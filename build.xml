@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is an ant build file. See: "http://jakarta.apache.org/ant"-->
+<project
+	default="compile"
+	name="MekWars"
+>
+	<!-- Global properties for this build -->
+	<property
+		name="src"
+		value="src"
+	>
+	</property>
+	<property
+		name="build"
+		value="${basedir}/classes"
+	>
+	</property>
+	<property
+		name="timestampfile"
+		value="timestamp"
+	>
+	</property>
+
+	<property
+			name="megameklab"
+			value="MegaMekLab.jar"
+	>
+	</property>
+
+	<property
+		name="jarmanifest"
+		value="manifest.txt"
+	>
+	</property>
+	<path
+		id="project.classpath"
+	>
+		<pathelement
+			path="${build}"
+		>
+		</pathelement>
+		<fileset
+			dir="${basedir}"
+		>
+			<include
+				name="MegaMek.jar"
+			>
+			</include>
+		</fileset>
+	</path>
+	<target
+		description="Initialize system before build"
+		name="init"
+	>
+		<!-- Create the time stamp -->
+		<tstamp>
+		</tstamp>
+		<!-- Ensure that the build directory exists. -->
+		<mkdir
+			dir="${build}"
+		>
+		</mkdir>
+
+	</target>
+	<target
+		depends="init"
+		description="Compile java sources into class files"
+		name="compile"
+	>
+		<javac
+			classpathref="project.classpath"
+			debug="true"
+			deprecation="true"
+			destdir="${build}"
+			srcdir="${src}"
+			target="1.5"
+			source="1.5"
+		>
+		</javac>
+		<touch
+			file="${timestampfile}"
+		>
+		</touch>
+	</target>
+	<target
+		name="doc"
+	>
+		<mkdir
+			dir="${doc}"
+		>
+		</mkdir>
+		<javadoc
+			classpath="${basedir}"
+			destdir="${doc}"
+			package="yes"
+			packagenames="megamek.*"
+			sourcepath="${src}"
+			windowtitle="MegaMek API"
+		>
+		</javadoc>
+	</target>
+	<target
+		description="Remove all compiled and generated files"
+		name="clean"
+	>
+		<!-- Delete the ${build} directory tree -->
+		<delete
+			file="MegaMekLab.jar"
+		>
+		</delete>
+		<delete
+			dir="${build}"
+		>
+		</delete>
+		<delete
+			dir="${doc}"
+		>
+		</delete>
+		<delete
+			file="${timestampfile}"
+		>
+		</delete>
+		<delete
+			dir="dist"
+		>
+		</delete>
+	</target>
+	<target
+		depends="compile"
+		description="Create application jar file"
+		name="megameklab-jar"
+	>
+		<delete
+			file="${megameklab}"
+		>
+		</delete>
+		<jar
+			basedir="${build}"
+			compress="true"
+			destfile="${megameklab}"
+			excludes=""
+			includes="**"
+			jarfile="${megameklab}"
+			manifest="manifest.txt"
+		>
+		</jar>
+	</target>
+	
+</project>
