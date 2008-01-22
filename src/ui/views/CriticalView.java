@@ -36,7 +36,7 @@ public class CriticalView extends JPanel {
      */
     private static final long serialVersionUID = -6960975031034494605L;
 
-    public CriticalView(Mech unit) {
+    public CriticalView(Mech unit, boolean showEmpty) {
         JPanel mainPanel = new JPanel();
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -65,7 +65,8 @@ public class CriticalView extends JPanel {
                 for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                     CriticalSlot cs = unit.getCritical(location, slot);
                     if (cs == null) {
-                        critNames.add(MtfFile.EMPTY);
+                        if (showEmpty)
+                            critNames.add(MtfFile.EMPTY);
                         continue;
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                         critNames.add(unit.getSystemName(cs.getIndex()));
