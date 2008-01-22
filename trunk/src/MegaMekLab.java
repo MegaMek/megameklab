@@ -20,16 +20,19 @@ import java.io.PrintStream;
 
 import ui.MainUI;
 
-public class MegaMekLab{
-    
+public class MegaMekLab {
+
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
-        try {
-            PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(logFileName), 64));
-            System.setOut(ps);
-            System.setErr(ps);
-        } catch (Exception ex) {
-            System.err.println("Unable to redirect output");
+
+        if (args.length < 1) {
+            try {
+                PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(logFileName), 64));
+                System.setOut(ps);
+                System.setErr(ps);
+            } catch (Exception ex) {
+                System.err.println("Unable to redirect output");
+            }
         }
         new MainUI();
     }
