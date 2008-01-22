@@ -163,7 +163,10 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
         entity.setEngine(new Engine(5,Engine.NORMAL_ENGINE,0));
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
-        
+
+        entity.addGyro();
+        entity.addEngineCrits();
+        entity.addCockpit();
         
         
         entity.autoSetInternal();
@@ -173,7 +176,7 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
         }
         
     }
-    
+
     public void actionPerformed(ActionEvent arg0) {
         // TODO Auto-generated method stub
 
@@ -194,4 +197,5 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
 
     }
 
+    
 }
