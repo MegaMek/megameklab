@@ -167,7 +167,7 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
         entity.addGyro();
         entity.addEngineCrits();
         entity.addCockpit();
-        
+        entity.addEngineSinks(10, false);
         
         entity.autoSetInternal();
         for ( int loc = 0; loc <= Mech.LOC_LLEG; loc++ ) {
