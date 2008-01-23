@@ -38,6 +38,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import ui.dialog.UnitViewerDialog;
+import ui.tabs.StructureTab;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
@@ -59,7 +60,10 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
     JPanel contentPane;
     private JOptionPane pane;
     private JScrollPane scrollPane;
-
+    private StructureTab structureTab;
+    private Header header;
+    private StatusBar statusbar;
+    
     public MainUI() {
 
         file.setMnemonic('F');
@@ -145,10 +149,18 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
 
     public void reloadTabs() {
         ConfigPane.removeAll();
-        ConfigPane.addTab("Structure", new StructureTab(entity));
+        structureTab = new StructureTab(entity,this);
+        header = new Header(entity,this);
+        statusbar = new StatusBar(entity,this);
+        
+        ConfigPane.addTab("Structure", structureTab);
         this.repaint();
     }
 
+    public void refresh(){
+        structureTab.refresh();
+    }
+    
     public void jMenuExit_actionPerformed(ActionEvent event) {
         System.exit(0);
     }

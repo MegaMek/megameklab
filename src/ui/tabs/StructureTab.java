@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui;
+package ui.tabs;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
+import ui.MainUI;
 import ui.util.SpringLayoutHelper;
 import ui.views.CriticalView;
 
@@ -65,9 +66,11 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
     String[] techLevels = { "1", "2", "3" };
     JComboBox techLevel = new JComboBox(techLevels);
     JTextField era = new JTextField(5);
-
-    public StructureTab(Entity unit) {
+    private MainUI main;
+    
+    public StructureTab(Entity unit, MainUI main) {
         this.unit = (Mech) unit;
+        this.main = main;
         refresh();
     }
 
@@ -290,7 +293,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
             }
                 
 
-            refresh();
+            main.refresh();
         }
     }
 
