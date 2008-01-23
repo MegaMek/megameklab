@@ -160,14 +160,14 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
         entity.setYear(2075);
         entity.setTechLevel(TechConstants.T_IS_LEVEL_1);
         entity.setWeight(25);
-        entity.setEngine(new Engine(5,Engine.NORMAL_ENGINE,0));
+        entity.setEngine(new Engine(25,Engine.NORMAL_ENGINE,0));
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
         entity.addGyro();
         entity.addEngineCrits();
         entity.addCockpit();
-        entity.addEngineSinks(10, false);
+        entity.addEngineSinks(entity.getEngine().integralHeatSinkCapacity(), false);
         
         entity.autoSetInternal();
         for ( int loc = 0; loc <= Mech.LOC_LLEG; loc++ ) {

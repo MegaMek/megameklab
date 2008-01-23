@@ -333,6 +333,34 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         techLevel.addActionListener(this);
         techType.addActionListener(this);
         era.addKeyListener(this);
+
+        /*
+        Dimension size = new Dimension(1,40);
+        
+        weightClass.setMaximumSize(size);
+        heatSinkNumber.setMaximumSize(size);
+        engineRating.setMaximumSize(size);
+        techLevel.setMaximumSize(size);
+        techType.setMaximumSize(size);
+        era.setMaximumSize(size);
+        era.setPreferredSize(size);
+        weightClass.setPreferredSize(size);
+        heatSinkNumber.setPreferredSize(size);
+        engineRating.setPreferredSize(size);
+        techLevel.setPreferredSize(size);
+        techType.setPreferredSize(size);
+
+        size = new Dimension(100,40);
+        heatSinkType.setMaximumSize(size);
+        gyroType.setMaximumSize(size);
+        engineType.setMaximumSize(size);
+        cockpitType.setMaximumSize(size);
+        gyroType.setPreferredSize(size);
+        cockpitType.setPreferredSize(size);
+        heatSinkType.setPreferredSize(size);
+        engineType.setPreferredSize(size);
+*/
+        
     }
 
     public void keyPressed(KeyEvent e) {
