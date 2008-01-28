@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import ui.MainUI;
+import ui.util.RefreshListener;
 import ui.util.SpringLayoutHelper;
 import ui.views.CriticalView;
 
@@ -66,11 +66,15 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
     String[] techLevels = { "1", "2", "3" };
     JComboBox techLevel = new JComboBox(techLevels);
     JTextField era = new JTextField(5);
-    private MainUI main;
-    
-    public StructureTab(Entity unit, MainUI main) {
+    RefreshListener refresh = null;
+    private CriticalView critView = null;
+
+    public StructureTab(Entity unit) {
         this.unit = (Mech) unit;
-        this.main = main;
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        this.add(enginePanel());
+        critView = new CriticalView((Mech) unit, false);
+        this.add(critView);
         refresh();
     }
 
@@ -90,7 +94,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         masterPanel.add(createLabel("Era:", maxSize));
         masterPanel.add(era);
-        
+
         masterPanel.add(createLabel("Tech:", maxSize));
         masterPanel.add(techType);
         masterPanel.add(createLabel("Tech Level:", maxSize));
@@ -118,7 +122,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         masterPanel.add(weightClass);
 
         Vector<String> heatSinks = new Vector<String>(1, 1);
-        for (int count = 0; count < 30; count++)
+        for (int count = 0; count < 40; count++)
             heatSinks.add(Integer.toString(count));
 
         heatSinkNumber = new JComboBox(heatSinks.toArray());
@@ -133,12 +137,21 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
+        return masterPanel;
+    }
+
+    public void refresh() {
+        removeAllActionListeners();
         era.setText(Integer.toString(unit.getYear()));
         gyroType.setSelectedIndex(unit.getGyroType());
         engineType.setSelectedIndex(unit.getEngine().getEngineType());
         weightClass.setSelectedIndex((int) (unit.getWeight() / 5) - 2);
         cockpitType.setSelectedIndex(unit.getCockpitType());
-        heatSinkNumber.setSelectedIndex(unit.heatSinks() + unit.getEngine().getCountEngineHeatSinks());
+        try {
+            heatSinkNumber.setSelectedIndex(unit.heatSinks() + unit.getEngine().getCountEngineHeatSinks());
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
 
         if (unit.isClan()) {
             techType.setSelectedIndex(1);
@@ -169,15 +182,9 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
             heatSinkType.setSelectedIndex(0);
 
         engineRating.setSelectedIndex(unit.getEngine().getRating() / 5);
-        return masterPanel;
-    }
 
-    public void refresh() {
+        critView.refresh();
 
-        this.removeAll();
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(enginePanel());
-        this.add(new CriticalView((Mech) unit, false));
         addAllActionListeners();
     }
 
@@ -220,6 +227,8 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                 int rating = Integer.parseInt(engineRating.getSelectedItem().toString());
                 unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), 0));
                 unit.addEngineCrits();
+                refresh.refreshStatus();
+                refresh.refreshEquipment();
             } else if (combo.equals(gyroType)) {
                 unit.setGyroType(combo.getSelectedIndex());
                 removeSystemCrits(Mech.SYSTEM_GYRO);
@@ -237,6 +246,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                 default:
                     unit.addGyro();
                 }
+                refresh.refreshEquipment();
             } else if (combo.equals(cockpitType)) {
                 unit.setCockpitType(combo.getSelectedIndex());
                 removeSystemCrits(Mech.SYSTEM_COCKPIT);
@@ -262,14 +272,19 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                     unit.addCockpit();
 
                 }
+                refresh.refreshEquipment();
             } else if (combo.equals(weightClass)) {
                 unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
                 unit.autoSetInternal();
+                refresh.refreshArmor();
+                refresh.refreshStatus();
             } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
                 if (heatSinkType.getSelectedIndex() == 1 || heatSinkType.getSelectedIndex() == 3)
                     unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), true);
                 else
                     unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), false);
+                refresh.refreshStatus();
+                refresh.refreshEquipment();
             } else if (combo.equals(techLevel) || combo.equals(techType)) {
                 if (techType.getSelectedIndex() > 0) {
                     if (techLevel.getSelectedIndex() < 2) {
@@ -290,11 +305,11 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
                     }
                 }
+                refresh.refreshStatus();
             }
-                
-
-            main.refresh();
+            refresh.refreshStructure();
         }
+
     }
 
     public void removeSystemCrits(int systemType) {
@@ -337,47 +352,25 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         techType.addActionListener(this);
         era.addKeyListener(this);
 
-        /*
-        Dimension size = new Dimension(1,40);
-        
-        weightClass.setMaximumSize(size);
-        heatSinkNumber.setMaximumSize(size);
-        engineRating.setMaximumSize(size);
-        techLevel.setMaximumSize(size);
-        techType.setMaximumSize(size);
-        era.setMaximumSize(size);
-        era.setPreferredSize(size);
-        weightClass.setPreferredSize(size);
-        heatSinkNumber.setPreferredSize(size);
-        engineRating.setPreferredSize(size);
-        techLevel.setPreferredSize(size);
-        techType.setPreferredSize(size);
-
-        size = new Dimension(100,40);
-        heatSinkType.setMaximumSize(size);
-        gyroType.setMaximumSize(size);
-        engineType.setMaximumSize(size);
-        cockpitType.setMaximumSize(size);
-        gyroType.setPreferredSize(size);
-        cockpitType.setPreferredSize(size);
-        heatSinkType.setPreferredSize(size);
-        engineType.setPreferredSize(size);
-*/
-        
     }
 
     public void keyPressed(KeyEvent e) {
-        
+
     }
 
     public void keyReleased(KeyEvent e) {
-        try{
+        try {
             unit.setYear(Integer.parseInt(era.getText()));
-        }catch(Exception ex){
+        } catch (Exception ex) {
             unit.setYear(2075);
         }
     }
 
     public void keyTyped(KeyEvent e) {
     }
+
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
+    }
+
 }
