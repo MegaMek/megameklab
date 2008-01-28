@@ -16,29 +16,25 @@
 
 package ui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import ui.dialog.UnitViewerDialog;
 import ui.tabs.StructureTab;
+import ui.util.RefreshListener;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
@@ -47,7 +43,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.TechConstants;
 
-public class MainUI extends JFrame implements ActionListener, KeyListener {
+public class MainUI extends JFrame implements RefreshListener {
 
     /**
      * 
@@ -58,11 +54,10 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
     JMenu file = new JMenu("File");
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
-    private JOptionPane pane;
-    private JScrollPane scrollPane;
     private StructureTab structureTab;
     private Header header;
     private StatusBar statusbar;
+    JPanel masterPanel = new JPanel();
     
     public MainUI() {
 
@@ -91,19 +86,19 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
         file.add(item);
         menuBar.add(file);
 
-        pane = new JOptionPane(ConfigPane, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, null, null);
+        /*pane = new JOptionPane(ConfigPane, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, null, null);
 
         pane.setVisible(false);
         scrollPane = new JScrollPane(pane, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         contentPane = (JPanel) this.getContentPane();
         contentPane.setLayout(new BorderLayout());
-        contentPane.add(scrollPane, BorderLayout.CENTER);
+        contentPane.add(scrollPane, BorderLayout.CENTER);*/
         repaint();
         setLocation(getLocation().x + 10, getLocation().y);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                boolean closeit = true;
+                /*boolean closeit = true;
                 int result = JOptionPane.showConfirmDialog(null, "Do you want to exit?", "Exit?", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION)
                     closeit = true;
@@ -111,15 +106,16 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
                     closeit = false;
                 if (closeit) {
                     System.exit(0);
-                }
+                }*/
             }
         });
 
-        ConfigPane.setMinimumSize(new Dimension(300, 300));
+        //ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewMech();
         reloadTabs();
         setJMenuBar(menuBar);
-        this.add(ConfigPane);
+        this.add(masterPanel);
+        masterPanel.setPreferredSize(new Dimension(640,480));
         setResizable(true);
         setSize(new Dimension(640, 480));
         setExtendedState(Frame.NORMAL);
@@ -138,7 +134,6 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
                 return;
             entity = (Mech)viewer.getSelectedEntity();
             viewer.setVisible(false);
-            this.setTitle(entity.getShortNameRaw());
             reloadTabs();
         }
     }
@@ -148,19 +143,25 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
     }
 
     public void reloadTabs() {
+        masterPanel.removeAll();
         ConfigPane.removeAll();
-        structureTab = new StructureTab(entity,this);
-        header = new Header(entity,this);
-        statusbar = new StatusBar(entity,this);
+        
+        masterPanel.setLayout(new BoxLayout(masterPanel,BoxLayout.Y_AXIS));
+        structureTab = new StructureTab(entity);
+        header = new Header(entity);
+        statusbar = new StatusBar(entity);
+        header.addRefreshedListener(this);
+        structureTab.addRefreshedListener(this);
         
         ConfigPane.addTab("Structure", structureTab);
+
+        masterPanel.add(header);
+        masterPanel.add(ConfigPane);
+        masterPanel.add(statusbar);
+        refreshHeader();
         this.repaint();
     }
 
-    public void refresh(){
-        structureTab.refresh();
-    }
-    
     public void jMenuExit_actionPerformed(ActionEvent event) {
         System.exit(0);
     }
@@ -189,24 +190,43 @@ public class MainUI extends JFrame implements ActionListener, KeyListener {
         
     }
 
-    public void actionPerformed(ActionEvent arg0) {
-        // TODO Auto-generated method stub
-
+    public void refreshAll() {
+        statusbar.refresh();
+        structureTab.refresh();
+        this.setTitle(entity.getChassis()+" "+entity.getModel()+".mtf");
+        header = new Header(entity);
     }
 
-    public void keyPressed(KeyEvent arg0) {
+    public void refreshArmor() {
         // TODO Auto-generated method stub
-
+        
     }
 
-    public void keyReleased(KeyEvent arg0) {
+    public void refreshBuild() {
         // TODO Auto-generated method stub
-
+        
     }
 
-    public void keyTyped(KeyEvent arg0) {
+    public void refreshEquipment() {
         // TODO Auto-generated method stub
+        
+    }
 
+    public void refreshHeader() {
+        this.setTitle(entity.getChassis()+" "+entity.getModel()+".mtf");
+    }
+
+    public void refreshStatus() {
+        statusbar.refresh();
+    }
+
+    public void refreshStructure() {
+        structureTab.refresh();
+    }
+
+    public void refreshWeapons() {
+        // TODO Auto-generated method stub
+        
     }
 
     

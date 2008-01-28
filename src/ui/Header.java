@@ -16,45 +16,65 @@
 
 package ui;
 
+import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
+
+import ui.util.RefreshListener;
+import ui.util.SpringLayoutHelper;
 
 import megamek.common.Mech;
 
 public class Header extends JPanel implements KeyListener{
 
     private Mech unit;
-    private MainUI main;
+    private RefreshListener refresh;
+    private JTextField chassie = new JTextField(5);
+    private JTextField model = new JTextField(5);
+    
     /**
      * 
      */
     private static final long serialVersionUID = -5806920722514383555L;
 
     
-    public Header(Mech unit, MainUI main){
+    public Header(Mech unit){
         this.unit = unit;
-        this.main = main;
-    }
-    
-    public void refresh(){
+        this.setMinimumSize(new Dimension(300,300));
+        chassie.setText(unit.getChassis());
+        model.setText(unit.getModel());
         
+        chassie.setMaximumSize(new Dimension(100,10));
+        model.setMaximumSize(new Dimension(100,10));
+        this.setLayout(new SpringLayout());
+        this.add(new JLabel("Chassie:",JLabel.TRAILING));
+        this.add(chassie);
+        this.add(new JLabel("Model:",JLabel.TRAILING));
+        this.add(model);
+        SpringLayoutHelper.setupSpringGrid(this, 4);
+        chassie.addKeyListener(this);
+        model.addKeyListener(this);
+
     }
-    
+
     public void keyPressed(KeyEvent e) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void keyReleased(KeyEvent e) {
-        // TODO Auto-generated method stub
-        
+        unit.setChassis(chassie.getText().trim());
+        unit.setModel(model.getText().trim());
+        refresh.refreshHeader();
     }
 
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
-        
     }
     
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
+    }
 }
