@@ -33,6 +33,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
 import ui.dialog.UnitViewerDialog;
+import ui.tabs.ArmorTab;
 import ui.tabs.StructureTab;
 import ui.util.RefreshListener;
 
@@ -55,6 +56,7 @@ public class MainUI extends JFrame implements RefreshListener {
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
+    private ArmorTab armorTab;
     private Header header;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
@@ -98,15 +100,7 @@ public class MainUI extends JFrame implements RefreshListener {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                /*boolean closeit = true;
-                int result = JOptionPane.showConfirmDialog(null, "Do you want to exit?", "Exit?", JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION)
-                    closeit = true;
-                else
-                    closeit = false;
-                if (closeit) {
                     System.exit(0);
-                }*/
             }
         });
 
@@ -118,6 +112,8 @@ public class MainUI extends JFrame implements RefreshListener {
         masterPanel.setPreferredSize(new Dimension(640,480));
         setResizable(true);
         setSize(new Dimension(640, 480));
+        setMinimumSize(new Dimension(640, 480));
+        setPreferredSize(new Dimension(640, 480));
         setExtendedState(Frame.NORMAL);
 
         this.setVisible(true);
@@ -148,13 +144,16 @@ public class MainUI extends JFrame implements RefreshListener {
         
         masterPanel.setLayout(new BoxLayout(masterPanel,BoxLayout.Y_AXIS));
         structureTab = new StructureTab(entity);
+        armorTab = new ArmorTab(entity);
         header = new Header(entity);
         statusbar = new StatusBar(entity);
         header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
+        armorTab.addRefreshedListener(this);
         
         ConfigPane.addTab("Structure", structureTab);
-
+        ConfigPane.addTab("Armor", armorTab);
+        
         masterPanel.add(header);
         masterPanel.add(ConfigPane);
         masterPanel.add(statusbar);
@@ -193,13 +192,14 @@ public class MainUI extends JFrame implements RefreshListener {
     public void refreshAll() {
         statusbar.refresh();
         structureTab.refresh();
+        armorTab.refresh();
+        
         this.setTitle(entity.getChassis()+" "+entity.getModel()+".mtf");
         header = new Header(entity);
     }
 
     public void refreshArmor() {
-        // TODO Auto-generated method stub
-        
+        armorTab.refresh();
     }
 
     public void refreshBuild() {
