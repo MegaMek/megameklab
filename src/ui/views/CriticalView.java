@@ -48,13 +48,13 @@ public class CriticalView extends JPanel {
     private JPanel legPanel = new JPanel();
 
     private boolean showEmpty = false;
-    
+
     public CriticalView(Mech unit, boolean showEmpty) {
         this.unit = unit;
         this.showEmpty = showEmpty;
 
         JPanel mainPanel = new JPanel();
-        
+
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         headPanel.setLayout(new BoxLayout(headPanel, BoxLayout.X_AXIS));
@@ -76,7 +76,7 @@ public class CriticalView extends JPanel {
 
         this.add(mainPanel);
     }
-    
+
     public void refresh() {
         laPanel.removeAll();
         raPanel.removeAll();
@@ -102,7 +102,10 @@ public class CriticalView extends JPanel {
                         critNames.add(unit.getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         Mounted m = unit.getEquipment(cs.getIndex());
-                        critNames.add(m.getDesc());
+                        if (m.getName().length() > 10)
+                            critNames.add(m.getName().substring(0, 10)+"...");
+                        else
+                            critNames.add(m.getName());
                     }
                 }
                 JList CriticalSlotList = new JList(critNames);

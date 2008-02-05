@@ -14,156 +14,431 @@
  * for more details.
  */
 
-
 package ui.views;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.util.Vector;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JList;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.ListSelectionModel;
+import javax.swing.JTextField;
 
-import megamek.common.EquipmentType;
+import ui.util.RefreshListener;
+
 import megamek.common.Mech;
 
-public class ArmorView extends JPanel{
-    
+public class ArmorView extends JPanel implements KeyListener {
+
     /**
      * 
      */
     private static final long serialVersionUID = 799195356642563937L;
 
+    // private EntityVerifier entityVerifier = new EntityVerifier(new
+    // File("data/mechfiles/UnitVerifierOptions.xml"));
+    private Mech unit;
+    // private TestMech testMech;
+
+    private JPanel mainPanel = new JPanel();
+
+    private JPanel headPanel = new JPanel();
+    private JPanel torsoPanel = new JPanel();
+    private JPanel legPanel = new JPanel();
+
+    private JPanel laPanel = new JPanel();
+    private JPanel raPanel = new JPanel();
+    private JPanel llPanel = new JPanel();
+    private JPanel rlPanel = new JPanel();
+    private JPanel ltPanel = new JPanel();
+    private JPanel rtPanel = new JPanel();
+    private JPanel ctPanel = new JPanel();
+
+    private JTextField laArmorField = new JTextField(2);
+    private JTextField raArmorField = new JTextField(2);
+    private JTextField llArmorField = new JTextField(2);
+    private JTextField rlArmorField = new JTextField(2);
+    private JTextField ltArmorField = new JTextField(2);
+    private JTextField rtArmorField = new JTextField(2);
+    private JTextField ctArmorField = new JTextField(2);
+    private JTextField hdArmorField = new JTextField(2);
+    private JTextField rtrArmorField = new JTextField(2);
+    private JTextField ltrArmorField = new JTextField(2);
+    private JTextField ctrArmorField = new JTextField(2);
+
+    private JLabel laArmorMaxLabel = new JLabel();
+    private JLabel raArmorMaxLabel = new JLabel();
+    private JLabel llArmorMaxLabel = new JLabel();
+    private JLabel rlArmorMaxLabel = new JLabel();
+    private JLabel ltArmorMaxLabel = new JLabel();
+    private JLabel rtArmorMaxLabel = new JLabel();
+    private JLabel ctArmorMaxLabel = new JLabel();
+
+    private JLabel laISLabel = new JLabel();
+    private JLabel raISLabel = new JLabel();
+    private JLabel llISLabel = new JLabel();
+    private JLabel rlISLabel = new JLabel();
+    private JLabel rtISLabel = new JLabel();
+    private JLabel ltISLabel = new JLabel();
+    private JLabel ctISLabel = new JLabel();
+    private JLabel hdISLabel = new JLabel();
+
+    private RefreshListener refresh;
+
     public ArmorView(Mech unit) {
-        JPanel mainPanel = new JPanel();
-        JPanel armorPanel = new JPanel();
-        JPanel masterPanel = new JPanel();
-        
+
+        this.unit = unit;
+
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        armorPanel.setLayout(new BoxLayout(armorPanel, BoxLayout.Y_AXIS));
-
-        JPanel headPanel = new JPanel();
-        JPanel torsoPanel = new JPanel();
-        JPanel legPanel = new JPanel();
-
-        JPanel laPanel = new JPanel();
-        JPanel raPanel = new JPanel();
-        JPanel llPanel = new JPanel();
-        JPanel rlPanel = new JPanel();
-        JPanel ltPanel = new JPanel();
-        JPanel rtPanel = new JPanel();
-        JPanel ctPanel = new JPanel();
-
-        JPanel headArmorPanel = new JPanel();
-        JPanel laArmorPanel = new JPanel();
-        JPanel raArmorPanel = new JPanel();
-        JPanel llArmorPanel = new JPanel();
-        JPanel rlArmorPanel = new JPanel();
-        JPanel ltArmorPanel = new JPanel();
-        JPanel rtArmorPanel = new JPanel();
-        JPanel ctArmorPanel = new JPanel();
 
         headPanel.setLayout(new BoxLayout(headPanel, BoxLayout.X_AXIS));
-        headArmorPanel.setLayout(new BoxLayout(headArmorPanel, BoxLayout.X_AXIS));
         torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
         legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
 
+        laPanel.setLayout(new BoxLayout(laPanel, BoxLayout.Y_AXIS));
+        raPanel.setLayout(new BoxLayout(raPanel, BoxLayout.Y_AXIS));
+        ltPanel.setLayout(new BoxLayout(ltPanel, BoxLayout.Y_AXIS));
+        ctPanel.setLayout(new BoxLayout(ctPanel, BoxLayout.Y_AXIS));
+        rtPanel.setLayout(new BoxLayout(rtPanel, BoxLayout.Y_AXIS));
+
+        mainPanel.add(headPanel);
+
+        laPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        raPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        ltPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        rtPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        ctPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+
+        torsoPanel.add(laPanel);
+        torsoPanel.add(ltPanel);
+        torsoPanel.add(ctPanel);
+        torsoPanel.add(rtPanel);
+        torsoPanel.add(raPanel);
+        mainPanel.add(torsoPanel);
+
+        legPanel.add(llPanel);
+        legPanel.add(rlPanel);
+        mainPanel.add(legPanel);
+
+        laArmorField.setToolTipText("Front Armor");
+        raArmorField.setToolTipText("Front Armor");
+        llArmorField.setToolTipText("Front Armor");
+        rlArmorField.setToolTipText("Front Armor");
+        ltArmorField.setToolTipText("Front Armor");
+        rtArmorField.setToolTipText("Front Armor");
+        ctArmorField.setToolTipText("Front Armor");
+        hdArmorField.setToolTipText("Front Armor");
+        rtrArmorField.setToolTipText("Rear Armor");
+        ltrArmorField.setToolTipText("Rear Armor");
+        ctrArmorField.setToolTipText("Rear Armor");
+
+        laArmorField.setName(Integer.toString(Mech.LOC_LARM));
+        raArmorField.setName(Integer.toString(Mech.LOC_RARM));
+        llArmorField.setName(Integer.toString(Mech.LOC_LLEG));
+        rlArmorField.setName(Integer.toString(Mech.LOC_RLEG));
+        ltArmorField.setName(Integer.toString(Mech.LOC_LT));
+        rtArmorField.setName(Integer.toString(Mech.LOC_RT));
+        ctArmorField.setName(Integer.toString(Mech.LOC_CT));
+        hdArmorField.setName(Integer.toString(Mech.LOC_HEAD));
+        rtrArmorField.setName(Integer.toString(Mech.LOC_RT));
+        ltrArmorField.setName(Integer.toString(Mech.LOC_LT));
+        ctrArmorField.setName(Integer.toString(Mech.LOC_CT));
+
+        torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
+        legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
+
+        JPanel masterPanel;
+
         synchronized (unit) {
-            String armorName = EquipmentType.getArmorTypeName(unit.getArmorType());
-            String isName = EquipmentType.getStructureTypeName(unit.getStructureType());
-
-            if (armorName.equalsIgnoreCase("Standard"))
-                armorName = "Armor";
-            if (isName.equalsIgnoreCase("Standard"))
-                isName = "Internal";
             for (int location = 0; location < unit.locations(); location++) {
-                 Vector<String> armorNames = new Vector<String>(3, 1);
- 
-                armorNames.add(armorName + ": " + Math.max(0, unit.getArmor(location)) + "/" + unit.getOArmor(location));
 
-                if (unit.hasRearArmor(location)) {
-                    armorNames.add("" + armorName + "(r): " + Math.max(0, unit.getArmor(location, true)) + "/" + unit.getOArmor(location, true));
-                }
-
-                armorNames.add(isName + ": " + Math.max(0, unit.getInternal(location)) + "/" + unit.getOInternal(location));
-
-                JList ArmorSlotList = new JList(armorNames);
-                ArmorSlotList.setVisibleRowCount(armorNames.size());
-                ArmorSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                ArmorSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
-                ArmorSlotList.setName("armor" + location);
                 switch (location) {
                 case Mech.LOC_HEAD:
-                    headArmorPanel.add(ArmorSlotList);
-                    ArmorSlotList.setBackground(Color.green);
+                    masterPanel = new JPanel();
+                    JPanel topPanel = new JPanel();
+                    JPanel bottomPanel = new JPanel();
+                    masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
+                    topPanel.add(hdArmorField);
+                    topPanel.add(new JLabel("/ 9", JLabel.TRAILING));
+                    masterPanel.add(topPanel);
+                    bottomPanel = new JPanel();
+                    bottomPanel.add(hdISLabel);
+                    masterPanel.add(bottomPanel);
+                    masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
+                    headPanel.add(masterPanel);
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
+                    headPanel.add(new JPanel());
                     break;
                 case Mech.LOC_LARM:
-                    laArmorPanel.add(ArmorSlotList);
-                    ArmorSlotList.setBackground(Color.green);
+                    masterPanel = new JPanel();
+                    masterPanel.add(laArmorField);
+                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(laArmorMaxLabel);
+                    laPanel.add(masterPanel);
+                    laPanel.add(laISLabel);
                     break;
                 case Mech.LOC_RARM:
-                    raArmorPanel.add(ArmorSlotList);
-                    ArmorSlotList.setBackground(Color.green);
+                    masterPanel = new JPanel();
+                    masterPanel.add(raArmorField);
+                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(raArmorMaxLabel);
+                    raPanel.add(masterPanel);
+                    raPanel.add(raISLabel);
                     break;
                 case Mech.LOC_CT:
-                    ctArmorPanel.add(ArmorSlotList);
-                    ArmorSlotList.setBackground(Color.green);
+                    masterPanel = new JPanel();
+                    masterPanel.add(ctArmorField);
+                    masterPanel.add(new JLabel("(", JLabel.TRAILING));
+                    masterPanel.add(ctrArmorField);
+                    masterPanel.add(new JLabel(")/", JLabel.TRAILING));
+                    masterPanel.add(ctArmorMaxLabel);
+                    ctPanel.add(masterPanel);
+                    ctPanel.add(ctISLabel);
                     break;
                 case Mech.LOC_LT:
-                    ltArmorPanel.add(ArmorSlotList);
-                    ArmorSlotList.setBackground(Color.green);
+                    masterPanel = new JPanel();
+                    masterPanel.add(ltArmorField);
+                    masterPanel.add(new JLabel("("));
+                    masterPanel.add(ltrArmorField);
+                    masterPanel.add(new JLabel(")/", JLabel.TRAILING));
+                    masterPanel.add(ltArmorMaxLabel);
+                    ltPanel.add(masterPanel);
+                    ltPanel.add(ltISLabel);
                     break;
                 case Mech.LOC_RT:
-                    rtArmorPanel.add(ArmorSlotList);
-                    ArmorSlotList.setBackground(Color.green);
+                    masterPanel = new JPanel();
+                    masterPanel.add(rtArmorField);
+                    masterPanel.add(new JLabel("("));
+                    masterPanel.add(rtrArmorField);
+                    masterPanel.add(new JLabel(")/", JLabel.TRAILING));
+                    masterPanel.add(rtArmorMaxLabel);
+                    rtPanel.add(masterPanel);
+                    rtPanel.add(rtISLabel);
                     break;
                 case Mech.LOC_LLEG:
-                    llArmorPanel.add(ArmorSlotList);
-                    ArmorSlotList.setBackground(Color.green);
+                    masterPanel = new JPanel();
+                    topPanel = new JPanel();
+                    bottomPanel = new JPanel();
+                    masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
+                    topPanel.add(llArmorField);
+                    topPanel.add(new JLabel("/", JLabel.TRAILING));
+                    topPanel.add(llArmorMaxLabel);
+                    masterPanel.add(topPanel);
+                    bottomPanel = new JPanel();
+                    bottomPanel.add(llISLabel);
+                    masterPanel.add(bottomPanel);
+                    masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+                    llPanel.add(new JPanel());
+                    llPanel.add(new JPanel());
+                    llPanel.add(masterPanel);
+                    llPanel.add(new JPanel());
+                    llPanel.add(new JPanel());
                     break;
                 case Mech.LOC_RLEG:
-                    rlArmorPanel.add(ArmorSlotList);
-                    ArmorSlotList.setBackground(Color.green);
+                    masterPanel = new JPanel();
+                    topPanel = new JPanel();
+                    bottomPanel = new JPanel();
+                    masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
+                    topPanel.add(rlArmorField);
+                    topPanel.add(new JLabel("/", JLabel.TRAILING));
+                    topPanel.add(rlArmorMaxLabel);
+                    masterPanel.add(topPanel);
+                    bottomPanel = new JPanel();
+                    bottomPanel.add(rlISLabel);
+                    masterPanel.add(bottomPanel);
+                    masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+                    rlPanel.add(new JPanel());
+                    rlPanel.add(new JPanel());
+                    rlPanel.add(masterPanel);
+                    rlPanel.add(new JPanel());
+                    rlPanel.add(new JPanel());
                     break;
                 }
-
-                mainPanel.add(headPanel);
-
-                torsoPanel.add(laPanel);
-                torsoPanel.add(ltPanel);
-                torsoPanel.add(ctPanel);
-                torsoPanel.add(rtPanel);
-                torsoPanel.add(raPanel);
-                mainPanel.add(torsoPanel);
-
-                legPanel.add(llPanel);
-                legPanel.add(rlPanel);
-                mainPanel.add(legPanel);
-
-                torsoPanel = new JPanel();
-                legPanel = new JPanel();
-                torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
-                legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
-
-                armorPanel.add(headArmorPanel);
-
-                torsoPanel.add(laArmorPanel);
-                torsoPanel.add(ltArmorPanel);
-                torsoPanel.add(ctArmorPanel);
-                torsoPanel.add(rtArmorPanel);
-                torsoPanel.add(raArmorPanel);
-                armorPanel.add(torsoPanel);
-
-                legPanel.add(llArmorPanel);
-                legPanel.add(rlArmorPanel);
-                armorPanel.add(legPanel);
-
             }
         }
-        masterPanel.add(mainPanel);
-        masterPanel.add(armorPanel);
-        this.add(masterPanel);
+
+        this.add(mainPanel);
+        refresh();
+        addAllListeners();
     }
+
+    public void refresh() {
+
+        // testMech = new TestMech(unit, entityVerifier.mechOption, null);
+
+        for (int location = 0; location < unit.locations(); location++) {
+
+            int maxArmor = unit.getOInternal(location) * 2;
+            switch (location) {
+            case Mech.LOC_HEAD:
+                hdArmorField.setText(unit.getArmorString(location));
+                hdISLabel.setText(unit.getInternalString(location));
+                if (unit.getArmor(location) > 9)
+                    hdArmorField.setBackground(Color.RED);
+                else
+                    hdArmorField.setBackground(Color.white);
+                break;
+            case Mech.LOC_LARM:
+                laArmorField.setText(unit.getArmorString(location));
+                laISLabel.setText(unit.getInternalString(location));
+                if (unit.getArmor(location) > maxArmor)
+                    laArmorField.setBackground(Color.RED);
+                else
+                    laArmorField.setBackground(Color.white);
+                laArmorMaxLabel.setText(Integer.toString(maxArmor));
+                break;
+            case Mech.LOC_RARM:
+                raArmorField.setText(unit.getArmorString(location));
+                raISLabel.setText(unit.getInternalString(location));
+                if (unit.getArmor(location) > maxArmor)
+                    raArmorField.setBackground(Color.RED);
+                else
+                    raArmorField.setBackground(Color.white);
+                raArmorMaxLabel.setText(Integer.toString(maxArmor));
+                break;
+            case Mech.LOC_CT:
+                ctArmorField.setText(unit.getArmorString(location));
+                ctrArmorField.setText(unit.getArmorString(location, true));
+                ctISLabel.setText(unit.getInternalString(location));
+                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor)
+                    ctArmorField.setBackground(Color.RED);
+                else
+                    ctArmorField.setBackground(Color.white);
+                ctArmorMaxLabel.setText(Integer.toString(maxArmor));
+                break;
+            case Mech.LOC_LT:
+                ltArmorField.setText(unit.getArmorString(location));
+                ltrArmorField.setText(unit.getArmorString(location, true));
+                ltISLabel.setText(unit.getInternalString(location));
+                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor)
+                    ltArmorField.setBackground(Color.RED);
+                else
+                    ltArmorField.setBackground(Color.white);
+                ltArmorMaxLabel.setText(Integer.toString(maxArmor));
+                break;
+            case Mech.LOC_RT:
+                rtArmorField.setText(unit.getArmorString(location));
+                rtrArmorField.setText(unit.getArmorString(location, true));
+                rtISLabel.setText(unit.getInternalString(location));
+                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor)
+                    rtArmorField.setBackground(Color.RED);
+                else
+                    rtArmorField.setBackground(Color.white);
+                rtArmorMaxLabel.setText(Integer.toString(maxArmor));
+                break;
+            case Mech.LOC_LLEG:
+                llArmorField.setText(unit.getArmorString(location));
+                llISLabel.setText(unit.getInternalString(location));
+                if (unit.getArmor(location) > maxArmor)
+                    llArmorField.setBackground(Color.RED);
+                else
+                    llArmorField.setBackground(Color.white);
+                llArmorMaxLabel.setText(Integer.toString(maxArmor));
+                break;
+            case Mech.LOC_RLEG:
+                rlArmorField.setText(unit.getArmorString(location));
+                rlISLabel.setText(unit.getInternalString(location));
+                if (unit.getArmor(location) > maxArmor)
+                    rlArmorField.setBackground(Color.RED);
+                else
+                    rlArmorField.setBackground(Color.white);
+                rlArmorMaxLabel.setText(Integer.toString(maxArmor));
+                break;
+            }
+
+        }
+    }
+
+    private void addAllListeners() {
+        laArmorField.addKeyListener(this);
+        raArmorField.addKeyListener(this);
+        llArmorField.addKeyListener(this);
+        rlArmorField.addKeyListener(this);
+        ltArmorField.addKeyListener(this);
+        rtArmorField.addKeyListener(this);
+        ctArmorField.addKeyListener(this);
+        hdArmorField.addKeyListener(this);
+        rtrArmorField.addKeyListener(this);
+        ltrArmorField.addKeyListener(this);
+        ctrArmorField.addKeyListener(this);
+    }
+
+    private void removeAllListeners() {
+        laArmorField.removeKeyListener(this);
+        raArmorField.removeKeyListener(this);
+        llArmorField.removeKeyListener(this);
+        rlArmorField.removeKeyListener(this);
+        ltArmorField.removeKeyListener(this);
+        rtArmorField.removeKeyListener(this);
+        ctArmorField.removeKeyListener(this);
+        hdArmorField.removeKeyListener(this);
+        rtrArmorField.removeKeyListener(this);
+        ltrArmorField.removeKeyListener(this);
+        ctrArmorField.removeKeyListener(this);
+    }
+
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
+    }
+
+    public void keyPressed(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void keyReleased(KeyEvent arg0) {
+        addAllListeners();
+
+        try {
+            JTextField field = (JTextField) arg0.getSource();
+            int location = Integer.parseInt(field.getName());
+            int value = Integer.parseInt(field.getText());
+            switch (location) {
+            case Mech.LOC_CT:
+                if (field.equals(ctrArmorField))
+                    unit.initializeRearArmor(value, location);
+                else
+                    unit.initializeArmor(value, location);
+                break;
+            case Mech.LOC_RT:
+                if (field.equals(rtrArmorField))
+                    unit.initializeRearArmor(value, location);
+                else
+                    unit.initializeArmor(value, location);
+                break;
+            case Mech.LOC_LT:
+                if (field.equals(ltrArmorField))
+                    unit.initializeRearArmor(value, location);
+                else
+                    unit.initializeArmor(value, location);
+                break;
+            default:
+                unit.initializeArmor(value, location);
+                break;
+            }
+            refresh.refreshStatus();
+            refresh();
+        } catch (Exception ex) {
+        }
+
+        removeAllListeners();
+    }
+
+    public void keyTyped(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

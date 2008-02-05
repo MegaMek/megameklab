@@ -65,7 +65,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
     JComboBox techType = new JComboBox(techTypes);
     String[] techLevels = { "1", "2", "3" };
     JComboBox techLevel = new JComboBox(techLevels);
-    JTextField era = new JTextField(5);
+    JTextField era = new JTextField(3);
     RefreshListener refresh = null;
     private CriticalView critView = null;
 
@@ -90,7 +90,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         engineRating = new JComboBox(engineRatings.toArray());
 
-        maxSize.setSize(20, 5);
+        maxSize.setSize(80, 5);
 
         masterPanel.add(createLabel("Era:", maxSize));
         masterPanel.add(era);
@@ -137,6 +137,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
+        masterPanel.setPreferredSize(maxSize);
         return masterPanel;
     }
 
@@ -194,6 +195,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         label.setMaximumSize(maxSize);
         label.setMinimumSize(maxSize);
+        label.setPreferredSize(maxSize);
 
         return label;
     }
