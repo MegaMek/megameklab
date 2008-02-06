@@ -441,4 +441,32 @@ public class ArmorView extends JPanel implements KeyListener {
 
     }
 
+    public void allocateArmor(int percent) {
+        for (int location = 0; location <= Mech.LOC_LLEG; location++) {
+            int IS = (unit.getInternal(location) * 2);
+            double maxArmor = (double)IS * (double)percent / 100;
+
+            switch (location) {
+            case Mech.LOC_HEAD:
+                unit.initializeArmor(9, location);
+                break;
+            case Mech.LOC_CT:
+            case Mech.LOC_LT:
+            case Mech.LOC_RT:
+                double rear = Math.floor(maxArmor * .25);
+                double front = Math.ceil(maxArmor * .75);
+                unit.initializeArmor((int)front, location);
+                unit.initializeRearArmor((int)rear, location);
+                break;
+            default:
+                unit.initializeArmor((int)maxArmor, location);
+                break;
+            }
+        }
+
+        removeAllListeners();
+        refresh();
+        addAllListeners();
+        refresh.refreshStatus();
+    }
 }

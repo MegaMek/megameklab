@@ -36,6 +36,7 @@ import ui.dialog.UnitViewerDialog;
 import ui.tabs.ArmorTab;
 import ui.tabs.StructureTab;
 import ui.util.RefreshListener;
+import ui.util.SaveMechToMTF;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
@@ -71,6 +72,16 @@ public class MainUI extends JFrame implements RefreshListener {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadEntity_actionPerformed(e);
+            }
+        });
+        file.add(item);
+        
+        item = new JMenuItem();
+        item.setText("Save");
+        item.setMnemonic('S');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SaveMechToMTF.getInstance(entity, entity.getChassis()+" "+entity.getModel()+".mtf").save();
             }
         });
         file.add(item);
@@ -229,5 +240,4 @@ public class MainUI extends JFrame implements RefreshListener {
         
     }
 
-    
 }
