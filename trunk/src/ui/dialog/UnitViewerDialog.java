@@ -1,5 +1,5 @@
 /*
- * MekWars - Copyright (C) 2008 
+ * MegaMekLab - Copyright (C) 2008 
  * 
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -777,13 +777,14 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
         // null entity, so load a default unit.
         if (entity == null) {
-            try {
+/*            try {
                 MechSummary ms = MechSummaryCache.getInstance().getMech("Error OMG-UR-FD");
                 selectedUnit = new MechFileParser(ms.getSourceFile(), ms.getEntryName()).getEntity();
                 populateTextFields = false;
             } catch (EntityLoadingException e) {
                 // this would be very very bad ...
-            }
+            }*/
+            return;
         }
 
         MechView mechView = null;

@@ -1,5 +1,5 @@
 /*
- * MekWars - Copyright (C) 2008 
+ * MegaMekLab - Copyright (C) 2008 
  * 
  * Original author - jtighe (torren@users.sourceforge.net)
  *
