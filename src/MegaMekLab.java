@@ -1,5 +1,5 @@
 /*
- * MekWars - Copyright (C) 2008 
+ * MegaMekLab - Copyright (C) 2008 
  * 
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -13,6 +13,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
