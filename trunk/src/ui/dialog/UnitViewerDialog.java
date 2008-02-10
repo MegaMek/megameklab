@@ -462,7 +462,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         for (Enumeration<EquipmentType> e = EquipmentType.getAllTypes(); e.hasMoreElements();) {
             EquipmentType et = e.nextElement();
             if (et instanceof WeaponType && (et.getTechLevel() == nType || (nType == TechConstants.T_ALL) || ((nType == TechConstants.T_LEVEL_2_ALL) && ((et.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (et.getTechLevel() == TechConstants.T_IS_LEVEL_2) || (et.getTechLevel() == TechConstants.T_CLAN_LEVEL_2))) || ((nType == TechConstants.T_IS_LEVEL_2_ALL || nType == TechConstants.T_IS_LEVEL_2) && ((et.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (et.getTechLevel() == TechConstants.T_IS_LEVEL_2))))) {
-                if (!(nUnitType == UnitType.SIZE) && ((UnitType.getTypeName(nUnitType).equals("Mek") || UnitType.getTypeName(nUnitType).equals("Tank")) && (et.hasFlag(WeaponType.F_PROTOMECH) || et.hasFlag(WeaponType.F_INFANTRY) || et.hasFlag(WeaponType.F_BATTLEARMOR)))) {
+                if (!(nUnitType == UnitType.SIZE) && ((UnitType.getTypeName(nUnitType).equals("Mek") || UnitType.getTypeName(nUnitType).equals("Tank")) && (et.hasFlag(WeaponType.F_INFANTRY) || et.hasFlag(WeaponType.F_BATTLEARMOR)))) {
                     continue;
                 }
                 m_cWeapons1.addItem(et.getName());
