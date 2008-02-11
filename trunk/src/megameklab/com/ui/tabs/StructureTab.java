@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui.tabs;
+package megameklab.com.ui.tabs;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -29,12 +29,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import ui.util.RefreshListener;
-import ui.util.SpringLayoutHelper;
-import ui.views.CriticalView;
+import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.SpringLayoutHelper;
+import megameklab.com.ui.views.CriticalView;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
@@ -70,11 +72,19 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
     private CriticalView critView = null;
 
     public StructureTab(Entity unit) {
+        JScrollPane scroll = new JScrollPane();
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setAutoscrolls(true);
+        scroll.setWheelScrollingEnabled(true);
+        JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,enginePanel(),scroll);
+        
         this.unit = (Mech) unit;
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(enginePanel());
+        //this.add(enginePanel());
         critView = new CriticalView((Mech) unit, false);
-        this.add(critView);
+        scroll.setViewportView(critView);
+        this.add(splitter);
         refresh();
     }
 
@@ -137,7 +147,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        masterPanel.setPreferredSize(maxSize);
+        // masterPanel.setPreferredSize(maxSize);
         return masterPanel;
     }
 
@@ -150,7 +160,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         cockpitType.setSelectedIndex(unit.getCockpitType());
         try {
             heatSinkNumber.setSelectedIndex(unit.heatSinks() + unit.getEngine().getCountEngineHeatSinks());
-        }catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 

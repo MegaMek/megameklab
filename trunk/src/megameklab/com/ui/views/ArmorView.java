@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui.views;
+package megameklab.com.ui.views;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -26,7 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import ui.util.RefreshListener;
+import megameklab.com.ui.util.RefreshListener;
 
 import megamek.common.Mech;
 

@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui.dialog;
+package megameklab.com.ui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -54,7 +54,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import ui.util.SpringLayoutHelper;
+import megameklab.com.ui.util.SpringLayoutHelper;
 
 import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.UnitFailureDialog;

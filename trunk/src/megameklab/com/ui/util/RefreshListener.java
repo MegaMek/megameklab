@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui.util;
+package megameklab.com.ui.util;
 
 import java.util.EventListener;
 

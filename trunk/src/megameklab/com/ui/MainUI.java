@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui;
+package megameklab.com.ui;
 
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -32,11 +32,11 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
-import ui.dialog.UnitViewerDialog;
-import ui.tabs.ArmorTab;
-import ui.tabs.StructureTab;
-import ui.util.RefreshListener;
-import ui.util.SaveMechToMTF;
+import megameklab.com.ui.dialog.UnitViewerDialog;
+import megameklab.com.ui.tabs.ArmorTab;
+import megameklab.com.ui.tabs.StructureTab;
+import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.SaveMechToMTF;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;

@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui.views;
+package megameklab.com.ui.views;
 
 import java.awt.Font;
 import java.util.Vector;

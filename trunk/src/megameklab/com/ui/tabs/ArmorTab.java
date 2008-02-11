@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui.tabs;
+package megameklab.com.ui.tabs;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -31,9 +31,9 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import ui.util.RefreshListener;
-import ui.util.SpringLayoutHelper;
-import ui.views.ArmorView;
+import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.SpringLayoutHelper;
+import megameklab.com.ui.views.ArmorView;
 
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
