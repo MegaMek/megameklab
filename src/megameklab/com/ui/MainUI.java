@@ -23,12 +23,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
@@ -61,6 +63,7 @@ public class MainUI extends JFrame implements RefreshListener {
     private Header header;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
+    JScrollPane scroll = new JScrollPane();
     
     public MainUI() {
 
@@ -119,8 +122,13 @@ public class MainUI extends JFrame implements RefreshListener {
         createNewMech();
         reloadTabs();
         setJMenuBar(menuBar);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setViewportView(ConfigPane);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
         this.add(masterPanel);
         masterPanel.setPreferredSize(new Dimension(640,480));
+       // scroll.setPreferredSize(new Dimension(600,400));
         setResizable(true);
         setSize(new Dimension(640, 480));
         setMinimumSize(new Dimension(640, 480));
@@ -166,7 +174,7 @@ public class MainUI extends JFrame implements RefreshListener {
         ConfigPane.addTab("Armor", armorTab);
         
         masterPanel.add(header);
-        masterPanel.add(ConfigPane);
+        masterPanel.add(scroll);
         masterPanel.add(statusbar);
         refreshHeader();
         this.repaint();
