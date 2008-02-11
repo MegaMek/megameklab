@@ -15,7 +15,7 @@
  */
 
 
-package ui.util;
+package megameklab.com.ui.util;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui;
+package megameklab.com.ui;
 
 import java.awt.Color;
 import java.io.File;

@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package ui;
+package megameklab.com.ui;
 
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -25,8 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import ui.util.RefreshListener;
-import ui.util.SpringLayoutHelper;
+import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.SpringLayoutHelper;
 
 import megamek.common.Mech;
 

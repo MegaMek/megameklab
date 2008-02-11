@@ -14,12 +14,13 @@
  * for more details.
  */
 
+package megameklab.com;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-import ui.MainUI;
+import megameklab.com.ui.MainUI;
 
 public class MegaMekLab {
 
