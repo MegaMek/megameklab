@@ -102,14 +102,6 @@ public class MainUI extends JFrame implements RefreshListener {
         file.add(item);
         menuBar.add(file);
 
-        /*pane = new JOptionPane(ConfigPane, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, null, null);
-
-        pane.setVisible(false);
-        scrollPane = new JScrollPane(pane, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        contentPane = (JPanel) this.getContentPane();
-        contentPane.setLayout(new BorderLayout());
-        contentPane.add(scrollPane, BorderLayout.CENTER);*/
-        repaint();
         setLocation(getLocation().x + 10, getLocation().y);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -120,23 +112,24 @@ public class MainUI extends JFrame implements RefreshListener {
 
         //ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewMech();
-        reloadTabs();
         setJMenuBar(menuBar);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.setViewportView(ConfigPane);
+        scroll.setViewportView(masterPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
-        this.add(masterPanel);
-        masterPanel.setPreferredSize(new Dimension(640,480));
-       // scroll.setPreferredSize(new Dimension(600,400));
+        this.add(scroll);
+        //masterPanel.setPreferredSize(new Dimension(600,400));
+        scroll.setPreferredSize(new Dimension(640,480));
         setResizable(true);
         setSize(new Dimension(640, 480));
-        setMinimumSize(new Dimension(640, 480));
+        setMaximumSize(new Dimension(640, 480));
         setPreferredSize(new Dimension(640, 480));
         setExtendedState(Frame.NORMAL);
 
+        reloadTabs();
         this.setVisible(true);
-    }
+        repaint();
+    }   
 
     private void loadUnit() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
@@ -149,7 +142,11 @@ public class MainUI extends JFrame implements RefreshListener {
                 return;
             entity = (Mech)viewer.getSelectedEntity();
             viewer.setVisible(false);
+            viewer.dispose();
+            this.setVisible(false);
             reloadTabs();
+            this.setVisible(true);
+            this.repaint();
         }
     }
 
@@ -174,8 +171,9 @@ public class MainUI extends JFrame implements RefreshListener {
         ConfigPane.addTab("Armor", armorTab);
         
         masterPanel.add(header);
-        masterPanel.add(scroll);
+        masterPanel.add(ConfigPane);
         masterPanel.add(statusbar);
+
         refreshHeader();
         this.repaint();
     }
