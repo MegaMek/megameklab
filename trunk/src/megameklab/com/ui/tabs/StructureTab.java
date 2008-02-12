@@ -84,6 +84,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         //this.add(enginePanel());
         critView = new CriticalView((Mech) unit, false);
         scroll.setViewportView(critView);
+        
         this.add(splitter);
         refresh();
     }
@@ -147,7 +148,6 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        // masterPanel.setPreferredSize(maxSize);
         return masterPanel;
     }
 
@@ -258,7 +258,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                 default:
                     unit.addGyro();
                 }
-                refresh.refreshEquipment();
+                refresh.refreshStatus();
             } else if (combo.equals(cockpitType)) {
                 unit.setCockpitType(combo.getSelectedIndex());
                 removeSystemCrits(Mech.SYSTEM_COCKPIT);

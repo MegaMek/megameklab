@@ -60,8 +60,12 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
 
         this.unit = unit;
         armor = new ArmorView(this.unit);
+        
+        this.setLayout(new SpringLayout());
         this.add(ButtonPanel());
         this.add(armor);
+        SpringLayoutHelper.setupSpringGrid(this,1);
+        
         refresh();
 
         addAllListeners();
