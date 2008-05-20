@@ -394,8 +394,6 @@ public class ArmorView extends JPanel implements KeyListener {
     }
 
     public void keyPressed(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     public void keyReleased(KeyEvent arg0) {
@@ -437,8 +435,6 @@ public class ArmorView extends JPanel implements KeyListener {
     }
 
     public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     public void allocateArmor(int percent) {
