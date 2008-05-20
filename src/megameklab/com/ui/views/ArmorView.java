@@ -270,7 +270,7 @@ public class ArmorView extends JPanel implements KeyListener {
         }
 
         this.add(mainPanel);
-        refresh();
+        //refresh();
         addAllListeners();
     }
 

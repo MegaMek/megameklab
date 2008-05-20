@@ -318,6 +318,8 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                     }
                 }
                 refresh.refreshStatus();
+                refresh.refreshEquipment();
+                refresh.refreshWeapons();
             }
             refresh.refreshStructure();
         }
