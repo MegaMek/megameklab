@@ -36,7 +36,9 @@ import javax.swing.SwingConstants;
 
 import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.ui.tabs.ArmorTab;
+import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.StructureTab;
+import megameklab.com.ui.tabs.WeaponTab;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SaveMechToMTF;
 
@@ -60,6 +62,8 @@ public class MainUI extends JFrame implements RefreshListener {
     JPanel contentPane;
     private StructureTab structureTab;
     private ArmorTab armorTab;
+    private EquipmentTab equipmentTab;
+    private WeaponTab weaponTab;
     private Header header;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
@@ -163,12 +167,18 @@ public class MainUI extends JFrame implements RefreshListener {
         armorTab = new ArmorTab(entity);
         header = new Header(entity);
         statusbar = new StatusBar(entity);
+        equipmentTab = new EquipmentTab(entity);
+        weaponTab = new WeaponTab(entity);
         header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
         armorTab.addRefreshedListener(this);
+        equipmentTab.addRefreshedListener(this);
+        weaponTab.addRefreshedListener(this);
         
         ConfigPane.addTab("Structure", structureTab);
         ConfigPane.addTab("Armor", armorTab);
+        ConfigPane.addTab("Equipment", equipmentTab);
+        ConfigPane.addTab("Weapons", weaponTab);
         
         masterPanel.add(header);
         masterPanel.add(ConfigPane);
@@ -210,6 +220,8 @@ public class MainUI extends JFrame implements RefreshListener {
         statusbar.refresh();
         structureTab.refresh();
         armorTab.refresh();
+        equipmentTab.refresh();
+        weaponTab.refresh();
         
         this.setTitle(entity.getChassis()+" "+entity.getModel()+".mtf");
         header = new Header(entity);
@@ -225,7 +237,7 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void refreshEquipment() {
-        // TODO Auto-generated method stub
+        equipmentTab.refresh();
         
     }
 
@@ -242,8 +254,7 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void refreshWeapons() {
-        // TODO Auto-generated method stub
-        
+        weaponTab.refresh();
     }
 
 }
