@@ -133,6 +133,7 @@ public class MainUI extends JFrame implements RefreshListener {
         reloadTabs();
         this.setVisible(true);
         repaint();
+        refreshAll();
     }   
 
     private void loadUnit() {
@@ -151,6 +152,7 @@ public class MainUI extends JFrame implements RefreshListener {
             reloadTabs();
             this.setVisible(true);
             this.repaint();
+            refreshAll();
         }
     }
 
