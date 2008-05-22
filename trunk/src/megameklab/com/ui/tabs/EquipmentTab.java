@@ -35,24 +35,23 @@ public class EquipmentTab extends JPanel implements ActionListener, ChangeListen
      * 
      */
     private static final long serialVersionUID = 3978675469713289404L;
-    private Mech unit;
+
     private EquipmentView equipment;
     private RefreshListener refresh;
     
     public EquipmentTab(Mech unit){
-        this.unit = unit;
         this.equipment = new EquipmentView(unit);
         this.setLayout(new SpringLayout());
         this.add(equipment);
         SpringLayoutHelper.setupSpringGrid(this,1);
         
         refresh();
-
-        addAllListeners();
     }
 
     public void refresh() {
+        removeAllListeners();
         equipment.refresh();
+        addAllListeners();
     }
 
     public void addRefreshedListener(RefreshListener l) {
