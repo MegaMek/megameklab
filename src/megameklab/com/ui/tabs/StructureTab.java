@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -41,6 +42,7 @@ import megameklab.com.ui.views.CriticalView;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
+import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -77,14 +79,14 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setAutoscrolls(true);
         scroll.setWheelScrollingEnabled(true);
-        JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,enginePanel(),scroll);
-        
+        JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, enginePanel(), scroll);
+
         this.unit = (Mech) unit;
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        //this.add(enginePanel());
+        // this.add(enginePanel());
         critView = new CriticalView((Mech) unit, false);
         scroll.setViewportView(critView);
-        
+
         this.add(splitter);
         refresh();
     }
@@ -159,7 +161,8 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         weightClass.setSelectedIndex((int) (unit.getWeight() / 5) - 2);
         cockpitType.setSelectedIndex(unit.getCockpitType());
         try {
-            heatSinkNumber.setSelectedIndex(unit.heatSinks() + unit.getEngine().getCountEngineHeatSinks());
+            //heatSinkNumber.setSelectedIndex(unit.heatSinks() + unit.getEngine().getCountEngineHeatSinks());
+            heatSinkNumber.setSelectedIndex(unit.heatSinks());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -239,8 +242,9 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                 int rating = Integer.parseInt(engineRating.getSelectedItem().toString());
                 unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), 0));
                 unit.addEngineCrits();
-                refresh.refreshStatus();
+                updateHeatSinks();
                 refresh.refreshEquipment();
+                refresh.refreshStatus();
             } else if (combo.equals(gyroType)) {
                 unit.setGyroType(combo.getSelectedIndex());
                 removeSystemCrits(Mech.SYSTEM_GYRO);
@@ -291,12 +295,9 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                 refresh.refreshArmor();
                 refresh.refreshStatus();
             } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
-                if (heatSinkType.getSelectedIndex() == 1 || heatSinkType.getSelectedIndex() == 3)
-                    unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), true);
-                else
-                    unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), false);
-                refresh.refreshStatus();
+                updateHeatSinks();
                 refresh.refreshEquipment();
+                refresh.refreshStatus();
             } else if (combo.equals(techLevel) || combo.equals(techType)) {
                 if (techType.getSelectedIndex() > 0) {
                     if (techLevel.getSelectedIndex() < 2) {
@@ -317,9 +318,9 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
                     }
                 }
-                refresh.refreshStatus();
                 refresh.refreshEquipment();
                 refresh.refreshWeapons();
+                refresh.refreshStatus();
             }
             refresh.refreshStructure();
         }
@@ -337,6 +338,35 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
                 if (cs.getIndex() == systemType)
                     unit.setCritical(loc, slot, null);
+            }
+        }
+    }
+
+    public void removeHeatSinks() {
+
+        ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(unit.getMisc());
+        for (Mounted eq : equipmentList) {
+            if (eq.getType().hasFlag(MiscType.F_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))
+                unit.getMisc().remove(eq);
+        }
+    }
+
+    private void addHeatSinkMounts() {
+        int heatSinks = heatSinkNumber.getSelectedIndex() - unit.getEngine().integralHeatSinkCapacity();
+        EquipmentType sinkType;
+
+        if (heatSinkType.getSelectedIndex() == 1 || heatSinkType.getSelectedIndex() == 3) {
+            sinkType = EquipmentType.get(unit.isClan() ? "CLDoubleHeatSink" : "ISDoubleHeatSink");
+        } else {
+            sinkType = EquipmentType.get("Heat Sink");
+        }
+
+        for (; heatSinks > 0; heatSinks--) {
+
+            try {
+                unit.addEquipment(new Mounted(unit, sinkType), Entity.LOC_NONE, false);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }
@@ -385,6 +415,16 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
+    }
+    
+    private void updateHeatSinks(){
+        removeHeatSinks();
+        refresh.refreshEquipment();
+        if (heatSinkType.getSelectedIndex() == 1 || heatSinkType.getSelectedIndex() == 3)
+            unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), true);
+        else
+            unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), false);
+        addHeatSinkMounts();
     }
 
 }

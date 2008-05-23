@@ -89,10 +89,8 @@ public class EquipmentView extends JPanel implements ActionListener {
         for (int i = 0; i < this.equipmentList.getColumnCount(); i++)
             this.equipmentTable.getColumnModel().getColumn(i).setCellRenderer(this.equipmentList.getRenderer());
 
-        // sorter.addMouseListenerToHeaderInTable(this.equipmentTable);
         this.equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        // ListSelectionModel rowSM = this.equipmentTable.getSelectionModel();
-        equipmentScroll.setToolTipText("Click on the column header to sort.");
+        // equipmentScroll.setToolTipText("");
         equipmentScroll.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() * 3 / 4));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
@@ -146,15 +144,49 @@ public class EquipmentView extends JPanel implements ActionListener {
         }
     }
 
-    private void loadEquipmentTable(){
-        for ( Mounted mount : unit.getMisc() ){
+    private void loadEquipmentTable() {
+        for (Mounted mount : unit.getMisc()) {
+
+            if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK))) {
+                continue;
+            }
             equipmentList.addCrit(mount.getType());
         }
     }
-    
+
+    private void loadHeatSinks() {
+        int engineHeatSinks = unit.getEngine().integralHeatSinkCapacity();
+        for (Mounted mount : unit.getMisc()) {
+
+            if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK))) {
+                if (engineHeatSinks-- > 0) {
+                    continue;
+                }
+                equipmentList.addCrit(mount.getType());
+            }
+        }
+
+    }
+
+    private void removeHeatSinks() {
+        int location = 0;
+        for (; location < equipmentList.getRowCount();) {
+
+            EquipmentType eq = (EquipmentType) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
+            if ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK))) {
+                equipmentList.removeCrit(location);
+                equipmentList.refreshModel();
+            } else {
+                location++;
+            }
+        }
+    }
+
     public void refresh() {
         removeAllListeners();
         loadEquipmentCombo();
+        removeHeatSinks();
+        loadHeatSinks();
         addAllListeners();
         fireTableRefresh();
     }
@@ -183,13 +215,13 @@ public class EquipmentView extends JPanel implements ActionListener {
             equipmentList.addCrit(equipmentTypes.get(equipmentCombo.getSelectedItem().toString()));
             fireTableRefresh();
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
-            
+
             int startRow = equipmentTable.getSelectedRow();
             int count = equipmentTable.getSelectedRowCount();
-            
+
             for (; count > 0; count--) {
                 if (startRow > -1) {
-                    equipmentList.removeCrit(startRow );
+                    equipmentList.removeCrit(startRow);
                 }
             }
             fireTableRefresh();

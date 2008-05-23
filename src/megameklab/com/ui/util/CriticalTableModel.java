@@ -43,6 +43,7 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int NAME = 0;
     public final static int TONNAGE = 1;
     public final static int CRITS = 2;
+    public final static int EQUIPMENT = 3;
 
     final String[] columnNames = {
             "Name",
@@ -117,6 +118,8 @@ public class CriticalTableModel extends AbstractTableModel {
                 return crit.getTonnage(unit);
             case CRITS:
                 return new Integer(crit.getCriticals(unit));
+            case EQUIPMENT:
+                return crit;
         }
         return "";
     }

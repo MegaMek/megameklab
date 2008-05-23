@@ -89,7 +89,7 @@ public class StatusBar extends JPanel {
     }
     
     public JPanel heatPanel() {
-        int heat = unit.getHeatCapacity();
+        int heat = unit.heatSinks();
 
         heatSink.setText("Heat: 0/" + heat);
         heatPanel.add(heatSink);
@@ -101,7 +101,7 @@ public class StatusBar extends JPanel {
         int walk = unit.getOriginalWalkMP();
         int run = unit.getOriginalRunMPwithoutMASC();
         int jump = unit.getOriginalJumpMP();
-        int heat = unit.getHeatCapacity();
+        int heat = unit.heatSinks();
         float tonnage = unit.getWeight();
         float currentTonnage;
         int bv = unit.calculateBattleValue();
