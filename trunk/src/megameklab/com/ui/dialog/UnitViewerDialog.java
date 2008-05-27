@@ -532,6 +532,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == bCancel) {
+            selectedUnit = null;
             this.dispose();
         }
         if (ae.getSource() == bSelect) {
@@ -789,7 +790,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
         MechView mechView = null;
         try {
-            mechView = new MechView(selectedUnit);
+            mechView = new MechView(selectedUnit,true);
         } catch (Exception e) {
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
