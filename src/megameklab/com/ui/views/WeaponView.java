@@ -16,15 +16,38 @@
 
 package megameklab.com.ui.views;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.TreeMap;
+import java.util.Vector;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 
+import megamek.common.AmmoType;
+import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.Mounted;
+import megamek.common.TechConstants;
+import megamek.common.WeaponType;
+import megamek.common.weapons.InfantryWeapon;
+import megamek.common.weapons.NavalACWeapon;
+import megamek.common.weapons.NavalGaussWeapon;
+import megamek.common.weapons.NavalLaserWeapon;
+import megamek.common.weapons.NavalPPCWeapon;
+import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.RefreshListener;
 
-public class WeaponView extends JPanel implements KeyListener {
+public class WeaponView extends JPanel implements ActionListener {
 
     /**
      * 
@@ -33,31 +56,313 @@ public class WeaponView extends JPanel implements KeyListener {
     private Mech unit;
     private RefreshListener refresh;
 
-    public WeaponView (Mech unit){
+    private JPanel mainPanel = new JPanel();
+    private JPanel leftPanel = new JPanel();
+    private JPanel rightPanel = new JPanel();
+    private JPanel buttonPanel = new JPanel();
+
+    private JButton laserWeaponAddButton = new JButton("Add");
+    private JButton laserAmmoAddButton = new JButton("Add");
+    private JButton missileWeaponAddButton = new JButton("Add");
+    private JButton missileAmmoAddButton = new JButton("Add");
+    private JButton ballisticWeaponAddButton = new JButton("Add");
+    private JButton ballisticAmmoAddButton = new JButton("Add");
+    private JButton removeButton = new JButton("Remove");
+    private JButton removeAllButton = new JButton("Remove All");
+
+    private JComboBox laserWeaponCombo = new JComboBox();
+    private JComboBox laserAmmoCombo = new JComboBox();
+    private JComboBox missileWeaponCombo = new JComboBox();
+    private JComboBox missileAmmoCombo = new JComboBox();
+    private JComboBox ballisticWeaponCombo = new JComboBox();
+    private JComboBox ballisticAmmoCombo = new JComboBox();
+
+    private CriticalTableModel weaponList;
+    private Vector<EquipmentType> masterLaserWeaponList = new Vector<EquipmentType>(10, 1);
+    private Vector<EquipmentType> masterLaserAmmoList = new Vector<EquipmentType>(10, 1);
+    private Vector<EquipmentType> masterMissileWeaponList = new Vector<EquipmentType>(10, 1);
+    private Vector<EquipmentType> masterMissileAmmoList = new Vector<EquipmentType>(10, 1);
+    private Vector<EquipmentType> masterBallisticWeaponList = new Vector<EquipmentType>(10, 1);
+    private Vector<EquipmentType> masterBallisticAmmoList = new Vector<EquipmentType>(10, 1);
+
+    private JTable equipmentTable = new JTable();
+    private JScrollPane equipmentScroll = new JScrollPane();
+    private TreeMap<String, EquipmentType> equipmentTypes;
+
+    private String LASERWEAPONADD_COMMAND = "ADDLASERWEAPON";
+    private String LASERAMMOADD_COMMAND = "ADDLASERAMMO";
+    private String MISSILEWEAPONADD_COMMAND = "ADDMISSILEWEAPON";
+    private String MISSILEAMMOADD_COMMAND = "ADDMISSILEAMMO";
+    private String BALLISTICWEAPONADD_COMMAND = "ADDBALLISTICWEAPON";
+    private String BALLISTICAMMOADD_COMMAND = "ADDBALLISTICAMMO";
+    private String REMOVE_COMMAND = "REMOVE";
+    private String REMOVEALL_COMMAND = "REMOVEALL";
+
+    public WeaponView(Mech unit) {
         this.unit = unit;
+
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+
+        leftPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+
+        weaponList = new CriticalTableModel(unit);
+
+        this.equipmentTable.setModel(weaponList);
+        this.weaponList.initColumnSizes(this.equipmentTable);
+        for (int i = 0; i < this.weaponList.getColumnCount(); i++)
+            this.equipmentTable.getColumnModel().getColumn(i).setCellRenderer(this.weaponList.getRenderer());
+
+        this.equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        // equipmentScroll.setToolTipText("");
+        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() * 3 / 4));
+        equipmentTable.setDoubleBuffered(true);
+        equipmentScroll.setViewportView(equipmentTable);
+
+        leftPanel.add(laserWeaponCombo);
+        leftPanel.add(laserWeaponAddButton);
+        leftPanel.add(laserAmmoCombo);
+        leftPanel.add(laserAmmoAddButton);
+
+        leftPanel.add(missileWeaponCombo);
+        leftPanel.add(missileWeaponAddButton);
+        leftPanel.add(missileAmmoCombo);
+        leftPanel.add(missileAmmoAddButton);
+
+        leftPanel.add(ballisticWeaponCombo);
+        leftPanel.add(ballisticWeaponAddButton);
+        leftPanel.add(ballisticAmmoCombo);
+        leftPanel.add(ballisticAmmoAddButton);
+
+        buttonPanel.add(removeButton);
+        buttonPanel.add(removeAllButton);
+
+        rightPanel.add(equipmentScroll);
+        rightPanel.add(buttonPanel);
+
+        mainPanel.add(leftPanel);
+        mainPanel.add(rightPanel);
+
+        Enumeration<EquipmentType> weaponTypes = EquipmentType.getAllTypes();
+
+        while (weaponTypes.hasMoreElements()) {
+            EquipmentType eq = weaponTypes.nextElement();
+
+            if (eq instanceof InfantryWeapon || eq instanceof NavalACWeapon || eq instanceof NavalGaussWeapon || eq instanceof NavalLaserWeapon || eq instanceof NavalPPCWeapon) {
+                continue;
+            }
+
+            if (eq instanceof WeaponType) {
+
+                WeaponType weapon = (WeaponType) eq;
+
+                if ((weapon.getName().startsWith("LRM") || weapon.getName().startsWith("LRT") || weapon.getName().startsWith("RL")) && weapon.getRackSize() != 5 && weapon.getRackSize() != 10 && weapon.getRackSize() != 15 && weapon.getRackSize() != 20) {
+                    continue;
+                }
+                if ((weapon.getName().startsWith("SRM") || weapon.getName().startsWith("SRT")) && weapon.getRackSize() != 2 && weapon.getRackSize() != 4 && weapon.getRackSize() != 6) {
+                    continue;
+                }
+                if (weapon.getName().startsWith("MRM") && weapon.getRackSize() < 5) {
+                    continue;
+                }
+                if (eq.hasFlag(WeaponType.F_ENERGY)) {
+                    masterLaserWeaponList.add(eq);
+                } else if (eq.hasFlag(WeaponType.F_BALLISTIC)) {
+                    masterBallisticWeaponList.add(eq);
+                } else if (eq.hasFlag(WeaponType.F_MISSILE)) {
+                    masterMissileWeaponList.add(eq);
+                }
+            } else if (eq instanceof AmmoType) {
+                AmmoType ammo = (AmmoType) eq;
+                if (ammo.hasFlag(AmmoType.F_BATTLEARMOR) || ammo.getAmmoType() == AmmoType.T_VEHICLE_FLAMER) {
+                    continue;
+                }
+                if (ammo.getAmmoType() == AmmoType.T_PLASMA) {
+                    masterLaserAmmoList.add(eq);
+                } else if (ammo.hasFlag(AmmoType.F_HOTLOAD)) {
+                    masterMissileAmmoList.add(eq);
+                } else {
+                    masterBallisticAmmoList.add(eq);
+                }
+            }
+        }
+
+        this.add(mainPanel);
+        loadWeaponsTable();
+    }
+
+    private void loadWeaponCombos() {
+
+        laserAmmoCombo.removeAllItems();
+        laserWeaponCombo.removeAllItems();
+        missileAmmoCombo.removeAllItems();
+        missileWeaponCombo.removeAllItems();
+        ballisticAmmoCombo.removeAllItems();
+        ballisticWeaponCombo.removeAllItems();
+
+        equipmentTypes = new TreeMap<String, EquipmentType>();
+
+        for (EquipmentType eq : masterLaserWeaponList) {
+            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
+            // IS
+                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
+                    // Clan
+                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+                equipmentTypes.put(eq.getName(), eq);
+                laserWeaponCombo.addItem(eq.getName());
+            }
+        }
+        for (EquipmentType eq : masterLaserAmmoList) {
+            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
+            // IS
+                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
+                    // Clan
+                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+                equipmentTypes.put(eq.getName(), eq);
+                laserAmmoCombo.addItem(eq.getName());
+            }
+        }
+        for (EquipmentType eq : masterMissileWeaponList) {
+            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
+            // IS
+                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
+                    // Clan
+                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+                equipmentTypes.put(eq.getName(), eq);
+                missileWeaponCombo.addItem(eq.getName());
+            }
+        }
+        for (EquipmentType eq : masterMissileAmmoList) {
+            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
+            // IS
+                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
+                    // Clan
+                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+                equipmentTypes.put(eq.getName(), eq);
+                missileAmmoCombo.addItem(eq.getName());
+            }
+        }
+        for (EquipmentType eq : masterBallisticWeaponList) {
+            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
+            // IS
+                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
+                    // Clan
+                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+                equipmentTypes.put(eq.getName(), eq);
+                ballisticWeaponCombo.addItem(eq.getName());
+            }
+        }
+        for (EquipmentType eq : masterBallisticAmmoList) {
+            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
+            // IS
+                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
+                    // Clan
+                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+                equipmentTypes.put(eq.getName(), eq);
+                ballisticAmmoCombo.addItem(eq.getName());
+            }
+        }
+    }
+
+    private void loadWeaponsTable() {
+        for (Mounted mount : unit.getWeaponList()) {
+            weaponList.addCrit(mount.getType());
+        }
+        for (Mounted mount : unit.getAmmo()) {
+            weaponList.addCrit(mount.getType());
+        }
     }
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
 
-
     public void refresh() {
-    }
-    
-    public void keyPressed(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-        
+        removeAllListeners();
+        loadWeaponCombos();
+        addAllListeners();
+        fireTableRefresh();
+
     }
 
-    public void keyReleased(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-        
+    private void removeAllListeners() {
+        laserWeaponAddButton.removeActionListener(this);
+        laserAmmoAddButton.removeActionListener(this);
+        missileWeaponAddButton.removeActionListener(this);
+        missileAmmoAddButton.removeActionListener(this);
+        ballisticWeaponAddButton.removeActionListener(this);
+        ballisticAmmoAddButton.removeActionListener(this);
+        removeButton.removeActionListener(this);
+        removeAllButton.removeActionListener(this);
     }
 
-    public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
-        
+    private void fireTableRefresh() {
+        weaponList.refreshModel();
+        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() * 8 / 10));
+        equipmentScroll.repaint();
+        if (refresh != null) {
+            refresh.refreshStatus();
+        }
     }
-    
+
+    private void addAllListeners() {
+        laserWeaponAddButton.addActionListener(this);
+        laserAmmoAddButton.addActionListener(this);
+        missileWeaponAddButton.addActionListener(this);
+        missileAmmoAddButton.addActionListener(this);
+        ballisticWeaponAddButton.addActionListener(this);
+        ballisticAmmoAddButton.addActionListener(this);
+
+        removeButton.addActionListener(this);
+        removeAllButton.addActionListener(this);
+
+        laserWeaponAddButton.setActionCommand(LASERWEAPONADD_COMMAND);
+        laserAmmoAddButton.setActionCommand(LASERAMMOADD_COMMAND);
+        missileWeaponAddButton.setActionCommand(MISSILEWEAPONADD_COMMAND);
+        missileAmmoAddButton.setActionCommand(MISSILEAMMOADD_COMMAND);
+        ballisticWeaponAddButton.setActionCommand(BALLISTICWEAPONADD_COMMAND);
+        ballisticAmmoAddButton.setActionCommand(BALLISTICAMMOADD_COMMAND);
+
+        removeButton.setActionCommand(REMOVE_COMMAND);
+        removeAllButton.setActionCommand(REMOVEALL_COMMAND);
+
+        removeButton.setMnemonic('R');
+        removeAllButton.setMnemonic('L');
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals(LASERWEAPONADD_COMMAND)) {
+            weaponList.addCrit(equipmentTypes.get(laserWeaponCombo.getSelectedItem().toString()));
+        } else if (e.getActionCommand().equals(LASERAMMOADD_COMMAND)) {
+            weaponList.addCrit(equipmentTypes.get(laserAmmoCombo.getSelectedItem().toString()));
+        } else if (e.getActionCommand().equals(MISSILEWEAPONADD_COMMAND)) {
+            weaponList.addCrit(equipmentTypes.get(missileWeaponCombo.getSelectedItem().toString()));
+        } else if (e.getActionCommand().equals(MISSILEAMMOADD_COMMAND)) {
+            weaponList.addCrit(equipmentTypes.get(missileAmmoCombo.getSelectedItem().toString()));
+        } else if (e.getActionCommand().equals(BALLISTICWEAPONADD_COMMAND)) {
+            weaponList.addCrit(equipmentTypes.get(ballisticWeaponCombo.getSelectedItem().toString()));
+        } else if (e.getActionCommand().equals(BALLISTICAMMOADD_COMMAND)) {
+            weaponList.addCrit(equipmentTypes.get(ballisticAmmoCombo.getSelectedItem().toString()));
+        } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
+
+            int startRow = equipmentTable.getSelectedRow();
+            int count = equipmentTable.getSelectedRowCount();
+
+            for (; count > 0; count--) {
+                if (startRow > -1) {
+                    weaponList.removeCrit(startRow);
+                }
+            }
+        } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
+            weaponList.removeAllCrits();
+        } else {
+            return;
+        }
+        fireTableRefresh();
+
+    }
+
 }

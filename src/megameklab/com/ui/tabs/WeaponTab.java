@@ -35,20 +35,16 @@ public class WeaponTab extends JPanel implements ActionListener, ChangeListener 
      * 
      */
     private static final long serialVersionUID = 3978675469713289404L;
-    private Mech unit;
     private WeaponView weapon;
     private RefreshListener refresh;
     
     public WeaponTab(Mech unit){
-        this.unit = unit;
         this.weapon = new WeaponView(unit);
         this.setLayout(new SpringLayout());
         this.add(weapon);
         SpringLayoutHelper.setupSpringGrid(this,1);
         
         refresh();
-
-        addAllListeners();
     }
 
     public void refresh() {
@@ -57,16 +53,10 @@ public class WeaponTab extends JPanel implements ActionListener, ChangeListener 
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        weapon.addRefreshedListener(l);
+        weapon.addRefreshedListener(refresh);
     }
 
 
-    private void addAllListeners() {
-    }
-    
-    private void removeAllListeners() {
-    }
-    
     public void actionPerformed(ActionEvent arg0) {
         // TODO Auto-generated method stub
         
