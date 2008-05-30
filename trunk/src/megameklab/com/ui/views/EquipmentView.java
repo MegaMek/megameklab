@@ -34,6 +34,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import megamek.common.BattleArmor;
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
@@ -212,8 +213,12 @@ public class EquipmentView extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
+            try{
+                unit.addEquipment(new Mounted(unit, equipmentTypes.get(equipmentCombo.getSelectedItem().toString())), Entity.LOC_NONE,false);
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
             equipmentList.addCrit(equipmentTypes.get(equipmentCombo.getSelectedItem().toString()));
-            fireTableRefresh();
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
 
             int startRow = equipmentTable.getSelectedRow();
@@ -221,23 +226,41 @@ public class EquipmentView extends JPanel implements ActionListener {
 
             for (; count > 0; count--) {
                 if (startRow > -1) {
+                    equipmentList.removeMounted(startRow);
                     equipmentList.removeCrit(startRow);
                 }
             }
-            fireTableRefresh();
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
+            for ( int count = 0; count < equipmentList.getRowCount(); count++ ){
+                equipmentList.removeMounted(count);
+            }
             equipmentList.removeAllCrits();
-            fireTableRefresh();
+        }else{
+            return;
         }
+        fireTableRefresh();
     }
 
     private void fireTableRefresh() {
         equipmentList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() * 8 / 10));
         equipmentScroll.repaint();
+        updateJumpMP();
         if (refresh != null) {
             refresh.refreshStatus();
         }
+    }
+    
+    private void updateJumpMP(){
+        int mp = 0;
+        for ( Mounted mount : unit.getEquipment() ){
+            if ( mount.getType() instanceof MiscType ){
+                if ( mount.getType().hasFlag(MiscType.F_JUMP_JET) || mount.getType().hasFlag(MiscType.F_JUMP_BOOSTER) ){
+                    mp++;
+                }
+            }
+        }
+        unit.setOriginalJumpMP(mp);
     }
 
 }

@@ -27,8 +27,11 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import megamek.common.AmmoType;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
 
 public class CriticalTableModel extends AbstractTableModel {
 
@@ -93,7 +96,6 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public int getRowCount() {
-        int count = this.sortedEquipment.length;
         return this.sortedEquipment.length;
     }
 
@@ -171,5 +173,30 @@ public class CriticalTableModel extends AbstractTableModel {
     
     public void removeAllCrits(){
         crits.removeAllElements();
+    }
+  
+    public void removeMounted(int row){
+        removeMounted((EquipmentType)this.getValueAt(row,CriticalTableModel.EQUIPMENT ));
+    }
+    
+    public void removeMounted(EquipmentType eq){
+        Mounted equipment = null;
+        for ( Mounted mount : unit.getEquipment() ){
+            if ( mount.getType().getInternalName().equals(eq.getInternalName()) ){
+                equipment = mount;
+                break;
+            }
+        }
+        unit.getEquipment().remove(equipment);
+        
+        if ( equipment.getType() instanceof MiscType ){
+            unit.getMisc().remove(equipment);
+        }else if ( equipment.getType() instanceof AmmoType ){
+            unit.getAmmo().remove(equipment);
+        }else{
+            unit.getWeaponList().remove(equipment);
+        }
+        
+        //unit.setWeight(unit.getWeight()-eq.getTonnage(unit));
     }
 }

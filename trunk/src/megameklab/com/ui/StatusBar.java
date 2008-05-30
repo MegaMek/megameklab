@@ -23,7 +23,10 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import megamek.common.AmmoType;
 import megamek.common.Mech;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 
@@ -111,7 +114,15 @@ public class StatusBar extends JPanel {
 
         currentTonnage = testEntity.calculateWeight();
         
-        heatSink.setText("Heat: 0/" + heat);
+        int totalHeat = calculateTotalHeat();
+        heatSink.setText("Heat: "+totalHeat+"/" + heat);
+        
+        if ( totalHeat > heat ){
+            heatSink.setForeground(Color.red);
+        }else{
+            heatSink.setForeground(Color.black);
+        }
+            
         tons.setText("Tonnage: " +currentTonnage+"/"+ tonnage);
         
         if ( currentTonnage > tonnage )
@@ -123,6 +134,53 @@ public class StatusBar extends JPanel {
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
 
         
+    }
+    
+    public int calculateTotalHeat(){
+        int heat = 0;
+        
+        if ( unit.getOriginalJumpMP() > 0 ){
+            heat += Math.max(3, unit.getOriginalJumpMP() );
+        }else{
+            heat += 2;
+        }
+        
+        for (Mounted mounted : unit.getWeaponList()) {
+            WeaponType wtype = (WeaponType) mounted.getType();
+            double weaponHeat = wtype.getHeat();
+
+            // only count non-damaged equipment
+            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed()
+                    || mounted.isBreached()) {
+                continue;
+            }
+
+            // one shot weapons count 1/4
+            if (wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER
+                    || wtype.hasFlag(WeaponType.F_ONESHOT)) {
+                weaponHeat *= 0.25;
+            }
+
+            // double heat for ultras
+            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA)
+                    || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+                weaponHeat *= 2;
+            }
+
+            // Six times heat for RAC
+            if (wtype.getAmmoType() == AmmoType.T_AC_ROTARY) {
+                weaponHeat *= 6;
+            }
+
+            // half heat for streaks
+            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
+                    || (wtype.getAmmoType() == AmmoType.T_MRM_STREAK)
+                    || (wtype.getAmmoType() == AmmoType.T_LRM_STREAK)) {
+                weaponHeat *= 0.5;
+            }
+            heat += weaponHeat;
+        }
+        return heat;
     }
 
 }
