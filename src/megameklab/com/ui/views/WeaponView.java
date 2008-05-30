@@ -34,6 +34,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import megamek.common.AmmoType;
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
@@ -335,16 +336,46 @@ public class WeaponView extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(LASERWEAPONADD_COMMAND)) {
+            try{
+                unit.addEquipment(new Mounted(unit, equipmentTypes.get(laserWeaponCombo.getSelectedItem().toString())), Entity.LOC_NONE,false);
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
             weaponList.addCrit(equipmentTypes.get(laserWeaponCombo.getSelectedItem().toString()));
         } else if (e.getActionCommand().equals(LASERAMMOADD_COMMAND)) {
+            try{
+                unit.addEquipment(new Mounted(unit, equipmentTypes.get(laserAmmoCombo.getSelectedItem().toString())), Entity.LOC_NONE,false);
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
             weaponList.addCrit(equipmentTypes.get(laserAmmoCombo.getSelectedItem().toString()));
         } else if (e.getActionCommand().equals(MISSILEWEAPONADD_COMMAND)) {
+            try{
+                unit.addEquipment(new Mounted(unit, equipmentTypes.get(missileWeaponCombo.getSelectedItem().toString())), Entity.LOC_NONE,false);
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
             weaponList.addCrit(equipmentTypes.get(missileWeaponCombo.getSelectedItem().toString()));
         } else if (e.getActionCommand().equals(MISSILEAMMOADD_COMMAND)) {
+            try{
+                unit.addEquipment(new Mounted(unit, equipmentTypes.get(missileAmmoCombo.getSelectedItem().toString())), Entity.LOC_NONE,false);
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
             weaponList.addCrit(equipmentTypes.get(missileAmmoCombo.getSelectedItem().toString()));
         } else if (e.getActionCommand().equals(BALLISTICWEAPONADD_COMMAND)) {
+            try{
+                unit.addEquipment(new Mounted(unit, equipmentTypes.get(ballisticWeaponCombo.getSelectedItem().toString())), Entity.LOC_NONE,false);
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
             weaponList.addCrit(equipmentTypes.get(ballisticWeaponCombo.getSelectedItem().toString()));
         } else if (e.getActionCommand().equals(BALLISTICAMMOADD_COMMAND)) {
+            try{
+                unit.addEquipment(new Mounted(unit, equipmentTypes.get(ballisticAmmoCombo.getSelectedItem().toString())), Entity.LOC_NONE,false);
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
             weaponList.addCrit(equipmentTypes.get(ballisticAmmoCombo.getSelectedItem().toString()));
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
 
@@ -353,10 +384,14 @@ public class WeaponView extends JPanel implements ActionListener {
 
             for (; count > 0; count--) {
                 if (startRow > -1) {
+                    weaponList.removeMounted(startRow);
                     weaponList.removeCrit(startRow);
                 }
             }
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
+            for ( int count = 0; count < weaponList.getRowCount(); count++ ){
+                weaponList.removeMounted(count);
+            }
             weaponList.removeAllCrits();
         } else {
             return;
