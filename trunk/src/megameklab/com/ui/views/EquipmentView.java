@@ -83,7 +83,7 @@ public class EquipmentView extends JPanel implements ActionListener {
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        equipmentList = new CriticalTableModel(unit);
+        equipmentList = new CriticalTableModel(unit,false);
 
         this.equipmentTable.setModel(equipmentList);
         this.equipmentList.initColumnSizes(this.equipmentTable);
@@ -243,11 +243,12 @@ public class EquipmentView extends JPanel implements ActionListener {
 
     private void fireTableRefresh() {
         equipmentList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() * 8 / 10));
+        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() *90/100, this.getHeight() * 8 / 10));
         equipmentScroll.repaint();
         updateJumpMP();
         if (refresh != null) {
             refresh.refreshStatus();
+            refresh.refreshBuild();
         }
     }
     
@@ -261,6 +262,10 @@ public class EquipmentView extends JPanel implements ActionListener {
             }
         }
         unit.setOriginalJumpMP(mp);
+    }
+    
+    public CriticalTableModel getEquipmentList(){
+        return equipmentList;
     }
 
 }

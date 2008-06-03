@@ -16,20 +16,15 @@
 
 package megameklab.com.ui.tabs;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import megamek.common.Mech;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SpringLayoutHelper;
 import megameklab.com.ui.views.EquipmentView;
 
-public class EquipmentTab extends JPanel implements ActionListener, ChangeListener {
+public class EquipmentTab extends JPanel {
 
     /**
      * 
@@ -37,7 +32,6 @@ public class EquipmentTab extends JPanel implements ActionListener, ChangeListen
     private static final long serialVersionUID = 3978675469713289404L;
 
     private EquipmentView equipment;
-    private RefreshListener refresh;
     
     public EquipmentTab(Mech unit){
         this.equipment = new EquipmentView(unit);
@@ -49,31 +43,14 @@ public class EquipmentTab extends JPanel implements ActionListener, ChangeListen
     }
 
     public void refresh() {
-        removeAllListeners();
         equipment.refresh();
-        addAllListeners();
     }
 
     public void addRefreshedListener(RefreshListener l) {
-        refresh = l;
         equipment.addRefreshedListener(l);
     }
 
-
-    private void addAllListeners() {
+    public EquipmentView getView(){
+        return equipment;
     }
-    
-    private void removeAllListeners() {
-    }
-    
-    public void actionPerformed(ActionEvent arg0) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void stateChanged(ChangeEvent arg0) {
-        // TODO Auto-generated method stub
-        
-    }
-    
 }

@@ -84,7 +84,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         this.unit = (Mech) unit;
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         // this.add(enginePanel());
-        critView = new CriticalView((Mech) unit, false);
+        critView = new CriticalView((Mech) unit, false, refresh);
         scroll.setViewportView(critView);
 
         this.add(splitter);
@@ -323,6 +323,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                 refresh.refreshStatus();
             }
             refresh.refreshStructure();
+            refresh.refreshBuild();
         }
 
     }

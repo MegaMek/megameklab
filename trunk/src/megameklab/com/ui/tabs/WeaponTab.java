@@ -16,20 +16,15 @@
 
 package megameklab.com.ui.tabs;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import megamek.common.Mech;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SpringLayoutHelper;
 import megameklab.com.ui.views.WeaponView;
 
-public class WeaponTab extends JPanel implements ActionListener, ChangeListener {
+public class WeaponTab extends JPanel{
 
     /**
      * 
@@ -56,15 +51,8 @@ public class WeaponTab extends JPanel implements ActionListener, ChangeListener 
         weapon.addRefreshedListener(refresh);
     }
 
-
-    public void actionPerformed(ActionEvent arg0) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void stateChanged(ChangeEvent arg0) {
-        // TODO Auto-generated method stub
-        
+    public WeaponView getView(){
+        return weapon;
     }
     
 }

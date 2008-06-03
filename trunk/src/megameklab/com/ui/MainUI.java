@@ -36,6 +36,7 @@ import javax.swing.SwingConstants;
 
 import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.ui.tabs.ArmorTab;
+import megameklab.com.ui.tabs.BuildTab;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.StructureTab;
 import megameklab.com.ui.tabs.WeaponTab;
@@ -64,6 +65,7 @@ public class MainUI extends JFrame implements RefreshListener {
     private ArmorTab armorTab;
     private EquipmentTab equipmentTab;
     private WeaponTab weaponTab;
+    private BuildTab buildTab;
     private Header header;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
@@ -122,12 +124,13 @@ public class MainUI extends JFrame implements RefreshListener {
         scroll.setViewportView(masterPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         this.add(scroll);
+        Dimension maxSize = new Dimension(800,600);
         //masterPanel.setPreferredSize(new Dimension(600,400));
-        scroll.setPreferredSize(new Dimension(640,480));
+        scroll.setPreferredSize(maxSize);
         setResizable(true);
-        setSize(new Dimension(640, 480));
-        setMaximumSize(new Dimension(640, 480));
-        setPreferredSize(new Dimension(640, 480));
+        setSize(maxSize);
+        setMaximumSize(maxSize);
+        setPreferredSize(maxSize);
         setExtendedState(Frame.NORMAL);
 
         reloadTabs();
@@ -171,16 +174,20 @@ public class MainUI extends JFrame implements RefreshListener {
         statusbar = new StatusBar(entity);
         equipmentTab = new EquipmentTab(entity);
         weaponTab = new WeaponTab(entity);
+        buildTab = new BuildTab(entity,equipmentTab,weaponTab);
         header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
         armorTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         weaponTab.addRefreshedListener(this);
+        buildTab.addRefreshedListener(this);
         
         ConfigPane.addTab("Structure", structureTab);
         ConfigPane.addTab("Armor", armorTab);
         ConfigPane.addTab("Equipment", equipmentTab);
         ConfigPane.addTab("Weapons", weaponTab);
+        ConfigPane.addTab("Build", buildTab);
+        
         
         masterPanel.add(header);
         masterPanel.add(ConfigPane);
@@ -224,6 +231,7 @@ public class MainUI extends JFrame implements RefreshListener {
         armorTab.refresh();
         equipmentTab.refresh();
         weaponTab.refresh();
+        buildTab.refresh();
         
         this.setTitle(entity.getChassis()+" "+entity.getModel()+".mtf");
         header = new Header(entity);
@@ -234,8 +242,7 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void refreshBuild() {
-        // TODO Auto-generated method stub
-        
+        buildTab.refresh();
     }
 
     public void refreshEquipment() {

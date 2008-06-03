@@ -20,7 +20,6 @@ import java.awt.Font;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
@@ -28,6 +27,8 @@ import megamek.common.CriticalSlot;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.loaders.MtfFile;
+import megameklab.com.ui.util.DropTargetCriticalList;
+import megameklab.com.ui.util.RefreshListener;
 
 public class CriticalView extends JPanel {
 
@@ -46,13 +47,15 @@ public class CriticalView extends JPanel {
     private JPanel headPanel = new JPanel();
     private JPanel torsoPanel = new JPanel();
     private JPanel legPanel = new JPanel();
-
+    private RefreshListener refresh;
+    
     private boolean showEmpty = false;
 
-    public CriticalView(Mech unit, boolean showEmpty) {
+    public CriticalView(Mech unit, boolean showEmpty, RefreshListener refresh) {
         this.unit = unit;
         this.showEmpty = showEmpty;
-
+        this.refresh = refresh;
+        
         JPanel mainPanel = new JPanel();
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -77,6 +80,10 @@ public class CriticalView extends JPanel {
         this.add(mainPanel);
     }
 
+    public void updateRefresh(RefreshListener refresh){
+        this.refresh = refresh;
+    }
+    
     public void refresh() {
         laPanel.removeAll();
         raPanel.removeAll();
@@ -103,12 +110,12 @@ public class CriticalView extends JPanel {
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         Mounted m = unit.getEquipment(cs.getIndex());
                         if (m.getName().length() > 10)
-                            critNames.add(m.getName().substring(0, 10)+"...");
+                            critNames.add(m.getName().substring(0, 10) + "...");
                         else
                             critNames.add(m.getName());
                     }
                 }
-                JList CriticalSlotList = new JList(critNames);
+                DropTargetCriticalList CriticalSlotList = new DropTargetCriticalList(critNames,unit,refresh);
                 CriticalSlotList.setVisibleRowCount(critNames.size());
                 CriticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 CriticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
@@ -116,31 +123,38 @@ public class CriticalView extends JPanel {
                 switch (location) {
                 case Mech.LOC_HEAD:
                     headPanel.add(CriticalSlotList);
+                    headPanel.repaint();
                     break;
                 case Mech.LOC_LARM:
                     laPanel.add(CriticalSlotList);
+                    laPanel.repaint();
                     break;
                 case Mech.LOC_RARM:
                     raPanel.add(CriticalSlotList);
+                    raPanel.repaint();
                     break;
                 case Mech.LOC_CT:
                     ctPanel.add(CriticalSlotList);
+                    ctPanel.repaint();
                     break;
                 case Mech.LOC_LT:
                     ltPanel.add(CriticalSlotList);
+                    ltPanel.repaint();
                     break;
                 case Mech.LOC_RT:
                     rtPanel.add(CriticalSlotList);
+                    rtPanel.repaint();
                     break;
                 case Mech.LOC_LLEG:
                     llPanel.add(CriticalSlotList);
+                    llPanel.repaint();
                     break;
                 case Mech.LOC_RLEG:
                     rlPanel.add(CriticalSlotList);
+                    rlPanel.repaint();
                     break;
                 }
             }
         }
-
     }
 }
