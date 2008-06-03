@@ -16,7 +16,6 @@
 
 package megameklab.com.ui.util;
 
-
 import java.awt.Color;
 import java.awt.Component;
 import java.util.Vector;
@@ -28,10 +27,12 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import megamek.common.AmmoType;
+import megamek.common.CriticalSlot;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.WeaponType;
 
 public class CriticalTableModel extends AbstractTableModel {
 
@@ -46,33 +47,29 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int NAME = 0;
     public final static int TONNAGE = 1;
     public final static int CRITS = 2;
-    public final static int EQUIPMENT = 3;
+    public final static int HEAT = 3;
+    public final static int EQUIPMENT = 4;
 
-    final String[] columnNames = {
-            "Name",
-            "Tonnage",
-            "Crits",
-    };
+    String[] columnNames = { "Name", "Tons", "Crits", };
 
-    final String[] longValues = {
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-    };
+    String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", };
 
     public int getColumnCount() {
         return this.columnNames.length;
     }
 
-    public CriticalTableModel(Mech unit)
-    {
+    public CriticalTableModel(Mech unit, boolean weapons) {
+        if (weapons) {
+            longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", };
+            columnNames = new String[] { "Name", "Tons", "Crits", "Heat", };
+        }
         this.unit = unit;
     }
 
     public void refreshModel() {
-        //do a resort
+        // do a resort
         this.sortedEquipment = new EquipmentType[] {};
-        if ( this.crits.size() > 0 ){
+        if (this.crits.size() > 0) {
             this.sortedEquipment = this.crits.toArray(sortedEquipment);
         }
         this.fireTableDataChanged();
@@ -86,10 +83,7 @@ public class CriticalTableModel extends AbstractTableModel {
         CriticalTableModel model = this;
         for (int i = 0; i < this.getColumnCount(); i++) {
             column = table.getColumnModel().getColumn(i);
-            comp = table.getDefaultRenderer(model.getColumnClass(i)).
-            getTableCellRendererComponent(
-                    table, longValues[i],
-                    false, false, 0, i);
+            comp = table.getDefaultRenderer(model.getColumnClass(i)).getTableCellRendererComponent(table, longValues[i], false, false, 0, i);
             cellWidth = comp.getPreferredSize().width;
             column.setPreferredWidth(Math.max(headerWidth, cellWidth));
         }
@@ -110,18 +104,25 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int row, int col) {
-        if (row < 0) return "";
-        if (row >= sortedEquipment.length) return "";
+        if (row < 0)
+            return "";
+        if (row >= sortedEquipment.length)
+            return "";
         EquipmentType crit = this.sortedEquipment[row];
         switch (col) {
-            case NAME:
-                return crit.getName();
-            case TONNAGE:
-                return crit.getTonnage(unit);
-            case CRITS:
-                return new Integer(crit.getCriticals(unit));
-            case EQUIPMENT:
-                return crit;
+        case NAME:
+            return crit.getName();
+        case TONNAGE:
+            return crit.getTonnage(unit);
+        case CRITS:
+            return new Integer(crit.getCriticals(unit));
+        case EQUIPMENT:
+            return crit;
+        case HEAT:
+            if (crit instanceof WeaponType) {
+                return new Integer(((WeaponType) crit).getHeat());
+            }
+            return new Integer(0);
         }
         return "";
     }
@@ -142,11 +143,12 @@ public class CriticalTableModel extends AbstractTableModel {
 
         @Override
         public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            java.awt.Component d =  super.getTableCellRendererComponent(table,value,isSelected,hasFocus,row,column);
+            java.awt.Component d = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-            JLabel c = new JLabel(); //use a new label for everything (should be made better later)
+            JLabel c = new JLabel();
             c.setOpaque(true);
-            if (crits.size() < row || row < 0) return c;
+            if (crits.size() < row || row < 0)
+                return c;
             if (table.getModel().getValueAt(row, column) != null) {
                 c.setText(table.getModel().getValueAt(row, column).toString());
             }
@@ -162,41 +164,54 @@ public class CriticalTableModel extends AbstractTableModel {
             return c;
         }
     }
-    
-    public void addCrit(EquipmentType eq){
+
+    public void addCrit(EquipmentType eq) {
         crits.add(eq);
     }
-    
-    public void removeCrit(int location){
+
+    public void removeCrit(int location) {
         crits.removeElementAt(location);
     }
-    
-    public void removeAllCrits(){
+
+    public void removeAllCrits() {
         crits.removeAllElements();
     }
-  
-    public void removeMounted(int row){
-        removeMounted((EquipmentType)this.getValueAt(row,CriticalTableModel.EQUIPMENT ));
+
+    public void removeMounted(int row) {
+        removeMounted((EquipmentType) this.getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
-    
-    public void removeMounted(EquipmentType eq){
+
+    public void removeMounted(EquipmentType eq) {
         Mounted equipment = null;
-        for ( Mounted mount : unit.getEquipment() ){
-            if ( mount.getType().getInternalName().equals(eq.getInternalName()) ){
+        for (Mounted mount : unit.getEquipment()) {
+            if (mount.getType().getInternalName().equals(eq.getInternalName())) {
                 equipment = mount;
                 break;
             }
         }
+        // time to remove the criticals linked to this Mount
+        if (equipment.getLocation() != Mech.LOC_NONE) {
+            int critsUsed = equipment.getType().getCriticals(unit);
+            for (int slot = 0; slot < unit.getNumberOfCriticals(equipment.getLocation()) && critsUsed > 0; slot++) {
+                CriticalSlot cs = unit.getCritical(equipment.getLocation(), slot);
+                if (cs != null && unit.getEquipmentType(cs) == equipment.getType()) {
+                    cs = null;
+                    unit.setCritical(equipment.getLocation(), slot, cs);
+                    --critsUsed;
+                }
+            }
+        }
+
         unit.getEquipment().remove(equipment);
-        
-        if ( equipment.getType() instanceof MiscType ){
+
+        if (equipment.getType() instanceof MiscType) {
             unit.getMisc().remove(equipment);
-        }else if ( equipment.getType() instanceof AmmoType ){
+        } else if (equipment.getType() instanceof AmmoType) {
             unit.getAmmo().remove(equipment);
-        }else{
+        } else {
             unit.getWeaponList().remove(equipment);
         }
-        
-        //unit.setWeight(unit.getWeight()-eq.getTonnage(unit));
+
     }
+
 }

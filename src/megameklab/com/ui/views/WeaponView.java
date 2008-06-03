@@ -110,7 +110,7 @@ public class WeaponView extends JPanel implements ActionListener {
         leftPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        weaponList = new CriticalTableModel(unit);
+        weaponList = new CriticalTableModel(unit,true);
 
         this.equipmentTable.setModel(weaponList);
         this.weaponList.initColumnSizes(this.equipmentTable);
@@ -119,7 +119,7 @@ public class WeaponView extends JPanel implements ActionListener {
 
         this.equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         // equipmentScroll.setToolTipText("");
-        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() * 3 / 4));
+        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() * 3 / 4, this.getHeight() * 3 / 4));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
 
@@ -302,10 +302,11 @@ public class WeaponView extends JPanel implements ActionListener {
 
     private void fireTableRefresh() {
         weaponList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() * 8 / 10));
+        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() * 65 /100, this.getHeight()* 80/100));
         equipmentScroll.repaint();
         if (refresh != null) {
             refresh.refreshStatus();
+            refresh.refreshBuild();
         }
     }
 
@@ -342,7 +343,7 @@ public class WeaponView extends JPanel implements ActionListener {
                 ex.printStackTrace();
             }
             weaponList.addCrit(equipmentTypes.get(laserWeaponCombo.getSelectedItem().toString()));
-        } else if (e.getActionCommand().equals(LASERAMMOADD_COMMAND)) {
+        } else if (e.getActionCommand().equals(LASERAMMOADD_COMMAND) && laserAmmoCombo.getItemCount() > 0) {
             try{
                 unit.addEquipment(new Mounted(unit, equipmentTypes.get(laserAmmoCombo.getSelectedItem().toString())), Entity.LOC_NONE,false);
             }catch(Exception ex){
@@ -398,6 +399,10 @@ public class WeaponView extends JPanel implements ActionListener {
         }
         fireTableRefresh();
 
+    }
+    
+    public CriticalTableModel getWeaponList(){
+        return weaponList;
     }
 
 }
