@@ -48,7 +48,7 @@ public class CriticalView extends JPanel {
     private JPanel torsoPanel = new JPanel();
     private JPanel legPanel = new JPanel();
     private RefreshListener refresh;
-    
+
     private boolean showEmpty = false;
 
     public CriticalView(Mech unit, boolean showEmpty, RefreshListener refresh) {
@@ -109,10 +109,17 @@ public class CriticalView extends JPanel {
                         critNames.add(unit.getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         Mounted m = unit.getEquipment(cs.getIndex());
-                        if (m.getName().length() > 10)
-                            critNames.add(m.getName().substring(0, 10) + "...");
-                        else
-                            critNames.add(m.getName());
+                        StringBuffer critName = new StringBuffer(m.getName());
+                        if (critName.length() > 10){
+                            critName.setLength(10);
+                            critName.append("...");
+                            if ( m.isRearMounted() ){
+                                critName.append("(R)");
+                            }
+                        }
+                        
+                        critNames.add(critName.toString());
+                        
                     }
                 }
                 DropTargetCriticalList CriticalSlotList = new DropTargetCriticalList(critNames,unit,refresh);
