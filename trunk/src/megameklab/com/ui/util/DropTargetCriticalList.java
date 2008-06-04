@@ -80,7 +80,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                 String mountName = (String) t.getTransferData(DataFlavor.stringFlavor);
                 Mounted eq = null;
                 for (Mounted mount : unit.getEquipment()) {
-                    if (mount.getLocation() == Entity.LOC_NONE && mount.getName().equals(mountName)) {
+                    if (mount.getLocation() == Entity.LOC_NONE && mount.getType().getInternalName().equals(mountName)) {
                         eq = mount;
                         break;
                     }
