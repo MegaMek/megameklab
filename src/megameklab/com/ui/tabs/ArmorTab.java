@@ -37,6 +37,9 @@ import megameklab.com.ui.views.ArmorView;
 
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.TechConstants;
 
 public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
 
@@ -60,12 +63,12 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
 
         this.unit = unit;
         armor = new ArmorView(this.unit);
-        
+
         this.setLayout(new SpringLayout());
         this.add(ButtonPanel());
         this.add(armor);
-        SpringLayoutHelper.setupSpringGrid(this,1);
-        
+        SpringLayoutHelper.setupSpringGrid(this, 1);
+
         refresh();
 
         addAllListeners();
@@ -86,6 +89,8 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
         if (arg0.getSource() instanceof JComboBox) {
             unit.setArmorType(armorCombo.getSelectedIndex());
             unit.setStructureType(structureCombo.getSelectedIndex());
+            removeArmorMounts();
+            createArmorMounts();
             refresh.refreshStatus();
             refresh();
         }
@@ -100,8 +105,8 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
         masterPanel.add(new JLabel("Structure", JLabel.TRAILING));
         masterPanel.add(structureCombo);
 
-        buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));
-        
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+
         SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
 
         buttonPanel.add(masterPanel);
@@ -123,15 +128,14 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
         armorSlider.setPaintTrack(true);
         armorSlider.addChangeListener(this);
         armorSlider.setSnapToTicks(true);
-       
+
         JPanel sliderPanel = new JPanel(new SpringLayout());
         sliderPanel.add(armorSlider);
         sliderPanel.add(allocateArmorButton);
         SpringLayoutHelper.setupSpringGrid(sliderPanel, 2);
-        
+
         buttonPanel.add(sliderPanel);
-        
-        
+
         return buttonPanel;
     }
 
@@ -145,14 +149,73 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
         structureCombo.removeActionListener(this);
     }
 
-    private void allocateArmorActionPerformed(){
-        
+    private void allocateArmorActionPerformed() {
+
         armor.allocateArmor(armorSlider.getValue());
-        
+
     }
 
     public void stateChanged(ChangeEvent arg0) {
         armorSlider.setToolTipText(Integer.toString(armorSlider.getValue()));
+
+    }
+
+    private void createArmorMounts(){
+        int armorCount = 0;
+        int ISCount = 0;
+        boolean isClan = unit.isClan();
+        
+            switch ( unit.getArmorType() ){
+                case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+                    if ( isClan ){
+                        armorCount =  7;
+                    }else{
+                        armorCount = 14;
+                    }
+                    break;
+                case EquipmentType.T_ARMOR_HEAVY_FERRO:
+                    armorCount = 21;
+                    break;
+                case EquipmentType.T_ARMOR_LIGHT_FERRO:
+                    armorCount = 7;
+            }
+            switch (unit.getStructureType() ){
+            case EquipmentType.T_STRUCTURE_ENDO_STEEL:
+                if ( isClan ){
+                    ISCount = 7;
+                }else{
+                    ISCount = 14;
+                }
+               
+            }
+            
+            if ( armorCount < 1 && ISCount < 1 ){
+                return;
+            }
+                
         
     }
+
+    private void removeArmorMounts() {
+        
+        for ( int pos = 0; pos < unit.getEquipment().size(); ){
+            Mounted mount = unit.getEquipment().get(pos); 
+            if( mount.getType() instanceof MiscType && ( mount.getType().hasFlag(MiscType.F_ENDO_STEEL) || mount.getType().hasFlag(MiscType.F_FERRO_FIBROUS) ) ){
+                unit.getEquipment().remove(pos);
+            }else{
+                pos++;
+            }
+        }
+        
+        for ( int pos = 0; pos < unit.getMisc().size(); ){
+            Mounted mount = unit.getMisc().get(pos); 
+            if( mount.getType().hasFlag(MiscType.F_ENDO_STEEL) || mount.getType().hasFlag(MiscType.F_FERRO_FIBROUS) ){
+                unit.getEquipment().remove(pos);
+            }else{
+                pos++;
+            }
+        }
+
+    }
+
 }

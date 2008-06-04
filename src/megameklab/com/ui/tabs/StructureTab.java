@@ -427,5 +427,4 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
             unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), false);
         addHeatSinkMounts();
     }
-
 }

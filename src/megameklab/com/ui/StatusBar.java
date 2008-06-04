@@ -101,10 +101,11 @@ public class StatusBar extends JPanel {
     }
     
     public void refresh() {
+        
         int walk = unit.getOriginalWalkMP();
         int run = unit.getOriginalRunMPwithoutMASC();
         int jump = unit.getOriginalJumpMP();
-        int heat = unit.heatSinks();
+        int heat = unit.getNumberOfSinks();
         float tonnage = unit.getWeight();
         float currentTonnage;
         int bv = unit.calculateBattleValue();
@@ -115,8 +116,12 @@ public class StatusBar extends JPanel {
         currentTonnage = testEntity.calculateWeight();
         
         int totalHeat = calculateTotalHeat();
-        heatSink.setText("Heat: "+totalHeat+"/" + heat);
+        if ( unit.hasDoubleHeatSinks() ){
+            heat*=2;
+        }
         
+        heatSink.setText("Heat: "+totalHeat+"/" + heat);
+        heatSink.setToolTipText("Total Heat Generated/Total Heat Dissipated");
         if ( totalHeat > heat ){
             heatSink.setForeground(Color.red);
         }else{
@@ -124,14 +129,17 @@ public class StatusBar extends JPanel {
         }
             
         tons.setText("Tonnage: " +currentTonnage+"/"+ tonnage);
-        
+        tons.setToolTipText("Current Tonnage/Max Tonnage");
         if ( currentTonnage > tonnage )
             tons.setForeground(Color.red);
         else
             tons.setForeground(Color.black);
         
         bvLabel.setText("BV: " + bv);
+        bvLabel.setToolTipText("BV 2.0");
+        
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
+        move.setToolTipText("Walk/Run/Jump MP");
 
         
     }
