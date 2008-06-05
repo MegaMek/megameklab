@@ -33,13 +33,14 @@ import javax.swing.event.ChangeListener;
 
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SpringLayoutHelper;
+import megameklab.com.ui.util.UnitUtil;
 import megameklab.com.ui.views.ArmorView;
 
+import megamek.common.CriticalSlot;
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.TechConstants;
 
 public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
 
@@ -91,8 +92,7 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
             unit.setStructureType(structureCombo.getSelectedIndex());
             removeArmorMounts();
             createArmorMounts();
-            refresh.refreshStatus();
-            refresh();
+            refresh.refreshAll();
         }
         addAllListeners();
     }
@@ -160,62 +160,96 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
 
     }
 
-    private void createArmorMounts(){
+    private void createArmorMounts() {
         int armorCount = 0;
         int ISCount = 0;
         boolean isClan = unit.isClan();
-        
-            switch ( unit.getArmorType() ){
-                case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-                    if ( isClan ){
-                        armorCount =  7;
-                    }else{
-                        armorCount = 14;
-                    }
-                    break;
-                case EquipmentType.T_ARMOR_HEAVY_FERRO:
-                    armorCount = 21;
-                    break;
-                case EquipmentType.T_ARMOR_LIGHT_FERRO:
-                    armorCount = 7;
+
+        switch (unit.getArmorType()) {
+        case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+            if (isClan) {
+                armorCount = 7;
+            } else {
+                armorCount = 14;
             }
-            switch (unit.getStructureType() ){
-            case EquipmentType.T_STRUCTURE_ENDO_STEEL:
-                if ( isClan ){
-                    ISCount = 7;
-                }else{
-                    ISCount = 14;
-                }
-               
+            break;
+        case EquipmentType.T_ARMOR_HEAVY_FERRO:
+            armorCount = 21;
+            break;
+        case EquipmentType.T_ARMOR_LIGHT_FERRO:
+            armorCount = 7;
+        }
+        switch (unit.getStructureType()) {
+        case EquipmentType.T_STRUCTURE_ENDO_STEEL:
+            if (isClan) {
+                ISCount = 7;
+            } else {
+                ISCount = 14;
             }
-            
-            if ( armorCount < 1 && ISCount < 1 ){
-                return;
-            }
+
+        }
+
+        if (armorCount < 1 && ISCount < 1) {
+            return;
+        }
+
+        for ( ; armorCount > 0; armorCount-- ){
+            try{
+                unit.addEquipment(new Mounted(unit,EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))) , Entity.LOC_NONE,false);
+            }catch (Exception ex){
                 
+            }
+        }
+        
+        for ( ; ISCount > 0; ISCount-- ){
+            try{
+                unit.addEquipment(new Mounted(unit,EquipmentType.get(EquipmentType.getStructureTypeName(unit.getStructureType()))) , Entity.LOC_NONE,false);
+            }catch (Exception ex){
+                
+            }
+        }
         
     }
 
     private void removeArmorMounts() {
+
+        removeArmorCrits();
         
-        for ( int pos = 0; pos < unit.getEquipment().size(); ){
-            Mounted mount = unit.getEquipment().get(pos); 
-            if( mount.getType() instanceof MiscType && ( mount.getType().hasFlag(MiscType.F_ENDO_STEEL) || mount.getType().hasFlag(MiscType.F_FERRO_FIBROUS) ) ){
+        for (int pos = 0; pos < unit.getEquipment().size();) {
+            Mounted mount = unit.getEquipment().get(pos);
+            if (UnitUtil.isArmorOrStructure(mount.getType())) {
                 unit.getEquipment().remove(pos);
-            }else{
-                pos++;
-            }
-        }
-        
-        for ( int pos = 0; pos < unit.getMisc().size(); ){
-            Mounted mount = unit.getMisc().get(pos); 
-            if( mount.getType().hasFlag(MiscType.F_ENDO_STEEL) || mount.getType().hasFlag(MiscType.F_FERRO_FIBROUS) ){
-                unit.getEquipment().remove(pos);
-            }else{
+            } else {
                 pos++;
             }
         }
 
+        for (int pos = 0; pos < unit.getMisc().size();) {
+            Mounted mount = unit.getMisc().get(pos);
+            if (UnitUtil.isArmorOrStructure(mount.getType())) {
+                unit.getMisc().remove(pos);
+            } else {
+                pos++;
+            }
+        }
+
+    }
+
+    private void removeArmorCrits() {
+
+        for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
+            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+                CriticalSlot crit = unit.getCritical(location, slot);
+                if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                    Mounted mount = unit.getEquipment(crit.getIndex());
+
+                    if (mount != null && UnitUtil.isArmorOrStructure(mount.getType())) {
+                        crit = null;
+                        unit.setCritical(location, slot, crit);
+                    }
+                }
+            }
+        }
     }
 
 }
