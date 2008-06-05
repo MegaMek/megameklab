@@ -6,3 +6,5 @@ V 0.0.0.1
 + Added popup menu's to DropTargetCriticalList to allow the removal of added 
 	equipment/weapons and set weapons to rear facing. 
 + Bug: not all weapons getting placed in crit slots
++ Added code to add individual crits/mounts for FF and Endo Steel
++ Added new utility file UnitUtil.java

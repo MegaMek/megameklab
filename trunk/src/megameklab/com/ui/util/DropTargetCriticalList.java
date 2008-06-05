@@ -214,21 +214,12 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
     private void removeCrit() {
         CriticalSlot crit = getCrit();
         Mounted mounted = getMounted();
-        int location = getCritLocation();
         
         if ( mounted == null )
             return;
-        
-        int critsUsed = mounted.getType().getCriticals(unit);
-        for (int slot = 0; slot < unit.getNumberOfCriticals(location) && critsUsed > 0; slot++) {
-            CriticalSlot cs = unit.getCritical(location, slot);
-            if (cs != null && unit.getEquipmentType(cs) == mounted.getType()) {
-                cs = null;
-                unit.setCritical(location, slot, cs);
-                --critsUsed;
-            }
-        }
 
+        UnitUtil.removeCriticals(unit, mounted);
+        
         if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
             changeMountStatus(mounted, Mech.LOC_NONE, false);
         }

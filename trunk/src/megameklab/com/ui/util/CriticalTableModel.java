@@ -26,12 +26,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import megamek.common.AmmoType;
-import megamek.common.CriticalSlot;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
 import megamek.common.WeaponType;
 
 public class CriticalTableModel extends AbstractTableModel {
@@ -115,7 +111,7 @@ public class CriticalTableModel extends AbstractTableModel {
         case TONNAGE:
             return crit.getTonnage(unit);
         case CRITS:
-            return new Integer(crit.getCriticals(unit));
+            return UnitUtil.getCritsUsed(unit, crit);
         case EQUIPMENT:
             return crit;
         case HEAT:
@@ -178,40 +174,9 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public void removeMounted(int row) {
-        removeMounted((EquipmentType) this.getValueAt(row, CriticalTableModel.EQUIPMENT));
+        UnitUtil.removeMounted(unit,(EquipmentType) this.getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
 
-    public void removeMounted(EquipmentType eq) {
-        Mounted equipment = null;
-        for (Mounted mount : unit.getEquipment()) {
-            if (mount.getType().getInternalName().equals(eq.getInternalName())) {
-                equipment = mount;
-                break;
-            }
-        }
-        // time to remove the criticals linked to this Mount
-        if (equipment.getLocation() != Mech.LOC_NONE) {
-            int critsUsed = equipment.getType().getCriticals(unit);
-            for (int slot = 0; slot < unit.getNumberOfCriticals(equipment.getLocation()) && critsUsed > 0; slot++) {
-                CriticalSlot cs = unit.getCritical(equipment.getLocation(), slot);
-                if (cs != null && unit.getEquipmentType(cs) == equipment.getType()) {
-                    cs = null;
-                    unit.setCritical(equipment.getLocation(), slot, cs);
-                    --critsUsed;
-                }
-            }
-        }
-
-        unit.getEquipment().remove(equipment);
-
-        if (equipment.getType() instanceof MiscType) {
-            unit.getMisc().remove(equipment);
-        } else if (equipment.getType() instanceof AmmoType) {
-            unit.getAmmo().remove(equipment);
-        } else {
-            unit.getWeaponList().remove(equipment);
-        }
-
-    }
+    
 
 }
