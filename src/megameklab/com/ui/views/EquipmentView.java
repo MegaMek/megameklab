@@ -83,7 +83,7 @@ public class EquipmentView extends JPanel implements ActionListener {
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        equipmentList = new CriticalTableModel(unit,false);
+        equipmentList = new CriticalTableModel(unit, false);
 
         this.equipmentTable.setModel(equipmentList);
         this.equipmentList.initColumnSizes(this.equipmentTable);
@@ -213,12 +213,19 @@ public class EquipmentView extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
-            try{
-                unit.addEquipment(new Mounted(unit, equipmentTypes.get(equipmentCombo.getSelectedItem().toString())), Entity.LOC_NONE,false);
-            }catch(Exception ex){
-                ex.printStackTrace();
+            if (equipmentCombo.getSelectedItem().toString().equals("TSM")) {
+                if (!unit.hasTSM()) {
+                    createTSMMounts();
+                    equipmentList.addCrit(equipmentTypes.get(equipmentCombo.getSelectedItem().toString()));
+                }
+            } else {
+                try {
+                    unit.addEquipment(new Mounted(unit, equipmentTypes.get(equipmentCombo.getSelectedItem().toString())), Entity.LOC_NONE, false);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                equipmentList.addCrit(equipmentTypes.get(equipmentCombo.getSelectedItem().toString()));
             }
-            equipmentList.addCrit(equipmentTypes.get(equipmentCombo.getSelectedItem().toString()));
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
 
             int startRow = equipmentTable.getSelectedRow();
@@ -231,11 +238,11 @@ public class EquipmentView extends JPanel implements ActionListener {
                 }
             }
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
-            for ( int count = 0; count < equipmentList.getRowCount(); count++ ){
+            for (int count = 0; count < equipmentList.getRowCount(); count++) {
                 equipmentList.removeMounted(count);
             }
             equipmentList.removeAllCrits();
-        }else{
+        } else {
             return;
         }
         fireTableRefresh();
@@ -243,7 +250,7 @@ public class EquipmentView extends JPanel implements ActionListener {
 
     private void fireTableRefresh() {
         equipmentList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() *90/100, this.getHeight() * 8 / 10));
+        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() * 90 / 100, this.getHeight() * 8 / 10));
         equipmentScroll.repaint();
         updateJumpMP();
         if (refresh != null) {
@@ -251,21 +258,40 @@ public class EquipmentView extends JPanel implements ActionListener {
             refresh.refreshBuild();
         }
     }
-    
-    private void updateJumpMP(){
+
+    private void updateJumpMP() {
         int mp = 0;
-        for ( Mounted mount : unit.getEquipment() ){
-            if ( mount.getType() instanceof MiscType ){
-                if ( mount.getType().hasFlag(MiscType.F_JUMP_JET) || mount.getType().hasFlag(MiscType.F_JUMP_BOOSTER) ){
+        for (Mounted mount : unit.getEquipment()) {
+            if (mount.getType() instanceof MiscType) {
+                if (mount.getType().hasFlag(MiscType.F_JUMP_JET) || mount.getType().hasFlag(MiscType.F_JUMP_BOOSTER)) {
                     mp++;
                 }
             }
         }
         unit.setOriginalJumpMP(mp);
     }
-    
-    public CriticalTableModel getEquipmentList(){
+
+    public CriticalTableModel getEquipmentList() {
         return equipmentList;
+    }
+
+    private void createTSMMounts() {
+        int TSMCount = 0;
+
+        TSMCount = EquipmentType.get("TSM").getCriticals(unit);
+
+        if (TSMCount < 1) {
+            return;
+        }
+
+        for (; TSMCount > 0; TSMCount--) {
+            try {
+                unit.addEquipment(new Mounted(unit, EquipmentType.get("TSM")), Entity.LOC_NONE, false);
+            } catch (Exception ex) {
+
+            }
+        }
+
     }
 
 }

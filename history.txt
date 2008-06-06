@@ -8,3 +8,4 @@ V 0.0.0.1
 + Bug: not all weapons getting placed in crit slots
 + Added code to add individual crits/mounts for FF and Endo Steel
 + Added new utility file UnitUtil.java
++ Added code to add TSM crits.
