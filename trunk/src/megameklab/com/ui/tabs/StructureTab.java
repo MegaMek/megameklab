@@ -37,6 +37,7 @@ import javax.swing.SpringLayout;
 
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SpringLayoutHelper;
+import megameklab.com.ui.util.UnitUtil;
 import megameklab.com.ui.views.CriticalView;
 
 import megamek.common.CriticalSlot;
@@ -243,8 +244,6 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                 unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), 0));
                 unit.addEngineCrits();
                 updateHeatSinks();
-                refresh.refreshEquipment();
-                refresh.refreshStatus();
             } else if (combo.equals(gyroType)) {
                 unit.setGyroType(combo.getSelectedIndex());
                 removeSystemCrits(Mech.SYSTEM_GYRO);
@@ -262,7 +261,6 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                 default:
                     unit.addGyro();
                 }
-                refresh.refreshStatus();
             } else if (combo.equals(cockpitType)) {
                 unit.setCockpitType(combo.getSelectedIndex());
                 removeSystemCrits(Mech.SYSTEM_COCKPIT);
@@ -286,18 +284,12 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                     break;
                 default:
                     unit.addCockpit();
-
                 }
-                refresh.refreshEquipment();
             } else if (combo.equals(weightClass)) {
                 unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
                 unit.autoSetInternal();
-                refresh.refreshArmor();
-                refresh.refreshStatus();
             } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
                 updateHeatSinks();
-                refresh.refreshEquipment();
-                refresh.refreshStatus();
             } else if (combo.equals(techLevel) || combo.equals(techType)) {
                 if (techType.getSelectedIndex() > 0) {
                     if (techLevel.getSelectedIndex() < 2) {
@@ -318,12 +310,10 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
                     }
                 }
-                refresh.refreshEquipment();
-                refresh.refreshWeapons();
-                refresh.refreshStatus();
             }
-            refresh.refreshStructure();
-            refresh.refreshBuild();
+            UnitUtil.resetCriticalsAndMounts(unit);
+            addAllActionListeners();
+            refresh.refreshAll();
         }
 
     }

@@ -97,4 +97,22 @@ public class UnitUtil{
             }
         }
     }
+    
+    public static void resetCriticalsAndMounts(Mech unit){
+        for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++ ){
+            for ( int slot = 0; slot < unit.getNumberOfCriticals(location); slot++ ){
+                CriticalSlot cs = unit.getCritical(location, slot);
+                
+                if ( cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT ){
+                    cs = null;
+                    unit.setCritical(location, slot, cs);
+                }
+            }
+        }
+        
+        for ( Mounted mount : unit.getEquipment() ){
+            mount.setLocation(Mech.LOC_NONE,false);
+        }
+        
+    }
 }

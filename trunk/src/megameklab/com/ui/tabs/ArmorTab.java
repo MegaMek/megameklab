@@ -163,58 +163,36 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
     private void createArmorMounts() {
         int armorCount = 0;
         int ISCount = 0;
-        boolean isClan = unit.isClan();
 
-        switch (unit.getArmorType()) {
-        case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-            if (isClan) {
-                armorCount = 7;
-            } else {
-                armorCount = 14;
-            }
-            break;
-        case EquipmentType.T_ARMOR_HEAVY_FERRO:
-            armorCount = 21;
-            break;
-        case EquipmentType.T_ARMOR_LIGHT_FERRO:
-            armorCount = 7;
-        }
-        switch (unit.getStructureType()) {
-        case EquipmentType.T_STRUCTURE_ENDO_STEEL:
-            if (isClan) {
-                ISCount = 7;
-            } else {
-                ISCount = 14;
-            }
-
-        }
+        armorCount = EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType())).getCriticals(unit);
+        ISCount = EquipmentType.get(EquipmentType.getStructureTypeName(unit.getStructureType())).getCriticals(unit);
 
         if (armorCount < 1 && ISCount < 1) {
             return;
         }
 
-        for ( ; armorCount > 0; armorCount-- ){
-            try{
-                unit.addEquipment(new Mounted(unit,EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))) , Entity.LOC_NONE,false);
-            }catch (Exception ex){
-                
+        for (; armorCount > 0; armorCount--) {
+            try {
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), Entity.LOC_NONE, false);
+            } catch (Exception ex) {
+
             }
         }
-        
-        for ( ; ISCount > 0; ISCount-- ){
-            try{
-                unit.addEquipment(new Mounted(unit,EquipmentType.get(EquipmentType.getStructureTypeName(unit.getStructureType()))) , Entity.LOC_NONE,false);
-            }catch (Exception ex){
-                
+
+        for (; ISCount > 0; ISCount--) {
+            try {
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getStructureTypeName(unit.getStructureType()))), Entity.LOC_NONE, false);
+            } catch (Exception ex) {
+
             }
         }
-        
+
     }
 
     private void removeArmorMounts() {
 
         removeArmorCrits();
-        
+
         for (int pos = 0; pos < unit.getEquipment().size();) {
             Mounted mount = unit.getEquipment().get(pos);
             if (UnitUtil.isArmorOrStructure(mount.getType())) {
