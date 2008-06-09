@@ -291,7 +291,5 @@ public class EquipmentView extends JPanel implements ActionListener {
 
             }
         }
-
     }
-
 }

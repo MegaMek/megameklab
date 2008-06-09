@@ -9,3 +9,4 @@ V 0.0.0.1
 + Added code to add individual crits/mounts for FF and Endo Steel
 + Added new utility file UnitUtil.java
 + Added code to add TSM crits.
++ fixed bugs in adding and removing TSM crits.
