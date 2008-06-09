@@ -1,7 +1,8 @@
 VERSION HISTORY:
 ----------------
 
-V 0.0.0.1
+V 0.0.0.2
+Release 0.0.0.2
 + Added History File
 + Added popup menu's to DropTargetCriticalList to allow the removal of added 
 	equipment/weapons and set weapons to rear facing. 
