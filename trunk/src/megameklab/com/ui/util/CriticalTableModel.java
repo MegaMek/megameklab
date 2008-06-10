@@ -46,6 +46,12 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int HEAT = 3;
     public final static int EQUIPMENT = 4;
 
+    public final static int EQUIPMENTTABLE = 0;
+    public final static int WEAPONTABLE = 1;
+    public final static int BUILDTABLE = 2;
+    
+    private int tableType = EQUIPMENTTABLE;
+    
     String[] columnNames = { "Name", "Tons", "Crits", };
 
     String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", };
@@ -54,8 +60,9 @@ public class CriticalTableModel extends AbstractTableModel {
         return this.columnNames.length;
     }
 
-    public CriticalTableModel(Mech unit, boolean weapons) {
-        if (weapons) {
+    public CriticalTableModel(Mech unit, int tableType) {
+        this.tableType = tableType;
+        if (tableType == WEAPONTABLE) {
             longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", };
             columnNames = new String[] { "Name", "Tons", "Crits", "Heat", };
         }
@@ -111,7 +118,9 @@ public class CriticalTableModel extends AbstractTableModel {
         case TONNAGE:
             return crit.getTonnage(unit);
         case CRITS:
-            return UnitUtil.getCritsUsed(unit, crit);
+            if ( tableType == BUILDTABLE )
+                return UnitUtil.getCritsUsed(unit, crit);
+            return crit.getCriticals(unit);
         case EQUIPMENT:
             return crit;
         case HEAT:

@@ -42,6 +42,7 @@ import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.UnitUtil;
 
 public class EquipmentView extends JPanel implements ActionListener {
 
@@ -83,7 +84,7 @@ public class EquipmentView extends JPanel implements ActionListener {
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        equipmentList = new CriticalTableModel(unit, false);
+        equipmentList = new CriticalTableModel(unit, CriticalTableModel.EQUIPMENT);
 
         this.equipmentTable.setModel(equipmentList);
         this.equipmentList.initColumnSizes(this.equipmentTable);
@@ -213,10 +214,15 @@ public class EquipmentView extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
-            if (equipmentCombo.getSelectedItem().toString().equals("TSM")) {
+            if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TSM)) {
                 if (!unit.hasTSM()) {
                     createTSMMounts();
-                    equipmentList.addCrit(equipmentTypes.get(equipmentCombo.getSelectedItem().toString()));
+                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.TSM));
+                }
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TARGETINGCOMPUTER)) {
+                if (!unit.hasTargComp()) {
+                    UnitUtil.updateTC(unit);
+                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.TARGETINGCOMPUTER));
                 }
             } else {
                 try {
@@ -278,7 +284,7 @@ public class EquipmentView extends JPanel implements ActionListener {
     private void createTSMMounts() {
         int TSMCount = 0;
 
-        TSMCount = EquipmentType.get("TSM").getCriticals(unit);
+        TSMCount = EquipmentType.get(UnitUtil.TSM).getCriticals(unit);
 
         if (TSMCount < 1) {
             return;
@@ -286,10 +292,11 @@ public class EquipmentView extends JPanel implements ActionListener {
 
         for (; TSMCount > 0; TSMCount--) {
             try {
-                unit.addEquipment(new Mounted(unit, EquipmentType.get("TSM")), Entity.LOC_NONE, false);
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil.TSM)), Entity.LOC_NONE, false);
             } catch (Exception ex) {
 
             }
         }
     }
+    
 }

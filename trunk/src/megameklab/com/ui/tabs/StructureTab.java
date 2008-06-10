@@ -29,6 +29,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -59,7 +60,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
     Mech unit;
     String[] engineTypes = { "I.C.E.", "Standard", "XL", "Light", "XXL", "Compact" };
     JComboBox engineType = new JComboBox(engineTypes);
-    JComboBox engineRating;
+    JComboBox walkMP;
     JComboBox gyroType = new JComboBox(Mech.GYRO_SHORT_STRING);
     JComboBox weightClass;
     JComboBox cockpitType = new JComboBox(Mech.COCKPIT_SHORT_STRING);
@@ -96,13 +97,13 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         JPanel masterPanel = new JPanel(new SpringLayout());
         Dimension maxSize = new Dimension();
 
-        Vector<String> engineRatings = new Vector<String>();
+        Vector<String> walkMPs = new Vector<String>(26, 1);
 
-        for (int pos = 0; pos < 81; pos++) {
-            engineRatings.add(Integer.toString(pos * 5));
+        for (int pos = 1; pos <= 25; pos++) {
+            walkMPs.add(Integer.toString(pos));
         }
 
-        engineRating = new JComboBox(engineRatings.toArray());
+        walkMP = new JComboBox(walkMPs.toArray());
 
         maxSize.setSize(80, 5);
 
@@ -116,8 +117,8 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         masterPanel.add(createLabel("Engine Type:", maxSize));
         masterPanel.add(engineType);
-        masterPanel.add(createLabel("Engine Rating:", maxSize));
-        masterPanel.add(engineRating);
+        masterPanel.add(createLabel("Walk MP:", maxSize));
+        masterPanel.add(walkMP);
 
         masterPanel.add(createLabel("Gyro:", maxSize));
         masterPanel.add(gyroType);
@@ -162,7 +163,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         weightClass.setSelectedIndex((int) (unit.getWeight() / 5) - 2);
         cockpitType.setSelectedIndex(unit.getCockpitType());
         try {
-            //heatSinkNumber.setSelectedIndex(unit.heatSinks() + unit.getEngine().getCountEngineHeatSinks());
+            // heatSinkNumber.setSelectedIndex(unit.heatSinks() + unit.getEngine().getCountEngineHeatSinks());
             heatSinkNumber.setSelectedIndex(unit.heatSinks());
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -196,7 +197,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         } else
             heatSinkType.setSelectedIndex(0);
 
-        engineRating.setSelectedIndex(unit.getEngine().getRating() / 5);
+        walkMP.setSelectedIndex(unit.getWalkMP() - 1);
 
         critView.refresh();
 
@@ -238,12 +239,20 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
             JComboBox combo = (JComboBox) e.getSource();
             removeAllActionListeners();
 
-            if (combo.equals(engineType) || combo.equals(engineRating)) {
-                removeSystemCrits(Mech.SYSTEM_ENGINE);
-                int rating = Integer.parseInt(engineRating.getSelectedItem().toString());
-                unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), 0));
-                unit.addEngineCrits();
-                updateHeatSinks();
+            if (combo.equals(engineType) || combo.equals(walkMP)) {
+                int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                if (rating > 500) {
+                    JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    removeSystemCrits(Mech.SYSTEM_ENGINE);
+                    if (unit.isClan()) {
+                        unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), Engine.CLAN_ENGINE));
+                    } else {
+                        unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), 0));
+                    }
+                    unit.addEngineCrits();
+                    updateHeatSinks();
+                }
             } else if (combo.equals(gyroType)) {
                 unit.setGyroType(combo.getSelectedIndex());
                 removeSystemCrits(Mech.SYSTEM_GYRO);
@@ -286,8 +295,16 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
                     unit.addCockpit();
                 }
             } else if (combo.equals(weightClass)) {
-                unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
-                unit.autoSetInternal();
+                int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                if (rating > 500) {
+                    JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
+                    unit.autoSetInternal();
+                    addAllActionListeners();
+                    engineType.setSelectedIndex(engineType.getSelectedIndex());
+                    removeAllActionListeners();
+                }
             } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
                 updateHeatSinks();
             } else if (combo.equals(techLevel) || combo.equals(techType)) {
@@ -310,6 +327,9 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
                     }
                 }
+                addAllActionListeners();
+                engineType.setSelectedIndex(1);
+                removeAllActionListeners();
             }
             UnitUtil.resetCriticalsAndMounts(unit);
             addAllActionListeners();
@@ -369,7 +389,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         cockpitType.removeActionListener(this);
         heatSinkNumber.removeActionListener(this);
         heatSinkType.removeActionListener(this);
-        engineRating.removeActionListener(this);
+        walkMP.removeActionListener(this);
         techLevel.removeActionListener(this);
         techType.removeActionListener(this);
         era.removeKeyListener(this);
@@ -382,7 +402,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         cockpitType.addActionListener(this);
         heatSinkNumber.addActionListener(this);
         heatSinkType.addActionListener(this);
-        engineRating.addActionListener(this);
+        walkMP.addActionListener(this);
         techLevel.addActionListener(this);
         techType.addActionListener(this);
         era.addKeyListener(this);
@@ -407,8 +427,8 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
-    
-    private void updateHeatSinks(){
+
+    private void updateHeatSinks() {
         removeHeatSinks();
         refresh.refreshEquipment();
         if (heatSinkType.getSelectedIndex() == 1 || heatSinkType.getSelectedIndex() == 3)
