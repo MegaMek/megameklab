@@ -28,6 +28,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -47,6 +48,7 @@ import megamek.common.weapons.NavalLaserWeapon;
 import megamek.common.weapons.NavalPPCWeapon;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.UnitUtil;
 
 public class WeaponView extends JPanel implements ActionListener {
 
@@ -78,6 +80,13 @@ public class WeaponView extends JPanel implements ActionListener {
     private JComboBox ballisticWeaponCombo = new JComboBox();
     private JComboBox ballisticAmmoCombo = new JComboBox();
 
+    private JLabel laserWeaponLabel = new JLabel("Energy Weapons");
+    private JLabel laserAmmoLabel = new JLabel("Energy Ammo");
+    private JLabel missileWeaponLabel = new JLabel("Missile Weapons");
+    private JLabel missileAmmoLabel = new JLabel("Missile Ammo");
+    private JLabel ballisticWeaponLabel = new JLabel("Ballistic Weapons");
+    private JLabel ballisticAmmoLabel = new JLabel("Ballistic Ammo");
+    
     private CriticalTableModel weaponList;
     private Vector<EquipmentType> masterLaserWeaponList = new Vector<EquipmentType>(10, 1);
     private Vector<EquipmentType> masterLaserAmmoList = new Vector<EquipmentType>(10, 1);
@@ -110,7 +119,7 @@ public class WeaponView extends JPanel implements ActionListener {
         leftPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        weaponList = new CriticalTableModel(unit,true);
+        weaponList = new CriticalTableModel(unit,CriticalTableModel.WEAPONTABLE);
 
         this.equipmentTable.setModel(weaponList);
         this.weaponList.initColumnSizes(this.equipmentTable);
@@ -123,18 +132,24 @@ public class WeaponView extends JPanel implements ActionListener {
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
 
+        leftPanel.add(laserWeaponLabel);
         leftPanel.add(laserWeaponCombo);
         leftPanel.add(laserWeaponAddButton);
+        leftPanel.add(laserAmmoLabel);
         leftPanel.add(laserAmmoCombo);
         leftPanel.add(laserAmmoAddButton);
 
+        leftPanel.add(missileWeaponLabel);
         leftPanel.add(missileWeaponCombo);
         leftPanel.add(missileWeaponAddButton);
+        leftPanel.add(missileAmmoLabel);
         leftPanel.add(missileAmmoCombo);
         leftPanel.add(missileAmmoAddButton);
 
+        leftPanel.add(ballisticWeaponLabel);
         leftPanel.add(ballisticWeaponCombo);
         leftPanel.add(ballisticWeaponAddButton);
+        leftPanel.add(ballisticAmmoLabel);
         leftPanel.add(ballisticAmmoCombo);
         leftPanel.add(ballisticAmmoAddButton);
 
@@ -169,11 +184,16 @@ public class WeaponView extends JPanel implements ActionListener {
                 if (weapon.getName().startsWith("MRM") && weapon.getRackSize() < 5) {
                     continue;
                 }
-                if (eq.hasFlag(WeaponType.F_ENERGY)) {
+                
+                if (eq.hasFlag(WeaponType.F_ENERGY) ) {
+                    
+                    if ( weapon.hasFlag(WeaponType.F_PLASMA) && weapon.getAmmoType() == AmmoType.T_NA ){
+                        continue;
+                    }
                     masterLaserWeaponList.add(eq);
-                } else if (eq.hasFlag(WeaponType.F_BALLISTIC)) {
+                } else if (eq.hasFlag(WeaponType.F_BALLISTIC) && weapon.getAmmoType() != AmmoType.T_NA ) {
                     masterBallisticWeaponList.add(eq);
-                } else if (eq.hasFlag(WeaponType.F_MISSILE)) {
+                } else if (eq.hasFlag(WeaponType.F_MISSILE) && weapon.getAmmoType() != AmmoType.T_NA ) {
                     masterMissileWeaponList.add(eq);
                 }
             } else if (eq instanceof AmmoType) {
@@ -397,6 +417,7 @@ public class WeaponView extends JPanel implements ActionListener {
         } else {
             return;
         }
+        UnitUtil.updateTC(unit);
         fireTableRefresh();
 
     }

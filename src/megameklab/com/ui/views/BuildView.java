@@ -55,7 +55,7 @@ public class BuildView extends JPanel implements ActionListener {
         this.unit = unit;
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        equipmentList = new CriticalTableModel(this.unit, false);
+        equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
 
         this.equipmentTable.setModel(equipmentList);
         this.equipmentList.initColumnSizes(this.equipmentTable);
