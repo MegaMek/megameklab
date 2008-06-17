@@ -115,10 +115,10 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(level3, "high_winds", false); //$NON-NLS-1$
         addOption(level3, "team_vision", true); //$NON-NLS-1$
         addOption(level3, "floating_crits", false); //$NON-NLS-1$
-        addOption(level3, "engine_explosions", false); //$NON-NLS-1$
+        addOption(level3, "tacops_engine_explosions", false); //$NON-NLS-1$
         addOption(level3, "pilot_advantages", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_physical_psr", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_round_damage", false); //$NON-NLS-1$
+        addOption(level3, "tacops_physical_psr", false); //$NON-NLS-1$
+        addOption(level3, "tacops_taking_damage", false); //$NON-NLS-1$
         addOption(level3, "maxtech_prone_fire", false); //$NON-NLS-1$
         addOption(level3, "maxtech_leg_damage", false); //$NON-NLS-1$
         addOption(level3, "maxtech_fire", false); //$NON-NLS-1$

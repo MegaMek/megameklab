@@ -153,7 +153,7 @@
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>engine_explosions</optionname>
+      <optionname>tacops_engine_explosions</optionname>
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
@@ -165,11 +165,11 @@
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_physical_psr</optionname>
+      <optionname>tacops_physical_psr</optionname>
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_round_damage</optionname>
+      <optionname>tacops_taking_damage</optionname>
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>

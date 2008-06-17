@@ -55,6 +55,7 @@ import megamek.common.Compute;
 import megamek.common.Coords;
 import megamek.common.CriticalSlot;
 import megamek.common.Dropship;
+import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EntitySelector;
 import megamek.common.EntityWeightClass;
@@ -11760,39 +11761,22 @@ public class Server implements Runnable {
             Entity target, String reason) {
         int mod = 0;
 
-        if (game.getOptions().booleanOption("maxtech_physical_psr")) {
-            int attackerMod = 0;
-            int targetMod = 0;
+        if (game.getOptions().booleanOption("tacops_physical_psr")) {
 
-            switch (attacker.getWeightClass()) {
-                case EntityWeightClass.WEIGHT_LIGHT:
-                    attackerMod = 1;
-                    break;
-                case EntityWeightClass.WEIGHT_MEDIUM:
-                    attackerMod = 2;
-                    break;
-                case EntityWeightClass.WEIGHT_HEAVY:
-                    attackerMod = 3;
-                    break;
-                case EntityWeightClass.WEIGHT_ASSAULT:
-                    attackerMod = 4;
-                    break;
-            }
             switch (target.getWeightClass()) {
                 case EntityWeightClass.WEIGHT_LIGHT:
-                    targetMod = 1;
+                    mod = 1;
                     break;
                 case EntityWeightClass.WEIGHT_MEDIUM:
-                    targetMod = 2;
+                    mod = 0;
                     break;
                 case EntityWeightClass.WEIGHT_HEAVY:
-                    targetMod = 3;
+                    mod = -1;
                     break;
                 case EntityWeightClass.WEIGHT_ASSAULT:
-                    targetMod = 4;
+                    mod = -2;
                     break;
             }
-            mod = attackerMod - targetMod;
         }
         StringBuffer reportStr = new StringBuffer();
         reportStr.append(reason);
@@ -12638,14 +12622,15 @@ public class Server implements Runnable {
             if (entity instanceof Mech) {
                 // if this mech has 20+ damage, add another roll to the list.
                 if (entity.damageThisPhase >= 20) {
-                    if (game.getOptions().booleanOption("maxtech_round_damage")) {
+                    if (game.getOptions().booleanOption("tacops_taking_damage")) {
                         int damMod = entity.damageThisPhase / 20;
                         int weightMod = 0;
                         StringBuffer reportStr = new StringBuffer();
                         reportStr.append(entity.damageThisPhase).append(
                                 " damage +").append(damMod);
 
-                        switch (entity.getWeightClass()) {
+                        if (game.getOptions().booleanOption("tacops_physical_psr")) {
+                                switch (entity.getWeightClass()) {
                             case EntityWeightClass.WEIGHT_LIGHT:
                                 weightMod = 1;
                                 break;
@@ -12661,6 +12646,7 @@ public class Server implements Runnable {
                             case EntityWeightClass.WEIGHT_ASSAULT:
                                 weightMod = -2;
                                 break;
+                            }
                         }
                         if (weightMod > 0)
                             reportStr.append(", weight class modifier +")
@@ -15193,21 +15179,37 @@ public class Server implements Runnable {
     private boolean checkEngineExplosion(Entity en, Vector<Report> vDesc,
             int hits) {
         if (!(en instanceof Mech) && !(en instanceof QuadMech)
-                && !(en instanceof BipedMech)) {
+                && !(en instanceof BipedMech)
+                && !(en instanceof Aero)
+                && !(en instanceof Tank)) {
             return false;
         }
         if (en.isDestroyed())
             return false;
-        Mech mech = (Mech) en;
-
+        int explosionBTH = 10;
+        int hitsPerRound = 4;
+        Engine engine = null;
+        
+        if ( en instanceof Mech) {
+            engine = ((Mech)en).getEngine();
+        }else if ( en instanceof Tank ) {
+            explosionBTH = 12;
+            hitsPerRound = 1;
+            engine = ((Tank)en).getEngine();
+        }else {
+            engine = ((Aero)en).getEngine();
+            explosionBTH = 12;
+            hitsPerRound = 1;
+        }
+            
+        
         if (en.rolledForEngineExplosion)
             return false;
         // ICE can always explode and roll every time hit
-        if (mech.getEngine().isFusion()
-                && (!game.getOptions().booleanOption("engine_explosions") || en.engineHitsThisRound < 2))
+        if (engine.isFusion()
+                && (!game.getOptions().booleanOption("tacops_engine_explosions") || en.engineHitsThisRound < hitsPerRound))
             return false;
-        int explosionBTH = 12;
-        if (!mech.getEngine().isFusion()) {
+        if (!engine.isFusion()) {
             switch (hits) {
                 case 0:
                     return false;
@@ -15242,7 +15244,7 @@ public class Server implements Runnable {
 
         if (!didExplode) {
             // whew!
-            if (mech.getEngine().isFusion())
+            if (engine.isFusion())
                 en.rolledForEngineExplosion = true;
             // fusion engines only roll 1/phase but ICE roll every time damaged
             r = new Report(6160);
@@ -15283,7 +15285,7 @@ public class Server implements Runnable {
             }
 
             // ICE explosions don't hurt anyone else, but fusion do
-            if (mech.getEngine().isFusion()) {
+            if (engine.isFusion()) {
                 int engineRating = en.getEngine().getRating();
                 doFusionEngineExplosion(engineRating, en.getPosition(), vDesc,
                         null);
@@ -16255,6 +16257,11 @@ public class Server implements Runnable {
                     r.subject = t.getId();
                     vDesc.add(r);
                     t.engineHit();
+                    boolean engineExploded = checkEngineExplosion(en, vDesc, 1);
+                    if ( engineExploded ) {
+                        vDesc.addAll(destroyEntity(en, "engine destruction",true,true));
+                    }
+                    
                     if (t instanceof VTOL) {
                         PilotingRollData psr = t.getBasePilotingRoll();
                         IHex hex = game.getBoard().getHex(t.getPosition());
@@ -16636,7 +16643,8 @@ public class Server implements Runnable {
                 r.subject = a.getId();
                 r.newlines = 0;
                 vDesc.add(r);
-                if((a.getEngineHits()+1) < a.getMaxEngineHits()) {
+                boolean engineExploded = checkEngineExplosion(en, vDesc, 1);
+                if((a.getEngineHits()+1) < a.getMaxEngineHits() && !engineExploded) {
                     a.setEngineHits(a.getEngineHits()+1);
                     if(a instanceof SmallCraft || a instanceof Jumpship) {
                         a.setOriginalWalkMP(Math.max(0,a.getOriginalWalkMP()-1));
