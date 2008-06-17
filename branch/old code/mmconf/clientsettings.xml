@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<MegaMekSettings>
+	<store name="ClientSettings">
+	</store>
+	<store name="megamek.client.ui.AWT.GUIPreferences">
+	</store>
+</MegaMekSettings>
