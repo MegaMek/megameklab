@@ -5428,12 +5428,18 @@ public class Server implements Runnable {
                 if (roll < psr.getValue()) {
                     if (entity instanceof Mech) {
                         if (curHex.getElevation() < game.getBoard().getHex(
-                                lastPos).getElevation())
+                                lastPos).getElevation()) {
+                            entity.setElevation(Integer.MIN_VALUE);
                             addReport(doEntityFallsInto(entity, lastPos, curPos, entity
                                     .getBasePilotingRoll(), false));
-                        else
+                        }
+                        else {
+                            //Tac Ops p.22
+                            //the change in levels is not taken into consideration for determining the levels fallen.
+                            entity.setElevation(Integer.MIN_VALUE);
                             addReport(doEntityFallsInto(entity, curPos, lastPos, entity
                                     .getBasePilotingRoll(), false));
+                        }
                     } else if (entity instanceof Tank) {
                         curPos = lastPos;
                     }

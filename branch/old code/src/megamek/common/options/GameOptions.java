@@ -145,7 +145,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(level3, "maxtech_new_physicals", false); //$NON-NLS-1$
         addOption(level3, "maxtech_hotload", false); //$NON-NLS-1$
         addOption(level3, "maxtech_rapid_ac", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_walk_backwards", false); //$NON-NLS-1$
+        addOption(level3, "tacops_walk_backwards", false); //$NON-NLS-1$
         addOption(level3, "manei_domini", false); //$NON-NLS-1$
         addOption(level3, "maxtech_angel_ecm", false); //$NON-NLS-1$
 
