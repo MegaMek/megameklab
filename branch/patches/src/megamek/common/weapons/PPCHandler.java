@@ -29,6 +29,7 @@ import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.Mech;
 import megamek.common.Mounted;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.Tank;
 import megamek.common.TargetRoll;
@@ -84,19 +85,22 @@ public class PPCHandler extends EnergyWeaponHandler {
                 && (ae.getSwarmTargetId() == target.getTargetId())) {
             toReturn *= ((BattleArmor) ae).getShootingStrength();
         }
-        // Check for Altered Damage from Energy Weapons (MTR, pg.22)
+        // Check for Altered Damage from Energy Weapons (TacOps, pg.83)
         int nRange = ae.getPosition().distance(target.getPosition());
-        if (game.getOptions().booleanOption("maxtech_altdmg")) {
+        if (game.getOptions().booleanOption("tacops_altdmg")) {
             if (nRange <= 1) {
                 toReturn++;
             } else if (nRange <= wtype.getMediumRange()) {
                 // Do Nothing for Short and Medium Range
             } else if (nRange <= wtype.getLongRange()) {
                 toReturn--;
-            } else if (nRange <= wtype.getExtremeRange()) {
-                toReturn = (int) Math.floor(toReturn / 2.0);
-            }
+            } 
         }
+        
+        if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
+            toReturn -= 1;
+        }
+
         if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
@@ -118,7 +122,7 @@ public class PPCHandler extends EnergyWeaponHandler {
      */
     protected boolean doChecks(Vector<Report> vPhaseReport) {
         // Resolve roll for disengaged field inhibitors on PPCs, if needed
-        if (game.getOptions().booleanOption("maxtech_ppc_inhibitors")
+        if (game.getOptions().booleanOption("tacops_ppc_inhibitors")
                 && wtype.hasModes()
                 && weapon.curMode().equals("Field Inhibitor OFF")) {
             int rollTarget = 0;

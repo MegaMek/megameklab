@@ -773,6 +773,7 @@ public class FiringDisplay extends StatusBarPhaseDisplay implements
         // and add it into the game, temporarily
         client.game.addAction(saa);
         clientgui.bv.addAttack(saa);
+        clientgui.bv.repaint(100);
         clientgui.minimap.drawMap();
 
         // refresh weapon panel, as bth will have changed
@@ -873,6 +874,7 @@ public class FiringDisplay extends StatusBarPhaseDisplay implements
         // and add it into the game, temporarily
         client.game.addAction(waa);
         clientgui.bv.addAttack(waa);
+        clientgui.bv.repaint(100);
         clientgui.minimap.drawMap();
 
         // set the weapon as used
@@ -997,7 +999,8 @@ public class FiringDisplay extends StatusBarPhaseDisplay implements
     private void removeTempAttacks() {
         // remove temporary attacks from game & board
         client.game.removeActionsFor(cen);
-        clientgui.bv.removeAttacksFor(ce());
+        clientgui.bv.removeAttacksFor(cen);
+        clientgui.bv.repaint(100);
     }
 
     /**
@@ -1012,6 +1015,7 @@ public class FiringDisplay extends StatusBarPhaseDisplay implements
             clientgui.mechD.wPan.displayMech(ce());
             client.game.removeAction(o);
             clientgui.bv.refreshAttacks();
+            clientgui.bv.repaint(100);
             clientgui.minimap.drawMap();
         }
     }

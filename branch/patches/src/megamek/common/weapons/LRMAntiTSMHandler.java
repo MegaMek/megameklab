@@ -20,6 +20,7 @@ import megamek.common.Compute;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.Mech;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.ToHitData;
 import megamek.common.WeaponType;
@@ -68,19 +69,7 @@ public class LRMAntiTSMHandler extends LRMHandler {
         int missilesHit;
         int nMissilesModifier = 0;
         boolean bWeather = false;
-        boolean maxtechmissiles = game.getOptions().booleanOption(
-                "maxtech_mslhitpen");
-        if (maxtechmissiles) {
-            if (nRange <= 1) {
-                nMissilesModifier += 1;
-            } else if (nRange <= wtype.getShortRange()) {
-                nMissilesModifier += 0;
-            } else if (nRange <= wtype.getMediumRange()) {
-                nMissilesModifier -= 1;
-            } else {
-                nMissilesModifier -= 2;
-            }
-        }
+
         boolean bMekStealthActive = false;
         if (ae instanceof Mech) {
             bMekStealthActive = ae.isStealthActive();
@@ -107,6 +96,9 @@ public class LRMAntiTSMHandler extends LRMHandler {
             nMissilesModifier -= 4;
             bWeather = true;
         }
+        if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
+            nMissilesModifier -= 2;
+        }
 
         // AMS mod
         nMissilesModifier += getAMSHitsMod(vPhaseReport);
@@ -116,7 +108,7 @@ public class LRMAntiTSMHandler extends LRMHandler {
             // anti tsm hit with half the normal number, round up
             missilesHit = Compute
                     .missilesHit(wtype.getRackSize(), nMissilesModifier,
-                            bWeather || bGlancing || maxtechmissiles);
+                            bWeather || bGlancing );
             missilesHit = (int) Math.ceil((double) missilesHit / 2);
         }
         r = new Report(3325);

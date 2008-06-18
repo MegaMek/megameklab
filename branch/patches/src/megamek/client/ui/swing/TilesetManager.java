@@ -36,10 +36,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
 import megamek.client.ui.swing.util.ImageFileFactory;
 import megamek.client.ui.swing.util.PlayerColors;
 import megamek.client.ui.swing.util.RotateFilter;
-import megamek.client.ui.ITilesetManager;
 import megamek.common.Entity;
 import megamek.common.IBoard;
 import megamek.common.IGame;
@@ -60,7 +62,7 @@ import megamek.common.util.DirectoryItems;
  * 
  * @author Ben
  */
-public class TilesetManager implements IPreferenceChangeListener, ITilesetManager {
+public class TilesetManager implements IPreferenceChangeListener {
     // component to load images to
     private Component comp;
 
@@ -366,7 +368,7 @@ public class TilesetManager implements IPreferenceChangeListener, ITilesetManage
     }
 
     // Loads a preview image of the unit into the BufferedPanel.
-    public Image loadPreviewImage(Entity entity, Image camo, int tint, Component bp) {
+    public void loadPreviewImage(Entity entity, Image camo, int tint, JLabel bp) {
         Image base = mechTileset.imageFor(entity, comp);
         EntityImage entityImage = new EntityImage(base, tint, camo, bp);
         Image preview = entityImage.loadPreviewImage();
@@ -379,8 +381,7 @@ public class TilesetManager implements IPreferenceChangeListener, ITilesetManage
             // should never come here
 
         }
-        
-        return preview;
+        bp.setIcon(new ImageIcon(preview));
     }
 
     /**

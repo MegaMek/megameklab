@@ -21,6 +21,7 @@ import java.util.Vector;
 
 import megamek.common.Building;
 import megamek.common.IGame;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
@@ -57,6 +58,10 @@ public class ACFlechetteHandler extends AmmoWeaponHandler {
 
         if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
+        }
+
+        if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
+            toReturn = (int) Math.floor((double) toReturn * .75);
         }
 
         return (int) Math.ceil(toReturn);

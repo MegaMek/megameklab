@@ -700,7 +700,7 @@ public class GUIPreferences extends PreferenceStoreProxy {
         return b.toString();
     }
 
-    public Color getColor(String name) {
+    protected Color getColor(String name) {
         String sresult = store.getString(name);
         if (sresult != null) {
             if (!p.parse(sresult)) {

@@ -17,10 +17,8 @@ package megamek.client.ui.AWT;
 
 import java.awt.Adjustable;
 import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -29,10 +27,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
-import java.awt.Panel;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.PopupMenu;
 import java.awt.Rectangle;
 import java.awt.Scrollbar;
 import java.awt.SystemColor;
@@ -72,7 +68,6 @@ import megamek.client.ui.AWT.util.ImprovedAveragingScaleFilter;
 import megamek.client.ui.AWT.util.KeyAlphaFilter;
 import megamek.client.ui.AWT.util.PlayerColors;
 import megamek.client.ui.AWT.util.StraightArrowPolygon;
-import megamek.client.ui.IDisplayable;
 import megamek.common.Aero;
 import megamek.common.Building;
 import megamek.common.Compute;
@@ -139,11 +134,6 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
 
     private static final int TRANSPARENT = 0xFFFF00FF;
 
-    private static final int BOARD_HEX_CLICK = 1;
-    private static final int BOARD_HEX_DOUBLECLICK = 2;
-    private static final int BOARD_HEX_DRAG = 3;
-    private static final int BOARD_HEX_POPUP = 4;
-
     // the dimensions of megamek's hex images
     private static final int HEX_W = 84;
     private static final int HEX_H = 72;
@@ -176,6 +166,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
     private Font font_minefield = FONT_12;
 
     IGame game;
+    private Frame frame;
 
     private Point mousePos = new Point();
     Rectangle view = new Rectangle();
@@ -185,7 +176,6 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
     // scrolly stuff:
     private Scrollbar vScrollbar = null;
     private Scrollbar hScrollbar = null;
-    private Panel scroller;
     private boolean isScrolling = false;
     private Point scroll = new Point();
     private boolean initCtlScroll;
@@ -253,7 +243,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
     private ImageCache<Image, Image> scaledImageCache = new ImageCache<Image, Image>();
 
     // Displayables (Chat box, etc.)
-    ArrayList<IDisplayable> displayables = new ArrayList<IDisplayable>();
+    ArrayList<Displayable> displayables = new ArrayList<Displayable>();
 
     // Move units step by step
     private ArrayList<MovingUnit> movingUnits = new ArrayList<MovingUnit>();
@@ -298,8 +288,9 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
     /**
      * Construct a new board view for the specified game
      */
-    public BoardView1(IGame game) throws java.io.IOException {
+    public BoardView1(IGame game, Frame frame) throws java.io.IOException {
         this.game = game;
+        this.frame = frame;
 
         tileManager = new TilesetManager(this);
 
@@ -330,7 +321,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
         updateBoardSize();
 
         // tooltip
-        tipWindow = new Window(new Frame());
+        tipWindow = new Window(frame);
 
         hex_size = new Dimension((int) (HEX_W * scale), (int) (HEX_H * scale));
 
@@ -414,7 +405,6 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                 case BoardViewEvent.BOARD_HEX_CLICKED:
                 case BoardViewEvent.BOARD_HEX_DOUBLECLICKED:
                 case BoardViewEvent.BOARD_HEX_DRAGGED:
-                case BoardViewEvent.BOARD_HEX_POPUP:
                     l.hexMoused(event);
                     break;
                 case BoardViewEvent.BOARD_HEX_CURSOR:
@@ -456,12 +446,27 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
         }
     }
 
-    public void addDisplayable(IDisplayable disp) {
+    public void addDisplayable(Displayable disp) {
         displayables.add(disp);
     }
 
     public void removeDisplayable(Displayable disp) {
         displayables.remove(disp);
+    }
+
+    /**
+     * Specify the scrollbars that control this view's positioning.
+     * 
+     * @param vertical - the vertical <code>Scrollbar</code>
+     * @param horizontal - the horizontal <code>Scrollbar</code>
+     */
+    public void setScrollbars(Scrollbar vertical, Scrollbar horizontal) {
+        this.vScrollbar = vertical;
+        this.hScrollbar = horizontal;
+
+        // When the scroll bars are adjusted, update our offset.
+        this.vScrollbar.addAdjustmentListener(this);
+        this.hScrollbar.addAdjustmentListener(this);
     }
 
     /**
@@ -620,7 +625,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
 
         // draw all the "displayables"
         for (int i = 0; i < displayables.size(); i++) {
-            IDisplayable disp = displayables.get(i);
+            Displayable disp = displayables.get(i);
             disp.draw(backGraph, backSize);
         }
 
@@ -1468,12 +1473,12 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
 
             // adjust horizontal location for the tipWindow if it goes off the
             // frame
-            if (scroller.getLocationOnScreen().x + scroller.getSize().width < tipLoc.x
+            if (frame.getLocation().x + frame.getSize().width < tipLoc.x
                     + tipWindow.getSize().width + 10) {
-                if (scroller.getSize().width > tipWindow.getSize().width) {
+                if (frame.getSize().width > tipWindow.getSize().width) {
                     // bound it by the right edge of the frame
                     tipLoc.x -= tipLoc.x + tipWindow.getSize().width + 10
-                            - scroller.getSize().width - scroller.getLocationOnScreen().x;
+                            - frame.getSize().width - frame.getLocation().x;
                 } else {
                     // too big to fit, left justify to the frame (roughly).
                     // how do I extract the first term of HEX_SIZE to use
@@ -1487,7 +1492,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
 
             tipWindow.setVisible(true);
         } catch (Exception e) {
-            tipWindow = new Window(null);
+            tipWindow = new Window(frame);
         }
     }
 
@@ -2046,7 +2051,6 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
             }
             previousStep = step;
         }
-        repaint(100);
     }
 
     /**
@@ -2075,7 +2079,6 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
      */
     public void markDeploymentHexesFor(Player p) {
         m_plDeployer = p;
-        repaint(100);
     }
 
     /**
@@ -2182,19 +2185,16 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
         } else {
             attackSprites.add(new AttackSprite(aa));
         }
-        repaint(100);
     }
 
     /** Removes all attack sprites from a certain entity */
-    public synchronized void removeAttacksFor(Entity e) {
-        int entityId = e.getId();
+    public synchronized void removeAttacksFor(int entityId) {
         for (Iterator<AttackSprite> i = attackSprites.iterator(); i.hasNext();) {
             AttackSprite sprite = i.next();
             if (sprite.getEntityId() == entityId) {
                 i.remove();
             }
         }
-        repaint(100);
     }
 
     /**
@@ -2216,7 +2216,6 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                 addAttack(ea);
             }
         }
-        repaint(100);
     }
     
     public void refreshMoveVectors() {
@@ -2358,7 +2357,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                             .getString("BoardView1.AttackerPartialCover")); //$NON-NLS-1$
                 }
             }
-            AlertDialog alert = new AlertDialog(null, Messages
+            AlertDialog alert = new AlertDialog(frame, Messages
                     .getString("BoardView1.LOSTitle"), //$NON-NLS-1$
                     message.toString(), false);
             alert.setVisible(true);
@@ -2639,12 +2638,6 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                 ctlKeyHeld = true;
                 initCtlScroll = true;
                 break;
-            case KeyEvent.VK_PAGE_DOWN:
-                zoomIn();
-                break;
-            case KeyEvent.VK_PAGE_UP:
-                zoomOut();
-                break;
         }
 
         if (isTipShowing()) {
@@ -2677,17 +2670,11 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
         oldMousePosition = point;
 
         isTipPossible = false;
-
         for (int i = 0; i < displayables.size(); i++) {
-            IDisplayable disp = displayables.get(i);
+            Displayable disp = displayables.get(i);
             if ((backSize != null) && (disp.isHit(point, backSize))) {
                 return;
             }
-        }
-
-        if (me.isPopupTrigger()) {
-            mouseAction(getCoordsAt(point), BOARD_HEX_POPUP, me.getModifiers());
-            return;
         }
 
         // Disable scrolling when ctrl or alt is held down, since this
@@ -2734,17 +2721,13 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
         oldMousePosition = mousePos;
 
         for (int i = 0; i < displayables.size(); i++) {
-            IDisplayable disp = displayables.get(i);
+            Displayable disp = displayables.get(i);
             if (disp.isReleased()) {
                 return;
             }
         }
         isScrolling = false;
 
-        if (me.isPopupTrigger() && me.getPoint() != null) {
-            mouseAction(getCoordsAt(me.getPoint()), BOARD_HEX_POPUP, me.getModifiers());
-            return;
-        }
         // Unless the user has auto-scroll on and is using the left
         // mouse button, no click action should be triggered if the map
         // is being scrolled.
@@ -2769,9 +2752,6 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
     }
 
     public void mouseClicked(MouseEvent me) {
-        if (me.isPopupTrigger() && me.getPoint() != null) {
-            mouseAction(getCoordsAt(me.getPoint()), BOARD_HEX_POPUP, me.getModifiers());
-        }
     }
 
     //
@@ -2786,7 +2766,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
         }
 
         for (int i = 0; i < displayables.size(); i++) {
-            IDisplayable disp = displayables.get(i);
+            Displayable disp = displayables.get(i);
             if (disp.isDragged(point, backSize)) {
                 repaint();
                 return;
@@ -2839,7 +2819,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
         }
 
         for (int i = 0; i < displayables.size(); i++) {
-            IDisplayable disp = displayables.get(i);
+            Displayable disp = displayables.get(i);
             if (disp.isBeingDragged()) {
                 isTipPossible = false;
                 return;
@@ -5249,9 +5229,6 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                     processBoardViewEvent(new BoardViewEvent(this, c, null,
                             BoardViewEvent.BOARD_HEX_DRAGGED, modifiers));
                     break;
-                case BOARD_HEX_POPUP :
-                    processBoardViewEvent(new BoardViewEvent(this, c, null, BoardViewEvent.BOARD_HEX_POPUP, modifiers));
-                    break;
             }
         }
     }
@@ -5420,7 +5397,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
             if (isShowing()) {
                 boolean redraw = false;
                 for (int i = 0; i < displayables.size(); i++) {
-                    IDisplayable disp = displayables.get(i);
+                    Displayable disp = displayables.get(i);
                     if (!disp.isSliding()) {
                         disp.setIdleTime(currentTime - lastTime, true);
                     } else {
@@ -5543,7 +5520,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                 names[loop] = entities.elementAt(loop).getDisplayName();
             }
             SingleChoiceDialog choiceDialog = new SingleChoiceDialog(
-                    null,
+                    this.frame,
                     Messages.getString("BoardView1.ChooseEntityDialog.title"), //$NON-NLS-1$
                     Messages
                             .getString(
@@ -5558,47 +5535,4 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
         // Return the chosen unit.
         return choice;
     }
-
-    public Component getComponent() {
-        // Scrollbars are broken for "Brandon Drew" <brandx0@hotmail.com>
-        if (System.getProperty
-                ("megamek.client.clientgui.hidescrollbars", "false").equals //$NON-NLS-1$ //$NON-NLS-2$
-                ("true")) //$NON-NLS-1$
-            return this;
-        if (scroller != null) return scroller;
-
-        // Place the board viewer in a set of scrollbars.
-        scroller = new Panel();
-        scroller.setLayout(new BorderLayout());
-        vScrollbar = new Scrollbar(Scrollbar.VERTICAL);
-        hScrollbar = new Scrollbar(Scrollbar.HORIZONTAL);
-        scroller.add(this, BorderLayout.CENTER);
-
-        // Assign the scrollbars to the board viewer.
-        scroller.add(vScrollbar, BorderLayout.EAST);
-        scroller.add(hScrollbar, BorderLayout.SOUTH);
-
-        // When the scroll bars are adjusted, update our offset.
-        vScrollbar.addAdjustmentListener (this);
-        hScrollbar.addAdjustmentListener (this);
-
-        return scroller;
-    }
-
-    public void refreshDisplayables() {
-        repaint();
-    }
-
-    public void showPopup(PopupMenu popup, Coords c) {
-        Point p = getHexLocation(c);
-        p.x += (int)(HEX_WC*scale)-view.x;
-        p.y += (int)(HEX_H*scale/2)-view.y;
-        if (popup.getParent() == null) add(popup);
-        popup.show(this, p.x, p.y);
-    }
-
-    public void refreshMinefields() {
-        repaint();
-    }
-
 }

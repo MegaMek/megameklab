@@ -19,6 +19,7 @@ import megamek.common.BattleArmor;
 import megamek.common.Compute;
 import megamek.common.IGame;
 import megamek.common.Infantry;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.ToHitData;
 import megamek.common.WeaponType;
@@ -67,21 +68,23 @@ public class SRMAntiTSMHandler extends SRMHandler {
         int missilesHit;
         int nMissilesModifier = nSalvoBonus;
         boolean bWeather = false;
-        boolean maxtechmissiles = game.getOptions().booleanOption(
-                "maxtech_mslhitpen");
-        if (maxtechmissiles) {
+        boolean tacopscluster = game.getOptions().booleanOption(
+                "tacops_clusterhitpen");
+        if (tacopscluster) {
             if (nRange <= 1) {
                 nMissilesModifier += 1;
-            } else if (nRange <= wtype.getShortRange()) {
-                nMissilesModifier += 0;
             } else if (nRange <= wtype.getMediumRange()) {
-                nMissilesModifier -= 1;
+                nMissilesModifier += 0;
             } else {
-                nMissilesModifier -= 2;
-            }
+                nMissilesModifier -= 1;
+            } 
         }
+        
         if (bGlancing) {
             nMissilesModifier -= 4;
+        }
+        if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
+            nMissilesModifier -= 2;
         }
 
         // weather checks
@@ -111,7 +114,7 @@ public class SRMAntiTSMHandler extends SRMHandler {
             // anti tsm hit with half the normal number, round up
             missilesHit = Compute
                     .missilesHit(wtype.getRackSize(), nMissilesModifier,
-                            bWeather || bGlancing || maxtechmissiles);
+                            bWeather || bGlancing || tacopscluster);
             missilesHit = (int) Math.ceil((double) missilesHit / 2);
         }
         r = new Report(3325);

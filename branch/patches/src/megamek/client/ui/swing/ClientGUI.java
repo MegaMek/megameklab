@@ -17,7 +17,6 @@ import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -26,6 +25,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.MenuItem;
+import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
@@ -33,6 +33,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -46,7 +48,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -55,14 +56,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 
 import megamek.client.Client;
 import megamek.client.bot.TestBot;
 import megamek.client.event.BoardViewListener;
-import megamek.client.event.BoardViewEvent;
-import megamek.client.ui.swing.CustomFighterSquadronDialog;
 import megamek.client.ui.swing.util.PlayerColors;
 import megamek.common.BuildingTarget;
 import megamek.common.Coords;
@@ -89,7 +88,7 @@ import megamek.common.event.GameSettingsChangeEvent;
 import megamek.common.util.Distractable;
 import megamek.common.util.StringUtil;
 
-public class ClientGUI extends JPanel implements WindowListener, BoardViewListener,
+public class ClientGUI extends JPanel implements MouseListener, WindowListener,
         ActionListener, KeyListener {
     /**
      * 
@@ -112,8 +111,8 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
     private String helpFileName = "readme.txt"; //$NON-NLS-1$
     // keep me
     ChatterBox cb;
-    public IBoardView bv;
-    private Component bvc;
+    public BoardView1 bv;
+    private JScrollPane scroller;
     public JDialog mechW;
     public MechDisplay mechD;
     public JDialog minimapW;
@@ -180,10 +179,6 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
      * Current Selected entity
      */
     private int selectedEntityNum = Entity.NONE;
-
-    static {
-        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
-    }
 
     /**
      * Construct a client which will display itself in a new frame. It will not
@@ -310,22 +305,19 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
     public void initialize() {
         menuBar = new CommonMenuBar(getClient());
         initializeFrame();
-
         try {
             client.game.addGameListener(gameListener);
             // Create the board viewer.
-            Class c = getClass().getClassLoader().loadClass(System.getProperty("megamek.client.ui.AWT.boardView", "megamek.client.ui.AWT.BoardView1"));
-            bv = (IBoardView)c.getConstructor(IGame.class).newInstance(client.game);
-            bvc = bv.getComponent();
-            bv.addBoardViewListener(this);
+            bv = new BoardView1(client.game);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            // Place the board viewer in a set of scrollbars.
+            scroller = new JScrollPane(bv);
+            bv.setScrollPane(scroller);
+        } catch (IOException e) {
             doAlertDialog(
                     Messages.getString("ClientGUI.FatalError.title"), Messages.getString("ClientGUI.FatalError.message") + e); //$NON-NLS-1$ //$NON-NLS-2$
             die();
         }
-
         layoutFrame();
         frame.setVisible(true);
         menuBar.addActionListener(this);
@@ -343,7 +335,9 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
         }
         uo = new UnitOverview(this);
         bv.addDisplayable(uo);
+        bv.addMouseListener(this);
         bv.addKeyListener(this);
+        bv.add(popup);
         Dimension screenSize = frame.getToolkit().getScreenSize();
         int x;
         int y;
@@ -773,7 +767,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "SelectArtyAutoHitHexDisplay"; //$NON-NLS-1$
                 if (!mainNames.containsValue(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -782,7 +776,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "DeployMinefieldDisplay"; //$NON-NLS-1$
                 if (!mainNames.containsValue(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -791,7 +785,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "DeploymentDisplay"; //$NON-NLS-1$
                 if (!mainNames.containsValue(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -801,7 +795,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "TargetingPhaseDisplay"; //$NON-NLS-1$
                 if (!mainNames.containsValue(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -810,7 +804,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "MovementDisplay"; //$NON-NLS-1$
                 if (!mainNames.containsValue(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -820,7 +814,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "OffboardDisplay"; //$NON-NLS-1$
                 if (!mainNames.containsValue(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -829,7 +823,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "FiringDisplay"; //$NON-NLS-1$
                 if (!mainNames.containsValue(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -838,7 +832,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "PhysicalDisplay"; //$NON-NLS-1$
                 if (!mainNames.containsValue(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -887,11 +881,10 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
         add(comp);
     }
 
-    protected void showBoardPopup(Coords c) {
-        fillPopup(c);
-
+    private void showBoardPopup(Point point) {
+        fillPopup(bv.getCoordsAt(point));
         if (popup.getItemCount() > 0) {
-            bv.showPopup(popup, c);
+            popup.show(bv, point.x, point.y);
         }
     }
 
@@ -930,7 +923,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
 
     private void toggleUnitOverview() {
         uo.setVisible(!uo.isVisible());
-        bv.refreshDisplayables();
+        bv.repaint();
     }
 
     /**
@@ -1129,6 +1122,27 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
         ConfirmDialog confirm = new ConfirmDialog(frame, title, question, true);
         confirm.setVisible(true);
         return confirm;
+    }
+
+    public void mouseClicked(MouseEvent mouseEvent) {
+    }
+
+    public void mouseEntered(MouseEvent mouseEvent) {
+    }
+
+    public void mouseExited(MouseEvent mouseEvent) {
+    }
+
+    public void mousePressed(MouseEvent mouseEvent) {
+        if (mouseEvent.isPopupTrigger()) {
+            showBoardPopup(mouseEvent.getPoint());
+        }
+    }
+
+    public void mouseReleased(MouseEvent mouseEvent) {
+        if (mouseEvent.isPopupTrigger()) {
+            showBoardPopup(mouseEvent.getPoint());
+        }
     }
 
     /**
@@ -1400,7 +1414,7 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
     public void loadPreviewImage(JLabel bp, Entity entity, Player player) {
         Image camo = bv.getTilesetManager().getPlayerCamo(player);
         int tint = PlayerColors.getColorRGB(player.getColorIndex());
-        bp.setIcon(new ImageIcon(bv.getTilesetManager().loadPreviewImage(entity, camo, tint, bp)));
+        bv.getTilesetManager().loadPreviewImage(entity, camo, tint, bp);
     }
 
     /**
@@ -1604,16 +1618,4 @@ public class ClientGUI extends JPanel implements WindowListener, BoardViewListen
     public RandomSkillDialog getRandomSkillDialog() {
         return randomSkillDialog;
     }
-    public void hexMoused(BoardViewEvent b) {
-        if (b.getType() == BoardViewEvent.BOARD_HEX_POPUP) showBoardPopup(b.getCoords());
-    }
-
-    public void hexCursor(BoardViewEvent b) {}
-    public void boardHexHighlighted(BoardViewEvent b) {}
-    public void hexSelected(BoardViewEvent b) {}
-    public void firstLOSHex(BoardViewEvent b) {}
-    public void secondLOSHex(BoardViewEvent b, Coords c) {}
-    public void finishedMovingUnits(BoardViewEvent b) {}
-    public void unitSelected(BoardViewEvent b) {}
-
 }

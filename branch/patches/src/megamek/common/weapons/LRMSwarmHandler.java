@@ -22,6 +22,7 @@ import megamek.common.Entity;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.Mounted;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.Targetable;
 import megamek.common.ToHitData;
@@ -337,21 +338,12 @@ public class LRMSwarmHandler extends LRMHandler {
         int missilesHit;
         int nMissilesModifier = 0;
         boolean bWeather = false;
-        boolean maxtechmissiles = game.getOptions().booleanOption(
-                "maxtech_mslhitpen");
-        if (maxtechmissiles) {
-            if (nRange <= 1) {
-                nMissilesModifier += 1;
-            } else if (nRange <= wtype.getShortRange()) {
-                nMissilesModifier += 0;
-            } else if (nRange <= wtype.getMediumRange()) {
-                nMissilesModifier -= 1;
-            } else {
-                nMissilesModifier -= 2;
-            }
-        }
+
         if (bGlancing) {
             nMissilesModifier -= 4;
+        }
+        if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
+            nMissilesModifier -= 2;
         }
 
         // weather checks
@@ -387,7 +379,7 @@ public class LRMSwarmHandler extends LRMHandler {
                 else if (swarmMissilesLeft > 15 && swarmMissilesLeft <= 20)
                     swarmsForHitTable = 20;
                 missilesHit = Compute.missilesHit(swarmsForHitTable,
-                        nMissilesModifier, maxtechmissiles | bGlancing);
+                        nMissilesModifier, bGlancing);
                 if (missilesHit > swarmMissilesLeft) {
                     missilesHit = swarmMissilesLeft;
                 }
@@ -395,7 +387,7 @@ public class LRMSwarmHandler extends LRMHandler {
         } else {
             missilesHit = allShotsHit() ? wtype.getRackSize() : Compute
                     .missilesHit(wtype.getRackSize(), nMissilesModifier,
-                            bWeather || bGlancing || maxtechmissiles);
+                            bWeather || bGlancing);
             swarmMissilesLeft = wtype.getRackSize();
         }
         swarmMissilesNowLeft = swarmMissilesLeft - missilesHit;

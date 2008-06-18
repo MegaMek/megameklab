@@ -35,6 +35,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Panel;
+import java.awt.Scrollbar;
 import java.awt.SystemColor;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
@@ -147,7 +148,7 @@ public class BoardEditor extends Container implements ItemListener,
      */
     public BoardEditor() {
         try {
-            bv = new BoardView1(game);
+            bv = new BoardView1(game, frame);
         } catch (final IOException e) {
             new AlertDialog(
                     frame,
@@ -209,7 +210,18 @@ public class BoardEditor extends Container implements ItemListener,
         frame.setTitle(Messages.getString("BoardEditor.title")); //$NON-NLS-1$
         frame.setLayout(new BorderLayout());
 
-        frame.add(bv.getComponent(), BorderLayout.CENTER);
+        // Create a scroll bars to surround the board view.
+        final Panel scrollPane = new Panel();
+        scrollPane.setLayout(new BorderLayout());
+        final Scrollbar vertical = new Scrollbar(Scrollbar.VERTICAL);
+        final Scrollbar horizontal = new Scrollbar(Scrollbar.HORIZONTAL);
+        scrollPane.add(bv, BorderLayout.CENTER);
+        scrollPane.add(vertical, BorderLayout.EAST);
+        scrollPane.add(horizontal, BorderLayout.SOUTH);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        // Assign the scrollbars to the board viewer.
+        bv.setScrollbars(vertical, horizontal);
 
         frame.add(this, BorderLayout.EAST);
 
@@ -227,6 +239,10 @@ public class BoardEditor extends Container implements ItemListener,
         } else {
             frame.setSize(800, 600);
         }
+
+        // Give the scrollbars large initial values.
+        horizontal.setVisibleAmount(frame.getSize().width);
+        vertical.setVisibleAmount(frame.getSize().height);
 
         // when frame is closing, just hide it
         frame.addWindowListener(new WindowAdapter() {

@@ -24,6 +24,7 @@ import megamek.common.EntityWeightClass;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.PilotingRollData;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
@@ -90,6 +91,10 @@ public class HGRHandler extends AmmoWeaponHandler {
         } else {
             toReturn = 10;
         }
+        if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
+            toReturn -=1;
+        }
+
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn /= 10;
         }

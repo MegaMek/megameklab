@@ -1,24 +1,7 @@
-/*
- * MegaMek -
- * Copyright (C) 2000,2001,2002,2003,2004,2005,2006,2007,2008 Ben Mazur (bmazur@sev.org)
- *
- *  This program is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU General Public License as published by the Free
- *  Software Foundation; either version 2 of the License, or (at your option)
- *  any later version.
- *
- *  This program is distributed in the hope that it will be useful, but
- *  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- *  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- *  for more details.
- */
-
 package megamek.client.ui.swing;
 
 import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -29,7 +12,6 @@ import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.PopupMenu;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -65,7 +47,6 @@ import megamek.client.ui.AWT.Messages;
 import megamek.client.ui.swing.util.KeyAlphaFilter;
 import megamek.client.ui.swing.util.PlayerColors;
 import megamek.client.ui.swing.util.StraightArrowPolygon;
-import megamek.client.ui.IDisplayable;
 import megamek.common.Aero;
 import megamek.common.Building;
 import megamek.common.Compute;
@@ -131,11 +112,6 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
 
     private static final long serialVersionUID = -5582195884759007416L;
     private static final int TRANSPARENT = 0xFFFF00FF;
-
-    private static final int BOARD_HEX_CLICK = 1;
-    private static final int BOARD_HEX_DOUBLECLICK = 2;
-    private static final int BOARD_HEX_DRAG = 3;
-    private static final int BOARD_HEX_POPUP = 4;
 
     // the dimensions of megamek's hex images
     private static final int HEX_W = 84;
@@ -206,7 +182,7 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
     float scale = 1.00f;
 
     // Displayables (Chat box, etc.)
-    ArrayList<IDisplayable> displayables = new ArrayList<IDisplayable>();
+    ArrayList<Displayable> displayables = new ArrayList<Displayable>();
 
     // Move units step by step
     private ArrayList<MovingUnit> movingUnits = new ArrayList<MovingUnit>();
@@ -390,12 +366,22 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
         }
     }
 
-    public void addDisplayable(IDisplayable disp) {
+    public void addDisplayable(Displayable disp) {
         displayables.add(disp);
     }
 
     public void removeDisplayable(Displayable disp) {
         displayables.remove(disp);
+    }
+
+    /**
+     * Specify the scrollbars that control this view's positioning.
+     * 
+     * @param vertical - the vertical <code>Scrollbar</code>
+     * @param horizontal - the horizontal <code>Scrollbar</code>
+     */
+    public void setScrollPane(JScrollPane scrollPane) {
+        this.scrollpane = scrollPane;
     }
 
     /**
@@ -489,7 +475,7 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
 
         // draw all the "displayables"
         for (int i = 0; i < displayables.size(); i++) {
-            IDisplayable disp = displayables.get(i);
+            Displayable disp = displayables.get(i);
             disp.draw(g, size);
         }
     }
@@ -1288,7 +1274,6 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
             }
             previousStep = step;
         }
-        repaint(100);
     }
 
     /**
@@ -1314,7 +1299,6 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
      */
     public void markDeploymentHexesFor(Player p) {
         m_plDeployer = p;
-        repaint(100);
     }
 
     /**
@@ -1364,7 +1348,6 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
             return;
         }
 
-        repaint(100);
         for (final Iterator<AttackSprite> i = attackSprites.iterator(); i
                 .hasNext();) {
             final AttackSprite sprite = i.next();
@@ -1425,15 +1408,13 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
     }
 
     /** Removes all attack sprites from a certain entity */
-    public synchronized void removeAttacksFor(Entity e) {
-        int entityId = e.getId();
+    public synchronized void removeAttacksFor(int entityId) {
         for (Iterator<AttackSprite> i = attackSprites.iterator(); i.hasNext();) {
             AttackSprite sprite = i.next();
             if (sprite.getEntityId() == entityId) {
                 i.remove();
             }
         }
-        repaint(100);
     }
 
     /**
@@ -1455,7 +1436,6 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
                 addAttack((AttackAction) ea);
             }
         }
-        repaint(100);
     }
     
     public void refreshMoveVectors() {
@@ -1820,11 +1800,6 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
             return;
         }
 
-        if (me.isPopupTrigger()) {
-            mouseAction(getCoordsAt(point), BOARD_HEX_POPUP, me.getModifiers());
-            return;
-        }
-
         // Disable scrolling when ctrl or alt is held down, since this
         // means the user wants to use the LOS/ruler tools.
         int mask = InputEvent.CTRL_MASK | InputEvent.ALT_MASK;
@@ -1856,15 +1831,10 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
 
     public void mouseReleased(MouseEvent me) {
         for (int i = 0; i < displayables.size(); i++) {
-            IDisplayable disp = displayables.get(i);
+            Displayable disp = displayables.get(i);
             if (disp.isReleased()) {
                 return;
             }
-        }
-
-        if (me.isPopupTrigger()) {
-            mouseAction(getCoordsAt(me.getPoint()), BOARD_HEX_POPUP, me.getModifiers());
-            return;
         }
 
         // Unless the user has auto-scroll on and is using the left
@@ -4168,7 +4138,7 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
             if (isShowing()) {
                 boolean redraw = false;
                 for (int i = 0; i < displayables.size(); i++) {
-                    IDisplayable disp = displayables.get(i);
+                    Displayable disp = displayables.get(i);
                     if (!disp.isSliding()) {
                         disp.setIdleTime(currentTime - lastTime, true);
                     } else {
@@ -4651,49 +4621,4 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
         }
         return v;
     }
-
-    public Component getComponent() {
-        // Scrollbars are broken for "Brandon Drew" <brandx0@hotmail.com>
-        if (System.getProperty
-                ("megamek.client.clientgui.hidescrollbars", "false").equals //$NON-NLS-1$ //$NON-NLS-2$
-                ("true")) //$NON-NLS-1$
-            return this;
-        if (scrollpane != null) return scrollpane;
-
-        // Place the board viewer in a set of scrollbars.
-        scrollpane = new JScrollPane();
-        scrollpane.setLayout(new BorderLayout());
-        scrollpane.add(this, BorderLayout.CENTER);
-
-        return scrollpane;
-    }
-
-    public void refreshDisplayables() {
-        repaint();
-    }
-
-    public void showPopup(PopupMenu popup, Coords c) {
-        Point p = getHexLocation(c);
-        p.x += (int)(HEX_WC*scale)-scrollpane.getX();
-        p.y += (int)(HEX_H*scale/2)-scrollpane.getY();
-        if (popup.getParent() == null) add(popup);
-        popup.show(this, p.x, p.y);
-    }
-
-    public void refreshMinefields() {
-        repaint();
-    }
-
-    public void zoomIn() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void zoomOut() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void hideTooltip() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }

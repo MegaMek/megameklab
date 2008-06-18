@@ -23,6 +23,7 @@ import megamek.common.BattleArmor;
 import megamek.common.Compute;
 import megamek.common.IGame;
 import megamek.common.Infantry;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.TargetRoll;
 import megamek.common.ToHitData;
@@ -38,6 +39,7 @@ public class MGHandler extends AmmoWeaponHandler {
      * 
      */
     private static final long serialVersionUID = 5635871269404561702L;
+
     private int nRapidDamHeatPerHit;
 
     /**
@@ -70,6 +72,12 @@ public class MGHandler extends AmmoWeaponHandler {
                 nDamPerHit = super.calcDamagePerHit();
             }
         }
+        if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
+            float toReturn = nDamPerHit;
+            toReturn *= .75;
+            nDamPerHit = (int)Math.floor(toReturn);
+        }
+
         return nDamPerHit;
     }
 

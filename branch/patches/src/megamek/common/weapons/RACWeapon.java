@@ -62,7 +62,7 @@ public abstract class RACWeapon extends UACWeapon {
         } else if (weapon.curMode().equals("2-shot")) {
             return new UltraWeaponHandler(toHit, waa, game, server);
         } else {
-            return super.getCorrectHandler(toHit, waa, game, server);
+            return new ACWeaponHandler(toHit, waa, game, server);
         }
     }
 }

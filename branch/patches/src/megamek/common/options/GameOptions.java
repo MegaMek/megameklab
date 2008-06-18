@@ -115,18 +115,18 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(level3, "high_winds", false); //$NON-NLS-1$
         addOption(level3, "team_vision", true); //$NON-NLS-1$
         addOption(level3, "floating_crits", false); //$NON-NLS-1$
-        addOption(level3, "engine_explosions", false); //$NON-NLS-1$
+        addOption(level3, "tacops_engine_explosions", false); //$NON-NLS-1$
         addOption(level3, "pilot_advantages", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_physical_psr", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_round_damage", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_prone_fire", false); //$NON-NLS-1$
+        addOption(level3, "tacops_physical_psr", false); //$NON-NLS-1$
+        addOption(level3, "tacops_taking_damage", false); //$NON-NLS-1$
+        addOption(level3, "tacops_prone_fire", false); //$NON-NLS-1$
         addOption(level3, "maxtech_leg_damage", false); //$NON-NLS-1$
         addOption(level3, "maxtech_fire", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_range", false); //$NON-NLS-1$
+        addOption(level3, "tacops_range", false); //$NON-NLS-1$
         addOption(level3, "maxtech_LOS1", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_altdmg", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_mslhitpen", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_ppc_inhibitors", false); //$NON-NLS-1$
+        addOption(level3, "tacops_altdmg", false); //$NON-NLS-1$
+        addOption(level3, "tacops_clusterhitpen", false); //$NON-NLS-1$
+        addOption(level3, "tacops_ppc_inhibitors", false); //$NON-NLS-1$
         addOption(level3, "maxtech_charge_damage", false); //$NON-NLS-1$
         addOption(level3, "maxtech_glancing_blows", false); //$NON-NLS-1$
         addOption(level3, "maxtech_burst", false); //$NON-NLS-1$
@@ -145,7 +145,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(level3, "maxtech_new_physicals", false); //$NON-NLS-1$
         addOption(level3, "maxtech_hotload", false); //$NON-NLS-1$
         addOption(level3, "maxtech_rapid_ac", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_walk_backwards", false); //$NON-NLS-1$
+        addOption(level3, "tacops_walk_backwards", false); //$NON-NLS-1$
         addOption(level3, "manei_domini", false); //$NON-NLS-1$
         addOption(level3, "maxtech_angel_ecm", false); //$NON-NLS-1$
 

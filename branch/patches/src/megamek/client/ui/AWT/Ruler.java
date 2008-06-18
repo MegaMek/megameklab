@@ -63,7 +63,7 @@ public class Ruler extends Dialog implements BoardViewListener {
     private Color endColor;
     private int distance;
     private Client client;
-    private IBoardView bv;
+    private BoardView1 bv;
     private boolean flip;
 
     Panel panel1 = new Panel();
@@ -85,7 +85,7 @@ public class Ruler extends Dialog implements BoardViewListener {
     Label heightLabel2 = new Label();
     TextField height2 = new TextField();
 
-    public Ruler(Frame f, Client c, IBoardView b) {
+    public Ruler(Frame f, Client c, BoardView1 b) {
         super(f, Messages.getString("Ruler.title"), false); //$NON-NLS-1$
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
 

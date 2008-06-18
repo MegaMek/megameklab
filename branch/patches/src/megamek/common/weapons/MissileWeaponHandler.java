@@ -98,19 +98,23 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         int missilesHit;
         int nMissilesModifier = nSalvoBonus;
         boolean bWeather = false;
-        boolean maxtechmissiles = game.getOptions().booleanOption(
-                "maxtech_mslhitpen");
-        if (maxtechmissiles) {
+        boolean tacopscluster = game.getOptions().booleanOption("tacops_clusterhitpen");
+        
+        int[] ranges = wtype.getRanges(weapon);
+        if (tacopscluster) {
             if (nRange <= 1) {
                 nMissilesModifier += 1;
-            } else if (nRange <= wtype.getShortRange()) {
+            } else if (nRange <= ranges[RangeType.RANGE_MEDIUM]) {
                 nMissilesModifier += 0;
-            } else if (nRange <= wtype.getMediumRange()) {
-                nMissilesModifier -= 1;
             } else {
-                nMissilesModifier -= 2;
-            }
+                nMissilesModifier -= 1;
+            } 
         }
+        
+        if ( game.getOptions().booleanOption("tacops_range") && nRange > ranges[RangeType.RANGE_LONG] ) {
+            nMissilesModifier -= 2;
+        }
+        
         boolean bMekStealthActive = false;
         if (ae instanceof Mech) {
             bMekStealthActive = ae.isStealthActive();
@@ -219,11 +223,11 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
                 missilesHit = Compute.missilesHit(wtype.getRackSize()
                         * ((BattleArmor) ae).getShootingStrength(),
                         nMissilesModifier, bWeather || bGlancing
-                                || maxtechmissiles, weapon.isHotLoaded());
+                                || tacopscluster, weapon.isHotLoaded());
             else
                 missilesHit = Compute.missilesHit(wtype.getRackSize(),
                         nMissilesModifier, bWeather || bGlancing
-                                || maxtechmissiles, weapon.isHotLoaded());
+                                || tacopscluster, weapon.isHotLoaded());
         }
 
         if (missilesHit > 0) {

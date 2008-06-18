@@ -222,9 +222,34 @@ public class WeaponType extends EquipmentType {
         return ammoType;
     }
 
-    public int[] getRanges() {
-        return new int[] { minimumRange, shortRange, mediumRange, longRange,
+    public int[] getRanges(Mounted weapon) {
+        
+        int[] weaponRanges = { minimumRange, shortRange, mediumRange, longRange,
                 extremeRange };
+        // modify the ranges for ATM missile systems based on the ammo selected
+        // TODO: this is not the right place to hardcode these
+        if (this.getAmmoType() == AmmoType.T_ATM) {
+            AmmoType atype = (AmmoType) weapon.getLinked().getType();
+            if ((atype.getAmmoType() == AmmoType.T_ATM) && atype.getMunitionType() == AmmoType.M_EXTENDED_RANGE) {
+                weaponRanges = new int[] { 4, 9, 18, 27, 36 };
+            } else if ((atype.getAmmoType() == AmmoType.T_ATM) && atype.getMunitionType() == AmmoType.M_HIGH_EXPLOSIVE) {
+                weaponRanges = new int[] { 0, 3, 6, 9, 12 };
+            }
+        }
+        if (this.getAmmoType() == AmmoType.T_MML) {
+            AmmoType atype = (AmmoType) weapon.getLinked().getType();
+            if (atype.hasFlag(AmmoType.F_MML_LRM) || this.getAmmoType() == AmmoType.T_LRM_TORPEDO) {
+                weaponRanges = new int[] { 7, 14, 21, 28};
+                this.setMinimumRange(6);
+            } else {
+                weaponRanges = new int[] { 3, 6, 9, 12};
+                this.setMinimumRange(0);
+            }
+            weaponRanges = new int[] { minimumRange, shortRange, mediumRange, longRange,
+                    extremeRange };
+        }
+
+        return weaponRanges;
     }
 
     public int getMinimumRange() {

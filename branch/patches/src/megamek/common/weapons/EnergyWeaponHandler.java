@@ -17,6 +17,7 @@ import megamek.common.BattleArmor;
 import megamek.common.HitData;
 import megamek.common.IGame;
 import megamek.common.Infantry;
+import megamek.common.RangeType;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
 import megamek.server.Server;
@@ -51,19 +52,22 @@ public class EnergyWeaponHandler extends WeaponHandler {
                 && (ae.getSwarmTargetId() == target.getTargetId())) {
             toReturn *= ((BattleArmor) ae).getShootingStrength();
         }
-        // Check for Altered Damage from Energy Weapons (MTR, pg.22)
+        // Check for Altered Damage from Energy Weapons (TacOp, pg.83)
         int nRange = ae.getPosition().distance(target.getPosition());
-        if (game.getOptions().booleanOption("maxtech_altdmg")) {
+        if (game.getOptions().booleanOption("tacops_altdmg")) {
             if (nRange <= 1) {
                 toReturn++;
             } else if (nRange <= wtype.getMediumRange()) {
                 // Do Nothing for Short and Medium Range
             } else if (nRange <= wtype.getLongRange()) {
                 toReturn--;
-            } else if (nRange <= wtype.getExtremeRange()) {
-                toReturn = (int) Math.floor(toReturn / 2.0);
-            }
+            } 
         }
+        
+        if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
+            toReturn -=1;
+        }
+
         if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }

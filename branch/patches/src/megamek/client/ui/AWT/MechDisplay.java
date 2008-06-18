@@ -180,8 +180,6 @@ public class MechDisplay extends BufferedPanel {
         wPan.displayMech(en);
         sPan.displayMech(en);
         ePan.displayMech(en);
-
-        processMechDisplayEvent(new MechDisplayEvent(this, en, null));
     }
 
     /**
@@ -1169,7 +1167,7 @@ public class MechDisplay extends BufferedPanel {
             }
 
             // If MaxTech range rules are in play, display the extreme range.
-            if (game.getOptions().booleanOption("maxtech_range") || entity instanceof Aero) { //$NON-NLS-1$
+            if (game.getOptions().booleanOption("tacops_range") || entity instanceof Aero) { //$NON-NLS-1$
                 wExtL.setVisible(true);
                 wExtR.setVisible(true);
             } else {

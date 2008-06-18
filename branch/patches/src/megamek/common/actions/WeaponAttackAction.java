@@ -92,16 +92,6 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         this.weaponId = weaponId;
     }
 
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 61 * hash + weaponId;
-        return hash;
-    }
-    
-    public boolean equals(Object o) {
-        return super.equals(o) && ((WeaponAttackAction)o).getWeaponId() == weaponId;
-    }
-
     public int getWeaponId() {
         return weaponId;
     }
@@ -186,8 +176,8 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         if (exchangeSwarmTarget) {
             // Quick check, is the new target out of range for the weapon?
             if (RangeType.rangeBracket(ae.getPosition().distance(
-                    target.getPosition()), wtype.getRanges(), game.getOptions()
-                    .booleanOption("maxtech_range")) == RangeType.RANGE_OUT) {
+                    target.getPosition()), wtype.getRanges(weapon), game.getOptions()
+                    .booleanOption("tacops_range")) == RangeType.RANGE_OUT) {
                 return new ToHitData(TargetRoll.AUTOMATIC_FAIL,
                         "swarm target out of range");
             }

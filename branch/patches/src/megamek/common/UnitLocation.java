@@ -42,22 +42,17 @@ public class UnitLocation implements Serializable {
     /** The facing of the unit at this location. */
     private final int facing;
 
-    /** The elevation of the unit at this location. */
-    private final int elevation;
-
     /**
      * Create a new location object.
      * 
      * @param id the unit's <code>int</code> ID number.
      * @param coords the <code>Coords</code> of this location.
      * @param facing the unit's <code>int</code> facing at this location.
-     * @param elevation the unit's <code>int</code> elevation at this location.
      */
-    public UnitLocation(int id, Coords coords, int facing, int elevation) {
+    public UnitLocation(int id, Coords coords, int facing) {
         this.entityId = id;
         this.coords = coords;
         this.facing = facing;
-        this.elevation = elevation;
     }
 
     /**
@@ -85,15 +80,6 @@ public class UnitLocation implements Serializable {
      */
     public int getFacing() {
         return facing;
-    }
-
-    /**
-     * Get the elevation of the entity at this location.
-     * 
-     * @return the <code>int</code> elevation of the entity.
-     */
-    public int getElevation() {
-        return elevation;
     }
 
 }

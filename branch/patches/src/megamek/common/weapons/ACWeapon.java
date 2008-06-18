@@ -67,7 +67,7 @@ public abstract class ACWeapon extends AmmoWeapon {
         } else if (atype.getMunitionType() == AmmoType.M_TRACER) {
             return new ACTracerHandler(toHit, waa, game, server);
         } else {
-            return super.getCorrectHandler(toHit, waa, game, server);
+            return new ACWeaponHandler(toHit, waa, game, server);
         }
 
     }

@@ -13,7 +13,10 @@
  */
 package megamek.common.weapons;
 
+import megamek.common.BattleArmor;
 import megamek.common.IGame;
+import megamek.common.Infantry;
+import megamek.common.RangeType;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
 import megamek.server.Server;
@@ -44,7 +47,25 @@ public class ACTracerHandler extends AmmoWeaponHandler {
      * @see megamek.common.weapons.WeaponHandler#calcDamagePerHit()
      */
     protected int calcDamagePerHit() {
-        return super.calcDamagePerHit() - 1;
+        double toReturn = wtype.getDamage();
+        // during a swarm, all damage gets applied as one block to one
+        // location
+        if (ae instanceof BattleArmor && weapon.getLocation() == BattleArmor.LOC_SQUAD && (ae.getSwarmTargetId() == target.getTargetId())) {
+            toReturn *= ((BattleArmor) ae).getShootingStrength();
+        }
+        // we default to direct fire weapons for anti-infantry damage
+        if (target instanceof Infantry && !(target instanceof BattleArmor)) {
+            toReturn = Math.ceil(toReturn / 10);
+        }
+        if (bGlancing) {
+            toReturn = (int) Math.floor(toReturn / 2.0);
+        }
+        if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
+            toReturn = (int) Math.floor((double) toReturn * .75);
+        }
+
+        return (int) toReturn-1;
     }
+
 
 }

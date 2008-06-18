@@ -580,44 +580,23 @@ public class Compute {
     public static ToHitData getRangeMods(IGame game, Entity ae, int weaponId, Targetable target) {
         Mounted weapon = ae.getEquipment(weaponId);
         WeaponType wtype = (WeaponType) weapon.getType();
-        int[] weaponRanges = wtype.getRanges();
+        int[] weaponRanges = wtype.getRanges(weapon);
         boolean isAttackerInfantry = (ae instanceof Infantry);
         boolean isWeaponInfantry = wtype.hasFlag(WeaponType.F_INFANTRY);
         boolean isIndirect = ((wtype.getAmmoType() == AmmoType.T_LRM) || (wtype.getAmmoType() == AmmoType.T_MML) || (wtype.getAmmoType() == AmmoType.T_EXLRM) || (wtype.getAmmoType() == AmmoType.T_TBOLT_5) || (wtype.getAmmoType() == AmmoType.T_TBOLT_10) || (wtype.getAmmoType() == AmmoType.T_TBOLT_15) || (wtype.getAmmoType() == AmmoType.T_TBOLT_20) || (wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO)) && weapon.curMode().equals("Indirect");
-        boolean useExtremeRange = game.getOptions().booleanOption("maxtech_range");
+        boolean useExtremeRange = game.getOptions().booleanOption("tacops_range");
 
         if(ae instanceof Aero)
             useExtremeRange = true;
         
         ToHitData mods = new ToHitData();
 
-        // modify the ranges for ATM missile systems based on the ammo selected
-        // TODO: this is not the right place to hardcode these
-        if (wtype.getAmmoType() == AmmoType.T_ATM) {
-            AmmoType atype = (AmmoType) weapon.getLinked().getType();
-            if ((atype.getAmmoType() == AmmoType.T_ATM) && atype.getMunitionType() == AmmoType.M_EXTENDED_RANGE) {
-                weaponRanges = new int[] { 4, 9, 18, 27, 36 };
-            } else if ((atype.getAmmoType() == AmmoType.T_ATM) && atype.getMunitionType() == AmmoType.M_HIGH_EXPLOSIVE) {
-                weaponRanges = new int[] { 0, 3, 6, 9, 12 };
-            }
-        }
-        if (wtype.getAmmoType() == AmmoType.T_MML) {
-            AmmoType atype = (AmmoType) weapon.getLinked().getType();
-            if (atype.hasFlag(AmmoType.F_MML_LRM) || wtype.getAmmoType() == AmmoType.T_LRM_TORPEDO) {
-                wtype.setRanges(7, 14, 21, 28);
-                wtype.setMinimumRange(6);
-            } else {
-                wtype.setRanges(3, 6, 9, 12);
-                wtype.setMinimumRange(0);
-            }
-            weaponRanges = wtype.getRanges();
-        }
         //
         // modifiy the ranges for PPCs when field inhibitors are turned off
         // TODO: See above, it should be coded elsewhere...
         //
         if (wtype.hasFlag(WeaponType.F_PPC)) {
-            if (game.getOptions().booleanOption("maxtech_ppc_inhibitors")) {
+            if (game.getOptions().booleanOption("tacops_ppc_inhibitors")) {
                 if (weapon.curMode() != null && weapon.curMode().equals("Field Inhibitor OFF")) {
                     weaponRanges[RangeType.RANGE_MINIMUM] = 0;
                 }
@@ -625,7 +604,7 @@ public class Compute {
         }
 
         // Hotloaded weapons
-        if (weapon.isHotLoaded() && game.getOptions().booleanOption("maxtech_hotload"))
+        if (weapon.isHotLoaded() && game.getOptions().booleanOption("tacops_hotload"))
             weaponRanges[RangeType.RANGE_MINIMUM] = 0;
 
         // is water involved?
@@ -673,9 +652,9 @@ public class Compute {
                     || wtype.getAmmoType() == AmmoType.T_MML) {
                 AmmoType atype = (AmmoType) weapon.getLinked().getType();
                 if (atype.getMunitionType() == AmmoType.M_TORPEDO) {
-                    weaponRanges = wtype.getRanges();
+                    weaponRanges = wtype.getRanges(weapon);
                 } else if (atype.getMunitionType() == AmmoType.M_MULTI_PURPOSE) {
-                    weaponRanges = wtype.getRanges();
+                    weaponRanges = wtype.getRanges(weapon);
                     MPM = true;
                 }
             }
@@ -759,6 +738,14 @@ public class Compute {
         int c3dist = effectiveDistance(game, c3spotter, target);
         int c3range = RangeType.rangeBracket(c3dist, weaponRanges, useExtremeRange);
 
+        /*
+         * Tac Ops Extreme Range Rule p. 85 if the weapons normal range is Extreme then C3
+         * uses the next highest range bracket, i.e. medium instead of short.
+         */
+        if ( range == RangeType.RANGE_EXTREME ) {
+            c3range++;
+        }
+        
         // determine which range we're using
         int usingRange = Math.min(range, c3range);
 
@@ -1018,7 +1005,7 @@ public class Compute {
             int l3ProneFiringArm = Entity.LOC_NONE;
 
             if (attacker.isLocationBad(Mech.LOC_RARM) || attacker.isLocationBad(Mech.LOC_LARM)) {
-                if (game.getOptions().booleanOption("maxtech_prone_fire")) {
+                if (game.getOptions().booleanOption("tacops_prone_fire")) {
                     // Can fire with only one arm
                     if (attacker.isLocationBad(Mech.LOC_RARM) && attacker.isLocationBad(Mech.LOC_LARM)) {
                         return new ToHitData(TargetRoll.IMPOSSIBLE, "Prone with both arms destroyed.");
@@ -2365,17 +2352,18 @@ public class Compute {
         return missilesHit(missiles, 0);
     }
 
-    public static int missilesHit(int missiles, int nMod, boolean maxtech, boolean hotloaded) {
-        return missilesHit(missiles, nMod, maxtech, hotloaded, false);
+    public static int missilesHit(int missiles, int nMod, boolean tacops, boolean hotloaded) {
+        return missilesHit(missiles, nMod, tacops, hotloaded, false);
     }
 
     /**
      * Roll the number of missiles (or whatever) on the missile hit table, with
      * the specified mod to the roll.
      * 
-     * @param maxtech -
-     *            either maxtech glancing blows or maxtech missile hit penalties
-     *            are in effect so it is possible to roll less than a 2
+     * --deprecated tacops no longer allows for a roll below 2 like Maxtech
+     * @param tacops - 
+     *            either tacops glancing blows or tacops cluster hit penalties
+     *            are in effect. However the roll cannot go below 2 or above 12
      * @param missiles -
      *            the <code>int</code> number of missiles in the pack.
      * @param nMod -
@@ -2386,10 +2374,9 @@ public class Compute {
      * @param streak -
      *            force a roll of 11 on the cluster table
      */
-    public static int missilesHit(int missiles, int nMod, boolean maxtech, boolean hotloaded, boolean streak) {
+    public static int missilesHit(int missiles, int nMod, boolean tacops, boolean hotloaded, boolean streak) {
         int nRoll = d6(2);
-        int minimum = maxtech ? 1 : 2;
-
+        
         if (hotloaded) {
             int roll1 = d6();
             int roll2 = d6();
@@ -2412,13 +2399,7 @@ public class Compute {
         if (streak)
             nRoll = 11;
         nRoll += nMod;
-        nRoll = Math.min(Math.max(nRoll, minimum), 12);
-        if (maxtech && nRoll == 1) {
-            return 1;
-        }
-        if (nRoll < 2) {
-            nRoll = 2;
-        }
+        nRoll = Math.min(Math.max(nRoll, 2), 12);
 
         for (int i = 0; i < clusterHitsTable.length; i++) {
             if (clusterHitsTable[i][0] == missiles) {
@@ -2430,7 +2411,7 @@ public class Compute {
         // if so, take largest, subtract value and try again
         for (int i = clusterHitsTable.length - 1; i >= 0; i--) {
             if (missiles > clusterHitsTable[i][0]) {
-                return clusterHitsTable[i][nRoll - 1] + missilesHit(missiles - clusterHitsTable[i][0], nMod, maxtech, hotloaded, streak);
+                return clusterHitsTable[i][nRoll - 1] + missilesHit(missiles - clusterHitsTable[i][0], nMod, tacops, hotloaded, streak);
             }
         }
         throw new RuntimeException("Could not find number of missiles in hit table");
@@ -2440,8 +2421,8 @@ public class Compute {
         return missilesHit(missiles, nMod, false, false);
     }
 
-    public static int missilesHit(int missiles, int nMod, boolean maxtech) {
-        return missilesHit(missiles, nMod, maxtech, false);
+    public static int missilesHit(int missiles, int nMod, boolean tacops) {
+        return missilesHit(missiles, nMod, tacops, false);
     }
 
     /**

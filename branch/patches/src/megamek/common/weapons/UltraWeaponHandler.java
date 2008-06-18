@@ -179,6 +179,9 @@ public class UltraWeaponHandler extends AmmoWeaponHandler {
         }
         if (bGlancing)
             toReturn = (int) Math.floor(toReturn / 2.0);
+        if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
+            toReturn = (int) Math.floor(toReturn * .75);
+        }
         return (int)toReturn;
     }
     

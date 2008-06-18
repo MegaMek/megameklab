@@ -508,6 +508,7 @@ public class TargetingPhaseDisplay extends StatusBarPhaseDisplay implements
         // and add it into the game, temporarily
         client.game.addAction(saa);
         clientgui.bv.addAttack(saa);
+        clientgui.bv.repaint(100);
         clientgui.minimap.drawMap();
 
         // refresh weapon panel, as bth will have changed
@@ -558,6 +559,7 @@ public class TargetingPhaseDisplay extends StatusBarPhaseDisplay implements
         // and add it into the game, temporarily
         client.game.addAction(waa);
         clientgui.bv.addAttack(waa);
+        clientgui.bv.repaint(100);
         clientgui.minimap.drawMap();
 
         // set the weapon as used
@@ -629,7 +631,8 @@ public class TargetingPhaseDisplay extends StatusBarPhaseDisplay implements
     private void removeTempAttacks() {
         // remove temporary attacks from game & board
         client.game.removeActionsFor(cen);
-        clientgui.bv.removeAttacksFor(ce());
+        clientgui.bv.removeAttacksFor(cen);
+        clientgui.bv.repaint(100);
 
     }
 

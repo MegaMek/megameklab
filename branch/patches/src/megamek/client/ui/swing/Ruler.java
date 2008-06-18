@@ -66,7 +66,7 @@ public class Ruler extends JDialog implements BoardViewListener {
     private Color endColor;
     private int distance;
     private Client client;
-    private IBoardView bv;
+    private BoardView1 bv;
     private boolean flip;
 
     private JPanel panel1 = new JPanel();
@@ -88,7 +88,7 @@ public class Ruler extends JDialog implements BoardViewListener {
     private JLabel heightLabel2 = new JLabel();
     private JTextField height2 = new JTextField();
 
-    public Ruler(JFrame f, Client c, IBoardView b) {
+    public Ruler(JFrame f, Client c, BoardView1 b) {
         super(f, Messages.getString("Ruler.title"), false); //$NON-NLS-1$
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
 

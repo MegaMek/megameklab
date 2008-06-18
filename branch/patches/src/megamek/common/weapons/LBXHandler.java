@@ -24,6 +24,7 @@ import megamek.common.BattleArmor;
 import megamek.common.Compute;
 import megamek.common.IGame;
 import megamek.common.Infantry;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
@@ -62,15 +63,16 @@ public class LBXHandler extends AmmoWeaponHandler {
         }
         return 1;
     }
-    
+
     /**
      * Calculate the attack value based on range
      * 
-     * @return an <code>int</code> representing the attack value at that range.
+     * @return an <code>int</code> representing the attack value at that
+     *         range.
      */
     protected int calcAttackValue() {
-        //basically 60% of racksize
-        return (int)Math.floor(0.6*wtype.getRackSize());
+        // basically 60% of racksize
+        return (int) Math.floor(0.6 * wtype.getRackSize());
     }
 
     /*
@@ -85,11 +87,39 @@ public class LBXHandler extends AmmoWeaponHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             return 1;
         }
-        int shotsHit = allShotsHit() ? wtype.getRackSize() : Compute
-                .missilesHit(wtype.getRackSize());
+
+        int shotsHit;
+        int nHitsModifier = 0;
+
+        if (allShotsHit()) {
+            shotsHit = wtype.getRackSize();
+            if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
+                shotsHit = (int) Math.ceil((double) shotsHit * .75);
+            }
+        } else {
+            //TacOps Cluster Hit Penalties p. 83
+            boolean tacopscluster = game.getOptions().booleanOption("tacops_clusterhitpen");
+            if (tacopscluster) {
+                if (nRange <= 1) {
+                    nHitsModifier += 1;
+                } else if (nRange <= wtype.getMediumRange()) {
+                    nHitsModifier += 0;
+                } else {
+                    nHitsModifier -= 1;
+                }
+            }
+            if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
+                nHitsModifier -= 2;
+            }
+
+
+            shotsHit = Compute.missilesHit(wtype.getRackSize(), nHitsModifier);
+        }
+
         if (bGlancing) {
             shotsHit = (int) Math.floor(shotsHit / 2.0);
         }
+
         r = new Report(3325);
         r.subject = subjectId;
         r.add(shotsHit);
@@ -97,6 +127,16 @@ public class LBXHandler extends AmmoWeaponHandler {
         r.add(toHit.getTableDesc());
         r.newlines = 0;
         vPhaseReport.addElement(r);
+        if (nHitsModifier != 0) {
+            if (nHitsModifier > 0)
+                r = new Report(3340);
+            else
+                r = new Report(3341);
+            r.subject = subjectId;
+            r.add(nHitsModifier);
+            r.newlines = 0;
+            vPhaseReport.addElement(r);
+        }
         r = new Report(3345);
         r.subject = subjectId;
         r.newlines = 0;
@@ -104,8 +144,8 @@ public class LBXHandler extends AmmoWeaponHandler {
         bSalvo = true;
         return shotsHit;
     }
-    
+
     protected boolean usesClusterTable() {
-        return ((AmmoType)ammo.getType()).getMunitionType() == AmmoType.M_CLUSTER;
+        return ((AmmoType) ammo.getType()).getMunitionType() == AmmoType.M_CLUSTER;
     }
 }

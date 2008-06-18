@@ -24,6 +24,7 @@ import megamek.common.Compute;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.Mounted;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
@@ -37,6 +38,7 @@ public class HAGWeaponHandler extends AmmoWeaponHandler {
      * 
      */
     private static final long serialVersionUID = -8193801876308832102L;
+
     Mounted ammo;
 
     /**
@@ -70,7 +72,7 @@ public class HAGWeaponHandler extends AmmoWeaponHandler {
             toReturn += 1;
             toReturn = Math.ceil(toReturn);
             if (bGlancing)
-                toReturn = Math.floor(toReturn/2);
+                toReturn = Math.floor(toReturn / 2);
             return (int) toReturn;
         }
         return 1;
@@ -94,11 +96,26 @@ public class HAGWeaponHandler extends AmmoWeaponHandler {
         } else if (nRange > wtype.getMediumRange()) {
             nHitsModifier -= 2;
         }
+        
+        boolean tacopscluster = game.getOptions().booleanOption("tacops_clusterhitpen");
+        if (tacopscluster) {
+            if (nRange <= 1) {
+                nHitsModifier += 1;
+            } else if (nRange <= wtype.getMediumRange()) {
+                nHitsModifier += 0;
+            } else {
+                nHitsModifier -= 1;
+            }
+        }
+
+        if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
+            nHitsModifier -= 2;
+        }
+
         if (allShotsHit())
             nHits = wtype.getRackSize();
         else
-            nHits = Compute.missilesHit(wtype.getRackSize(), nHitsModifier,
-                    bGlancing, false);
+            nHits = Compute.missilesHit(wtype.getRackSize(), nHitsModifier, bGlancing || tacopscluster, false);
         r = new Report(3325);
         r.subject = subjectId;
         r.add(nHits);
@@ -122,7 +139,7 @@ public class HAGWeaponHandler extends AmmoWeaponHandler {
         bSalvo = true;
         return nHits;
     }
-    
+
     protected boolean usesClusterTable() {
         return true;
     }

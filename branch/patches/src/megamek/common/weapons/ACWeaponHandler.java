@@ -11,10 +11,6 @@
  *  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
  *  for more details.
  */
-/*
- * Created on Sep 5, 2005
- *
- */
 package megamek.common.weapons;
 
 import megamek.common.BattleArmor;
@@ -24,28 +20,27 @@ import megamek.common.RangeType;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
 import megamek.server.Server;
-import megamek.server.Server.DamageType;
 
 /**
- * @author Sebastian Brocks
+ * @author Jason Tighe
  */
-public class ACIncendiaryHandler extends AmmoWeaponHandler {
+public class ACWeaponHandler extends AmmoWeaponHandler {
+
     /**
      * 
      */
-    private static final long serialVersionUID = 3301631731286472616L;
+    private static final long serialVersionUID = 7326881584091651519L;
 
     /**
      * @param t
      * @param w
      * @param g
+     * @param s
      */
-    public ACIncendiaryHandler(ToHitData t, WeaponAttackAction w, IGame g,
-            Server s) {
+    public ACWeaponHandler(ToHitData t, WeaponAttackAction w, IGame g, Server s) {
         super(t, w, g, s);
-        damageType = DamageType.INCENDIARY;
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -71,6 +66,4 @@ public class ACIncendiaryHandler extends AmmoWeaponHandler {
 
         return (int) toReturn;
     }
-
-
 }

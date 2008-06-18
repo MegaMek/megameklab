@@ -33,11 +33,16 @@ import java.awt.Image;
 import java.awt.Label;
 import java.awt.MenuItem;
 import java.awt.Panel;
+import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;
+import java.awt.Scrollbar;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -53,10 +58,8 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import megamek.client.Client;
-import megamek.client.event.BoardViewEvent;
 import megamek.client.event.BoardViewListener;
 import megamek.client.ui.AWT.util.PlayerColors;
-import megamek.client.ui.AWT.widget.BackGroundDrawer;
 import megamek.client.ui.AWT.widget.BufferedPanel;
 import megamek.common.BuildingTarget;
 import megamek.common.Coords;
@@ -83,7 +86,8 @@ import megamek.common.event.GameSettingsChangeEvent;
 import megamek.common.util.Distractable;
 import megamek.common.util.StringUtil;
 
-public class ClientGUI extends Panel implements WindowListener, ActionListener, BoardViewListener {
+public class ClientGUI extends Panel implements MouseListener, WindowListener,
+        ActionListener, KeyListener {
     /**
      * 
      */
@@ -108,8 +112,8 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
 
     // keep me
     ChatterBox cb;
-    public IBoardView bv;
-    private Component bvc;
+    public BoardView1 bv;
+    private Panel scroller;
     public Dialog mechW;
     public MechDisplay mechD;
     public Dialog minimapW;
@@ -232,6 +236,23 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
         }
     }
 
+    public void keyPressed(KeyEvent ke) {
+        switch (ke.getKeyCode()) {
+            case KeyEvent.VK_PAGE_DOWN:
+                bv.zoomIn();
+                break;
+            case KeyEvent.VK_PAGE_UP:
+                bv.zoomOut();
+                break;
+        }
+    }
+
+    public void keyTyped(KeyEvent ke) {
+    }
+
+    public void keyReleased(KeyEvent ke) {
+    }
+
     /**
      * Display a system message in the chat box.
      * 
@@ -312,13 +333,25 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
         try {
             client.game.addGameListener(gameListener);
             // Create the board viewer.
-            Class c = getClass().getClassLoader().loadClass(System.getProperty("megamek.client.ui.AWT.boardView", "megamek.client.ui.AWT.BoardView1"));
-            bv = (IBoardView)c.getConstructor(IGame.class).newInstance(client.game);
-            bvc = bv.getComponent();
-            bv.addBoardViewListener(this);
- 
-        } catch (Exception e) {
-            e.printStackTrace();
+            bv = new BoardView1(client.game, frame);
+
+            // Place the board viewer in a set of scrollbars.
+            scroller = new Panel();
+            scroller.setLayout(new BorderLayout());
+            Scrollbar vertical = new Scrollbar(Scrollbar.VERTICAL);
+            Scrollbar horizontal = new Scrollbar(Scrollbar.HORIZONTAL);
+            scroller.add(bv, BorderLayout.CENTER);
+            // Scrollbars are broken for "Brandon Drew" <brandx0@hotmail.com>
+            if (System.getProperty(
+                    "megamek.client.clientgui.hidescrollbars", "false").equals //$NON-NLS-1$ //$NON-NLS-2$
+                    ("false")) { //$NON-NLS-1$
+                // Assign the scrollbars to the board viewer.
+                scroller.add(vertical, BorderLayout.EAST);
+                scroller.add(horizontal, BorderLayout.SOUTH);
+                bv.setScrollbars(vertical, horizontal);
+            }
+
+        } catch (IOException e) {
             doAlertDialog(
                     Messages.getString("ClientGUI.FatalError.title"), Messages.getString("ClientGUI.FatalError.message") + e); //$NON-NLS-1$ //$NON-NLS-2$
             die();
@@ -329,6 +362,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
         frame.setVisible(true);
 
         menuBar.addActionListener(this);
+        frame.addKeyListener(this);
 
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -345,6 +379,11 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
 
         uo = new UnitOverview(this);
         bv.addDisplayable(uo);
+
+        bv.addMouseListener(this);
+        bv.addKeyListener(this);
+
+        bv.add(popup);
 
         Dimension screenSize = frame.getToolkit().getScreenSize();
         int x, y, h, w;
@@ -367,6 +406,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
         mechW.setSize(w, h);
         mechW.setResizable(true);
         mechW.addWindowListener(this);
+        mechW.addKeyListener(this);
         mechD = new MechDisplay(this);
         mechD.addMechDisplayListener(bv);
         mechW.add(mechD);
@@ -403,6 +443,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
                     Messages.getString("ClientGUI.FatalError.title"), Messages.getString("ClientGUI.FatalError.message1") + e); //$NON-NLS-1$ //$NON-NLS-2$
             die();
         }
+        minimap.addKeyListener(this);
         h = minimap.getSize().height;
         w = minimap.getSize().width;
         if ((x + 10) >= screenSize.width || (x + w) < 10) {
@@ -413,6 +454,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
         }
         minimapW.setLocation(x, y);
         minimapW.addWindowListener(this);
+        minimapW.addKeyListener(this);
         minimapW.add(minimap);
 
         cb = new ChatterBox(this);
@@ -791,7 +833,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "SelectArtyAutoHitHexDisplay"; //$NON-NLS-1$
                 if (!mainNames.keySet().contains(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, this.scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -801,7 +843,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "DeployMinefieldDisplay"; //$NON-NLS-1$
                 if (!mainNames.keySet().contains(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, this.scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -810,7 +852,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "DeploymentDisplay"; //$NON-NLS-1$
                 if (!mainNames.keySet().contains(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, this.scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -820,7 +862,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "TargetingPhaseDisplay"; //$NON-NLS-1$
                 if (!mainNames.keySet().contains(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, this.scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -829,7 +871,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "MovementDisplay"; //$NON-NLS-1$
                 if (!mainNames.keySet().contains(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, this.scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -839,7 +881,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "OffboardDisplay"; //$NON-NLS-1$
                 if (!mainNames.keySet().contains(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, this.scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -848,7 +890,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "FiringDisplay"; //$NON-NLS-1$
                 if (!mainNames.keySet().contains(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, this.scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -857,7 +899,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
                 main = "BoardView"; //$NON-NLS-1$
                 secondary = "PhysicalDisplay"; //$NON-NLS-1$
                 if (!mainNames.keySet().contains(main)) {
-                    panMain.add(main, bvc);
+                    panMain.add(main, this.scroller);
                 }
                 panSecondary.add(secondary, component);
                 break;
@@ -907,11 +949,13 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
         add(comp);
     }
 
-    protected void showBoardPopup(Coords c) {
-        fillPopup(c);
+    protected void showBoardPopup(Point point) {
+        if (!bv.mayDrawPopup())
+            return;
+        fillPopup(bv.getCoordsAt(point));
 
         if (popup.getItemCount() > 0) {
-            bv.showPopup(popup, c);
+            popup.show(bv, point.x, point.y);
         }
     }
 
@@ -950,7 +994,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
 
     public void toggleUnitOverview() {
         uo.setVisible(!uo.isVisible());
-        bv.refreshDisplayables();
+        bv.repaint();
     }
 
     /**
@@ -1150,6 +1194,27 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
         ConfirmDialog confirm = new ConfirmDialog(frame, title, question, true);
         confirm.setVisible(true);
         return confirm;
+    }
+
+    public void mouseClicked(java.awt.event.MouseEvent mouseEvent) {
+    }
+
+    public void mouseEntered(java.awt.event.MouseEvent mouseEvent) {
+    }
+
+    public void mouseExited(java.awt.event.MouseEvent mouseEvent) {
+    }
+
+    public void mousePressed(java.awt.event.MouseEvent mouseEvent) {
+        if (mouseEvent.isPopupTrigger()) {
+            showBoardPopup(mouseEvent.getPoint());
+        }
+    }
+
+    public void mouseReleased(java.awt.event.MouseEvent mouseEvent) {
+        if (mouseEvent.isPopupTrigger()) {
+            showBoardPopup(mouseEvent.getPoint());
+        }
     }
 
     /**
@@ -1415,9 +1480,7 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
     public void loadPreviewImage(BufferedPanel bp, Entity entity, Player player) {
         Image camo = bv.getTilesetManager().getPlayerCamo(player);
         int tint = PlayerColors.getColorRGB(player.getColorIndex());
-        BackGroundDrawer bgdPreview = new BackGroundDrawer(bv.getTilesetManager().loadPreviewImage(entity, camo, tint, bp));
-        bp.removeBgDrawers();
-        bp.addBgDrawer(bgdPreview);
+        bv.getTilesetManager().loadPreviewImage(entity, camo, tint, bp);
     }
 
     /**
@@ -1630,16 +1693,4 @@ public class ClientGUI extends Panel implements WindowListener, ActionListener, 
     public RandomSkillDialog getRandomSkillDialog() {
         return randomSkillDialog;
     }
-
-    public void hexMoused(BoardViewEvent b) {
-        if (b.getType() == BoardViewEvent.BOARD_HEX_POPUP) showBoardPopup(b.getCoords());
-    }
-
-    public void hexCursor(BoardViewEvent b) {}
-    public void boardHexHighlighted(BoardViewEvent b) {}
-    public void hexSelected(BoardViewEvent b) {}
-    public void firstLOSHex(BoardViewEvent b) {}
-    public void secondLOSHex(BoardViewEvent b, Coords c) {}
-    public void finishedMovingUnits(BoardViewEvent b) {}
-    public void unitSelected(BoardViewEvent b) {}
 }

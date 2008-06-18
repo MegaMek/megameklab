@@ -273,7 +273,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             }
             client.game.addMinefield(mf);
             deployedMinefields.addElement(mf);
-            clientgui.bv.refreshMinefields();
+            clientgui.bv.repaint();
         }
 
         if (p.getNbrMFConventional() == 0 && p.getNbrMFCommand() == 0

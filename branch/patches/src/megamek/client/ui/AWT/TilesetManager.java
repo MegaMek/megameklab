@@ -37,7 +37,8 @@ import java.util.List;
 import megamek.client.ui.AWT.util.ImageFileFactory;
 import megamek.client.ui.AWT.util.PlayerColors;
 import megamek.client.ui.AWT.util.RotateFilter;
-import megamek.client.ui.ITilesetManager;
+import megamek.client.ui.AWT.widget.BackGroundDrawer;
+import megamek.client.ui.AWT.widget.BufferedPanel;
 import megamek.common.Entity;
 import megamek.common.IBoard;
 import megamek.common.IGame;
@@ -59,7 +60,7 @@ import megamek.common.util.DirectoryItems;
  * @author Ben
  * @version
  */
-public class TilesetManager implements IPreferenceChangeListener, ITilesetManager {
+public class TilesetManager implements IPreferenceChangeListener {
     // component to load images to
     private Component comp;
 
@@ -376,11 +377,15 @@ public class TilesetManager implements IPreferenceChangeListener, ITilesetManage
     }
 
     // Loads a preview image of the unit into the BufferedPanel.
-    public Image loadPreviewImage(Entity entity, Image camo, int tint,
-            Component bp) {
+    public void loadPreviewImage(Entity entity, Image camo, int tint,
+            BufferedPanel bp) {
         Image base = mechTileset.imageFor(entity, comp);
         EntityImage entityImage = new EntityImage(base, tint, camo, bp);
         Image preview = entityImage.loadPreviewImage();
+
+        BackGroundDrawer bgdPreview = new BackGroundDrawer(preview);
+        bp.removeBgDrawers();
+        bp.addBgDrawer(bgdPreview);
 
         MediaTracker loadTracker = new MediaTracker(comp);
         loadTracker.addImage(preview, 0);
@@ -389,7 +394,7 @@ public class TilesetManager implements IPreferenceChangeListener, ITilesetManage
         } catch (InterruptedException e) {
 
         }
-        return preview;
+
     }
 
     /**

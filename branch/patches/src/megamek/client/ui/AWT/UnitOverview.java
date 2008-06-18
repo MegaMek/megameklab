@@ -76,9 +76,9 @@ public class UnitOverview implements Displayable {
 
     public UnitOverview(ClientGUI clientgui) {
         this.clientgui = clientgui;
-        fm = clientgui.getFontMetrics(FONT);
+        fm = clientgui.bv.getFontMetrics(FONT);
 
-        Toolkit toolkit = clientgui.getToolkit();
+        Toolkit toolkit = clientgui.bv.getToolkit();
         scrollUp = toolkit.getImage(IMAGE_DIR + "/scrollUp.gif"); //$NON-NLS-1$
         PMUtil.setImage(scrollUp, clientgui);
         scrollDown = toolkit.getImage(IMAGE_DIR + "/scrollDown.gif"); //$NON-NLS-1$
@@ -118,8 +118,9 @@ public class UnitOverview implements Displayable {
         int y = DIST_TOP;
 
         if (scroll) {
-            graph.drawImage(pageUp, x, y, null);
-            graph.drawImage(scrollUp, x, y + BUTTON_HEIGHT + BUTTON_PADDING, null);
+            graph.drawImage(pageUp, x, y, clientgui.bv);
+            graph.drawImage(scrollUp, x, y + BUTTON_HEIGHT + BUTTON_PADDING,
+                    clientgui.bv);
             y += BUTTON_HEIGHT + BUTTON_HEIGHT + BUTTON_PADDING
                     + BUTTON_PADDING;
         }
@@ -131,7 +132,7 @@ public class UnitOverview implements Displayable {
             String name = getIconName(e, fm);
             Image i1 = clientgui.bv.getTilesetManager().iconFor(e);
 
-            graph.drawImage(i1, x, y, null);
+            graph.drawImage(i1, x, y, clientgui.bv);
             printLine(graph, x + 3, y + 46, name);
             drawBars(graph, e, x, y);
             drawHeat(graph, e, x, y);
@@ -151,8 +152,9 @@ public class UnitOverview implements Displayable {
         if (scroll) {
             y -= PADDING;
             y += BUTTON_PADDING;
-            graph.drawImage(scrollDown, x, y, null);
-            graph.drawImage(pageDown, x, y + BUTTON_HEIGHT + BUTTON_PADDING, null);
+            graph.drawImage(scrollDown, x, y, clientgui.bv);
+            graph.drawImage(pageDown, x, y + BUTTON_HEIGHT + BUTTON_PADDING,
+                    clientgui.bv);
         }
 
     }
@@ -329,7 +331,6 @@ public class UnitOverview implements Displayable {
     }
 
     private void printLine(Graphics g, int x, int y, String s) {
-        if (s == null || s.isEmpty()) return; // some Graphics objects don't like empty strings
         g.setColor(Color.black);
         g.drawString(s, x + 1, y);
         g.drawString(s, x - 1, y);
@@ -436,7 +437,7 @@ public class UnitOverview implements Displayable {
             if (scrollOffset < 0) {
                 scrollOffset = 0;
             }
-            clientgui.bv.refreshDisplayables();
+            clientgui.bv.repaint();
         }
     }
 
@@ -446,21 +447,21 @@ public class UnitOverview implements Displayable {
             if (scrollOffset > unitIds.length - actUnitsPerPage) {
                 scrollOffset = unitIds.length - actUnitsPerPage;
             }
-            clientgui.bv.refreshDisplayables();
+            clientgui.bv.repaint();
         }
     }
 
     private void scrollUp() {
         if (scrollOffset > 0) {
             scrollOffset--;
-            clientgui.bv.refreshDisplayables();
+            clientgui.bv.repaint();
         }
     }
 
     private void scrollDown() {
         if (scrollOffset < unitIds.length - actUnitsPerPage) {
             scrollOffset++;
-            clientgui.bv.refreshDisplayables();
+            clientgui.bv.repaint();
         }
     }
 

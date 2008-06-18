@@ -21,6 +21,7 @@ import megamek.common.Compute;
 import megamek.common.Entity;
 import megamek.common.IGame;
 import megamek.common.Infantry;
+import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.TargetRoll;
 import megamek.common.ToHitData;
@@ -92,30 +93,22 @@ public class StreakHandler extends MissileWeaponHandler {
         if (bMissed)
             return 0;
         int nMissilesModifier = nSalvoBonus;
-        int nGlancing = 0;
+
         if (bGlancing)
-            nGlancing -= 4;
-        boolean maxtechmissiles = game.getOptions().booleanOption(
-                "maxtech_mslhitpen");
-        if (maxtechmissiles) {
-            if (nRange <= 1) {
-                nMissilesModifier += 1;
-            } else if (nRange <= wtype.getShortRange()) {
-                nMissilesModifier += 0;
-            } else if (nRange <= wtype.getMediumRange()) {
-                nMissilesModifier -= 1;
-            } else {
-                nMissilesModifier -= 2;
-            }
+            nMissilesModifier -= 4;
+
+        if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
+            nMissilesModifier -= 2;
         }
+        
+
         int missilesHit;
-        int amsMod = getAMSHitsMod(vPhaseReport);
+        int amsMod = getAMSHitsMod(vPhaseReport) + nMissilesModifier;
         if (amsMod == 0) {
             missilesHit = wtype.getRackSize();
         } else {
-            nMissilesModifier += amsMod;
             missilesHit = Compute.missilesHit(wtype.getRackSize(),
-                    nMissilesModifier, maxtechmissiles | bGlancing, weapon
+                    nMissilesModifier, bGlancing, weapon
                             .isHotLoaded(), true);
             if (nMissilesModifier != 0) {
                 if (nMissilesModifier > 0)

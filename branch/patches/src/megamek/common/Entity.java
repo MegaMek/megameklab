@@ -6421,7 +6421,7 @@ public abstract class Entity extends TurnOrdered implements Serializable,
     }
 
     public int getExtremeRangeModifier() {
-        return 8;
+        return 6;
     }
 
     public int getTargSysType() {
