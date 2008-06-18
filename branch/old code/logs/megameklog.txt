@@ -1,9 +1,0 @@
-Starting MegaMek v0.33.19-dev ...
-Compiled on Sun Feb 24 14:49:08 PST 2008
-Today is Sun Feb 24 14:56:55 PST 2008
-Java vendor Sun Microsystems Inc.
-Java version 1.5.0_12
-Platform Windows XP 5.1 (x86)
-Total memory available to MegaMek: 65,088 kB
-
-Starting GUI AWT. args: []
