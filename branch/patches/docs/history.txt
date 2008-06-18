@@ -1,8 +1,6 @@
 ﻿VERSION HISTORY:
 ----------------
-v0.33.29-dev (SVN)
-
-v0.33.28 (2008-06-17, 18:19 GMT+2)
+v0.33.28-dev (SVN)
 + Aeros can go up and down in atmosphere
 + Aero velocity halved every round in atmosphere
 + fixed misspelling of "chassis" for leviathan in mechset.txt
@@ -39,13 +37,6 @@ v0.33.28 (2008-06-17, 18:19 GMT+2)
 + air-breather fuel efficiency option
 + Aero special maneuvers in atmosphere
 + damage to Aero if launched in atmosphere at velocity > 2
-+ Optional 3D interface, thanks to Jörg Walter
-  To use this, Java 3d needs to be installed on your machine 
-  (https://java3d.dev.java.net/binary-builds.html.
-  Then, run MegaMek with the commandline parameter
-  -Dmegamek.client.ui.AWT.boardView=megamek.client.ui.AWT.boardview3d.BoardView3D
-  Also, the memory allocated to MegaMek should be increased by using the command
-  line parameter -Xmx256M, as soon as you want to play on somewhat larger maps.
 
 v0.33.27 (2008-06-10, 23:50 GMT+2)
 + Bug: ISSRM3 not getting created
