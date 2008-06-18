@@ -173,7 +173,7 @@
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_prone_fire</optionname>
+      <optionname>tacops_prone_fire</optionname>
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
