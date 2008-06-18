@@ -153,7 +153,7 @@
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>engine_explosions</optionname>
+      <optionname>tacops_engine_explosions</optionname>
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
@@ -165,15 +165,15 @@
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_physical_psr</optionname>
+      <optionname>tacops_physical_psr</optionname>
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_round_damage</optionname>
+      <optionname>tacops_taking_damage</optionname>
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_prone_fire</optionname>
+      <optionname>tacops_prone_fire</optionname>
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
@@ -189,7 +189,7 @@
       <optionvalue>true</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_range</optionname>
+      <optionname>tacops_range</optionname>
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>
@@ -197,11 +197,11 @@
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_altdmg</optionname>
+      <optionname>tacops_altdmg</optionname>
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_mslhitpen</optionname>
+      <optionname>tacops_clusterhitpen</optionname>
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>
