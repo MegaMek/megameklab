@@ -18,7 +18,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 
-public interface Displayable {
+import megamek.client.ui.IDisplayable;
+
+public interface Displayable extends IDisplayable{
 
     public void draw(Graphics graph, Dimension size);
 
