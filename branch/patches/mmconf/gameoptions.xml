@@ -209,7 +209,7 @@
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_LOS1</optionname>
+      <optionname>tacops_LOS1</optionname>
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>

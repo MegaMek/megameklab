@@ -678,7 +678,7 @@ public class LosEffects {
         // check for block by terrain
 
         // check for LOS according to diagramming rule from MaxTech, page 22
-        if (game.getOptions().booleanOption("maxtech_LOS1")) {
+        if (game.getOptions().booleanOption("tacops_LOS1")) {
             if (hexEl + bldgEl > (ai.targetAbsHeight
                     * ai.attackPos.distance(coords) + ai.attackAbsHeight
                     * ai.targetPos.distance(coords))

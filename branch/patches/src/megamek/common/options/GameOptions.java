@@ -123,7 +123,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(level3, "maxtech_leg_damage", false); //$NON-NLS-1$
         addOption(level3, "maxtech_fire", false); //$NON-NLS-1$
         addOption(level3, "tacops_range", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_LOS1", false); //$NON-NLS-1$
+        addOption(level3, "tacops_LOS1", false); //$NON-NLS-1$
         addOption(level3, "tacops_altdmg", false); //$NON-NLS-1$
         addOption(level3, "tacops_clusterhitpen", false); //$NON-NLS-1$
         addOption(level3, "tacops_ppc_inhibitors", false); //$NON-NLS-1$
