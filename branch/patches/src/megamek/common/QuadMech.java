@@ -97,7 +97,7 @@ public class QuadMech extends Mech {
                         hipHits++;
                         if (game == null
                                 || !game.getOptions().booleanOption(
-                                        "maxtech_leg_damage")) {
+                                        "tacops_leg_damage")) {
                             continue;
                         }
                     }
@@ -120,7 +120,7 @@ public class QuadMech extends Mech {
             if (hipHits > 0) {
                 if (game != null
                         && game.getOptions()
-                                .booleanOption("maxtech_leg_damage")) {
+                                .booleanOption("tacops_leg_damage")) {
                     wmp = wmp - (2 * hipHits);
                 } else {
                     for (int i = 0; i < hipHits; i++) {
@@ -279,7 +279,7 @@ public class QuadMech extends Mech {
                         Mech.ACTUATOR_HIP, loc) > 0) {
                     roll.addModifier(2, getLocationName(loc)
                             + " Hip Actuator destroyed");
-                    if (!game.getOptions().booleanOption("maxtech_leg_damage"))
+                    if (!game.getOptions().booleanOption("tacops_leg_damage"))
                         continue;
                 }
                 // upper leg actuators?

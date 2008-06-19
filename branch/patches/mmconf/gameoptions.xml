@@ -197,7 +197,7 @@
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_leg_damage</optionname>
+      <optionname>tacops_leg_damage</optionname>
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>

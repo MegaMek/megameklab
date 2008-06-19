@@ -22,18 +22,14 @@ public class BipedMech extends Mech {
      */
     private static final long serialVersionUID = 4166375446709772785L;
 
-    public static final String[] LOCATION_NAMES = { "Head", "Center Torso",
-            "Right Torso", "Left Torso", "Right Arm", "Left Arm", "Right Leg",
-            "Left Leg" };
+    public static final String[] LOCATION_NAMES = { "Head", "Center Torso", "Right Torso", "Left Torso", "Right Arm", "Left Arm", "Right Leg", "Left Leg" };
 
-    public static final String[] LOCATION_ABBRS = { "HD", "CT", "RT", "LT",
-            "RA", "LA", "RL", "LL" };
+    public static final String[] LOCATION_ABBRS = { "HD", "CT", "RT", "LT", "RA", "LA", "RL", "LL" };
 
     private static final int[] NUM_OF_SLOTS = { 6, 12, 12, 12, 12, 12, 6, 6 };
 
     public BipedMech(String inGyroType, String inCockpitType) {
-        this(getGyroTypeForString(inGyroType),
-                getCockpitTypeForString(inCockpitType));
+        this(getGyroTypeForString(inGyroType), getCockpitTypeForString(inCockpitType));
     }
 
     public BipedMech() {
@@ -45,23 +41,15 @@ public class BipedMech extends Mech {
 
         movementMode = IEntityMovementMode.BIPED;
 
-        setCritical(LOC_RARM, 0, new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                ACTUATOR_SHOULDER));
-        setCritical(LOC_RARM, 1, new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                ACTUATOR_UPPER_ARM));
-        setCritical(LOC_RARM, 2, new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                ACTUATOR_LOWER_ARM));
-        setCritical(LOC_RARM, 3, new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                ACTUATOR_HAND));
+        setCritical(LOC_RARM, 0, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_SHOULDER));
+        setCritical(LOC_RARM, 1, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_UPPER_ARM));
+        setCritical(LOC_RARM, 2, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_LOWER_ARM));
+        setCritical(LOC_RARM, 3, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_HAND));
 
-        setCritical(LOC_LARM, 0, new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                ACTUATOR_SHOULDER));
-        setCritical(LOC_LARM, 1, new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                ACTUATOR_UPPER_ARM));
-        setCritical(LOC_LARM, 2, new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                ACTUATOR_LOWER_ARM));
-        setCritical(LOC_LARM, 3, new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                ACTUATOR_HAND));
+        setCritical(LOC_LARM, 0, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_SHOULDER));
+        setCritical(LOC_LARM, 1, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_UPPER_ARM));
+        setCritical(LOC_LARM, 2, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_LOWER_ARM));
+        setCritical(LOC_LARM, 3, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_HAND));
     }
 
     /**
@@ -94,9 +82,7 @@ public class BipedMech extends Mech {
                 if (!isLocationBad(i)) {
                     if (legHasHipCrit(i)) {
                         hipHits++;
-                        if (game == null
-                                || !game.getOptions().booleanOption(
-                                        "maxtech_leg_damage")) {
+                        if (game == null || !game.getOptions().booleanOption("tacops_leg_damage")) {
                             continue;
                         }
                     }
@@ -112,9 +98,7 @@ public class BipedMech extends Mech {
             wmp = (legsDestroyed == 1) ? 1 : 0;
         } else {
             if (hipHits > 0) {
-                if (game != null
-                        && game.getOptions()
-                                .booleanOption("maxtech_leg_damage")) {
+                if (game != null && game.getOptions().booleanOption("tacops_leg_damage")) {
                     wmp = (hipHits >= 1) ? wmp - (2 * hipHits) : 0;
                 } else {
                     wmp = (hipHits == 1) ? (int) Math.ceil(wmp / 2.0) : 0;
@@ -188,11 +172,16 @@ public class BipedMech extends Mech {
     /**
      * Sets the internal structure for the mech.
      * 
-     * @param head head
-     * @param ct center torso
-     * @param t right/left torso
-     * @param arm right/left arm
-     * @param leg right/left leg
+     * @param head
+     *            head
+     * @param ct
+     *            center torso
+     * @param t
+     *            right/left torso
+     * @param arm
+     *            right/left arm
+     * @param leg
+     *            right/left leg
      */
     public void setInternal(int head, int ct, int t, int arm, int leg) {
         initializeInternal(head, LOC_HEAD);
@@ -221,30 +210,22 @@ public class BipedMech extends Mech {
                 roll.addModifier(5, getLocationName(loc) + " destroyed");
             } else {
                 // check for damaged hip actuators
-                if (getBadCriticals(CriticalSlot.TYPE_SYSTEM,
-                        Mech.ACTUATOR_HIP, loc) > 0) {
-                    roll.addModifier(2, getLocationName(loc)
-                            + " Hip Actuator destroyed");
-                    if (!game.getOptions().booleanOption("maxtech_leg_damage"))
+                if (getBadCriticals(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_HIP, loc) > 0) {
+                    roll.addModifier(2, getLocationName(loc) + " Hip Actuator destroyed");
+                    if (!game.getOptions().booleanOption("tacops_leg_damage"))
                         continue;
                 }
                 // upper leg actuators?
-                if (getBadCriticals(CriticalSlot.TYPE_SYSTEM,
-                        Mech.ACTUATOR_UPPER_LEG, loc) > 0) {
-                    roll.addModifier(1, getLocationName(loc)
-                            + " Upper Leg Actuator destroyed");
+                if (getBadCriticals(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_UPPER_LEG, loc) > 0) {
+                    roll.addModifier(1, getLocationName(loc) + " Upper Leg Actuator destroyed");
                 }
                 // lower leg actuators?
-                if (getBadCriticals(CriticalSlot.TYPE_SYSTEM,
-                        Mech.ACTUATOR_LOWER_LEG, loc) > 0) {
-                    roll.addModifier(1, getLocationName(loc)
-                            + " Lower Leg Actuator destroyed");
+                if (getBadCriticals(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_LOWER_LEG, loc) > 0) {
+                    roll.addModifier(1, getLocationName(loc) + " Lower Leg Actuator destroyed");
                 }
                 // foot actuators?
-                if (getBadCriticals(CriticalSlot.TYPE_SYSTEM,
-                        Mech.ACTUATOR_FOOT, loc) > 0) {
-                    roll.addModifier(1, getLocationName(loc)
-                            + " Foot Actuator destroyed");
+                if (getBadCriticals(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_FOOT, loc) > 0) {
+                    roll.addModifier(1, getLocationName(loc) + " Foot Actuator destroyed");
                 }
             }
         }
@@ -309,7 +290,8 @@ public class BipedMech extends Mech {
     /**
      * Check to see if a Biped mech has a claw in one of its arms
      * 
-     * @param location (LOC_RARM or LOC_LARM)
+     * @param location
+     *            (LOC_RARM or LOC_LARM)
      * @return True/False
      */
     public boolean hasClaw(int location) {
@@ -325,9 +307,7 @@ public class BipedMech extends Mech {
                 continue;
             Mounted m = this.getEquipment(cs.getIndex());
             EquipmentType type = m.getType();
-            if (type instanceof MiscType
-                    && type.hasFlag(MiscType.F_HAND_WEAPON)
-                    && type.hasSubType(MiscType.S_CLAW)) {
+            if (type instanceof MiscType && type.hasFlag(MiscType.F_HAND_WEAPON) && type.hasSubType(MiscType.S_CLAW)) {
                 return !(m.isDestroyed() || m.isMissing() || m.isBreached());
             }
         }
@@ -403,9 +383,7 @@ public class BipedMech extends Mech {
                 continue;
             Mounted m = this.getEquipment(cs.getIndex());
             EquipmentType type = m.getType();
-            if (type instanceof MiscType && ((MiscType) type).isVibroblade()
-                    && m.curMode().equals("Active")
-                    && !(m.isDestroyed() || m.isMissing() || m.isBreached())) {
+            if (type instanceof MiscType && ((MiscType) type).isVibroblade() && m.curMode().equals("Active") && !(m.isDestroyed() || m.isMissing() || m.isBreached())) {
                 MiscType blade = (MiscType) type;
                 if (blade.hasSubType(MiscType.S_VIBRO_LARGE))
                     return 7;
