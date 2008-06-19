@@ -24,6 +24,7 @@ import java.awt.Point;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Vector;
+
 import megamek.client.ui.AWT.Displayable;
 import megamek.client.ui.AWT.GUIPreferences;
 import megamek.client.ui.AWT.Messages;

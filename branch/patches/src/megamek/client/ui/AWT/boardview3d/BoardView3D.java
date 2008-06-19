@@ -231,8 +231,8 @@ public class BoardView3D
     public void processBoardViewEvent(BoardViewEvent event) {
         if (boardListeners == null) return;
 
-        for(Enumeration e = boardListeners.elements(); e.hasMoreElements();) {
-            BoardViewListener l = (BoardViewListener)e.nextElement();
+        for(Enumeration<BoardViewListener> e = boardListeners.elements(); e.hasMoreElements();) {
+            BoardViewListener l = e.nextElement();
             switch(event.getType()) {
             case BoardViewEvent.BOARD_HEX_CLICKED :
             case BoardViewEvent.BOARD_HEX_DOUBLECLICKED :
@@ -712,6 +712,66 @@ public class BoardView3D
             hoverInfo.setPosition(c);
             refreshDisplayables();
         }
+    }
+
+
+    public void cursor(int x, int y) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    public Coords getFirstLOS() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public Coords getHighlighted() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public void highlight(int x, int y) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    public void mouseAction(int x, int y, int mtype, int modifiers) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    public void mouseAction(Coords coords, int mtype, int modifiers) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    public void select(int x, int y) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    public void setHighlighted(Coords highlighted) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    public void setLastCursor(Coords lastCursor) {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    public void setSelected(Coords selected) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
