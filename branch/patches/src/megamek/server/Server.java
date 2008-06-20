@@ -3819,7 +3819,8 @@ public class Server implements Runnable {
                 // building and displace the entity inside.
                 // ASSUMPTION: you don't charge the building
                 // if Tanks or Mechs were charged.
-                int chargeDamage = ChargeAttackAction.getDamageFor(entity);
+                int chargeDamage = ChargeAttackAction.getDamageFor(entity,game
+                        .getOptions().booleanOption("tacops_charge_damage"),entity.delta_distance);
                 if (!bldgSuffered) {
                     Vector<Report> reports = damageBuilding(bldg, chargeDamage);
                     for (Report report : reports) {
@@ -10792,6 +10793,8 @@ public class Server implements Runnable {
         int damage = pr.damage;
         final ToHitData toHit = pr.toHit;
         int roll = pr.roll;
+        
+        toHit.setMoS(toHit.getValue() - roll);
         Entity te = null;
         if (target != null && target.getTargetType() == Targetable.TYPE_ENTITY) {
             te = (Entity) target;
@@ -11259,9 +11262,12 @@ public class Server implements Runnable {
             int direction, boolean glancing, boolean throughFront) {
 
         // we hit...
-        int damage = ChargeAttackAction.getDamageFor(ae);
+        //Damage To Target
+        int damage = ChargeAttackAction.getDamageFor(ae,te,game
+                .getOptions().booleanOption("tacops_charge_damage"),toHit.getMoS());
+        //Damage to Attacker
         int damageTaken = ChargeAttackAction.getDamageTakenBy(ae, te, game
-                .getOptions().booleanOption("maxtech_charge_damage"));
+                .getOptions().booleanOption("tacops_charge_damage"));
         PilotingRollData chargePSR = null;
         if (glancing) {
             // Glancing Blow rule doesn't state whether damage to attacker on
@@ -21401,7 +21407,12 @@ public class Server implements Runnable {
         } else if (aaa instanceof ChargeAttackAction) {
             ChargeAttackAction caa = (ChargeAttackAction) aaa;
             toHit = caa.toHit(game);
-            damage = ChargeAttackAction.getDamageFor(ae);
+            if ( caa.getTarget(game) instanceof Entity ) {
+                Entity target = (Entity)caa.getTarget(game);
+                damage = ChargeAttackAction.getDamageFor(ae,target,game.getOptions().booleanOption("tacops_charge_damage"),toHit.getMoS());
+            } else {
+                damage = ChargeAttackAction.getDamageFor(ae);
+            }
         } else if (aaa instanceof ClubAttackAction) {
             ClubAttackAction caa = (ClubAttackAction) aaa;
             toHit = caa.toHit(game);

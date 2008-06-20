@@ -225,7 +225,7 @@
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_charge_damage</optionname>
+      <optionname>tacops_charge_damage</optionname>
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>

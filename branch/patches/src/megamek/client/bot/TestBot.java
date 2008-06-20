@@ -479,7 +479,7 @@ public class TestBot extends BotClient {
                                             .getEntity(), target.getEntity())
                                             .toHit(game, option);
                                     damage = ChargeAttackAction.getDamageFor(
-                                            option.getEntity(), option
+                                            option.getEntity(), target.getEntity(),false, option
                                                     .getHexesMoved());
                                     self_threat = option
                                             .getCEntity()
