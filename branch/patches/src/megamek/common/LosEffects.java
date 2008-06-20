@@ -422,7 +422,7 @@ public class LosEffects {
         if (heavySmoke > 0) {
             StringBuffer text = new StringBuffer(heavySmoke);
             text.append(" intervening");
-            if (game.getOptions().booleanOption("maxtech_fire"))
+            if (game.getOptions().booleanOption("tacops_fire"))
                 text.append(" heavy");
             text.append(" smoke");
             if (eistatus > 0) {
@@ -715,7 +715,7 @@ public class LosEffects {
                     || (hexEl + 2 > ai.targetAbsHeight && ai.targetPos
                             .distance(coords) == 1)) {
                 // smoke overrides any woods in the hex if L3 smoke rule is off
-                if (!game.getOptions().booleanOption("maxtech_fire")) {
+                if (!game.getOptions().booleanOption("tacops_fire")) {
                     if (hex.containsTerrain(Terrains.SMOKE)) {
                         los.heavySmoke++;
                     } else if (hex.terrainLevel(Terrains.WOODS) == 1

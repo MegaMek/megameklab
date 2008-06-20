@@ -2338,7 +2338,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                             new Integer(le.getLightSmoke()) }));
                 }
                 if (le.getHeavySmoke() > 0) {
-                    if (game.getOptions().booleanOption("maxtech_fire")) { //$NON-NLS-1$
+                    if (game.getOptions().booleanOption("tacops_fire")) { //$NON-NLS-1$
                         message.append(Messages.getString(
                                 "BoardView1.HeavySmoke", new Object[] { //$NON-NLS-1$
                                 new Integer(le.getHeavySmoke()) }));

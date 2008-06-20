@@ -1588,13 +1588,13 @@ public class Game implements Serializable, IGame {
     public void determineWind() {
         String[] dirNames = { "North", "Northeast", "Southeast", "South",
                 "Southwest", "Northwest" };
-        String[] strNames = { "Calm", "Light", "Moderate", "High" };
+        String[] strNames = { "No Wind", "Light Gale", "Moderate Gale", "Strong Gale", "Storm", "Tornado F1", "Tornado F2", "Tornado F3", "Tornado F4" };
 
         if (windDirection == -1) {
             // Initial wind direction. If using level 2 rules, this
             // will be the wind direction for the whole battle.
             windDirection = Compute.d6(1) - 1;
-        } else if (getOptions().booleanOption("maxtech_fire")) {
+        } else if (getOptions().booleanOption("tacops_fire")) {
             // Wind direction changes on a roll of 1 or 6
             switch (Compute.d6()) {
                 case 1: // rotate clockwise
@@ -1604,23 +1604,26 @@ public class Game implements Serializable, IGame {
                     windDirection = (windDirection + 5) % 6;
             }
         }
-        if (getOptions().booleanOption("maxtech_fire")) {
+        if (getOptions().booleanOption("tacops_fire")) {
             if (windStrength == -1) {
                 // Initial wind strength
                 switch (Compute.d6()) {
                     case 1:
+                    case 2:
                         windStrength = 0;
                         break;
-                    case 2:
                     case 3:
                         windStrength = 1;
                         break;
                     case 4:
-                    case 5:
                         windStrength = 2;
                         break;
-                    case 6:
+                    case 5:
                         windStrength = 3;
+                        break;
+                    case 6:
+                        windStrength = 4;
+                        break;
                 }
             } else {
                 // Wind strength changes on a roll of 1 or 6
@@ -1630,7 +1633,7 @@ public class Game implements Serializable, IGame {
                             windStrength--;
                         break;
                     case 6: // stronger
-                        if (windStrength < 3)
+                        if (windStrength < 8)
                             windStrength++;
                 }
             }

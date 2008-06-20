@@ -201,7 +201,7 @@
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_fire</optionname>
+      <optionname>tacops_fire</optionname>
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>

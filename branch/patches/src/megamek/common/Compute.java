@@ -1429,7 +1429,7 @@ public class Compute {
         } else if (woodsLevel == 3) {
             woodsText = "target in ultra heavy " + woodsText;
         }
-        if (!game.getOptions().booleanOption("maxtech_fire")) { // L2
+        if (!game.getOptions().booleanOption("tacops_fire")) { // L2
             if (hex.containsTerrain(Terrains.SMOKE)) {
                 if (eistatus > 0) {
                     toHit.addModifier(1, "target in smoke");

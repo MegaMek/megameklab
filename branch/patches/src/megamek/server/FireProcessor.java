@@ -93,7 +93,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
 
         // If we're in L3 rules, process smoke FIRST, before any fires spread or
         // smoke is produced.
-        if (game.getOptions().booleanOption("maxtech_fire")) {
+        if (game.getOptions().booleanOption("tacops_fire")) {
             resolveSmoke();
         }
 
@@ -195,7 +195,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
                 // If the L3 smoke rule is off, add smoke normally, otherwise
                 // call the L3 method
                 if (currentHex.containsTerrain(Terrains.FIRE)
-                        && !game.getOptions().booleanOption("maxtech_fire")) {
+                        && !game.getOptions().booleanOption("tacops_fire")) {
                     server.addSmoke(currentXCoord, currentYCoord, windDirection);
                     server.addSmoke(currentXCoord, currentYCoord,
                             (windDirection + 1) % 6);
@@ -203,7 +203,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
                             (windDirection + 5) % 6);
                     board.initializeAround(currentXCoord, currentYCoord);
                 } else if (currentHex.containsTerrain(Terrains.FIRE)
-                        && game.getOptions().booleanOption("maxtech_fire")) {
+                        && game.getOptions().booleanOption("tacops_fire")) {
                     server.addL3Smoke(currentXCoord, currentYCoord);
                     board.initializeAround(currentXCoord, currentYCoord);
                 }
@@ -218,7 +218,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
         }
 
         // If we're in L3 rules, shift the wind.
-        if (game.getOptions().booleanOption("maxtech_fire")) {
+        if (game.getOptions().booleanOption("tacops_fire")) {
             game.determineWind();
         }
 
@@ -399,21 +399,25 @@ public class FireProcessor extends DynamicTerrainProcessor {
         if (windStr == 3) {
             nextCoords = nextCoords.translated(windDir);
         }
+        //if Storm smoke moves 3 hexes
+        if (windStr == 4) {
+            nextCoords = nextCoords.translated(windDir).translated(windDir);
+        }
 
         return nextCoords;
     }
 
     /**
+     * TODO
      * This method does not currently support "smoke clouds" as specified in
-     * MaxTech (revised ed.) under "Dissipation" on page 51. The added
-     * complexity was not worth it given that smoke-delivering weapons were not
-     * even implemented yet (and might never be).
+     * TacOps under "Dissipation" on page 47. The added
      */
     public boolean driftSmokeDissipate(IHex smokeHex, int roll, int smokeSize,
             int windStr) {
         // Dissipate in various winds
         if (roll > 10 || (roll > 9 && windStr == 2)
-                || (roll > 7 && windStr == 3)) {
+                || (roll > 7 && windStr == 3)
+                || (roll > 5 && windStr == 4)) {
             smokeHex.removeTerrain(Terrains.SMOKE);
 
             if (smokeSize == 2) {
@@ -421,6 +425,12 @@ public class FireProcessor extends DynamicTerrainProcessor {
                         Terrains.SMOKE, 1));
                 return true;
             }
+            return true;
+        }
+        //All smoke goes bye bye in Tornados
+        if ( windStr > 4 ) {
+            smokeHex.removeTerrain(Terrains.SMOKE);
+            smokeSize = 1;
             return true;
         }
         return false;

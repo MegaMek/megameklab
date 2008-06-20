@@ -6351,7 +6351,7 @@ public class Server implements Runnable {
      * @param coords the <code>Coords</code> where to deliver
      */
     public void deliverArtillerySmoke(Coords coords, Vector<Report> vPhaseReport) {
-        if (game.getOptions().booleanOption("maxtech_fire")) {
+        if (game.getOptions().booleanOption("tacops_fire")) {
             IHex h = game.getBoard().getHex(coords);
             // Unless there is a heavy smoke in the hex already, add one.
             if (h.terrainLevel(Terrains.SMOKE) < 2) {
@@ -18754,7 +18754,7 @@ public class Server implements Runnable {
         Coords fireCoords = new Coords(x, y);
         hex.removeTerrain(Terrains.FIRE);
         sendChangedHex(fireCoords);
-        if (!game.getOptions().booleanOption("maxtech_fire")) {
+        if (!game.getOptions().booleanOption("tacops_fire")) {
             // only remove the 3 smoke hexes if under L2 rules!
             int windDir = game.getWindDirection();
             removeSmoke(x, y, windDir);
