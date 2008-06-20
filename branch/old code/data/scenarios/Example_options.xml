@@ -221,7 +221,7 @@
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>
-      <optionname>maxtech_heat</optionname>
+      <optionname>tacops_heat</optionname>
       <optionvalue>false</optionvalue>
    </gameoption>
    <gameoption>

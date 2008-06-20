@@ -12264,7 +12264,7 @@ public class Server implements Runnable {
             int autoShutDownHeat;
             boolean mtHeat;
 
-            if (game.getOptions().booleanOption("maxtech_heat")) {
+            if (game.getOptions().booleanOption("tacops_heat")) {
                 autoShutDownHeat = 50;
                 mtHeat = true;
             } else {
@@ -12284,7 +12284,17 @@ public class Server implements Runnable {
                     // roll for startup
                     int startup = 4 + (entity.heat - 14) / 4 * 2;
                     if (mtHeat) {
-                        startup = entity.crew.getPiloting() + startup - 8;
+                        int pmod=0;
+                        switch (entity.crew.getPiloting() {
+                            case 0:
+                            case 1: pmod=-2; break;
+                            case 2:
+                            case 3: pmod=-1; break;
+                            case 6:
+                            case 7: pmod=+1; break;
+                        }
+                        if (entity instanceof QuadMech) pmod-=2;
+                        startup = startup - 5 + pmod;
                     }
                     int suroll = Compute.d6(2);
                     r = new Report(5050);

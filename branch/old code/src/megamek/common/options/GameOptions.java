@@ -130,7 +130,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(level3, "maxtech_charge_damage", false); //$NON-NLS-1$
         addOption(level3, "maxtech_glancing_blows", false); //$NON-NLS-1$
         addOption(level3, "maxtech_burst", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_heat", false); //$NON-NLS-1$
+        addOption(level3, "tacops_heat", false); //$NON-NLS-1$
         addOption(level3, "maxtech_partial_cover", false); //$NON-NLS-1$
         addOption(level3, "allow_level_3_targsys", false); //$NON-NLS-1$ 
         addOption(level3, "quad_hit_location", false); //$NON-NLS-1$

@@ -1357,7 +1357,7 @@ public abstract class Entity extends TurnOrdered implements Serializable,
         int mp = getOriginalWalkMP();
         int minus;
         if (!ignoreheat) {
-            if (game != null && game.getOptions().booleanOption("maxtech_heat")) {
+            if (game != null && game.getOptions().booleanOption("tacops_heat")) {
                 if (heat < 30) {
                     minus = (heat / 5);
                 } else if (heat >= 49) {
@@ -1956,7 +1956,7 @@ public abstract class Entity extends TurnOrdered implements Serializable,
         if (heat >= 24) {
             mod++;
         }
-        boolean mtHeat = game.getOptions().booleanOption("maxtech_heat");
+        boolean mtHeat = game.getOptions().booleanOption("tacops_heat");
         if (mtHeat && heat >= 33) {
             mod++;
         }
