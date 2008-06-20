@@ -2768,7 +2768,7 @@ public class MechDisplay extends BufferedPanel {
                     hasTSM = true;
 
                 if (clientgui.getClient().game.getOptions().booleanOption(
-                        "maxtech_heat")) {
+                        "tacops_heat")) {
                     mtHeat = true;
                 }
                 heatR.append(HeatEffects
