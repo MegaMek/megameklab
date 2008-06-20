@@ -48,7 +48,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
     }
 
     public void initialize() {
-        IBasicOptionGroup base = addGroup("base"); //$NON-NLS-1$
+        IBasicOptionGroup base = addGroup("basic"); //$NON-NLS-1$
         addOption(base, "friendly_fire", false); //$NON-NLS-1$
         addOption(base, "skip_ineligable_movement", false); //$NON-NLS-1$
         addOption(base, "skip_ineligable_firing", false); //$NON-NLS-1$
@@ -86,68 +86,70 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(at2,"heat_by_bay", false); //$NON-NLS-1$
         addOption(at2,"at2_nukes", false); //$NON-NLS-1$
         
-        IBasicOptionGroup level2 = addGroup("level2"); //$NON-NLS-1$
-        addOption(level2, "flamer_heat", true); //$NON-NLS-1$
-        addOption(level2, "fire", false); //$NON-NLS-1$
-        addOption(level2, "indirect_fire", true); //$NON-NLS-1$
-        addOption(level2, "minefields", false); //$NON-NLS-1$
-        addOption(level2, "temperature", 25); //$NON-NLS-1$
-        addOption(level2, "gravity", (float) 1.0); //$NON-NLS-1$
-        addOption(level2, "vacuum", false); //$NON-NLS-1$
-        addOption(level2, "night_battle", false); //$NON-NLS-1$
-        addOption(level2, "assault_drop", false); //$NON-NLS-1$
-        addOption(level2, "hidden_units", false); //$NON-NLS-1$
+        IBasicOptionGroup advancedRules = addGroup("advancedRules"); //$NON-NLS-1$
+        addOption(advancedRules, "flamer_heat", true); //$NON-NLS-1$
+        addOption(advancedRules, "indirect_fire", true); //$NON-NLS-1$
+        addOption(advancedRules, "minefields", false); //$NON-NLS-1$
+        addOption(advancedRules, "temperature", 25); //$NON-NLS-1$
+        addOption(advancedRules, "gravity", (float) 1.0); //$NON-NLS-1$
+        addOption(advancedRules, "vacuum", false); //$NON-NLS-1$
+        addOption(advancedRules, "night_battle", false); //$NON-NLS-1$
+        addOption(advancedRules, "assault_drop", false); //$NON-NLS-1$
+        addOption(advancedRules, "hidden_units", false); //$NON-NLS-1$
+        addOption(advancedRules, "allow_nukes", false);
+        addOption(advancedRules, "really_allow_nukes", false);
+        addOption(advancedRules, "allow_level_3_units", false);
+        addOption(advancedRules, "allow_level_3_ammo", false);
+        addOption(advancedRules, "double_blind", false); //$NON-NLS-1$
+        addOption(advancedRules, "supress_all_double_blind_messages", false); //$NON-NLS-1$
+        addOption(advancedRules, "team_vision", true); //$NON-NLS-1$
+        addOption(advancedRules, "pilot_advantages", false); //$NON-NLS-1$
+        addOption(advancedRules, "allow_level_3_targsys", false); //$NON-NLS-1$ 
+        addOption(advancedRules, "maxtech_bap", false); //$NON-NLS-1$
+        addOption(advancedRules, "maxtech_artillery", false); //$NON-NLS-1$
+        addOption(advancedRules, "maxtech_eccm", false); //$NON-NLS-1$
+        addOption(advancedRules, "maxtech_dig_in", false); //$NON-NLS-1$
+        addOption(advancedRules, "manei_domini", false); //$NON-NLS-1$
+        addOption(advancedRules, "maxtech_angel_ecm", false); //$NON-NLS-1$
+        addOption(advancedRules, "paratroopers", false); //$NON-NLS-1$
 
-        IBasicOptionGroup level3 = addGroup("level3"); //$NON-NLS-1$
-        addOption(level3, "allow_nukes", false);
-        addOption(level3, "really_allow_nukes", false);
-        addOption(level3, "allow_level_3_units", false);
-        addOption(level3, "allow_level_3_ammo", false);
-        addOption(level3, "double_blind", false); //$NON-NLS-1$
-        addOption(level3, "supress_all_double_blind_messages", false); //$NON-NLS-1$
-        addOption(level3, "dusk", false); //$NON-NLS-1$
-        addOption(level3, "blizzard", false); //$NON-NLS-1$
-        addOption(level3, "blowing_sand", false); //$NON-NLS-1$
-        addOption(level3, "heavy_snowfall", false); //$NON-NLS-1$
-        addOption(level3, "light_rainfall", false); //$NON-NLS-1$
-        addOption(level3, "heavy_rainfall", false); //$NON-NLS-1$
-        addOption(level3, "moderate_winds", false); //$NON-NLS-1$
-        addOption(level3, "high_winds", false); //$NON-NLS-1$
-        addOption(level3, "team_vision", true); //$NON-NLS-1$
-        addOption(level3, "floating_crits", false); //$NON-NLS-1$
-        addOption(level3, "tacops_engine_explosions", false); //$NON-NLS-1$
-        addOption(level3, "pilot_advantages", false); //$NON-NLS-1$
-        addOption(level3, "tacops_physical_psr", false); //$NON-NLS-1$
-        addOption(level3, "tacops_taking_damage", false); //$NON-NLS-1$
-        addOption(level3, "tacops_prone_fire", false); //$NON-NLS-1$
-        addOption(level3, "tacops_leg_damage", false); //$NON-NLS-1$
-        addOption(level3, "tacops_fire", false); //$NON-NLS-1$
-        addOption(level3, "tacops_range", false); //$NON-NLS-1$
-        addOption(level3, "tacops_LOS1", false); //$NON-NLS-1$
-        addOption(level3, "tacops_altdmg", false); //$NON-NLS-1$
-        addOption(level3, "tacops_clusterhitpen", false); //$NON-NLS-1$
-        addOption(level3, "tacops_ppc_inhibitors", false); //$NON-NLS-1$
-        addOption(level3, "tacops_charge_damage", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_glancing_blows", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_burst", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_heat", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_partial_cover", false); //$NON-NLS-1$
-        addOption(level3, "allow_level_3_targsys", false); //$NON-NLS-1$ 
-        addOption(level3, "quad_hit_location", false); //$NON-NLS-1$
-        addOption(level3, "hull_down", false); //$NON-NLS-1$
-        addOption(level3, "vehicle_fires", false); //$NON-NLS-1$
-        addOption(level3, "paratroopers", false); //$NON-NLS-1$
-        addOption(level3, "ba_criticals", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_bap", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_artillery", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_eccm", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_dig_in", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_new_physicals", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_hotload", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_rapid_ac", false); //$NON-NLS-1$
-        addOption(level3, "tacops_walk_backwards", false); //$NON-NLS-1$
-        addOption(level3, "manei_domini", false); //$NON-NLS-1$
-        addOption(level3, "maxtech_angel_ecm", false); //$NON-NLS-1$
+        IBasicOptionGroup advancedCombat = addGroup("advancedCombat"); //$NON-NLS-1$
+        addOption(advancedCombat, "floating_crits", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_engine_explosions", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_prone_fire", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_fire", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_range", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_LOS1", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_altdmg", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_clusterhitpen", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_ppc_inhibitors", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_charge_damage", false); //$NON-NLS-1$
+        addOption(advancedCombat, "maxtech_glancing_blows", false); //$NON-NLS-1$
+        addOption(advancedCombat, "maxtech_burst", false); //$NON-NLS-1$
+        addOption(advancedCombat, "maxtech_heat", false); //$NON-NLS-1$
+        addOption(advancedCombat, "maxtech_partial_cover", false); //$NON-NLS-1$
+        addOption(advancedCombat, "quad_hit_location", false); //$NON-NLS-1$
+        addOption(advancedCombat, "hull_down", false); //$NON-NLS-1$
+        addOption(advancedCombat, "ba_criticals", false); //$NON-NLS-1$
+        addOption(advancedCombat, "maxtech_hotload", false); //$NON-NLS-1$
+        addOption(advancedCombat, "maxtech_rapid_ac", false); //$NON-NLS-1$
+        addOption(advancedCombat, "maxtech_new_physicals", false); //$NON-NLS-1$
+
+        IBasicOptionGroup advancedGroundMovement = addGroup("advancedGroundMovement"); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "dusk", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "blizzard", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "blowing_sand", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "heavy_snowfall", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "light_rainfall", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "heavy_rainfall", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "moderate_winds", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "high_winds", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "tacops_physical_psr", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "tacops_taking_damage", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "tacops_leg_damage", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "fire", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "vehicle_fires", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "tacops_walk_backwards", false); //$NON-NLS-1$
 
         IBasicOptionGroup ruleBreakers = addGroup("ruleBreakers"); //$NON-NLS-1$
         addOption(ruleBreakers, "no_tac", false); //$NON-NLS-1$
@@ -194,6 +196,9 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(ruleBreakers, "no_force_size_mod", false); //$NON-NLS-1$
         addOption(ruleBreakers, "tank_level_3_targsys", false); //$NON-NLS-1$
         addOption(ruleBreakers, "dumping_from_round", 1); //$NON-NLS-1$
+
+        //IBasicOptionGroup advancedBuildings = addGroup("advancedBuildings"); //$NON-NLS-1$
+
     }
 
     public Vector<IOption> loadOptions() {
