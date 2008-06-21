@@ -106,8 +106,14 @@ public class UltraWeaponHandler extends AmmoWeaponHandler {
                 shotsHit = 1;
                 break;
             default:
-                shotsHit = allShotsHit() ? howManyShots : Compute
-                        .missilesHit(howManyShots);
+                if ( bGlancing ) {
+                    shotsHit = allShotsHit() ? howManyShots : Compute
+                            .missilesHit(howManyShots,-4);
+                } else {
+                    shotsHit = allShotsHit() ? howManyShots : Compute
+                            .missilesHit(howManyShots);
+                }
+            
                 // report number of shots that hit only when weapon doesn't jam
                 if (!weapon.isJammed()) {
                     r = new Report(3325);
@@ -176,9 +182,10 @@ public class UltraWeaponHandler extends AmmoWeaponHandler {
                 //ok, more than 1 shot, +1 for cluster
                 toReturn += 1;
             }
-        }
-        if (bGlancing)
+        }else if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
+        }
+        
         if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
             toReturn = (int) Math.floor(toReturn * .75);
         }

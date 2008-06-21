@@ -401,10 +401,12 @@ public class ArtilleryWeaponIndirectFireHandler extends AmmoWeaponHandler {
         float toReturn = wtype.getDamage();
         // area effect damage is double
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            toReturn /= 0.5;
-        }
-            
-        if (bGlancing) {
+            if ( bGlancing ) {
+                toReturn /= 5;
+            }else {
+                toReturn /= 0.5;
+            }
+        } else if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
 

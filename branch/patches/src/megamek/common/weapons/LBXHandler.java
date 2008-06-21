@@ -58,7 +58,8 @@ public class LBXHandler extends AmmoWeaponHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             float toReturn = wtype.getDamage();
             toReturn /= 10;
-            toReturn += 1;
+            if (!bGlancing)
+                toReturn += 1;
             return (int) Math.ceil(toReturn);
         }
         return 1;
@@ -112,13 +113,13 @@ public class LBXHandler extends AmmoWeaponHandler {
                 nHitsModifier -= 2;
             }
 
+            if (bGlancing) {
+                nHitsModifier -= 4;
+            }
 
             shotsHit = Compute.missilesHit(wtype.getRackSize(), nHitsModifier);
         }
 
-        if (bGlancing) {
-            shotsHit = (int) Math.floor(shotsHit / 2.0);
-        }
 
         r = new Report(3325);
         r.subject = subjectId;

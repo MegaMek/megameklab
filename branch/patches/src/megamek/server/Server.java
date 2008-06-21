@@ -9035,7 +9035,7 @@ public class Server implements Runnable {
                 : pr.rollRight;
         final boolean targetInBuilding = Compute.isInBuilding(game, te);
         final boolean glancing = game.getOptions().booleanOption(
-                "maxtech_glancing_blows")
+                "tacops_glancing_blows")
                 && roll == toHit.getValue();
         Report r;
 
@@ -9232,7 +9232,7 @@ public class Server implements Runnable {
         int roll = pr.roll;
         final boolean targetInBuilding = Compute.isInBuilding(game, te);
         final boolean glancing = game.getOptions().booleanOption(
-                "maxtech_glancing_blows")
+                "tacops_glancing_blows")
                 && roll == toHit.getValue();
 
         // Which building takes the damage?
@@ -9457,7 +9457,7 @@ public class Server implements Runnable {
         int roll = pr.roll;
         final boolean targetInBuilding = Compute.isInBuilding(game, te);
         final boolean glancing = game.getOptions().booleanOption(
-                "maxtech_glancing_blows")
+                "tacops_glancing_blows")
                 && roll == toHit.getValue();
 
         // Which building takes the damage?
@@ -9625,7 +9625,7 @@ public class Server implements Runnable {
         }
         final boolean targetInBuilding = Compute.isInBuilding(game, te);
         final boolean glancing = game.getOptions().booleanOption(
-                "maxtech_glancing_blows")
+                "tacops_glancing_blows")
                 && roll == toHit.getValue();
         Report r;
 
@@ -9899,7 +9899,7 @@ public class Server implements Runnable {
         final ToHitData toHit = pr.toHit;
         int roll = pr.roll;
         final boolean glancing = game.getOptions().booleanOption(
-                "maxtech_glancing_blows")
+                "tacops_glancing_blows")
                 && roll == toHit.getValue();
 
         // PLEASE NOTE: buildings are *never* the target of a "thrash".
@@ -10039,7 +10039,7 @@ public class Server implements Runnable {
         }
         final boolean targetInBuilding = Compute.isInBuilding(game, te);
         final boolean glancing = game.getOptions().booleanOption(
-                "maxtech_glancing_blows")
+                "tacops_glancing_blows")
                 && roll == toHit.getValue();
         Report r;
 
@@ -10805,7 +10805,7 @@ public class Server implements Runnable {
                     .isThroughFrontHex(game, ae.getPosition(), te);
         }
         final boolean glancing = game.getOptions().booleanOption(
-                "maxtech_glancing_blows")
+                "tacops_glancing_blows")
                 && roll == toHit.getValue();
         Report r;
 
@@ -11482,7 +11482,7 @@ public class Server implements Runnable {
                     .isThroughFrontHex(game, ae.getPosition(), te);
         }
         final boolean glancing = game.getOptions().booleanOption(
-                "maxtech_glancing_blows")
+                "tacops_glancing_blows")
                 && roll == toHit.getValue();
         Report r;
 

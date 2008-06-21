@@ -62,11 +62,12 @@ public class SNPPCHandler extends PPCHandler {
         if (weapon.hasChargedCapacitor()) {
             toReturn += 5;
         }
-        if (target instanceof Infantry && !(target instanceof BattleArmor))
-            toReturn /= 10;
-        toReturn = Math.ceil(toReturn);
-        if (bGlancing)
+        if (target instanceof Infantry && !(target instanceof BattleArmor)) {
+            toReturn = Math.ceil(toReturn/= 10);
+        }else if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
+        }
+        
         return (int)toReturn;
     }
 }

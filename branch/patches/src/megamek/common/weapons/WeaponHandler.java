@@ -245,7 +245,7 @@ public class WeaponHandler implements AttackHandler, Serializable {
         bMissed = roll < toHit.getValue();
 
         // are we a glancing hit?
-        if (game.getOptions().booleanOption("maxtech_glancing_blows")) {
+        if (game.getOptions().booleanOption("tacops_glancing_blows")) {
             if (roll == toHit.getValue()) {
                 bGlancing = true;
                 r = new Report(3186);
@@ -383,8 +383,7 @@ public class WeaponHandler implements AttackHandler, Serializable {
         // we default to direct fire weapons for anti-infantry damage
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn = Math.ceil(toReturn/10);
-        }
-        if (bGlancing) {
+        }else if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
         return (int) toReturn;

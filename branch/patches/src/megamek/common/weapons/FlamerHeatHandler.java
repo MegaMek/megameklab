@@ -100,10 +100,8 @@ public class FlamerHeatHandler extends WeaponHandler {
                 toReturn = Compute.d6(3);
             toReturn = Compute.d6(4);
             // pain shunted infantry get half damage
-            if (target instanceof Infantry
-                    && ((Entity) target).getCrew().getOptions().booleanOption(
-                            "pain_shunt")) {
-                toReturn /= 2;
+            if (((Entity) target).getCrew().getOptions().booleanOption("pain_shunt")) {
+                toReturn = (int) Math.floor(toReturn / 2.0);
             }
             if (bGlancing)
                 toReturn = (int) Math.floor(toReturn / 2.0);

@@ -67,10 +67,10 @@ public class RapidfireACWeaponHandler extends UltraWeaponHandler {
         // we default to direct fire weapons for anti-infantry damage
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn = Math.ceil(toReturn / 10);
-        }
-        if (bGlancing) {
+        }else  if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
+        
         if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
             toReturn = (int) Math.floor((double) toReturn * .75);
         }

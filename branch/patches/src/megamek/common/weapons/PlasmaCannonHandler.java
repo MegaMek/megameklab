@@ -39,8 +39,7 @@ public class PlasmaCannonHandler extends AmmoWeaponHandler {
      * @param waa
      * @param g
      */
-    public PlasmaCannonHandler(ToHitData toHit, WeaponAttackAction waa,
-            IGame g, Server s) {
+    public PlasmaCannonHandler(ToHitData toHit, WeaponAttackAction waa, IGame g, Server s) {
         super(toHit, waa, g, s);
         generalDamageType = HitData.DAMAGE_ENERGY;
     }
@@ -51,17 +50,12 @@ public class PlasmaCannonHandler extends AmmoWeaponHandler {
      * @see megamek.common.weapons.WeaponHandler#handleEntityDamage(megamek.common.Entity,
      *      java.util.Vector, megamek.common.Building, int, int, int, int)
      */
-    protected void handleEntityDamage(Entity entityTarget,
-            Vector<Report> vPhaseReport, Building bldg, int hits, int nCluster,
-            int nDamPerHit, int bldgAbsorbs) {
+    protected void handleEntityDamage(Entity entityTarget, Vector<Report> vPhaseReport, Building bldg, int hits, int nCluster, int nDamPerHit, int bldgAbsorbs) {
 
         if (entityTarget instanceof Mech) {
-            HitData hit = entityTarget.rollHitLocation(toHit.getHitTable(),
-                    toHit.getSideTable(), waa.getAimedLocation(), waa
-                            .getAimingMode());
+            HitData hit = entityTarget.rollHitLocation(toHit.getHitTable(), toHit.getSideTable(), waa.getAimedLocation(), waa.getAimingMode());
             hit.setGeneralDamageType(generalDamageType);
-            if (entityTarget.removePartialCoverHits(hit.getLocation(), toHit
-                    .getCover(), Compute.targetSideTable(ae, entityTarget))) {
+            if (entityTarget.removePartialCoverHits(hit.getLocation(), toHit.getCover(), Compute.targetSideTable(ae, entityTarget))) {
                 // Weapon strikes Partial Cover.
                 r = new Report(3460);
                 r.subject = subjectId;
@@ -92,8 +86,7 @@ public class PlasmaCannonHandler extends AmmoWeaponHandler {
             vPhaseReport.addElement(r);
             entityTarget.heatFromExternal += extraHeat;
         } else
-            super.handleEntityDamage(entityTarget, vPhaseReport, bldg, hits,
-                    nCluster, nDamPerHit, bldgAbsorbs);
+            super.handleEntityDamage(entityTarget, vPhaseReport, bldg, hits, nCluster, nDamPerHit, bldgAbsorbs);
     }
 
     /*
@@ -106,16 +99,16 @@ public class PlasmaCannonHandler extends AmmoWeaponHandler {
             return 0;
         } else {
             int toReturn = 1;
-            if (target instanceof Infantry && !(target instanceof BattleArmor))
+            if (target instanceof Infantry && !(target instanceof BattleArmor)) {
                 toReturn = Compute.d6(3);
-            // pain shunted infantry get half damage
-            if (target instanceof Infantry
-                    && ((Entity) target).getCrew().getOptions().booleanOption(
-                            "pain_shunt")) {
-                toReturn = Math.max(toReturn / 2, 1);
+                // pain shunted infantry get half damage
+                if (((Entity) target).getCrew().getOptions().booleanOption("pain_shunt")) {
+                    toReturn = Math.max(toReturn / 2, 1);
+                }
             }
-            if (bGlancing)
-                toReturn = (int) Math.floor(toReturn / 2.0);;
+            if (bGlancing) {
+                toReturn = (int) Math.floor(toReturn / 2.0);
+            }
             return toReturn;
         }
     }
@@ -149,8 +142,7 @@ public class PlasmaCannonHandler extends AmmoWeaponHandler {
         if (target instanceof Mech) {
             return 1;
         } else {
-            if (target instanceof BattleArmor
-                    && ((BattleArmor) target).hasFireresistantArmor())
+            if (target instanceof BattleArmor && ((BattleArmor) target).hasFireresistantArmor())
                 return 0;
             return Compute.d6(3);
         }

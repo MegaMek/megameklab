@@ -101,7 +101,10 @@ public class PPCHandler extends EnergyWeaponHandler {
             toReturn -= 1;
         }
 
-        if (bGlancing) {
+        if (target instanceof Infantry && !(target instanceof BattleArmor)) {
+            toReturn /= 10;
+        }
+        else if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
 
@@ -109,8 +112,6 @@ public class PPCHandler extends EnergyWeaponHandler {
                 && ((Entity) target).getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE)
             toReturn /= 2;
 
-        if (target instanceof Infantry && !(target instanceof BattleArmor))
-            toReturn /= 10;
         return (int) Math.ceil(toReturn);
     }
 

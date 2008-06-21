@@ -179,9 +179,10 @@ public class SRMTandemChargeHandler extends SRMHandler {
      */
     protected int calcDamagePerHit() {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            int toReturn = (int) Math.ceil(((float) wtype.getRackSize()) / 5);
-            if (bGlancing)
-                toReturn = (int) Math.floor(toReturn / 2.0);
+            int toReturn = (int) Math.ceil(((float) wtype.getRackSize()*2) / 5);
+            if (bGlancing) {
+                toReturn = (int) Math.ceil(((float) wtype.getRackSize()*2) / 10)+2;
+            }
             return toReturn;
         }
         return 1;

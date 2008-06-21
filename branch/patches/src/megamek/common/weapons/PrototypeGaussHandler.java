@@ -43,8 +43,7 @@ public class PrototypeGaussHandler extends AmmoWeaponHandler {
      * @param w
      * @param g
      */
-    public PrototypeGaussHandler(ToHitData t, WeaponAttackAction w, IGame g,
-            Server s) {
+    public PrototypeGaussHandler(ToHitData t, WeaponAttackAction w, IGame g, Server s) {
         super(t, w, g, s);
     }
 
@@ -57,15 +56,15 @@ public class PrototypeGaussHandler extends AmmoWeaponHandler {
         float toReturn = wtype.getDamage();
         int nRange = ae.getPosition().distance(target.getPosition());
 
-        if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
-            toReturn -=1;
+        if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
+            toReturn -= 1;
         }
 
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn /= 10;
-        }
-        if (bGlancing)
+        } else if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
+        }
         return (int) Math.ceil(toReturn);
     }
 

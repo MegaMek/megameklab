@@ -45,7 +45,7 @@ public class EnergyWeaponHandler extends WeaponHandler {
      * @see megamek.common.weapons.WeaponHandler#calcDamagePerHit()
      */
     protected int calcDamagePerHit() {
-        float toReturn = wtype.getDamage();
+        double toReturn = wtype.getDamage();
         // during a swarm, all damage gets applied as one block to one location
         if (ae instanceof BattleArmor
                 && weapon.getLocation() == BattleArmor.LOC_SQUAD
@@ -68,12 +68,13 @@ public class EnergyWeaponHandler extends WeaponHandler {
             toReturn -=1;
         }
 
-        if (bGlancing) {
+        if (target instanceof Infantry && !(target instanceof BattleArmor)) {
+            toReturn = Math.ceil(toReturn / 10);
+        }
+        else if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
 
-        if (target instanceof Infantry && !(target instanceof BattleArmor))
-            toReturn /= 10;
         return (int) Math.ceil(toReturn);
     }
 

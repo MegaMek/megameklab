@@ -67,12 +67,13 @@ public class PulseLaserWeaponHandler extends WeaponHandler {
             toReturn -= 1;
         }
 
-        if (bGlancing) {
-            toReturn = (int) Math.floor(toReturn / 2.0);
-        }
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn /= 10;
-            toReturn += 2;
+            toReturn++;
+            if ( !bGlancing )
+                toReturn++;
+        }else if (bGlancing) {
+            toReturn = (int) Math.floor(toReturn / 2.0);
         }
         return (int) Math.ceil(toReturn);
     }

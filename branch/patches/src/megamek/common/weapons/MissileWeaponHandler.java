@@ -275,10 +275,13 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         double toReturn;
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn = wtype.getRackSize();
-            toReturn /= 5;
+            if (bGlancing) {
+                toReturn /= 10;
+                toReturn += 2;
+            }else {
+                toReturn /= 5;
+            }
             toReturn = Math.ceil(toReturn);
-            if (bGlancing)
-                toReturn = (int) Math.floor(toReturn / 2.0);
             return (int)toReturn;
         }
         return 1;
@@ -527,7 +530,7 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         bMissed = roll < toHit.getValue();
 
         // are we a glancing hit?
-        if (game.getOptions().booleanOption("maxtech_glancing_blows")) {
+        if (game.getOptions().booleanOption("tacops_glancing_blows")) {
             if (roll == toHit.getValue()) {
                 bGlancing = true;
                 r = new Report(3186);

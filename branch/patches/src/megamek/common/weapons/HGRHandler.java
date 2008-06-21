@@ -98,8 +98,9 @@ public class HGRHandler extends AmmoWeaponHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn /= 10;
         }
-        if (bGlancing)
+        else if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
+        }
         return (int) Math.ceil(toReturn);
     }
 }

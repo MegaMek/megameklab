@@ -67,10 +67,14 @@ public class MPodHandler extends LBXHandler {
         } else if (nRange == 4) {
             shots = 2;
         }
-        int shotsHit = allShotsHit() ? shots : Compute.missilesHit(shots);
+        
+        int hitMod = 0;
         if (bGlancing) {
-            shotsHit = (int) Math.floor(shotsHit / 2.0);
+            hitMod = 4;
         }
+        
+        int shotsHit = allShotsHit() ? shots : Compute.missilesHit(shots,hitMod);
+        
         r = new Report(3325);
         r.subject = subjectId;
         r.add(shotsHit);

@@ -58,8 +58,6 @@ public class StreakHandler extends MissileWeaponHandler {
     protected int calcDamagePerHit() {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             int toReturn = (int) Math.ceil(((float) wtype.getRackSize() * 2) / 5);
-            if (bGlancing)
-                toReturn = (int) Math.floor(toReturn / 2.0);
             return toReturn;
         }
         return 2;
@@ -93,9 +91,6 @@ public class StreakHandler extends MissileWeaponHandler {
         if (bMissed)
             return 0;
         int nMissilesModifier = nSalvoBonus;
-
-        if (bGlancing)
-            nMissilesModifier -= 4;
 
         if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
             nMissilesModifier -= 2;
