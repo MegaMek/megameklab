@@ -541,7 +541,7 @@ public class CustomMechDialog extends ClientDialog implements ActionListener,
 
         // Set up rapidfire mg
         if (clientgui.getClient().game.getOptions().booleanOption(
-                "maxtech_burst")) { //$NON-NLS-1$
+                "tacops_burst")) { //$NON-NLS-1$
             c.gridwidth = 1;
             setupRapidfireMGs();
             c.anchor = GridBagConstraints.CENTER;
