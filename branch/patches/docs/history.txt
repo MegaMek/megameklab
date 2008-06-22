@@ -11,6 +11,7 @@ v0.33.29-dev (SVN)
 + Partial Cover
 + Angel ECM
 + BAP
++ added MoS/MoF for all attacks weapons and physicals.
 
 v0.33.28 (2008-06-17, 18:19 GMT+2)
 + Aeros can go up and down in atmosphere

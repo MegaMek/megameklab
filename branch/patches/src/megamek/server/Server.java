@@ -9038,6 +9038,8 @@ public class Server implements Runnable {
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
         Report r;
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
 
         // Which building takes the damage?
         Building bldg = game.getBoard().getBuildingAt(target.getPosition());
@@ -9234,6 +9236,8 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
 
         // Which building takes the damage?
         Building bldg = game.getBoard().getBuildingAt(target.getPosition());
@@ -9459,6 +9463,8 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
 
         // Which building takes the damage?
         Building bldg = game.getBoard().getBuildingAt(target.getPosition());
@@ -9627,6 +9633,9 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
+
         Report r;
 
         // Which building takes the damage?
@@ -9901,6 +9910,8 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
 
         // PLEASE NOTE: buildings are *never* the target of a "thrash".
         final Entity te = game.getEntity(taa.getTargetId());
@@ -10041,6 +10052,9 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
+
         Report r;
 
         // Which building takes the damage?
@@ -10807,6 +10821,9 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
+
         Report r;
 
         // Which building takes the damage?
@@ -11484,6 +11501,10 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+        
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
+
         Report r;
 
         // Which building takes the damage?

@@ -170,6 +170,9 @@ public class SRMInfernoHandler extends SRMHandler {
             bGlancing = false;
         }
 
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
+
         // Do this stuff first, because some weapon's miss report reference the
         // amount of shots fired and stuff.
         addHeat();

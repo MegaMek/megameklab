@@ -167,6 +167,9 @@ public class ArtilleryWeaponIndirectHomingHandler extends
             bGlancing = false;
         }
 
+        //Set Margin of Success/Failure.
+        toHit.setMoS(toHit.getValue()-roll);
+        
         // we may still have to use ammo, if direct fire
         if (!handledAmmoAndReport) {
             addHeat();
