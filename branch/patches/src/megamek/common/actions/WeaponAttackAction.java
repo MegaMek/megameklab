@@ -698,7 +698,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         }
         // if we have BAP with MaxTech rules, and there are woods in the
         // way, and we are within BAP range, we reduce the BTH by 1
-        if (game.getOptions().booleanOption("maxtech_bap")
+        if (game.getOptions().booleanOption("tacops_bap")
                 && !isIndirect
                 && te != null
                 && ae.hasBAP()

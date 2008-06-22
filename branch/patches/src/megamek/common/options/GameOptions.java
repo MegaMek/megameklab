@@ -105,12 +105,12 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedRules, "team_vision", true); //$NON-NLS-1$
         addOption(advancedRules, "pilot_advantages", false); //$NON-NLS-1$
         addOption(advancedRules, "allow_level_3_targsys", false); //$NON-NLS-1$ 
-        addOption(advancedRules, "maxtech_bap", false); //$NON-NLS-1$
+        addOption(advancedRules, "tacops_bap", false); //$NON-NLS-1$
         addOption(advancedRules, "maxtech_artillery", false); //$NON-NLS-1$
         addOption(advancedRules, "maxtech_eccm", false); //$NON-NLS-1$
         addOption(advancedRules, "maxtech_dig_in", false); //$NON-NLS-1$
         addOption(advancedRules, "manei_domini", false); //$NON-NLS-1$
-        addOption(advancedRules, "maxtech_angel_ecm", false); //$NON-NLS-1$
+        addOption(advancedRules, "tacops_angel_ecm", false); //$NON-NLS-1$
         addOption(advancedRules, "paratroopers", false); //$NON-NLS-1$
 
         IBasicOptionGroup advancedCombat = addGroup("advancedCombat"); //$NON-NLS-1$

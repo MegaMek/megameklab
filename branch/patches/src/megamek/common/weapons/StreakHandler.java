@@ -160,14 +160,14 @@ public class StreakHandler extends MissileWeaponHandler {
      * @see megamek.common.weapons.WeaponHandler#reportMiss(java.util.Vector)
      */
     protected void reportMiss(Vector<Report> vPhaseReport) {
-        if (!isAngelECMAffected) {
+        //if (!isAngelECMAffected) {
             // no lock
             Report r = new Report(3215);
             r.subject = subjectId;
             vPhaseReport.addElement(r);
-        } else {
+        /*} else {
             super.reportMiss(vPhaseReport);
-        }
+        }*/
     }
 
     /*
