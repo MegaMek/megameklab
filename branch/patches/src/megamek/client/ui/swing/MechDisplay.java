@@ -2915,7 +2915,7 @@ public class MechDisplay extends JPanel {
                     hasTSM = true;
 
                 if (clientgui.getClient().game.getOptions().booleanOption(
-                        "maxtech_heat")) {
+                        "tacops_heat")) {
                     mtHeat = true;
                 }
                 heatR.append(HeatEffects

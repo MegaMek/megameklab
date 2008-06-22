@@ -11860,7 +11860,8 @@ public class Server implements Runnable {
                 }
                 
                 int autoShutDownHeat = 30;
-                boolean mtHeat = false;
+                boolean mtHeat = game.getOptions().booleanOption("tacops_heat");
+                if (mtHeat) autoShutDownHeat = 50;
                 
                 //heat effects: start up
                 if (entity.heat < autoShutDownHeat && entity.isShutDown()) {
@@ -11874,6 +11875,24 @@ public class Server implements Runnable {
                     } else {
                         //roll for startup
                         int startup = 4 + (entity.heat - 14) / 4 * 2;
+                        if (mtHeat) {
+                            startup -= 5;
+                            switch (entity.crew.getPiloting()) {
+                                case 0:
+                                case 1:
+                                    startup -= 2;
+                                    break;
+                                case 2:
+                                case 3:
+                                    startup -= 1;
+                                    break;
+                                case 6:
+                                case 7:
+                                    startup += 1;
+                                    break;
+                            }
+                            if (entity instanceof QuadMech) startup -= 2;
+                        }
                         int suroll = Compute.d6(2);
                         r = new Report(5050);
                         r.subject = entity.getId();
@@ -11903,7 +11922,22 @@ public class Server implements Runnable {
                     } else if (entity.heat >= 14) {
                         int shutdown = 4 + (entity.heat - 14) / 4 * 2;
                         if (mtHeat) {
-                            shutdown = entity.crew.getPiloting() + shutdown - 8;
+                            shutdown -= 5;
+                            switch (entity.crew.getPiloting()) {
+                                case 0:
+                                case 1:
+                                    shutdown -= 2;
+                                    break;
+                                case 2:
+                                case 3:
+                                    shutdown -= 1;
+                                    break;
+                                case 6:
+                                case 7:
+                                    shutdown += 1;
+                                    break;
+                            }
+                            if (entity instanceof QuadMech) shutdown -= 2;
                         }
                         int sdroll = Compute.d6(2);
                         r = new Report(5060);
@@ -12269,7 +12303,7 @@ public class Server implements Runnable {
             int autoShutDownHeat;
             boolean mtHeat;
 
-            if (game.getOptions().booleanOption("maxtech_heat")) {
+            if (game.getOptions().booleanOption("tacops_heat")) {
                 autoShutDownHeat = 50;
                 mtHeat = true;
             } else {
@@ -12289,7 +12323,21 @@ public class Server implements Runnable {
                     // roll for startup
                     int startup = 4 + (entity.heat - 14) / 4 * 2;
                     if (mtHeat) {
-                        startup = entity.crew.getPiloting() + startup - 8;
+                        startup -= 5;
+                        switch (entity.crew.getPiloting()) {
+                            case 0:
+                            case 1:
+                                startup -= 2;
+                                break;
+                            case 2:
+                            case 3:
+                                startup -= 1;
+                                break;
+                            case 6:
+                            case 7:
+                                startup += 1;
+                        }
+                        if (entity instanceof QuadMech) startup -= 2;
                     }
                     int suroll = Compute.d6(2);
                     r = new Report(5050);
@@ -12325,7 +12373,21 @@ public class Server implements Runnable {
                 } else if (entity.heat >= 14) {
                     int shutdown = 4 + (entity.heat - 14) / 4 * 2;
                     if (mtHeat) {
-                        shutdown = entity.crew.getPiloting() + shutdown - 8;
+                        shutdown -= 5;
+                        switch (entity.crew.getPiloting()) {
+                            case 0:
+                            case 1:
+                                shutdown -= 2;
+                                break;
+                            case 2:
+                            case 3:
+                                shutdown -= 1;
+                                break;
+                            case 6:
+                            case 7:
+                                shutdown += 1;
+                        }
+                        if (entity instanceof QuadMech) shutdown -= 2;
                     }
                     int sdroll = Compute.d6(2);
                     r = new Report(5060);
