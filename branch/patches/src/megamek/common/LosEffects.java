@@ -433,7 +433,7 @@ public class LosEffects {
         }
 
         if (targetCover != COVER_NONE) {
-            if (game.getOptions().booleanOption("maxtech_partial_cover")) {
+            if (game.getOptions().booleanOption("tacops_partial_cover")) {
                 if (targetCover == COVER_75LEFT || targetCover == COVER_75RIGHT)
                     modifiers.addModifier(1, "target has 75% cover");
                 else if (targetCover >= COVER_HORIZONTAL)
@@ -606,7 +606,7 @@ public class LosEffects {
             } else {
                 los = right;
             }
-            if (game.getOptions().booleanOption("maxtech_partial_cover")) {
+            if (game.getOptions().booleanOption("tacops_partial_cover")) {
                 int cover = (left.targetCover & (COVER_LEFT | COVER_LOWLEFT))
                         | (right.targetCover & (COVER_RIGHT | COVER_LOWRIGHT));
                 if (cover < COVER_FULL && !(left.blocked && right.blocked)) {
@@ -758,7 +758,7 @@ public class LosEffects {
         // check for target partial cover
         if (ai.targetPos.distance(coords) == 1) {
             if (los.blocked
-                    && game.getOptions().booleanOption("maxtech_partial_cover")) {
+                    && game.getOptions().booleanOption("tacops_partial_cover")) {
                 los.targetCover = COVER_FULL;
             } else if (hexEl + bldgEl == ai.targetAbsHeight
                     && ai.attackAbsHeight <= ai.targetAbsHeight
@@ -770,7 +770,7 @@ public class LosEffects {
         // check for attacker partial cover
         if (ai.attackPos.distance(coords) == 1) {
             if (los.blocked
-                    && game.getOptions().booleanOption("maxtech_partial_cover")) {
+                    && game.getOptions().booleanOption("tacops_partial_cover")) {
                 los.attackerCover = COVER_FULL;
             } else if (hexEl + bldgEl == ai.attackAbsHeight
                     && ai.attackAbsHeight >= ai.targetAbsHeight

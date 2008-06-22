@@ -1220,7 +1220,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                 toHit.setHitTable(ToHitData.HIT_PARTIAL_COVER);
                 toHit.setCover(LosEffects.COVER_UPPER);
             } else {
-                if (game.getOptions().booleanOption("maxtech_partial_cover")) {
+                if (game.getOptions().booleanOption("tacops_partial_cover")) {
                     toHit.setHitTable(ToHitData.HIT_PARTIAL_COVER);
                     toHit.setCover(los.getTargetCover());
                 } else {

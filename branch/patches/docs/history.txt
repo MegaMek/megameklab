@@ -8,6 +8,7 @@ v0.33.29-dev (SVN)
 + Glancing Blows
 + Tabs for Swing Game Options Dialog
 + RapidFire MG's 
++ Partial Cover
 
 v0.33.28 (2008-06-17, 18:19 GMT+2)
 + Aeros can go up and down in atmosphere
