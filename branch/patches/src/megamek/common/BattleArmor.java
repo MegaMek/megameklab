@@ -383,11 +383,8 @@ public class BattleArmor extends Infantry implements Serializable {
         // Pick a random number between 1 and 6.
         int loc = Compute.d6();
 
-        if (game.getOptions().booleanOption("ba_criticals") && loc == 6) {
-            return new HitData(Compute.d6(), false, HitData.EFFECT_CRITICAL);
-        }
         
-        if ((aimedLocation != LOC_NONE)
+/*        if ((aimedLocation != LOC_NONE)
                 && (aimingMode != IAimingModes.AIM_MODE_NONE)) {
             
             int roll = Compute.d6(2);
@@ -396,7 +393,7 @@ public class BattleArmor extends Infantry implements Serializable {
                 return new HitData(aimedLocation, side == ToHitData.SIDE_REAR,
                         true);
             }
-        }
+        }*/
 
         // Pick a new random number if that trooper is dead or never existed.
         // Remember that there's one more location than the number of troopers.
@@ -411,6 +408,11 @@ public class BattleArmor extends Infantry implements Serializable {
             loc = Compute.d6();
         }
 
+        int critLocation = Compute.d6();
+        //TacOps p. 108 Trooper takes a crit if a second roll is the same location as the first. 
+        if (game.getOptions().booleanOption("tacops_ba_criticals") && loc == critLocation) {
+            return new HitData(loc, false, HitData.EFFECT_CRITICAL);
+        }
         // Hit that trooper.
         return new HitData(loc);
 

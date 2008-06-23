@@ -877,7 +877,7 @@ public class CustomMechDialog extends ClientDialog implements ActionListener,
                     && !client.game.getOptions().booleanOption(
                             "lobby_ammo_dump")
                     && !client.game.getOptions().booleanOption(
-                            "maxtech_hotload")) { //$NON-NLS-1$
+                            "tacops_hotload")) { //$NON-NLS-1$
                 continue;
             }
 
@@ -1004,7 +1004,7 @@ public class CustomMechDialog extends ClientDialog implements ActionListener,
                 g.setConstraints(chDump, c);
                 add(chDump);
                 if (clientgui.getClient().game.getOptions().booleanOption(
-                        "maxtech_hotload")
+                        "tacops_hotload")
                         && curType.hasFlag(AmmoType.F_HOTLOAD)) { //$NON-NLS-1$
                     c.gridx = 0;
                     c.gridy = 2;
@@ -1018,7 +1018,7 @@ public class CustomMechDialog extends ClientDialog implements ActionListener,
                     add(chHotLoad);
                 }
             } else if (clientgui.getClient().game.getOptions().booleanOption(
-                    "maxtech_hotload")
+                    "tacops_hotload")
                     && curType.hasFlag(AmmoType.F_HOTLOAD)) { //$NON-NLS-1$
                 c.gridx = 0;
                 c.gridy = 1;
@@ -1041,7 +1041,7 @@ public class CustomMechDialog extends ClientDialog implements ActionListener,
                 m_mounted.setShotsLeft(0);
             }
             if (clientgui.getClient().game.getOptions().booleanOption(
-                    "maxtech_hotload")) {
+                    "tacops_hotload")) {
                 if (chHotLoad.getState() != m_mounted.isHotLoaded())
                     m_mounted.setHotLoad(chHotLoad.getState());
             }

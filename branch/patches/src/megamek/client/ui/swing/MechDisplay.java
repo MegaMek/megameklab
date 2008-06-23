@@ -2162,7 +2162,7 @@ public class MechDisplay extends JPanel {
                                 .getRoundCount()) {
                     m_bDumpAmmo.setEnabled(true);
                     if (clientgui.getClient().game.getOptions().booleanOption(
-                            "maxtech_hotload")
+                            "tacops_hotload")
                             && en instanceof Tank
                             && m.getType().hasFlag(AmmoType.F_HOTLOAD)) {
                         m_bDumpAmmo.setEnabled(false);
