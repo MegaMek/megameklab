@@ -2113,7 +2113,7 @@ public class MechDisplay extends BufferedPanel {
                     // should not show anything.
                     if (m.getType().hasFlag(MiscType.F_ECM)
                             && !clientgui.getClient().game.getOptions()
-                                    .booleanOption("maxtech_eccm")) {
+                                    .booleanOption("tacops_eccm")) {
                         m_chMode.removeAll();
                         return;
                     }

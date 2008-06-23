@@ -2188,7 +2188,7 @@ public class MechDisplay extends JPanel {
                     // should not show anything.
                     if (m.getType().hasFlag(MiscType.F_ECM)
                             && !clientgui.getClient().game.getOptions()
-                                    .booleanOption("maxtech_eccm")) {
+                                    .booleanOption("tacops_eccm")) {
                         ((DefaultComboBoxModel) m_chMode.getModel())
                                 .removeAllElements();
                         return;
@@ -2465,7 +2465,7 @@ public class MechDisplay extends JPanel {
                     // should not show anything.
                     if (m.getType().hasFlag(MiscType.F_ECM)
                             && !clientgui.getClient().game.getOptions()
-                                    .booleanOption("maxtech_eccm")) {
+                                    .booleanOption("tacops_eccm")) {
                         ((DefaultComboBoxModel) m_chMode.getModel())
                                 .removeAllElements();
                         return;

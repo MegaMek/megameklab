@@ -2970,7 +2970,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      *         or it is not in eccm mode or it is damaged.
      */
     public boolean hasActiveECCM() {
-        if (game.getOptions().booleanOption("maxtech_eccm")) {
+        if (game.getOptions().booleanOption("tacops_eccm")) {
             for (Mounted m : getMisc()) {
                 EquipmentType type = m.getType();
                 if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) && m.curMode().equals("ECCM")) {
@@ -2990,7 +2990,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      *         or it is not in eccm mode or it is damaged.
      */
     public boolean hasActiveAngelECCM() {
-        if (game.getOptions().booleanOption("tacops_angel_ecm") && game.getOptions().booleanOption("maxtech_eccm")) {
+        if (game.getOptions().booleanOption("tacops_angel_ecm") && game.getOptions().booleanOption("tacops_eccm")) {
             for (Mounted m : getMisc()) {
                 EquipmentType type = m.getType();
                 if (type instanceof MiscType && type.hasFlag(MiscType.F_ANGEL_ECM) && m.curMode().equals("ECCM")) {
