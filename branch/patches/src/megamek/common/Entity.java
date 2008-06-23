@@ -2939,7 +2939,8 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     public boolean hasActiveECM() {
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
-            if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) && m.curMode().equals("ECM")) {
+            //TacOps p. 100 Angle ECM can have 1 ECM and 1 ECCM at the same time
+            if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) && ( m.curMode().equals("ECM") || m.curMode().equals("ECM & ECCM")) ) {
                 return !(m.isDestroyed() || m.isMissing() || m.isBreached() || isShutDown() || this.getCrew().isUnconscious());
             }
         }
@@ -2973,7 +2974,8 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         if (game.getOptions().booleanOption("tacops_eccm")) {
             for (Mounted m : getMisc()) {
                 EquipmentType type = m.getType();
-                if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) && m.curMode().equals("ECCM")) {
+                //TacOps p. 100 Angle ECM can have 1 ECM and 1 ECCM at the same time
+                if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) && ( m.curMode().equals("ECCM") || m.curMode().equals("ECM & ECCM")) ) {
                     return !(m.isDestroyed() || m.isMissing() || m.isBreached() || isShutDown() || this.getCrew().isUnconscious());
                 }
             }

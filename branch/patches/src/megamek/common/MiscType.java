@@ -961,7 +961,7 @@ public class MiscType extends EquipmentType {
         misc.spreadable = false;
         misc.flags |= F_ECM | F_ANGEL_ECM;
         misc.bv = 100;
-        misc.setModes(new String[] { "ECM", "ECCM" });
+        misc.setModes(new String[] { "ECM", "ECCM", "ECM & ECCM" });
         misc.setInstantModeSwitch(false);
 
         return misc;
