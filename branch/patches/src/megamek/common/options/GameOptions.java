@@ -134,7 +134,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedCombat, "tacops_ba_criticals", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_hotload", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_rapid_ac", false); //$NON-NLS-1$
-        addOption(advancedCombat, "maxtech_new_physicals", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_grappling", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_jump_jet_attack", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_trip_attack", false); //$NON-NLS-1$
         
