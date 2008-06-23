@@ -80,7 +80,7 @@ public class PhysicalAttackAction extends AbstractAttackAction {
                 return "Target is swarming a Mek.";
             }
 
-            if (ae instanceof Mech && ((Mech) ae).getGrappled() != Entity.NONE) {
+            if ( ae.getGrappled() != Entity.NONE) {
                 return "Locked in Grapple";
             }
 

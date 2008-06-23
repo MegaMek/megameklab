@@ -96,6 +96,11 @@ public class Protomech extends Entity implements Serializable {
 
     public static final String systemNames[] = { "Arm", "Leg", "Head", "Torso" };
 
+    // For grapple attacks
+    private int grappled_id = Entity.NONE;
+
+    private boolean isGrappleAttacker = false;
+
     /**
      * Construct a new, blank, pmech.
      */
@@ -1089,4 +1094,25 @@ public class Protomech extends Entity implements Serializable {
     public boolean isNuclearHardened() {
         return true;
     }
+    public void setGrappled(int id, boolean attacker) {
+        grappled_id = id;
+        isGrappleAttacker = attacker;
+    }
+
+    public boolean isGrappleAttacker() {
+        return isGrappleAttacker;
+    }
+
+    public int getGrappled() {
+        return grappled_id;
+    }
+
+    public boolean isEligibleForMovement() {
+        if (grappled_id != Entity.NONE) {
+            return false;
+        }
+        return super.isEligibleForMovement();
+    }
+
+
 }

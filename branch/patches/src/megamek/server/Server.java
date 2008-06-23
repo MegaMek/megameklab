@@ -8098,9 +8098,9 @@ public class Server implements Runnable {
             // If attacker breaks grapple, defender may counter
             if (ea instanceof BreakGrappleAttackAction) {
                 final BreakGrappleAttackAction bgaa = (BreakGrappleAttackAction) ea;
-                final Mech att = (Mech) (game.getEntity(bgaa.getEntityId()));
+                final Entity att = (game.getEntity(bgaa.getEntityId()));
                 if (att.isGrappleAttacker()) {
-                    final Mech def = (Mech) (game.getEntity(bgaa.getTargetId()));
+                    final Entity def = (game.getEntity(bgaa.getTargetId()));
                     // Remove existing break grapple by defender (if exists)
                     if (def.isDone()) {
                         game.removeActionsFor(def.getId());
@@ -10552,9 +10552,9 @@ public class Server implements Runnable {
      */
     private void resolveGrappleAttack(PhysicalResult pr, int lastEntityId) {
         final GrappleAttackAction paa = (GrappleAttackAction) pr.aaa;
-        final Mech ae = (Mech) game.getEntity(paa.getEntityId());
+        final Entity ae = game.getEntity(paa.getEntityId());
         // PLEASE NOTE: buildings are *never* the target of a "push".
-        final Mech te = (Mech) game.getEntity(paa.getTargetId());
+        final Entity te = game.getEntity(paa.getTargetId());
         // get roll and ToHitData from the PhysicalResult
         int roll = pr.roll;
         final ToHitData toHit = pr.toHit;
@@ -10630,9 +10630,9 @@ public class Server implements Runnable {
      */
     private void resolveBreakGrappleAttack(PhysicalResult pr, int lastEntityId) {
         final BreakGrappleAttackAction paa = (BreakGrappleAttackAction) pr.aaa;
-        final Mech ae = (Mech) game.getEntity(paa.getEntityId());
+        final Entity ae = game.getEntity(paa.getEntityId());
         // PLEASE NOTE: buildings are *never* the target of a "push".
-        final Mech te = (Mech) game.getEntity(paa.getTargetId());
+        final Entity te = game.getEntity(paa.getTargetId());
         // get roll and ToHitData from the PhysicalResult
         int roll = pr.roll;
         final ToHitData toHit = pr.toHit;
@@ -18206,17 +18206,14 @@ public class Server implements Runnable {
             }
 
             // If in a grapple, release both mechs
-            if (entity instanceof Mech) {
-                Mech mech = (Mech) entity;
-                int grappler = mech.getGrappled();
-                if (grappler != Entity.NONE) {
-                    mech.setGrappled(Entity.NONE, false);
-                    Entity e = game.getEntity(grappler);
-                    if (e != null && e instanceof Mech) {
-                        ((Mech) e).setGrappled(Entity.NONE, false);
-                    }
-                    entityUpdate(grappler);
+            if (entity.getGrappled() != Entity.NONE) {
+                int grappler = entity.getGrappled();
+                entity.setGrappled(Entity.NONE, false);
+                Entity e = game.getEntity(grappler);
+                if (e != null && e instanceof Entity) {
+                    e.setGrappled(Entity.NONE, false);
                 }
+                entityUpdate(grappler);
             }
 
         } // End entity-not-already-destroyed.

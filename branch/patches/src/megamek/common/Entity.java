@@ -6965,4 +6965,16 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         return tmTracker;
     }
 
+    public void setGrappled(int id, boolean attacker) {
+    }
+
+    public boolean isGrappleAttacker() {
+        return false;
+    }
+
+    public int getGrappled() {
+        return Entity.NONE;
+    }
+
+
 }

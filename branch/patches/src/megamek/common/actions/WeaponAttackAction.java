@@ -1270,8 +1270,8 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         }
 
         // deal with grapples
-        if (target instanceof Mech) {
-            int grapple = ((Mech) target).getGrappled();
+        if (target instanceof Entity) {
+            int grapple = ((Entity)target).getGrappled();
             if (grapple != Entity.NONE) {
                 if (grapple == ae.getId())
                     toHit.addModifier(-4, "target grappled");
@@ -2041,18 +2041,14 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             }
         }
 
-        if (ae instanceof Mech) {
-            int grapple = ((Mech) ae).getGrappled();
-            if (grapple != Entity.NONE) {
-                if (grapple != target.getTargetId()) {
-                    return "Can only attack grappled mech";
-                }
-                int loc = weapon.getLocation();
-                if ((loc != Mech.LOC_CT && loc != Mech.LOC_LT
-                        && loc != Mech.LOC_RT && loc != Mech.LOC_HEAD)
-                        || weapon.isRearMounted()) {
-                    return "Can only fire head and front torso weapons when grappled";
-                }
+        if (ae.getGrappled() != Entity.NONE) {
+            int grapple = ae.getGrappled();
+            if (grapple != target.getTargetId()) {
+                return "Can only attack grappled mech";
+            }
+            int loc = weapon.getLocation();
+            if (ae instanceof Mech && (loc != Mech.LOC_CT && loc != Mech.LOC_LT && loc != Mech.LOC_RT && loc != Mech.LOC_HEAD) || weapon.isRearMounted()) {
+                return "Can only fire head and front torso weapons when grappled";
             }
         }
         if (ae.getMovementMode() == IEntityMovementMode.WIGE &&

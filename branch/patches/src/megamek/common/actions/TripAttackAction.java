@@ -57,8 +57,8 @@ public class TripAttackAction extends PhysicalAttackAction {
             return new ToHitData(TargetRoll.IMPOSSIBLE,
                     "You can't attack from a null entity!");
 
-        if (!game.getOptions().booleanOption("maxtech_new_physicals"))
-            return new ToHitData(TargetRoll.IMPOSSIBLE, "no MaxTech physicals");
+        if (!game.getOptions().booleanOption("tacops_trip_attack"))
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "no Trip attack");
 
         String impossible = toHitIsImpossible(game, ae, target);
         if (impossible != null) {
