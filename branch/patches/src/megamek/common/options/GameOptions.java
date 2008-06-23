@@ -136,6 +136,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedCombat, "maxtech_new_physicals", false); //$NON-NLS-1$
 
         IBasicOptionGroup advancedGroundMovement = addGroup("advancedGroundMovement"); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "tacops_standing", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "dusk", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "blizzard", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "blowing_sand", false); //$NON-NLS-1$

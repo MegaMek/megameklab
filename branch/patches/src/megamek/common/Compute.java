@@ -1329,6 +1329,15 @@ public class Compute {
         if(entity instanceof Aero) {
             return new ToHitData();
         }
+
+	if (game.getOptions().booleanOption("tacops_standing") &&
+            entity.moved==IEntityMovementType.MOVE_NONE &&
+            !(entity instanceof Infantry || entity instanceof VTOL ||
+              entity instanceof GunEmplacement)) {
+            ToHitData toHit = new ToHitData();
+            toHit.addModifier(-1, "target didn't move");
+            return toHit;
+        }
         
         ToHitData toHit = getTargetMovementModifier(entity.delta_distance, ((entity.moved == IEntityMovementType.MOVE_JUMP) || (entity.moved == IEntityMovementType.MOVE_VTOL_RUN) || (entity.moved == IEntityMovementType.MOVE_VTOL_WALK)), entity.moved == IEntityMovementType.MOVE_VTOL_RUN || entity.moved == IEntityMovementType.MOVE_VTOL_WALK || entity.getMovementMode() == IEntityMovementMode.VTOL);
 
