@@ -114,6 +114,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedRules, "paratroopers", false); //$NON-NLS-1$
 
         IBasicOptionGroup advancedCombat = addGroup("advancedCombat"); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_ams", false); //$NON-NLS-1$
         addOption(advancedCombat, "floating_crits", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_engine_explosions", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_prone_fire", false); //$NON-NLS-1$

@@ -50,6 +50,7 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
     String sSalvoType = " missile(s) ";
     boolean amsEnganged = false;
     int nSalvoBonus = 0;
+    boolean advancedAMS = false;
 
     /**
      * @param t
@@ -61,6 +62,7 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
             Server s) {
         super(t, w, g, s);
         generalDamageType = HitData.DAMAGE_MISSILE;
+        advancedAMS=g.getOptions().booleanOption("tacops_ams");
     }
 
     /*
@@ -223,11 +225,13 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
                 missilesHit = Compute.missilesHit(wtype.getRackSize()
                         * ((BattleArmor) ae).getShootingStrength(),
                         nMissilesModifier, bWeather || bGlancing
-                                || tacopscluster, weapon.isHotLoaded());
+                                || tacopscluster, weapon.isHotLoaded(),
+                        false, advancedAMS);
             else
                 missilesHit = Compute.missilesHit(wtype.getRackSize(),
                         nMissilesModifier, bWeather || bGlancing
-                                || tacopscluster, weapon.isHotLoaded());
+                                || tacopscluster, weapon.isHotLoaded(),
+                        false, advancedAMS);
         }
 
         if (missilesHit > 0) {

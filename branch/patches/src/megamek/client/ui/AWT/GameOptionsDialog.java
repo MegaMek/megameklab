@@ -141,7 +141,7 @@ public class GameOptionsDialog extends Dialog implements ActionListener,
 
         pack();
         setSize(getSize().width, Math.max(getSize().height, 400));
-        setResizable(false);
+        setResizable(true);
         setLocation(frame.getLocation().x + frame.getSize().width / 2
                 - getSize().width / 2, frame.getLocation().y
                 + frame.getSize().height / 2 - getSize().height / 2);

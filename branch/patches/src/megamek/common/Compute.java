@@ -2362,7 +2362,7 @@ public class Compute {
     }
 
     public static int missilesHit(int missiles, int nMod, boolean tacops, boolean hotloaded) {
-        return missilesHit(missiles, nMod, tacops, hotloaded, false);
+        return missilesHit(missiles, nMod, tacops, hotloaded, false, false);
     }
 
     /**
@@ -2382,8 +2382,10 @@ public class Compute {
      *            roll 3d6 take worst 2
      * @param streak -
      *            force a roll of 11 on the cluster table
+     * @param advancedAMS -
+     *            the roll can now go below 2, indicating no damage
      */
-    public static int missilesHit(int missiles, int nMod, boolean tacops, boolean hotloaded, boolean streak) {
+    public static int missilesHit(int missiles, int nMod, boolean tacops, boolean hotloaded, boolean streak, boolean advancedAMS) {
         int nRoll = d6(2);
         
         if (hotloaded) {
@@ -2408,7 +2410,12 @@ public class Compute {
         if (streak)
             nRoll = 11;
         nRoll += nMod;
-        nRoll = Math.min(Math.max(nRoll, 2), 12);
+        if (!advancedAMS)
+            nRoll = Math.min(Math.max(nRoll, 2), 12);
+        else
+            nRoll=Math.min(nRoll, 12);
+        if (nRoll<2)
+            return 0;
 
         for (int i = 0; i < clusterHitsTable.length; i++) {
             if (clusterHitsTable[i][0] == missiles) {
@@ -2420,7 +2427,7 @@ public class Compute {
         // if so, take largest, subtract value and try again
         for (int i = clusterHitsTable.length - 1; i >= 0; i--) {
             if (missiles > clusterHitsTable[i][0]) {
-                return clusterHitsTable[i][nRoll - 1] + missilesHit(missiles - clusterHitsTable[i][0], nMod, tacops, hotloaded, streak);
+                return clusterHitsTable[i][nRoll - 1] + missilesHit(missiles - clusterHitsTable[i][0], nMod, tacops, hotloaded, streak, advancedAMS);
             }
         }
         throw new RuntimeException("Could not find number of missiles in hit table");
