@@ -49,7 +49,7 @@ public class SRMHandler extends MissileWeaponHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             int toReturn = (int) Math.ceil(((float) wtype.getRackSize() * 2) / 5);
             if (bGlancing) {
-                toReturn = (int) Math.ceil(((float) wtype.getRackSize() * 2) / 10)+2;
+                toReturn /= 2;
             }
             return toReturn;
         }

@@ -62,7 +62,7 @@ public class PrototypeGaussHandler extends AmmoWeaponHandler {
 
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn /= 10;
-        } else if (bGlancing) {
+        } if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
         return (int) Math.ceil(toReturn);

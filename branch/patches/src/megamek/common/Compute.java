@@ -2361,18 +2361,31 @@ public class Compute {
         return missilesHit(missiles, 0);
     }
 
-    public static int missilesHit(int missiles, int nMod, boolean tacops, boolean hotloaded) {
-        return missilesHit(missiles, nMod, tacops, hotloaded, false, false);
+    /**
+     * Maintain backwards compatability.
+     * @param missiles
+     * @param nMod
+     * @return
+     */
+    public static int missilesHit(int missiles, int nMod) {
+        return missilesHit(missiles, nMod, false);
+    }
+
+    /**
+     * Maintain backwards compatability.
+     * @param missiles
+     * @param nMod
+     * @param hotloaded
+     * @return
+     */
+    public static int missilesHit(int missiles, int nMod, boolean hotloaded) {
+        return missilesHit(missiles, nMod, hotloaded, false, false);
     }
 
     /**
      * Roll the number of missiles (or whatever) on the missile hit table, with
      * the specified mod to the roll.
      * 
-     * --deprecated tacops no longer allows for a roll below 2 like Maxtech
-     * @param tacops - 
-     *            either tacops glancing blows or tacops cluster hit penalties
-     *            are in effect. However the roll cannot go below 2 or above 12
      * @param missiles -
      *            the <code>int</code> number of missiles in the pack.
      * @param nMod -
@@ -2385,7 +2398,7 @@ public class Compute {
      * @param advancedAMS -
      *            the roll can now go below 2, indicating no damage
      */
-    public static int missilesHit(int missiles, int nMod, boolean tacops, boolean hotloaded, boolean streak, boolean advancedAMS) {
+    public static int missilesHit(int missiles, int nMod, boolean hotloaded, boolean streak, boolean advancedAMS) {
         int nRoll = d6(2);
         
         if (hotloaded) {
@@ -2427,18 +2440,10 @@ public class Compute {
         // if so, take largest, subtract value and try again
         for (int i = clusterHitsTable.length - 1; i >= 0; i--) {
             if (missiles > clusterHitsTable[i][0]) {
-                return clusterHitsTable[i][nRoll - 1] + missilesHit(missiles - clusterHitsTable[i][0], nMod, tacops, hotloaded, streak, advancedAMS);
+                return clusterHitsTable[i][nRoll - 1] + missilesHit(missiles - clusterHitsTable[i][0], nMod, hotloaded, streak, advancedAMS);
             }
         }
         throw new RuntimeException("Could not find number of missiles in hit table");
-    }
-
-    public static int missilesHit(int missiles, int nMod) {
-        return missilesHit(missiles, nMod, false, false);
-    }
-
-    public static int missilesHit(int missiles, int nMod, boolean tacops) {
-        return missilesHit(missiles, nMod, tacops, false);
     }
 
     /**

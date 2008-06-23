@@ -99,7 +99,6 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
                 : null;
         int missilesHit;
         int nMissilesModifier = nSalvoBonus;
-        boolean bWeather = false;
         boolean tacopscluster = game.getOptions().booleanOption("tacops_clusterhitpen");
         
         int[] ranges = wtype.getRanges(weapon);
@@ -200,19 +199,16 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         if (game.getOptions().booleanOption("blizzard")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
-            bWeather = true;
         }
 
         if (game.getOptions().booleanOption("moderate_winds")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 2;
-            bWeather = true;
         }
 
         if (game.getOptions().booleanOption("high_winds")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
-            bWeather = true;
         }
 
         // add AMS mods
@@ -224,13 +220,11 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
             if (ae instanceof BattleArmor)
                 missilesHit = Compute.missilesHit(wtype.getRackSize()
                         * ((BattleArmor) ae).getShootingStrength(),
-                        nMissilesModifier, bWeather || bGlancing
-                                || tacopscluster, weapon.isHotLoaded(),
+                        nMissilesModifier, weapon.isHotLoaded(),
                         false, advancedAMS);
             else
                 missilesHit = Compute.missilesHit(wtype.getRackSize(),
-                        nMissilesModifier, bWeather || bGlancing
-                                || tacopscluster, weapon.isHotLoaded(),
+                        nMissilesModifier, weapon.isHotLoaded(),
                         false, advancedAMS);
         }
 
@@ -279,12 +273,9 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         double toReturn;
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn = wtype.getRackSize();
-            if (bGlancing) {
-                toReturn /= 10;
-                toReturn += 2;
-            }else {
-                toReturn /= 5;
-            }
+            toReturn /= 5;
+            if (bGlancing)
+                toReturn /= 2;
             toReturn = Math.ceil(toReturn);
             return (int)toReturn;
         }

@@ -252,9 +252,7 @@ public class SRMInfernoHandler extends SRMHandler {
                 : null;
         int missilesHit;
         int nMissilesModifier = nSalvoBonus;
-        boolean bWeather = false;
-        boolean tacopscluster = game.getOptions().booleanOption(
-                "tacops_clusterhitpen");
+        boolean tacopscluster = game.getOptions().booleanOption("tacops_clusterhitpen");
         if (tacopscluster) {
             if (nRange <= 1) {
                 nMissilesModifier += 1;
@@ -352,19 +350,16 @@ public class SRMInfernoHandler extends SRMHandler {
         if (game.getOptions().booleanOption("blizzard")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
-            bWeather = true;
         }
 
         if (game.getOptions().booleanOption("moderate_winds")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 2;
-            bWeather = true;
         }
 
         if (game.getOptions().booleanOption("high_winds")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
-            bWeather = true;
         }
 
         // add AMS mods
@@ -376,12 +371,10 @@ public class SRMInfernoHandler extends SRMHandler {
             if (ae instanceof BattleArmor)
                 missilesHit = Compute.missilesHit(wtype.getRackSize()
                         * ((BattleArmor) ae).getShootingStrength(),
-                        nMissilesModifier, bWeather || bGlancing
-                                || tacopscluster, weapon.isHotLoaded());
+                        nMissilesModifier, weapon.isHotLoaded());
             else
                 missilesHit = Compute.missilesHit(wtype.getRackSize(),
-                        nMissilesModifier, bWeather || bGlancing
-                                || tacopscluster, weapon.isHotLoaded());
+                        nMissilesModifier, weapon.isHotLoaded());
         }
 
         if (missilesHit > 0) {

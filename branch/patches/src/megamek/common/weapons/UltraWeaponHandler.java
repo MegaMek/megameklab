@@ -182,7 +182,7 @@ public class UltraWeaponHandler extends AmmoWeaponHandler {
                 //ok, more than 1 shot, +1 for cluster
                 toReturn += 1;
             }
-        }else if (bGlancing) {
+        }if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
         

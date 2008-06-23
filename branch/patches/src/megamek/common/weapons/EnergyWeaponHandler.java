@@ -71,7 +71,7 @@ public class EnergyWeaponHandler extends WeaponHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn = Math.ceil(toReturn / 10);
         }
-        else if (bGlancing) {
+        if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
 

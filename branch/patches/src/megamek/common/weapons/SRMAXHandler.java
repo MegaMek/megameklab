@@ -53,7 +53,7 @@ public class SRMAXHandler extends SRMHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             int toReturn = (int) Math.ceil(((float) wtype.getRackSize()) / 5);
             if (bGlancing) {
-                toReturn = (int) Math.ceil(((float) wtype.getRackSize()) / 10)+2;
+                toReturn /= 2;
             }
             return toReturn;
         }

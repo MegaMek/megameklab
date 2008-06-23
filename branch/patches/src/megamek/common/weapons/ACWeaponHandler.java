@@ -57,7 +57,7 @@ public class ACWeaponHandler extends AmmoWeaponHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn = Math.ceil(toReturn / 10);
         }
-        else if (bGlancing) {
+        if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
         if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {

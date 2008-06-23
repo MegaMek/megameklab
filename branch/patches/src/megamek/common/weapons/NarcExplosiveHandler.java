@@ -121,7 +121,7 @@ public class NarcExplosiveHandler extends MissileWeaponHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn /= 10;
             toReturn = Math.ceil(toReturn);
-        } else if (bGlancing)
+        } if (bGlancing)
             return (int) Math.floor(toReturn / 2.0);
         return (int)toReturn;
     }

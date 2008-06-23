@@ -58,8 +58,10 @@ public class LBXHandler extends AmmoWeaponHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             float toReturn = wtype.getDamage();
             toReturn /= 10;
-            if (!bGlancing)
-                toReturn += 1;
+            toReturn += 1;
+            
+            if (bGlancing)
+                toReturn /= 2;
             return (int) Math.ceil(toReturn);
         }
         return 1;

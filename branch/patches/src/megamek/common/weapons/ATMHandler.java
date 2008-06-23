@@ -70,11 +70,7 @@ public class ATMHandler extends MissileWeaponHandler {
             toReturn = 2;
         }
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            if (bGlancing) {
-                toReturn = (int) Math.floor(toReturn / 10)+2;
-            }else {
-                toReturn = (int) Math.ceil(toReturn * wtype.getRackSize() / 5);
-            }
+            toReturn = (int) Math.ceil(toReturn * wtype.getRackSize() / 5);
             return toReturn;
         }
             
@@ -189,7 +185,6 @@ public class ATMHandler extends MissileWeaponHandler {
                 : null;
         int missilesHit;
         int nMissilesModifier = nSalvoBonus;
-        boolean bWeather = false;
 
         if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
             nMissilesModifier -= 2;
@@ -278,19 +273,16 @@ public class ATMHandler extends MissileWeaponHandler {
         if (game.getOptions().booleanOption("blizzard")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
-            bWeather = true;
         }
 
         if (game.getOptions().booleanOption("moderate_winds")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 2;
-            bWeather = true;
         }
 
         if (game.getOptions().booleanOption("high_winds")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
-            bWeather = true;
         }
 
         // add AMS mods
@@ -302,10 +294,10 @@ public class ATMHandler extends MissileWeaponHandler {
             if (ae instanceof BattleArmor)
                 missilesHit = Compute.missilesHit(wtype.getRackSize()
                         * ((BattleArmor) ae).getShootingStrength(),
-                        nMissilesModifier, bWeather || bGlancing , weapon.isHotLoaded());
+                        nMissilesModifier, weapon.isHotLoaded());
             else
                 missilesHit = Compute.missilesHit(wtype.getRackSize(),
-                        nMissilesModifier, bWeather || bGlancing , weapon.isHotLoaded());
+                        nMissilesModifier, weapon.isHotLoaded());
         }
 
         if (missilesHit > 0) {

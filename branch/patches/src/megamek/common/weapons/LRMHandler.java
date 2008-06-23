@@ -126,7 +126,6 @@ public class LRMHandler extends MissileWeaponHandler {
                 : null;
         int missilesHit;
         int nMissilesModifier = nSalvoBonus;
-        boolean bWeather = false;
 
         if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
             nMissilesModifier -= 2;
@@ -215,19 +214,16 @@ public class LRMHandler extends MissileWeaponHandler {
         if (game.getOptions().booleanOption("blizzard")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
-            bWeather = true;
         }
 
         if (game.getOptions().booleanOption("moderate_winds")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 2;
-            bWeather = true;
         }
 
         if (game.getOptions().booleanOption("high_winds")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
-            bWeather = true;
         }
 
         // add AMS mods
@@ -239,10 +235,10 @@ public class LRMHandler extends MissileWeaponHandler {
             if (ae instanceof BattleArmor)
                 missilesHit = Compute.missilesHit(wtype.getRackSize()
                         * ((BattleArmor) ae).getShootingStrength(),
-                        nMissilesModifier, bWeather || bGlancing , weapon.isHotLoaded());
+                        nMissilesModifier, weapon.isHotLoaded());
             else
                 missilesHit = Compute.missilesHit(wtype.getRackSize(),
-                        nMissilesModifier, bWeather || bGlancing , weapon.isHotLoaded());
+                        nMissilesModifier, weapon.isHotLoaded());
         }
 
         if (missilesHit > 0) {

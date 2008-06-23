@@ -69,8 +69,9 @@ public class HAGWeaponHandler extends AmmoWeaponHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             double toReturn = wtype.getRackSize();
             toReturn /= 10;
-            if (!bGlancing)
-                toReturn += 1;
+            toReturn += 1;
+            if ( bGlancing )
+                toReturn /=2;
             toReturn = Math.ceil(toReturn);
             return (int) toReturn;
         }
@@ -114,7 +115,7 @@ public class HAGWeaponHandler extends AmmoWeaponHandler {
         if (allShotsHit())
             nHits = wtype.getRackSize();
         else
-            nHits = Compute.missilesHit(wtype.getRackSize(), nHitsModifier, bGlancing || tacopscluster, false);
+            nHits = Compute.missilesHit(wtype.getRackSize(), nHitsModifier, false);
         r = new Report(3325);
         r.subject = subjectId;
         r.add(nHits);

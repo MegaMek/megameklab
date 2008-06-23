@@ -60,7 +60,7 @@ public class SRMDeadFireHandler extends SRMHandler {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             int toReturn = (int) Math.ceil(((float) wtype.getRackSize()*3) / 5);
             if (bGlancing) {
-                toReturn = (int) Math.ceil(((float) wtype.getRackSize()*3) / 10)+2;
+                toReturn /= 2;
             }
             return toReturn;
         }
