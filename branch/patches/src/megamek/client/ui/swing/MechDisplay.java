@@ -2194,12 +2194,12 @@ public class MechDisplay extends JPanel {
                         return;
                     }
                     // disables AC mode switching from system tab if
-                    // maxtech_rapid_ac is not turned on
+                    // tacops_rapid_ac is not turned on
                     if (m.getType() instanceof WeaponType
                             && (((WeaponType) m.getType()).getAmmoType() == AmmoType.T_AC || ((WeaponType) m
                                     .getType()).getAmmoType() == AmmoType.T_LAC)
                             && !clientgui.getClient().game.getOptions()
-                                    .booleanOption("maxtech_rapid_ac")) {
+                                    .booleanOption("tacops_rapid_ac")) {
                         ((DefaultComboBoxModel) m_chMode.getModel())
                                 .removeAllElements();
                         return;
