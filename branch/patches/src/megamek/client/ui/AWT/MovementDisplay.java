@@ -891,7 +891,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         else
             butFortify.setEnabled(false);
 
-        if (isInfantry && client.game.getOptions().booleanOption("maxtech_dig_in"))
+        if (isInfantry && client.game.getOptions().booleanOption("tacops_dig_in"))
             butDigIn.setEnabled(true);
         else
             butDigIn.setEnabled(false);

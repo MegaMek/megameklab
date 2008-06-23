@@ -14,6 +14,7 @@ v0.33.29-dev (SVN)
 + added MoS/MoF for all attacks weapons and physicals.
 + ECCM
 + Angel ECM && ECCM at same time
++ Infantry Digging
 
 v0.33.28 (2008-06-17, 18:19 GMT+2)
 + Aeros can go up and down in atmosphere
