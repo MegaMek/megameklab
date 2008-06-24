@@ -11364,6 +11364,7 @@ public class Server implements Runnable {
         //Damage To Target
         int damage = ChargeAttackAction.getDamageFor(ae,te,game
                 .getOptions().booleanOption("tacops_charge_damage"),toHit.getMoS());
+        
         //Damage to Attacker
         int damageTaken = ChargeAttackAction.getDamageTakenBy(ae, te, game
                 .getOptions().booleanOption("tacops_charge_damage"));
@@ -11375,6 +11376,7 @@ public class Server implements Runnable {
             damage = (int) Math.floor(damage / 2.0);
             damageTaken = (int) Math.floor(damageTaken / 2.0);
         }
+        
         // Is the target inside a building?
         final boolean targetInBuilding = Compute.isInBuilding(game, te);
 
@@ -11478,6 +11480,14 @@ public class Server implements Runnable {
                 HitData hit = te.rollHitLocation(toHit.getHitTable(), toHit
                         .getSideTable());
                 hit.setGeneralDamageType(HitData.DAMAGE_PHYSICAL);
+                if ( game.getOptions().booleanOption("tacops_direct_blow") ) {
+                    damage += toHit.getMoS()/3;
+                    hit.makeDirectBlow(toHit.getMoS()/3);
+                    r = new Report(4032);
+                    r.subject = ae.getId();
+                    r.newlines = 0;
+                    addReport(r);
+                }
                 if (spikes[hit.getLocation()] == 1) {
                     r = new Report(4330);
                     r.indent(2);
