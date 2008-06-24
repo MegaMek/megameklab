@@ -767,45 +767,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         int tElev = target.getElevation();
         int distance = Compute.effectiveDistance(game, ae, target);
 
-        toHit.append(nightModifiers(game, target, atype, ae));
-
-        // weather conditions
-        if (game.getOptions().booleanOption("blizzard")) {
-            if (wtype.hasFlag(WeaponType.F_BALLISTIC)) {
-                toHit.addModifier(+2, "Blizzard");
-            } else {
-                toHit.addModifier(+1, "Blizzard");
-            }
-        }
-
-        if (game.getOptions().booleanOption("blowing_sand")) {
-            if (wtype.hasFlag(WeaponType.F_BALLISTIC)) {
-                toHit.addModifier(+1, "Blowing sand");
-            } else {
-                toHit.addModifier(+2, "Blowing sand");
-            }
-        }
-
-        if (game.getOptions().booleanOption("heavy_snowfall")) {
-            toHit.addModifier(+1, "Heavy snowfall");
-        }
-
-        if (game.getOptions().booleanOption("light_rainfall")
-                || game.getOptions().booleanOption("heavy_rainfall")) {
-            toHit.addModifier(+1, "Rainfall");
-        }
-
-        if (game.getOptions().booleanOption("moderate_winds")) {
-            if (wtype.hasFlag(WeaponType.F_BALLISTIC)) {
-                toHit.addModifier(+1, "Moderate winds");
-            }
-        }
-
-        if (game.getOptions().booleanOption("high_winds")) {
-            if (wtype.hasFlag(WeaponType.F_BALLISTIC)) {
-                toHit.addModifier(+2, "High winds");
-            }
-        }
+        toHit.append(nightModifiers(game, target, atype, ae, true));
 
         // handle LAM speial rules
 
@@ -2064,10 +2026,6 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             return "WiGE may not attack target in same hex";
         }
         
-        if (wtype.hasFlag(WeaponType.F_ENERGY) && game.getOptions().booleanOption("blowing_sand")) {
-            return "Energy weapons can't hit in blowing sands";
-        }
-
         return null;
     }
 

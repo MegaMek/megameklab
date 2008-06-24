@@ -45,6 +45,7 @@ import megamek.common.options.GameOptions;
 import megamek.common.options.IBasicOption;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
+import megamek.common.LightConditions;
 
 /**
  * Responsible for displaying the current game options and allowing the user to
@@ -308,6 +309,14 @@ public class GameOptionsDialog extends JDialog implements ActionListener,
                     || !editable) {
                 optionComp.setEditable(false);
             }
+        } else if (option.getName().equals("tacops_light")) { 
+        	optionComp.addValue(LightConditions.T_DAYLIGHT);
+        	optionComp.addValue(LightConditions.T_DUSK);
+        	optionComp.addValue(LightConditions.T_FULL_MOON);
+        	optionComp.addValue(LightConditions.T_MOONLESS);
+        	optionComp.addValue(LightConditions.T_PITCH_BLACK);
+        	optionComp.setSelected(option.stringValue());
+        	optionComp.setEditable(true);
         } else {
             optionComp.setEditable(editable);
         }

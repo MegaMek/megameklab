@@ -1245,7 +1245,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             if (entity instanceof Aero) {
                 // check for more than one roll
                 Aero a = (Aero) entity;
-                rollTarget = a.checkRolls(step);
+                rollTarget = a.checkRolls(step, overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     nagReport.append(addNag(rollTarget));
                 }
@@ -1372,9 +1372,9 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                 if (bldgExited != null && bldgEntered != null && !bldgExited.equals(bldgEntered)) {
                     // Exiting one building and entering another.
                     // Brave, aren't we?
-                    rollTarget = entity.rollMovementInBuilding(bldgExited, distance, "exiting");
+                    rollTarget = entity.rollMovementInBuilding(bldgExited, distance, "exiting", overallMoveType);
                     nagReport.append(addNag(rollTarget));
-                    rollTarget = entity.rollMovementInBuilding(bldgEntered, distance, "entering");
+                    rollTarget = entity.rollMovementInBuilding(bldgEntered, distance, "entering", overallMoveType);
                     nagReport.append(addNag(rollTarget));
                 } else {
                     Building bldg;
@@ -1386,7 +1386,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                         bldg = bldgEntered;
                     }
                     if (bldg != null) {
-                        rollTarget = entity.rollMovementInBuilding(bldg, distance, "");
+                        rollTarget = entity.rollMovementInBuilding(bldg, distance, "", overallMoveType);
                         nagReport.append(addNag(rollTarget));
                     }
                 }
@@ -1421,7 +1421,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         // but the danger isn't over yet! landing from a jump can be risky!
         if (overallMoveType == IEntityMovementType.MOVE_JUMP && !entity.isMakingDfa()) {
             // check for damaged criticals
-            rollTarget = entity.checkLandingWithDamage();
+            rollTarget = entity.checkLandingWithDamage(overallMoveType);
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 nagReport.append(addNag(rollTarget));
             }
@@ -1431,7 +1431,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             if (hex.containsTerrain(Terrains.ICE) && waterLevel > 0) {
                 nagReport.append(Messages.getString("MovementDisplay.IceLanding"));
             } else if (!(prevStep.climbMode() && hex.containsTerrain(Terrains.BRIDGE))) {
-                rollTarget = entity.checkWaterMove(waterLevel);
+                rollTarget = entity.checkWaterMove(waterLevel, overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     nagReport.append(addNag(rollTarget));
                 }
@@ -1443,14 +1443,14 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         // Checked.
         if ((moveType == MovePath.STEP_BACKWARDS || moveType == MovePath.STEP_LATERAL_LEFT_BACKWARDS || moveType == MovePath.STEP_LATERAL_RIGHT_BACKWARDS) && prevHex != null && prevHex.getElevation() != client.game.getBoard().getHex(curPos).getElevation() && !(entity instanceof VTOL)) {
             nagReport.append(Messages.getString("MovementDisplay.BackWardsElevationChange"));
-            nagReport.append(addNag(entity.getBasePilotingRoll()));
+            nagReport.append(addNag(entity.getBasePilotingRoll(overallMoveType)));
         }
 
         if (entity instanceof Aero) {
             // check to see if thrust exceeded SI
             Aero a = (Aero) entity;
             int thrust = md.getMpUsed();
-            rollTarget = a.checkThrustSITotal(thrust);
+            rollTarget = a.checkThrustSITotal(thrust, overallMoveType);
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 nagReport.append(addNag(rollTarget));
             }
@@ -1458,20 +1458,20 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             // Atmospheric checks
             if (client.game.getBoard().inAtmosphere()) {
                 // check to see if velocity is 2x thrust
-                rollTarget = a.checkVelocityDouble(md.getFinalVelocity());
+                rollTarget = a.checkVelocityDouble(md.getFinalVelocity(), overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     nagReport.append(addNag(rollTarget));
                 }
 
                 // check to see if descended more than two hexes
-                rollTarget = a.checkDown(md.getFinalNDown());
+                rollTarget = a.checkDown(md.getFinalNDown(), overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     nagReport.append(addNag(rollTarget));
                 }
 
                 // stalling out
                 if (md.getFinalVelocity() == 0 && !a.isSpheroid() && client.game.getBoard().inAtmosphere() && !a.isVSTOL()) {
-                    rollTarget = a.checkStall(md.getFinalVelocity());
+                    rollTarget = a.checkStall(md.getFinalVelocity(), overallMoveType);
                     nagReport.append(addNag(rollTarget));
                 }
 
@@ -1496,9 +1496,11 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         StringBuffer nagReport = new StringBuffer();
 
         final Entity entity = ce();
+        int overallMoveType = IEntityMovementType.MOVE_NONE;
 
         Aero a = (Aero) entity;
-
+        overallMoveType = md.getLastStepMovementType();
+        
         PilotingRollData rollTarget;
 
         // cycle through movement. Collect thrust used until position changes.
@@ -1520,7 +1522,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                 // then we moved to a new hex or the last step so check
                 // conditions
                 // structural damage
-                rollTarget = a.checkThrustSI(thrustUsed);
+                rollTarget = a.checkThrustSI(thrustUsed, overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     nagReport.append(addNag(rollTarget));
                 }
@@ -2508,6 +2510,10 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         }
         Aero a = (Aero) ce();
 
+        int overallMoveType = IEntityMovementType.MOVE_NONE;
+        if(null != cmd) {
+        	overallMoveType = cmd.getLastStepMovementType();
+        }
         // bring up dialog to dump bombs, then make a control roll and report
         // success or failure
         // should update mp available
@@ -2517,7 +2523,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         if (dumpBombsDialog.getAnswer()) {
             int[] bombsDumped = dumpBombsDialog.getChoices();
             // first make a control roll
-            PilotingRollData psr = ce().getBasePilotingRoll();
+            PilotingRollData psr = ce().getBasePilotingRoll(overallMoveType);
             int ctrlroll = Compute.d6(2);
             Report r = new Report(9500);
             r.subject = ce().getId();

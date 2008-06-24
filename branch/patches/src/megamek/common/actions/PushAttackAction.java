@@ -278,7 +278,7 @@ public class PushAttackAction extends DisplacementAttackAction {
 
         Compute.modifyPhysicalBTHForAdvantages(ae, te, toHit, game);
 
-        toHit.append(nightModifiers(game, target, null, ae));
+        toHit.append(nightModifiers(game, target, null, ae, false));
         // side and elevation shouldn't matter
 
         // If it has a torso-mounted cockpit and two head sensor hits or three

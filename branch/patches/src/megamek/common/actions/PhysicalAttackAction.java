@@ -161,7 +161,7 @@ public class PhysicalAttackAction extends AbstractAttackAction {
         // target immobile
         toHit.append(Compute.getImmobileMod(target));
 
-        toHit.append(nightModifiers(game, target, null, ae));
+        toHit.append(nightModifiers(game, target, null, ae, false));
 
         if (target.getTargetType() == Targetable.TYPE_ENTITY) {
             // Checks specific to entity targets

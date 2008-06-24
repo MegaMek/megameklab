@@ -52,6 +52,7 @@ import megamek.common.GunEmplacement;
 import megamek.common.IGame;
 import megamek.common.IOffBoardDirections;
 import megamek.common.Infantry;
+import megamek.common.LightConditions;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -536,8 +537,9 @@ public class CustomMechDialog extends ClientDialog implements ActionListener,
         }
 
         // Set up searchlight
-        if (clientgui.getClient().game.getOptions().booleanOption(
-                "night_battle")) { //$NON-NLS-1$
+        String lightCond = (String)clientgui.getClient().game.getOptions().getOption("tacops_light").getValue(); //$NON-NLS-1$
+        if (!lightCond.equals(LightConditions.T_DAYLIGHT) 
+        		&& !lightCond.equals(LightConditions.T_DUSK)) { 
             c.gridwidth = 1;
             c.anchor = GridBagConstraints.EAST;
             gridbag.setConstraints(labSearchlight, c);

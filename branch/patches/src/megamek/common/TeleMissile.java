@@ -149,15 +149,15 @@ public class TeleMissile extends Aero {
         return 0;
     }
 
-    public PilotingRollData checkThrustSI(int thrust) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkThrustSI(int thrust, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         roll.addModifier(TargetRoll.CHECK_FALSE,"Check false: Entity is not exceeding SI");
         return roll;
     }
 
-    public PilotingRollData checkThrustSITotal(int thrust) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkThrustSITotal(int thrust, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         roll.addModifier(TargetRoll.CHECK_FALSE,"Check false: Entity is not exceeding SI");
         return roll;

@@ -59,6 +59,7 @@ import megamek.common.IEntityMovementType;
 import megamek.common.IGame;
 import megamek.common.IHex;
 import megamek.common.Infantry;
+import megamek.common.LightConditions;
 import megamek.common.LosEffects;
 import megamek.common.Mech;
 import megamek.common.Minefield;
@@ -851,7 +852,8 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
 
         if (GUIPreferences.getInstance().getBoolean(
                 GUIPreferences.ADVANCED_DARKEN_MAP_AT_NIGHT)
-                && game.getOptions().booleanOption("night_battle")
+                && !((String)game.getOptions().getOption("tacops_light").getValue()).equals(LightConditions.T_DAYLIGHT)
+                && !((String)game.getOptions().getOption("tacops_light").getValue()).equals(LightConditions.T_DUSK)
                 && !game.isPositionIlluminated(c)) {
             boardGraph.drawImage(tileManager.getNightFog(), drawX, drawY, this);
         }

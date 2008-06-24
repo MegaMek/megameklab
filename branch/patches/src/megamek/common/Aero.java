@@ -1531,8 +1531,8 @@ public class Aero
         return critical;
     }
 
-    public PilotingRollData checkThrustSI(int thrust) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkThrustSI(int thrust, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
         
         if(thrust > getSI()) {
             // append the reason modifier
@@ -1543,8 +1543,8 @@ public class Aero
         return roll;
     }
     
-    public PilotingRollData checkThrustSITotal(int thrust) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkThrustSITotal(int thrust, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         if(thrust > getSI()) {
             // append the reason modifier
@@ -1555,8 +1555,8 @@ public class Aero
         return roll;
     }
     
-    public PilotingRollData checkVelocityDouble(int velocity) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkVelocityDouble(int velocity, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         if(velocity > (2 * getWalkMP()) && game.getBoard().inAtmosphere()) {
             // append the reason modifier
@@ -1567,8 +1567,8 @@ public class Aero
         return roll;
     }
     
-    public PilotingRollData checkDown(int drop) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkDown(int drop, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         if( drop > 2 ) {
             // append the reason modifier
@@ -1580,7 +1580,7 @@ public class Aero
     }
     
     public PilotingRollData checkHover(MovePath md) {
-        PilotingRollData roll = getBasePilotingRoll();
+        PilotingRollData roll = getBasePilotingRoll(md.getLastStepMovementType());
 
         if( md.contains(MovePath.STEP_HOVER) ) {
             // append the reason modifier
@@ -1591,8 +1591,8 @@ public class Aero
         return roll;
     }
     
-    public PilotingRollData checkStall(int velocity) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkStall(int velocity, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         if( velocity == 0 ) {
             // append the reason modifier
@@ -1603,8 +1603,8 @@ public class Aero
         return roll;
     }
     
-    public PilotingRollData checkRolls(MoveStep step) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkRolls(MoveStep step, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         if((step.getType() == MovePath.STEP_ROLL || step.getType() == MovePath.STEP_YAW) 
                 && step.getNRolls() > 1) {
@@ -1619,8 +1619,8 @@ public class Aero
     /**
      * Checks if a maneuver requires a control roll
      */
-    public PilotingRollData checkManeuver(MoveStep step) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkManeuver(MoveStep step, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
         
         if ((step == null) || (step.getType() != MovePath.STEP_MANEUVER)) {
             roll.addModifier(TargetRoll.CHECK_FALSE,

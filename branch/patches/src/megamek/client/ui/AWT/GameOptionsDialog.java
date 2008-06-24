@@ -333,6 +333,14 @@ public class GameOptionsDialog extends Dialog implements ActionListener,
                     || !editable) {
                 optionComp.setEditable(false);
             }
+        } else if (option.getName().equals("tacops_light")) { 
+        	optionComp.addValue("Daylight");
+        	optionComp.addValue("Dusk/Dawn");
+        	optionComp.addValue("Full Moon");
+        	optionComp.addValue("Moonless Night");
+        	optionComp.addValue("Pitch Black");
+        	optionComp.setSelected(option.stringValue());
+        	optionComp.setEditable(true);
         } else {
             optionComp.setEditable(editable);
         }

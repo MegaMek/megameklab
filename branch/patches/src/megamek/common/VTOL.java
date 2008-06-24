@@ -66,7 +66,7 @@ public class VTOL extends Tank {
             int overallMoveType, MoveStep prevStep, int prevFacing,
             int curFacing, Coords lastPos, Coords curPos, boolean isInfantry,
             int distance) {
-        PilotingRollData roll = getBasePilotingRoll();
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
         roll.addModifier(TargetRoll.CHECK_FALSE,
                 "Check false: VTOLs can't skid");
         return roll;

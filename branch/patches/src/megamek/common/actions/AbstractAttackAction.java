@@ -17,8 +17,11 @@ package megamek.common.actions;
 import java.util.Enumeration;
 
 import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
 import megamek.common.Entity;
+import megamek.common.Infantry;
 import megamek.common.IGame;
+import megamek.common.LightConditions;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.Targetable;
@@ -82,24 +85,25 @@ public abstract class AbstractAttackAction extends AbstractEntityAction
      * ammo based weapon
      */
     public static ToHitData nightModifiers(IGame game, Targetable target,
-            AmmoType atype, Entity attacker) {
+            AmmoType atype, Entity attacker, boolean isWeapon) {
         ToHitData toHit = null;
-        if (game.getOptions().booleanOption("night_battle")) {
+        
             Entity te = null;
             if (target.getTargetType() == Targetable.TYPE_ENTITY) {
                 te = (Entity) target;
             }
             toHit = new ToHitData();
 
-            // The base night penalty
-            int night_modifier;
-            if (game.getOptions().booleanOption("dusk")) {
-                night_modifier = 1;
-                toHit.addModifier(night_modifier, "Dusk");
-            } else {
-                night_modifier = 2;
-                toHit.addModifier(night_modifier, "Night");
+            String lightCond = (String)game.getOptions().getOption("tacops_light").getValue();
+            if(lightCond.equals(LightConditions.T_DAYLIGHT)) {
+            	//not nighttime so just return
+            	return toHit;
             }
+            
+            // The base night penalty
+            int night_modifier = 0;   
+            night_modifier = LightConditions.getHitPenalty(lightCond, isWeapon);
+            toHit.addModifier(night_modifier, lightCond);
 
             boolean illuminated = false;
             if (te != null) {
@@ -119,20 +123,23 @@ public abstract class AbstractAttackAction extends AbstractEntityAction
                     }
                 }
             }
-            // Searchlights reduce the penalty to zero
-            if (te != null && te.isUsingSpotlight()) {
-                toHit.addModifier(-night_modifier, "target using searchlight");
-                night_modifier = 0;
-            } else if (illuminated) {
-                toHit.addModifier(-night_modifier,
+            // Searchlights reduce the penalty to zero (except for dusk/dawn)
+            int searchlightMod = Math.min(3, night_modifier);
+            if (te != null && te.isUsingSpotlight() && !lightCond.equals(LightConditions.T_DUSK)) {
+                toHit.addModifier(-searchlightMod, "target using searchlight");
+                night_modifier = night_modifier - searchlightMod;
+            } else if (illuminated && !lightCond.equals(LightConditions.T_DUSK)) {
+                toHit.addModifier(-searchlightMod,
                         "target illuminated by searchlight");
-                night_modifier = 0;
+                night_modifier = night_modifier - searchlightMod;
             }
+            /*
             // Ignored with EI system & implants
             else if (attacker.hasActiveEiCockpit()) {
                 toHit.addModifier(-night_modifier, "EI system");
                 night_modifier = 0;
             }
+            */
             // So do flares
             else if (game.isPositionIlluminated(target.getPosition())) {
                 toHit.addModifier(-night_modifier,
@@ -192,7 +199,16 @@ public abstract class AbstractAttackAction extends AbstractEntityAction
                     toHit.addModifier(-1, "target uses laser heatsinks");
                 }
             }
-        }
+            
+            
+            //now check for general hit bonuses for heat
+            if(te != null && !(attacker instanceof Infantry && !(attacker instanceof BattleArmor))) {             	
+            	int heatBonus = LightConditions.getHeatBonus(lightCond, te.heat);
+            	if(heatBonus > 0) {
+            		toHit.addModifier(heatBonus, "target excess heat at night");
+            	}
+            }
+            
         return toHit;
     }
 

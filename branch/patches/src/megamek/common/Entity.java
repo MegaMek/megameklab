@@ -3969,8 +3969,16 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
 
     /**
      * Returns an entity's base piloting skill roll needed
+     * Only use this version if the entity is through processing movement
      */
     public PilotingRollData getBasePilotingRoll() {
+    	return getBasePilotingRoll(this.moved);
+    }
+    
+    /**
+     * Returns an entity's base piloting skill roll needed
+     */
+    public PilotingRollData getBasePilotingRoll(int moveType) {
         final int entityId = getId();
 
         PilotingRollData roll;
@@ -4015,21 +4023,10 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         // pass in the roll
         // object and adjust as necessary
         roll = addEntityBonuses(roll);
-
-        // add weather related stuff
-
-        if (game.getOptions().booleanOption("blizzard")) {
-            roll.addModifier(+1, "blizzard");
-        }
-
-        if (game.getOptions().booleanOption("heavy_snowfall")) {
-            roll.addModifier(+1, "heavy snowfall");
-        }
-
-        if (game.getOptions().booleanOption("light_rainfall") || game.getOptions().booleanOption("heavy_rainfall")) {
-            roll.addModifier(+1, "rainfall");
-        }
-
+        
+        //add planetary condition modifiers
+        roll = addConditionBonuses(roll, moveType);
+        
         return roll;
     }
 
@@ -4039,12 +4036,30 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     public abstract PilotingRollData addEntityBonuses(PilotingRollData roll);
 
     /**
+     * Add in any modifiers due to global conditions like light/weather/etc.
+     */
+    public PilotingRollData addConditionBonuses(PilotingRollData roll, int moveType) {
+    	//check light conditions and running
+        //TODO: I need to pass on overallMoveType in all checks during movement processing
+        //once I do that then I can set up another getbasepilotingroll that just passes on this.moved
+        if(moveType == IEntityMovementType.MOVE_RUN || 
+        		moveType == IEntityMovementType.MOVE_VTOL_RUN || moveType == IEntityMovementType.MOVE_OVER_THRUST) {
+        	String lightCond = (String)game.getOptions().getOption("tacops_light").getValue();
+        	int lightPenalty = LightConditions.getPilotPenalty(lightCond);
+        	if(lightPenalty > 0) {
+        		roll.addModifier(lightPenalty, lightCond);
+        	}
+        }
+        return roll;
+    }
+    
+    /**
      * Checks if the entity is getting up. If so, returns the target roll for
      * the piloting skill check.
      */
     public PilotingRollData checkGetUp(MoveStep step) {
-        PilotingRollData roll = getBasePilotingRoll();
-
+        PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
+        
         if ((step == null) || (step.getType() != MovePath.STEP_GET_UP)) {
             roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: Entity is not attempting to get up.");
             return roll;
@@ -4071,7 +4086,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * PSR. If so, returns the target roll for the piloting skill check.
      */
     public PilotingRollData checkRunningWithDamage(int overallMoveType) {
-        PilotingRollData roll = getBasePilotingRoll();
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         int gyroDamage = getBadCriticals(CriticalSlot.TYPE_SYSTEM, Mech.SYSTEM_GYRO, Mech.LOC_CT);
         if (getGyroType() == Mech.GYRO_HEAVY_DUTY)
@@ -4090,8 +4105,8 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Checks if the entity is landing (from a jump) with damage that would
      * force a PSR. If so, returns the target roll for the piloting skill check.
      */
-    public PilotingRollData checkLandingWithDamage() {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkLandingWithDamage(int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         if ((getBadCriticals(CriticalSlot.TYPE_SYSTEM, Mech.SYSTEM_GYRO, Mech.LOC_CT) > 0 && getGyroType() != Mech.GYRO_HEAVY_DUTY) || (getBadCriticals(CriticalSlot.TYPE_SYSTEM, Mech.SYSTEM_GYRO, Mech.LOC_CT) > 1 && getGyroType() == Mech.GYRO_HEAVY_DUTY) || hasLegActuatorCrit()) {
             // append the reason modifier
@@ -4105,7 +4120,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     }
 
     public PilotingRollData checkMovedTooFast(MoveStep step) {
-        PilotingRollData roll = getBasePilotingRoll();
+        PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
         addPilotingModifierForTerrain(roll, step);
         switch (step.getMovementType()) {
         case IEntityMovementType.MOVE_WALK:
@@ -4132,7 +4147,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * roll for the piloting skill check.
      */
     public PilotingRollData checkSkid(int moveType, IHex prevHex, int overallMoveType, MoveStep prevStep, int prevFacing, int curFacing, Coords lastPos, Coords curPos, boolean isInfantry, int distance) {
-        PilotingRollData roll = getBasePilotingRoll();
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
         addPilotingModifierForTerrain(roll, lastPos);
 
         // TODO: add check for elevation of pavement, road,
@@ -4169,7 +4184,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * roll for the piloting skill check.
      */
     public PilotingRollData checkRubbleMove(MoveStep step, IHex curHex, Coords lastPos, Coords curPos) {
-        PilotingRollData roll = getBasePilotingRoll();
+        PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
         addPilotingModifierForTerrain(roll, curPos);
 
         if (!lastPos.equals(curPos) && step.getMovementType() != IEntityMovementType.MOVE_JUMP && curHex.terrainLevel(Terrains.RUBBLE) > 0 && this instanceof Mech) {
@@ -4188,7 +4203,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * can bog down
      */
     public PilotingRollData checkSwampMove(MoveStep step, IHex curHex, Coords lastPos, Coords curPos, boolean isPavementStep) {
-        PilotingRollData roll = getBasePilotingRoll();
+        PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
         // DO NOT add terrain modifier, or the example in maxtech would have the
         // wrong target number
 
@@ -4216,17 +4231,17 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      */
     public PilotingRollData checkWaterMove(MoveStep step, IHex curHex, Coords lastPos, Coords curPos, boolean isPavementStep) {
         if (curHex.terrainLevel(Terrains.WATER) > 0 && step.getElevation() < 0 && !lastPos.equals(curPos) && step.getMovementType() != IEntityMovementType.MOVE_JUMP && getMovementMode() != IEntityMovementMode.HOVER && getMovementMode() != IEntityMovementMode.VTOL && getMovementMode() != IEntityMovementMode.NAVAL && getMovementMode() != IEntityMovementMode.HYDROFOIL && getMovementMode() != IEntityMovementMode.SUBMARINE && getMovementMode() != IEntityMovementMode.INF_UMU && getMovementMode() != IEntityMovementMode.BIPED_SWIM && getMovementMode() != IEntityMovementMode.QUAD_SWIM && getMovementMode() != IEntityMovementMode.WIGE && !isPavementStep) {
-            return checkWaterMove(curHex.terrainLevel(Terrains.WATER));
+            return checkWaterMove(curHex.terrainLevel(Terrains.WATER), step.getParent().getLastStepMovementType());
         }
-        return checkWaterMove(0);
+        return checkWaterMove(0, step.getParent().getLastStepMovementType());
     }
 
     /**
      * Checks if the entity is moving into depth 1+ water. If so, returns the
      * target roll for the piloting skill check.
      */
-    public PilotingRollData checkWaterMove(int waterLevel) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData checkWaterMove(int waterLevel, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         int mod;
         if (waterLevel == 1) {
@@ -4259,7 +4274,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         }
 
         // append the reason modifier
-        PilotingRollData roll = getBasePilotingRoll();
+        PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
         roll.append(new PilotingRollData(getId(), 0, "attempting to dislodge swarmers by dropping prone"));
         addPilotingModifierForTerrain(roll, step);
 
@@ -4314,8 +4329,8 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     /**
      * Calculates and returns the roll for an entity moving in buildings.
      */
-    public PilotingRollData rollMovementInBuilding(Building bldg, int distance, String why) {
-        PilotingRollData roll = getBasePilotingRoll();
+    public PilotingRollData rollMovementInBuilding(Building bldg, int distance, String why, int overallMoveType) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         int mod = 0;
         String desc;
@@ -6677,7 +6692,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     }
 
     public PilotingRollData checkSideSlip(int moveType, IHex prevHex, int overallMoveType, MoveStep prevStep, int prevFacing, int curFacing, Coords lastPos, Coords curPos, int distance) {
-        PilotingRollData roll = getBasePilotingRoll();
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         if (moveType != IEntityMovementType.MOVE_JUMP && prevHex != null && distance > 1 && (overallMoveType == IEntityMovementType.MOVE_RUN || overallMoveType == IEntityMovementType.MOVE_VTOL_RUN) && prevFacing != curFacing && !lastPos.equals(curPos) && !(this instanceof Infantry)) {
             roll.append(new PilotingRollData(getId(), 0, "flanking and turning"));

@@ -3585,7 +3585,7 @@ public class Server implements Runnable {
                     nextAltitude = curAltitude;
                 } else {
                     addReport(doEntityFallsInto(entity, curPos, nextPos, entity
-                            .getBasePilotingRoll()));
+                            .getBasePilotingRoll(step.getMovementType())));
                     addReport(doEntityDisplacementMinefieldCheck(entity, curPos, nextPos));
                     // Stay in the current hex and stop skidding.
                     break;
@@ -4130,7 +4130,7 @@ public class Server implements Runnable {
                     target.moved = IEntityMovementType.MOVE_OVER_THRUST;
                     //they may have exceeded SI, only add if they hadn't exceeded it before
                     if(target.mpUsed <= ta.getSI()) { 
-                        PilotingRollData rollTarget = ta.checkThrustSITotal(target.getRunMPwithoutMASC());
+                        PilotingRollData rollTarget = ta.checkThrustSITotal(target.getRunMPwithoutMASC(), ta.moved);
                         if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                             game.addControlRoll(new PilotingRollData
                                     ( ta.getId(), 0, "Thrust spent during turn exceeds SI" ));
@@ -4469,7 +4469,7 @@ public class Server implements Runnable {
                     }
                     //then we moved to a new hex or the last step so check conditions
                     //structural damage
-                    rollTarget = a.checkThrustSI(thrustUsed);
+                    rollTarget = a.checkThrustSI(thrustUsed, overallMoveType);
                     if (rollTarget.getValue() != TargetRoll.CHECK_FALSE && !(entity instanceof FighterSquadron) 
                             && !game.useVectorMove()) {
                         if(!doSkillCheckInSpace(entity, rollTarget)) {
@@ -4494,13 +4494,13 @@ public class Server implements Runnable {
                     thrustUsed = 0;
                 }
                 
-                rollTarget = a.checkRolls(step);
+                rollTarget = a.checkRolls(step, overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     game.addControlRoll(new PilotingRollData
                             ( a.getId(), 0, "excess roll" ));
                 }         
                 
-                rollTarget = a.checkManeuver(step);
+                rollTarget = a.checkManeuver(step, overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     if(!doSkillCheckManeuver(entity, rollTarget)) {
                         a.setFailedManeuver(true);
@@ -5360,7 +5360,7 @@ public class Server implements Runnable {
                 
                 loader = game.getEntity(step.getRecoveryUnit());
                 
-                PilotingRollData psr = entity.getBasePilotingRoll();
+                PilotingRollData psr = entity.getBasePilotingRoll(overallMoveType);
                 if(loader.mpUsed > 0) {
                     psr.addModifier(5, "carrier used thrust");
                 }
@@ -5414,7 +5414,7 @@ public class Server implements Runnable {
                     && game.getBoard().getHex(lastPos).getElevation() != curHex
                             .getElevation() && !(entity instanceof VTOL)) {
 
-                PilotingRollData psr = entity.getBasePilotingRoll();
+                PilotingRollData psr = entity.getBasePilotingRoll(overallMoveType);
                 int roll = Compute.d6(2);
                 if (entity instanceof Tank)
                     r = new Report(2435);
@@ -5432,14 +5432,14 @@ public class Server implements Runnable {
                                 lastPos).getElevation()) {
                             entity.setElevation(Integer.MIN_VALUE);
                             addReport(doEntityFallsInto(entity, lastPos, curPos, entity
-                                    .getBasePilotingRoll(), false));
+                                    .getBasePilotingRoll(overallMoveType), false));
                         }
                         else {
                             //Tac Ops p.22
                             //the change in levels is not taken into consideration for determining the levels fallen.
                             entity.setElevation(Integer.MIN_VALUE);
                             addReport(doEntityFallsInto(entity, curPos, lastPos, entity
-                                    .getBasePilotingRoll(), false));
+                                    .getBasePilotingRoll(overallMoveType), false));
                         }
                     } else if (entity instanceof Tank) {
                         curPos = lastPos;
@@ -5473,7 +5473,7 @@ public class Server implements Runnable {
                     if (bldgExited == null) {
                         collapsed = passBuildingWall(entity, bldgEntered,
                                 lastPos, curPos, distance, "entering", step
-                                        .isThisStepBackwards());
+                                        .isThisStepBackwards(), step.getParent().getLastStepMovementType());
                         addAffectedBldg(bldgEntered, collapsed);
                     }
 
@@ -5482,7 +5482,7 @@ public class Server implements Runnable {
                     else if (bldgExited.equals(bldgEntered)) {
                         collapsed = passBuildingWall(entity, bldgEntered,
                                 lastPos, curPos, distance, "moving in", step
-                                        .isThisStepBackwards());
+                                        .isThisStepBackwards(), step.getParent().getLastStepMovementType());
                         addAffectedBldg(bldgEntered, collapsed);
                     }
 
@@ -5498,11 +5498,11 @@ public class Server implements Runnable {
                         }
                         collapsed = passBuildingWall(entity, bldgExited,
                                 lastPos, curPos, distance, "exiting", step
-                                        .isThisStepBackwards());
+                                        .isThisStepBackwards(), step.getParent().getLastStepMovementType());
                         addAffectedBldg(bldgExited, collapsed);
                         collapsed = passBuildingWall(entity, bldgEntered,
                                 lastPos, curPos, distance, "entering", step
-                                        .isThisStepBackwards());
+                                        .isThisStepBackwards(), step.getParent().getLastStepMovementType());
                         addAffectedBldg(bldgEntered, collapsed);
                     }
 
@@ -5510,7 +5510,7 @@ public class Server implements Runnable {
                     else {
                         collapsed = passBuildingWall(entity, bldgExited,
                                 lastPos, curPos, distance, "exiting", step
-                                        .isThisStepBackwards());
+                                        .isThisStepBackwards(), step.getParent().getLastStepMovementType());
                         addAffectedBldg(bldgExited, collapsed);
                     }
                 }
@@ -5644,20 +5644,20 @@ public class Server implements Runnable {
             
             //check to see if thrust exceeded SI
             
-            rollTarget = a.checkThrustSITotal(thrust);
+            rollTarget = a.checkThrustSITotal(thrust, overallMoveType);
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 game.addControlRoll(new PilotingRollData
                         ( a.getId(), 0, "Thrust spent during turn exceeds SI" ));
             }
             
             if(game.getBoard().inAtmosphere()) {
-                rollTarget = a.checkVelocityDouble(md.getFinalVelocity());
+                rollTarget = a.checkVelocityDouble(md.getFinalVelocity(), overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     game.addControlRoll(new PilotingRollData
                             ( a.getId(), 0, "Velocity greater than 2x safe thrust" ));
                 }
                 
-                rollTarget = a.checkDown(md.getFinalNDown());
+                rollTarget = a.checkDown(md.getFinalNDown(), overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     game.addControlRoll(new PilotingRollData
                             ( a.getId(), md.getFinalNDown(), "descended more than two altitudes" ));
@@ -5693,7 +5693,7 @@ public class Server implements Runnable {
         if (Entity.NONE != swarmerId
                 && md.contains(MovePath.STEP_SHAKE_OFF_SWARMERS)) {
             final Entity swarmer = game.getEntity(swarmerId);
-            final PilotingRollData roll = entity.getBasePilotingRoll();
+            final PilotingRollData roll = entity.getBasePilotingRoll(overallMoveType);
 
             entity.addPilotingModifierForTerrain(roll);
 
@@ -5782,7 +5782,7 @@ public class Server implements Runnable {
                 && !entity.isMakingDfa()) {
             final IHex curHex = game.getBoard().getHex(curPos);
             // check for damaged criticals
-            rollTarget = entity.checkLandingWithDamage();
+            rollTarget = entity.checkLandingWithDamage(overallMoveType);
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 doSkillCheckInPlace(entity, rollTarget);
             }
@@ -5802,7 +5802,7 @@ public class Server implements Runnable {
                     addReport(resolveIceBroken(curPos));
                 }
             } else if (!(prevStep.climbMode() && curHex.containsTerrain(Terrains.BRIDGE))){
-                rollTarget = entity.checkWaterMove(waterLevel);
+                rollTarget = entity.checkWaterMove(waterLevel, overallMoveType);
                 if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                     doSkillCheckInPlace(entity, rollTarget);
                 }
@@ -5881,7 +5881,7 @@ public class Server implements Runnable {
             // If the entity is being swarmed, jumping may dislodge the fleas.
             if (Entity.NONE != swarmerId) {
                 final Entity swarmer = game.getEntity(swarmerId);
-                final PilotingRollData roll = entity.getBasePilotingRoll();
+                final PilotingRollData roll = entity.getBasePilotingRoll(overallMoveType);
 
                 entity.addPilotingModifierForTerrain(roll);
 
@@ -7694,7 +7694,7 @@ public class Server implements Runnable {
             if (destHex.terrainLevel(Terrains.BLDG_ELEV) > oldElev) {
                 //woops, into the building we go
                 passBuildingWall(entity, game.getBoard().getBuildingAt(dest),
-                        src, dest, 1, "displaced into", Math.abs(entity.getFacing() - src.direction(dest)) == 3);
+                        src, dest, 1, "displaced into", Math.abs(entity.getFacing() - src.direction(dest)) == 3, entity.moved);
             } else {
                 //woops, we step on the roof
                 checkBuildingCollapseWhileMoving(bldg, entity, dest);
@@ -12252,35 +12252,6 @@ public class Server implements Runnable {
                     r.add(game.getTemperatureDifference());
                     addReport(r);
                 }
-            }
-
-            // weather conditions on heat
-            if (game.getOptions().booleanOption("blizzard")) {
-                entity.heatFromExternal -= 2;
-                r = new Report(5026);
-                r.subject = entity.getId();
-                addReport(r);
-            }
-
-            if (game.getOptions().booleanOption("heavy_rainfall")) {
-                entity.heatFromExternal -= 2;
-                r = new Report(5027);
-                r.subject = entity.getId();
-                addReport(r);
-            }
-
-            if (game.getOptions().booleanOption("heavy_snowfall")) {
-                entity.heatFromExternal -= 1;
-                r = new Report(5028);
-                r.subject = entity.getId();
-                addReport(r);
-            }
-
-            if (game.getOptions().booleanOption("light_rainfall")) {
-                entity.heatFromExternal -= 1;
-                r = new Report(5029);
-                r.subject = entity.getId();
-                addReport(r);
             }
 
             // Add +5 Heat if the hex you're in is on fire
@@ -20746,13 +20717,13 @@ public class Server implements Runnable {
      */
     private boolean passBuildingWall(Entity entity, Building bldg,
             Coords lastPos, Coords curPos, int distance, String why,
-            boolean backwards) {
+            boolean backwards, int overallMoveType) {
 
         Report r;
 
         // Need to roll based on building type.
         PilotingRollData psr = entity.rollMovementInBuilding(bldg, distance,
-                why);
+                why, overallMoveType);
 
         // Did the entity make the roll?
         if (0 < doSkillCheckWhileMoving(entity, lastPos, curPos, psr, false)) {
@@ -21824,7 +21795,7 @@ public class Server implements Runnable {
                                 .checkMovedTooFast(step));
                     } else if (game.getOptions().floatOption("gravity") > 1) {
                         // jumping in high g is bad for your legs
-                        rollTarget = entity.getBasePilotingRoll();
+                        rollTarget = entity.getBasePilotingRoll(step.getParent().getLastStepMovementType());
                         entity.addPilotingModifierForTerrain(rollTarget, step);
                         rollTarget.append(new PilotingRollData(entity.getId(),
                                 0, "jumped in high gravity"));
