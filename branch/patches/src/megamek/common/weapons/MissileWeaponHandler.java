@@ -195,22 +195,6 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
             nMissilesModifier -= 4;
         }
 
-        // weather checks
-        if (game.getOptions().booleanOption("blizzard")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 4;
-        }
-
-        if (game.getOptions().booleanOption("moderate_winds")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 2;
-        }
-
-        if (game.getOptions().booleanOption("high_winds")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 4;
-        }
-
         if ( bDirect ){
             nMissilesModifier += (toHit.getMoS()/3)*2;
         }

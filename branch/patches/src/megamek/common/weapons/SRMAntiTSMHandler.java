@@ -67,7 +67,6 @@ public class SRMAntiTSMHandler extends SRMHandler {
         }
         int missilesHit;
         int nMissilesModifier = nSalvoBonus;
-        boolean bWeather = false;
         boolean tacopscluster = game.getOptions().booleanOption(
                 "tacops_clusterhitpen");
         if (tacopscluster) {
@@ -87,25 +86,6 @@ public class SRMAntiTSMHandler extends SRMHandler {
             nMissilesModifier -= 2;
         }
 
-        // weather checks
-        if (game.getOptions().booleanOption("blizzard")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 4;
-            bWeather = true;
-        }
-
-        if (game.getOptions().booleanOption("moderate_winds")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 2;
-            bWeather = true;
-        }
-
-        if (game.getOptions().booleanOption("high_winds")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 4;
-            bWeather = true;
-        }
-
         if ( bDirect ){
             nMissilesModifier += (toHit.getMoS()/3)*2;
         }
@@ -117,8 +97,7 @@ public class SRMAntiTSMHandler extends SRMHandler {
         } else {
             // anti tsm hit with half the normal number, round up
             missilesHit = Compute
-                    .missilesHit(wtype.getRackSize(), nMissilesModifier,
-                            bWeather || bGlancing || tacopscluster);
+                    .missilesHit(wtype.getRackSize(), nMissilesModifier, bGlancing || tacopscluster);
             missilesHit = (int) Math.ceil((double) missilesHit / 2);
         }
         r = new Report(3325);

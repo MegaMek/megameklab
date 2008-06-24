@@ -347,7 +347,6 @@ public class LRMSwarmHandler extends LRMHandler {
         // no AMS for Swarms
         int missilesHit;
         int nMissilesModifier = 0;
-        boolean bWeather = false;
 
         if (bGlancing) {
             nMissilesModifier -= 4;
@@ -356,24 +355,6 @@ public class LRMSwarmHandler extends LRMHandler {
             nMissilesModifier -= 2;
         }
 
-        // weather checks
-        if (game.getOptions().booleanOption("blizzard")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 4;
-            bWeather = true;
-        }
-
-        if (game.getOptions().booleanOption("moderate_winds")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 2;
-            bWeather = true;
-        }
-
-        if (game.getOptions().booleanOption("high_winds")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 4;
-            bWeather = true;
-        }
         if ( bDirect ){
             nMissilesModifier += (toHit.getMoS()/3)*2;
         }
@@ -399,8 +380,7 @@ public class LRMSwarmHandler extends LRMHandler {
             }
         } else {
             missilesHit = allShotsHit() ? wtype.getRackSize() : Compute
-                    .missilesHit(wtype.getRackSize(), nMissilesModifier,
-                            bWeather || bGlancing);
+                    .missilesHit(wtype.getRackSize(), nMissilesModifier, bGlancing);
             swarmMissilesLeft = wtype.getRackSize();
         }
         swarmMissilesNowLeft = swarmMissilesLeft - missilesHit;

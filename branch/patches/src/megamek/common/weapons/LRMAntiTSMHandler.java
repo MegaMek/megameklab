@@ -68,7 +68,6 @@ public class LRMAntiTSMHandler extends LRMHandler {
         }
         int missilesHit;
         int nMissilesModifier = 0;
-        boolean bWeather = false;
 
         boolean bMekStealthActive = false;
         if (ae instanceof Mech) {
@@ -78,24 +77,6 @@ public class LRMAntiTSMHandler extends LRMHandler {
             nMissilesModifier -= 4;
         }
 
-        // weather checks
-        if (game.getOptions().booleanOption("blizzard")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 4;
-            bWeather = true;
-        }
-
-        if (game.getOptions().booleanOption("moderate_winds")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 2;
-            bWeather = true;
-        }
-
-        if (game.getOptions().booleanOption("high_winds")
-                && wtype.hasFlag(WeaponType.F_MISSILE)) {
-            nMissilesModifier -= 4;
-            bWeather = true;
-        }
         if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
             nMissilesModifier -= 2;
         }
@@ -112,8 +93,7 @@ public class LRMAntiTSMHandler extends LRMHandler {
         else {
             // anti tsm hit with half the normal number, round up
             missilesHit = Compute
-                    .missilesHit(wtype.getRackSize(), nMissilesModifier,
-                            bWeather || bGlancing );
+                    .missilesHit(wtype.getRackSize(), nMissilesModifier, bGlancing );
             missilesHit = (int) Math.ceil((double) missilesHit / 2);
         }
         r = new Report(3325);
