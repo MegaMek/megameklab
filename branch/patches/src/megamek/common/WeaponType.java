@@ -231,22 +231,35 @@ public class WeaponType extends EquipmentType {
         if (this.getAmmoType() == AmmoType.T_ATM) {
             AmmoType atype = (AmmoType) weapon.getLinked().getType();
             if ((atype.getAmmoType() == AmmoType.T_ATM) && atype.getMunitionType() == AmmoType.M_EXTENDED_RANGE) {
-                weaponRanges = new int[] { 4, 9, 18, 27, 36 };
+                minimumRange = 4;
+                shortRange = 9;
+                mediumRange = 18;
+                longRange = 27;
+                extremeRange = 36;
             } else if ((atype.getAmmoType() == AmmoType.T_ATM) && atype.getMunitionType() == AmmoType.M_HIGH_EXPLOSIVE) {
-                weaponRanges = new int[] { 0, 3, 6, 9, 12 };
+                minimumRange = 0;
+                shortRange = 3;
+                mediumRange = 6;
+                longRange = 9;
+                extremeRange = 12;
             }
         }
         if (this.getAmmoType() == AmmoType.T_MML) {
             AmmoType atype = (AmmoType) weapon.getLinked().getType();
             if (atype.hasFlag(AmmoType.F_MML_LRM) || this.getAmmoType() == AmmoType.T_LRM_TORPEDO) {
-                weaponRanges = new int[] { 7, 14, 21, 28};
-                this.setMinimumRange(6);
+                minimumRange = 6;
+                shortRange = 7;
+                mediumRange = 14;
+                longRange = 21;
+                extremeRange = 28;
             } else {
-                weaponRanges = new int[] { 3, 6, 9, 12};
-                this.setMinimumRange(0);
+                minimumRange = 0;
+                shortRange = 3;
+                mediumRange = 6;
+                longRange = 9;
+                extremeRange = 12;
             }
-            weaponRanges = new int[] { minimumRange, shortRange, mediumRange, longRange,
-                    extremeRange };
+            weaponRanges = new int[] { minimumRange, shortRange, mediumRange, longRange, extremeRange };
         }
 
         return weaponRanges;

@@ -703,23 +703,16 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                 && te != null
                 && ae.hasBAP()
                 && ae.getBAPRange() >= Compute.effectiveDistance(game, ae, te)
-                && !Compute.isAffectedByECM(ae, ae.getPosition(), te
-                        .getPosition())
-                && (game.getBoard().getHex(te.getPosition()).containsTerrain(
-                        Terrains.WOODS)
-                        || game.getBoard().getHex(te.getPosition())
-                                .containsTerrain(Terrains.JUNGLE)
+                && !Compute.isAffectedByECM(ae, ae.getPosition(), te.getPosition())
+                && (game.getBoard().getHex(te.getPosition()).containsTerrain(Terrains.WOODS)
+                        || game.getBoard().getHex(te.getPosition()).containsTerrain(Terrains.JUNGLE)
                         || los.getLightWoods() > 0 || los.getHeavyWoods() > 0 || los
                         .getUltraWoods() > 0)) {
-
-            toHit
-                    .addModifier(-1,
-                            "target in/behind woods and attacker has BAP");
+            toHit.addModifier(-1,"target in/behind woods and attacker has BAP");
         }
 
         // Is the pilot a weapon specialist?
-        if (ae.crew.getOptions().stringOption("weapon_specialist").equals(
-                wtype.getName())) {
+        if (ae.crew.getOptions().stringOption("weapon_specialist").equals(wtype.getName())) {
             toHit.addModifier(-2, "weapon specialist");
         }
 
@@ -1140,16 +1133,31 @@ public class WeaponAttackAction extends AbstractAttackAction implements
 
         // Heat Seeking Missles
         if (bHeatSeeking) {
-            if (te == null || te.heat == 0)
-                toHit.addModifier(2, "ammunition to-hit modifier");
-            else if (te.heat < 6)
-                toHit.addModifier(0, "ammunition to-hit modifier");
-            else if (te.heat < 11)
-                toHit.addModifier(-1, "ammunition to-hit modifier");
-            else if (te.heat < 16)
+            if ( te == null ) {
+                if (target.getTargetType() == Targetable.TYPE_BUILDING
+                        || target.getTargetType() == Targetable.TYPE_BLDG_IGNITE
+                        || target.getTargetType() == Targetable.TYPE_FUEL_TANK
+                        || target.getTargetType() == Targetable.TYPE_FUEL_TANK_IGNITE 
+                        || target instanceof GunEmplacement) {
+                    IHex hexTarget = game.getBoard().getHex(target.getPosition());
+                    if (hexTarget.containsTerrain(Terrains.FIRE)) {
+                        toHit.addModifier(-2, "ammunition to-hit modifier");
+                    }
+                }
+            } else if ( te instanceof Aero && (toHit.getSideTable() == ToHitData.SIDE_REAR)) {
                 toHit.addModifier(-2, "ammunition to-hit modifier");
-            else
-                toHit.addModifier(-3, "ammunition to-hit modifier");
+            }
+            else if ( te.heat == 0) {
+                toHit.addModifier(1, "ammunition to-hit modifier");
+            }
+            else {
+                int heatPenalty = te.getOriginalWalkMP() - te.getWalkMP(false,false);
+               toHit.addModifier(-heatPenalty, "ammunition to-hit modifier");
+            }
+            
+            if (!(ae instanceof Aero) && LosEffects.hasFireBetween(ae.getPosition(), target.getPosition(), game)) {
+                toHit.addModifier(2, "fire between target and attacker"); 
+            }
         }
 
         if (bFTL)

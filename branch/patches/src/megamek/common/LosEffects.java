@@ -781,4 +781,14 @@ public class LosEffects {
 
         return los;
     }
+    
+    public static boolean hasFireBetween(Coords start, Coords end, IGame game) {
+        
+        ArrayList<Coords> in = Coords.intervening(start, end);
+        for ( Coords hex : in ) {
+            if ( game.getBoard().getHex(hex).containsTerrain(Terrains.FIRE) )
+                return true;
+        }
+        return false;
+    }
 }

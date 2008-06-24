@@ -8754,8 +8754,9 @@ public class Server implements Runnable {
                 vPhaseReport.add(r);
             }
             return true;
-        } else if (ignite(hex, nTargetRoll, bAnyTerrain, entityId)) {
+        } else if ( (r = ignite(hex, nTargetRoll, bAnyTerrain, entityId)) != null ) {
             // hex ignites
+            vPhaseReport.add(r);
             r = new Report(3070);
             r.indent(2);
             r.subject = entityId;
@@ -18869,41 +18870,41 @@ public class Server implements Runnable {
      *            value is Entity.NONE, then the roll attempt will not be
      *            included in the report.
      */
-    public boolean ignite(IHex hex, int roll, boolean bAnyTerrain, int entityId) {
+    public Report ignite(IHex hex, int roll, boolean bAnyTerrain, int entityId) {
 
         // The hex might be null due to spreadFire translation
         // goes outside of the board limit.
         if (!game.getOptions().booleanOption("fire") || null == hex) {
-            return false;
+            return null;
         }
 
         // The hex may already be on fire.
         if (hex.containsTerrain(Terrains.FIRE)) {
-            return true;
+            return null;
         }
 
         if (!bAnyTerrain && !hex.containsTerrain(Terrains.WOODS)
                 && !hex.containsTerrain(Terrains.JUNGLE)
                 && !hex.containsTerrain(Terrains.FUEL_TANK)
                 && !hex.containsTerrain(Terrains.BUILDING)) {
-            return false;
+            return null;
         }
 
         int fireRoll = Compute.d6(2);
+        Report r = null;
         if (entityId != Entity.NONE) {
-            Report r = new Report(3430);
-            r.indent(3);
+            r = new Report(3430);
+            r.indent(2);
             r.subject = entityId;
             r.add(roll);
             r.add(fireRoll);
-            addReport(r);
+            //addReport(r);
         }
         if (fireRoll >= roll) {
-            hex.addTerrain(Terrains.getTerrainFactory().createTerrain(
-                    Terrains.FIRE, 1));
-            return true;
+            hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
+            return r;
         }
-        return false;
+        return r;
     }
 
     /**
@@ -18917,7 +18918,7 @@ public class Server implements Runnable {
      *            terrain. If this value is <code>false</code> the hex will be
      *            lit only if it contains Woods, jungle or a Building.
      */
-    public boolean ignite(IHex hex, int roll, boolean bAnyTerrain) {
+    public Report ignite(IHex hex, int roll, boolean bAnyTerrain) {
         return ignite(hex, roll, bAnyTerrain, Entity.NONE);
     }
 
@@ -18929,7 +18930,7 @@ public class Server implements Runnable {
      * @param hex - the <code>IHex</code> to be lit.
      * @param roll - the <code>int</code> target number for the ignition roll
      */
-    public boolean ignite(IHex hex, int roll) {
+    public Report ignite(IHex hex, int roll) {
         // default signature, assuming only woods can burn
         return ignite(hex, roll, false, Entity.NONE);
     }
