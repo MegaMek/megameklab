@@ -81,7 +81,7 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
                 r.add(wtype.getRackSize()
                         * ((BattleArmor) ae).getShootingStrength());
                 r.add(sSalvoType);
-                r.add(toHit.getTableDesc());
+                r.add(" ");
                 r.newlines = 0;
                 vPhaseReport.add(r);
                 return ((BattleArmor) ae).getShootingStrength();
@@ -90,7 +90,7 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
             r.subject = subjectId;
             r.add(wtype.getRackSize());
             r.add(sSalvoType);
-            r.add(toHit.getTableDesc());
+            r.add(" ");
             r.newlines = 0;
             vPhaseReport.add(r);
             return 1;
@@ -211,6 +211,10 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
             nMissilesModifier -= 4;
         }
 
+        if ( bDirect ){
+            nMissilesModifier += (toHit.getMoS()/3)*2;
+        }
+
         // add AMS mods
         nMissilesModifier += getAMSHitsMod(vPhaseReport);
 
@@ -273,7 +277,7 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         double toReturn;
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn = wtype.getRackSize();
-            toReturn /= 5;
+            toReturn = Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_CLUSTER_MISSILE);
             if (bGlancing)
                 toReturn /= 2;
             toReturn = Math.ceil(toReturn);
@@ -540,7 +544,14 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         }
 
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        bDirect = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
+        if (bDirect) {
+            r = new Report(3189);
+            r.subject = ae.getId();
+            r.newlines = 0;
+            vPhaseReport.addElement(r);
+        } 
 
         // Do this stuff first, because some weapon's miss report reference the
         // amount of shots fired and stuff.

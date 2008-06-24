@@ -140,9 +140,15 @@ public class LRMSwarmHandler extends LRMHandler {
         }
 
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        bDirect = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
+        if (bDirect) {
+            r = new Report(3189);
+            r.subject = ae.getId();
+            r.newlines = 0;
+            vPhaseReport.addElement(r);
+        } 
 
-        
         // Do this stuff first, because some weapon's miss report reference the
         // amount of shots fired and stuff.
         if (!handledHeat) {
@@ -367,6 +373,9 @@ public class LRMSwarmHandler extends LRMHandler {
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
             bWeather = true;
+        }
+        if ( bDirect ){
+            nMissilesModifier += (toHit.getMoS()/3)*2;
         }
 
         int swarmMissilesLeft = waa.getSwarmMissiles();

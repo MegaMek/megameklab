@@ -20,6 +20,7 @@ package megamek.common.weapons;
 import java.util.Vector;
 
 import megamek.common.BattleArmor;
+import megamek.common.Compute;
 import megamek.common.EntityWeightClass;
 import megamek.common.IGame;
 import megamek.common.Infantry;
@@ -96,7 +97,7 @@ public class HGRHandler extends AmmoWeaponHandler {
         }
 
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            toReturn /= 10;
+            toReturn = (float)Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_DIRECT_FIRE);
         }
         if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);

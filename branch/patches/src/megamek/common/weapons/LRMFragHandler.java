@@ -64,6 +64,8 @@ public class LRMFragHandler extends LRMHandler {
         // against infantry, we have 1 hit
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn = wtype.getRackSize();
+            if (bDirect )
+                toReturn += toHit.getMoS()/3;
         }
 
         if (target instanceof Entity && !(target instanceof Infantry)

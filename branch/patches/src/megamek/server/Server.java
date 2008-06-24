@@ -9034,12 +9034,12 @@ public class Server implements Runnable {
         int roll = paa.getArm() == PunchAttackAction.LEFT ? pr.roll
                 : pr.rollRight;
         final boolean targetInBuilding = Compute.isInBuilding(game, te);
-        final boolean glancing = game.getOptions().booleanOption(
-                "tacops_glancing_blows")
-                && roll == toHit.getValue();
+        final boolean glancing = game.getOptions().booleanOption("tacops_glancing_blows") && roll == toHit.getValue();
+        
         Report r;
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        final boolean directBlow = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
 
         // Which building takes the damage?
         Building bldg = game.getBoard().getBuildingAt(target.getPosition());
@@ -9082,6 +9082,12 @@ public class Server implements Runnable {
             addReport(r);
             if (glancing) {
                 r = new Report(4030);
+                r.subject = ae.getId();
+                r.newlines = 0;
+                addReport(r);
+            }
+            if (directBlow) {
+                r = new Report(4032);
                 r.subject = ae.getId();
                 r.newlines = 0;
                 addReport(r);
@@ -9167,6 +9173,11 @@ public class Server implements Runnable {
             if (glancing) {
                 damage = (int) Math.floor(damage / 2.0);
             }
+            if (directBlow){
+                damage += toHit.getMoS()/3;
+                hit.makeDirectBlow(toHit.getMoS()/3);
+            }
+                
             if (damage >= 1
                     && te.hasWorkingMisc(MiscType.F_SPIKES, -1, hit
                             .getLocation())) {
@@ -9236,8 +9247,10 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        final boolean directBlow = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
 
         // Which building takes the damage?
         Building bldg = game.getBoard().getBuildingAt(target.getPosition());
@@ -9285,6 +9298,13 @@ public class Server implements Runnable {
                 r.newlines = 0;
                 addReport(r);
             }
+            if (directBlow) {
+                r = new Report(4032);
+                r.subject = ae.getId();
+                r.newlines = 0;
+                addReport(r);
+            }
+
         }
 
         // do we hit?
@@ -9367,6 +9387,11 @@ public class Server implements Runnable {
             if (glancing) {
                 damage = (int) Math.floor(damage / 2.0);
             }
+            if ( directBlow ){
+                damage += toHit.getMoS()/3;
+                hit.makeDirectBlow(toHit.getMoS()/3);
+            }
+                
             if (damage >= 1
                     && te.hasWorkingMisc(MiscType.F_SPIKES, -1, hit
                             .getLocation())) {
@@ -9463,8 +9488,10 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        final boolean directBlow = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
 
         // Which building takes the damage?
         Building bldg = game.getBoard().getBuildingAt(target.getPosition());
@@ -9511,6 +9538,13 @@ public class Server implements Runnable {
                 r.newlines = 0;
                 addReport(r);
             }
+            if (directBlow) {
+                r = new Report(4032);
+                r.subject = ae.getId();
+                r.newlines = 0;
+                addReport(r);
+            }
+
         }
 
         // do we hit?
@@ -9599,6 +9633,10 @@ public class Server implements Runnable {
                 if (glancing) {
                     damage = (int) Math.floor(damage / 2.0);
                 }
+                if ( directBlow ){
+                    damage += toHit.getMoS()/3;
+                    hit.makeDirectBlow(toHit.getMoS()/3);
+                }
                 addReport(damageEntity(te, hit, damage, false, DamageType.NONE,
                         false, false, throughFront));
             }
@@ -9634,7 +9672,8 @@ public class Server implements Runnable {
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        final boolean directBlow = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
 
         Report r;
 
@@ -9683,6 +9722,13 @@ public class Server implements Runnable {
                 r.newlines = 0;
                 addReport(r);
             }
+            if (directBlow) {
+                r = new Report(4032);
+                r.subject = ae.getId();
+                r.newlines = 0;
+                addReport(r);
+            }
+
         }
 
         // do we hit?
@@ -9764,6 +9810,10 @@ public class Server implements Runnable {
         } else {
             if (glancing) {
                 damage = (int) Math.floor(damage / 2.0);
+            }
+            if ( directBlow ){
+                damage += toHit.getMoS()/3;
+                hit.makeDirectBlow(toHit.getMoS()/3);
             }
             addReport(damageEntity(te, hit, damage, false, DamageType.NONE,
                     false, false, throughFront));
@@ -9910,8 +9960,10 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        final boolean directBlow = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
 
         // PLEASE NOTE: buildings are *never* the target of a "thrash".
         final Entity te = game.getEntity(taa.getTargetId());
@@ -9973,6 +10025,10 @@ public class Server implements Runnable {
         if (glancing) {
             hits = (int) Math.floor(hits / 2.0);
         }
+        if ( directBlow ){
+            hits += toHit.getMoS()/3;
+        }
+            
 
         r = new Report(4130);
         r.subject = ae.getId();
@@ -9985,6 +10041,13 @@ public class Server implements Runnable {
             r.newlines = 0;
             addReport(r);
         }
+        if (directBlow) {
+            r = new Report(4032);
+            r.subject = ae.getId();
+            r.newlines = 0;
+            addReport(r);
+        }
+
         while (hits > 0) {
             int damage = Math.min(5, hits);
             hits -= damage;
@@ -10052,8 +10115,10 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        final boolean directBlow = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
 
         Report r;
 
@@ -10175,6 +10240,13 @@ public class Server implements Runnable {
                 r.newlines = 0;
                 addReport(r);
             }
+            if (directBlow) {
+                r = new Report(4032);
+                r.subject = ae.getId();
+                r.newlines = 0;
+                addReport(r);
+            }
+
         }
 
         // do we hit?
@@ -10265,6 +10337,10 @@ public class Server implements Runnable {
         } else {
             if (glancing) {
                 damage = (int) Math.floor(damage / 2.0);
+            }
+            if ( directBlow ){
+                damage += toHit.getMoS()/3;
+                hit.makeDirectBlow(toHit.getMoS()/3);
             }
             if (damage >= 1
                     && te.hasWorkingMisc(MiscType.F_SPIKES, -1, hit
@@ -10807,8 +10883,7 @@ public class Server implements Runnable {
         int damage = pr.damage;
         final ToHitData toHit = pr.toHit;
         int roll = pr.roll;
-        
-        toHit.setMoS(toHit.getValue() - roll);
+
         Entity te = null;
         if (target != null && target.getTargetType() == Targetable.TYPE_ENTITY) {
             te = (Entity) target;
@@ -10821,8 +10896,10 @@ public class Server implements Runnable {
         final boolean glancing = game.getOptions().booleanOption(
                 "tacops_glancing_blows")
                 && roll == toHit.getValue();
+
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        final boolean directBlow = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
 
         Report r;
 
@@ -10934,6 +11011,13 @@ public class Server implements Runnable {
                 r.newlines = 0;
                 addReport(r);
             }
+            if (directBlow) {
+                r = new Report(4032);
+                r.subject = ae.getId();
+                r.newlines = 0;
+                addReport(r);
+            }
+
         }
 
         // do we hit?
@@ -10981,8 +11065,7 @@ public class Server implements Runnable {
             // TODO: What if the building collapses?
         } else {
             // Resolve the damage.
-            resolveChargeDamage(ae, te, toHit, direction, glancing,
-                    throughFront);
+            resolveChargeDamage(ae, te, toHit, direction, glancing,throughFront);
         }
     }
 
@@ -11200,8 +11283,7 @@ public class Server implements Runnable {
             addReport(r);
         } else {
             //Resolve the damage.
-            resolveRamDamage((Aero)ae, (Aero)te, toHit, glancing,
-                    throughFront);
+            resolveRamDamage((Aero)ae, (Aero)te, toHit, glancing,throughFront);
         }
         
         
@@ -11498,12 +11580,11 @@ public class Server implements Runnable {
             throughFront = Compute
                     .isThroughFrontHex(game, ae.getPosition(), te);
         }
-        final boolean glancing = game.getOptions().booleanOption(
-                "tacops_glancing_blows")
+        final boolean glancing = game.getOptions().booleanOption("tacops_glancing_blows")
                 && roll == toHit.getValue();
-        
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        final boolean directBlow = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
 
         Report r;
 
@@ -11599,6 +11680,13 @@ public class Server implements Runnable {
                 r.newlines = 0;
                 addReport(r);
             }
+            if (directBlow) {
+                r = new Report(4032);
+                r.subject = ae.getId();
+                r.newlines = 0;
+                addReport(r);
+            }
+
         }
 
         // do we hit?
@@ -11658,6 +11746,9 @@ public class Server implements Runnable {
             if (glancing) {
                 damage = (int) Math.floor(damage / 2.0);
             }
+            if ( directBlow ){
+                damage += toHit.getMoS()/3;
+            }
             // damage target
             r = new Report(4230);
             r.subject = ae.getId();
@@ -11682,6 +11773,10 @@ public class Server implements Runnable {
                 HitData hit = te.rollHitLocation(toHit.getHitTable(), toHit
                         .getSideTable());
                 hit.setGeneralDamageType(HitData.DAMAGE_PHYSICAL);
+                if ( directBlow ){
+                    hit.makeDirectBlow(toHit.getMoS()/3);
+                }
+
                 if (spikes[hit.getLocation()] == 1) {
                     r = new Report(4330);
                     r.indent(2);

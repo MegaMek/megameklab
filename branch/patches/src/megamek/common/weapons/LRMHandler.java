@@ -225,6 +225,11 @@ public class LRMHandler extends MissileWeaponHandler {
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
         }
+        
+        if ( bDirect ){
+            nMissilesModifier += (toHit.getMoS()/3)*2;
+        }
+
 
         // add AMS mods
         nMissilesModifier += getAMSHitsMod(vPhaseReport);

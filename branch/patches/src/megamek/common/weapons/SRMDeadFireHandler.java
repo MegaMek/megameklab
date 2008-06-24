@@ -14,6 +14,7 @@
 package megamek.common.weapons;
 
 import megamek.common.BattleArmor;
+import megamek.common.Compute;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.ToHitData;
@@ -58,7 +59,7 @@ public class SRMDeadFireHandler extends SRMHandler {
      */
     protected int calcDamagePerHit() {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            int toReturn = (int) Math.ceil(((float) wtype.getRackSize()*3) / 5);
+            int toReturn = (int)Compute.directBlowInfantryDamage(wtype.getRackSize()*3, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_CLUSTER_MISSILE);
             if (bGlancing) {
                 toReturn /= 2;
             }

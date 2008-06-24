@@ -99,6 +99,11 @@ public class LRMAntiTSMHandler extends LRMHandler {
         if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
             nMissilesModifier -= 2;
         }
+        
+        if ( bDirect ){
+            nMissilesModifier += (toHit.getMoS()/3)*2;
+        }
+
 
         // AMS mod
         nMissilesModifier += getAMSHitsMod(vPhaseReport);

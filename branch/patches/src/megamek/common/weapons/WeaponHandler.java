@@ -60,6 +60,7 @@ public class WeaponHandler implements AttackHandler, Serializable {
     protected boolean bMissed;
     protected boolean bSalvo = false;
     protected boolean bGlancing = false;
+    protected boolean bDirect = false;
     protected WeaponType wtype;
     protected Mounted weapon;
     protected Entity ae;
@@ -260,8 +261,15 @@ public class WeaponHandler implements AttackHandler, Serializable {
         }
 
         //Set Margin of Success/Failure.
-        toHit.setMoS(toHit.getValue()-roll);
-
+        toHit.setMoS(roll-Math.max(2,toHit.getValue()));
+        bDirect = game.getOptions().booleanOption("tacops_direct_blow") && ((toHit.getMoS()/3) >= 1);
+        if (bDirect) {
+            r = new Report(3189);
+            r.subject = ae.getId();
+            r.newlines = 0;
+            vPhaseReport.addElement(r);
+        } 
+        
         // Do this stuff first, because some weapon's miss report reference the
         // amount of shots fired and stuff.
         nDamPerHit = calcDamagePerHit();
@@ -385,7 +393,7 @@ public class WeaponHandler implements AttackHandler, Serializable {
         }
         // we default to direct fire weapons for anti-infantry damage
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            toReturn = Math.ceil(toReturn/10);
+            toReturn = Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_DIRECT_FIRE);
         }if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
@@ -490,6 +498,11 @@ public class WeaponHandler implements AttackHandler, Serializable {
         // Resolve damage normally.
         nDamage = nDamPerHit * Math.min(nCluster, hits);
 
+        if ( bDirect && (!(target instanceof Infantry) || target instanceof BattleArmor)){
+            nDamage = Math.min(nDamage+(toHit.getMoS()/3), nDamage*2);
+            hit.makeDirectBlow(toHit.getMoS()/3);
+        }
+        
         // A building may be damaged, even if the squad is not.
         if (bldgAbsorbs > 0) {
             int toBldg = Math.min(bldgAbsorbs, nDamage);

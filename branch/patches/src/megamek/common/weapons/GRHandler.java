@@ -18,6 +18,7 @@
 package megamek.common.weapons;
 
 import megamek.common.BattleArmor;
+import megamek.common.Compute;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.RangeType;
@@ -59,7 +60,7 @@ public class GRHandler extends AmmoWeaponHandler {
         }
 
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            toReturn /= 10;
+            toReturn = (float)Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_DIRECT_FIRE);
         }
         if (bGlancing)
             toReturn = (int) Math.floor(toReturn / 2.0);

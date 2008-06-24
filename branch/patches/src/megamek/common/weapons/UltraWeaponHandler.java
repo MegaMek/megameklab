@@ -177,7 +177,7 @@ public class UltraWeaponHandler extends AmmoWeaponHandler {
         // infantry get hit by all shots
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             toReturn = wtype.getDamage() * howManyShots;
-            toReturn = Math.ceil(toReturn/10);
+            toReturn = Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_DIRECT_FIRE);
             if (howManyShots > 1) {
                 //ok, more than 1 shot, +1 for cluster
                 toReturn += 1;

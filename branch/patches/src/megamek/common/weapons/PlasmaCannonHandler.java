@@ -102,6 +102,8 @@ public class PlasmaCannonHandler extends AmmoWeaponHandler {
             if (target instanceof Infantry && !(target instanceof BattleArmor)) {
                 toReturn = Compute.d6(3);
                 // pain shunted infantry get half damage
+                if (bDirect)
+                    toReturn += toHit.getMoS();
                 if (((Entity) target).getCrew().getOptions().booleanOption("pain_shunt")) {
                     toReturn = Math.max(toReturn / 2, 1);
                 }

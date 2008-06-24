@@ -408,7 +408,7 @@ public class ArtilleryWeaponIndirectFireHandler extends AmmoWeaponHandler {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
 
-        System.err.println("Attack is doing " + toReturn + " damage.");
+        //System.err.println("Attack is doing " + toReturn + " damage.");
 
         return (int) Math.ceil(toReturn);
     }

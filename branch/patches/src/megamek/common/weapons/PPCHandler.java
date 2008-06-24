@@ -102,7 +102,7 @@ public class PPCHandler extends EnergyWeaponHandler {
         }
 
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            toReturn /= 10;
+            toReturn = (int)Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_DIRECT_FIRE);
         }
         if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);

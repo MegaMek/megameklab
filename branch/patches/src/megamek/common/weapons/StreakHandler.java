@@ -57,7 +57,7 @@ public class StreakHandler extends MissileWeaponHandler {
      */
     protected int calcDamagePerHit() {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            int toReturn = (int) Math.ceil(((float) wtype.getRackSize() * 2) / 5);
+            int toReturn = (int)Compute.directBlowInfantryDamage(wtype.getRackSize()*2, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_CLUSTER_MISSILE);
             return toReturn;
         }
         return 2;

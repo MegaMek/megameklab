@@ -22,6 +22,7 @@ import java.util.Vector;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Building;
+import megamek.common.Compute;
 import megamek.common.Entity;
 import megamek.common.HitData;
 import megamek.common.IGame;
@@ -66,7 +67,7 @@ public class ACAPHandler extends AmmoWeaponHandler {
         }
         // we default to direct fire weapons for anti-infantry damage
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            toReturn = Math.ceil(toReturn / 10);
+            toReturn = Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_DIRECT_FIRE);
         }
         if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
@@ -108,6 +109,11 @@ public class ACAPHandler extends AmmoWeaponHandler {
         }
         // Resolve damage normally.
         nDamage = nDamPerHit * Math.min(nCluster, hits);
+        if ( bDirect && (!(target instanceof Infantry) || target instanceof BattleArmor) ){
+            
+            nDamage = Math.min(nDamage+(toHit.getMoS()/3), nDamage*2);
+            hit.makeDirectBlow(toHit.getMoS()/3);
+        }
 
         // A building may be damaged, even if the squad is not.
         if (bldgAbsorbs > 0) {

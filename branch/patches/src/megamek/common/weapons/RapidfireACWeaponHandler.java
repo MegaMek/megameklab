@@ -20,6 +20,7 @@ package megamek.common.weapons;
 import java.util.Vector;
 
 import megamek.common.BattleArmor;
+import megamek.common.Compute;
 import megamek.common.CriticalSlot;
 import megamek.common.HitData;
 import megamek.common.IGame;
@@ -66,7 +67,7 @@ public class RapidfireACWeaponHandler extends UltraWeaponHandler {
         }
         // we default to direct fire weapons for anti-infantry damage
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            toReturn = Math.ceil(toReturn / 10);
+            toReturn = Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_DIRECT_FIRE);
         }
         if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);

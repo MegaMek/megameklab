@@ -57,6 +57,8 @@ public class APGaussWeaponHandler extends AmmoWeaponHandler {
             int toReturn = Compute.d6(2);
             if (bGlancing)
                 toReturn = (int) Math.floor(toReturn / 2.0);
+            if ( bDirect )
+                toReturn += toHit.getMoS()/3;
             if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
                 toReturn -= 1;
             }

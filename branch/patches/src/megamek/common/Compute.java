@@ -81,6 +81,14 @@ public class Compute {
     public static final int METHOD_TAHARQA = 1;
     public static final int METHOD_CONSTANT = 2;
 
+    public static final int WEAPON_DIRECT_FIRE = 0;
+    public static final int WEAPON_CLUSTER_BALLISTIC = 1;
+    public static final int WEAPON_PULSE = 2;
+    public static final int WEAPON_CLUSTER_MISSILE = 3;
+    public static final int WEAPON_CLUSTER_MISSILE_1D6 = 4;
+    public static final int WEAPON_CLUSTER_MISSILE_2D6 = 5;
+    public static final int WEAPON_CLUSTER_MISSILE_3D6 = 6;
+    
     private static final int[][] skillLevels = new int[][] {
         { 7, 6, 5, 4, 4, 3, 2, 1, 0 },
         { 7, 7, 6, 6, 5, 4, 3, 2, 1 } };
@@ -3533,5 +3541,39 @@ public class Compute {
         return 0;
     }
 
+    public static double directBlowInfantryDamage(double damage, int mos, int damageType){
+        
+        damageType += mos;
+        
+        switch(damageType){
+        case Compute.WEAPON_DIRECT_FIRE:
+            damage /= 10;
+            break;
+        case Compute.WEAPON_CLUSTER_BALLISTIC:
+            damage /= 10;
+            damage++;
+            break;
+        case Compute.WEAPON_PULSE:
+            damage /= 10;
+            damage += 2;
+            break;
+        case Compute.WEAPON_CLUSTER_MISSILE:
+            damage /= 5;
+            break;
+        case Compute.WEAPON_CLUSTER_MISSILE_1D6:
+            damage /=5;
+            damage += Compute.d6();
+            break;
+        case Compute.WEAPON_CLUSTER_MISSILE_2D6:
+            damage /=5;
+            damage += Compute.d6(2);
+            break;
+        case Compute.WEAPON_CLUSTER_MISSILE_3D6:
+            damage /=5;
+            damage += Compute.d6(3);
+            break;
+        }
+        return Math.ceil(damage);
+    }
 } // End public class Compute
 

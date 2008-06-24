@@ -69,6 +69,8 @@ public class MGHandler extends AmmoWeaponHandler {
                 nDamPerHit = Compute.d6(wtype.getDamage());
                 if (bGlancing)
                     nDamPerHit = (int) Math.floor(nDamPerHit / 2.0);
+                if (bDirect)
+                    nDamPerHit += toHit.getMoS()/3;
             } else {
                 nDamPerHit = super.calcDamagePerHit();
             }

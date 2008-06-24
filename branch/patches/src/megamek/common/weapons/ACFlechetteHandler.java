@@ -56,7 +56,9 @@ public class ACFlechetteHandler extends AmmoWeaponHandler {
     protected int calcDamagePerHit() {
         float toReturn = wtype.getDamage();
 
-        if (bGlancing) {
+        if ( bDirect ){
+            toReturn += toHit.getMoS()/3;
+        }else if (bGlancing) {
             toReturn = (int) Math.floor(toReturn / 2.0);
         }
 

@@ -57,9 +57,7 @@ public class LBXHandler extends AmmoWeaponHandler {
     protected int calcDamagePerHit() {
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
             float toReturn = wtype.getDamage();
-            toReturn /= 10;
-            toReturn += 1;
-            
+            toReturn = (float)Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS()/3 : 0, Compute.WEAPON_CLUSTER_BALLISTIC);            
             if (bGlancing)
                 toReturn /= 2;
             return (int) Math.ceil(toReturn);

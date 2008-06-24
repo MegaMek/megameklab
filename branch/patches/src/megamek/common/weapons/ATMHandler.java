@@ -58,7 +58,7 @@ public class ATMHandler extends MissileWeaponHandler {
      * @see megamek.common.weapons.WeaponHandler#calcDamagePerHit()
      */
     protected int calcDamagePerHit() {
-        int toReturn;
+        double toReturn;
         AmmoType atype = (AmmoType) ammo.getType();
         if (atype.getMunitionType() == AmmoType.M_HIGH_EXPLOSIVE) {
             sSalvoType = " high-explosive missile(s) ";
@@ -70,11 +70,11 @@ public class ATMHandler extends MissileWeaponHandler {
             toReturn = 2;
         }
         if (target instanceof Infantry && !(target instanceof BattleArmor)) {
-            toReturn = (int) Math.ceil(toReturn * wtype.getRackSize() / 5);
-            return toReturn;
+            toReturn = Compute.directBlowInfantryDamage(toReturn, bDirect ? toHit.getMoS() : 0, Compute.WEAPON_CLUSTER_MISSILE);
+            return (int) toReturn;
         }
             
-        return toReturn;
+        return (int)toReturn;
     }
 
     /*
@@ -283,6 +283,10 @@ public class ATMHandler extends MissileWeaponHandler {
         if (game.getOptions().booleanOption("high_winds")
                 && wtype.hasFlag(WeaponType.F_MISSILE)) {
             nMissilesModifier -= 4;
+        }
+
+        if ( bDirect ){
+            nMissilesModifier += (toHit.getMoS()/3)*2;
         }
 
         // add AMS mods

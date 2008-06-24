@@ -106,6 +106,10 @@ public class SRMAntiTSMHandler extends SRMHandler {
             bWeather = true;
         }
 
+        if ( bDirect ){
+            nMissilesModifier += (toHit.getMoS()/3)*2;
+        }
+
         // Add ams mod
         nMissilesModifier += getAMSHitsMod(vPhaseReport);
         if (allShotsHit()) {
