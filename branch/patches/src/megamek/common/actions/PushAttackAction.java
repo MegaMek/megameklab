@@ -19,6 +19,7 @@ import megamek.common.Compute;
 import megamek.common.Coords;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
+import megamek.common.EntityWeightClass;
 import megamek.common.IGame;
 import megamek.common.IHex;
 import megamek.common.Mech;
@@ -294,6 +295,15 @@ public class PushAttackAction extends DisplacementAttackAction {
             } else if (sensorHits == 2) {
                 toHit.addModifier(4,
                         "Head Sensors Destroyed for Torso-Mounted Cockpit");
+            }
+        }
+        
+        //Attacking Weight Class Modifier.
+        if ( game.getOptions().booleanOption("tacops_attack_physical_psr") ) {
+            if ( ae.getWeightClass() == EntityWeightClass.WEIGHT_LIGHT ) {
+                toHit.addModifier(-2, "Weight Class Attack Modifier");
+            }else if ( ae.getWeightClass() == EntityWeightClass.WEIGHT_MEDIUM ) {
+                toHit.addModifier(-1, "Weight Class Attack Modifier");
             }
         }
 

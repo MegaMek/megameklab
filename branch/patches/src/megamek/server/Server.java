@@ -11377,6 +11377,12 @@ public class Server implements Runnable {
             damage = (int) Math.floor(damage / 2.0);
             damageTaken = (int) Math.floor(damageTaken / 2.0);
         }
+        boolean bDirect = false;
+        int directBlowCritMod = toHit.getMoS()/3;
+        if ( game.getOptions().booleanOption("tacops_direct_blow") && toHit.getMoS()/3 >= 1) {
+            damage += toHit.getMoS()/3;
+            bDirect = false;
+        }
         
         // Is the target inside a building?
         final boolean targetInBuilding = Compute.isInBuilding(game, te);
@@ -11481,14 +11487,8 @@ public class Server implements Runnable {
                 HitData hit = te.rollHitLocation(toHit.getHitTable(), toHit
                         .getSideTable());
                 hit.setGeneralDamageType(HitData.DAMAGE_PHYSICAL);
-                if ( game.getOptions().booleanOption("tacops_direct_blow") ) {
-                    damage += toHit.getMoS()/3;
-                    hit.makeDirectBlow(toHit.getMoS()/3);
-                    r = new Report(4032);
-                    r.subject = ae.getId();
-                    r.newlines = 0;
-                    addReport(r);
-                }
+                if ( bDirect )
+                    hit.makeDirectBlow(directBlowCritMod);
                 if (spikes[hit.getLocation()] == 1) {
                     r = new Report(4330);
                     r.indent(2);

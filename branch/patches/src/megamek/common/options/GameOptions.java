@@ -140,7 +140,6 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedCombat, "tacops_trip_attack", false); //$NON-NLS-1$
         
         IBasicOptionGroup advancedGroundMovement = addGroup("advancedGroundMovement"); //$NON-NLS-1$
-        addOption(advancedGroundMovement, "tacops_standing", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "dusk", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "blizzard", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "blowing_sand", false); //$NON-NLS-1$
@@ -149,12 +148,14 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedGroundMovement, "heavy_rainfall", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "moderate_winds", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "high_winds", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "tacops_standing", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_physical_psr", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "tacops_attack_physical_psr", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_taking_damage", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_leg_damage", false); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "tacops_walk_backwards", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "fire", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "vehicle_fires", false); //$NON-NLS-1$
-        addOption(advancedGroundMovement, "tacops_walk_backwards", false); //$NON-NLS-1$
 
         IBasicOptionGroup ruleBreakers = addGroup("ruleBreakers"); //$NON-NLS-1$
         addOption(ruleBreakers, "no_tac", false); //$NON-NLS-1$

@@ -19,6 +19,7 @@ import megamek.common.Building;
 import megamek.common.Compute;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
+import megamek.common.EntityWeightClass;
 import megamek.common.IGame;
 import megamek.common.IHex;
 import megamek.common.Mech;
@@ -183,6 +184,15 @@ public class PhysicalAttackAction extends AbstractAttackAction {
 
             // Pilot skills
             Compute.modifyPhysicalBTHForAdvantages(ae, te, toHit, game);
+            
+            //Attacking Weight Class Modifier.
+            if ( game.getOptions().booleanOption("tacops_attack_physical_psr") ) {
+                if ( ae.getWeightClass() == EntityWeightClass.WEIGHT_LIGHT ) {
+                    toHit.addModifier(-2, "Weight Class Attack Modifier");
+                }else if ( ae.getWeightClass() == EntityWeightClass.WEIGHT_MEDIUM ) {
+                    toHit.addModifier(-1, "Weight Class Attack Modifier");
+                }
+            }
         }
     }
 }

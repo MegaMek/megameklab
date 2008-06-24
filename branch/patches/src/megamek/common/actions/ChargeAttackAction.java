@@ -27,6 +27,7 @@ import megamek.common.Compute;
 import megamek.common.Coords;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
+import megamek.common.EntityWeightClass;
 import megamek.common.GunEmplacement;
 import megamek.common.IEntityMovementType;
 import megamek.common.IGame;
@@ -258,6 +259,15 @@ public class ChargeAttackAction extends DisplacementAttackAction {
             toHit.setHitTable(ToHitData.HIT_KICK);
         } else {
             toHit.setHitTable(ToHitData.HIT_NORMAL);
+        }
+
+        //Attacking Weight Class Modifier.
+        if ( game.getOptions().booleanOption("tacops_attack_physical_psr") ) {
+            if ( ae.getWeightClass() == EntityWeightClass.WEIGHT_LIGHT ) {
+                toHit.addModifier(-2, "Weight Class Attack Modifier");
+            }else if ( ae.getWeightClass() == EntityWeightClass.WEIGHT_MEDIUM ) {
+                toHit.addModifier(-1, "Weight Class Attack Modifier");
+            }
         }
 
         // done!
