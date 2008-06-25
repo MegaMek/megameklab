@@ -122,6 +122,7 @@ public class ChatLounge extends AbstractPhaseDisplay implements ActionListener,
     private List lisBoardsSelected;
     private Button butChangeBoard;
     private Panel panBoardSettings;
+    private Button butConditions;
 
     private Button butLoadList;
     //private Label lblPlaceholder;
@@ -529,6 +530,9 @@ public class ChatLounge extends AbstractPhaseDisplay implements ActionListener,
                 .getString("ChatLounge.butChangeBoard")); //$NON-NLS-1$
         butChangeBoard.setActionCommand("change_board"); //$NON-NLS-1$
         butChangeBoard.addActionListener(this);
+        
+        butConditions = new Button(Messages.getString("ChatLounge.butConditions")); //$NON-NLS-1$
+        butConditions.addActionListener(this);
 
         panBoardSettings = new Panel();
 
@@ -560,6 +564,11 @@ public class ChatLounge extends AbstractPhaseDisplay implements ActionListener,
         c.weighty = 0.0;
         gridbag.setConstraints(butChangeBoard, c);
         panBoardSettings.add(butChangeBoard);
+        
+        c.weightx = 1.0;
+        c.weighty = 0.0;
+        gridbag.setConstraints(butConditions, c);
+        panBoardSettings.add(butConditions);
 
         refreshBoardSettings();
     }
@@ -1783,6 +1792,10 @@ public class ChatLounge extends AbstractPhaseDisplay implements ActionListener,
             }
             c.die();
             clientgui.getBots().remove(c.getName());
+        } else if (ev.getSource() == butConditions) {
+            // Display the game options dialog.
+            clientgui.getPlanetaryConditionsDialog().update(client.game.getPlanetaryConditions());
+            clientgui.getPlanetaryConditionsDialog().setVisible(true);
         }
     }
 

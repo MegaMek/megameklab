@@ -45,6 +45,7 @@ import megamek.common.MechWarrior;
 import megamek.common.MinefieldTarget;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.PlanetaryConditions;
 import megamek.common.Protomech;
 import megamek.common.RangeType;
 import megamek.common.SmallCraft;
@@ -56,7 +57,6 @@ import megamek.common.ToHitData;
 import megamek.common.VTOL;
 import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.ScreenLauncherBayWeapon;
-import megamek.common.WeatherConditions;
 import megamek.common.WeaponType;
 
 /**
@@ -772,10 +772,10 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         toHit.append(nightModifiers(game, target, atype, ae, true));
 
         //weather mods (not in space)
-        String weatherCond = (String)game.getOptions().getOption("tacops_weather").getValue();
-        int weatherMod = WeatherConditions.getHitPenalty(weatherCond, ae);
+        int weatherCond = game.getPlanetaryConditions().getWeather();
+        int weatherMod = PlanetaryConditions.getWeatherHitPenalty(weatherCond, ae);
         if(weatherMod != 0 && !game.getBoard().inSpace()) {
-        	toHit.addModifier(weatherMod,weatherCond);
+        	toHit.addModifier(weatherMod,PlanetaryConditions.getWeatherDisplayableName(weatherCond));
         }
         
         // handle LAM speial rules

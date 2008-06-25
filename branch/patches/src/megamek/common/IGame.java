@@ -1268,4 +1268,8 @@ public interface IGame {
     
     public abstract boolean checkForValidSmallCraft(int playerId);
     
+    public abstract PlanetaryConditions getPlanetaryConditions();
+    
+    public abstract void setPlanetaryConditions(PlanetaryConditions conditions);
+    
 }

@@ -1946,11 +1946,6 @@ public class MoveStep implements Serializable {
                 && !isMechanizedInfantry) {
             mp--;
         }
-        
-        //make adjustments for light conditions
-        //TODO: awaiting a ruling on whether these are supposed to be in table on pg. 36, TacOps
-        //mp += LightConditions.getMovementCost((String)game.getOptions().getOption("tacops_light").getValue());
-        
     }
 
     /**

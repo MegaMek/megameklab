@@ -87,11 +87,13 @@ public class Game implements Serializable, IGame {
     private boolean deploymentComplete = false;
 
     /** how's the weather? */
+    //TODO: move wind into planetary conditions
     private int windDirection = -1;
     private int windStrength = -1;
     private String stringWindDirection;
     private String stringWindStrength;
-
+    private PlanetaryConditions planetaryConditions = new PlanetaryConditions();
+    
     /** what round is it? */
     private int roundCount = 0;
 
@@ -2917,6 +2919,19 @@ public class Game implements Serializable, IGame {
             } 
         }
         return false;
+    }
+    
+    public PlanetaryConditions getPlanetaryConditions() {
+    	return planetaryConditions;
+    }
+    
+    public void setPlanetaryConditions(PlanetaryConditions conditions) {
+    	if (null == conditions) {
+            System.err.println("Can't set the planetary conditions to null!");
+        } else {
+            this.planetaryConditions = conditions;
+            processGameEvent(new GameSettingsChangeEvent(this));
+        }
     }
     
 }

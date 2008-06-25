@@ -96,6 +96,7 @@ import megamek.common.MoveStep;
 import megamek.common.PhysicalResult;
 import megamek.common.Pilot;
 import megamek.common.PilotingRollData;
+import megamek.common.PlanetaryConditions;
 import megamek.common.Player;
 import megamek.common.Protomech;
 import megamek.common.QuadMech;
@@ -688,6 +689,7 @@ public class Server implements Runnable {
         // why are these two outside the player != null check below?
         transmitAllPlayerConnects(connId);
         send(connId, createGameSettingsPacket());
+        send(connId, createPlanetaryConditionsPacket());
 
         Player player = game.getPlayer(connId);
         if (null != player) {
@@ -2351,8 +2353,7 @@ public class Server implements Runnable {
             newBoard.setBridgeCF(game.getOptions().getOption("bridgeCF")
                     .intValue());
         }
-        //TODO: adjust terrain based on weather if necessary
-        BoardUtilities.addWeatherConditions(newBoard, (String)game.getOptions().getOption("tacops_weather").getValue());
+        BoardUtilities.addWeatherConditions(newBoard, game.getPlanetaryConditions().getWeather());
         game.setBoard(newBoard);
     }
 
@@ -20075,6 +20076,13 @@ public class Server implements Runnable {
     private Packet createMapSettingsPacket() {
         return new Packet(Packet.COMMAND_SENDING_MAP_SETTINGS, mapSettings);
     }
+    
+    /**
+     * Creates a packet containing the planetary conditions
+     */
+    private Packet createPlanetaryConditionsPacket() {
+        return new Packet(Packet.COMMAND_SENDING_PLANETARY_CONDITIONS, game.getPlanetaryConditions());
+    }
 
     /**
      * Creates a packet containing temporary map settings as a response to a
@@ -20587,6 +20595,16 @@ public class Server implements Runnable {
                 resetPlayersDone();
                 transmitAllPlayerDones();
                 send(createMapSettingsPacket());
+                break;
+            case Packet.COMMAND_SENDING_PLANETARY_CONDITIONS:
+                //MapSettings newSettings = (MapSettings) packet.getObject(0);
+            	PlanetaryConditions conditions = (PlanetaryConditions) packet.getObject(0);
+                sendServerChat("Player " + player.getName()
+                            + " changed planetary conditions");
+                game.setPlanetaryConditions(conditions);
+                resetPlayersDone();
+                transmitAllPlayerDones();
+                send(createPlanetaryConditionsPacket());
                 break;
             case Packet.COMMAND_QUERY_MAP_SETTINGS:
                 MapSettings temp = (MapSettings) packet.getObject(0);

@@ -19,7 +19,7 @@ package megamek.common;
  * Effects of wind are kept separatelyin WindConditions
  */
 public class WeatherConditions {
-    
+    /*
 	public static final String T_NONE        = Messages.getString("WeatherConditions.None");
     public static final String T_LIGHT_RAIN  = Messages.getString("WeatherConditions.LightRain");
     public static final String T_MOD_RAIN    = Messages.getString("WeatherConditions.ModerateRain");
@@ -34,6 +34,7 @@ public class WeatherConditions {
     /*
      * to-hit penalty
      */
+    /*
     public static int getHitPenalty(String type, Entity en) {
     	if((type.equals(T_LIGHT_RAIN) || type.equals(T_LIGHT_SNOW)) 
     			&& en instanceof Infantry && !(en instanceof BattleArmor)) {
@@ -55,6 +56,7 @@ public class WeatherConditions {
     /*
      * piloting penalty
      */
+    /*
     public static int getPilotPenalty(String type) {
     	if(type.equals(T_HEAVY_RAIN) || type.equals(T_HEAVY_SNOW)) {
     		return 1;
@@ -69,5 +71,5 @@ public class WeatherConditions {
     
     //temperature
     //mud, snow, and ice
-    
+    */
 }

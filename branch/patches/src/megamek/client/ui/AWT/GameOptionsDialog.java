@@ -41,7 +41,6 @@ import java.awt.event.WindowEvent;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import megamek.common.LightConditions;
 import megamek.common.WeatherConditions;
 import megamek.common.options.GameOptions;
 import megamek.common.options.IBasicOption;
@@ -335,28 +334,6 @@ public class GameOptionsDialog extends Dialog implements ActionListener,
                     || !editable) {
                 optionComp.setEditable(false);
             }
-        } else if (option.getName().equals("tacops_light")) { 
-        	optionComp.addValue(LightConditions.T_DAYLIGHT);
-        	optionComp.addValue(LightConditions.T_DUSK);
-        	optionComp.addValue(LightConditions.T_FULL_MOON);
-        	optionComp.addValue(LightConditions.T_MOONLESS);
-        	optionComp.addValue(LightConditions.T_PITCH_BLACK);
-        	optionComp.setSelected(option.stringValue());
-        	optionComp.setEditable(true);
-        } else if (option.getName().equals("tacops_weather")) { 
-        	optionComp.addValue(WeatherConditions.T_NONE);
-        	optionComp.addValue(WeatherConditions.T_LIGHT_RAIN);
-        	optionComp.addValue(WeatherConditions.T_MOD_RAIN);
-        	optionComp.addValue(WeatherConditions.T_HEAVY_RAIN);
-        	optionComp.addValue(WeatherConditions.T_DOWNPOUR);
-        	//TODO: awaiting some rules clarifications before finishing snow
-        	//optionComp.addValue(WeatherConditions.T_LIGHT_SNOW);
-        	//optionComp.addValue(WeatherConditions.T_MOD_SNOW);
-        	//optionComp.addValue(WeatherConditions.T_HEAVY_SNOW);
-        	//optionComp.addValue(WeatherConditions.T_SLEET);
-        	//optionComp.addValue(WeatherConditions.T_ICE_STORM);
-        	//optionComp.setSelected(option.stringValue());
-        	optionComp.setEditable(true);
         } else {
             optionComp.setEditable(editable);
         }

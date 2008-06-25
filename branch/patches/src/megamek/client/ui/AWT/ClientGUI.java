@@ -136,6 +136,7 @@ public class ClientGUI extends Panel implements MouseListener, WindowListener,
     private RandomArmyDialog randomArmyDialog;
     private RandomSkillDialog randomSkillDialog;
     private CustomInitiativeDialog initDialog;
+    private PlanetaryConditionsDialog conditionsDialog;
 
     /**
      * Save and Open dialogs for MegaMek Unit List (mul) files.
@@ -748,6 +749,13 @@ public class ClientGUI extends Panel implements MouseListener, WindowListener,
             initDialog = new CustomInitiativeDialog(this);
         }
         return initDialog;
+    }
+    
+    public PlanetaryConditionsDialog getPlanetaryConditionsDialog() {
+        if (conditionsDialog == null) {
+            conditionsDialog = new PlanetaryConditionsDialog(this);
+        }
+        return conditionsDialog;
     }
 
     void switchPanel(IGame.Phase phase) {

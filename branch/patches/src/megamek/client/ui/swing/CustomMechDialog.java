@@ -63,11 +63,11 @@ import megamek.common.IGame;
 import megamek.common.IOffBoardDirections;
 import megamek.common.Infantry;
 import megamek.common.Jumpship;
-import megamek.common.LightConditions;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Pilot;
+import megamek.common.PlanetaryConditions;
 import megamek.common.Player;
 import megamek.common.Protomech;
 import megamek.common.Tank;
@@ -550,9 +550,7 @@ public class CustomMechDialog extends ClientDialog implements ActionListener,
         }
 
         // Set up searchlight
-        String lightCond = (String)clientgui.getClient().game.getOptions().getOption("tacops_light").getValue(); //$NON-NLS-1$
-        if (!lightCond.equals(LightConditions.T_DAYLIGHT) 
-        		&& !lightCond.equals(LightConditions.T_DUSK)) { 
+        if (clientgui.getClient().game.getPlanetaryConditions().getLight() > PlanetaryConditions.L_DUSK) { 
             c.gridwidth = 1;
             c.anchor = GridBagConstraints.EAST;
             gridbag.setConstraints(labSearchlight, c);

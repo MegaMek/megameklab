@@ -153,12 +153,6 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(planetaryConditions, "temperature", 25); //$NON-NLS-1$
         addOption(planetaryConditions, "gravity", (float) 1.0); //$NON-NLS-1$
         addOption(planetaryConditions, "vacuum", false); //$NON-NLS-1$
-        addOption(planetaryConditions, "tacops_light", new Vector()); //$NON-NLS-1$
-        addOption(planetaryConditions, "tacops_weather", new Vector()); //$NON-NLS-1$
-        //addOption(planetaryConditions, "tacops_fog", false); //$NON-NLS-1$
-        //addOption(planetaryConditions, "tacops_wind", false); //$NON-NLS-1$
-        //addOption(planetaryConditions, "tacops_lightning", false); //$NON-NLS-1$
-        //addOption(planetaryConditions, "tacops_blowing_sand", false); //$NON-NLS-1$
 
         IBasicOptionGroup ruleBreakers = addGroup("ruleBreakers"); //$NON-NLS-1$
         addOption(ruleBreakers, "no_tac", false); //$NON-NLS-1$

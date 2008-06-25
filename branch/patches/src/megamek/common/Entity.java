@@ -4045,18 +4045,18 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     	//check light conditions for "running" entities
         if(moveType == IEntityMovementType.MOVE_RUN || 
         		moveType == IEntityMovementType.MOVE_VTOL_RUN || moveType == IEntityMovementType.MOVE_OVER_THRUST) {
-        	String lightCond = (String)game.getOptions().getOption("tacops_light").getValue();
-        	int lightPenalty = LightConditions.getPilotPenalty(lightCond);
+        	int lightCond = game.getPlanetaryConditions().getLight();
+        	int lightPenalty = PlanetaryConditions.getLightPilotPenalty(lightCond);
         	if(lightPenalty > 0) {
-        		roll.addModifier(lightPenalty, lightCond);
+        		roll.addModifier(lightPenalty, PlanetaryConditions.getLightDisplayableName(lightCond));
         	}
         }
         
         //check weather conditions for all entities
-        String weatherCond = (String)game.getOptions().getOption("tacops_weather").getValue();
-        int weatherMod = WeatherConditions.getPilotPenalty(weatherCond);
+        int weatherCond = game.getPlanetaryConditions().getWeather();
+        int weatherMod = PlanetaryConditions.getWeatherPilotPenalty(weatherCond);
         if(weatherMod != 0 && !game.getBoard().inSpace()) {
-        	roll.addModifier(weatherMod, weatherCond);
+        	roll.addModifier(weatherMod, PlanetaryConditions.getWeatherDisplayableName(weatherCond));
         }
         return roll;
     }

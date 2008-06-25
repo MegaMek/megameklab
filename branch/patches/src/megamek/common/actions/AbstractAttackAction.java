@@ -21,9 +21,9 @@ import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.Infantry;
 import megamek.common.IGame;
-import megamek.common.LightConditions;
 import megamek.common.Mech;
 import megamek.common.Mounted;
+import megamek.common.PlanetaryConditions;
 import megamek.common.Targetable;
 import megamek.common.ToHitData;
 import megamek.common.WeaponType;
@@ -94,16 +94,16 @@ public abstract class AbstractAttackAction extends AbstractEntityAction
             }
             toHit = new ToHitData();
 
-            String lightCond = (String)game.getOptions().getOption("tacops_light").getValue();
-            if(lightCond.equals(LightConditions.T_DAYLIGHT)) {
+            int lightCond = game.getPlanetaryConditions().getLight();
+            if(lightCond == PlanetaryConditions.L_DAY) {
             	//not nighttime so just return
             	return toHit;
             }
             
             // The base night penalty
             int night_modifier = 0;   
-            night_modifier = LightConditions.getHitPenalty(lightCond, isWeapon);
-            toHit.addModifier(night_modifier, lightCond);
+            night_modifier = PlanetaryConditions.getLightHitPenalty(lightCond, isWeapon);
+            toHit.addModifier(night_modifier, PlanetaryConditions.getLightDisplayableName(lightCond));
 
             boolean illuminated = false;
             if (te != null) {
@@ -125,10 +125,10 @@ public abstract class AbstractAttackAction extends AbstractEntityAction
             }
             // Searchlights reduce the penalty to zero (except for dusk/dawn)
             int searchlightMod = Math.min(3, night_modifier);
-            if (te != null && te.isUsingSpotlight() && !lightCond.equals(LightConditions.T_DUSK)) {
+            if (te != null && te.isUsingSpotlight() && lightCond != PlanetaryConditions.L_DUSK) {
                 toHit.addModifier(-searchlightMod, "target using searchlight");
                 night_modifier = night_modifier - searchlightMod;
-            } else if (illuminated && !lightCond.equals(LightConditions.T_DUSK)) {
+            } else if (illuminated && lightCond != PlanetaryConditions.L_DUSK) {
                 toHit.addModifier(-searchlightMod,
                         "target illuminated by searchlight");
                 night_modifier = night_modifier - searchlightMod;
@@ -203,7 +203,7 @@ public abstract class AbstractAttackAction extends AbstractEntityAction
             
             //now check for general hit bonuses for heat
             if(te != null && !(attacker instanceof Infantry && !(attacker instanceof BattleArmor))) {             	
-            	int heatBonus = LightConditions.getHeatBonus(lightCond, te.heat);
+            	int heatBonus = PlanetaryConditions.getLightHeatBonus(lightCond, te.heat);
             	if(heatBonus > 0) {
             		toHit.addModifier(heatBonus, "target excess heat at night");
             	}

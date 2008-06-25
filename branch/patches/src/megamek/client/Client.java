@@ -58,6 +58,7 @@ import megamek.common.MechSummaryCache;
 import megamek.common.Minefield;
 import megamek.common.Mounted;
 import megamek.common.MovePath;
+import megamek.common.PlanetaryConditions;
 import megamek.common.Player;
 import megamek.common.Report;
 import megamek.common.SpecialHexDisplay;
@@ -588,6 +589,13 @@ public class Client implements IClientCommandHandler {
     public void sendMapSettings(MapSettings settings) {
         send(new Packet(Packet.COMMAND_SENDING_MAP_SETTINGS, settings));
     }
+    
+    /**
+     * Send the planetary Conditions to the server
+     */
+    public void sendPlanetaryConditions(PlanetaryConditions conditions) {
+        send(new Packet(Packet.COMMAND_SENDING_PLANETARY_CONDITIONS, conditions));
+    }
 
     /**
      * Send the game settings to the server
@@ -1076,6 +1084,10 @@ public class Client implements IClientCommandHandler {
                 break;
             case Packet.COMMAND_SENDING_MAP_SETTINGS:
                 mapSettings = (MapSettings) c.getObject(0);
+                game.processGameEvent(new GameSettingsChangeEvent(this));
+                break;
+            case Packet.COMMAND_SENDING_PLANETARY_CONDITIONS:
+                game.setPlanetaryConditions((PlanetaryConditions) c.getObject(0));
                 game.processGameEvent(new GameSettingsChangeEvent(this));
                 break;
             case Packet.COMMAND_QUERY_MAP_SETTINGS:
