@@ -93,6 +93,7 @@ import megamek.common.VTOL;
 import megamek.common.Warship;
 import megamek.common.WeaponType;
 import megamek.common.weapons.BayWeapon;
+import megamek.common.weapons.GaussWeapon;
 
 /**
  * Displays the info for a mech. This is also a sort of interface for special
@@ -2127,6 +2128,13 @@ public class MechDisplay extends BufferedPanel {
                     if (m.getType().hasFlag(WeaponType.F_ENERGY) 
                             && (((WeaponType) m.getType()).getAmmoType() == AmmoType.T_NA) 
                             && !clientgui.getClient().game.getOptions().booleanOption("tacops_energy_weapons")) {
+                        m_chMode.removeAll();
+                        return;
+                    }
+
+                    //If not using tacops Gauss Weapon rule then remove all the power up/down modes
+                    if (m.getType() instanceof GaussWeapon 
+                            && !clientgui.getClient().game.getOptions().booleanOption("tacops_gauss_weapons")) {
                         m_chMode.removeAll();
                         return;
                     }

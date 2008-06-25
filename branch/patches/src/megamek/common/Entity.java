@@ -34,6 +34,8 @@ import megamek.common.event.GameEntityChangeEvent;
 import megamek.common.preference.PreferenceManager;
 import megamek.common.util.StringUtil;
 import megamek.common.weapons.BayWeapon;
+import megamek.common.weapons.EnergyWeapon;
+import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.WeaponHandler;
 
 /**
@@ -6994,7 +6996,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     public void setGameOptions(IGame game) {
 
         for (Mounted mounted : this.getWeaponList()) {
-            if (mounted.getType().hasFlag(WeaponType.F_ENERGY) 
+            if (mounted.getType() instanceof EnergyWeapon 
                     && (((WeaponType) mounted.getType()).getAmmoType() == AmmoType.T_NA) 
                     && game != null && game.getOptions().booleanOption("tacops_energy_weapons")) {
 
@@ -7005,6 +7007,15 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
                 }
                 ((WeaponType) mounted.getType()).setModes(modes.toArray(stringArray));
             }
+            
+            if (mounted.getType() instanceof GaussWeapon
+                    &&  game != null && game.getOptions().booleanOption("tacops_gauss_weapons")) {
+
+                String[] modes = {"Powered Up","Powered Down"};
+                ((WeaponType) mounted.getType()).setModes(modes);
+                ((WeaponType) mounted.getType()).setInstantModeSwitch(false);
+            }
+
         }
 
     }

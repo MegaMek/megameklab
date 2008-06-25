@@ -24,6 +24,8 @@ package megamek.common;
 import java.io.Serializable;
 import java.util.Vector;
 
+import megamek.common.weapons.GaussWeapon;
+
 /**
  * This describes equipment mounted on a mech.
  * 
@@ -613,6 +615,10 @@ public class Mounted implements Serializable, RoundUpdated {
             return damagePerShot * rackSize * shotsLeft;
         } else if (type instanceof WeaponType) {
             WeaponType wtype = (WeaponType) type;
+            //TacOps Gauss Weapon rule p. 102
+            if ( type instanceof GaussWeapon && type.hasModes() && this.curMode().equals("Powered Down") ) {
+                return 0;
+            }
             // HACK: gauss rifle damage hardcoding
             if (wtype.getAmmoType() == AmmoType.T_GAUSS
                     || wtype.getAmmoType() == AmmoType.T_SBGAUSS) {

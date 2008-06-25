@@ -54,6 +54,7 @@ import megamek.common.Targetable;
 import megamek.common.Terrains;
 import megamek.common.ToHitData;
 import megamek.common.VTOL;
+import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.ScreenLauncherBayWeapon;
 import megamek.common.WeaponType;
 
@@ -1320,7 +1321,8 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                 return "Sensors Completely Destroyed for Torso-Mounted Cockpit";
             }
         }
-
+        
+        
         // missing, breached or jammed weapons can't fire
         if (!weapon.canFire() && !exchangeSwarmTarget) {
             return "Weapon is not in a state where it can be fired";
@@ -2026,6 +2028,11 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             return "WiGE may not attack target in same hex";
         }
         
+        if ( wtype instanceof GaussWeapon && wtype.hasModes() 
+                && weapon.curMode().equals("Powered Down") ) {
+            return "Weapon is powered down";
+        }
+
         return null;
     }
 
