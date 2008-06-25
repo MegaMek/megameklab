@@ -312,7 +312,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
              */
         }
 
-        Vector<SmokeDrift> SmokeToAdd = new Vector<SmokeDrift>();
+        Vector<SmokeDrift> smokeToAdd = new Vector<SmokeDrift>();
 
         // Cycle through all hexes, checking for smoke, IF the wind is higher
         // than calm! Calm means no drift!
@@ -346,7 +346,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
                                                             // the vector if
                                                             // it's not on
                                                             // board!
-                            SmokeToAdd.addElement(new SmokeDrift(new Coords(smokeCoords), smokeLevel));
+                            smokeToAdd.addElement(new SmokeDrift(new Coords(smokeCoords), smokeLevel));
                         } else {
                             // report that the smoke has blown off the map
                             Report r = new Report(5230, Report.PUBLIC);
@@ -364,8 +364,8 @@ public class FireProcessor extends DynamicTerrainProcessor {
             debugTime("resolve smoke 1 end, resolve smoke 2 begin", true);
 
             // Cycle through the vector and add the drifted smoke
-            for (int sta = 0; sta < SmokeToAdd.size(); sta++) {
-                SmokeDrift drift = SmokeToAdd.elementAt(sta);
+            for (int sta = 0; sta < smokeToAdd.size(); sta++) {
+                SmokeDrift drift = smokeToAdd.elementAt(sta);
                 Coords smokeCoords = drift.coords;
                 int smokeSize = drift.size;
                 IHex smokeHex = game.getBoard().getHex(smokeCoords);
@@ -377,8 +377,8 @@ public class FireProcessor extends DynamicTerrainProcessor {
 
             // Cycle through the vector again and dissipate the smoke, then
             // reporting it
-            for (int dis = 0; dis < SmokeToAdd.size(); dis++) {
-                SmokeDrift drift = SmokeToAdd.elementAt(dis);
+            for (int dis = 0; dis < smokeToAdd.size(); dis++) {
+                SmokeDrift drift = smokeToAdd.elementAt(dis);
                 Coords smokeCoords = drift.coords;
                 int smokeSize = drift.size;
                 IHex smokeHex = game.getBoard().getHex(smokeCoords);
