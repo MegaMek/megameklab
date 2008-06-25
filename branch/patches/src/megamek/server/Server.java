@@ -15329,6 +15329,31 @@ public class Server implements Runnable {
             }
         }
 
+        //TacOps p.78 Ammo booms can hurt other units in same and adjcent hexes
+        if ( ammoExplosion && (te.isDoomed() || te.isDestroyed()) 
+                && game.getOptions().booleanOption("tacops_ammunition") 
+                && damage_orig/10 > 0 ) {
+            
+            Report.addNewline(vDesc);
+            r = new Report(5068, Report.PUBLIC);
+            r.subject = te.getId();
+            r.addDesc(te);
+            r.indent(2);
+            vDesc.add(r);
+            Report.addNewline(vDesc);
+            r = new Report(5400, Report.PUBLIC);
+            r.subject = te.getId();
+            r.indent(2);
+            vDesc.add(r);
+            int[] damages = {(int)Math.floor(damage_orig/10),(int)Math.floor(damage_orig/20)};
+            doExplosion(damages, true, te.getPosition(), true, vDesc, null);
+            Report.addNewline(vDesc);
+            r = new Report(5410, Report.PUBLIC);
+            r.subject = te.getId();
+            r.indent(2);
+            vDesc.add(r);
+        }
+        
         // This flag indicates the hit was directly to IS
         if (wasDamageIS) {
             Report.addNewline(vDesc);
@@ -15460,8 +15485,19 @@ public class Server implements Runnable {
             // ICE explosions don't hurt anyone else, but fusion do
             if (engine.isFusion()) {
                 int engineRating = en.getEngine().getRating();
-                doFusionEngineExplosion(engineRating, en.getPosition(), vDesc,
-                        null);
+                Report.addNewline(vDesc);
+                r = new Report(5400, Report.PUBLIC);
+                r.subject = en.getId();
+                r.indent(2);
+                vDesc.add(r);
+
+                doFusionEngineExplosion(engineRating, en.getPosition(), vDesc,null);
+                Report.addNewline(vDesc);
+                r = new Report(5410, Report.PUBLIC);
+                r.subject = en.getId();
+                r.indent(2);
+                vDesc.add(r);
+
             }
         }
 
@@ -18412,6 +18448,7 @@ public class Server implements Runnable {
                             && ((AmmoType) ammo.getType()).getMunitionType() != AmmoType.M_DEAD_FIRE) {
                         ammoExploded++;
                         vDesc.addAll(this.explodeEquipment(en, loc, ammo));
+                        break;
                     }
                 }
                 if (ammoExploded == 0) {
