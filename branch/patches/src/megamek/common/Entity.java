@@ -6991,5 +6991,22 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         return Entity.NONE;
     }
 
+    public void setGameOptions(IGame game) {
+
+        for (Mounted mounted : this.getWeaponList()) {
+            if (mounted.getType().hasFlag(WeaponType.F_ENERGY) 
+                    && (((WeaponType) mounted.getType()).getAmmoType() == AmmoType.T_NA) 
+                    && game != null && game.getOptions().booleanOption("tacops_energy_weapons")) {
+
+                ArrayList<String> modes = new ArrayList<String>();
+                String[] stringArray = {};
+                for (int damage = ((WeaponType) mounted.getType()).getDamage(); damage >= 0; damage--) {
+                    modes.add("Damage " + damage);
+                }
+                ((WeaponType) mounted.getType()).setModes(modes.toArray(stringArray));
+            }
+        }
+
+    }
 
 }

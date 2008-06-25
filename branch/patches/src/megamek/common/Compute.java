@@ -3541,6 +3541,14 @@ public class Compute {
         return 0;
     }
 
+    /**
+     * Method replicates the Non-Conventional Damage against Infantry damage table
+     * as well as shifting for direct blows.
+     * @param damage
+     * @param mos
+     * @param damageType
+     * @return
+     */
     public static double directBlowInfantryDamage(double damage, int mos, int damageType){
         
         damageType += mos;
@@ -3575,5 +3583,52 @@ public class Compute {
         }
         return Math.ceil(damage);
     }
+    
+    /**
+     * Method computes how much damage a dial down weapon has done
+     * @param weapon
+     * @param wtype
+     * @return new damage
+     */
+    public static int dialDownDamage(Mounted weapon, WeaponType wtype){
+        int toReturn = wtype.getDamage();
+
+        if ( !wtype.hasModes() )
+            return toReturn;
+        String damage = weapon.curMode().getName();
+        
+        if ( damage.trim().toLowerCase().indexOf("damage") == 0){
+            toReturn = Integer.parseInt(damage.substring(6).trim());
+        }
+        
+        return toReturn;
+
+    }
+    
+    /**
+     * Method computes how much heat a dial down weapon generates
+     * @param weapon
+     * @param wtype
+     * @return Heat, minimum of 1;
+     */
+    public static int dialDownHeat(Mounted weapon, WeaponType wtype){
+        int toReturn = wtype.getHeat();
+        
+        if ( !wtype.hasModes() )
+            return toReturn;
+
+        String damage = weapon.curMode().getName();
+        
+        if ( damage.trim().toLowerCase().indexOf("damage") == 0){
+            //Subtract the actual damage done by the weapon from the original damage of the weapon
+            int newDamage = wtype.getDamage() - Integer.parseInt(damage.substring(6).trim());
+            //take that damage difference and subtract that from the origial heat output
+            //min heat is always 1
+            toReturn = Math.max(1, wtype.getHeat()-newDamage);
+        }
+        return toReturn;
+
+    }
+
 } // End public class Compute
 

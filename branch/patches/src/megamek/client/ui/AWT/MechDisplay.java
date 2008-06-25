@@ -1227,12 +1227,16 @@ public class MechDisplay extends BufferedPanel {
             // update weapon display
             wNameR.setText(mounted.getDesc());
             if (mounted.hasChargedCapacitor())
-                wHeatR.setText((mounted.getCurrentHeat() + 5) + ""); //$NON-NLS-1$
-            else
-                wHeatR.setText(mounted.getCurrentHeat() + ""); //$NON-NLS-1$
+                wHeatR.setText(Integer.toString((Compute.dialDownHeat(mounted, wtype) + 5))); //$NON-NLS-1$
+            else if ( wtype.hasFlag(WeaponType.F_ENERGY) && wtype.hasModes() 
+                    && clientgui.getClient().game.getOptions().booleanOption("tacops_energy_weapons") ){
+                wHeatR.setText(Integer.toString((Compute.dialDownHeat(mounted, wtype))));
+            }
+            else{
+                wHeatR.setText(Integer.toString(mounted.getCurrentHeat())); //$NON-NLS-1$
+            }
 
-            wArcHeatR.setText(Integer.toString(entity.getHeatInArc(mounted
-                    .getLocation(), mounted.isRearMounted())));
+            wArcHeatR.setText(Integer.toString(entity.getHeatInArc(mounted.getLocation(), mounted.isRearMounted())));
 
             if (wtype.getDamage() == WeaponType.DAMAGE_MISSILE) {
                 wDamR.setText(Messages.getString("MechDisplay.Missile")); //$NON-NLS-1$
@@ -1243,14 +1247,16 @@ public class MechDisplay extends BufferedPanel {
             } else if (wtype.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
                 StringBuffer damage = new StringBuffer();
                 damage.append(Integer.toString(wtype.getRackSize()))
-                        .append('/').append(
-                                Integer.toString(wtype.getRackSize() / 2));
+                        .append('/').append(Integer.toString(wtype.getRackSize() / 2));
                 wDamR.setText(damage.toString());
-            } else {
+            } else if ( wtype.hasFlag(WeaponType.F_ENERGY) && wtype.hasModes() 
+                    && clientgui.getClient().game.getOptions().booleanOption("tacops_energy_weapons") ){
                 if (mounted.hasChargedCapacitor()) {
-                    wDamR.setText(Integer.toString(wtype.getDamage() + 5));
-                } else
-                    wDamR.setText(Integer.toString(wtype.getDamage()));
+                    wDamR.setText(Integer.toString(Compute.dialDownDamage(mounted, wtype) + 5));
+                } else                
+                    wDamR.setText(Integer.toString(Compute.dialDownDamage(mounted, wtype)));
+            } else {
+                wDamR.setText(Integer.toString(wtype.getDamage()));
             }
 
             // update range
@@ -2072,8 +2078,7 @@ public class MechDisplay extends BufferedPanel {
                 modeLabel.setEnabled(false);
                 Mounted m = getSelectedEquipment();
 
-                boolean bOwner = (clientgui.getClient().getLocalPlayer() == en
-                        .getOwner());
+                boolean bOwner = (clientgui.getClient().getLocalPlayer() == en.getOwner());
                 if (m != null
                         && bOwner
                         && m.getType() instanceof AmmoType
@@ -2117,6 +2122,15 @@ public class MechDisplay extends BufferedPanel {
                         m_chMode.removeAll();
                         return;
                     }
+                    
+                    //If not using tacops Energy Weapon rule then remove all the dial down statements
+                    if (m.getType().hasFlag(WeaponType.F_ENERGY) 
+                            && (((WeaponType) m.getType()).getAmmoType() == AmmoType.T_NA) 
+                            && !clientgui.getClient().game.getOptions().booleanOption("tacops_energy_weapons")) {
+                        m_chMode.removeAll();
+                        return;
+                    }
+
                     // disables AC mode switching from system tab if
                     // tacops_rapid_ac is not turned on
                     if (m.getType() instanceof WeaponType
@@ -2154,8 +2168,7 @@ public class MechDisplay extends BufferedPanel {
                             m_chMode.add("EI Off");
                             m_chMode.add("EI On");
                             m_chMode.add("Aimed shot");
-                            m_chMode.select(((Mech) en)
-                                    .getCockpitStatusNextRound());
+                            m_chMode.select(((Mech) en).getCockpitStatusNextRound());
                         }
                     }
                 }

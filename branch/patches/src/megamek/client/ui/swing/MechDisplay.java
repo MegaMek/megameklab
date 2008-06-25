@@ -1291,10 +1291,19 @@ public class MechDisplay extends JPanel {
             WeaponType wtype = (WeaponType) mounted.getType();
             // update weapon display
             wNameR.setText(mounted.getDesc());
-            wHeatR.setText(mounted.getCurrentHeat() + ""); //$NON-NLS-1$
+            if (mounted.hasChargedCapacitor())
+                wHeatR.setText(Integer.toString((Compute.dialDownHeat(mounted, wtype) + 5))); //$NON-NLS-1$
+            else if ( wtype.hasFlag(WeaponType.F_ENERGY) && wtype.hasModes() 
+                    && clientgui.getClient().game.getOptions().booleanOption("tacops_energy_weapons") ){
+                wHeatR.setText(Integer.toString((Compute.dialDownHeat(mounted, wtype))));
+            }
+            else{
+                wHeatR.setText(Integer.toString(mounted.getCurrentHeat())); //$NON-NLS-1$
+            }
 
             wArcHeatR.setText(Integer.toString(entity.getHeatInArc(mounted
                     .getLocation(), mounted.isRearMounted())));
+
 
             if (wtype.getDamage() == WeaponType.DAMAGE_MISSILE) {
                 wDamR.setText(Messages.getString("MechDisplay.Missile")); //$NON-NLS-1$
@@ -1308,8 +1317,14 @@ public class MechDisplay extends JPanel {
                         .append('/').append(
                                 Integer.toString(wtype.getRackSize() / 2));
                 wDamR.setText(damage.toString());
+            } else if ( wtype.hasFlag(WeaponType.F_ENERGY) && wtype.hasModes() 
+                    && clientgui.getClient().game.getOptions().booleanOption("tacops_energy_weapons") ){
+                if (mounted.hasChargedCapacitor()) {
+                    wDamR.setText(Integer.toString(Compute.dialDownDamage(mounted, wtype) + 5));
+                } else
+                    wDamR.setText(Integer.toString(Compute.dialDownDamage(mounted, wtype)));
             } else {
-                wDamR.setText(Integer.toString(wtype.getDamage()));
+                    wDamR.setText(Integer.toString(wtype.getDamage()));
             }
 
             // update range
@@ -2193,6 +2208,16 @@ public class MechDisplay extends JPanel {
                                 .removeAllElements();
                         return;
                     }
+                    
+                    //If not using tacops Energy Weapon rule then remove all the dial down statements
+                    if (m.getType().hasFlag(WeaponType.F_ENERGY) 
+                            && (((WeaponType) m.getType()).getAmmoType() == AmmoType.T_NA) 
+                            && !clientgui.getClient().game.getOptions().booleanOption("tacops_energy_weapons")) {
+                        m_chMode.removeAll();
+                        return;
+                    }
+
+
                     // disables AC mode switching from system tab if
                     // tacops_rapid_ac is not turned on
                     if (m.getType() instanceof WeaponType
@@ -2221,7 +2246,22 @@ public class MechDisplay extends JPanel {
                         m_chMode.addItem(em.getDisplayableName());
                     }
                     m_chMode.setSelectedItem(m.curMode().getDisplayableName());
-                } else {
+                } else 
+                    //TacOps Energy Weapon rule allows you to dial down the damage, which will lower the heat
+                    //Damage can goto 0 but heat will always be a min of 1
+                    if ( m != null && bOwner && m.getType() instanceof WeaponType 
+                            && m.getType().hasFlag(WeaponType.F_ENERGY)
+                            && (((WeaponType) m.getType()).getAmmoType() == AmmoType.T_NA) 
+                            && clientgui.getClient().game.getOptions().booleanOption("tacops_energy_weapons")){
+                        m_chMode.removeAll();
+                        m_chMode.setEnabled(true);
+                        
+                        for ( int damage = ((WeaponType) m.getType()).getDamage(); damage >= 0; damage-- ){
+                            m_chMode.addItem("Damage "+damage);
+                        }
+                        m_chMode.setSelectedIndex(0);
+                        m.getType().setInstantModeSwitch(true);
+                    } else {
                     CriticalSlot cs = getSelectedCritical();
                     if (cs != null && cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                         if (cs.getIndex() == Mech.SYSTEM_COCKPIT

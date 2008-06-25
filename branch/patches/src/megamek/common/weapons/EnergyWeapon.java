@@ -31,7 +31,7 @@ public abstract class EnergyWeapon extends Weapon {
         this.flags |= F_ENERGY;
 
     }
-
+    
     /*
      * (non-Javadoc)
      * 

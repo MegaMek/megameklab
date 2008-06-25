@@ -13,12 +13,14 @@
  */
 package megamek.common.weapons;
 
+import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Compute;
 import megamek.common.HitData;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.RangeType;
+import megamek.common.TargetRoll;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
 import megamek.server.Server;
@@ -47,6 +49,10 @@ public class EnergyWeaponHandler extends WeaponHandler {
      */
     protected int calcDamagePerHit() {
         double toReturn = wtype.getDamage();
+        
+        if ( game.getOptions().booleanOption("tacops_energy_weapons") && wtype.hasModes()){
+            toReturn = Compute.dialDownDamage(weapon, wtype);
+        }
         // during a swarm, all damage gets applied as one block to one location
         if (ae instanceof BattleArmor
                 && weapon.getLocation() == BattleArmor.LOC_SQUAD
@@ -78,5 +84,22 @@ public class EnergyWeaponHandler extends WeaponHandler {
 
         return (int) Math.ceil(toReturn);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see megamek.common.weapons.WeaponHandler#addHeat()
+     */
+    protected void addHeat() {
+        if ( toHit.getValue() != TargetRoll.IMPOSSIBLE) {
+            int heat = wtype.getHeat();
+            if ( game.getOptions().booleanOption("tacops_energy_weapons") 
+                    && wtype.getAmmoType() == AmmoType.T_NA){
+                heat = Compute.dialDownHeat(weapon, wtype);
+            }
+            ae.heatBuildup += heat;
+        }
+    }
+    
 
 }
