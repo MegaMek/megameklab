@@ -56,6 +56,7 @@ import megamek.common.ToHitData;
 import megamek.common.VTOL;
 import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.ScreenLauncherBayWeapon;
+import megamek.common.WeatherConditions;
 import megamek.common.WeaponType;
 
 /**
@@ -770,6 +771,13 @@ public class WeaponAttackAction extends AbstractAttackAction implements
 
         toHit.append(nightModifiers(game, target, atype, ae, true));
 
+        //weather mods (not in space)
+        String weatherCond = (String)game.getOptions().getOption("tacops_weather").getValue();
+        int weatherMod = WeatherConditions.getHitPenalty(weatherCond, ae);
+        if(weatherMod != 0 && !game.getBoard().inSpace()) {
+        	toHit.addModifier(weatherMod,weatherCond);
+        }
+        
         // handle LAM speial rules
 
         // a temporary variable so I don't need to keep casting.

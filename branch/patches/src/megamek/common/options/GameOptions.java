@@ -90,9 +90,6 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedRules, "flamer_heat", true); //$NON-NLS-1$
         addOption(advancedRules, "indirect_fire", true); //$NON-NLS-1$
         addOption(advancedRules, "minefields", false); //$NON-NLS-1$
-        addOption(advancedRules, "temperature", 25); //$NON-NLS-1$
-        addOption(advancedRules, "gravity", (float) 1.0); //$NON-NLS-1$
-        addOption(advancedRules, "vacuum", false); //$NON-NLS-1$
         addOption(advancedRules, "assault_drop", false); //$NON-NLS-1$
         addOption(advancedRules, "hidden_units", false); //$NON-NLS-1$
         addOption(advancedRules, "allow_nukes", false);
@@ -152,9 +149,12 @@ public class GameOptions extends AbstractOptions implements Serializable {
 
         
         IBasicOptionGroup planetaryConditions = addGroup("planetaryConditions"); //$NON-NLS-1$
+        addOption(planetaryConditions, "temperature", 25); //$NON-NLS-1$
+        addOption(planetaryConditions, "gravity", (float) 1.0); //$NON-NLS-1$
+        addOption(planetaryConditions, "vacuum", false); //$NON-NLS-1$
         addOption(planetaryConditions, "tacops_light", new Vector()); //$NON-NLS-1$
+        addOption(planetaryConditions, "tacops_weather", new Vector()); //$NON-NLS-1$
         //addOption(planetaryConditions, "tacops_fog", false); //$NON-NLS-1$
-        //addOption(planetaryConditions, "tacops_precipitation", false); //$NON-NLS-1$
         //addOption(planetaryConditions, "tacops_wind", false); //$NON-NLS-1$
         //addOption(planetaryConditions, "tacops_lightning", false); //$NON-NLS-1$
         //addOption(planetaryConditions, "tacops_blowing_sand", false); //$NON-NLS-1$

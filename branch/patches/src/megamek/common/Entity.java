@@ -4041,9 +4041,8 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Add in any modifiers due to global conditions like light/weather/etc.
      */
     public PilotingRollData addConditionBonuses(PilotingRollData roll, int moveType) {
-    	//check light conditions and running
-        //TODO: I need to pass on overallMoveType in all checks during movement processing
-        //once I do that then I can set up another getbasepilotingroll that just passes on this.moved
+    	
+    	//check light conditions for "running" entities
         if(moveType == IEntityMovementType.MOVE_RUN || 
         		moveType == IEntityMovementType.MOVE_VTOL_RUN || moveType == IEntityMovementType.MOVE_OVER_THRUST) {
         	String lightCond = (String)game.getOptions().getOption("tacops_light").getValue();
@@ -4051,6 +4050,13 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         	if(lightPenalty > 0) {
         		roll.addModifier(lightPenalty, lightCond);
         	}
+        }
+        
+        //check weather conditions for all entities
+        String weatherCond = (String)game.getOptions().getOption("tacops_weather").getValue();
+        int weatherMod = WeatherConditions.getPilotPenalty(weatherCond);
+        if(weatherMod != 0 && !game.getBoard().inSpace()) {
+        	roll.addModifier(weatherMod, weatherCond);
         }
         return roll;
     }

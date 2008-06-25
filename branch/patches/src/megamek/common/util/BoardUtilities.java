@@ -29,6 +29,7 @@ import megamek.common.ITerrain;
 import megamek.common.ITerrainFactory;
 import megamek.common.MapSettings;
 import megamek.common.Terrains;
+import megamek.common.WeatherConditions;
 
 public class BoardUtilities {
     /**
@@ -868,6 +869,60 @@ public class BoardUtilities {
                     }
                 }
                 candidate.clear();
+            }
+        }
+    }
+    
+    /*
+     * adjust the board based on weather conditions
+     */
+    public static void addWeatherConditions(IBoard board, String weatherCond) {
+    	ITerrainFactory tf = Terrains.getTerrainFactory();
+    	
+        for (int x = 0; x < board.getWidth(); x++) {
+            for (int y = 0; y < board.getHeight(); y++) {
+                Coords c = new Coords(x, y);
+                IHex hex = board.getHex(c);
+                
+                //moderate rain - mud in clear hexes, depth 0 water, and dirt roads (not implemented yet)
+                if(weatherCond.equals(WeatherConditions.T_MOD_RAIN)) {
+                	if(hex.terrainsPresent() == 0 || (hex.containsTerrain(Terrains.WATER) && hex.depth() == 0)) {
+                		hex.addTerrain(tf.createTerrain(Terrains.MUD, hex.getElevation()));
+                		if(hex.containsTerrain(Terrains.WATER)) {
+                			hex.removeTerrain(Terrains.WATER);
+                		}
+                	}
+                }   
+                
+                //heavy rain - mud in all hexes except buildings, depth 1+ water, and non-dirt roads
+                //rapids in all depth 1+ water
+                if(weatherCond.equals(WeatherConditions.T_HEAVY_RAIN)) {
+                	if(hex.containsTerrain(Terrains.WATER) && hex.depth() > 0) {
+                		hex.addTerrain(tf.createTerrain(Terrains.RAPIDS, hex.getElevation()));
+                	}
+                	else if(!hex.containsTerrain(Terrains.BUILDING) && !hex.containsTerrain(Terrains.ROAD)) {
+                		hex.addTerrain(tf.createTerrain(Terrains.MUD, hex.getElevation()));
+                		if(hex.containsTerrain(Terrains.WATER)) {
+                			hex.removeTerrain(Terrains.WATER);
+                		}
+                	}
+                }
+                
+                //torrential downpour - mud in all hexes except buildings, depth 1+ water, and non-dirt roads
+                //torrent in all depth 1+ water, swamps in all depth 0 water hexes
+                if(weatherCond.equals(WeatherConditions.T_HEAVY_RAIN)) {
+                	if(hex.containsTerrain(Terrains.WATER) && hex.depth() > 0) {
+                		//TODO: implement torrent
+                		//hex.addTerrain(tf.createTerrain(Terrains.TORRENT, hex.getElevation()));
+                	}
+                	else if(hex.containsTerrain(Terrains.WATER)) {
+                		hex.addTerrain(tf.createTerrain(Terrains.SWAMP, hex.getElevation()));
+                		hex.removeTerrain(Terrains.WATER);
+                	}
+                	else if(!hex.containsTerrain(Terrains.BUILDING) && !hex.containsTerrain(Terrains.ROAD)) {
+                		hex.addTerrain(tf.createTerrain(Terrains.MUD, hex.getElevation()));
+                	}
+                }
             }
         }
     }

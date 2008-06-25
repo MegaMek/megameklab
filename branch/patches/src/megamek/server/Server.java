@@ -2351,6 +2351,8 @@ public class Server implements Runnable {
             newBoard.setBridgeCF(game.getOptions().getOption("bridgeCF")
                     .intValue());
         }
+        //TODO: adjust terrain based on weather if necessary
+        BoardUtilities.addWeatherConditions(newBoard, (String)game.getOptions().getOption("tacops_weather").getValue());
         game.setBoard(newBoard);
     }
 

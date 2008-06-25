@@ -46,6 +46,7 @@ import megamek.common.options.IBasicOption;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.LightConditions;
+import megamek.common.WeatherConditions;
 
 /**
  * Responsible for displaying the current game options and allowing the user to
@@ -316,6 +317,20 @@ public class GameOptionsDialog extends JDialog implements ActionListener,
         	optionComp.addValue(LightConditions.T_MOONLESS);
         	optionComp.addValue(LightConditions.T_PITCH_BLACK);
         	optionComp.setSelected(option.stringValue());
+        	optionComp.setEditable(true);
+        } else if (option.getName().equals("tacops_weather")) { 
+        	optionComp.addValue(WeatherConditions.T_NONE);
+        	optionComp.addValue(WeatherConditions.T_LIGHT_RAIN);
+        	optionComp.addValue(WeatherConditions.T_MOD_RAIN);
+        	optionComp.addValue(WeatherConditions.T_HEAVY_RAIN);
+        	optionComp.addValue(WeatherConditions.T_DOWNPOUR);
+        	//TODO: awaiting some rules clarifications before finishing snow
+        	//optionComp.addValue(WeatherConditions.T_LIGHT_SNOW);
+        	//optionComp.addValue(WeatherConditions.T_MOD_SNOW);
+        	//optionComp.addValue(WeatherConditions.T_HEAVY_SNOW);
+        	//optionComp.addValue(WeatherConditions.T_SLEET);
+        	//optionComp.addValue(WeatherConditions.T_ICE_STORM);
+        	//optionComp.setSelected(option.stringValue());
         	optionComp.setEditable(true);
         } else {
             optionComp.setEditable(editable);
