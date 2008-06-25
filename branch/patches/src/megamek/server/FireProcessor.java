@@ -323,26 +323,30 @@ public class FireProcessor extends DynamicTerrainProcessor {
             for (int currentXCoord = 0; currentXCoord < width; currentXCoord++) {
 
                 for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
-                    Coords currentCoords = new Coords(currentXCoord,
-                            currentYCoord);
-                    IHex currentHex = board
-                            .getHex(currentXCoord, currentYCoord);
-
+                    Coords currentCoords = new Coords(currentXCoord,currentYCoord);
+                    IHex currentHex = board.getHex(currentXCoord, currentYCoord);
+                    int tempWindStr = windStr;
+                    int tempWindDir = windDir;
                     // check for existence of smoke, then add it to the
                     // vector...if the wind is not Calm!
                     if (currentHex.containsTerrain(Terrains.SMOKE)) {
-                        int smokeLevel = currentHex
-                                .terrainLevel(Terrains.SMOKE);
-                        Coords smokeCoords = driftAddSmoke(currentXCoord,
-                                currentYCoord, windDir, windStr);
+                        int smokeLevel = currentHex.terrainLevel(Terrains.SMOKE);
+                        Coords smokeCoords = driftAddSmoke(currentXCoord,currentYCoord, tempWindDir, tempWindStr);
+                        
                         // System.out.println(currentCoords.toString() + " to "
                         // + smokeCoords.toString());
-                        if (board.contains(smokeCoords)) { // don't add it to
+                        //Smoke has Dissipated by moving into a hex with a greater then 4 elevation drop.
+                        if ( smokeCoords == null ){
+                            Report r = new Report(5220, Report.PUBLIC);
+                            r.add(currentCoords.getBoardNum());
+                            vPhaseReport.addElement(r);
+                            
+                        }
+                        else if (board.contains(smokeCoords)) { // don't add it to
                                                             // the vector if
                                                             // it's not on
                                                             // board!
-                            SmokeToAdd.addElement(new SmokeDrift(new Coords(
-                                    smokeCoords), smokeLevel));
+                            SmokeToAdd.addElement(new SmokeDrift(new Coords(smokeCoords), smokeLevel));
                         } else {
                             // report that the smoke has blown off the map
                             Report r = new Report(5230, Report.PUBLIC);
@@ -365,8 +369,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
                 Coords smokeCoords = drift.coords;
                 int smokeSize = drift.size;
                 IHex smokeHex = game.getBoard().getHex(smokeCoords);
-                smokeHex.addTerrain(Terrains.getTerrainFactory().createTerrain(
-                        Terrains.SMOKE, smokeSize));
+                smokeHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SMOKE, smokeSize));
                 server.sendChangedHex(smokeCoords);
             }
 
@@ -381,8 +384,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
                 IHex smokeHex = game.getBoard().getHex(smokeCoords);
                 int roll = Compute.d6(2);
 
-                boolean smokeDis = driftSmokeDissipate(smokeHex, roll,
-                        smokeSize, windStr);
+                boolean smokeDis = driftSmokeDissipate(smokeHex, roll,smokeSize, windStr);
                 driftSmokeReport(smokeCoords, smokeSize, smokeDis);
                 server.sendChangedHex(smokeCoords);
             }
@@ -392,18 +394,56 @@ public class FireProcessor extends DynamicTerrainProcessor {
         } // end smoke resolution
     }
 
+    /**
+     * Override for the main driftAddSmoke to allow for 0 direction changes
+     * @param x
+     * @param y
+     * @param windDir
+     * @param windStr
+     * @return
+     */
     public Coords driftAddSmoke(int x, int y, int windDir, int windStr) {
+        return driftAddSmoke(x, y, windDir++, windStr, 0); 
+    }
+    
+    /**
+     * Smoke cannot climb more then 4 hexes if the next hex is more then 4 in elevation then
+     * The smoke will try to go right. If it cannot go right it'll try to go left
+     * if it cannot go left it'll stay put.
+     * 
+     * @param x
+     * @param y
+     * @param windDir
+     * @param windStr
+     * @param directionChanges How many times the smoke has tried to change directions to get around an obsticle.
+     * @return
+     */
+    public Coords driftAddSmoke(int x, int y, int windDir, int windStr, int directionChanges) {
         Coords src = new Coords(x, y);
         Coords nextCoords = src.translated(windDir);
+        IBoard board = game.getBoard(); 
 
-        // if the wind is High, it blows 2 hexes! If it's Calm, there's no
-        // drift!
-        if (windStr == 3) {
-            nextCoords = nextCoords.translated(windDir);
+        //If the smoke moves into a hex that has a greate then 4 elevation drop it dissipates.
+        if ( board.getHex(src).getElevation() - board.getHex(nextCoords).getElevation() > 4){
+            return null;
         }
-        //if Storm smoke moves 3 hexes
-        if (windStr == 4) {
-            nextCoords = nextCoords.translated(windDir).translated(windDir);
+        
+        if ( board.getHex(src).getElevation() - board.getHex(nextCoords).getElevation() < -4){
+            //Try Right
+            if ( directionChanges == 0 ){
+                return driftAddSmoke(x, y, (windDir + 1) % 6, windStr, directionChanges++);
+            }
+            //Try Left
+            else if ( directionChanges == 1)
+                return driftAddSmoke(x, y, (windDir - 2 ) % 6, windStr, directionChanges++);
+            //Stay put
+            else
+                return src;
+        }
+
+        // if the wind is High and above smoke drifts farther
+        if (windStr > 2 && windStr < 5) {
+            return driftAddSmoke(nextCoords.x, nextCoords.y, windDir, windStr--); 
         }
 
         return nextCoords;
@@ -414,8 +454,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
      * This method does not currently support "smoke clouds" as specified in
      * TacOps under "Dissipation" on page 47. The added
      */
-    public boolean driftSmokeDissipate(IHex smokeHex, int roll, int smokeSize,
-            int windStr) {
+    public boolean driftSmokeDissipate(IHex smokeHex, int roll, int smokeSize, int windStr) {
         // Dissipate in various winds
         if (roll > 10 || (roll > 9 && windStr == 2)
                 || (roll > 7 && windStr == 3)
