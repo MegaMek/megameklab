@@ -89,6 +89,7 @@ public class PlanetaryConditions implements Serializable {
     private int windDirection = -1;
     private boolean shiftWindDirection = false;
     private boolean shiftWindStrength = false;
+    private int temperature = 25;
     
     /**
      * Constructor
@@ -105,6 +106,7 @@ public class PlanetaryConditions implements Serializable {
     	this.windDirection = other.windDirection;
     	this.shiftWindDirection = other.shiftWindDirection;
     	this.shiftWindStrength = other.shiftWindStrength;
+    	this.temperature = other.temperature;
     }
     
     /** clone! */
@@ -398,6 +400,11 @@ public class PlanetaryConditions implements Serializable {
     	return shiftWindStrength;
     }
     
+    public void setTemperature(int tem) {
+    	this.temperature = tem;
+    }
     
-    
+    public int getTemperature() {
+    	return temperature;
+    }   
 }

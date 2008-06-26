@@ -541,18 +541,18 @@ public class Game implements Serializable, IGame {
 
     public int getTemperatureDifference() {
         int i = 0;
-        if (getOptions().intOption("temperature") >= -30
-                && getOptions().intOption("temperature") <= 50)
+        if (getPlanetaryConditions().getTemperature() >= -30
+                && getPlanetaryConditions().getTemperature() <= 50)
             return i;
-        else if (getOptions().intOption("temperature") < -30) {
+        else if (getPlanetaryConditions().getTemperature() < -30) {
             do {
                 i++;
-            } while (getOptions().intOption("temperature") + i * 10 < -30);
+            } while (getPlanetaryConditions().getTemperature() + i * 10 < -30);
             return i;
         } else
             do {
                 i++;
-            } while (getOptions().intOption("temperature") - i * 10 > 50);
+            } while (getPlanetaryConditions().getTemperature() - i * 10 > 50);
         return i;
     }
 

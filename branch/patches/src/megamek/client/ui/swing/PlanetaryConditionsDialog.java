@@ -39,6 +39,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import megamek.client.ui.AWT.AlertDialog;
 import megamek.client.ui.AWT.Messages;
 import megamek.common.PlanetaryConditions;
 
@@ -67,6 +68,9 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
             .getString("PlanetaryConditionsDialog.shiftWindDir"));
 	private JCheckBox cShiftWindStr = new JCheckBox(Messages
             .getString("PlanetaryConditionsDialog.shiftWindStr"));
+	private JTextField fldTemp = new JTextField(4);
+    private JLabel labTemp = new JLabel(Messages
+            .getString("PlanetaryConditionsDialog.labTemp"), SwingConstants.RIGHT); //$NON-NLS-1$
 	    	
 	private JPanel panButtons = new JPanel();	
 	private JButton butOkay = new JButton(Messages.getString("Okay")); //$NON-NLS-1$
@@ -166,6 +170,15 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
         c.insets = new Insets(1, 1, 1, 1);
         c.weightx = 1.0;
         c.weighty = 0.0;
+        c.anchor = GridBagConstraints.EAST;
+        gridbag.setConstraints(labTemp, c);
+        panOptions.add(labTemp);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(fldTemp, c);
+        panOptions.add(fldTemp);
+        
         c.gridwidth = 1;
         c.anchor = GridBagConstraints.EAST;
         gridbag.setConstraints(labLight, c);
@@ -235,6 +248,8 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 		
 		cShiftWindDir.setSelected(conditions.shiftingWindDirection());
 		cShiftWindStr.setSelected(conditions.shiftingWindStrength());
+		
+		fldTemp.setText(Integer.toString(conditions.getTemperature()));
 	}
 	
 	public void send() {
@@ -245,6 +260,15 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 		conditions.setWindStrength(choWind.getSelectedIndex());
 		conditions.setShiftingWindDirection(cShiftWindDir.isSelected());
 		conditions.setShiftingWindStrength(cShiftWindStr.isSelected());
+		try {
+			conditions.setTemperature(Integer.parseInt(fldTemp.getText()));
+		} catch (NumberFormatException e) {
+            new AlertDialog(
+                    client.frame,
+                    Messages
+                            .getString("CustomMechDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidTemperature")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+            return;
+        }
 		
 		client.getClient().sendPlanetaryConditions(conditions);
 	}

@@ -12272,7 +12272,7 @@ public class Server implements Runnable {
             // below 50 or -30 degrees Celsius
             if (entity instanceof Mech && game.getTemperatureDifference() != 0
                     && !((Mech) entity).hasLaserHeatSinks()) {
-                if (game.getOptions().intOption("temperature") > 50) {
+                if (game.getPlanetaryConditions().getTemperature() > 50) {
                     entity.heatFromExternal += game.getTemperatureDifference();
                     r = new Report(5020);
                     r.subject = entity.getId();

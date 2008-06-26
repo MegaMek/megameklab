@@ -1050,7 +1050,7 @@ public class MechDisplay extends JPanel {
                 }
                 if (!((Mech) en).hasLaserHeatSinks()) {
                     // extreme temperatures.
-                    if (game.getOptions().intOption("temperature") > 0) {
+                    if (game.getPlanetaryConditions().getTemperature() > 0) {
                         currentHeatBuildup += game.getTemperatureDifference();
                     } else {
                         currentHeatBuildup -= game.getTemperatureDifference();
