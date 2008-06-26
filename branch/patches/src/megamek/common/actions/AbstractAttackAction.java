@@ -102,8 +102,8 @@ public abstract class AbstractAttackAction extends AbstractEntityAction
             
             // The base night penalty
             int night_modifier = 0;   
-            night_modifier = PlanetaryConditions.getLightHitPenalty(lightCond, isWeapon);
-            toHit.addModifier(night_modifier, PlanetaryConditions.getLightDisplayableName(lightCond));
+            night_modifier = game.getPlanetaryConditions().getLightHitPenalty(isWeapon);
+            toHit.addModifier(night_modifier, game.getPlanetaryConditions().getLightCurrentName());
 
             boolean illuminated = false;
             if (te != null) {
@@ -203,7 +203,7 @@ public abstract class AbstractAttackAction extends AbstractEntityAction
             
             //now check for general hit bonuses for heat
             if(te != null && !(attacker instanceof Infantry && !(attacker instanceof BattleArmor))) {             	
-            	int heatBonus = PlanetaryConditions.getLightHeatBonus(lightCond, te.heat);
+            	int heatBonus = game.getPlanetaryConditions().getLightHeatBonus(te.heat);
             	if(heatBonus > 0) {
             		toHit.addModifier(heatBonus, "target excess heat at night");
             	}

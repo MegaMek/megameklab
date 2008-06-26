@@ -772,10 +772,9 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         toHit.append(nightModifiers(game, target, atype, ae, true));
 
         //weather mods (not in space)
-        int weatherCond = game.getPlanetaryConditions().getWeather();
-        int weatherMod = PlanetaryConditions.getWeatherHitPenalty(weatherCond, ae);
+        int weatherMod = game.getPlanetaryConditions().getWeatherHitPenalty(ae);
         if(weatherMod != 0 && !game.getBoard().inSpace()) {
-        	toHit.addModifier(weatherMod,PlanetaryConditions.getWeatherDisplayableName(weatherCond));
+        	toHit.addModifier(weatherMod,game.getPlanetaryConditions().getWeatherCurrentName());
         }
         
         //wind mods (not in space)

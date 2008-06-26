@@ -127,30 +127,42 @@ public class PlanetaryConditions implements Serializable {
         throw new IllegalArgumentException("Unknown wind condition");
     }
     
+    public String getLightCurrentName() {
+    	return Messages.getString("PlanetaryConditions." + lightNames[lightConditions]);
+    }
+    
+    public String getWeatherCurrentName() {
+    	return Messages.getString("PlanetaryConditions." + weatherNames[weatherConditions]);
+    }
+    
+    public String getWindCurrentName() {
+    	return Messages.getString("PlanetaryConditions." + windNames[windStrength]);
+    }
+    
     /*
      * to-hit penalty for light
      */
-    public static int getLightHitPenalty(int type, boolean isWeapon) {
+    public int getLightHitPenalty(boolean isWeapon) {
     	int penalty = 0;
     	if(isWeapon) {
-    		if(type == L_DUSK) {
+    		if(lightConditions == L_DUSK) {
     			penalty = 1;
     		}
-    		else if(type == L_FULL_MOON) {
+    		else if(lightConditions == L_FULL_MOON) {
     			penalty = 2;
     		}
-    		else if(type == L_MOONLESS) {
+    		else if(lightConditions == L_MOONLESS) {
     			penalty = 3;
     		}
-    		else if(type == L_PITCH_BLACK) {
+    		else if(lightConditions == L_PITCH_BLACK) {
     			penalty = 4;
     		}
     	}
     	else {
-    		if(type == L_MOONLESS) {
+    		if(lightConditions == L_MOONLESS) {
     			penalty = 1;
     		}
-    		else if(type == L_PITCH_BLACK) {
+    		else if(lightConditions == L_PITCH_BLACK) {
     			penalty = 2;
     		}
     	}
@@ -161,18 +173,18 @@ public class PlanetaryConditions implements Serializable {
     /*
      * heat bonus to hit for being overheated in darkness
      */
-    public static int getLightHeatBonus(int type, int heat) {
+    public int getLightHeatBonus(int heat) {
     	double divisor = 10000.0;
-    	if(type == L_DUSK) {
+    	if(lightConditions == L_DUSK) {
     		divisor = 25.0;
     	}
-    	else if(type == L_FULL_MOON) {
+    	else if(lightConditions == L_FULL_MOON) {
     		divisor = 20.0;
     	}
-    	else if(type == L_MOONLESS) {
+    	else if(lightConditions == L_MOONLESS) {
     		divisor = 15.0;
     	}
-    	else if(type == L_PITCH_BLACK) {
+    	else if(lightConditions == L_PITCH_BLACK) {
     		divisor = 10.0;
     	}
     	return (-1 * (int)Math.floor(heat / divisor));
@@ -181,11 +193,11 @@ public class PlanetaryConditions implements Serializable {
     /*
      * piloting penalty for running/flanking/etc for light
      */
-    public static int getLightPilotPenalty(int type) {
-    	if(type == L_MOONLESS) {
+    public int getLightPilotPenalty() {
+    	if(lightConditions == L_MOONLESS) {
     		return 1;
     	}
-    	else if(type == L_PITCH_BLACK) {
+    	else if(lightConditions == L_PITCH_BLACK) {
     		return 2;
     	}
     	return 0;
@@ -194,17 +206,17 @@ public class PlanetaryConditions implements Serializable {
     /*
      * to-hit penalty for weather
      */
-    public static int getWeatherHitPenalty(int type, Entity en) {
-    	if((type == WE_LIGHT_RAIN || type == WE_LIGHT_SNOW)	
+    public int getWeatherHitPenalty(Entity en) {
+    	if((weatherConditions == WE_LIGHT_RAIN || weatherConditions == WE_LIGHT_SNOW)	
     			&& en instanceof Infantry && !(en instanceof BattleArmor)) {
     		return 1;
     	}
-    	else if(type == WE_MOD_RAIN || type == WE_HEAVY_RAIN
-    			|| type == WE_MOD_SNOW || type == WE_HEAVY_SNOW
-    			|| type == WE_SLEET) {
+    	else if(weatherConditions == WE_MOD_RAIN || weatherConditions == WE_HEAVY_RAIN
+    			|| weatherConditions == WE_MOD_SNOW || weatherConditions == WE_HEAVY_SNOW
+    			|| weatherConditions == WE_SLEET) {
     		return 1;
     	}
-    	else if(type == WE_DOWNPOUR) {
+    	else if(weatherConditions == WE_DOWNPOUR) {
     		return 2;
     	}
     	else  {
@@ -215,11 +227,11 @@ public class PlanetaryConditions implements Serializable {
     /*
      * piloting penalty for weather
      */
-    public static int getWeatherPilotPenalty(int type) {
-    	if(type == WE_HEAVY_RAIN || type == WE_HEAVY_SNOW) {
+    public int getWeatherPilotPenalty() {
+    	if(weatherConditions == WE_HEAVY_RAIN || weatherConditions == WE_HEAVY_SNOW) {
     		return 1;
     	}
-    	else if(type == WE_DOWNPOUR) {
+    	else if(weatherConditions == WE_DOWNPOUR) {
     		return 2;
     	}
     	else  {
@@ -228,12 +240,12 @@ public class PlanetaryConditions implements Serializable {
     }
     
     /*
-     * piloting penalty for weather
+     * piloting penalty for wind
      */
-    public static int getWindPilotPenalty(int type, Entity en) {
+    public int getWindPilotPenalty(Entity en) {
     	int penalty = 0;
     	
-    	switch(type) {
+    	switch(windStrength) {
     	case (WI_MOD_GALE):
     		if(en instanceof VTOL || en.getMovementMode() == IEntityMovementMode.WIGE) {
     			penalty = 1;

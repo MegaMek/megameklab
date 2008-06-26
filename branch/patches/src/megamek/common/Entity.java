@@ -4050,28 +4050,26 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      */
     public PilotingRollData addConditionBonuses(PilotingRollData roll, int moveType) {
     	
+    	PlanetaryConditions conditions = game.getPlanetaryConditions();
     	//check light conditions for "running" entities
         if(moveType == IEntityMovementType.MOVE_RUN || 
         		moveType == IEntityMovementType.MOVE_VTOL_RUN || moveType == IEntityMovementType.MOVE_OVER_THRUST) {
-        	int lightCond = game.getPlanetaryConditions().getLight();
-        	int lightPenalty = PlanetaryConditions.getLightPilotPenalty(lightCond);
+        	int lightPenalty = conditions.getLightPilotPenalty();
         	if(lightPenalty > 0) {
-        		roll.addModifier(lightPenalty, PlanetaryConditions.getLightDisplayableName(lightCond));
+        		roll.addModifier(lightPenalty, conditions.getLightCurrentName());
         	}
         }
         
         //check weather conditions for all entities
-        int weatherCond = game.getPlanetaryConditions().getWeather();
-        int weatherMod = PlanetaryConditions.getWeatherPilotPenalty(weatherCond);
+        int weatherMod = conditions.getWeatherPilotPenalty();
         if(weatherMod != 0 && !game.getBoard().inSpace()) {
-        	roll.addModifier(weatherMod, PlanetaryConditions.getWeatherDisplayableName(weatherCond));
+        	roll.addModifier(weatherMod, conditions.getWeatherCurrentName());
         }
                
         //check wind conditions for all entities
-        int windCond = game.getPlanetaryConditions().getWindStrength();
-        int windMod = PlanetaryConditions.getWindPilotPenalty(windCond, this);
+        int windMod = conditions.getWindPilotPenalty(this);
         if(windMod != 0 && !game.getBoard().inSpace()) {
-        	roll.addModifier(windMod, PlanetaryConditions.getWindDisplayableName(windCond));
+        	roll.addModifier(windMod, conditions.getWindCurrentName());
         }
         return roll;
         
