@@ -167,6 +167,8 @@ public class MGAWeaponHandler extends MGHandler {
             }
             vPhaseReport.addAll(buildingReport);
         }
+        
+        nDamage = checkTerrain(nDamage, entityTarget,vPhaseReport);
 
         // A building may absorb the entire shot.
         if (nDamage == 0) {

@@ -15,7 +15,6 @@ package megamek.common.weapons;
 
 import java.util.Vector;
 
-import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Building;
 import megamek.common.Compute;
@@ -108,6 +107,8 @@ public class SRMTandemChargeHandler extends SRMHandler {
             vPhaseReport.addAll(buildingReport);
         }
 
+        nDamage = checkTerrain(nDamage, entityTarget,vPhaseReport);
+        
         // A building may absorb the entire shot.
         if (nDamage == 0) {
             r = new Report(3415);

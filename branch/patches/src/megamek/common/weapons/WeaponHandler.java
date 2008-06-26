@@ -19,8 +19,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Vector;
 
-import javax.management.remote.TargetedNotification;
-
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Building;
@@ -29,6 +27,7 @@ import megamek.common.Entity;
 import megamek.common.FighterSquadron;
 import megamek.common.HitData;
 import megamek.common.IGame;
+import megamek.common.ITerrain;
 import megamek.common.Infantry;
 import megamek.common.Mech;
 import megamek.common.Mounted;
@@ -518,6 +517,8 @@ public class WeaponHandler implements AttackHandler, Serializable {
             vPhaseReport.addAll(buildingReport);
         }
         
+        nDamage = checkTerrain(nDamage, entityTarget, vPhaseReport);
+        
         // A building may absorb the entire shot.
         if (nDamage == 0) {
             r = new Report(3415);
@@ -528,13 +529,6 @@ public class WeaponHandler implements AttackHandler, Serializable {
             vPhaseReport.addElement(r);
             missed = true;
         } else {
-            if ( game.getBoard().getHex(entityTarget.getPosition()).containsTerrain(Terrains.WOODS)
-                    || game.getBoard().getHex(entityTarget.getPosition()).containsTerrain(Terrains.JUNGLE)) {
-                //int coverAbsorbtion = game.getBoard().getHex(entityTarget.getPosition()).get
-                //TODO add report for woods
-                
-            }
-            
             if (bGlancing) {
                 hit.makeGlancingBlow();
             }
@@ -724,6 +718,36 @@ public class WeaponHandler implements AttackHandler, Serializable {
 
     public WeaponAttackAction getWaa() {
         return waa;
+    }
+    
+    public int checkTerrain(int nDamage, Entity entityTarget, Vector<Report>vPhaseReport){
+        if ( game.getBoard().getHex(entityTarget.getPosition()).containsTerrain(Terrains.WOODS)
+                || game.getBoard().getHex(entityTarget.getPosition()).containsTerrain(Terrains.JUNGLE)) {
+            ITerrain woodHex = game.getBoard().getHex(entityTarget.getPosition()).getTerrain(Terrains.WOODS);
+            ITerrain jungleHex = game.getBoard().getHex(entityTarget.getPosition()).getTerrain(Terrains.JUNGLE);
+            int treeAbsorbs = 0;
+            String hexType = "";
+            if ( woodHex != null ){
+                treeAbsorbs = woodHex.getLevel() * 2;
+                hexType = "wooded";
+            }else if (jungleHex != null){
+                treeAbsorbs = jungleHex.getLevel() * 2;
+                hexType = "jungle";
+            }
+            
+            
+            nDamage = Math.max(0, nDamage-treeAbsorbs);
+            server.tryClearHex(entityTarget.getPosition(), treeAbsorbs, ae.getId());
+            Report.addNewline(vPhaseReport);
+            Report r = new Report(6427);
+            r.subject = entityTarget.getId();
+            r.add(hexType);
+            r.add(treeAbsorbs);
+            r.indent(2);
+            r.newlines = 0;
+            vPhaseReport.add(r);
+        }
+        return nDamage;
     }
 
 }
