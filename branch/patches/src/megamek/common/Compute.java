@@ -1461,7 +1461,7 @@ public class Compute {
                     toHit.addModifier(2, "target in erupting geyser");
                 }
             } else {
-                if (!isVTOL && !(t.getTargetType() == Targetable.TYPE_HEX_CLEAR || t.getTargetType() == Targetable.TYPE_HEX_IGNITE || t.getTargetType() == Targetable.TYPE_HEX_BOMB || t.getTargetType() == Targetable.TYPE_HEX_ARTILLERY || t.getTargetType() == Targetable.TYPE_MINEFIELD_DELIVER)) {
+                if (!game.getOptions().booleanOption("tacops_woods_cover") && !isVTOL && !(t.getTargetType() == Targetable.TYPE_HEX_CLEAR || t.getTargetType() == Targetable.TYPE_HEX_IGNITE || t.getTargetType() == Targetable.TYPE_HEX_BOMB || t.getTargetType() == Targetable.TYPE_HEX_ARTILLERY || t.getTargetType() == Targetable.TYPE_MINEFIELD_DELIVER)) {
                     if (woodsLevel == 1 && eistatus != 2) {
                         toHit.addModifier(1, woodsText);
                     } else if (woodsLevel > 1) {
@@ -1490,7 +1490,7 @@ public class Compute {
                     toHit.addModifier(2, "target in erupting geyser");
                 }
             }
-            if (!isVTOL && !(t.getTargetType() == Targetable.TYPE_HEX_CLEAR || t.getTargetType() == Targetable.TYPE_HEX_IGNITE || t.getTargetType() == Targetable.TYPE_HEX_BOMB || t.getTargetType() == Targetable.TYPE_HEX_ARTILLERY || t.getTargetType() == Targetable.TYPE_MINEFIELD_DELIVER)) {
+            if (!game.getOptions().booleanOption("tacops_woods_cover") && !isVTOL && !(t.getTargetType() == Targetable.TYPE_HEX_CLEAR || t.getTargetType() == Targetable.TYPE_HEX_IGNITE || t.getTargetType() == Targetable.TYPE_HEX_BOMB || t.getTargetType() == Targetable.TYPE_HEX_ARTILLERY || t.getTargetType() == Targetable.TYPE_MINEFIELD_DELIVER)) {
                 if (woodsLevel == 1 && eistatus != 2) {
                     toHit.addModifier(1, woodsText);
                 } else if (woodsLevel > 1) {

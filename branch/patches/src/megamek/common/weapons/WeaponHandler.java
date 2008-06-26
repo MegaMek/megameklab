@@ -19,6 +19,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Vector;
 
+import javax.management.remote.TargetedNotification;
+
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Building;
@@ -34,6 +36,7 @@ import megamek.common.RangeType;
 import megamek.common.Report;
 import megamek.common.TargetRoll;
 import megamek.common.Targetable;
+import megamek.common.Terrains;
 import megamek.common.ToHitData;
 import megamek.common.WeaponType;
 import megamek.common.actions.WeaponAttackAction;
@@ -525,6 +528,13 @@ public class WeaponHandler implements AttackHandler, Serializable {
             vPhaseReport.addElement(r);
             missed = true;
         } else {
+            if ( game.getBoard().getHex(entityTarget.getPosition()).containsTerrain(Terrains.WOODS)
+                    || game.getBoard().getHex(entityTarget.getPosition()).containsTerrain(Terrains.JUNGLE)) {
+                //int coverAbsorbtion = game.getBoard().getHex(entityTarget.getPosition()).get
+                //TODO add report for woods
+                
+            }
+            
             if (bGlancing) {
                 hit.makeGlancingBlow();
             }
