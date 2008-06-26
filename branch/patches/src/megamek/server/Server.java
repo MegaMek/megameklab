@@ -6550,7 +6550,7 @@ public class Server implements Runnable {
             case Targetable.TYPE_HEX_CLEAR:
             case Targetable.TYPE_HEX_IGNITE:
                 vPhaseReport.addAll(tryClearHex(t.getPosition(), missiles * 4, ae.getId()));
-                tryIgniteHex(t.getPosition(), ae.getId(), true, new TargetRoll(0, "inferno"), vPhaseReport);
+                tryIgniteHex(t.getPosition(), ae.getId(), true, new TargetRoll(0, "inferno"), -1, vPhaseReport);
                 break;
             case Targetable.TYPE_BLDG_IGNITE:
             case Targetable.TYPE_BUILDING:
@@ -8720,9 +8720,12 @@ public class Server implements Runnable {
      * @param nTargetRoll - the <code>int</code> roll target for the attempt.
      * @param bReportAttempt - <code>true</code> if the attempt roll should be
      *            added to the report.
+     * @param accidentTarget - <code>int</code> the target number below which a roll has 
+     *              to be made in order to try igniting a hex accidently. -1 for intentional           
      */
     public boolean tryIgniteHex(Coords c, int entityId, boolean bInferno,
-            TargetRoll nTargetRoll, boolean bReportAttempt, Vector<Report> vPhaseReport) {
+            TargetRoll nTargetRoll, boolean bReportAttempt, 
+            int accidentTarget, Vector<Report> vPhaseReport) {
 
         IHex hex = game.getBoard().getHex(c);
         boolean bAnyTerrain = false;
@@ -8736,6 +8739,24 @@ public class Server implements Runnable {
         // Ignore if fire is not enabled as a game option
         if (!game.getOptions().booleanOption("tacops_start_fire")) {
             return false;
+        }
+        
+        //first for accidental ignitions, make the necessary roll
+        if(accidentTarget > -1) {
+        	int accidentRoll = Compute.d6(2);
+        	r = new Report(3066);
+            r.subject = entityId;
+            r.add(accidentTarget);
+            r.add(accidentRoll);
+            r.indent(2);
+            if(accidentRoll > accidentTarget) {
+                r.choose(false);
+                vPhaseReport.add(r);
+                return false;
+            } else {
+            	r.choose(true);
+            	vPhaseReport.add(r);
+            }
         }
         
         //TODO: add in any modifiers for terrain (are these already in?)
@@ -8792,9 +8813,9 @@ public class Server implements Runnable {
      * @param nTargetRoll - the <code>int</code> roll target for the attempt.
      */
     public boolean tryIgniteHex(Coords c, int entityId, boolean bInferno,
-            TargetRoll nTargetRoll, Vector<Report> vPhaseReport) {
+            TargetRoll nTargetRoll, int accidentTarget, Vector<Report> vPhaseReport) {
         return tryIgniteHex(c, entityId, bInferno, nTargetRoll, false,
-                vPhaseReport);
+                accidentTarget, vPhaseReport);
     }
 
     public Vector<Report> tryClearHex(Coords c, int nDamage, int entityId) {

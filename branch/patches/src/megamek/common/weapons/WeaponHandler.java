@@ -127,10 +127,8 @@ public class WeaponHandler implements AttackHandler, Serializable {
         // and some weapons can't ignite fires.
         if (entityTarget != null
                 && (bldg == null && wtype.getFireTN() != TargetRoll.IMPOSSIBLE)) {
-        	//TODO: Rule changed in TacOps - need to roll a 2/3 on 2d6 and then apply
-        	//as intentional
             server.tryIgniteHex(target.getPosition(), subjectId, false, new TargetRoll(wtype.getFireTN(), wtype.getName()),
-                    vPhaseReport);
+                    3, vPhaseReport);
         }
 
         // BMRr, pg. 51: "All shots that were aimed at a target inside
@@ -578,7 +576,7 @@ public class WeaponHandler implements AttackHandler, Serializable {
             }
             Report.addNewline(vPhaseReport);
             server.tryIgniteHex(target.getPosition(), subjectId, false, tn,
-                    true, vPhaseReport);
+                    true, -1, vPhaseReport);
         }
     }
 
@@ -605,7 +603,7 @@ public class WeaponHandler implements AttackHandler, Serializable {
         //you do a normal ignition as though for intentional fires
         if (bldg != null
                 && server.tryIgniteHex(target.getPosition(), subjectId, false,
-                		new TargetRoll(wtype.getFireTN(), wtype.getName()), vPhaseReport)) {
+                		new TargetRoll(wtype.getFireTN(), wtype.getName()), 5, vPhaseReport)) {
             return;
         }
         vPhaseReport.addAll(server.tryClearHex(target.getPosition(), nDamage, subjectId));

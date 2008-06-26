@@ -100,7 +100,7 @@ public class ACFlechetteHandler extends AmmoWeaponHandler {
         // Buildings can't be accidentally ignited.
         if (bldg != null
                 && server.tryIgniteHex(target.getPosition(), subjectId, false,
-                		new TargetRoll(wtype.getFireTN(), wtype.getName()), vPhaseReport)) {
+                		new TargetRoll(wtype.getFireTN(), wtype.getName()), 5, vPhaseReport)) {
             return;
         }
         vPhaseReport.addAll(server.tryClearHex(target.getPosition(), nDamage, subjectId));

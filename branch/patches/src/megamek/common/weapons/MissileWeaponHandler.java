@@ -323,7 +323,7 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         if (entityTarget != null
                 && (bldg == null && wtype.getFireTN() != TargetRoll.IMPOSSIBLE)) {
             server.tryIgniteHex(target.getPosition(), subjectId, false, 
-            		new TargetRoll(wtype.getFireTN(), wtype.getName()),
+            		new TargetRoll(wtype.getFireTN(), wtype.getName()), 3,
                     vPhaseReport);
         }
 
