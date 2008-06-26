@@ -1340,6 +1340,7 @@ public class Compute {
 
 	if (game.getOptions().booleanOption("tacops_standing") &&
             entity.moved==IEntityMovementType.MOVE_NONE &&
+			!entity.isImmobile() &&
             !(entity instanceof Infantry || entity instanceof VTOL ||
               entity instanceof GunEmplacement)) {
             ToHitData toHit = new ToHitData();
