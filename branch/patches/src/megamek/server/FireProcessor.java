@@ -322,6 +322,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
         // Cycle through all hexes, checking for smoke, IF the wind is higher
         // than calm! Calm means no drift!
         //can't create smoke in tornadoes!
+        //FIXME: This will cause smoke to not dissipate under certain weather conditions
         if (windStr > PlanetaryConditions.WI_NONE && windStr < PlanetaryConditions.WI_TORNADO_F13) {
 
             debugTime("resolve smoke 1", true);
@@ -409,7 +410,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
      * @return
      */
     public Coords driftAddSmoke(int x, int y, int windDir, int windStr) {
-        return driftAddSmoke(x, y, windDir++, windStr, 0); 
+        return driftAddSmoke(x, y, windDir, windStr, 0); 
     }
     
     /**
@@ -453,9 +454,8 @@ public class FireProcessor extends DynamicTerrainProcessor {
         }
 
         // stronger wind causes smoke to drift farther
-        //FIXME: help, this is catching in a loop, ends up blowing off the map in all cases
         if (windStr > PlanetaryConditions.WI_MOD_GALE) {
-            return driftAddSmoke(nextCoords.x, nextCoords.y, windDir, windStr--); 
+            return driftAddSmoke(nextCoords.x, nextCoords.y, windDir, --windStr); 
         }
 
         return nextCoords;
