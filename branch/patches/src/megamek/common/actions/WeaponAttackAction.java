@@ -1103,10 +1103,11 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         if (te != null
                 && te.getMovementMode() == IEntityMovementMode.VTOL
                 && atype != null
-                && (((atype.getAmmoType() == AmmoType.T_AC_LBX || atype
-                        .getAmmoType() == AmmoType.T_AC_LBX_THB) && atype
-                        .getMunitionType() == AmmoType.M_CLUSTER) || atype
-                        .getAmmoType() == AmmoType.T_HAG)
+                && (((atype.getAmmoType() == AmmoType.T_AC_LBX 
+                        || atype.getAmmoType() == AmmoType.T_AC_LBX_THB
+                        || atype.getAmmoType() == AmmoType.T_SBGAUSS) 
+                        && atype.getMunitionType() == AmmoType.M_CLUSTER) 
+                        || atype.getAmmoType() == AmmoType.T_HAG)
                 && te.getElevation() > 0
                 && te.getElevation() > game.getBoard().getHex(te.getPosition())
                         .terrainLevel(Terrains.BLDG_ELEV)
