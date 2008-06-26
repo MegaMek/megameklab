@@ -12683,9 +12683,11 @@ public class Server implements Runnable {
      * (crude fix because infantry shouldn't be able to be deployed outside of
      * vehicles or buildings, but we can't do that because we don't know wether
      * the map has buildings or not or wether the player has an apc
+     * No longer Used TacOps allows for infantry to easily equip Exteme Weather Gear.
      */
+    @Deprecated
     private void resolveExtremeTempInfantryDeath() {
-        int heat = game.getTemperatureDifference();
+        /*int heat = game.getTemperatureDifference();
         if (heat > 0) {
             for (Enumeration<Entity> i = game.getEntities(); i
                     .hasMoreElements();) {
@@ -12730,7 +12732,7 @@ public class Server implements Runnable {
                     }
                 }
             }
-        }
+        }*/
     }
 
     /**

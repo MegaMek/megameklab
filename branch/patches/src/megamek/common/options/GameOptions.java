@@ -64,6 +64,8 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(base, "restrict_game_commands", false); //$NON-NLS-1$
         addOption(base, "bridgeCF", 0); //$NON-NLS-1$
         addOption(base, "show_bay_detail", false); //$NON-NLS-1$
+        addOption(base, "flamer_heat", true); //$NON-NLS-1$
+        addOption(base, "indirect_fire", true); //$NON-NLS-1$
 
         IBasicOptionGroup victory = addGroup("victory"); //$NON-NLS-1$
         addOption(victory, "skip_forced_victory", false); //$NON-NLS-1$
@@ -87,27 +89,25 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(at2,"at2_nukes", false); //$NON-NLS-1$
         
         IBasicOptionGroup advancedRules = addGroup("advancedRules"); //$NON-NLS-1$
-        addOption(advancedRules, "flamer_heat", true); //$NON-NLS-1$
-        addOption(advancedRules, "indirect_fire", true); //$NON-NLS-1$
         addOption(advancedRules, "minefields", false); //$NON-NLS-1$
-        addOption(advancedRules, "assault_drop", false); //$NON-NLS-1$
-        addOption(advancedRules, "hidden_units", false); //$NON-NLS-1$
-        addOption(advancedRules, "allow_nukes", false);
-        addOption(advancedRules, "really_allow_nukes", false);
-        addOption(advancedRules, "allow_level_3_units", false);
-        addOption(advancedRules, "allow_level_3_ammo", false);
+//        addOption(advancedRules, "hidden_units", false); //$NON-NLS-1$
         addOption(advancedRules, "double_blind", false); //$NON-NLS-1$
         addOption(advancedRules, "supress_all_double_blind_messages", false); //$NON-NLS-1$
         addOption(advancedRules, "team_vision", true); //$NON-NLS-1$
         addOption(advancedRules, "pilot_advantages", false); //$NON-NLS-1$
-        addOption(advancedRules, "allow_level_3_targsys", false); //$NON-NLS-1$ 
+        addOption(advancedRules, "manei_domini", false); //$NON-NLS-1$
         addOption(advancedRules, "tacops_bap", false); //$NON-NLS-1$
         addOption(advancedRules, "maxtech_artillery", false); //$NON-NLS-1$
         addOption(advancedRules, "tacops_eccm", false); //$NON-NLS-1$
         addOption(advancedRules, "tacops_dig_in", false); //$NON-NLS-1$
-        addOption(advancedRules, "manei_domini", false); //$NON-NLS-1$
         addOption(advancedRules, "tacops_angel_ecm", false); //$NON-NLS-1$
+        addOption(advancedRules, "assault_drop", false); //$NON-NLS-1$
         addOption(advancedRules, "paratroopers", false); //$NON-NLS-1$
+        addOption(advancedRules, "allow_level_3_units", false);
+        addOption(advancedRules, "allow_level_3_targsys", false); //$NON-NLS-1$ 
+        addOption(advancedRules, "allow_level_3_ammo", false);
+        addOption(advancedRules, "allow_nukes", false);
+        addOption(advancedRules, "really_allow_nukes", false);
 
         IBasicOptionGroup advancedCombat = addGroup("advancedCombat"); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_ams", false); //$NON-NLS-1$

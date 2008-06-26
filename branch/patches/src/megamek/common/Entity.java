@@ -7027,6 +7027,9 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
                 for (int damage = ((WeaponType) mounted.getType()).getDamage(); damage >= 0; damage--) {
                     modes.add("Damage " + damage);
                 }
+                if ( ((WeaponType)mounted.getType()).hasFlag(WeaponType.F_FLAMER) ){
+                    modes.add("Heat");
+                }
                 ((WeaponType) mounted.getType()).setModes(modes.toArray(stringArray));
             }
             

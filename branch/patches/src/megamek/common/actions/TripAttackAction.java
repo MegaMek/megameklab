@@ -149,20 +149,13 @@ public class TripAttackAction extends PhysicalAttackAction {
             limb1 = Mech.LOC_LARM;
             limb2 = Mech.LOC_RARM;
         } else {
-            // normal attack uses one leg and one arm
+            // normal attack uses both legs
             if (usedWeapons[Mech.LOC_RLEG]) {
                 if (usedWeapons[Mech.LOC_LLEG]) {
                     return new ToHitData(TargetRoll.IMPOSSIBLE,
                             "both legs unusable");
                 }
                 limb1 = Mech.LOC_LLEG;
-            }
-            if (usedWeapons[Mech.LOC_RARM]) {
-                if (usedWeapons[Mech.LOC_LARM]) {
-                    return new ToHitData(TargetRoll.IMPOSSIBLE,
-                            "both arms unusable");
-                }
-                limb2 = Mech.LOC_LARM;
             }
         }
 
