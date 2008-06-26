@@ -39,6 +39,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import megamek.client.ui.AWT.Messages;
 import megamek.common.PlanetaryConditions;
 
 /**
@@ -59,6 +60,13 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 	private JLabel labWeather = new JLabel(Messages
 			.getString("PlanetaryConditionsDialog.labWeather"), JLabel.CENTER); //$NON-NLS-1$
 	private JComboBox choWeather = new JComboBox();
+	private JLabel labWind = new JLabel(Messages
+			.getString("PlanetaryConditionsDialog.labWind"), JLabel.CENTER); //$NON-NLS-1$
+	private JComboBox choWind = new JComboBox();
+	private JCheckBox cShiftWindDir = new JCheckBox(Messages
+            .getString("PlanetaryConditionsDialog.shiftWindDir"));
+	private JCheckBox cShiftWindStr = new JCheckBox(Messages
+            .getString("PlanetaryConditionsDialog.shiftWindStr"));
 	    	
 	private JPanel panButtons = new JPanel();	
 	private JButton butOkay = new JButton(Messages.getString("Okay")); //$NON-NLS-1$
@@ -177,6 +185,26 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
         c.anchor = GridBagConstraints.WEST;
         gridbag.setConstraints(choWeather, c);
         panOptions.add(choWeather);
+        
+        c.gridwidth = 1;
+        c.anchor = GridBagConstraints.EAST;
+        gridbag.setConstraints(labWind, c);
+        panOptions.add(labWind);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(choWind, c);
+        panOptions.add(choWind);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(cShiftWindDir, c);
+        panOptions.add(cShiftWindDir);
+        
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(cShiftWindStr, c);
+        panOptions.add(cShiftWindStr);
 
 	}
 	
@@ -197,7 +225,16 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 		for(int i = 0; i < PlanetaryConditions.WE_SIZE; i++) {
 			choWeather.addItem(PlanetaryConditions.getWeatherDisplayableName(i));
 		}
-		choWeather.setSelectedIndex(conditions.getWeather());		
+		choWeather.setSelectedIndex(conditions.getWeather());	
+		
+		choWind.removeAllItems();
+		for(int i = 0; i < PlanetaryConditions.WI_SIZE; i++) {
+			choWind.addItem(PlanetaryConditions.getWindDisplayableName(i));
+		}
+		choWind.setSelectedIndex(conditions.getWindStrength());	
+		
+		cShiftWindDir.setSelected(conditions.shiftingWindDirection());
+		cShiftWindStr.setSelected(conditions.shiftingWindStrength());
 	}
 	
 	public void send() {
@@ -205,6 +242,9 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 		//make the changes to the planetary conditions
 		conditions.setLight(choLight.getSelectedIndex());
 		conditions.setWeather(choWeather.getSelectedIndex());
+		conditions.setWindStrength(choWind.getSelectedIndex());
+		conditions.setShiftingWindDirection(cShiftWindDir.isSelected());
+		conditions.setShiftingWindStrength(cShiftWindStr.isSelected());
 		
 		client.getClient().sendPlanetaryConditions(conditions);
 	}
