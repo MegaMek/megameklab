@@ -320,6 +320,33 @@ public class PlanetaryConditions implements Serializable {
         }
     }
     
+    /*
+     * modifiers for fire ignition
+     */
+    public int getIgniteModifiers() {
+    	int mod = 0;
+    	
+    	if(weatherConditions == WE_LIGHT_RAIN || weatherConditions == WE_MOD_RAIN) {
+    		mod += 1;
+    	}
+    	if(weatherConditions == WE_HEAVY_RAIN || weatherConditions == WE_DOWNPOUR
+    			|| weatherConditions == WE_LIGHT_SNOW || weatherConditions == WE_MOD_SNOW) {
+    		mod += 2;
+    	}
+    	if(weatherConditions == WE_HEAVY_SNOW || weatherConditions == WE_LIGHT_HAIL || weatherConditions == WE_HEAVY_HAIL) {
+    		mod += 3;
+    	}
+    	if(windStrength == WI_LIGHT_GALE || windStrength == WI_MOD_GALE) {
+    		mod += 2;
+    	}
+    	if(windStrength == WI_STRONG_GALE || windStrength == WI_STORM || weatherConditions == WE_ICE_STORM) {
+    		mod += 4;
+    	}
+    	//TODO: temperature adjustments
+    	
+    	return mod;
+    }
+    
     //temperature
     //mud, snow, and ice
     

@@ -23,6 +23,7 @@ import megamek.common.Building;
 import megamek.common.IGame;
 import megamek.common.RangeType;
 import megamek.common.Report;
+import megamek.common.TargetRoll;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
 import megamek.server.Server;
@@ -99,7 +100,7 @@ public class ACFlechetteHandler extends AmmoWeaponHandler {
         // Buildings can't be accidentally ignited.
         if (bldg != null
                 && server.tryIgniteHex(target.getPosition(), subjectId, false,
-                        9, vPhaseReport)) {
+                		new TargetRoll(wtype.getFireTN(), wtype.getName()), vPhaseReport)) {
             return;
         }
         vPhaseReport.addAll(server.tryClearHex(target.getPosition(), nDamage, subjectId));

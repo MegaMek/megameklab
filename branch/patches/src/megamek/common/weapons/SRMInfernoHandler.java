@@ -28,6 +28,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.RangeType;
 import megamek.common.Report;
+import megamek.common.TargetRoll;
 import megamek.common.Targetable;
 import megamek.common.ToHitData;
 import megamek.common.WeaponType;
@@ -64,7 +65,7 @@ public class SRMInfernoHandler extends SRMHandler {
      */
     protected void reportMiss(Vector<Report> vPhaseReport) {
         super.reportMiss(vPhaseReport);
-        server.tryIgniteHex(target.getPosition(), ae.getId(), true, 11,
+        server.tryIgniteHex(target.getPosition(), ae.getId(), true, new TargetRoll(wtype.getFireTN(), wtype.getName()),
                 vPhaseReport);
     }
 

@@ -127,7 +127,9 @@ public class WeaponHandler implements AttackHandler, Serializable {
         // and some weapons can't ignite fires.
         if (entityTarget != null
                 && (bldg == null && wtype.getFireTN() != TargetRoll.IMPOSSIBLE)) {
-            server.tryIgniteHex(target.getPosition(), subjectId, false, 11,
+        	//TODO: Rule changed in TacOps - need to roll a 2/3 on 2d6 and then apply
+        	//as intentional
+            server.tryIgniteHex(target.getPosition(), subjectId, false, new TargetRoll(wtype.getFireTN(), wtype.getName()),
                     vPhaseReport);
         }
 
@@ -569,10 +571,10 @@ public class WeaponHandler implements AttackHandler, Serializable {
             r.newlines = 0;
             vPhaseReport.addElement(r);
         }
-        int tn = wtype.getFireTN();
-        if (tn != TargetRoll.IMPOSSIBLE) {
+        TargetRoll tn = new TargetRoll(wtype.getFireTN(), wtype.getName());
+        if (tn.getValue() != TargetRoll.IMPOSSIBLE) {
             if (bldg != null) {
-                tn += bldg.getType() - 1;
+                tn.addModifier(bldg.getType() - 1, "building");
             }
             Report.addNewline(vPhaseReport);
             server.tryIgniteHex(target.getPosition(), subjectId, false, tn,
@@ -599,9 +601,11 @@ public class WeaponHandler implements AttackHandler, Serializable {
         // Any clear attempt can result in accidental ignition, even
         // weapons that can't normally start fires. that's weird.
         // Buildings can't be accidentally ignited.
+        //TODO: change this for TacOps - now you roll another 2d6 first and on a 5 or less
+        //you do a normal ignition as though for intentional fires
         if (bldg != null
                 && server.tryIgniteHex(target.getPosition(), subjectId, false,
-                        9, vPhaseReport)) {
+                		new TargetRoll(wtype.getFireTN(), wtype.getName()), vPhaseReport)) {
             return;
         }
         vPhaseReport.addAll(server.tryClearHex(target.getPosition(), nDamage, subjectId));

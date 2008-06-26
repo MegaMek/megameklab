@@ -27,6 +27,7 @@ import megamek.common.IGame;
 import megamek.common.IHex;
 import megamek.common.PlanetaryConditions;
 import megamek.common.Report;
+import megamek.common.TargetRoll;
 import megamek.common.Terrains;
 
 public class FireProcessor extends DynamicTerrainProcessor {
@@ -84,6 +85,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
         int width = board.getWidth();
         int height = board.getHeight();
         int windDirection = game.getPlanetaryConditions().getWindDirection();
+        int windStrength = game.getPlanetaryConditions().getWindStrength();
         Report r;
 
         // Get the position map of all entities in the game.
@@ -160,7 +162,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
                         r.messageId = 5130;
                     r.add(currentCoords.getBoardNum());
                     vPhaseReport.addElement(r);
-                    spreadFire(currentXCoord, currentYCoord, windDirection);
+                    spreadFire(currentXCoord, currentYCoord, windDirection, windStrength);
                 }
             }
         }
@@ -197,17 +199,12 @@ public class FireProcessor extends DynamicTerrainProcessor {
                 // call the L3 method
                 //If we are in a tornado then no smoke at all
                 boolean isTornado = (game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM); 
-                if (currentHex.containsTerrain(Terrains.FIRE) && !isTornado
-                        && !game.getOptions().booleanOption("tacops_fire")) {
+                if (currentHex.containsTerrain(Terrains.FIRE) && !isTornado) {
                     server.addSmoke(currentXCoord, currentYCoord, windDirection);
                     server.addSmoke(currentXCoord, currentYCoord,
                             (windDirection + 1) % 6);
                     server.addSmoke(currentXCoord, currentYCoord,
                             (windDirection + 5) % 6);
-                    board.initializeAround(currentXCoord, currentYCoord);
-                } else if (currentHex.containsTerrain(Terrains.FIRE) && !isTornado
-                        && game.getOptions().booleanOption("tacops_fire")) {
-                    server.addL3Smoke(currentXCoord, currentYCoord);
                     board.initializeAround(currentXCoord, currentYCoord);
                 }
             }
@@ -247,42 +244,54 @@ public class FireProcessor extends DynamicTerrainProcessor {
     /**
      * Spreads the fire around the specified coordinates.
      */
-    public void spreadFire(int x, int y, int windDir) {
+    public void spreadFire(int x, int y, int windDir, int windStr) {
         Coords src = new Coords(x, y);
         Coords nextCoords = src.translated(windDir);
+        
+        //TODO: check for height differences between hexes
 
-        spreadFire(nextCoords, 9);
+        TargetRoll directroll = new TargetRoll(9, "spread downwind");
+        TargetRoll obliqueroll = new TargetRoll(11, "spread 60 degrees to downwind");
+        
+        if(windStr > PlanetaryConditions.WI_NONE && windStr < PlanetaryConditions.WI_STRONG_GALE) {
+        	directroll.addModifier(-2, "light/moderate gale");
+        	obliqueroll.addModifier(-1, "light/moderate gale");
+        }
+        else if(windStr > PlanetaryConditions.WI_MOD_GALE) {
+        	directroll.addModifier(-3, "strong gale+");
+        	directroll.addModifier(-2, "strong gale+");
+        }
+        
+        spreadFire(nextCoords, directroll);
 
         // Spread to the next hex downwind on a 12 if the first hex wasn't
         // burning...
         IHex nextHex = game.getBoard().getHex(nextCoords);
         if (nextHex != null && !(nextHex.containsTerrain(Terrains.FIRE))) {
             // we've already gone one step in the wind direction, now go another
-            spreadFire(nextCoords.translated(windDir), 12);
+        	directroll.addModifier(3, "crossing non-burning hex");
+            spreadFire(nextCoords.translated(windDir), directroll);
         }
 
         // spread fire 60 degrees clockwise....
-        spreadFire(src.translated((windDir + 1) % 6), 11);
+        spreadFire(src.translated((windDir + 1) % 6), obliqueroll);
 
         // spread fire 60 degrees counterclockwise
-        spreadFire(src.translated((windDir + 5) % 6), 11);
+        spreadFire(src.translated((windDir + 5) % 6), obliqueroll);
     }
 
     /**
      * Spreads the fire, and reports the spread, to the specified hex, if
      * possible, if the hex isn't already on fire, and the fire roll is made.
      */
-    public void spreadFire(Coords coords, int roll) {
+    public void spreadFire(Coords coords, TargetRoll roll) {
         IHex hex = game.getBoard().getHex(coords);
         if (hex == null) {
             // Don't attempt to spread fire off the board.
             return;
         }
-        Report r = null;
-        if (!(hex.containsTerrain(Terrains.FIRE)) && (r = server.ignite(hex, roll)) != null) {
-            vPhaseReport.add(r);
-            server.sendChangedHex(coords);
-            r = new Report(5150, Report.PUBLIC);
+        if (!(hex.containsTerrain(Terrains.FIRE)) && server.ignite(hex, roll)) {
+            Report r = new Report(5150, Report.PUBLIC);
             r.add(coords.getBoardNum());
             vPhaseReport.addElement(r);
         }

@@ -21,6 +21,7 @@ import megamek.common.Entity;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.Report;
+import megamek.common.TargetRoll;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
 import megamek.server.Server;
@@ -109,7 +110,7 @@ public class LRMFragHandler extends LRMHandler {
         // Buildings can't be accidentally ignited.
         if (bldg != null
                 && server.tryIgniteHex(target.getPosition(), subjectId, false,
-                        9, vPhaseReport)) {
+                		new TargetRoll(wtype.getFireTN(), wtype.getName()), vPhaseReport)) {
             return;
         }
 

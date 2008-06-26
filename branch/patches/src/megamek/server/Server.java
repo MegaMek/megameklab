@@ -6552,7 +6552,7 @@ public class Server implements Runnable {
             case Targetable.TYPE_HEX_CLEAR:
             case Targetable.TYPE_HEX_IGNITE:
                 vPhaseReport.addAll(tryClearHex(t.getPosition(), missiles * 4, ae.getId()));
-                tryIgniteHex(t.getPosition(), ae.getId(), true, 0, vPhaseReport);
+                tryIgniteHex(t.getPosition(), ae.getId(), true, new TargetRoll(0, "inferno"), vPhaseReport);
                 break;
             case Targetable.TYPE_BLDG_IGNITE:
             case Targetable.TYPE_BUILDING:
@@ -8724,7 +8724,7 @@ public class Server implements Runnable {
      *            added to the report.
      */
     public boolean tryIgniteHex(Coords c, int entityId, boolean bInferno,
-            int nTargetRoll, boolean bReportAttempt, Vector<Report> vPhaseReport) {
+            TargetRoll nTargetRoll, boolean bReportAttempt, Vector<Report> vPhaseReport) {
 
         IHex hex = game.getBoard().getHex(c);
         boolean bAnyTerrain = false;
@@ -8739,15 +8739,28 @@ public class Server implements Runnable {
         if (!game.getOptions().booleanOption("fire")) {
             return false;
         }
-
+        
+        //TODO: add in any modifiers for terrain (are these already in?)
+        
+        //add in any modifiers for planetary conditions
+        int weatherMod = game.getPlanetaryConditions().getIgniteModifiers();
+        if(weatherMod != 0) {
+        	nTargetRoll.addModifier(weatherMod, "conditions");
+        }
+        
         // inferno always ignites
         // ERRATA not if targeting clear hexes for ignition is disabled.
         if (bInferno && !game.getOptions().booleanOption("no_ignite_clear")) {
             game.getBoard().addInfernoTo(c, InfernoTracker.STANDARD_ROUND, 1);
-            nTargetRoll = 0;
+            nTargetRoll = new TargetRoll(0, "inferno");
             bAnyTerrain = true;
         }
 
+        //no lighting fires in tornados
+        if(game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM) {
+        	nTargetRoll = new TargetRoll(TargetRoll.AUTOMATIC_FAIL, "tornado");
+        }
+        
         // The hex may already be on fire.
         if (hex.containsTerrain(Terrains.FIRE)) {
             if (bReportAttempt) {
@@ -8756,10 +8769,8 @@ public class Server implements Runnable {
                 r.subject = entityId;
                 vPhaseReport.add(r);
             }
-            return true;
-        } else if ( (r = ignite(hex, nTargetRoll, bAnyTerrain, entityId)) != null ) {
-            // hex ignites
-            vPhaseReport.add(r);
+            //return true;
+        } else if(ignite(hex, nTargetRoll, bAnyTerrain, entityId, vPhaseReport)){
             r = new Report(3070);
             r.indent(2);
             r.subject = entityId;
@@ -8783,7 +8794,7 @@ public class Server implements Runnable {
      * @param nTargetRoll - the <code>int</code> roll target for the attempt.
      */
     public boolean tryIgniteHex(Coords c, int entityId, boolean bInferno,
-            int nTargetRoll, Vector<Report> vPhaseReport) {
+            TargetRoll nTargetRoll, Vector<Report> vPhaseReport) {
         return tryIgniteHex(c, entityId, bInferno, nTargetRoll, false,
                 vPhaseReport);
     }
@@ -18875,7 +18886,7 @@ public class Server implements Runnable {
      * course, also checks to see that fire is possible in the specified hex.
      * 
      * @param hex - the <code>IHex</code> to be lit.
-     * @param roll - the <code>int</code> target number for the ignition roll
+     * @param roll - the <code>TargetRoll</code> for the ignition roll
      * @param bAnyTerrain - <code>true</code> if the fire can be lit in any
      *            terrain. If this value is <code>false</code> the hex will be
      *            lit only if it contains Woods,jungle or a Building.
@@ -18883,24 +18894,24 @@ public class Server implements Runnable {
      *            value is Entity.NONE, then the roll attempt will not be
      *            included in the report.
      */
-    public Report ignite(IHex hex, int roll, boolean bAnyTerrain, int entityId) {
+    public boolean ignite(IHex hex, TargetRoll roll, boolean bAnyTerrain, int entityId, Vector<Report> vPhaseReport) {
 
         // The hex might be null due to spreadFire translation
         // goes outside of the board limit.
         if (!game.getOptions().booleanOption("fire") || null == hex) {
-            return null;
+            return false;
         }
 
         // The hex may already be on fire.
         if (hex.containsTerrain(Terrains.FIRE)) {
-            return null;
+            return false;
         }
 
         if (!bAnyTerrain && !hex.containsTerrain(Terrains.WOODS)
                 && !hex.containsTerrain(Terrains.JUNGLE)
                 && !hex.containsTerrain(Terrains.FUEL_TANK)
                 && !hex.containsTerrain(Terrains.BUILDING)) {
-            return null;
+            return false;
         }
 
         int fireRoll = Compute.d6(2);
@@ -18909,15 +18920,16 @@ public class Server implements Runnable {
             r = new Report(3430);
             r.indent(2);
             r.subject = entityId;
-            r.add(roll);
+            r.add(roll.getValueAsString());
+            r.add(roll.getDesc());
             r.add(fireRoll);
-            //addReport(r);
+            vPhaseReport.add(r);
         }
-        if (fireRoll >= roll) {
+        if (fireRoll >= roll.getValue()) {
             hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
-            return r;
+            return true;
         }
-        return r;
+        return false;
     }
 
     /**
@@ -18931,8 +18943,8 @@ public class Server implements Runnable {
      *            terrain. If this value is <code>false</code> the hex will be
      *            lit only if it contains Woods, jungle or a Building.
      */
-    public Report ignite(IHex hex, int roll, boolean bAnyTerrain) {
-        return ignite(hex, roll, bAnyTerrain, Entity.NONE);
+    public boolean ignite(IHex hex, TargetRoll roll, boolean bAnyTerrain) {
+        return ignite(hex, roll, bAnyTerrain, Entity.NONE, null);
     }
 
     /**
@@ -18943,9 +18955,9 @@ public class Server implements Runnable {
      * @param hex - the <code>IHex</code> to be lit.
      * @param roll - the <code>int</code> target number for the ignition roll
      */
-    public Report ignite(IHex hex, int roll) {
+    public boolean ignite(IHex hex, TargetRoll roll) {
         // default signature, assuming only woods can burn
-        return ignite(hex, roll, false, Entity.NONE);
+        return ignite(hex, roll, false, Entity.NONE, null);
     }
 
     /**
@@ -18973,36 +18985,14 @@ public class Server implements Runnable {
     }
 
     /**
-     * called when a fire is burning. Adds smoke to hex in the direction
-     * specified. Called 3 times per fire hex
-     * 
+     * Called when a fire is burning. Called 3 times per fire hex.
      * @param x The <code>int</code> x-coordinate of the hex
      * @param y The <code>int</code> y-coordinate of the hex
-     * @param windDir The <code>int</code> specifying the winddirection
      */
     public void addSmoke(int x, int y, int windDir) {
+        IBoard board = game.getBoard();
         Coords smokeCoords = new Coords(Coords.xInDir(x, y, windDir), Coords
                 .yInDir(x, y, windDir));
-        IHex nextHex = game.getBoard().getHex(smokeCoords);
-        if (nextHex != null && !nextHex.containsTerrain(Terrains.SMOKE)) {
-            nextHex.addTerrain(Terrains.getTerrainFactory().createTerrain(
-                    Terrains.SMOKE, 1));
-            sendChangedHex(smokeCoords);
-            Report r = new Report(5175, Report.PUBLIC);
-            r.add(smokeCoords.getBoardNum());
-            addReport(r);
-        }
-    }
-
-    /**
-     * Add lvl3 smoke to the hex specified by the parameters. Called once.
-     * 
-     * @param x The <code>int</code> x-coordinate of the hex
-     * @param y The <code>int</code> y-coordinate of the hex
-     */
-    public void addL3Smoke(int x, int y) {
-        IBoard board = game.getBoard();
-        Coords smokeCoords = new Coords(x, y);
         IHex smokeHex = game.getBoard().getHex(smokeCoords);
         boolean infernoBurning = board.isInfernoBurning(smokeCoords);
         Report r;
