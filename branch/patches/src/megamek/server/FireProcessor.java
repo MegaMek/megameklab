@@ -215,9 +215,6 @@ public class FireProcessor extends DynamicTerrainProcessor {
             server.sendChangedCFBuildings(burningBldgs);
         }
 
-        // shift the wind.
-        game.getPlanetaryConditions().determineWind();
-
     } // End the ResolveFire() method
 
     public void burnDownWoods(Coords coords) {

@@ -1752,6 +1752,7 @@ public class Server implements Runnable {
                 resolveMechWarriorPickUp();
                 resolveVeeINarcPodRemoval();
                 resolveFortify();
+                game.getPlanetaryConditions().determineWind();
                 checkForObservers();
                 entityAllUpdate();
                 break;
