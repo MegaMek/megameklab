@@ -44,7 +44,7 @@ public class PlanetaryConditions implements Serializable {
     public static final int L_FULL_MOON    = 2;
     public static final int L_MOONLESS     = 3;
     public static final int L_PITCH_BLACK  = 4;
-    private static String[] lightNames = { "None", "Dusk", "Full Moon Night", "Moonless Night",
+    private static String[] lightNames = { "Daylight", "Dusk", "Full Moon Night", "Moonless Night",
     	                                   "Pitch Black"};
     public static final int L_SIZE = lightNames.length;
 	
@@ -70,7 +70,7 @@ public class PlanetaryConditions implements Serializable {
     public static final int WI_NONE        = 0;
     public static final int WI_LIGHT_GALE  = 1;
     public static final int WI_MOD_GALE    = 2;
-    public static final int WI_HEAVY_GALE  = 3;
+    public static final int WI_STRONG_GALE  = 3;
     public static final int WI_STORM       = 4;
     public static final int WI_TORNADO_F13 = 5;
     public static final int WI_TORNADO_F4  = 6;   
@@ -79,9 +79,10 @@ public class PlanetaryConditions implements Serializable {
     int lightConditions = WI_NONE;
     int weatherConditions = WE_NONE;
     int windStrength = WI_NONE;
+    boolean shiftWinds = false;
     
     
-    private static String[] windNames = { "None", "Light Gale", "Moderate Gale", "Heavy Gale", "Storm", "Tornado F1-F3", "Tornado F4"};
+    private static String[] windNames = { "None", "Light Gale", "Moderate Gale", "Strong Gale", "Storm", "Tornado F1-F3", "Tornado F4"};
     public static final int WI_SIZE = windNames.length;
     
     
@@ -97,6 +98,7 @@ public class PlanetaryConditions implements Serializable {
     	this.lightConditions = other.lightConditions;
     	this.weatherConditions = other.weatherConditions;
     	this.windStrength = other.windStrength;
+    	this.shiftWinds = other.shiftWinds;
     }
     
     /** clone! */
@@ -225,6 +227,48 @@ public class PlanetaryConditions implements Serializable {
     	}
     }
     
+    /*
+     * piloting penalty for weather
+     */
+    public static int getWindPilotPenalty(int type, Entity en) {
+    	int penalty = 0;
+    	
+    	switch(type) {
+    	case (WI_MOD_GALE):
+    		if(en instanceof VTOL || en.getMovementMode() == IEntityMovementMode.WIGE) {
+    			penalty = 1;
+    		}
+    		break;
+    	case (WI_STRONG_GALE):
+    		if(en instanceof VTOL || en.getMovementMode() == IEntityMovementMode.WIGE 
+    				|| en.getMovementMode() == IEntityMovementMode.HOVER) {
+    			penalty = 2;
+    		}
+    		else if(en instanceof Mech || en instanceof Aero) {
+    			penalty = 1;
+    		}	
+    		break;
+    	case (WI_STORM):
+    		if(en instanceof VTOL || en instanceof Mech || en.getMovementMode() == IEntityMovementMode.WIGE 
+    				|| en.getMovementMode() == IEntityMovementMode.HOVER) {
+    			penalty = 3;
+    		}
+    		else if(en instanceof Aero) {
+    			penalty = 2;
+    		}
+    		break;
+    	case (WI_TORNADO_F13):
+    		penalty = 3;
+    		break;
+    	case (WI_TORNADO_F4):
+    		penalty = 5;
+    		break;
+    	default:
+    		penalty = 0;
+    	}
+    	return penalty;
+    }
+    
     //temperature
     //mud, snow, and ice
     
@@ -244,12 +288,20 @@ public class PlanetaryConditions implements Serializable {
     	return weatherConditions;
     }
     
-    public void setWindStength(int type) {
+    public void setWindStrength(int type) {
     	this.windStrength = type;
     }
     
-    public int getWindStrength(int type) {
+    public int getWindStrength() {
     	return windStrength;
+    }
+    
+    public void setShiftingWinds(boolean b) {
+    	this.shiftWinds = b;
+    }
+    
+    public boolean shiftingWinds() {
+    	return shiftWinds;
     }
     
     

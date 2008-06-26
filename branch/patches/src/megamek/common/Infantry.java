@@ -169,6 +169,27 @@ public class Infantry extends Entity implements Serializable {
     }
 
     /**
+     * return this infantry's walk mp, adjusted for planetary conditions
+     */
+    public int getWalkMP(boolean gravity, boolean ignoreheat) {
+    	int mp = getOriginalWalkMP();
+    	if (gravity) {
+            mp = applyGravityEffectsOnMP(mp);
+        }
+    	int windP = 0;
+    	if(null != game) {
+    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		if(windCond == PlanetaryConditions.WI_LIGHT_GALE || windCond == PlanetaryConditions.WI_MOD_GALE) {
+    			windP++;
+    		} else if (windCond >= PlanetaryConditions.WI_STRONG_GALE) {
+    			windP += 2;
+    		}
+    	}
+    	mp = Math.max(mp - windP, 0);
+    	return mp;
+    }
+    
+    /**
      * Return this Infantry's run MP.
      */
     public int getRunMP(boolean gravity, boolean ignoreheat) {
@@ -190,6 +211,34 @@ public class Infantry extends Entity implements Serializable {
     protected int getOriginalRunMP() {
         return this.runMP;
     }
+    
+    /*
+     * Get this infantry's jump MP, adjusted for weather conditions
+     */
+    public int getJumpMP(boolean gravity) {
+    	return getJumpMP();
+    }
+    
+    /**
+     * Returns this entity's current jumping MP, not effected by terrain,
+     * factored for gravity.
+     */
+    public int getJumpMP() {
+        int mp = applyGravityEffectsOnMP(getOriginalJumpMP());
+        int windP = 0;
+    	if(null != game) {
+    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		if(windCond == PlanetaryConditions.WI_MOD_GALE) {
+    			windP++;
+    		}
+    		if(windCond >= PlanetaryConditions.WI_STRONG_GALE) {
+    			return 0;
+    		}
+    	}
+    	mp = Math.max(mp - windP, 0);
+        return mp;
+    }
+    
 
     /**
      * Infantry can not enter water unless they have UMU mp or hover.

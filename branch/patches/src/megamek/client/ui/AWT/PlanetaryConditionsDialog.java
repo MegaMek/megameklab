@@ -19,6 +19,7 @@
 package megamek.client.ui.AWT;
 
 import java.awt.Button;
+import java.awt.Checkbox;
 import java.awt.Choice;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -52,6 +53,11 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 	private Label labWeather = new Label(Messages
 			.getString("PlanetaryConditionsDialog.labWeather"), Label.CENTER); //$NON-NLS-1$
 	private Choice choWeather = new Choice();
+	private Label labWind = new Label(Messages
+			.getString("PlanetaryConditionsDialog.labWind"), Label.CENTER); //$NON-NLS-1$
+	private Choice choWind = new Choice();
+	private Checkbox cShiftWinds = new Checkbox(Messages
+            .getString("PlanetaryConditionsDialog.shiftWinds"));
 	    	
 	private Panel panButtons = new Panel();	
 	private Button butOkay = new Button(Messages.getString("Okay")); //$NON-NLS-1$
@@ -170,6 +176,21 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
         c.anchor = GridBagConstraints.WEST;
         gridbag.setConstraints(choWeather, c);
         panOptions.add(choWeather);
+        
+        c.gridwidth = 1;
+        c.anchor = GridBagConstraints.EAST;
+        gridbag.setConstraints(labWind, c);
+        panOptions.add(labWind);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(choWind, c);
+        panOptions.add(choWind);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(cShiftWinds, c);
+        panOptions.add(cShiftWinds);
 
 	}
 	
@@ -190,7 +211,15 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		for(int i = 0; i < PlanetaryConditions.WE_SIZE; i++) {
 			choWeather.add(PlanetaryConditions.getWeatherDisplayableName(i));
 		}
-		choWeather.select(conditions.getWeather());		
+		choWeather.select(conditions.getWeather());	
+		
+		choWind.removeAll();
+		for(int i = 0; i < PlanetaryConditions.WI_SIZE; i++) {
+			choWind.add(PlanetaryConditions.getWindDisplayableName(i));
+		}
+		choWind.select(conditions.getWindStrength());	
+		
+		cShiftWinds.setState(conditions.shiftingWinds());
 	}
 	
 	public void send() {
@@ -198,6 +227,8 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		//make the changes to the planetary conditions
 		conditions.setLight(choLight.getSelectedIndex());
 		conditions.setWeather(choWeather.getSelectedIndex());
+		conditions.setWindStrength(choWind.getSelectedIndex());
+		conditions.setShiftingWinds(cShiftWinds.getState());
 		
 		client.getClient().sendPlanetaryConditions(conditions);
 	}

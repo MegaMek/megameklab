@@ -778,6 +778,40 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         	toHit.addModifier(weatherMod,PlanetaryConditions.getWeatherDisplayableName(weatherCond));
         }
         
+        //wind mods (not in space)
+        if(!game.getBoard().inSpace()) {
+        	int windCond = game.getPlanetaryConditions().getWindStrength();
+        	if(windCond == PlanetaryConditions.WI_MOD_GALE) {
+        		if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
+        			toHit.addModifier(1, PlanetaryConditions.getWindDisplayableName(windCond));
+        		}
+        	}
+        	else if(windCond == PlanetaryConditions.WI_STRONG_GALE) {
+        		if(wtype.hasFlag(WeaponType.F_BALLISTIC)) { 
+        			toHit.addModifier(1, PlanetaryConditions.getWindDisplayableName(windCond));
+        		}
+        		else if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
+        			toHit.addModifier(2, PlanetaryConditions.getWindDisplayableName(windCond));
+        		}
+        	} else if(windCond == PlanetaryConditions.WI_STORM) {
+        		if(wtype.hasFlag(WeaponType.F_BALLISTIC)) { 
+        			toHit.addModifier(2, PlanetaryConditions.getWindDisplayableName(windCond));
+        		}
+        		else if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
+        			toHit.addModifier(3, PlanetaryConditions.getWindDisplayableName(windCond));
+        		}
+        	} else if(windCond == PlanetaryConditions.WI_TORNADO_F13) {
+        		if(wtype.hasFlag(WeaponType.F_ENERGY)) { 
+        			toHit.addModifier(2, PlanetaryConditions.getWindDisplayableName(windCond));
+        		}
+        		else { 
+        			toHit.addModifier(3, PlanetaryConditions.getWindDisplayableName(windCond));
+        		}
+        	} else if(windCond == PlanetaryConditions.WI_TORNADO_F4) {
+        		toHit.addModifier(3, PlanetaryConditions.getWindDisplayableName(windCond));
+        	}
+        }
+        
         // handle LAM speial rules
 
         // a temporary variable so I don't need to keep casting.
@@ -1812,6 +1846,17 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             }
         }
 
+        //check wind conditions
+        int windCond = game.getPlanetaryConditions().getWindStrength();
+        if(windCond == PlanetaryConditions.WI_TORNADO_F13 && wtype.hasFlag(WeaponType.F_MISSILE) && !game.getBoard().inSpace()) {
+        	return "No missile fire in a tornado";
+        }
+        
+        if(windCond == PlanetaryConditions.WI_TORNADO_F13 && !game.getBoard().inSpace() && 
+        		(wtype.hasFlag(WeaponType.F_MISSILE) || wtype.hasFlag(WeaponType.F_BALLISTIC))) {
+        	return "No missile or ballistic fire in an F4 tornado";
+        }
+        
         // check if indirect fire is valid
         if (isIndirect && !game.getOptions().booleanOption("indirect_fire")) {
             return "Indirect fire option not enabled";

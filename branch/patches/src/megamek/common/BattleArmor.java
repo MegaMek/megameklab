@@ -273,6 +273,10 @@ public class BattleArmor extends Infantry implements Serializable {
         return jumpMP;
     }
 
+    public int getWalkMP() {
+    	return getWalkMP(false, true);
+    }
+    
     /**
      * Returns this entity's walking mp, factored for extreme temperatures and
      * gravity.
@@ -286,6 +290,14 @@ public class BattleArmor extends Infantry implements Serializable {
             i = game.getTemperatureDifference();
             return Math.max(j - i, 0);
         }
+        int windP = 0;
+    	if(null != game) {
+    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		if(windCond >= PlanetaryConditions.WI_STRONG_GALE) {
+    			windP++;
+    		} 
+    	}
+    	j = Math.max(j - windP, 0);
         return j;
     }
 
@@ -304,6 +316,10 @@ public class BattleArmor extends Infantry implements Serializable {
         }
         return j;
     }
+    
+    public int getJumpMP(boolean gravity) {
+    	return getJumpMP();
+    }
 
     /**
      * Returns this entity's current jumping MP, not effected by terrain,
@@ -313,8 +329,15 @@ public class BattleArmor extends Infantry implements Serializable {
     public int getJumpMP() {
         if (this.isBurdened()) {
             return 0;
-        }
-        return super.getJumpMP();
+        }      
+    	if(null != game) {
+    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		if(windCond >= PlanetaryConditions.WI_STORM) {
+    			return 0;
+    		}
+    	}
+    	int mp = applyGravityEffectsOnMP(getOriginalJumpMP());
+        return mp;
     }
 
     /**

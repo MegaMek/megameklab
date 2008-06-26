@@ -45,7 +45,6 @@ import megamek.common.options.GameOptions;
 import megamek.common.options.IBasicOption;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
-import megamek.common.WeatherConditions;
 
 /**
  * Responsible for displaying the current game options and allowing the user to

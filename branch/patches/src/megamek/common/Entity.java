@@ -1342,6 +1342,14 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         if (gravity) {
             mp = applyGravityEffectsOnMP(mp);
         }
+        int windP = 0;
+        if(null != game) {
+    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		if(windCond >= PlanetaryConditions.WI_TORNADO_F13) {
+    			windP += 2;
+    		} 
+    	}
+    	mp = Math.max(mp - windP, 0);
         return mp;
     }
 
@@ -4058,7 +4066,15 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         if(weatherMod != 0 && !game.getBoard().inSpace()) {
         	roll.addModifier(weatherMod, PlanetaryConditions.getWeatherDisplayableName(weatherCond));
         }
+               
+        //check wind conditions for all entities
+        int windCond = game.getPlanetaryConditions().getWindStrength();
+        int windMod = PlanetaryConditions.getWindPilotPenalty(windCond, this);
+        if(windMod != 0 && !game.getBoard().inSpace()) {
+        	roll.addModifier(windMod, PlanetaryConditions.getWindDisplayableName(windCond));
+        }
         return roll;
+        
     }
     
     /**

@@ -412,7 +412,7 @@ public class VTOL extends Tank {
                 && !getCrew().getOptions().booleanOption("bvdni")) {
             prd.addModifier(-1, "VDNI");
         }
-
+     
         return prd;
     }
 
