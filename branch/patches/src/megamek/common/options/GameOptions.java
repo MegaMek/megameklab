@@ -114,7 +114,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedCombat, "floating_crits", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_engine_explosions", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_prone_fire", false); //$NON-NLS-1$
-        addOption(advancedCombat, "tacops_fire", false); //$NON-NLS-1$
+        addOption(advancedCombat, "tacops_start_fire", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_range", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_LOS1", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_altdmg", false); //$NON-NLS-1$
@@ -146,7 +146,6 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedGroundMovement, "tacops_taking_damage", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_leg_damage", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_walk_backwards", false); //$NON-NLS-1$
-        addOption(advancedGroundMovement, "fire", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "vehicle_fires", false); //$NON-NLS-1$
 
         

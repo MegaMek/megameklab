@@ -1006,7 +1006,7 @@ public class ClientGUI extends JPanel implements MouseListener, WindowListener,
                             .add(new TargetMenuItem(new HexTarget(coords,
                                     client.game.getBoard(),
                                     Targetable.TYPE_HEX_CLEAR)));
-                    if (client.game.getOptions().booleanOption("fire")) { //$NON-NLS-1$
+                    if (client.game.getOptions().booleanOption("tacops_start_fire")) { //$NON-NLS-1$
                         popup.add(new TargetMenuItem(new HexTarget(coords,
                                 client.game.getBoard(),
                                 Targetable.TYPE_HEX_IGNITE)));
@@ -1014,14 +1014,14 @@ public class ClientGUI extends JPanel implements MouseListener, WindowListener,
                 } else if (h != null && h.containsTerrain(Terrains.FUEL_TANK)) {
                     popup.add(new TargetMenuItem(new BuildingTarget(coords,
                             client.game.getBoard(), false)));
-                    if (client.game.getOptions().booleanOption("fire")) { //$NON-NLS-1$
+                    if (client.game.getOptions().booleanOption("tacops_start_fire")) { //$NON-NLS-1$
                         popup.add(new TargetMenuItem(new BuildingTarget(coords,
                                 client.game.getBoard(), true)));
                     }
                 } else if (h != null && h.containsTerrain(Terrains.BUILDING)) {
                     popup.add(new TargetMenuItem(new BuildingTarget(coords,
                             client.game.getBoard(), false)));
-                    if (client.game.getOptions().booleanOption("fire")) { //$NON-NLS-1$
+                    if (client.game.getOptions().booleanOption("tacops_start_fire")) { //$NON-NLS-1$
                         popup.add(new TargetMenuItem(new BuildingTarget(coords,
                                 client.game.getBoard(), true)));
                     }
@@ -1050,7 +1050,7 @@ public class ClientGUI extends JPanel implements MouseListener, WindowListener,
                                 Targetable.TYPE_HEX_ARTILLERY)));
                     }
                 }
-                if (h != null && client.game.getOptions().booleanOption("fire")
+                if (h != null && client.game.getOptions().booleanOption("tacops_start_fire")
                         && h.containsTerrain(Terrains.FIRE)) {
                     popup.add(new TargetMenuItem(new HexTarget(coords,
                             client.game.getBoard(),

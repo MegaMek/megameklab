@@ -422,8 +422,7 @@ public class LosEffects {
         if (heavySmoke > 0) {
             StringBuffer text = new StringBuffer(heavySmoke);
             text.append(" intervening");
-            if (game.getOptions().booleanOption("tacops_fire"))
-                text.append(" heavy");
+            text.append(" heavy");
             text.append(" smoke");
             if (eistatus > 0) {
                 modifiers.addModifier(heavySmoke, text.toString());
@@ -714,46 +713,30 @@ public class LosEffects {
                             .distance(coords) == 1)
                     || (hexEl + 2 > ai.targetAbsHeight && ai.targetPos
                             .distance(coords) == 1)) {
-                // smoke overrides any woods in the hex if L3 smoke rule is off
-                if (!game.getOptions().booleanOption("tacops_fire")) {
-                    if (hex.containsTerrain(Terrains.SMOKE)) {
-                        los.heavySmoke++;
-                    } else if (hex.terrainLevel(Terrains.WOODS) == 1
-                            || hex.terrainLevel(Terrains.JUNGLE) == 1) {
-                        los.lightWoods++;
-                    } else if (hex.terrainLevel(Terrains.WOODS) == 2
-                            || hex.terrainLevel(Terrains.JUNGLE) == 2) {
-                        los.heavyWoods++;
-                    } else if (hex.terrainLevel(Terrains.WOODS) == 3
-                            || hex.terrainLevel(Terrains.JUNGLE) == 3) {
-                        los.ultraWoods++;
-                    }
-                }
-                // if the L3 fire/smoke rule is on, smoke and woods stack for
+                // smoke and woods stack for
                 // LOS
                 // so check them both
-                else {
-                    if (hex.containsTerrain(Terrains.SMOKE)) {
-                        if (hex.terrainLevel(Terrains.SMOKE) == 1) {
-                            los.lightSmoke++;
-                        } else if (hex.terrainLevel(Terrains.SMOKE) > 1) {
-                            los.heavySmoke++;
-                        }
-                    }
+            	if (hex.containsTerrain(Terrains.SMOKE)) {
+            		if (hex.terrainLevel(Terrains.SMOKE) == 1) {
+            			los.lightSmoke++;
+            		} else if (hex.terrainLevel(Terrains.SMOKE) > 1) {
+            			los.heavySmoke++;
+            		}
+            	}
 
-                    if (hex.terrainLevel(Terrains.WOODS) == 1
-                            || hex.terrainLevel(Terrains.JUNGLE) == 1) {
-                        los.lightWoods++;
-                    } else if (hex.terrainLevel(Terrains.WOODS) == 2
-                            || hex.terrainLevel(Terrains.JUNGLE) == 2) {
-                        los.heavyWoods++;
-                    } else if (hex.terrainLevel(Terrains.WOODS) == 3
-                            || hex.terrainLevel(Terrains.JUNGLE) == 3) {
-                        los.ultraWoods++;
-                    }
-                }
+            	if (hex.terrainLevel(Terrains.WOODS) == 1
+            			|| hex.terrainLevel(Terrains.JUNGLE) == 1) {
+            		los.lightWoods++;
+            	} else if (hex.terrainLevel(Terrains.WOODS) == 2
+            			|| hex.terrainLevel(Terrains.JUNGLE) == 2) {
+            		los.heavyWoods++;
+            	} else if (hex.terrainLevel(Terrains.WOODS) == 3
+            			|| hex.terrainLevel(Terrains.JUNGLE) == 3) {
+            		los.ultraWoods++;
+            	}
             }
         }
+        
 
         // check for target partial cover
         if (ai.targetPos.distance(coords) == 1) {

@@ -6355,18 +6355,16 @@ public class Server implements Runnable {
      * @param coords the <code>Coords</code> where to deliver
      */
     public void deliverArtillerySmoke(Coords coords, Vector<Report> vPhaseReport) {
-        if (game.getOptions().booleanOption("tacops_fire")) {
-            IHex h = game.getBoard().getHex(coords);
-            // Unless there is a heavy smoke in the hex already, add one.
-            if (h.terrainLevel(Terrains.SMOKE) < 2) {
-                Report r = new Report(5185, Report.PUBLIC);
-                r.indent(2);
-                r.add(coords.getBoardNum());
-                vPhaseReport.add(r);
-                h.addTerrain(Terrains.getTerrainFactory().createTerrain(
-                        Terrains.SMOKE, 2));
-                sendChangedHex(coords);
-            }
+    	IHex h = game.getBoard().getHex(coords);
+    	// Unless there is a heavy smoke in the hex already, add one.
+    	if (h.terrainLevel(Terrains.SMOKE) < 2) {
+    		Report r = new Report(5185, Report.PUBLIC);
+    		r.indent(2);
+    		r.add(coords.getBoardNum());
+    		vPhaseReport.add(r);
+    		h.addTerrain(Terrains.getTerrainFactory().createTerrain(
+    				Terrains.SMOKE, 2));
+    		sendChangedHex(coords);            
         }
     }
 
@@ -6381,7 +6379,7 @@ public class Server implements Runnable {
         Report r;
         // Unless there is a fire in the hex already, start one.
         if (!h.containsTerrain(Terrains.FIRE)
-                && game.getOptions().booleanOption("fire")) {
+                && game.getOptions().booleanOption("tacops_start_fire")) {
             r = new Report(3005);
             r.subject = subjectId;
             r.indent(2);
@@ -6416,7 +6414,7 @@ public class Server implements Runnable {
             h = game.getBoard().getHex(tempcoords);
             // Unless there is a fire in the hex already, start one.
             if (!h.containsTerrain(Terrains.FIRE)
-                    && game.getOptions().booleanOption("fire")) {
+                    && game.getOptions().booleanOption("tacops_start_fire")) {
                 r = new Report(3005);
                 r.subject = subjectId;
                 r.indent(2);
@@ -6785,7 +6783,7 @@ public class Server implements Runnable {
 
                     vPhaseReport.addAll(deliverInfernoMissiles(entity, entity, mf.getDamage()));
 
-                    if (game.getOptions().booleanOption("fire")) {
+                    if (game.getOptions().booleanOption("tacops_start_fire")) {
                         // start a fire in the targets hex
                         IHex h = game.getBoard().getHex(dest);
 
@@ -7079,7 +7077,7 @@ public class Server implements Runnable {
         r.subject = entity.getId();
         r.addDesc(entity);
         if (!hex.containsTerrain(Terrains.FIRE)
-                && game.getOptions().booleanOption("fire")) {
+                && game.getOptions().booleanOption("tacops_start_fire")) {
             r.messageId = 2175;
             hex.addTerrain(Terrains.getTerrainFactory().createTerrain(
                     Terrains.FIRE, 1));
@@ -8736,7 +8734,7 @@ public class Server implements Runnable {
         }
 
         // Ignore if fire is not enabled as a game option
-        if (!game.getOptions().booleanOption("fire")) {
+        if (!game.getOptions().booleanOption("tacops_start_fire")) {
             return false;
         }
         
@@ -15477,7 +15475,7 @@ public class Server implements Runnable {
             if (en instanceof Mech)
                 en.destroyLocation(Mech.LOC_CT);
 
-            if (game.getOptions().booleanOption("fire")) {
+            if (game.getOptions().booleanOption("tacops_start_fire")) {
                 // Light our hex on fire
                 final IHex curHex = game.getBoard().getHex(en.getPosition());
 
@@ -17594,7 +17592,7 @@ public class Server implements Runnable {
             vDesc.addElement(r);
         } else {
             Coords pos = en.getPosition();
-            if (game.getOptions().booleanOption("fire")) {
+            if (game.getOptions().booleanOption("tacops_start_fire")) {
                 IHex hex = game.getBoard().getHex(pos);
                 if (hex.containsTerrain(Terrains.WOODS)
                         || hex.containsTerrain(Terrains.JUNGLE)) {
@@ -18898,7 +18896,7 @@ public class Server implements Runnable {
 
         // The hex might be null due to spreadFire translation
         // goes outside of the board limit.
-        if (!game.getOptions().booleanOption("fire") || null == hex) {
+        if (!game.getOptions().booleanOption("tacops_start_fire") || null == hex) {
             return false;
         }
 
@@ -18971,13 +18969,6 @@ public class Server implements Runnable {
         Coords fireCoords = new Coords(x, y);
         hex.removeTerrain(Terrains.FIRE);
         sendChangedHex(fireCoords);
-        if (!game.getOptions().booleanOption("tacops_fire")) {
-            // only remove the 3 smoke hexes if under L2 rules!
-            int windDir = game.getPlanetaryConditions().getWindDirection();
-            removeSmoke(x, y, windDir);
-            removeSmoke(x, y, (windDir + 1) % 6);
-            removeSmoke(x, y, (windDir + 5) % 6);
-        }
         // fire goes out due to lack of fuel
         Report r = new Report(5170, Report.PUBLIC);
         r.add(fireCoords.getBoardNum());

@@ -42,7 +42,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
     @Override
     void DoEndPhaseChanges(Vector<Report> vPhaseReport) {
         game = server.getGame();
-        if (game.getOptions().booleanOption("fire")) {
+        if (game.getOptions().booleanOption("tacops_start_fire")) {
             this.vPhaseReport = vPhaseReport;
             resolveFire();
             this.vPhaseReport = null;
@@ -94,11 +94,9 @@ public class FireProcessor extends DynamicTerrainProcessor {
         // Build vector to send for updated buildings at once.
         Vector<Building> burningBldgs = new Vector<Building>();
 
-        // If we're in L3 rules, process smoke FIRST, before any fires spread or
+        // process smoke FIRST, before any fires spread or
         // smoke is produced.
-        if (game.getOptions().booleanOption("tacops_fire")) {
-            resolveSmoke();
-        }
+        resolveSmoke();
 
         // Cycle through all buildings, checking for fire.
         // ASSUMPTION: buildings don't lose 2 CF on the turn a fire starts.
@@ -217,12 +215,8 @@ public class FireProcessor extends DynamicTerrainProcessor {
             server.sendChangedCFBuildings(burningBldgs);
         }
 
-        // If we're in L3 rules, shift the wind.
-        // Determine wind won't change anything now unless user has 
-        // hit the checkbox for shifting wind direction and strength
-        //if (game.getOptions().booleanOption("tacops_fire")) {
-            game.getPlanetaryConditions().determineWind();
-        //}
+        // shift the wind.
+        game.getPlanetaryConditions().determineWind();
 
     } // End the ResolveFire() method
 

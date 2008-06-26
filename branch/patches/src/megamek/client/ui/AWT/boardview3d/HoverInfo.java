@@ -230,14 +230,8 @@ class HoverInfo implements Displayable {
                             new Integer(le.getLightSmoke())}));
                 }
                 if (le.getHeavySmoke() > 0) {
-                    if (game.getOptions().booleanOption("tacops_fire")) { //$NON-NLS-1$
-                        out.add(Messages.getString("BoardView1.HeavySmoke", new Object[]{ //$NON-NLS-1$
-                                new Integer(le.getHeavySmoke())}));
-                    }
-                    else {
-                        out.add(Messages.getString("BoardView1.Smoke", new Object[]{ //$NON-NLS-1$
-                                new Integer(le.getHeavySmoke())}));
-                    }
+                	out.add(Messages.getString("BoardView1.HeavySmoke", new Object[]{ //$NON-NLS-1$
+                			new Integer(le.getHeavySmoke())}));
                 }
                 if (le.isTargetCover()) {
                     out.add(Messages.getString("BoardView1.TargetPartialCover")); //$NON-NLS-1$
