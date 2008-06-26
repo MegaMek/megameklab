@@ -54,9 +54,9 @@ public class ISSilverBulletGauss extends GaussWeapon {
         this.criticals = 7;
         this.bv = 198;
         this.cost = 350000;
-        this.shortAV = 15;
-        this.medAV = 15;
-        this.longAV = 15;
+        this.shortAV = 9;
+        this.medAV = 9;
+        this.longAV = 9;
         this.maxRange = RANGE_LONG;
         this.ammoType = AmmoType.T_SBGAUSS;
         this.flags |= F_NO_AIM;
