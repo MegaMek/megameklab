@@ -25,6 +25,7 @@ import megamek.common.Entity;
 import megamek.common.IBoard;
 import megamek.common.IGame;
 import megamek.common.IHex;
+import megamek.common.PlanetaryConditions;
 import megamek.common.Report;
 import megamek.common.Terrains;
 
@@ -82,7 +83,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
         IBoard board = game.getBoard();
         int width = board.getWidth();
         int height = board.getHeight();
-        int windDirection = game.getWindDirection();
+        int windDirection = game.getPlanetaryConditions().getWindDirection();
         Report r;
 
         // Get the position map of all entities in the game.
@@ -194,7 +195,9 @@ public class FireProcessor extends DynamicTerrainProcessor {
                 }
                 // If the L3 smoke rule is off, add smoke normally, otherwise
                 // call the L3 method
-                if (currentHex.containsTerrain(Terrains.FIRE)
+                //If we are in a tornado then no smoke at all
+                boolean isTornado = (game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM); 
+                if (currentHex.containsTerrain(Terrains.FIRE) && !isTornado
                         && !game.getOptions().booleanOption("tacops_fire")) {
                     server.addSmoke(currentXCoord, currentYCoord, windDirection);
                     server.addSmoke(currentXCoord, currentYCoord,
@@ -202,7 +205,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
                     server.addSmoke(currentXCoord, currentYCoord,
                             (windDirection + 5) % 6);
                     board.initializeAround(currentXCoord, currentYCoord);
-                } else if (currentHex.containsTerrain(Terrains.FIRE)
+                } else if (currentHex.containsTerrain(Terrains.FIRE) && !isTornado
                         && game.getOptions().booleanOption("tacops_fire")) {
                     server.addL3Smoke(currentXCoord, currentYCoord);
                     board.initializeAround(currentXCoord, currentYCoord);
@@ -218,9 +221,11 @@ public class FireProcessor extends DynamicTerrainProcessor {
         }
 
         // If we're in L3 rules, shift the wind.
-        if (game.getOptions().booleanOption("tacops_fire")) {
-            game.determineWind();
-        }
+        // Determine wind won't change anything now unless user has 
+        // hit the checkbox for shifting wind direction and strength
+        //if (game.getOptions().booleanOption("tacops_fire")) {
+            game.getPlanetaryConditions().determineWind();
+        //}
 
     } // End the ResolveFire() method
 
@@ -295,8 +300,8 @@ public class FireProcessor extends DynamicTerrainProcessor {
         IBoard board = game.getBoard();
         int width = board.getWidth();
         int height = board.getHeight();
-        int windDir = game.getWindDirection();
-        int windStr = game.getWindStrength();
+        int windDir = game.getPlanetaryConditions().getWindDirection();
+        int windStr = game.getPlanetaryConditions().getWindStrength();
         class SmokeDrift { // hold the hex and level of the smoke cloud
             public Coords coords;
             public int size;
@@ -316,7 +321,8 @@ public class FireProcessor extends DynamicTerrainProcessor {
 
         // Cycle through all hexes, checking for smoke, IF the wind is higher
         // than calm! Calm means no drift!
-        if (windStr > 0) {
+        //can't create smoke in tornadoes!
+        if (windStr > PlanetaryConditions.WI_NONE && windStr < PlanetaryConditions.WI_TORNADO_F13) {
 
             debugTime("resolve smoke 1", true);
 
@@ -423,6 +429,11 @@ public class FireProcessor extends DynamicTerrainProcessor {
         Coords nextCoords = src.translated(windDir);
         IBoard board = game.getBoard(); 
 
+        //if it is no longer on the board then return it now to avoid getting null arguments later
+        if(!board.contains(nextCoords)) {
+        	return nextCoords;
+        }
+        
         //If the smoke moves into a hex that has a greate then 4 elevation drop it dissipates.
         if ( board.getHex(src).getElevation() - board.getHex(nextCoords).getElevation() > 4){
             return null;
@@ -441,8 +452,9 @@ public class FireProcessor extends DynamicTerrainProcessor {
                 return src;
         }
 
-        // if the wind is High and above smoke drifts farther
-        if (windStr > 2 && windStr < 5) {
+        // stronger wind causes smoke to drift farther
+        //FIXME: help, this is catching in a loop, ends up blowing off the map in all cases
+        if (windStr > PlanetaryConditions.WI_MOD_GALE) {
             return driftAddSmoke(nextCoords.x, nextCoords.y, windDir, windStr--); 
         }
 
@@ -456,9 +468,9 @@ public class FireProcessor extends DynamicTerrainProcessor {
      */
     public boolean driftSmokeDissipate(IHex smokeHex, int roll, int smokeSize, int windStr) {
         // Dissipate in various winds
-        if (roll > 10 || (roll > 9 && windStr == 2)
-                || (roll > 7 && windStr == 3)
-                || (roll > 5 && windStr == 4)) {
+        if (roll > 10 || (roll > 9 && windStr == PlanetaryConditions.WI_MOD_GALE)
+                || (roll > 7 && windStr == PlanetaryConditions.WI_STRONG_GALE)
+                || (roll > 5 && windStr == PlanetaryConditions.WI_STORM)) {
             smokeHex.removeTerrain(Terrains.SMOKE);
 
             if (smokeSize == 2) {
@@ -469,7 +481,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
             return true;
         }
         //All smoke goes bye bye in Tornados
-        if ( windStr > 4 ) {
+        if ( windStr > PlanetaryConditions.WI_STORM ) {
             smokeHex.removeTerrain(Terrains.SMOKE);
             smokeSize = 1;
             return true;

@@ -1874,7 +1874,7 @@ public class Server implements Runnable {
                 game.setupTeams();
                 applyBoardSettings();
                 game.setupRoundDeployment();
-                game.determineWind();
+                game.getPlanetaryConditions().determineWind();
                 game.setVictoryContext(new HashMap<String, Object>());
                 game.createVictoryConditions();
                 // If we add transporters for any Magnetic Clamp
@@ -2895,10 +2895,10 @@ public class Server implements Runnable {
         if (!abbreviatedReport) {
             // Wind direction and strength
             r = new Report(1025, Report.PUBLIC);
-            r.add(game.getStringWindDirection());
-            if (game.getWindStrength() != -1) {
+            r.add(game.getPlanetaryConditions().getWindDirName());
+            if (game.getPlanetaryConditions().getWindStrength() > 0) {
                 Report r2 = new Report(1030, Report.PUBLIC);
-                r2.add(game.getStringWindStrength());
+                r2.add(game.getPlanetaryConditions().getWindCurrentName());
                 r.newlines = 0;
                 addReport(r);
                 addReport(r2);
@@ -18961,7 +18961,7 @@ public class Server implements Runnable {
         sendChangedHex(fireCoords);
         if (!game.getOptions().booleanOption("tacops_fire")) {
             // only remove the 3 smoke hexes if under L2 rules!
-            int windDir = game.getWindDirection();
+            int windDir = game.getPlanetaryConditions().getWindDirection();
             removeSmoke(x, y, windDir);
             removeSmoke(x, y, (windDir + 1) % 6);
             removeSmoke(x, y, (windDir + 5) % 6);

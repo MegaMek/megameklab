@@ -87,11 +87,6 @@ public class Game implements Serializable, IGame {
     private boolean deploymentComplete = false;
 
     /** how's the weather? */
-    //TODO: move wind into planetary conditions
-    private int windDirection = -1;
-    private int windStrength = -1;
-    private String stringWindDirection;
-    private String stringWindStrength;
     private PlanetaryConditions planetaryConditions = new PlanetaryConditions();
     
     /** what round is it? */
@@ -1587,80 +1582,6 @@ public class Game implements Serializable, IGame {
         return getFirstDeployableEntityNum(turn);
     }
 
-    public void determineWind() {
-        String[] dirNames = { "North", "Northeast", "Southeast", "South",
-                "Southwest", "Northwest" };
-        String[] strNames = { "No Wind", "Light Gale", "Moderate Gale", "Strong Gale", "Storm", "Tornado F1", "Tornado F2", "Tornado F3", "Tornado F4" };
-
-        if (windDirection == -1) {
-            // Initial wind direction. If using level 2 rules, this
-            // will be the wind direction for the whole battle.
-            windDirection = Compute.d6(1) - 1;
-        } else if (getOptions().booleanOption("tacops_fire")) {
-            // Wind direction changes on a roll of 1 or 6
-            switch (Compute.d6()) {
-                case 1: // rotate clockwise
-                    windDirection = (windDirection + 1) % 6;
-                    break;
-                case 6: // rotate counter-clockwise
-                    windDirection = (windDirection + 5) % 6;
-            }
-        }
-        if (getOptions().booleanOption("tacops_fire")) {
-            if (windStrength == -1) {
-                // Initial wind strength
-                switch (Compute.d6()) {
-                    case 1:
-                    case 2:
-                        windStrength = 0;
-                        break;
-                    case 3:
-                        windStrength = 1;
-                        break;
-                    case 4:
-                        windStrength = 2;
-                        break;
-                    case 5:
-                        windStrength = 3;
-                        break;
-                    case 6:
-                        windStrength = 4;
-                        break;
-                }
-            } else {
-                // Wind strength changes on a roll of 1 or 6
-                switch (Compute.d6()) {
-                    case 1: // weaker
-                        if (windStrength > 0)
-                            windStrength--;
-                        break;
-                    case 6: // stronger
-                        if (windStrength < 8)
-                            windStrength++;
-                }
-            }
-            stringWindStrength = strNames[windStrength];
-        }
-
-        stringWindDirection = dirNames[windDirection];
-    }
-
-    public int getWindDirection() {
-        return windDirection;
-    }
-
-    public String getStringWindDirection() {
-        return stringWindDirection;
-    }
-
-    public int getWindStrength() {
-        return windStrength;
-    }
-
-    public String getStringWindStrength() {
-        return stringWindStrength;
-    }
-
     /**
      * Get the entities for the player.
      * 
@@ -2769,8 +2690,8 @@ public class Game implements Serializable, IGame {
             if ((flare.flags & Flare.F_IGNITED) != 0) {
                 flare.turnsToBurn--;
                 if ((flare.flags & Flare.F_DRIFTING) != 0) {
-                    int dir = getWindDirection();
-                    int str = getWindStrength();
+                    int dir = planetaryConditions.getWindDirection();
+                    int str = planetaryConditions.getWindStrength();
                     if (str > 0) {
                         flare.position = flare.position.translated(dir);
                         if (str == 3) {

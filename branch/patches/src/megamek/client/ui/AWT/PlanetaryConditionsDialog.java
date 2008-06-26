@@ -56,8 +56,10 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 	private Label labWind = new Label(Messages
 			.getString("PlanetaryConditionsDialog.labWind"), Label.CENTER); //$NON-NLS-1$
 	private Choice choWind = new Choice();
-	private Checkbox cShiftWinds = new Checkbox(Messages
-            .getString("PlanetaryConditionsDialog.shiftWinds"));
+	private Checkbox cShiftWindDir = new Checkbox(Messages
+            .getString("PlanetaryConditionsDialog.shiftWindDir"));
+	private Checkbox cShiftWindStr = new Checkbox(Messages
+            .getString("PlanetaryConditionsDialog.shiftWindStr"));
 	    	
 	private Panel panButtons = new Panel();	
 	private Button butOkay = new Button(Messages.getString("Okay")); //$NON-NLS-1$
@@ -189,8 +191,13 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.anchor = GridBagConstraints.WEST;
-        gridbag.setConstraints(cShiftWinds, c);
-        panOptions.add(cShiftWinds);
+        gridbag.setConstraints(cShiftWindDir, c);
+        panOptions.add(cShiftWindDir);
+        
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(cShiftWindStr, c);
+        panOptions.add(cShiftWindStr);
 
 	}
 	
@@ -219,7 +226,8 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		}
 		choWind.select(conditions.getWindStrength());	
 		
-		cShiftWinds.setState(conditions.shiftingWinds());
+		cShiftWindDir.setState(conditions.shiftingWindDirection());
+		cShiftWindStr.setState(conditions.shiftingWindStrength());
 	}
 	
 	public void send() {
@@ -228,7 +236,8 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		conditions.setLight(choLight.getSelectedIndex());
 		conditions.setWeather(choWeather.getSelectedIndex());
 		conditions.setWindStrength(choWind.getSelectedIndex());
-		conditions.setShiftingWinds(cShiftWinds.getState());
+		conditions.setShiftingWindDirection(cShiftWindDir.getState());
+		conditions.setShiftingWindStrength(cShiftWindStr.getState());
 		
 		client.getClient().sendPlanetaryConditions(conditions);
 	}

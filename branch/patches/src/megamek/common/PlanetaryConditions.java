@@ -70,21 +70,25 @@ public class PlanetaryConditions implements Serializable {
     public static final int WI_NONE        = 0;
     public static final int WI_LIGHT_GALE  = 1;
     public static final int WI_MOD_GALE    = 2;
-    public static final int WI_STRONG_GALE  = 3;
+    public static final int WI_STRONG_GALE = 3;
     public static final int WI_STORM       = 4;
     public static final int WI_TORNADO_F13 = 5;
     public static final int WI_TORNADO_F4  = 6;   
     
-    //set up the specific conditions
-    int lightConditions = WI_NONE;
-    int weatherConditions = WE_NONE;
-    int windStrength = WI_NONE;
-    boolean shiftWinds = false;
-    
-    
     private static String[] windNames = { "None", "Light Gale", "Moderate Gale", "Strong Gale", "Storm", "Tornado F1-F3", "Tornado F4"};
     public static final int WI_SIZE = windNames.length;
     
+    //wind direction  
+    private static String[] dirNames = { "North", "Northeast", "Southeast", "South","Southwest", "Northwest" };
+    public static final int DIR_SIZE = dirNames.length;
+    
+    //set up the specific conditions
+    private int lightConditions = WI_NONE;
+    private int weatherConditions = WE_NONE;
+    private int windStrength = WI_NONE;
+    private int windDirection = -1;
+    private boolean shiftWindDirection = false;
+    private boolean shiftWindStrength = false;
     
     /**
      * Constructor
@@ -98,7 +102,9 @@ public class PlanetaryConditions implements Serializable {
     	this.lightConditions = other.lightConditions;
     	this.weatherConditions = other.weatherConditions;
     	this.windStrength = other.windStrength;
-    	this.shiftWinds = other.shiftWinds;
+    	this.windDirection = other.windDirection;
+    	this.shiftWindDirection = other.shiftWindDirection;
+    	this.shiftWindStrength = other.shiftWindStrength;
     }
     
     /** clone! */
@@ -125,6 +131,10 @@ public class PlanetaryConditions implements Serializable {
             return Messages.getString("PlanetaryConditions." + windNames[type]);
         }
         throw new IllegalArgumentException("Unknown wind condition");
+    }
+    
+    public String getWindDirName() {
+            return dirNames[windDirection];
     }
     
     public String getLightCurrentName() {
@@ -281,6 +291,35 @@ public class PlanetaryConditions implements Serializable {
     	return penalty;
     }
     
+    public void determineWind() {  
+        if (windDirection == -1) {
+            // Initial wind direction. If using level 2 rules, this
+            // will be the wind direction for the whole battle.
+            windDirection = Compute.d6(1) - 1;
+        } else if (shiftWindDirection) {
+            // Wind direction changes on a roll of 1 or 6
+            switch (Compute.d6()) {
+                case 1: // rotate clockwise
+                    windDirection = (windDirection + 1) % 6;
+                    break;
+                case 6: // rotate counter-clockwise
+                    windDirection = (windDirection + 5) % 6;
+            }
+        }
+        if (shiftWindStrength) {
+        	// Wind strength changes on a roll of 1 or 6
+        	switch (Compute.d6()) {
+        	case 1: // weaker
+        		if (windStrength > 0)
+        			windStrength--;
+        		break;
+        	case 6: // stronger
+        		if (windStrength < WI_SIZE)
+        			windStrength++;
+        	}
+        }
+    }
+    
     //temperature
     //mud, snow, and ice
     
@@ -308,12 +347,28 @@ public class PlanetaryConditions implements Serializable {
     	return windStrength;
     }
     
-    public void setShiftingWinds(boolean b) {
-    	this.shiftWinds = b;
+    public void setWindDirection(int type) {
+    	this.windDirection = type;
     }
     
-    public boolean shiftingWinds() {
-    	return shiftWinds;
+    public int getWindDirection() {
+    	return windDirection;
+    }
+    
+    public void setShiftingWindDirection(boolean b) {
+    	this.shiftWindDirection = b;
+    }
+    
+    public boolean shiftingWindDirection() {
+    	return shiftWindDirection;
+    }
+    
+    public void setShiftingWindStrength(boolean b) {
+    	this.shiftWindStrength = b;
+    }
+    
+    public boolean shiftingWindStrength() {
+    	return shiftWindStrength;
     }
     
     

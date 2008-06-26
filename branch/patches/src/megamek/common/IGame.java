@@ -728,16 +728,6 @@ public interface IGame {
 
     public abstract int getNextDeployableEntityNum(GameTurn turn, int start);
 
-    public abstract void determineWind();
-
-    public abstract int getWindDirection();
-
-    public abstract String getStringWindDirection();
-
-    public abstract int getWindStrength();
-
-    public abstract String getStringWindStrength();
-
     /**
      * Get the entities for the player.
      * 
