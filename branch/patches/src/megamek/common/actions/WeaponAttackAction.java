@@ -634,7 +634,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                         }
                     }
                     if(onlyCluster) {
-                        toHit.addModifier(-1, "cluster LBX ammo");
+                        toHit.addModifier(-1, "cluster ammo");
                     }
                 }
             }

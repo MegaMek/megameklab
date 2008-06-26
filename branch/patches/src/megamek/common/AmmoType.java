@@ -86,7 +86,8 @@ public class AmmoType extends EquipmentType {
     public static final int     T_AR10              = 61;
     public static final int     T_SCREEN_LAUNCHER   = 62;
     public static final int     T_ALAMO             = 63;
-    public static final int     NUM_TYPES           = 64;
+    public static final int     T_IGAUSS_HEAVY      = 64;
+    public static final int     NUM_TYPES           = 65;
     
 
     // ammo flags
@@ -379,6 +380,7 @@ public class AmmoType extends EquipmentType {
         EquipmentType.addType(createISGaussAmmo());
         EquipmentType.addType(createISLTGaussAmmo());
         EquipmentType.addType(createISHVGaussAmmo());
+        EquipmentType.addType(createISIHVGaussAmmo());
         EquipmentType.addType(createISStreakSRM2Ammo());
         EquipmentType.addType(createISStreakSRM4Ammo());
         EquipmentType.addType(createISStreakSRM6Ammo());
@@ -2152,6 +2154,23 @@ public class AmmoType extends EquipmentType {
         ammo.ammoType = AmmoType.T_GAUSS_HEAVY;
         ammo.shots = 4;
         ammo.bv = 43;
+        ammo.cost = 20000;
+
+        return ammo;
+    }
+    
+    private static AmmoType createISIHVGaussAmmo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_IS_LEVEL_2;
+        ammo.name = "Improved Heavy Gauss Ammo";
+        ammo.setInternalName("ISImprovedHeavyGauss Ammo");
+        ammo.addLookupName("IS Improved Heavy Gauss Rifle Ammo");
+        ammo.damagePerShot = 22;
+        ammo.explosive = false;
+        ammo.ammoType = AmmoType.T_IGAUSS_HEAVY;
+        ammo.shots = 4;
+        ammo.bv = 48;
         ammo.cost = 20000;
 
         return ammo;
@@ -5930,14 +5949,16 @@ public class AmmoType extends EquipmentType {
         ammo.addLookupName("IS SBGauss Rifle Ammo");
         ammo.addLookupName("ISSBGauss Ammo");
         ammo.addLookupName("ISSBGaussRifleAmmo");
+        ammo.explosive = false;
         ammo.damagePerShot = 1;
         ammo.rackSize = 15;
         ammo.ammoType = AmmoType.T_SBGAUSS;
         ammo.munitionType = M_CLUSTER;
         ammo.shots = 8;
-        ammo.bv = 21;
+        ammo.bv = 25;
         ammo.cost = 25000;
-        
+        ammo.toHitModifier = -1;
+
         return ammo;
     }
 

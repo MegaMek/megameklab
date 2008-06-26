@@ -501,9 +501,11 @@ public class WeaponType extends EquipmentType {
         // Gausses
         addType(new ISGaussRifle());
         addType(new ISGaussRiflePrototype());
+        addType(new ISSilverBulletGauss());
         addType(new CLGaussRifle());
         addType(new ISLGaussRifle());
         addType(new ISHGaussRifle());
+        addType(new ISIHGaussRifle());
         addType(new CLHAG20());
         addType(new CLHAG30());
         addType(new CLHAG40());

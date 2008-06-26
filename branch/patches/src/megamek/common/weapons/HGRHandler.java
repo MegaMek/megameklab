@@ -19,6 +19,7 @@ package megamek.common.weapons;
 
 import java.util.Vector;
 
+import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Compute;
 import megamek.common.EntityWeightClass;
@@ -85,7 +86,10 @@ public class HGRHandler extends AmmoWeaponHandler {
     protected int calcDamagePerHit() {
         float toReturn;
         int nRange = ae.getPosition().distance(target.getPosition());
-        if (nRange <= wtype.getShortRange()) {
+        if ( wtype.getAmmoType() == AmmoType.T_IGAUSS_HEAVY ){
+            toReturn = wtype.getDamage();
+        }
+        else if (nRange <= wtype.getShortRange()) {
             toReturn = 25;
         } else if (nRange <= wtype.getMediumRange()) {
             toReturn = 20;
