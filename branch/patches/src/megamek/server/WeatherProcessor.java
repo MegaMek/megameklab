@@ -95,7 +95,6 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
         // Cycle through all hexes, checking for screens
         debugTime("resolve weather 1", true);
 
-        //TODO: send out reports
         if(conditions.getWeather() == PlanetaryConditions.WE_MOD_SNOW && game.getBoard().onGround()) {
         	modSnowTurn = modSnowTurn + 1;
         	if(modSnowTurn == 9) {
@@ -106,6 +105,44 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
         		ice = true;
         	}
         }
+        if(conditions.getWeather() == PlanetaryConditions.WE_HEAVY_SNOW && game.getBoard().onGround()) {  
+        	heavySnowTurn = heavySnowTurn + 1;
+        	if(heavySnowTurn == 4) {
+        		lightSnow = true;
+        	}
+        	if(heavySnowTurn == 14) {
+        		deepSnow = true;
+        	}
+        	if(heavySnowTurn == 19) {
+        		ice = true;
+        	}
+        }
+        if(conditions.getWeather() == PlanetaryConditions.WE_SLEET && game.getBoard().onGround()) {  
+        	sleetTurn = sleetTurn + 1;
+        	if(sleetTurn == 14) {
+        		ice = true;
+        	}
+        }
+        if(conditions.getWeather() == PlanetaryConditions.WE_ICE_STORM && game.getBoard().onGround()) {  
+        	iceTurn = iceTurn + 1;
+        	if(iceTurn == 14) {
+        		ice = true;
+        	}
+        }
+        
+        if(lightSnow) {
+        	Report r = new Report(5505, Report.PUBLIC);
+            vPhaseReport.addElement(r);
+        }
+        if(deepSnow) {
+        	Report r = new Report(5510, Report.PUBLIC);
+            vPhaseReport.addElement(r);
+        }
+        if(ice) {
+        	Report r = new Report(5515, Report.PUBLIC);
+            vPhaseReport.addElement(r);
+        }
+        	
         
         for (int currentXCoord = 0; currentXCoord < width; currentXCoord++ ) {
             for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
