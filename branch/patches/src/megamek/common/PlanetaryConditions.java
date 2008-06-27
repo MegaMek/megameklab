@@ -348,8 +348,42 @@ public class PlanetaryConditions implements Serializable {
     	
     	return mod;
     }
+
+    /*
+     * Do a roll for these weather conditions putting out fire
+     * return boolean 
+     */
+    public boolean putOutFire() {  		
+    	int roll = Compute.d6(2);
+    	switch(weatherConditions) {
+    	case(WE_LIGHT_HAIL):
+    	case(WE_LIGHT_RAIN):
+    	case(WE_LIGHT_SNOW):
+    		roll = roll + 1;
+    		break;
+    	case(WE_HEAVY_HAIL):
+    	case(WE_MOD_RAIN):
+    	case(WE_MOD_SNOW):
+    		roll = roll + 2;
+    		break;
+    	case(WE_HEAVY_RAIN):
+    	case(WE_HEAVY_SNOW):
+    		roll = roll + 3;
+    		break;
+    	case(WE_DOWNPOUR):
+    		roll = roll + 4;
+    		break;
+    	default:
+    		roll = -1;
+    	}
+    	
+    	if(roll > 10) {
+    		return true;
+    	}
+    	
+      	return false;
+    }
     
-    //temperature
     //mud, snow, and ice
     
     public void setLight(int type) {

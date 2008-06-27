@@ -375,6 +375,7 @@ public class Server implements Runnable {
         terrainProcessors.add(new GeyserProcessor(this));
         terrainProcessors.add(new ElevatorProcessor(this));
         terrainProcessors.add(new ScreenProcessor(this));
+        terrainProcessors.add(new WeatherProcessor(this));
 
         // Fully initialised, now accept connections
         connector = new Thread(this, "Connection Listener");
