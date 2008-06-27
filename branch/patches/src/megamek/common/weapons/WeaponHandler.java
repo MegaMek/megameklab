@@ -386,7 +386,8 @@ public class WeaponHandler implements AttackHandler, Serializable {
      * @return an <code>int</code> representing the damage dealt per hit.
      */
     protected int calcDamagePerHit() {
-        double toReturn = wtype.getDamage();
+        int nRange = ae.getPosition().distance(target.getPosition());
+        double toReturn = wtype.getDamage(nRange);
         // during a swarm, all damage gets applied as one block to one location
         if (ae instanceof BattleArmor
                 && weapon.getLocation() == BattleArmor.LOC_SQUAD

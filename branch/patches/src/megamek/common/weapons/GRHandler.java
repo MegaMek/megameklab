@@ -52,8 +52,8 @@ public class GRHandler extends AmmoWeaponHandler {
      * @see megamek.common.weapons.WeaponHandler#calcDamagePerHit()
      */
     protected int calcDamagePerHit() {
-        float toReturn = wtype.getDamage();
         int nRange = ae.getPosition().distance(target.getPosition());
+        float toReturn = wtype.getDamage(nRange);
 
         if ( game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG] ) {
             toReturn -=1;

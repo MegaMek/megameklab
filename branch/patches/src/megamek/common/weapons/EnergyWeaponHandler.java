@@ -48,8 +48,8 @@ public class EnergyWeaponHandler extends WeaponHandler {
      * @see megamek.common.weapons.WeaponHandler#calcDamagePerHit()
      */
     protected int calcDamagePerHit() {
-        double toReturn = wtype.getDamage();
         int nRange = ae.getPosition().distance(target.getPosition());
+        double toReturn = wtype.getDamage(nRange);
         
         if ( game.getOptions().booleanOption("tacops_energy_weapons") && wtype.hasModes()){
             toReturn = Compute.dialDownDamage(weapon, wtype,nRange);

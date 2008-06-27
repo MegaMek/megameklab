@@ -38,6 +38,7 @@ public class ISSmallVariableSpeedPulseLaser extends VariableSpeedPulseLaserWeapo
         this.name = "Small VSP";
         this.setInternalName("ISSmallVSPLaser");
         this.setInternalName("ISSVSPL");
+        this.setInternalName("ISSmallVariableSpeedLaser");
         this.heat = 3;
         this.damage = WeaponType.DAMAGE_VARIABLE;
         this.toHitModifier = -4;

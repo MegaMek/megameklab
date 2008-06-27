@@ -37,6 +37,7 @@ public class ISMediumVariableSpeedPulseLaser extends VariableSpeedPulseLaserWeap
         this.name = "Medium VSP";
         this.setInternalName("ISMediumVSPLaser");
         this.setInternalName("ISMVSPL");
+        this.setInternalName("ISMediumVariableSpeedLaser");
         this.heat = 7;
         this.damage = DAMAGE_VARIABLE;
         this.toHitModifier = -4;

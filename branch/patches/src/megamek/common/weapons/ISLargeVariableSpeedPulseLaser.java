@@ -38,6 +38,7 @@ public class ISLargeVariableSpeedPulseLaser extends VariableSpeedPulseLaserWeapo
         this.name = "Large VSP";
         this.setInternalName("ISLargeVSPLaser");
         this.setInternalName("ISLVSPL");
+        this.setInternalName("ISLargeVariableSpeedLaser");
         this.heat = 10;
         this.damage = WeaponType.DAMAGE_VARIABLE;
         this.toHitModifier = -4;
