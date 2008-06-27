@@ -146,7 +146,6 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedGroundMovement, "tacops_taking_damage", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_leg_damage", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_walk_backwards", false); //$NON-NLS-1$
-        addOption(advancedGroundMovement, "vehicle_fires", false); //$NON-NLS-1$
 
         
         IBasicOptionGroup planetaryConditions = addGroup("planetaryConditions"); //$NON-NLS-1$

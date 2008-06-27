@@ -1980,7 +1980,7 @@ public class Server implements Runnable {
                 applyBuildingDamage();
                 checkForPSRFromDamage();
                 addReport(resolvePilotingRolls()); // Skids cause damage in movement phase
-                checkForFlamingDeath();
+                checkForFlamingDamage();
                 checkForTeleMissileAttacks();
                 // check phase report
                 if (vPhaseReport.size() > 1) {
@@ -5169,12 +5169,7 @@ public class Server implements Runnable {
                         && !lastPos.equals(curPos)
                         && step.getMovementType() != IEntityMovementType.MOVE_JUMP
                         && step.getElevation() <= 1) {
-                    if (game.getOptions().booleanOption("vehicle_fires")
-                            && entity instanceof Tank) {
-                        checkForVehicleFire((Tank) entity, false);
-                    } else {
-                        doFlamingDeath(entity);
-                    }
+                	doFlamingDamage(entity);
                 }
             }
             // check for extreme gravity movement
@@ -6608,10 +6603,6 @@ public class Server implements Runnable {
                     vPhaseReport.add(r);
                     te.heatFromExternal += 2 * missiles;
                 } else if (te instanceof Tank) {
-                    if (game.getOptions().booleanOption("vehicle_fires")
-                            && te instanceof Tank) {
-                        vPhaseReport.addAll(checkForVehicleFire((Tank) te, true));
-                    }
                     int direction = Compute.targetSideTable(ae, te);
                     while (missiles-- > 0) {
                         HitData hit = te.rollHitLocation(ToHitData.HIT_NORMAL,
@@ -12232,13 +12223,8 @@ public class Server implements Runnable {
                 entity.heatBuildup = 0;
                 entity.heatFromExternal = 0;
 
-                if (game.getOptions().booleanOption("vehicle_fires")
-                        && entity instanceof Tank) {
-                    addReport(resolveVehicleFire((Tank) entity, true));
-                }
-                // If the unit is hit with an Inferno, do flaming death test.
-                else if (entity.infernos.isStillBurning()) {
-                    doFlamingDeath(entity);
+                if (entity.infernos.isStillBurning()) {
+                    doFlamingDamage(entity);
                 }
                 continue;
             }
@@ -12768,12 +12754,13 @@ public class Server implements Runnable {
     }
 
     /**
-     * Resolve Flaming Death for the given Entity
-     * 
+     * Resolve Flaming Damage for the given Entity
+     * Taharqa: This is now updated to TacOps rules which is much more lenient
+     * So I have change the name to Flaming Damage rather than flaming death
      * @param entity The <code>Entity</code> that may experience flaming
-     *            death.
+     *            damage.
      */
-    private void doFlamingDeath(Entity entity) {
+    private void doFlamingDamage(Entity entity) {
         Report r;
         int boomroll = Compute.d6(2);
         // Infantry are unaffected by fire while they're still swarming.
@@ -12792,7 +12779,8 @@ public class Server implements Runnable {
             }
         }
         // Battle Armor squads equipped with fire protection
-        // gear automatically avoid flaming death.
+        // gear automatically avoid flaming damage
+        //TODO: can conv. infantry mount fire-resistant armor?
         for (Mounted mount : entity.getMisc()) {
             EquipmentType equip = mount.getType();
             if (BattleArmor.FIRE_PROTECTION.equals(equip.getInternalName())) {
@@ -12804,6 +12792,12 @@ public class Server implements Runnable {
             }
         }
 
+        //mechs shouldn't be here, but just in case
+        //TODO: what to do with Aeros?
+        if(entity instanceof Mech) {
+        	return;
+        }
+        
         // Must roll 8+ to survive...
         r = new Report(5100);
         r.subject = entity.getId();
@@ -12817,7 +12811,55 @@ public class Server implements Runnable {
             // eek
             r.choose(false);
             addReport(r);
-            addReport(destroyEntity(entity, "fire", false, false));
+            //Taharqa: TacOps rules, protos and vees no longer die instantly (hurray!)
+            if(entity instanceof Tank) {
+            	int bonus = -2;
+            	if(entity instanceof SupportTank || entity instanceof SupportVTOL) {
+            		bonus = 0;
+            	}
+            	//roll a critical hit
+            	addReport(criticalTank((Tank)entity, Tank.LOC_FRONT, bonus));
+            	Report.addNewline(vPhaseReport);
+            }
+            else if(entity instanceof Protomech) {
+            	//this code is taken from inferno hits
+            	HitData hit = entity.rollHitLocation(ToHitData.HIT_NORMAL,
+                        ToHitData.SIDE_FRONT);
+                if (hit.getLocation() == Protomech.LOC_NMISS) {
+                    r = new Report(6035);
+                    r.subject = entity.getId();
+                    r.indent(1);
+                    vPhaseReport.add(r);
+                } else {
+                    r = new Report(6690);
+                    r.subject = entity.getId();
+                    r.indent(1);
+                    r.add(entity.getLocationName(hit));
+                    vPhaseReport.add(r);
+                    entity.destroyLocation(hit.getLocation());
+                    // Handle Protomech pilot damage
+                    // due to location destruction
+                    int hits = Protomech.POSSIBLE_PILOT_DAMAGE[hit
+                            .getLocation()]
+                            - ((Protomech) entity).getPilotDamageTaken(hit
+                                    .getLocation());
+                    if (hits > 0) {
+                        vPhaseReport.addAll(damageCrew(entity, hits));
+                        ((Protomech) entity).setPilotDamageTaken(hit
+                                .getLocation(),
+                                Protomech.POSSIBLE_PILOT_DAMAGE[hit
+                                        .getLocation()]);
+                    }
+                    if (entity.getTransferLocation(hit).getLocation() == Entity.LOC_DESTROYED) {
+                        vPhaseReport.addAll(destroyEntity(entity,
+                                "flaming death", false, true));
+                        Report.addNewline(vPhaseReport);
+                    }
+                }
+            } else {
+            	//sucks to be you
+            	addReport(destroyEntity(entity, "fire", false, false));
+            }
         }
     }
 
@@ -12893,7 +12935,7 @@ public class Server implements Runnable {
      * Checks to see if any non-mech units are standing in fire. Called at the
      * end of the movement phase
      */
-    public void checkForFlamingDeath() {
+    public void checkForFlamingDamage() {
         for (Enumeration<Entity> i = game.getEntities(); i.hasMoreElements();) {
             final Entity entity = i.nextElement();
             if (null == entity.getPosition() || entity instanceof Mech
@@ -12904,12 +12946,7 @@ public class Server implements Runnable {
             final IHex curHex = game.getBoard().getHex(entity.getPosition());
             if (curHex.containsTerrain(Terrains.FIRE)
                     && entity.getElevation() <= 1) {
-                if (game.getOptions().booleanOption("vehicle_fires")
-                        && entity instanceof Tank) {
-                    addReport(checkForVehicleFire((Tank) entity, false));
-                } else {
-                    doFlamingDeath(entity);
-                }
+            	doFlamingDamage(entity);              
             }
         }
     }
