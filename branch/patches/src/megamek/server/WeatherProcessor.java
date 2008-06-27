@@ -20,6 +20,7 @@ import megamek.common.Coords;
 import megamek.common.IBoard;
 import megamek.common.IGame;
 import megamek.common.IHex;
+import megamek.common.ITerrainFactory;
 import megamek.common.PlanetaryConditions;
 import megamek.common.Report;
 import megamek.common.Terrains;
@@ -29,15 +30,23 @@ import megamek.common.Terrains;
  * What will happen here:
  *  - add light and heavy snow for snowfall
  *  - add ice for snowfall, sleet, and ice storm
- *  - add rapids and torrent for winds
- *  - add mud, rapids, and torrent for rain
- *  - put out fires (must be called after fire processor)
+ *  - add/take away(?) rapids and torrent for winds
+ *  - add mud, rapids, and torrent for rain (no that has to be done before play starts so it is in
+ *    server.applyBoardSettings()
+ *  - put out fires (DONE)
  */
 
 public class WeatherProcessor extends DynamicTerrainProcessor {
 
     private IGame game;
     Vector<Report> vPhaseReport;
+    
+    //track turns of snow, sleet, and ice
+    //do it this way because we may eventually implement more customizable conditions
+    int modSnowTurn = 0;
+    int heavySnowTurn = 0;
+    int sleetTurn = 0;
+    int iceTurn = 0;
     
     public WeatherProcessor(Server server) {
         super(server);
@@ -75,13 +84,29 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
     }
 
     private void resolveWeather() {
+    	ITerrainFactory tf = Terrains.getTerrainFactory();
         IBoard board = game.getBoard();
         int width = board.getWidth();
         int height = board.getHeight();
         PlanetaryConditions conditions = game.getPlanetaryConditions();
+        boolean lightSnow = false;
+        boolean deepSnow = false;
+        boolean ice = false;
         // Cycle through all hexes, checking for screens
         debugTime("resolve weather 1", true);
 
+        //TODO: send out reports
+        if(conditions.getWeather() == PlanetaryConditions.WE_MOD_SNOW && game.getBoard().onGround()) {
+        	modSnowTurn = modSnowTurn + 1;
+        	if(modSnowTurn == 9) {
+        		lightSnow = true;
+        	}
+        	if(modSnowTurn == 19) {
+        		deepSnow = true;
+        		ice = true;
+        	}
+        }
+        
         for (int currentXCoord = 0; currentXCoord < width; currentXCoord++ ) {
             for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
                 Coords currentCoords = new Coords(currentXCoord, currentYCoord);
@@ -96,9 +121,30 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
 
                     currentHex.removeTerrain(Terrains.FIRE);
                     server.sendChangedHex(currentCoords);                   
+                }   
+                
+                if(ice && !currentHex.containsTerrain(Terrains.ICE) 
+                		&& currentHex.containsTerrain(Terrains.WATER)) {
+                	currentHex.addTerrain(tf.createTerrain(Terrains.ICE, currentHex.getElevation()));
+                	server.sendChangedHex(currentCoords);
+                }
+                
+                if(lightSnow
+                		&& !currentHex.containsTerrain(Terrains.THIN_SNOW) && !currentHex.containsTerrain(Terrains.DEEP_SNOW)
+                		&& !(currentHex.containsTerrain(Terrains.WATER) && !currentHex.containsTerrain(Terrains.ICE))) {
+                	currentHex.addTerrain(tf.createTerrain(Terrains.THIN_SNOW, currentHex.getElevation()));
+                	server.sendChangedHex(currentCoords);
+                }
+                
+                if(deepSnow && !currentHex.containsTerrain(Terrains.DEEP_SNOW) 
+                		&& !(currentHex.containsTerrain(Terrains.WATER) && !currentHex.containsTerrain(Terrains.ICE))) {
+                	currentHex.addTerrain(tf.createTerrain(Terrains.DEEP_SNOW, currentHex.getElevation()));
+                	if(currentHex.containsTerrain(Terrains.THIN_SNOW)) {
+                		currentHex.removeTerrain(Terrains.THIN_SNOW);
+                	}
+                	server.sendChangedHex(currentCoords);
                 }
             }
-
         }
         debugTime("resolve weather 1 end", true);
     }

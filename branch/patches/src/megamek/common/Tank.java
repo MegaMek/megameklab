@@ -278,7 +278,7 @@ public class Tank extends Entity implements Serializable {
                         || hex.containsTerrain(Terrains.RUBBLE)
                         || hex.containsTerrain(Terrains.MAGMA)
                         || hex.containsTerrain(Terrains.JUNGLE)
-                        || hex.containsTerrain(Terrains.SNOW)
+                        || hex.containsTerrain(Terrains.DEEP_SNOW)
                         || hex.terrainLevel(Terrains.GEYSER) == 2;
             case IEntityMovementMode.HOVER:
                 return hex.containsTerrain(Terrains.WOODS)
@@ -844,6 +844,12 @@ public class Tank extends Entity implements Serializable {
         if (driverHit)
             prd.addModifier(2, "driver injured");
 
+        //are we wheeled and in light snow?
+        IHex hex = game.getBoard().getHex(getPosition());
+        if(null != hex && getMovementMode() == IEntityMovementMode.WHEELED && hex.containsTerrain(Terrains.THIN_SNOW)) {
+        	prd.addModifier(1, "thin snow");
+        }
+        
         // VDNI bonus?
         if (getCrew().getOptions().booleanOption("vdni")
                 && !getCrew().getOptions().booleanOption("bvdni")) {

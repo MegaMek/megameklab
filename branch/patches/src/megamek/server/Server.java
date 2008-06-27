@@ -5854,7 +5854,7 @@ public class Server implements Runnable {
             // jumped into swamp? maybe stuck!
             if (curHex.containsTerrain(Terrains.SWAMP)
                     || curHex.containsTerrain(Terrains.MAGMA)
-                    || curHex.containsTerrain(Terrains.SNOW)
+                    || curHex.containsTerrain(Terrains.DEEP_SNOW)
                     || curHex.containsTerrain(Terrains.MUD)
                     || curHex.containsTerrain(Terrains.TUNDRA)) {
                 if (entity instanceof Mech) {
@@ -5868,7 +5868,7 @@ public class Server implements Runnable {
                             entity.getId(), 5, "entering boggy terrain");
                     if (curHex.containsTerrain(Terrains.MAGMA)
                             || curHex.containsTerrain(Terrains.MUD)
-                            || curHex.containsTerrain(Terrains.SNOW)
+                            || curHex.containsTerrain(Terrains.DEEP_SNOW)
                             || curHex.containsTerrain(Terrains.TUNDRA))
                         roll.append(new PilotingRollData(entity.getId(), -1,
                                 "avoid bogging down"));

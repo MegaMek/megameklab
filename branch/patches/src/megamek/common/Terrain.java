@@ -257,7 +257,7 @@ public class Terrain implements ITerrain, Serializable {
                 return (level == 2) ? 4 : 1;
             case Terrains.TUNDRA:
             case Terrains.SAND:
-            case Terrains.SNOW:
+            case Terrains.DEEP_SNOW:
             case Terrains.MUD:
                 return 1;
             case Terrains.GEYSER:
@@ -283,7 +283,7 @@ public class Terrain implements ITerrain, Serializable {
                 return level;
             case Terrains.JUNGLE:
                 return level + 1;
-            case Terrains.SNOW:
+            case Terrains.DEEP_SNOW:
             case Terrains.MUD:
             case Terrains.ROUGH:
             case Terrains.RAPIDS:
@@ -293,6 +293,7 @@ public class Terrain implements ITerrain, Serializable {
                 return 1;
             case Terrains.RUBBLE:
                 return 1;
+            case Terrains.THIN_SNOW:
             case Terrains.SAND:
                 if (moveType == IEntityMovementMode.WHEELED
                         || moveType == IEntityMovementMode.INF_JUMP
