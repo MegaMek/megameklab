@@ -67,6 +67,7 @@ public class Compute {
     public static final int ARC_RIGHT_BROADSIDE =22;
     public static final int ARC_LEFT_SPHERE_GROUND = 23;
     public static final int ARC_RIGHT_SPHERE_GROUND =24;
+    public static final int ARC_TURRET = 25;
 
     public static final int TYPE_IS = 0;
     public static final int TYPE_CLAN = 1;
@@ -2243,6 +2244,8 @@ public class Compute {
             return fa >= 180 && fa < 360;
         case ARC_RIGHT_SPHERE_GROUND:
             return fa >= 0 && fa < 180;
+        case ARC_TURRET:
+            return fa >= 330 || fa <= 30;
         default:
             return false;
         }
