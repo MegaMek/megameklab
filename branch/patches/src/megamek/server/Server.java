@@ -19003,6 +19003,12 @@ public class Server implements Runnable {
      * @param y The <code>int</code> y-coordinate of the hex
      */
     public void addSmoke(int x, int y, int windDir) {
+    	
+    	//if a tornado, then no smoke!
+    	if(game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM) {
+    		return;
+    	}
+    	
         IBoard board = game.getBoard();
         Coords smokeCoords = new Coords(Coords.xInDir(x, y, windDir), Coords
                 .yInDir(x, y, windDir));

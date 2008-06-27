@@ -319,87 +319,80 @@ public class FireProcessor extends DynamicTerrainProcessor {
 
         Vector<SmokeDrift> smokeToAdd = new Vector<SmokeDrift>();
 
-        // Cycle through all hexes, checking for smoke, IF the wind is higher
-        // than calm! Calm means no drift!
-        //can't create smoke in tornadoes!
-        //FIXME: This will cause smoke to not dissipate under certain weather conditions
-        if (windStr > PlanetaryConditions.WI_NONE && windStr < PlanetaryConditions.WI_TORNADO_F13) {
+        // Cycle through all hexes, checking for smoke
+        debugTime("resolve smoke 1", true);
 
-            debugTime("resolve smoke 1", true);
+        for (int currentXCoord = 0; currentXCoord < width; currentXCoord++) {
 
-            for (int currentXCoord = 0; currentXCoord < width; currentXCoord++) {
-
-                for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
-                    Coords currentCoords = new Coords(currentXCoord,currentYCoord);
-                    IHex currentHex = board.getHex(currentXCoord, currentYCoord);
-                    int tempWindStr = windStr;
-                    int tempWindDir = windDir;
-                    // check for existence of smoke, then add it to the
-                    // vector...if the wind is not Calm!
-                    if (currentHex.containsTerrain(Terrains.SMOKE)) {
-                        int smokeLevel = currentHex.terrainLevel(Terrains.SMOKE);
-                        Coords smokeCoords = driftAddSmoke(currentXCoord,currentYCoord, tempWindDir, tempWindStr);
+        	for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
+        		Coords currentCoords = new Coords(currentXCoord,currentYCoord);
+        		IHex currentHex = board.getHex(currentXCoord, currentYCoord);
+        		int tempWindStr = windStr;
+        		int tempWindDir = windDir;
+        		// check for existence of smoke, then add it to the
+        		// vector...if the wind is not Calm!
+        		if (currentHex.containsTerrain(Terrains.SMOKE)) {
+        			int smokeLevel = currentHex.terrainLevel(Terrains.SMOKE);
+        			Coords smokeCoords = driftAddSmoke(currentXCoord,currentYCoord, tempWindDir, tempWindStr);
                         
-                        // System.out.println(currentCoords.toString() + " to "
-                        // + smokeCoords.toString());
-                        //Smoke has Dissipated by moving into a hex with a greater then 4 elevation drop.
-                        if ( smokeCoords == null ){
-                            Report r = new Report(5220, Report.PUBLIC);
-                            r.add(currentCoords.getBoardNum());
-                            vPhaseReport.addElement(r);
+        			// System.out.println(currentCoords.toString() + " to "
+        			// + smokeCoords.toString());
+        			//Smoke has Dissipated by moving into a hex with a greater then 4 elevation drop.
+        			if ( smokeCoords == null ){
+        				Report r = new Report(5220, Report.PUBLIC);
+        				r.add(currentCoords.getBoardNum());
+        				vPhaseReport.addElement(r);
                             
-                        }
-                        else if (board.contains(smokeCoords)) { // don't add it to
-                                                            // the vector if
-                                                            // it's not on
-                                                            // board!
-                            smokeToAdd.addElement(new SmokeDrift(new Coords(smokeCoords), smokeLevel));
-                        } else {
-                            // report that the smoke has blown off the map
-                            Report r = new Report(5230, Report.PUBLIC);
-                            r.add(currentCoords.getBoardNum());
-                            vPhaseReport.addElement(r);
-                        }
-                        currentHex.removeTerrain(Terrains.SMOKE);
-                        server.sendChangedHex(currentCoords);
+        			}
+        			else if (board.contains(smokeCoords)) { // don't add it to
+        				// the vector if
+        				// it's not on
+        				// board!
+        				smokeToAdd.addElement(new SmokeDrift(new Coords(smokeCoords), smokeLevel));
+        			} else {
+        				// report that the smoke has blown off the map
+        				Report r = new Report(5230, Report.PUBLIC);
+        				r.add(currentCoords.getBoardNum());
+        				vPhaseReport.addElement(r);
+        			}
+        			currentHex.removeTerrain(Terrains.SMOKE);
+        			server.sendChangedHex(currentCoords);
+        		}
 
-                    }
+        	} // end the loop through Y coordinates
+        } // end the loop through X coordinates
 
-                } // end the loop through Y coordinates
-            } // end the loop through X coordinates
+        debugTime("resolve smoke 1 end, resolve smoke 2 begin", true);
 
-            debugTime("resolve smoke 1 end, resolve smoke 2 begin", true);
+        // Cycle through the vector and add the drifted smoke
+        for (int sta = 0; sta < smokeToAdd.size(); sta++) {
+        	SmokeDrift drift = smokeToAdd.elementAt(sta);
+        	Coords smokeCoords = drift.coords;
+        	int smokeSize = drift.size;
+        	IHex smokeHex = game.getBoard().getHex(smokeCoords);
+        	smokeHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SMOKE, smokeSize));
+        	server.sendChangedHex(smokeCoords);
+        }
 
-            // Cycle through the vector and add the drifted smoke
-            for (int sta = 0; sta < smokeToAdd.size(); sta++) {
-                SmokeDrift drift = smokeToAdd.elementAt(sta);
-                Coords smokeCoords = drift.coords;
-                int smokeSize = drift.size;
-                IHex smokeHex = game.getBoard().getHex(smokeCoords);
-                smokeHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SMOKE, smokeSize));
-                server.sendChangedHex(smokeCoords);
-            }
+        debugTime("resolve smoke 2 end, resolve smoke 3 begin", true);
 
-            debugTime("resolve smoke 2 end, resolve smoke 3 begin", true);
+        // Cycle through the vector again and dissipate the smoke, then
+        // reporting it
+        for (int dis = 0; dis < smokeToAdd.size(); dis++) {
+        	SmokeDrift drift = smokeToAdd.elementAt(dis);
+        	Coords smokeCoords = drift.coords;
+        	int smokeSize = drift.size;
+        	IHex smokeHex = game.getBoard().getHex(smokeCoords);
+        	int roll = Compute.d6(2);
 
-            // Cycle through the vector again and dissipate the smoke, then
-            // reporting it
-            for (int dis = 0; dis < smokeToAdd.size(); dis++) {
-                SmokeDrift drift = smokeToAdd.elementAt(dis);
-                Coords smokeCoords = drift.coords;
-                int smokeSize = drift.size;
-                IHex smokeHex = game.getBoard().getHex(smokeCoords);
-                int roll = Compute.d6(2);
+        	boolean smokeDis = driftSmokeDissipate(smokeHex, roll,smokeSize, windStr);
+        	driftSmokeReport(smokeCoords, smokeSize, smokeDis);
+        	server.sendChangedHex(smokeCoords);
+        }
 
-                boolean smokeDis = driftSmokeDissipate(smokeHex, roll,smokeSize, windStr);
-                driftSmokeReport(smokeCoords, smokeSize, smokeDis);
-                server.sendChangedHex(smokeCoords);
-            }
+        debugTime("resolve smoke 3 end", false);
 
-            debugTime("resolve smoke 3 end", false);
-
-        } // end smoke resolution
-    }
+    } // end smoke resolution
 
     /**
      * Override for the main driftAddSmoke to allow for 0 direction changes
@@ -430,6 +423,11 @@ public class FireProcessor extends DynamicTerrainProcessor {
         Coords nextCoords = src.translated(windDir);
         IBoard board = game.getBoard(); 
 
+        //if the wind conditions are calm, then don't drift it
+        if(windStr == PlanetaryConditions.WI_NONE) {
+        	return src;
+        }
+        
         //if it is no longer on the board then return it now to avoid getting null arguments later
         if(!board.contains(nextCoords)) {
         	return nextCoords;
