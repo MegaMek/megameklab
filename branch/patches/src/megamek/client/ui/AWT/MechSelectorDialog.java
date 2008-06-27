@@ -37,7 +37,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -47,7 +46,6 @@ import java.util.Vector;
 
 import megamek.client.Client;
 import megamek.client.ui.AWT.widget.BufferedPanel;
-import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EntityWeightClass;

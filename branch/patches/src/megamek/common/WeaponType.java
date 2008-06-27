@@ -127,6 +127,10 @@ public class WeaponType extends EquipmentType {
     // protected RangeType rangeL;
     protected int heat;
     protected int damage;
+    protected int damageShort;
+    protected int damageMedium;
+    protected int damageLong;
+    
     public int rackSize; // or AC size, or whatever
     public int ammoType;
 
@@ -208,6 +212,10 @@ public class WeaponType extends EquipmentType {
         } else {
             return 9;
         }
+    }
+
+    public int getDamage(int range) {
+        return damage;
     }
 
     public int getDamage() {
@@ -443,6 +451,9 @@ public class WeaponType extends EquipmentType {
         addType(new CLHeavySmallLaser());
         addType(new CLERMicroLaser());
         addType(new CLMicroPulseLaser());
+        addType(new ISMediumVariableSpeedPulseLaser());
+        addType(new ISSmallVariableSpeedPulseLaser());
+        addType(new ISLargeVariableSpeedPulseLaser());
         // PPC types
         addType(new ISPPC());
         addType(new ISERPPC());

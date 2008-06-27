@@ -1222,8 +1222,7 @@ public class MechDisplay extends BufferedPanel {
                 wExtR.setText("---"); //$NON-NLS-1$
                 return;
             }
-            Mounted mounted = entity.getWeaponList().get(
-                    weaponList.getSelectedIndex());
+            Mounted mounted = entity.getWeaponList().get(weaponList.getSelectedIndex());
             WeaponType wtype = (WeaponType) mounted.getType();
             // update weapon display
             wNameR.setText(mounted.getDesc());

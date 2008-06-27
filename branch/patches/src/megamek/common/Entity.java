@@ -7022,7 +7022,12 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
 
                 ArrayList<String> modes = new ArrayList<String>();
                 String[] stringArray = {};
-                for (int damage = ((WeaponType) mounted.getType()).getDamage(); damage >= 0; damage--) {
+                int damage = ((WeaponType) mounted.getType()).getDamage();
+                
+                if ( damage == WeaponType.DAMAGE_VARIABLE )
+                    damage = ((WeaponType) mounted.getType()).damageShort;
+                
+                for (; damage >= 0; damage--) {
                     modes.add("Damage " + damage);
                 }
                 if ( ((WeaponType)mounted.getType()).hasFlag(WeaponType.F_FLAMER) ){

@@ -56,7 +56,9 @@ import megamek.common.Terrains;
 import megamek.common.ToHitData;
 import megamek.common.VTOL;
 import megamek.common.weapons.GaussWeapon;
+import megamek.common.weapons.ISHGaussRifle;
 import megamek.common.weapons.ScreenLauncherBayWeapon;
+import megamek.common.weapons.VariableSpeedPulseLaserWeapon;
 import megamek.common.WeaponType;
 
 /**
@@ -555,7 +557,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             }
             
             //check for heavy gauss rifle on fighter of small craft
-            if(weapon.getName().indexOf("Heavy Gauss Rifle") != -1 
+            if(weapon.getType() instanceof ISHGaussRifle 
                     && ae instanceof Aero && !(ae instanceof Dropship) && !(ae instanceof Jumpship)) {
                 toHit.addModifier(+1,"weapon to-hit modifier");
             }
@@ -854,8 +856,24 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             if (ae.getHeatFiringModifier() != 0) {
                 toHit.addModifier(ae.getHeatFiringModifier(), "heat");
             }
+            
             // weapon to-hit modifier
-            if (wtype.getToHitModifier() != 0) {
+            if ( wtype instanceof VariableSpeedPulseLaserWeapon){
+                int nRange = ae.getPosition().distance(target.getPosition());
+                int[] nRanges = wtype.getRanges(weapon);
+                int modifier = wtype.getToHitModifier();
+                
+                if ( nRange <= nRanges[RangeType.RANGE_SHORT] ){
+                    modifier -= RangeType.RANGE_SHORT;
+                }else if ( nRange <= nRanges[RangeType.RANGE_MEDIUM] ){
+                    modifier -= RangeType.RANGE_MEDIUM;
+                }else if ( nRange <= nRanges[RangeType.RANGE_LONG] ){
+                    modifier -= RangeType.RANGE_LONG;
+                }else
+                    modifier = 0;
+                
+                toHit.addModifier(modifier,"weapon to-hit modifier");
+            } else if (wtype.getToHitModifier() != 0) {
                 toHit.addModifier(wtype.getToHitModifier(),
                         "weapon to-hit modifier");
             }
@@ -1094,7 +1112,22 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         }
 
         // weapon to-hit modifier
-        if (wtype.getToHitModifier() != 0) {
+        if ( wtype instanceof VariableSpeedPulseLaserWeapon){
+            int nRange = ae.getPosition().distance(target.getPosition());
+            int[] nRanges = wtype.getRanges(weapon);
+            int modifier = wtype.getToHitModifier();
+            
+            if ( nRange <= nRanges[RangeType.RANGE_SHORT] ){
+                modifier += RangeType.RANGE_SHORT;
+            }else if ( nRange <= nRanges[RangeType.RANGE_MEDIUM] ){
+                modifier += RangeType.RANGE_MEDIUM;
+            }else if ( nRange <= nRanges[RangeType.RANGE_LONG] ){
+                modifier += RangeType.RANGE_LONG;
+            }else
+                modifier = 0;
+            
+            toHit.addModifier(modifier,"weapon to-hit modifier");
+        } else if (wtype.getToHitModifier() != 0) {
             toHit.addModifier(wtype.getToHitModifier(),
                     "weapon to-hit modifier");
         }

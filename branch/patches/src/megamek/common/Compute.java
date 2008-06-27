@@ -3561,20 +3561,32 @@ public class Compute {
      * Method computes how much damage a dial down weapon has done
      * @param weapon
      * @param wtype
-     * @return new damage
+     * @returnnew damage
      */
     public static int dialDownDamage(Mounted weapon, WeaponType wtype){
-        int toReturn = wtype.getDamage();
+        return Compute.dialDownDamage(weapon, wtype, 1);
+    }
+    
+    /**
+     * Method computes how much damage a dial down weapon has done
+     * @param weapon
+     * @param wtype
+     * @param range
+     * @return new damage
+     */
+    public static int dialDownDamage(Mounted weapon, WeaponType wtype, int range){
+        int toReturn = wtype.getDamage(range);
 
         if ( !wtype.hasModes() )
             return toReturn;
+        
         String damage = weapon.curMode().getName();
         
         if ( damage.trim().toLowerCase().indexOf("damage") == 0){
             toReturn = Integer.parseInt(damage.substring(6).trim());
         }
         
-        return toReturn;
+        return Math.min(wtype.getDamage(range), toReturn);
 
     }
     
@@ -3585,20 +3597,27 @@ public class Compute {
      * @return Heat, minimum of 1;
      */
     public static int dialDownHeat(Mounted weapon, WeaponType wtype){
+        return Compute.dialDownHeat(weapon, wtype,1);
+    }
+    
+    /**
+     * Method computes how much heat a dial down weapon generates
+     * @param weapon
+     * @param wtype
+     * @param range
+     * @return Heat, minimum of 1;
+     */
+    public static int dialDownHeat(Mounted weapon, WeaponType wtype, int range){
         int toReturn = wtype.getHeat();
         
         if ( !wtype.hasModes() )
             return toReturn;
 
-        String damage = weapon.curMode().getName();
+        int damage = wtype.getDamage(range);
+        int newDamage = Compute.dialDownDamage(weapon, wtype, range);
         
-        if ( damage.trim().toLowerCase().indexOf("damage") == 0){
-            //Subtract the actual damage done by the weapon from the original damage of the weapon
-            int newDamage = wtype.getDamage() - Integer.parseInt(damage.substring(6).trim());
-            //take that damage difference and subtract that from the origial heat output
-            //min heat is always 1
-            toReturn = Math.max(1, wtype.getHeat()-newDamage);
-        }
+        
+        toReturn = Math.max(1, wtype.getHeat()-Math.max(0,damage-newDamage));
         return toReturn;
 
     }

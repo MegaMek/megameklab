@@ -75,7 +75,13 @@ public class PPCHandler extends EnergyWeaponHandler {
      * @see megamek.common.weapons.EnergyWeaponHandler#calcDamagePerHit()
      */
     protected int calcDamagePerHit() {
-        float toReturn = wtype.getDamage();
+        int nRange = ae.getPosition().distance(target.getPosition());
+        float toReturn = wtype.getDamage(nRange);
+
+        if ( game.getOptions().booleanOption("tacops_energy_weapons") && wtype.hasModes()){
+            toReturn = Compute.dialDownDamage(weapon, wtype,nRange);
+        }
+
         if (weapon.hasChargedCapacitor()) {
             toReturn += 5;
         }
@@ -85,8 +91,8 @@ public class PPCHandler extends EnergyWeaponHandler {
                 && (ae.getSwarmTargetId() == target.getTargetId())) {
             toReturn *= ((BattleArmor) ae).getShootingStrength();
         }
+
         // Check for Altered Damage from Energy Weapons (TacOps, pg.83)
-        int nRange = ae.getPosition().distance(target.getPosition());
         if (game.getOptions().booleanOption("tacops_altdmg")) {
             if (nRange <= 1) {
                 toReturn++;

@@ -45,6 +45,11 @@ public class PulseLaserWeaponHandler extends WeaponHandler {
      */
     protected int calcDamagePerHit() {
         float toReturn = wtype.getDamage();
+
+        if ( game.getOptions().booleanOption("tacops_energy_weapons") && wtype.hasModes()){
+            toReturn = Compute.dialDownDamage(weapon, wtype,nRange);
+        }
+
         // during a swarm, all damage gets applied as one block to one location
         if (ae instanceof BattleArmor
                 && weapon.getLocation() == BattleArmor.LOC_SQUAD
