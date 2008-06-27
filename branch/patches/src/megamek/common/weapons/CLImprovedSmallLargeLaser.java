@@ -34,9 +34,9 @@ public class CLImprovedSmallLargeLaser extends LaserWeapon {
     public CLImprovedSmallLargeLaser() {
         super();
         this.techLevel = TechConstants.T_CLAN_LEVEL_2;
-        this.name = "Improved Heavy Large Laser";
-        this.setInternalName("CLImprovedHeavyLargeLaser");
-        this.addLookupName("Clan Improved Large Heavy Laser");
+        this.name = "Improved Small Large Laser";
+        this.setInternalName("CLImprovedSmallLargeLaser");
+        this.addLookupName("Clan Improved Small Heavy Laser");
         this.heat = 3;
         this.damage = 6;
         this.shortRange = 2;

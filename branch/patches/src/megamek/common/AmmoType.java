@@ -87,7 +87,8 @@ public class AmmoType extends EquipmentType {
     public static final int     T_SCREEN_LAUNCHER   = 62;
     public static final int     T_ALAMO             = 63;
     public static final int     T_IGAUSS_HEAVY      = 64;
-    public static final int     NUM_TYPES           = 65;
+    public static final int     T_CHEMICAL_LASER    = 65;
+    public static final int     NUM_TYPES           = 66;
     
 
     // ammo flags
@@ -561,6 +562,9 @@ public class AmmoType extends EquipmentType {
         EquipmentType.addType(createCLPlasmaCannonAmmo());
         EquipmentType.addType(createISPlasmaRifleAmmo());
         EquipmentType.addType(createCLAPGaussRifleAmmo());
+        EquipmentType.addType(createCLMediumChemicalLaserAmmo());
+        EquipmentType.addType(createCLSmallChemicalLaserAmmo());
+        EquipmentType.addType(createCLLargeChemicalLaserAmmo());
         
         base = createCLLongTomAmmo();
         clanArtyAmmos.add( base );
@@ -4068,6 +4072,54 @@ public class AmmoType extends EquipmentType {
         ammo.shots = 6;
         ammo.bv = 0;
         ammo.cost = 1500;
+        ammo.kgPerShot = 150;
+
+        return ammo;
+    }
+
+    private static AmmoType createCLSmallChemicalLaserAmmo() {
+        AmmoType ammo = new AmmoType();
+        ammo.techLevel = TechConstants.T_CLAN_LEVEL_2;
+        ammo.name = "Small Chemical Laser Ammo";
+        ammo.setInternalName("CLSmallChemLaserAmmo");
+        ammo.damagePerShot = 1;
+        ammo.rackSize = 3;
+        ammo.ammoType = AmmoType.T_CHEMICAL_LASER;
+        ammo.shots = 60;
+        ammo.bv = 1;
+        ammo.cost = 30000;
+        ammo.kgPerShot = 150;
+
+        return ammo;
+    }
+
+    private static AmmoType createCLMediumChemicalLaserAmmo() {
+        AmmoType ammo = new AmmoType();
+        ammo.techLevel = TechConstants.T_CLAN_LEVEL_2;
+        ammo.name = "Medium Chemical Laser Ammo";
+        ammo.setInternalName("CLMediumChemLaserAmmo");
+        ammo.damagePerShot = 1;
+        ammo.rackSize = 5;
+        ammo.ammoType = AmmoType.T_CHEMICAL_LASER;
+        ammo.shots = 30;
+        ammo.bv = 5;
+        ammo.cost = 30000;
+        ammo.kgPerShot = 150;
+
+        return ammo;
+    }
+
+    private static AmmoType createCLLargeChemicalLaserAmmo() {
+        AmmoType ammo = new AmmoType();
+        ammo.techLevel = TechConstants.T_CLAN_LEVEL_2;
+        ammo.name = "Large Chemical Laser Ammo";
+        ammo.setInternalName("CLLargeChemLaserAmmo");
+        ammo.damagePerShot = 8;
+        ammo.rackSize = 1;
+        ammo.ammoType = AmmoType.T_CHEMICAL_LASER;
+        ammo.shots = 10;
+        ammo.bv = 12;
+        ammo.cost = 30000;
         ammo.kgPerShot = 150;
 
         return ammo;
