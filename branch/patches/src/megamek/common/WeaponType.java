@@ -438,6 +438,9 @@ public class WeaponType extends EquipmentType {
         addType(new ISSmallPulseLaser());
         addType(new ISSmallXPulseLaser());
         addType(new ISERSmallLaser());
+        addType(new ISMediumVariableSpeedPulseLaser());
+        addType(new ISSmallVariableSpeedPulseLaser());
+        addType(new ISLargeVariableSpeedPulseLaser());
         addType(new CLERLargeLaser());
         addType(new CLHeavyLargeLaser());
         addType(new CLLargePulseLaser());
@@ -452,9 +455,9 @@ public class WeaponType extends EquipmentType {
         addType(new CLHeavySmallLaser());
         addType(new CLERMicroLaser());
         addType(new CLMicroPulseLaser());
-        addType(new ISMediumVariableSpeedPulseLaser());
-        addType(new ISSmallVariableSpeedPulseLaser());
-        addType(new ISLargeVariableSpeedPulseLaser());
+        addType(new CLImprovedHeavyLargeLaser());
+        addType(new CLImprovedMediumLargeLaser());
+        addType(new CLImprovedSmallLargeLaser());
         // PPC types
         addType(new ISPPC());
         addType(new ISERPPC());

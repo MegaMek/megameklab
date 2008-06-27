@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import megamek.common.weapons.EnergyWeapon;
+
 /**
  * Taharqa's attempt at creating an Aerospace entity
  */
@@ -2070,7 +2072,35 @@ public class Aero
     public boolean didAccDecNow() {
         return accDecNow;
     }
-    
+
+    public void setGameOptions(IGame game) {
+        super.setGameOptions(game);
+        
+        for (Mounted mounted : this.getWeaponList()) {
+            if (mounted.getType() instanceof EnergyWeapon 
+                    && (((WeaponType) mounted.getType()).getAmmoType() == AmmoType.T_NA) 
+                    && game != null && game.getOptions().booleanOption("tacops_energy_weapons")) {
+
+                ArrayList<String> modes = new ArrayList<String>();
+                String[] stringArray = {};
+                int damage = ((WeaponType) mounted.getType()).getDamage();
+                
+                if ( damage == WeaponType.DAMAGE_VARIABLE )
+                    damage = ((WeaponType) mounted.getType()).damageShort;
+                
+                for (; damage >= 0; damage--) {
+                    modes.add("Damage " + damage);
+                }
+                if ( ((WeaponType)mounted.getType()).hasFlag(WeaponType.F_FLAMER) ){
+                    modes.add("Heat");
+                }
+                ((WeaponType) mounted.getType()).setModes(modes.toArray(stringArray));
+            }
+            
+        }
+
+    }
+
 }
 
 
