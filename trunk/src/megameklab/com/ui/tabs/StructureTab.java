@@ -69,7 +69,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
     JComboBox heatSinkNumber;
     String[] techTypes = { "I.S.", "Clan" };
     JComboBox techType = new JComboBox(techTypes);
-    String[] techLevels = { "1", "2", "3", "4" };
+    String[] techLevels = { "1", "2", "3" };
     JComboBox techLevel = new JComboBox(techLevels);
     JTextField era = new JTextField(3);
     RefreshListener refresh = null;
