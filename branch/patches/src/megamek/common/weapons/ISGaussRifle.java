@@ -58,6 +58,7 @@ public class ISGaussRifle extends GaussWeapon {
         this.medAV = 15;
         this.longAV = 15;
         this.maxRange = RANGE_LONG;
+        this.explosionDamage = 20;
     }
     
     /*

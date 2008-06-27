@@ -59,6 +59,7 @@ public class ISLGaussRifle extends GaussWeapon {
         this.longAV = 8;
         this.extAV = 8;
         this.maxRange = RANGE_EXT;
+        this.explosionDamage = 16;
     }
     
     /*

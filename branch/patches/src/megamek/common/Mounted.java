@@ -613,33 +613,15 @@ public class Mounted implements Serializable, RoundUpdated {
                 damagePerShot++;
 
             return damagePerShot * rackSize * shotsLeft;
-        } else if (type instanceof WeaponType) {
+        } 
+
+        if (type instanceof WeaponType) {
             WeaponType wtype = (WeaponType) type;
             //TacOps Gauss Weapon rule p. 102
             if ( type instanceof GaussWeapon && type.hasModes() && this.curMode().equals("Powered Down") ) {
                 return 0;
             }
-            // HACK: gauss rifle damage hardcoding
-            if (wtype.getAmmoType() == AmmoType.T_GAUSS
-                    || wtype.getAmmoType() == AmmoType.T_SBGAUSS) {
-                return 20;
-            } else if (wtype.getAmmoType() == AmmoType.T_GAUSS_LIGHT) {
-                return 16;
-            } else if (wtype.getAmmoType() == AmmoType.T_RAIL_GUN) {
-                return 22;
-            } else if (wtype.getAmmoType() == AmmoType.T_GAUSS_HEAVY) {
-                return 25;
-            } else if (wtype.getAmmoType() == AmmoType.T_IGAUSS_HEAVY) {
-                return 30;
-            } else if (wtype.getAmmoType() == AmmoType.T_AC_ROTARY
-                    || wtype.getAmmoType() == AmmoType.T_AC
-                    || wtype.getAmmoType() == AmmoType.T_LAC) {
-                return wtype.getDamage();
-            } else if (wtype.getAmmoType() == AmmoType.T_MAGSHOT) {
-                return 3;
-            } else if (wtype.getAmmoType() == AmmoType.T_HAG) {
-                return wtype.getRackSize() / 2;
-            } else if (this.isHotLoaded() && this.getLinked().getShotsLeft() > 0) {
+            if (this.isHotLoaded() && this.getLinked().getShotsLeft() > 0) {
                 Mounted link = this.getLinked();
                 AmmoType atype = ((AmmoType) link.getType());
                 int damagePerShot = atype.getDamagePerShot();
@@ -650,18 +632,26 @@ public class Mounted implements Serializable, RoundUpdated {
 
                 int damage = wtype.getRackSize() * damagePerShot;
                 return damage;
-            } else if (wtype.hasFlag(WeaponType.F_PPC) && hasChargedCapacitor()) {
+            } 
+            
+            if (wtype.hasFlag(WeaponType.F_PPC) && hasChargedCapacitor()) {
                 if (isFired())
                     return 0;
                 return 15;
             }
-        } else if (type instanceof MiscType) {
+
+           return wtype.getExplosionDamage();
+           
+        } 
+
+        if (type instanceof MiscType) {
             MiscType mtype = (MiscType) type;
             if (mtype.hasFlag(MiscType.F_PPC_CAPACITOR)) {
                 if (curMode().equals("Charge") && linked != null
                         && !linked.isFired())
                     return 15;
-            } else if (mtype.hasFlag(MiscType.F_B_POD)) {
+            } 
+            if (mtype.hasFlag(MiscType.F_B_POD)) {
                 return 2;
             }
             return 0;

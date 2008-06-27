@@ -130,6 +130,7 @@ public class WeaponType extends EquipmentType {
     protected int damageShort;
     protected int damageMedium;
     protected int damageLong;
+    protected int explosionDamage = 0;
     
     public int rackSize; // or AC size, or whatever
     public int ammoType;
@@ -848,5 +849,9 @@ public class WeaponType extends EquipmentType {
 
     public String toString() {
         return "WeaponType: " + name;
+    }
+    
+    public int getExplosionDamage() {
+        return explosionDamage;
     }
 }

@@ -62,6 +62,7 @@ public class ISHGaussRifle extends GaussWeapon {
         this.medAV = 20;
         this.longAV = 10;
         this.maxRange = RANGE_LONG;
+        this.explosionDamage = 25;
     }
 
     public int getDamage(int range) {

@@ -61,6 +61,7 @@ public class ISSilverBulletGauss extends GaussWeapon {
         this.ammoType = AmmoType.T_SBGAUSS;
         this.flags |= F_NO_AIM;
         this.atClass = CLASS_LBX_AC;
+        this.explosionDamage = 20;
    }
     
     /*
