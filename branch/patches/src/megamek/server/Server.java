@@ -12258,19 +12258,19 @@ public class Server implements Runnable {
             // If a Mek is in extreme Temperatures, add or subtract one
             // heat per 10 degrees (or fraction of 10 degrees) above or
             // below 50 or -30 degrees Celsius
-            if (entity instanceof Mech && game.getTemperatureDifference() != 0
+            if (entity instanceof Mech && game.getPlanetaryConditions().getTemperatureDifference(50, -30) != 0
                     && !((Mech) entity).hasLaserHeatSinks()) {
                 if (game.getPlanetaryConditions().getTemperature() > 50) {
-                    entity.heatFromExternal += game.getTemperatureDifference();
+                    entity.heatFromExternal += game.getPlanetaryConditions().getTemperatureDifference(50, -30);
                     r = new Report(5020);
                     r.subject = entity.getId();
-                    r.add(game.getTemperatureDifference());
+                    r.add(game.getPlanetaryConditions().getTemperatureDifference(50,-30));
                     addReport(r);
                 } else {
-                    entity.heatFromExternal -= game.getTemperatureDifference();
+                    entity.heatFromExternal -= game.getPlanetaryConditions().getTemperatureDifference(50,-30);
                     r = new Report(5025);
                     r.subject = entity.getId();
-                    r.add(game.getTemperatureDifference());
+                    r.add(game.getPlanetaryConditions().getTemperatureDifference(50,-30));
                     addReport(r);
                 }
             }

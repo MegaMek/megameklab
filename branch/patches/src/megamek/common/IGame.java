@@ -331,12 +331,6 @@ public interface IGame {
     public abstract boolean hasTacticalGenius(Player player);
 
     /**
-     * Returns how much higher than 50 or lower than -30 degrees, divided by
-     * ten, rounded up, the temperature is
-     */
-    public abstract int getTemperatureDifference();
-
-    /**
      * Get a vector of entity objects that are "acceptable" to attack with this
      * entity
      */

@@ -117,7 +117,7 @@ public class Tank extends Entity implements Serializable {
         if (gravity)
             j = applyGravityEffectsOnMP(j);
         if (game != null && !ignoreheat) {
-            int i = game.getTemperatureDifference();
+            int i = game.getPlanetaryConditions().getTemperatureDifference(50,-30);
             return Math.max(j - i, 0);
         }
         int windP = 0;

@@ -56,7 +56,7 @@ import megamek.server.victory.VictoryFactory;
  * The game class is the root of all data about the game in progress. Both the
  * Client and the Server should have one of these objects and it is their job to
  * keep it synched.
- */
+ */ 
 public class Game implements Serializable, IGame {
     /**
      * 
@@ -532,28 +532,6 @@ public class Game implements Serializable, IGame {
             }
         }
         return false;
-    }
-
-    /**
-     * Returns how much higher than 50 or lower than -30 degrees, divided by
-     * ten, rounded up, the temperature is
-     */
-
-    public int getTemperatureDifference() {
-        int i = 0;
-        if (getPlanetaryConditions().getTemperature() >= -30
-                && getPlanetaryConditions().getTemperature() <= 50)
-            return i;
-        else if (getPlanetaryConditions().getTemperature() < -30) {
-            do {
-                i++;
-            } while (getPlanetaryConditions().getTemperature() + i * 10 < -30);
-            return i;
-        } else
-            do {
-                i++;
-            } while (getPlanetaryConditions().getTemperature() - i * 10 > 50);
-        return i;
     }
 
     /**

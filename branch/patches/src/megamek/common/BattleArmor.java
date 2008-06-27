@@ -287,7 +287,7 @@ public class BattleArmor extends Infantry implements Serializable {
         if (gravity)
             j = applyGravityEffectsOnMP(j);
         if (game != null) {
-            i = game.getTemperatureDifference();
+            i = game.getPlanetaryConditions().getTemperatureDifference(50,-30);
             return Math.max(j - i, 0);
         }
         int windP = 0;
@@ -311,7 +311,7 @@ public class BattleArmor extends Infantry implements Serializable {
         if (gravity)
             j = applyGravityEffectsOnMP(j);
         if (game != null && !ignoreheat) {
-            i = game.getTemperatureDifference();
+            i = game.getPlanetaryConditions().getTemperatureDifference(50,-30);
             return Math.max(j - i, 0);
         }
         return j;

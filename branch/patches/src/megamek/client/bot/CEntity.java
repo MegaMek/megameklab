@@ -412,7 +412,7 @@ public class CEntity {
                 }
             }
             // Include heat from ambient temperature
-            heat += tb.game.getTemperatureDifference();
+            heat += tb.game.getPlanetaryConditions().getTemperatureDifference(50,-30);
         }
 
         if (heat <= 4) {

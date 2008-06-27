@@ -344,7 +344,7 @@ public class PlanetaryConditions implements Serializable {
     	if(windStrength == WI_STRONG_GALE || windStrength == WI_STORM || weatherConditions == WE_ICE_STORM) {
     		mod += 4;
     	}
-    	//TODO: temperature adjustments
+    	mod += getTemperatureDifference(30,-30);
     	
     	return mod;
     }
@@ -384,7 +384,34 @@ public class PlanetaryConditions implements Serializable {
       	return false;
     }
     
-    //mud, snow, and ice
+    /**
+     * Returns how much higher or lower than a given range, divided by
+     * ten, rounded up, the temperature is
+     */
+
+    public int getTemperatureDifference(int high, int low) {
+        int i = 0;
+        //if the low is more than the high, reverse
+        if(low > high) {
+        	int tempLow = low;
+        	low = high;
+        	high = tempLow;
+        	
+        }
+        if (getTemperature() >= low
+                && getTemperature() <= high)
+            return i;
+        else if (getTemperature() < low) {
+            do {
+                i++;
+            } while (getTemperature() + i * 10 < low);
+            return i;
+        } else
+            do {
+                i++;
+            } while (getTemperature() - i * 10 > high);
+        return i;
+    }
     
     public void setLight(int type) {
     	this.lightConditions = type;
