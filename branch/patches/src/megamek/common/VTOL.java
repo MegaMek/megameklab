@@ -193,7 +193,7 @@ public class VTOL extends Tank {
             case 7:
                 break;
             case 8:
-                if (bSide) {
+                if (bSide && !game.getOptions().booleanOption("tacops_vehicle_effective")) {
                     rv.setEffect(HitData.EFFECT_CRITICAL);
                 }
                 break;

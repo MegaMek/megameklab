@@ -453,6 +453,9 @@ public class Tank extends Entity implements Serializable {
             motiveMod = 1;
             bRear = true;
         }        
+        if(game.getOptions().booleanOption("tacops_vehicle_effective")) {
+        	motiveMod = 0;
+        }
         HitData rv = new HitData(nArmorLoc);
         boolean bHitAimed = false;
         if ((aimedLocation != LOC_NONE)
@@ -496,22 +499,32 @@ public class Tank extends Entity implements Serializable {
             case 7:
                 break;
             case 8:
-                if (bSide) {
+                if (bSide && !game.getOptions().booleanOption("tacops_vehicle_effective")) {
                     rv.setEffect(HitData.EFFECT_CRITICAL);
                 }
                 break;
             case 9:
-                if (bSide) {
-                    rv = new HitData(LOC_REAR, false,
+            	if(game.getOptions().booleanOption("tacops_vehicle_effective")) {
+            		if (bSide) {
+            			rv = new HitData(LOC_REAR);
+	                } else if (bRear) {
+	                    rv = new HitData(LOC_RIGHT);
+	                } else {
+	                    rv = new HitData(LOC_LEFT);
+	                }
+            	} else {
+            		if (bSide) {
+            			rv = new HitData(LOC_REAR, false,
+            					HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
+	                } else if (bRear) {
+	                    rv = new HitData(LOC_RIGHT, false,
                             HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
-                } else if (bRear) {
-                    rv = new HitData(LOC_RIGHT, false,
-                            HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
-                } else {
-                    rv = new HitData(LOC_LEFT, false,
-                            HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
-                }
-                rv.setMotiveMod(motiveMod);
+	                } else {
+	                    rv = new HitData(LOC_LEFT, false,
+	                            HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
+	                }
+            		rv.setMotiveMod(motiveMod);
+            	}
                 break;
             case 10:
                 if (!m_bHasNoTurret) {

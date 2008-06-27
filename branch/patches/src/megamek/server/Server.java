@@ -22629,6 +22629,9 @@ public class Server implements Runnable {
                 }
                 return vDesc;
         }
+        if(game.getOptions().booleanOption("tacops_vehicle_effective")) {
+        	modifier = Math.max(modifier -1, 0);
+        }
         int roll = Compute.d6(2) + modifier;
         r = new Report(6305);
         r.subject = te.getId();
