@@ -197,4 +197,6 @@ public interface IHex extends Cloneable {
     public abstract int movementCost(int moveType);
     
     public abstract int getIgnitionModifier();
+    
+    public abstract boolean isIgnitable();
 }

@@ -8734,6 +8734,11 @@ public class Server implements Runnable {
             return false;
         }
         
+        //is the hex ignitable (how are infernos handled?)
+        if(!hex.isIgnitable() && !bInferno) {
+        	return false;
+        }
+        
         //check for hot gun
         boolean bHotGun = false;
         if(nTargetRoll.getValue() < 6 && !bInferno) {

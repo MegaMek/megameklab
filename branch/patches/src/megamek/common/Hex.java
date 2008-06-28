@@ -429,4 +429,14 @@ public class Hex implements IHex, Serializable {
         }
     	return mod;
     }
+    
+    /*
+     * Is this hex ignitable
+     */
+    public boolean isIgnitable() {
+    	return !containsTerrain(Terrains.FIRE) && (containsTerrain(Terrains.WOODS) 
+    			|| containsTerrain(Terrains.JUNGLE) 
+    			|| containsTerrain(Terrains.BUILDING));
+    	
+    }
 }
