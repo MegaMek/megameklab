@@ -442,6 +442,7 @@ public class WeaponType extends EquipmentType {
         addType(new ISSmallVariableSpeedPulseLaser());
         addType(new ISLargeVariableSpeedPulseLaser());
         addType(new ISBinaryLaserCannon());
+        addType(new ISBombastLaser());
         addType(new CLERLargeLaser());
         addType(new CLHeavyLargeLaser());
         addType(new CLLargePulseLaser());

@@ -56,6 +56,7 @@ import megamek.common.Terrains;
 import megamek.common.ToHitData;
 import megamek.common.VTOL;
 import megamek.common.weapons.GaussWeapon;
+import megamek.common.weapons.ISBombastLaser;
 import megamek.common.weapons.ISHGaussRifle;
 import megamek.common.weapons.ScreenLauncherBayWeapon;
 import megamek.common.weapons.VariableSpeedPulseLaserWeapon;
@@ -873,7 +874,12 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                     modifier = 0;
                 
                 toHit.addModifier(modifier,"weapon to-hit modifier");
-            } else if (wtype.getToHitModifier() != 0) {
+            } else if ( wtype instanceof ISBombastLaser ){
+                int damage = (int)Math.ceil((Compute.dialDownDamage(weapon, wtype)-7)/2);
+                
+                if ( damage > 0 )
+                    toHit.addModifier(damage,"weapon to-hit modifier");
+            }else if (wtype.getToHitModifier() != 0) {
                 toHit.addModifier(wtype.getToHitModifier(),
                         "weapon to-hit modifier");
             }
@@ -1127,6 +1133,12 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                 modifier = 0;
             
             toHit.addModifier(modifier,"weapon to-hit modifier");
+        }else if ( wtype instanceof ISBombastLaser ){
+            double damage = Compute.dialDownDamage(weapon, wtype);
+            damage = Math.ceil((damage-7)/2);
+            
+            if ( damage > 0 )
+                toHit.addModifier((int)damage,"weapon to-hit modifier");
         } else if (wtype.getToHitModifier() != 0) {
             toHit.addModifier(wtype.getToHitModifier(),
                     "weapon to-hit modifier");

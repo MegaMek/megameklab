@@ -35,6 +35,7 @@ import megamek.common.preference.PreferenceManager;
 import megamek.common.util.StringUtil;
 import megamek.common.weapons.BayWeapon;
 import megamek.common.weapons.GaussWeapon;
+import megamek.common.weapons.ISBombastLaser;
 import megamek.common.weapons.WeaponHandler;
 
 /**
@@ -7021,8 +7022,20 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
                 String[] modes = {"Powered Up","Powered Down"};
                 ((WeaponType) mounted.getType()).setModes(modes);
                 ((WeaponType) mounted.getType()).setInstantModeSwitch(false);
-            }
+            }else if ( mounted.getType() instanceof ISBombastLaser ){
+                int damage = 12;
+                ArrayList<String> modes = new ArrayList<String>();
+                String[] stringArray = {};
 
+                for (; damage >= 7; damage--) {
+                    modes.add("Damage " + damage);
+                }
+                if ( ((WeaponType)mounted.getType()).hasFlag(WeaponType.F_FLAMER) ){
+                    modes.add("Heat");
+                }
+                ((WeaponType) mounted.getType()).setModes(modes.toArray(stringArray));
+                
+            }
         }
 
     }
