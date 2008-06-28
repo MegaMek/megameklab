@@ -8785,14 +8785,18 @@ public class Server implements Runnable {
         }
         
         //if there is snow on the ground and this a hotgun or inferno, it may melt the snow instead       
-        if((hex.containsTerrain(Terrains.DEEP_SNOW) || hex.containsTerrain(Terrains.THIN_SNOW))
+        if((hex.containsTerrain(Terrains.DEEP_SNOW) || hex.containsTerrain(Terrains.THIN_SNOW)
+        		|| hex.containsTerrain(Terrains.ICE))
         		&& (bHotGun || bInferno)) {
         	boolean melted = false;
         	int meltCheck = Compute.d6(2);
         	if(hex.containsTerrain(Terrains.DEEP_SNOW) && meltCheck == 12) {
         		melted = true;
         	}
-        	else if(hex.containsTerrain(Terrains.DEEP_SNOW) && meltCheck > 7) {
+        	else if(hex.containsTerrain(Terrains.ICE) && meltCheck > 9) {
+        		melted = true;
+        	}
+        	else if(hex.containsTerrain(Terrains.THIN_SNOW) && meltCheck > 7) {
         		melted = true;
         	}
         	if(bInferno) {
@@ -8807,7 +8811,9 @@ public class Server implements Runnable {
         				hex.removeTerrain(Terrains.DEEP_SNOW);
         		if(hex.containsTerrain(Terrains.THIN_SNOW))
         			hex.removeTerrain(Terrains.THIN_SNOW);
-        		if(!hex.containsTerrain(Terrains.MUD))
+        		if(hex.containsTerrain(Terrains.ICE))
+        			hex.removeTerrain(Terrains.ICE);
+        		if(!hex.containsTerrain(Terrains.MUD) && !hex.containsTerrain(Terrains.WATER))
         			hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.MUD, hex.getElevation()));
         		sendChangedHex(c);
         		return false;
