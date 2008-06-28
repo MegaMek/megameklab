@@ -126,7 +126,7 @@ public class WeaponHandler implements AttackHandler, Serializable {
         // and some weapons can't ignite fires.
         if (entityTarget != null
                 && (bldg == null && wtype.getFireTN() != TargetRoll.IMPOSSIBLE)) {
-            server.tryIgniteHex(target.getPosition(), subjectId, false, new TargetRoll(wtype.getFireTN(), wtype.getName()),
+            server.tryIgniteHex(target.getPosition(), subjectId, false, false, new TargetRoll(wtype.getFireTN(), wtype.getName()),
                     3, vPhaseReport);
         }
 
@@ -567,7 +567,7 @@ public class WeaponHandler implements AttackHandler, Serializable {
         TargetRoll tn = new TargetRoll(wtype.getFireTN(), wtype.getName());
         if (tn.getValue() != TargetRoll.IMPOSSIBLE) {
             Report.addNewline(vPhaseReport);
-            server.tryIgniteHex(target.getPosition(), subjectId, false, tn,
+            server.tryIgniteHex(target.getPosition(), subjectId, false, false, tn,
                     true, -1, vPhaseReport);
         }
     }
@@ -594,7 +594,7 @@ public class WeaponHandler implements AttackHandler, Serializable {
         //TODO: change this for TacOps - now you roll another 2d6 first and on a 5 or less
         //you do a normal ignition as though for intentional fires
         if (bldg != null
-                && server.tryIgniteHex(target.getPosition(), subjectId, false,
+                && server.tryIgniteHex(target.getPosition(), subjectId, false, false, 
                 		new TargetRoll(wtype.getFireTN(), wtype.getName()), 5, vPhaseReport)) {
             return;
         }

@@ -6547,7 +6547,7 @@ public class Server implements Runnable {
             case Targetable.TYPE_HEX_CLEAR:
             case Targetable.TYPE_HEX_IGNITE:
                 vPhaseReport.addAll(tryClearHex(t.getPosition(), missiles * 4, ae.getId()));
-                tryIgniteHex(t.getPosition(), ae.getId(), true, new TargetRoll(0, "inferno"), -1, vPhaseReport);
+                tryIgniteHex(t.getPosition(), ae.getId(), false, true, new TargetRoll(0, "inferno"), -1, vPhaseReport);
                 break;
             case Targetable.TYPE_BLDG_IGNITE:
             case Targetable.TYPE_BUILDING:
@@ -8708,15 +8708,15 @@ public class Server implements Runnable {
      * @param bInferno - <code>true</code> if the weapon igniting the hex is
      *            an Inferno round. If some other weapon or ammo is causing the
      *            roll, this should be <code>false</code>.
-     * @param nTargetRoll - the <code>int</code> target number for the
+     * @param bHotGun - <code>true</code> if the weapon is plasma/flamer/incendiary LRM/etc
+     * @param nTargetRoll - the <code>TargetRoll</code> for the
      *            ignition roll.
-     * @param nTargetRoll - the <code>int</code> roll target for the attempt.
      * @param bReportAttempt - <code>true</code> if the attempt roll should be
      *            added to the report.
      * @param accidentTarget - <code>int</code> the target number below which a roll has 
      *              to be made in order to try igniting a hex accidently. -1 for intentional           
      */
-    public boolean tryIgniteHex(Coords c, int entityId, boolean bInferno,
+    public boolean tryIgniteHex(Coords c, int entityId, boolean bHotGun, boolean bInferno,
             TargetRoll nTargetRoll, boolean bReportAttempt, 
             int accidentTarget, Vector<Report> vPhaseReport) {
 
@@ -8737,12 +8737,6 @@ public class Server implements Runnable {
         //is the hex ignitable (how are infernos handled?)
         if(!hex.isIgnitable() && !bInferno) {
         	return false;
-        }
-        
-        //check for hot gun
-        boolean bHotGun = false;
-        if(nTargetRoll.getValue() < 6 && !bInferno) {
-        	bHotGun = true;
         }
         
         //first for accidental ignitions, make the necessary roll
@@ -8867,9 +8861,9 @@ public class Server implements Runnable {
      *            roll, this should be <code>false</code>.
      * @param nTargetRoll - the <code>int</code> roll target for the attempt.
      */
-    public boolean tryIgniteHex(Coords c, int entityId, boolean bInferno,
+    public boolean tryIgniteHex(Coords c, int entityId, boolean bHotGun, boolean bInferno,
             TargetRoll nTargetRoll, int accidentTarget, Vector<Report> vPhaseReport) {
-        return tryIgniteHex(c, entityId, bInferno, nTargetRoll, false,
+        return tryIgniteHex(c, entityId, bHotGun, bInferno, nTargetRoll, false,
                 accidentTarget, vPhaseReport);
     }
 
