@@ -8751,6 +8751,7 @@ public class Server implements Runnable {
         	if(hex.containsTerrain(Terrains.DEEP_SNOW) || hex.containsTerrain(Terrains.THIN_SNOW)) {
         		return false;
         	}
+        	nTargetRoll.addModifier(2,"accidental");
         	int accidentRoll = Compute.d6(2);
         	r = new Report(3066);
             r.subject = entityId;
