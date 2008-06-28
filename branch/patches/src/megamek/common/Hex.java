@@ -417,4 +417,16 @@ public class Hex implements IHex, Serializable {
         }
         return temp;
     }
+    
+    /*
+     * Get the fire ignition modifier for this hex, based on its terrain
+     */
+    public int getIgnitionModifier() {
+    	int mod = 0;
+    	for (int i = 0; i < terrains.length; i++) {
+            if (terrains[i] != null)
+                mod += terrains[i].ignitionModifier();
+        }
+    	return mod;
+    }
 }

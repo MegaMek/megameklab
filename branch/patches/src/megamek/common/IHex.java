@@ -195,4 +195,6 @@ public interface IHex extends Cloneable {
      * @return extra movement cost for entering the hex
      */
     public abstract int movementCost(int moveType);
+    
+    public abstract int getIgnitionModifier();
 }

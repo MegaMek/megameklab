@@ -305,4 +305,15 @@ public class Terrain implements ITerrain, Serializable {
                 return 0;
         }
     }
+    
+    public int ignitionModifier() {
+        switch (type) {
+            case Terrains.JUNGLE:
+                return 1;
+            case Terrains.DEEP_SNOW:
+                return 2;
+            default:
+                return 0;
+        }
+    }
 }

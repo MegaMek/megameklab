@@ -8752,7 +8752,16 @@ public class Server implements Runnable {
             }
         }
         
-        //TODO: add in any modifiers for terrain (are these already in?)
+        int terrainMod =hex.getIgnitionModifier();
+        if(terrainMod != 0) {
+        	nTargetRoll.addModifier(terrainMod, "terrain");
+        }
+        
+        //building modifiers
+        Building bldg = game.getBoard().getBuildingAt(c);
+        if(null != bldg) {
+        	nTargetRoll.addModifier(bldg.getType() - 1, "building");
+        }
         
         //add in any modifiers for planetary conditions
         int weatherMod = game.getPlanetaryConditions().getIgniteModifiers();

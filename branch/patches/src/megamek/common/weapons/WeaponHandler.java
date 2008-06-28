@@ -566,9 +566,6 @@ public class WeaponHandler implements AttackHandler, Serializable {
         }
         TargetRoll tn = new TargetRoll(wtype.getFireTN(), wtype.getName());
         if (tn.getValue() != TargetRoll.IMPOSSIBLE) {
-            if (bldg != null) {
-                tn.addModifier(bldg.getType() - 1, "building");
-            }
             Report.addNewline(vPhaseReport);
             server.tryIgniteHex(target.getPosition(), subjectId, false, tn,
                     true, -1, vPhaseReport);
