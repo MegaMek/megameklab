@@ -239,7 +239,12 @@ public class FireProcessor extends DynamicTerrainProcessor {
         Coords src = new Coords(x, y);
         Coords nextCoords = src.translated(windDir);
         
-        //TODO: check for height differences between hexes
+        //check for height differences between hexes
+        //TODO: until further clarification only the heights matter (not the base elevation)
+        //This means that a fire cannot spread from a level 6 building at base level 0 to
+        //a level 1 building at base level 0, for example.
+
+        int curHeight = game.getBoard().getHex(src).ceiling();
 
         TargetRoll directroll = new TargetRoll(9, "spread downwind");
         TargetRoll obliqueroll = new TargetRoll(11, "spread 60 degrees to downwind");
@@ -253,34 +258,42 @@ public class FireProcessor extends DynamicTerrainProcessor {
         	directroll.addModifier(-2, "strong gale+");
         }
         
-        spreadFire(nextCoords, directroll);
+        spreadFire(nextCoords, directroll, curHeight);
 
         // Spread to the next hex downwind on a 12 if the first hex wasn't
         // burning...
+        // unless a higher hex intervenes
         IHex nextHex = game.getBoard().getHex(nextCoords);
-        if (nextHex != null && !(nextHex.containsTerrain(Terrains.FIRE))) {
+        IHex jumpHex = game.getBoard().getHex(nextCoords.translated(windDir));
+        if (nextHex != null && jumpHex != null && !(nextHex.containsTerrain(Terrains.FIRE))
+        		&& (curHeight >= nextHex.ceiling() || jumpHex.ceiling() >= nextHex.ceiling())) {
             // we've already gone one step in the wind direction, now go another
         	directroll.addModifier(3, "crossing non-burning hex");
-            spreadFire(nextCoords.translated(windDir), directroll);
+            spreadFire(nextCoords.translated(windDir), directroll, curHeight);
         }
 
         // spread fire 60 degrees clockwise....
-        spreadFire(src.translated((windDir + 1) % 6), obliqueroll);
+        spreadFire(src.translated((windDir + 1) % 6), obliqueroll, curHeight);
 
         // spread fire 60 degrees counterclockwise
-        spreadFire(src.translated((windDir + 5) % 6), obliqueroll);
+        spreadFire(src.translated((windDir + 5) % 6), obliqueroll, curHeight);
     }
 
     /**
      * Spreads the fire, and reports the spread, to the specified hex, if
      * possible, if the hex isn't already on fire, and the fire roll is made.
      */
-    public void spreadFire(Coords coords, TargetRoll roll) {
+    public void spreadFire(Coords coords, TargetRoll roll, int height) {
         IHex hex = game.getBoard().getHex(coords);
         if (hex == null) {
             // Don't attempt to spread fire off the board.
             return;
         }
+        
+        if(Math.abs(hex.ceiling() - height) > 4) {
+        	return;
+        }
+        
         if (!(hex.containsTerrain(Terrains.FIRE)) && server.ignite(hex, roll)) {
             Report r = new Report(5150, Report.PUBLIC);
             r.add(coords.getBoardNum());
