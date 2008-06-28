@@ -13,8 +13,6 @@
  */
 package megamek.common.weapons;
 
-import java.util.Vector;
-
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Compute;
@@ -22,7 +20,7 @@ import megamek.common.HitData;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.RangeType;
-import megamek.common.Report;
+import megamek.common.TargetRoll;
 import megamek.common.ToHitData;
 import megamek.common.actions.WeaponAttackAction;
 import megamek.server.Server;
@@ -51,9 +49,6 @@ public class ChemicalLaserHandler extends AmmoWeaponHandler {
     protected int calcDamagePerHit() {
         double toReturn = ((AmmoType)ammo.getType()).getRackSize() * ((AmmoType)ammo.getType()).getDamagePerShot(); 
         
-        if ( game.getOptions().booleanOption("tacops_energy_weapons") && wtype.hasModes()){
-            toReturn = Compute.dialDownDamage(weapon, wtype,nRange);
-        }
         // during a swarm, all damage gets applied as one block to one location
         if (ae instanceof BattleArmor
                 && weapon.getLocation() == BattleArmor.LOC_SQUAD
@@ -86,21 +81,10 @@ public class ChemicalLaserHandler extends AmmoWeaponHandler {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see megamek.common.weapons.WeaponHandler#calcnCluster()
-     */
-    protected int calcnCluster() {
-        return 8;
+    protected void addHeat() {
+        if (!(toHit.getValue() == TargetRoll.IMPOSSIBLE)) {
+            ae.heatBuildup += (wtype.getHeat());
+        }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see megamek.common.weapons.WeaponHandler#calcHits(java.util.Vector)
-     */
-    protected int calcHits(Vector<Report> vPhaseReport) {
-        return 1;
-    }
 }
