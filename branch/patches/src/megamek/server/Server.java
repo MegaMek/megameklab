@@ -15595,9 +15595,7 @@ public class Server implements Runnable {
                 final IHex curHex = game.getBoard().getHex(en.getPosition());
 
                 if (null != curHex
-                        && !curHex.containsTerrain(Terrains.FIRE)
-                        && (curHex.containsTerrain(Terrains.WOODS) || curHex
-                                .containsTerrain(Terrains.JUNGLE))) {
+                        && !curHex.containsTerrain(Terrains.FIRE)) {
                     curHex.addTerrain(Terrains.getTerrainFactory()
                             .createTerrain(Terrains.FIRE, 1));
                     r = new Report(6170, Report.PUBLIC);
