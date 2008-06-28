@@ -8734,8 +8734,18 @@ public class Server implements Runnable {
             return false;
         }
         
+        //check for hot gun
+        boolean bHotGun = false;
+        if(nTargetRoll.getValue() < 6 && !bInferno) {
+        	bHotGun = true;
+        }
+        
         //first for accidental ignitions, make the necessary roll
         if(accidentTarget > -1) {
+        	//if this hex is in snow, then accidental ignitions are not possible
+        	if(hex.containsTerrain(Terrains.DEEP_SNOW) || hex.containsTerrain(Terrains.THIN_SNOW)) {
+        		return false;
+        	}
         	int accidentRoll = Compute.d6(2);
         	r = new Report(3066);
             r.subject = entityId;
@@ -8767,6 +8777,37 @@ public class Server implements Runnable {
         int weatherMod = game.getPlanetaryConditions().getIgniteModifiers();
         if(weatherMod != 0) {
         	nTargetRoll.addModifier(weatherMod, "conditions");
+        }
+        
+        //if there is snow on the ground and this a hotgun or inferno, it may melt the snow instead       
+        if((hex.containsTerrain(Terrains.DEEP_SNOW) || hex.containsTerrain(Terrains.THIN_SNOW))
+        		&& (bHotGun || bInferno)) {
+        	boolean melted = false;
+        	int meltCheck = Compute.d6(2);
+        	if(hex.containsTerrain(Terrains.DEEP_SNOW) && meltCheck == 12) {
+        		melted = true;
+        	}
+        	else if(hex.containsTerrain(Terrains.DEEP_SNOW) && meltCheck > 7) {
+        		melted = true;
+        	}
+        	if(bInferno) {
+        		melted = true;
+        	}
+        	if(melted) {
+        		r = new Report(3069);
+                r.indent(2);
+                r.subject = entityId;
+                vPhaseReport.add(r);
+        		if(hex.containsTerrain(Terrains.DEEP_SNOW))
+        				hex.removeTerrain(Terrains.DEEP_SNOW);
+        		if(hex.containsTerrain(Terrains.THIN_SNOW))
+        			hex.removeTerrain(Terrains.THIN_SNOW);
+        		if(!hex.containsTerrain(Terrains.MUD))
+        			hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.MUD, hex.getElevation()));
+        		sendChangedHex(c);
+        		return false;
+        	}
+        	
         }
         
         // inferno always ignites
