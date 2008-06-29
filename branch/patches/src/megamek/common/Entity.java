@@ -4180,7 +4180,19 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
          * prevHex.contains(Terrain.PAVEMENT) || prevHex.contains(Terrain.ROAD) ||
          * prevHex.contains(Terrain.BRIDGE) )
          */
-        && ((prevStep.isPavementStep() && overallMoveType == IEntityMovementType.MOVE_RUN && movementMode != IEntityMovementMode.HOVER && movementMode != IEntityMovementMode.WIGE) || (prevHex.containsTerrain(Terrains.ICE) && movementMode != IEntityMovementMode.HOVER && movementMode != IEntityMovementMode.WIGE) || ((movementMode == IEntityMovementMode.HOVER || movementMode == IEntityMovementMode.WIGE) && (game.getOptions().booleanOption("blizzard") || game.getOptions().booleanOption("high_winds")))) && prevFacing != curFacing && !lastPos.equals(curPos) && !isInfantry
+        && ((prevStep.isPavementStep() 
+                && overallMoveType == IEntityMovementType.MOVE_RUN 
+                && movementMode != IEntityMovementMode.HOVER 
+                && movementMode != IEntityMovementMode.WIGE) 
+                || (prevHex.containsTerrain(Terrains.ICE) 
+                        && movementMode != IEntityMovementMode.HOVER 
+                        && movementMode != IEntityMovementMode.WIGE) 
+                        || ((movementMode == IEntityMovementMode.HOVER 
+                                || movementMode == IEntityMovementMode.WIGE) 
+                                && (game.getPlanetaryConditions().getWeather()== PlanetaryConditions.WE_HEAVY_SNOW  
+                                        || game.getPlanetaryConditions().getWindStrength() >= PlanetaryConditions.WI_STORM))) 
+                                        && prevFacing != curFacing && !lastPos.equals(curPos) 
+                                        && !isInfantry
         // Bug 912127, a unit that just got up and changed facing
                 // on pavement in that getting up does not skid.
                 && !prevStep.isHasJustStood()) {

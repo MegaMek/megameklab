@@ -1642,6 +1642,28 @@ public class Game implements Serializable, IGame {
     }
 
     /**
+     * Returns the number of Vehicles that <code>playerId</code>
+     * has not moved yet this turn.
+     * @param playerId
+     * @return number of vehicles <code>playerId</code> has not moved yet this turn
+     */
+    public int getVehiclesLeft(int playerId) {
+        Player player = this.getPlayer(playerId);
+        int remaining = 0;
+
+        for (Enumeration<Entity> i = entities.elements(); i.hasMoreElements();) {
+            final Entity entity = i.nextElement();
+            if (player.equals(entity.getOwner())
+                    && entity.isSelectableThisTurn()
+                    && entity instanceof Tank) {
+                remaining++;
+            }
+        }
+
+        return remaining;
+    }
+
+    /**
      * Removes the last, next turn found that the specified entity can move in.
      * Used when, say, an entity dies mid-phase.
      */
@@ -1693,6 +1715,30 @@ public class Game implements Serializable, IGame {
                 return;
             }
         }
+
+        // Same thing but for vehicles
+        if (getOptions().booleanOption("vehicle_lance_movement")
+                && entity instanceof Tank && phase == Phase.PHASE_MOVEMENT) {
+            if ((getProtomechsLeft(entity.getOwnerId()) % getOptions()
+                    .intOption("vehicle_lance_movement_number")) != 1) {
+                // exception, if the _next_ turn is an tank turn, remove
+                // that
+                // contrived, but may come up e.g. one tank accidently kills
+                // another
+                if (hasMoreTurns()) {
+                    GameTurn nextTurn = turnVector.elementAt(turnIndex + 1);
+                    if (nextTurn instanceof GameTurn.EntityClassTurn) {
+                        GameTurn.EntityClassTurn ect = (GameTurn.EntityClassTurn) nextTurn;
+                        if (ect.isValidClass(GameTurn.CLASS_TANK)
+                                && !ect.isValidClass(~GameTurn.CLASS_TANK)) {
+                            turnVector.removeElementAt(turnIndex + 1);
+                        }
+                    }
+                }
+                return;
+            }
+        }
+
         for (int i = turnVector.size() - 1; i >= turnIndex; i--) {
             GameTurn turn = turnVector.elementAt(i);
             if (turn.isValidEntity(entity, this)) {

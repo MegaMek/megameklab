@@ -754,6 +754,11 @@ public interface IGame {
     public abstract int getProtomechsLeft(int playerId);
 
     /**
+     * Returns the number of remaining selectable Vehicles owned by a player.
+     */
+    public abstract int getVehiclesLeft(int playerId);
+
+    /**
      * Removes the last, next turn found that the specified entity can move in.
      * Used when, say, an entity dies mid-phase.
      */

@@ -1486,8 +1486,10 @@ public class Server implements Runnable {
                 .booleanOption("inf_move_multi")
                 && (game.getPhase() == IGame.Phase.PHASE_MOVEMENT || game.getPhase() == IGame.Phase.PHASE_INITIATIVE);
         boolean protosMoved = entityUsed instanceof Protomech;
-        boolean protosMoveMulti = game.getOptions().booleanOption(
-                "protos_move_multi");
+        boolean protosMoveMulti = game.getOptions().booleanOption("protos_move_multi");
+        boolean tanksMoved = entityUsed instanceof Tank;
+        boolean tanksMoveMulti = game.getOptions().booleanOption("vehicle_lance_movement")
+        && (game.getPhase() == IGame.Phase.PHASE_MOVEMENT || game.getPhase() == IGame.Phase.PHASE_INITIATIVE);
 
         // If infantry or protos move multi see if any
         // other unit types can move in the current turn.
@@ -1505,6 +1507,10 @@ public class Server implements Runnable {
             multiMask = 0;
         }
 
+        if ( tanksMoveMulti ) {
+            multiMask += GameTurn.CLASS_TANK;
+        }
+        
         // Is this a general move turn?
         boolean isGeneralMoveTurn = !(turn instanceof GameTurn.SpecificEntityTurn)
                 && !(turn instanceof GameTurn.UnitNumberTurn)
@@ -1562,17 +1568,30 @@ public class Server implements Runnable {
             if (protosMoveMulti) {
                 remaining += game.getProtomechsLeft(playerId);
             }
-            int moreInfAndProtoTurns = Math.min(game.getOptions().intOption(
-                    "inf_proto_move_multi") - 1, remaining);
+            int moreInfAndProtoTurns = Math.min(game.getOptions().intOption( "inf_proto_move_multi") - 1, remaining);
 
             // Add the correct number of turns for the right unit classes.
             for (int i = 0; i < moreInfAndProtoTurns; i++) {
-                GameTurn newTurn = new GameTurn.EntityClassTurn(playerId,
-                        multiMask);
+                GameTurn newTurn = new GameTurn.EntityClassTurn(playerId, multiMask);
                 game.insertNextTurn(newTurn);
                 turnsChanged = true;
             }
         }
+        
+        if (tanksMoved && tanksMoveMulti 
+                && isGeneralMoveTurn) {
+            int remaining = game.getVehiclesLeft(playerId);
+
+            int moreVeeTurns = Math.min(game.getOptions().intOption( "vehicle_lance_movement_number") - 1, remaining);
+
+            // Add the correct number of turns for the right unit classes.
+            for (int i = 0; i < moreVeeTurns; i++) {
+                GameTurn newTurn = new GameTurn.EntityClassTurn(playerId, multiMask);
+                game.insertNextTurn(newTurn);
+                turnsChanged = true;
+            }
+        }
+
         // brief everybody on the turn update, if they changed
         if (turnsChanged) {
             send(createTurnVectorPacket());
@@ -2463,12 +2482,15 @@ public class Server implements Runnable {
         boolean protosMoveMulti = game.getOptions().booleanOption(
                 "protos_move_multi");
         boolean protosMoveByPoint = !protosMoveMulti;
+        boolean tankMoveByLance = game.getOptions().booleanOption("vehicle_lance_movement")
+                && (game.getPhase() == IGame.Phase.PHASE_INITIATIVE 
+                || game.getPhase() == IGame.Phase.PHASE_MOVEMENT);
+        
         int evenMask = 0;
         if (infMoveEven)
             evenMask += GameTurn.CLASS_INFANTRY;
         if (protosMoveEven)
             evenMask += GameTurn.CLASS_PROTOMECH;
-
         // Reset all of the Players' turn category counts
         for (Enumeration<Player> loop = game.getPlayers(); loop
                 .hasMoreElements();) {
@@ -2543,7 +2565,10 @@ public class Server implements Runnable {
                         else
                             player.incrementOtherTurns();
                     }
-                } else if (entity instanceof SpaceStation 
+                } else if ( entity instanceof Tank && tankMoveByLance) {
+                    player.incrementMultiTurns();
+                }
+                else if (entity instanceof SpaceStation 
                             && game.getPhase() == IGame.Phase.PHASE_MOVEMENT) {
                     player.incrementSpaceStationTurns();
                 } else if (entity instanceof Warship 
@@ -15474,7 +15499,7 @@ public class Server implements Runnable {
             r.indent(2);
             vDesc.add(r);
             int[] damages = {(int)Math.floor(damage_orig/10),(int)Math.floor(damage_orig/20)};
-            doExplosion(damages, true, te.getPosition(), true, vDesc, null);
+            doExplosion(damages, false, te.getPosition(), true, vDesc, null);
             Report.addNewline(vDesc);
             r = new Report(5410, Report.PUBLIC);
             r.subject = te.getId();
