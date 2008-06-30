@@ -24,10 +24,10 @@ public class Terrains implements ITerrainFactory {
     public static final int WATER = 4;
     public static final int PAVEMENT = 5;
     public static final int ROAD = 6;
-    public static final int FIRE = 7;
+    public static final int FIRE = 7; // 1: normal fire 2: inferno fire
     public static final int SMOKE = 8;
     public static final int SWAMP = 9;
-    public static final int BUILDING = 10;
+    public static final int BUILDING = 10; // 1: light 2: medium 3: heavy 4: hardened 5: wall
     public static final int BLDG_CF = 11;
     public static final int BLDG_ELEV = 12;
     public static final int BLDG_BASEMENT = 13;
