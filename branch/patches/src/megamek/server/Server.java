@@ -8296,7 +8296,7 @@ public class Server implements Runnable {
                 if (hex.containsTerrain(Terrains.ICE))
                     hex.removeTerrain(Terrains.ICE);
                 if (!hex.containsTerrain(Terrains.MUD) && !hex.containsTerrain(Terrains.WATER))
-                    hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.MUD, hex.getElevation()));
+                    hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.MUD, 1));
                 sendChangedHex(c);
                 return false;
             }

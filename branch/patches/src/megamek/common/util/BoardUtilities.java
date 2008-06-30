@@ -887,7 +887,7 @@ public class BoardUtilities {
                 //moderate rain - mud in clear hexes, depth 0 water, and dirt roads (not implemented yet)
                 if(weatherCond == PlanetaryConditions.WE_MOD_RAIN) {
                 	if(hex.terrainsPresent() == 0 || (hex.containsTerrain(Terrains.WATER) && hex.depth() == 0)) {
-                		hex.addTerrain(tf.createTerrain(Terrains.MUD, hex.getElevation()));
+                		hex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
                 		if(hex.containsTerrain(Terrains.WATER)) {
                 			hex.removeTerrain(Terrains.WATER);
                 		}
@@ -898,10 +898,10 @@ public class BoardUtilities {
                 //rapids in all depth 1+ water
                 if(weatherCond == PlanetaryConditions.WE_HEAVY_RAIN) {
                 	if(hex.containsTerrain(Terrains.WATER) && hex.depth() > 0) {
-                		hex.addTerrain(tf.createTerrain(Terrains.RAPIDS, hex.getElevation()));
+                		hex.addTerrain(tf.createTerrain(Terrains.RAPIDS, 1));
                 	}
                 	else if(!hex.containsTerrain(Terrains.BUILDING) && !hex.containsTerrain(Terrains.ROAD)) {
-                		hex.addTerrain(tf.createTerrain(Terrains.MUD, hex.getElevation()));
+                		hex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
                 		if(hex.containsTerrain(Terrains.WATER)) {
                 			hex.removeTerrain(Terrains.WATER);
                 		}
@@ -913,14 +913,14 @@ public class BoardUtilities {
                 if(weatherCond == PlanetaryConditions.WE_DOWNPOUR) {
                 	if(hex.containsTerrain(Terrains.WATER) && hex.depth() > 0) {
                 		//TODO: implement torrent
-                		//hex.addTerrain(tf.createTerrain(Terrains.TORRENT, hex.getElevation()));
+                		//hex.addTerrain(tf.createTerrain(Terrains.TORRENT, 1));
                 	}
                 	else if(hex.containsTerrain(Terrains.WATER)) {
-                		hex.addTerrain(tf.createTerrain(Terrains.SWAMP, hex.getElevation()));
+                		hex.addTerrain(tf.createTerrain(Terrains.SWAMP, 1));
                 		hex.removeTerrain(Terrains.WATER);
                 	}
                 	else if(!hex.containsTerrain(Terrains.BUILDING) && !hex.containsTerrain(Terrains.ROAD)) {
-                		hex.addTerrain(tf.createTerrain(Terrains.MUD, hex.getElevation()));
+                		hex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
                 	}
                 }
             }
