@@ -5993,10 +5993,8 @@ public class Server implements Runnable {
             r.indent(2);
             r.add(coords.getBoardNum());
             vPhaseReport.add(r);
-            h.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
+            ignite(coords, true);
         }
-        game.getBoard().addInfernoTo(coords, InfernoTracker.INFERNO_IV_ROUND, 1);
-        sendChangedHex(coords);
         for (Enumeration<Entity> impactHexHits = game.getEntities(coords); impactHexHits.hasMoreElements();) {
             Entity entity = impactHexHits.nextElement();
             entity.infernos.add(InfernoTracker.INFERNO_IV_ROUND, 1);
@@ -6024,10 +6022,8 @@ public class Server implements Runnable {
                 r.indent(2);
                 r.add(tempcoords.getBoardNum());
                 vPhaseReport.add(r);
-                h.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
+                ignite(tempcoords, true);
             }
-            game.getBoard().addInfernoTo(tempcoords, InfernoTracker.INFERNO_IV_ROUND, 1);
-            sendChangedHex(tempcoords);
             for (Enumeration<Entity> splashHexHits = game.getEntities(tempcoords); splashHexHits.hasMoreElements();) {
                 Entity entity = splashHexHits.nextElement();
                 entity.infernos.add(InfernoTracker.INFERNO_IV_ROUND, 1);
@@ -6365,7 +6361,7 @@ public class Server implements Runnable {
                         r.subject = entity.getId();
                         r.add(dest.getBoardNum(), true);
                         vPhaseReport.add(r);
-                        h.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
+                        ignite(dest, true);
                     }
                     game.getBoard().addInfernoTo(dest, InfernoTracker.STANDARD_ROUND, 1);
                     sendChangedHex(dest);
@@ -6648,10 +6644,9 @@ public class Server implements Runnable {
         r.addDesc(entity);
         if (!hex.containsTerrain(Terrains.FIRE) && game.getOptions().booleanOption("tacops_start_fire")) {
             r.messageId = 2175;
-            hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
+            ignite(coords, true);
         }
         addReport(r);
-        sendChangedHex(coords);
     }
 
     /**
@@ -14687,13 +14682,12 @@ public class Server implements Runnable {
                 final IHex curHex = game.getBoard().getHex(en.getPosition());
 
                 if (null != curHex && !curHex.containsTerrain(Terrains.FIRE)) {
-                    curHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
+                    ignite(en.getPosition(), false);
                     r = new Report(6170, Report.PUBLIC);
                     r.subject = en.getId();
                     r.indent(2);
                     r.add(en.getPosition().getBoardNum());
                     vDesc.addElement(r);
-                    sendChangedHex(en.getPosition());
                 }
             }
 
@@ -16667,13 +16661,9 @@ public class Server implements Runnable {
             if (game.getOptions().booleanOption("tacops_start_fire")) {
                 IHex hex = game.getBoard().getHex(pos);
                 if (hex.containsTerrain(Terrains.WOODS) || hex.containsTerrain(Terrains.JUNGLE)) {
-                    hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
+                    ignite(pos, false);
                 } else {
-                    game.getBoard().addInfernoTo(pos, InfernoTracker.STANDARD_ROUND, 1);
-                    game.getBoard().getInfernos().get(pos).setTurnsLeftToBurn(game.getBoard().getInfernoBurnTurns(pos) - 2); // massive
-                    // hack
-                    hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
-                    sendChangedHex(pos);
+                    ignite(pos, true);
                 }
             }
             vDesc.addAll(destroyEntity(en, "crashed and burned", false, false));
