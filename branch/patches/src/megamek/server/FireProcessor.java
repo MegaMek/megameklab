@@ -285,7 +285,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
         	return;
         }
         
-        if (!(hex.containsTerrain(Terrains.FIRE)) && server.ignite(hex, roll)) {
+        if (!(hex.containsTerrain(Terrains.FIRE)) && server.checkIgnition(coords, roll)) {
             Report r = new Report(5150, Report.PUBLIC);
             r.add(coords.getBoardNum());
             vPhaseReport.addElement(r);

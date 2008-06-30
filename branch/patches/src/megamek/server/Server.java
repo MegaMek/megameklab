@@ -8211,7 +8211,8 @@ public class Server implements Runnable {
      *            be made in order to try igniting a hex accidently. -1 for
      *            intentional
      */
-    public boolean tryIgniteHex(Coords c, int entityId, boolean bHotGun, boolean bInferno, TargetRoll nTargetRoll, boolean bReportAttempt, int accidentTarget, Vector<Report> vPhaseReport) {
+    public boolean tryIgniteHex(Coords c, int entityId, boolean bHotGun, boolean bInferno, TargetRoll nTargetRoll, 
+    		boolean bReportAttempt, int accidentTarget, Vector<Report> vPhaseReport) {
 
         IHex hex = game.getBoard().getHex(c);
         Report r;
@@ -8326,12 +8327,11 @@ public class Server implements Runnable {
                 vPhaseReport.add(r);
             }
             //return true;
-        } else if(ignite(hex, nTargetRoll, bInferno, entityId, vPhaseReport)){
+        } else if(checkIgnition(c, nTargetRoll, bInferno, entityId, vPhaseReport)){
             r = new Report(3070);
             r.indent(2);
             r.subject = entityId;
             vPhaseReport.add(r);
-            sendChangedHex(c);
             return true;
         }
         return false;
@@ -17875,10 +17875,10 @@ public class Server implements Runnable {
     }
 
     /**
-     * Returns true if the hex is set on fire with the specified roll. Of
-     * course, also checks to see that fire is possible in the specified hex.
+     * Checks for fire ignition based on a given target roll.
+     * If successful, lights a fire
+	 * also checks to see that fire is possible in the specified hex.
      * 
-<<<<<<< .mine
      * @param hex - the <code>IHex</code> to be lit.
      * @param roll - the <code>TargetRoll</code> for the ignition roll
      * @param bInferno - <code>true</code> if the fire is an inferno fire. If this value is <code>false</code> the hex will be
@@ -17886,23 +17886,15 @@ public class Server implements Runnable {
      * @param entityId - the entityId responsible for the ignite attempt. If the
      *            value is Entity.NONE, then the roll attempt will not be
      *            included in the report.
-=======
-     * @param hex -
-     *            the <code>IHex</code> to be lit.
-     * @param roll -
-     *            the <code>TargetRoll</code> for the ignition roll
-     * @param bAnyTerrain -
-     *            <code>true</code> if the fire can be lit in any terrain. If
-     *            this value is <code>false</code> the hex will be lit only if
-     *            it contains Woods,jungle or a Building.
-     * @param entityId -
-     *            the entityId responsible for the ignite attempt. If the value
-     *            is Entity.NONE, then the roll attempt will not be included in
-     *            the report.
->>>>>>> .r176
      */
-    public boolean ignite(IHex hex, TargetRoll roll, boolean bInferno, int entityId, Vector<Report> vPhaseReport) {
+    public boolean checkIgnition(Coords c, TargetRoll roll, boolean bInferno, int entityId, Vector<Report> vPhaseReport) {
 
+    	IHex hex = game.getBoard().getHex(c);
+    	
+    	if(null == hex) {
+    		return false;
+    	}
+    	
         // The hex might be null due to spreadFire translation
         // goes outside of the board limit.
         if (!game.getOptions().booleanOption("tacops_start_fire") || null == hex) {
@@ -17918,11 +17910,6 @@ public class Server implements Runnable {
             return false;
         }
 
-        //type of fire. We use level 2 for infernos
-        int type = 1;
-        if(bInferno)
-        	type = type + 1;
-        
         int fireRoll = Compute.d6(2);
         Report r = null;
         if (entityId != Entity.NONE) {
@@ -17935,7 +17922,7 @@ public class Server implements Runnable {
             vPhaseReport.add(r);
         }
         if (fireRoll >= roll.getValue()) {
-            hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, type));
+            ignite(c, bInferno);
             return true;
         }
         return false;
@@ -17955,8 +17942,8 @@ public class Server implements Runnable {
      *            this value is <code>false</code> the hex will be lit only if
      *            it contains Woods, jungle or a Building.
      */
-    public boolean ignite(IHex hex, TargetRoll roll, boolean bInferno) {
-        return ignite(hex, roll, bInferno, Entity.NONE, null);
+    public boolean checkIgnition(Coords c, TargetRoll roll, boolean bInferno) {
+        return checkIgnition(c, roll, bInferno, Entity.NONE, null);
     }
 
     /**
@@ -17969,11 +17956,30 @@ public class Server implements Runnable {
      * @param roll -
      *            the <code>int</code> target number for the ignition roll
      */
-    public boolean ignite(IHex hex, TargetRoll roll) {
+    public boolean checkIgnition(Coords c, TargetRoll roll) {
         // default signature, assuming only woods can burn
-        return ignite(hex, roll, false, Entity.NONE, null);
+        return checkIgnition(c, roll, false, Entity.NONE, null);
     }
 
+    /**
+     * add fire to a hex
+     * 
+     * @param c - the <code>Coords</code> of the hex to be set on fire
+     * @param bInferno - <code>true</code> if the fire to be set is an inferno
+     */
+    public void ignite(Coords c, boolean bInferno) {
+    	//type of fire. We use level 2 for infernos
+    	IHex hex = game.getBoard().getHex(c);
+    	if(null == hex) {
+    		return;
+    	}
+        int type = 1;
+        if(bInferno)
+        	type = type + 1;
+        hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, type));
+        sendChangedHex(c);	
+    }
+    
     /**
      * remove fire from a hex
      * 
@@ -18007,7 +18013,6 @@ public class Server implements Runnable {
             return;
         }
 
-        IBoard board = game.getBoard();
         Coords smokeCoords = new Coords(Coords.xInDir(x, y, windDir), Coords.yInDir(x, y, windDir));
         IHex smokeHex = game.getBoard().getHex(smokeCoords);
         Report r;
