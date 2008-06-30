@@ -1348,7 +1348,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         }
         int windP = 0;
         if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		int windCond = game.getPlanetaryConditions().getWindStrength(true);
     		if(windCond >= PlanetaryConditions.WI_TORNADO_F13) {
     			windP += 2;
     		} 
@@ -4194,7 +4194,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
                         || ((movementMode == IEntityMovementMode.HOVER 
                                 || movementMode == IEntityMovementMode.WIGE) 
                                 && (game.getPlanetaryConditions().getWeather()== PlanetaryConditions.WE_HEAVY_SNOW  
-                                        || game.getPlanetaryConditions().getWindStrength() >= PlanetaryConditions.WI_STORM))) 
+                                        || game.getPlanetaryConditions().getWindStrength(true) >= PlanetaryConditions.WI_STORM))) 
                                         && prevFacing != curFacing && !lastPos.equals(curPos) 
                                         && !isInfantry
         // Bug 912127, a unit that just got up and changed facing

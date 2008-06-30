@@ -241,7 +241,7 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 		for(int i = 0; i < PlanetaryConditions.WI_SIZE; i++) {
 			choWind.addItem(PlanetaryConditions.getWindDisplayableName(i));
 		}
-		choWind.setSelectedIndex(conditions.getWindStrength());	
+		choWind.setSelectedIndex(conditions.getWindStrength(false));	
 		
 		cShiftWindDir.setSelected(conditions.shiftingWindDirection());
 		cShiftWindStr.setSelected(conditions.shiftingWindStrength());

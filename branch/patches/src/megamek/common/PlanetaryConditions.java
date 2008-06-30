@@ -75,12 +75,23 @@ public class PlanetaryConditions implements Serializable {
     public static final int WI_TORNADO_F13 = 5;
     public static final int WI_TORNADO_F4  = 6;   
     
-    private static String[] windNames = { "None", "Light Gale", "Moderate Gale", "Strong Gale", "Storm", "Tornado F1-F3", "Tornado F4"};
+    private static String[] windNames = { "Calm", "Light Gale", "Moderate Gale", "Strong Gale", "Storm", "Tornado F1-F3", "Tornado F4"};
     public static final int WI_SIZE = windNames.length;
     
     //wind direction  
     private static String[] dirNames = { "North", "Northeast", "Southeast", "South","Southwest", "Northwest" };
     public static final int DIR_SIZE = dirNames.length;
+    
+    //atmospheric pressure
+    public static final int ATMO_VACUUM   = 0;
+    public static final int ATMO_TRACE    = 1;
+    public static final int ATMO_THIN     = 2;
+    public static final int ATMO_STANDARD = 3;
+    public static final int ATMO_HIGH     = 4;
+    public static final int ATMO_VHIGH    = 5;
+    
+    private static String[] atmoNames = {"Vacuum", "Trace", "Thin", "Standard", "High", "Very High" };
+    public static final int ATMO_SIZE = atmoNames.length;
     
     //set up the specific conditions
     private int lightConditions = WI_NONE;
@@ -89,6 +100,7 @@ public class PlanetaryConditions implements Serializable {
     private int windDirection = -1;
     private boolean shiftWindDirection = false;
     private boolean shiftWindStrength = false;
+    private int atmosphere = ATMO_STANDARD;
     private int temperature = 25;
     
     /**
@@ -106,6 +118,7 @@ public class PlanetaryConditions implements Serializable {
     	this.windDirection = other.windDirection;
     	this.shiftWindDirection = other.shiftWindDirection;
     	this.shiftWindStrength = other.shiftWindStrength;
+    	this.atmosphere = other.atmosphere;
     	this.temperature = other.temperature;
     }
     
@@ -135,6 +148,13 @@ public class PlanetaryConditions implements Serializable {
         throw new IllegalArgumentException("Unknown wind condition");
     }
     
+    public static String getAtmosphereDisplayableName(int type) {
+        if (type >= 0 && type < ATMO_SIZE) {
+            return Messages.getString("PlanetaryConditions." + atmoNames[type]);
+        }
+        throw new IllegalArgumentException("Unknown atmospheric pressure condition");
+    }
+    
     public String getWindDirName() {
             return dirNames[windDirection];
     }
@@ -148,7 +168,11 @@ public class PlanetaryConditions implements Serializable {
     }
     
     public String getWindCurrentName() {
-    	return Messages.getString("PlanetaryConditions." + windNames[windStrength]);
+    	return Messages.getString("PlanetaryConditions." + windNames[getWindStrength(true)]);
+    }
+    
+    public String getAtmosphereCurrentName() {
+    	return Messages.getString("PlanetaryConditions." + atmoNames[atmosphere]);
     }
     
     /*
@@ -257,7 +281,7 @@ public class PlanetaryConditions implements Serializable {
     public int getWindPilotPenalty(Entity en) {
     	int penalty = 0;
     	
-    	switch(windStrength) {
+    	switch(getWindStrength(true)) {
     	case (WI_MOD_GALE):
     		if(en instanceof VTOL || en.getMovementMode() == IEntityMovementMode.WIGE) {
     			penalty = 1;
@@ -338,10 +362,10 @@ public class PlanetaryConditions implements Serializable {
     	if(weatherConditions == WE_HEAVY_SNOW || weatherConditions == WE_LIGHT_HAIL || weatherConditions == WE_HEAVY_HAIL) {
     		mod += 3;
     	}
-    	if(windStrength == WI_LIGHT_GALE || windStrength == WI_MOD_GALE) {
+    	if(getWindStrength(true) == WI_LIGHT_GALE || getWindStrength(true) == WI_MOD_GALE) {
     		mod += 2;
     	}
-    	if(windStrength == WI_STRONG_GALE || windStrength == WI_STORM || weatherConditions == WE_ICE_STORM) {
+    	if(getWindStrength(true) == WI_STRONG_GALE || getWindStrength(true) == WI_STORM || weatherConditions == WE_ICE_STORM) {
     		mod += 4;
     	}
     	mod += getTemperatureDifference(30,-30);
@@ -413,6 +437,16 @@ public class PlanetaryConditions implements Serializable {
         return i;
     }
     
+    public boolean canStartFire() {
+    	if(getWindStrength(true) > WI_STORM) {
+    		return false;
+    	}
+    	if(atmosphere < ATMO_THIN) {
+    		return false;
+    	}
+    	return true;   	
+    }
+    
     public void setLight(int type) {
     	this.lightConditions = type;
     }
@@ -433,8 +467,43 @@ public class PlanetaryConditions implements Serializable {
     	this.windStrength = type;
     }
     
-    public int getWindStrength() {
-    	return windStrength;
+    public int getWindStrength(boolean adjust) {
+    	int strength = windStrength;
+    	//in some cases I need to adjust this by the atmospheric pressure
+    	//calm wind is always calm 
+    	if(strength == WI_NONE) {
+    		return strength;
+    	}
+    	
+    	int mod = 0;
+    	switch(atmosphere) {
+    	case(ATMO_VACUUM):
+    		//no wind in a vacuum, right?
+    		mod = ATMO_SIZE;
+    		break;
+    	case(ATMO_TRACE):
+    		mod = -2;
+    		break;
+    	case(ATMO_THIN):
+    		mod = -1;
+    		break;
+    	case(ATMO_HIGH):
+    		mod = 1;
+    		break;
+    	case(ATMO_VHIGH):
+    		mod = 2;
+    		break;
+    	default:
+    		mod = 0;
+    	}
+    	strength = strength + mod;
+    	if(strength < WI_NONE) {
+    		strength = WI_NONE;
+    	}
+    	if(strength > WI_TORNADO_F4) {
+    		strength = WI_TORNADO_F4;
+    	}
+    	return strength;
     }
     
     public void setWindDirection(int type) {
@@ -461,6 +530,14 @@ public class PlanetaryConditions implements Serializable {
     	return shiftWindStrength;
     }
     
+    public void setAtmosphere(int a) {
+    	this.atmosphere = a;
+    }
+    
+    public int getAtmosphere() {
+    	return atmosphere;
+    }
+    
     public void setTemperature(int tem) {
     	this.temperature = tem;
     }
@@ -468,4 +545,8 @@ public class PlanetaryConditions implements Serializable {
     public int getTemperature() {
     	return temperature;
     }   
+    
+    public boolean isVacuum() {
+    	return atmosphere == ATMO_VACUUM || atmosphere == ATMO_TRACE;
+    }
 }

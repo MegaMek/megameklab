@@ -459,7 +459,7 @@ public class MoveStep implements Serializable {
         if(entity instanceof Aero) {
             setMp(0);
             //if this a spheroid in atmosphere then the cost is always two
-            if(game.getBoard().inAtmosphere() && entity.getMovementMode() == IEntityMovementMode.SPHEROID) {
+            if(game.getBoard().inAtmosphere() && (((Aero)entity).isSpheroid() || game.getPlanetaryConditions().isVacuum())) {
                 setMp(2);
             }
         } else {
@@ -1368,7 +1368,8 @@ public class MoveStep implements Serializable {
             
             //unless velocity is zero ASFs must move forward one hex before making turns
             if(!game.useVectorMove() && !isManeuver() && 
-                    !(game.getBoard().inAtmosphere() && a.isSpheroid()) &&
+                    !(game.getBoard().inAtmosphere() 
+                    		&& (a.isSpheroid() || game.getPlanetaryConditions().isVacuum())) &&
                     distance == 0 && velocity != 0 && 
                     (type == MovePath.STEP_TURN_LEFT || type == MovePath.STEP_TURN_RIGHT)) {
                 return;
@@ -1376,14 +1377,14 @@ public class MoveStep implements Serializable {
             
             //if in atmosphere, then they cannot turn under any circumstances in the first hex
             if(game.getBoard().inAtmosphere() && distance == 0  && !isManeuver()
-                    && !(game.getBoard().inAtmosphere() && a.isSpheroid()) && 
+                    && !(game.getBoard().inAtmosphere() && (a.isSpheroid() || game.getPlanetaryConditions().isVacuum())) && 
                     (type == MovePath.STEP_TURN_LEFT || type == MovePath.STEP_TURN_RIGHT)) {
                 return;
             }
             
             //no more than two turns in one hex unless velocity is zero for anything except ASF
             if( !game.useVectorMove() && !isManeuver() &&
-                    !(game.getBoard().inAtmosphere() && a.isSpheroid()) &&
+                    !(game.getBoard().inAtmosphere() && (a.isSpheroid() || game.getPlanetaryConditions().isVacuum())) &&
                     a instanceof SmallCraft && velocity != 0 && getNTurns() > 2 ) {
                 return;
             }
@@ -1396,7 +1397,7 @@ public class MoveStep implements Serializable {
 
             //if in atmosphere then only one turn no matter what
             if( game.getBoard().inAtmosphere() && getNTurns() > 1 && !isManeuver() && 
-                    !(game.getBoard().inAtmosphere() && a.isSpheroid())) {
+                    !(game.getBoard().inAtmosphere() && (a.isSpheroid() || game.getPlanetaryConditions().isVacuum()))) {
                 return;
             }
             
@@ -1425,10 +1426,10 @@ public class MoveStep implements Serializable {
             
             //check for thruster damage
             if(type == MovePath.STEP_TURN_LEFT && a.getRightThrustHits() > 2 && 
-                    !(game.getBoard().inAtmosphere() && a.isSpheroid())) 
+                    !(game.getBoard().inAtmosphere() && (a.isSpheroid() || game.getPlanetaryConditions().isVacuum()))) 
                 return;
             if(type == MovePath.STEP_TURN_RIGHT && a.getLeftThrustHits() > 2 && 
-                    !(game.getBoard().inAtmosphere() && a.isSpheroid()))
+                    !(game.getBoard().inAtmosphere() && (a.isSpheroid() || game.getPlanetaryConditions().isVacuum())))
                 return;
             
             //no moves after launching fighters
@@ -1456,7 +1457,8 @@ public class MoveStep implements Serializable {
             }
             
             //check to make sure there is velocity left to spend
-            if(getVelocityLeft() >= 0 || (game.getBoard().inAtmosphere() && a.isSpheroid())) {
+            if(getVelocityLeft() >= 0 || (game.getBoard().inAtmosphere() 
+            		&& (a.isSpheroid() || game.getPlanetaryConditions().isVacuum()))) {
                 if (getMpUsed() <= tmpSafeTh) {
                     movementType = IEntityMovementType.MOVE_SAFE_THRUST;
                 } else if(getMpUsed() <= entity.getRunMPwithoutMASC()) {

@@ -178,7 +178,7 @@ public class Infantry extends Entity implements Serializable {
         }
     	int windP = 0;
     	if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		int windCond = game.getPlanetaryConditions().getWindStrength(true);
     		if(windCond == PlanetaryConditions.WI_LIGHT_GALE || windCond == PlanetaryConditions.WI_MOD_GALE) {
     			windP++;
     		} else if (windCond >= PlanetaryConditions.WI_STRONG_GALE) {
@@ -227,7 +227,7 @@ public class Infantry extends Entity implements Serializable {
         int mp = applyGravityEffectsOnMP(getOriginalJumpMP());
         int windP = 0;
     	if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		int windCond = game.getPlanetaryConditions().getWindStrength(true);
     		if(windCond == PlanetaryConditions.WI_MOD_GALE) {
     			windP++;
     		}

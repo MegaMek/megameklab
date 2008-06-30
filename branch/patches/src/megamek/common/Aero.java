@@ -193,7 +193,7 @@ public class Aero
         j = Math.max(0, j - (int)Math.ceil(getBombPoints()/5.0));
         int windP = 0;
         if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		int windCond = game.getPlanetaryConditions().getWindStrength(true);
     		if(windCond == PlanetaryConditions.WI_TORNADO_F13) {
     			windP += 1;
     		} 

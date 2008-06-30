@@ -57,6 +57,9 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 	private Label labWind = new Label(Messages
 			.getString("PlanetaryConditionsDialog.labWind"), Label.CENTER); //$NON-NLS-1$
 	private Choice choWind = new Choice();
+	private Label labAtmosphere = new Label(Messages
+			.getString("PlanetaryConditionsDialog.labAtmosphere"), Label.CENTER); //$NON-NLS-1$
+	private Choice choAtmosphere = new Choice();
 	private Checkbox cShiftWindDir = new Checkbox(Messages
             .getString("PlanetaryConditionsDialog.shiftWindDir"));
 	private Checkbox cShiftWindStr = new Checkbox(Messages
@@ -202,6 +205,16 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
         c.anchor = GridBagConstraints.WEST;
         gridbag.setConstraints(choWind, c);
         panOptions.add(choWind);
+        
+        c.gridwidth = 1;
+        c.anchor = GridBagConstraints.EAST;
+        gridbag.setConstraints(labAtmosphere, c);
+        panOptions.add(labAtmosphere);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(choAtmosphere, c);
+        panOptions.add(choAtmosphere);
 
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.anchor = GridBagConstraints.WEST;
@@ -238,7 +251,13 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		for(int i = 0; i < PlanetaryConditions.WI_SIZE; i++) {
 			choWind.add(PlanetaryConditions.getWindDisplayableName(i));
 		}
-		choWind.select(conditions.getWindStrength());	
+		choWind.select(conditions.getWindStrength(false));	
+		
+		choAtmosphere.removeAll();
+		for(int i = 0; i < PlanetaryConditions.ATMO_SIZE; i++) {
+			choAtmosphere.add(PlanetaryConditions.getAtmosphereDisplayableName(i));
+		}
+		choAtmosphere.select(conditions.getAtmosphere());	
 		
 		cShiftWindDir.setState(conditions.shiftingWindDirection());
 		cShiftWindStr.setState(conditions.shiftingWindStrength());
@@ -252,6 +271,7 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		conditions.setLight(choLight.getSelectedIndex());
 		conditions.setWeather(choWeather.getSelectedIndex());
 		conditions.setWindStrength(choWind.getSelectedIndex());
+		conditions.setAtmosphere(choAtmosphere.getSelectedIndex());
 		conditions.setShiftingWindDirection(cShiftWindDir.getState());
 		conditions.setShiftingWindStrength(cShiftWindStr.getState());
 		try {

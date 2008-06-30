@@ -782,7 +782,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         
         //wind mods (not in space)
         if(!game.getBoard().inSpace()) {
-        	int windCond = game.getPlanetaryConditions().getWindStrength();
+        	int windCond = game.getPlanetaryConditions().getWindStrength(true);
         	if(windCond == PlanetaryConditions.WI_MOD_GALE) {
         		if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
         			toHit.addModifier(1, PlanetaryConditions.getWindDisplayableName(windCond));
@@ -1892,7 +1892,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         }
 
         //check wind conditions
-        int windCond = game.getPlanetaryConditions().getWindStrength();
+        int windCond = game.getPlanetaryConditions().getWindStrength(true);
         if(windCond == PlanetaryConditions.WI_TORNADO_F13 && wtype.hasFlag(WeaponType.F_MISSILE) && !game.getBoard().inSpace()) {
         	return "No missile fire in a tornado";
         }

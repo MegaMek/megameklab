@@ -3504,7 +3504,8 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
             if (entity.getFacing() != -1
                     && !(entity instanceof Infantry && ((Infantry) entity)
                             .getDugIn() == Infantry.DUG_IN_NONE)
-                    && !(entity instanceof Aero && ((Aero)entity).isSpheroid() && game.getBoard().inAtmosphere())) {
+                    && !(entity instanceof Aero && ((Aero)entity).isSpheroid() 
+                    		&& game.getBoard().inAtmosphere())) {
                 graph.drawPolygon(facingPolys[entity.getFacing()]);
             }
 

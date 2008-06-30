@@ -153,9 +153,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         
         
         IBasicOptionGroup planetaryConditions = addGroup("planetaryConditions"); //$NON-NLS-1$
-        addOption(planetaryConditions, "temperature", 25); //$NON-NLS-1$
         addOption(planetaryConditions, "gravity", (float) 1.0); //$NON-NLS-1$
-        addOption(planetaryConditions, "vacuum", false); //$NON-NLS-1$
 
         IBasicOptionGroup ruleBreakers = addGroup("ruleBreakers"); //$NON-NLS-1$
         addOption(ruleBreakers, "no_tac", false); //$NON-NLS-1$

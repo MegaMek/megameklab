@@ -122,7 +122,7 @@ public class Tank extends Entity implements Serializable {
         }
         int windP = 0;
         if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		int windCond = game.getPlanetaryConditions().getWindStrength(true);
     		if(windCond == PlanetaryConditions.WI_TORNADO_F13) {
     			windP += 2;
     		} 

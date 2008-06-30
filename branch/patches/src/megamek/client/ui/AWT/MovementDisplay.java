@@ -870,7 +870,8 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             butEvade.setEnabled(true);
             setEjectEnabled(true);
             // no turning for spheroids in atmosphere
-            if (((Aero) ce).isSpheroid() && client.game.getBoard().inAtmosphere()) {
+            if ((((Aero) ce).isSpheroid() || client.game.getPlanetaryConditions().isVacuum()) 
+            		&& client.game.getBoard().inAtmosphere()) {
                 setTurnEnabled(false);
             }
         }
@@ -1085,7 +1086,8 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             Aero a = (Aero) ce;
 
             // first check for stalling
-            if (client.game.getBoard().inAtmosphere() && !a.isVSTOL() && (!a.isSpheroid() && ((md == null && a.getCurrentVelocity() == 0) || (md != null && md.getFinalVelocity() == 0)))) {
+            if (client.game.getBoard().inAtmosphere() && !a.isVSTOL() && !a.isSpheroid()  && !client.game.getPlanetaryConditions().isVacuum()
+            		&& ((md == null && a.getCurrentVelocity() == 0) || (md != null && md.getFinalVelocity() == 0))) {
 
                 // add a stall to the movement path
                 md.addStep(MovePath.STEP_STALL);
@@ -1126,7 +1128,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                     int vel = a.getCurrentVelocity();
 
                     // need to check for stall here as well
-                    if (vel == 0 && !a.isSpheroid() && client.game.getBoard().inAtmosphere() && !a.isVSTOL()) {
+                    if (vel == 0 && !(a.isSpheroid() || client.game.getPlanetaryConditions().isVacuum()) && client.game.getBoard().inAtmosphere() && !a.isVSTOL()) {
                         // add a stall to the movement path
                         md.addStep(MovePath.STEP_STALL);
                     }
@@ -1584,7 +1586,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                 }
 
                 // stalling out
-                if (md.getFinalVelocity() == 0 && !a.isSpheroid() && client.game.getBoard().inAtmosphere() && !a.isVSTOL()) {
+                if (md.getFinalVelocity() == 0 && !(a.isSpheroid() || client.game.getPlanetaryConditions().isVacuum()) && client.game.getBoard().inAtmosphere() && !a.isVSTOL()) {
                     rollTarget = a.checkStall(md.getFinalVelocity(), overallMoveType);
                     nagReport.append(addNag(rollTarget));
                 }
@@ -1986,7 +1988,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
         Aero a = (Aero) ce;
 
-        if (!a.isSpheroid()) {
+        if (!(a.isSpheroid() || client.game.getPlanetaryConditions().isVacuum())) {
             return;
         }
 
@@ -2178,7 +2180,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
         Aero a = (Aero) ce;
 
-        if (a.isSpheroid())
+        if (a.isSpheroid() || client.game.getPlanetaryConditions().isVacuum())
             return;
 
         if (!a.didFailManeuver() && (null == cmd || !cmd.contains(MovePath.STEP_MANEUVER))) {
@@ -2558,7 +2560,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
         Aero a = (Aero) ce;
         if (client.game.getBoard().inAtmosphere()) {
-            if (a.isSpheroid()) {
+            if (a.isSpheroid() || client.game.getPlanetaryConditions().isVacuum()) {
                 butAcc.setEnabled(false);
                 butDec.setEnabled(false);
                 butAccN.setEnabled(false);
@@ -3003,7 +3005,9 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             // if this movement path goes down more than two altitudes
             // then add acceleration.
             // TODO: Is there somewhere better to put this?
-            if (ce instanceof Aero && null != cmd.getLastStep() && cmd.getLastStep().getNDown() == 1 && cmd.getLastStep().getVelocity() < 12 && !((Aero) ce).isSpheroid()) {
+            if (ce instanceof Aero && null != cmd.getLastStep() 
+            		&& cmd.getLastStep().getNDown() == 1 && cmd.getLastStep().getVelocity() < 12 
+            		&& !(((Aero) ce).isSpheroid() || client.game.getPlanetaryConditions().isVacuum())) {
                 cmd.addStep(MovePath.STEP_ACC, true);
             }
             cmd.addStep(MovePath.STEP_DOWN);

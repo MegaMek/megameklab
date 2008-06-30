@@ -292,7 +292,7 @@ public class BattleArmor extends Infantry implements Serializable {
         }
         int windP = 0;
     	if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		int windCond = game.getPlanetaryConditions().getWindStrength(true);
     		if(windCond >= PlanetaryConditions.WI_STRONG_GALE) {
     			windP++;
     		} 
@@ -331,7 +331,7 @@ public class BattleArmor extends Infantry implements Serializable {
             return 0;
         }      
     	if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
+    		int windCond = game.getPlanetaryConditions().getWindStrength(true);
     		if(windCond >= PlanetaryConditions.WI_STORM) {
     			return 0;
     		}

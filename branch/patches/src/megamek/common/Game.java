@@ -2715,7 +2715,7 @@ public class Game implements Serializable, IGame {
                 flare.turnsToBurn--;
                 if ((flare.flags & Flare.F_DRIFTING) != 0) {
                     int dir = planetaryConditions.getWindDirection();
-                    int str = planetaryConditions.getWindStrength();
+                    int str = planetaryConditions.getWindStrength(true);
                     if (str > 0) {
                         flare.position = flare.position.translated(dir);
                         if (str == 3) {

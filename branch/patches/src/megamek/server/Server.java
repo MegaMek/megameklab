@@ -1695,7 +1695,7 @@ public class Server implements Runnable {
             // write End Phase header
             addReport(new Report(5005, Report.PUBLIC));
             checkForSuffocation();
-            if (game.getOptions().booleanOption("vacuum")) {
+            if (game.getPlanetaryConditions().isVacuum()) {
                 checkForVacuumDeath();
             }
             if (game.getBoard().inAtmosphere()) {
@@ -2779,7 +2779,7 @@ public class Server implements Runnable {
             // Wind direction and strength
             r = new Report(1025, Report.PUBLIC);
             r.add(game.getPlanetaryConditions().getWindDirName());
-            if (game.getPlanetaryConditions().getWindStrength() > 0) {
+            if (game.getPlanetaryConditions().getWindStrength(true) > 0) {
                 Report r2 = new Report(1030, Report.PUBLIC);
                 r2.add(game.getPlanetaryConditions().getWindCurrentName());
                 r.newlines = 0;
@@ -5340,7 +5340,7 @@ public class Server implements Runnable {
                 // assume it occurs
                 // if there was no elevation change during the turn and no hover
                 // step
-                if (a.isSpheroid() && startElevation == curElevation && !md.contains(MovePath.STEP_HOVER)) {
+                if ((a.isSpheroid() || game.getPlanetaryConditions().isVacuum()) && startElevation == curElevation && !md.contains(MovePath.STEP_HOVER)) {
                     a.setElevation(a.getElevation() - 1);
                     // check for crash
                     if (game.getBoard().getHex(a.getPosition()).ceiling() >= a.getElevation()) {
@@ -6691,7 +6691,7 @@ public class Server implements Runnable {
         if (hex.terrainLevel(Terrains.WATER) > 0 && !isJump && elevation < 0) {
             if (entity instanceof Mech && !entity.isProne() && hex.terrainLevel(Terrains.WATER) == 1) {
                 for (int loop = 0; loop < entity.locations(); loop++) {
-                    if (game.getOptions().booleanOption("vacuum"))
+                    if (game.getPlanetaryConditions().isVacuum())
                         entity.setLocationStatus(loop, ILocationExposureStatus.VACUUM);
                     else
                         entity.setLocationStatus(loop, ILocationExposureStatus.NORMAL);
@@ -6714,7 +6714,7 @@ public class Server implements Runnable {
             }
         } else {
             for (int loop = 0; loop < entity.locations(); loop++) {
-                if (game.getOptions().booleanOption("vacuum"))
+                if (game.getPlanetaryConditions().isVacuum())
                     entity.setLocationStatus(loop, ILocationExposureStatus.VACUUM);
                 else
                     entity.setLocationStatus(loop, ILocationExposureStatus.NORMAL);
@@ -7395,7 +7395,7 @@ public class Server implements Runnable {
                 // regardless of
                 // what was entered
                 Aero a = (Aero) entity;
-                if (a.isSpheroid()) {
+                if (a.isSpheroid() || game.getPlanetaryConditions().isVacuum()) {
                     a.setCurrentVelocity(0);
                     a.setNextVelocity(0);
                 }
@@ -8310,7 +8310,7 @@ public class Server implements Runnable {
         }
 
         // no lighting fires in tornados
-        if (game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM) {
+        if (game.getPlanetaryConditions().getWindStrength(true) > PlanetaryConditions.WI_STORM) {
             nTargetRoll = new TargetRoll(TargetRoll.AUTOMATIC_FAIL, "tornado");
         }
 
@@ -12379,7 +12379,7 @@ public class Server implements Runnable {
     }
 
     /**
-     * Checks to see if any entities are underwater with damaged life support.
+     * Checks to see if any entities are underwater (or in vacuum) with damaged life support.
      * Called during the end phase.
      */
     private void checkForSuffocation() {
@@ -12389,7 +12389,9 @@ public class Server implements Runnable {
                 continue;
             }
             final IHex curHex = game.getBoard().getHex(entity.getPosition());
-            if (entity.getElevation() < 0 && (curHex.terrainLevel(Terrains.WATER) > 1 || curHex.terrainLevel(Terrains.WATER) == 1 && entity.isProne()) && entity.getHitCriticals(CriticalSlot.TYPE_SYSTEM, Mech.SYSTEM_LIFE_SUPPORT, Mech.LOC_HEAD) > 0) {
+            if (((entity.getElevation() < 0 && (curHex.terrainLevel(Terrains.WATER) > 1 || curHex.terrainLevel(Terrains.WATER) == 1 && entity.isProne()))
+            		|| game.getPlanetaryConditions().isVacuum()) 
+            		&& entity.getHitCriticals(CriticalSlot.TYPE_SYSTEM, Mech.SYSTEM_LIFE_SUPPORT, Mech.LOC_HEAD) > 0) {
                 Report r = new Report(6020);
                 r.subject = entity.getId();
                 r.addDesc(entity);
@@ -13377,7 +13379,8 @@ public class Server implements Runnable {
             }
         }
         // Is the infantry in vacuum?
-        if ((isPlatoon || isBattleArmor) && !te.isDestroyed() && !te.isDoomed() && game.getOptions().booleanOption("vacuum")) {
+        if ((isPlatoon || isBattleArmor) && !te.isDestroyed() && !te.isDoomed() 
+        		&& game.getPlanetaryConditions().isVacuum()) {
             // PBI. Double damage.
             damage *= 2;
             r = new Report(6041);
@@ -16975,6 +16978,8 @@ public class Server implements Runnable {
      * @param loc
      *            the <code>int</code> location on the entity that needs to be
      *            checked for a breach.
+     * @param target 
+     *            the <code>int</code> target number for the breach
      * @param hex
      *            the <code>IHex</code> the enitity occupies when checking
      *            This value will be <code>null</code> if the check is the
@@ -17008,6 +17013,13 @@ public class Server implements Runnable {
             // Does the location have armor (check rear armor on Mek)
             // and is the check due to damage?
             int breachroll = 0;
+            //set the target roll for the breach
+            int target = 10;
+            //if this is a vacuum check and we are in trace atmosphere then adjust target
+            if(entity.getLocationStatus(loc) == ILocationExposureStatus.VACUUM && 
+            		game.getPlanetaryConditions().getAtmosphere() == PlanetaryConditions.ATMO_TRACE) {
+            	target = 12;
+            }
             if (entity.getArmor(loc) > 0 && (entity instanceof Mech ? entity.getArmor(loc, true) > 0 : true) && null == hex) {
                 // functional HarJel prevents breach
                 if (entity instanceof Mech && ((Mech) entity).hasHarJelIn(loc)) {
@@ -17024,14 +17036,14 @@ public class Server implements Runnable {
                 r.add(entity.getLocationAbbr(loc));
                 r.add(breachroll);
                 r.newlines = 0;
-                if (breachroll >= 10)
+                if (breachroll >= target)
                     r.choose(false);
                 else
                     r.choose(true);
                 vDesc.addElement(r);
             }
             // Breach by damage or lack of armor.
-            if (breachroll >= 10 || !(entity.getArmor(loc) > 0) || (dumping && (!(entity instanceof Mech) || loc == Mech.LOC_CT || loc == Mech.LOC_RT || loc == Mech.LOC_LT)) || !(entity instanceof Mech ? entity.getArmor(loc, true) > 0 : true)) {
+            if (breachroll >= target || !(entity.getArmor(loc) > 0) || (dumping && (!(entity instanceof Mech) || loc == Mech.LOC_CT || loc == Mech.LOC_RT || loc == Mech.LOC_LT)) || !(entity instanceof Mech ? entity.getArmor(loc, true) > 0 : true)) {
                 // functional HarJel prevents breach
                 if (entity instanceof Mech && ((Mech) entity).hasHarJelIn(loc)) {
                     r = new Report(6342);
@@ -17959,6 +17971,11 @@ public class Server implements Runnable {
      * @param bInferno - <code>true</code> if the fire to be set is an inferno
      */
     public void ignite(Coords c, boolean bInferno) {
+    	//you can't start fires in some planetary conditions!
+    	if(!game.getPlanetaryConditions().canStartFire()) {
+    		return;
+    	}
+    	
     	//type of fire. We use level 2 for infernos
     	IHex hex = game.getBoard().getHex(c);
     	if(null == hex) {
@@ -18003,7 +18020,7 @@ public class Server implements Runnable {
     public void addSmoke(int x, int y, int windDir, boolean bInferno) {
 
         // if a tornado, then no smoke!
-        if (game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM) {
+        if (game.getPlanetaryConditions().getWindStrength(true) > PlanetaryConditions.WI_STORM) {
             return;
         }
 
@@ -20924,7 +20941,7 @@ public class Server implements Runnable {
                     r.subject = entity.getId();
                     r.indent(5);
                     vDesc.addElement(r);
-                    if (game.getOptions().booleanOption("vacuum")) {
+                    if (game.getPlanetaryConditions().isVacuum()) {
                         // ended up in a vacuum
                         r = new Report(6405);
                         r.subject = entity.getId();
@@ -20942,7 +20959,7 @@ public class Server implements Runnable {
                     r.subject = entity.getId();
                     r.indent(3);
                     vDesc.addElement(r);
-                    if (game.getOptions().booleanOption("vacuum")) {
+                    if (game.getPlanetaryConditions().isVacuum()) {
                         // landed in vacuum
                         r = new Report(6405);
                         r.subject = entity.getId();
@@ -21015,7 +21032,7 @@ public class Server implements Runnable {
             return vDesc;
 
         // Don't make them abandon into vacuum
-        if (game.getOptions().booleanOption("vacuum"))
+        if (game.getPlanetaryConditions().isVacuum())
             return vDesc;
 
         Coords targetCoords = entity.getPosition();
