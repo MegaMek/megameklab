@@ -6350,6 +6350,9 @@ public class Server implements Runnable {
 
                 vPhaseReport.addAll(deliverInfernoMissiles(entity, entity, mf.getDamage()));
 
+                /*
+                 * According to TacOps, p. 366, inferno mines do not start fires
+                 * TODO: This may be a typo, awaiting rules clarification                
                 if (game.getOptions().booleanOption("tacops_start_fire")) {
                     // start a fire in the targets hex
                     IHex h = game.getBoard().getHex(dest);
@@ -6362,9 +6365,8 @@ public class Server implements Runnable {
                         vPhaseReport.add(r);
                         ignite(dest, true);
                     }
-                    game.getBoard().addInfernoTo(dest, InfernoTracker.STANDARD_ROUND, 1);
-                    sendChangedHex(dest);
                 }
+                */
                 break;
             }
         }
