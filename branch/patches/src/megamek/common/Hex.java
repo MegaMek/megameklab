@@ -30,6 +30,7 @@ public class Hex implements IHex, Serializable {
     private int elevation;
     private ITerrain[] terrains;
     private String theme;
+    private int fireTurn;
 
     /** Constructs clear, plain hex at level 0. */
     public Hex() {
@@ -434,9 +435,22 @@ public class Hex implements IHex, Serializable {
      * Is this hex ignitable
      */
     public boolean isIgnitable() {
-    	return !containsTerrain(Terrains.FIRE) && (containsTerrain(Terrains.WOODS) 
+    	return (containsTerrain(Terrains.WOODS) 
     			|| containsTerrain(Terrains.JUNGLE) 
-    			|| containsTerrain(Terrains.BUILDING));
+    			|| containsTerrain(Terrains.BUILDING)
+    			|| containsTerrain(Terrains.FUEL_TANK));
     	
+    }
+    
+    public int getFireTurn() {
+    	return fireTurn;
+    }
+    
+    public void incrementFireTurn() {
+    	fireTurn = fireTurn + 1;
+    }
+    
+    public void resetFireTurn() {
+    	fireTurn = 0;
     }
 }

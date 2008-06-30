@@ -218,7 +218,8 @@ public class GAAttack extends GA {
         // ... or standing in fire...
         if (game.getBoard().getHex(attacker.entity.getPosition()) != null) {
             if (game.getBoard().getHex(attacker.entity.getPosition())
-                    .terrainLevel(Terrains.FIRE) == 2) {
+                    .containsTerrain(Terrains.FIRE) &&
+                    game.getBoard().getHex(attacker.entity.getPosition()).getFireTurn() > 0) {
                 overheat += 5;
             }
         }

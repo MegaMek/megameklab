@@ -196,7 +196,19 @@ public interface IHex extends Cloneable {
      */
     public abstract int movementCost(int moveType);
     
+    /**
+     * @return the modifier to the roll to ignite this hex
+     */
     public abstract int getIgnitionModifier();
     
+    /**
+     * @return <code>true</code> if this hex is ignitable
+     */
     public abstract boolean isIgnitable();
+    
+    public abstract int getFireTurn();
+    
+    public abstract void incrementFireTurn();
+    
+    public abstract void resetFireTurn();
 }

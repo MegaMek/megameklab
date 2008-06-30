@@ -42,8 +42,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import sun.jdbc.odbc.OdbcDef;
-
 import megamek.MegaMek;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
@@ -8216,7 +8214,6 @@ public class Server implements Runnable {
     public boolean tryIgniteHex(Coords c, int entityId, boolean bHotGun, boolean bInferno, TargetRoll nTargetRoll, boolean bReportAttempt, int accidentTarget, Vector<Report> vPhaseReport) {
 
         IHex hex = game.getBoard().getHex(c);
-        boolean bAnyTerrain = false;
         Report r;
 
         // Ignore bad coordinates.
@@ -8312,9 +8309,7 @@ public class Server implements Runnable {
         // inferno always ignites
         // ERRATA not if targeting clear hexes for ignition is disabled.
         if (bInferno && !game.getOptions().booleanOption("no_ignite_clear")) {
-            game.getBoard().addInfernoTo(c, InfernoTracker.STANDARD_ROUND, 1);
             nTargetRoll = new TargetRoll(0, "inferno");
-            bAnyTerrain = true;
         }
 
         // no lighting fires in tornados
@@ -8330,8 +8325,8 @@ public class Server implements Runnable {
                 r.subject = entityId;
                 vPhaseReport.add(r);
             }
-            // return true;
-        } else if (ignite(hex, nTargetRoll, bAnyTerrain, entityId, vPhaseReport)) {
+            //return true;
+        } else if(ignite(hex, nTargetRoll, bInferno, entityId, vPhaseReport)){
             r = new Report(3070);
             r.indent(2);
             r.subject = entityId;
@@ -11685,7 +11680,8 @@ public class Server implements Runnable {
             // Add +5 Heat if the hex you're in is on fire
             // and was on fire for the full round.
             if (entityHex != null) {
-                if (entityHex.terrainLevel(Terrains.FIRE) == 2 && entity.getElevation() <= 1) {
+                if (entityHex.containsTerrain(Terrains.FIRE) && entityHex.getFireTurn() > 0
+                        && entity.getElevation() <= 1) {
                     entity.heatFromExternal += 5;
                     r = new Report(5030);
                     r.subject = entity.getId();
@@ -17882,6 +17878,15 @@ public class Server implements Runnable {
      * Returns true if the hex is set on fire with the specified roll. Of
      * course, also checks to see that fire is possible in the specified hex.
      * 
+<<<<<<< .mine
+     * @param hex - the <code>IHex</code> to be lit.
+     * @param roll - the <code>TargetRoll</code> for the ignition roll
+     * @param bInferno - <code>true</code> if the fire is an inferno fire. If this value is <code>false</code> the hex will be
+     *            lit only if it contains Woods,jungle or a Building.
+     * @param entityId - the entityId responsible for the ignite attempt. If the
+     *            value is Entity.NONE, then the roll attempt will not be
+     *            included in the report.
+=======
      * @param hex -
      *            the <code>IHex</code> to be lit.
      * @param roll -
@@ -17894,8 +17899,9 @@ public class Server implements Runnable {
      *            the entityId responsible for the ignite attempt. If the value
      *            is Entity.NONE, then the roll attempt will not be included in
      *            the report.
+>>>>>>> .r176
      */
-    public boolean ignite(IHex hex, TargetRoll roll, boolean bAnyTerrain, int entityId, Vector<Report> vPhaseReport) {
+    public boolean ignite(IHex hex, TargetRoll roll, boolean bInferno, int entityId, Vector<Report> vPhaseReport) {
 
         // The hex might be null due to spreadFire translation
         // goes outside of the board limit.
@@ -17908,10 +17914,15 @@ public class Server implements Runnable {
             return false;
         }
 
-        if (!bAnyTerrain && !hex.containsTerrain(Terrains.WOODS) && !hex.containsTerrain(Terrains.JUNGLE) && !hex.containsTerrain(Terrains.FUEL_TANK) && !hex.containsTerrain(Terrains.BUILDING)) {
+        if (!bInferno && !hex.isIgnitable()) {
             return false;
         }
 
+        //type of fire. We use level 2 for infernos
+        int type = 1;
+        if(bInferno)
+        	type = type + 1;
+        
         int fireRoll = Compute.d6(2);
         Report r = null;
         if (entityId != Entity.NONE) {
@@ -17924,7 +17935,7 @@ public class Server implements Runnable {
             vPhaseReport.add(r);
         }
         if (fireRoll >= roll.getValue()) {
-            hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, 1));
+            hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, type));
             return true;
         }
         return false;
@@ -17944,8 +17955,8 @@ public class Server implements Runnable {
      *            this value is <code>false</code> the hex will be lit only if
      *            it contains Woods, jungle or a Building.
      */
-    public boolean ignite(IHex hex, TargetRoll roll, boolean bAnyTerrain) {
-        return ignite(hex, roll, bAnyTerrain, Entity.NONE, null);
+    public boolean ignite(IHex hex, TargetRoll roll, boolean bInferno) {
+        return ignite(hex, roll, bInferno, Entity.NONE, null);
     }
 
     /**
@@ -17973,6 +17984,7 @@ public class Server implements Runnable {
     public void removeFire(int x, int y, IHex hex) {
         Coords fireCoords = new Coords(x, y);
         hex.removeTerrain(Terrains.FIRE);
+        hex.resetFireTurn();
         sendChangedHex(fireCoords);
         // fire goes out due to lack of fuel
         Report r = new Report(5170, Report.PUBLIC);
@@ -17988,7 +18000,7 @@ public class Server implements Runnable {
      * @param y
      *            The <code>int</code> y-coordinate of the hex
      */
-    public void addSmoke(int x, int y, int windDir) {
+    public void addSmoke(int x, int y, int windDir, boolean bInferno) {
 
         // if a tornado, then no smoke!
         if (game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM) {
@@ -17998,14 +18010,15 @@ public class Server implements Runnable {
         IBoard board = game.getBoard();
         Coords smokeCoords = new Coords(Coords.xInDir(x, y, windDir), Coords.yInDir(x, y, windDir));
         IHex smokeHex = game.getBoard().getHex(smokeCoords);
-        boolean infernoBurning = board.isInfernoBurning(smokeCoords);
         Report r;
         if (smokeHex == null) {
             return;
         }
         // Have to check if it's inferno smoke or from a heavy/hardened building
         // - heavy smoke from those
-        if (infernoBurning || Building.MEDIUM < smokeHex.terrainLevel(Terrains.FUEL_TANK) || Building.MEDIUM < smokeHex.terrainLevel(Terrains.BUILDING)) {
+        if (bInferno
+                || Building.MEDIUM < smokeHex.terrainLevel(Terrains.FUEL_TANK)
+                || Building.MEDIUM < smokeHex.terrainLevel(Terrains.BUILDING)) {
             if (smokeHex.terrainLevel(Terrains.SMOKE) == 2) {
                 // heavy smoke fills hex
                 r = new Report(5180, Report.PUBLIC);

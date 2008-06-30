@@ -1060,7 +1060,7 @@ public class MechDisplay extends JPanel {
             Coords position = entity.getPosition();
             if (!en.isOffBoard() && position != null) {
                 IHex hex = game.getBoard().getHex(position);
-                if (hex.terrainLevel(Terrains.FIRE) == 2) {
+                if (hex.containsTerrain(Terrains.FIRE) && hex.getFireTurn() > 0) {
                     currentHeatBuildup += 5; // standing in fire
                 }
                 if (hex.terrainLevel(Terrains.MAGMA) == 1) {

@@ -126,90 +126,81 @@ public class FireProcessor extends DynamicTerrainProcessor {
 
         debugTime("resolve fire 1", true);
 
-        // Cycle through all hexes, checking for fire.
+        // Cycle through all hexes, checking for fire and the spread of fire
         for (int currentXCoord = 0; currentXCoord < width; currentXCoord++) {
-
             for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
                 Coords currentCoords = new Coords(currentXCoord, currentYCoord);
                 IHex currentHex = board.getHex(currentXCoord, currentYCoord);
-                boolean infernoBurning = board.burnInferno(currentCoords);
 
-                // optional rule, woods burn down
-                if ((currentHex.containsTerrain(Terrains.WOODS) || currentHex
-                        .containsTerrain(Terrains.JUNGLE))
-                        && currentHex.terrainLevel(Terrains.FIRE) == 2
-                        && game.getOptions().booleanOption("woods_burn_down")) {
-                    burnDownWoods(currentCoords);
-                }
-
-                // If the woods has been cleared, or the building
-                // has collapsed put non-inferno fires out.
-                if (currentHex.containsTerrain(Terrains.FIRE)
-                        && !infernoBurning
-                        && !(currentHex.containsTerrain(Terrains.WOODS))
-                        && !(currentHex.containsTerrain(Terrains.JUNGLE))
-                        && !(currentHex.containsTerrain(Terrains.FUEL_TANK))
-                        && !(currentHex.containsTerrain(Terrains.BUILDING))) {
-                    server.removeFire(currentXCoord, currentYCoord, currentHex);
-                }
-
-                // Was the fire started on a previous turn?
-                else if (currentHex.terrainLevel(Terrains.FIRE) == 2) {
-                    r = new Report(5125, Report.PUBLIC);
-                    if (infernoBurning)
-                        r.messageId = 5130;
-                    r.add(currentCoords.getBoardNum());
-                    vPhaseReport.addElement(r);
-                    spreadFire(currentXCoord, currentYCoord, windDirection, windStrength);
-                }
-            }
-        }
-
-        debugTime("resolve fire 1 end, begin resolve fire 2", true);
-
-        // Loop a second time, to set all fires to level 2 before next turn, and
-        // add smoke.
-        for (int currentXCoord = 0; currentXCoord < width; currentXCoord++) {
-
-            for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
-                Coords currentCoords = new Coords(currentXCoord, currentYCoord);
-                IHex currentHex = board.getHex(currentXCoord, currentYCoord);
-                // if the fire in the hex was started this turn
-                if (currentHex.terrainLevel(Terrains.FIRE) == 1) {
-                    currentHex.removeTerrain(Terrains.FIRE);
-                    currentHex.addTerrain(Terrains.getTerrainFactory()
-                            .createTerrain(Terrains.FIRE, 2));
-                    server.sendChangedHex(currentCoords);
-                    // fire started this round
-                    r = new Report(5135, Report.PUBLIC);
-                    r.add(currentCoords.getBoardNum());
-                    vPhaseReport.addElement(r);
-
-                    // If the hex contains a building, set it on fire.
-                    Building bldg = game.getBoard()
-                            .getBuildingAt(currentCoords);
-                    if (bldg != null) {
-                        bldg.setBurning(true);
-                        burningBldgs.addElement(bldg);
+                if(currentHex.containsTerrain(Terrains.FIRE)) {  
+                	//If the woods has been cleared, or the building
+                    // has collapsed put non-inferno fires out.
+                    if (currentHex.terrainLevel(Terrains.FIRE) == 1 && !currentHex.isIgnitable()) {
+                        server.removeFire(currentXCoord, currentYCoord, currentHex);
+                        continue;
+                    }
+                	
+                    //only check spread for fires that didn't start this turn        	
+                    if(currentHex.getFireTurn() > 0) {
+                    	//optional rule, woods burn down
+                    	if ((currentHex.containsTerrain(Terrains.WOODS) || currentHex
+                    			.containsTerrain(Terrains.JUNGLE))
+                    			&& game.getOptions().booleanOption("woods_burn_down")) {
+                    		burnDownWoods(currentCoords);
+                    	}
+                    	//report and check for fire spread
+                    	r = new Report(5125, Report.PUBLIC);
+                    	if (currentHex.terrainLevel(Terrains.FIRE) == 2)
+                    		r.messageId = 5130;
+                    	r.add(currentCoords.getBoardNum());
+                    	vPhaseReport.addElement(r);
+                    	spreadFire(currentXCoord, currentYCoord, windDirection, windStrength);                       
                     }
                 }
-                // If the L3 smoke rule is off, add smoke normally, otherwise
-                // call the L3 method
-                //If we are in a tornado then no smoke at all
-                boolean isTornado = (game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM); 
-                if (currentHex.containsTerrain(Terrains.FIRE) && !isTornado) {
-                    server.addSmoke(currentXCoord, currentYCoord, windDirection);
-                    server.addSmoke(currentXCoord, currentYCoord,
-                            (windDirection + 1) % 6);
-                    server.addSmoke(currentXCoord, currentYCoord,
-                            (windDirection + 5) % 6);
-                    board.initializeAround(currentXCoord, currentYCoord);
-                }
             }
         }
+        
+        //Cycle through all hexes again, reporting new fires, spreading smoke, and incrementing the fire turn.
+        //Can't do this in first loop because new fires may be spread
+        for (int currentXCoord = 0; currentXCoord < width; currentXCoord++) {
+            for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
+                Coords currentCoords = new Coords(currentXCoord, currentYCoord);
+                IHex currentHex = board.getHex(currentXCoord, currentYCoord);
 
-        debugTime("resolve fire 2 end", false);
-
+                if(currentHex.containsTerrain(Terrains.FIRE)) {                 	
+                    //was the fire started this turn?           	
+                    if(currentHex.getFireTurn() == 0) {
+                    	//report fire started this round
+                    	r = new Report(5135, Report.PUBLIC);
+                    	r.add(currentCoords.getBoardNum());
+                    	vPhaseReport.addElement(r);
+	
+                    	// If the hex contains a building, set it on fire.
+                    	Building bldg = game.getBoard()
+                    	.getBuildingAt(currentCoords);
+                    	if (bldg != null) {
+                    		bldg.setBurning(true);
+                    		burningBldgs.addElement(bldg);
+                    	}         		
+                    }  
+                                       
+                    //Add smoke (unless we are in a tornado)
+                    boolean bInferno = currentHex.terrainLevel(Terrains.FIRE) == 2;
+                    if (game.getPlanetaryConditions().getWindStrength() < PlanetaryConditions.WI_TORNADO_F13) {
+                    	server.addSmoke(currentXCoord, currentYCoord, windDirection, bInferno);
+                    	server.addSmoke(currentXCoord, currentYCoord,
+                    			(windDirection + 1) % 6, bInferno);
+                    	server.addSmoke(currentXCoord, currentYCoord,
+                    			(windDirection + 5) % 6, bInferno);
+                    	board.initializeAround(currentXCoord, currentYCoord);
+                    }
+                    //increment the fire turn counter
+                    currentHex.incrementFireTurn();
+                    server.sendChangedHex(currentCoords);
+                }              
+            }
+        }   
+        
         // If any buildings are burning, update the clients.
         if (!burningBldgs.isEmpty()) {
             server.sendChangedCFBuildings(burningBldgs);

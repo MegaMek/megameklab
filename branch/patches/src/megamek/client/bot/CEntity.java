@@ -406,7 +406,8 @@ public class CEntity {
             if (entity.getPosition() != null) {
                 if (tb.game.getBoard().getHex(entity.getPosition()) != null) {
                     if (tb.game.getBoard().getHex(entity.getPosition())
-                            .terrainLevel(Terrains.FIRE) == 2) {
+                            .containsTerrain(Terrains.FIRE) &&
+                            tb.game.getBoard().getHex(entity.getPosition()).getFireTurn() > 0) {
                         heat += 5;
                     }
                 }
