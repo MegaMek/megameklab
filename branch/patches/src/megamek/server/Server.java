@@ -5980,10 +5980,12 @@ public class Server implements Runnable {
      * 
      * @param coords
      *            the <code>Coords</code> where to deliver
+     * @param ae 
+     *           the attacking <code>entity<code>
      * @param subjectId
      *            the <code>int</code> id of the target
      */
-    public void deliverArtilleryInferno(Coords coords, int subjectId, Vector<Report> vPhaseReport) {
+    public void deliverArtilleryInferno(Coords coords, Entity ae, int subjectId, Vector<Report> vPhaseReport) {
         IHex h = game.getBoard().getHex(coords);
         Report r;
         // Unless there is a fire in the hex already, start one.
@@ -5997,14 +5999,13 @@ public class Server implements Runnable {
         }
         for (Enumeration<Entity> impactHexHits = game.getEntities(coords); impactHexHits.hasMoreElements();) {
             Entity entity = impactHexHits.nextElement();
-            entity.infernos.add(InfernoTracker.INFERNO_IV_ROUND, 1);
-            // entity on fire now
-            r = new Report(3205);
+            //TacOps, p. 356 - treat as if hit by 5 inferno missiles
+            r = new Report(6695);
             r.indent(2);
-            r.subject = entity.getId();
-            r.addDesc(entity);
-            r.add(entity.infernos.getTurnsLeftToBurn());
+            r.add(entity.getDisplayName());
+            r.newlines = 0;
             vPhaseReport.add(r);
+            vPhaseReport.addAll(deliverInfernoMissiles(ae, entity, 5));
         }
         for (int dir = 0; dir <= 5; dir++) {
             Coords tempcoords = coords.translated(dir);
@@ -6025,15 +6026,13 @@ public class Server implements Runnable {
                 ignite(tempcoords, true);
             }
             for (Enumeration<Entity> splashHexHits = game.getEntities(tempcoords); splashHexHits.hasMoreElements();) {
-                Entity entity = splashHexHits.nextElement();
-                entity.infernos.add(InfernoTracker.INFERNO_IV_ROUND, 1);
-                // entity on fire
-                r = new Report(3205);
+            	Entity entity = splashHexHits.nextElement();
+            	r = new Report(6695);
                 r.indent(2);
-                r.subject = entity.getId();
-                r.addDesc(entity);
-                r.add(entity.infernos.getTurnsLeftToBurn());
+                r.add(entity.getDisplayName());
+                r.newlines = 0;
                 vPhaseReport.add(r);
+            	vPhaseReport.addAll(deliverInfernoMissiles(ae, entity, 5));
             }
         }
     }
