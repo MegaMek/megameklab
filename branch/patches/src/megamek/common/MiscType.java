@@ -99,8 +99,8 @@ public class MiscType extends EquipmentType {
     public static final int S_ROCK_CUTTER = 0x00200000; // Miniatures Rulebook;
                                                         // TODO
     public static final int S_BUZZSAW = 0x00400000; // Unbound;
-    public static final int S_RETRACTABLE_BLADE = 0x00800000; // Total
-                                                                // Warfare;
+    public static final int S_RETRACTABLE_BLADE = 0x00800000; // Total Warfare;
+    public static final int S_CHAIN_WHIP = 0x02000000; // TacOps;
 
     public static final String S_ACTIVE_SHIELD = "Active";
     public static final String S_PASSIVE_SHIELD = "Passive";
@@ -208,7 +208,7 @@ public class MiscType extends EquipmentType {
             return (float) Math.ceil(entity.getWeight() / 15.0);
         } else if (hasFlag(F_CLUB) && hasSubType(S_LANCE)) {
             return (float) Math.ceil(entity.getWeight() / 20.0);
-        } else if (hasFlag(F_CLUB) && hasSubType(S_SWORD)) {
+        } else if (hasFlag(F_CLUB) && ( hasSubType(S_SWORD) ||hasSubType(S_CHAIN_WHIP)) ) {
             return (float) (Math.ceil(entity.getWeight() / 20.0 * 2.0) / 2.0);
         } else if (hasFlag(F_CLUB) && hasSubType(S_MACE)) {
             return (float) (Math.ceil(entity.getWeight() / 10.0));
@@ -296,7 +296,7 @@ public class MiscType extends EquipmentType {
         }
         // check for known formulas
         if (hasFlag(F_CLUB)
-                && (hasSubType(S_HATCHET) || hasSubType(S_SWORD) || hasSubType(S_MACE_THB))) {
+                && (hasSubType(S_HATCHET) || hasSubType(S_SWORD) || hasSubType(S_MACE_THB) || hasSubType(S_CHAIN_WHIP))) {
             return (int) Math.ceil(entity.getWeight() / 15.0);
         } else if (hasFlag(F_CLUB) && hasSubType(S_LANCE)) {
             return (int) Math.ceil(entity.getWeight() / 20.0);
@@ -357,7 +357,7 @@ public class MiscType extends EquipmentType {
             return Math.ceil(entity.getWeight() / 5.0) * 1.0;
         } else if (hasFlag(F_CLUB) && hasSubType(S_MACE)) {
             return Math.ceil(entity.getWeight() / 4.0);
-        } else if (hasFlag(F_CLUB) && hasSubType(S_SWORD)) {
+        } else if (hasFlag(F_CLUB) && (hasSubType(S_SWORD) || hasSubType(S_CHAIN_WHIP))  ) {
             return (Math.ceil(entity.getWeight() / 10.0) + 1.0) * 1.725;
         } else if (hasFlag(F_CLUB) && hasSubType(S_RETRACTABLE_BLADE)) {
             return Math.ceil(entity.getWeight() / 10.0) * 1.725;
@@ -430,6 +430,7 @@ public class MiscType extends EquipmentType {
         EquipmentType.addType(createSword());
         EquipmentType.addType(createISPPCCapacitor());
         EquipmentType.addType(createRetractableBlade());
+        EquipmentType.addType(createChainWhip());
 
         // Start of level 3 stuff
         EquipmentType.addType(createImprovedJumpJet());
@@ -1044,6 +1045,22 @@ public class MiscType extends EquipmentType {
         misc.cost = COST_VARIABLE;
         misc.flags |= F_CLUB;
         misc.subType |= S_SWORD;
+        misc.bv = BV_VARIABLE;
+
+        return misc;
+    }
+
+    public static MiscType createChainWhip() {
+        MiscType misc = new MiscType();
+
+        misc.techLevel = TechConstants.T_IS_LEVEL_2;
+        misc.name = "Chain Whip";
+        misc.setInternalName(misc.name);
+        misc.tonnage = TONNAGE_VARIABLE;
+        misc.criticals = CRITICALS_VARIABLE;
+        misc.cost = 120000;
+        misc.flags |= F_CLUB;
+        misc.subType |= S_CHAIN_WHIP;
         misc.bv = BV_VARIABLE;
 
         return misc;

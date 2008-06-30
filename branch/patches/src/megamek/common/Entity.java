@@ -49,6 +49,10 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
 
     public static final int MAX_C3_NODES = 12;
 
+    public static final int GRAPPLE_BOTH = 0;
+    public static final int GRAPPLE_RIGHT = 1;
+    public static final int GRAPPLE_LEFT = 2;
+    
     protected transient IGame game;
 
     protected int id = Entity.NONE;
@@ -7050,6 +7054,14 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
             }
         }
 
+    }
+    
+    public void setGrappleSide(int side) {
+        
+    }
+    
+    public int getGrappleSide() {
+        return Entity.NONE;
     }
 
 }

@@ -192,6 +192,8 @@ public abstract class Mech extends Entity implements Serializable {
 
     private static final NumberFormat commafy = NumberFormat.getInstance();
 
+    private int grappledSide = Entity.GRAPPLE_BOTH;
+    
     /**
      * Construct a new, blank, mech.
      */
@@ -3623,5 +3625,13 @@ public abstract class Mech extends Entity implements Serializable {
         }
 
     }
+    public void setGrappleSide(int side) {
+        grappledSide = side;
+    }
+    
+    public int getGrappleSide() {
+        return grappledSide;
+    }
+
 
 }
