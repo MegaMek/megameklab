@@ -176,6 +176,33 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
                 	}
                 	server.sendChangedHex(currentCoords);
                 }
+                
+                //check for the melting of any snow or ice
+                if(currentHex.containsTerrain(Terrains.DEEP_SNOW) 
+                		&& currentHex.containsTerrain(Terrains.FIRE) && currentHex.terrainLevel(Terrains.FIRE) == 3) {
+                	currentHex.removeTerrain(Terrains.DEEP_SNOW);
+                	if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
+                		currentHex.addTerrain(tf.createTerrain(Terrains.MUD, currentHex.getElevation()));
+                	}
+                }
+                
+                if(currentHex.containsTerrain(Terrains.THIN_SNOW) 
+                		&& currentHex.containsTerrain(Terrains.FIRE) && currentHex.terrainLevel(Terrains.FIRE) == 1) {
+                	currentHex.removeTerrain(Terrains.THIN_SNOW);
+                	if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
+                		currentHex.addTerrain(tf.createTerrain(Terrains.MUD, currentHex.getElevation()));
+                	}
+                }
+                
+                if(currentHex.containsTerrain(Terrains.ICE) 
+                		&& currentHex.containsTerrain(Terrains.FIRE) && currentHex.terrainLevel(Terrains.FIRE) == 2) {
+                	currentHex.removeTerrain(Terrains.ICE);
+                	if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
+                		currentHex.addTerrain(tf.createTerrain(Terrains.MUD, currentHex.getElevation()));
+                	}
+                }
+                
+                
             }
         }
         debugTime("resolve weather 1 end", true);
