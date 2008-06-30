@@ -136,7 +136,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
                 	//If the woods has been cleared, or the building
                     // has collapsed put non-inferno fires out.
                     if (currentHex.terrainLevel(Terrains.FIRE) == 1 && !currentHex.isIgnitable()) {
-                        server.removeFire(currentXCoord, currentYCoord, currentHex);
+                        server.removeFire(currentCoords, "lack of fuel");
                         continue;
                     }
                 	

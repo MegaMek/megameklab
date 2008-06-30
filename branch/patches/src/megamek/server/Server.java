@@ -17987,14 +17987,17 @@ public class Server implements Runnable {
      * @param y
      * @param hex
      */
-    public void removeFire(int x, int y, IHex hex) {
-        Coords fireCoords = new Coords(x, y);
+    public void removeFire(Coords fireCoords, String reason) {
+    	IHex hex = game.getBoard().getHex(fireCoords);
+    	if(null == hex)
+    		return;
         hex.removeTerrain(Terrains.FIRE);
         hex.resetFireTurn();
         sendChangedHex(fireCoords);
-        // fire goes out due to lack of fuel
+        // fire goes out
         Report r = new Report(5170, Report.PUBLIC);
         r.add(fireCoords.getBoardNum());
+        r.add(reason);
         addReport(r);
     }
 

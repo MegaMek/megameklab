@@ -152,12 +152,7 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
                 //check for fires and potentially put them out
                 if (currentHex.containsTerrain(Terrains.FIRE)
                 		&& conditions.putOutFire()) {
-                	Report r = new Report(5500, Report.PUBLIC);
-                    r.add(currentCoords.getBoardNum());
-                    vPhaseReport.addElement(r);
-
-                    currentHex.removeTerrain(Terrains.FIRE);
-                    server.sendChangedHex(currentCoords);                   
+                    server.removeFire(currentCoords, "weather conditions");           
                 }   
                 
                 if(ice && !currentHex.containsTerrain(Terrains.ICE) 
