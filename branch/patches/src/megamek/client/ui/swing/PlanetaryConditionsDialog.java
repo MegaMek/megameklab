@@ -272,7 +272,7 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 	
 	public void actionPerformed(ActionEvent e) {
         if (e.getSource() == butOkay) {
-            if (client != null) {
+        	if (client != null) {
                 send();
             }
         } else if (e.getSource() == butCancel) {

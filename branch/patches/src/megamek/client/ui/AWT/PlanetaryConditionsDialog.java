@@ -288,32 +288,77 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		conditions.setAtmosphere(choAtmosphere.getSelectedIndex());
 		conditions.setShiftingWindDirection(cShiftWindDir.getState());
 		conditions.setShiftingWindStrength(cShiftWindStr.getState());
-		
-		try {
-			conditions.setTemperature(Integer.parseInt(fldTemp.getText()));
-		} catch (NumberFormatException e) {
-            new AlertDialog(
-                    client.frame,
-                    Messages
-                            .getString("CustomMechDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidTemperature")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
-            return;
-        }
-		
-		try {
-			conditions.setGravity(Float.parseFloat(fldGrav.getText()));
-		} catch (NumberFormatException e) {
-            new AlertDialog(
-                    client.frame,
-                    Messages
-                            .getString("CustomMechDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidGravity")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
-            return;
-        }
+		conditions.setTemperature(Integer.parseInt(fldTemp.getText()));
+		conditions.setGravity(Float.parseFloat(fldGrav.getText()));
 			
 		client.getClient().sendPlanetaryConditions(conditions);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
         if (e.getSource() == butOkay) {
+        	//check for reasonable values and some conditionals
+        	int temper = 25;
+        	float grav = (float)1.0;
+        	try {
+    			temper = Integer.parseInt(fldTemp.getText());
+    		} catch (NumberFormatException er) {
+                new AlertDialog(
+                        client.frame,
+                        Messages
+                                .getString("PlanetaryConditionsDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidTemperature")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+                return;
+            }
+    		try {
+    			grav = Float.parseFloat(fldGrav.getText());
+    		} catch (NumberFormatException er) {
+                new AlertDialog(
+                        client.frame,
+                        Messages
+                                .getString("PlanetaryConditionsDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidGravity")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+                return;
+            }
+    		
+    		if(temper > 200 || temper < -200) {
+    			new AlertDialog(
+                        client.frame,
+                        Messages
+                                .getString("PlanetaryConditionsDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidTemperature")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+                return;
+    		}
+   
+    		if(grav < 0.1 || grav > 10.0) {
+    			new AlertDialog(
+                        client.frame,
+                        Messages
+                                .getString("PlanetaryConditionsDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidGravity")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+                return;
+    		}
+    		
+    		//can't combine certain wind conditions with certain atmospheres
+    		int wind = choWind.getSelectedIndex();
+    		int atmo = choAtmosphere.getSelectedIndex();
+    		if(atmo == PlanetaryConditions.ATMO_VACUUM && wind > PlanetaryConditions.WI_NONE) {
+    			new AlertDialog(
+                        client.frame,
+                        Messages
+                                .getString("PlanetaryConditionsDialog.Incompatible"), Messages.getString("PlanetaryConditionsDialog.VacuumWind")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+                return;
+    		}
+    		if(atmo == PlanetaryConditions.ATMO_TRACE && wind > PlanetaryConditions.WI_STORM) {
+    			new AlertDialog(
+                        client.frame,
+                        Messages
+                                .getString("PlanetaryConditionsDialog.Incompatible"), Messages.getString("PlanetaryConditionsDialog.TraceWind")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+                return;
+    		}
+    		if(atmo == PlanetaryConditions.ATMO_THIN && wind > PlanetaryConditions.WI_TORNADO_F13) {
+    			new AlertDialog(
+                        client.frame,
+                        Messages
+                                .getString("PlanetaryConditionsDialog.Incompatible"), Messages.getString("PlanetaryConditionsDialog.ThinWind")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+                return;
+    		}
+    		
             if (client != null) {
                 send();
             }
