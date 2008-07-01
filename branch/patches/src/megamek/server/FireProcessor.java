@@ -85,7 +85,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
         int width = board.getWidth();
         int height = board.getHeight();
         int windDirection = game.getPlanetaryConditions().getWindDirection();
-        int windStrength = game.getPlanetaryConditions().getWindStrength(true);
+        int windStrength = game.getPlanetaryConditions().getWindStrength();
         Report r;
 
         // Get the position map of all entities in the game.
@@ -186,7 +186,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
                                        
                     //Add smoke (unless we are in a tornado)
                     boolean bInferno = currentHex.terrainLevel(Terrains.FIRE) == 2;
-                    if (game.getPlanetaryConditions().getWindStrength(true) < PlanetaryConditions.WI_TORNADO_F13) {
+                    if (game.getPlanetaryConditions().getWindStrength() < PlanetaryConditions.WI_TORNADO_F13) {
                     	server.addSmoke(currentXCoord, currentYCoord, windDirection, bInferno);
                     	server.addSmoke(currentXCoord, currentYCoord,
                     			(windDirection + 1) % 6, bInferno);
@@ -305,7 +305,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
         int width = board.getWidth();
         int height = board.getHeight();
         int windDir = game.getPlanetaryConditions().getWindDirection();
-        int windStr = game.getPlanetaryConditions().getWindStrength(true);
+        int windStr = game.getPlanetaryConditions().getWindStrength();
         class SmokeDrift { // hold the hex and level of the smoke cloud
             public Coords coords;
             public int size;

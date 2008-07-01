@@ -264,7 +264,7 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		for(int i = 0; i < PlanetaryConditions.WI_SIZE; i++) {
 			choWind.add(PlanetaryConditions.getWindDisplayableName(i));
 		}
-		choWind.select(conditions.getWindStrength(false));	
+		choWind.select(conditions.getWindStrength());	
 		
 		choAtmosphere.removeAll();
 		for(int i = 0; i < PlanetaryConditions.ATMO_SIZE; i++) {

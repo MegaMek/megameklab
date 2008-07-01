@@ -170,7 +170,7 @@ public class PlanetaryConditions implements Serializable {
     }
     
     public String getWindCurrentName() {
-    	return Messages.getString("PlanetaryConditions." + windNames[getWindStrength(true)]);
+    	return Messages.getString("PlanetaryConditions." + windNames[windStrength]);
     }
     
     public String getAtmosphereCurrentName() {
@@ -283,7 +283,7 @@ public class PlanetaryConditions implements Serializable {
     public int getWindPilotPenalty(Entity en) {
     	int penalty = 0;
     	
-    	switch(getWindStrength(true)) {
+    	switch(windStrength) {
     	case (WI_MOD_GALE):
     		if(en instanceof VTOL || en.getMovementMode() == IEntityMovementMode.WIGE) {
     			penalty = 1;
@@ -346,6 +346,15 @@ public class PlanetaryConditions implements Serializable {
         			windStrength++;
         	}
         }
+        
+        //atmospheric pressure may limit wind strength
+        if(atmosphere == ATMO_TRACE && windStrength > WI_STORM) {
+        	windStrength = WI_STORM;
+        }
+        
+        if(atmosphere ==ATMO_THIN && windStrength > WI_TORNADO_F13) {
+        	windStrength = WI_TORNADO_F13;
+        }
     }
     
     /*
@@ -364,10 +373,10 @@ public class PlanetaryConditions implements Serializable {
     	if(weatherConditions == WE_HEAVY_SNOW || weatherConditions == WE_LIGHT_HAIL || weatherConditions == WE_HEAVY_HAIL) {
     		mod += 3;
     	}
-    	if(getWindStrength(true) == WI_LIGHT_GALE || getWindStrength(true) == WI_MOD_GALE) {
+    	if(windStrength == WI_LIGHT_GALE || windStrength == WI_MOD_GALE) {
     		mod += 2;
     	}
-    	if(getWindStrength(true) == WI_STRONG_GALE || getWindStrength(true) == WI_STORM || weatherConditions == WE_ICE_STORM) {
+    	if(windStrength == WI_STRONG_GALE || windStrength == WI_STORM || weatherConditions == WE_ICE_STORM) {
     		mod += 4;
     	}
     	mod += getTemperatureDifference(30,-30);
@@ -440,7 +449,7 @@ public class PlanetaryConditions implements Serializable {
     }
     
     public boolean canStartFire() {
-    	if(getWindStrength(true) > WI_STORM) {
+    	if(windStrength > WI_STORM) {
     		return false;
     	}
     	if(atmosphere < ATMO_THIN) {
@@ -469,43 +478,8 @@ public class PlanetaryConditions implements Serializable {
     	this.windStrength = type;
     }
     
-    public int getWindStrength(boolean adjust) {
-    	int strength = windStrength;
-    	//in some cases I need to adjust this by the atmospheric pressure
-    	//calm wind is always calm 
-    	if(strength == WI_NONE) {
-    		return strength;
-    	}
-    	
-    	int mod = 0;
-    	switch(atmosphere) {
-    	case(ATMO_VACUUM):
-    		//no wind in a vacuum, right?
-    		mod = ATMO_SIZE;
-    		break;
-    	case(ATMO_TRACE):
-    		mod = -2;
-    		break;
-    	case(ATMO_THIN):
-    		mod = -1;
-    		break;
-    	case(ATMO_HIGH):
-    		mod = 1;
-    		break;
-    	case(ATMO_VHIGH):
-    		mod = 2;
-    		break;
-    	default:
-    		mod = 0;
-    	}
-    	strength = strength + mod;
-    	if(strength < WI_NONE) {
-    		strength = WI_NONE;
-    	}
-    	if(strength > WI_TORNADO_F4) {
-    		strength = WI_TORNADO_F4;
-    	}
-    	return strength;
+    public int getWindStrength() { 
+    	return windStrength;
     }
     
     public void setWindDirection(int type) {

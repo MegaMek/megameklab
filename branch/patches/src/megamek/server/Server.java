@@ -2779,7 +2779,7 @@ public class Server implements Runnable {
             // Wind direction and strength
             r = new Report(1025, Report.PUBLIC);
             r.add(game.getPlanetaryConditions().getWindDirName());
-            if (game.getPlanetaryConditions().getWindStrength(true) > 0) {
+            if (game.getPlanetaryConditions().getWindStrength() > 0) {
                 Report r2 = new Report(1030, Report.PUBLIC);
                 r2.add(game.getPlanetaryConditions().getWindCurrentName());
                 r.newlines = 0;
@@ -8310,7 +8310,7 @@ public class Server implements Runnable {
         }
 
         // no lighting fires in tornados
-        if (game.getPlanetaryConditions().getWindStrength(true) > PlanetaryConditions.WI_STORM) {
+        if (game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM) {
             nTargetRoll = new TargetRoll(TargetRoll.AUTOMATIC_FAIL, "tornado");
         }
 
@@ -18033,7 +18033,7 @@ public class Server implements Runnable {
     public void addSmoke(int x, int y, int windDir, boolean bInferno) {
 
         // if a tornado, then no smoke!
-        if (game.getPlanetaryConditions().getWindStrength(true) > PlanetaryConditions.WI_STORM) {
+        if (game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM) {
             return;
         }
 
