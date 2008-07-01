@@ -192,6 +192,19 @@ public class ClubAttackAction extends PhysicalAttackAction {
             return new ToHitData(TargetRoll.IMPOSSIBLE, "Blade is Retracted.");
         }
 
+        if ( ae.getGrappled() != Entity.NONE && 
+                ae.getGrappleSide() == Entity.GRAPPLE_LEFT
+                && club.getLocation() == Mech.LOC_LARM ) {
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "impossible");
+        }
+        
+        if ( ae.getGrappled() != Entity.NONE && 
+                ae.getGrappleSide() == Entity.GRAPPLE_RIGHT
+                && club.getLocation() == Mech.LOC_RARM ) {
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "impossible");
+        }
+
+
         IHex attHex = game.getBoard().getHex(ae.getPosition());
         IHex targHex = game.getBoard().getHex(target.getPosition());
         final int attackerElevation = ae.getElevation() + attHex.getElevation();

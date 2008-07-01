@@ -81,8 +81,10 @@ public class PhysicalAttackAction extends AbstractAttackAction {
                 return "Target is swarming a Mek.";
             }
 
-            if ( ae.getGrappled() != Entity.NONE) {
-                return "Locked in Grapple";
+            if ( ae.getGrappled() != Entity.NONE && 
+                    ae.getGrappleSide() == Entity.GRAPPLE_BOTH ) {
+                    return "Locked in Grapple";
+                
             }
 
             // target unit in building checks

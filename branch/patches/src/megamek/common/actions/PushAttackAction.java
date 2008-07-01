@@ -69,6 +69,11 @@ public class PushAttackAction extends DisplacementAttackAction {
             extendedBladeImpossible = "Extended retractable blade";
         if (physicalImpossible != null)
             return physicalImpossible;
+        
+        if ( ae.getGrappled() != Entity.NONE ) {
+            return "Unit Grappled";
+        }
+        
         return extendedBladeImpossible;
     }
 

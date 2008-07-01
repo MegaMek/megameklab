@@ -101,6 +101,18 @@ public class PunchAttackAction extends PhysicalAttackAction {
             return new ToHitData(TargetRoll.IMPOSSIBLE, "impossible");
         }
 
+        if ( ae.getGrappled() != Entity.NONE && 
+                ae.getGrappleSide() == Entity.GRAPPLE_LEFT
+                && arm == Mech.LOC_LARM ) {
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "impossible");
+        }
+        
+        if ( ae.getGrappled() != Entity.NONE && 
+                ae.getGrappleSide() == Entity.GRAPPLE_RIGHT
+                && arm == Mech.LOC_RARM ) {
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "impossible");
+        }
+
         IHex attHex = game.getBoard().getHex(ae.getPosition());
         IHex targHex = game.getBoard().getHex(target.getPosition());
         final int attackerHeight = ae.absHeight() + attHex.getElevation();

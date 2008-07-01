@@ -1339,8 +1339,10 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         if (target instanceof Entity) {
             int grapple = ((Entity)target).getGrappled();
             if (grapple != Entity.NONE) {
-                if (grapple == ae.getId())
+                if (grapple == ae.getId() && ((Entity)target).getGrappleSide() == Entity.GRAPPLE_BOTH)
                     toHit.addModifier(-4, "target grappled");
+                else if (grapple == ae.getId() && ((Entity)target).getGrappleSide() != Entity.GRAPPLE_BOTH)
+                    toHit.addModifier(-2, "target grappled (Chain Whip)");
                 else if (!exchangeSwarmTarget)
                     toHit.addModifier(1, "CQC, possible friendly fire");
                 else {
@@ -2125,8 +2127,14 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                 return "Can only attack grappled mech";
             }
             int loc = weapon.getLocation();
-            if (ae instanceof Mech && (loc != Mech.LOC_CT && loc != Mech.LOC_LT && loc != Mech.LOC_RT && loc != Mech.LOC_HEAD) || weapon.isRearMounted()) {
+            if (ae instanceof Mech && ae.getGrappleSide() == Entity.GRAPPLE_BOTH && (loc != Mech.LOC_CT && loc != Mech.LOC_LT && loc != Mech.LOC_RT && loc != Mech.LOC_HEAD) || weapon.isRearMounted()) {
                 return "Can only fire head and front torso weapons when grappled";
+            }
+            if (ae instanceof Mech && ae.getGrappleSide() == Entity.GRAPPLE_LEFT && loc == Mech.LOC_LARM ) {
+                return "Cannot Fire Weapon, Snared by Chain Whip";
+            }
+            if (ae instanceof Mech && ae.getGrappleSide() == Entity.GRAPPLE_RIGHT && loc == Mech.LOC_RARM ) {
+                return "Cannot Fire Weapon, Snared by Chain Whip";
             }
         }
         if (ae.getMovementMode() == IEntityMovementMode.WIGE &&

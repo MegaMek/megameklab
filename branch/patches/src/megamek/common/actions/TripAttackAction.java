@@ -61,6 +61,11 @@ public class TripAttackAction extends PhysicalAttackAction {
         if (impossible != null) {
             return new ToHitData(TargetRoll.IMPOSSIBLE, "impossible");
         }
+        
+        if ( ae.getGrappled() != Entity.NONE ) {
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "impossible");
+        }
+
         ToHitData toHit;
 
         // non-mechs can't trip or be tripped

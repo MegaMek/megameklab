@@ -9897,7 +9897,14 @@ public class Server implements Runnable {
                 }
                     
 
-            }else if ( hit.getLocation() == Mech.LOC_RARM || hit.getLocation() == Mech.LOC_LARM) {
+            }else if ( loc == Mech.LOC_RARM || loc == Mech.LOC_LARM) {
+                GrappleAttackAction gaa = new GrappleAttackAction(ae.getId(),te.getId());
+                ToHitData grappleHit = GrappleAttackAction.toHit(game, ae.getId(), target);
+                PhysicalResult grappleResult = new PhysicalResult();
+                grappleResult.aaa = gaa;
+                grappleResult.toHit = grappleHit;
+                grappleResult.roll = Compute.d6(2);
+                resolveGrappleAttack(grappleResult, lastEntityId, hit.getLocation() == Mech.LOC_RARM ? Entity.GRAPPLE_RIGHT : Entity.GRAPPLE_LEFT );
                 
             }
         }
@@ -10128,6 +10135,10 @@ public class Server implements Runnable {
      * Handle a grapple attack
      */
     private void resolveGrappleAttack(PhysicalResult pr, int lastEntityId) {
+        resolveGrappleAttack(pr, lastEntityId, Entity.GRAPPLE_BOTH);
+    }
+    
+    private void resolveGrappleAttack(PhysicalResult pr, int lastEntityId, int grappleSide) {
         final GrappleAttackAction paa = (GrappleAttackAction) pr.aaa;
         final Entity ae = game.getEntity(paa.getEntityId());
         // PLEASE NOTE: buildings are *never* the target of a "push".
@@ -10194,7 +10205,9 @@ public class Server implements Runnable {
         ae.setElevation(te.getElevation());
         te.setFacing((ae.getFacing() + 3) % 6);
         addReport(doSetLocationsExposure(ae, game.getBoard().getHex(pos), false, ae.getElevation()));
-
+        ae.setGrappleSide(grappleSide);
+        te.setGrappleSide(grappleSide);
+        
         r = new Report(4040);
         r.subject = ae.getId();
         addReport(r);
