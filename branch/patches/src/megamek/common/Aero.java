@@ -186,19 +186,17 @@ public class Aero
     * Returns this entity's safe thrust, factored
     * for heat, extreme temperatures, gravity, and bomb load.
     */
-    public int getWalkMP(boolean gravity) {
+    public int getWalkMP(boolean gravity, boolean ignoreheat) {
         int j = getOriginalWalkMP();
         j = Math.max(0, j - getCargoMpReduction());
+        if(null != game) {
+    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+    		if(weatherMod != 0) {
+    			j = Math.max(j + weatherMod, 0);
+    		} 
+    	}  	
         //get bomb load
         j = Math.max(0, j - (int)Math.ceil(getBombPoints()/5.0));
-        int windP = 0;
-        if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
-    		if(windCond == PlanetaryConditions.WI_TORNADO_F13) {
-    			windP += 1;
-    		} 
-    	}
-    	j = Math.max(j - windP, 0);
         return j;
     }    
 

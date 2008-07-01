@@ -173,19 +173,15 @@ public class Infantry extends Entity implements Serializable {
      */
     public int getWalkMP(boolean gravity, boolean ignoreheat) {
     	int mp = getOriginalWalkMP();
+    	if(null != game) {
+    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+    		if(weatherMod != 0) {
+    			mp = Math.max(mp + weatherMod, 0);
+    		} 
+    	}  	
     	if (gravity) {
             mp = applyGravityEffectsOnMP(mp);
         }
-    	int windP = 0;
-    	if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
-    		if(windCond == PlanetaryConditions.WI_LIGHT_GALE || windCond == PlanetaryConditions.WI_MOD_GALE) {
-    			windP++;
-    		} else if (windCond >= PlanetaryConditions.WI_STRONG_GALE) {
-    			windP += 2;
-    		}
-    	}
-    	mp = Math.max(mp - windP, 0);
     	return mp;
     }
     
@@ -193,9 +189,16 @@ public class Infantry extends Entity implements Serializable {
      * Return this Infantry's run MP.
      */
     public int getRunMP(boolean gravity, boolean ignoreheat) {
+    	int j = getOriginalRunMP();
+    	if(null != game) {
+    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+    		if(weatherMod != 0) {
+    			j = Math.max(j + weatherMod, 0);
+    		} 
+    	}  
         if (gravity)
-            return applyGravityEffectsOnMP(this.getOriginalRunMP());
-        return this.getOriginalRunMP();
+            j = applyGravityEffectsOnMP(j);
+        return j;
     }
 
     /**

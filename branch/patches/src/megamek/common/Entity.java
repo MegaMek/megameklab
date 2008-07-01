@@ -1343,17 +1343,15 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
             }
         }
         mp = Math.max(mp - getCargoMpReduction(), 0);
+        if(null != game) {
+    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+    		if(weatherMod != 0) {
+    			mp = Math.max(mp + weatherMod, 0);
+    		} 
+    	}  	
         if (gravity) {
             mp = applyGravityEffectsOnMP(mp);
         }
-        int windP = 0;
-        if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
-    		if(windCond >= PlanetaryConditions.WI_TORNADO_F13) {
-    			windP += 2;
-    		} 
-    	}
-    	mp = Math.max(mp - windP, 0);
         return mp;
     }
 

@@ -154,6 +154,12 @@ public class QuadMech extends Mech {
                 wmp += 2;
             }
         }
+        if(null != game) {
+    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+    		if(weatherMod != 0) {
+    			wmp = Math.max(wmp + weatherMod, 0);
+    		} 
+    	}  	
         // gravity
         if (gravity)
             wmp = applyGravityEffectsOnMP(wmp);

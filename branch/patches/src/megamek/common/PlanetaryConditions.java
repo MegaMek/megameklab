@@ -463,6 +463,99 @@ public class PlanetaryConditions implements Serializable {
     	return null;   	
     }
     
+    /**
+     * Planetary conditions on movement, except for gravity
+     * @param entity - the entity in question
+     * @return an <code>int</code> with the modifier to movement
+     */
+    public int getMovementMods(Entity en) {
+    	int mod = 0;
+    	
+    	//wind mods
+    	switch(windStrength) {
+    	case(WI_LIGHT_GALE):
+    		if(en.getMovementMode() == IEntityMovementMode.INF_LEG) {
+    			mod -= 1;
+    		}
+    		break;
+    	case (WI_MOD_GALE):
+    		if(en instanceof Infantry && !(en instanceof BattleArmor)) {
+    			mod -= 1;
+    		}
+    		break;
+    	case (WI_STRONG_GALE):
+    	case (WI_STORM):
+    		if(en instanceof BattleArmor) {
+    			mod -= 1;
+    		}
+    		else if(en instanceof Infantry) {
+    			mod -= 2;
+    		}
+    		break;   		
+    	case (WI_TORNADO_F13): 
+    		if(en instanceof Aero) {
+    			mod -= 1;
+    		}
+    		else {
+    			mod -= 2;
+    		}
+    		break;  	
+    	}
+    	
+    	//atmospheric pressure mods
+    	switch(atmosphere) {
+    	case(ATMO_THIN):
+    		if(en.getMovementMode() == IEntityMovementMode.HOVER
+    				|| en.getMovementMode() == IEntityMovementMode.WIGE
+    				|| en.getMovementMode() == IEntityMovementMode.VTOL) {
+    			mod -= 2;
+    		}
+    		break;
+    	case(ATMO_HIGH):
+    	case(ATMO_VHIGH):
+    		if(en.getMovementMode() == IEntityMovementMode.HOVER
+    				|| en.getMovementMode() == IEntityMovementMode.WIGE
+    				|| en.getMovementMode() == IEntityMovementMode.VTOL) {
+    			mod += 1;
+    		}
+    		break;
+    	}
+    	
+    	//temperature difference
+    	if(en instanceof Tank || en instanceof Infantry || en instanceof Protomech) {
+    		mod -= Math.abs(getTemperatureDifference(50,-30));
+    	}
+    	
+    	//TODO: awaiting clarification on the effect of other weather on movement
+    	  	
+    	return mod;
+    }
+    
+    /**
+     * is the given entity type doomed in these conditions?
+     * @return a string given the reason for being doomed, null if not doomed
+     */
+    public String whyDoomed(Entity en) {
+    	if(atmosphere < ATMO_THIN && en.doomedInVacuum()) {
+    		return "vacuum";
+    	}
+    	if(windStrength == WI_TORNADO_F4 && !(en instanceof Mech)) {
+    		return "tornado";
+    	}
+    	if(windStrength == WI_TORNADO_F13 
+    			&& ((en instanceof Infantry && !(en instanceof BattleArmor))
+    					|| (en.getMovementMode() == IEntityMovementMode.HOVER
+    				|| en.getMovementMode() == IEntityMovementMode.WIGE
+    				|| en.getMovementMode() == IEntityMovementMode.VTOL))) {
+    		return "tornado";
+    	}
+    	if(windStrength == WI_STORM && (en instanceof Infantry && !(en instanceof BattleArmor))) {
+    		return "tornado";
+    	}   	
+    	return null;	
+    }
+    
+    
     public void setLight(int type) {
     	this.lightConditions = type;
     }

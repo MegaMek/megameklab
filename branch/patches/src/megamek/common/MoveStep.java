@@ -1841,6 +1841,14 @@ public class MoveStep implements Serializable {
                 danger = true; // langing requiers a roll. (at -4)
             }
         }
+        
+        //only walking speed in Tornados
+        if(game.getPlanetaryConditions().getWindStrength() == PlanetaryConditions.WI_TORNADO_F4) {
+        	if(movementType != IEntityMovementType.MOVE_WALK) {
+        		movementType = IEntityMovementType.MOVE_ILLEGAL;
+        		return;
+        	}
+        }
     }
 
     public int getTotalHeat() {

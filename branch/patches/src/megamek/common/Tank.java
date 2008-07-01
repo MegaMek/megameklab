@@ -114,21 +114,14 @@ public class Tank extends Entity implements Serializable {
     public int getWalkMP(boolean gravity, boolean ignoreheat) {
         int j = getOriginalWalkMP();
         j = Math.max(0, j - getCargoMpReduction());
+        if(null != game) {
+    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+    		if(weatherMod != 0) {
+    			j = Math.max(j + weatherMod, 0);
+    		} 
+    	}  
         if (gravity)
             j = applyGravityEffectsOnMP(j);
-        if (game != null && !ignoreheat) {
-            int i = game.getPlanetaryConditions().getTemperatureDifference(50,-30);
-            return Math.max(j - i, 0);
-        }
-        int windP = 0;
-        if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
-    		if(windCond == PlanetaryConditions.WI_TORNADO_F13) {
-    			windP += 2;
-    		} 
-    	}
-    	j = Math.max(j - windP, 0);
-        
         return j;
     }
 

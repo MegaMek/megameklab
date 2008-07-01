@@ -1695,9 +1695,7 @@ public class Server implements Runnable {
             // write End Phase header
             addReport(new Report(5005, Report.PUBLIC));
             checkForSuffocation();
-            if (game.getPlanetaryConditions().isVacuum()) {
-                checkForVacuumDeath();
-            }
+            checkForConditionDeath();
             if (game.getBoard().inAtmosphere()) {
                 checkForAtmosphereDeath();
             }
@@ -12329,9 +12327,9 @@ public class Server implements Runnable {
     }
 
     /**
-     * Check to see if anyone dies due to being in a vacuum.
+     * Check to see if anyone dies due to being in certain planetary conditions.
      */
-    private void checkForVacuumDeath() {
+    private void checkForConditionDeath() {
         Report r;
         for (Enumeration<Entity> i = game.getEntities(); i.hasMoreElements();) {
             final Entity entity = i.nextElement();
@@ -12340,12 +12338,14 @@ public class Server implements Runnable {
                 // example...
                 continue;
             }
-            if (entity.doomedInVacuum()) {
+            String reason = game.getPlanetaryConditions().whyDoomed(entity);
+            if (null != reason) {
                 r = new Report(6015);
                 r.subject = entity.getId();
                 r.addDesc(entity);
+                r.add(reason);
                 addReport(r);
-                addReport(destroyEntity(entity, "being in a vacuum where it can't survive", true, true));
+                addReport(destroyEntity(entity, reason, true, true));
             }
         }
     }

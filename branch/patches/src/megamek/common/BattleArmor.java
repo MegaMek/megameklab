@@ -274,7 +274,7 @@ public class BattleArmor extends Infantry implements Serializable {
     }
 
     public int getWalkMP() {
-    	return getWalkMP(false, true);
+    	return getWalkMP(true, true);
     }
     
     /**
@@ -282,22 +282,15 @@ public class BattleArmor extends Infantry implements Serializable {
      * gravity.
      */
     public int getWalkMP(boolean gravity, boolean ignoreheat) {
-        int i;
         int j = getOriginalWalkMP();
+        if(null != game) {
+    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+    		if(weatherMod != 0) {
+    			j = Math.max(j + weatherMod, 0);
+    		} 
+    	}  	
         if (gravity)
             j = applyGravityEffectsOnMP(j);
-        if (game != null) {
-            i = game.getPlanetaryConditions().getTemperatureDifference(50,-30);
-            return Math.max(j - i, 0);
-        }
-        int windP = 0;
-    	if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
-    		if(windCond >= PlanetaryConditions.WI_STRONG_GALE) {
-    			windP++;
-    		} 
-    	}
-    	j = Math.max(j - windP, 0);
         return j;
     }
 
@@ -306,14 +299,15 @@ public class BattleArmor extends Infantry implements Serializable {
      * gravity.
      */
     public int getRunMP(boolean gravity, boolean ignoreheat) {
-        int i;
         int j = getOriginalRunMP();
+        if(null != game) {
+    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+    		if(weatherMod != 0) {
+    			j = Math.max(j + weatherMod, 0);
+    		} 
+    	}  
         if (gravity)
             j = applyGravityEffectsOnMP(j);
-        if (game != null && !ignoreheat) {
-            i = game.getPlanetaryConditions().getTemperatureDifference(50,-30);
-            return Math.max(j - i, 0);
-        }
         return j;
     }
     
