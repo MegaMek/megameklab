@@ -2788,7 +2788,6 @@ public class Server implements Runnable {
             rWeather.newlines = 0;
             Report rLight = new Report(1032, Report.PUBLIC);
             rLight.add(game.getPlanetaryConditions().getLightCurrentName());  
-            rLight.newlines = 0;
             addReport(rWindDir);
             addReport(rWindStr);
             addReport(rWeather);
