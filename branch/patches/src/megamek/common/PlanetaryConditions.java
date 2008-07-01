@@ -93,6 +93,14 @@ public class PlanetaryConditions implements Serializable {
     private static String[] atmoNames = {"Vacuum", "Trace", "Thin", "Standard", "High", "Very High" };
     public static final int ATMO_SIZE = atmoNames.length;
     
+    //fog
+    public static final int FOG_NONE  = 0;
+    public static final int FOG_LIGHT = 1;
+    public static final int FOG_HEAVY = 2;
+    
+    private static String[] fogNames = {"None", "Light Fog", "Heavy Fog" };
+    public static final int FOG_SIZE = fogNames.length;
+    
     //set up the specific conditions
     private int lightConditions = WI_NONE;
     private int weatherConditions = WE_NONE;
@@ -101,6 +109,7 @@ public class PlanetaryConditions implements Serializable {
     private boolean shiftWindDirection = false;
     private boolean shiftWindStrength = false;
     private int atmosphere = ATMO_STANDARD;
+    private int fog = FOG_NONE;
     private int temperature = 25;
     private float gravity = (float)1.0;
     private boolean emi = false;
@@ -124,6 +133,7 @@ public class PlanetaryConditions implements Serializable {
     	this.temperature = other.temperature;
     	this.gravity = other.gravity;
     	this.emi = other.emi;
+    	this.fog = other.fog;
     }
     
     /** clone! */
@@ -159,6 +169,13 @@ public class PlanetaryConditions implements Serializable {
         throw new IllegalArgumentException("Unknown atmospheric pressure condition");
     }
     
+    public static String getFogDisplayableName(int type) {
+        if (type >= 0 && type < FOG_SIZE) {
+            return Messages.getString("PlanetaryConditions." + fogNames[type]);
+        }
+        throw new IllegalArgumentException("Unknown fog condition");
+    }
+    
     public String getWindDirName() {
             return dirNames[windDirection];
     }
@@ -177,6 +194,10 @@ public class PlanetaryConditions implements Serializable {
     
     public String getAtmosphereCurrentName() {
     	return Messages.getString("PlanetaryConditions." + atmoNames[atmosphere]);
+    }
+    
+    public String getFogCurrentName() {
+    	return Messages.getString("PlanetaryConditions." + fogNames[fog]);
     }
     
     /*
@@ -640,5 +661,13 @@ public class PlanetaryConditions implements Serializable {
     
     public boolean hasEMI() {
     	return emi;
+    }
+    
+    public int getFog() {
+    	return fog;
+    }
+    
+    public void setFog(int fog) {
+    	this.fog = fog;
     }
 }

@@ -814,6 +814,13 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         	}
         }
         
+        //fog mods (not in space)
+        if(wtype.hasFlag(WeaponType.F_ENERGY) 
+        		&& !game.getBoard().inSpace() 
+        		&& game.getPlanetaryConditions().getFog() == PlanetaryConditions.FOG_HEAVY) {
+        	toHit.addModifier(1, "heavy fog");
+        }
+        
         //gravity mods (not in space)
         if(!game.getBoard().inSpace()) {
         	int mod = (int)Math.ceil(Math.abs((game.getPlanetaryConditions().getGravity() - 1.0f) / 0.2f));

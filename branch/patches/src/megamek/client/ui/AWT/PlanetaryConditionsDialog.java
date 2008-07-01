@@ -60,6 +60,9 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 	private Label labAtmosphere = new Label(Messages
 			.getString("PlanetaryConditionsDialog.labAtmosphere"), Label.RIGHT); //$NON-NLS-1$
 	private Choice choAtmosphere = new Choice();
+	private Label labFog = new Label(Messages
+			.getString("PlanetaryConditionsDialog.labFog"), Label.RIGHT); //$NON-NLS-1$
+	private Choice choFog = new Choice();
 	private Checkbox cShiftWindDir = new Checkbox(Messages
             .getString("PlanetaryConditionsDialog.shiftWindDir"));
 	private Checkbox cShiftWindStr = new Checkbox(Messages
@@ -220,6 +223,16 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
         c.anchor = GridBagConstraints.WEST;
         gridbag.setConstraints(choAtmosphere, c);
         panOptions.add(choAtmosphere);
+        
+        c.gridwidth = 1;
+        c.anchor = GridBagConstraints.EAST;
+        gridbag.setConstraints(labFog, c);
+        panOptions.add(labFog);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(choFog, c);
+        panOptions.add(choFog);
 
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.anchor = GridBagConstraints.WEST;
@@ -279,6 +292,12 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		}
 		choAtmosphere.select(conditions.getAtmosphere());	
 		
+		choFog.removeAll();
+		for(int i = 0; i < PlanetaryConditions.FOG_SIZE; i++) {
+			choFog.add(PlanetaryConditions.getFogDisplayableName(i));
+		}
+		choFog.select(conditions.getFog());	
+		
 		cShiftWindDir.setState(conditions.shiftingWindDirection());
 		cShiftWindStr.setState(conditions.shiftingWindStrength());
 		
@@ -295,6 +314,7 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		conditions.setWeather(choWeather.getSelectedIndex());
 		conditions.setWindStrength(choWind.getSelectedIndex());
 		conditions.setAtmosphere(choAtmosphere.getSelectedIndex());
+		conditions.setFog(choFog.getSelectedIndex());
 		conditions.setShiftingWindDirection(cShiftWindDir.getState());
 		conditions.setShiftingWindStrength(cShiftWindStr.getState());
 		conditions.setTemperature(Integer.parseInt(fldTemp.getText()));

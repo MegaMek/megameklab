@@ -1878,6 +1878,16 @@ public class MoveStep implements Serializable {
             return;
         }
 
+        //check for fog
+        if(game.getPlanetaryConditions().getFog() == PlanetaryConditions.FOG_LIGHT &&
+        		!game.getBoard().inSpace()) {
+        	mp += 1;
+        }
+        if(game.getPlanetaryConditions().getFog() == PlanetaryConditions.FOG_HEAVY &&
+        		!game.getBoard().inSpace()) {
+        	mp += 2;
+        }
+        
         // VTOLs pay 1 for everything
         if (moveType == IEntityMovementMode.VTOL) {
             return;
