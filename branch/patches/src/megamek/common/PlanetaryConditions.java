@@ -448,14 +448,19 @@ public class PlanetaryConditions implements Serializable {
         return i;
     }
     
-    public boolean canStartFire() {
-    	if(windStrength > WI_STORM) {
-    		return false;
-    	}
+    /**
+     * 
+     * @return a <code>String</code> with the reason why you cannot start a fire here
+     */
+    public String cannotStartFire() {
     	if(atmosphere < ATMO_THIN) {
-    		return false;
+    		return "atmosphere this thin";
     	}
-    	return true;   	
+    	if(windStrength > WI_STORM) {
+    		return "a tornado";
+    	}
+    	
+    	return null;   	
     }
     
     public void setLight(int type) {

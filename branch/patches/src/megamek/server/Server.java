@@ -5994,13 +5994,8 @@ public class Server implements Runnable {
         IHex h = game.getBoard().getHex(coords);
         Report r;
         // Unless there is a fire in the hex already, start one.
-        if (!h.containsTerrain(Terrains.FIRE) && game.getOptions().booleanOption("tacops_start_fire")) {
-            r = new Report(3005);
-            r.subject = subjectId;
-            r.indent(2);
-            r.add(coords.getBoardNum());
-            vPhaseReport.add(r);
-            ignite(coords, true);
+        if (!h.containsTerrain(Terrains.FIRE)) {
+            ignite(coords, true, vPhaseReport);
         }
         for (Enumeration<Entity> impactHexHits = game.getEntities(coords); impactHexHits.hasMoreElements();) {
             Entity entity = impactHexHits.nextElement();
@@ -6023,12 +6018,7 @@ public class Server implements Runnable {
             h = game.getBoard().getHex(tempcoords);
             // Unless there is a fire in the hex already, start one.
             if (!h.containsTerrain(Terrains.FIRE) && game.getOptions().booleanOption("tacops_start_fire")) {
-                r = new Report(3005);
-                r.subject = subjectId;
-                r.indent(2);
-                r.add(tempcoords.getBoardNum());
-                vPhaseReport.add(r);
-                ignite(tempcoords, true);
+                ignite(tempcoords, true, vPhaseReport);
             }
             for (Enumeration<Entity> splashHexHits = game.getEntities(tempcoords); splashHexHits.hasMoreElements();) {
             	Entity entity = splashHexHits.nextElement();
@@ -6648,9 +6638,9 @@ public class Server implements Runnable {
         Report r = new Report(2170);
         r.subject = entity.getId();
         r.addDesc(entity);
-        if (!hex.containsTerrain(Terrains.FIRE) && game.getOptions().booleanOption("tacops_start_fire")) {
+        if (!hex.containsTerrain(Terrains.FIRE)) {
             r.messageId = 2175;
-            ignite(coords, true);
+            ignite(coords, true, null);
         }
         addReport(r);
     }
@@ -8325,12 +8315,7 @@ public class Server implements Runnable {
                 r.subject = entityId;
                 vPhaseReport.add(r);
             }
-            //return true;
         } else if(checkIgnition(c, nTargetRoll, bInferno, entityId, vPhaseReport)){
-            r = new Report(3070);
-            r.indent(2);
-            r.subject = entityId;
-            vPhaseReport.add(r);
             return true;
         }
         return false;
@@ -14697,19 +14682,12 @@ public class Server implements Runnable {
             if (en instanceof Mech)
                 en.destroyLocation(Mech.LOC_CT);
 
-            if (game.getOptions().booleanOption("tacops_start_fire")) {
-                // Light our hex on fire
-                final IHex curHex = game.getBoard().getHex(en.getPosition());
+            // Light our hex on fire
+            final IHex curHex = game.getBoard().getHex(en.getPosition());
 
-                if (null != curHex && !curHex.containsTerrain(Terrains.FIRE)) {
-                    ignite(en.getPosition(), false);
-                    r = new Report(6170, Report.PUBLIC);
-                    r.subject = en.getId();
-                    r.indent(2);
-                    r.add(en.getPosition().getBoardNum());
-                    vDesc.addElement(r);
-                }
-            }
+            if (null != curHex && !curHex.containsTerrain(Terrains.FIRE)) {
+            	ignite(en.getPosition(), false, vDesc);
+            }           
 
             // ICE explosions don't hurt anyone else, but fusion do
             if (engine.isFusion()) {
@@ -16681,9 +16659,9 @@ public class Server implements Runnable {
             if (game.getOptions().booleanOption("tacops_start_fire")) {
                 IHex hex = game.getBoard().getHex(pos);
                 if (hex.containsTerrain(Terrains.WOODS) || hex.containsTerrain(Terrains.JUNGLE)) {
-                    ignite(pos, false);
+                    ignite(pos, false, vDesc);
                 } else {
-                    ignite(pos, true);
+                    ignite(pos, true, vDesc);
                 }
             }
             vDesc.addAll(destroyEntity(en, "crashed and burned", false, false));
@@ -17916,7 +17894,7 @@ public class Server implements Runnable {
     	
         // The hex might be null due to spreadFire translation
         // goes outside of the board limit.
-        if (!game.getOptions().booleanOption("tacops_start_fire") || null == hex) {
+        if (null == hex) {
             return false;
         }
 
@@ -17941,7 +17919,7 @@ public class Server implements Runnable {
             vPhaseReport.add(r);
         }
         if (fireRoll >= roll.getValue()) {
-            ignite(c, bInferno);
+            ignite(c, bInferno, vPhaseReport);
             return true;
         }
         return false;
@@ -17986,20 +17964,43 @@ public class Server implements Runnable {
      * @param c - the <code>Coords</code> of the hex to be set on fire
      * @param bInferno - <code>true</code> if the fire to be set is an inferno
      */
-    public void ignite(Coords c, boolean bInferno) {
+    public void ignite(Coords c, boolean bInferno, Vector<Report> vReport) {
     	//you can't start fires in some planetary conditions!
-    	if(!game.getPlanetaryConditions().canStartFire()) {
+    	if(null != game.getPlanetaryConditions().cannotStartFire()) {
+    		Report r = new Report(3007);
+	        r.indent(2);
+	        r.add(game.getPlanetaryConditions().cannotStartFire());
+	        vReport.add(r);
+    		return;
+    	}
+    	   	
+    	if(!game.getOptions().booleanOption("tacops_start_fire")) {
+    		Report r = new Report(3008);
+	        r.indent(2);
+	        vReport.add(r);
     		return;
     	}
     	
-    	//type of fire. We use level 2 for infernos
     	IHex hex = game.getBoard().getHex(c);
     	if(null == hex) {
     		return;
     	}
+    	
+    	Report r = new Report(3005);
+        r.indent(2);
+        r.add(c.getBoardNum());
+    	
+    	//type of fire. We use level 2 for infernos
         int type = 1;
-        if(bInferno)
+        if(bInferno) {
         	type = type + 1;
+        	r.messageId = 3006;
+        	
+        }
+        
+        //report it
+        if(null != vReport)
+	        vReport.add(r);
         hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.FIRE, type));
         sendChangedHex(c);	
     }
