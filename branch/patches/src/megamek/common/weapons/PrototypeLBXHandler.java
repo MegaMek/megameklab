@@ -65,6 +65,9 @@ public class PrototypeLBXHandler extends LBXHandler {
         if (bGlancing) {
             shotMod -= 4;
         }
+        if(game.getPlanetaryConditions().hasEMI()) {
+        	shotMod -= 2;
+        }
         int shotsHit = allShotsHit() ? wtype.getRackSize() : Compute
                 .missilesHit(wtype.getRackSize(), shotMod);
         

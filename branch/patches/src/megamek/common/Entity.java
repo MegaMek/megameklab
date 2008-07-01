@@ -3023,11 +3023,15 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      *         be <code>Entity.NONE</code> if no ECM is active.
      */
     public int getECMRange() {
+    	
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
             if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) && !m.isDestroyed() && !m.isMissing()) {
                 if (BattleArmor.SINGLE_HEX_ECM.equals(type.getInternalName())) {
                     return 0;
+                }
+                if(game.getPlanetaryConditions().hasEMI()) {
+                	return 12;
                 }
                 return 6;
             }
@@ -3040,6 +3044,9 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Beagle BloodHound WatchDog Clan Active or Light.
      */
     public boolean hasBAP() {
+    	if(game.getPlanetaryConditions().hasEMI()) {
+    		return false;
+    	}
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
             if (type instanceof MiscType && type.hasFlag(MiscType.F_BAP)) {
@@ -3067,6 +3074,9 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      *         be <code>Entity.NONE</code> if no BAP is active.
      */
     public int getBAPRange() {
+    	if(game.getPlanetaryConditions().hasEMI()) {
+    		return Entity.NONE;
+    	}
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
             if (type instanceof MiscType && type.hasFlag(MiscType.F_BAP) && !m.isDestroyed() && !m.isMissing()) {

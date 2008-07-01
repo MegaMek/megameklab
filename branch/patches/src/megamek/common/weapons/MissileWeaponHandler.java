@@ -199,6 +199,10 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
             nMissilesModifier += (toHit.getMoS()/3)*2;
         }
 
+        if(game.getPlanetaryConditions().hasEMI()) {
+        	nMissilesModifier -= 2;
+        }
+        
         // add AMS mods
         nMissilesModifier += getAMSHitsMod(vPhaseReport);
 
@@ -208,11 +212,12 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
             if (ae instanceof BattleArmor)
                 missilesHit = Compute.missilesHit(wtype.getRackSize()
                         * ((BattleArmor) ae).getShootingStrength(),
-                        nMissilesModifier, weapon.isHotLoaded(),
-                        false, advancedAMS);
+                        nMissilesModifier, 
+                        weapon.isHotLoaded(), false, advancedAMS);
             else
                 missilesHit = Compute.missilesHit(wtype.getRackSize(),
-                        nMissilesModifier, weapon.isHotLoaded(),
+                        nMissilesModifier,
+                        weapon.isHotLoaded(),
                         false, advancedAMS);
         }
 

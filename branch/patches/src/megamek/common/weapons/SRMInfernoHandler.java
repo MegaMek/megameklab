@@ -393,6 +393,10 @@ public class SRMInfernoHandler extends SRMHandler {
         if ( bDirect ){
             nMissilesModifier += (toHit.getMoS()/3)*2;
         }
+        
+        if(game.getPlanetaryConditions().hasEMI()) {
+        	nMissilesModifier -= 2;
+        }
 
         // add AMS mods
         nMissilesModifier += getAMSHitsMod(vPhaseReport);

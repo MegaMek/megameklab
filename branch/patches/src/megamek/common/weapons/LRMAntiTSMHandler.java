@@ -83,6 +83,10 @@ public class LRMAntiTSMHandler extends LRMHandler {
         if ( bDirect ){
             nMissilesModifier += (toHit.getMoS()/3)*2;
         }
+        
+        if(game.getPlanetaryConditions().hasEMI()) {
+        	nMissilesModifier -= 2;
+        }
 
 
         // AMS mod

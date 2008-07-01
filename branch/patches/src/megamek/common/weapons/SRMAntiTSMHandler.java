@@ -89,6 +89,10 @@ public class SRMAntiTSMHandler extends SRMHandler {
             nMissilesModifier += (toHit.getMoS()/3)*2;
         }
 
+        if(game.getPlanetaryConditions().hasEMI()) {
+        	nMissilesModifier -= 2;
+        }
+        
         // Add ams mod
         nMissilesModifier += getAMSHitsMod(vPhaseReport);
         if (allShotsHit()) {

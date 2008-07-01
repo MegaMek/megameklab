@@ -357,6 +357,10 @@ public class LRMSwarmHandler extends LRMHandler {
         if ( bDirect ){
             nMissilesModifier += (toHit.getMoS()/3)*2;
         }
+        
+        if(game.getPlanetaryConditions().hasEMI()) {
+        	nMissilesModifier -= 2;
+        }
 
         int swarmMissilesLeft = waa.getSwarmMissiles();
         // swarm or swarm-I shots may just hit with the remaining missiles

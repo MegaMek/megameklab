@@ -822,6 +822,11 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         	}      	
         }
         
+        //Electro-Magnetic Interference
+        if(game.getPlanetaryConditions().hasEMI()) {
+        	toHit.addModifier(2, "EMI");
+        }
+        
         // handle LAM speial rules
 
         // a temporary variable so I don't need to keep casting.

@@ -96,6 +96,9 @@ public class StreakHandler extends MissileWeaponHandler {
             nMissilesModifier -= 2;
         }
         
+        if(game.getPlanetaryConditions().hasEMI()) {
+        	nMissilesModifier -= 2;
+        }
 
         int missilesHit;
         int amsMod = getAMSHitsMod(vPhaseReport) + nMissilesModifier;

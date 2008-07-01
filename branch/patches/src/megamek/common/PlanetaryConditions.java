@@ -103,6 +103,7 @@ public class PlanetaryConditions implements Serializable {
     private int atmosphere = ATMO_STANDARD;
     private int temperature = 25;
     private float gravity = (float)1.0;
+    private boolean emi = false;
     
     /**
      * Constructor
@@ -122,6 +123,7 @@ public class PlanetaryConditions implements Serializable {
     	this.atmosphere = other.atmosphere;
     	this.temperature = other.temperature;
     	this.gravity = other.gravity;
+    	this.emi = other.emi;
     }
     
     /** clone! */
@@ -630,5 +632,13 @@ public class PlanetaryConditions implements Serializable {
     
     public float getGravity() {
     	return gravity;
+    }
+    
+    public void setEMI(boolean b) {
+    	this.emi = b;
+    }
+    
+    public boolean hasEMI() {
+    	return emi;
     }
 }

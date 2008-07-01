@@ -110,11 +110,15 @@ public class HAGWeaponHandler extends AmmoWeaponHandler {
         if (game.getOptions().booleanOption("tacops_range") && nRange > wtype.getRanges(weapon)[RangeType.RANGE_LONG]) {
             nHitsModifier -= 2;
         }
+        
+        if(game.getPlanetaryConditions().hasEMI()) {
+        	nHitsModifier -= 2;
+        }
 
         if (allShotsHit())
             nHits = wtype.getRackSize();
         else
-            nHits = Compute.missilesHit(wtype.getRackSize(), nHitsModifier, false);
+            nHits = Compute.missilesHit(wtype.getRackSize(), nHitsModifier);
         r = new Report(3325);
         r.subject = subjectId;
         r.add(nHits);
