@@ -266,7 +266,10 @@ public class Terrain implements ITerrain, Serializable {
                     return 1;
                 return 0;
             case Terrains.RAPIDS:
-                return 2;
+            	if(level == 2)
+            		return 3;
+            	else 
+            		return 2;
             default:
                 return 0;
         }
@@ -300,11 +303,17 @@ public class Terrain implements ITerrain, Serializable {
             	return 0;
             case Terrains.MUD:
             case Terrains.ROUGH:
-            case Terrains.RAPIDS:
             case Terrains.SWAMP:
                 if (moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
                     return 0;
                 return 1;
+            case Terrains.RAPIDS:
+            	if (moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
+                    return 0;
+            	if(level == 2)
+            		return 2;
+            	else 
+            		return 1;
             case Terrains.RUBBLE:
                 return 1;
             case Terrains.SAND:

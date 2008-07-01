@@ -54,6 +54,7 @@ super * "water:3" "" "transparent/blue_water_3.png"
 super * "water:4" "" "transparent/blue_water_4.png"
 
 super * "rapids:1" "" "transparent/rapids.png"
+super * "rapids:2" "" "transparent/rapids.png"
 
 super * "ice:1" "" "transparent/ice.png"
 

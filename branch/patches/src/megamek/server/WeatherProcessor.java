@@ -199,7 +199,21 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
                 	}
                 }
                 
-                
+                //check for rapids/torrents created by wind
+                //FIXME: This doesn't seem to be doing anything
+                if(conditions.getWindStrength() > PlanetaryConditions.WI_MOD_GALE 
+                		&& currentHex.containsTerrain(Terrains.WATER) && currentHex.depth() > 0) {
+                	
+                	if(conditions.getWindStrength() > PlanetaryConditions.WI_STORM) {
+                		if(!(currentHex.terrainLevel(Terrains.RAPIDS) > 1)) {
+                			currentHex.addTerrain(tf.createTerrain(Terrains.RAPIDS, 2));
+                		}
+                	} else {
+                		if(!currentHex.containsTerrain(Terrains.RAPIDS)) {
+                    		currentHex.addTerrain(tf.createTerrain(Terrains.RAPIDS, 1));
+                    	}
+                	}               	
+                }
             }
         }
         debugTime("resolve weather 1 end", true);

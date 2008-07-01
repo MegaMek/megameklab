@@ -47,7 +47,7 @@ public class Terrains implements ITerrainFactory {
     public static final int JUNGLE = 23; // levels 1,2,3
     public static final int MAGMA = 24; // 1: crust 2: liquid
     public static final int MUD = 25;
-    public static final int RAPIDS = 26;
+    public static final int RAPIDS = 26; //1: rapids 2: torrent
     public static final int SAND = 27;
     public static final int SNOW = 28; // 1: thin 2: deep
     public static final int TUNDRA = 29;

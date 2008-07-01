@@ -2289,7 +2289,7 @@ public class Server implements Runnable {
         if (game.getOptions().getOption("bridgeCF").intValue() > 0) {
             newBoard.setBridgeCF(game.getOptions().getOption("bridgeCF").intValue());
         }
-        BoardUtilities.addWeatherConditions(newBoard, game.getPlanetaryConditions().getWeather());
+        BoardUtilities.addWeatherConditions(newBoard, game.getPlanetaryConditions().getWeather(), game.getPlanetaryConditions().getWindStrength());
         game.setBoard(newBoard);
     }
 
