@@ -257,7 +257,8 @@ public class Terrain implements ITerrain, Serializable {
                 return (level == 2) ? 4 : 1;
             case Terrains.TUNDRA:
             case Terrains.SAND:
-            case Terrains.DEEP_SNOW:
+            case Terrains.SNOW:
+            	return (level == 2) ? 1 : 0;
             case Terrains.MUD:
                 return 1;
             case Terrains.GEYSER:
@@ -283,7 +284,20 @@ public class Terrain implements ITerrain, Serializable {
                 return level;
             case Terrains.JUNGLE:
                 return level + 1;
-            case Terrains.DEEP_SNOW:
+            case Terrains.SNOW:
+            	if(level == 2) {
+            		if(moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
+            			return 0;
+            		else 
+            			return 1;
+            	}
+            	if (moveType == IEntityMovementMode.WHEELED
+                        || moveType == IEntityMovementMode.INF_JUMP
+                        || moveType == IEntityMovementMode.INF_LEG
+                        || moveType == IEntityMovementMode.INF_MOTORIZED) {
+            		return 1;
+            	}
+            	return 0;
             case Terrains.MUD:
             case Terrains.ROUGH:
             case Terrains.RAPIDS:
@@ -293,7 +307,6 @@ public class Terrain implements ITerrain, Serializable {
                 return 1;
             case Terrains.RUBBLE:
                 return 1;
-            case Terrains.THIN_SNOW:
             case Terrains.SAND:
                 if (moveType == IEntityMovementMode.WHEELED
                         || moveType == IEntityMovementMode.INF_JUMP
@@ -310,8 +323,11 @@ public class Terrain implements ITerrain, Serializable {
         switch (type) {
             case Terrains.JUNGLE:
                 return 1;
-            case Terrains.DEEP_SNOW:
-                return 2;
+            case Terrains.SNOW:
+            	if(level == 2)
+            		return 2;
+            	else 
+            		return 0;
             default:
                 return 0;
         }

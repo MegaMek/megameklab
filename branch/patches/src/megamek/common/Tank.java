@@ -278,7 +278,7 @@ public class Tank extends Entity implements Serializable {
                         || hex.containsTerrain(Terrains.RUBBLE)
                         || hex.containsTerrain(Terrains.MAGMA)
                         || hex.containsTerrain(Terrains.JUNGLE)
-                        || hex.containsTerrain(Terrains.DEEP_SNOW)
+                        || hex.terrainLevel(Terrains.SNOW) > 1
                         || hex.terrainLevel(Terrains.GEYSER) == 2;
             case IEntityMovementMode.HOVER:
                 return hex.containsTerrain(Terrains.WOODS)
@@ -874,7 +874,7 @@ public class Tank extends Entity implements Serializable {
 
         //are we wheeled and in light snow?
         IHex hex = game.getBoard().getHex(getPosition());
-        if(null != hex && getMovementMode() == IEntityMovementMode.WHEELED && hex.containsTerrain(Terrains.THIN_SNOW)) {
+        if(null != hex && getMovementMode() == IEntityMovementMode.WHEELED && hex.terrainLevel(Terrains.SNOW) == 1) {
         	prd.addModifier(1, "thin snow");
         }
         

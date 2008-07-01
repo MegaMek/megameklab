@@ -4252,7 +4252,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
                 roll.append(new PilotingRollData(getId(), 0, "entering Swamp"));
             } else if (curHex.terrainLevel(Terrains.MAGMA) == 2) {
                 roll.append(new PilotingRollData(getId(), 0, "entering Liquid Magma"));
-            } else if (curHex.containsTerrain(Terrains.MAGMA) || curHex.containsTerrain(Terrains.MUD) || curHex.containsTerrain(Terrains.DEEP_SNOW) || curHex.containsTerrain(Terrains.TUNDRA)) {
+            } else if (curHex.containsTerrain(Terrains.MAGMA) || curHex.containsTerrain(Terrains.MUD) || curHex.terrainLevel(Terrains.SNOW) > 1 || curHex.containsTerrain(Terrains.TUNDRA)) {
                 roll.append(new PilotingRollData(getId(), -1, "avoid bogging down"));
             } else {
                 roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: no swamp-like terrain present");

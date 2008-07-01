@@ -702,7 +702,7 @@ public class Infantry extends Entity implements Serializable {
                 roll.append(new PilotingRollData(getId(), 0, "entering Swamp"));
             } else if (curHex.containsTerrain(Terrains.MAGMA)
                     || curHex.containsTerrain(Terrains.MUD)
-                    || curHex.containsTerrain(Terrains.DEEP_SNOW)
+                    || curHex.terrainLevel(Terrains.SNOW) > 1
                     || curHex.containsTerrain(Terrains.TUNDRA)) {
                 roll.append(new PilotingRollData(getId(), -1,
                         "avoid bogging down"));

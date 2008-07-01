@@ -5503,7 +5503,7 @@ public class Server implements Runnable {
             }
 
             // jumped into swamp? maybe stuck!
-            if (curHex.containsTerrain(Terrains.SWAMP) || curHex.containsTerrain(Terrains.MAGMA) || curHex.containsTerrain(Terrains.DEEP_SNOW) || curHex.containsTerrain(Terrains.MUD) || curHex.containsTerrain(Terrains.TUNDRA)) {
+            if (curHex.containsTerrain(Terrains.SWAMP) || curHex.containsTerrain(Terrains.MAGMA) || curHex.terrainLevel(Terrains.SNOW) > 1 || curHex.containsTerrain(Terrains.MUD) || curHex.containsTerrain(Terrains.TUNDRA)) {
                 if (entity instanceof Mech) {
                     entity.setStuck(true);
                     r = new Report(2121);
@@ -5512,7 +5512,7 @@ public class Server implements Runnable {
                     addReport(r);
                 } else if (entity instanceof Infantry) {
                     PilotingRollData roll = new PilotingRollData(entity.getId(), 5, "entering boggy terrain");
-                    if (curHex.containsTerrain(Terrains.MAGMA) || curHex.containsTerrain(Terrains.MUD) || curHex.containsTerrain(Terrains.DEEP_SNOW) || curHex.containsTerrain(Terrains.TUNDRA))
+                    if (curHex.containsTerrain(Terrains.MAGMA) || curHex.containsTerrain(Terrains.MUD) || curHex.terrainLevel(Terrains.SNOW) > 1 || curHex.containsTerrain(Terrains.TUNDRA))
                         roll.append(new PilotingRollData(entity.getId(), -1, "avoid bogging down"));
                     if (0 < doSkillCheckWhileMoving(entity, curPos, curPos, roll, false)) {
                         entity.setStuck(true);
@@ -8232,7 +8232,7 @@ public class Server implements Runnable {
         if (accidentTarget > -1) {
             // if this hex is in snow, then accidental ignitions are not
             // possible
-            if (hex.containsTerrain(Terrains.DEEP_SNOW) || hex.containsTerrain(Terrains.THIN_SNOW)) {
+            if (hex.containsTerrain(Terrains.SNOW)) {
                 return false;
             }
             nTargetRoll.addModifier(2, "accidental");
@@ -8271,14 +8271,14 @@ public class Server implements Runnable {
 
         // if there is snow on the ground and this a hotgun or inferno, it may
         // melt the snow instead
-        if ((hex.containsTerrain(Terrains.DEEP_SNOW) || hex.containsTerrain(Terrains.THIN_SNOW) || hex.containsTerrain(Terrains.ICE)) && (bHotGun || bInferno)) {
+        if ((hex.containsTerrain(Terrains.SNOW) || hex.containsTerrain(Terrains.ICE)) && (bHotGun || bInferno)) {
             boolean melted = false;
             int meltCheck = Compute.d6(2);
-            if (hex.containsTerrain(Terrains.DEEP_SNOW) && meltCheck == 12) {
+            if (hex.terrainLevel(Terrains.SNOW) > 1 && meltCheck == 12) {
                 melted = true;
             } else if (hex.containsTerrain(Terrains.ICE) && meltCheck > 9) {
                 melted = true;
-            } else if (hex.containsTerrain(Terrains.THIN_SNOW) && meltCheck > 7) {
+            } else if (hex.containsTerrain(Terrains.SNOW) && meltCheck > 7) {
                 melted = true;
             }
             if (bInferno) {
@@ -8289,10 +8289,8 @@ public class Server implements Runnable {
                 r.indent(2);
                 r.subject = entityId;
                 vPhaseReport.add(r);
-                if (hex.containsTerrain(Terrains.DEEP_SNOW))
-                    hex.removeTerrain(Terrains.DEEP_SNOW);
-                if (hex.containsTerrain(Terrains.THIN_SNOW))
-                    hex.removeTerrain(Terrains.THIN_SNOW);
+                if (hex.containsTerrain(Terrains.SNOW))
+                    hex.removeTerrain(Terrains.SNOW);
                 if (hex.containsTerrain(Terrains.ICE))
                     hex.removeTerrain(Terrains.ICE);
                 if (!hex.containsTerrain(Terrains.MUD) && !hex.containsTerrain(Terrains.WATER))

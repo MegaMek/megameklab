@@ -162,33 +162,30 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
                 }
                 
                 if(lightSnow
-                		&& !currentHex.containsTerrain(Terrains.THIN_SNOW) && !currentHex.containsTerrain(Terrains.DEEP_SNOW)
+                		&& !currentHex.containsTerrain(Terrains.SNOW)
                 		&& !(currentHex.containsTerrain(Terrains.WATER) && !currentHex.containsTerrain(Terrains.ICE))) {
-                	currentHex.addTerrain(tf.createTerrain(Terrains.THIN_SNOW, 1));
+                	currentHex.addTerrain(tf.createTerrain(Terrains.SNOW, 1));
                 	server.sendChangedHex(currentCoords);
                 }
                 
-                if(deepSnow && !currentHex.containsTerrain(Terrains.DEEP_SNOW) 
+                if(deepSnow && !(currentHex.terrainLevel(Terrains.SNOW) > 1)
                 		&& !(currentHex.containsTerrain(Terrains.WATER) && !currentHex.containsTerrain(Terrains.ICE))) {
-                	currentHex.addTerrain(tf.createTerrain(Terrains.DEEP_SNOW, 1));
-                	if(currentHex.containsTerrain(Terrains.THIN_SNOW)) {
-                		currentHex.removeTerrain(Terrains.THIN_SNOW);
-                	}
+                	currentHex.addTerrain(tf.createTerrain(Terrains.SNOW, 2));
                 	server.sendChangedHex(currentCoords);
                 }
                 
                 //check for the melting of any snow or ice
-                if(currentHex.containsTerrain(Terrains.DEEP_SNOW) 
+                if(currentHex.terrainLevel(Terrains.SNOW) > 1
                 		&& currentHex.containsTerrain(Terrains.FIRE) && currentHex.getFireTurn() == 3) {
-                	currentHex.removeTerrain(Terrains.DEEP_SNOW);
+                	currentHex.removeTerrain(Terrains.SNOW);
                 	if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
                 		currentHex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
                 	}
                 }
                 
-                if(currentHex.containsTerrain(Terrains.THIN_SNOW) 
+                if(currentHex.terrainLevel(Terrains.SNOW) == 1
                 		&& currentHex.containsTerrain(Terrains.FIRE) && currentHex.getFireTurn() == 1) {
-                	currentHex.removeTerrain(Terrains.THIN_SNOW);
+                	currentHex.removeTerrain(Terrains.SNOW);
                 	if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
                 		currentHex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
                 	}

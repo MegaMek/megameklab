@@ -49,25 +49,24 @@ public class Terrains implements ITerrainFactory {
     public static final int MUD = 25;
     public static final int RAPIDS = 26;
     public static final int SAND = 27;
-    public static final int THIN_SNOW = 28;
-    public static final int DEEP_SNOW = 29;
-    public static final int TUNDRA = 30;
-    public static final int SPACE = 31;
-    public static final int SCREEN  = 32;
+    public static final int SNOW = 28; // 1: thin 2: deep
+    public static final int TUNDRA = 29;
+    public static final int SPACE = 30;
+    public static final int SCREEN  = 31;
     // special types
-    public static final int IMPASSABLE = 33;
-    public static final int ELEVATOR = 34; // level=elevation it moves to,
+    public static final int IMPASSABLE = 32;
+    public static final int ELEVATOR = 33; // level=elevation it moves to,
                                             // exits=d6 rolls it moves on
-    public static final int FUEL_TANK = 35;
-    public static final int FUEL_TANK_CF = 36;
-    public static final int FUEL_TANK_ELEV = 37;
-    public static final int FUEL_TANK_MAGN = 38;
+    public static final int FUEL_TANK = 34;
+    public static final int FUEL_TANK_CF = 35;
+    public static final int FUEL_TANK_ELEV = 36;
+    public static final int FUEL_TANK_MAGN = 37;
 
     private static final String[] names = { "none", "woods", "rough", "rubble",
             "water", "pavement", "road", "fire", "smoke", "swamp", "building",
             "bldg_cf", "bldg_elev", "bldg_basement", "bridge", "bridge_cf",
             "bridge_elev", "fluff", "arms", "legs", "ice", "fortified",
-            "geyser", "jungle", "magma", "mud", "rapids", "sand", "thin snow", "deep snow",
+            "geyser", "jungle", "magma", "mud", "rapids", "sand", "snow",
             "tundra", "space", "screen", "impassable", "elevator", "fuel_tank", "fuel_tank_cf",
             "fuel_tank_elev", "fuel_tank_magn" };
 
