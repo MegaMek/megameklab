@@ -6000,11 +6000,16 @@ public class Server implements Runnable {
             Entity entity = impactHexHits.nextElement();
             //TacOps, p. 356 - treat as if hit by 5 inferno missiles
             r = new Report(6695);
-            r.indent(2);
+            r.indent(3);
             r.add(entity.getDisplayName());
             r.newlines = 0;
             vPhaseReport.add(r);
-            vPhaseReport.addAll(deliverInfernoMissiles(ae, entity, 5));
+            if(entity instanceof Tank) {
+            	Report.addNewline(vPhaseReport);
+            }
+            Vector<Report> vDamageReport = deliverInfernoMissiles(ae, entity, 5);
+            Report.indentAll(vDamageReport, 2);
+            vPhaseReport.addAll(vDamageReport);
         }
         for (int dir = 0; dir <= 5; dir++) {
             Coords tempcoords = coords.translated(dir);
@@ -6016,17 +6021,22 @@ public class Server implements Runnable {
             }
             h = game.getBoard().getHex(tempcoords);
             // Unless there is a fire in the hex already, start one.
-            if (!h.containsTerrain(Terrains.FIRE) && game.getOptions().booleanOption("tacops_start_fire")) {
+            if (!h.containsTerrain(Terrains.FIRE)) {
                 ignite(tempcoords, true, vPhaseReport);
             }
             for (Enumeration<Entity> splashHexHits = game.getEntities(tempcoords); splashHexHits.hasMoreElements();) {
             	Entity entity = splashHexHits.nextElement();
             	r = new Report(6695);
-                r.indent(2);
+                r.indent(3);
                 r.add(entity.getDisplayName());
                 r.newlines = 0;
                 vPhaseReport.add(r);
-            	vPhaseReport.addAll(deliverInfernoMissiles(ae, entity, 5));
+                if(entity instanceof Tank) {
+                	Report.addNewline(vPhaseReport);
+                }
+                Vector<Report> vDamageReport = deliverInfernoMissiles(ae, entity, 5);
+                Report.indentAll(vDamageReport, 2);
+                vPhaseReport.addAll(vDamageReport);
             }
         }
     }
@@ -6212,7 +6222,7 @@ public class Server implements Runnable {
                     } else {
                         r = new Report(6690);
                         r.subject = te.getId();
-                        r.newlines = 0;
+                        r.indent(2);
                         r.add(te.getLocationName(hit));
                         vPhaseReport.add(r);
                         te.destroyLocation(hit.getLocation());
@@ -6225,6 +6235,7 @@ public class Server implements Runnable {
                         }
                         if (te.getTransferLocation(hit).getLocation() == Entity.LOC_DESTROYED) {
                             vPhaseReport.addAll(destroyEntity(te, "flaming inferno death", false, true));
+                            Report.addNewline(vPhaseReport);
                         }
                     }
                 }
@@ -6245,6 +6256,7 @@ public class Server implements Runnable {
                     HitData hit = te.rollHitLocation(ToHitData.HIT_NORMAL, ToHitData.SIDE_FRONT);
                     hit.setEffect(HitData.EFFECT_CRITICAL);
                     vPhaseReport.addAll(damageEntity(te, hit, 1));
+                    Report.addNewline(vPhaseReport);
                 }
             } else if (te instanceof Infantry) {
                 HitData hit = new HitData(Infantry.LOC_INFANTRY);
@@ -12132,6 +12144,7 @@ public class Server implements Runnable {
             if (BattleArmor.FIRE_PROTECTION.equals(equip.getInternalName())) {
                 r = new Report(5095);
                 r.subject = entity.getId();
+                r.indent(1);
                 r.addDesc(entity);
                 addReport(r);
                 return;
@@ -12147,15 +12160,17 @@ public class Server implements Runnable {
         // Must roll 8+ to survive...
         r = new Report(5100);
         r.subject = entity.getId();
+        r.newlines = 0;
         r.addDesc(entity);
         r.add(boomroll);
         if (boomroll >= 8) {
             // phew!
             r.choose(true);
-            addReport(r);
+           	addReport(r);
         } else {
             // eek
             r.choose(false);
+            r.newlines = 1;
             addReport(r);
             // Taharqa: TacOps rules, protos and vees no longer die instantly
             // (hurray!)
@@ -12165,8 +12180,8 @@ public class Server implements Runnable {
                     bonus = 0;
                 }
                 // roll a critical hit
-                addReport(criticalTank((Tank) entity, Tank.LOC_FRONT, bonus));
                 Report.addNewline(vPhaseReport);
+                addReport(criticalTank((Tank) entity, Tank.LOC_FRONT, bonus));
             } else if (entity instanceof Protomech) {
                 // this code is taken from inferno hits
                 HitData hit = entity.rollHitLocation(ToHitData.HIT_NORMAL, ToHitData.SIDE_FRONT);
@@ -12174,29 +12189,30 @@ public class Server implements Runnable {
                     r = new Report(6035);
                     r.subject = entity.getId();
                     r.indent(1);
-                    vPhaseReport.add(r);
+                    addReport(r);
                 } else {
                     r = new Report(6690);
                     r.subject = entity.getId();
                     r.indent(1);
                     r.add(entity.getLocationName(hit));
-                    vPhaseReport.add(r);
+                    addReport(r);
                     entity.destroyLocation(hit.getLocation());
                     // Handle Protomech pilot damage
                     // due to location destruction
                     int hits = Protomech.POSSIBLE_PILOT_DAMAGE[hit.getLocation()] - ((Protomech) entity).getPilotDamageTaken(hit.getLocation());
                     if (hits > 0) {
-                        vPhaseReport.addAll(damageCrew(entity, hits));
+                        addReport(damageCrew(entity, hits));
                         ((Protomech) entity).setPilotDamageTaken(hit.getLocation(), Protomech.POSSIBLE_PILOT_DAMAGE[hit.getLocation()]);
                     }
                     if (entity.getTransferLocation(hit).getLocation() == Entity.LOC_DESTROYED) {
-                        vPhaseReport.addAll(destroyEntity(entity, "flaming death", false, true));
+                        addReport(destroyEntity(entity, "flaming death", false, true));
                         Report.addNewline(vPhaseReport);
                     }
                 }
             } else {
                 // sucks to be you
                 addReport(destroyEntity(entity, "fire", false, false));
+                Report.addNewline(vPhaseReport);
             }
         }
     }
@@ -16655,13 +16671,11 @@ public class Server implements Runnable {
             vDesc.addElement(r);
         } else {
             Coords pos = en.getPosition();
-            if (game.getOptions().booleanOption("tacops_start_fire")) {
-                IHex hex = game.getBoard().getHex(pos);
-                if (hex.containsTerrain(Terrains.WOODS) || hex.containsTerrain(Terrains.JUNGLE)) {
-                    ignite(pos, false, vDesc);
-                } else {
-                    ignite(pos, true, vDesc);
-                }
+            IHex hex = game.getBoard().getHex(pos);
+            if (hex.containsTerrain(Terrains.WOODS) || hex.containsTerrain(Terrains.JUNGLE)) {
+            	ignite(pos, false, vDesc);
+            } else {
+            	ignite(pos, true, vDesc);
             }
             vDesc.addAll(destroyEntity(en, "crashed and burned", false, false));
         }
