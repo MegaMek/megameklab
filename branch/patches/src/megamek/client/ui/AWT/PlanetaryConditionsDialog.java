@@ -67,6 +67,9 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 	private Label labTemp = new Label(Messages
             .getString("PlanetaryConditionsDialog.labTemp"), Label.RIGHT); //$NON-NLS-1$
     private TextField fldTemp = new TextField(4);
+    private Label labGrav = new Label(Messages
+            .getString("PlanetaryConditionsDialog.labGrav"), Label.RIGHT); //$NON-NLS-1$
+    private TextField fldGrav = new TextField(4);
 	    	
 	private Panel panButtons = new Panel();	
 	private Button butOkay = new Button(Messages.getString("Okay")); //$NON-NLS-1$
@@ -225,6 +228,16 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
         c.anchor = GridBagConstraints.WEST;
         gridbag.setConstraints(cShiftWindStr, c);
         panOptions.add(cShiftWindStr);
+        
+        c.gridwidth = 1;
+        c.anchor = GridBagConstraints.EAST;
+        gridbag.setConstraints(labGrav, c);
+        panOptions.add(labGrav);
+
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(fldGrav, c);
+        panOptions.add(fldGrav);
 
 	}
 	
@@ -263,6 +276,7 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		cShiftWindStr.setState(conditions.shiftingWindStrength());
 		
 		fldTemp.setText(Integer.toString(conditions.getTemperature()));
+		fldGrav.setText(Float.toString(conditions.getGravity()));
 	}
 	
 	public void send() {
@@ -274,6 +288,7 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		conditions.setAtmosphere(choAtmosphere.getSelectedIndex());
 		conditions.setShiftingWindDirection(cShiftWindDir.getState());
 		conditions.setShiftingWindStrength(cShiftWindStr.getState());
+		
 		try {
 			conditions.setTemperature(Integer.parseInt(fldTemp.getText()));
 		} catch (NumberFormatException e) {
@@ -281,6 +296,16 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
                     client.frame,
                     Messages
                             .getString("CustomMechDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidTemperature")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+            return;
+        }
+		
+		try {
+			conditions.setGravity(Float.parseFloat(fldGrav.getText()));
+		} catch (NumberFormatException e) {
+            new AlertDialog(
+                    client.frame,
+                    Messages
+                            .getString("CustomMechDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidGravity")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
             return;
         }
 			

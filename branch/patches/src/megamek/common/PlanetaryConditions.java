@@ -102,6 +102,7 @@ public class PlanetaryConditions implements Serializable {
     private boolean shiftWindStrength = false;
     private int atmosphere = ATMO_STANDARD;
     private int temperature = 25;
+    private float gravity = (float)1.0;
     
     /**
      * Constructor
@@ -120,6 +121,7 @@ public class PlanetaryConditions implements Serializable {
     	this.shiftWindStrength = other.shiftWindStrength;
     	this.atmosphere = other.atmosphere;
     	this.temperature = other.temperature;
+    	this.gravity = other.gravity;
     }
     
     /** clone! */
@@ -548,5 +550,13 @@ public class PlanetaryConditions implements Serializable {
     
     public boolean isVacuum() {
     	return atmosphere == ATMO_VACUUM || atmosphere == ATMO_TRACE;
+    }
+    
+    public void setGravity(float f) {
+    	this.gravity = f;
+    }
+    
+    public float getGravity() {
+    	return gravity;
     }
 }

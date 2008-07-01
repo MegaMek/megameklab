@@ -12488,7 +12488,7 @@ public class Server implements Runnable {
                 if (entity.moved == IEntityMovementType.MOVE_JUMP && entity instanceof Mech) {
                     // low g, 1 damage for each hex jumped further than
                     // possible normally
-                    if (game.getOptions().floatOption("gravity") < 1) {
+                    if (game.getPlanetaryConditions().getGravity() < 1) {
                         int j = entity.mpUsed;
                         int damage = 0;
                         while (j > entity.getOriginalJumpMP()) {
@@ -12499,7 +12499,7 @@ public class Server implements Runnable {
                         vPhaseReport.addAll(doExtremeGravityDamage(entity, damage));
                     }
                     // high g, 1 damage for each MP we have less than normally
-                    else if (game.getOptions().floatOption("gravity") > 1) {
+                    else if (game.getPlanetaryConditions().getGravity() > 1) {
                         int damage = entity.getWalkMP(false, false) - entity.getWalkMP();
                         // Wee, direct internal damage
                         vPhaseReport.addAll(doExtremeGravityDamage(entity, damage));
@@ -16565,7 +16565,7 @@ public class Server implements Runnable {
             int damage = (int) Math.round(en.getWeight() / 10.0) * (fall + 1);
 
             // adjust damage for gravity
-            damage = Math.round(damage * game.getOptions().floatOption("gravity"));
+            damage = Math.round(damage * game.getPlanetaryConditions().getGravity());
             // report falling
             r = new Report(6280);
             r.subject = en.getId();
@@ -17684,8 +17684,8 @@ public class Server implements Runnable {
             waterDamage = (int) Math.round(entity.getWeight() / 10.0) * (height + 1) / 2;
         }
         // adjust damage for gravity
-        damage = Math.round(damage * game.getOptions().floatOption("gravity"));
-        waterDamage = Math.round(waterDamage * game.getOptions().floatOption("gravity"));
+        damage = Math.round(damage * game.getPlanetaryConditions().getGravity());
+        waterDamage = Math.round(waterDamage * game.getPlanetaryConditions().getGravity());
 
         // report falling
         if (waterDamage == 0) {
@@ -20742,7 +20742,7 @@ public class Server implements Runnable {
      */
     private void checkExtremeGravityMovement(Entity entity, MoveStep step, Coords curPos, int cachedMaxMPExpenditure) {
         PilotingRollData rollTarget;
-        if (game.getOptions().floatOption("gravity") != 1) {
+        if (game.getPlanetaryConditions().getGravity() != 1) {
             if (entity instanceof Mech) {
                 if (step.getMovementType() == IEntityMovementType.MOVE_WALK || step.getMovementType() == IEntityMovementType.MOVE_VTOL_WALK || step.getMovementType() == IEntityMovementType.MOVE_RUN || step.getMovementType() == IEntityMovementType.MOVE_VTOL_RUN) {
                     if (step.getMpUsed() > cachedMaxMPExpenditure) {
@@ -20757,7 +20757,7 @@ public class Server implements Runnable {
                         // We jumped too far, let's make PSR to see if we get
                         // damage
                         game.addExtremeGravityPSR(entity.checkMovedTooFast(step));
-                    } else if (game.getOptions().floatOption("gravity") > 1) {
+                    } else if (game.getPlanetaryConditions().getGravity() > 1) {
                         // jumping in high g is bad for your legs
                         rollTarget = entity.getBasePilotingRoll(step.getParent().getLastStepMovementType());
                         entity.addPilotingModifierForTerrain(rollTarget, step);
@@ -20808,6 +20808,7 @@ public class Server implements Runnable {
         } else if (entity instanceof Tank) {
             hit = new HitData(Tank.LOC_FRONT);
             vPhaseReport.addAll(damageEntity(entity, hit, damage, false, DamageType.NONE, true));
+            vPhaseReport.addAll(vehicleMotiveDamage((Tank) entity, 0));
         }
         return vPhaseReport;
     }

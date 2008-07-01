@@ -5557,7 +5557,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     protected int applyGravityEffectsOnMP(int MP) {
         int result = MP;
         if (game != null) {
-            float fMP = MP / game.getOptions().floatOption("gravity");
+            float fMP = MP / game.getPlanetaryConditions().getGravity();
             fMP = (Math.abs((Math.round(fMP) - fMP)) == 0.5) ? (float) Math.floor(fMP) : Math.round(fMP); // the
             // rule
             // requires

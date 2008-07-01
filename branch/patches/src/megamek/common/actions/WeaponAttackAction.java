@@ -814,6 +814,14 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         	}
         }
         
+        //gravity mods (not in space)
+        if(!game.getBoard().inSpace()) {
+        	int mod = (int)Math.ceil(Math.abs((game.getPlanetaryConditions().getGravity() - 1.0f) / 0.2f));
+        	if(mod != 0 && (wtype.hasFlag(WeaponType.F_BALLISTIC) || wtype.hasFlag(WeaponType.F_MISSILE))) {
+        		toHit.addModifier(mod, "gravity");
+        	}      	
+        }
+        
         // handle LAM speial rules
 
         // a temporary variable so I don't need to keep casting.
