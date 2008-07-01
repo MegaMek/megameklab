@@ -53,16 +53,16 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 	private ClientGUI client;
 	private PlanetaryConditions conditions;
 	private JLabel labLight = new JLabel(Messages
-			.getString("PlanetaryConditionsDialog.labLight"), JLabel.CENTER); //$NON-NLS-1$
+			.getString("PlanetaryConditionsDialog.labLight"), SwingConstants.RIGHT); //$NON-NLS-1$
 	private JComboBox choLight = new JComboBox();
 	private JLabel labWeather = new JLabel(Messages
-			.getString("PlanetaryConditionsDialog.labWeather"), JLabel.CENTER); //$NON-NLS-1$
+			.getString("PlanetaryConditionsDialog.labWeather"), SwingConstants.RIGHT); //$NON-NLS-1$
 	private JComboBox choWeather = new JComboBox();
 	private JLabel labWind = new JLabel(Messages
-			.getString("PlanetaryConditionsDialog.labWind"), JLabel.CENTER); //$NON-NLS-1$
+			.getString("PlanetaryConditionsDialog.labWind"), SwingConstants.RIGHT); //$NON-NLS-1$
 	private JComboBox choWind = new JComboBox();
 	private JLabel labAtmosphere = new JLabel(Messages
-			.getString("PlanetaryConditionsDialog.labAtmosphere"), JLabel.CENTER); //$NON-NLS-1$
+			.getString("PlanetaryConditionsDialog.labAtmosphere"), SwingConstants.RIGHT); //$NON-NLS-1$
 	private JComboBox choAtmosphere = new JComboBox();
 	private JCheckBox cShiftWindDir = new JCheckBox(Messages
             .getString("PlanetaryConditionsDialog.shiftWindDir"));

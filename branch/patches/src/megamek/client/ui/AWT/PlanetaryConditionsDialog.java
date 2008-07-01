@@ -49,16 +49,16 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 	private ClientGUI client;
 	private PlanetaryConditions conditions;
 	private Label labLight = new Label(Messages
-			.getString("PlanetaryConditionsDialog.labLight"), Label.CENTER); //$NON-NLS-1$
+			.getString("PlanetaryConditionsDialog.labLight"), Label.RIGHT); //$NON-NLS-1$
 	private Choice choLight = new Choice();
 	private Label labWeather = new Label(Messages
-			.getString("PlanetaryConditionsDialog.labWeather"), Label.CENTER); //$NON-NLS-1$
+			.getString("PlanetaryConditionsDialog.labWeather"), Label.RIGHT); //$NON-NLS-1$
 	private Choice choWeather = new Choice();
 	private Label labWind = new Label(Messages
-			.getString("PlanetaryConditionsDialog.labWind"), Label.CENTER); //$NON-NLS-1$
+			.getString("PlanetaryConditionsDialog.labWind"), Label.RIGHT); //$NON-NLS-1$
 	private Choice choWind = new Choice();
 	private Label labAtmosphere = new Label(Messages
-			.getString("PlanetaryConditionsDialog.labAtmosphere"), Label.CENTER); //$NON-NLS-1$
+			.getString("PlanetaryConditionsDialog.labAtmosphere"), Label.RIGHT); //$NON-NLS-1$
 	private Choice choAtmosphere = new Choice();
 	private Checkbox cShiftWindDir = new Checkbox(Messages
             .getString("PlanetaryConditionsDialog.shiftWindDir"));
