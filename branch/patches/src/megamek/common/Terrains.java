@@ -19,7 +19,7 @@ import java.util.Hashtable;
 public class Terrains implements ITerrainFactory {
 
     public static final int WOODS = 1;
-    public static final int ROUGH = 2;
+    public static final int ROUGH = 2; //1: normal 2: ultra
     public static final int RUBBLE = 3;
     public static final int WATER = 4;
     public static final int PAVEMENT = 5;

@@ -302,12 +302,12 @@ public class Terrain implements ITerrain, Serializable {
             	}
             	return 0;
             case Terrains.MUD:
-            case Terrains.ROUGH:
             case Terrains.SWAMP:
                 if (moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
                     return 0;
                 return 1;
             case Terrains.RAPIDS:
+            case Terrains.ROUGH:
             	if (moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
                     return 0;
             	if(level == 2)

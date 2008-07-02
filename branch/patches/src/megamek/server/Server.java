@@ -17398,7 +17398,6 @@ public class Server implements Runnable {
         		&& !(entity instanceof Infantry || entity instanceof Protomech)) {
         	//large support vees will create ultra rough, otherwise rough 
         	if(entity instanceof LargeSupportTank) {
-        		//TODO: ultra rough is not yet coded, lets assume it will be level 2
         		if(entityHex.terrainLevel(Terrains.ROUGH) < 2) {
         			entityHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.ROUGH, 2));
         			sendChangedHex(curPos);

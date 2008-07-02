@@ -255,14 +255,15 @@ public class Tank extends Entity implements Serializable {
         
         if(hex.containsTerrain(Terrains.SPACE) && doomedInSpace())
             return true;
-        
+
         switch (movementMode) {
             case IEntityMovementMode.TRACKED:
                 return hex.terrainLevel(Terrains.WOODS) > 1
                         || (hex.terrainLevel(Terrains.WATER) > 0 && !hex
                                 .containsTerrain(Terrains.ICE))
                         || hex.containsTerrain(Terrains.JUNGLE)
-                        || hex.terrainLevel(Terrains.MAGMA) > 1;
+                        || hex.terrainLevel(Terrains.MAGMA) > 1
+                        || hex.terrainLevel(Terrains.ROUGH) > 1;
             case IEntityMovementMode.WHEELED:
                 return hex.containsTerrain(Terrains.WOODS)
                         || hex.containsTerrain(Terrains.ROUGH)
@@ -276,7 +277,8 @@ public class Tank extends Entity implements Serializable {
             case IEntityMovementMode.HOVER:
                 return hex.containsTerrain(Terrains.WOODS)
                         || hex.containsTerrain(Terrains.JUNGLE)
-                        || hex.terrainLevel(Terrains.MAGMA) > 1;
+                        || hex.terrainLevel(Terrains.MAGMA) > 1
+                        || hex.terrainLevel(Terrains.ROUGH) > 1;
             case IEntityMovementMode.NAVAL:
             case IEntityMovementMode.HYDROFOIL:
                 return (hex.terrainLevel(Terrains.WATER) <= 0)
