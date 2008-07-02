@@ -95,6 +95,9 @@ import megamek.common.WeaponType;
 import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.BayWeapon;
 import megamek.common.weapons.GaussWeapon;
+import megamek.common.weapons.RACWeapon;
+import megamek.common.weapons.UACWeapon;
+import megamek.common.weapons.UltraWeaponHandler;
 
 /**
  * Displays the info for a mech. This is also a sort of interface for special
@@ -2147,7 +2150,9 @@ public class MechDisplay extends BufferedPanel {
                         return;
                     }
                     //disable rapid fire mode switching for Aeros
-                    if(en instanceof Aero && m.getType() instanceof ACWeapon) {
+                    if(en instanceof Aero && m.getType() instanceof ACWeapon 
+                            || m.getType() instanceof RACWeapon 
+                            || m.getType() instanceof UACWeapon) {
                         m_chMode.removeAll();
                         return;
                     }
