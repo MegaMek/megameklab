@@ -88,6 +88,7 @@ import megamek.common.event.GamePhaseChangeEvent;
 import megamek.common.event.GameTurnChangeEvent;
 import megamek.common.util.Distractable;
 import megamek.common.util.DistractableAdapter;
+import megamek.common.weapons.ACWeapon;
 
 public class FiringDisplay extends StatusBarPhaseDisplay implements
         BoardViewListener, GameListener, ActionListener, DoneButtoned,
@@ -522,11 +523,9 @@ public class FiringDisplay extends StatusBarPhaseDisplay implements
         }
 
         // disables mode button for AC's if tacops_rapid_ac is not turned on
-        if (m.getType() instanceof WeaponType
-                && (((WeaponType) m.getType()).getAmmoType() == AmmoType.T_AC || ((WeaponType) m
-                        .getType()).getAmmoType() == AmmoType.T_LAC)
-                && !clientgui.getClient().game.getOptions().booleanOption(
-                        "tacops_rapid_ac")) {
+        if (m.getType() instanceof ACWeapon
+                && !clientgui.getClient().game.getOptions().booleanOption("tacops_rapid_ac")) {
+            
             return;
         }
 

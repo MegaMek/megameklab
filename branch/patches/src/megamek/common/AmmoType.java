@@ -88,7 +88,8 @@ public class AmmoType extends EquipmentType {
     public static final int     T_ALAMO             = 63;
     public static final int     T_IGAUSS_HEAVY      = 64;
     public static final int     T_CHEMICAL_LASER    = 65;
-    public static final int     NUM_TYPES           = 66;
+    public static final int     T_HYPER_VELOCITY    = 66;
+    public static final int     NUM_TYPES           = 67;
     
 
     // ammo flags
@@ -432,6 +433,9 @@ public class AmmoType extends EquipmentType {
         EquipmentType.addType(createISLightMGAmmo());
         EquipmentType.addType(createISLightMGAmmoHalf());
         EquipmentType.addType(createISSBGaussRifleAmmo());
+        EquipmentType.addType(createISHVAC10Ammo());
+        EquipmentType.addType(createISHVAC5Ammo());
+        EquipmentType.addType(createISHVAC2Ammo());
         
         base = createISMML3LRMAmmo();
         lrmAmmos.add( base );
@@ -5484,6 +5488,65 @@ public class AmmoType extends EquipmentType {
 
         return ammo;
     }
+
+    private static AmmoType createISHVAC2Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_IS_LEVEL_2;
+        ammo.name = "HVAC/2 Ammo";
+        ammo.setInternalName("IS Ammo HVAC/2");
+        ammo.addLookupName("ISHVAC2 Ammo");
+        ammo.addLookupName("IS Hyper Velocity Autocannon/2 Ammo");
+        ammo.addLookupName("Hyper Velocity AC/2 Ammo");
+        ammo.damagePerShot = 1;
+        ammo.rackSize = 2;
+        ammo.ammoType = AmmoType.T_HYPER_VELOCITY;
+        ammo.shots = 30;
+        ammo.bv = 7;
+        ammo.cost = 3000;
+
+        return ammo;
+    }
+
+    private static AmmoType createISHVAC5Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_IS_LEVEL_2;
+        ammo.name = "HVAC/5 Ammo";
+        ammo.setInternalName("IS Ammo HVAC/5");
+        ammo.addLookupName("ISHVAC5 Ammo");
+        ammo.addLookupName("IS Hyper Velocity Autocannon/5 Ammo");
+        ammo.addLookupName(" Hyper Velocity AC/5 Ammo");
+        ammo.damagePerShot = 1;
+        ammo.rackSize = 5;
+        ammo.ammoType = AmmoType.T_HYPER_VELOCITY;
+        ammo.shots = 15;
+        ammo.bv = 14;
+        ammo.cost = 10000;
+
+        return ammo;
+    }
+
+    private static AmmoType createISHVAC10Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_IS_LEVEL_3;
+        ammo.name = "HVAC/10 Ammo";
+        ammo.setInternalName("IS Ammo HVAC/10");
+        ammo.addLookupName("ISHVAC10 Ammo");
+        ammo.addLookupName("IS Hyper Velocity Autocannon/10 Ammo");
+        ammo.addLookupName("Hyper Velocity AC/10 Ammo");
+        ammo.damagePerShot = 1;
+        ammo.rackSize = 10;
+        ammo.ammoType = AmmoType.T_HYPER_VELOCITY;
+        ammo.shots = 8;
+        ammo.bv = 20;
+        ammo.cost = 20000;
+
+        return ammo;
+    }
+
+
     private static AmmoType createISHeavyFlamerAmmo() {
         AmmoType ammo = new AmmoType();
 

@@ -518,6 +518,10 @@ public class WeaponType extends EquipmentType {
         addType(new ISLAC5());
         addType(new ISLAC10());
         addType(new ISLAC20());
+        //HVACs
+        addType(new ISHVAC2());
+        addType(new ISHVAC5());
+        addType(new ISHVAC10());
         // Gausses
         addType(new ISGaussRifle());
         addType(new ISGaussRiflePrototype());

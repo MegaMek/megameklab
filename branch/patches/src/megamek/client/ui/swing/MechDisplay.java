@@ -99,6 +99,7 @@ import megamek.common.Terrains;
 import megamek.common.VTOL;
 import megamek.common.Warship;
 import megamek.common.WeaponType;
+import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.BayWeapon;
 import megamek.common.weapons.GaussWeapon;
 
@@ -2227,21 +2228,13 @@ public class MechDisplay extends JPanel {
 
                     // disables AC mode switching from system tab if
                     // tacops_rapid_ac is not turned on
-                    if (m.getType() instanceof WeaponType
-                            && (((WeaponType) m.getType()).getAmmoType() == AmmoType.T_AC || ((WeaponType) m
-                                    .getType()).getAmmoType() == AmmoType.T_LAC)
-                            && !clientgui.getClient().game.getOptions()
-                                    .booleanOption("tacops_rapid_ac")) {
-                        ((DefaultComboBoxModel) m_chMode.getModel())
-                                .removeAllElements();
+                    if (m.getType() instanceof ACWeapon
+                            && !clientgui.getClient().game.getOptions().booleanOption("tacops_rapid_ac")) {
+                        ((DefaultComboBoxModel) m_chMode.getModel()).removeAllElements();
                         return;
                     }
                     //disable rapid fire mode switching for Aeros
-                    if(en instanceof Aero && m.getType() instanceof WeaponType
-                            && (((WeaponType) m.getType()).getAmmoType() == AmmoType.T_AC_ROTARY 
-                                    || ((WeaponType) m.getType()).getAmmoType() == AmmoType.T_AC_ULTRA
-                                    ||    ((WeaponType) m.getType()).getAmmoType() == AmmoType.T_AC
-                                    ||    ((WeaponType) m.getType()).getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+                    if(en instanceof Aero && m.getType() instanceof ACWeapon) {
                         ((DefaultComboBoxModel) m_chMode.getModel()).removeAllElements();
                         return;
                     }

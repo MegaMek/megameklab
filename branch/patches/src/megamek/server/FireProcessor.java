@@ -442,7 +442,8 @@ public class FireProcessor extends DynamicTerrainProcessor {
             return null;
         }
         
-        if ( board.getHex(src).getElevation() - board.getHex(nextCoords).getElevation() < -4){
+        if ( board.getHex(src).getElevation() - board.getHex(nextCoords).getElevation() < -4
+                || board.getHex(src).getElevation() - (board.getHex(nextCoords).terrainLevel(Terrains.BLDG_ELEV) + board.getHex(nextCoords).getElevation()) < -4){
             //Try Right
             if ( directionChanges == 0 ){
                 return driftAddSmoke(x, y, (windDir + 1) % 6, windStr, directionChanges++);
