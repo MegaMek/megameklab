@@ -33,7 +33,7 @@ import megamek.server.Server.DamageType;
 /**
  * @author Jason Tighe
  */
-public class HVACWeaponHandler extends AmmoWeaponHandler {
+public class HVACWeaponHandler extends RapidfireACWeaponHandler {
 
     /**
      * 
@@ -109,6 +109,8 @@ public class HVACWeaponHandler extends AmmoWeaponHandler {
             r.choose(false);
             vPhaseReport.addElement(r);
             vPhaseReport.addAll(server.damageEntity(ae, new HitData(wlocation), wtype.getDamage(), false, DamageType.NONE, true));
+        }else {
+            return super.doChecks(vPhaseReport);
         }
         return false;
     }
