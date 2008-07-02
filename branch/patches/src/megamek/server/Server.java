@@ -277,6 +277,8 @@ public class Server implements Runnable {
 
     private static Server serverInstance = null;
 
+    private ArrayList<SmokeCloud> smokeCloudList = new ArrayList<SmokeCloud>();
+    
     private ConnectionListenerAdapter connectionListener = new ConnectionListenerAdapter() {
 
         /**
@@ -14616,7 +14618,11 @@ public class Server implements Runnable {
      *          <code>false</code> if not.
      */
     private boolean checkEngineExplosion(Entity en, Vector<Report> vDesc, int hits) {
-        if (!(en instanceof Mech) && !(en instanceof QuadMech) && !(en instanceof BipedMech) && !(en instanceof Aero) && !(en instanceof Tank)) {
+        if (!(en instanceof Mech) 
+                && !(en instanceof QuadMech) 
+                && !(en instanceof BipedMech) 
+                && !(en instanceof Aero) 
+                && !(en instanceof Tank)) {
             return false;
         }
         if (en.isDestroyed())
@@ -14640,7 +14646,9 @@ public class Server implements Runnable {
         if (en.rolledForEngineExplosion)
             return false;
         // ICE can always explode and roll every time hit
-        if (engine.isFusion() && (!game.getOptions().booleanOption("tacops_engine_explosions") || en.engineHitsThisRound < hitsPerRound))
+        if (engine.isFusion() 
+                && (!game.getOptions().booleanOption("tacops_engine_explosions") 
+                        || en.engineHitsThisRound < hitsPerRound))
             return false;
         if (!engine.isFusion()) {
             switch (hits) {
@@ -15621,7 +15629,8 @@ public class Server implements Runnable {
                 r.subject = t.getId();
                 vDesc.add(r);
                 t.engineHit();
-                boolean engineExploded = checkEngineExplosion(en, vDesc, 1);
+                t.engineHitsThisRound++;
+                boolean engineExploded = checkEngineExplosion(t, vDesc, 1);
                 if (engineExploded) {
                     vDesc.addAll(destroyEntity(en, "engine destruction", true, true));
                 }
@@ -15987,7 +15996,8 @@ public class Server implements Runnable {
                 r.subject = a.getId();
                 r.newlines = 0;
                 vDesc.add(r);
-                boolean engineExploded = checkEngineExplosion(en, vDesc, 1);
+                a.engineHitsThisRound++;
+                boolean engineExploded = checkEngineExplosion(a, vDesc, 1);
                 if ((a.getEngineHits() + 1) < a.getMaxEngineHits() && !engineExploded) {
                     a.setEngineHits(a.getEngineHits() + 1);
                     if (a instanceof SmallCraft || a instanceof Jumpship) {
@@ -16288,7 +16298,7 @@ public class Server implements Runnable {
                     numEngineHits += en.getHitCriticals(CriticalSlot.TYPE_SYSTEM, Mech.SYSTEM_ENGINE, Mech.LOC_LT);
 
                     engineExploded = checkEngineExplosion(en, vDesc, numEngineHits);
-                    if (!engineExploded && numEngineHits > 2) {
+                    if (!engineExploded && numEngineHits >= 4) {
                         // third engine hit
                         vDesc.addAll(destroyEntity(en, "engine destruction"));
                         if (game.getOptions().booleanOption("auto_abandon_unit")) {
@@ -22223,5 +22233,101 @@ public class Server implements Runnable {
      */
     public static Server getServerInstance() {
         return serverInstance;
+    }
+    
+    /**
+     * create a <code>SmokeCloud object and add it to the server list</code>
+     * @param coords
+     */
+    public void createSmoke(Coords coords){
+        createSmoke(coords,1,0);
+    }
+    
+    /**
+     * create a <code>SmokeCloud object and add it to the server list</code>
+     * @param coords
+     * @param level 1=Light 2=Heavy Smoke
+     */
+    public void createSmoke(Coords coords, int level){
+        createSmoke(coords,level,0);
+    }
+    
+    /**
+     * create a <code>SmokeCloud object and add it to the server list</code>
+     * @param coords
+     * @param level 1=Light 2=Heavy Smoke
+     * @param duration How long the smoke will last.
+     */
+    public void createSmoke(Coords coords, int level, int duration){
+        SmokeCloud cloud = new SmokeCloud(coords,level,duration);
+        smokeCloudList.add(cloud);
+        createSmokeTerrain(cloud);
+    }
+    
+    /**
+     * create a <code>SmokeCloud object and add it to the server list</code>
+     * @param coords
+     * @param level 1=Light 2=Heavy Smoke
+     * @param duration  duration How long the smoke will last.
+     */
+    public void createSmoke(ArrayList<Coords> coords, int level, int duration){
+        SmokeCloud cloud = new SmokeCloud(coords,level,duration);
+        smokeCloudList.add(cloud);
+        createSmokeTerrain(cloud);
+    }
+    
+    /**
+     * Update the Map
+     */
+    public void updateSmoke(){
+        for ( SmokeCloud cloud : smokeCloudList ){
+            removeSmokeTerrain(cloud);
+            createSmokeTerrain(cloud);
+        }
+    }
+
+    /**
+     * Update the map with a new set of coords.
+     * @param newCoords
+     */
+    public void updateSmoke(SmokeCloud cloud, ArrayList<Coords> newCoords){
+        removeSmokeTerrain(cloud);
+        cloud.getCoordsList().clear();
+        cloud.getCoordsList().addAll(newCoords);
+        createSmokeTerrain(cloud);
+    }
+    
+
+    /**
+     * remove a cloud from the map
+     * @param cloud
+     */
+    public void removeSmokeTerrain(SmokeCloud cloud){
+        for ( Coords coords : cloud.getCoordsList() ){
+            IHex nextHex = game.getBoard().getHex(coords);
+            if (nextHex != null && nextHex.containsTerrain(Terrains.SMOKE)) {
+                nextHex.removeTerrain(Terrains.SMOKE);
+                sendChangedHex(coords);
+            }
+        }
+    }
+    
+    /**
+     * Creats the Smoke Terrain Markers.
+     * @param cloud
+     */
+    public void createSmokeTerrain(SmokeCloud cloud){
+        
+        for( Coords coords : cloud.getCoordsList() ){
+            IHex smokeHex = game.getBoard().getHex(coords);
+            if ( smokeHex != null ){
+                smokeHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SMOKE, cloud.getSmokeLevel()));
+                sendChangedHex(coords);
+            }
+        }
+    }
+    
+    public ArrayList<SmokeCloud> getSmokeCloudList(){
+        return this.smokeCloudList;
     }
 }
