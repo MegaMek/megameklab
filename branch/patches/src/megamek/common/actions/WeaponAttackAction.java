@@ -830,7 +830,8 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         }
         
         //Electro-Magnetic Interference
-        if(game.getPlanetaryConditions().hasEMI()) {
+        if(game.getPlanetaryConditions().hasEMI() &&
+        		!(ae instanceof Infantry && !(ae instanceof BattleArmor))) {
         	toHit.addModifier(2, "EMI");
         }
         
