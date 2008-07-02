@@ -83,6 +83,7 @@ import megamek.common.ITerrain;
 import megamek.common.Infantry;
 import megamek.common.InfernoTracker;
 import megamek.common.Jumpship;
+import megamek.common.LargeSupportTank;
 import megamek.common.LocationFullException;
 import megamek.common.LosEffects;
 import megamek.common.MapSettings;
@@ -17388,6 +17389,30 @@ public class Server implements Runnable {
 
         } // End entity-not-already-destroyed.
 
+        //if using battlefield wreckage rules, then the destruction of this unit
+        //might convert the hex to rough
+        Coords curPos = entity.getPosition();
+        IHex entityHex = game.getBoard().getHex(curPos);
+        if(game.getOptions().booleanOption("tacops_battle_wreck")  
+        		&& entityHex != null && game.getBoard().onGround()
+        		&& !(entity instanceof Infantry || entity instanceof Protomech)) {
+        	//large support vees will create ultra rough, otherwise rough 
+        	if(entity instanceof LargeSupportTank) {
+        		//TODO: ultra rough is not yet coded, lets assume it will be level 2
+        		if(entityHex.terrainLevel(Terrains.ROUGH) < 2) {
+        			entityHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.ROUGH, 2));
+        			sendChangedHex(curPos);
+        		} 
+        	} else {
+        		if(!entityHex.containsTerrain(Terrains.ROUGH)) {
+        			entityHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.ROUGH, 1));
+           			sendChangedHex(curPos);
+        		} 
+        	}
+        	
+        }
+        
+        
         // update our entity, so clients have correct data
         // needed for MekWars stuff
         entityUpdate(entity.getId());
