@@ -22309,7 +22309,7 @@ public class Server implements Runnable {
         while ( clouds.hasNext() ) {
             SmokeCloud cloud = clouds.next();
             
-            if ( cloud.getCoordsList().size() < 1 ) {
+            if ( cloud.getCoordsList().size() < 1 || cloud.getSmokeLevel() < 1) {
                 clouds.remove();
             }
         }

@@ -16,6 +16,7 @@ package megamek.server;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -308,7 +309,8 @@ public class FireProcessor extends DynamicTerrainProcessor {
         int windDir = game.getPlanetaryConditions().getWindDirection();
         int windStr = game.getPlanetaryConditions().getWindStrength();
 
-        ArrayList<Coords> smokeToAdd = new ArrayList<Coords>();
+        ArrayList<Coords> smokeToAdd;
+        HashMap<SmokeCloud, ArrayList<Coords>> smokeCloudData = new HashMap<SmokeCloud, ArrayList<Coords>>();
 
         // Cycle through all hexes, checking for smoke
         debugTime("resolve smoke 1", true);
@@ -317,8 +319,9 @@ public class FireProcessor extends DynamicTerrainProcessor {
 
         	//for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
         for ( SmokeCloud cloud : server.getSmokeCloudList() ){
+            smokeToAdd = new ArrayList<Coords>();
             for ( Coords currentCoords : cloud.getCoordsList() ){
-
+                
                 // check for existence of smoke, then add it to the
                 // vector...if the wind is not Calm!
     			//int smokeLevel = currentHex.terrainLevel(Terrains.SMOKE);
@@ -348,7 +351,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
     			//server.sendChangedHex(currentCoords);
 
         	} // end the loop through Y coordinates
-            server.updateSmoke(cloud,smokeToAdd);
+            smokeCloudData.put(cloud,smokeToAdd);
         } // end the loop through X coordinates/
 
         debugTime("resolve smoke 1 end, resolve smoke 2 begin", true);
@@ -389,7 +392,11 @@ public class FireProcessor extends DynamicTerrainProcessor {
             	    cloud.setDrift(false);
         }
 
-        server.updateSmoke();
+        for ( SmokeCloud cloud : smokeCloudData.keySet() ){
+            smokeToAdd = smokeCloudData.get(cloud);
+            server.updateSmoke(cloud, smokeToAdd);
+        }
+        //server.updateSmoke();
         debugTime("resolve smoke 3 end", false);
 
     } // end smoke resolution

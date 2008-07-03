@@ -208,7 +208,7 @@ public class MiscType extends EquipmentType {
             return (float) Math.ceil(entity.getWeight() / 15.0);
         } else if (hasFlag(F_CLUB) && hasSubType(S_LANCE)) {
             return (float) Math.ceil(entity.getWeight() / 20.0);
-        } else if (hasFlag(F_CLUB) && ( hasSubType(S_SWORD) ||hasSubType(S_CHAIN_WHIP)) ) {
+        } else if (hasFlag(F_CLUB) && hasSubType(S_SWORD) ) {
             return (float) (Math.ceil(entity.getWeight() / 20.0 * 2.0) / 2.0);
         } else if (hasFlag(F_CLUB) && hasSubType(S_MACE)) {
             return (float) (Math.ceil(entity.getWeight() / 10.0));
@@ -1056,7 +1056,7 @@ public class MiscType extends EquipmentType {
         misc.techLevel = TechConstants.T_IS_LEVEL_2;
         misc.name = "Chain Whip";
         misc.setInternalName(misc.name);
-        misc.tonnage = TONNAGE_VARIABLE;
+        misc.tonnage = 3;
         misc.criticals = CRITICALS_VARIABLE;
         misc.cost = 120000;
         misc.flags |= F_CLUB;

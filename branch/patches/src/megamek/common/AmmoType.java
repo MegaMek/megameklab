@@ -4092,7 +4092,6 @@ public class AmmoType extends EquipmentType {
         ammo.shots = 60;
         ammo.bv = 1;
         ammo.cost = 30000;
-        ammo.kgPerShot = 150;
 
         return ammo;
     }
@@ -4108,7 +4107,6 @@ public class AmmoType extends EquipmentType {
         ammo.shots = 30;
         ammo.bv = 5;
         ammo.cost = 30000;
-        ammo.kgPerShot = 150;
 
         return ammo;
     }
@@ -4124,7 +4122,6 @@ public class AmmoType extends EquipmentType {
         ammo.shots = 10;
         ammo.bv = 12;
         ammo.cost = 30000;
-        ammo.kgPerShot = 150;
 
         return ammo;
     }
