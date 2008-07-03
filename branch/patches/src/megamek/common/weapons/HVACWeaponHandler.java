@@ -33,7 +33,7 @@ import megamek.server.Server.DamageType;
 /**
  * @author Jason Tighe
  */
-public class HVACWeaponHandler extends RapidfireACWeaponHandler {
+public class HVACWeaponHandler extends ACWeaponHandler {
 
     /**
      * 
@@ -73,11 +73,7 @@ public class HVACWeaponHandler extends RapidfireACWeaponHandler {
                 rearCoords = src;
             }
 
-            if (board.getHex(rearCoords).getTerrain(Terrains.SMOKE) != null) {
-                board.getHex(rearCoords).removeTerrain(Terrains.SMOKE);
-            }
-
-            board.getHex(rearCoords).addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SMOKE, 2));
+            server.createSmoke(rearCoords,2,2);
         }
         return super.handle(phase, vPhaseReport);
     }
@@ -106,9 +102,9 @@ public class HVACWeaponHandler extends RapidfireACWeaponHandler {
                     break;
                 }
             }
+            vPhaseReport.addAll(server.damageEntity(ae, new HitData(wlocation), wtype.getDamage(), false, DamageType.NONE, true));
             r.choose(false);
             vPhaseReport.addElement(r);
-            vPhaseReport.addAll(server.damageEntity(ae, new HitData(wlocation), wtype.getDamage(), false, DamageType.NONE, true));
         }else {
             return super.doChecks(vPhaseReport);
         }

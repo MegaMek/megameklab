@@ -18081,60 +18081,61 @@ public class Server implements Runnable {
      * @param y
      *            The <code>int</code> y-coordinate of the hex
      */
-    public void addSmoke(int x, int y, int windDir, boolean bInferno) {
+    public void addSmoke(ArrayList<Coords> coords, int windDir, boolean bInferno) {
 
         // if a tornado, then no smoke!
         if (game.getPlanetaryConditions().getWindStrength() > PlanetaryConditions.WI_STORM) {
             return;
         }
 
-        Coords smokeCoords = new Coords(Coords.xInDir(x, y, windDir), Coords.yInDir(x, y, windDir));
-        IHex smokeHex = game.getBoard().getHex(smokeCoords);
-        Report r;
-        if (smokeHex == null) {
-            return;
-        }
-        // Have to check if it's inferno smoke or from a heavy/hardened building
-        // - heavy smoke from those
-        if (bInferno
-                || Building.MEDIUM < smokeHex.terrainLevel(Terrains.FUEL_TANK)
-                || Building.MEDIUM < smokeHex.terrainLevel(Terrains.BUILDING)) {
-            if (smokeHex.terrainLevel(Terrains.SMOKE) == 2) {
-                // heavy smoke fills hex
-                r = new Report(5180, Report.PUBLIC);
-                r.add(smokeCoords.getBoardNum());
-                addReport(r);
-            } else {
-                if (smokeHex.terrainLevel(Terrains.SMOKE) == 1) {
-                    // heavy smoke overrides light
-                    smokeHex.removeTerrain(Terrains.SMOKE);
+        int smokeLevel = 0;
+        for (Coords smokeCoords : coords) {
+            IHex smokeHex = game.getBoard().getHex(smokeCoords);
+            Report r;
+            if (smokeHex == null) {
+                continue;
+            }
+            // Have to check if it's inferno smoke or from a heavy/hardened
+            // building
+            // - heavy smoke from those
+            if (bInferno || Building.MEDIUM < smokeHex.terrainLevel(Terrains.FUEL_TANK) || Building.MEDIUM < smokeHex.terrainLevel(Terrains.BUILDING)) {
+                if (smokeHex.terrainLevel(Terrains.SMOKE) == 2) {
+                    // heavy smoke fills hex
+                    r = new Report(5180, Report.PUBLIC);
+                    r.add(smokeCoords.getBoardNum());
+                    addReport(r);
+                } else {
+                    if (smokeHex.terrainLevel(Terrains.SMOKE) == 1) {
+                        // heavy smoke overrides light
+                        smokeHex.removeTerrain(Terrains.SMOKE);
+                    }
+                    smokeLevel = Math.max(smokeLevel, 2);;
+                    r = new Report(5185, Report.PUBLIC);
+                    r.add(smokeCoords.getBoardNum());
+                    addReport(r);
                 }
-                smokeHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SMOKE, 2));
-                sendChangedHex(smokeCoords);
-                r = new Report(5185, Report.PUBLIC);
-                r.add(smokeCoords.getBoardNum());
-                addReport(r);
-            }
-        } else {
-            if (smokeHex.terrainLevel(Terrains.SMOKE) == 2) {
-                // heavy smoke overpowers light
-                r = new Report(5190, Report.PUBLIC);
-                r.add(smokeCoords.getBoardNum());
-                addReport(r);
-            } else if (smokeHex.terrainLevel(Terrains.SMOKE) == 1) {
-                // light smoke continue to fill hex
-                r = new Report(5195, Report.PUBLIC);
-                r.add(smokeCoords.getBoardNum());
-                addReport(r);
             } else {
-                smokeHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SMOKE, 1));
-                sendChangedHex(smokeCoords);
-                // light smoke fills hex
-                r = new Report(5200, Report.PUBLIC);
-                r.add(smokeCoords.getBoardNum());
-                addReport(r);
+                if (smokeHex.terrainLevel(Terrains.SMOKE) == 2) {
+                    // heavy smoke overpowers light
+                    r = new Report(5190, Report.PUBLIC);
+                    r.add(smokeCoords.getBoardNum());
+                    addReport(r);
+                } else if (smokeHex.terrainLevel(Terrains.SMOKE) == 1) {
+                    // light smoke continue to fill hex
+                    r = new Report(5195, Report.PUBLIC);
+                    r.add(smokeCoords.getBoardNum());
+                    addReport(r);
+                    smokeLevel = Math.max(smokeLevel, 2);
+                } else {
+                    smokeLevel = Math.max(smokeLevel, 1);;
+                    // light smoke fills hex
+                    r = new Report(5200, Report.PUBLIC);
+                    r.add(smokeCoords.getBoardNum());
+                    addReport(r);
+                }
             }
         }
+        createSmoke(coords, smokeLevel, 0);
     }
 
     public void removeSmoke(int x, int y, int windDir) { // L2 smoke removal
@@ -22284,6 +22285,7 @@ public class Server implements Runnable {
             removeSmokeTerrain(cloud);
             createSmokeTerrain(cloud);
         }
+        removeEmptyClouds();
     }
 
     /**
@@ -22295,8 +22297,23 @@ public class Server implements Runnable {
         cloud.getCoordsList().clear();
         cloud.getCoordsList().addAll(newCoords);
         createSmokeTerrain(cloud);
+        removeEmptyClouds();
     }
-    
+
+    /**
+     * Remove any empty clouds from the array
+     */
+    public void removeEmptyClouds() {
+        Iterator<SmokeCloud> clouds = smokeCloudList.iterator();
+        
+        while ( clouds.hasNext() ) {
+            SmokeCloud cloud = clouds.next();
+            
+            if ( cloud.getCoordsList().size() < 1 ) {
+                clouds.remove();
+            }
+        }
+    }
 
     /**
      * remove a cloud from the map

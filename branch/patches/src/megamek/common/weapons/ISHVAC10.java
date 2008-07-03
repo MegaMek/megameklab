@@ -17,17 +17,10 @@
  */
 package megamek.common.weapons;
 
-import megamek.common.AmmoType;
-import megamek.common.IGame;
-import megamek.common.TechConstants;
-import megamek.common.ToHitData;
-import megamek.common.actions.WeaponAttackAction;
-import megamek.server.Server;
-
 /**
  * @author Jason Tighe
  */
-public class ISHVAC10 extends ACWeapon {
+public class ISHVAC10 extends HVACWeapon {
 
     /**
      * 
@@ -36,7 +29,6 @@ public class ISHVAC10 extends ACWeapon {
 
     public ISHVAC10() {
         super();
-        this.techLevel = TechConstants.T_IS_LEVEL_2;
         this.name = "Hyper Velocity Auto Cannon/10";
         this.setInternalName(this.name);
         this.addLookupName("IS Hyper Velocity Auto Cannon/10");
@@ -57,17 +49,6 @@ public class ISHVAC10 extends ACWeapon {
         this.medAV = 10;
         this.longAV = 10;
         this.maxRange = RANGE_LONG;
-        this.explosionDamage = damage;
-        this.ammoType = AmmoType.T_HYPER_VELOCITY;
     }
     
-    /*
-     * (non-Javadoc)
-     * @see megamek.common.weapons.ACWeapon#getCorrectHandler(megamek.common.ToHitData, megamek.common.actions.WeaponAttackAction, megamek.common.IGame, megamek.server.Server)
-     */
-    protected AttackHandler getCorrectHandler(ToHitData toHit,
-            WeaponAttackAction waa, IGame game, Server server) {
-            return new HVACWeaponHandler(toHit, waa, game, server);
-    }
-
 }

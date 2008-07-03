@@ -188,11 +188,13 @@ public class FireProcessor extends DynamicTerrainProcessor {
                     //Add smoke (unless we are in a tornado)
                     boolean bInferno = currentHex.terrainLevel(Terrains.FIRE) == 2;
                     if (game.getPlanetaryConditions().getWindStrength() < PlanetaryConditions.WI_TORNADO_F13) {
-                    	server.addSmoke(currentXCoord, currentYCoord, windDirection, bInferno);
-                    	server.addSmoke(currentXCoord, currentYCoord,
-                    			(windDirection + 1) % 6, bInferno);
-                    	server.addSmoke(currentXCoord, currentYCoord,
-                    			(windDirection + 5) % 6, bInferno);
+                        ArrayList<Coords> smokeList = new ArrayList<Coords>();
+                        
+                        smokeList.add(new Coords(Coords.xInDir(currentXCoord, currentYCoord, windDirection), Coords.yInDir(currentXCoord, currentYCoord, windDirection)));
+                        smokeList.add(new Coords(Coords.xInDir(currentXCoord, currentYCoord, (windDirection+1)%6), Coords.yInDir(currentXCoord, currentYCoord, (windDirection+1)%6)));
+                        smokeList.add(new Coords(Coords.xInDir(currentXCoord, currentYCoord, (windDirection+5)%6), Coords.yInDir(currentXCoord, currentYCoord, (windDirection+5)%6)));
+
+                    	server.addSmoke(smokeList, windDirection, bInferno);
                     	board.initializeAround(currentXCoord, currentYCoord);
                     }
                     //increment the fire turn counter
@@ -303,24 +305,8 @@ public class FireProcessor extends DynamicTerrainProcessor {
      */
     private void resolveSmoke() {
         IBoard board = game.getBoard();
-        int width = board.getWidth();
-        int height = board.getHeight();
         int windDir = game.getPlanetaryConditions().getWindDirection();
         int windStr = game.getPlanetaryConditions().getWindStrength();
-        class SmokeDrift { // hold the hex and level of the smoke cloud
-            public Coords coords;
-            public int size;
-
-            public SmokeDrift(Coords c, int s) {
-                coords = c;
-                size = s;
-            }
-
-            /*
-             * public SmokeDrift(SmokeDrift sd) { sd.coords = coords; sd.size =
-             * size; }
-             */
-        }
 
         ArrayList<Coords> smokeToAdd = new ArrayList<Coords>();
 
@@ -345,14 +331,14 @@ public class FireProcessor extends DynamicTerrainProcessor {
     				Report r = new Report(5220, Report.PUBLIC);
     				r.add(currentCoords.getBoardNum());
     				vPhaseReport.addElement(r);
+    				r = new Report(5222,Report.PUBLIC);
+    				vPhaseReport.addElement(r);
     			}
-    			else if (board.contains(smokeCoords)) { // don't add it to
-    				// the vector if
-    				// it's not on
-    				// board!
+    			else if (board.contains(smokeCoords) && !smokeCoords.equals(currentCoords)) { 
+    			    // don't add it to the vector if it's not on board!
     				smokeToAdd.add(smokeCoords);
     				cloud.setDrift(true);
-    			} else {
+    			} else if ( !board.contains(smokeCoords) ) {
     				// report that the smoke has blown off the map
     				Report r = new Report(5230, Report.PUBLIC);
     				r.add(currentCoords.getBoardNum());
@@ -389,16 +375,21 @@ public class FireProcessor extends DynamicTerrainProcessor {
             	//IHex smokeHex = game.getBoard().getHex(smokeCoords);
             	int roll = Compute.d6(2);
     
-            	int newSmokeLevel = driftSmokeDissipate(cloud, roll, windStr);
-            	boolean dissipated = newSmokeLevel < cloud.getSmokeLevel();
+            	boolean dissipated = driftSmokeDissipate(cloud, roll, windStr);
             	
             	if ( dissipated || cloud.didDrift() ){
             	    driftSmokeReport(cloud,dissipated);
-            	    cloud.setSmokeLevel(newSmokeLevel);
+            	    if ( dissipated )
+            	        cloud.setSmokeLevel(cloud.getSmokeLevel()-1);
             	}
-            	cloud.setDrift(false);
+            	
+            	if ( cloud.getSmokeLevel() <= 0 ) {
+            	    cloud.getCoordsList().clear();
+            	} else
+            	    cloud.setDrift(false);
         }
 
+        server.updateSmoke();
         debugTime("resolve smoke 3 end", false);
 
     } // end smoke resolution
@@ -474,19 +465,31 @@ public class FireProcessor extends DynamicTerrainProcessor {
      * This method does not currently support "smoke clouds" as specified in
      * TacOps under "Dissipation" on page 47. The added
      */
-    public int driftSmokeDissipate(SmokeCloud cloud, int roll, int windStr) {
+    public boolean driftSmokeDissipate(SmokeCloud cloud, int roll, int windStr) {
+        
+        //HVAC Heavy smoke dissipation
+        if ( cloud.getDuration() > 0 && cloud.getDuration()-1 == 0 ) {
+            cloud.setDuration(0);
+            cloud.setSmokeLevel(0);
+            return true;
+        }
+        
+        if ( cloud.getDuration() > 0 && cloud.getDuration()-1 > 0 ) {
+            cloud.setDuration(cloud.getDuration()-1);
+        }
+        
         // Dissipate in various winds
         if (roll > 10 || (roll > 9 && windStr == PlanetaryConditions.WI_MOD_GALE)
                 || (roll > 7 && windStr == PlanetaryConditions.WI_STRONG_GALE)
                 || (roll > 5 && windStr == PlanetaryConditions.WI_STORM)) {
-
-            return cloud.getSmokeLevel()-1;
+            return true;
         }
         //All smoke goes bye bye in Tornados
         if ( windStr > PlanetaryConditions.WI_STORM ) {
-            return 0;
+            cloud.setSmokeLevel(0);
+            return true;
         }
-        return cloud.getSmokeLevel();
+        return false;
     }
 
     public void driftSmokeReport(SmokeCloud cloud, boolean dis) {
@@ -497,21 +500,74 @@ public class FireProcessor extends DynamicTerrainProcessor {
             r = new Report(5210, Report.PUBLIC);
             r.add(cloud.getCoordsList().get(0).getBoardNum());
             vPhaseReport.addElement(r);
+            
+            for ( int pos = 1; pos < cloud.getCoordsList().size(); pos++ ) {
+                r = new Report(5211, Report.PUBLIC);
+                r.add(cloud.getCoordsList().get(pos).getBoardNum());
+                vPhaseReport.addElement(r);
+            }
+            
+            r = new Report(5212, Report.PUBLIC);
+            vPhaseReport.addElement(r);
         } else if (size == 2 && dis == false) {
             // heavy smoke drifts
-            r = new Report(5215, Report.PUBLIC);
+            r = new Report(5210, Report.PUBLIC);
             r.add(cloud.getCoordsList().get(0).getBoardNum());
+            vPhaseReport.addElement(r);
+            
+            for ( int pos = 1; pos < cloud.getCoordsList().size(); pos++ ) {
+                r = new Report(5211, Report.PUBLIC);
+                r.add(cloud.getCoordsList().get(pos).getBoardNum());
+                vPhaseReport.addElement(r);
+            }
+            
+            r = new Report(5213, Report.PUBLIC);
             vPhaseReport.addElement(r);
         } else if (size == 1 && dis == true) {
             // light smoke drifts and dissipates
             r = new Report(5220, Report.PUBLIC);
             r.add(cloud.getCoordsList().get(0).getBoardNum());
             vPhaseReport.addElement(r);
+            
+            for ( int pos = 1; pos < cloud.getCoordsList().size(); pos++ ) {
+                r = new Report(5211, Report.PUBLIC);
+                r.add(cloud.getCoordsList().get(pos).getBoardNum());
+                vPhaseReport.addElement(r);
+            }
+            
+            r = new Report(5222, Report.PUBLIC);
+            vPhaseReport.addElement(r);
+
         } else if (size == 1 && dis == false) {
             // light smoke drifts
-            r = new Report(5225, Report.PUBLIC);
+            r = new Report(5220, Report.PUBLIC);
             r.add(cloud.getCoordsList().get(0).getBoardNum());
             vPhaseReport.addElement(r);
-        }
+            
+            for ( int pos = 1; pos < cloud.getCoordsList().size(); pos++ ) {
+                r = new Report(5211, Report.PUBLIC);
+                r.add(cloud.getCoordsList().get(pos).getBoardNum());
+                vPhaseReport.addElement(r);
+            }
+            
+            r = new Report(5213, Report.PUBLIC);
+            vPhaseReport.addElement(r);
+
+        }else if (size < 1 ) {
+            // light smoke drifts and dissipates
+            r = new Report(5223, Report.PUBLIC);
+            r.add(cloud.getCoordsList().get(0).getBoardNum());
+            vPhaseReport.addElement(r);
+            
+            for ( int pos = 1; pos < cloud.getCoordsList().size(); pos++ ) {
+                r = new Report(5211, Report.PUBLIC);
+                r.add(cloud.getCoordsList().get(pos).getBoardNum());
+                vPhaseReport.addElement(r);
+            }
+            
+            r = new Report(5224, Report.PUBLIC);
+            vPhaseReport.addElement(r);
+
+        } 
     }
 }
