@@ -366,7 +366,7 @@ public class ArtilleryWeaponIndirectFireHandler extends AmmoWeaponHandler {
             return false;
         }
         if (atype.getMunitionType() == AmmoType.M_FASCAM) {
-            server.deliverFASCAMMinefield(coords, ae.getOwner().getId());
+            server.deliverFASCAMMinefield(coords, ae.getOwner().getId(), atype.getRackSize(), ae.getId());
             return false;
         }
         if (atype.getMunitionType() == AmmoType.M_INFERNO_IV) {
@@ -375,7 +375,7 @@ public class ArtilleryWeaponIndirectFireHandler extends AmmoWeaponHandler {
         }
         if (atype.getMunitionType() == AmmoType.M_VIBRABOMB_IV) {
             server.deliverThunderVibraMinefield(coords, ae.getOwner().getId(),
-                    20, waa.getOtherAttackInfo());
+            		atype.getRackSize(), waa.getOtherAttackInfo(), ae.getId());
             return false;
         }
         if (atype.getMunitionType() == AmmoType.M_SMOKE) {

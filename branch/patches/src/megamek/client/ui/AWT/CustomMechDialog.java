@@ -904,6 +904,8 @@ public class CustomMechDialog extends ClientDialog implements ActionListener,
             m_choice = new Choice();
             m_choice.add(Messages.getString("CustomMechDialog.Conventional")); //$NON-NLS-1$
             m_choice.add(Messages.getString("CustomMechDialog.Vibrabomb")); //$NON-NLS-1$
+            m_choice.add(Messages.getString("CustomMechDialog.Active")); //$NON-NLS-1$
+            m_choice.add(Messages.getString("CustomMechDialog.Inferno")); //$NON-NLS-1$
             // m_choice.add("Messages.getString("CustomMechDialog.Command-detonated"));
             // //$NON-NLS-1$
             int loc;

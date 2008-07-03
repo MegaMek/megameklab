@@ -254,10 +254,10 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             Minefield mf;
 
             if (deployM) {
-                mf = Minefield.createConventionalMF(coords, p.getId());
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_CONVENTIONAL, 10);
                 p.setNbrMFConventional(p.getNbrMFConventional() - 1);
             } else if (deployC) {
-                mf = Minefield.createCommandDetonatedMF(coords, p.getId());
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_COMMAND_DETONATED, 10);
                 p.setNbrMFCommand(p.getNbrMFCommand() - 1);
             } else if (deployV) {
                 VibrabombSettingDialog vsd = new VibrabombSettingDialog(
@@ -265,7 +265,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
                 vsd.setVisible(true);
 
                 // Hack warning...
-                mf = Minefield.createVibrabombMF(coords, p.getId(), vsd
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_VIBRABOMB, 10, vsd
                         .getSetting());
                 p.setNbrMFVibra(p.getNbrMFVibra() - 1);
             } else {

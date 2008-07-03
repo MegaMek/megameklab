@@ -2956,7 +2956,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             // then bring up an option dialog
             int recoverer = getRecoveryUnit();
             if (recoverer != -1) {
-                cmd.addStep(MovePath.STEP_RECOVER, recoverer);
+                cmd.addStep(MovePath.STEP_RECOVER, recoverer, -1);
                 clientgui.bv.drawMovementData(ce, cmd);
                 clientgui.bv.repaint();
             }

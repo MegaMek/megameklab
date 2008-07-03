@@ -966,43 +966,33 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                         case (Minefield.TYPE_CONVENTIONAL):
                             drawCenteredString(
                                     Messages
-                                            .getString("BoardView1.Conventional"), //$NON-NLS-1$
+                                            .getString("BoardView1.Conventional") + mf.getDensity() + ")", //$NON-NLS-1$
                                     p.x, p.y + (int) (51 * scale),
                                     font_minefield, backGraph);
                             break;
-                        case (Minefield.TYPE_THUNDER):
-                            drawCenteredString(
-                                    Messages.getString("BoardView1.Thunder") + mf.getDamage() + ")", //$NON-NLS-1$ //$NON-NLS-2$
-                                    p.x, p.y + (int) (51 * scale),
-                                    font_minefield, backGraph);
-                            break;
-                        case (Minefield.TYPE_THUNDER_INFERNO):
+                        case (Minefield.TYPE_INFERNO):
                             drawCenteredString(
                                     Messages
-                                            .getString("BoardView1.Thunder-Inf") + mf.getDamage() + ")", //$NON-NLS-1$ //$NON-NLS-2$
+                                            .getString("BoardView1.Inferno") + mf.getDensity() + ")", //$NON-NLS-1$ //$NON-NLS-2$
                                     p.x, p.y + (int) (51 * scale),
                                     font_minefield, backGraph);
                             break;
-                        case (Minefield.TYPE_THUNDER_ACTIVE):
+                        case (Minefield.TYPE_ACTIVE):
                             drawCenteredString(
                                     Messages
-                                            .getString("BoardView1.Thunder-Actv") + mf.getDamage() + ")", //$NON-NLS-1$ //$NON-NLS-2$
+                                            .getString("BoardView1.Active") + mf.getDensity() + ")", //$NON-NLS-1$ //$NON-NLS-2$
                                     p.x, p.y + (int) (51 * scale),
                                     font_minefield, backGraph);
                             break;
                         case (Minefield.TYPE_COMMAND_DETONATED):
                             drawCenteredString(
-                                    Messages.getString("BoardView1.Command-"), //$NON-NLS-1$
+                                    Messages.getString("BoardView1.Command") + mf.getDensity() + ")", //$NON-NLS-1$
                                     p.x, p.y + (int) (51 * scale),
-                                    font_minefield, backGraph);
-                            drawCenteredString(
-                                    Messages.getString("BoardView1.detonated"), //$NON-NLS-1$
-                                    p.x, p.y + (int) (60 * scale),
                                     font_minefield, backGraph);
                             break;
                         case (Minefield.TYPE_VIBRABOMB):
                             drawCenteredString(
-                                    Messages.getString("BoardView1.Vibrabomb"), //$NON-NLS-1$
+                                    Messages.getString("BoardView1.Vibrabomb") + mf.getDensity() + ")", //$NON-NLS-1$
                                     p.x, p.y + (int) (51 * scale),
                                     font_minefield, backGraph);
                             if (mf.getPlayerId() == localPlayer.getId()) {
@@ -1694,38 +1684,33 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                         case (Minefield.TYPE_CONVENTIONAL):
                             strings[stringsIndex] = mf.getName()
                                     + Messages
-                                            .getString("BoardView1.minefield") + " " + owner; //$NON-NLS-1$ //$NON-NLS-2$
-                            break;
-                        case (Minefield.TYPE_THUNDER):
-                            strings[stringsIndex] = mf.getName()
-                                    + Messages
-                                            .getString("BoardView1.minefield") + "(" + mf.getDamage() + ")" + owner; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                            .getString("BoardView1.minefield") + "(" + mf.getDensity() + ")" + " " + owner; //$NON-NLS-1$ //$NON-NLS-2$
                             break;
                         case (Minefield.TYPE_COMMAND_DETONATED):
                             strings[stringsIndex] = mf.getName()
                                     + Messages
-                                            .getString("BoardView1.minefield") + " " + owner; //$NON-NLS-1$ //$NON-NLS-2$
+                                            .getString("BoardView1.minefield") + "(" + mf.getDensity() + ")"+ " " + owner; //$NON-NLS-1$ //$NON-NLS-2$
                             break;
                         case (Minefield.TYPE_VIBRABOMB):
                             if (mf.getPlayerId() == localPlayer.getId()) {
                                 strings[stringsIndex] = mf.getName()
                                         + Messages
-                                                .getString("BoardView1.minefield") + "(" + mf.getSetting() + ") " + owner; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                                .getString("BoardView1.minefield") + "(" + mf.getDensity() + ")" + "(" + mf.getSetting() + ") " + owner; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             } else {
                                 strings[stringsIndex] = mf.getName()
                                         + Messages
-                                                .getString("BoardView1.minefield") + " " + owner; //$NON-NLS-1$ //$NON-NLS-2$
+                                                .getString("BoardView1.minefield") + "(" + mf.getDensity() + ")" + " " + owner; //$NON-NLS-1$ //$NON-NLS-2$
                             }
                             break;
-                        case (Minefield.TYPE_THUNDER_ACTIVE):
+                        case (Minefield.TYPE_ACTIVE):
                             strings[stringsIndex] = mf.getName()
                                     + Messages
-                                            .getString("BoardView1.minefield") + "(" + mf.getDamage() + ")" + owner; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                            .getString("BoardView1.minefield") + "(" + mf.getDensity() + ")" + owner; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             break;
-                        case (Minefield.TYPE_THUNDER_INFERNO):
+                        case (Minefield.TYPE_INFERNO):
                             strings[stringsIndex] = mf.getName()
                                     + Messages
-                                            .getString("BoardView1.minefield") + "(" + mf.getDamage() + ")" + owner; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                            .getString("BoardView1.minefield") + "(" + mf.getDensity() + ")" + owner; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             break;
                     }
                     stringsIndex++;

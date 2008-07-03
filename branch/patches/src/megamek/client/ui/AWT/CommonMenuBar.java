@@ -97,6 +97,8 @@ public class CommonMenuBar extends MenuBar implements ActionListener,
     private MenuItem deployMinesConventional = null;
     private MenuItem deployMinesCommand = null;
     private MenuItem deployMinesVibrabomb = null;
+    private MenuItem deployMinesActive = null;
+    private MenuItem deployMinesInferno = null;
     private MenuItem deployNext = null;
     private MenuItem deployTurn = null;
     private MenuItem deployLoad = null;
@@ -368,7 +370,12 @@ public class CommonMenuBar extends MenuBar implements ActionListener,
         deployMinesVibrabomb = createMenuItem(
                 submenu,
                 Messages.getString("CommonMenuBar.deployMinesVibrabomb"), DeployMinefieldDisplay.DEPLOY_MINE_VIBRA); //$NON-NLS-1$
-
+        deployMinesActive = createMenuItem(
+                submenu,
+                Messages.getString("CommonMenuBar.deployMinesActive"), DeployMinefieldDisplay.DEPLOY_MINE_ACTIVE); //$NON-NLS-1$
+        deployMinesInferno = createMenuItem(
+                submenu,
+                Messages.getString("CommonMenuBar.deployMinesInferno"), DeployMinefieldDisplay.DEPLOY_MINE_INFERNO); //$NON-NLS-1$
         // Finish off the deploy menu.
         deployNext = createMenuItem(
                 menu,
@@ -1076,6 +1083,18 @@ public class CommonMenuBar extends MenuBar implements ActionListener,
         deployMinesVibrabomb.setLabel(Messages.getString(
                 "CommonMenuBar.Vibrabomb", new Object[] { new Integer(nbr) })); //$NON-NLS-1$
         deployMinesVibrabomb.setEnabled(nbr > 0);
+    }
+    
+    public synchronized void setDeployActiveEnabled(int nbr) {
+        deployMinesActive.setLabel(Messages.getString(
+                "CommonMenuBar.Active", new Object[] { new Integer(nbr) })); //$NON-NLS-1$
+        deployMinesActive.setEnabled(nbr > 0);
+    }
+    
+    public synchronized void setDeployInfernoEnabled(int nbr) {
+        deployMinesInferno.setLabel(Messages.getString(
+                "CommonMenuBar.Inferno", new Object[] { new Integer(nbr) })); //$NON-NLS-1$
+        deployMinesInferno.setEnabled(nbr > 0);
     }
 
     // Manages physical menu items...

@@ -169,8 +169,8 @@ public class MovePath implements Cloneable, Serializable {
         return addStep(new MoveStep(this, type, target));
     }
 
-    public MovePath addStep(final int type, final int recover) {
-        return addStep(type, recover, -1);
+    public MovePath addStep(final int type, final int mineToLay) {
+        return addStep(type, -1, mineToLay);
     }
     
     public MovePath addStep(final int type, final int recover, final int mineToLay) {

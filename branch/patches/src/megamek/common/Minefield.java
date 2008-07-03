@@ -25,10 +25,16 @@ public class Minefield implements Serializable, Cloneable {
     public static final int TYPE_CONVENTIONAL = 0;
     public static final int TYPE_COMMAND_DETONATED = 1;
     public static final int TYPE_VIBRABOMB = 2;
+    public static final int TYPE_ACTIVE = 3;
+    public static final int TYPE_EMP = 4;
+    public static final int TYPE_INFERNO = 5;
+    
+    /*
     public static final int TYPE_THUNDER = 3;
     public static final int TYPE_THUNDER_INFERNO = 4;
     public static final int TYPE_THUNDER_ACTIVE = 5;
     public static final int TYPE_THUNDER_VIBRABOMB = 6;
+    */
 
     public static final int TRIGGER_NONE = 0;
 
@@ -41,113 +47,60 @@ public class Minefield implements Serializable, Cloneable {
     public static final int TO_HIT_SIDE = ToHitData.SIDE_FRONT;
     public static final int TO_HIT_TABLE = ToHitData.HIT_KICK;
 
-    public static final int MAX_DAMAGE = 20;
+    public static final int MAX_DAMAGE = 30;
 
     public static final String IMAGE_FILE = "data/images/hexes/minefieldsign.gif";
 
     private static String[] names = { "Conventional", "Command-detonated",
-            "Vibrabomb", "Thunder", "Thunder-Inferno", "Thunder-Active",
-            "Thunder-Vibrabomb" };
+            "Vibrabomb", "Active", "EMP", "Inferno"};
+            //"Thunder", "Thunder-Inferno", "Thunder-Active",
+            //"Thunder-Vibrabomb" };
+    
+    public static int TYPE_SIZE = names.length;
 
     private Coords coords = null;
     private int playerId = Player.PLAYER_NONE;
-    private int damage = 0;
-    private int secondaryDamage = 0;
-    private int setting = 0;
-    private int trigger = TRIGGER_NONE;
+    //private int damage = 0;
+    //private int secondaryDamage = 0;
+    private int density = 5;
     private int type = -1;
-    private boolean areaEffect = false;
+    private int setting = 0;
     private boolean oneUse = false;
+    private boolean sea = false;
 
     private Minefield() {
     }
-
-    public static Minefield createConventionalMF(Coords coords, int playerId) {
-        Minefield mf = new Minefield();
-
-        mf.damage = 6;
-        mf.type = TYPE_CONVENTIONAL;
-        mf.trigger = 7;
-        mf.coords = coords;
-        mf.playerId = playerId;
-        return mf;
+    
+    public static Minefield createMinefield(Coords coords, int playerId, int type, int density) {
+    	return createMinefield(coords, playerId, type, density, 0);
+    }
+    
+    public static Minefield createMinefield(Coords coords, int playerId, int type, int density, boolean sea) {
+    	return createMinefield(coords, playerId, type, density, 0, sea);
+    }
+    
+    public static Minefield createMinefield(Coords coords, int playerId, int type, int density, int setting) {
+    	return createMinefield(coords, playerId, type, density, setting, false);
     }
 
-    public static Minefield createCommandDetonatedMF(Coords coords, int playerId) {
-        Minefield mf = new Minefield();
-
-        mf.damage = 10;
-        mf.secondaryDamage = 4;
-        mf.areaEffect = true;
-        mf.oneUse = true;
-        mf.type = TYPE_COMMAND_DETONATED;
-        mf.coords = coords;
-        mf.playerId = playerId;
-        return mf;
+    public static Minefield createMinefield(Coords coords, int playerId, int type, int density, int setting, boolean sea) {
+    	Minefield mf = new Minefield();
+    	
+    	mf.type = type;
+    	mf.density = density;
+    	mf.coords = coords;
+    	mf.playerId = playerId;
+    	mf.setting = setting;
+    	mf.sea = sea;
+    	return mf;
     }
-
-    public static Minefield createVibrabombMF(Coords coords, int playerId,
-            int setting) {
-        Minefield mf = new Minefield();
-
-        mf.damage = 10;
-        mf.areaEffect = true;
-        mf.oneUse = true;
-        mf.setting = setting;
-        mf.type = TYPE_VIBRABOMB;
-        mf.coords = coords;
-        mf.playerId = playerId;
-        return mf;
-    }
-
-    public static Minefield createThunderVibrabombMF(Coords coords,
-            int playerId, int damage, int setting) {
-        Minefield mf = new Minefield();
-
-        mf.damage = damage;
-        mf.areaEffect = true;
-        mf.oneUse = true;
-        mf.setting = setting;
-        mf.type = TYPE_VIBRABOMB;
-        mf.coords = coords;
-        mf.playerId = playerId;
-        return mf;
-    }
-
-    public static Minefield createThunderMF(Coords coords, int playerId,
-            int damage) {
-        Minefield mf = new Minefield();
-
-        mf.damage = damage;
-        mf.type = TYPE_THUNDER;
-        mf.trigger = 7;
-        mf.coords = coords;
-        mf.playerId = playerId;
-        return mf;
-    }
-
-    public static Minefield createThunderInfernoMF(Coords coords, int playerId,
-            int damage) {
-        Minefield mf = new Minefield();
-
-        mf.damage = damage;
-        mf.type = TYPE_THUNDER_INFERNO;
-        mf.trigger = 7;
-        mf.coords = coords;
-        mf.playerId = playerId;
-        return mf;
-    }
-
-    public static Minefield createThunderActiveMF(Coords coords, int playerId,
-            int damage) {
-        Minefield mf = new Minefield();
-
-        mf.damage = damage;
-        mf.type = TYPE_THUNDER_ACTIVE;
-        mf.trigger = 7;
-        mf.coords = coords;
-        mf.playerId = playerId;
-        return mf;
+    
+    
+    public static String getDisplayableName(int type) {
+        if (type >= 0 && type < TYPE_SIZE) {
+            return names[type];
+        }
+        throw new IllegalArgumentException("Unknown mine type");
     }
 
     public Object clone() {
@@ -155,12 +108,10 @@ public class Minefield implements Serializable, Cloneable {
 
         mf.playerId = playerId;
         mf.coords = coords;
-        mf.damage = damage;
-        mf.secondaryDamage = secondaryDamage;
-        mf.areaEffect = areaEffect;
+        mf.density = density;
         mf.oneUse = oneUse;
-        mf.setting = setting;
         mf.type = type;
+        mf.sea = sea;
 
         return mf;
     }
@@ -180,28 +131,34 @@ public class Minefield implements Serializable, Cloneable {
         return false;
     }
 
-    public void setDamage(int damage) {
-        this.damage = damage;
+    public void setDensity(int density) {
+        this.density = density;
     }
 
     public Coords getCoords() {
         return coords;
     }
 
-    public int getDamage() {
-        return damage;
+    public int getDensity() {
+        return density;
     }
 
-    public int getSecondaryDamage() {
-        return secondaryDamage;
+    /**
+     * what do we need to roll to trigger this mine
+     * @return
+     */
+    public int getTrigger() {	
+    	if(density < 15) {
+    		return 9;
+    	} else if (density < 25) {
+    		return 8;
+    	} else {
+    		return 7;
+    	}
     }
 
-    public int getTrigger() {
-        return trigger;
-    }
-
-    public boolean isAreaEffect() {
-        return areaEffect;
+    public boolean isSeaBased() {
+        return sea;
     }
 
     public boolean isOneUse() {
@@ -223,5 +180,26 @@ public class Minefield implements Serializable, Cloneable {
     public int getPlayerId() {
         return playerId;
     }
-
+    
+    /**
+     * check for a reduction in density
+     * @param bonus - an <code>int</code> indicating the modifier to the target roll for reduction
+     * @param direct - a <code>boolean</code> indicating whether this reduction was due to a direct explosion or
+     *                    a result of another minefield in the same hex explodin
+     * @return - <code>true</code> if this reduction cleared the minefield
+     */
+    public boolean checkReduction(int bonus, boolean direct) {
+    	boolean isReduced = ((Compute.d6(2) + bonus) >= getTrigger()) || (direct && getType() != Minefield.TYPE_CONVENTIONAL && getType() != Minefield.TYPE_INFERNO);
+    	if(getType() == Minefield.TYPE_CONVENTIONAL && getDensity() < 10) {
+    		isReduced = false;
+    	}
+    	if(isReduced) {
+    		setDensity(getDensity() - 5);
+    	}    
+    	if (getDensity() < 5 || getType() == Minefield.TYPE_EMP) {
+    		return true;
+    	} else { 
+    		return false;
+    	}
+    }
 }

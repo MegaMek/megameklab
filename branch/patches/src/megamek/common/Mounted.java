@@ -92,7 +92,10 @@ public class Mounted implements Serializable, RoundUpdated {
     public static final int MINE_NONE = -1;
     public static final int MINE_CONVENTIONAL = 0;
     public static final int MINE_VIBRABOMB = 1;
-    public static final int MINE_COMMAND_DETONATED = 2;
+    public static final int MINE_ACTIVE = 2;
+    public static final int MINE_INFERNO = 3;
+    public static final int MINE_EMP = 4;
+    public static final int MINE_COMMAND_DETONATED = 5;
 
     // New stuff for shields
     protected int baseDamageAbsorptionRate = 0;
@@ -252,18 +255,24 @@ public class Mounted implements Serializable, RoundUpdated {
     public String getDesc() {
         StringBuffer desc;
         switch (getMineType()) {
-            case 0:
+            case MINE_CONVENTIONAL:
                 desc = new StringBuffer(Messages
                         .getString("Mounted.ConventionalMine"));
                 break;
-            case 1:
+            case MINE_VIBRABOMB:
                 desc = new StringBuffer(Messages
                         .getString("Mounted.VibraBombMine"));
                 break;
-            case 2:
+            case MINE_COMMAND_DETONATED:
                 desc = new StringBuffer(Messages
                         .getString("Mounted.CommandDetonatedMine"));
                 break;
+            case MINE_ACTIVE:
+            	desc = new StringBuffer(Messages.getString("Mounted.ActiveMine"));
+            	break;
+            case MINE_INFERNO:
+            	desc = new StringBuffer(Messages.getString("Mounted.InfernoMine"));
+            	break;
             case -1:
             default:
                 desc = new StringBuffer(type.getDesc());

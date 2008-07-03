@@ -55,6 +55,8 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
     public static final String DEPLOY_MINE_CONV = "deployMineConv"; //$NON-NLS-1$
     public static final String DEPLOY_MINE_COM = "deployMineCom"; //$NON-NLS-1$
     public static final String DEPLOY_MINE_VIBRA = "deployMineVibra"; //$NON-NLS-1$
+    public static final String DEPLOY_MINE_ACTIVE = "deployMineActive"; //$NON-NLS-1$
+    public static final String DEPLOY_MINE_INFERNO = "deployMineInferno"; //$NON-NLS-1$
 
     // parent game
     public ClientGUI clientgui;
@@ -70,6 +72,8 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
     // private Button butSpace2;
     // private Button butSpace3;
     private Button butV;
+    private Button butA;
+    private Button butI;
     private Button butUnload;
     private Button butDone;
 
@@ -77,6 +81,8 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
     private boolean deployM = false;
     private boolean deployC = false;
     private boolean deployV = false;
+    private boolean deployA = false;
+    private boolean deployI = false;
 
     private Player p;
     private Vector<Minefield> deployedMinefields = new Vector<Minefield>();
@@ -134,7 +140,23 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         butV.addActionListener(this);
         butV.setActionCommand(DEPLOY_MINE_VIBRA);
         butV.setEnabled(false);
+        
+        butA = new Button(
+                Messages
+                        .getString(
+                                "DeploymentDisplay.buttonActive", new Object[] { new Integer(p.getNbrMFActive()) })); //$NON-NLS-1$
+        butA.addActionListener(this);
+        butA.setActionCommand(DEPLOY_MINE_ACTIVE);
+        butA.setEnabled(false);
 
+        butI = new Button(
+                Messages
+                        .getString(
+                                "DeploymentDisplay.buttonInferno", new Object[] { new Integer(p.getNbrMFInferno()) })); //$NON-NLS-1$
+        butI.addActionListener(this);
+        butI.setActionCommand(DEPLOY_MINE_INFERNO);
+        butI.setEnabled(false);
+        
         butDone = new Button(Messages.getString("DeployMinefieldDisplay.Done")); //$NON-NLS-1$
         butDone.addActionListener(this);
         butDone.setEnabled(false);
@@ -145,6 +167,8 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         panButtons.add(butM);
         panButtons.add(butC);
         panButtons.add(butV);
+        panButtons.add(butA);
+        panButtons.add(butI);
         // panButtons.add(butSpace);
         // panButtons.add(butSpace1);
         // panButtons.add(butSpace2);
@@ -196,6 +220,8 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         setConventionalEnabled(p.getNbrMFConventional());
         setCommandEnabled(p.getNbrMFCommand());
         setVibrabombEnabled(p.getNbrMFVibra());
+        setActiveEnabled(p.getNbrMFActive());
+        setInfernoEnabled(p.getNbrMFInferno());
         if (!p.hasMinefields()) {
             butDone.setEnabled(true);
         }
@@ -220,6 +246,8 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         setConventionalEnabled(0);
         setCommandEnabled(0);
         setVibrabombEnabled(0);
+        setActiveEnabled(0);
+        setInfernoEnabled(0);
 
         butDone.setEnabled(false);
         butUnload.setEnabled(false);
@@ -241,39 +269,86 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
                         deployM = true;
                         deployC = false;
                         deployV = false;
+                        deployA = false;
+                        deployI = false;
                         p.setNbrMFConventional(p.getNbrMFConventional() + 1);
                         break;
                     case (Minefield.TYPE_COMMAND_DETONATED):
                         deployM = false;
                         deployC = true;
                         deployV = false;
+                        deployA = false;
+                        deployI = false;
                         p.setNbrMFCommand(p.getNbrMFCommand() + 1);
                         break;
                     case (Minefield.TYPE_VIBRABOMB):
                         deployM = false;
                         deployC = false;
                         deployV = true;
+                        deployA = false;
+                        deployI = false;
                         p.setNbrMFVibra(p.getNbrMFVibra() + 1);
+                        break;
+                    case (Minefield.TYPE_ACTIVE):
+                        deployM = false;
+                        deployC = false;
+                        deployV = false;
+                        deployA = true;
+                        deployI = false;
+                        p.setNbrMFActive(p.getNbrMFActive() + 1);
+                        break;
+                    case (Minefield.TYPE_INFERNO):
+                        deployM = false;
+                        deployC = false;
+                        deployV = false;
+                        deployA = false;
+                        deployI = true;
+                        p.setNbrMFInferno(p.getNbrMFInferno() + 1);
                         break;
                 }
             }
         } else {
             Minefield mf;
-
-            if (deployM) {
-                mf = Minefield.createConventionalMF(coords, p.getId());
+            if (deployM) {        	
+            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                mfd.setVisible(true);
+                //              Hack warning...
+                clientgui.bv.stopScrolling();
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_CONVENTIONAL, mfd.getDensity());
                 p.setNbrMFConventional(p.getNbrMFConventional() - 1);
             } else if (deployC) {
-                mf = Minefield.createCommandDetonatedMF(coords, p.getId());
+            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                mfd.setVisible(true);
+                //              Hack warning...
+                clientgui.bv.stopScrolling();
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_COMMAND_DETONATED, mfd.getDensity());
                 p.setNbrMFCommand(p.getNbrMFCommand() - 1);
+            } else if (deployA) {
+            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                mfd.setVisible(true);
+                //              Hack warning...
+                clientgui.bv.stopScrolling();
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_ACTIVE, mfd.getDensity());
+                p.setNbrMFActive(p.getNbrMFActive() - 1);
+            } else if (deployI) {
+            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                mfd.setVisible(true);
+                //              Hack warning...
+                clientgui.bv.stopScrolling();
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_INFERNO, mfd.getDensity());
+                p.setNbrMFInferno(p.getNbrMFInferno() - 1);
             } else if (deployV) {
+            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                mfd.setVisible(true);
+                //              Hack warning...
+                clientgui.bv.stopScrolling();
                 VibrabombSettingDialog vsd = new VibrabombSettingDialog(
                         clientgui.frame);
                 vsd.setVisible(true);
 
                 // Hack warning...
                 clientgui.bv.stopScrolling();
-                mf = Minefield.createVibrabombMF(coords, p.getId(), vsd
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_VIBRABOMB, mfd.getDensity(), vsd
                         .getSetting());
                 p.setNbrMFVibra(p.getNbrMFVibra() - 1);
             } else {
@@ -285,13 +360,16 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         }
 
         if (p.getNbrMFConventional() == 0 && p.getNbrMFCommand() == 0
-                && p.getNbrMFVibra() == 0) {
+                && p.getNbrMFVibra() == 0 && p.getNbrMFActive() == 0 && p.getNbrMFInferno() == 0) {
             butDone.setEnabled(true);
         }
 
         setConventionalEnabled(p.getNbrMFConventional());
         setCommandEnabled(p.getNbrMFCommand());
         setVibrabombEnabled(p.getNbrMFVibra());
+        setActiveEnabled(p.getNbrMFActive());
+        setInfernoEnabled(p.getNbrMFInferno());
+
 
         if (p.getNbrMFConventional() == 0) {
             deployM = false;
@@ -301,6 +379,12 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         }
         if (p.getNbrMFVibra() == 0) {
             deployV = false;
+        }
+        if (p.getNbrMFActive() == 0) {
+            deployA = false;
+        }
+        if (p.getNbrMFInferno() == 0) {
+            deployI = false;
         }
 
     }
@@ -397,16 +481,36 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             deployM = true;
             deployC = false;
             deployV = false;
+            deployA = false;
+            deployI = false;
         }
         if (ev.getActionCommand().equals(DEPLOY_MINE_COM)) {
             deployM = false;
             deployC = true;
             deployV = false;
+            deployA = false;
+            deployI = false;
         }
         if (ev.getActionCommand().equals(DEPLOY_MINE_VIBRA)) {
             deployM = false;
             deployC = false;
             deployV = true;
+            deployA = false;
+            deployI = false;
+        }
+        if (ev.getActionCommand().equals(DEPLOY_MINE_ACTIVE)) {
+            deployM = false;
+            deployC = false;
+            deployV = false;
+            deployA = true;
+            deployI = false;
+        }
+        if (ev.getActionCommand().equals(DEPLOY_MINE_INFERNO)) {
+            deployM = false;
+            deployC = false;
+            deployV = false;
+            deployA = false;
+            deployI = true;
         }
     } // End public void actionPerformed(ActionEvent ev)
 
@@ -447,6 +551,23 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
                                 "DeploymentDisplay.buttonVibrabomb", new Object[] { new Integer(nbr) })); //$NON-NLS-1$
         butV.setEnabled(nbr > 0);
         clientgui.getMenuBar().setDeployVibrabombEnabled(nbr);
+    }
+    
+    private void setActiveEnabled(int nbr) {
+        butA
+                .setLabel(Messages
+                        .getString(
+                                "DeploymentDisplay.buttonActive", new Object[] { new Integer(nbr) })); //$NON-NLS-1$
+        butA.setEnabled(nbr > 0);
+        clientgui.getMenuBar().setDeployActiveEnabled(nbr);
+    }
+    private void setInfernoEnabled(int nbr) {
+        butI
+                .setLabel(Messages
+                        .getString(
+                                "DeploymentDisplay.buttonInferno", new Object[] { new Integer(nbr) })); //$NON-NLS-1$
+        butI.setEnabled(nbr > 0);
+        clientgui.getMenuBar().setDeployInfernoEnabled(nbr);
     }
 
     /**
