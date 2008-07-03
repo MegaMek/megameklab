@@ -4905,10 +4905,10 @@ public class Server implements Runnable {
                         // infantry otherwise would get double damage
                         // when moving from clear into mined woods
                         entity.setPosition(curPos);
-                        if (isOnGround) {
+                        if (isOnGround && mf.getType() != Minefield.TYPE_ACTIVE) {
                             addReport(enterMinefield(entity, mf, lastPos, curPos, true, mf.getTrigger()));
                         } else if (mf.getType() == Minefield.TYPE_ACTIVE) {
-                            addReport(enterMinefield(entity, mf, lastPos, curPos, true, 2));
+                            addReport(enterMinefield(entity, mf, lastPos, curPos, true, 9));
                         }
                         // set original position again.
                         //only do this if the entity is still standing. Otherwise, it will move units
