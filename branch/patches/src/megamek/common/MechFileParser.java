@@ -54,6 +54,11 @@ import megamek.common.loaders.MtfFile;
 import megamek.common.loaders.TdbFile;
 import megamek.common.preference.PreferenceManager;
 import megamek.common.util.BuildingBlock;
+import megamek.common.weapons.ISERPPC;
+import megamek.common.weapons.ISHeavyPPC;
+import megamek.common.weapons.ISLightPPC;
+import megamek.common.weapons.ISPPC;
+import megamek.common.weapons.ISSnubNosePPC;
 
 /*
  * Switches between the various type-specific parsers depending on suffix
@@ -282,8 +287,20 @@ public class MechFileParser {
 
                     // check location
                     if (mWeapon.getLocation() == m.getLocation()) {
-                        m.setLinked(mWeapon);
-                        break;
+                        
+                        if ( (m.getType().getInternalName().equals("ISPPCCapacitor") 
+                                && mWeapon.getType() instanceof ISPPC)
+                                || (m.getType().getInternalName().equals("ISLightPPCCapacitor") 
+                                        && mWeapon.getType() instanceof ISLightPPC)
+                                || (m.getType().getInternalName().equals("ISHeavyPPCCapacitor") 
+                                        && mWeapon.getType() instanceof ISHeavyPPC)
+                                || (m.getType().getInternalName().equals("ISERPPCCapacitor") 
+                                        && mWeapon.getType() instanceof ISERPPC) 
+                                || (m.getType().getInternalName().equals("ISSNPPCCapacitor") 
+                                        && mWeapon.getType() instanceof ISSnubNosePPC)) {
+                            m.setLinked(mWeapon);
+                            break;
+                        }
                     }
                 }
 

@@ -1167,12 +1167,18 @@ public class WeaponAttackAction extends AbstractAttackAction implements
 
         // ammo to-hit modifier
         if (te != null
-                && te.getMovementMode() == IEntityMovementMode.VTOL
+                && ( te.getMovementMode() == IEntityMovementMode.VTOL
+                        || te.getMovementMode() == IEntityMovementMode.AERODYNE
+                        || te.getMovementMode() == IEntityMovementMode.AIRMECH
+                        || te.getMovementMode() == IEntityMovementMode.AREOSPACE
+                        || te.getMovementMode() == IEntityMovementMode.SPHEROID
+                        || te.getMovementMode() == IEntityMovementMode.WIGE )
                 && atype != null
                 && (((atype.getAmmoType() == AmmoType.T_AC_LBX 
                         || atype.getAmmoType() == AmmoType.T_AC_LBX_THB
                         || atype.getAmmoType() == AmmoType.T_SBGAUSS) 
-                        && atype.getMunitionType() == AmmoType.M_CLUSTER) 
+                        && ( atype.getMunitionType() == AmmoType.M_CLUSTER
+                            || atype.getMunitionType() == AmmoType.M_FLAK) )
                         || atype.getAmmoType() == AmmoType.T_HAG)
                 && te.getElevation() > 0
                 && te.getElevation() > game.getBoard().getHex(te.getPosition())
@@ -1180,8 +1186,9 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                 && te.getElevation() != game.getBoard()
                         .getHex(te.getPosition()).terrainLevel(
                                 Terrains.BRIDGE_ELEV)) {
-            toHit.addModifier(-3, "flak to-hit modifier");
-        } else if (usesAmmo && atype.getToHitModifier() != 0) {
+            toHit.addModifier(-2, "flak to-hit modifier");
+        } 
+        if (usesAmmo && atype.getToHitModifier() != 0) {
             toHit.addModifier(atype.getToHitModifier(),
                     "ammunition to-hit modifier");
         }
