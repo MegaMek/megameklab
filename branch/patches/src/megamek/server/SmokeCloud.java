@@ -43,7 +43,7 @@ public class SmokeCloud{
     }
     
     public void setSmokeLevel(int level){
-        this.smokeLevel = level;
+        this.smokeLevel = Math.min(2, level);
     }
     
     public int getSmokeLevel(){
