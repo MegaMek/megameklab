@@ -33,8 +33,10 @@ import megamek.client.event.BoardViewEvent;
 import megamek.client.event.BoardViewListener;
 import megamek.common.Coords;
 import megamek.common.IGame;
+import megamek.common.IHex;
 import megamek.common.Minefield;
 import megamek.common.Player;
+import megamek.common.Terrains;
 import megamek.common.event.GameListener;
 import megamek.common.event.GameTurnChangeEvent;
 import megamek.common.util.Distractable;
@@ -258,6 +260,13 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             return;
         }
 
+        //check if this is a water hex
+        boolean sea = false;
+        IHex hex = client.game.getBoard().getHex(coords);
+        if(hex.containsTerrain(Terrains.WATER)) {
+        	sea = true;
+        }
+        
         if (client.game.containsMinefield(coords)) {
             Minefield mf = client.game.getMinefields(coords).elementAt(0);
             if (mf.getPlayerId() == client.getLocalPlayer().getId()) {
@@ -309,19 +318,34 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             }
         } else {
             Minefield mf;
-            if (deployM) {        	
+            if(sea && !(deployM || deployI)) {
+        		new AlertDialog(
+                        clientgui.frame,
+                        Messages
+                                .getString("DeployMinefieldDisplay.IllegalPlacement"), Messages.getString("DeployMinefieldDisplay.WaterPlacement")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+                return;
+        	}    
+        	int depth = 0;
+            if (deployM) {        
+            	if(sea) {
+            		SeaMineDepthDialog smd = new SeaMineDepthDialog(clientgui.frame, hex.depth());
+            		smd.setVisible(true);
+            		//              Hack warning...
+            		clientgui.bv.stopScrolling();
+            		depth = smd.getDepth();
+            	}
             	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
                 mfd.setVisible(true);
                 //              Hack warning...
                 clientgui.bv.stopScrolling();
-                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_CONVENTIONAL, mfd.getDensity());
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_CONVENTIONAL, mfd.getDensity(), sea, depth);
                 p.setNbrMFConventional(p.getNbrMFConventional() - 1);
             } else if (deployC) {
             	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
                 mfd.setVisible(true);
                 //              Hack warning...
                 clientgui.bv.stopScrolling();
-                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_COMMAND_DETONATED, mfd.getDensity());
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_COMMAND_DETONATED, mfd.getDensity(), sea, depth);
                 p.setNbrMFCommand(p.getNbrMFCommand() - 1);
             } else if (deployA) {
             	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
@@ -335,7 +359,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
                 mfd.setVisible(true);
                 //              Hack warning...
                 clientgui.bv.stopScrolling();
-                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_INFERNO, mfd.getDensity());
+                mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_INFERNO, mfd.getDensity(), sea, depth);
                 p.setNbrMFInferno(p.getNbrMFInferno() - 1);
             } else if (deployV) {
             	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);

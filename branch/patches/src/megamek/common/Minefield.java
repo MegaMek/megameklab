@@ -67,6 +67,7 @@ public class Minefield implements Serializable, Cloneable {
     private int setting = 0;
     private boolean oneUse = false;
     private boolean sea = false;
+    private int depth = 0;
 
     private Minefield() {
     }
@@ -75,15 +76,15 @@ public class Minefield implements Serializable, Cloneable {
     	return createMinefield(coords, playerId, type, density, 0);
     }
     
-    public static Minefield createMinefield(Coords coords, int playerId, int type, int density, boolean sea) {
-    	return createMinefield(coords, playerId, type, density, 0, sea);
+    public static Minefield createMinefield(Coords coords, int playerId, int type, int density, boolean sea, int depth) {
+    	return createMinefield(coords, playerId, type, density, 0, sea, depth);
     }
     
     public static Minefield createMinefield(Coords coords, int playerId, int type, int density, int setting) {
-    	return createMinefield(coords, playerId, type, density, setting, false);
+    	return createMinefield(coords, playerId, type, density, setting, false, 0);
     }
 
-    public static Minefield createMinefield(Coords coords, int playerId, int type, int density, int setting, boolean sea) {
+    public static Minefield createMinefield(Coords coords, int playerId, int type, int density, int setting, boolean sea, int depth) {
     	Minefield mf = new Minefield();
     	
     	mf.type = type;
@@ -92,6 +93,7 @@ public class Minefield implements Serializable, Cloneable {
     	mf.playerId = playerId;
     	mf.setting = setting;
     	mf.sea = sea;
+    	mf.depth = depth;
     	return mf;
     }
     
@@ -112,6 +114,7 @@ public class Minefield implements Serializable, Cloneable {
         mf.oneUse = oneUse;
         mf.type = type;
         mf.sea = sea;
+        mf.depth = depth;
 
         return mf;
     }
@@ -172,6 +175,10 @@ public class Minefield implements Serializable, Cloneable {
     public int getType() {
         return type;
     }
+    
+    public int getDepth() {
+    	return depth;
+    }
 
     public String getName() {
         return names[getType()];
@@ -186,9 +193,8 @@ public class Minefield implements Serializable, Cloneable {
      * @param bonus - an <code>int</code> indicating the modifier to the target roll for reduction
      * @param direct - a <code>boolean</code> indicating whether this reduction was due to a direct explosion or
      *                    a result of another minefield in the same hex explodin
-     * @return - <code>true</code> if this reduction cleared the minefield
      */
-    public boolean checkReduction(int bonus, boolean direct) {
+    public void checkReduction(int bonus, boolean direct) {
     	boolean isReduced = ((Compute.d6(2) + bonus) >= getTrigger()) || (direct && getType() != Minefield.TYPE_CONVENTIONAL && getType() != Minefield.TYPE_INFERNO);
     	if(getType() == Minefield.TYPE_CONVENTIONAL && getDensity() < 10) {
     		isReduced = false;
@@ -196,10 +202,5 @@ public class Minefield implements Serializable, Cloneable {
     	if(isReduced) {
     		setDensity(getDensity() - 5);
     	}    
-    	if (getDensity() < 5 || getType() == Minefield.TYPE_EMP) {
-    		return true;
-    	} else { 
-    		return false;
-    	}
     }
 }

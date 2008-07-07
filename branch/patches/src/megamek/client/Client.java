@@ -784,7 +784,7 @@ public class Client implements IClientCommandHandler {
     protected void receiveSendingMinefields(Packet packet) {
         game.setMinefields((Vector<Minefield>) packet.getObject(0));
     }
-
+    
     protected void receiveRevealMinefield(Packet packet) {
         game.addMinefield((Minefield) packet.getObject(0));
     }

@@ -964,11 +964,17 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                 } else if (nbrMfs == 1) {
                     switch (mf.getType()) {
                         case (Minefield.TYPE_CONVENTIONAL):
-                            drawCenteredString(
-                                    Messages
-                                            .getString("BoardView1.Conventional") + mf.getDensity() + ")", //$NON-NLS-1$
-                                    p.x, p.y + (int) (51 * scale),
-                                    font_minefield, backGraph);
+                        	drawCenteredString(
+                        			Messages
+                        			.getString("BoardView1.Conventional") + mf.getDensity() + ")", //$NON-NLS-1$
+                        			p.x, p.y + (int) (51 * scale),
+                        			font_minefield, backGraph);
+                        	if(mf.isSeaBased()) {
+                        		drawCenteredString(
+                        				"Depth: " + mf.getDepth() + "", //$NON-NLS-1$ //$NON-NLS-2$
+                        				p.x, p.y + (int) (60 * scale),
+                        				font_minefield, backGraph);
+                        	}
                             break;
                         case (Minefield.TYPE_INFERNO):
                             drawCenteredString(
