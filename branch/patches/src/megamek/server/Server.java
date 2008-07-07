@@ -6406,6 +6406,8 @@ public class Server implements Runnable {
 	        }
         }
         
+        sendChangedMines(c);
+        
         //now remove any mines that have been reduced below a density of 5
         //FIXME: can't get this to work without concurrent mod exceptions
         Enumeration minefields = game.getMinefields(c).elements();
@@ -19427,6 +19429,20 @@ public class Server implements Runnable {
      */
     public void sendChangedHex(Coords coords) {
         send(createHexChangePacket(coords, game.getBoard().getHex(coords)));
+    }
+    
+    /**
+     * Creates a packet containing a vector of mines.
+     */
+    private Packet createMineChangePacket(Coords coords) {
+        return new Packet(Packet.COMMAND_SENDING_MINEFIELDS, game.getMinefields(coords));
+    }
+    
+    /**
+     * Sends notification to clients that the specified hex has changed.
+     */
+    public void sendChangedMines(Coords coords) {
+        send(createMineChangePacket(coords));
     }
 
     public void sendVisibilityIndicator(Entity e) {
