@@ -180,6 +180,12 @@ public interface IGame {
     public abstract void setMinefields(Vector<Minefield> minefields);
 
     /**
+     * Resets the minefield density for a given <code>Vector</code> of minefields
+     * @param newMinefields
+     */
+    public abstract void resetMinefieldDensity(Vector<Minefield> newMinefields);
+    
+    /**
      * Removes the specified minefield
      * 
      * @param mf minefield to remove

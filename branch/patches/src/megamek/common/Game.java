@@ -220,6 +220,19 @@ public class Game implements Serializable, IGame {
         }
         processGameEvent(new GameBoardChangeEvent(this));
     }
+    
+    public void resetMinefieldDensity(Vector<Minefield> newMinefields) {
+    	if(newMinefields.size() < 1) {
+    		return;
+    	}
+    	Vector<Minefield> mfs = minefields.get(newMinefields.firstElement().getCoords());
+    	mfs.clear();
+    	for (int i = 0; i < newMinefields.size(); i++) {
+            Minefield mf = newMinefields.elementAt(i);
+            addMinefieldHelper(mf);
+        }
+    	processGameEvent(new GameBoardChangeEvent(this));  	
+    }
 
     protected void addMinefieldHelper(Minefield mf) {
         Vector<Minefield> mfs = minefields.get(mf.getCoords());

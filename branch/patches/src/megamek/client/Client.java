@@ -792,6 +792,18 @@ public class Client implements IClientCommandHandler {
     protected void receiveRemoveMinefield(Packet packet) {
         game.removeMinefield((Minefield) packet.getObject(0));
     }
+    
+    @SuppressWarnings("unchecked")
+    protected void receiveUpdateMinefields(Packet packet) {
+    	//only update information if you know about the minefield
+    	Vector<Minefield> newMines = new Vector<Minefield>();
+    	for(Minefield mf : (Vector<Minefield>)packet.getObject(0)) {
+    		if(getLocalPlayer().containsMinefield(mf))
+    			newMines.add(mf);	
+    	}
+    	if(newMines.size() > 0)
+    		game.resetMinefieldDensity((Vector<Minefield>) newMines);
+    }
 
     @SuppressWarnings("unchecked")
     protected void receiveBuildingUpdateCF(Packet packet) {
@@ -998,6 +1010,9 @@ public class Client implements IClientCommandHandler {
                 break;
             case Packet.COMMAND_SENDING_MINEFIELDS:
                 receiveSendingMinefields(c);
+                break;
+            case Packet.COMMAND_UPDATE_MINEFIELDS:
+                receiveUpdateMinefields(c);
                 break;
             case Packet.COMMAND_DEPLOY_MINEFIELDS:
                 receiveDeployMinefields(c);

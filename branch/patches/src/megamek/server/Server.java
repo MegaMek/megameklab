@@ -6313,6 +6313,10 @@ public class Server implements Runnable {
         return vPhaseReport;
     }
 
+    private boolean enterMinefield(Entity entity, Coords c, int curElev, boolean isOnGround, Vector<Report> vMineReport) {
+    	return enterMinefield(entity, c, curElev, isOnGround, vMineReport, -1);
+    }
+    
     /**
      * When an entity enters any minefield, except a vibrabomb.
      * 
@@ -6323,7 +6327,7 @@ public class Server implements Runnable {
      * @param resolvePSRNow
      * @param hitMod
      */
-    private boolean enterMinefield(Entity entity, Coords c, int curElev, boolean isOnGround, Vector<Report> vMineReport) {
+    private boolean enterMinefield(Entity entity, Coords c, int curElev, boolean isOnGround, Vector<Report> vMineReport, int target) {
         Report r;
         boolean trippedMine = false;
         Vector<Minefield> explodedMines = new Vector<Minefield>();
@@ -6346,15 +6350,17 @@ public class Server implements Runnable {
 	        }
 	        
 	        //set the target number
-	        int target = mf.getTrigger();
-	        if(mf.getType() == Minefield.TYPE_ACTIVE) {
-	        	target = 9;
-	        }
-	        if(entity instanceof Infantry) {
-	        	target += 1;
-	        }
-	        if(entity.getMovementMode() == IEntityMovementMode.HOVER || entity.getMovementMode() == IEntityMovementMode.WIGE) {
-	        	target = 12;
+	        if(target == -1) {
+	        	target = mf.getTrigger();
+		        if(mf.getType() == Minefield.TYPE_ACTIVE) {
+		        	target = 9;
+		        }
+		        if(entity instanceof Infantry) {
+		        	target += 1;
+		        }
+		        if(entity.getMovementMode() == IEntityMovementMode.HOVER || entity.getMovementMode() == IEntityMovementMode.WIGE) {
+		        	target = 12;
+		        }
 	        }
 	        
 	        if (Compute.d6(2) < target) {
@@ -6406,10 +6412,10 @@ public class Server implements Runnable {
 	        }
         }
         
-        sendChangedMines(c);
+        if(trippedMine)
+        	sendChangedMines(c);
         
         //now remove any mines that have been reduced below a density of 5
-        //FIXME: can't get this to work without concurrent mod exceptions
         Enumeration minefields = game.getMinefields(c).elements();
         while (minefields.hasMoreElements()) {
             Minefield minefield = (Minefield)minefields.nextElement();
@@ -17977,7 +17983,7 @@ public class Server implements Runnable {
         
         //if there is a minefield in this hex, then the mech may set it off
         if (game.containsMinefield(fallPos)) {
-        	enterMinefield(entity, fallPos, newElevation, true, vPhaseReport);
+        	enterMinefield(entity, fallPos, newElevation, true, vPhaseReport, 12);
         }
         
         return vPhaseReport;
@@ -19435,7 +19441,7 @@ public class Server implements Runnable {
      * Creates a packet containing a vector of mines.
      */
     private Packet createMineChangePacket(Coords coords) {
-        return new Packet(Packet.COMMAND_SENDING_MINEFIELDS, game.getMinefields(coords));
+        return new Packet(Packet.COMMAND_UPDATE_MINEFIELDS, game.getMinefields(coords));
     }
     
     /**
