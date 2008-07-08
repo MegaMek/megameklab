@@ -708,14 +708,14 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
                         case (Minefield.TYPE_INFERNO):
                             drawCenteredString(
                                     Messages
-                                            .getString("BoardView1.Thunder-Inf") + mf.getDensity() + ")", //$NON-NLS-1$ //$NON-NLS-2$
+                                            .getString("BoardView1.Inferno") + mf.getDensity() + ")", //$NON-NLS-1$ //$NON-NLS-2$
                                     p.x, p.y + (int) (51 * scale),
                                     font_minefield, g);
                             break;
                         case (Minefield.TYPE_ACTIVE):
                             drawCenteredString(
                                     Messages
-                                            .getString("BoardView1.Thunder-Actv") + mf.getDensity() + ")", //$NON-NLS-1$ //$NON-NLS-2$
+                                            .getString("BoardView1.Active") + mf.getDensity() + ")", //$NON-NLS-1$ //$NON-NLS-2$
                                     p.x, p.y + (int) (51 * scale),
                                     font_minefield, g);
                             break;
