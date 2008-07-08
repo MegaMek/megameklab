@@ -4154,6 +4154,7 @@ public class Server implements Runnable {
         int curVTOLElevation = entity.getElevation();
         int startElevation = entity.getElevation();
         int curElevation = entity.getElevation();
+        int lastElevation = entity.getElevation();
         // if the entity already used some MPs,
         // it previously tried to get up and fell,
         // and then got another turn. set moveType
@@ -4894,8 +4895,9 @@ public class Server implements Runnable {
             if (!i.hasMoreElements() && !firstStep) {
                 checkExtremeGravityMovement(entity, step, curPos, cachedGravityLimit);
             }
-            // check for minefields.
-            if (!lastPos.equals(curPos)) {
+            // check for minefields. have to check both new hex and new elevation 
+            // VTOLs may land and submarines may rise or lower into a minefield
+            if (!lastPos.equals(curPos) ||  lastElevation != curElevation) {
             	boolean boom = false;
             	boolean isOnGround = !i.hasMoreElements();
             	isOnGround |= step.getMovementType() != IEntityMovementType.MOVE_JUMP;
@@ -5280,6 +5282,7 @@ public class Server implements Runnable {
 
             // update lastPos, prevStep, prevFacing & prevHex
             lastPos = new Coords(curPos);
+            lastElevation = curElevation;
             prevStep = step;
             /*
              * Bug 754610: Revert fix for bug 702735. if (prevHex != null &&
@@ -6354,6 +6357,11 @@ public class Server implements Runnable {
     private boolean enterMinefield(Entity entity, Coords c, int curElev, boolean isOnGround, Vector<Report> vMineReport, int target) {
         Report r;
         boolean trippedMine = false;
+        //flying units cannot trip a mine
+        if(curElev > 0) {
+        	return false;
+        }
+        
         //loop through mines in this hex
         for(Minefield mf : game.getMinefields(c)) {
         	
@@ -6469,6 +6477,20 @@ public class Server implements Runnable {
     		//update the mines at these coords
     		sendChangedMines(c);
     	}  	
+    }
+    
+    /**
+     * Clear any detonated mines at these coords
+     */
+    private void clearDetonatedMines(Coords c, int target) {
+    	
+    	Enumeration minefields = game.getMinefields(c).elements();
+    	while (minefields.hasMoreElements()) {
+    		Minefield minefield = (Minefield)minefields.nextElement();
+    		if(minefield.hasDetonated() && Compute.d6(2) >= target) {
+    			removeMinefield(minefield);
+    		}
+    	}
     }
     
     
@@ -16834,6 +16856,15 @@ public class Server implements Runnable {
             }
 
         }
+        
+        if(game.containsMinefield(crashPos)) {
+        	//may set off any minefields in the hex
+        	enterMinefield(en, crashPos, 0, true, vDesc, 7);
+        	//it may also clear any minefields that it detonated
+        	clearDetonatedMines(crashPos, 5); 
+        	resetMines();
+        }
+        
         return vDesc;
 
     }
