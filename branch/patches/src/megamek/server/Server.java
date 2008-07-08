@@ -4896,27 +4896,38 @@ public class Server implements Runnable {
             }
             // check for minefields.
             if (!lastPos.equals(curPos)) {
-                addReport(checkVibrabombs(entity, curPos, false, lastPos, curPos));
-                if (game.containsMinefield(curPos)) {
-                	boolean isOnGround = !i.hasMoreElements();
-                	isOnGround |= step.getMovementType() != IEntityMovementType.MOVE_JUMP;
-                	isOnGround &= step.getElevation() < 1;
+            	boolean boom = false;
+            	boolean isOnGround = !i.hasMoreElements();
+            	isOnGround |= step.getMovementType() != IEntityMovementType.MOVE_JUMP;
+            	isOnGround &= step.getElevation() < 1;
+            	if(isOnGround)
+            		boom = checkVibrabombs(entity, curPos, false, lastPos, curPos, vPhaseReport);
+                if (game.containsMinefield(curPos)) {               	
                 	// set the new position temporarily, because
                 	// infantry otherwise would get double damage
                 	// when moving from clear into mined woods
                 	entity.setPosition(curPos);
                 	if(enterMinefield(entity, curPos, step.getElevation(), isOnGround, vPhaseReport)) {
-                		//resolve any piloting rolls from damage and set fell during movement
-                		//so that entity will get another chance to move with any motive damage 
-                		//taken account of (functions the same as MASC failure)
+                		//resolve any piloting rolls from damage and 
                 		addReport(resolvePilotingRolls(entity));
-                		game.resetPSRs(entity);
-                		md.clear();
-                		fellDuringMovement = true;
+                		game.resetPSRs(entity);                		
+                		boom = true;
                 	} 
                 	if(wasProne || !entity.isProne()) {
                 		entity.setPosition(lastPos);
                 	}
+                }
+                //did anything go boom?
+                if(boom) {
+                	//set fell during movement so that entity will get another chance to move with any motive damage 
+            		//taken account of (functions the same as MASC failure)
+                	//only do this if they had more steps
+                	if(i.hasMoreElements()) {
+                		md.clear();
+                		fellDuringMovement = true;
+                	}
+                	//reset mines if anything detonated
+                	resetMines();
                 }
             }
 
@@ -6313,26 +6324,41 @@ public class Server implements Runnable {
         return vPhaseReport;
     }
 
+    /**
+     * Check for any detonations when an entity enters a minefield, except a vibrabomb.
+     * 
+     * @param entity - the <code>entity</code> who entered the minefield
+     * @param c - the <code>Coords</code> of the minefield
+     * @param curElev - an <code>int</code> for the elevation of the entity entering the minefield (used for underwater sea mines)
+     * @param isOnGround - <code>true</code> if the entity is not in the middle of a jump
+     * @param vMineReport - the report vector that reports will be added to
+     * @return - <code>true</code> if the entity set off any mines
+     */
     private boolean enterMinefield(Entity entity, Coords c, int curElev, boolean isOnGround, Vector<Report> vMineReport) {
     	return enterMinefield(entity, c, curElev, isOnGround, vMineReport, -1);
     }
     
     /**
-     * When an entity enters any minefield, except a vibrabomb.
+     * Check for any detonations when an entity enters a minefield, except a vibrabomb.
      * 
-     * @param entity
-     * @param mf
-     * @param src
-     * @param dest
-     * @param resolvePSRNow
-     * @param hitMod
+     * @param entity - the <code>entity</code> who entered the minefield
+     * @param c - the <code>Coords</code> of the minefield
+     * @param curElev - an <code>int</code> for the elevation of the entity entering the minefield (used for underwater sea mines)
+     * @param isOnGround - <code>true</code> if the entity is not in the middle of a jump
+     * @param vMineReport - the report vector that reports will be added to
+     * @param target - the <code>int</code> target number for detonation. If this will be determined by density, it should be -1
+     * @return - <code>true</code> if the entity set off any mines
      */
     private boolean enterMinefield(Entity entity, Coords c, int curElev, boolean isOnGround, Vector<Report> vMineReport, int target) {
         Report r;
         boolean trippedMine = false;
-        Vector<Minefield> explodedMines = new Vector<Minefield>();
         //loop through mines in this hex
         for(Minefield mf : game.getMinefields(c)) {
+        	
+        	//vibrabombs are handled differently
+        	if(mf.getType() == Minefield.TYPE_VIBRABOMB) {
+        		continue;
+        	}
         	
 	        //if we are in the water, then the sea mine will only blow up if at the right depth
 	        if(game.getBoard().getHex(mf.getCoords()).containsTerrain(Terrains.WATER)) {
@@ -6369,7 +6395,8 @@ public class Server implements Runnable {
 	        
 	        //apply damage
 	        trippedMine = true;
-	        explodedMines.add(mf);
+	        //explodedMines.add(mf);
+	        mf.setDetonated(true);
 	        if(mf.getType() == Minefield.TYPE_INFERNO) {
 	        	//report hitting an inferno mine
 	        	r = new Report(2155);
@@ -6396,51 +6423,69 @@ public class Server implements Runnable {
 	        revealMinefield(mf);
         }
         
-        //now check for indirect reductions
-        for(Minefield mfExploded : explodedMines) {
-	        for (Minefield mfOther : game.getMinefields(c)) {
-	        	if(mfOther.equals(mfExploded))
-	        		continue;
-	        	int bonus = 0;
-	        	if(mfOther.getDensity() > mfExploded.getDensity()) {
-	        		bonus = 1;
-	        	}
-	        	if(mfOther.getDensity() < mfExploded.getDensity()) {
-	        		bonus = -1;
-	        	}
-	        	mfOther.checkReduction(bonus, false);
-	        }
-        }
-        
-        if(trippedMine)
-        	sendChangedMines(c);
-        
-        //now remove any mines that have been reduced below a density of 5
-        Enumeration minefields = game.getMinefields(c).elements();
-        while (minefields.hasMoreElements()) {
-            Minefield minefield = (Minefield)minefields.nextElement();
-            if(minefield.getDensity() < 5)
-            	removeMinefield(minefield);
-        }
-        
         return trippedMine;
     }
     
     /**
+     * cycle through all mines on the board, check to see whether they should do collateral damage
+     * to other mines due to detonation, resets detonation to false, and removes any mines whose density has
+     * been reduced to zero.
+     */
+    private void resetMines() {
+    	
+    	Enumeration mineLoc = game.getMinedCoords();
+    	while(mineLoc.hasMoreElements()) {
+    		Coords c = (Coords)mineLoc.nextElement();
+    		Enumeration minefields = game.getMinefields(c).elements();
+    		while (minefields.hasMoreElements()) {
+                Minefield minefield = (Minefield)minefields.nextElement();
+                if(minefield.hasDetonated()) {
+                	minefield.setDetonated(false);
+                	Enumeration otherMines = game.getMinefields(c).elements();
+                	while (otherMines.hasMoreElements()) {
+                        Minefield otherMine = (Minefield)otherMines.nextElement();
+        	        	if(otherMine.equals(minefield))
+        	        		continue;
+        	        	int bonus = 0;
+        	        	if(otherMine.getDensity() > minefield.getDensity()) {
+        	        		bonus = 1;
+        	        	}
+        	        	if(otherMine.getDensity() < minefield.getDensity()) {
+        	        		bonus = -1;
+        	        	}
+        	        	otherMine.checkReduction(bonus, false);
+        	        }
+                }
+    		}
+    		//cycle through a second time to see if any mines at these coords need to be removed
+    		Enumeration mines = game.getMinefields(c).elements();
+    		while (mines.hasMoreElements()) {
+    			Minefield mine = (Minefield)mines.nextElement();
+    			if(mine.getDensity() < 5)
+    				removeMinefield(mine);
+        	}
+    		//update the mines at these coords
+    		sendChangedMines(c);
+    	}  	
+    }
+    
+    
+    /**
      * Checks to see if an entity sets off any vibrabombs.
      */
-    private Vector<Report> checkVibrabombs(Entity entity, Coords coords, boolean displaced) {
-        return checkVibrabombs(entity, coords, displaced, null, null);
+    private boolean checkVibrabombs(Entity entity, Coords coords, boolean displaced, Vector<Report> vMineReport) {
+        return checkVibrabombs(entity, coords, displaced, null, null, vMineReport);
     }
 
     /**
      * Checks to see if an entity sets off any vibrabombs.
      */
-    private Vector<Report> checkVibrabombs(Entity entity, Coords coords, boolean displaced, Coords lastPos, Coords curPos) {
-        Vector<Report> vPhaseReport = new Vector<Report>();
+    private boolean checkVibrabombs(Entity entity, Coords coords, boolean displaced, Coords lastPos, Coords curPos, Vector<Report> vMineReport) {
+        
+    	boolean boom = false;
         // Only mechs can set off vibrabombs.
         if (!(entity instanceof Mech)) {
-            return vPhaseReport;
+            return boom;
         }
 
         int mass = (int) entity.getWeight();
@@ -6449,7 +6494,7 @@ public class Server implements Runnable {
 
         while (e.hasMoreElements()) {
             Minefield mf = e.nextElement();
-
+            
             // Bug 954272: Mines shouldn't work underwater, and BMRr says
             // Vibrabombs are mines
             if (game.getBoard().getHex(mf.getCoords()).containsTerrain(Terrains.WATER) && !game.getBoard().getHex(mf.getCoords()).containsTerrain(Terrains.PAVEMENT) && !game.getBoard().getHex(mf.getCoords()).containsTerrain(Terrains.ICE)) {
@@ -6469,8 +6514,8 @@ public class Server implements Runnable {
                 r.subject = entity.getId();
                 r.add(entity.getShortName(), true);
                 r.add(mf.getCoords().getBoardNum(), true);
-                vPhaseReport.add(r);
-                explodeVibrabomb(mf);
+                vMineReport.add(r);  
+                explodeVibrabomb(mf, vMineReport, false);
             }
 
             // Hack; when moving, the Mech isn't in the hex during
@@ -6480,17 +6525,25 @@ public class Server implements Runnable {
                 Report r = new Report(2160);
                 r.subject = entity.getId();
                 r.add(entity.getShortName(), true);
-                vPhaseReport.add(r);
+                vMineReport.add(r);
                 HitData hit = entity.rollHitLocation(Minefield.TO_HIT_TABLE, Minefield.TO_HIT_SIDE);
-                vPhaseReport.addAll(damageEntity(entity, hit, mf.getDensity()));
-                vPhaseReport.addAll(resolvePilotingRolls(entity, true, lastPos, curPos));
+                vMineReport.addAll(damageEntity(entity, hit, mf.getDensity()));
+                vMineReport.addAll(resolvePilotingRolls(entity, true, lastPos, curPos));
                 // we need to apply Damage now, in case the entity lost a leg,
                 // otherwise it won't get a leg missing mod if it hasn't yet
                 // moved and lost a leg, see bug 1071434 for an example
                 entity.applyDamage();
             }
+            
+            //don't check for reduction until the end or units in the same hex through
+            //movement will get the reduced damage
+            if(mf.hasDetonated()) {
+            	boom = true;
+            	mf.checkReduction(0, true);
+            }
+            
         }
-        return vPhaseReport;
+        return boom;
     }
 
     /**
@@ -6636,7 +6689,7 @@ public class Server implements Runnable {
      * @param mf
      *            The <code>Minefield</code> to explode
      */
-    private void explodeVibrabomb(Minefield mf) {
+    private void explodeVibrabomb(Minefield mf, Vector<Report> vBoomReport, boolean reduce) {
         Enumeration<Entity> targets = game.getEntities(mf.getCoords());
         Report r;
 
@@ -6650,36 +6703,37 @@ public class Server implements Runnable {
                 r = new Report(2157);
                 r.subject = entity.getId();
                 r.add(entity.getShortName(), true);
-                addReport(r);
+                vBoomReport.add(r);
                 continue;
             }
             // report hitting vibrabomb
             r = new Report(2160);
             r.subject = entity.getId();
             r.add(entity.getShortName(), true);
-            addReport(r);
+            vBoomReport.add(r);
 
-            if (mf.getType() == Minefield.TYPE_VIBRABOMB) {
-                // normal vibrabombs do all damage in one pack
-                HitData hit = entity.rollHitLocation(Minefield.TO_HIT_TABLE, Minefield.TO_HIT_SIDE);
-                addReport(damageEntity(entity, hit, mf.getDensity()));
-                addNewLines();
-            }
+            // normal vibrabombs do all damage in one pack
+            HitData hit = entity.rollHitLocation(Minefield.TO_HIT_TABLE, Minefield.TO_HIT_SIDE);
+            vBoomReport.addAll(damageEntity(entity, hit, mf.getDensity()));
+            Report.addNewline(vBoomReport);
+           
             if(entity instanceof Tank) {
-    			vPhaseReport.addAll(vehicleMotiveDamage((Tank)entity, 2));
+    			vBoomReport.addAll(vehicleMotiveDamage((Tank)entity, 2));
     		}
-            addReport(resolvePilotingRolls(entity, true, entity.getPosition(), entity.getPosition()));
+            vBoomReport.addAll(resolvePilotingRolls(entity, true, entity.getPosition(), entity.getPosition()));
             // we need to apply Damage now, in case the entity lost a leg,
             // otherwise it won't get a leg missing mod if it hasn't yet
             // moved and lost a leg, see bug 1071434 for an example
             game.resetPSRs(entity);
             entity.applyDamage();
-            addNewLines();
+            Report.addNewline(vBoomReport);
             entityUpdate(entity.getId());    
         }
         
         //check the direct reduction of mine
-    	mf.checkReduction(0, true);   
+        if(reduce)
+        	mf.checkReduction(0, true);
+    	mf.setDetonated(true);
     }
 
     /**
@@ -7393,10 +7447,14 @@ public class Server implements Runnable {
 
     private Vector<Report> doEntityDisplacementMinefieldCheck(Entity entity, Coords src, Coords dest, int elev) {
         Vector<Report> vPhaseReport = new Vector<Report>();
+        boolean boom = checkVibrabombs(entity, dest, true, vPhaseReport);
         if (game.containsMinefield(dest)) {
-        	enterMinefield(entity, dest, elev, true, vPhaseReport);
+        	boom = enterMinefield(entity, dest, elev, true, vPhaseReport) || boom;
         }
-        vPhaseReport.addAll(checkVibrabombs(entity, dest, true));
+        if(boom) {
+        	resetMines();
+        }
+        
         return vPhaseReport;
     }
 
@@ -8043,7 +8101,7 @@ public class Server implements Runnable {
                         }
                         break;
                     case Minefield.TYPE_VIBRABOMB:
-                        explodeVibrabomb(mf);
+                        explodeVibrabomb(mf, vPhaseReport, true);
                         break;
                     }
                 }
@@ -17982,8 +18040,8 @@ public class Server implements Runnable {
         game.resetPSRs(entity);
         
         //if there is a minefield in this hex, then the mech may set it off
-        if (game.containsMinefield(fallPos)) {
-        	enterMinefield(entity, fallPos, newElevation, true, vPhaseReport, 12);
+        if (game.containsMinefield(fallPos) && enterMinefield(entity, fallPos, newElevation, true, vPhaseReport, 12)) {
+        	resetMines();
         }
         
         return vPhaseReport;

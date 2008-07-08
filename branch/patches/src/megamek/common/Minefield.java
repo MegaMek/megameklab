@@ -68,6 +68,7 @@ public class Minefield implements Serializable, Cloneable {
     private boolean oneUse = false;
     private boolean sea = false;
     private int depth = 0;
+    private boolean detonated = false;
 
     private Minefield() {
     }
@@ -188,6 +189,14 @@ public class Minefield implements Serializable, Cloneable {
         return playerId;
     }
     
+    public void setDetonated(boolean b) {
+    	this.detonated = b;
+    }
+    
+    public boolean hasDetonated() {
+    	return detonated;
+    }
+    
     /**
      * check for a reduction in density
      * @param bonus - an <code>int</code> indicating the modifier to the target roll for reduction
@@ -203,4 +212,5 @@ public class Minefield implements Serializable, Cloneable {
     		setDensity(getDensity() - 5);
     	}    
     }
+    
 }

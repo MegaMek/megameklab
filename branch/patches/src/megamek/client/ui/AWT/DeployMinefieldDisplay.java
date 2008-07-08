@@ -27,6 +27,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
+import java.util.Enumeration;
 
 import megamek.client.Client;
 import megamek.client.event.BoardViewEvent;
@@ -59,6 +60,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
     public static final String DEPLOY_MINE_VIBRA = "deployMineVibra"; //$NON-NLS-1$
     public static final String DEPLOY_MINE_ACTIVE = "deployMineActive"; //$NON-NLS-1$
     public static final String DEPLOY_MINE_INFERNO = "deployMineInferno"; //$NON-NLS-1$
+    public static final String REMOVE_MINES = "removeMines"; //$NON-NLS-1$
 
     // parent game
     public ClientGUI clientgui;
@@ -76,6 +78,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
     private Button butV;
     private Button butA;
     private Button butI;
+    private Button butRemove;
     private Button butUnload;
     private Button butDone;
 
@@ -85,7 +88,8 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
     private boolean deployV = false;
     private boolean deployA = false;
     private boolean deployI = false;
-
+    private boolean remove  = false;
+    
     private Player p;
     private Vector<Minefield> deployedMinefields = new Vector<Minefield>();
 
@@ -159,6 +163,14 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         butI.setActionCommand(DEPLOY_MINE_INFERNO);
         butI.setEnabled(false);
         
+        butRemove = new Button(
+                Messages
+                        .getString(
+                                "DeploymentDisplay.buttonRemove")); //$NON-NLS-1$
+        butRemove.addActionListener(this);
+        butRemove.setActionCommand(REMOVE_MINES);
+        butRemove.setEnabled(false);
+        
         butDone = new Button(Messages.getString("DeployMinefieldDisplay.Done")); //$NON-NLS-1$
         butDone.addActionListener(this);
         butDone.setEnabled(false);
@@ -171,6 +183,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         panButtons.add(butV);
         panButtons.add(butA);
         panButtons.add(butI);
+        panButtons.add(butRemove);
         // panButtons.add(butSpace);
         // panButtons.add(butSpace1);
         // panButtons.add(butSpace2);
@@ -224,6 +237,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         setVibrabombEnabled(p.getNbrMFVibra());
         setActiveEnabled(p.getNbrMFActive());
         setInfernoEnabled(p.getNbrMFInferno());
+        setRemoveMineEnabled(true);
         if (!p.hasMinefields()) {
             butDone.setEnabled(true);
         }
@@ -250,6 +264,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         setVibrabombEnabled(0);
         setActiveEnabled(0);
         setInfernoEnabled(0);
+        setRemoveMineEnabled(false);
 
         butDone.setEnabled(false);
         butUnload.setEnabled(false);
@@ -266,57 +281,54 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         if(hex.containsTerrain(Terrains.WATER)) {
         	sea = true;
         }
-        
-        if (client.game.containsMinefield(coords)) {
-            Minefield mf = client.game.getMinefields(coords).elementAt(0);
-            if (mf.getPlayerId() == client.getLocalPlayer().getId()) {
-                butDone.setEnabled(false);
-                client.game.removeMinefield(mf);
-                deployedMinefields.removeElement(mf);
-                switch (mf.getType()) {
-                    case (Minefield.TYPE_CONVENTIONAL):
-                        deployM = true;
-                        deployC = false;
-                        deployV = false;
-                        deployA = false;
-                        deployI = false;
-                        p.setNbrMFConventional(p.getNbrMFConventional() + 1);
-                        break;
-                    case (Minefield.TYPE_COMMAND_DETONATED):
-                        deployM = false;
-                        deployC = true;
-                        deployV = false;
-                        deployA = false;
-                        deployI = false;
-                        p.setNbrMFCommand(p.getNbrMFCommand() + 1);
-                        break;
-                    case (Minefield.TYPE_VIBRABOMB):
-                        deployM = false;
-                        deployC = false;
-                        deployV = true;
-                        deployA = false;
-                        deployI = false;
-                        p.setNbrMFVibra(p.getNbrMFVibra() + 1);
-                        break;
-                    case (Minefield.TYPE_ACTIVE):
-                        deployM = false;
-                        deployC = false;
-                        deployV = false;
-                        deployA = true;
-                        deployI = false;
-                        p.setNbrMFActive(p.getNbrMFActive() + 1);
-                        break;
-                    case (Minefield.TYPE_INFERNO):
-                        deployM = false;
-                        deployC = false;
-                        deployV = false;
-                        deployA = false;
-                        deployI = true;
-                        p.setNbrMFInferno(p.getNbrMFInferno() + 1);
-                        break;
-                }
-            }
+
+        if(remove) {
+        	if (!client.game.containsMinefield(coords))
+        		return;
+        	Enumeration mfs = client.game.getMinefields(coords).elements();
+        	//FIXME: this should be getting rid of mines in one click, but
+        	//sometimes it takes multiple clicks to remove them all
+        	while(mfs.hasMoreElements()) {
+        		Minefield mf = (Minefield)mfs.nextElement();  
+	            if (mf.getPlayerId() == client.getLocalPlayer().getId()) {
+	                butDone.setEnabled(false);
+	                client.game.removeMinefield(mf);
+	                deployedMinefields.removeElement(mf);
+	                if(mf.getType() == Minefield.TYPE_CONVENTIONAL) {
+	                	p.setNbrMFConventional(p.getNbrMFConventional() + 1);
+	                } 
+	                else if (mf.getType() == Minefield.TYPE_COMMAND_DETONATED) {
+	                	 p.setNbrMFCommand(p.getNbrMFCommand() + 1);
+	                }
+	                else if (mf.getType() == Minefield.TYPE_VIBRABOMB) {
+	                	 p.setNbrMFVibra(p.getNbrMFVibra() + 1);
+	                }
+	                else if (mf.getType() == Minefield.TYPE_ACTIVE) {
+	                	 p.setNbrMFActive(p.getNbrMFActive() + 1);
+	                }
+	                else if (mf.getType() == Minefield.TYPE_INFERNO) {
+	                	 p.setNbrMFInferno(p.getNbrMFInferno() + 1);
+	                }
+	            }
+        	}
         } else {
+        	//first check that there is not already a mine of this type deployed
+        	Enumeration mfs = client.game.getMinefields(coords).elements();
+        	while(mfs.hasMoreElements()) {
+        		Minefield mf = (Minefield)mfs.nextElement(); 
+        		if((deployM && mf.getType() == Minefield.TYPE_CONVENTIONAL) ||
+        				(deployC && mf.getType() == Minefield.TYPE_COMMAND_DETONATED) ||
+        				(deployV && mf.getType() == Minefield.TYPE_VIBRABOMB) ||
+        				(deployA && mf.getType() == Minefield.TYPE_ACTIVE) ||
+        				(deployI && mf.getType() == Minefield.TYPE_INFERNO)) {
+        			new AlertDialog(
+                            clientgui.frame,
+                            Messages
+                                    .getString("DeployMinefieldDisplay.IllegalPlacement"), Messages.getString("DeployMinefieldDisplay.DuplicateMinefield")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
+                    return;
+        		}
+        	}
+        	
             Minefield mf;
             if(sea && !(deployM || deployI)) {
         		new AlertDialog(
@@ -507,6 +519,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             deployV = false;
             deployA = false;
             deployI = false;
+            remove = false;
         }
         if (ev.getActionCommand().equals(DEPLOY_MINE_COM)) {
             deployM = false;
@@ -514,6 +527,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             deployV = false;
             deployA = false;
             deployI = false;
+            remove = false;
         }
         if (ev.getActionCommand().equals(DEPLOY_MINE_VIBRA)) {
             deployM = false;
@@ -521,6 +535,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             deployV = true;
             deployA = false;
             deployI = false;
+            remove = false;
         }
         if (ev.getActionCommand().equals(DEPLOY_MINE_ACTIVE)) {
             deployM = false;
@@ -528,6 +543,7 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             deployV = false;
             deployA = true;
             deployI = false;
+            remove = false;
         }
         if (ev.getActionCommand().equals(DEPLOY_MINE_INFERNO)) {
             deployM = false;
@@ -535,6 +551,15 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
             deployV = false;
             deployA = false;
             deployI = true;
+            remove = false;
+        }
+        if (ev.getActionCommand().equals(REMOVE_MINES)) {
+            deployM = false;
+            deployC = false;
+            deployV = false;
+            deployA = false;
+            deployI = false;
+            remove = true;
         }
     } // End public void actionPerformed(ActionEvent ev)
 
@@ -592,6 +617,10 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
                                 "DeploymentDisplay.buttonInferno", new Object[] { new Integer(nbr) })); //$NON-NLS-1$
         butI.setEnabled(nbr > 0);
         clientgui.getMenuBar().setDeployInfernoEnabled(nbr);
+    }
+    private void setRemoveMineEnabled(boolean enable) {
+        butRemove.setEnabled(enable);
+        //clientgui.getMenuBar().setRemoveMineEnabled(enable);
     }
 
     /**
