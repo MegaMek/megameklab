@@ -1622,7 +1622,7 @@ public class Server implements Runnable {
             Vector<GameTurn> turns = new Vector<GameTurn>();
             while (e.hasMoreElements()) {
                 Player p = e.nextElement();
-                if (p.hasMinefields()) {
+                if (p.hasMinefields() && game.getBoard().onGround()) {
                     GameTurn gt = new GameTurn(p.getId());
                     turns.addElement(gt);
                 }
