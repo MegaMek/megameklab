@@ -4908,9 +4908,11 @@ public class Server implements Runnable {
                 	// when moving from clear into mined woods
                 	entity.setPosition(curPos);
                 	if(enterMinefield(entity, curPos, step.getElevation(), isOnGround, vPhaseReport)) {
-                		//resolve any piloting rolls from damage and 
-                		addReport(resolvePilotingRolls(entity));
-                		game.resetPSRs(entity);                		
+                		//resolve any piloting rolls from damage unless unit was jumping
+                		if(step.getMovementType() != IEntityMovementType.MOVE_JUMP) {
+                			addReport(resolvePilotingRolls(entity));
+                			game.resetPSRs(entity); 
+                		}
                 		boom = true;
                 	} 
                 	if(wasProne || !entity.isProne()) {
@@ -4921,8 +4923,8 @@ public class Server implements Runnable {
                 if(boom) {
                 	//set fell during movement so that entity will get another chance to move with any motive damage 
             		//taken account of (functions the same as MASC failure)
-                	//only do this if they had more steps
-                	if(i.hasMoreElements()) {
+                	//only do this if they had more steps (and they were not jumping
+                	if(i.hasMoreElements() && step.getMovementType() != IEntityMovementType.MOVE_JUMP) {
                 		md.clear();
                 		fellDuringMovement = true;
                 	}
