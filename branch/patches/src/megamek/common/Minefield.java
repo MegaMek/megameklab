@@ -28,13 +28,6 @@ public class Minefield implements Serializable, Cloneable {
     public static final int TYPE_ACTIVE = 3;
     public static final int TYPE_EMP = 4;
     public static final int TYPE_INFERNO = 5;
-    
-    /*
-    public static final int TYPE_THUNDER = 3;
-    public static final int TYPE_THUNDER_INFERNO = 4;
-    public static final int TYPE_THUNDER_ACTIVE = 5;
-    public static final int TYPE_THUNDER_VIBRABOMB = 6;
-    */
 
     public static final int TRIGGER_NONE = 0;
 

@@ -116,6 +116,8 @@ public class MoveStep implements Serializable {
     //is this step part of a maneuver?
     private boolean maneuver = false;
 
+    private Minefield mf;
+    
     /**
      * Flag that indicates that this step is into prohibited terrain. <p/> If
      * the unit is jumping, this step is only invalid if it is the end of the
@@ -217,6 +219,11 @@ public class MoveStep implements Serializable {
         this.recoveryUnit = recovery;
         this.mineToLay = mineToLay;
         this.maneuverType = manType;
+    }
+    
+    public MoveStep(MovePath path, int type, Minefield mf) {
+        this(path, type);
+        this.mf = mf;      
     }
 
     void setParent(MovePath path) {
@@ -2505,6 +2512,10 @@ public class MoveStep implements Serializable {
     
     public boolean isManeuver() {
         return maneuver;
+    }
+    
+    public Minefield getMinefield() {
+    	return mf;
     }
 
 }

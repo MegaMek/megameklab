@@ -616,6 +616,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsInf.add(butSwim);
         buttonsInf.add(butDigIn);
         buttonsInf.add(butFortify);
+        buttonsInf.add(butClear);
         // these are last, they won't be used by infantry
         buttonsInf.add(butLoad);
         buttonsInf.add(butUnload);
@@ -625,7 +626,6 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsInf.add(butDfa);
         buttonsInf.add(butUp);
         buttonsInf.add(butDown);
-        buttonsInf.add(butShakeOff);
 
         buttonsAero = new ArrayList<Button>(22);
         if (!client.game.useVectorMove()) {
@@ -815,14 +815,14 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         setDFAEnabled(ce.canDFA());
         setRamEnabled(ce.canRam());
 
-        if (isInfantry || isProtomech) {
+        if (isInfantry) {
             if (client.game.containsMinefield(ce.getPosition())) {
                 setClearEnabled(true);
             } else {
-                setClearEnabled(false);
+              setClearEnabled(false);
             }
         } else {
-            setClearEnabled(false);
+        	setClearEnabled(false);
         }
 
         if (ce.getMovementMode() == IEntityMovementMode.HYDROFOIL || ce.getMovementMode() == IEntityMovementMode.NAVAL || ce.getMovementMode() == IEntityMovementMode.SUBMARINE || ce.getMovementMode() == IEntityMovementMode.INF_UMU || ce.getMovementMode() == IEntityMovementMode.VTOL || ce.getMovementMode() == IEntityMovementMode.AIRMECH || ce.getMovementMode() == IEntityMovementMode.AREOSPACE || ce.getMovementMode() == IEntityMovementMode.BIPED_SWIM || ce.getMovementMode() == IEntityMovementMode.QUAD_SWIM) {
@@ -2892,9 +2892,12 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                 return;
             }
 
-            // Does the entity has a minesweeper?
+            
             int clear = Minefield.CLEAR_NUMBER_INFANTRY;
             int boom = Minefield.CLEAR_NUMBER_INFANTRY_ACCIDENT;
+            // Does the entity has a minesweeper?
+            //TODO: not the way this is handled anymore, need to know whether they are specially trained
+            /*
             for (Mounted mounted : ce.getMisc()) {
                 if (mounted.getType().hasFlag(MiscType.F_TOOLS) && mounted.getType().hasSubType(MiscType.S_MINESWEEPER)) {
                     int sweeperType = mounted.getType().getToHitModifier();
@@ -2903,11 +2906,26 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                     break;
                 }
             }
+            */
+            
+            //need to choose a mine
+            Vector<Minefield> mfs = client.game.getMinefields(ce.getPosition());
+            String[] choices = new String[mfs.size()];
+            for (int loop = 0; loop < choices.length; loop++) {
+                choices[loop] = Minefield.getDisplayableName(mfs.elementAt(loop).getType());
+            }
+            SingleChoiceDialog choiceDialog = new SingleChoiceDialog(clientgui.frame, Messages.getString("MovementDisplay.ChooseMinefieldDialog.title"), //$NON-NLS-1$
+            		Messages.getString("MovementDisplay.ChooseMinefieldDialog.message"), choices);
+            choiceDialog.setVisible(true);
+            Minefield mf = null;
+            if (choiceDialog.getAnswer() == true) {
+                mf = mfs.elementAt(choiceDialog.getChoice());
+            }
 
-            if (clientgui.doYesNoDialog(Messages.getString("MovementDisplay.ClearMinefieldDialog.title"), //$NON-NLS-1$
+            if (null != mf && clientgui.doYesNoDialog(Messages.getString("MovementDisplay.ClearMinefieldDialog.title"), //$NON-NLS-1$
                     Messages.getString("MovementDisplay.ClearMinefieldDialog.message", new Object[] { //$NON-NLS-1$
                             new Integer(clear), new Integer(boom) }))) {
-                cmd.addStep(MovePath.STEP_CLEAR_MINEFIELD);
+                cmd.addStep(MovePath.STEP_CLEAR_MINEFIELD, mf);
                 moveTo(cmd);
             }
         } else if (ev.getActionCommand().equals(MOVE_CHARGE)) {

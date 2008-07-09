@@ -4200,12 +4200,6 @@ public class Server implements Runnable {
         // movepath
         entity.setVectors(md.getFinalVectors());
 
-        if (md.contains(MovePath.STEP_CLEAR_MINEFIELD)) {
-            ClearMinefieldAction cma = new ClearMinefieldAction(entity.getId());
-            entity.setClearingMinefield(true);
-            game.addAction(cma);
-        }
-
         overallMoveType = md.getLastStepMovementType();
 
         // check for starting in liquid magma
@@ -4537,6 +4531,13 @@ public class Server implements Runnable {
                 LayMinefieldAction lma = new LayMinefieldAction(entity.getId(), step.getMineToLay());
                 game.addLayMinefieldAction(lma);
                 entity.setLayingMines(true);
+                break;
+            }
+            
+            if (step.getType() == MovePath.STEP_CLEAR_MINEFIELD) {
+                ClearMinefieldAction cma = new ClearMinefieldAction(entity.getId(), step.getMinefield());
+                entity.setClearingMinefield(true);
+                game.addAction(cma);
                 break;
             }
 
@@ -6512,7 +6513,7 @@ public class Server implements Runnable {
     		r = new Report(2250);
     		r.subject = en.getId();
     		r.add(Minefield.getDisplayableName(mf.getType()));
-    		r.indent(2);
+    		r.indent(1);
     		vClearReport.add(r);
     		return true;
     	} 
@@ -6520,14 +6521,37 @@ public class Server implements Runnable {
     		//TODO: detonate the minefield
     		r = new Report(2255);
     		r.subject = en.getId();
-    		r.indent(2);
+    		r.indent(1);
     		r.add(Minefield.getDisplayableName(mf.getType()));
     		vClearReport.add(r);
+    		//The detonation damages any units that were also attempting to 
+    		//clear mines in the same hex
+    		for (Enumeration<Entity> e = game.getEntities(mf.getCoords()); e.hasMoreElements();) {
+                Entity victim = e.nextElement();
+                Report rVictim;
+                if(victim.isClearingMinefield()) {
+                	rVictim = new Report(2265);
+                	rVictim.subject = victim.getId();
+                	rVictim.add(victim.getShortName(), true);
+                	rVictim.indent(2);
+                	vClearReport.add(rVictim);
+                	HitData hit = victim.rollHitLocation(Minefield.TO_HIT_TABLE, Minefield.TO_HIT_SIDE);
+                	vClearReport.addAll(damageEntity(victim, hit, mf.getDensity()));
+                	Report.addNewline(vClearReport);
+                }
+    		}
+    		//reduction works differently here
+    		if(mf.getType() == Minefield.TYPE_CONVENTIONAL) {
+    			mf.setDensity(Math.max(5, mf.getDensity() - 5));
+    		} else {
+    			//congratulations, you cleared the mine by blowing yourself up
+    			return true;
+    		}
         } else {
             // failure
             r = new Report(2260);
             r.subject = en.getId();
-            r.indent(2);
+            r.indent(1);
             r.add(Minefield.getDisplayableName(mf.getType()));
             vClearReport.add(r);
     	}
@@ -8043,7 +8067,6 @@ public class Server implements Runnable {
             game.resetLayMinefieldActions();
         }
 
-        Vector<Entity> clearAttempts = new Vector<Entity>();
         Vector<TriggerAPPodAction> triggerPodActions = new Vector<TriggerAPPodAction>();
         // loop thru actions and handle everything we expect except attacks
         for (Enumeration<EntityAction> i = game.getActions(); i.hasMoreElements();) {
@@ -8062,7 +8085,7 @@ public class Server implements Runnable {
             } else if (ea instanceof UnjamAction) {
                 resolveUnjam(entity);
             } else if (ea instanceof ClearMinefieldAction) {
-                clearAttempts.addElement(entity);
+                resolveClearMinefield(entity, ((ClearMinefieldAction)ea).getMinefield());
             } else if (ea instanceof TriggerAPPodAction) {
                 TriggerAPPodAction tapa = (TriggerAPPodAction) ea;
 
@@ -8104,34 +8127,22 @@ public class Server implements Runnable {
             }
         }
 
-        resolveClearMinefieldAttempts(clearAttempts);
     }
 
-    private void resolveClearMinefieldAttempts(Vector<Entity> clearAttempts) {
+    private void resolveClearMinefield(Entity ent, Minefield mf) {
 
-        for (int i = 0; i < clearAttempts.size(); i++) {
-            Vector<Entity> temp = new Vector<Entity>();
-            Entity e = clearAttempts.elementAt(i);
-            Coords pos = e.getPosition();
-            temp.addElement(e);
+    	if(null == mf || null == ent || ent.isDoomed() || ent.isDestroyed()) {
+    		return;
+    	}
+    	
+    	Coords pos = mf.getCoords();
+    	int clear = Minefield.CLEAR_NUMBER_INFANTRY;
+    	int boom = Minefield.CLEAR_NUMBER_INFANTRY_ACCIDENT;
 
-            for (int j = i + 1; j < clearAttempts.size(); j++) {
-                Entity ent = clearAttempts.elementAt(j);
-                if (ent.getPosition().equals(pos)) {
-                    temp.addElement(ent);
-                    clearAttempts.removeElement(ent);
-                }
-            }
-
-            boolean accident = false;
-            boolean cleared = false;
-            for (int j = 0; j < temp.size(); j++) {
-                Entity ent = temp.elementAt(j);
-                int roll = Compute.d6(2);
-                int clear = Minefield.CLEAR_NUMBER_INFANTRY;
-                int boom = Minefield.CLEAR_NUMBER_INFANTRY_ACCIDENT;
-
-                // Does the entity has a minesweeper?
+    	// Does the entity has a minesweeper?
+    	/*this is no longer the way this is handled in TacOps
+    	 * for infantry, we need to check for specialized minesweeping
+    	 * for vees, this is totally different
                 for (Mounted mounted : ent.getMisc()) {
                     if (mounted.getType().hasFlag(MiscType.F_TOOLS) && mounted.getType().hasSubType(MiscType.S_MINESWEEPER)) {
                         int sweeperType = mounted.getType().getToHitModifier();
@@ -8140,64 +8151,21 @@ public class Server implements Runnable {
                         break;
                     }
                 }
-                // mine clearing roll
-                Report r = new Report(2245);
-                r.subject = ent.getId();
-                r.add(ent.getShortName(), true);
-                r.add(pos.getBoardNum(), true);
-                r.add(clear);
-                r.add(roll);
-                r.newlines = 0;
-                addReport(r);
+    	 */
+    	// mine clearing roll
+    	Report r = new Report(2245);
+    	r.subject = ent.getId();
+    	r.add(ent.getShortName(), true);
+    	r.add(Minefield.getDisplayableName(mf.getType()));
+    	r.add(pos.getBoardNum(), true);
+    	addReport(r);
 
-                if (roll >= clear) {
-                    // success
-                    r = new Report(2250);
-                    r.subject = ent.getId();
-                    addReport(r);
-                    cleared = true;
-                } else if (roll <= boom) {
-                    // "click"...oops!
-                    r = new Report(2255);
-                    r.subject = ent.getId();
-                    addReport(r);
-                    accident = true;
-                } else {
-                    // failure
-                    r = new Report(2260);
-                    r.subject = ent.getId();
-                    addReport(r);
-                }
-            }
-            if (accident) {
-                Enumeration<Minefield> minefields = game.getMinefields(pos).elements();
-                while (minefields.hasMoreElements()) {
-                    Minefield mf = minefields.nextElement();
-                    switch (mf.getType()) {
-                    case Minefield.TYPE_CONVENTIONAL:
-                        for (int j = 0; j < temp.size(); j++) {
-                            Entity entity = temp.elementAt(j);
-                            Report r = new Report(2265);
-                            r.subject = entity.getId();
-                            r.add(entity.getShortName(), true);
-                            addReport(r);
-                            HitData hit = entity.rollHitLocation(Minefield.TO_HIT_TABLE, Minefield.TO_HIT_SIDE);
-                            addReport(damageEntity(entity, hit, mf.getDensity()));
-                            addNewLines();
-                        }
-                        break;
-                    case Minefield.TYPE_VIBRABOMB:
-                        explodeVibrabomb(mf, vPhaseReport, true);
-                        break;
-                    }
-                }
-            }
-            if (cleared) {
-            	//TODO: minefield now have to cleared separately by type
-                //removeMinefieldsFrom(pos);
-            }
-        }
-    }
+    	if(clearMinefield(mf, ent, clear, boom, vPhaseReport)) {
+    		removeMinefield(mf);
+    	}
+    	//some mines might have blown up
+    	resetMines();
+    }        
 
     /**
      * Called during the fire phase to resolve all (and only) weapon attacks

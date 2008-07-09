@@ -189,6 +189,10 @@ public class MovePath implements Cloneable, Serializable {
         return addStep(new MoveStep(this, type, noCost, isManeuver));
     }
     
+    public MovePath addStep(final int type, final Minefield mf) {
+        return addStep(new MoveStep(this, type, mf));
+    }
+    
     public MovePath addManeuver(final int manType) {
         return addStep(new MoveStep(this, STEP_MANEUVER, -1, -1, manType));
     }
@@ -268,7 +272,10 @@ public class MovePath implements Cloneable, Serializable {
                 step = new MoveStep(this, step.getType(), step.hasNoCost(), step.isManeuver());
             } else if(step.hasNoCost()) {
                 step = new MoveStep(this, step.getType(), step.hasNoCost());
+            } else if(null != step.getMinefield()) {
+            	step = new MoveStep(this, step.getType(), step.getMinefield());
             } else {
+            
                 step = new MoveStep(this, step.getType());
             }
             this.addStep(step);
