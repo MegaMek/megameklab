@@ -17617,11 +17617,9 @@ public class Server implements Runnable {
         			entityHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.ROUGH, 2));
         			sendChangedHex(curPos);
         		} 
-        	} else {
-        		if(!entityHex.containsTerrain(Terrains.ROUGH)) {
+        	} else if ( entity.getWeight() >= 40 && !entityHex.containsTerrain(Terrains.ROUGH)) {
         			entityHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.ROUGH, 1));
            			sendChangedHex(curPos);
-        		} 
         	}
         	
         }
