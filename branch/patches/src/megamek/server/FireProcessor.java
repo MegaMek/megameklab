@@ -350,11 +350,11 @@ public class FireProcessor extends DynamicTerrainProcessor {
     			//currentHex.removeTerrain(Terrains.SMOKE);
     			//server.sendChangedHex(currentCoords);
 
-        	} // end the loop through Y coordinates
+        	} // end the loop through Cloud coordinates
             if ( smokeToAdd.size() > 0 ) {
                 smokeCloudData.put(cloud,smokeToAdd);
             }
-        } // end the loop through X coordinates/
+        } // end the loop through clouds
 
         debugTime("resolve smoke 1 end, resolve smoke 2 begin", true);
 
@@ -447,11 +447,11 @@ public class FireProcessor extends DynamicTerrainProcessor {
                 || board.getHex(src).getElevation() - (board.getHex(nextCoords).terrainLevel(Terrains.BLDG_ELEV) + board.getHex(nextCoords).getElevation()) < -4){
             //Try Right
             if ( directionChanges == 0 ){
-                return driftAddSmoke(src, (windDir + 1) % 6, windStr, directionChanges++);
+                return driftAddSmoke(src, (windDir + 1) % 6, windStr, ++directionChanges);
             }
             //Try Left
             else if ( directionChanges == 1)
-                return driftAddSmoke(src, (windDir - 2 ) % 6, windStr, directionChanges++);
+                return driftAddSmoke(src, (windDir - 2 ) % 6, windStr, ++directionChanges);
             //Stay put
             else
                 return src;
