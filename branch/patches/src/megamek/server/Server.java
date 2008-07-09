@@ -6468,15 +6468,70 @@ public class Server implements Runnable {
                 }
     		}
     		//cycle through a second time to see if any mines at these coords need to be removed
+    		ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
     		Enumeration<Minefield> mines = game.getMinefields(c).elements();
     		while (mines.hasMoreElements()) {
     			Minefield mine = mines.nextElement();
     			if(mine.getDensity() < 5)
-    				removeMinefield(mine);
+    				mfRemoved.add(mine);
+        	}
+    		//we have to do it this way to avoid a concurrent error problem
+        	for(Minefield mf : mfRemoved) {
+        		removeMinefield(mf);
         	}
     		//update the mines at these coords
     		sendChangedMines(c);
     	}  	
+    }
+    
+    /**
+     * attempt to clear a minefield
+     * @param mf - a <code>Minefield</code> to clear
+     * @param en - <code>entity</code> doing the clearing
+     * @param target - <code>int</code> needed to roll for a successful clearance
+     * @return <code>true</code> if clearance successful
+     */
+    public boolean clearMinefield(Minefield mf, Entity en, int target, Vector<Report> vClearReport) {
+    	return clearMinefield(mf, en, target, -1, vClearReport);
+    }
+    
+    /**
+     * attempt to clear a minefield
+     * We don't actually remove the minefield here, because if this is called up from within
+     * a loop, that will cause problems
+     * @param mf - a <code>Minefield</code> to clear
+     * @param en - <code>entity</code> doing the clearing
+     * @param target - <code>int</code> needed to roll for a successful clearance
+     * @param botch - <code>int</code> that indicates an accidental detonation
+     * @return <code>true</code> if clearance successful
+     */
+    public boolean clearMinefield(Minefield mf, Entity en, int target, int botch, Vector<Report> vClearReport) {
+    	Report r;
+    	int roll = Compute.d6(2);
+    	if(roll >= target) {
+    		r = new Report(2250);
+    		r.subject = en.getId();
+    		r.add(Minefield.getDisplayableName(mf.getType()));
+    		r.indent(2);
+    		vClearReport.add(r);
+    		return true;
+    	} 
+    	else if(roll <= botch) {
+    		//TODO: detonate the minefield
+    		r = new Report(2255);
+    		r.subject = en.getId();
+    		r.indent(2);
+    		r.add(Minefield.getDisplayableName(mf.getType()));
+    		vClearReport.add(r);
+        } else {
+            // failure
+            r = new Report(2260);
+            r.subject = en.getId();
+            r.indent(2);
+            r.add(Minefield.getDisplayableName(mf.getType()));
+            vClearReport.add(r);
+    	}
+    	return false;
     }
     
     /**
@@ -6485,11 +6540,16 @@ public class Server implements Runnable {
     private void clearDetonatedMines(Coords c, int target) {
     	
     	Enumeration<Minefield> minefields = game.getMinefields(c).elements();
+    	ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
     	while (minefields.hasMoreElements()) {
     		Minefield minefield = (Minefield)minefields.nextElement();
     		if(minefield.hasDetonated() && Compute.d6(2) >= target) {
-    			removeMinefield(minefield);
+    			mfRemoved.add(minefield);
     		}
+    	}
+    	//we have to do it this way to avoid a concurrent error problem
+    	for(Minefield mf : mfRemoved) {
+    		removeMinefield(mf);
     	}
     }
     
@@ -6576,6 +6636,7 @@ public class Server implements Runnable {
      * @param coords
      *            The <code>Coords</code> from which to remove minefields
      */
+    /*
     public void removeMinefieldsFrom(Coords coords) {
         Vector<Minefield> v = game.getMinefields(coords);
         while (v.elements().hasMoreElements()) {
@@ -6584,6 +6645,7 @@ public class Server implements Runnable {
         }
 
     }
+    */
 
     /**
      * Removes the minefield from the game.
@@ -8131,7 +8193,8 @@ public class Server implements Runnable {
                 }
             }
             if (cleared) {
-                removeMinefieldsFrom(pos);
+            	//TODO: minefield now have to cleared separately by type
+                //removeMinefieldsFrom(pos);
             }
         }
     }

@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.Enumeration;
 
@@ -286,13 +287,12 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         	if (!client.game.containsMinefield(coords))
         		return;
         	Enumeration mfs = client.game.getMinefields(coords).elements();
-        	//FIXME: this should be getting rid of mines in one click, but
-        	//sometimes it takes multiple clicks to remove them all
+        	ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
         	while(mfs.hasMoreElements()) {
         		Minefield mf = (Minefield)mfs.nextElement();  
 	            if (mf.getPlayerId() == client.getLocalPlayer().getId()) {
 	                butDone.setEnabled(false);
-	                client.game.removeMinefield(mf);
+	                mfRemoved.add(mf);
 	                deployedMinefields.removeElement(mf);
 	                if(mf.getType() == Minefield.TYPE_CONVENTIONAL) {
 	                	p.setNbrMFConventional(p.getNbrMFConventional() + 1);
@@ -310,6 +310,9 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
 	                	 p.setNbrMFInferno(p.getNbrMFInferno() + 1);
 	                }
 	            }
+        	}
+        	for(Minefield mf : mfRemoved) {
+        		client.game.removeMinefield(mf);
         	}
         } else {
         	//first check that there is not already a mine of this type deployed

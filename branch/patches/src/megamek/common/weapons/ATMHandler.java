@@ -13,15 +13,19 @@
  */
 package megamek.common.weapons;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Vector;
 
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Compute;
+import megamek.common.Coords;
 import megamek.common.Entity;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.Mech;
+import megamek.common.Minefield;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.RangeType;
@@ -317,6 +321,33 @@ public class ATMHandler extends MissileWeaponHandler {
         vPhaseReport.addElement(r);
         bSalvo = true;
         return missilesHit;
+    }
+    
+    protected boolean specialResolution(Vector<Report> vPhaseReport,
+            Entity entityTarget, boolean bMissed) {
+        if (!bMissed
+                && target.getTargetType() == Targetable.TYPE_MINEFIELD_CLEAR) {
+        	r = new Report(3255);
+        	r.indent(1);
+        	r.subject = subjectId;
+        	vPhaseReport.addElement(r);
+        	Coords coords = target.getPosition();
+
+        	Enumeration<Minefield> minefields = game.getMinefields(coords).elements();
+        	ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
+        	while (minefields.hasMoreElements()) {
+        		Minefield mf = minefields.nextElement();
+        		if(server.clearMinefield(mf, ae, Minefield.CLEAR_NUMBER_WEAPON, vPhaseReport)) {
+        			mfRemoved.add(mf);
+        		}
+        	}
+        	//we have to do it this way to avoid a concurrent error problem
+        	for(Minefield mf : mfRemoved) {
+        		server.removeMinefield(mf);
+        	}
+        	return true;
+        }
+        return false;
     }
 
 }

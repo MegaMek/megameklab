@@ -45,6 +45,6 @@ public abstract class RLWeapon extends MissileWeapon {
      */
     protected AttackHandler getCorrectHandler(ToHitData toHit,
             WeaponAttackAction waa, IGame game, Server server) {
-        return new MissileWeaponHandler(toHit, waa, game, server);
+        return new RLHandler(toHit, waa, game, server);
     }
 }
