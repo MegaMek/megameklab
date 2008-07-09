@@ -370,14 +370,16 @@ public class FireProcessor extends DynamicTerrainProcessor {
 
         debugTime("resolve smoke 2 end, resolve smoke 3 begin", true);
 
+        //update all the new coords for the smoke cloud.
+        for ( SmokeCloud cloud : smokeCloudData.keySet() ){
+            smokeToAdd = smokeCloudData.get(cloud);
+            server.updateSmoke(cloud, smokeToAdd);
+        }
+
         // Cycle through the vector again and dissipate the smoke, then
         // reporting it
         for ( SmokeCloud cloud : server.getSmokeCloudList() ){
             
-            	//SmokeDrift drift = smokeToAdd.elementAt(dis);
-            	//Coords smokeCoords = drift.coords;
-            	//int smokeSize = drift.size;
-            	//IHex smokeHex = game.getBoard().getHex(smokeCoords);
             	int roll = Compute.d6(2);
     
             	boolean dissipated = driftSmokeDissipate(cloud, roll, windStr);
@@ -391,10 +393,6 @@ public class FireProcessor extends DynamicTerrainProcessor {
            	    cloud.setDrift(false);
         }
 
-        for ( SmokeCloud cloud : smokeCloudData.keySet() ){
-            smokeToAdd = smokeCloudData.get(cloud);
-            server.updateSmoke(cloud, smokeToAdd);
-        }
         debugTime("resolve smoke 3 end", false);
 
     } // end smoke resolution
@@ -438,13 +436,22 @@ public class FireProcessor extends DynamicTerrainProcessor {
         	return nextCoords;
         }
         
-        //If the smoke moves into a hex that has a greate then 4 elevation drop it dissipates.
-        if ( board.getHex(src).getElevation() - board.getHex(nextCoords).getElevation() > 4){
+        int hexElevation = board.getHex(src).getElevation();
+        int nextElevation = board.getHex(nextCoords).getElevation();
+        
+        if ( board.getHex(nextCoords).containsTerrain(Terrains.BUILDING) ) {
+            nextElevation += board.getHex(nextCoords).terrainLevel(Terrains.BLDG_ELEV);
+        }
+        
+        if ( board.getHex(src).containsTerrain(Terrains.BUILDING) ) {
+            hexElevation += board.getHex(src).terrainLevel(Terrains.BLDG_ELEV);
+        }
+        //If the smoke moves into a hex that has a greater then 4 elevation drop it dissipates.
+        if ( hexElevation - nextElevation > 4 ) {
             return null;
         }
         
-        if ( board.getHex(src).getElevation() - board.getHex(nextCoords).getElevation() < -4
-                || board.getHex(src).getElevation() - (board.getHex(nextCoords).terrainLevel(Terrains.BLDG_ELEV) + board.getHex(nextCoords).getElevation()) < -4){
+        if ( hexElevation - nextElevation < -4 ){
             //Try Right
             if ( directionChanges == 0 ){
                 return driftAddSmoke(src, (windDir + 1) % 6, windStr, ++directionChanges);

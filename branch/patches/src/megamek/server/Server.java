@@ -6443,17 +6443,17 @@ public class Server implements Runnable {
      */
     private void resetMines() {
     	
-    	Enumeration mineLoc = game.getMinedCoords();
+    	Enumeration<Coords> mineLoc = game.getMinedCoords();
     	while(mineLoc.hasMoreElements()) {
-    		Coords c = (Coords)mineLoc.nextElement();
-    		Enumeration minefields = game.getMinefields(c).elements();
+    		Coords c = mineLoc.nextElement();
+    		Enumeration<Minefield> minefields = game.getMinefields(c).elements();
     		while (minefields.hasMoreElements()) {
-                Minefield minefield = (Minefield)minefields.nextElement();
+                Minefield minefield = minefields.nextElement();
                 if(minefield.hasDetonated()) {
                 	minefield.setDetonated(false);
-                	Enumeration otherMines = game.getMinefields(c).elements();
+                	Enumeration<Minefield> otherMines = game.getMinefields(c).elements();
                 	while (otherMines.hasMoreElements()) {
-                        Minefield otherMine = (Minefield)otherMines.nextElement();
+                        Minefield otherMine = otherMines.nextElement();
         	        	if(otherMine.equals(minefield))
         	        		continue;
         	        	int bonus = 0;
@@ -6468,9 +6468,9 @@ public class Server implements Runnable {
                 }
     		}
     		//cycle through a second time to see if any mines at these coords need to be removed
-    		Enumeration mines = game.getMinefields(c).elements();
+    		Enumeration<Minefield> mines = game.getMinefields(c).elements();
     		while (mines.hasMoreElements()) {
-    			Minefield mine = (Minefield)mines.nextElement();
+    			Minefield mine = mines.nextElement();
     			if(mine.getDensity() < 5)
     				removeMinefield(mine);
         	}
@@ -6484,7 +6484,7 @@ public class Server implements Runnable {
      */
     private void clearDetonatedMines(Coords c, int target) {
     	
-    	Enumeration minefields = game.getMinefields(c).elements();
+    	Enumeration<Minefield> minefields = game.getMinefields(c).elements();
     	while (minefields.hasMoreElements()) {
     		Minefield minefield = (Minefield)minefields.nextElement();
     		if(minefield.hasDetonated() && Compute.d6(2) >= target) {
