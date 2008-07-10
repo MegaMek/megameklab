@@ -272,6 +272,10 @@ public class QuadMech extends Mech {
 
         if (destroyedLegs == 0)
             roll.addModifier(-2, "Quad bonus");
+        
+        if ( hasFunctionalLegAES() ) {
+            roll.addModifier(-2, "AES bonus");
+        }
 
         for (int i = 0; i < locsToCheck.length; i++) {
             int loc = locsToCheck[i];
@@ -688,6 +692,44 @@ public class QuadMech extends Mech {
         return false;
     }
 
+    /**
+     * Checks for functional AES in all legs
+     */
+    public boolean hasFunctionalLegAES() {
+        boolean frontRightLeg = false;
+        boolean frontLeftLeg = false;
+        boolean rearRightLeg = false;
+        boolean rearLeftLeg = false;
+        
+        for (Mounted mounted : this.getMisc()) {
+            if ( mounted.getLocation() == Mech.LOC_LLEG || mounted.getLocation() == Mech.LOC_RLEG 
+                    || mounted.getLocation() == Mech.LOC_LARM || mounted.getLocation() == Mech.LOC_RARM ) {
+                if ( ((MiscType)mounted.getType()).hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM) 
+                        && !mounted.isDestroyed()
+                        && !mounted.isBreached()
+                        && !mounted.isMissing()) {
+                    if ( mounted.getLocation() == Mech.LOC_LLEG ) {
+                        rearLeftLeg = true;
+                    }
+                    else if (mounted.getLocation() == Mech.LOC_RLEG ){
+                        rearRightLeg = true;
+                    } else if (mounted.getLocation() == Mech.LOC_RARM ){
+                        frontRightLeg = true;
+                    } else {
+                        frontLeftLeg = true;
+                    }
+
+
+                }//AES is destroyed their for it cannot be used.
+                else if ( ((MiscType)mounted.getType()).hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM) ) {
+                    return false;
+                }
+            }
+        }
+        
+        return frontLeftLeg && frontRightLeg && rearRightLeg && rearLeftLeg;
+    }
+    
     public boolean canGoHullDown() {
         return game.getOptions().booleanOption("tacops_hull_down") 
             && !isLocationBad(Mech.LOC_LARM)

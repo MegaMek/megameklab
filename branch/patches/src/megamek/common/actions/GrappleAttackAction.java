@@ -183,6 +183,11 @@ public class GrappleAttackAction extends PhysicalAttackAction {
             if (!ae.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
                 toHit.addModifier(1, "Right hand actuator destroyed");
             }
+
+            if ( ae.hasFunctionalArmAES(Mech.LOC_RARM) && ae.hasFunctionalArmAES(Mech.LOC_LARM) ) {
+                toHit.addModifier(-1,"AES modifer");
+            }
+
         } else if (ae instanceof Mech && grappleSide == Entity.GRAPPLE_RIGHT ) {
             // damaged or missing actuators
             if (!ae.hasWorkingSystem(Mech.ACTUATOR_UPPER_ARM, Mech.LOC_RARM)) {
@@ -194,6 +199,10 @@ public class GrappleAttackAction extends PhysicalAttackAction {
             if (!ae.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
                 toHit.addModifier(1, "Right hand actuator destroyed");
             }
+            if ( ae.hasFunctionalArmAES(Mech.LOC_RARM)) {
+                toHit.addModifier(-1,"AES modifer");
+            }
+
         } else {
             // damaged or missing actuators
             if (!ae.hasWorkingSystem(Mech.ACTUATOR_UPPER_ARM, Mech.LOC_LARM)) {
@@ -205,6 +214,10 @@ public class GrappleAttackAction extends PhysicalAttackAction {
             if (!ae.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
                 toHit.addModifier(1, "Left hand actuator destroyed");
             }
+            if ( ae.hasFunctionalArmAES(Mech.LOC_LARM) ) {
+                toHit.addModifier(-1,"AES modifer");
+            }
+
         }
 
         if ( grappleSide != Entity.GRAPPLE_BOTH && ae instanceof Mech ) {

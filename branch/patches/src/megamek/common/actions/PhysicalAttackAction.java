@@ -137,6 +137,7 @@ public class PhysicalAttackAction extends AbstractAttackAction {
         // target terrain
         toHit.append(Compute.getTargetTerrainModifier(game, target));
 
+
         // If it has a torso-mounted cockpit and two head sensor hits or three
         // sensor hits...
         // It gets a =4 penalty for being blind!

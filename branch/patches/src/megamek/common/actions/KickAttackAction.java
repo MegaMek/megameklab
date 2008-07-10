@@ -262,6 +262,10 @@ public class KickAttackAction extends PhysicalAttackAction {
             toHit.addModifier(1, "Foot actuator destroyed");
         }
 
+        if ( ae.hasFunctionalLegAES() ) {
+            toHit.addModifier(-1, "AES bonus");
+        }
+        
         // elevation
         if (attackerElevation < targetHeight) {
             toHit.setHitTable(ToHitData.HIT_KICK);

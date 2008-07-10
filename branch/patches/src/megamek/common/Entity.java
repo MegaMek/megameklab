@@ -2309,7 +2309,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      *            A MiscType.S_XXX or -1 for don't care
      * @return true if at least one ready item.
      */
-    public boolean hasWorkingMisc(long flag, int secondary) {
+    public boolean hasWorkingMisc(long flag, long secondary) {
         for (Mounted m : miscList) {
             if (m.getType() instanceof MiscType && m.isReady()) {
                 MiscType type = (MiscType) m.getType();
@@ -2679,20 +2679,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      *         0 else <code>false</code>
      */
     public boolean hasShield() {
-        int shieldCount = 0;
-
-        // only mechs can have shields.
-        if (!(this instanceof Mech))
-            return false;
-
-        for (Mounted m : getMisc()) {
-            EquipmentType type = m.getType();
-            if (type instanceof MiscType && ((MiscType) type).isShield() && this.getInternal(m.getLocation()) > 0) {
-                shieldCount++;
-            }
-        }
-
-        return shieldCount > 0;
+        return false;
     }
 
     /**
@@ -2701,28 +2688,8 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * size has its own draw backs. So check each size and add modifers based on
      * the number shields of that size.
      */
-    public int getNumberOfShields(int size) {
-        // only mechs can have shields.
-        if (!(this instanceof Mech))
-            return 0;
-
-        int raShield = 0;
-        int laShield = 0;
-
-        for (Mounted m : getMisc()) {
-            EquipmentType type = m.getType();
-            if (type instanceof MiscType && type.hasFlag(MiscType.F_CLUB) && (type.hasSubType(size))) {
-                // ok so we have a shield of certain size. no which arm is it.
-                if (m.getLocation() == Mech.LOC_RARM)
-                    raShield = 1;
-                if (m.getLocation() == Mech.LOC_LARM)
-                    laShield = 1;
-                // break now.
-                if (raShield > 0 && laShield > 0)
-                    return 2;
-            }
-        }
-        return raShield + laShield;
+    public int getNumberOfShields(long size) {
+        return 0;
     }
 
     /**
@@ -2730,28 +2697,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * hasShield has been called.
      */
     public boolean hasActiveShield(int location, boolean rear) {
-        if (!(this instanceof Mech)) {
-            return false;
-        }
-        switch (location) {
-        case Mech.LOC_CT:
-        case Mech.LOC_HEAD:
-            // no rear head location so must be rear CT which is not
-            // proected by
-            // any shield
-            if (rear)
-                return false;
-            if (hasActiveShield(Mech.LOC_LARM) || hasActiveShield(Mech.LOC_RARM))
-                return true;
-            // else
-            return false;
-        case Mech.LOC_LARM:
-        case Mech.LOC_LT:
-        case Mech.LOC_LLEG:
-            return hasActiveShield(Mech.LOC_LARM);
-        default:
-            return hasActiveShield(Mech.LOC_RARM);
-        }
+        return true;
     }
 
     /**
@@ -2759,31 +2705,6 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * hasActiveShield(location,rear)
      */
     public boolean hasActiveShield(int location) {
-
-        if (location != Mech.LOC_RARM && location != Mech.LOC_LARM)
-            return false;
-
-        if (this.isShutDown() || (this.getCrew().isKoThisRound() || this.getCrew().isUnconscious()))
-            return false;
-
-        for (int slot = 0; slot < this.getNumberOfCriticals(location); slot++) {
-            CriticalSlot cs = this.getCritical(location, slot);
-
-            if (cs == null)
-                continue;
-
-            if (cs.getType() != CriticalSlot.TYPE_EQUIPMENT)
-                continue;
-
-            if (cs.isDamaged())
-                continue;
-
-            Mounted m = this.getEquipment(cs.getIndex());
-            EquipmentType type = m.getType();
-            if (type instanceof MiscType && ((MiscType) type).isShield() && m.curMode().equals(MiscType.S_ACTIVE_SHIELD)) {
-                return m.getCurrentDamageCapacity(this, m.getLocation()) > 0;
-            }
-        }
         return false;
     }
 
@@ -2792,29 +2713,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * hasShield has been called.
      */
     public boolean hasPassiveShield(int location, boolean rear) {
-        if (!(this instanceof Mech)) {
-            return false;
-        }
-        switch (location) {
-        // CT Head and legs are not protected by Passive shields.
-        case Mech.LOC_CT:
-        case Mech.LOC_HEAD:
-        case Mech.LOC_LLEG:
-        case Mech.LOC_RLEG:
-            return false;
-        case Mech.LOC_LARM:
-        case Mech.LOC_LT:
-            if (rear)// only LT has a rear and passive does not protect
-                // that
-                return false;
-            return hasPassiveShield(Mech.LOC_LARM);
-            // RA RT
-        default:
-            if (rear)// only RT has a rear and passive does not protect
-                // that
-                return false;
-            return hasPassiveShield(Mech.LOC_RARM);
-        }
+        return false;
     }
 
     /**
@@ -2822,31 +2721,6 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * hasPassiveShield(location,rear)
      */
     public boolean hasPassiveShield(int location) {
-
-        if (this.isShutDown() || (this.getCrew().isKoThisRound() || this.getCrew().isUnconscious()))
-            return false;
-
-        if (location != Mech.LOC_RARM && location != Mech.LOC_LARM)
-            return false;
-
-        for (int slot = 0; slot < this.getNumberOfCriticals(location); slot++) {
-            CriticalSlot cs = this.getCritical(location, slot);
-
-            if (cs == null)
-                continue;
-
-            if (cs.getType() != CriticalSlot.TYPE_EQUIPMENT)
-                continue;
-
-            if (cs.isDamaged())
-                continue;
-
-            Mounted m = this.getEquipment(cs.getIndex());
-            EquipmentType type = m.getType();
-            if (type instanceof MiscType && ((MiscType) type).isShield() && m.curMode().equals(MiscType.S_PASSIVE_SHIELD)) {
-                return m.getCurrentDamageCapacity(this, m.getLocation()) > 0;
-            }
-        }
         return false;
     }
 
@@ -2854,37 +2728,6 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Does the mech have an shield in no defense mode
      */
     public boolean hasNoDefenseShield(int location) {
-
-        if (location != Mech.LOC_RARM && location != Mech.LOC_LARM)
-            return false;
-
-        for (int slot = 0; slot < this.getNumberOfCriticals(location); slot++) {
-            CriticalSlot cs = this.getCritical(location, slot);
-
-            if (cs == null)
-                continue;
-
-            if (cs.getType() != CriticalSlot.TYPE_EQUIPMENT)
-                continue;
-
-            if (cs.isDamaged())
-                continue;
-
-            Mounted m = this.getEquipment(cs.getIndex());
-            EquipmentType type = m.getType();
-            if (type instanceof MiscType && ((MiscType) type).isShield() && (m.curMode().equals(MiscType.S_NO_SHIELD) || this.isShutDown() || // if
-                    // he
-                    // has
-                    // a
-                    // shield
-                    // and
-                    // the mek is SD or pilot
-                    // KOed then it goes to no
-                    // defense mode
-                    this.getCrew().isKoThisRound() || this.getCrew().isUnconscious())) {
-                return m.getCurrentDamageCapacity(this, m.getLocation()) > 0;
-            }
-        }
         return false;
     }
 
@@ -7075,4 +6918,11 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         return Entity.NONE;
     }
 
+    public boolean hasFunctionalArmAES(int location) {
+        return false;
+    }
+    
+    public boolean hasFunctionalLegAES() {
+        return false;
+    }
 }

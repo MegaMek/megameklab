@@ -208,6 +208,10 @@ public class BipedMech extends Mech {
         locsToCheck[0] = Mech.LOC_RLEG;
         locsToCheck[1] = Mech.LOC_LLEG;
 
+        if ( hasFunctionalLegAES() ) {
+            roll.addModifier(-2, "AES bonus");
+        }
+        
         for (int i = 0; i < locsToCheck.length; i++) {
             int loc = locsToCheck[i];
 
@@ -403,10 +407,272 @@ public class BipedMech extends Mech {
 
     }
 
+    /**
+     * Does the mech have any shields. a mech can have up to 2 shields.
+     * 
+     * @return <code>true</code> if <code>shieldCount</code> is greater then
+     *         0 else <code>false</code>
+     */
+    public boolean hasShield() {
+        int shieldCount = 0;
+
+        
+        for (Mounted m : getMisc()) {
+            EquipmentType type = m.getType();
+            if (type instanceof MiscType && ((MiscType) type).isShield() && this.getInternal(m.getLocation()) > 0) {
+                shieldCount++;
+            }
+        }
+
+        return shieldCount > 0;
+    }
+
+    /**
+     * Check to see how many shields of a certian size a mek has. you can have
+     * up to shields per mech. However they can be of different size and each
+     * size has its own draw backs. So check each size and add modifers based on
+     * the number shields of that size.
+     */
+    public int getNumberOfShields(long size) {
+        
+        int raShield = 0;
+        int laShield = 0;
+
+        for (Mounted m : getMisc()) {
+            EquipmentType type = m.getType();
+            if (type instanceof MiscType && type.hasFlag(MiscType.F_CLUB) && (type.hasSubType(size))) {
+                // ok so we have a shield of certain size. no which arm is it.
+                if (m.getLocation() == Mech.LOC_RARM)
+                    raShield = 1;
+                if (m.getLocation() == Mech.LOC_LARM)
+                    laShield = 1;
+                // break now.
+                if (raShield > 0 && laShield > 0)
+                    return 2;
+            }
+        }
+        return raShield + laShield;
+    }
+
+    /**
+     * Does the mech have an active shield This should only be called after
+     * hasShield has been called.
+     */
+    public boolean hasActiveShield(int location, boolean rear) {
+
+        switch (location) {
+        case Mech.LOC_CT:
+        case Mech.LOC_HEAD:
+            // no rear head location so must be rear CT which is not
+            // proected by
+            // any shield
+            if (rear)
+                return false;
+            if (hasActiveShield(Mech.LOC_LARM) || hasActiveShield(Mech.LOC_RARM))
+                return true;
+            // else
+            return false;
+        case Mech.LOC_LARM:
+        case Mech.LOC_LT:
+        case Mech.LOC_LLEG:
+            return hasActiveShield(Mech.LOC_LARM);
+        default:
+            return hasActiveShield(Mech.LOC_RARM);
+        }
+    }
+
+    /**
+     * Does the mech have an active shield This should only be called by
+     * hasActiveShield(location,rear)
+     */
+    public boolean hasActiveShield(int location) {
+
+        if (location != Mech.LOC_RARM && location != Mech.LOC_LARM)
+            return false;
+
+        if (this.isShutDown() || (this.getCrew().isKoThisRound() || this.getCrew().isUnconscious()))
+            return false;
+
+        for (int slot = 0; slot < this.getNumberOfCriticals(location); slot++) {
+            CriticalSlot cs = this.getCritical(location, slot);
+
+            if (cs == null)
+                continue;
+
+            if (cs.getType() != CriticalSlot.TYPE_EQUIPMENT)
+                continue;
+
+            if (cs.isDamaged())
+                continue;
+
+            Mounted m = this.getEquipment(cs.getIndex());
+            EquipmentType type = m.getType();
+            if (type instanceof MiscType && ((MiscType) type).isShield() && m.curMode().equals(MiscType.S_ACTIVE_SHIELD)) {
+                return m.getCurrentDamageCapacity(this, m.getLocation()) > 0;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Does the mech have a passive shield This should only be called after
+     * hasShield has been called.
+     */
+    public boolean hasPassiveShield(int location, boolean rear) {
+
+        switch (location) {
+        // CT Head and legs are not protected by Passive shields.
+        case Mech.LOC_CT:
+        case Mech.LOC_HEAD:
+        case Mech.LOC_LLEG:
+        case Mech.LOC_RLEG:
+            return false;
+        case Mech.LOC_LARM:
+        case Mech.LOC_LT:
+            if (rear)// only LT has a rear and passive does not protect
+                // that
+                return false;
+            return hasPassiveShield(Mech.LOC_LARM);
+            // RA RT
+        default:
+            if (rear)// only RT has a rear and passive does not protect
+                // that
+                return false;
+            return hasPassiveShield(Mech.LOC_RARM);
+        }
+    }
+
+    /**
+     * Does the mech have a passive shield This should only be called by
+     * hasPassiveShield(location,rear)
+     */
+    public boolean hasPassiveShield(int location) {
+
+        if (this.isShutDown() || (this.getCrew().isKoThisRound() || this.getCrew().isUnconscious()))
+            return false;
+
+        if (location != Mech.LOC_RARM && location != Mech.LOC_LARM)
+            return false;
+
+        for (int slot = 0; slot < this.getNumberOfCriticals(location); slot++) {
+            CriticalSlot cs = this.getCritical(location, slot);
+
+            if (cs == null)
+                continue;
+
+            if (cs.getType() != CriticalSlot.TYPE_EQUIPMENT)
+                continue;
+
+            if (cs.isDamaged())
+                continue;
+
+            Mounted m = this.getEquipment(cs.getIndex());
+            EquipmentType type = m.getType();
+            if (type instanceof MiscType && ((MiscType) type).isShield() && m.curMode().equals(MiscType.S_PASSIVE_SHIELD)) {
+                return m.getCurrentDamageCapacity(this, m.getLocation()) > 0;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Does the mech have an shield in no defense mode
+     */
+    public boolean hasNoDefenseShield(int location) {
+
+        if (location != Mech.LOC_RARM && location != Mech.LOC_LARM)
+            return false;
+
+        for (int slot = 0; slot < this.getNumberOfCriticals(location); slot++) {
+            CriticalSlot cs = this.getCritical(location, slot);
+
+            if (cs == null)
+                continue;
+
+            if (cs.getType() != CriticalSlot.TYPE_EQUIPMENT)
+                continue;
+
+            if (cs.isDamaged())
+                continue;
+
+            Mounted m = this.getEquipment(cs.getIndex());
+            EquipmentType type = m.getType();
+            if (type instanceof MiscType && ((MiscType) type).isShield() && (m.curMode().equals(MiscType.S_NO_SHIELD) || this.isShutDown() || // if
+                    // he
+                    // has
+                    // a
+                    // shield
+                    // and
+                    // the mek is SD or pilot
+                    // KOed then it goes to no
+                    // defense mode
+                    this.getCrew().isKoThisRound() || this.getCrew().isUnconscious())) {
+                return m.getCurrentDamageCapacity(this, m.getLocation()) > 0;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Checks is Biped Mek has functional AES in the location.
+     * Only works for Arms
+     */
+    public boolean hasFunctionalArmAES(int location) {
+        
+        boolean hasAES = false;
+        if ( location != Mech.LOC_RARM && location != Mech.LOC_LARM )
+            return false;
+        
+        for (Mounted mounted : this.getWeaponList() ) {
+            if ( mounted.getLocation() == location 
+                    && mounted.getType().hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM) 
+                    && !mounted.isDestroyed()
+                    && !mounted.isBreached()
+                    && !mounted.isMissing() ) {
+                hasAES = true;
+            } //AES is destroyed their for it cannot be used.
+            else if ( mounted.getLocation() == location 
+                    && mounted.getType().hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM) ) {
+                return false;
+            }
+        }
+        
+        return hasAES;
+    }
+    
+    /**
+     * Checks for functional AES in both legs
+     */
+    public boolean hasFunctionalLegAES() {
+        boolean rightLeg = false;
+        boolean leftLeg = false;
+        
+        for (Mounted mounted : this.getMisc()) {
+            if ( mounted.getLocation() == Mech.LOC_LLEG || mounted.getLocation() == Mech.LOC_RLEG ) {
+                if ( ((MiscType)mounted.getType()).hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM) 
+                        && !mounted.isDestroyed()
+                        && !mounted.isBreached()
+                        && !mounted.isMissing()) {
+                    if ( mounted.getLocation() == Mech.LOC_LLEG ) {
+                        leftLeg = true;
+                    }
+                    else {
+                        rightLeg = true;
+                    }
+                }//AES is destroyed their for it cannot be used.
+                else if ( ((MiscType)mounted.getType()).hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM) ) {
+                    return false;
+                }
+            }
+        }
+        
+        return rightLeg && leftLeg;
+    }
+
     public boolean canGoHullDown() {
         return game.getOptions().booleanOption("tacops_hull_down")
             && !isLocationBad(Mech.LOC_LLEG)
             && !isLocationBad(Mech.LOC_RLEG);
-
     }
 }

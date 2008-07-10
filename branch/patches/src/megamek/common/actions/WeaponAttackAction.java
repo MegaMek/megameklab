@@ -690,6 +690,10 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             }
         }
 
+        if ( ae.hasFunctionalArmAES(weapon.getLocation()) ) {
+            toHit.addModifier(-1,"AES modifer");
+        }
+        
         if (ae.hasShield()) {
             // active shield has already been checked as it makes shots
             // impossible

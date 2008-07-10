@@ -368,7 +368,7 @@ public class ClubAttackAction extends PhysicalAttackAction {
         toHit = new ToHitData(base, "base");
 
         setCommonModifiers(toHit, game, ae, target);
-
+        
         // damaged or missing actuators
         if (bothArms) {
             if (!ae.hasWorkingSystem(Mech.ACTUATOR_UPPER_ARM, Mech.LOC_RARM)) {
@@ -385,6 +385,9 @@ public class ClubAttackAction extends PhysicalAttackAction {
             }
             if (hasClaws) {
                 toHit.addModifier(1, "Mek has claws");
+            }
+            if ( ae.hasFunctionalArmAES(Mech.LOC_RARM) && ae.hasFunctionalArmAES(Mech.LOC_LARM) ) {
+                toHit.addModifier(-1,"AES modifer");
             }
         } else {
             if (!ae.hasWorkingSystem(Mech.ACTUATOR_UPPER_ARM, club
@@ -409,6 +412,9 @@ public class ClubAttackAction extends PhysicalAttackAction {
                     && (!ae.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, club
                             .getLocation()) || !ae.hasWorkingSystem(
                             Mech.ACTUATOR_UPPER_ARM, club.getLocation()))) {
+            }
+            if ( ae.hasFunctionalArmAES(club.getLocation()) ) {
+                toHit.addModifier(-1,"AES modifer");
             }
         }
 

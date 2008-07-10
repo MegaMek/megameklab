@@ -172,6 +172,10 @@ public class TripAttackAction extends PhysicalAttackAction {
             toHit.append(getLimbModifier(limb1, ae));
         }
 
+        if ( ae.hasFunctionalLegAES() ) {
+            toHit.addModifier(-1, "AES modifer");
+        }
+        
         // done!
         return toHit;
     }
