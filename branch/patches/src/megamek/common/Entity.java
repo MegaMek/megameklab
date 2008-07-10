@@ -769,6 +769,9 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
 
     public void setHullDown(boolean down) {
         hullDown = down;
+        if ( hullDown ){
+            prone = false;
+        }
     }
 
     /**
@@ -4099,7 +4102,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
             return roll;
         }
 
-        if (isHullDown()) {
+        if (isHullDown() && this instanceof QuadMech) {
             roll.addModifier(TargetRoll.AUTOMATIC_SUCCESS, "getting up from hull down");
             return roll;
         }

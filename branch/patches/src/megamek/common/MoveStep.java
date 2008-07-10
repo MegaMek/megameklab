@@ -641,7 +641,35 @@ public class MoveStep implements Serializable {
                 }
                 break;
             case MovePath.STEP_HULL_DOWN:
-                setMp(2);
+                if ( isProne() && entity instanceof Mech){
+                    int mpUsed = 1;
+                    if ( entity instanceof BipedMech ){
+                        for ( int location = Mech.LOC_RLEG; location <= Mech.LOC_LLEG; location++ ){
+                            if ( entity.isLocationBad(location ) ){
+                                mpUsed += 4;
+                            }else {
+                                mpUsed += ((Mech)entity).countLegActuatorCrits(location);
+                                if ( ((Mech)entity).hasHipCrit() ){
+                                    mpUsed += 1;
+                                }
+                            }
+                        }
+                    }else {
+                        for ( int location = Mech.LOC_RARM; location <= Mech.LOC_LLEG; location++ ){
+                            if ( entity.isLocationBad(location ) ){
+                                mpUsed += 4;
+                            }else {
+                                mpUsed += ((QuadMech)entity).countLegActuatorCrits(location);
+                                if ( ((QuadMech)entity).hasHipCrit() ){
+                                    mpUsed += 1;
+                                }
+                            }
+                        }
+                    }
+                    setMp(mpUsed);
+                }else{
+                    setMp(2);
+                }
                 break;
             case MovePath.STEP_CLIMB_MODE_ON:
                 setClimbMode(true);
@@ -1755,9 +1783,9 @@ public class MoveStep implements Serializable {
 
         // only standing quads may go hull down
         if (stepType == MovePath.STEP_HULL_DOWN) {
-            if ((isProne() || isHullDown()
-                    || !(entity instanceof QuadMech || entity instanceof Tank) || entity
-                    .isStuck())) {
+            if ((isHullDown()
+                    || !(entity instanceof Mech || entity instanceof Tank) 
+                    || entity.isStuck())) {
                 movementType = IEntityMovementType.MOVE_ILLEGAL;
             }
             if (entity instanceof Tank

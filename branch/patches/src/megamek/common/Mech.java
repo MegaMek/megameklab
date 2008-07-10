@@ -3633,5 +3633,4 @@ public abstract class Mech extends Entity implements Serializable {
         return grappledSide;
     }
 
-
 }

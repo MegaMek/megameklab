@@ -4182,6 +4182,7 @@ public class Server implements Runnable {
         int j = 0;
         boolean didMove = false;
         boolean recovered = false;
+        boolean isHullDown = entity.isHullDown();
         Entity loader = null;
 
         // get a list of coordinates that the unit passed through this turn
@@ -4502,13 +4503,22 @@ public class Server implements Runnable {
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 entity.heatBuildup += 1;
                 entity.setProne(false);
-                entity.setHullDown(false);
                 wasProne = false;
                 game.resetPSRs(entity);
                 entityFellWhileAttemptingToStand = !doSkillCheckInPlace(entity, rollTarget);
+                entity.setHullDown(false);
             }
             // did the entity just fall?
-            if (entityFellWhileAttemptingToStand) {
+            if (entityFellWhileAttemptingToStand && !isHullDown) {
+                moveType = step.getMovementType();
+                curFacing = entity.getFacing();
+                curPos = entity.getPosition();
+                mpUsed = step.getMpUsed();
+                fellDuringMovement = true;
+                break;
+            }else if ( entityFellWhileAttemptingToStand && isHullDown ){
+                mpUsed = step.getMpUsed();
+                entity.setHullDown(true);
                 moveType = step.getMovementType();
                 curFacing = entity.getFacing();
                 curPos = entity.getPosition();
@@ -7154,10 +7164,18 @@ public class Server implements Runnable {
         r.add(roll.getDesc());
         r.add(diceRoll);
         boolean suc;
-        if (diceRoll < roll.getValue()) {
+        if (diceRoll < roll.getValue() ) {
             r.choose(false);
             addReport(r);
-            addReport(doEntityFall(entity, roll));
+            if ( !entity.isHullDown() )
+                addReport(doEntityFall(entity, roll));
+            else{
+                r = new Report (2317);
+                r.subject = entity.getId();
+                r.add(entity.getDisplayName());
+                addReport(r);
+            }
+                
             suc = false;
         } else {
             r.choose(true);
@@ -17877,6 +17895,11 @@ public class Server implements Runnable {
             entity.setProne(true);
             return vPhaseReport;
         }
+        
+        if ( entity.canGoHullDown() && entity.isHullDown() ){
+            
+        }
+        
         // facing after fall
         String side;
         int table;

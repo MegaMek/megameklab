@@ -689,6 +689,10 @@ public class QuadMech extends Mech {
     }
 
     public boolean canGoHullDown() {
-        return game.getOptions().booleanOption("hull_down");
+        return game.getOptions().booleanOption("tacops_hull_down") 
+            && !isLocationBad(Mech.LOC_LARM)
+            && !isLocationBad(Mech.LOC_RARM)
+            && !isLocationBad(Mech.LOC_LLEG)
+            && !isLocationBad(Mech.LOC_RLEG);
     }
 }

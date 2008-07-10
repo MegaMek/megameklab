@@ -1184,7 +1184,7 @@ public class Tank extends Entity implements Serializable {
     }
     
     public boolean canGoHullDown() {
-        return game.getOptions().booleanOption("hull_down");
+        return game.getOptions().booleanOption("tacops_hull_down");
     }
 
     public void setOnFire(boolean inferno) {

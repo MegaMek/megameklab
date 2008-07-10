@@ -1782,7 +1782,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         if (ce != null && !ce.isImmobile()) {
             setGetUpEnabled(cmd.getFinalProne() || cmd.getFinalHullDown());
             setGoProneEnabled(!(butUp.isEnabled()) && ce instanceof Mech);
-            setHullDownEnabled(!(butUp.isEnabled()) && ce.canGoHullDown());
+            setHullDownEnabled(ce.canGoHullDown());
         } else {
             setGetUpEnabled(false);
             setGoProneEnabled(false);

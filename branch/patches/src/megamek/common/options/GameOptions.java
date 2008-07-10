@@ -128,7 +128,6 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedCombat, "tacops_heat", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_partial_cover", false); //$NON-NLS-1$
         addOption(advancedCombat, "quad_hit_location", false); //$NON-NLS-1$
-        addOption(advancedCombat, "hull_down", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_ba_criticals", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_hotload", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_rapid_ac", false); //$NON-NLS-1$
@@ -151,6 +150,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedGroundMovement, "tacops_walk_backwards", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "vehicle_lance_movement", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "vehicle_lance_movement_number", 4); //$NON-NLS-1$
+        addOption(advancedGroundMovement, "tacops_hull_down", false); //$NON-NLS-1$
 
         IBasicOptionGroup ruleBreakers = addGroup("ruleBreakers"); //$NON-NLS-1$
         addOption(ruleBreakers, "no_tac", false); //$NON-NLS-1$

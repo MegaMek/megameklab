@@ -402,4 +402,11 @@ public class BipedMech extends Mech {
         return 0;
 
     }
+
+    public boolean canGoHullDown() {
+        return game.getOptions().booleanOption("tacops_hull_down")
+            && !isLocationBad(Mech.LOC_LLEG)
+            && !isLocationBad(Mech.LOC_RLEG);
+
+    }
 }
