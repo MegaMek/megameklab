@@ -690,7 +690,8 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             }
         }
 
-        if ( ae.hasFunctionalArmAES(weapon.getLocation()) ) {
+        if ( ae.hasFunctionalArmAES(weapon.getLocation()) 
+                && !weapon.isSplit() ) {
             toHit.addModifier(-1,"AES modifer");
         }
         

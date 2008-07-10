@@ -122,7 +122,6 @@ import megamek.common.VTOL;
 import megamek.common.Warship;
 import megamek.common.WeaponComparator;
 import megamek.common.WeaponType;
-import megamek.common.IGame.Phase;
 import megamek.common.actions.AbstractAttackAction;
 import megamek.common.actions.ArtilleryAttackAction;
 import megamek.common.actions.AttackAction;
