@@ -1027,7 +1027,7 @@ public class ClientGUI extends JPanel implements MouseListener, WindowListener,
                     }
                 }
                 if (h != null && client.game.containsMinefield(coords)
-                        && curPanel instanceof FiringDisplay) {
+                        && (curPanel instanceof FiringDisplay || curPanel instanceof TargetingPhaseDisplay)) {
                     popup.add(new TargetMenuItem(new MinefieldTarget(coords,
                             client.game.getBoard())));
                 }

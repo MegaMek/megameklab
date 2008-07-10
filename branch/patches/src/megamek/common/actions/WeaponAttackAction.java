@@ -1528,7 +1528,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                 // target type checked later because its different for
                 // direct/indirect (BMRr p77 on board arrow IV)
                 isHoming = true;
-            } else if (ttype != Targetable.TYPE_HEX_ARTILLERY
+            } else if (ttype != Targetable.TYPE_HEX_ARTILLERY && ttype != Targetable.TYPE_MINEFIELD_CLEAR
                     && !isArtilleryFLAK) {
                 return "Weapon must make artillery attacks.";
             }

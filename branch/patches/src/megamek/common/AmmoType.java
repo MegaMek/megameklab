@@ -6682,6 +6682,15 @@ public class AmmoType extends EquipmentType {
         	return true;
         }
         
+        //Artillery
+        if(at != null &&
+        		((at.getAmmoType() == T_ARROW_IV || 
+        				at.getAmmoType() == T_LONG_TOM ||
+        				at.getAmmoType() == T_SNIPER ||
+        				at.getAmmoType() == T_THUMPER) && at.getMunitionType() == M_STANDARD)) {
+        	return true;
+        }
+        
         //TODO: mine clearance munitions
 
         return false;

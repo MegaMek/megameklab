@@ -22250,7 +22250,7 @@ public class Server implements Runnable {
      * @param altitude
      *            Absolute altitude for flak attack
      */
-    public void artilleryDamageArea(Coords centre, Coords attackSource, AmmoType ammo, int subjectId, Entity killer, boolean flak, int altitude, Vector<Report> vPhaseReport) {
+    public void artilleryDamageArea(Coords centre, Coords attackSource, AmmoType ammo, int subjectId, Entity killer, boolean flak, int altitude, boolean mineClear, Vector<Report> vPhaseReport) {
         int damage;
         int falloff = 5;
         if (ammo.getMunitionType() == AmmoType.M_FLECHETTE) {
@@ -22272,6 +22272,10 @@ public class Server implements Runnable {
             // level 2 ammo
             damage = ammo.getRackSize();
             falloff = (damage + 1) / 2;
+        }
+        //if this was a mine clearance, then it only affects the hex hit
+        if(mineClear) {
+        	falloff = damage;
         }
         artilleryDamageArea(centre, attackSource, ammo, subjectId, killer, damage, falloff, flak, altitude, vPhaseReport);
     }
