@@ -518,6 +518,11 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         if (ae.isSufferingEMI())
             toHit.addModifier(+2, "electromagnetic interference");
 
+        //evading bonuses (
+        if(te.isEvading()) {
+        	toHit.addModifier(te.getEvasionBonus(), "target is evading");
+        }
+      
         //Aeros may suffer from criticals
         if (ae instanceof Aero) {
             Aero aero = (Aero)ae;
@@ -651,17 +656,6 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             if(a.getCurrentVelocity() == 0) {
                 toHit.addModifier(-2,"target is not moving");
             }
-            
-            //is target evading
-            if(a.isEvading()) {
-                if(target instanceof SmallCraft) {
-                    toHit.addModifier(+2, "target is evading");
-                } else  if (target instanceof Jumpship) {
-                    toHit.addModifier(+1, "target is evading");
-                } else {
-                    toHit.addModifier(+3,"target is evading");
-                }
-            }   
             
             //capital weapon (except missiles) penalties at small targets
             if(wtype.isCapital() && 
@@ -1586,6 +1580,9 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         } else if (sensorHits > 1) {
             return "Attacker sensors destroyed.";
         }
+        
+        if(ae.isEvading() && !(ae instanceof Dropship) && !(ae instanceof Jumpship)) 
+            return "Attacker is evading.";
 
         if (ae instanceof Aero) {
             Aero aero = (Aero)ae;            
@@ -1600,9 +1597,6 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                 if(cic > 2)
                     return "CIC destroyed.";
             }
-            
-            if(aero.isEvading() && !(ae instanceof Dropship) && !(ae instanceof Jumpship)) 
-                return "Attacker is evading.";
                         
             //if space bombing, then can't do other attacks
             for ( Enumeration<EntityAction> i = game.getActions();

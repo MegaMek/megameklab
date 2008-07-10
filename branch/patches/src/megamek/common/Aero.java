@@ -162,7 +162,6 @@ public class Aero
     //set up movement
     private int currentVelocity = 0;
     private int nextVelocity = currentVelocity;
-    private boolean evading = false;
     private boolean accLast = false;
     private boolean rolled = false;
     private boolean failedManeuver = false;
@@ -236,10 +235,6 @@ public class Aero
         return randomMove;
     }
     
-    public boolean isEvading() {
-        return evading;
-    }
-    
     public boolean didAccLast() {
         return accLast;
     }
@@ -270,10 +265,6 @@ public class Aero
     
     public void setRolled(boolean roll) {
         this.rolled = roll;
-    }
-    
-    public void setEvading(boolean evasion) {
-        this.evading = evasion;
     }
     
     public void setAccLast(boolean b) {
@@ -496,9 +487,6 @@ public class Aero
     
     public void newRound(int roundNumber) {
         super.newRound(roundNumber);
-       
-        //reset evasion
-        this.setEvading(false);
         
         //reset maneuver status
         this.setFailedManeuver(false);

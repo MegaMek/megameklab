@@ -128,6 +128,11 @@ public class DfaAttackAction extends DisplacementAttackAction {
             return new ToHitData(TargetRoll.IMPOSSIBLE,
                     "Target is a passenger.");
         }
+        
+        //no evading
+        if(md.contains(MovePath.STEP_EVADE)) {
+        	return new ToHitData(TargetRoll.IMPOSSIBLE, "No evading while charging");
+        }
 
         // Can't target a entity conducting a swarm attack.
         if (te != null && Entity.NONE != te.getSwarmTargetId()) {
@@ -344,6 +349,11 @@ public class DfaAttackAction extends DisplacementAttackAction {
 
         Compute.modifyPhysicalBTHForAdvantages(ae, te, toHit, game);
 
+        //evading bonuses (
+        if(te.isEvading()) {
+        	toHit.addModifier(te.getEvasionBonus(), "target is evading");
+        }
+        
         if (te != null) {
             if (te instanceof Tank) {
                 toHit.setSideTable(ToHitData.SIDE_FRONT);

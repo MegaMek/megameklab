@@ -538,11 +538,11 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsMech.add(butSearchlight);
         buttonsMech.add(butHullDown);
         buttonsMech.add(butSwim);
+        buttonsMech.add(butEvade);
         buttonsMech.add(butEject);
         buttonsMech.add(butFlee);
         buttonsMech.add(butRAC);
         // these are last, they won't be used by mechs
-        buttonsMech.add(butDigIn);
         buttonsMech.add(butFortify);
         buttonsMech.add(butLayMine);
         buttonsMech.add(butLower);
@@ -858,6 +858,9 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         updateSearchlightButton();
         updateLoadButtons();
         updateElevationButtons();
+        
+        setEvadeEnabled(isMech && client.game.getOptions().booleanOption("tacops_evade"));
+        
         updateRecoveryButton();
         updateDumpButton();
 
@@ -867,7 +870,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             butEndOver.setEnabled(true);
             butTurnLeft.setEnabled(true);
             butTurnRight.setEnabled(true);
-            butEvade.setEnabled(true);
+            setEvadeEnabled(true);
             setEjectEnabled(true);
             // no turning for spheroids in atmosphere
             if ((((Aero) ce).isSpheroid() || client.game.getPlanetaryConditions().isVacuum()) 

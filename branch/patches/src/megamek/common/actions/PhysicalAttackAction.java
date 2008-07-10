@@ -14,6 +14,7 @@
 
 package megamek.common.actions;
 
+import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Building;
 import megamek.common.Compute;
@@ -61,6 +62,11 @@ public class PhysicalAttackAction extends AbstractAttackAction {
         if (ae.getPosition().distance(target.getPosition()) > 1) {
             return "Target not in range";
         }
+        
+        //can't make a physical attack if you are evading
+        if(ae.isEvading()) {
+        	return "Attacker is evading.";
+        }
 
         if (target.getTargetType() == Targetable.TYPE_ENTITY) {
             // Checks specific to entity targets
@@ -106,7 +112,7 @@ public class PhysicalAttackAction extends AbstractAttackAction {
             if (te.isMakingDfa()) {
                 return "Target is making a DFA attack";
             }
-
+            
         }
 
         // Can't target woods or ignite a building with a physical.
@@ -136,7 +142,6 @@ public class PhysicalAttackAction extends AbstractAttackAction {
 
         // target terrain
         toHit.append(Compute.getTargetTerrainModifier(game, target));
-
 
         // If it has a torso-mounted cockpit and two head sensor hits or three
         // sensor hits...
@@ -195,6 +200,11 @@ public class PhysicalAttackAction extends AbstractAttackAction {
                 }else if ( ae.getWeightClass() == EntityWeightClass.WEIGHT_MEDIUM ) {
                     toHit.addModifier(-1, "Weight Class Attack Modifier");
                 }
+            }
+            
+            //evading bonuses (
+            if(te.isEvading()) {
+            	toHit.addModifier(te.getEvasionBonus(), "target is evading");
             }
         }
     }

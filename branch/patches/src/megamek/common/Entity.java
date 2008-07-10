@@ -138,6 +138,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     // twice in one round
     public boolean dodging;
     public boolean reckless;
+    private boolean evading = false;
 
     public boolean spotting;
     private boolean clearingMinefield = false;
@@ -3493,6 +3494,9 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         setPassedThrough(new Vector<Coords>());
 
         resetFiringArcs();
+        
+        //reset evasion
+        setEvading(false);
 
         // Update the inferno tracker.
         this.infernos.newRound(roundNumber);
@@ -6924,5 +6928,41 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     
     public boolean hasFunctionalLegAES() {
         return false;
+    }
+    
+    public boolean isEvading() {
+        return evading;
+    }
+    
+    public void setEvading(boolean evasion) {
+        this.evading = evasion;
+    }
+    
+    public int getEvasionBonus() {
+    	if(isProne()) {
+    		return 0;
+    	}
+    	
+    	if(this instanceof SmallCraft) {
+    		return 2;
+    	} else  if (this instanceof Jumpship) {
+    		return 1;
+    	} else if (this instanceof Aero) {
+    		return 3;
+    	} else {
+    		if(game.getOptions().booleanOption("tacops_skilled_evasion")) {
+    			int piloting = crew.getPiloting();
+    			if(piloting < 2) {
+    				return 3;
+    			} else if(piloting < 4) {
+    				return 2;
+    			} else if(piloting < 6) {
+    				return 1;
+    			}
+    		} else {
+    			return 1;
+    		}
+    	}
+    	return 0;
     }
 }

@@ -706,7 +706,9 @@ public class MoveStep implements Serializable {
                 setMp(1);
                 break;
             case MovePath.STEP_EVADE:
-                setMp(2);
+            	setEvading(true);
+            	if(entity instanceof Aero)
+            		setMp(2);
                 break;
             case MovePath.STEP_ROLL:
                 if(prev.isRolled) {
@@ -1450,6 +1452,8 @@ public class MoveStep implements Serializable {
                 }
             }
             
+            /*
+             * TODO: better to disable this in movement display
             //don't let them evade more than once
             if(type == MovePath.STEP_EVADE ) {
                 if(isEvading) {
@@ -1458,6 +1462,7 @@ public class MoveStep implements Serializable {
                     setEvading(true);
                 }
             }
+            */
             
             //check for thruster damage
             if(type == MovePath.STEP_TURN_LEFT && a.getRightThrustHits() > 2 && 
@@ -1566,6 +1571,14 @@ public class MoveStep implements Serializable {
         if (type == MovePath.STEP_CLEAR_MINEFIELD && entity instanceof Infantry) {
             movementType = IEntityMovementType.MOVE_NONE;
         }
+        //check for evasion
+        if (type == MovePath.STEP_EVADE) {
+        	if(entity.hasHipCrit()) {
+        		movementType = IEntityMovementType.MOVE_ILLEGAL;
+        		return;
+        	}
+            movementType = prev.movementType;
+        }
 
         // check for valid jump mp
         if (parent.isJumping()
@@ -1652,7 +1665,7 @@ public class MoveStep implements Serializable {
                     movementType = IEntityMovementType.MOVE_VTOL_RUN;
                 else
                     movementType = IEntityMovementType.MOVE_RUN;
-            } else if (getMpUsed() <= entity.getRunMP() && !isRunProhibited()) {
+            } else if (getMpUsed() <= entity.getRunMP() && !isRunProhibited() && !isEvading()) {
                 setUsingMASC(true);
                 Mech m = (Mech) entity;
                 setTargetNumberMASC(m.getMASCTarget());

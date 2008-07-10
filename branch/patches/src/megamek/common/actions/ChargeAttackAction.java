@@ -246,6 +246,11 @@ public class ChargeAttackAction extends DisplacementAttackAction {
 
         Compute.modifyPhysicalBTHForAdvantages(ae, te, toHit, game);
 
+        //evading bonuses (
+        if(te.isEvading()) {
+        	toHit.addModifier(te.getEvasionBonus(), "target is evading");
+        }
+        
         // determine hit direction
         if (te != null) {
             toHit.setSideTable(te.sideTable(src));
@@ -299,6 +304,11 @@ public class ChargeAttackAction extends DisplacementAttackAction {
             return new ToHitData(TargetRoll.IMPOSSIBLE, "No backwards movement allowed while charging");
         }
 
+        //no evading
+        if(md.contains(MovePath.STEP_EVADE)) {
+        	return new ToHitData(TargetRoll.IMPOSSIBLE, "No evading while charging");
+        }
+        
         // determine last valid step
         md.compile(game, ae);
         for (final Enumeration<MoveStep> i = md.getSteps(); i.hasMoreElements();) {

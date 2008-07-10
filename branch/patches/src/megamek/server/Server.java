@@ -4641,10 +4641,8 @@ public class Server implements Runnable {
             }
 
             if (step.getType() == MovePath.STEP_EVADE) {
-                if (entity instanceof Aero) {
-                    Aero a = (Aero) entity;
-                    a.setEvading(true);
-                }
+                entity.setEvading(true);
+                
             }
 
             if (step.getType() == MovePath.STEP_STALL) {
@@ -6940,7 +6938,9 @@ public class Server implements Runnable {
                 return;
 
             // build up heat from movement
-            if (entity.moved == IEntityMovementType.MOVE_NONE) {
+            if(entity.isEvading() && !(entity instanceof Aero)) {
+            	entity.heatBuildup += entity.getRunHeat() + 2;
+            } else if (entity.moved == IEntityMovementType.MOVE_NONE) {
                 entity.heatBuildup += entity.getStandingHeat();
             } else if (entity.moved == IEntityMovementType.MOVE_WALK || entity.moved == IEntityMovementType.MOVE_VTOL_WALK) {
                 entity.heatBuildup += entity.getWalkHeat();

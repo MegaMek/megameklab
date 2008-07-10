@@ -74,6 +74,10 @@ public class PushAttackAction extends DisplacementAttackAction {
             return "Unit Grappled";
         }
         
+        if(ae.isEvading()) {
+        	return "attacker is evading.";
+        }
+        
         return extendedBladeImpossible;
     }
 
@@ -283,6 +287,11 @@ public class PushAttackAction extends DisplacementAttackAction {
 
         Compute.modifyPhysicalBTHForAdvantages(ae, te, toHit, game);
 
+        //evading
+        if(te.isEvading()) {
+        	toHit.addModifier(te.getEvasionBonus(), "target is evading");
+        }
+        
         toHit.append(nightModifiers(game, target, null, ae, false));
         // side and elevation shouldn't matter
 
