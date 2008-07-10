@@ -122,6 +122,7 @@ import megamek.common.VTOL;
 import megamek.common.Warship;
 import megamek.common.WeaponComparator;
 import megamek.common.WeaponType;
+import megamek.common.IGame.Phase;
 import megamek.common.actions.AbstractAttackAction;
 import megamek.common.actions.ArtilleryAttackAction;
 import megamek.common.actions.AttackAction;
@@ -4182,7 +4183,6 @@ public class Server implements Runnable {
         int j = 0;
         boolean didMove = false;
         boolean recovered = false;
-        boolean isHullDown = entity.isHullDown();
         Entity loader = null;
 
         // get a list of coordinates that the unit passed through this turn
@@ -4506,17 +4506,16 @@ public class Server implements Runnable {
                 wasProne = false;
                 game.resetPSRs(entity);
                 entityFellWhileAttemptingToStand = !doSkillCheckInPlace(entity, rollTarget);
-                entity.setHullDown(false);
             }
             // did the entity just fall?
-            if (entityFellWhileAttemptingToStand && !isHullDown) {
+            if (entityFellWhileAttemptingToStand && !entity.isHullDown()) {
                 moveType = step.getMovementType();
                 curFacing = entity.getFacing();
                 curPos = entity.getPosition();
                 mpUsed = step.getMpUsed();
                 fellDuringMovement = true;
                 break;
-            }else if ( entityFellWhileAttemptingToStand && isHullDown ){
+            }else if ( entityFellWhileAttemptingToStand && entity.isHullDown() ){
                 mpUsed = step.getMpUsed();
                 entity.setHullDown(true);
                 moveType = step.getMovementType();
@@ -7167,6 +7166,7 @@ public class Server implements Runnable {
         if (diceRoll < roll.getValue() ) {
             r.choose(false);
             addReport(r);
+            
             if ( !entity.isHullDown() )
                 addReport(doEntityFall(entity, roll));
             else{
@@ -12875,7 +12875,24 @@ public class Server implements Runnable {
                 if (moving) {
                     vPhaseReport.addAll(doEntityFallsInto(entity, src, dest, base));
                 } else {
-                    vPhaseReport.addAll(doEntityFall(entity, base));
+                    if ( game.getOptions().booleanOption("tacops_falling_expanded") 
+                            && entity.getCrew().getPiloting() < 6
+                            && !entity.isHullDown() ){
+                        if ( entity.getCrew().getPiloting() > 1 && target.getValue() - diceRoll < 2){
+                            entity.setHullDown(true);
+                        }else if ( target.getValue() - diceRoll < 3 ){
+                            entity.setHullDown(true);
+                        }
+                        if ( entity.isHullDown() ){
+                            r = new Report (2317);
+                            r.subject = entity.getId();
+                            r.add(entity.getDisplayName());
+                            vPhaseReport.add(r);
+                        }
+
+                    }else {
+                        vPhaseReport.addAll(doEntityFall(entity, base));
+                    }
                 }
                 return vPhaseReport;
             }
@@ -17895,11 +17912,7 @@ public class Server implements Runnable {
             entity.setProne(true);
             return vPhaseReport;
         }
-        
-        if ( entity.canGoHullDown() && entity.isHullDown() ){
-            
-        }
-        
+
         // facing after fall
         String side;
         int table;
