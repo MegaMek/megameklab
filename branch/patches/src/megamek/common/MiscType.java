@@ -37,10 +37,8 @@ public class MiscType extends EquipmentType {
     public static final long F_C3S = 1L << 7;
     public static final long F_C3I = 1L << 8;
     public static final long F_ARTEMIS = 1L << 9;
-    public static final long F_ECM = 1L << 0;
     public static final long F_TARGCOMP = 1L << 10;
     public static final long F_ANGEL_ECM = 1L << 11;
-    public static final long F_BAP = 1L << 0;
     public static final long F_BOARDING_CLAW = 1L << 12;
     public static final long F_VACUUM_PROTECTION = 1L << 13;
     public static final long F_ASSAULT_CLAW = 1L << 14;
@@ -72,6 +70,8 @@ public class MiscType extends EquipmentType {
     public static final long F_ARMORED_CHASSIS = 1L << 40;
     public static final long F_TRACTOR_MODIFICATION = 1L << 41;    
     public static final long F_ACTUATOR_ENHANCEMENT_SYSTEM = 1L << 42;    
+    public static final long F_ECM = 1L << 43;
+    public static final long F_BAP = 1L << 44;
 
     // Secondary Flags for Physical Weapons
     public static final long S_CLUB = 1L << 0; // BMR

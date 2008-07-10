@@ -7165,7 +7165,15 @@ public class Server implements Runnable {
         if (diceRoll < roll.getValue() ) {
             r.choose(false);
             addReport(r);
-            
+            if ( game.getOptions().booleanOption("tacops_falling_expanded") 
+                    && entity.getCrew().getPiloting() < 6
+                    && !entity.isHullDown() ){
+                if ( entity.getCrew().getPiloting() > 1 && roll.getValue() - diceRoll < 2){
+                    entity.setHullDown(true);
+                }else if ( roll.getValue() - diceRoll < 3 ){
+                    entity.setHullDown(true);
+                }
+            }
             if ( !entity.isHullDown() )
                 addReport(doEntityFall(entity, roll));
             else{
