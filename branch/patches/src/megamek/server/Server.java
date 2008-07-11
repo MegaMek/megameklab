@@ -21261,7 +21261,7 @@ public class Server implements Runnable {
                 rollTarget.addModifier(2,"High-G");
             }
             
-            if ( game.getPlanetaryConditions().isVacuum() ){
+            if ( game.getPlanetaryConditions().getAtmosphere() == PlanetaryConditions.ATMO_VACUUM ){
                 rollTarget.addModifier(3,"Vacuum");
             }else if ( game.getPlanetaryConditions().getAtmosphere() == PlanetaryConditions.ATMO_VHIGH){
                 rollTarget.addModifier(2,"Very High Atmosphere Pressure");
