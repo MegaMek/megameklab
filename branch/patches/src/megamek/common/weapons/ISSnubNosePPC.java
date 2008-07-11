@@ -44,11 +44,11 @@ public class ISSnubNosePPC extends PPCWeapon {
         this.shortRange = 9;
         this.mediumRange = 13;
         this.longRange = 15;
-        this.extremeRange = 26;
+        this.extremeRange = 22;
         this.waterShortRange = 6;
         this.waterMediumRange = 8;
         this.waterLongRange = 9;
-        this.waterExtremeRange = 16;
+        this.waterExtremeRange = 13;
         this.damageShort = 10;
         this.damageMedium = 8;
         this.damageLong = 5;
