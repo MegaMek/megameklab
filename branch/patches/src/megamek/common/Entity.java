@@ -3990,6 +3990,51 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         addPilotingModifierForTerrain(roll);
         return roll;
     }
+    
+    /**
+     * Checks if an entity is passing through certain terrain while not moving carefully
+     */
+    public PilotingRollData checkRecklessMove(MoveStep step, IHex curHex, Coords lastPos, Coords curPos, int lastElev) {
+    	PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
+    	//no need to go further if movement is careful
+    	if(step.getParent().isCareful()) {
+    		roll.addModifier(TargetRoll.CHECK_FALSE, "moving carefully");
+    		return roll;
+    	}
+    	
+    	//this only applies in fog, night conditions, or if the current hex has ice
+    	boolean isFoggy = game.getPlanetaryConditions().getFog() != PlanetaryConditions.FOG_NONE;
+    	boolean isDark = game.getPlanetaryConditions().getLight() > PlanetaryConditions.L_DUSK;
+    	boolean hasIce = curHex.containsTerrain(Terrains.ICE);
+    	
+    	if(!isFoggy && !isDark) {
+    		roll.addModifier(TargetRoll.CHECK_FALSE, "conditions are not dangerous");
+    		return roll;
+    	}
+    	
+    	//if we are jumping, then no worries
+    	if(step.getMovementType() == IEntityMovementType.MOVE_JUMP) {
+    		roll.addModifier(TargetRoll.CHECK_FALSE, "jumping is not reckless?");
+    		return roll;
+    	}
+    	
+    	//we need to make this check on the first move forward and anytime the hex is not clear 
+    	//or is a level change   	
+    	if(!lastPos.equals(curPos) && lastPos.equals(step.getParent().getEntity().getPosition())) {
+    		roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
+    	}
+    	//TODO: how do you tell if it is clear?
+    	//FIXME: no perfect solution in the current code. I will for the moment use movement costs
+    	else if (!lastPos.equals(curPos) 
+    			&& (curHex.movementCost(step.getParent().getLastStepMovementType()) > 0 || lastElev != curHex.getElevation())) {
+    		roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
+    	//TODO: icy conditions
+    	} else {
+    		roll.addModifier(TargetRoll.CHECK_FALSE, "not moving recklessly");
+    	}
+    	
+    	return roll;
+    }
 
     /**
      * Checks if the entity is landing (from a jump) with damage that would
@@ -6640,11 +6685,9 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         return false;
     }
 
-    /*
     public void setReckless(boolean b) {
         this.reckless = b;
     }
-*/
 
     public boolean isReckless() {
         return reckless;

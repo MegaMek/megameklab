@@ -1928,10 +1928,10 @@ public class MoveStep implements Serializable {
 
         //check for fog
         if(game.getPlanetaryConditions().getFog() == PlanetaryConditions.FOG_LIGHT &&
-        		!game.getBoard().inSpace()) {
+        		!game.getBoard().inSpace() && parent.isCareful()) {
         	mp += 1;
         } else if(game.getPlanetaryConditions().getFog() == PlanetaryConditions.FOG_HEAVY &&
-        		!game.getBoard().inSpace()) {
+        		!game.getBoard().inSpace() && parent.isCareful()) {
         	mp += 2;
         }
         
@@ -1939,13 +1939,13 @@ public class MoveStep implements Serializable {
         //the table on p. 36 of TacOps
         //TODO: waiting to hear whether searchlights affect this
         if(game.getPlanetaryConditions().getLight() == PlanetaryConditions.L_FULL_MOON &&
-        		!game.getBoard().inSpace()) {
+        		!game.getBoard().inSpace() && parent.isCareful()) {
         	mp += 1;
         } else if(game.getPlanetaryConditions().getLight() == PlanetaryConditions.L_MOONLESS &&
-        		!game.getBoard().inSpace()) {
+        		!game.getBoard().inSpace() && parent.isCareful()) {
         	mp += 2;
         } else if(game.getPlanetaryConditions().getLight() == PlanetaryConditions.L_PITCH_BLACK &&
-        		!game.getBoard().inSpace()) {
+        		!game.getBoard().inSpace() && parent.isCareful()) {
         	mp += 3;
         }
         

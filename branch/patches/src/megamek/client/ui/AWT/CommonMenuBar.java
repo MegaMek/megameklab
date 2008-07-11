@@ -127,6 +127,7 @@ public class CommonMenuBar extends MenuBar implements ActionListener,
     private MenuItem moveGetUp = null;
     private MenuItem moveRaise = null;
     private MenuItem moveLower = null;
+    private MenuItem moveReckless = null;
     private MenuItem moveLAMmechMode = null;
     private MenuItem moveLAMairmechMode = null;
     private MenuItem moveLAMaircraftMode = null;
@@ -433,7 +434,11 @@ public class CommonMenuBar extends MenuBar implements ActionListener,
         moveLower = createMenuItem(
                 menu,
                 Messages.getString("CommonMenuBar.moveLower"), MovementDisplay.MOVE_LOWER_ELEVATION); //$NON-NLS-1$
+        moveReckless = createMenuItem(
+                menu,
+                Messages.getString("CommonMenuBar.moveReckless"), MovementDisplay.MOVE_RECKLESS); //$NON-NLS-1$
 
+        
         // Create the Special sub-menu.
         submenu = new Menu(Messages.getString("CommonMenuBar.SpecialMenu")); //$NON-NLS-1$
 
@@ -975,6 +980,10 @@ public class CommonMenuBar extends MenuBar implements ActionListener,
 
     public synchronized void setMoveLowerEnabled(boolean enabled) {
         moveLower.setEnabled(enabled);
+    }
+    
+    public synchronized void setMoveRecklessEnabled(boolean enabled) {
+        moveReckless.setEnabled(enabled);
     }
 
     public synchronized void setMoveLAMmechModeEnabled(boolean enabled) {

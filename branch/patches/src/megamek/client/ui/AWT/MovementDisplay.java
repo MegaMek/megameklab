@@ -117,6 +117,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
     public static final String MOVE_MODE_MECH = "moveModeMech"; //$NON-NLS-1$
     public static final String MOVE_MODE_AIRMECH = "moveModeAirmech"; //$NON-NLS-1$
     public static final String MOVE_MODE_AIRCRAFT = "moveModeAircraft"; //$NON-NLS-1$
+    public static final String MOVE_RECKLESS = "moveReckless"; //$NON-NLS-1$
     // Aero Movement
     public static final String MOVE_ACC = "MoveAccelerate"; //$NON-NLS-1$
     public static final String MOVE_DEC = "MoveDecelerate"; //$NON-NLS-1$
@@ -184,6 +185,8 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
     private Button butFortify;
 
     private Button butShakeOff;
+    
+    private Button butReckless;
 
     private Button butAcc;
     private Button butDec;
@@ -415,6 +418,12 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         butShakeOff.setEnabled(false);
         butShakeOff.setActionCommand(MOVE_SHAKE_OFF);
         butShakeOff.addKeyListener(this);
+        
+        butReckless = new Button(Messages.getString("MovementDisplay.butReckless")); //$NON-NLS-1$
+        butReckless.addActionListener(this);
+        butReckless.setEnabled(false);
+        butReckless.setActionCommand(MOVE_RECKLESS);
+        butReckless.addKeyListener(this);
 
         butAcc = new Button(Messages.getString("MovementDisplay.butAcc")); //$NON-NLS-1$
         butAcc.addActionListener(this);
@@ -539,6 +548,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsMech.add(butHullDown);
         buttonsMech.add(butSwim);
         buttonsMech.add(butEvade);
+        buttonsMech.add(butReckless);
         buttonsMech.add(butEject);
         buttonsMech.add(butFlee);
         buttonsMech.add(butRAC);
@@ -547,7 +557,6 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsMech.add(butLayMine);
         buttonsMech.add(butLower);
         buttonsMech.add(butRaise);
-        buttonsMech.add(butShakeOff);
 
         buttonsTank = new ArrayList<Button>(22);
         buttonsTank.add(butWalk);
@@ -560,6 +569,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsTank.add(butSearchlight);
         buttonsTank.add(butHullDown);
         buttonsTank.add(butSwim);
+        buttonsTank.add(butReckless);
         buttonsTank.add(butEject);
         buttonsTank.add(butFlee);
         buttonsTank.add(butRAC);
@@ -571,7 +581,6 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsTank.add(butDown);
         buttonsTank.add(butJump);
         buttonsTank.add(butDigIn);
-        buttonsTank.add(butFortify);
         buttonsTank.add(butLower);
         buttonsTank.add(butRaise);
 
@@ -584,6 +593,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsVtol.add(butLoad);
         buttonsVtol.add(butUnload);
         buttonsVtol.add(butSearchlight);
+        buttonsVtol.add(butReckless);
         buttonsVtol.add(butEject);
         buttonsVtol.add(butFlee);
         buttonsVtol.add(butRAC);
@@ -599,7 +609,6 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsVtol.add(butDown);
         buttonsVtol.add(butJump);
         buttonsVtol.add(butDigIn);
-        buttonsVtol.add(butFortify);
 
         buttonsInf = new ArrayList<Button>(22);
         buttonsInf.add(butWalk);
@@ -887,6 +896,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         checkAtmosphere();
         updateFleeButton();
         updateLaunchButton();
+        updateRecklessButton();
         updateHoverButton();
         updateManeuverButton();
 
@@ -1010,6 +1020,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         setRamEnabled(false);
         setHoverEnabled(false);
         setManeuverEnabled(false);
+        setRecklessEnabled(false);
     }
 
     /**
@@ -1043,6 +1054,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         updateElevationButtons();
         updateFleeButton();
         updateLaunchButton();
+        updateRecklessButton();
         updateHoverButton();
         updateManeuverButton();
 
@@ -1322,6 +1334,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         // okay, proceed with movement calculations
         Coords lastPos = entity.getPosition();
         Coords curPos = entity.getPosition();
+        int lastElevation = entity.getElevation();
         int curFacing = entity.getFacing();
         int distance = 0;
         int moveType = IEntityMovementType.MOVE_NONE;
@@ -1390,6 +1403,12 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
             // check if we've moved into rubble
             rollTarget = entity.checkRubbleMove(step, curHex, lastPos, curPos);
+            if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
+                nagReport.append(addNag(rollTarget));
+            }
+            
+            //check if we are moving recklessly
+            rollTarget = entity.checkRecklessMove(step, curHex, lastPos, curPos, lastElevation);
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 nagReport.append(addNag(rollTarget));
             }
@@ -1534,6 +1553,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                 prevFacing = curFacing;
             }
             prevHex = curHex;
+            lastElevation = step.getElevation();
 
             firstStep = false;
         }
@@ -1889,6 +1909,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             updateElevationButtons();
             updateFleeButton();
             updateLaunchButton();
+            updateRecklessButton();
             updateHoverButton();
             updateManeuverButton();
             updateSpeedButtons();
@@ -2168,6 +2189,21 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
         setLaunchEnabled(ce.getLaunchableFighters().size() > 0 || ce.getLaunchableSmallCraft().size() > 0);
 
+    }
+    
+    private void updateRecklessButton() {
+
+        final Entity ce = ce();
+
+        if (null == ce) {
+            return;
+        }
+        
+        if(ce instanceof Protomech) {
+        	setRecklessEnabled(false);
+        } else {
+        	setRecklessEnabled(null == cmd || cmd.length() == 0);
+        }
     }
 
     private void updateManeuverButton() {
@@ -3096,6 +3132,8 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                 updateTransformationButtons(lam);
                 clientgui.mechD.displayEntity(lam);
             }
+        } else if (ev.getActionCommand().equals(MOVE_RECKLESS)) {
+            cmd.setCareful(false);
         } else if (ev.getActionCommand().equals(MOVE_ACCN)) {
             cmd.addStep(MovePath.STEP_ACCN);
             clientgui.bv.drawMovementData(ce, cmd);
@@ -3196,6 +3234,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         updateElevationButtons();
         updateFleeButton();
         updateLaunchButton();
+        updateRecklessButton();
         updateHoverButton();
         updateManeuverButton();
         updateDumpButton();
@@ -3488,6 +3527,11 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
     private void setLowerEnabled(boolean enabled) {
         butLower.setEnabled(enabled);
         clientgui.getMenuBar().setMoveLowerEnabled(enabled);
+    }
+    
+    private void setRecklessEnabled(boolean enabled) {
+        butReckless.setEnabled(enabled);
+        clientgui.getMenuBar().setMoveRecklessEnabled(enabled);
     }
 
     private void setLAMmechModeEnabled(boolean enabled) {

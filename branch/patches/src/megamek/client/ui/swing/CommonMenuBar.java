@@ -118,6 +118,7 @@ public class CommonMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem moveGetUp;
     private JMenuItem moveRaise;
     private JMenuItem moveLower;
+    private JMenuItem moveReckless;
     private JMenuItem moveAcc = null;
     private JMenuItem moveDec = null;
     private JMenuItem moveAccN = null;
@@ -427,6 +428,9 @@ public class CommonMenuBar extends JMenuBar implements ActionListener {
         moveLower = createMenuItem(
                 menu,
                 Messages.getString("CommonMenuBar.moveLower"), MovementDisplay.MOVE_LOWER_ELEVATION); //$NON-NLS-1$
+        moveReckless = createMenuItem(
+                menu,
+                Messages.getString("CommonMenuBar.moveReckless"), MovementDisplay.MOVE_RECKLESS); //$NON-NLS-1$
 
         // Create the Special sub-menu.
         submenu = new JMenu(Messages.getString("CommonMenuBar.SpecialMenu")); //$NON-NLS-1$
@@ -944,6 +948,9 @@ public class CommonMenuBar extends JMenuBar implements ActionListener {
 
     public synchronized void setMoveLowerEnabled(boolean enabled) {
         moveLower.setEnabled(enabled);
+    }
+    public synchronized void setMoveRecklessEnabled(boolean enabled) {
+        moveReckless.setEnabled(enabled);
     }
     public synchronized void setMoveAccEnabled(boolean enabled) {
         moveAcc.setEnabled(enabled);

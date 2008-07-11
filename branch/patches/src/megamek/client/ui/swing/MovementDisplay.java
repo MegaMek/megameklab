@@ -112,6 +112,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
     public static final String MOVE_DIG_IN = "moveDigIn"; //$NON-NLS-1$
     public static final String MOVE_FORTIFY = "moveFortify"; //$NON-NLS-1$
     public static final String MOVE_SHAKE_OFF = "moveShakeOff"; //$NON-NLS-1$
+    public static final String MOVE_RECKLESS = "moveReckless"; //$NON-NLS-1$
     // Aero Movement
     public static final String MOVE_ACC = "MoveAccelerate"; //$NON-NLS-1$
     public static final String MOVE_DEC = "MoveDecelerate"; //$NON-NLS-1$
@@ -164,6 +165,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
     private JButton butDigIn;
     private JButton butFortify;
     private JButton butShakeOff;
+    private JButton butReckless;
 
     private JButton butAcc;
     private JButton butDec;
@@ -359,6 +361,12 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         butShakeOff.setActionCommand(MOVE_SHAKE_OFF);
         butShakeOff.addKeyListener(this);
 
+        butReckless = new JButton(Messages.getString("MovementDisplay.butReckless")); //$NON-NLS-1$
+        butReckless.addActionListener(this);
+        butReckless.setEnabled(false);
+        butReckless.setActionCommand(MOVE_RECKLESS);
+        butReckless.addKeyListener(this);
+        
         butAcc = new JButton(Messages.getString("MovementDisplay.butAcc")); //$NON-NLS-1$
         butAcc.addActionListener(this);
         butAcc.setEnabled(false);
@@ -481,6 +489,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsMech.add(butSearchlight);
         buttonsMech.add(butHullDown);
         buttonsMech.add(butEvade);
+        buttonsMech.add(butReckless);
         buttonsMech.add(butSwim);
         buttonsMech.add(butEject);
         buttonsMech.add(butFlee);
@@ -491,7 +500,6 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsMech.add(butLayMine);
         buttonsMech.add(butLower);
         buttonsMech.add(butRaise);
-        buttonsMech.add(butShakeOff);
 
         buttonsTank = new ArrayList<JButton>(22);
         buttonsTank.add(butWalk);
@@ -503,6 +511,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsTank.add(butClimbMode);
         buttonsTank.add(butSearchlight);
         buttonsTank.add(butHullDown);
+        buttonsTank.add(butReckless);
         buttonsTank.add(butSwim);
         buttonsTank.add(butEject);
         buttonsTank.add(butFlee);
@@ -518,7 +527,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsTank.add(butDigIn);
         buttonsTank.add(butFortify);
         buttonsTank.add(butLower);
-        buttonsTank.add(butRaise);
+
         buttonsVtol = new ArrayList<JButton>(22);
         buttonsVtol.add(butWalk);
         buttonsVtol.add(butBackup);
@@ -528,6 +537,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsVtol.add(butLoad);
         buttonsVtol.add(butUnload);
         buttonsVtol.add(butSearchlight);
+        buttonsVtol.add(butReckless);
         buttonsVtol.add(butEject);
         buttonsVtol.add(butFlee);
         buttonsVtol.add(butRAC);
@@ -544,7 +554,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         buttonsVtol.add(butDown);
         buttonsVtol.add(butJump);
         buttonsVtol.add(butDigIn);
-        buttonsVtol.add(butFortify);
+
         buttonsInf = new ArrayList<JButton>(22);
         buttonsInf.add(butWalk);
         buttonsInf.add(butJump);
@@ -816,6 +826,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         checkAtmosphere();
         updateFleeButton();
         updateLaunchButton();
+        updateRecklessButton();
         updateHoverButton();
         updateManeuverButton();
 
@@ -945,6 +956,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         updateElevationButtons();
         updateFleeButton();
         updateLaunchButton();
+        updateRecklessButton();
         updateHoverButton();
         updateManeuverButton();
 
@@ -1768,6 +1780,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             updateElevationButtons();
             updateFleeButton();
             updateLaunchButton();
+            updateRecklessButton();
             updateHoverButton();
             updateManeuverButton();
             updateSpeedButtons();
@@ -2035,6 +2048,21 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
         setLaunchEnabled(ce.getLaunchableFighters().size() > 0 || ce.getLaunchableSmallCraft().size() > 0);
 
+    }
+    
+    private void updateRecklessButton() {
+
+        final Entity ce = ce();
+
+        if (null == ce) {
+            return;
+        }
+        
+        if(ce instanceof Protomech) {
+        	setRecklessEnabled(false);
+        } else {
+        	setRecklessEnabled(null == cmd || cmd.length() == 0);
+        }
     }
 
     private void updateManeuverButton() {
@@ -2911,6 +2939,8 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             cmd.addStep(MovePath.STEP_SHAKE_OFF_SWARMERS);
             clientgui.bv.drawMovementData(ce(), cmd);
             clientgui.bv.repaint();
+        } else if (ev.getActionCommand().equals(MOVE_RECKLESS)) {
+            cmd.setCareful(false);
         } else if (ev.getActionCommand().equals(MOVE_ACCN)) {
             cmd.addStep(MovePath.STEP_ACCN);
             clientgui.bv.drawMovementData(ce, cmd);
@@ -3010,6 +3040,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         updateElevationButtons();
         updateFleeButton();
         updateLaunchButton();
+        updateRecklessButton();
         updateHoverButton();
         updateManeuverButton();
         updateDumpButton();
@@ -3297,6 +3328,11 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         clientgui.getMenuBar().setMoveLowerEnabled(enabled);
     }
 
+    private void setRecklessEnabled(boolean enabled) {
+        butReckless.setEnabled(enabled);
+        clientgui.getMenuBar().setMoveRecklessEnabled(enabled);
+    }
+    
     private void setAccEnabled(boolean enabled) {
         butAcc.setEnabled(enabled);
         clientgui.getMenuBar().setMoveAccEnabled(enabled);

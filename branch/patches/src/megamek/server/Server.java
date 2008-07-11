@@ -4817,6 +4817,38 @@ public class Server implements Runnable {
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 doSkillCheckWhileMoving(entity, lastPos, curPos, rollTarget, true);
             }
+            
+            //check if we are using reckless movement
+            rollTarget = entity.checkRecklessMove(step, curHex, lastPos, curPos, lastElevation);
+            if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
+            	if(entity instanceof Mech) {
+            		doSkillCheckWhileMoving(entity, lastPos, curPos, rollTarget, true);
+            	} else if (entity instanceof Tank) {
+            		if(0 < doSkillCheckWhileMoving(entity, lastPos, curPos, rollTarget, false)) {
+            			//assume VTOLs in flight are always in clear terrain
+            			if(0 == curHex.terrainsPresent() || step.getElevation() > 0) {
+            				r = new Report(2206);
+                            r.addDesc(entity);
+                            r.subject = entity.getId();
+                            addReport(r);
+                            mpUsed = step.getMpUsed() + 1;
+                            fellDuringMovement = true;
+                            break;
+            			} else {
+            				r = new Report(2207);
+                            r.addDesc(entity);
+                            r.subject = entity.getId();
+                            addReport(r);
+                            //until we get a rules clarification assume that the entity is both giver and taker
+                            //for charge damage
+                            HitData hit = entity.rollHitLocation(ToHitData.HIT_NORMAL, ToHitData.SIDE_FRONT);
+                            addReport(damageEntity(entity, hit, ChargeAttackAction.getDamageTakenBy(entity, entity)));
+            				turnOver = true;
+            				break;
+            			}
+            		}
+            	}
+            }
 
             // check for breaking magma crust
             if (curHex.terrainLevel(Terrains.MAGMA) == 1 && step.getElevation() == 0 && step.getMovementType() != IEntityMovementType.MOVE_JUMP) {

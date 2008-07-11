@@ -81,7 +81,7 @@ public class MovePath implements Cloneable, Serializable {
     public static final int STEP_HOVER = 47;
     public static final int STEP_MANEUVER = 48;
     public static final int STEP_LOOP = 49;
-
+    
     public static class Key {
         private final Coords coords;
         private final int facing;
@@ -113,6 +113,9 @@ public class MovePath implements Cloneable, Serializable {
     protected transient Entity entity;
 
     public static final int DEFAULT_PATHFINDER_TIME_LIMIT = 2000;
+    
+    //is this move path being done using careful movement?
+    private boolean careful = true;
 
     /**
      * Generates a new, empty, movement path object.
@@ -900,6 +903,7 @@ public class MovePath implements Cloneable, Serializable {
     public MovePath clone() {
         final MovePath copy = new MovePath(this.game, this.entity);
         copy.steps = new Vector<MoveStep>(steps);
+        copy.careful = this.careful;
         return copy;
     }
 
@@ -971,5 +975,13 @@ public class MovePath implements Cloneable, Serializable {
          }
          return priorPos;
         
+    }
+    
+    public boolean isCareful() {
+    	return careful;
+    }
+    
+    public void setCareful(boolean b) {
+    	this.careful = b;
     }
 }
