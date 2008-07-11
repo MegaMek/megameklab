@@ -525,6 +525,25 @@ public class PlanetaryConditions implements Serializable {
     		break;  	
     	}
     	
+    	//weather mods (clarified in an email exchange with TPTB)
+    	switch(weatherConditions) {
+    	case(WE_LIGHT_SNOW):
+    		if((en instanceof Infantry && !(en instanceof BattleArmor)) || en instanceof Tank) {
+    			mod -= 1;
+    		}
+    		break;
+    	case(WE_MOD_SNOW):
+    		if((en instanceof Infantry && !(en instanceof BattleArmor)) || en instanceof Tank) {
+    			mod -= 2;
+    		}
+    		break;
+    	case(WE_HEAVY_SNOW):
+    		if((en instanceof Infantry && !(en instanceof BattleArmor)) || en instanceof Tank) {
+    			mod -= 3;
+    		}
+    		break;
+    	}
+    	
     	//atmospheric pressure mods
     	switch(atmosphere) {
     	case(ATMO_THIN):
