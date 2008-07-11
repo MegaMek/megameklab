@@ -127,10 +127,6 @@ public class MiscType extends EquipmentType {
     // Secondary flags for MASC
     public static final long S_SUPERCHARGER = 1L << 0;
 
-    // Secondary flags for AES
-    public static final long S_AES_LEG = 1L << 0;
-    public static final long S_AES_ARM = 1L << 1;
-
     public static final int T_TARGSYS_UNKNOWN = -1;
     public static final int T_TARGSYS_STANDARD = 0;
     public static final int T_TARGSYS_TARGCOMP = 1;
@@ -292,10 +288,21 @@ public class MiscType extends EquipmentType {
             return (int) Math.ceil(entity.getWeight() / 15);
         } else if ( hasFlag(F_ACTUATOR_ENHANCEMENT_SYSTEM) ) {
             
+            float tonnage = 0;
             if ( entity instanceof BipedMech )
-                return entity.getWeight()/35;
+                tonnage = entity.getWeight()/35;
             else
-                return entity.getWeight()/50;
+                tonnage = entity.getWeight()/50;
+            
+            if ( tonnage == Math.round(tonnage) ) {
+                return tonnage;
+            }
+            
+            if ( Math.floor(tonnage) < Math.round(tonnage) ) {
+                return Math.round(tonnage);
+            }
+            
+            return (float)(Math.floor(tonnage)+0.5);
         }
         // okay, I'm out of ideas
         return 1.0f;
@@ -2307,7 +2314,7 @@ public class MiscType extends EquipmentType {
         MiscType misc = new MiscType();
         misc.techLevel = TechConstants.T_IS_LEVEL_3;
         misc.name = "AES";
-        misc.setInternalName("ISARM");
+        misc.setInternalName("ISAES");
         misc.addLookupName("IS Actuator Enhancement System");
         misc.addLookupName("ISActuatorEnhancementSystem");
         misc.tonnage = TONNAGE_VARIABLE;

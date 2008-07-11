@@ -624,7 +624,7 @@ public class BipedMech extends Mech {
         if ( location != Mech.LOC_RARM && location != Mech.LOC_LARM )
             return false;
         
-        for (Mounted mounted : this.getWeaponList() ) {
+        for (Mounted mounted : this.getMisc() ) {
             if ( mounted.getLocation() == location 
                     && mounted.getType().hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM) 
                     && !mounted.isDestroyed()

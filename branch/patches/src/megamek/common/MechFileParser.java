@@ -317,6 +317,22 @@ public class MechFileParser {
                 ((Mech) ent).setAutoEject(false);
             }
 
+            if ( ent instanceof Mech && m.getType().hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)) {
+                
+                if ( ent.hasTargComp() || ((Mech)ent).hasTSM() || ((Mech)ent).hasMASC()) {
+                    throw new EntityLoadingException("Unable to load AES due to incompatible systems");
+                }
+                
+                if ( m.getLocation() != Mech.LOC_LARM && m.getLocation() != Mech.LOC_LLEG
+                        && m.getLocation() != Mech.LOC_RARM && m.getLocation() != Mech.LOC_RLEG) {
+                    throw new EntityLoadingException("Unable to load AES due to incompatible location");
+                }
+                
+            }
+            
+            if ( m.getType().hasFlag(MiscType.F_HARJEL) && m.getLocation() == Mech.LOC_HEAD ) {
+                throw new EntityLoadingException("Unable to load harjel in head.");
+            }
         } // Check the next piece of equipment.
         
         //need to load all those weapons in the weapon bays
