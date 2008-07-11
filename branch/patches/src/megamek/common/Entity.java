@@ -3933,6 +3933,12 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         if(windMod != 0 && !game.getBoard().inSpace()) {
         	roll.addModifier(windMod, conditions.getWindCurrentName());
         }
+        
+        //check gravity conditions for all entities
+        int gravMod = conditions.getGravityPilotPenalty();
+        if(gravMod != 0 && !game.getBoard().inSpace()) {
+        	roll.addModifier(gravMod, "high/low gravity");
+        }
         return roll;
         
     }
@@ -6634,9 +6640,11 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         return false;
     }
 
+    /*
     public void setReckless(boolean b) {
         this.reckless = b;
     }
+*/
 
     public boolean isReckless() {
         return reckless;

@@ -300,6 +300,15 @@ public class PlanetaryConditions implements Serializable {
     	}
     }
     
+    
+    /*
+     * gravity penalties to PSRs
+     * According to email from TPTB, you apply a penalty for every 0.5 gravities above or below 1 (rounding up)
+     */
+    public int getGravityPilotPenalty() {
+    	return (int)Math.ceil(Math.abs(gravity - 1.0) / 0.5);
+    }
+    
     /*
      * piloting penalty for wind
      */
