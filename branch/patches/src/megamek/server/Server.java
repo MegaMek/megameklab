@@ -21252,6 +21252,36 @@ public class Server implements Runnable {
             } else {
                 rollTarget.addModifier(-2, "landing off the board");
             }
+            
+            if ( game.getPlanetaryConditions().getGravity() == 0 ){
+                rollTarget.addModifier(3,"Zero-G");
+            }else if ( game.getPlanetaryConditions().getGravity() < .8){
+                rollTarget.addModifier(2,"Low-G");
+            }else if (  game.getPlanetaryConditions().getGravity() > 1.2 ){
+                rollTarget.addModifier(2,"High-G");
+            }
+            
+            if ( game.getPlanetaryConditions().isVacuum() ){
+                rollTarget.addModifier(3,"Vacuum");
+            }else if ( game.getPlanetaryConditions().getAtmosphere() == PlanetaryConditions.ATMO_VHIGH){
+                rollTarget.addModifier(2,"Very High Atmosphere Pressure");
+            }else if ( game.getPlanetaryConditions().getAtmosphere() == PlanetaryConditions.ATMO_TRACE){
+                rollTarget.addModifier(2,"Trace atmosphere");
+            }
+            
+            if ( game.getPlanetaryConditions().getWeather() == PlanetaryConditions.WE_HEAVY_SNOW
+                    || game.getPlanetaryConditions().getWeather() == PlanetaryConditions.WE_ICE_STORM
+                    || game.getPlanetaryConditions().getWeather() == PlanetaryConditions.WE_DOWNPOUR
+                    || game.getPlanetaryConditions().getWindStrength() == PlanetaryConditions.WI_STRONG_GALE){
+                rollTarget.addModifier(2,"Bad Weather");
+            }
+            
+            if ( game.getPlanetaryConditions().getWindStrength() >= PlanetaryConditions.WI_STORM
+                    || ( game.getPlanetaryConditions().getWeather() == PlanetaryConditions.WE_HEAVY_SNOW 
+                            && game.getPlanetaryConditions().getWindStrength() == PlanetaryConditions.WI_STRONG_GALE)){
+                rollTarget.addModifier(3,"Really Bad Weather");
+            }
+            
             if (autoEject) {
                 r = new Report(6395);
                 r.subject = entity.getId();
