@@ -308,8 +308,6 @@ public class Terrain implements ITerrain, Serializable {
                 return 1;
             case Terrains.RAPIDS:
             case Terrains.ROUGH:
-            	if (moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
-                    return 0;
             	if(level == 2)
             		return 2;
             	else 
