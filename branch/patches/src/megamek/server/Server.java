@@ -1156,6 +1156,10 @@ public class Server implements Runnable {
             // reset spotlights
             entity.setIlluminated(false);
             entity.setUsedSearchlight(false);
+            
+            if ( entity instanceof MechWarrior ){
+                ((MechWarrior)entity).setLanded(true);
+            }
         }
     }
 
@@ -15094,6 +15098,11 @@ public class Server implements Runnable {
                 continue;
             }
 
+            if ( entity instanceof MechWarrior && !((MechWarrior)entity).hasLanded() ){
+                //MechWarrior is still up in the air ejecting their for safe from this explosion.
+                continue;
+            }
+            
             Coords entityPos = entity.getPosition();
             if (entityPos == null) {
                 // maybe its loaded?
@@ -21271,6 +21280,7 @@ public class Server implements Runnable {
             MechWarrior pilot = new MechWarrior(entity);
             pilot.setDeployed(true);
             pilot.setId(getFreeEntityId());
+            pilot.setLanded(false);
             game.addEntity(pilot.getId(), pilot);
             send(createAddEntityPacket(pilot.getId()));
             // make him not get a move this turn

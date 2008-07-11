@@ -74,7 +74,7 @@ public class ClubAttackAction extends PhysicalAttackAction {
             boolean targetInfantry) {
         MiscType mType = (MiscType) (club.getType());
         int nDamage = (int) Math.floor(entity.getWeight() / 5.0);
-        if (mType.hasSubType(MiscType.S_SWORD)|| mType.hasSubType(MiscType.S_CHAIN_WHIP)) {
+        if (mType.hasSubType(MiscType.S_SWORD)) {
             nDamage = (int) (Math.ceil(entity.getWeight() / 10.0) + 1.0);
         } else if (mType.hasSubType(MiscType.S_MACE_THB)) {
             nDamage *= 2;
@@ -116,6 +116,8 @@ public class ClubAttackAction extends PhysicalAttackAction {
             } else
                 // when not active a vibro blade does normal sword damage
                 nDamage = (int) (Math.ceil(entity.getWeight() / 10.0) + 1.0);
+        }else if (mType.hasSubType(MiscType.S_CHAIN_WHIP)){
+            nDamage = 3;
         }
 
         // TSM doesn't apply to some weapons, including Saws.
@@ -342,6 +344,7 @@ public class ClubAttackAction extends PhysicalAttackAction {
         // penalties.
         if ((((MiscType) club.getType()).hasSubType(MiscType.S_DUAL_SAW))
                 || (((MiscType) club.getType()).hasSubType(MiscType.S_CHAINSAW))
+                || (((MiscType) club.getType()).hasSubType(MiscType.S_LANCE))
                 || (((MiscType) club.getType()).hasSubType(MiscType.S_FLAIL))) {
             base += 1;
         } else if ((((MiscType) club.getType()).hasSubType(MiscType.S_MACE_THB))
@@ -350,7 +353,6 @@ public class ClubAttackAction extends PhysicalAttackAction {
                 || (((MiscType) club.getType()).hasSubType(MiscType.S_MACE))
                 || (((MiscType) club.getType()).hasSubType(MiscType.S_BACKHOE))
                 || (((MiscType) club.getType()).hasSubType(MiscType.S_BACKHOE))
-                || (((MiscType) club.getType()).hasSubType(MiscType.S_LANCE))
                 || (((MiscType) club.getType()).hasSubType(MiscType.S_WRECKING_BALL))) {
             base += 2;
         } else if (((MiscType) club.getType()).hasSubType(MiscType.S_PILE_DRIVER)) {
