@@ -109,6 +109,8 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedRules, "allow_nukes", false);
         addOption(advancedRules, "really_allow_nukes", false);
         addOption(advancedRules, "tacops_battle_wreck", false);
+        addOption(advancedRules, "tacops_skin_of_the_teeth_ejection", false);
+        
 
         IBasicOptionGroup advancedCombat = addGroup("advancedCombat"); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_ams", false); //$NON-NLS-1$

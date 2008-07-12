@@ -14670,6 +14670,22 @@ public class Server implements Runnable {
                             // Only ammo explosions in the CT are devastating.
                             vDesc.addAll(destroyEntity(te, "damage", !ammoExplosion, !((ammoExplosion || areaSatArty) && ((te instanceof Tank) || (te instanceof Mech && hit.getLocation() == Mech.LOC_CT)))));
                             // If the head is destroyed, kill the crew.
+                            
+                            if (te instanceof Mech && hit.getLocation() == Mech.LOC_HEAD
+                                    && game.getOptions().booleanOption("tacops_skin_of_the_teeth_ejection") ) {
+                                Mech mech = (Mech) te;
+                                if (mech.isAutoEject()) {
+                                    if ( mech.getCrew().getHits() < 5) {
+                                        Report.addNewline(vDesc);
+                                        mech.setDoomed(false);
+                                        vDesc.addAll(damageCrew(te, 5-mech.getCrew().getHits()));
+                                        mech.setDoomed(true);
+                                    }
+                                    autoEject = true;
+                                    vDesc.addAll(ejectEntity(te, true));
+                                }
+                            }
+                            
                             if (hit.getLocation() == Mech.LOC_HEAD || hit.getLocation() == Mech.LOC_CT && (ammoExplosion && !autoEject || areaSatArty)) {
                                 te.getCrew().setDoomed(true);
                             }
@@ -15026,6 +15042,13 @@ public class Server implements Runnable {
                 r.subject = en.getId();
                 r.indent(2);
                 vDesc.add(r);
+
+                if (en instanceof Mech) {
+                    Mech mech = (Mech) en;
+                    if (mech.isAutoEject()) {
+                        vDesc.addAll(ejectEntity(en, true));
+                    }
+                }
 
                 doFusionEngineExplosion(engineRating, en.getPosition(), vDesc, null);
                 Report.addNewline(vDesc);
