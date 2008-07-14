@@ -519,7 +519,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             toHit.addModifier(+2, "electromagnetic interference");
 
         //evading bonuses (
-        if(te.isEvading()) {
+        if(target.getTargetType() == Targetable.TYPE_ENTITY && te.isEvading()) {
         	toHit.addModifier(te.getEvasionBonus(), "target is evading");
         }
       
