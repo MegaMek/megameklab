@@ -1605,6 +1605,7 @@ public class Server implements Runnable {
             resetEntityRound();
             resetEntityPhase(phase);
             checkForObservers();
+            
             // roll 'em
             resetActivePlayersDone();
             rollInitiative();
@@ -1615,6 +1616,16 @@ public class Server implements Runnable {
             // setIneligible(phase);
             determineTurnOrder(phase);
             writeInitiativeReport(false);
+            
+            //checks for environmental survival
+            checkForConditionDeath();
+            if (game.getBoard().inAtmosphere()) {
+                checkForAtmosphereDeath();
+            }
+            if (game.getBoard().inSpace()) {
+                checkForSpaceDeath();
+            }
+            
             System.out.println("Round " + game.getRoundCount() + " memory usage: " + MegaMek.getMemoryUsed());
             break;
         case PHASE_DEPLOY_MINEFIELDS:
@@ -1705,6 +1716,9 @@ public class Server implements Runnable {
             // write End Phase header
             addReport(new Report(5005, Report.PUBLIC));
             checkForSuffocation();
+            game.getPlanetaryConditions().determineWind();
+            send(createPlanetaryConditionsPacket());
+            /*
             checkForConditionDeath();
             if (game.getBoard().inAtmosphere()) {
                 checkForAtmosphereDeath();
@@ -1712,6 +1726,7 @@ public class Server implements Runnable {
             if (game.getBoard().inSpace()) {
                 checkForSpaceDeath();
             }
+            */
             for (DynamicTerrainProcessor tp : terrainProcessors) {
                 tp.DoEndPhaseChanges(vPhaseReport);
             }
@@ -1723,7 +1738,6 @@ public class Server implements Runnable {
             resolveMechWarriorPickUp();
             resolveVeeINarcPodRemoval();
             resolveFortify();
-            game.getPlanetaryConditions().determineWind();
             checkForObservers();
             entityAllUpdate();
             break;
@@ -1838,8 +1852,9 @@ public class Server implements Runnable {
             // Build teams vector
             game.setupTeams();
             applyBoardSettings();
-            game.setupRoundDeployment();
             game.getPlanetaryConditions().determineWind();
+            send(createPlanetaryConditionsPacket());
+            game.setupRoundDeployment();
             game.setVictoryContext(new HashMap<String, Object>());
             game.createVictoryConditions();
             // If we add transporters for any Magnetic Clamp

@@ -603,7 +603,7 @@ public class PlanetaryConditions implements Serializable {
     		return "tornado";
     	}
     	if(windStrength == WI_STORM && (en instanceof Infantry && !(en instanceof BattleArmor))) {
-    		return "tornado";
+    		return "storm";
     	}   	
     	return null;	
     }
