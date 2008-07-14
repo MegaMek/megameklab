@@ -81,6 +81,7 @@ public class MovePath implements Cloneable, Serializable {
     public static final int STEP_HOVER = 47;
     public static final int STEP_MANEUVER = 48;
     public static final int STEP_LOOP = 49;
+    public static final int STEP_CAREFUL_STAND = 50;
     
     public static class Key {
         private final Coords coords;
@@ -854,7 +855,12 @@ public class MovePath implements Cloneable, Serializable {
             if (last != null && last.getType() != STEP_TURN_LEFT) {
                 result.add(this.clone().addStep(MovePath.STEP_TURN_RIGHT));
             }
-            result.add(this.clone().addStep(MovePath.STEP_GET_UP));
+            
+            if ( entity.isCarefulStand() ) {
+                result.add(this.clone().addStep(MovePath.STEP_CAREFUL_STAND));
+            } else {
+                result.add(this.clone().addStep(MovePath.STEP_GET_UP));
+            }
             return result;
         }
         if (canShift()) {

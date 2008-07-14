@@ -240,6 +240,7 @@ public class MoveStep implements Serializable {
                 return "DFA";
             case MovePath.STEP_FORWARDS:
                 return "F";
+            case MovePath.STEP_CAREFUL_STAND:
             case MovePath.STEP_GET_UP:
                 return "Up";
             case MovePath.STEP_GO_PRONE:
@@ -609,6 +610,15 @@ public class MoveStep implements Serializable {
             case MovePath.STEP_GET_UP:
                 // mechs with 1 MP are allowed to get up
                 setMp(entity.getRunMP() == 1 ? 1 : 2);
+                setHasJustStood(true);
+                break;
+            case MovePath.STEP_CAREFUL_STAND:
+                if ( entity.getWalkMP() <= 2) {
+                    entity.setCarefulStand(false);
+                    setMp(entity.getRunMP() == 1 ? 1 : 2);
+                }else {
+                    setMp(entity.getWalkMP());
+                }
                 setHasJustStood(true);
                 break;
             case MovePath.STEP_GO_PRONE:
@@ -1630,6 +1640,7 @@ public class MoveStep implements Serializable {
                     && stepType != MovePath.STEP_GET_UP
                     && stepType != MovePath.STEP_UNLOAD
                     && stepType != MovePath.STEP_LOAD
+                    && stepType != MovePath.STEP_CAREFUL_STAND
                     && (isProne() || isHullDown())) {
                 movementType = IEntityMovementType.MOVE_ILLEGAL;
                 return;
@@ -1707,6 +1718,11 @@ public class MoveStep implements Serializable {
             movementType = IEntityMovementType.MOVE_RUN;
         }
 
+        if ( MovePath.STEP_CAREFUL_STAND == stepType 
+                && entity.mpUsed > 1) {
+            movementType = IEntityMovementType.MOVE_ILLEGAL;
+        }
+        
         // VTOLs with a damaged flight stabiliser can't flank
         if (entity instanceof VTOL
                 && movementType == IEntityMovementType.MOVE_VTOL_RUN
@@ -1888,6 +1904,10 @@ public class MoveStep implements Serializable {
                 movementType = IEntityMovementType.MOVE_FLYING;
                 danger = true; // langing requiers a roll. (at -4)
             }
+        }
+        
+        if ( entity.isCarefulStand() ) {
+            movementType = IEntityMovementType.MOVE_CAREFUL_STAND;
         }
         
         //only walking speed in Tornados

@@ -34,8 +34,8 @@ import javax.swing.JPanel;
 import megamek.client.Client;
 import megamek.client.event.BoardViewEvent;
 import megamek.client.event.BoardViewListener;
-import megamek.client.ui.swing.ManeuverChoiceDialog;
 import megamek.client.ui.AWT.Messages;
+import megamek.client.ui.swing.ManeuverChoiceDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Bay;
@@ -2826,12 +2826,36 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             gear = MovementDisplay.GEAR_RAM;
         } else if (ev.getActionCommand().equals(MOVE_GET_UP)) {
             clearAllMoves();
-            if (cmd.getFinalProne() || cmd.getFinalHullDown()) {
-                cmd.addStep(MovePath.STEP_GET_UP);
+            
+            if ( client.game.getOptions().booleanOption("tacops_careful_stand") && ce.getWalkMP() > 2) {
+                megamek.client.ui.swing.ConfirmDialog response = clientgui.doYesNoBotherDialog(
+                    Messages.getString("MovementDisplay.CarefulStand.title"),//$NON-NLS-1$
+                    Messages.getString("MovementDisplay.CarefulStand.message"));
+                
+                
+                response.setVisible(true);
+                response.setVisible(true);
+                
+                if ( response.getAnswer() ) {
+                    ce.setCarefulStand(true);
+                    if (cmd.getFinalProne() || cmd.getFinalHullDown()) {
+                        cmd.addStep(MovePath.STEP_CAREFUL_STAND);
+                    }
+                } else {
+                    if (cmd.getFinalProne() || cmd.getFinalHullDown()) {
+                        cmd.addStep(MovePath.STEP_GET_UP);
+                    }
+                }
+            }else {
+                butDone.setText(Messages.getString("MovementDisplay.Move")); //$NON-NLS-1$
+                if (cmd.getFinalProne() || cmd.getFinalHullDown()) {
+                    cmd.addStep(MovePath.STEP_GET_UP);
+                }
             }
+       
+
             clientgui.bv.drawMovementData(ce(), cmd);
             clientgui.bv.repaint();
-            butDone.setText(Messages.getString("MovementDisplay.Move")); //$NON-NLS-1$
         } else if (ev.getActionCommand().equals(MOVE_GO_PRONE)) {
             gear = MovementDisplay.GEAR_LAND;
             if (!cmd.getFinalProne()) {

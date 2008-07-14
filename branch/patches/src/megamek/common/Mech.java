@@ -3633,4 +3633,8 @@ public abstract class Mech extends Entity implements Serializable {
         return grappledSide;
     }
 
+    public boolean isCarefulStand() {
+        return isCarefulStanding;
+    }
+
 }

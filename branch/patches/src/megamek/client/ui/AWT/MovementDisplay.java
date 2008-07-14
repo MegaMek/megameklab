@@ -2987,12 +2987,33 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             gear = MovementDisplay.GEAR_RAM;
         } else if (ev.getActionCommand().equals(MOVE_GET_UP)) {
             clearAllMoves();
-            if (cmd.getFinalProne() || cmd.getFinalHullDown()) {
-                cmd.addStep(MovePath.STEP_GET_UP);
+            
+            if ( client.game.getOptions().booleanOption("tacops_careful_stand") && ce.getWalkMP() > 2) {
+                ConfirmDialog nag = new ConfirmDialog(clientgui.frame, 
+                    Messages.getString("MovementDisplay.CarefulStand.title"), //$NON-NLS-1$
+                    Messages.getString("MovementDisplay.CarefulStand.message"), false);
+                
+                nag.setVisible(true);
+                
+                if ( nag.getAnswer() ) {
+                    ce.setCarefulStand(true);
+                    if (cmd.getFinalProne() || cmd.getFinalHullDown()) {
+                        cmd.addStep(MovePath.STEP_CAREFUL_STAND);
+                    }
+                } else {
+                    if (cmd.getFinalProne() || cmd.getFinalHullDown()) {
+                        cmd.addStep(MovePath.STEP_GET_UP);
+                    }
+                }
+            }else {
+                butDone.setLabel(Messages.getString("MovementDisplay.Move")); //$NON-NLS-1$
+                if (cmd.getFinalProne() || cmd.getFinalHullDown()) {
+                    cmd.addStep(MovePath.STEP_GET_UP);
+                }
             }
+       
             clientgui.bv.drawMovementData(ce, cmd);
             clientgui.bv.repaint();
-            butDone.setLabel(Messages.getString("MovementDisplay.Move")); //$NON-NLS-1$
         } else if (ev.getActionCommand().equals(MOVE_GO_PRONE)) {
             gear = MovementDisplay.GEAR_LAND;
             if (!cmd.getFinalProne()) {

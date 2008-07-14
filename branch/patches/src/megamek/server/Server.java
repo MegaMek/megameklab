@@ -1156,6 +1156,7 @@ public class Server implements Runnable {
             // reset spotlights
             entity.setIlluminated(false);
             entity.setUsedSearchlight(false);
+            entity.setCarefulStand(false);
             
             if ( entity instanceof MechWarrior ){
                 ((MechWarrior)entity).setLanded(true);
@@ -4147,7 +4148,7 @@ public class Server implements Runnable {
             send(createRemoveEntityPacket(entity.getId(), IEntityRemovalConditions.REMOVE_IN_RETREAT));
             return;
         }
-
+        
         if (md.contains(MovePath.STEP_EJECT)) {
             if (entity instanceof Mech) {
                 r = new Report(2020);
@@ -4164,6 +4165,10 @@ public class Server implements Runnable {
             addReport(ejectEntity(entity, false));
 
             return;
+        }
+
+        if ( md.contains(MovePath.STEP_CAREFUL_STAND) ) {
+            entity.setCarefulStand(true);
         }
 
         // okay, proceed with movement calculations
@@ -4535,7 +4540,8 @@ public class Server implements Runnable {
                 curPos = entity.getPosition();
                 mpUsed = step.getMpUsed();
                 fellDuringMovement = true;
-                break;
+                if ( !entity.isCarefulStand() )
+                    break;
             }else if ( entityFellWhileAttemptingToStand && entity.isHullDown() ){
                 mpUsed = step.getMpUsed();
                 entity.setHullDown(true);
@@ -4544,7 +4550,8 @@ public class Server implements Runnable {
                 curPos = entity.getPosition();
                 mpUsed = step.getMpUsed();
                 fellDuringMovement = true;
-                break;
+                if ( !entity.isCarefulStand() )
+                    break;
             }
 
             if (step.getType() == MovePath.STEP_UNJAM_RAC) {
@@ -6996,7 +7003,7 @@ public class Server implements Runnable {
             	entity.heatBuildup += entity.getRunHeat() + 2;
             } else if (entity.moved == IEntityMovementType.MOVE_NONE) {
                 entity.heatBuildup += entity.getStandingHeat();
-            } else if (entity.moved == IEntityMovementType.MOVE_WALK || entity.moved == IEntityMovementType.MOVE_VTOL_WALK) {
+            } else if (entity.moved == IEntityMovementType.MOVE_WALK || entity.moved == IEntityMovementType.MOVE_VTOL_WALK || entity.moved == IEntityMovementType.MOVE_CAREFUL_STAND) {
                 entity.heatBuildup += entity.getWalkHeat();
             } else if (entity.moved == IEntityMovementType.MOVE_RUN || entity.moved == IEntityMovementType.MOVE_VTOL_RUN || entity.moved == IEntityMovementType.MOVE_SKID) {
                 entity.heatBuildup += entity.getRunHeat();
@@ -7224,12 +7231,13 @@ public class Server implements Runnable {
                     && !entity.isHullDown() ){
                 if ( entity.getCrew().getPiloting() > 1 && roll.getValue() - diceRoll < 2){
                     entity.setHullDown(true);
-                }else if ( roll.getValue() - diceRoll < 3 ){
+                }else if ( entity.getCrew().getPiloting() <= 1 && roll.getValue() - diceRoll < 3 ){
                     entity.setHullDown(true);
                 }
             }
-            if ( !entity.isHullDown() )
+            if ( !entity.isHullDown() ) {
                 addReport(doEntityFall(entity, roll));
+            }
             else{
                 r = new Report (2317);
                 r.subject = entity.getId();
@@ -12941,7 +12949,7 @@ public class Server implements Runnable {
                             && !entity.isHullDown() ){
                         if ( entity.getCrew().getPiloting() > 1 && target.getValue() - diceRoll < 2){
                             entity.setHullDown(true);
-                        }else if ( target.getValue() - diceRoll < 3 ){
+                        }else if ( entity.getCrew().getPiloting() <= 1 && target.getValue() - diceRoll < 3 ){
                             entity.setHullDown(true);
                         }
                         if ( entity.isHullDown() ){

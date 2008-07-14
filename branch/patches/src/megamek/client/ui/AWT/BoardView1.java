@@ -4047,6 +4047,7 @@ public class BoardView1 extends Canvas implements IBoardView, BoardListener,
                     break;
                 case MovePath.STEP_GET_UP:
                 case MovePath.STEP_UP:
+                case MovePath.STEP_CAREFUL_STAND:
                     // draw arrow indicating standing up
                     // also doubles as the climb indication
                     // and triples as deceleration

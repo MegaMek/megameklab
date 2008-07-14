@@ -344,6 +344,8 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
 
     private boolean isCommander = false;
 
+    protected boolean isCarefulStanding = false;
+    
     /**
      * Generates a new, blank, entity.
      */
@@ -3899,6 +3901,10 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         //add planetary condition modifiers
         roll = addConditionBonuses(roll, moveType);
         
+        if ( isCarefulStand() ) {
+            roll.addModifier(-2, "careful stand");
+        }
+        
         return roll;
     }
 
@@ -3949,7 +3955,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      */
     public PilotingRollData checkGetUp(MoveStep step) {
         
-        if ((step == null) || (step.getType() != MovePath.STEP_GET_UP)) {
+        if ((step == null) || (step.getType() != MovePath.STEP_GET_UP) && (step.getType() != MovePath.STEP_CAREFUL_STAND) ) {
             return new PilotingRollData(id, TargetRoll.CHECK_FALSE, "Check false: Entity is not attempting to get up.");
         }
 
@@ -7032,5 +7038,14 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     		}
     	}
     	return 0;
+    }
+    
+    
+    public void setCarefulStand(boolean stand) {
+        isCarefulStanding = stand;
+    }
+    
+    public boolean isCarefulStand() {
+        return false;
     }
 }
