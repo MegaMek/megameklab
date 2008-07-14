@@ -4177,8 +4177,6 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         if ((!lastPos.equals(curPos) || step.getElevation() != lastElev) 
         		&& bgMod != TargetRoll.AUTOMATIC_SUCCESS 
         		&& step.getMovementType() != IEntityMovementType.MOVE_JUMP 
-        		&& (this.getMovementMode() != IEntityMovementMode.HOVER) 
-        		&& (this.getMovementMode() != IEntityMovementMode.WIGE)
         		&& step.getElevation() == 0 && !isPavementStep) {
         	roll.append(new PilotingRollData(getId(), bgMod, "avoid bogging down"));   	
         } else {
@@ -6466,7 +6464,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
             return;
         }
         IHex hex = game.getBoard().getHex(c);
-        int modifier = hex.terrainPilotingModifier();
+        int modifier = hex.terrainPilotingModifier(getMovementMode());
         if (modifier != 0) {
             roll.addModifier(modifier, "difficult terrain");
         }

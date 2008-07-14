@@ -353,11 +353,11 @@ public class Hex implements IHex, Serializable {
         return new Hex(elevation, tcopy, theme);
     }
 
-    public int terrainPilotingModifier() {
+    public int terrainPilotingModifier(int moveType) {
         int rv = 0;
         for (int i = 0; i < terrains.length; i++) {
             if (terrains[i] != null)
-                rv += terrains[i].pilotingModifier();
+                rv += terrains[i].pilotingModifier(moveType);
         }
         return rv;
     }

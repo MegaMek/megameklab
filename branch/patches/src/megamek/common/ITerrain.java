@@ -91,7 +91,7 @@ public interface ITerrain {
     /**
      * @return the modifier to PSRs made in this terrain
      */
-    public abstract int pilotingModifier();
+    public abstract int pilotingModifier(int moveType);
 
     /**
      * @return the additional movement cost for this terrain
