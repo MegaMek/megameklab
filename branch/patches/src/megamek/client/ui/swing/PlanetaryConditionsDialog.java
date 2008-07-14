@@ -79,6 +79,8 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
             .getString("PlanetaryConditionsDialog.labGrav"), SwingConstants.RIGHT); //$NON-NLS-1$
     private JCheckBox cEMI = new JCheckBox(Messages
             .getString("PlanetaryConditionsDialog.EMI"));
+    private JCheckBox cTerrainAffected = new JCheckBox(Messages
+            .getString("PlanetaryConditionsDialog.TerrainAffected"));
 	    	
 	private JPanel panButtons = new JPanel();	
 	private JButton butOkay = new JButton(Messages.getString("Okay")); //$NON-NLS-1$
@@ -261,6 +263,11 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
         c.anchor = GridBagConstraints.WEST;
         gridbag.setConstraints(cEMI, c);
         panOptions.add(cEMI);
+        
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(cTerrainAffected, c);
+        panOptions.add(cTerrainAffected);
 
 	}
 	
@@ -309,6 +316,8 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 		
 		cEMI.setSelected(conditions.hasEMI());
 		
+		cTerrainAffected.setSelected(conditions.isTerrainAffected());
+		
 	}
 	
 	public void send() {
@@ -324,6 +333,7 @@ public class PlanetaryConditionsDialog extends JDialog implements ActionListener
 		conditions.setTemperature(Integer.parseInt(fldTemp.getText()));
 		conditions.setGravity(Float.parseFloat(fldGrav.getText()));
 		conditions.setEMI(cEMI.isSelected());
+		conditions.setTerrainAffected(cTerrainAffected.isSelected());
 		
 		client.getClient().sendPlanetaryConditions(conditions);
 	}

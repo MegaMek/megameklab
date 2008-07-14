@@ -92,9 +92,13 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
         boolean lightSnow = false;
         boolean deepSnow = false;
         boolean ice = false;
-        // Cycle through all hexes, checking for screens
+        
+        if(!conditions.isTerrainAffected())
+        	return;
+        
         debugTime("resolve weather 1", true);
 
+        //first we need to increment the conditions
         if(conditions.getWeather() == PlanetaryConditions.WE_MOD_SNOW && game.getBoard().onGround()) {
         	modSnowTurn = modSnowTurn + 1;
         	if(modSnowTurn == 9) {
@@ -143,7 +147,7 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
             vPhaseReport.addElement(r);
         }
         	
-        
+        // Cycle through all hexes, checking for the appropriate weather changes
         for (int currentXCoord = 0; currentXCoord < width; currentXCoord++ ) {
             for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
                 Coords currentCoords = new Coords(currentXCoord, currentYCoord);

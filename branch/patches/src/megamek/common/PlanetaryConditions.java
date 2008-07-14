@@ -113,6 +113,7 @@ public class PlanetaryConditions implements Serializable {
     private int temperature = 25;
     private float gravity = (float)1.0;
     private boolean emi = false;
+    private boolean terrainAffected = true;
     
     /**
      * Constructor
@@ -134,6 +135,7 @@ public class PlanetaryConditions implements Serializable {
     	this.gravity = other.gravity;
     	this.emi = other.emi;
     	this.fog = other.fog;
+    	this.terrainAffected = other.terrainAffected;
     }
     
     /** clone! */
@@ -697,5 +699,14 @@ public class PlanetaryConditions implements Serializable {
     
     public void setFog(int fog) {
     	this.fog = fog;
+    }
+    
+    public void setTerrainAffected(boolean b) {
+    	this.terrainAffected = b;
+    }
+    
+    //can weather alter the terrain (add snow, mud, etc.)
+    public boolean isTerrainAffected() {
+    	return terrainAffected;
     }
 }

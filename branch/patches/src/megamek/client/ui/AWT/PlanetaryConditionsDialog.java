@@ -74,7 +74,9 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
             .getString("PlanetaryConditionsDialog.labGrav"), Label.RIGHT); //$NON-NLS-1$
     private TextField fldGrav = new TextField(4);
     private Checkbox cEMI = new Checkbox(Messages
-            .getString("PlanetaryConditionsDialog.EMI"));
+            .getString("PlanetaryConditionsDialog.EMI"));   
+    private Checkbox cTerrainAffected = new Checkbox(Messages
+            .getString("PlanetaryConditionsDialog.TerrainAffected"));
 	    	
 	private Panel panButtons = new Panel();	
 	private Button butOkay = new Button(Messages.getString("Okay")); //$NON-NLS-1$
@@ -259,6 +261,11 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
         gridbag.setConstraints(cEMI, c);
         panOptions.add(cEMI);
         
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(cTerrainAffected, c);
+        panOptions.add(cTerrainAffected);
+        
 	}
 	
 	public void update(PlanetaryConditions conditions) {
@@ -305,6 +312,8 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		fldGrav.setText(Float.toString(conditions.getGravity()));
 		
 		cEMI.setState(conditions.hasEMI());
+		
+		cTerrainAffected.setState(conditions.isTerrainAffected());
 	}
 	
 	public void send() {
@@ -320,6 +329,7 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 		conditions.setTemperature(Integer.parseInt(fldTemp.getText()));
 		conditions.setGravity(Float.parseFloat(fldGrav.getText()));
 		conditions.setEMI(cEMI.getState());
+		conditions.setTerrainAffected(cTerrainAffected.getState());
 			
 		client.getClient().sendPlanetaryConditions(conditions);
 	}
