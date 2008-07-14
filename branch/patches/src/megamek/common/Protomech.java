@@ -181,6 +181,7 @@ public class Protomech extends Entity implements Serializable {
     /**
      * Protos don't take piloting skill rolls.
      */
+    //TODO: this is no longer true in TacOps. Protos sometimes make PSRs using their gunnery skill
     public PilotingRollData getBasePilotingRoll() {
         return new PilotingRollData(this.getId(), TargetRoll.CHECK_FALSE,
                 "Protomeks never take PSRs.");

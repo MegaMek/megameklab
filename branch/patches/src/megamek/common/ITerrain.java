@@ -102,4 +102,6 @@ public interface ITerrain {
      */
     public abstract int ignitionModifier();
     
+    public abstract int getBogDownModifier();
+    
 }

@@ -3810,9 +3810,10 @@ public class Server implements Runnable {
             }
 
             // is the next hex a swamp?
-            PilotingRollData rollTarget = entity.checkSwampMove(step, nextHex, curPos, nextPos, Compute.canMoveOnPavement(game, curPos, nextPos, step.getParentUpToThisStep()));
+            PilotingRollData rollTarget = entity.checkBogDown(step, nextHex, curPos, nextPos, Compute.canMoveOnPavement(game, curPos, nextPos, step.getParentUpToThisStep()));
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
-                if (0 < doSkillCheckWhileMoving(entity, curPos, nextPos, rollTarget, false)) {
+            	//Taharqa: According to TacOps, you automatically stick if you are skidding, (pg. 63)
+                //if (0 < doSkillCheckWhileMoving(entity, curPos, nextPos, rollTarget, false)) {
                     entity.setStuck(true);
                     r = new Report(2081);
                     r.subject = entity.getId();
@@ -3829,7 +3830,7 @@ public class Server implements Runnable {
                     }
                     // stay here and stop skidding, see bug 1115608
                     break;
-                }
+               // }
             }
 
             // Update the position and keep skidding.
@@ -4901,7 +4902,7 @@ public class Server implements Runnable {
             }
 
             // check if we've moved into a swamp
-            rollTarget = entity.checkSwampMove(step, curHex, lastPos, curPos, isPavementStep);
+            rollTarget = entity.checkBogDown(step, curHex, lastPos, curPos, isPavementStep);
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 if (0 < doSkillCheckWhileMoving(entity, lastPos, curPos, rollTarget, false)) {
                     entity.setStuck(true);
@@ -5597,17 +5598,16 @@ public class Server implements Runnable {
             }
 
             // jumped into swamp? maybe stuck!
-            if (curHex.containsTerrain(Terrains.SWAMP) || curHex.containsTerrain(Terrains.MAGMA) || curHex.terrainLevel(Terrains.SNOW) > 1 || curHex.containsTerrain(Terrains.MUD) || curHex.containsTerrain(Terrains.TUNDRA)) {
+            if (curHex.getBogDownModifier() != TargetRoll.AUTOMATIC_SUCCESS) {
                 if (entity instanceof Mech) {
                     entity.setStuck(true);
                     r = new Report(2121);
                     r.add(entity.getDisplayName(), true);
                     r.subject = entity.getId();
                     addReport(r);
-                } else if (entity instanceof Infantry) {
-                    PilotingRollData roll = new PilotingRollData(entity.getId(), 5, "entering boggy terrain");
-                    if (curHex.containsTerrain(Terrains.MAGMA) || curHex.containsTerrain(Terrains.MUD) || curHex.terrainLevel(Terrains.SNOW) > 1 || curHex.containsTerrain(Terrains.TUNDRA))
-                        roll.append(new PilotingRollData(entity.getId(), -1, "avoid bogging down"));
+                } else {
+                    PilotingRollData roll = new PilotingRollData(entity.getId(), 5, "entering boggy terrain");             
+                    roll.append(new PilotingRollData(entity.getId(), curHex.getBogDownModifier(), "avoid bogging down"));
                     if (0 < doSkillCheckWhileMoving(entity, curPos, curPos, roll, false)) {
                         entity.setStuck(true);
                         r = new Report(2081);
@@ -7588,6 +7588,7 @@ public class Server implements Runnable {
             return vPhaseReport;
         }
         // unstick the entity if it was stuck in swamp
+        boolean wasStuck = entity.isStuck();
         entity.setStuck(false);
         int oldElev = entity.elevationOccupied(srcHex);
         // move the entity into the new location gently
@@ -7625,6 +7626,15 @@ public class Server implements Runnable {
         // trigger any special things for moving to the new hex
         vPhaseReport.addAll(doEntityDisplacementMinefieldCheck(entity, src, dest, entity.getElevation()));
         vPhaseReport.addAll(doSetLocationsExposure(entity, destHex, false, entity.getElevation()));
+        //mechs that were stuck will automatically fall in their new hex
+        if(wasStuck && entity instanceof Mech && !entity.isProne()) {
+        	if (roll == null)
+                roll = entity.getBasePilotingRoll();
+        	vPhaseReport.addAll(doEntityFall(entity, dest, 0, roll));
+        }
+        //check bog-down conditions
+        vPhaseReport.addAll(doEntityDisplacementBogDownCheck(entity, destHex, entity.getElevation()));
+        
         if (roll != null) {
             game.addPSR(roll);
         }
@@ -7653,6 +7663,30 @@ public class Server implements Runnable {
         }
         
         return vPhaseReport;
+    }
+    
+    private Vector<Report> doEntityDisplacementBogDownCheck(Entity entity, IHex destHex, int elev) {
+        Vector<Report> vReport = new Vector<Report>();
+        Report r; 
+        int bgMod = destHex.getBogDownModifier();
+        if (bgMod != TargetRoll.AUTOMATIC_SUCCESS 
+        		&& (entity.getMovementMode() != IEntityMovementMode.HOVER)
+        		&& (entity.getMovementMode() != IEntityMovementMode.VTOL) 
+        		&& (entity.getMovementMode() != IEntityMovementMode.WIGE) 
+        		&& elev == 0) {
+        	PilotingRollData roll = entity.getBasePilotingRoll();
+        	roll.append(new PilotingRollData(entity.getId(), bgMod, "avoid bogging down"));
+        	int stuckroll = Compute.d6(2);
+        	if(stuckroll < roll.getValue()) {
+        		entity.setStuck(true);
+                r = new Report(2081);
+                r.subject = entity.getId();
+                r.add(entity.getDisplayName(), true);
+                vReport.add(r);
+        	}
+        	
+        } 
+        return vReport;
     }
 
     /**
@@ -18145,6 +18179,15 @@ public class Server implements Runnable {
             }
         }
 
+        //if falling into a bog-down hex, the entity automatically gets stuck
+        if(fallHex.getBogDownModifier() != TargetRoll.AUTOMATIC_SUCCESS) {
+        	entity.setStuck(true);
+            r = new Report(2081);
+            r.subject = entity.getId();
+            r.add(entity.getDisplayName(), true);
+            vPhaseReport.add(r);
+        }
+        
         // standard damage loop
         while (damage > 0) {
             int cluster = Math.min(5, damage);
@@ -21714,9 +21757,7 @@ public class Server implements Runnable {
             entity.addPilotingModifierForTerrain(rollTarget);
             // apart from swamp & liquid magma, -1 modifier
             IHex hex = game.getBoard().getHex(entity.getPosition());
-            if (!hex.containsTerrain(Terrains.SWAMP) && !(hex.terrainLevel(Terrains.MAGMA) == 2)) {
-                rollTarget.addModifier(-1, "bogged down");
-            }
+            rollTarget.addModifier(hex.getBogDownModifier(), "bogged down");
             // okay, print the info
             r = new Report(2340);
             r.addDesc(entity);

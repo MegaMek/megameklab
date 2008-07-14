@@ -4168,29 +4168,16 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     }
 
     /**
-     * Checks if the entity is moving into a swamp. If so, returns the target
-     * roll for the piloting skill check. now includes the level 3 terains which
-     * can bog down
+     * Checks if the entity is moving into a hex that might cause it to bog down. If so, returns the target
+     * roll for the piloting skill check. 
      */
-    public PilotingRollData checkSwampMove(MoveStep step, IHex curHex, Coords lastPos, Coords curPos, boolean isPavementStep) {
+    public PilotingRollData checkBogDown(MoveStep step, IHex curHex, Coords lastPos, Coords curPos, boolean isPavementStep) {
         PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
-        // DO NOT add terrain modifier, or the example in maxtech would have the
-        // wrong target number
-
-        if (!lastPos.equals(curPos) && step.getMovementType() != IEntityMovementType.MOVE_JUMP && (this.getMovementMode() != IEntityMovementMode.HOVER) && (this.getMovementMode() != IEntityMovementMode.VTOL) && (this.getMovementMode() != IEntityMovementMode.WIGE) && step.getElevation() == 0 && !isPavementStep) {
-            // non-hovers need a simple PSR
-            if (curHex.containsTerrain(Terrains.SWAMP)) {
-                // append the reason modifier
-                roll.append(new PilotingRollData(getId(), 0, "entering Swamp"));
-            } else if (curHex.terrainLevel(Terrains.MAGMA) == 2) {
-                roll.append(new PilotingRollData(getId(), 0, "entering Liquid Magma"));
-            } else if (curHex.containsTerrain(Terrains.MAGMA) || curHex.containsTerrain(Terrains.MUD) || curHex.terrainLevel(Terrains.SNOW) > 1 || curHex.containsTerrain(Terrains.TUNDRA)) {
-                roll.append(new PilotingRollData(getId(), -1, "avoid bogging down"));
-            } else {
-                roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: no swamp-like terrain present");
-            }
+        int bgMod = curHex.getBogDownModifier();
+        if (!lastPos.equals(curPos) && bgMod != TargetRoll.AUTOMATIC_SUCCESS && step.getMovementType() != IEntityMovementType.MOVE_JUMP && (this.getMovementMode() != IEntityMovementMode.HOVER) && (this.getMovementMode() != IEntityMovementMode.VTOL) && (this.getMovementMode() != IEntityMovementMode.WIGE) && step.getElevation() == 0 && !isPavementStep) {
+        	roll.append(new PilotingRollData(getId(), bgMod, "avoid bogging down"));   	
         } else {
-            roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: Not entering swamp, or jumping/hovering over the swamp");
+            roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: Not entering bog-down terrain, or jumping/hovering over such terrain");
         }
         return roll;
     }

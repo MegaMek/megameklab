@@ -211,4 +211,6 @@ public interface IHex extends Cloneable {
     public abstract void incrementFireTurn();
     
     public abstract void resetFireTurn();
+    
+    public abstract int getBogDownModifier();
 }

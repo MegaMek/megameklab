@@ -340,4 +340,26 @@ public class Terrain implements ITerrain, Serializable {
                 return 0;
         }
     }
+    
+    public int getBogDownModifier() {
+    	switch (type) {
+    	case(Terrains.SWAMP):
+    		return 0;
+    	case(Terrains.MAGMA):
+    		if(level == 2)
+    			return 0;
+    		else
+    			return TargetRoll.AUTOMATIC_SUCCESS;
+    	case(Terrains.MUD):
+    	case(Terrains.TUNDRA):
+    		return -1;
+    	case(Terrains.SNOW):
+    		if(level == 2)
+    			return -1;
+    		else
+    			return TargetRoll.AUTOMATIC_SUCCESS;
+    	default:
+    		return TargetRoll.AUTOMATIC_SUCCESS;
+    	}
+    }
 }
