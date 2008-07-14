@@ -18,7 +18,7 @@ import java.util.Hashtable;
 
 public class Terrains implements ITerrainFactory {
 
-    public static final int WOODS = 1;
+    public static final int WOODS = 1; //1: light 2: heavy 3: ultra
     public static final int ROUGH = 2; //1: normal 2: ultra
     public static final int RUBBLE = 3;
     public static final int WATER = 4;
@@ -44,7 +44,7 @@ public class Terrains implements ITerrainFactory {
     public static final int FORTIFIED = 21;
     public static final int GEYSER = 22; // 1: dormant 2: active 3: magma
                                             // vent
-    public static final int JUNGLE = 23; // levels 1,2,3
+    public static final int JUNGLE = 23; //1: light 2: heavy 3: ultra
     public static final int MAGMA = 24; // 1: crust 2: liquid
     public static final int MUD = 25;
     public static final int RAPIDS = 26; //1: rapids 2: torrent
