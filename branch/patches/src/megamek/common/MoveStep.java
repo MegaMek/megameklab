@@ -1982,6 +1982,11 @@ public class MoveStep implements Serializable {
                         mp += 3;
                     }
                 }
+                //if using non-careful movement on ice then reduce cost
+                if(destHex.containsTerrain(Terrains.ICE) && !parent.isCareful()) {
+                	mp--;
+                }
+                
             }
         } // End not-along-road
 

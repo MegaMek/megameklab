@@ -4002,12 +4002,27 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     		return roll;
     	}
     	
-    	//this only applies in fog, night conditions, or if the current hex has ice
+    	//this only applies in fog, night conditions, or if a hex along the move path has ice
     	boolean isFoggy = game.getPlanetaryConditions().getFog() != PlanetaryConditions.FOG_NONE;
     	boolean isDark = game.getPlanetaryConditions().getLight() > PlanetaryConditions.L_DUSK;
-    	boolean hasIce = curHex.containsTerrain(Terrains.ICE);
+    	boolean hasIce = false;
     	
-    	if(!isFoggy && !isDark) {
+    	Enumeration<MoveStep> steps = step.getParent().getSteps();
+    	while(steps.hasMoreElements()) {
+    		MoveStep nextStep = steps.nextElement();
+    		if(null == nextStep.getPosition())
+    			continue;
+    		IHex nextHex = game.getBoard().getHex(nextStep.getPosition());
+    		if(null == nextHex)
+    			continue;
+    		if(nextHex.containsTerrain(Terrains.ICE)) {
+    			hasIce = true;
+    			break;
+    		}
+    	}
+    	
+    	
+    	if(!isFoggy && !isDark && !hasIce) {
     		roll.addModifier(TargetRoll.CHECK_FALSE, "conditions are not dangerous");
     		return roll;
     	}
@@ -4024,11 +4039,13 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     		roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
     	}
     	//TODO: how do you tell if it is clear?
-    	//FIXME: no perfect solution in the current code. I will for the moment use movement costs
+    	//FIXME: no perfect solution in the current code. I will use movement costs
     	else if (!lastPos.equals(curPos) 
     			&& (curHex.movementCost(step.getParent().getLastStepMovementType()) > 0 || lastElev != curHex.getElevation())) {
     		roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
-    	//TODO: icy conditions
+    	//ice conditions
+    	} else if (curHex.containsTerrain(Terrains.ICE)) {
+    		roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
     	} else {
     		roll.addModifier(TargetRoll.CHECK_FALSE, "not moving recklessly");
     	}

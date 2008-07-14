@@ -303,6 +303,7 @@ public class Terrain implements ITerrain, Serializable {
             	return 0;
             case Terrains.MUD:
             case Terrains.SWAMP:
+            case Terrains.ICE:
                 if (moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
                     return 0;
                 return 1;
