@@ -4503,7 +4503,10 @@ public class Server implements Runnable {
 
             // check piloting skill for getting up
             rollTarget = entity.checkGetUp(step);
+            
+            
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
+            
                 entity.heatBuildup += 1;
                 entity.setProne(false);
                 wasProne = false;
@@ -21400,14 +21403,15 @@ public class Server implements Runnable {
                     r.subject = entity.getId();
                     r.indent(5);
                     vDesc.addElement(r);
-                    if (game.getPlanetaryConditions().isVacuum()) {
+                    //infantry have auto XTC gear so do pilots
+                    /*if (game.getPlanetaryConditions().isVacuum()) {
                         // ended up in a vacuum
                         r = new Report(6405);
                         r.subject = entity.getId();
                         r.indent(3);
                         vDesc.addElement(r);
                         vDesc.addAll(destroyEntity(pilot, "explosive decompression", false, false));
-                    }
+                    }*/
                     // Update the entity
                     entityUpdate(pilot.getId());
                     // check if the pilot lands in a minefield
@@ -21418,6 +21422,7 @@ public class Server implements Runnable {
                     r.subject = entity.getId();
                     r.indent(3);
                     vDesc.addElement(r);
+                    /*
                     if (game.getPlanetaryConditions().isVacuum()) {
                         // landed in vacuum
                         r = new Report(6405);
@@ -21425,10 +21430,10 @@ public class Server implements Runnable {
                         r.indent(3);
                         vDesc.addElement(r);
                         vDesc.addAll(destroyEntity(pilot, "explosive decompression", false, false));
-                    } else {
-                        game.removeEntity(pilot.getId(), IEntityRemovalConditions.REMOVE_IN_RETREAT);
-                        send(createRemoveEntityPacket(pilot.getId(), IEntityRemovalConditions.REMOVE_IN_RETREAT));
-                    }
+                    } else {*/
+                    game.removeEntity(pilot.getId(), IEntityRemovalConditions.REMOVE_IN_RETREAT);
+                    send(createRemoveEntityPacket(pilot.getId(), IEntityRemovalConditions.REMOVE_IN_RETREAT));
+                    //}
                 }
                 if (game.getOptions().booleanOption("ejected_pilots_flee")) {
                     game.removeEntity(pilot.getId(), IEntityRemovalConditions.REMOVE_IN_RETREAT);

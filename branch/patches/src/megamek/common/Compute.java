@@ -1339,7 +1339,7 @@ public class Compute {
             return new ToHitData();
         }
 
-	if (game.getOptions().booleanOption("tacops_standing") &&
+	if (game.getOptions().booleanOption("tacops_standing_still") &&
             entity.moved==IEntityMovementType.MOVE_NONE &&
 			!entity.isImmobile() &&
             !(entity instanceof Infantry || entity instanceof VTOL ||

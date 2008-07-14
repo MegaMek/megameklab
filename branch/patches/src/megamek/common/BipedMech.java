@@ -675,4 +675,47 @@ public class BipedMech extends Mech {
             && !isLocationBad(Mech.LOC_LLEG)
             && !isLocationBad(Mech.LOC_RLEG);
     }
+    
+    public PilotingRollData checkGetUp(MoveStep step) {
+        
+        PilotingRollData roll = super.checkGetUp(step);
+        
+        if ( game.getOptions().booleanOption("tacops_attempting_stand") 
+                && roll.getValue() != TargetRoll.CHECK_FALSE) {
+            addStandingPenalties(roll);
+        }
+        
+        return roll;
+    }
+    
+    
+    public PilotingRollData addStandingPenalties(PilotingRollData roll) {
+
+        
+        int[] locsToCheck = new int[2];
+
+        locsToCheck[0] = Mech.LOC_RARM;
+        locsToCheck[1] = Mech.LOC_LARM;
+
+        for (int i = 0; i < locsToCheck.length; i++) {
+            int loc = locsToCheck[i];
+            if (isLocationBad(loc)) {
+                roll.addModifier(2, getLocationName(loc) + " destroyed");
+            } else {
+                // check for damaged hip actuators
+                if (!hasWorkingSystem(Mech.ACTUATOR_HAND, loc)) {
+                    roll.addModifier(1, getLocationName(loc) + " hand Actuator missing/destroyed");
+                } else if (!hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, loc)) {
+                    roll.addModifier(1, getLocationName(loc) + " lower Actuator missing/destroyed");
+                } else if (!hasWorkingSystem(Mech.ACTUATOR_UPPER_ARM, loc)) {
+                    roll.addModifier(1, getLocationName(loc) + " upper ctuator missing/destroyed");
+                } else if (!hasWorkingSystem(Mech.ACTUATOR_SHOULDER, loc)) {
+                    roll.addModifier(1, getLocationName(loc) + " shoulder Actuator missing/destroyed");
+                }
+            }
+        }
+
+        return roll;
+    }
+
 }

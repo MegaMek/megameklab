@@ -3948,12 +3948,12 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * the piloting skill check.
      */
     public PilotingRollData checkGetUp(MoveStep step) {
-        PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
         
         if ((step == null) || (step.getType() != MovePath.STEP_GET_UP)) {
-            roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: Entity is not attempting to get up.");
-            return roll;
+            return new PilotingRollData(id, TargetRoll.CHECK_FALSE, "Check false: Entity is not attempting to get up.");
         }
+
+        PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
 
         if (isHullDown() && this instanceof QuadMech) {
             roll.addModifier(TargetRoll.AUTOMATIC_SUCCESS, "getting up from hull down");
