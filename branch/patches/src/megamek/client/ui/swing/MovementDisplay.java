@@ -1232,6 +1232,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         // okay, proceed with movement calculations
         Coords lastPos = entity.getPosition();
         Coords curPos = entity.getPosition();
+        int lastElevation = entity.getElevation();
         int curFacing = entity.getFacing();
         int distance = 0;
         int moveType = IEntityMovementType.MOVE_NONE;
@@ -1295,6 +1296,12 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 nagReport.append(addNag(rollTarget));
             }
+            
+            //check if we are moving recklessly
+            rollTarget = entity.checkRecklessMove(step, curHex, lastPos, curPos, lastElevation);
+            if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
+                nagReport.append(addNag(rollTarget));
+            }
 
             // check for crossing ice
             if (curHex.containsTerrain(Terrains.ICE) && curHex.containsTerrain(Terrains.WATER) && !(curPos.equals(lastPos)) && step.getElevation() == 0 && moveType != IEntityMovementType.MOVE_JUMP) {
@@ -1327,7 +1334,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             }
 
             // check if we've moved into swamp
-            rollTarget = entity.checkBogDown(step, curHex, lastPos, curPos, isPavementStep);
+            rollTarget = entity.checkBogDown(step, curHex, lastPos, curPos, lastElevation, isPavementStep);
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 nagReport.append(addNag(rollTarget));
             }
@@ -1426,6 +1433,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                 prevFacing = curFacing;
             }
             prevHex = curHex;
+            lastElevation = step.getElevation();
             firstStep = false;
         }
 

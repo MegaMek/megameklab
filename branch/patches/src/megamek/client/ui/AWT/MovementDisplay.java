@@ -1445,7 +1445,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             }
 
             // check if we've moved into swamp
-            rollTarget = entity.checkBogDown(step, curHex, lastPos, curPos, isPavementStep);
+            rollTarget = entity.checkBogDown(step, curHex, lastPos, curPos, lastElevation, isPavementStep);
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 nagReport.append(addNag(rollTarget));
             }

@@ -3810,7 +3810,7 @@ public class Server implements Runnable {
             }
 
             // is the next hex a swamp?
-            PilotingRollData rollTarget = entity.checkBogDown(step, nextHex, curPos, nextPos, Compute.canMoveOnPavement(game, curPos, nextPos, step.getParentUpToThisStep()));
+            PilotingRollData rollTarget = entity.checkBogDown(step, nextHex, curPos, nextPos, step.getElevation(), Compute.canMoveOnPavement(game, curPos, nextPos, step.getParentUpToThisStep()));
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
             	//Taharqa: According to TacOps, you automatically stick if you are skidding, (pg. 63)
                 //if (0 < doSkillCheckWhileMoving(entity, curPos, nextPos, rollTarget, false)) {
@@ -4902,7 +4902,7 @@ public class Server implements Runnable {
             }
 
             // check if we've moved into a swamp
-            rollTarget = entity.checkBogDown(step, curHex, lastPos, curPos, isPavementStep);
+            rollTarget = entity.checkBogDown(step, curHex, lastPos, curPos, lastElevation, isPavementStep);
             if (rollTarget.getValue() != TargetRoll.CHECK_FALSE) {
                 if (0 < doSkillCheckWhileMoving(entity, lastPos, curPos, rollTarget, false)) {
                     entity.setStuck(true);
