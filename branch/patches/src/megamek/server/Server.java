@@ -7671,8 +7671,6 @@ public class Server implements Runnable {
         int bgMod = destHex.getBogDownModifier();
         if (bgMod != TargetRoll.AUTOMATIC_SUCCESS 
         		&& (entity.getMovementMode() != IEntityMovementMode.HOVER)
-        		&& (entity.getMovementMode() != IEntityMovementMode.VTOL) 
-        		&& (entity.getMovementMode() != IEntityMovementMode.WIGE) 
         		&& elev == 0) {
         	PilotingRollData roll = entity.getBasePilotingRoll();
         	roll.append(new PilotingRollData(entity.getId(), bgMod, "avoid bogging down"));
