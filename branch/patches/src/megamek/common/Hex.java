@@ -458,11 +458,11 @@ public class Hex implements IHex, Serializable {
      * get any modifiers to a bog-down roll in this hex. Takes the worst modifier
      * If there is no bog-down chance in this hex, then it returns TargetRoll.AUTOMATIC_SUCCESS
      */
-    public int getBogDownModifier() {
+    public int getBogDownModifier(int moveType) {
     	int mod = TargetRoll.AUTOMATIC_SUCCESS;
     	for (int i = 0; i < terrains.length; i++) {
-            if (terrains[i] != null && mod < terrains[i].getBogDownModifier())
-                mod = terrains[i].getBogDownModifier();
+            if (terrains[i] != null && mod < terrains[i].getBogDownModifier(moveType))
+                mod = terrains[i].getBogDownModifier(moveType);
         }
     	return mod;
     }

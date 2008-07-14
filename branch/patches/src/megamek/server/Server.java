@@ -5598,7 +5598,7 @@ public class Server implements Runnable {
             }
 
             // jumped into swamp? maybe stuck!
-            if (curHex.getBogDownModifier() != TargetRoll.AUTOMATIC_SUCCESS) {
+            if (curHex.getBogDownModifier(entity.getMovementMode()) != TargetRoll.AUTOMATIC_SUCCESS) {
                 if (entity instanceof Mech) {
                     entity.setStuck(true);
                     r = new Report(2121);
@@ -5607,7 +5607,7 @@ public class Server implements Runnable {
                     addReport(r);
                 } else {
                     PilotingRollData roll = new PilotingRollData(entity.getId(), 5, "entering boggy terrain");             
-                    roll.append(new PilotingRollData(entity.getId(), curHex.getBogDownModifier(), "avoid bogging down"));
+                    roll.append(new PilotingRollData(entity.getId(), curHex.getBogDownModifier(entity.getMovementMode()), "avoid bogging down"));
                     if (0 < doSkillCheckWhileMoving(entity, curPos, curPos, roll, false)) {
                         entity.setStuck(true);
                         r = new Report(2081);
@@ -7668,9 +7668,10 @@ public class Server implements Runnable {
     private Vector<Report> doEntityDisplacementBogDownCheck(Entity entity, IHex destHex, int elev) {
         Vector<Report> vReport = new Vector<Report>();
         Report r; 
-        int bgMod = destHex.getBogDownModifier();
+        int bgMod = destHex.getBogDownModifier(entity.getMovementMode());
         if (bgMod != TargetRoll.AUTOMATIC_SUCCESS 
         		&& (entity.getMovementMode() != IEntityMovementMode.HOVER)
+        		&& (entity.getMovementMode() != IEntityMovementMode.WIGE)
         		&& elev == 0) {
         	PilotingRollData roll = entity.getBasePilotingRoll();
         	roll.append(new PilotingRollData(entity.getId(), bgMod, "avoid bogging down"));
@@ -18178,7 +18179,7 @@ public class Server implements Runnable {
         }
 
         //if falling into a bog-down hex, the entity automatically gets stuck
-        if(fallHex.getBogDownModifier() != TargetRoll.AUTOMATIC_SUCCESS) {
+        if(fallHex.getBogDownModifier(entity.getMovementMode()) != TargetRoll.AUTOMATIC_SUCCESS) {
         	entity.setStuck(true);
             r = new Report(2081);
             r.subject = entity.getId();
@@ -21755,7 +21756,7 @@ public class Server implements Runnable {
             entity.addPilotingModifierForTerrain(rollTarget);
             // apart from swamp & liquid magma, -1 modifier
             IHex hex = game.getBoard().getHex(entity.getPosition());
-            rollTarget.addModifier(hex.getBogDownModifier(), "bogged down");
+            rollTarget.addModifier(hex.getBogDownModifier(entity.getMovementMode()), "bogged down");
             // okay, print the info
             r = new Report(2340);
             r.addDesc(entity);

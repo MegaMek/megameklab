@@ -4173,8 +4173,13 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      */
     public PilotingRollData checkBogDown(MoveStep step, IHex curHex, Coords lastPos, Coords curPos, int lastElev, boolean isPavementStep) {
         PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
-        int bgMod = curHex.getBogDownModifier();
-        if ((!lastPos.equals(curPos) || step.getElevation() != lastElev) && bgMod != TargetRoll.AUTOMATIC_SUCCESS && step.getMovementType() != IEntityMovementType.MOVE_JUMP && (this.getMovementMode() != IEntityMovementMode.HOVER) && step.getElevation() == 0 && !isPavementStep) {
+        int bgMod = curHex.getBogDownModifier(getMovementMode());
+        if ((!lastPos.equals(curPos) || step.getElevation() != lastElev) 
+        		&& bgMod != TargetRoll.AUTOMATIC_SUCCESS 
+        		&& step.getMovementType() != IEntityMovementType.MOVE_JUMP 
+        		&& (this.getMovementMode() != IEntityMovementMode.HOVER) 
+        		&& (this.getMovementMode() != IEntityMovementMode.WIGE)
+        		&& step.getElevation() == 0 && !isPavementStep) {
         	roll.append(new PilotingRollData(getId(), bgMod, "avoid bogging down"));   	
         } else {
             roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: Not entering bog-down terrain, or jumping/hovering over such terrain");

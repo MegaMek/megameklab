@@ -302,6 +302,8 @@ public class Terrain implements ITerrain, Serializable {
             	}
             	return 0;
             case Terrains.MUD:
+            	if(moveType == IEntityMovementMode.BIPED || moveType== IEntityMovementMode.QUAD)
+            		return 0;
             case Terrains.SWAMP:
             case Terrains.ICE:
                 if (moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
@@ -341,7 +343,7 @@ public class Terrain implements ITerrain, Serializable {
         }
     }
     
-    public int getBogDownModifier() {
+    public int getBogDownModifier(int moveType) {
     	switch (type) {
     	case(Terrains.SWAMP):
     		return 0;
@@ -351,6 +353,9 @@ public class Terrain implements ITerrain, Serializable {
     		else
     			return TargetRoll.AUTOMATIC_SUCCESS;
     	case(Terrains.MUD):
+    		if(moveType == IEntityMovementMode.BIPED || moveType== IEntityMovementMode.QUAD
+    				|| moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
+    			return TargetRoll.AUTOMATIC_SUCCESS;
     	case(Terrains.TUNDRA):
     		return -1;
     	case(Terrains.SNOW):
