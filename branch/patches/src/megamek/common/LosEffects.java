@@ -67,6 +67,7 @@ public class LosEffects {
     boolean infProtected = false;
     boolean hasLoS = true;
     int plantedFields = 0;
+    int heavyIndustrial = 0;
     int lightWoods = 0;
     int heavyWoods = 0;
     int ultraWoods = 0;
@@ -95,6 +96,7 @@ public class LosEffects {
         this.blocked |= other.blocked;
         this.infProtected |= other.infProtected;
         this.plantedFields += other.plantedFields;
+        this.heavyIndustrial += other.heavyIndustrial;
         this.lightWoods += other.lightWoods;
         this.heavyWoods += other.heavyWoods;
         this.ultraWoods += other.ultraWoods;
@@ -110,6 +112,10 @@ public class LosEffects {
 
     public int getPlantedFields() {
         return plantedFields;
+    }
+    
+    public int getHeavyIndustrial() {
+        return heavyIndustrial;
     }
     
     public int getLightWoods() {
@@ -310,7 +316,8 @@ public class LosEffects {
 
         LosEffects finalLoS = calculateLos(game, ai);
         finalLoS.setMinimumWaterDepth(ai.minimumWaterDepth);
-        finalLoS.hasLoS = !finalLoS.blocked && finalLoS.screen < 1 && finalLoS.plantedFields < 6
+        finalLoS.hasLoS = !finalLoS.blocked && finalLoS.screen < 1 && finalLoS.plantedFields < 6 
+        	    && finalLoS.heavyIndustrial < 3
                 && (finalLoS.lightWoods + finalLoS.lightSmoke)
                         + ((finalLoS.heavyWoods + finalLoS.heavySmoke) * 2)
                         + (finalLoS.ultraWoods * 3) < 3;
@@ -395,6 +402,10 @@ public class LosEffects {
         	return new ToHitData(TargetRoll.IMPOSSIBLE, "LOS blocked by planted fields.");
         }
         
+        if(heavyIndustrial > 2) {
+        	return new ToHitData(TargetRoll.IMPOSSIBLE, "LOS blocked by heavy industrial zones.");
+        }
+        
         if (screen > 0) {
             return new ToHitData(ToHitData.IMPOSSIBLE, "LOS blocked by screen.");
         }
@@ -407,6 +418,11 @@ public class LosEffects {
         if(plantedFields > 0) {
         	modifiers.addModifier((int)Math.floor(plantedFields / 2.0), plantedFields
                     + " intervening planted fields");
+        }
+        
+        if(heavyIndustrial > 0) {
+        	modifiers.addModifier(heavyIndustrial, heavyIndustrial
+                    + " intervening heavy industrial zones");
         }
         
         if (lightWoods > 0) {
@@ -723,6 +739,21 @@ public class LosEffects {
                 //number of screens doesn't matter. One is enough to block
                 los.screen++;
             }
+            //heavy industrial zones can vary in height up to 10 levels, so lets 
+            //put all of this into a for loop
+            for(int level = 1; level < 11; level++) {
+            	if((hexEl + level > ai.attackAbsHeight && hexEl + level > ai.targetAbsHeight)
+                        || (hexEl + level > ai.attackAbsHeight && ai.attackPos
+                                .distance(coords) == 1)
+                        || (hexEl + level > ai.targetAbsHeight && ai.targetPos
+                                .distance(coords) == 1)) {     		
+            		//check industrial zone
+            		if(hex.terrainLevel(Terrains.INDUSTRIAL) == level) {
+            			los.heavyIndustrial++;
+            		}
+            		//TODO: might as well put everything in here to save some time
+            	}
+            }           
             //planted fields only rise one level above the terrain
             if((hexEl + 1 > ai.attackAbsHeight && hexEl + 2 > ai.targetAbsHeight)
                     || (hexEl + 1 > ai.attackAbsHeight && ai.attackPos

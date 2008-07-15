@@ -8780,6 +8780,10 @@ public class Server implements Runnable {
             }
         }
         sendChangedHex(c);
+        
+        //any attempt to clear an heavy industrial hex may cause an exposion
+        checkExplodeIndustrialZone(c, vPhaseReport);
+        
         return vPhaseReport;
     }
 
@@ -20188,6 +20192,104 @@ public class Server implements Runnable {
     }
 
     /**
+     * checks for unintended exposion of heavy industrial zone hex and applies damage
+     * to entities occupying the hex
+     */
+    public void checkExplodeIndustrialZone(Coords c, Vector<Report> vDesc) {
+    	Report r;
+    	IHex hex = game.getBoard().getHex(c);
+    	if(null == hex)
+    		return;
+    	
+    	if(!hex.containsTerrain(Terrains.INDUSTRIAL))
+    		return;
+    	
+    	
+    	r = new Report(3590, Report.PUBLIC);
+    	r.add(c.getBoardNum());
+    	r.indent(2);
+    	int effect = Compute.d6(2);
+    	r.add(8);
+    	r.add(effect);
+    	if(effect > 7) {
+    		r.choose(true);
+    		r.newlines = 0;
+    		vDesc.add(r);
+    		boolean onFire = false;
+    		boolean powerLine = false;
+    		boolean minorExp = false;
+    		boolean elecExp = false;
+    		boolean majorExp = false;
+    		if(effect == 8) {
+    			onFire = true;
+    			r = new Report(3600, Report.PUBLIC);
+    			r.newlines = 0;
+    			vDesc.add(r);
+    		} else if(effect == 9) {
+    			powerLine = true;
+    			r = new Report(3605, Report.PUBLIC);
+    			r.newlines = 0;
+    			vDesc.add(r);
+    		} else if (effect == 10) {
+    			minorExp = true;
+    			onFire = true;
+    			r = new Report(3610, Report.PUBLIC);
+    			r.newlines  = 0;
+    			vDesc.add(r);
+    		} else if (effect == 11) {
+    			elecExp = true;
+    			r = new Report(3615, Report.PUBLIC);
+    			r.newlines = 0;
+    			vDesc.add(r);
+    		} else {
+    			onFire = true;
+    			majorExp = true;
+    			r = new Report(3620, Report.PUBLIC);
+    			r.newlines = 0;
+    			vDesc.add(r);
+    		}
+    		//apply damage here
+    		if(powerLine || minorExp || elecExp || majorExp) {
+    			//cycle through the entities in the hex and apply damage
+    			for (Enumeration<Entity> e = game.getEntities(c); e.hasMoreElements();) {
+                    Entity en = e.nextElement();
+                    int damage = 3;
+                    if(minorExp)
+                    	damage = 5;
+                    if(elecExp)
+                    	damage = Compute.d6(1) + 3;
+                    if(majorExp)
+                    	damage = Compute.d6(2);
+                    HitData hit = en.rollHitLocation(ToHitData.HIT_NORMAL, ToHitData.SIDE_FRONT);
+                    if(en instanceof BattleArmor) {
+                    	//ugly - I have to apply damage to each trooper separately
+                    	for(int loc = 0; loc < en.locations(); loc++) {
+                    		if(IArmorState.ARMOR_NA != en.getInternal(loc)
+                    				&& IArmorState.ARMOR_DESTROYED != en.getInternal(loc)
+                    				&& (IArmorState.ARMOR_DOOMED != en.getInternal(loc))) {
+                    			vDesc.addAll( damageEntity(en, new HitData(loc), damage) );
+                    		}
+                    	} 
+                    } else {
+                    	vDesc.addAll( damageEntity(en, hit, damage) );
+                    }
+                    if(majorExp)
+                    	//lets pretend that the infernos came from the entity itself (should give us side_front)
+                    	vDesc.addAll( deliverInfernoMissiles(en, en, Compute.d6(2)) );
+    			}
+    		}
+    		Report.addNewline(vDesc);
+    		if(onFire && !hex.containsTerrain(Terrains.FIRE)) {   			
+    			this.ignite(c, false, vDesc);
+    		}
+    	} else {
+    		//report no explosion
+    		r.choose(false);
+    		vDesc.add(r);
+    	}
+    }
+    
+    /**
      * Determine the results of an entity moving through a wall of a building
      * after having moved a certain distance. This gets called when a Mech or a
      * Tank enters a building, leaves a building, or travels from one hex to
@@ -20289,7 +20391,7 @@ public class Server implements Runnable {
 
         return rv;
     }
-
+    
     /**
      * Apply the correct amount of damage that passes on to any infantry unit in
      * the given building, based upon the amount of damage the building just

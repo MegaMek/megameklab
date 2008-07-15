@@ -288,6 +288,8 @@ public class Terrain implements ITerrain, Serializable {
                     return 0;
             	else 
             		return 4;
+            case Terrains.INDUSTRIAL:
+            	return 1;
             default:
                 return 0;
         }
@@ -351,6 +353,11 @@ public class Terrain implements ITerrain, Serializable {
                         || moveType == IEntityMovementMode.INF_MOTORIZED)
                     return 1;
                 return 0;
+            case Terrains.INDUSTRIAL:
+            	if(moveType == IEntityMovementMode.BIPED || moveType== IEntityMovementMode.QUAD)
+            		return 1;
+            	else
+            		return 0;
             default:
                 return 0;
         }

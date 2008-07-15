@@ -185,6 +185,9 @@ public class FireProcessor extends DynamicTerrainProcessor {
                     		burningBldgs.addElement(bldg);
                     	}         		
                     }  
+                    
+                    //check for any explosions
+                    server.checkExplodeIndustrialZone(currentCoords, vPhaseReport);
                                        
                     //Add smoke (unless we are in a tornado)
                     boolean bInferno = currentHex.terrainLevel(Terrains.FIRE) == 2;

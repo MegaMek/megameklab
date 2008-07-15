@@ -93,6 +93,9 @@ public class PlasmaMFUKWeaponHandler extends EnergyWeaponHandler {
             server.tryIgniteHex(target.getPosition(), subjectId, true, false, new TargetRoll(wtype.getFireTN(), wtype.getName()),
                     3, vPhaseReport);
         }
+        
+        //shots that miss an entity can also potential cause explosions in a heavy industrial hex
+        server.checkExplodeIndustrialZone(target.getPosition(), vPhaseReport);
 
         // BMRr, pg. 51: "All shots that were aimed at a target inside
         // a building and miss do full damage to the building instead."

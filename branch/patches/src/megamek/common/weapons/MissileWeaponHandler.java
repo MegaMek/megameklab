@@ -332,6 +332,9 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
                     vPhaseReport);
         }
 
+        //shots that miss an entity can also potential cause explosions in a heavy industrial hex
+        server.checkExplodeIndustrialZone(target.getPosition(), vPhaseReport);
+        
         // Report any AMS action.
         if (amsEnganged) {
             r = new Report(3230);

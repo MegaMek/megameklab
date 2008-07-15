@@ -54,7 +54,7 @@ public class Terrains implements ITerrainFactory {
     public static final int SPACE = 30;
     public static final int SCREEN  = 31;
     public static final int FIELDS = 32;
-    public static final int INDUSTRIAL = 33;
+    public static final int INDUSTRIAL = 33; //level indicates height
     // special types
     public static final int IMPASSABLE = 34;
     public static final int ELEVATOR = 35; // level=elevation it moves to,

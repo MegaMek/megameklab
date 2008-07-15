@@ -200,6 +200,11 @@ public class Hex implements IHex, Serializable {
         	maxFeature = 3;
         }     
 
+        //account for heavy industrial zones, which can vary in height
+        if (maxFeature < this.terrainLevel(Terrains.INDUSTRIAL)) {
+            maxFeature = this.terrainLevel(Terrains.INDUSTRIAL);
+        }
+        
         // Account for buildings.
         if (maxFeature < this.terrainLevel(Terrains.BLDG_ELEV)) {
             maxFeature = this.terrainLevel(Terrains.BLDG_ELEV);
@@ -442,15 +447,16 @@ public class Hex implements IHex, Serializable {
     	return mod;
     }
     
-    /*
-     * Is this hex ignitable
+    /**
+     * Is this hex ignitable?
      */
     public boolean isIgnitable() {
     	return (containsTerrain(Terrains.WOODS) 
     			|| containsTerrain(Terrains.JUNGLE) 
     			|| containsTerrain(Terrains.BUILDING)
     			|| containsTerrain(Terrains.FUEL_TANK)
-    			|| containsTerrain(Terrains.FIELDS));
+    			|| containsTerrain(Terrains.FIELDS)
+    			|| containsTerrain(Terrains.INDUSTRIAL));
     	
     }
     

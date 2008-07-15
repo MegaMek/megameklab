@@ -103,6 +103,7 @@ public class ACFlechetteHandler extends AmmoWeaponHandler {
                 		new TargetRoll(wtype.getFireTN(), wtype.getName()), 5, vPhaseReport)) {
             return;
         }
+        
         vPhaseReport.addAll(server.tryClearHex(target.getPosition(), nDamage, subjectId));
         return;
     }

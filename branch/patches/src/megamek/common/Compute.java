@@ -1475,7 +1475,9 @@ public class Compute {
         		}
         	}
         }
-        
+        if(hex.containsTerrain(Terrains.INDUSTRIAL)) {
+        	toHit.addModifier(+1, "target in heavy industrial zone");
+        }
         //space screens; bonus depends on number (level)
         if(hex.terrainLevel(Terrains.SCREEN) > 0) {
             toHit.addModifier(hex.terrainLevel(Terrains.SCREEN) + 1, "target in screen(s)");

@@ -388,6 +388,7 @@ public class ArtilleryWeaponIndirectFireHandler extends AmmoWeaponHandler {
         if (isFlak) {
             altitude = ((VTOL) target).getElevation();
         }
+        
         //check to see if this is a mine clearing attack
         //According to the RAW you have to hit the right hex to hit even if the scatter hex has minefields
         boolean mineClear = target.getTargetType() == Targetable.TYPE_MINEFIELD_CLEAR;
