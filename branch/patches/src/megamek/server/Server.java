@@ -5553,7 +5553,9 @@ public class Server implements Runnable {
                 addReport(r);
                 if (roll >= 4) {
                     // oops!
+                	entity.setPosition(curPos);
                     addReport(resolveIceBroken(curPos));
+                    curPos = entity.getPosition();
                 }
             } else if (!(prevStep.climbMode() && curHex.containsTerrain(Terrains.BRIDGE))) {
                 rollTarget = entity.checkWaterMove(waterLevel, overallMoveType);
@@ -16955,13 +16957,13 @@ public class Server implements Runnable {
                 boolean waterFall = fallHex.containsTerrain(Terrains.WATER);
                 if (waterFall && fallHex.containsTerrain(Terrains.ICE)) {
                     int roll = Compute.d6(1);
-                    r = new Report(2118);
+                    r = new Report(2119);
                     r.subject = en.getId();
-                    r.add(en.getDisplayName(), true);
+                    r.addDesc(en);
                     r.add(roll);
                     r.subject = en.getId();
                     vDesc.add(r);
-                    if (roll == 6) {
+                    if (roll > 3) {
                         vDesc.addAll(resolveIceBroken(crashPos));
                     } else {
                         waterFall = false; // saved by ice
@@ -18106,7 +18108,7 @@ public class Server implements Runnable {
         }
 
         // Falling into water instantly destroys most non-mechs
-        if (waterDepth > 0 && !(entity instanceof Mech) && !(entity instanceof Protomech) && (entity.getRunMP() > 0 && entity.getMovementMode() != IEntityMovementMode.HOVER) && entity.getMovementMode() != IEntityMovementMode.HYDROFOIL && entity.getMovementMode() != IEntityMovementMode.NAVAL && entity.getMovementMode() != IEntityMovementMode.SUBMARINE && entity.getMovementMode() != IEntityMovementMode.INF_UMU) {
+        if (waterDepth > 0 && !(entity instanceof Mech) && !(entity instanceof Protomech) && !(entity.getRunMP() > 0 && entity.getMovementMode() == IEntityMovementMode.HOVER) && entity.getMovementMode() != IEntityMovementMode.HYDROFOIL && entity.getMovementMode() != IEntityMovementMode.NAVAL && entity.getMovementMode() != IEntityMovementMode.SUBMARINE && entity.getMovementMode() != IEntityMovementMode.INF_UMU) {
             vPhaseReport.addAll(destroyEntity(entity, "a watery grave", false));
             return vPhaseReport;
         }
@@ -21946,7 +21948,7 @@ public class Server implements Runnable {
                 Entity e = entities.nextElement();
                 // If the unit is on the surface, and is no longer allowed in
                 // the hex
-                if (e.getElevation() == 0 && e.getMovementMode() != IEntityMovementMode.HOVER && e.getMovementMode() != IEntityMovementMode.WIGE && e.getMovementMode() != IEntityMovementMode.INF_UMU && !e.hasUMU()) {
+                if (e.getElevation() == 0 && !(e.getRunMP() > 0 && (e.getMovementMode() == IEntityMovementMode.HOVER || e.getMovementMode() == IEntityMovementMode.WIGE)) && e.getMovementMode() != IEntityMovementMode.INF_UMU && !e.hasUMU()) {
                     vPhaseReport.addAll(doEntityFallsInto(e, c, c, new PilotingRollData(TargetRoll.AUTOMATIC_FAIL)));
                 }
             }
