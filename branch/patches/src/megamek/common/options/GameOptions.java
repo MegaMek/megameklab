@@ -129,7 +129,6 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedCombat, "tacops_burst", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_heat", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_partial_cover", false); //$NON-NLS-1$
-        addOption(advancedCombat, "quad_hit_location", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_ba_criticals", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_hotload", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_rapid_ac", false); //$NON-NLS-1$
@@ -142,7 +141,8 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedCombat, "tacops_woods_cover", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_vehicle_effective", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_vehicle_arcs", false); //$NON-NLS-1$
-        
+        addOption(advancedCombat, "tacops_advanced_mech_hit_locations", false); //$NON-NLS-1$
+
         IBasicOptionGroup advancedGroundMovement = addGroup("advancedGroundMovement"); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_standing_still", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_evade", false); //$NON-NLS-1$

@@ -1269,42 +1269,6 @@ public abstract class Mech extends Entity implements Serializable {
             }
             if (side == ToHitData.SIDE_FRONT) {
                 // normal front hits
-                if (game.getOptions().booleanOption("quad_hit_location") && isProne()) {
-                    switch (roll) {
-                    case 2:
-                        if ((crew.hasEdgeRemaining() && crew.getOptions().booleanOption("edge_when_tac")) && !game.getOptions().booleanOption("no_tac")) {
-                            crew.decreaseEdge();
-                            HitData result = rollHitLocation(table, side, aimedLocation, aimingMode);
-                            result.setUndoneLocation(tac(table, side, Mech.LOC_CT, false));
-                            return result;
-                        } // if
-                        return tac(table, side, Mech.LOC_CT, false);
-                    case 3:
-                        return new HitData(Mech.LOC_RLEG);
-                    case 4:
-                    case 5:
-                        return new HitData(Mech.LOC_RARM);
-                    case 6:
-                        return new HitData(Mech.LOC_RT);
-                    case 7:
-                        return new HitData(Mech.LOC_CT);
-                    case 8:
-                        return new HitData(Mech.LOC_LT);
-                    case 9:
-                    case 10:
-                        return new HitData(Mech.LOC_LARM);
-                    case 11:
-                        return new HitData(Mech.LOC_LLEG);
-                    case 12:
-                        if (crew.hasEdgeRemaining() && crew.getOptions().booleanOption("edge_when_headhit")) {
-                            crew.decreaseEdge();
-                            HitData result = rollHitLocation(table, side, aimedLocation, aimingMode);
-                            result.setUndoneLocation(new HitData(Mech.LOC_HEAD));
-                            return result;
-                        } // if
-                        return new HitData(Mech.LOC_HEAD);
-                    }
-                } else {
                     switch (roll) {
                     case 2:
                         if ((crew.hasEdgeRemaining() && crew.getOptions().booleanOption("edge_when_tac")) && !game.getOptions().booleanOption("no_tac")) {
@@ -1339,7 +1303,6 @@ public abstract class Mech extends Entity implements Serializable {
                         } // if
                         return new HitData(Mech.LOC_HEAD);
                     }
-                }
             } else if (side == ToHitData.SIDE_LEFT) {
                 // normal left side hits
                 switch (roll) {
@@ -1361,8 +1324,12 @@ public abstract class Mech extends Entity implements Serializable {
                 case 7:
                     return new HitData(Mech.LOC_LT);
                 case 8:
+                    if (game.getOptions().booleanOption("tacops_advanced_mech_hit_locations"))
+                        return new HitData(Mech.LOC_CT,true);
                     return new HitData(Mech.LOC_CT);
                 case 9:
+                    if (game.getOptions().booleanOption("tacops_advanced_mech_hit_locations"))
+                        return new HitData(Mech.LOC_RT,true);
                     return new HitData(Mech.LOC_RT);
                 case 10:
                     return new HitData(Mech.LOC_RARM);
@@ -1398,8 +1365,12 @@ public abstract class Mech extends Entity implements Serializable {
                 case 7:
                     return new HitData(Mech.LOC_RT);
                 case 8:
+                    if (game.getOptions().booleanOption("tacops_advanced_mech_hit_locations"))
+                        return new HitData(Mech.LOC_CT,true);
                     return new HitData(Mech.LOC_CT);
                 case 9:
+                    if (game.getOptions().booleanOption("tacops_advanced_mech_hit_locations"))
+                        return new HitData(Mech.LOC_LT,true);
                     return new HitData(Mech.LOC_LT);
                 case 10:
                     return new HitData(Mech.LOC_LARM);

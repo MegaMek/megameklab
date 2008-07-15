@@ -6377,7 +6377,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         // calculate firing angle
         int fa = (effectivePos.degree(src) + (6 - face) * 60) % 360;
 
-        boolean targetIsTank = (this instanceof Tank) || (game.getOptions().booleanOption("quad_hit_location") && this instanceof QuadMech);
+        boolean targetIsTank = (this instanceof Tank) || (game.getOptions().booleanOption("tacops_advanced_mech_hit_locations") && this instanceof QuadMech);
         if (targetIsTank) {
             if (fa > 30 && fa <= 150) {
                 return ToHitData.SIDE_RIGHT;
