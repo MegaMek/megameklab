@@ -4173,7 +4173,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      */
     public PilotingRollData checkBogDown(MoveStep step, IHex curHex, Coords lastPos, Coords curPos, int lastElev, boolean isPavementStep) {
         PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
-        int bgMod = curHex.getBogDownModifier(getMovementMode());
+        int bgMod = curHex.getBogDownModifier(getMovementMode(), this instanceof LargeSupportTank);
         if ((!lastPos.equals(curPos) || step.getElevation() != lastElev) 
         		&& bgMod != TargetRoll.AUTOMATIC_SUCCESS 
         		&& step.getMovementType() != IEntityMovementType.MOVE_JUMP 

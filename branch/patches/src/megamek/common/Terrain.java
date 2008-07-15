@@ -370,7 +370,7 @@ public class Terrain implements ITerrain, Serializable {
         }
     }
     
-    public int getBogDownModifier(int moveType) {
+    public int getBogDownModifier(int moveType, boolean largeVee) {
     	if(moveType == IEntityMovementMode.HOVER || moveType == IEntityMovementMode.WIGE)
 			return TargetRoll.AUTOMATIC_SUCCESS;
     	switch (type) {
@@ -392,6 +392,11 @@ public class Terrain implements ITerrain, Serializable {
     	case(Terrains.SNOW):
     		if(level == 2)
     			return -1;
+    		else
+    			return TargetRoll.AUTOMATIC_SUCCESS;
+    	case(Terrains.SAND):
+    		if(largeVee)
+    			return 0;
     		else
     			return TargetRoll.AUTOMATIC_SUCCESS;
     	default:

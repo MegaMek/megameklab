@@ -102,6 +102,6 @@ public interface ITerrain {
      */
     public abstract int ignitionModifier();
     
-    public abstract int getBogDownModifier(int moveType);
+    public abstract int getBogDownModifier(int moveType, boolean largeVee);
     
 }
