@@ -257,6 +257,7 @@ public class Terrain implements ITerrain, Serializable {
                 return (level == 2) ? 4 : 1;
             case Terrains.TUNDRA:
             case Terrains.SAND:
+            	return 1;
             case Terrains.SNOW:
             	return (level == 2) ? 1 : 0;
             case Terrains.SWAMP:
@@ -273,6 +274,7 @@ public class Terrain implements ITerrain, Serializable {
             	else 
             		return 1;
             case Terrains.GEYSER:
+            case Terrains.RUBBLE:
                 if (level == 2)
                     return 1;
                 return 0;
@@ -294,6 +296,7 @@ public class Terrain implements ITerrain, Serializable {
     public int movementCost(int moveType) {
         switch (type) {
             case Terrains.MAGMA:
+            case Terrains.RUBBLE:
                 return level - 1;
             case Terrains.GEYSER:
                 if (level == 2)
@@ -341,8 +344,6 @@ public class Terrain implements ITerrain, Serializable {
             		return 2;
             	else 
             		return 1;
-            case Terrains.RUBBLE:
-                return 1;
             case Terrains.SAND:
                 if (moveType == IEntityMovementMode.WHEELED
                         || moveType == IEntityMovementMode.INF_JUMP

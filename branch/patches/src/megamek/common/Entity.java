@@ -4159,7 +4159,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
 
         if (!lastPos.equals(curPos) && step.getMovementType() != IEntityMovementType.MOVE_JUMP && curHex.terrainLevel(Terrains.RUBBLE) > 0 && this instanceof Mech) {
             // append the reason modifier
-            roll.append(new PilotingRollData(getId(), 0, "entering Rubble"));
+            roll.append(new PilotingRollData(getId(), curHex.terrainLevel(Terrains.RUBBLE) - 1, "entering Rubble"));
         } else {
             roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: Entity is not entering rubble");
         }

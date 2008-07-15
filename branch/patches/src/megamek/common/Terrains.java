@@ -20,7 +20,7 @@ public class Terrains implements ITerrainFactory {
 
     public static final int WOODS = 1; //1: light 2: heavy 3: ultra
     public static final int ROUGH = 2; //1: normal 2: ultra
-    public static final int RUBBLE = 3;
+    public static final int RUBBLE = 3; //1: normal 2: ultra
     public static final int WATER = 4;
     public static final int PAVEMENT = 5;
     public static final int ROAD = 6;
