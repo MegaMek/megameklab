@@ -188,6 +188,10 @@ public class Hex implements IHex, Serializable {
         if (containsTerrain(Terrains.WOODS) || containsTerrain(Terrains.JUNGLE)) {
             maxFeature = 2;
         }
+        //not so fast ultra jungles and woods are three levels high
+        if(terrainLevel(Terrains.WOODS) > 2 || terrainLevel(Terrains.JUNGLE) > 2) {
+        	maxFeature = 3;
+        }     
 
         // Account for buildings.
         if (maxFeature < this.terrainLevel(Terrains.BLDG_ELEV)) {

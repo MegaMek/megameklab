@@ -730,7 +730,16 @@ public class LosEffects {
             	} else if (hex.terrainLevel(Terrains.WOODS) == 2
             			|| hex.terrainLevel(Terrains.JUNGLE) == 2) {
             		los.heavyWoods++;
-            	} else if (hex.terrainLevel(Terrains.WOODS) == 3
+            	}
+            }
+            //ultra woods/jungle rise three levels above the terrain
+            if ((hexEl + 3 > ai.attackAbsHeight && hexEl + 3 > ai.targetAbsHeight)
+                    || (hexEl + 3 > ai.attackAbsHeight && ai.attackPos
+                            .distance(coords) == 1)
+                    || (hexEl + 3 > ai.targetAbsHeight && ai.targetPos
+                            .distance(coords) == 1)) {
+            	
+            	if (hex.terrainLevel(Terrains.WOODS) == 3
             			|| hex.terrainLevel(Terrains.JUNGLE) == 3) {
             		los.ultraWoods++;
             	}

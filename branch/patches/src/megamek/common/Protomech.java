@@ -1092,6 +1092,16 @@ public class Protomech extends Entity implements Serializable {
     public boolean canAssaultDrop() {
         return true;
     }
+    
+    public boolean isHexProhibited(IHex hex) {
+        if (hex.containsTerrain(Terrains.IMPASSABLE))
+            return true;
+
+        if (hex.containsTerrain(Terrains.SPACE) && doomedInSpace())
+            return true;
+
+        return hex.terrainLevel(Terrains.WOODS) > 2 || hex.terrainLevel(Terrains.JUNGLE) > 2;
+    }
 
     public boolean isNuclearHardened() {
         return true;
