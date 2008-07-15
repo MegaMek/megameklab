@@ -66,6 +66,7 @@ public class LosEffects {
     boolean blocked = false;
     boolean infProtected = false;
     boolean hasLoS = true;
+    int plantedFields = 0;
     int lightWoods = 0;
     int heavyWoods = 0;
     int ultraWoods = 0;
@@ -93,6 +94,7 @@ public class LosEffects {
     public void add(LosEffects other) {
         this.blocked |= other.blocked;
         this.infProtected |= other.infProtected;
+        this.plantedFields += other.plantedFields;
         this.lightWoods += other.lightWoods;
         this.heavyWoods += other.heavyWoods;
         this.ultraWoods += other.ultraWoods;
@@ -106,6 +108,10 @@ public class LosEffects {
         }
     }
 
+    public int getPlantedFields() {
+        return plantedFields;
+    }
+    
     public int getLightWoods() {
         return lightWoods;
     }
@@ -304,7 +310,7 @@ public class LosEffects {
 
         LosEffects finalLoS = calculateLos(game, ai);
         finalLoS.setMinimumWaterDepth(ai.minimumWaterDepth);
-        finalLoS.hasLoS = !finalLoS.blocked && finalLoS.screen < 1
+        finalLoS.hasLoS = !finalLoS.blocked && finalLoS.screen < 1 && finalLoS.plantedFields < 6
                 && (finalLoS.lightWoods + finalLoS.lightSmoke)
                         + ((finalLoS.heavyWoods + finalLoS.heavySmoke) * 2)
                         + (finalLoS.ultraWoods * 3) < 3;
@@ -385,6 +391,10 @@ public class LosEffects {
             return new ToHitData(TargetRoll.IMPOSSIBLE, "LOS blocked by smoke.");
         }
 
+        if(plantedFields > 5) {
+        	return new ToHitData(TargetRoll.IMPOSSIBLE, "LOS blocked by planted fields.");
+        }
+        
         if (screen > 0) {
             return new ToHitData(ToHitData.IMPOSSIBLE, "LOS blocked by screen.");
         }
@@ -394,6 +404,11 @@ public class LosEffects {
                     "LOS blocked by smoke and woods.");
         }
 
+        if(plantedFields > 0) {
+        	modifiers.addModifier((int)Math.floor(plantedFields / 2.0), plantedFields
+                    + " intervening planted fields");
+        }
+        
         if (lightWoods > 0) {
             if (eistatus > 0) {
                 modifiers.addModifier(1,
@@ -707,6 +722,16 @@ public class LosEffects {
             if(hex.containsTerrain(Terrains.SCREEN)) {
                 //number of screens doesn't matter. One is enough to block
                 los.screen++;
+            }
+            //planted fields only rise one level above the terrain
+            if((hexEl + 1 > ai.attackAbsHeight && hexEl + 2 > ai.targetAbsHeight)
+                    || (hexEl + 1 > ai.attackAbsHeight && ai.attackPos
+                            .distance(coords) == 1)
+                    || (hexEl + 1 > ai.targetAbsHeight && ai.targetPos
+                            .distance(coords) == 1)) { 
+            	if (hex.containsTerrain(Terrains.FIELDS)) {
+            		los.plantedFields++;
+            	}
             }
             if ((hexEl + 2 > ai.attackAbsHeight && hexEl + 2 > ai.targetAbsHeight)
                     || (hexEl + 2 > ai.attackAbsHeight && ai.attackPos

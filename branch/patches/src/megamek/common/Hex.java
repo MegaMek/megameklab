@@ -183,6 +183,13 @@ public class Hex implements IHex, Serializable {
     public int ceiling() {
         int maxFeature = 0;
 
+        //TODO: maxfeature should really be a method in Terrain.java
+        
+        //planted fields rise one level above the terrain
+        if (containsTerrain(Terrains.FIELDS)) {
+            maxFeature = 1;
+        }
+        
         // Account for woods. They are 2 levels high
         // N.B. VTOLs are allowed to enter smoke.
         if (containsTerrain(Terrains.WOODS) || containsTerrain(Terrains.JUNGLE)) {
@@ -442,7 +449,8 @@ public class Hex implements IHex, Serializable {
     	return (containsTerrain(Terrains.WOODS) 
     			|| containsTerrain(Terrains.JUNGLE) 
     			|| containsTerrain(Terrains.BUILDING)
-    			|| containsTerrain(Terrains.FUEL_TANK));
+    			|| containsTerrain(Terrains.FUEL_TANK)
+    			|| containsTerrain(Terrains.FIELDS));
     	
     }
     

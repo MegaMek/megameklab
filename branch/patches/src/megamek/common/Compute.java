@@ -1495,6 +1495,9 @@ public class Compute {
         if (entityTarget.isStuck()) {
             toHit.addModifier(-2, "target stuck in swamp");
         }
+        if(entityTarget instanceof Infantry && hex.containsTerrain(Terrains.FIELDS)) {
+        	toHit.addModifier(+1, "target in planted fields");
+        }
         return toHit;
     }
 

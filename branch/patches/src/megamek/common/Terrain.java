@@ -365,6 +365,8 @@ public class Terrain implements ITerrain, Serializable {
             		return 2;
             	else 
             		return 0;
+            case Terrains.FIELDS:
+            	return -1;
             default:
                 return 0;
         }
