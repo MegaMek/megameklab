@@ -332,7 +332,7 @@ public class ChargeAttackAction extends DisplacementAttackAction {
             return new ToHitData(TargetRoll.IMPOSSIBLE, "Violation of stacking limit in second last step");
         }
 
-        return toHit(game, target, chargeSrc, chargeEl, chargeStep.getMovementType(), false, md.contains(MovePath.STEP_GET_UP));
+        return toHit(game, target, chargeSrc, chargeEl, chargeStep.getMovementType(), false, md.contains(MovePath.STEP_GET_UP) || md.contains(MovePath.STEP_CAREFUL_STAND));
     }
 
     /**
