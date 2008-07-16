@@ -114,6 +114,11 @@ public class QuadMech extends Mech {
             }
             wmp -= actuatorHits;
         }
+        
+        if ( hasModularArmor() ) {
+            wmp--;
+        }
+        
         if (!ignoreheat) {
             // factor in heat
             if (game != null && game.getOptions().booleanOption("tacops_heat")) {

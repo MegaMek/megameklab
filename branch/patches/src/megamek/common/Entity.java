@@ -1417,6 +1417,11 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Returns this entity's original jumping mp.
      */
     public int getOriginalJumpMP() {
+        
+        if ( hasModularArmor() ) {
+            return jumpMP -1;
+        }
+        
         return jumpMP;
     }
 
@@ -7038,4 +7043,83 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     public boolean isCarefulStand() {
         return false;
     }
+    
+    public boolean hasModularArmor() {
+        return hasModularArmor(0);
+    }
+    
+    public boolean hasModularArmor(int loc) {
+        return false;
+    }
+    
+    public int getDamageReductionFromModularArmor(int loc, int damage, Vector<Report>vDesc) {
+        
+        if ( !hasModularArmor(loc) ) {
+            return damage;
+        }
+
+        for (Mounted mount : this.getEquipment()) {
+            if (mount.getLocation() == loc 
+                    && !mount.isDestroyed()
+                    && mount.getType() instanceof MiscType 
+                    && ((MiscType) mount.getType()).hasFlag(MiscType.F_MODULAR_ARMOR)) {
+                
+                int damageAbsorption = mount.getBaseDamageCapacity() - mount.getDamageTaken(); 
+                if ( damageAbsorption > damage ) {
+                    mount.damageTaken += damage;
+                    Report r = new Report(3535);
+                    r.subject = this.getId();
+                    r.add(damage);
+                    r.indent(1);
+                    r.newlines = 0;
+                    vDesc.addElement(r);
+                    Report.addNewline(vDesc);
+                    
+                    return 0;
+                }
+                
+                if ( damageAbsorption == damage ) {
+                    Report.addNewline(vDesc);
+                    Report r = new Report(3535);
+                    r.subject = this.getId();
+                    r.add(damage);
+                    r.indent(1);
+                    r.newlines = 0;
+                    vDesc.addElement(r);
+                    r = new Report(3536);
+                    r.subject = this.getId();
+                    r.indent();
+                    vDesc.addElement(r);
+
+                    mount.damageTaken += damage;
+                    mount.setDestroyed(true);
+                    mount.setHit(true);
+                    return 0;
+                }
+                
+                if ( damageAbsorption < damage ) {
+                    Report.addNewline(vDesc);
+                    Report r = new Report(3535);
+                    r.subject = this.getId();
+                    r.add(damageAbsorption);
+                    r.indent(1);
+                    r.newlines = 0;
+                    vDesc.addElement(r);
+                    r = new Report(3536);
+                    r.subject = this.getId();
+                    r.indent(1);
+                    vDesc.addElement(r);
+                    
+                    damage -= mount.baseDamageAbsorptionRate - mount.damageTaken; 
+                    mount.damageTaken = mount.baseDamageAbsorptionRate;
+                    mount.setDestroyed(true);
+                    mount.setHit(true);
+                }
+            }
+                
+        }
+        
+        return damage;
+    }
+
 }

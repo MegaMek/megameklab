@@ -196,6 +196,11 @@ public class Aero
     	}  	
         //get bomb load
         j = Math.max(0, j - (int)Math.ceil(getBombPoints()/5.0));
+        
+        if ( hasModularArmor() ) {
+            j--;
+        }
+        
         return j;
     }    
 
@@ -1243,6 +1248,11 @@ public class Aero
         if(!hasLifeSupport()) 
             prd.addModifier(+2,"No life support");
         
+        if ( hasModularArmor() ) {
+            prd.addModifier(1,"Modular Armor");
+        }
+
+        
         return prd;
     }
 
@@ -2087,6 +2097,31 @@ public class Aero
 
     }
 
+    public boolean hasModularArmor() {
+        
+        for (Mounted mount : this.getEquipment()) {
+            if (!mount.isDestroyed()
+                    && mount.getType() instanceof MiscType 
+                    && ((MiscType) mount.getType()).hasFlag(MiscType.F_MODULAR_ARMOR))
+                return true;
+        }
+
+        return false;
+        
+    }
+
+    public boolean hasModularArmor(int loc) {
+        
+        for (Mounted mount : this.getEquipment()) {
+            if (mount.getLocation() == loc 
+                    && mount.getType() instanceof MiscType 
+                    && ((MiscType) mount.getType()).hasFlag(MiscType.F_MODULAR_ARMOR))
+                return true;
+        }
+
+        return false;
+        
+    }
 }
 
 

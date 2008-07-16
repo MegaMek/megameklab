@@ -826,7 +826,11 @@ public abstract class Mech extends Entity implements Serializable {
 
         if (this.hasShield() && this.getNumberOfShields(MiscType.S_SHIELD_LARGE) > 0)
             return 0;
-
+        
+        if ( hasModularArmor() ) {
+            jump--;
+        }
+        
         for (Mounted mounted : getMisc()) {
             if (mounted.getType().hasFlag(MiscType.F_JUMP_JET) && !mounted.isDestroyed() && !mounted.isBreached()) {
                 jump++;
@@ -835,6 +839,8 @@ public abstract class Mech extends Entity implements Serializable {
                 break;
             }
         }
+        
+
         if (gravity)
             return applyGravityEffectsOnMP(jump);
         return jump;
@@ -2663,6 +2669,10 @@ public abstract class Mech extends Entity implements Serializable {
             roll.addModifier(1, "Hardened Armor");
         }
 
+        if ( hasModularArmor() ) {
+            roll.addModifier(1,"Modular Armor");
+        }
+        
         return roll;
     }
 
@@ -3608,4 +3618,30 @@ public abstract class Mech extends Entity implements Serializable {
         return isCarefulStanding;
     }
 
+    public boolean hasModularArmor() {
+        
+        for (Mounted mount : this.getEquipment()) {
+            if (!mount.isDestroyed()
+                    && mount.getType() instanceof MiscType 
+                    && ((MiscType) mount.getType()).hasFlag(MiscType.F_MODULAR_ARMOR))
+                return true;
+        }
+
+        return false;
+        
+    }
+
+    public boolean hasModularArmor(int loc) {
+        
+        for (Mounted mount : this.getEquipment()) {
+            if (mount.getLocation() == loc 
+                    && !mount.isDestroyed()
+                    && mount.getType() instanceof MiscType 
+                    && ((MiscType) mount.getType()).hasFlag(MiscType.F_MODULAR_ARMOR))
+                return true;
+        }
+
+        return false;
+        
+    }
 }

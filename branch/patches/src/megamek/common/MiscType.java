@@ -72,7 +72,8 @@ public class MiscType extends EquipmentType {
     public static final long F_ACTUATOR_ENHANCEMENT_SYSTEM = 1L << 42;    
     public static final long F_ECM = 1L << 43;
     public static final long F_BAP = 1L << 44;
-
+    public static final long F_MODULAR_ARMOR = 1L << 45;
+    
     // Secondary Flags for Physical Weapons
     public static final long S_CLUB = 1L << 0; // BMR
     public static final long S_TREE_CLUB = 1L << 1;// BMR
@@ -520,6 +521,8 @@ public class MiscType extends EquipmentType {
         EquipmentType.addType(createCLCASEII());
         EquipmentType.addType(createISAES());
         EquipmentType.addType(createCLAES());
+        EquipmentType.addType(createISModularArmor());
+        EquipmentType.addType(createCLModularArmor());
 
         // Start BattleArmor equipment
         EquipmentType.addType(createBABoardingClaw());
@@ -2275,7 +2278,6 @@ public class MiscType extends EquipmentType {
     }
 
     public static MiscType createCLHarJel() {
-        // TODO: make the verifier only accept this in non-head locations
         MiscType misc = new MiscType();
         misc.techLevel = TechConstants.T_CLAN_LEVEL_3;
         misc.name = "Clan HarJel";
@@ -2293,7 +2295,6 @@ public class MiscType extends EquipmentType {
     }
 
     public static MiscType createISHarJel() {
-        // TODO: make the verifier only accept this in non-head locations
         MiscType misc = new MiscType();
         misc.techLevel = TechConstants.T_IS_LEVEL_3;
         misc.name = "IS HarJel";
@@ -2814,6 +2815,44 @@ public class MiscType extends EquipmentType {
         misc.spreadable = true;
         misc.flags |= F_REACTIVE;
         misc.bv = 0;
+
+        return misc;
+    }
+
+    public static MiscType createISModularArmor() {
+        MiscType misc = new MiscType();
+
+        misc.techLevel = TechConstants.T_IS_LEVEL_3;
+        misc.name = "Modular Armor";
+        misc.setInternalName("ISModularArmor");
+        misc.setInternalName("IS Modular Armor");
+        misc.tonnage = 1;
+        misc.criticals = 1;
+        misc.cost = 100000;
+        misc.flags |= F_MODULAR_ARMOR;
+        misc.bv = BV_VARIABLE;
+        misc.damageTaken = 0;
+        misc.baseDamageAbsorptionRate = 10;
+        misc.baseDamageCapacity = 10;
+
+        return misc;
+    }
+
+    public static MiscType createCLModularArmor() {
+        MiscType misc = new MiscType();
+
+        misc.techLevel = TechConstants.T_CLAN_LEVEL_3;
+        misc.name = "Modular Armor";
+        misc.setInternalName("CLModularArmor");
+        misc.addLookupName("Clan Modular Armor");
+        misc.tonnage = 1;
+        misc.criticals = 1;
+        misc.cost = 100000;
+        misc.flags |= F_MODULAR_ARMOR;
+        misc.bv = BV_VARIABLE;
+        misc.damageTaken = 0;
+        misc.baseDamageAbsorptionRate = 10;
+        misc.baseDamageCapacity = 10;
 
         return misc;
     }

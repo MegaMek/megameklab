@@ -14,7 +14,6 @@
 
 package megamek.common.actions;
 
-import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Building;
 import megamek.common.Compute;
@@ -143,6 +142,10 @@ public class PhysicalAttackAction extends AbstractAttackAction {
         // target terrain
         toHit.append(Compute.getTargetTerrainModifier(game, target));
 
+        if ( ae.hasModularArmor() ) {
+            toHit.addModifier(1,"Modular Armor");
+        }
+        
         // If it has a torso-mounted cockpit and two head sensor hits or three
         // sensor hits...
         // It gets a =4 penalty for being blind!

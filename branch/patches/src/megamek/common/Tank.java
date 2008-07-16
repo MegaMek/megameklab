@@ -119,10 +119,19 @@ public class Tank extends Entity implements Serializable {
     		if(weatherMod != 0) {
     			j = Math.max(j + weatherMod, 0);
     		} 
-    	}  
+    	}
+        
+        if ( hasModularArmor() ) {
+            j--;
+        }
+        
         if (gravity)
             j = applyGravityEffectsOnMP(j);
+        
+        
         return j;
+        
+        
     }
 
     public boolean isTurretLocked() {
@@ -878,6 +887,11 @@ public class Tank extends Entity implements Serializable {
                 && !getCrew().getOptions().booleanOption("bvdni")) {
             prd.addModifier(-1, "VDNI");
         }
+        
+        if ( hasModularArmor() ) {
+            prd.addModifier(1,"Modular Armor");
+        }
+
         return prd;
     }
 
@@ -1517,4 +1531,29 @@ public class Tank extends Entity implements Serializable {
         }
     }
 
+    public boolean hasModularArmor() {
+        
+        for (Mounted mount : this.getEquipment()) {
+            if (!mount.isDestroyed()
+                    && mount.getType() instanceof MiscType 
+                    && ((MiscType) mount.getType()).hasFlag(MiscType.F_MODULAR_ARMOR))
+                return true;
+        }
+
+        return false;
+        
+    }
+
+    public boolean hasModularArmor(int loc) {
+        
+        for (Mounted mount : this.getEquipment()) {
+            if (mount.getLocation() == loc 
+                    && mount.getType() instanceof MiscType 
+                    && ((MiscType) mount.getType()).hasFlag(MiscType.F_MODULAR_ARMOR))
+                return true;
+        }
+
+        return false;
+        
+    }
 }

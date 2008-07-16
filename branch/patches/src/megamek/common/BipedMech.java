@@ -111,6 +111,10 @@ public class BipedMech extends Mech {
             wmp -= getNumberOfShields(MiscType.S_SHIELD_LARGE);
             wmp -= getNumberOfShields(MiscType.S_SHIELD_MEDIUM);
         }
+        
+        if ( hasModularArmor() ) {
+            wmp--;
+        }
 
         if (!ignoreheat) {
             // factor in heat

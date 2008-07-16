@@ -114,13 +114,13 @@ public class Mounted implements Serializable, RoundUpdated {
         if (type instanceof MiscType && type.hasFlag(MiscType.F_MINE)) {
             this.mineType = MINE_CONVENTIONAL;
         }
-        if (type instanceof MiscType && ((MiscType) type).isShield()) {
+        if (type instanceof MiscType && ((MiscType) type).isShield() || type.hasFlag(MiscType.F_MODULAR_ARMOR) ) {
             MiscType shield = (MiscType) type;
             baseDamageAbsorptionRate = shield.baseDamageAbsorptionRate;
             baseDamageCapacity = shield.baseDamageCapacity;
             damageTaken = shield.damageTaken;
         }
-
+        
     }
 
     /**
@@ -850,6 +850,10 @@ public class Mounted implements Serializable, RoundUpdated {
             }
         }
         return Math.max(0, base - damageTaken);
+    }
+    
+    public int getDamageTaken() {
+        return damageTaken;
     }
     
     public void addWeaponToBay(int w) {

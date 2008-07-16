@@ -333,6 +333,12 @@ public class MechFileParser {
             if ( m.getType().hasFlag(MiscType.F_HARJEL) && m.getLocation() == Mech.LOC_HEAD ) {
                 throw new EntityLoadingException("Unable to load harjel in head.");
             }
+            
+            if ( m.getType().hasFlag(MiscType.F_MODULAR_ARMOR) 
+                    && ( (ent instanceof Mech && m.getLocation() == Mech.LOC_HEAD) || (ent instanceof VTOL && m.getLocation() == VTOL.LOC_ROTOR) )) {
+                throw new EntityLoadingException("Unable to load Modular Armor in Rotor/Head location");
+            }
+            
         } // Check the next piece of equipment.
         
         //need to load all those weapons in the weapon bays
