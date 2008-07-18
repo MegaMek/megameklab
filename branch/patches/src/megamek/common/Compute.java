@@ -2608,6 +2608,8 @@ public class Compute {
             if (ent.isEnemyOf(ae) && ent.hasActiveAngelECM() && entPos != null) {
                 vEnemyAngelECMCoords.addElement(entPos);
                 vEnemyAngelECMRanges.addElement(new Integer(ent.getECMRange()));
+                vEnemyAngelECMCoords.addElement(entPos);
+                vEnemyAngelECMRanges.addElement(new Integer(ent.getECMRange()));
             }
             if (!ent.isEnemyOf(ae) && ent.hasActiveECCM() && entPos != null) {
                 vFriendlyECCMCoords.addElement(entPos);

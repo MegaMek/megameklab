@@ -21,6 +21,8 @@
 
 package megamek.common;
 
+import megamek.client.bot.MoveOption.WeightedComparator;
+
 /**
  * @author Ben
  * @version
@@ -73,6 +75,7 @@ public class MiscType extends EquipmentType {
     public static final long F_ECM = 1L << 43;
     public static final long F_BAP = 1L << 44;
     public static final long F_MODULAR_ARMOR = 1L << 45;
+    public static final long F_TALON = 1L <<46;
     
     // Secondary Flags for Physical Weapons
     public static final long S_CLUB = 1L << 0; // BMR
@@ -285,7 +288,7 @@ public class MiscType extends EquipmentType {
         } else if (hasFlag(F_JUMP_BOOSTER)) {
             return (float) (Math.ceil(entity.getWeight()
                     * entity.getOriginalJumpMP() / 10.0) / 2.0);
-        } else if (hasFlag(F_HAND_WEAPON) && hasSubType(S_CLAW)) {
+        } else if ((hasFlag(F_HAND_WEAPON) && hasSubType(S_CLAW)) || hasFlag(F_TALON)) {
             return (int) Math.ceil(entity.getWeight() / 15);
         } else if ( hasFlag(F_ACTUATOR_ENHANCEMENT_SYSTEM) ) {
             
@@ -304,7 +307,7 @@ public class MiscType extends EquipmentType {
             }
             
             return (float)(Math.floor(tonnage)+0.5);
-        }
+        } 
         // okay, I'm out of ideas
         return 1.0f;
     }
@@ -2655,6 +2658,21 @@ public class MiscType extends EquipmentType {
         misc.criticals = 1;
         misc.cost = 90000;
         misc.flags |= F_SPIKES;
+        misc.bv = 3;
+
+        return misc;
+    }
+
+    public static MiscType createTalons() {
+        MiscType misc = new MiscType();
+
+        misc.techLevel = TechConstants.T_CLAN_LEVEL_3;
+        misc.name = "Talons";
+        misc.setInternalName(misc.name);
+        misc.tonnage = TONNAGE_VARIABLE;
+        misc.criticals = 2;
+        misc.cost = 90000;
+        misc.flags |= F_TALON;
         misc.bv = 3;
 
         return misc;

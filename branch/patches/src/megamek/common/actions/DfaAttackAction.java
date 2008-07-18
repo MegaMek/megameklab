@@ -23,6 +23,7 @@ package megamek.common.actions;
 import java.util.Enumeration;
 
 import megamek.common.BattleArmor;
+import megamek.common.BipedMech;
 import megamek.common.Compute;
 import megamek.common.Coords;
 import megamek.common.CriticalSlot;
@@ -33,6 +34,7 @@ import megamek.common.IEntityMovementType;
 import megamek.common.IGame;
 import megamek.common.Infantry;
 import megamek.common.Mech;
+import megamek.common.MiscType;
 import megamek.common.MovePath;
 import megamek.common.MoveStep;
 import megamek.common.Tank;
@@ -74,6 +76,11 @@ public class DfaAttackAction extends DisplacementAttackAction {
      */
     public static int getDamageFor(Entity entity, boolean targetInfantry) {
         int toReturn = (int) Math.ceil((entity.getWeight() / 10.0) * 3.0);
+        
+        if ( hasTalons(entity) ) {
+            toReturn *= 1.5;
+        }
+
         if (targetInfantry) {
             toReturn = Math.max(1, toReturn / 10);
         }
@@ -380,4 +387,19 @@ public class DfaAttackAction extends DisplacementAttackAction {
         return toHit;
     }
 
+    public static boolean hasTalons(Entity entity){
+        
+        if ( entity instanceof Mech ){
+        
+            if ( entity instanceof BipedMech ){
+                
+                return (entity.hasWorkingMisc(MiscType.F_TALON, -1, Mech.LOC_RLEG) && entity.hasWorkingSystem(Mech.ACTUATOR_FOOT, Mech.LOC_RLEG)) || (entity.hasWorkingMisc(MiscType.F_TALON, -1, Mech.LOC_LLEG) && entity.hasWorkingSystem(Mech.ACTUATOR_FOOT, Mech.LOC_LLEG));
+            }else{
+                return (entity.hasWorkingMisc(MiscType.F_TALON, -1, Mech.LOC_RLEG) && entity.hasWorkingSystem(Mech.ACTUATOR_FOOT, Mech.LOC_RLEG)) || (entity.hasWorkingMisc(MiscType.F_TALON, -1, Mech.LOC_LLEG) && entity.hasWorkingSystem(Mech.ACTUATOR_FOOT, Mech.LOC_LLEG)) || (entity.hasWorkingMisc(MiscType.F_TALON, -1, Mech.LOC_RARM)) && (entity.hasWorkingSystem(Mech.ACTUATOR_FOOT, Mech.LOC_RARM) || entity.hasWorkingMisc(MiscType.F_TALON, -1, Mech.LOC_LARM) && entity.hasWorkingSystem(Mech.ACTUATOR_FOOT, Mech.LOC_LARM));
+                
+            }
+        }
+        
+        return false;
+    }
 }

@@ -10167,7 +10167,8 @@ public class Server implements Runnable {
                 damage += toHit.getMoS() / 3;
                 hit.makeDirectBlow(toHit.getMoS() / 3);
             }
-            if (damage >= 1 && te.hasWorkingMisc(MiscType.F_SPIKES, -1, hit.getLocation())) {
+            
+            /*if (damage >= 1 && te.hasWorkingMisc(MiscType.F_SPIKES, -1, hit.getLocation())) {
                 r = new Report(4330);
                 r.indent(2);
                 r.newlines = 0;
@@ -10182,7 +10183,7 @@ public class Server implements Runnable {
                 } else {
                     addReport(damageEntity(ae, new HitData(loc), 2, false, DamageType.NONE, false, false, false));
                 }
-            }
+            }*/
             DamageType damageType = DamageType.NONE;
             addReport(damageEntity(te, hit, damage, false, damageType, false, false, throughFront));
             if (target instanceof VTOL) {
@@ -10216,7 +10217,7 @@ public class Server implements Runnable {
             int loc = hit.getLocation();
             int toHitNumber = toHit.getValue();
             
-            if ( loc == Mech.LOC_LLEG || loc == Mech.LOC_RLEG) {
+            if ( (loc == Mech.LOC_LLEG || loc == Mech.LOC_RLEG) && (!te.hasActiveShield(loc) && !te.hasPassiveShield(loc))) {
                 
                 roll = Compute.d6(2);
                 
@@ -10241,7 +10242,7 @@ public class Server implements Runnable {
                     r.newlines = 0;
                     addReport(r);
                     
-                    game.addPSR(new PilotingRollData(te.getId(),3,"Snared by chain whip."));
+                    game.addPSR(new PilotingRollData(te.getId(),3,"Snared by chain whip"));
                 }else {
                     r = new Report(2357);
                     r.subject = ae.getId();
@@ -10250,7 +10251,8 @@ public class Server implements Runnable {
                 }
                     
 
-            }else if ( loc == Mech.LOC_RARM || loc == Mech.LOC_LARM) {
+            }else if ( (loc == Mech.LOC_RARM || loc == Mech.LOC_LARM)
+                    && (!te.hasActiveShield(loc) && !te.hasPassiveShield(loc) && !te.hasNoDefenseShield(loc)) ) {
                 GrappleAttackAction gaa = new GrappleAttackAction(ae.getId(),te.getId());
                 ToHitData grappleHit = GrappleAttackAction.toHit(game, ae.getId(), target);
                 PhysicalResult grappleResult = new PhysicalResult();

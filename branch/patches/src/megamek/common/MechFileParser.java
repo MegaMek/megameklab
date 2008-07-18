@@ -339,6 +339,31 @@ public class MechFileParser {
                 throw new EntityLoadingException("Unable to load Modular Armor in Rotor/Head location");
             }
             
+            if ( m.getType().hasFlag(MiscType.F_TALON) ){
+               if ( ent instanceof BipedMech ){
+                   if ( m.getLocation() != Mech.LOC_LLEG && m.getLocation() != Mech.LOC_RLEG ){
+                       throw new EntityLoadingException("Talons are only legal in the Legs");
+                   }
+                   
+                   if ( !ent.hasWorkingMisc(MiscType.F_TALON,-1,Mech.LOC_RLEG) || !ent.hasWorkingMisc(MiscType.F_TALON,-1,Mech.LOC_LLEG) ){
+                       throw new EntityLoadingException("Talons must be in all legs");
+                   }
+               }else if ( ent instanceof QuadMech ){
+                   if ( m.getLocation() != Mech.LOC_LLEG && m.getLocation() != Mech.LOC_RLEG  &&
+                           m.getLocation() != Mech.LOC_LARM && m.getLocation() != Mech.LOC_RARM){
+                       throw new EntityLoadingException("Talons are only legal in the Legs");
+                   }
+                   
+                   if ( !ent.hasWorkingMisc(MiscType.F_TALON,-1,Mech.LOC_RLEG) || !ent.hasWorkingMisc(MiscType.F_TALON,-1,Mech.LOC_LLEG) || 
+                           !ent.hasWorkingMisc(MiscType.F_TALON,-1,Mech.LOC_LARM) || !ent.hasWorkingMisc(MiscType.F_TALON,-1,Mech.LOC_LARM)){
+                       throw new EntityLoadingException("Talons must be in all legs");
+                   }
+                   
+               }else {
+                   throw new EntityLoadingException("Unable to load talons in non-Mek entity");
+               }
+            }
+            
         } // Check the next piece of equipment.
         
         //need to load all those weapons in the weapon bays

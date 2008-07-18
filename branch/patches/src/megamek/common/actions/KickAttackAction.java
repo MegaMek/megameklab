@@ -22,6 +22,7 @@ import megamek.common.IHex;
 import megamek.common.ILocationExposureStatus;
 import megamek.common.Infantry;
 import megamek.common.Mech;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
 import megamek.common.TargetRoll;
@@ -94,6 +95,11 @@ public class KickAttackAction extends PhysicalAttackAction {
         if (entity.heat >= 9 && ((Mech) entity).hasTSM()) {
             multiplier *= 2.0f;
         }
+        
+        if ( entity.hasWorkingMisc(MiscType.F_TALON, -1, legLoc) && entity.hasWorkingSystem(Mech.ACTUATOR_FOOT, legLoc) ){
+            multiplier *= 1.5;
+        }
+        
         int toReturn = (int) Math.floor(damage * multiplier)
                 + entity.getCrew().modifyPhysicalDamagaForMeleeSpecialist();
         // underwater damage is half, round up (see bug 1110692)
