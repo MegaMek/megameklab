@@ -226,7 +226,7 @@ public abstract class Mech extends Entity implements Serializable {
         setCritical(LOC_LLEG, 1, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_UPPER_LEG));
         setCritical(LOC_LLEG, 2, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_LOWER_LEG));
         setCritical(LOC_LLEG, 3, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, ACTUATOR_FOOT));
-
+        
         // Player setting specify whether their Meks' automatic
         // ejection systems are disabled by default or not.
         this.autoEject = !PreferenceManager.getClientPreferences().defaultAutoejectDisabled();

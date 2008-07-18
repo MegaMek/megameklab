@@ -74,9 +74,10 @@ public class MiscType extends EquipmentType {
     public static final long F_ACTUATOR_ENHANCEMENT_SYSTEM = 1L << 42;    
     public static final long F_ECM = 1L << 43;
     public static final long F_BAP = 1L << 44;
-    public static final long F_MODULAR_ARMOR = 1L << 45;
+    public static final long F_MODULAR_ARMOR = 1L << 45; 
     public static final long F_TALON = 1L <<46;
-    
+    public static final long F_VISUAL_CAMO = 1L << 47;
+
     // Secondary Flags for Physical Weapons
     public static final long S_CLUB = 1L << 0; // BMR
     public static final long S_TREE_CLUB = 1L << 1;// BMR
@@ -950,7 +951,7 @@ public class MiscType extends EquipmentType {
         misc.spreadable = false;
         misc.flags |= F_ECM;
         misc.bv = 61;
-        misc.setModes(new String[] { "ECM", "ECCM" });
+        misc.setModes(new String[] { "ECM", "ECCM", "Ghost Targets"});
         misc.setInstantModeSwitch(false);
 
         return misc;
@@ -970,7 +971,7 @@ public class MiscType extends EquipmentType {
         misc.spreadable = false;
         misc.flags |= F_ECM;
         misc.bv = 61;
-        misc.setModes(new String[] { "ECM", "ECCM" });
+        misc.setModes(new String[] { "ECM", "ECCM", "Ghost Targets" });
         misc.setInstantModeSwitch(false);
 
         return misc;
@@ -992,7 +993,7 @@ public class MiscType extends EquipmentType {
         misc.spreadable = false;
         misc.flags |= F_ECM | F_ANGEL_ECM;
         misc.bv = 100;
-        misc.setModes(new String[] { "ECM", "ECCM", "ECM & ECCM" });
+        misc.setModes(new String[] { "ECM", "ECCM", "ECM & ECCM", "ECM & Ghost Targets", "ECCM & Ghost Targets" });
         misc.setInstantModeSwitch(false);
 
         return misc;
@@ -1014,7 +1015,7 @@ public class MiscType extends EquipmentType {
         misc.spreadable = false;
         misc.flags |= F_ECM | F_ANGEL_ECM;
         misc.bv = 100;
-        misc.setModes(new String[] { "ECM", "ECCM" });
+        misc.setModes(new String[] { "ECM", "ECCM", "Ghost Targets"});
         misc.setInstantModeSwitch(false);
 
         return misc;
@@ -1036,7 +1037,7 @@ public class MiscType extends EquipmentType {
         misc.spreadable = false;
         misc.flags |= F_ECM | F_ANGEL_ECM;
         misc.bv = 100;
-        misc.setModes(new String[] { "ECM", "ECCM" });
+        misc.setModes(new String[] { "ECM", "ECCM", "Ghost Targets" });
         misc.setInstantModeSwitch(false);
 
         return misc;
@@ -1047,7 +1048,7 @@ public class MiscType extends EquipmentType {
 
         misc.techLevel = TechConstants.T_CLAN_LEVEL_3;
         misc.name = "Watchdog ECM Suite";
-        misc.setInternalName("WatchdogECMSuite");
+        misc.setInternalName(Sensor.WATCHDOG);
         misc.addLookupName("Watchdog ECM Suite");
         misc.addLookupName("WatchdogECM");
         misc.addLookupName("CLWatchdogECM");
@@ -1058,7 +1059,7 @@ public class MiscType extends EquipmentType {
         misc.spreadable = false;
         misc.flags |= F_ECM | F_BAP;
         misc.bv = 73;
-        misc.setModes(new String[] { "ECM", "ECCM" });
+        misc.setModes(new String[] { "ECM", "ECCM", "Ghost Targets" });
         misc.setInstantModeSwitch(false);
 
         return misc;
@@ -1476,7 +1477,7 @@ public class MiscType extends EquipmentType {
         misc.spreadable = false;
         misc.flags |= F_ECM;
         misc.bv = 0;
-        misc.setModes(new String[] { "ECM", "ECCM" });
+        misc.setModes(new String[] { "ECM", "ECCM", "Ghost Targets" });
         misc.setInstantModeSwitch(false);
 
         return misc;
@@ -1491,7 +1492,7 @@ public class MiscType extends EquipmentType {
         misc.criticals = 0;
         misc.hittable = false;
         misc.spreadable = false;
-        misc.flags |= F_STEALTH;
+        misc.flags |= F_STEALTH | F_VISUAL_CAMO;
         misc.bv = 0;
 
         return misc;
@@ -1506,7 +1507,7 @@ public class MiscType extends EquipmentType {
         misc.criticals = 0;
         misc.hittable = false;
         misc.spreadable = false;
-        misc.flags |= F_STEALTH;
+        misc.flags |= F_STEALTH | F_VISUAL_CAMO;
         misc.bv = 0;
 
         return misc;
@@ -1787,7 +1788,7 @@ public class MiscType extends EquipmentType {
 
         misc.techLevel = TechConstants.T_IS_LEVEL_2;
         misc.name = "Improved Sensors";
-        misc.setInternalName("ISImprovedSensors");
+        misc.setInternalName(Sensor.ISIMPROVED);
         misc.addLookupName("BAP (2 Hex)");
         misc.tonnage = 0.0f;
         misc.cost = 200000;
@@ -1801,7 +1802,7 @@ public class MiscType extends EquipmentType {
 
         misc.techLevel = TechConstants.T_CLAN_LEVEL_2;
         misc.name = "Improved Sensors";
-        misc.setInternalName("CLImprovedSensors");
+        misc.setInternalName(Sensor.CLIMPROVED);
         misc.addLookupName("BAP (3 Hex)");
         misc.tonnage = 0.0f;
         misc.cost = 200000;
@@ -1815,7 +1816,7 @@ public class MiscType extends EquipmentType {
 
         misc.techLevel = TechConstants.T_IS_LEVEL_2;
         misc.name = "Beagle Active Probe";
-        misc.setInternalName("BeagleActiveProbe");
+        misc.setInternalName(Sensor.BAP);
         misc.addLookupName("Beagle Active Probe");
         misc.addLookupName("ISBeagleActiveProbe");
         misc.addLookupName("IS Beagle Active Probe");
@@ -1835,7 +1836,7 @@ public class MiscType extends EquipmentType {
 
         misc.techLevel = TechConstants.T_IS_LEVEL_3;
         misc.name = "Bloodhound Active Probe";
-        misc.setInternalName("BloodhoundActiveProbe");
+        misc.setInternalName(Sensor.BLOODHOUND);
         misc.addLookupName("Bloodhound Active Probe");
         misc.addLookupName("ISBloodhoundActiveProbe");
         misc.addLookupName("IS Bloodhound Active Probe");
@@ -1875,7 +1876,7 @@ public class MiscType extends EquipmentType {
 
         misc.techLevel = TechConstants.T_CLAN_LEVEL_2;
         misc.name = "Clan Active Probe";
-        misc.setInternalName("CLActiveProbe");
+        misc.setInternalName(Sensor.CLAN_AP);
         misc.addLookupName("Active Probe");
         misc.addLookupName("Clan Active Probe");
         misc.tonnage = 1;
@@ -1894,7 +1895,7 @@ public class MiscType extends EquipmentType {
 
         misc.name = "Light Active Probe";
         misc.techLevel = TechConstants.T_CLAN_LEVEL_2;
-        misc.setInternalName("CLLightActiveProbe");
+        misc.setInternalName(Sensor.LIGHT_AP);
         misc.addLookupName("CL Light Active Probe");
         misc.addLookupName("Light Active Probe");
         misc.addLookupName("Clan Light Active Probe");

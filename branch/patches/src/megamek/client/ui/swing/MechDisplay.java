@@ -93,6 +93,7 @@ import megamek.common.Mounted;
 import megamek.common.Player;
 import megamek.common.Protomech;
 import megamek.common.QuadMech;
+import megamek.common.Sensor;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.Terrains;
@@ -2546,7 +2547,7 @@ public class MechDisplay extends JPanel {
     /**
      * This class shows information about a unit that doesn't belong elsewhere.
      */
-    private class ExtraPanel extends PicMap implements ActionListener {
+    private class ExtraPanel extends PicMap implements ActionListener, ItemListener {
 
         /**
          * 
@@ -2555,6 +2556,7 @@ public class MechDisplay extends JPanel {
 
         private static final String IMAGE_DIR = "data/images/widgets";
 
+        private JLabel curSensorsL;
         private JLabel narcLabel;
         private JLabel unusedL;
         private JLabel carrysL;
@@ -2570,6 +2572,8 @@ public class MechDisplay extends JPanel {
         private JList narcList;
         private int myMechId;
 
+        private JComboBox chSensors;
+        
         private Slider prompt;
 
         private int sinks;
@@ -2643,6 +2647,15 @@ public class MechDisplay extends JPanel {
                     SwingConstants.CENTER);
             targSysL.setForeground(Color.WHITE);
             targSysL.setOpaque(false);
+            
+            curSensorsL = new JLabel((Messages
+                    .getString("MechDisplay.CurrentSensors")).concat(" "),
+                    SwingConstants.CENTER);
+            curSensorsL.setForeground(Color.WHITE);
+            curSensorsL.setOpaque(false);
+            
+            chSensors = new JComboBox();
+            chSensors.addItemListener(this);
 
             // layout choice panel
             GridBagLayout gridbag;
@@ -2658,6 +2671,15 @@ public class MechDisplay extends JPanel {
             c.anchor = GridBagConstraints.CENTER;
             c.weighty = 1.0;
 
+            gridbag.setConstraints(curSensorsL, c);
+            add(curSensorsL);
+            
+            gridbag.setConstraints(chSensors, c);
+            add(chSensors);
+            
+            gridbag.setConstraints(narcLabel, c);
+            add(narcLabel);
+            
             gridbag.setConstraints(narcLabel, c);
             add(narcLabel);
 
@@ -2786,10 +2808,12 @@ public class MechDisplay extends JPanel {
                     .getOwnerId()) {
                 sinks2B.setEnabled(false);
                 dumpBombs.setEnabled(false);
+                chSensors.setEnabled(false);
                 dontChange = true;
             } else {
                 sinks2B.setEnabled(true);
                 dumpBombs.setEnabled(false);
+                chSensors.setEnabled(true);
                 dontChange = false;
             }
             // Walk through the list of teams. There
@@ -2979,6 +3003,17 @@ public class MechDisplay extends JPanel {
             } else {
                 dumpBombs.setEnabled(false);
             }
+            
+            refreshSensorChoices(en);
+            
+            if(null != en.getActiveSensor()) {
+            	curSensorsL.setText((Messages.getString("MechDisplay.CurrentSensors"))
+                        .concat(" ").concat(
+                                Sensor.getSensorName(en.getActiveSensor().getType())));
+            } else {
+            	curSensorsL.setText((Messages.getString("MechDisplay.CurrentSensors"))
+                        .concat(" "));
+            }
 
             targSysL.setText((Messages.getString("MechDisplay.TargSysLabel"))
                     .concat(" ").concat(
@@ -2986,6 +3021,33 @@ public class MechDisplay extends JPanel {
             onResize();
         } // End public void displayMech( Entity )
 
+        private void refreshSensorChoices(Entity en) {
+        	chSensors.removeItemListener(this);
+        	chSensors.removeAllItems();
+        	for(int i = 0; i < en.getSensors().size(); i++) {
+        		Sensor sensor = en.getSensors().elementAt(i);
+        		String condition = "";
+        		if(sensor.isBAP() && !en.hasBAP(false)) {
+        			condition = " (Disabled)";
+        		}
+        		chSensors.addItem(Sensor.getSensorName(sensor.getType()) + condition);
+        		if(sensor.getType() == en.getNextSensor().getType()) {
+        			chSensors.setSelectedIndex(i);
+        		}
+        	}
+        	chSensors.addItemListener(this);
+        }
+        
+        public void itemStateChanged(ItemEvent ev) {
+        	if (ev.getItemSelectable() == chSensors) { 
+        		Entity en = clientgui.getClient().game.getEntity(myMechId);
+        		en.setNextSensor(en.getSensors().elementAt(chSensors.getSelectedIndex()));
+        		refreshSensorChoices(en);
+        		clientgui.systemMessage(Messages.getString("MechDisplay.willSwitchAtEnd", new Object[] { "Active Sensors", Sensor.getSensorName(en.getSensors().elementAt(chSensors.getSelectedIndex()).getType()) }));//$NON-NLS-1$
+        		clientgui.getClient().sendUpdateEntity(clientgui.getClient().game.getEntity(myMechId));
+        	}
+        }
+        
         public void actionPerformed(ActionEvent ae) {
             if ("changeSinks".equals(ae.getActionCommand()) && !dontChange) { //$NON-NLS-1$
                 prompt = new Slider(clientgui.frame, Messages

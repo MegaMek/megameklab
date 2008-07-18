@@ -98,7 +98,7 @@ public class Tank extends Entity implements Serializable {
     private boolean driverHitPS = false;
     private boolean commanderHitPS = false;
     private boolean crewHitPS = false;
-
+    
     public boolean hasNoTurret() {
         return m_bHasNoTurret;
     }

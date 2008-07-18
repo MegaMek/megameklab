@@ -347,6 +347,22 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     protected boolean isCarefulStanding = false;
     
     /**
+     * a vector of currently active sensors that might be able to check range
+     */
+    private Vector<Sensor> sensors = new Vector<Sensor>();
+    //the currently selected sensor
+    private Sensor activeSensor;
+    //the sensor chosen for next turn
+    private Sensor nextSensor;
+    //roll for sensor check
+    private int sensorCheck;
+    
+    //the roll for ghost targets
+    private int ghostTargetRoll;
+    //the roll to override ghost targets
+    private int ghostTargetOverride;
+
+    /**
      * Generates a new, blank, entity.
      */
     public Entity() {
@@ -2800,13 +2816,27 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     }
 
     /**
+     * Does the mech have a functioning null signature system?
+     */
+    public boolean hasActiveNullSig() {
+        for (Mounted m : getMisc()) {
+            EquipmentType type = m.getType();
+            if (Mech.NULLSIG.equals(type.getInternalName()) && m.curMode().equals("On") && m.isReady()) {
+            	return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
      * Does the mech have a functioning ECM unit?
      */
     public boolean hasActiveECM() {
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
             //TacOps p. 100 Angle ECM can have 1 ECM and 1 ECCM at the same time
-            if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) && ( m.curMode().equals("ECM") || m.curMode().equals("ECM & ECCM")) ) {
+            if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM)
+            		&& ( m.curMode().equals("ECM") || m.curMode().equals("ECM & ECCM") || m.curMode().equals("ECM & Ghost Targets")) ) {
                 return !(m.isDestroyed() || m.isMissing() || m.isBreached() || isShutDown() || this.getCrew().isUnconscious());
             }
         }
@@ -2829,6 +2859,29 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     }
 
     /**
+     * Does the mech have a functioning ECM unit, tuned to ghost target generation?
+     */
+    
+    /**
+     * Does the mech have a functioning ECM unit, tuned to ghost target generation?
+     */
+    public boolean hasGhostTargets(boolean active) {
+//    	if you failed your ghost target PSR, then it doesn't matter
+    	if(active && getGhostTargetRollMoS() < 0) { 
+    		return false;
+    	}
+        for (Mounted m : getMisc()) {
+            EquipmentType type = m.getType();
+            //TacOps p. 100 Angle ECM can have ECM/ECCM and Ghost Targets at the same time
+            if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM)
+            		&& ( m.curMode().equals("Ghost Targets") || m.curMode().equals("ECM & Ghost Targets") || m.curMode().equals("ECCM & Ghost Targets")) ) {
+                return !(m.isDestroyed() || m.isMissing() || m.isBreached() || isShutDown() || this.getCrew().isUnconscious());
+            }
+        }
+        return false;
+    }
+    
+    /**
      * Checks to see if this entity has a functional ECM unit that is using
      * ECCM.
      * 
@@ -2841,7 +2894,8 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
             for (Mounted m : getMisc()) {
                 EquipmentType type = m.getType();
                 //TacOps p. 100 Angle ECM can have 1 ECM and 1 ECCM at the same time
-                if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) && ( m.curMode().equals("ECCM") || m.curMode().equals("ECM & ECCM")) ) {
+                if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) 
+                		&& ( m.curMode().equals("ECCM") || m.curMode().equals("ECM & ECCM") || m.curMode().equals("ECCM & Ghost Targets")) ) {
                     return !(m.isDestroyed() || m.isMissing() || m.isBreached() || isShutDown() || this.getCrew().isUnconscious());
                 }
             }
@@ -2898,6 +2952,10 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Beagle BloodHound WatchDog Clan Active or Light.
      */
     public boolean hasBAP() {
+    	return hasBAP(true);
+    }
+    
+    public boolean hasBAP(boolean checkECM) {
     	if(game.getPlanetaryConditions().hasEMI()) {
     		return false;
     	}
@@ -2909,12 +2967,12 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
                     //Beagle Isn't effected by normal ECM
                     if (type.getName().equals("Beagle Active Probe") ) {
                         
-                        if ( Compute.isAffectedByAngelECM(this, getPosition(), getPosition()) ) {
+                        if ( checkECM && Compute.isAffectedByAngelECM(this, getPosition(), getPosition()) ) {
                             return false;
                         }
                         return true;
                     }
-                    return Compute.isAffectedByECM(this, getPosition(), getPosition());
+                    return !checkECM || !Compute.isAffectedByECM(this, getPosition(), getPosition());
                 }
             }
         }
@@ -3504,7 +3562,27 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         
         //reset evasion
         setEvading(false);
-
+        
+        //make sensor checks
+        sensorCheck = Compute.d6(2);
+        //if the current sensor is BAP and BAP is critted, then switch to the first
+        //thing that works
+        if(null != nextSensor && nextSensor.isBAP() && !hasBAP(false)) {
+        	for(Sensor sensor : getSensors()) {
+        		if(!sensor.isBAP()) {
+        			nextSensor = sensor;
+        			break;
+        		}
+        	}
+        }      
+        //change the active sensor, if requested
+        if(null != nextSensor)
+        	activeSensor = nextSensor;
+        
+        //ghost target roll
+        ghostTargetRoll = Compute.d6(2);
+        ghostTargetOverride = Compute.d6(2);
+        
         // Update the inferno tracker.
         this.infernos.newRound(roundNumber);
     }
@@ -7044,6 +7122,26 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         return false;
     }
     
+    public Vector<Sensor> getSensors() {
+    	return sensors;
+    }
+    
+    public Sensor getActiveSensor() {
+    	return activeSensor;
+    }
+    
+    public Sensor getNextSensor() {
+    	return nextSensor;
+    }
+    
+    public void setNextSensor(Sensor s) {
+    	this.nextSensor = s;
+    }
+    
+    public int getSensorCheck() {
+    	return sensorCheck;
+    }
+    
     public boolean hasModularArmor() {
         return hasModularArmor(0);
     }
@@ -7121,5 +7219,16 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         
         return damage;
     }
-
+    
+    public int getGhostTargetRoll() {
+    	return ghostTargetRoll;
+    }
+    
+    public int getGhostTargetRollMoS() {
+    	return ghostTargetRoll - (getCrew().getSensorOps() + 2);
+    }
+    
+    public int getGhostTargetOverride() {
+    	return ghostTargetOverride;
+    }
 }

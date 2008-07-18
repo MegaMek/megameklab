@@ -1978,6 +1978,7 @@ public class Server implements Runnable {
             break;
         case PHASE_FIRING:
             resolveAllButWeaponAttacks();
+            reportGhostTargetRolls();
             resolveOnlyWeaponAttacks();
             assignAMS();
             handleAttacks();
@@ -8248,7 +8249,29 @@ public class Server implements Runnable {
                 }
             }
         }
-
+    }
+    
+    private void reportGhostTargetRolls() {
+    	//run through an enumeration of deployed game entities. If they have ghost targets, then check the roll
+    	//and report it
+    	Report r;
+    	for (Enumeration<Entity> e = game.getEntities(); e.hasMoreElements();) {
+            Entity ent = e.nextElement();
+            if(ent.isDeployed() && ent.hasGhostTargets(false)) {
+            	r = new Report(3630);
+            	r.addDesc(ent);
+            	int target = ent.getCrew().getPiloting() + 2;
+            	int roll = ent.getGhostTargetRoll();
+            	r.add(target);
+            	r.add(roll);
+            	if(roll >= target) {
+            		r.choose(true);
+            	} else {
+            		r.choose(false);
+            	}
+            	addReport(r);
+            }
+    	}
     }
 
     private void resolveClearMinefield(Entity ent, Minefield mf) {

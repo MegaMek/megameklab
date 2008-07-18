@@ -608,6 +608,105 @@ public class PlanetaryConditions implements Serializable {
     	return null;	
     }
     
+    /**
+     * visual range based on conditions
+     * 
+     */
+    public int getVisualRange(Entity en, boolean targetSpotlight) {
+    	
+    	boolean Spotlight = en.usedSearchlight();
+    	
+    	boolean isMechVee = en instanceof Mech || en instanceof Tank;
+    	boolean isLargeCraft = en instanceof Dropship || en instanceof Jumpship;
+    	boolean isAero = en instanceof Aero && !isLargeCraft;
+    	//anything else is infantry
+    	
+    	if(lightConditions == L_PITCH_BLACK && !Spotlight && !targetSpotlight) {
+    		if(isMechVee)
+    			return 3;
+    		if(isAero)
+    			return 5;
+    		if(isLargeCraft)
+    			return 4;
+    		return 1;
+    	} else if ((lightConditions == L_MOONLESS && !Spotlight && !targetSpotlight) 
+    			|| (lightConditions == L_FULL_MOON && !Spotlight && !targetSpotlight) 
+    			|| (weatherConditions == WE_HEAVY_SNOW && windStrength >= WI_STRONG_GALE)) {
+    		if(isMechVee)
+    			return 5;
+    		if(isAero)
+    			return 10;
+    		if(isLargeCraft)
+    			return 8;
+    		return 2;
+    	} else if (weatherConditions == WE_HEAVY_SNOW 
+    			|| weatherConditions == WE_HEAVY_RAIN 
+    			|| weatherConditions == WE_DOWNPOUR
+    			|| weatherConditions == WE_SLEET 
+    			|| weatherConditions == WE_ICE_STORM
+    			|| weatherConditions == WE_HEAVY_HAIL
+    			|| fog == FOG_HEAVY) {
+    		if(isMechVee)
+    			return 10;
+    		if(isAero)
+    			return 20;
+    		if(isLargeCraft)
+    			return 15;
+    		return 5;
+    	} else if (lightConditions == L_PITCH_BLACK && !targetSpotlight) {
+    		if(isMechVee)
+    			return 13;
+    		if(isAero)
+    			return 15;
+    		if(isLargeCraft)
+    			return 14;
+    		return 6;
+    	} else if((lightConditions >= L_DAY && !Spotlight && !targetSpotlight)
+    			|| ((weatherConditions == WE_HEAVY_SNOW || weatherConditions == WE_MOD_SNOW) && windStrength >= WI_MOD_GALE) ) {
+    		if(isMechVee)
+    			return 15;
+    		if(isAero)
+    			return 30;
+    		if(isLargeCraft)
+    			return 20;
+    		return 8;
+    	} else if(lightConditions >= L_DAY && !targetSpotlight) {
+    		if(isMechVee)
+    			return 25;
+    		if(isAero)
+    			return 40;
+    		if(isLargeCraft)
+    			return 30;
+    		return 13;
+    	} else if(weatherConditions == WE_MOD_SNOW || weatherConditions == WE_MOD_RAIN) {
+    		if(isMechVee)
+    			return 20;
+    		if(isAero)
+    			return 50;
+    		if(isLargeCraft)
+    			return 25;
+    		return 10;
+    	} else if(lightConditions >= L_DAY
+    			|| weatherConditions == WE_LIGHT_SNOW || weatherConditions == WE_LIGHT_RAIN 
+    			|| weatherConditions == WE_LIGHT_HAIL || fog == FOG_LIGHT) {
+    		if(isMechVee)
+    			return 30;
+    		if(isAero)
+    			return 60;
+    		if(isLargeCraft)
+    			return 35;
+    		return 15;
+    	} else {
+    		if(isMechVee)
+    			return 60;
+    		if(isAero)
+    			return 120;
+    		if(isLargeCraft)
+    			return 70;
+    		return 30;
+    	}
+    	
+    }
     
     public void setLight(int type) {
     	this.lightConditions = type;

@@ -250,7 +250,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                 && (atype.getAmmoType() == AmmoType.T_MML || atype
                         .getAmmoType() == AmmoType.T_LRM)
                 && atype.getMunitionType() == AmmoType.M_FOLLOW_THE_LEADER;
-
+        
         if (te != null) {
             if (!isTargetECMAffected
                     && te.isINarcedBy(ae.getOwner().getTeam())
@@ -523,6 +523,26 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         	toHit.addModifier(te.getEvasionBonus(), "target is evading");
         }
       
+        //ghost target modifier
+        int ghostTargetMod = Compute.getGhostTargetNumber(ae, ae.getPosition(), target.getPosition());
+        if(ghostTargetMod > -1 && !(ae instanceof Infantry && !(ae instanceof BattleArmor))) {
+        	int bapMod = 0;
+        	if(ae.hasBAP())
+        		bapMod = 1;
+        	int tcMod = 0;
+        	if (ae.hasTargComp()
+                    && wtype.hasFlag(WeaponType.F_DIRECT_FIRE)
+                    && (!usesAmmo || !((atype.getAmmoType() == AmmoType.T_AC_LBX || atype
+                            .getAmmoType() == AmmoType.T_AC_LBX_THB) && atype
+                            .getMunitionType() == AmmoType.M_CLUSTER))) {
+        		tcMod = 2;
+        	}
+        	int ghostTargetMoF = (ae.getCrew().getSensorOps() + ghostTargetMod) - (ae.getGhostTargetOverride() + bapMod + tcMod);
+        	if(ghostTargetMoF > 0) {
+        		toHit.addModifier(Math.min(4, ghostTargetMoF / 2), "ghost targets");
+        	}
+        }
+        
         //Aeros may suffer from criticals
         if (ae instanceof Aero) {
             Aero aero = (Aero)ae;

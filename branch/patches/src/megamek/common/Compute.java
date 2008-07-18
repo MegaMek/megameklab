@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.Hashtable;
 
 import megamek.common.actions.BreakGrappleAttackAction;
 import megamek.common.actions.BrushOffAttackAction;
@@ -2260,28 +2261,94 @@ public class Compute {
      * LOS check from ae to te.
      */
     public static boolean canSee(IGame game, Entity ae, Targetable target) {
-        if (target.getTargetType() == Targetable.TYPE_ENTITY) {
+        boolean teSpotlight = false;
+    	if (target.getTargetType() == Targetable.TYPE_ENTITY) {
             Entity te = (Entity) target;
+            teSpotlight = te.usedSearchlight();
             if (te.isOffBoard()) {
                 return false;
             }
         }
-        if (game.getOptions().intOption("visibility") < 999) {
-            int visualRange = game.getOptions().intOption("visibility");
-
-            if (ae instanceof MechWarrior && game.getOptions().booleanOption("pilots_visual_range_one"))
-                visualRange = 1;
-
-            if (ae.hasBAP())
-                visualRange = Math.max(ae.getBAPRange(), visualRange);
-
-            if (ae.getPosition() != null && target.getPosition() != null && ae.getPosition().distance(target.getPosition()) > visualRange) {
-                return false;
-            }
+        
+        //check visual range based on planetary conditions
+        int visualRange = game.getPlanetaryConditions().getVisualRange(ae, teSpotlight);
+        if(target.getTargetType() == Targetable.TYPE_ENTITY) {
+        	Entity te = (Entity) target;
+        	//check for an active null signature system
+        	//TODO: implement void signature
+        	/*
+        	if(te.hasActiveVoidSig()) {
+        		visualRange = visualRange / 4;
+        	} 
+        	*/
+        	//check for visual camoflauge
+        	//else 
+        	if(te.hasWorkingMisc(MiscType.F_VISUAL_CAMO, -1)) {
+        		visualRange = visualRange / 2;
+        	}
         }
-        return LosEffects.calculateLos(game, ae.getId(), target).canSee() && ae.getCrew().isActive();
+        //smoke in los
+        visualRange -= LosEffects.calculateLos(game, ae.getId(), target).getLightSmoke();
+        visualRange -= (2 * LosEffects.calculateLos(game, ae.getId(), target).getHeavySmoke());
+        
+        int sensorRange = getSensorRange(game, ae, target);
+        
+        boolean inSensorRange = ae.getPosition() != null && target.getPosition() != null && ae.getPosition().distance(target.getPosition()) <= sensorRange;
+        
+        if (!inSensorRange && ae.getPosition() != null && target.getPosition() != null && ae.getPosition().distance(target.getPosition()) > visualRange) {
+        	return false;
+        }
+    
+        return LosEffects.calculateLos(game, ae.getId(), target).canSee() && ae.getCrew().isActive() || inSensorRange;
     }
-
+    
+    /**
+     * Checks whether the target is within sensor range of the current entity
+     */
+    private static int getSensorRange(IGame game, Entity ae, Targetable target) {
+    	
+    	Sensor sensor = ae.getActiveSensor();
+    	if(null == sensor) {
+    		return 0;
+    	}
+    	//only works for entities
+    	if(target.getTargetType() != Targetable.TYPE_ENTITY) {
+    		return 0;
+    	}
+    	Entity te = (Entity)target;
+    	
+    	//if this sensor is an active probe and it is critted, then no can see
+    	if(sensor.isBAP() && !ae.hasBAP(false)) {
+    		return 0;
+    	}
+    	
+    	int check = ae.getSensorCheck();
+    	check += sensor.getModsForStealth(te);
+    	//ECM bubbles
+    	check += sensor.getModForECM(ae);
+    		
+    	//get the range bracket (0 - none; 1 - short; 2 - medium; 3 - long)
+    	int bracket = 0;
+    	if(check == 7 || check == 8)
+    		bracket = 1;
+    	if(check == 5 || check == 6)
+    		bracket = 2;
+    	if(check < 5)
+    		bracket = 3;
+    		
+    	//now get the range
+    	int maxrange = sensor.getRange(bracket);   
+    		
+    	//adjust the range based on LOS and planetary conditions
+    	maxrange = sensor.adjustRange(maxrange, game, LosEffects.calculateLos(game, ae.getId(), target));
+    	
+    	//now adjust for anything about the target entity (size, heat, etc)
+    	maxrange = sensor.entityAdjustments(maxrange, te, game);
+    	
+    	return maxrange;
+    	
+    }
+    
     public static int targetSideTable(Coords inPosition, Targetable target) {
         return target.sideTable(inPosition);
     }
@@ -2473,8 +2540,20 @@ public class Compute {
      * @return
      */
     public static boolean isAffectedByECM(Entity ae, Coords a, Coords b) {
+    	return getECMFieldSize(ae, a, b) > 0;
+    }
+    
+    /**
+     * This method returns the highest number of enemy ECM fields of ae between points a and b
+     * 
+     * @param ae
+     * @param a
+     * @param b
+     * @return
+     */
+    public static int getECMFieldSize(Entity ae, Coords a, Coords b) {
         if (a == null || b == null)
-            return false;
+            return 0;
 
         // Only grab enemies with active ECM
         Vector<Coords> vEnemyECMCoords = new Vector<Coords>(16);
@@ -2536,12 +2615,13 @@ public class Compute {
 
         // none? get out of here
         if (vEnemyECMCoords.size() == 0)
-            return false;
+            return 0;
 
         // get intervening Coords.
         ArrayList<Coords> coords = Coords.intervening(a, b);
         // loop through all intervening coords, check each if they are ECM
         // affected
+        int worstECM = 0;
         for (Coords c : coords) {
             // > 0: in friendly ECCM
             // 0: unaffected by enemy ECM
@@ -2550,7 +2630,7 @@ public class Compute {
             // if we're at ae's Position, figure in a possible
             // iNarc ECM pod
             if (c.equals(ae.getPosition()) && ae.isINarcedWith(INarcPod.ECM)) {
-                ecmStatus--;
+                ecmStatus++;
             }
             // first, subtract 1 for each enemy ECM that affects us
             Enumeration<Integer> ranges = vEnemyECMRanges.elements();
@@ -2559,7 +2639,7 @@ public class Compute {
                 int range = ranges.nextElement().intValue();
                 int nDist = c.distance(enemyECMCoords);
                 if (nDist <= range) {
-                    ecmStatus--;
+                    ecmStatus++;
                 }
             }
             // now, add one for each friendly ECCM
@@ -2569,15 +2649,15 @@ public class Compute {
                 int range = ranges.nextElement().intValue();
                 int nDist = c.distance(friendlyECCMCoords);
                 if (nDist <= range) {
-                    ecmStatus++;
+                    ecmStatus--;
                 }
             }
             // if any coords in the line are affected, the whole line is
-            if (ecmStatus < 0) {
-                return true;
+            if (ecmStatus > worstECM) {
+                worstECM = ecmStatus;
             }
         }
-        return false;
+        return worstECM;
     }
 
     /**
@@ -2593,8 +2673,12 @@ public class Compute {
      *         enemy or friendly fields.
      */
     public static boolean isAffectedByAngelECM(Entity ae, Coords a, Coords b) {
+    	return getAngelECMFieldSize(ae, a, b) > 0;
+    }
+    
+    public static int getAngelECMFieldSize(Entity ae, Coords a, Coords b) {
         if (a == null || b == null)
-            return false;
+            return 0;
 
         // Only grab enemies with active angel ECM
         Vector<Coords> vEnemyAngelECMCoords = new Vector<Coords>(16);
@@ -2645,12 +2729,13 @@ public class Compute {
 
         // none? get out of here
         if (vEnemyAngelECMCoords.size() == 0)
-            return false;
+            return 0;
 
         // get intervening Coords.
         ArrayList<Coords> coords = Coords.intervening(a, b);
         // loop through all intervening coords, check each if they are ECM
         // affected
+        int worstECM = 0;
         for (Coords c : coords) {
             // > 0: in friendly ECCM
             // 0: unaffected by enemy ECM
@@ -2663,7 +2748,7 @@ public class Compute {
                 int range = ranges.nextElement().intValue();
                 int nDist = c.distance(enemyECMCoords);
                 if (nDist <= range) {
-                    ecmStatus--;
+                    ecmStatus++;
                 }
             }
             // now, add one for each friendly ECCM
@@ -2673,15 +2758,171 @@ public class Compute {
                 int range = ranges.nextElement().intValue();
                 int nDist = c.distance(friendlyECCMCoords);
                 if (nDist <= range) {
-                    ecmStatus++;
+                    ecmStatus--;
                 }
             }
             // if any coords in the line are affected, the whole line is
-            if (ecmStatus < 0) {
-                return true;
+            if (ecmStatus > worstECM) {
+                worstECM = ecmStatus;
             }
         }
-        return false;
+        return worstECM;
+    }
+    
+    /**
+     * Check for ECM bubbles in Ghost Target mode along the path from a to b and return the highest
+     * target roll. -1 if no Ghost Targets
+     */
+    public static int getGhostTargetNumber(Entity ae, Coords a, Coords b) {
+    	if (a == null || b == null)
+            return 0;
+
+        // Only grab enemies with active ECM
+    	//need to create two hashtables for ghost targeting, one with mods 
+    	//and one with booleans indicating that this ghost target was intersected
+    	//the keys will be the entity id
+    	Hashtable<Integer, Boolean> hEnemyGTCrossed = new Hashtable<Integer, Boolean>();
+    	Hashtable<Integer, Integer> hEnemyGTMods = new Hashtable<Integer, Integer>();
+    	Vector<Coords> vEnemyECMCoords = new Vector<Coords>(16);
+        Vector<Integer> vEnemyECMRanges = new Vector<Integer>(16);
+        Vector<Coords> vEnemyGTCoords = new Vector<Coords>(16);
+        Vector<Integer> vEnemyGTRanges = new Vector<Integer>(16);
+        Vector<Integer> vEnemyGTId = new Vector<Integer>(16);
+        Vector<Coords> vFriendlyECCMCoords = new Vector<Coords>(16);
+        Vector<Integer> vFriendlyECCMRanges = new Vector<Integer>(16);
+        for (Enumeration<Entity> e = ae.game.getEntities(); e.hasMoreElements();) {
+            Entity ent = e.nextElement();
+            Coords entPos = ent.getPosition();
+            if (ent.isEnemyOf(ae) && ent.hasGhostTargets(true) && entPos != null) {
+                vEnemyGTCoords.addElement(entPos);
+                vEnemyGTRanges.addElement(new Integer(ent.getECMRange()));
+                vEnemyGTId.addElement(new Integer(ent.getId()));
+                hEnemyGTCrossed.put(ent.getId(), false);
+                hEnemyGTMods.put(ent.getId(), ent.getGhostTargetRollMoS());
+            }
+            if (ent.isEnemyOf(ae) && ent.hasActiveECM() && entPos != null) {
+                vEnemyECMCoords.addElement(entPos);
+                vEnemyECMRanges.addElement(new Integer(ent.getECMRange()));
+            }
+            // angel ECM gets added another time, to make it count as 2 ECMs,
+            // because it's already included above because it works as a normal
+            // ECM, too
+            if (ent.isEnemyOf(ae) && ent.hasActiveAngelECM() && entPos != null) {
+                vEnemyECMCoords.addElement(entPos);
+                vEnemyECMRanges.addElement(new Integer(ent.getECMRange()));
+            }
+            if (!ent.isEnemyOf(ae) && ent.hasActiveECCM() && entPos != null) {
+                vFriendlyECCMCoords.addElement(entPos);
+                vFriendlyECCMRanges.addElement(new Integer(ent.getECMRange()));
+            }
+            // angel ECCM gets added another time, to make it count as 2 ECMs,
+            // because it's already included above because it works as a normal
+            // ECM, too
+            if (!ent.isEnemyOf(ae) && ent.hasActiveAngelECCM() && entPos != null) {
+                vFriendlyECCMCoords.addElement(entPos);
+                vFriendlyECCMRanges.addElement(new Integer(ent.getECMRange()));
+            }
+
+            // Check the ECM effects of the entity's passengers.
+            for (Entity other : ent.getLoadedUnits()) {
+                if (other.isEnemyOf(ae) && other.hasGhostTargets(true) && entPos != null) {
+                    vEnemyGTCoords.addElement(entPos);
+                    vEnemyGTRanges.addElement(new Integer(other.getECMRange()));
+                    vEnemyGTId.addElement(new Integer(ent.getId()));
+                    hEnemyGTCrossed.put(ent.getId(), false);
+                    hEnemyGTMods.put(ent.getId(), ent.getGhostTargetRollMoS());
+                }
+                if (other.isEnemyOf(ae) && other.hasActiveECM() && entPos != null) {
+                    vEnemyECMCoords.addElement(entPos);
+                    vEnemyECMRanges.addElement(new Integer(other.getECMRange()));
+                }
+                // angel ECM gets added another time, to make it count as 2 ECMs,
+                // because it's already included above because it works as a normal
+                // ECM, too
+                if (other.isEnemyOf(ae) && other.hasActiveAngelECM() && entPos != null) {
+                    vEnemyECMCoords.addElement(entPos);
+                    vEnemyECMRanges.addElement(new Integer(other.getECMRange()));
+                }
+                if (!other.isEnemyOf(ae) && ent.hasActiveECCM() && entPos != null) {
+                    vFriendlyECCMCoords.addElement(entPos);
+                    vFriendlyECCMRanges.addElement(new Integer(ent.getECMRange()));
+                }
+                // angel ECCM gets added another time, to make it count as 2 ECMs,
+                // because it's already included above because it works as a normal
+                // ECM, too
+                if (!other.isEnemyOf(ae) && ent.hasActiveAngelECCM() && entPos != null) {
+                    vFriendlyECCMCoords.addElement(entPos);
+                    vFriendlyECCMRanges.addElement(new Integer(ent.getECMRange()));
+                }
+            }
+        }
+
+        // none? get out of here
+        if (vEnemyGTCoords.size() == 0)
+            return 0;
+
+        // get intervening Coords.
+        ArrayList<Coords> coords = Coords.intervening(a, b);
+        // loop through all intervening coords, if they are not eccm'ed by the enemy then add any Ghost Targets
+        //to the hashlist
+        for (Coords c : coords) {
+            // < 0: in friendly ECCM
+            // 0: unaffected by enemy ECM
+            // >0: affected by enemy ECM
+            int ecmStatus = 0;
+            // first, subtract 1 for each enemy ECM that affects us
+            Enumeration<Integer> ranges = vEnemyECMRanges.elements();
+            for (Enumeration<Coords> e = vEnemyECMCoords.elements(); e.hasMoreElements();) {
+                Coords enemyECMCoords = e.nextElement();
+                int range = ranges.nextElement().intValue();
+                int nDist = c.distance(enemyECMCoords);
+                if (nDist <= range) {
+                    ecmStatus++;
+                }
+            }
+            // now, add one for each friendly ECCM
+            ranges = vFriendlyECCMRanges.elements();
+            for (Enumeration<Coords> e = vFriendlyECCMCoords.elements(); e.hasMoreElements();) {
+                Coords friendlyECCMCoords = e.nextElement();
+                int range = ranges.nextElement().intValue();
+                int nDist = c.distance(friendlyECCMCoords);
+                if (nDist <= range) {
+                    ecmStatus--;
+                }
+            }
+            
+            if(ecmStatus >= 0) {
+            	//find any new Ghost Targets that we have crossed
+	            ranges = vEnemyGTRanges.elements();
+	            Enumeration<Integer> ids = vEnemyGTId.elements();
+	            for (Enumeration<Coords> e = vEnemyGTCoords.elements(); e.hasMoreElements();) {
+	                Coords enemyGTCoords = e.nextElement();
+	                int range = ranges.nextElement().intValue();
+	                int id = ids.nextElement().intValue();
+	                int nDist = c.distance(enemyGTCoords);
+	                if (nDist <= range && !hEnemyGTCrossed.get(id)) {
+	                    hEnemyGTCrossed.put(id, true);
+	                }
+	            }
+            }
+        }
+        
+        //ok so now we have a hashtable that tells us which Ghost Targets have been crossed
+        //lets loop through that and identify the highest bonus and count the total number crossed
+        int totalGT = 0;
+        int highestMod = -1;
+        Enumeration ids = hEnemyGTCrossed.keys();
+        while(ids.hasMoreElements()) {
+        	int id = (Integer)ids.nextElement();
+        	if(hEnemyGTCrossed.get(id)) {
+        		if(hEnemyGTMods.get(id) > highestMod) {
+        			highestMod = hEnemyGTMods.get(id);
+        		} else {
+        			totalGT++;
+        		}
+        	}
+        }
+        return highestMod + totalGT;
     }
 
     /**

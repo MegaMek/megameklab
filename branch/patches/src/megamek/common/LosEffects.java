@@ -74,6 +74,9 @@ public class LosEffects {
     int lightSmoke = 0;
     int heavySmoke = 0; // heavySmoke is also standard for normal L2 smoke
     int screen = 0;
+    int softBuildings = 0;
+    int hardBuildings = 0;
+    boolean blockedByHill = false;
     int targetCover = COVER_NONE; // that means partial cover
     int attackerCover = COVER_NONE; // ditto
     Building thruBldg = null;
@@ -103,6 +106,9 @@ public class LosEffects {
         this.lightSmoke += other.lightSmoke;
         this.heavySmoke += other.heavySmoke;
         this.screen += other.screen;
+        this.softBuildings += other.softBuildings;
+        this.hardBuildings += other.hardBuildings;
+        this.blockedByHill |= other.blockedByHill;
         this.targetCover |= other.targetCover;
         this.attackerCover |= other.attackerCover;
         if (null != this.thruBldg && !this.thruBldg.equals(other.thruBldg)) {
@@ -141,9 +147,21 @@ public class LosEffects {
     public int getScreen() {
         return screen;
     }
+    
+    public int getSoftBuildings() {
+        return softBuildings;
+    }
+    
+    public int getHardBuildings() {
+        return hardBuildings;
+    }
 
     public boolean isBlocked() {
         return blocked;
+    }
+    
+    public boolean isBlockedByHill() {
+        return blockedByHill;
     }
 
     /**
@@ -715,6 +733,18 @@ public class LosEffects {
                     / (ai.targetPos.distance(coords) + ai.attackPos
                             .distance(coords))) {
                 los.blocked = true;
+                if(hex.terrainLevel(Terrains.BLDG_CF) > 90) 
+                	los.hardBuildings++;
+                else if(bldgEl > 0)
+                	los.softBuildings++;
+            }
+            //for sensors I need to know whether this would have been blocked by a "hill"
+            if (hexEl > (ai.targetAbsHeight
+                    * ai.attackPos.distance(coords) + ai.attackAbsHeight
+                    * ai.targetPos.distance(coords))
+                    / (ai.targetPos.distance(coords) + ai.attackPos
+                            .distance(coords))) {
+                los.blockedByHill = true;
             }
         }
         if ((hexEl + bldgEl > ai.attackAbsHeight && hexEl + bldgEl > ai.targetAbsHeight)
@@ -723,8 +753,19 @@ public class LosEffects {
                 || (hexEl + bldgEl > ai.targetAbsHeight && ai.targetPos
                         .distance(coords) == 1)) {
             los.blocked = true;
+            if(hex.terrainLevel(Terrains.BLDG_CF) > 90) 
+            	los.hardBuildings++;
+            else if(bldgEl > 0)
+            	los.softBuildings++;
         }
-
+        //for sensors I need to know whether this would have been blocked by a "hill"
+        if ((hexEl > ai.attackAbsHeight && hexEl + bldgEl > ai.targetAbsHeight)
+                || (hexEl + bldgEl > ai.attackAbsHeight && ai.attackPos
+                        .distance(coords) == 1)
+                || (hexEl + bldgEl > ai.targetAbsHeight && ai.targetPos
+                        .distance(coords) == 1)) {
+        	los.blockedByHill = true;
+        }
         // check if there's a clear hex between the targets that's higher than
         // one of them, if we're in underwater combat
         if (ai.underWaterCombat

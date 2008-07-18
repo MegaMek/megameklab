@@ -86,6 +86,7 @@ import megamek.common.Mounted;
 import megamek.common.Player;
 import megamek.common.Protomech;
 import megamek.common.QuadMech;
+import megamek.common.Sensor;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.Terrains;
@@ -2386,8 +2387,8 @@ public class MechDisplay extends BufferedPanel {
 
         private static final String IMAGE_DIR = "data/images/widgets";
 
-        private TransparentLabel narcLabel, unusedL, carrysL, heatL, sinksL,
-                targSysL;
+        private TransparentLabel curSensorsL, narcLabel, unusedL, carrysL, heatL, sinksL, targSysL;
+        public Choice chSensors;
         public TextArea unusedR, carrysR, heatR, sinksR;
         public Button sinks2B, dumpBombs;
         public java.awt.List narcList;
@@ -2407,7 +2408,14 @@ public class MechDisplay extends BufferedPanel {
             prompt = null;
 
             FontMetrics fm = getFontMetrics(FONT_VALUE);
-
+            
+            curSensorsL = new TransparentLabel((Messages
+                    .getString("MechDisplay.CurrentSensors")).concat(" "), fm,
+                    Color.white, TransparentLabel.CENTER);
+            
+            chSensors = new Choice();
+            chSensors.addItemListener(this);
+            
             narcLabel = new TransparentLabel(
                     Messages.getString("MechDisplay.AffectedBy"), fm, Color.white, TransparentLabel.CENTER); //$NON-NLS-1$
 
@@ -2470,6 +2478,14 @@ public class MechDisplay extends BufferedPanel {
             c.anchor = GridBagConstraints.CENTER;
             c.weightx = 1.0;
 
+            c.weighty = 0.0;
+            gridbag.setConstraints(curSensorsL, c);
+            add(curSensorsL);
+
+            c.weighty = 0.0;
+            gridbag.setConstraints(chSensors, c);
+            add(chSensors);
+            
             c.weighty = 0.0;
             gridbag.setConstraints(narcLabel, c);
             add(narcLabel);
@@ -2596,10 +2612,12 @@ public class MechDisplay extends BufferedPanel {
                     .getOwnerId()) {
                 sinks2B.setEnabled(false);
                 dumpBombs.setEnabled(false);
+                chSensors.setEnabled(false);
                 dontChange = true;
             } else {
                 sinks2B.setEnabled(true);
                 dumpBombs.setEnabled(true);
+                chSensors.setEnabled(true);
                 dontChange = false;
             }
             // Walk through the list of teams. There
@@ -2806,13 +2824,47 @@ public class MechDisplay extends BufferedPanel {
             } else {
                 dumpBombs.setEnabled(false);
             }
+            
+            refreshSensorChoices(en);
+            
+            if(null != en.getActiveSensor()) {
+	            curSensorsL.setText((Messages.getString("MechDisplay.CurrentSensors"))
+	                    .concat(" ").concat(
+	                            Sensor.getSensorName(en.getActiveSensor().getType())));
+            } else {
+            	curSensorsL.setText((Messages.getString("MechDisplay.CurrentSensors"))
+	                    .concat(" None"));
+            }
 
             targSysL.setText((Messages.getString("MechDisplay.TargSysLabel"))
                     .concat(" ").concat(
                             MiscType.getTargetSysName(en.getTargSysType())));
         } // End public void displayMech( Entity )
 
+        
+        private void refreshSensorChoices(Entity en) {
+        	chSensors.removeAll();
+        	for(int i = 0; i < en.getSensors().size(); i++) {
+        		Sensor sensor = en.getSensors().elementAt(i);
+        		String condition = "";
+        		if(sensor.isBAP() && !en.hasBAP(false)) {
+        			condition = " (Disabled)";
+        		}
+        		chSensors.add(Sensor.getSensorName(sensor.getType()) + condition);
+        		if(sensor.getType() == en.getNextSensor().getType()) {
+        			chSensors.select(i);
+        		}
+        	}
+        }
+        
         public void itemStateChanged(ItemEvent ev) {
+        	if (ev.getItemSelectable() == chSensors) { 
+        		Entity en = clientgui.getClient().game.getEntity(myMechId);
+        		en.setNextSensor(en.getSensors().elementAt(chSensors.getSelectedIndex()));
+        		refreshSensorChoices(en);
+        		clientgui.systemMessage(Messages.getString("MechDisplay.willSwitchAtEnd", new Object[] { "Active Sensors", Sensor.getSensorName(en.getSensors().elementAt(chSensors.getSelectedIndex()).getType()) }));//$NON-NLS-1$
+        		clientgui.getClient().sendUpdateEntity(clientgui.getClient().game.getEntity(myMechId));
+        	}
         }
 
         public void actionPerformed(ActionEvent ae) {
