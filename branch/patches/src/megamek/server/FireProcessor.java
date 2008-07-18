@@ -42,7 +42,7 @@ public class FireProcessor extends DynamicTerrainProcessor {
     }
 
     @Override
-    void DoEndPhaseChanges(Vector<Report> vPhaseReport) {
+    void doEndPhaseChanges(Vector<Report> vPhaseReport) {
         game = server.getGame();
         if (game.getOptions().booleanOption("tacops_start_fire")) {
             this.vPhaseReport = vPhaseReport;

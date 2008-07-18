@@ -53,7 +53,7 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
     }
 
     @Override
-    void DoEndPhaseChanges(Vector<Report> vPhaseReport) {
+    void doEndPhaseChanges(Vector<Report> vPhaseReport) {
         game = server.getGame();
         this.vPhaseReport = vPhaseReport;
         resolveWeather();

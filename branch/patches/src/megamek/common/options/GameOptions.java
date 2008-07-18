@@ -97,7 +97,6 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedRules, "pilot_advantages", false); //$NON-NLS-1$
         addOption(advancedRules, "manei_domini", false); //$NON-NLS-1$
         addOption(advancedRules, "tacops_bap", false); //$NON-NLS-1$
-        addOption(advancedRules, "maxtech_artillery", false); //$NON-NLS-1$
         addOption(advancedRules, "tacops_eccm", false); //$NON-NLS-1$
         addOption(advancedRules, "tacops_ghost_target", false); //$NON-NLS-1$
         addOption(advancedRules, "tacops_dig_in", false); //$NON-NLS-1$
@@ -106,12 +105,11 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedRules, "paratroopers", false); //$NON-NLS-1$
         addOption(advancedRules, "allow_level_3_units", false);
         addOption(advancedRules, "allow_level_3_targsys", false); //$NON-NLS-1$ 
-        addOption(advancedRules, "allow_level_3_ammo", false);
-        addOption(advancedRules, "allow_nukes", false);
-        addOption(advancedRules, "really_allow_nukes", false);
-        addOption(advancedRules, "tacops_battle_wreck", false);
-        addOption(advancedRules, "tacops_skin_of_the_teeth_ejection", false);
-        
+        addOption(advancedRules, "allow_level_3_ammo", false); //$NON-NLS-1$ 
+        addOption(advancedRules, "allow_nukes", false); //$NON-NLS-1$ 
+        addOption(advancedRules, "really_allow_nukes", false); //$NON-NLS-1$ 
+        addOption(advancedRules, "tacops_battle_wreck", false); //$NON-NLS-1$ 
+        addOption(advancedRules, "tacops_skin_of_the_teeth_ejection", false); //$NON-NLS-1$ 
 
         IBasicOptionGroup advancedCombat = addGroup("advancedCombat"); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_ams", false); //$NON-NLS-1$
@@ -143,7 +141,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedCombat, "tacops_vehicle_effective", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_vehicle_arcs", false); //$NON-NLS-1$
         addOption(advancedCombat, "tacops_advanced_mech_hit_locations", false); //$NON-NLS-1$
-
+        
         IBasicOptionGroup advancedGroundMovement = addGroup("advancedGroundMovement"); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_standing_still", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_evade", false); //$NON-NLS-1$
@@ -159,7 +157,7 @@ public class GameOptions extends AbstractOptions implements Serializable {
         addOption(advancedGroundMovement, "tacops_falling_expanded", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_attempting_stand", false); //$NON-NLS-1$
         addOption(advancedGroundMovement, "tacops_careful_stand", false); //$NON-NLS-1$
-        
+
         IBasicOptionGroup ruleBreakers = addGroup("ruleBreakers"); //$NON-NLS-1$
         addOption(ruleBreakers, "no_tac", false); //$NON-NLS-1$
         addOption(ruleBreakers, "rpg_gunnery", false); //$NON-NLS-1$

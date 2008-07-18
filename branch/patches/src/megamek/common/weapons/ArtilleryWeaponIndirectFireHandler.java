@@ -357,8 +357,10 @@ public class ArtilleryWeaponIndirectFireHandler extends AmmoWeaponHandler {
                 radius = 4;
             else if (atype.getAmmoType() == AmmoType.T_LONG_TOM)
                 radius = 3;
+            else if (atype.getAmmoType() == AmmoType.T_SNIPER)
+                radius = 2;
             else
-                radius = Math.max(1, atype.getRackSize() / 5);
+                radius = 1;
             server.deliverArtilleryFlare(coords, radius);
             return false;
         }

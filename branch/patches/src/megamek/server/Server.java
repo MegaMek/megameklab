@@ -1729,7 +1729,7 @@ public class Server implements Runnable {
             }
             */
             for (DynamicTerrainProcessor tp : terrainProcessors) {
-                tp.DoEndPhaseChanges(vPhaseReport);
+                tp.doEndPhaseChanges(vPhaseReport);
             }
             addReport(game.ageFlares());
             send(createFlarePacket());
@@ -22466,8 +22466,13 @@ public class Server implements Runnable {
             // Work out hit table to use
             if (attackSource != null) {
                 toHit.setSideTable(entity.sideTable(attackSource));
-                if (ammo != null && entity instanceof Mech && ammo.getMunitionType() == AmmoType.M_CLUSTER && attackSource.equals(coords)) {
-                    toHit.setHitTable(ToHitData.HIT_ABOVE);
+                if (ammo != null && ammo.getMunitionType() == AmmoType.M_CLUSTER && attackSource.equals(coords)) {
+                    if (entity instanceof Mech) {
+                        toHit.setHitTable(ToHitData.HIT_ABOVE);
+                    } else if (entity instanceof Tank) {
+                        toHit.setSideTable(ToHitData.SIDE_FRONT);
+                        toHit.addModifier(2, "cluster artillery hitting a Tank");                        
+                    }                    
                 }
             }
 
@@ -22496,12 +22501,66 @@ public class Server implements Runnable {
                         vPhaseReport.addAll(vehicleMotiveDamage((Tank) entity, 0));
                         continue;
                     }
-                    // non infantry are immune
-                    if (entity instanceof BattleArmor || !(entity instanceof Infantry)) {
+                    // only infantry and support vees with bar < 5 are affected
+                    if (entity instanceof BattleArmor || !(entity instanceof Infantry) && !((entity instanceof SupportTank && ((SupportTank)entity).getBARRating() < 5)
+                            || (entity instanceof SupportVTOL && ((SupportVTOL)entity).getBARRating() < 5))) {
                         continue;
                     }
-                    if (hex.containsTerrain(Terrains.WOODS) || hex.containsTerrain(Terrains.JUNGLE)) {
-                        hits = (hits + 1) / 2;
+                    if (entity instanceof Infantry) {
+                        hits = Compute.d6(damage);
+                        hits *= 2;
+                    }
+                    if ((entity instanceof SupportTank && ((SupportTank)entity).getBARRating() < 5)) {
+                        switch (ammo.getAmmoType()) {
+                        case AmmoType.T_LONG_TOM:
+                            // hack: check if damage is still at 4, so we're in the
+                            // center hex. otherwise, do no damage
+                            if (damage == 4) {
+                                damage = (5 - ((SupportTank)entity).getBARRating()) * 5;
+                            }
+                            else
+                                continue;
+                            break;
+                        case AmmoType.T_SNIPER:
+                            // hack: check if damage is still at 2, so we're in the
+                            // center hex. otherwise, do no damage
+                            if (damage == 2) {
+                                damage = (5 - ((SupportTank)entity).getBARRating()) * 3;
+                            }
+                            else
+                                continue;
+                            break;
+                        case AmmoType.T_THUMPER:
+                            // no need to check for damage, because falloff = damage for the thumper
+                            damage = 5 - ((SupportTank)entity).getBARRating();
+                            break;
+                        }                        
+                    }
+                    if (entity instanceof SupportVTOL && ((SupportVTOL)entity).getBARRating() < 5) {
+                        switch (ammo.getAmmoType()) {
+                        case AmmoType.T_LONG_TOM:
+                            // hack: check if damage is still at 4, so we're in the
+                            // center hex. otherwise, do no damage
+                            if (damage == 4) {
+                                damage = (5 - ((SupportTank)entity).getBARRating()) * 5;
+                            }
+                            else
+                                continue;
+                            break;
+                        case AmmoType.T_SNIPER:
+                            // hack: check if damage is still at 2, so we're in the
+                            // center hex. otherwise, do no damage
+                            if (damage == 2) {
+                                damage = (5 - ((SupportTank)entity).getBARRating()) * 3;
+                            }
+                            else
+                                continue;
+                            break;
+                        case AmmoType.T_THUMPER:
+                            // no need to check for damage, because falloff = damage for the thumper
+                            damage = (5 - ((SupportTank)entity).getBARRating());
+                            break;
+                        }           
                     }
                 }
             }
@@ -22554,30 +22613,32 @@ public class Server implements Runnable {
      *            Absolute altitude for flak attack
      */
     public void artilleryDamageArea(Coords centre, Coords attackSource, AmmoType ammo, int subjectId, Entity killer, boolean flak, int altitude, boolean mineClear, Vector<Report> vPhaseReport) {
-        int damage;
-        int falloff = 5;
-        if (ammo.getMunitionType() == AmmoType.M_FLECHETTE) {
-            damage = ammo.getRackSize() + 10;
-        } else if (ammo.getMunitionType() == AmmoType.M_CLUSTER) {
-            if (ammo.getAmmoType() == AmmoType.T_SNIPER)
-                damage = 15;
-            else
-                damage = ammo.getRackSize();
+        int damage = ammo.getRackSize();
+        int falloff = 10;
+        if (ammo.getMunitionType() == AmmoType.M_CLUSTER) {
+            damage -= 5;
+            if (ammo.getAmmoType() == AmmoType.T_THUMPER)
+                falloff = 9;
             attackSource = centre;
-        } else if (game.getOptions().booleanOption("maxtech_artillery")) {
-            // "standard" mutates into high explosive
-            if (ammo.getAmmoType() == AmmoType.T_LONG_TOM)
-                damage = 25;
-            else
-                damage = ammo.getRackSize() + 10;
-            falloff = 10;
-        } else {
-            // level 2 ammo
-            damage = ammo.getRackSize();
-            falloff = (damage + 1) / 2;
-        }
+        }        
+        if (ammo.getMunitionType() == AmmoType.M_FLECHETTE) {
+            switch (ammo.getAmmoType()) {
+            // for flechette, damage and fallof is number of d6, not absolut damage
+            case AmmoType.T_LONG_TOM:
+                damage = 4;
+                falloff = 2;
+                break;
+            case AmmoType.T_SNIPER:
+                damage = 2;
+                falloff = 1;
+                break;
+            case AmmoType.T_THUMPER:
+                damage = 1;
+                falloff = 1;
+            }
+        } else 
         //if this was a mine clearance, then it only affects the hex hit
-        if(mineClear) {
+        if (mineClear) {
         	falloff = damage;
         }
         artilleryDamageArea(centre, attackSource, ammo, subjectId, killer, damage, falloff, flak, altitude, vPhaseReport);

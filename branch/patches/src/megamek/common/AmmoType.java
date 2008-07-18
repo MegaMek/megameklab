@@ -286,7 +286,7 @@ public class AmmoType extends EquipmentType {
         ArrayList<AmmoType> acAmmos  = new ArrayList<AmmoType>(4);
         ArrayList<AmmoType> arrowAmmos = new ArrayList<AmmoType>(4);
         ArrayList<AmmoType> clanArrowAmmos = new ArrayList<AmmoType>(4);
-        ArrayList<AmmoType> thumperAmmos = new ArrayList<AmmoType>(2);
+        ArrayList<AmmoType> thumperAmmos = new ArrayList<AmmoType>(6);
         ArrayList<AmmoType> sniperAmmos = new ArrayList<AmmoType>(6);
         ArrayList<AmmoType> longTomAmmos = new ArrayList<AmmoType>(6);
         ArrayList<AmmoType> clanArtyAmmos = new ArrayList<AmmoType>(6);
@@ -981,19 +981,21 @@ public class AmmoType extends EquipmentType {
         // Create the munition types for IS Arrow IV launchers.
         munitions.clear();
         munitions.add( new MunitionMutator( "Homing",
-                                                   1, M_HOMING, TechConstants.T_IS_LEVEL_2 ) );
+                1, M_HOMING, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "FASCAM",
-                                                   1, M_FASCAM, TechConstants.T_IS_LEVEL_2 ) );
+                1, M_FASCAM, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Inferno-IV",
-                                                   1, M_INFERNO_IV, TechConstants.T_IS_LEVEL_2 ) );
+                1, M_INFERNO_IV, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Vibrabomb-IV",
-                                                   1, M_VIBRABOMB_IV, TechConstants.T_IS_LEVEL_2 ) );
+                1, M_VIBRABOMB_IV, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Illumination",
-                                                   1, M_FLARE, TechConstants.T_IS_LEVEL_3 ) );
+                1, M_FLARE, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Cluster",
-                                                   1, M_CLUSTER, TechConstants.T_IS_LEVEL_3 ) );
+                1, M_CLUSTER, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Davy Crockett-M",
-                                                   5, M_DAVY_CROCKETT_M, TechConstants.T_IS_LEVEL_3 ) );
+                5, M_DAVY_CROCKETT_M, TechConstants.T_IS_LEVEL_3 ) );
+        munitions.add( new MunitionMutator( "Smoke",
+                1, M_SMOKE, TechConstants.T_IS_LEVEL_2 ) );
 
         // Walk through both the base types and the
         // mutators, and create munition types.
@@ -1002,19 +1004,21 @@ public class AmmoType extends EquipmentType {
         // Create the munition types for clan Arrow IV launchers.
         munitions.clear();
         munitions.add( new MunitionMutator( "Homing",
-                                                   1, M_HOMING, TechConstants.T_CLAN_LEVEL_2 ) );
+                1, M_HOMING, TechConstants.T_CLAN_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "FASCAM",
-                                                   1, M_FASCAM, TechConstants.T_CLAN_LEVEL_2 ) );
+                1, M_FASCAM, TechConstants.T_CLAN_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Inferno-IV",
-                                                   1, M_INFERNO_IV, TechConstants.T_CLAN_LEVEL_2 ) );
+                1, M_INFERNO_IV, TechConstants.T_CLAN_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Vibrabomb-IV",
-                                                   1, M_VIBRABOMB_IV, TechConstants.T_CLAN_LEVEL_2 ) );
+                1, M_VIBRABOMB_IV, TechConstants.T_CLAN_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Davy Crockett-M",
-                                                   5, M_DAVY_CROCKETT_M, TechConstants.T_CLAN_LEVEL_3 ) );
+                5, M_DAVY_CROCKETT_M, TechConstants.T_CLAN_LEVEL_3 ) );
         munitions.add( new MunitionMutator( "Illumination",
-                1, M_FLARE, TechConstants.T_CLAN_LEVEL_3 ) );
+                1, M_FLARE, TechConstants.T_CLAN_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Cluster",
-                1, M_CLUSTER, TechConstants.T_CLAN_LEVEL_3 ) );
+                1, M_CLUSTER, TechConstants.T_CLAN_LEVEL_2 ) );
+        munitions.add( new MunitionMutator( "Smoke",
+                1, M_SMOKE, TechConstants.T_CLAN_LEVEL_2 ) );
 
         // Walk through both the base types and the
         // mutators, and create munition types.
@@ -1023,24 +1027,20 @@ public class AmmoType extends EquipmentType {
         // Create the munition types for Artillery launchers.
         munitions.clear();
         munitions.add( new MunitionMutator( "Smoke",
-                                                   1, M_SMOKE, TechConstants.T_IS_LEVEL_2 ) );
-        // Walk through both the base types and the
-        // mutators, and create munition types.
-        createMunitions(thumperAmmos,munitions);
-
-        // extra level 3 ammo for sniper & long tom but not thumper
+                1, M_SMOKE, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Copperhead",
-                                                   1, M_HOMING, TechConstants.T_IS_LEVEL_3 ) );
+                1, M_HOMING, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Illumination",
-                                                   1, M_FLARE, TechConstants.T_IS_LEVEL_3 ) );
+                1, M_FLARE, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Cluster",
-                1, M_CLUSTER, TechConstants.T_IS_LEVEL_3 ) );
+                1, M_CLUSTER, TechConstants.T_IS_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "Flechette",
-                1, M_FLECHETTE, TechConstants.T_IS_LEVEL_3 ) );
+                1, M_FLECHETTE, TechConstants.T_IS_LEVEL_2 ) );
 
         // Walk through both the base types and the
         // mutators, and create munition types.
         createMunitions(sniperAmmos,munitions);
+        createMunitions(thumperAmmos,munitions);
 
         // Make Davy Crockett-Ms for Long Toms, but not Thumper or Sniper.
         munitions.add( new MunitionMutator( "Davy Crockett-M",
@@ -1049,8 +1049,14 @@ public class AmmoType extends EquipmentType {
 
         // Create the munition types for Clan Artillery launchers.
         munitions.clear();
+        munitions.add( new MunitionMutator( "(Clan) Copperhead",
+                1, M_HOMING, TechConstants.T_CLAN_LEVEL_2 ) );
         munitions.add( new MunitionMutator( "(Clan) Smoke",
-                                                   1, M_SMOKE, TechConstants.T_CLAN_LEVEL_2 ) );
+                1, M_SMOKE, TechConstants.T_CLAN_LEVEL_2 ) );
+        munitions.add( new MunitionMutator( "(Clan) Illumination",
+                1, M_FLARE, TechConstants.T_CLAN_LEVEL_2 ) );
+        munitions.add( new MunitionMutator( "(Clan) Flechette",
+                1, M_FLECHETTE, TechConstants.T_CLAN_LEVEL_2 ) );
 
         // Walk through both the base types and the
         // mutators, and create munition types.
@@ -1576,7 +1582,7 @@ public class AmmoType extends EquipmentType {
         ammo.addLookupName("IS Ammo Long Tom");
         ammo.addLookupName("IS Long Tom Ammo");
         ammo.damagePerShot=1;
-        ammo.rackSize = 20;
+        ammo.rackSize = 25;
         ammo.ammoType = AmmoType.T_LONG_TOM;
         ammo.shots = 5;
         ammo.bv = 11;
@@ -1596,7 +1602,7 @@ public class AmmoType extends EquipmentType {
         ammo.addLookupName("IS Ammo Sniper");
         ammo.addLookupName("IS Sniper Ammo");
         ammo.damagePerShot=1;
-        ammo.rackSize = 10;
+        ammo.rackSize = 20;
         ammo.ammoType = AmmoType.T_SNIPER;
         ammo.shots = 10;
         ammo.bv = 5;
@@ -1616,7 +1622,7 @@ public class AmmoType extends EquipmentType {
         ammo.addLookupName("IS Ammo Thumper");
         ammo.addLookupName("IS Thumper Ammo");
         ammo.damagePerShot=1;
-        ammo.rackSize = 5;
+        ammo.rackSize = 15;
         ammo.ammoType = AmmoType.T_THUMPER;
         ammo.shots = 20;
         ammo.bv = 3;
@@ -4793,7 +4799,7 @@ public class AmmoType extends EquipmentType {
         ammo.addLookupName("Clan Ammo Long Tom");
         ammo.addLookupName("Clan Long Tom Ammo");
         ammo.damagePerShot=1;
-        ammo.rackSize = 20;
+        ammo.rackSize = 25;
         ammo.ammoType = AmmoType.T_LONG_TOM;
         ammo.shots = 5;
         ammo.bv = 11;
@@ -4813,7 +4819,7 @@ public class AmmoType extends EquipmentType {
         ammo.addLookupName("Clan Ammo Sniper");
         ammo.addLookupName("Clan Sniper Ammo");
         ammo.damagePerShot=1;
-        ammo.rackSize = 10;
+        ammo.rackSize = 20;
         ammo.ammoType = AmmoType.T_SNIPER;
         ammo.shots = 10;
         ammo.bv = 5;
@@ -4833,7 +4839,7 @@ public class AmmoType extends EquipmentType {
         ammo.addLookupName("Clan Ammo Thumper");
         ammo.addLookupName("Clan Thumper Ammo");
         ammo.damagePerShot=1;
-        ammo.rackSize = 5;
+        ammo.rackSize = 15;
         ammo.ammoType = AmmoType.T_THUMPER;
         ammo.shots = 20;
         ammo.bv = 3;
