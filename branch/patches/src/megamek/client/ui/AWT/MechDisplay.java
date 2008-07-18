@@ -2118,13 +2118,6 @@ public class MechDisplay extends BufferedPanel {
                     if (!m.isDestroyed()
                             && m.getType().hasFlag(MiscType.F_STEALTH)) {
                         m_chMode.setEnabled(true);
-                    }// if the maxtech eccm option is not set then the ECM
-                    // should not show anything.
-                    if (m.getType().hasFlag(MiscType.F_ECM)
-                            && !clientgui.getClient().game.getOptions()
-                                    .booleanOption("tacops_eccm")) {
-                        m_chMode.removeAll();
-                        return;
                     }
                     
                     //If not using tacops Energy Weapon rule then remove all the dial down statements

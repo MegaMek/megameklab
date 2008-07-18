@@ -7058,6 +7058,29 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
                 
             }
         }
+        
+        for (Mounted misc : getMisc()) {
+            if (misc.getType().hasFlag(MiscType.F_ECM)) {
+            	ArrayList<String> modes = new ArrayList<String>();
+            	modes.add("ECM");
+            	String[] stringArray = {};
+            	if(game.getOptions().booleanOption("tacops_eccm")) {
+            		modes.add("ECCM");
+            		if(misc.getType().hasFlag(MiscType.F_ANGEL_ECM)) {
+            			modes.add("ECM & ECCM");
+            		}
+            	}
+            	if(game.getOptions().booleanOption("tacops_ghost_target")) {
+            		if(misc.getType().hasFlag(MiscType.F_ANGEL_ECM)) {
+            			modes.add("ECM & Ghost Targets");
+            			modes.add("ECCM & Ghost Targets");
+            		} else {
+            			modes.add("Ghost Targets");
+            		}
+            	}
+            	((MiscType) misc.getType()).setModes(modes.toArray(stringArray));
+            }
+        }
 
     }
     
