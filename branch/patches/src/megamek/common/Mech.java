@@ -1393,7 +1393,7 @@ public abstract class Mech extends Entity implements Serializable {
                 }
             } else if (side == ToHitData.SIDE_REAR) {
                 // normal rear hits
-                if (game.getOptions().booleanOption("quad_hit_location") && isProne()) {
+                if (game.getOptions().booleanOption("tacops_advanced_mech_hit_location") && isProne()) {
                     switch (roll) {
                     case 2:
                         if ((crew.hasEdgeRemaining() && crew.getOptions().booleanOption("edge_when_tac")) && !game.getOptions().booleanOption("no_tac")) {
