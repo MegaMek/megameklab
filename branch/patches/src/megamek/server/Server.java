@@ -19956,7 +19956,7 @@ public class Server implements Runnable {
     private static final String STAR_WARS_RESPONSE = "I can arrange that!";
 
     private static final String INVADER_ZIM_CALL = "What does the G stand for?";
-    
+
     private static final String INVADER_ZIM_RESPONSE = "I dont know.";
     
     /**
