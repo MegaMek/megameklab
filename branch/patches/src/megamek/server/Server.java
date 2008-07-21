@@ -19955,6 +19955,10 @@ public class Server implements Runnable {
 
     private static final String STAR_WARS_RESPONSE = "I can arrange that!";
 
+    private static final String INVADER_ZIM_CALL = "What does the G stand for?";
+    
+    private static final String INVADER_ZIM_RESPONSE = "I dont know.";
+    
     /**
      * Process a packet from a connection.
      * 
@@ -20012,10 +20016,12 @@ public class Server implements Runnable {
                 sendChat(player.getName(), chat);
             }
             // Easter eggs. Happy April Fool's Day!!
-            if (DUNE_CALL.equals(chat)) {
+            if (DUNE_CALL.equalsIgnoreCase(chat)) {
                 sendServerChat(DUNE_RESPONSE);
-            } else if (STAR_WARS_CALL.equals(chat)) {
+            } else if (STAR_WARS_CALL.equalsIgnoreCase(chat)) {
                 sendServerChat(STAR_WARS_RESPONSE);
+            } else if ( INVADER_ZIM_CALL.equalsIgnoreCase(chat) ){
+                sendServerChat(INVADER_ZIM_RESPONSE);
             }
             break;
         case Packet.COMMAND_ENTITY_MOVE:
