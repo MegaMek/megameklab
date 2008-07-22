@@ -57,6 +57,7 @@ public class ISBombastLaser extends LaserWeapon {
         this.shortAV = 12;
         this.medAV = 12;
         this.maxRange = RANGE_MED;
+        this.flags |= F_BOMBAST_LASER;
     }
     
     /*

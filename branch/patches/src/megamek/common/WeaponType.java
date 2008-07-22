@@ -86,6 +86,7 @@ public class WeaponType extends EquipmentType {
                                                         // infantry
     public static final long F_MGA = 1l << 32; // machine gun array
     public static final long F_NO_AIM = 1l << 33;
+    public static final long F_BOMBAST_LASER = 1l << 34;
 
 //  add maximum range for AT2
     public static final int     RANGE_SHORT = 1;
