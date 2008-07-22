@@ -5552,11 +5552,29 @@ public class Server implements Runnable {
                 r.add(roll);
                 r.subject = entity.getId();
                 addReport(r);
-                if (roll >= 4) {
+                if (roll >= 7) {
                     // oops!
                 	entity.setPosition(curPos);
                     addReport(resolveIceBroken(curPos));
                     curPos = entity.getPosition();
+                } else {
+                	//TacOps: immediate PSR with +4 for terrain. If you fall then may break the ice after all
+                	rollTarget = entity.checkLandingOnIce(overallMoveType, curHex);
+                	if(!doSkillCheckInPlace(entity, rollTarget)) {
+                		//apply damage now, or it will show up as a possible breach, if ice is broken
+                		entity.applyDamage();
+                		roll = Compute.d6(1);
+                		r = new Report(2118);
+                        r.addDesc(entity);
+                        r.add(roll);
+                        r.subject = entity.getId();
+                        addReport(r);
+                        if(roll == 6) {
+                        	entity.setPosition(curPos);
+                        	addReport(resolveIceBroken(curPos));
+                        	curPos = entity.getPosition();
+                        }
+                	}
                 }
             } else if (!(prevStep.climbMode() && curHex.containsTerrain(Terrains.BRIDGE))) {
                 rollTarget = entity.checkWaterMove(waterLevel, overallMoveType);
@@ -6104,6 +6122,10 @@ public class Server implements Runnable {
         if (!h.containsTerrain(Terrains.FIRE)) {
             ignite(coords, true, vPhaseReport);
         }
+        //possibly melt ice and snow
+        if(h.containsTerrain(Terrains.ICE) || h.containsTerrain(Terrains.SNOW)) {
+        	vPhaseReport.addAll(meltIceAndSnow(coords, subjectId));
+        }
         for (Enumeration<Entity> impactHexHits = game.getEntities(coords); impactHexHits.hasMoreElements();) {
             Entity entity = impactHexHits.nextElement();
             //TacOps, p. 356 - treat as if hit by 5 inferno missiles
@@ -6131,6 +6153,10 @@ public class Server implements Runnable {
             // Unless there is a fire in the hex already, start one.
             if (!h.containsTerrain(Terrains.FIRE)) {
                 ignite(tempcoords, true, vPhaseReport);
+            }
+            //possibly melt ice and snow
+            if(h.containsTerrain(Terrains.ICE) || h.containsTerrain(Terrains.SNOW)) {
+            	vPhaseReport.addAll(meltIceAndSnow(coords, subjectId));
             }
             for (Enumeration<Entity> splashHexHits = game.getEntities(tempcoords); splashHexHits.hasMoreElements();) {
             	Entity entity = splashHexHits.nextElement();
@@ -8664,17 +8690,7 @@ public class Server implements Runnable {
                 melted = true;
             }
             if (melted) {
-                r = new Report(3069);
-                r.indent(2);
-                r.subject = entityId;
-                vPhaseReport.add(r);
-                if (hex.containsTerrain(Terrains.SNOW))
-                    hex.removeTerrain(Terrains.SNOW);
-                if (hex.containsTerrain(Terrains.ICE))
-                    hex.removeTerrain(Terrains.ICE);
-                if (!hex.containsTerrain(Terrains.MUD) && !hex.containsTerrain(Terrains.WATER))
-                    hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.MUD, 1));
-                sendChangedHex(c);
+                vPhaseReport.addAll(meltIceAndSnow(c, entityId));
                 return false;
             }
 
@@ -21991,6 +22007,33 @@ public class Server implements Runnable {
         return vPhaseReport;
     }
 
+    /**
+     * melt any snow or ice in a hex, including checking for the effects of breaking through ice
+     */
+    private Vector<Report> meltIceAndSnow(Coords c, int entityId) {
+    	Vector<Report> vDesc = new Vector<Report>();
+    	Report r;
+    	IHex hex = game.getBoard().getHex(c);
+    	r = new Report(3069);
+        r.indent(2);
+        r.subject = entityId;
+        vDesc.add(r);
+        if (hex.containsTerrain(Terrains.SNOW)) {
+            hex.removeTerrain(Terrains.SNOW);
+            sendChangedHex(c);
+        }
+        if (hex.containsTerrain(Terrains.ICE)) {
+        	vDesc.addAll(resolveIceBroken(c));
+        }
+        //if we were not in water, then add mud
+        if (!hex.containsTerrain(Terrains.MUD) && !hex.containsTerrain(Terrains.WATER)) {
+            hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.MUD, 1));
+            sendChangedHex(c);
+        }
+        return vDesc;
+    }
+    
+    
     /**
      * check for vehicle fire, according to the MaxTech rules
      * 

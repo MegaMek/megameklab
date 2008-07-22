@@ -4159,6 +4159,22 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
 
         return roll;
     }
+    
+    /**
+     * Checks if the entity is landing (from a jump) on ice-covered water.
+     */
+    public PilotingRollData checkLandingOnIce(int overallMoveType, 	IHex curHex) {
+        PilotingRollData roll = getBasePilotingRoll(overallMoveType);
+
+        if(curHex.containsTerrain(Terrains.ICE) && curHex.terrainLevel(Terrains.WATER) > 0) {
+            roll.append(new PilotingRollData(getId(), 0, "landing on ice-covered water"));
+            addPilotingModifierForTerrain(roll);
+        } else {
+            roll.addModifier(TargetRoll.CHECK_FALSE, "hex is not covered by ice");
+        }
+
+        return roll;
+    }
 
     public PilotingRollData checkMovedTooFast(MoveStep step) {
         PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
