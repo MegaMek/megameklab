@@ -213,4 +213,6 @@ public interface IHex extends Cloneable {
     public abstract void resetFireTurn();
     
     public abstract int getBogDownModifier(int moveType, boolean largeVee);
+    
+    public abstract int getUnstuckModifier(int elev);
 }

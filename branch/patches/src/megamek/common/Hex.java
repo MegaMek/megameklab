@@ -484,4 +484,16 @@ public class Hex implements IHex, Serializable {
         }
     	return mod;
     }
+    
+    /**
+     * get any modifiers to a an unstuck roll in this hex.
+     */
+    public int getUnstuckModifier(int elev) {
+    	int mod = 0;
+    	for (int i = 0; i < terrains.length; i++) {
+            if (terrains[i] != null)
+                mod += terrains[i].getUnstuckModifier(elev);
+        }
+    	return mod;
+    }
 }

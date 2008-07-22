@@ -384,6 +384,9 @@ public class Terrain implements ITerrain, Serializable {
 			return TargetRoll.AUTOMATIC_SUCCESS;
     	switch (type) {
     	case(Terrains.SWAMP):
+    		//if this is quicksand, then you automatically fail
+    		if(level > 1)
+    			return TargetRoll.AUTOMATIC_FAIL;
     		if(moveType == IEntityMovementMode.VTOL) 
     			return TargetRoll.AUTOMATIC_FAIL;
     		else
@@ -412,4 +415,21 @@ public class Terrain implements ITerrain, Serializable {
     		return TargetRoll.AUTOMATIC_SUCCESS;
     	}
     }
+    
+    public int getUnstuckModifier(int elev) {
+    	switch (type) {
+    	case(Terrains.SWAMP):
+    		if(level > 1)
+    			return 3 + ((-3)*elev);
+    		else
+    			return 0;
+    	case(Terrains.TUNDRA):
+    		return -1;
+    	case(Terrains.SNOW):
+    			return -1;
+    	default:
+    		return 0;
+    	}
+    }
+    
 }

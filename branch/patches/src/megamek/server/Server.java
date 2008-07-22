@@ -380,6 +380,7 @@ public class Server implements Runnable {
         terrainProcessors.add(new ElevatorProcessor(this));
         terrainProcessors.add(new ScreenProcessor(this));
         terrainProcessors.add(new WeatherProcessor(this));
+        terrainProcessors.add(new QuicksandProcessor(this));
 
         // Fully initialised, now accept connections
         connector = new Thread(this, "Connection Listener");
@@ -3820,6 +3821,8 @@ public class Server implements Runnable {
                     r.subject = entity.getId();
                     r.add(entity.getDisplayName(), true);
                     addReport(r);
+                    //check for quicksand
+                    addReport (checkQuickSand(nextPos));
                     // check for accidental stacking violation
                     Entity violation = Compute.stackingViolation(game, entity.getId(), curPos);
                     if (violation != null) {
@@ -4912,6 +4915,8 @@ public class Server implements Runnable {
                     r.add(entity.getDisplayName());
                     r.subject = entity.getId();
                     addReport(r);
+                    //check for quicksand
+                    addReport(checkQuickSand(curPos));
                     // check for accidental stacking violation
                     Entity violation = Compute.stackingViolation(game, entity.getId(), curPos);
                     if (violation != null) {
@@ -5626,6 +5631,8 @@ public class Server implements Runnable {
                     r.add(entity.getDisplayName(), true);
                     r.subject = entity.getId();
                     addReport(r);
+                    //check for quicksand
+                    addReport(checkQuickSand(curPos));
                 } else {
                     PilotingRollData roll = new PilotingRollData(entity.getId(), 5, "entering boggy terrain");             
                     roll.append(new PilotingRollData(entity.getId(), curHex.getBogDownModifier(entity.getMovementMode(), entity instanceof LargeSupportTank), "avoid bogging down"));
@@ -5635,6 +5642,8 @@ public class Server implements Runnable {
                         r.add(entity.getDisplayName());
                         r.subject = entity.getId();
                         addReport(r);
+                        //check for quicksand
+                        addReport(checkQuickSand(curPos));
                     }
                 }
             }
@@ -7662,7 +7671,7 @@ public class Server implements Runnable {
         	vPhaseReport.addAll(doEntityFall(entity, dest, 0, roll));
         }
         //check bog-down conditions
-        vPhaseReport.addAll(doEntityDisplacementBogDownCheck(entity, destHex, entity.getElevation()));
+        vPhaseReport.addAll(doEntityDisplacementBogDownCheck(entity, dest, entity.getElevation()));
         
         if (roll != null) {
             game.addPSR(roll);
@@ -7694,9 +7703,10 @@ public class Server implements Runnable {
         return vPhaseReport;
     }
     
-    private Vector<Report> doEntityDisplacementBogDownCheck(Entity entity, IHex destHex, int elev) {
+    private Vector<Report> doEntityDisplacementBogDownCheck(Entity entity, Coords c, int elev) {
         Vector<Report> vReport = new Vector<Report>();
         Report r; 
+        IHex destHex = game.getBoard().getHex(c);
         int bgMod = destHex.getBogDownModifier(entity.getMovementMode(), entity instanceof LargeSupportTank);
         if (bgMod != TargetRoll.AUTOMATIC_SUCCESS 
         		&& (entity.getMovementMode() != IEntityMovementMode.HOVER)
@@ -7711,6 +7721,8 @@ public class Server implements Runnable {
                 r.subject = entity.getId();
                 r.add(entity.getDisplayName(), true);
                 vReport.add(r);
+                //check for quicksand
+                vReport.addAll(checkQuickSand(c));
         	}
         	
         } 
@@ -18236,6 +18248,8 @@ public class Server implements Runnable {
             r.subject = entity.getId();
             r.add(entity.getDisplayName(), true);
             vPhaseReport.add(r);
+            //check for quicksand
+            vPhaseReport.addAll(checkQuickSand(fallPos));
         }
         
         // standard damage loop
@@ -18685,7 +18699,7 @@ public class Server implements Runnable {
      * In a double-blind game, update only visible entities. Otherwise, update
      * everyone
      */
-    private void entityUpdate(int nEntityID) {
+    public void entityUpdate(int nEntityID) {
         entityUpdate(nEntityID, new Vector<UnitLocation>());
     }
 
@@ -18693,7 +18707,7 @@ public class Server implements Runnable {
      * In a double-blind game, update only visible entities. Otherwise, update
      * everyone
      */
-    private void entityUpdate(int nEntityID, Vector<UnitLocation> movePath) {
+    public void entityUpdate(int nEntityID, Vector<UnitLocation> movePath) {
         Entity eTarget = game.getEntity(nEntityID);
         if (eTarget == null) {
             if (game.getOutOfGameEntity(nEntityID) != null) {
@@ -21907,11 +21921,11 @@ public class Server implements Runnable {
         PilotingRollData rollTarget;
         while (stuckEntities.hasMoreElements()) {
             Entity entity = stuckEntities.nextElement();
-            rollTarget = entity.getBasePilotingRoll();
+            rollTarget = entity.getBasePilotingRoll();          
             entity.addPilotingModifierForTerrain(rollTarget);
             // apart from swamp & liquid magma, -1 modifier
             IHex hex = game.getBoard().getHex(entity.getPosition());
-            rollTarget.addModifier(hex.getBogDownModifier(entity.getMovementMode(), entity instanceof LargeSupportTank), "bogged down");
+            rollTarget.addModifier(hex.getUnstuckModifier(entity.getElevation()), "terrain");
             // okay, print the info
             r = new Report(2340);
             r.addDesc(entity);
@@ -21930,6 +21944,7 @@ public class Server implements Runnable {
                 r.choose(true);
                 entity.setStuck(false);
                 entity.setCanUnstickByJumping(false);
+                entity.setElevation(0);
                 entityUpdate(entity.getId());
             }
             addReport(r);
@@ -22034,6 +22049,28 @@ public class Server implements Runnable {
     }
     
     
+    /**
+     * check to see if a swamp hex becomes quicksand
+     */
+    private Vector<Report> checkQuickSand(Coords c) {
+    	Vector<Report> vDesc = new Vector<Report>();
+    	Report r;
+    	IHex hex = game.getBoard().getHex(c);
+    	if(hex.terrainLevel(Terrains.SWAMP)  == 1) {
+    		if(Compute.d6(2) == 12) {
+    			//better find a rope
+    			hex.removeTerrain(Terrains.SWAMP);
+    			hex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SWAMP,2));
+    			sendChangedHex(c);
+    			r = new Report(2440);
+    	        r.indent(1);
+    	        vDesc.add(r);
+    		}
+    	}
+    	return vDesc;
+    }
+     
+  
     /**
      * check for vehicle fire, according to the MaxTech rules
      * 
@@ -22406,6 +22443,22 @@ public class Server implements Runnable {
             addReport(destroyEntity(en, "fell into magma", false, false));
         }
         addNewLines();
+    }
+    
+    /**
+     * sink any entities in quicksand in the current hex
+     */
+    public void doSinkEntity(Entity en) {
+    	Report r;
+    	r = new Report(2445);
+    	r.addDesc(en);
+    	r.subject = en.getId();
+    	addReport(r);
+    	en.setElevation(en.getElevation() - 1);
+    	//if this means the entity is below the ground, then bye-bye!
+    	if(Math.abs(en.getElevation()) > en.getHeight()) {
+    		addReport(destroyEntity(en, "quicksand"));
+    	}
     }
 
     /**

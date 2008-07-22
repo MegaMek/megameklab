@@ -104,4 +104,6 @@ public interface ITerrain {
     
     public abstract int getBogDownModifier(int moveType, boolean largeVee);
     
+    public abstract int getUnstuckModifier(int elev);
+    
 }
