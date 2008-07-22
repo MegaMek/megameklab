@@ -77,6 +77,7 @@ public class LosEffects {
     int softBuildings = 0;
     int hardBuildings = 0;
     boolean blockedByHill = false;
+    boolean blockedByWater = false;
     int targetCover = COVER_NONE; // that means partial cover
     int attackerCover = COVER_NONE; // ditto
     Building thruBldg = null;
@@ -109,6 +110,7 @@ public class LosEffects {
         this.softBuildings += other.softBuildings;
         this.hardBuildings += other.hardBuildings;
         this.blockedByHill |= other.blockedByHill;
+        this.blockedByWater |= other.blockedByWater;
         this.targetCover |= other.targetCover;
         this.attackerCover |= other.attackerCover;
         if (null != this.thruBldg && !this.thruBldg.equals(other.thruBldg)) {
@@ -162,6 +164,10 @@ public class LosEffects {
     
     public boolean isBlockedByHill() {
         return blockedByHill;
+    }
+    
+    public boolean isBlockedByWater() {
+        return blockedByWater;
     }
 
     /**
@@ -378,6 +384,7 @@ public class LosEffects {
             LosEffects los = new LosEffects();
             los.blocked = true;
             los.hasLoS = false;
+            los.blockedByWater = true;
             return los;
         }
 

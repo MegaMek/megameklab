@@ -2298,7 +2298,7 @@ public class Compute {
         if (!inSensorRange && ae.getPosition() != null && target.getPosition() != null && ae.getPosition().distance(target.getPosition()) > visualRange) {
         	return false;
         }
-    
+        
         return LosEffects.calculateLos(game, ae.getId(), target).canSee() && ae.getCrew().isActive() || inSensorRange;
     }
     
@@ -2322,6 +2322,13 @@ public class Compute {
     		return 0;
     	}
     	
+    	//if we are crossing water then only magscan will work unless we are a naval vessel
+    	if(LosEffects.calculateLos(game, ae.getId(), target).isBlockedByWater() 
+    			&& sensor.getType() != Sensor.TYPE_MEK_MAGSCAN && sensor.getType() != Sensor.TYPE_VEE_MAGSCAN
+    			&& ae.getMovementMode() != IEntityMovementMode.HYDROFOIL && ae.getMovementMode() != IEntityMovementMode.NAVAL) {
+    		return 0;
+    	}
+    	
     	int check = ae.getSensorCheck();
     	check += sensor.getModsForStealth(te);
     	//ECM bubbles
@@ -2338,7 +2345,7 @@ public class Compute {
     		
     	//now get the range
     	int maxrange = sensor.getRange(bracket);   
-    		
+
     	//adjust the range based on LOS and planetary conditions
     	maxrange = sensor.adjustRange(maxrange, game, LosEffects.calculateLos(game, ae.getId(), target));
     	
