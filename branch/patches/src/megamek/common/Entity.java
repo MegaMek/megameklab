@@ -362,6 +362,10 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     //the roll to override ghost targets
     private int ghostTargetOverride;
 
+    
+    //Tac Ops HeatSink Coolant Failure number
+    protected int heatSinkCoolantFailureFactor;
+    
     /**
      * Generates a new, blank, entity.
      */
@@ -7269,5 +7273,12 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     
     public int getGhostTargetOverride() {
     	return ghostTargetOverride;
+    }
+    
+    public int getCoolantFailureAmount(){
+        return 0;
+    }
+
+    public void addCoolantFailureAmount(int amount){
     }
 }

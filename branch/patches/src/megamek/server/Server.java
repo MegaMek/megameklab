@@ -11866,8 +11866,6 @@ public class Server implements Runnable {
                                 startup += 1;
                                 break;
                             }
-                            if (entity instanceof QuadMech)
-                                startup -= 2;
                         }
                         int suroll = Compute.d6(2);
                         r = new Report(5050);
@@ -11913,8 +11911,6 @@ public class Server implements Runnable {
                                 shutdown += 1;
                                 break;
                             }
-                            if (entity instanceof QuadMech)
-                                shutdown -= 2;
                         }
                         int sdroll = Compute.d6(2);
                         r = new Report(5060);
@@ -11976,7 +11972,7 @@ public class Server implements Runnable {
                         a.setOutCtrlHeat(true);
                         a.setRandomMove(true);
                     }
-                }
+                } //End of Entity Instance of Aero
 
                 // heat effects: ammo explosion!
                 if (entity.heat >= 19) {
@@ -12158,7 +12154,16 @@ public class Server implements Runnable {
 
             // how much heat can we sink?
             int tosink = entity.getHeatCapacityWithWater();
+            
 
+            if ( entity.getCoolantFailureAmount() > 0 ){
+                int failureAmount = entity.getCoolantFailureAmount(); 
+                r = new Report(5520);
+                r.subject = entity.getId();
+                r.add(failureAmount);
+                tosink -= failureAmount;
+            }
+            
             // should we use a coolant pod?
             int safeHeat = entity.hasInfernoAmmo() ? 9 : 13;
             int possibleSinkage = ((Mech) entity).getNumberOfSinks();
@@ -12479,7 +12484,39 @@ public class Server implements Runnable {
                     }
                 }
             }
+            
+            if ( game.getOptions().booleanOption("tacops_coolant_failure") 
+                    && entity.getHeatCapacity() > entity.getCoolantFailureAmount() 
+                    && entity.heat >= 5){
+                int roll = Compute.d6(2);
+                int hitNumber = 10;
+                
+                hitNumber -= Math.max(0, (int)Math.ceil((double)entity.heat/5.0)-2);
+                
+                r = new Report(5525);
+                r.subject = entity.getId();
+                r.add(entity.getShortName());
+                r.add(hitNumber);
+                r.add(roll);
+                r.newlines = 0;
+                addReport(r);
+                if ( roll >= hitNumber ){
+                    r = new Report(5052);
+                    r.subject = entity.getId();
+                    addReport(r);
+                    r = new Report(5526);
+                    r.subject = entity.getId();
+                    r.add(entity.getShortNameRaw());
+                    addReport(r);
+                    entity.addCoolantFailureAmount(1);
+                }else {
+                    r = new Report(5041);
+                    r.subject = entity.getId();
+                    addReport(r);
+                }
+            }
         }
+        
         if (vPhaseReport.size() == 1) {
             // I guess nothing happened...
             addReport(new Report(1205, Report.PUBLIC));

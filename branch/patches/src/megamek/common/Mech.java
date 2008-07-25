@@ -3644,4 +3644,12 @@ public abstract class Mech extends Entity implements Serializable {
         return false;
         
     }
+
+    public int getCoolantFailureAmount(){
+        return heatSinkCoolantFailureFactor;
+    }
+
+    public void addCoolantFailureAmount(int amount){
+        heatSinkCoolantFailureFactor += amount;
+    }
 }
