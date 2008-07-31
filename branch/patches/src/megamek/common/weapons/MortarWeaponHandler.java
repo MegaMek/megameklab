@@ -22,6 +22,7 @@ import megamek.common.actions.WeaponAttackAction;
 import megamek.server.Server;
 
 public class MortarWeaponHandler extends PulseLaserWeaponHandler {
+
     /**
      * 
      */

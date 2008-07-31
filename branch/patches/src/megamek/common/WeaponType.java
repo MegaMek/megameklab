@@ -777,7 +777,17 @@ public class WeaponType extends EquipmentType {
         // plasma weapons
         addType(new ISPlasmaRifle());
         addType(new CLPlasmaCannon());
-
+        
+        //MekMortarWeapons
+        addType(new ISMekMortar1());
+        addType(new ISMekMortar2());
+        addType(new ISMekMortar4());
+        addType(new ISMekMortar8());
+        addType(new CLMekMortar1());
+        addType(new CLMekMortar2());
+        addType(new CLMekMortar4());
+        addType(new CLMekMortar8());
+        
         // BA weapons
         addType(new CLSmallLaser());
         addType(new ISLightRecoillessRifle());

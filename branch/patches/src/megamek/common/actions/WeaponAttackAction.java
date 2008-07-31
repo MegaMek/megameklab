@@ -48,7 +48,6 @@ import megamek.common.Mounted;
 import megamek.common.PlanetaryConditions;
 import megamek.common.Protomech;
 import megamek.common.RangeType;
-import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.TargetRoll;
 import megamek.common.Targetable;
@@ -58,6 +57,7 @@ import megamek.common.VTOL;
 import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.ISBombastLaser;
 import megamek.common.weapons.ISHGaussRifle;
+import megamek.common.weapons.MekMortarWeapon;
 import megamek.common.weapons.ScreenLauncherBayWeapon;
 import megamek.common.weapons.VariableSpeedPulseLaserWeapon;
 import megamek.common.WeaponType;
@@ -339,7 +339,8 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         // check LOS (indirect LOS is from the spotter)
         LosEffects los;
         ToHitData losMods;
-        if (!isIndirect) {
+        
+        if (!isIndirect || (isIndirect && spotter == null) ) {
             los = LosEffects.calculateLos(game, attackerId, target);
 
             if (ae.hasActiveEiCockpit()) {
@@ -347,6 +348,10 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                     eistatus = 2;
                 else
                     eistatus = 1;
+            }
+            
+            if ( wtype instanceof MekMortarWeapon && isIndirect){
+                los.setArcedAttack(true);
             }
 
             losMods = los.losModifiers(game, eistatus);
@@ -371,6 +376,10 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                     eistatus = 2;
                 else
                     eistatus = 1;
+            }
+
+            if ( wtype instanceof MekMortarWeapon ){
+                los.setArcedAttack(true);
             }
 
             losMods = los.losModifiers(game);
@@ -1013,6 +1022,15 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             toHit.addModifier(1, "indirect fire");
         }
 
+        if ( wtype instanceof MekMortarWeapon ){
+            if ( isIndirect ){
+                if ( spotter == null )
+                toHit.addModifier(2,"no spotter");
+            }else{
+                toHit.addModifier(3,"direct fire");
+            }
+        }
+        
         // attacker movement
         toHit.append(Compute.getAttackerMovementModifier(game, attackerId));
 
@@ -1058,19 +1076,15 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         if (isIndirect) {
             // semiguided ammo negates this modifier, if TAG succeeded
             if (atype != null
-                    && (atype.getAmmoType() == AmmoType.T_LRM || atype
-                            .getAmmoType() == AmmoType.T_MML)
+                    && (atype.getAmmoType() == AmmoType.T_LRM 
+                            || atype.getAmmoType() == AmmoType.T_MML)
                     && atype.getMunitionType() == AmmoType.M_SEMIGUIDED
                     && te.getTaggedBy() != -1) {
-                toHit
-                        .addModifier(-1,
-                                "semiguided ignores spotter movement & indirect fire penalties");
-            } else if (!narcSpotter) {
-                toHit.append(Compute.getSpotterMovementModifier(game, spotter
-                        .getId()));
+                toHit.addModifier(-1,"semiguided ignores spotter movement & indirect fire penalties");
+            } else if (!narcSpotter && spotter != null) {
+                toHit.append(Compute.getSpotterMovementModifier(game, spotter.getId()));
                 if (spotter.isAttackingThisTurn())
-                    toHit.addModifier(1,
-                            "spotter is making an attack this turn");
+                    toHit.addModifier(1,"spotter is making an attack this turn");
             }
         }
 
@@ -1502,13 +1516,14 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         }
 
         if (atype != null
-                && (atype.getAmmoType() == AmmoType.T_LRM || atype
-                        .getAmmoType() == AmmoType.T_MML)
+                && (atype.getAmmoType() == AmmoType.T_LRM 
+                        || atype.getAmmoType() == AmmoType.T_MML
+                        || atype.getAmmoType() == AmmoType.T_MEK_MORTAR)
                 && (atype.getMunitionType() == AmmoType.M_THUNDER
                         || atype.getMunitionType() == AmmoType.M_THUNDER_ACTIVE
                         || atype.getMunitionType() == AmmoType.M_THUNDER_INFERNO
-                        || atype.getMunitionType() == AmmoType.M_THUNDER_VIBRABOMB || atype
-                        .getMunitionType() == AmmoType.M_THUNDER_AUGMENTED)
+                        || atype.getMunitionType() == AmmoType.M_THUNDER_VIBRABOMB 
+                        || atype.getMunitionType() == AmmoType.M_THUNDER_AUGMENTED)
                 && (target.getTargetType() != Targetable.TYPE_MINEFIELD_DELIVER)) {
             return "Weapon can only deliver minefields";
         }
@@ -1998,7 +2013,8 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             } else {
                 spotter = Compute.findSpotter(game, ae, target);
             }
-            if (spotter == null) {
+            
+            if (spotter == null && !(wtype instanceof MekMortarWeapon) ) {
                 return "No available spotter";
             }
         }
@@ -2019,7 +2035,7 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         // check LOS (indirect LOS is from the spotter)
         LosEffects los;
         ToHitData losMods;
-        if (!isIndirect) {
+        if (!isIndirect || (isIndirect && spotter == null )) {
             los = LosEffects.calculateLos(game, attackerId, target);
 
             if (ae.hasActiveEiCockpit()) {
@@ -2027,6 +2043,10 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                     eistatus = 2;
                 else
                     eistatus = 1;
+            }
+            
+            if ( wtype instanceof MekMortarWeapon && isIndirect ){
+                los.setArcedAttack(true);
             }
 
             losMods = los.losModifiers(game, eistatus);
@@ -2042,9 +2062,13 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                     eistatus = 1;
             }
 
-            losMods = los.losModifiers(game);
-        }
+            if ( wtype instanceof MekMortarWeapon && isIndirect ){
+                los.setArcedAttack(true);
+            }
 
+            losMods = los.losModifiers(game);
+        } 
+        
         if (MPMelevationHack) {
             // and descend back to depth 1
             ae.setElevation(-1);

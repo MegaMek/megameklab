@@ -82,7 +82,8 @@ public class LosEffects {
     int attackerCover = COVER_NONE; // ditto
     Building thruBldg = null;
     int minimumWaterDepth = -1;
-
+    boolean arcedShot = false;
+    
     /** Creates a new instance of LosEffects */
     public LosEffects() {
 
@@ -387,7 +388,7 @@ public class LosEffects {
             los.blockedByWater = true;
             return los;
         }
-
+        
         double degree = ai.attackPos.degree(ai.targetPos);
         if (degree % 60 == 30) {
             return LosEffects.losDivided(game, ai);
@@ -405,6 +406,10 @@ public class LosEffects {
 
     public ToHitData losModifiers(IGame game, int eistatus) {
         ToHitData modifiers = new ToHitData();
+        
+        if ( arcedShot )
+            return modifiers;
+        
         if (blocked) {
             return new ToHitData(TargetRoll.IMPOSSIBLE,
                     "LOS blocked by terrain.");
@@ -886,5 +891,9 @@ public class LosEffects {
                 return true;
         }
         return false;
+    }
+    
+    public void setArcedAttack(boolean attack){
+        this.arcedShot = attack;
     }
 }

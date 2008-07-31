@@ -15067,7 +15067,7 @@ public class Server implements Runnable {
             r.indent(2);
             vDesc.add(r);
             int[] damages = { (int) Math.floor(damage_orig / 10), (int) Math.floor(damage_orig / 20) };
-            doExplosion(damages, false, te.getPosition(), true, vDesc, null);
+            doExplosion(damages, false, te.getPosition(), true, vDesc, null,5);
             Report.addNewline(vDesc);
             r = new Report(5410, Report.PUBLIC);
             r.subject = te.getId();
@@ -15227,7 +15227,7 @@ public class Server implements Runnable {
      */
     public void doFusionEngineExplosion(int engineRating, Coords position, Vector<Report> vDesc, Vector<Integer> vUnits) {
         int[] myDamages = { engineRating, (engineRating / 10), (engineRating / 20), (engineRating / 40) };
-        doExplosion(myDamages, true, position, false, vDesc, vUnits);
+        doExplosion(myDamages, true, position, false, vDesc, vUnits,5);
     }
 
     /**
@@ -15246,13 +15246,13 @@ public class Server implements Runnable {
         myDamages[0] = damage;
         for (int x = 1; x < myDamages.length; x++)
             myDamages[x] = myDamages[x - 1] - degredation;
-        doExplosion(myDamages, autoDestroyInSameHex, position, allowShelter, vDesc, vUnits);
+        doExplosion(myDamages, autoDestroyInSameHex, position, allowShelter, vDesc, vUnits,5);
     }
 
     /**
      * General function to cause explosions in areas.
      */
-    public void doExplosion(int[] damages, boolean autoDestroyInSameHex, Coords position, boolean allowShelter, Vector<Report> vDesc, Vector<Integer> vUnits) {
+    public void doExplosion(int[] damages, boolean autoDestroyInSameHex, Coords position, boolean allowShelter, Vector<Report> vDesc, Vector<Integer> vUnits, int clusterAmt) {
         if (vDesc == null)
             vDesc = new Vector<Report>();
 
@@ -15378,7 +15378,7 @@ public class Server implements Runnable {
             vDesc.addElement(r);
 
             while (damage > 0) {
-                int cluster = Math.min(5, damage);
+                int cluster = Math.min(clusterAmt, damage);
                 HitData hit = entity.rollHitLocation(ToHitData.HIT_NORMAL, Compute.targetSideTable(position, entity));
                 vDesc.addAll(damageEntity(entity, hit, cluster, false, DamageType.IGNORE_PASSENGER, false, true));
                 damage -= cluster;

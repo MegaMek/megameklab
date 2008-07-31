@@ -89,7 +89,8 @@ public class AmmoType extends EquipmentType {
     public static final int     T_IGAUSS_HEAVY      = 64;
     public static final int     T_CHEMICAL_LASER    = 65;
     public static final int     T_HYPER_VELOCITY    = 66;
-    public static final int     NUM_TYPES           = 67;
+    public static final int     T_MEK_MORTAR        = 67;
+    public static final int     NUM_TYPES           = 68;
     
 
     // ammo flags
@@ -290,6 +291,8 @@ public class AmmoType extends EquipmentType {
         ArrayList<AmmoType> sniperAmmos = new ArrayList<AmmoType>(6);
         ArrayList<AmmoType> longTomAmmos = new ArrayList<AmmoType>(6);
         ArrayList<AmmoType> clanArtyAmmos = new ArrayList<AmmoType>(6);
+        ArrayList<AmmoType> mortarAmmos = new ArrayList<AmmoType>(4);
+        ArrayList<AmmoType> clanMortarAmmos = new ArrayList<AmmoType>(4);
         ArrayList<MunitionMutator> munitions = new ArrayList<MunitionMutator>();
         ArrayList<AmmoType> mmlAmmos = new ArrayList<AmmoType>();
 
@@ -481,7 +484,7 @@ public class AmmoType extends EquipmentType {
         base = createISArrowIVAmmo();
         arrowAmmos.add( base );
         EquipmentType.addType( base );
-
+        
         EquipmentType.addType(createCLLB2XAmmo());
         EquipmentType.addType(createCLLB5XAmmo());
         EquipmentType.addType(createCLLB10XAmmo());
@@ -781,6 +784,36 @@ public class AmmoType extends EquipmentType {
         EquipmentType.addType(createScreenLauncherAmmo());
         EquipmentType.addType(createAlamoAmmo());
         
+        
+        base = createISAPMortar1Ammo();
+        mortarAmmos.add(base);
+        base = createISAPMortar2Ammo();
+        mortarAmmos.add(base);
+        base = createISAPMortar4Ammo();
+        mortarAmmos.add(base);
+        base = createISAPMortar8Ammo();
+        mortarAmmos.add(base);
+
+        //TODO add more Mek Mortar Ammo later.
+        base = createCLAPMortar1Ammo();
+        clanMortarAmmos.add(base);
+        base = createCLAPMortar2Ammo();
+        clanMortarAmmos.add(base);
+        base = createCLAPMortar4Ammo();
+        clanMortarAmmos.add(base);
+        base = createCLAPMortar8Ammo();
+        clanMortarAmmos.add(base);
+
+        EquipmentType.addType(createISAPMortar1Ammo());
+        EquipmentType.addType(createISAPMortar2Ammo());
+        EquipmentType.addType(createISAPMortar4Ammo());
+        EquipmentType.addType(createISAPMortar8Ammo());
+        EquipmentType.addType(createCLAPMortar1Ammo());
+        EquipmentType.addType(createCLAPMortar2Ammo());
+        EquipmentType.addType(createCLAPMortar4Ammo());
+        EquipmentType.addType(createCLAPMortar8Ammo());
+
+
         // Create the munition types for IS SRM launchers.
         munitions.clear();
         munitions.add( new MunitionMutator( "Inferno",
@@ -6656,6 +6689,156 @@ public class AmmoType extends EquipmentType {
         ammo.cost = 0;
         ammo.flags |= F_NUCLEAR;
         ammo.capital = true;
+
+        return ammo;
+    }
+
+    private static AmmoType createISAPMortar1Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_IS_LEVEL_2;
+        ammo.name = "AP Mortar 1 Ammo";
+        ammo.setInternalName("IS Ammo AP Mortar-1");
+        ammo.addLookupName("ISArmorPiercingMortarAmmo1");
+        ammo.addLookupName("ISAPMortarAmmo1");
+        ammo.damagePerShot = 2;
+        ammo.rackSize = 1;
+        ammo.ammoType = AmmoType.T_MEK_MORTAR;
+        ammo.shots = 24;
+        ammo.bv = 1;
+        ammo.cost = 10000;
+
+        return ammo;
+    }
+
+
+    private static AmmoType createISAPMortar2Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_IS_LEVEL_2;
+        ammo.name = "AP Mortar 2 Ammo";
+        ammo.setInternalName("IS Ammo AP Mortar-2");
+        ammo.addLookupName("ISArmorPiercingMortarAmmo2");
+        ammo.addLookupName("ISAPMortarAmmo2");
+        ammo.damagePerShot = 2;
+        ammo.rackSize = 2;
+        ammo.ammoType = AmmoType.T_MEK_MORTAR;
+        ammo.shots = 12;
+        ammo.bv = 2;
+        ammo.cost = 10000;
+
+        return ammo;
+    }
+
+
+    private static AmmoType createISAPMortar4Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_IS_LEVEL_2;
+        ammo.name = "AP Mortar 4 Ammo";
+        ammo.setInternalName("IS Ammo AP Mortar-4");
+        ammo.addLookupName("ISArmorPiercingMortarAmmo4");
+        ammo.addLookupName("ISAPMortarAmmo4");
+        ammo.damagePerShot = 2;
+        ammo.rackSize = 4;
+        ammo.ammoType = AmmoType.T_MEK_MORTAR;
+        ammo.shots = 6;
+        ammo.bv = 3;
+        ammo.cost = 10000;
+
+        return ammo;
+    }
+
+
+    private static AmmoType createISAPMortar8Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_IS_LEVEL_2;
+        ammo.name = "AP Mortar 8 Ammo";
+        ammo.setInternalName("IS Ammo AP Mortar-8");
+        ammo.addLookupName("ISArmorPiercingMortarAmmo8");
+        ammo.addLookupName("ISAPMortarAmmo8");
+        ammo.damagePerShot = 2;
+        ammo.rackSize = 8;
+        ammo.ammoType = AmmoType.T_MEK_MORTAR;
+        ammo.shots = 4;
+        ammo.bv = 6;
+        ammo.cost = 10000;
+
+        return ammo;
+    }
+
+    private static AmmoType createCLAPMortar1Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_CLAN_LEVEL_2;
+        ammo.name = "AP Mortar 1 Ammo";
+        ammo.setInternalName("Clan Ammo AP Mortar-1");
+        ammo.addLookupName("CLArmorPiercingMortarAmmo1");
+        ammo.addLookupName("CLAPMortarAmmo1");
+        ammo.damagePerShot = 2;
+        ammo.rackSize = 1;
+        ammo.ammoType = AmmoType.T_MEK_MORTAR;
+        ammo.shots = 24;
+        ammo.bv = 4;
+        ammo.cost = 10000;
+
+        return ammo;
+    }
+
+
+    private static AmmoType createCLAPMortar2Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_CLAN_LEVEL_2;
+        ammo.name = "AP Mortar 2 Ammo";
+        ammo.setInternalName("Clan Ammo AP Mortar-2");
+        ammo.addLookupName("CLArmorPiercingMortarAmmo2");
+        ammo.addLookupName("CLAPMortarAmmo2");
+        ammo.damagePerShot = 2;
+        ammo.rackSize = 2;
+        ammo.ammoType = AmmoType.T_MEK_MORTAR;
+        ammo.shots = 12;
+        ammo.bv = 7;
+        ammo.cost = 10000;
+
+        return ammo;
+    }
+
+
+    private static AmmoType createCLAPMortar4Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_CLAN_LEVEL_2;
+        ammo.name = "AP Mortar 4 Ammo";
+        ammo.setInternalName("Clan Ammo AP Mortar-4");
+        ammo.addLookupName("CLArmorPiercingMortarAmmo4");
+        ammo.addLookupName("CLAPMortarAmmo4");
+        ammo.damagePerShot = 2;
+        ammo.rackSize = 4;
+        ammo.ammoType = AmmoType.T_MEK_MORTAR;
+        ammo.shots = 6;
+        ammo.bv = 11;
+        ammo.cost = 10000;
+
+        return ammo;
+    }
+
+
+    private static AmmoType createCLAPMortar8Ammo() {
+        AmmoType ammo = new AmmoType();
+
+        ammo.techLevel = TechConstants.T_CLAN_LEVEL_2;
+        ammo.name = "AP Mortar 8 Ammo";
+        ammo.setInternalName("Clan Ammo AP Mortar-8");
+        ammo.addLookupName("CLArmorPiercingMortarAmmo8");
+        ammo.addLookupName("CLAPMortarAmmo8");
+        ammo.damagePerShot = 2;
+        ammo.rackSize = 8;
+        ammo.ammoType = AmmoType.T_MEK_MORTAR;
+        ammo.shots = 4;
+        ammo.bv = 14;
+        ammo.cost = 10000;
 
         return ammo;
     }
