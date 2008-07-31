@@ -649,6 +649,10 @@ public class Mounted implements Serializable, RoundUpdated {
                 return 15;
             }
 
+            if ( wtype.getAmmoType() == AmmoType.T_MPOD && isFired() ){
+                return 0;
+            }
+            
            return wtype.getExplosionDamage();
            
         } 
