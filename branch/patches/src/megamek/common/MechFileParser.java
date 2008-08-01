@@ -327,7 +327,38 @@ public class MechFileParser {
                             "Unable to match Capacitor to PPC");
                 }
             } // End link-PPC Capacitor
+            // Link MRM Apollo fire-control systems to their missle racks.
+            else if (m.getType().hasFlag(MiscType.F_APOLLO)
+                    && m.getLinked() == null) {
 
+                // link up to a weapon in the same location
+                for (Mounted mWeapon : ent.getTotalWeaponList()) {
+                    WeaponType wtype = (WeaponType) mWeapon.getType();
+
+                    // only srm and lrm are valid for artemis
+                    if (wtype.getAmmoType() != AmmoType.T_MRM) {
+                        continue;
+                    }
+
+                    // already linked?
+                    if (mWeapon.getLinkedBy() != null) {
+                        continue;
+                    }
+
+                    // check location
+                    if (mWeapon.getLocation() == m.getLocation()) {
+                        m.setLinked(mWeapon);
+                        break;
+                    }
+                    
+                }
+
+                if (m.getLinked() == null) {
+                    // huh. this shouldn't happen
+                    throw new EntityLoadingException(
+                            "Unable to match Apollo to launcher");
+                }
+            } // End link-Apollo
             //now find any active probes and add them to the sensor list
             //choose this sensor if added
             if(m.getType().hasFlag(MiscType.F_BAP)) {

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import megamek.common.Compute;
 import megamek.common.Coords;
 import megamek.common.Entity;
 import megamek.common.IGame;
@@ -80,4 +79,5 @@ public class MRMHandler extends MissileWeaponHandler {
         }
         return false;
     }
+    
 }

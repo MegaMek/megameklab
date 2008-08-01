@@ -1723,6 +1723,14 @@ public class Compute {
                     }
                 }
             }
+            
+            if (wt.getAmmoType() == AmmoType.T_MRM) {
+                lnk_guide = weapon.getLinkedBy();
+                if (lnk_guide != null && lnk_guide.getType() instanceof MiscType && !lnk_guide.isDestroyed() && !lnk_guide.isMissing() && !lnk_guide.isBreached() && lnk_guide.getType().hasFlag(MiscType.F_APOLLO)) {
+                    fHits *= .9f;
+                }
+            }
+
 
             // adjust for previous AMS
             if (wt.getDamage() == WeaponType.DAMAGE_MISSILE) {

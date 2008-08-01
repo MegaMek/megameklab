@@ -251,6 +251,12 @@ public class WeaponAttackAction extends AbstractAttackAction implements
                         .getAmmoType() == AmmoType.T_LRM)
                 && atype.getMunitionType() == AmmoType.M_FOLLOW_THE_LEADER;
         
+        Mounted mLinker = weapon.getLinkedBy();
+        boolean bApollo = (mLinker != null && mLinker.getType() instanceof MiscType
+                && !mLinker.isDestroyed() && !mLinker.isMissing()
+                && !mLinker.isBreached() && mLinker.getType().hasFlag(MiscType.F_APOLLO))
+                && atype.getAmmoType() == AmmoType.T_MRM;
+                
         if (te != null) {
             if (!isTargetECMAffected
                     && te.isINarcedBy(ae.getOwner().getTeam())
@@ -1273,8 +1279,13 @@ public class WeaponAttackAction extends AbstractAttackAction implements
             }
         }
 
-        if (bFTL)
+        if (bFTL){
             toHit.addModifier(2, "ammunition to-hit modifier");
+        }
+        
+        if ( bApollo ){
+            toHit.addModifier(-1,"Apollo FCS");
+        }
 
         // Heavy infantry have +1 penalty
         if (ae instanceof Infantry

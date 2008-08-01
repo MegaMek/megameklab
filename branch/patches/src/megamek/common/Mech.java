@@ -1393,7 +1393,7 @@ public abstract class Mech extends Entity implements Serializable {
                 }
             } else if (side == ToHitData.SIDE_REAR) {
                 // normal rear hits
-                if (game.getOptions().booleanOption("tacops_advanced_mech_hit_location") && isProne()) {
+                if (game.getOptions().booleanOption("tacops_advanced_mech_hit_locations") && isProne()) {
                     switch (roll) {
                     case 2:
                         if ((crew.hasEdgeRemaining() && crew.getOptions().booleanOption("edge_when_tac")) && !game.getOptions().booleanOption("no_tac")) {
@@ -2226,6 +2226,13 @@ public abstract class Mech extends Entity implements Serializable {
                     Mounted mLinker = mounted.getLinkedBy();
                     if (mLinker.getType() instanceof MiscType && mLinker.getType().hasFlag(MiscType.F_ARTEMIS)) {
                         dBV *= 1.2;
+                    }
+                }
+
+                if (mounted.getLinkedBy() != null) {
+                    Mounted mLinker = mounted.getLinkedBy();
+                    if (mLinker.getType() instanceof MiscType && mLinker.getType().hasFlag(MiscType.F_APOLLO)) {
+                        dBV *= 1.15;
                     }
                 }
 

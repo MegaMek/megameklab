@@ -21,8 +21,6 @@
 
 package megamek.common;
 
-import megamek.client.bot.MoveOption.WeightedComparator;
-
 /**
  * @author Ben
  * @version
@@ -77,6 +75,7 @@ public class MiscType extends EquipmentType {
     public static final long F_MODULAR_ARMOR = 1L << 45; 
     public static final long F_TALON = 1L <<46;
     public static final long F_VISUAL_CAMO = 1L << 47;
+    public static final long F_APOLLO = 1L << 48;
 
     // Secondary Flags for Physical Weapons
     public static final long S_CLUB = 1L << 0; // BMR
@@ -458,6 +457,7 @@ public class MiscType extends EquipmentType {
         EquipmentType.addType(createISPPCCapacitor());
         EquipmentType.addType(createRetractableBlade());
         EquipmentType.addType(createChainWhip());
+        EquipmentType.addType(createISApolloFCS());
 
         // Start of level 3 stuff
         EquipmentType.addType(createImprovedJumpJet());
@@ -931,6 +931,22 @@ public class MiscType extends EquipmentType {
         misc.cost = 100000;
         misc.criticals = 1;
         misc.flags |= F_ARTEMIS;
+
+        return misc;
+    }
+
+    public static MiscType createISApolloFCS() {
+        MiscType misc = new MiscType();
+
+        misc.techLevel = TechConstants.T_IS_LEVEL_2;
+        misc.name = "MRM Apollo FCS";
+        misc.setInternalName("ISApollo");
+        misc.addLookupName("IS MRM Apollo Fire Control System");
+        misc.addLookupName("IS MRM Apollo FCS");
+        misc.tonnage = 1.0f;
+        misc.criticals = 1;
+        misc.cost = 125000;
+        misc.flags |= F_APOLLO;
 
         return misc;
     }
