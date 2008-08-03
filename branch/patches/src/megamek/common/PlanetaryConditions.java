@@ -90,7 +90,7 @@ public class PlanetaryConditions implements Serializable {
     public static final int ATMO_HIGH     = 4;
     public static final int ATMO_VHIGH    = 5;
     
-    private static String[] atmoNames = {"Vacuum", "Trace", "Thin", "Standard", "High", "Very High" };
+    public static String[] atmoNames = {"Vacuum", "Trace", "Thin", "Standard", "High", "Very High" };
     public static final int ATMO_SIZE = atmoNames.length;
     
     //fog
@@ -614,12 +614,22 @@ public class PlanetaryConditions implements Serializable {
      */
     public int getVisualRange(Entity en, boolean targetSpotlight) {
     	
-    	boolean Spotlight = en.usedSearchlight();
+    	boolean Spotlight = false;
     	
-    	boolean isMechVee = en instanceof Mech || en instanceof Tank;
-    	boolean isLargeCraft = en instanceof Dropship || en instanceof Jumpship;
-    	boolean isAero = en instanceof Aero && !isLargeCraft;
-    	//anything else is infantry
+    	boolean isMechVee = false;
+    	boolean isLargeCraft = false;
+    	boolean isAero = false;
+
+    	//Needed for MekWars for Maximum Visual Range.
+    	if ( en == null ) {
+    	    isMechVee = true;
+    	}else {
+    	    Spotlight = en.isUsingSpotlight();
+            isMechVee = en instanceof Mech || en instanceof Tank;
+            isLargeCraft = en instanceof Dropship || en instanceof Jumpship;
+            isAero = en instanceof Aero && !isLargeCraft;
+    	}
+        //anything else is infantry
     	
     	if(lightConditions == L_PITCH_BLACK && !Spotlight && !targetSpotlight) {
     		if(isMechVee)
