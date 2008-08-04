@@ -115,11 +115,11 @@ public class Tank extends Entity implements Serializable {
         int j = getOriginalWalkMP();
         j = Math.max(0, j - getCargoMpReduction());
         if(null != game) {
-    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
-    		if(weatherMod != 0) {
-    			j = Math.max(j + weatherMod, 0);
-    		} 
-    	}
+            int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+            if(weatherMod != 0) {
+                j = Math.max(j + weatherMod, 0);
+            } 
+        }
         
         if ( hasModularArmor() ) {
             j--;
@@ -404,31 +404,31 @@ public class Tank extends Entity implements Serializable {
         switch (mounted.getLocation()) {
             case LOC_FRONT:
             case LOC_TURRET:
-            	if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
-            		return Compute.ARC_TURRET;
-            	}
+                if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
+                    return Compute.ARC_TURRET;
+                }
             case LOC_BODY:
                 // Body mounted C3Ms fire into the front arc,
                 // per
                 // http://forums.classicbattletech.com/index.php/topic,9400.0.html
-            	if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
-            		return Compute.ARC_NOSE;
-            	}
+                if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
+                    return Compute.ARC_NOSE;
+                }
                 return Compute.ARC_FORWARD;
             case LOC_RIGHT:
-            	if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
-            		return Compute.ARC_RIGHT_BROADSIDE;
-            	}
+                if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
+                    return Compute.ARC_RIGHT_BROADSIDE;
+                }
                 return Compute.ARC_RIGHTSIDE;
             case LOC_LEFT:
-            	if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
-            		return Compute.ARC_LEFT_BROADSIDE;
-            	}
+                if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
+                    return Compute.ARC_LEFT_BROADSIDE;
+                }
                 return Compute.ARC_LEFTSIDE;
             case LOC_REAR:
-            	if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
-            		return Compute.ARC_AFT;
-            	}
+                if(game.getOptions().booleanOption("tacops_vehicle_arcs")) {
+                    return Compute.ARC_AFT;
+                }
                 return Compute.ARC_REAR;
             default:
                 return Compute.ARC_360;
@@ -473,7 +473,7 @@ public class Tank extends Entity implements Serializable {
             bRear = true;
         }        
         if(game.getOptions().booleanOption("tacops_vehicle_effective")) {
-        	motiveMod = 0;
+            motiveMod = 0;
         }
         HitData rv = new HitData(nArmorLoc);
         boolean bHitAimed = false;
@@ -523,27 +523,27 @@ public class Tank extends Entity implements Serializable {
                 }
                 break;
             case 9:
-            	if(game.getOptions().booleanOption("tacops_vehicle_effective")) {
-            		if (bSide) {
-            			rv = new HitData(LOC_REAR);
-	                } else if (bRear) {
-	                    rv = new HitData(LOC_RIGHT);
-	                } else {
-	                    rv = new HitData(LOC_LEFT);
-	                }
-            	} else {
-            		if (bSide) {
-            			rv = new HitData(LOC_REAR, false,
-            					HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
-	                } else if (bRear) {
-	                    rv = new HitData(LOC_RIGHT, false,
+                if(game.getOptions().booleanOption("tacops_vehicle_effective")) {
+                    if (bSide) {
+                        rv = new HitData(LOC_REAR);
+                    } else if (bRear) {
+                        rv = new HitData(LOC_RIGHT);
+                    } else {
+                        rv = new HitData(LOC_LEFT);
+                    }
+                } else {
+                    if (bSide) {
+                        rv = new HitData(LOC_REAR, false,
+                                HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
+                    } else if (bRear) {
+                        rv = new HitData(LOC_RIGHT, false,
                             HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
-	                } else {
-	                    rv = new HitData(LOC_LEFT, false,
-	                            HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
-	                }
-            		rv.setMotiveMod(motiveMod);
-            	}
+                    } else {
+                        rv = new HitData(LOC_LEFT, false,
+                                HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
+                    }
+                    rv.setMotiveMod(motiveMod);
+                }
                 break;
             case 10:
                 if (!m_bHasNoTurret) {
@@ -886,7 +886,7 @@ public class Tank extends Entity implements Serializable {
         //are we wheeled and in light snow?
         IHex hex = game.getBoard().getHex(getPosition());
         if(null != hex && getMovementMode() == IEntityMovementMode.WHEELED && hex.terrainLevel(Terrains.SNOW) == 1) {
-        	prd.addModifier(1, "thin snow");
+            prd.addModifier(1, "thin snow");
         }
         
         // VDNI bonus?

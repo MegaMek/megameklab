@@ -213,11 +213,11 @@ public class Protomech extends Entity implements Serializable {
         int legCrits = this.getCritsHit(LOC_LEG);
         int j;
         if(null != game) {
-    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
-    		if(weatherMod != 0) {
-    			wmp = Math.max(wmp + weatherMod, 0);
-    		} 
-    	}  	
+            int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+            if(weatherMod != 0) {
+                wmp = Math.max(wmp + weatherMod, 0);
+            } 
+        }      
         // Gravity, Protos can't get faster
         if (gravity)
             j = applyGravityEffectsOnMP(wmp);

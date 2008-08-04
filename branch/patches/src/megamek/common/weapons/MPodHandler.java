@@ -73,7 +73,7 @@ public class MPodHandler extends LBXHandler {
             hitMod = 4;
         }
         if(game.getPlanetaryConditions().hasEMI()) {
-        	hitMod -= 2;
+            hitMod -= 2;
         }
         
         int shotsHit = allShotsHit() ? shots : Compute.missilesHit(shots,hitMod);

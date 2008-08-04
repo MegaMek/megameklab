@@ -581,11 +581,11 @@ public class Pilot implements Serializable {
     
     //for sensor ops, so these might be easily expanded later for rpg
     public int getSensorOps() {
-    	if(piloting > -1) {
-    		return piloting;
-    	} else {
-    		return gunnery;
-    	}
+        if(piloting > -1) {
+            return piloting;
+        } else {
+            return gunnery;
+        }
     }
 
 }

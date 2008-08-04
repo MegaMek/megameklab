@@ -206,7 +206,7 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         }
 
         if(game.getPlanetaryConditions().hasEMI()) {
-        	nMissilesModifier -= 2;
+            nMissilesModifier -= 2;
         }
         
         // add AMS mods
@@ -334,7 +334,7 @@ public class MissileWeaponHandler extends AmmoWeaponHandler {
         if (entityTarget != null
                 && (bldg == null && wtype.getFireTN() != TargetRoll.IMPOSSIBLE)) {
             server.tryIgniteHex(target.getPosition(), subjectId, false, false,
-            		new TargetRoll(wtype.getFireTN(), wtype.getName()), 3,
+                    new TargetRoll(wtype.getFireTN(), wtype.getName()), 3,
                     vPhaseReport);
         }
 

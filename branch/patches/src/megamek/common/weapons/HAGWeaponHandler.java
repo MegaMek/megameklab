@@ -112,7 +112,7 @@ public class HAGWeaponHandler extends AmmoWeaponHandler {
         }
         
         if(game.getPlanetaryConditions().hasEMI()) {
-        	nHitsModifier -= 2;
+            nHitsModifier -= 2;
         }
 
         if (allShotsHit())

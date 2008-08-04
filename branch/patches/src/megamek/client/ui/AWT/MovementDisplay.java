@@ -831,7 +831,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
               setClearEnabled(false);
             }
         } else {
-        	setClearEnabled(false);
+            setClearEnabled(false);
         }
 
         if (ce.getMovementMode() == IEntityMovementMode.HYDROFOIL || ce.getMovementMode() == IEntityMovementMode.NAVAL || ce.getMovementMode() == IEntityMovementMode.SUBMARINE || ce.getMovementMode() == IEntityMovementMode.INF_UMU || ce.getMovementMode() == IEntityMovementMode.VTOL || ce.getMovementMode() == IEntityMovementMode.AIRMECH || ce.getMovementMode() == IEntityMovementMode.AREOSPACE || ce.getMovementMode() == IEntityMovementMode.BIPED_SWIM || ce.getMovementMode() == IEntityMovementMode.QUAD_SWIM) {
@@ -883,7 +883,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             setEjectEnabled(true);
             // no turning for spheroids in atmosphere
             if ((((Aero) ce).isSpheroid() || client.game.getPlanetaryConditions().isVacuum()) 
-            		&& client.game.getBoard().inAtmosphere()) {
+                    && client.game.getBoard().inAtmosphere()) {
                 setTurnEnabled(false);
             }
         }
@@ -1102,7 +1102,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
             // first check for stalling
             if (client.game.getBoard().inAtmosphere() && !a.isVSTOL() && !a.isSpheroid()  && !client.game.getPlanetaryConditions().isVacuum()
-            		&& ((md == null && a.getCurrentVelocity() == 0) || (md != null && md.getFinalVelocity() == 0))) {
+                    && ((md == null && a.getCurrentVelocity() == 0) || (md != null && md.getFinalVelocity() == 0))) {
 
                 // add a stall to the movement path
                 md.addStep(MovePath.STEP_STALL);
@@ -2200,9 +2200,9 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         }
         
         if(ce instanceof Protomech) {
-        	setRecklessEnabled(false);
+            setRecklessEnabled(false);
         } else {
-        	setRecklessEnabled(null == cmd || cmd.length() == 0);
+            setRecklessEnabled(null == cmd || cmd.length() == 0);
         }
     }
 
@@ -2685,7 +2685,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         Aero a = (Aero) ce();
         int overallMoveType = IEntityMovementType.MOVE_NONE;
         if(null != cmd) {
-        	overallMoveType = cmd.getLastStepMovementType();
+            overallMoveType = cmd.getLastStepMovementType();
         }
         
         // bring up dialog to dump bombs, then make a control roll and report
@@ -2954,7 +2954,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                 choices[loop] = Minefield.getDisplayableName(mfs.elementAt(loop).getType());
             }
             SingleChoiceDialog choiceDialog = new SingleChoiceDialog(clientgui.frame, Messages.getString("MovementDisplay.ChooseMinefieldDialog.title"), //$NON-NLS-1$
-            		Messages.getString("MovementDisplay.ChooseMinefieldDialog.message"), choices);
+                    Messages.getString("MovementDisplay.ChooseMinefieldDialog.message"), choices);
             choiceDialog.setVisible(true);
             Minefield mf = null;
             if (choiceDialog.getAnswer() == true) {
@@ -3084,8 +3084,8 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             // then add acceleration.
             // TODO: Is there somewhere better to put this?
             if (ce instanceof Aero && null != cmd.getLastStep() 
-            		&& cmd.getLastStep().getNDown() == 1 && cmd.getLastStep().getVelocity() < 12 
-            		&& !(((Aero) ce).isSpheroid() || client.game.getPlanetaryConditions().isVacuum())) {
+                    && cmd.getLastStep().getNDown() == 1 && cmd.getLastStep().getVelocity() < 12 
+                    && !(((Aero) ce).isSpheroid() || client.game.getPlanetaryConditions().isVacuum())) {
                 cmd.addStep(MovePath.STEP_ACC, true);
             }
             cmd.addStep(MovePath.STEP_DOWN);

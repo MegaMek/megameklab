@@ -379,7 +379,7 @@ public class ArtilleryWeaponIndirectFireHandler extends AmmoWeaponHandler {
         }
         if (atype.getMunitionType() == AmmoType.M_VIBRABOMB_IV) {
             server.deliverThunderVibraMinefield(coords, ae.getOwner().getId(),
-            		atype.getRackSize(), waa.getOtherAttackInfo(), ae.getId());
+                    atype.getRackSize(), waa.getOtherAttackInfo(), ae.getId());
             return false;
         }
         if (atype.getMunitionType() == AmmoType.M_SMOKE) {
@@ -395,24 +395,24 @@ public class ArtilleryWeaponIndirectFireHandler extends AmmoWeaponHandler {
         //According to the RAW you have to hit the right hex to hit even if the scatter hex has minefields
         boolean mineClear = target.getTargetType() == Targetable.TYPE_MINEFIELD_CLEAR;
         if (mineClear && game.containsMinefield(coords) 
-        		&& !isFlak && !bMissed) {
-        	r = new Report(3255);
-        	r.indent(1);
-        	r.subject = subjectId;
-        	vPhaseReport.addElement(r);
+                && !isFlak && !bMissed) {
+            r = new Report(3255);
+            r.indent(1);
+            r.subject = subjectId;
+            vPhaseReport.addElement(r);
 
-        	Enumeration<Minefield> minefields = game.getMinefields(coords).elements();
-        	ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
-        	while (minefields.hasMoreElements()) {
-        		Minefield mf = minefields.nextElement();
-        		if(server.clearMinefield(mf, ae, Minefield.CLEAR_NUMBER_WEAPON, vPhaseReport)) {
-        			mfRemoved.add(mf);
-        		}
-        	}
-        	//we have to do it this way to avoid a concurrent error problem
-        	for(Minefield mf : mfRemoved) {
-        		server.removeMinefield(mf);
-        	}
+            Enumeration<Minefield> minefields = game.getMinefields(coords).elements();
+            ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
+            while (minefields.hasMoreElements()) {
+                Minefield mf = minefields.nextElement();
+                if(server.clearMinefield(mf, ae, Minefield.CLEAR_NUMBER_WEAPON, vPhaseReport)) {
+                    mfRemoved.add(mf);
+                }
+            }
+            //we have to do it this way to avoid a concurrent error problem
+            for(Minefield mf : mfRemoved) {
+                server.removeMinefield(mf);
+            }
         }
         
         server.artilleryDamageArea(coords, artyAttacker.getPosition(), atype,
@@ -420,18 +420,18 @@ public class ArtilleryWeaponIndirectFireHandler extends AmmoWeaponHandler {
 
         //artillery may unintentially clear minefields, but only if it wasn't trying to
         if(!mineClear && game.containsMinefield(coords)) {
-        	Enumeration<Minefield> minefields = game.getMinefields(coords).elements();
-        	ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
-        	while (minefields.hasMoreElements()) {
-        		Minefield mf = minefields.nextElement();
-        		if(server.clearMinefield(mf, artyAttacker, 10, vPhaseReport)) {
-        			mfRemoved.add(mf);
-        		}
-        	}
-        	//we have to do it this way to avoid a concurrent error problem
-        	for(Minefield mf : mfRemoved) {
-        		server.removeMinefield(mf);
-        	}
+            Enumeration<Minefield> minefields = game.getMinefields(coords).elements();
+            ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
+            while (minefields.hasMoreElements()) {
+                Minefield mf = minefields.nextElement();
+                if(server.clearMinefield(mf, artyAttacker, 10, vPhaseReport)) {
+                    mfRemoved.add(mf);
+                }
+            }
+            //we have to do it this way to avoid a concurrent error problem
+            for(Minefield mf : mfRemoved) {
+                server.removeMinefield(mf);
+            }
         }
         
         return false;

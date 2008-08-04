@@ -86,7 +86,7 @@ public class LargeSupportTank extends SupportTank implements Serializable {
             bRear = true;
         }        
         if(game.getOptions().booleanOption("tacops_vehicle_effective")) {
-        	motiveMod = 0;
+            motiveMod = 0;
         }
         HitData rv = new HitData(nArmorLoc);
         boolean bHitAimed = false;
@@ -140,10 +140,10 @@ public class LargeSupportTank extends SupportTank implements Serializable {
                 }
                 break;
             case 9:
-            	if (!game.getOptions().booleanOption("tacops_vehicle_effective")) {
-            		rv.setEffect(HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
-                	rv.setMotiveMod(motiveMod);
-            	}
+                if (!game.getOptions().booleanOption("tacops_vehicle_effective")) {
+                    rv.setEffect(HitData.EFFECT_VEHICLE_MOVE_DAMAGED);
+                    rv.setMotiveMod(motiveMod);
+                }
                 break;
             case 10:
                 if (!m_bHasNoTurret) {

@@ -39,8 +39,8 @@ public class SeaMineDepthDialog extends Dialog implements ActionListener {
 
     private Button butOk = new Button(Messages.getString("Okay")); //$NON-NLS-1$
     private Label labDepth = new Label(Messages
-			.getString("SeaMineDepthDialog.labDepth"), Label.RIGHT); //$NON-NLS-1$
-	private Choice choDepth = new Choice();
+            .getString("SeaMineDepthDialog.labDepth"), Label.RIGHT); //$NON-NLS-1$
+    private Choice choDepth = new Choice();
 
     private int depth = 5;
     private Frame frame = null;
@@ -52,11 +52,11 @@ public class SeaMineDepthDialog extends Dialog implements ActionListener {
 
         butOk.addActionListener(this);
 
-		choDepth.removeAll();
-		for(int i =0; i < (totalDepth + 1); i++) {
-			choDepth.add(Integer.toString(i));
-		}
-		choDepth.select(0);
+        choDepth.removeAll();
+        for(int i =0; i < (totalDepth + 1); i++) {
+            choDepth.add(Integer.toString(i));
+        }
+        choDepth.select(0);
 
         setLayout(gridbag);
 
@@ -94,7 +94,7 @@ public class SeaMineDepthDialog extends Dialog implements ActionListener {
 
     public void actionPerformed(ActionEvent actionEvent) {
         if (actionEvent.getSource() == butOk) {
-        	depth = Integer.parseInt(choDepth.getSelectedItem());
+            depth = Integer.parseInt(choDepth.getSelectedItem());
         }
         this.setVisible(false);
     }

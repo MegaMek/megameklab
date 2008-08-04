@@ -64,28 +64,28 @@ public class LRMHandler extends MissileWeaponHandler {
     protected boolean specialResolution(Vector<Report> vPhaseReport,
             Entity entityTarget, boolean bMissed) {
         if (!bMissed && target.getTargetType() == Targetable.TYPE_MINEFIELD_CLEAR) {
-        	// minefield clearance attempt
-        	r = new Report(3255);
-        	r.indent(1);
-        	r.subject = subjectId;
-        	vPhaseReport.addElement(r);
-        	Coords coords = target.getPosition();
-        	
-        	Enumeration<Minefield> minefields = game.getMinefields(coords).elements();
-        	ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
-        	while (minefields.hasMoreElements()) {
-        		Minefield mf = minefields.nextElement();
-        		if(server.clearMinefield(mf, ae, Minefield.CLEAR_NUMBER_WEAPON, vPhaseReport)) {
-        			mfRemoved.add(mf);
-        		}
-        	}
-        	//we have to do it this way to avoid a concurrent error problem
-        	for(Minefield mf : mfRemoved) {
-        		server.removeMinefield(mf);
-        	}
-        	return true;
+            // minefield clearance attempt
+            r = new Report(3255);
+            r.indent(1);
+            r.subject = subjectId;
+            vPhaseReport.addElement(r);
+            Coords coords = target.getPosition();
+            
+            Enumeration<Minefield> minefields = game.getMinefields(coords).elements();
+            ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
+            while (minefields.hasMoreElements()) {
+                Minefield mf = minefields.nextElement();
+                if(server.clearMinefield(mf, ae, Minefield.CLEAR_NUMBER_WEAPON, vPhaseReport)) {
+                    mfRemoved.add(mf);
+                }
+            }
+            //we have to do it this way to avoid a concurrent error problem
+            for(Minefield mf : mfRemoved) {
+                server.removeMinefield(mf);
+            }
+            return true;
         }
-    	return false;
+        return false;
     }
 
     /*
@@ -211,7 +211,7 @@ public class LRMHandler extends MissileWeaponHandler {
         }
 
         if(game.getPlanetaryConditions().hasEMI()) {
-        	nMissilesModifier -= 2;
+            nMissilesModifier -= 2;
         }
 
         // add AMS mods

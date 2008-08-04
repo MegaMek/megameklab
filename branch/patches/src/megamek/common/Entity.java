@@ -1370,11 +1370,11 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         }
         mp = Math.max(mp - getCargoMpReduction(), 0);
         if(null != game) {
-    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
-    		if(weatherMod != 0) {
-    			mp = Math.max(mp + weatherMod, 0);
-    		} 
-    	}  	
+            int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+            if(weatherMod != 0) {
+                mp = Math.max(mp + weatherMod, 0);
+            } 
+        }      
         if (gravity) {
             mp = applyGravityEffectsOnMP(mp);
         }
@@ -2826,7 +2826,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
             if (Mech.NULLSIG.equals(type.getInternalName()) && m.curMode().equals("On") && m.isReady()) {
-            	return true;
+                return true;
             }
         }
         return false;
@@ -2840,7 +2840,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
             EquipmentType type = m.getType();
             //TacOps p. 100 Angle ECM can have 1 ECM and 1 ECCM at the same time
             if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM)
-            		&& ( m.curMode().equals("ECM") || m.curMode().equals("ECM & ECCM") || m.curMode().equals("ECM & Ghost Targets")) ) {
+                    && ( m.curMode().equals("ECM") || m.curMode().equals("ECM & ECCM") || m.curMode().equals("ECM & Ghost Targets")) ) {
                 return !(m.isDestroyed() || m.isMissing() || m.isBreached() || isShutDown() || this.getCrew().isUnconscious());
             }
         }
@@ -2870,15 +2870,15 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Does the mech have a functioning ECM unit, tuned to ghost target generation?
      */
     public boolean hasGhostTargets(boolean active) {
-//    	if you failed your ghost target PSR, then it doesn't matter
-    	if(active && getGhostTargetRollMoS() < 0) { 
-    		return false;
-    	}
+//        if you failed your ghost target PSR, then it doesn't matter
+        if(active && getGhostTargetRollMoS() < 0) { 
+            return false;
+        }
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
             //TacOps p. 100 Angle ECM can have ECM/ECCM and Ghost Targets at the same time
             if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM)
-            		&& ( m.curMode().equals("Ghost Targets") || m.curMode().equals("ECM & Ghost Targets") || m.curMode().equals("ECCM & Ghost Targets")) ) {
+                    && ( m.curMode().equals("Ghost Targets") || m.curMode().equals("ECM & Ghost Targets") || m.curMode().equals("ECCM & Ghost Targets")) ) {
                 return !(m.isDestroyed() || m.isMissing() || m.isBreached() || isShutDown() || this.getCrew().isUnconscious());
             }
         }
@@ -2899,7 +2899,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
                 EquipmentType type = m.getType();
                 //TacOps p. 100 Angle ECM can have 1 ECM and 1 ECCM at the same time
                 if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) 
-                		&& ( m.curMode().equals("ECCM") || m.curMode().equals("ECM & ECCM") || m.curMode().equals("ECCM & Ghost Targets")) ) {
+                        && ( m.curMode().equals("ECCM") || m.curMode().equals("ECM & ECCM") || m.curMode().equals("ECCM & Ghost Targets")) ) {
                     return !(m.isDestroyed() || m.isMissing() || m.isBreached() || isShutDown() || this.getCrew().isUnconscious());
                 }
             }
@@ -2935,7 +2935,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      *         be <code>Entity.NONE</code> if no ECM is active.
      */
     public int getECMRange() {
-    	
+        
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
             if (type instanceof MiscType && type.hasFlag(MiscType.F_ECM) && !m.isDestroyed() && !m.isMissing()) {
@@ -2943,7 +2943,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
                     return 0;
                 }
                 if(game.getPlanetaryConditions().hasEMI()) {
-                	return 12;
+                    return 12;
                 }
                 return 6;
             }
@@ -2956,13 +2956,13 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Beagle BloodHound WatchDog Clan Active or Light.
      */
     public boolean hasBAP() {
-    	return hasBAP(true);
+        return hasBAP(true);
     }
     
     public boolean hasBAP(boolean checkECM) {
-    	if(game.getPlanetaryConditions().hasEMI()) {
-    		return false;
-    	}
+        if(game.getPlanetaryConditions().hasEMI()) {
+            return false;
+        }
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
             if (type instanceof MiscType && type.hasFlag(MiscType.F_BAP)) {
@@ -2990,9 +2990,9 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      *         be <code>Entity.NONE</code> if no BAP is active.
      */
     public int getBAPRange() {
-    	if(game.getPlanetaryConditions().hasEMI()) {
-    		return Entity.NONE;
-    	}
+        if(game.getPlanetaryConditions().hasEMI()) {
+            return Entity.NONE;
+        }
         for (Mounted m : getMisc()) {
             EquipmentType type = m.getType();
             if (type instanceof MiscType && type.hasFlag(MiscType.F_BAP) && !m.isDestroyed() && !m.isMissing()) {
@@ -3572,16 +3572,16 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         //if the current sensor is BAP and BAP is critted, then switch to the first
         //thing that works
         if(null != nextSensor && nextSensor.isBAP() && !hasBAP(false)) {
-        	for(Sensor sensor : getSensors()) {
-        		if(!sensor.isBAP()) {
-        			nextSensor = sensor;
-        			break;
-        		}
-        	}
+            for(Sensor sensor : getSensors()) {
+                if(!sensor.isBAP()) {
+                    nextSensor = sensor;
+                    break;
+                }
+            }
         }      
         //change the active sensor, if requested
         if(null != nextSensor)
-        	activeSensor = nextSensor;
+            activeSensor = nextSensor;
         
         //ghost target roll
         ghostTargetRoll = Compute.d6(2);
@@ -3933,7 +3933,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Only use this version if the entity is through processing movement
      */
     public PilotingRollData getBasePilotingRoll() {
-    	return getBasePilotingRoll(this.moved);
+        return getBasePilotingRoll(this.moved);
     }
     
     /**
@@ -4004,33 +4004,33 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Add in any modifiers due to global conditions like light/weather/etc.
      */
     public PilotingRollData addConditionBonuses(PilotingRollData roll, int moveType) {
-    	
-    	PlanetaryConditions conditions = game.getPlanetaryConditions();
-    	//check light conditions for "running" entities
+        
+        PlanetaryConditions conditions = game.getPlanetaryConditions();
+        //check light conditions for "running" entities
         if(moveType == IEntityMovementType.MOVE_RUN || 
-        		moveType == IEntityMovementType.MOVE_VTOL_RUN || moveType == IEntityMovementType.MOVE_OVER_THRUST) {
-        	int lightPenalty = conditions.getLightPilotPenalty();
-        	if(lightPenalty > 0) {
-        		roll.addModifier(lightPenalty, conditions.getLightCurrentName());
-        	}
+                moveType == IEntityMovementType.MOVE_VTOL_RUN || moveType == IEntityMovementType.MOVE_OVER_THRUST) {
+            int lightPenalty = conditions.getLightPilotPenalty();
+            if(lightPenalty > 0) {
+                roll.addModifier(lightPenalty, conditions.getLightCurrentName());
+            }
         }
         
         //check weather conditions for all entities
         int weatherMod = conditions.getWeatherPilotPenalty();
         if(weatherMod != 0 && !game.getBoard().inSpace()) {
-        	roll.addModifier(weatherMod, conditions.getWeatherCurrentName());
+            roll.addModifier(weatherMod, conditions.getWeatherCurrentName());
         }
                
         //check wind conditions for all entities
         int windMod = conditions.getWindPilotPenalty(this);
         if(windMod != 0 && !game.getBoard().inSpace()) {
-        	roll.addModifier(windMod, conditions.getWindCurrentName());
+            roll.addModifier(windMod, conditions.getWindCurrentName());
         }
         
         //check gravity conditions for all entities
         int gravMod = conditions.getGravityPilotPenalty();
         if(gravMod != 0 && !game.getBoard().inSpace()) {
-        	roll.addModifier(gravMod, "high/low gravity");
+            roll.addModifier(gravMod, "high/low gravity");
         }
         return roll;
         
@@ -4088,62 +4088,62 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
      * Checks if an entity is passing through certain terrain while not moving carefully
      */
     public PilotingRollData checkRecklessMove(MoveStep step, IHex curHex, Coords lastPos, Coords curPos, int lastElev) {
-    	PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
-    	//no need to go further if movement is careful
-    	if(step.getParent().isCareful()) {
-    		roll.addModifier(TargetRoll.CHECK_FALSE, "moving carefully");
-    		return roll;
-    	}
-    	
-    	//this only applies in fog, night conditions, or if a hex along the move path has ice
-    	boolean isFoggy = game.getPlanetaryConditions().getFog() != PlanetaryConditions.FOG_NONE;
-    	boolean isDark = game.getPlanetaryConditions().getLight() > PlanetaryConditions.L_DUSK;
-    	boolean hasIce = false;
-    	
-    	Enumeration<MoveStep> steps = step.getParent().getSteps();
-    	while(steps.hasMoreElements()) {
-    		MoveStep nextStep = steps.nextElement();
-    		if(null == nextStep.getPosition())
-    			continue;
-    		IHex nextHex = game.getBoard().getHex(nextStep.getPosition());
-    		if(null == nextHex)
-    			continue;
-    		if(nextHex.containsTerrain(Terrains.ICE)) {
-    			hasIce = true;
-    			break;
-    		}
-    	}
-    	
-    	
-    	if(!isFoggy && !isDark && !hasIce) {
-    		roll.addModifier(TargetRoll.CHECK_FALSE, "conditions are not dangerous");
-    		return roll;
-    	}
-    	
-    	//if we are jumping, then no worries
-    	if(step.getMovementType() == IEntityMovementType.MOVE_JUMP) {
-    		roll.addModifier(TargetRoll.CHECK_FALSE, "jumping is not reckless?");
-    		return roll;
-    	}
-    	
-    	//we need to make this check on the first move forward and anytime the hex is not clear 
-    	//or is a level change   	
-    	if(!lastPos.equals(curPos) && lastPos.equals(step.getParent().getEntity().getPosition())) {
-    		roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
-    	}
-    	//TODO: how do you tell if it is clear?
-    	//FIXME: no perfect solution in the current code. I will use movement costs
-    	else if (!lastPos.equals(curPos) 
-    			&& (curHex.movementCost(step.getParent().getLastStepMovementType()) > 0 || lastElev != curHex.getElevation())) {
-    		roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
-    	//ice conditions
-    	} else if (curHex.containsTerrain(Terrains.ICE)) {
-    		roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
-    	} else {
-    		roll.addModifier(TargetRoll.CHECK_FALSE, "not moving recklessly");
-    	}
-    	
-    	return roll;
+        PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
+        //no need to go further if movement is careful
+        if(step.getParent().isCareful()) {
+            roll.addModifier(TargetRoll.CHECK_FALSE, "moving carefully");
+            return roll;
+        }
+        
+        //this only applies in fog, night conditions, or if a hex along the move path has ice
+        boolean isFoggy = game.getPlanetaryConditions().getFog() != PlanetaryConditions.FOG_NONE;
+        boolean isDark = game.getPlanetaryConditions().getLight() > PlanetaryConditions.L_DUSK;
+        boolean hasIce = false;
+        
+        Enumeration<MoveStep> steps = step.getParent().getSteps();
+        while(steps.hasMoreElements()) {
+            MoveStep nextStep = steps.nextElement();
+            if(null == nextStep.getPosition())
+                continue;
+            IHex nextHex = game.getBoard().getHex(nextStep.getPosition());
+            if(null == nextHex)
+                continue;
+            if(nextHex.containsTerrain(Terrains.ICE)) {
+                hasIce = true;
+                break;
+            }
+        }
+        
+        
+        if(!isFoggy && !isDark && !hasIce) {
+            roll.addModifier(TargetRoll.CHECK_FALSE, "conditions are not dangerous");
+            return roll;
+        }
+        
+        //if we are jumping, then no worries
+        if(step.getMovementType() == IEntityMovementType.MOVE_JUMP) {
+            roll.addModifier(TargetRoll.CHECK_FALSE, "jumping is not reckless?");
+            return roll;
+        }
+        
+        //we need to make this check on the first move forward and anytime the hex is not clear 
+        //or is a level change       
+        if(!lastPos.equals(curPos) && lastPos.equals(step.getParent().getEntity().getPosition())) {
+            roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
+        }
+        //TODO: how do you tell if it is clear?
+        //FIXME: no perfect solution in the current code. I will use movement costs
+        else if (!lastPos.equals(curPos) 
+                && (curHex.movementCost(step.getParent().getLastStepMovementType()) > 0 || lastElev != curHex.getElevation())) {
+            roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
+        //ice conditions
+        } else if (curHex.containsTerrain(Terrains.ICE)) {
+            roll.append(new PilotingRollData(getId(), 0, "moving recklessly"));
+        } else {
+            roll.addModifier(TargetRoll.CHECK_FALSE, "not moving recklessly");
+        }
+        
+        return roll;
     }
 
     /**
@@ -4167,7 +4167,7 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     /**
      * Checks if the entity is landing (from a jump) on ice-covered water.
      */
-    public PilotingRollData checkLandingOnIce(int overallMoveType, 	IHex curHex) {
+    public PilotingRollData checkLandingOnIce(int overallMoveType,     IHex curHex) {
         PilotingRollData roll = getBasePilotingRoll(overallMoveType);
 
         if(curHex.containsTerrain(Terrains.ICE) && curHex.terrainLevel(Terrains.WATER) > 0) {
@@ -4278,10 +4278,10 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         PilotingRollData roll = getBasePilotingRoll(step.getParent().getLastStepMovementType());
         int bgMod = curHex.getBogDownModifier(getMovementMode(), this instanceof LargeSupportTank);
         if ((!lastPos.equals(curPos) || step.getElevation() != lastElev) 
-        		&& bgMod != TargetRoll.AUTOMATIC_SUCCESS 
-        		&& step.getMovementType() != IEntityMovementType.MOVE_JUMP 
-        		&& step.getElevation() == 0 && !isPavementStep) {
-        	roll.append(new PilotingRollData(getId(), bgMod, "avoid bogging down"));   	
+                && bgMod != TargetRoll.AUTOMATIC_SUCCESS 
+                && step.getMovementType() != IEntityMovementType.MOVE_JUMP 
+                && step.getElevation() == 0 && !isPavementStep) {
+            roll.append(new PilotingRollData(getId(), bgMod, "avoid bogging down"));       
         } else {
             roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: Not entering bog-down terrain, or jumping/hovering over such terrain");
         }
@@ -7081,24 +7081,24 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
         
         for (Mounted misc : getMisc()) {
             if (misc.getType().hasFlag(MiscType.F_ECM)) {
-            	ArrayList<String> modes = new ArrayList<String>();
-            	modes.add("ECM");
-            	String[] stringArray = {};
-            	if(game.getOptions().booleanOption("tacops_eccm")) {
-            		modes.add("ECCM");
-            		if(misc.getType().hasFlag(MiscType.F_ANGEL_ECM)) {
-            			modes.add("ECM & ECCM");
-            		}
-            	}
-            	if(game.getOptions().booleanOption("tacops_ghost_target")) {
-            		if(misc.getType().hasFlag(MiscType.F_ANGEL_ECM)) {
-            			modes.add("ECM & Ghost Targets");
-            			modes.add("ECCM & Ghost Targets");
-            		} else {
-            			modes.add("Ghost Targets");
-            		}
-            	}
-            	((MiscType) misc.getType()).setModes(modes.toArray(stringArray));
+                ArrayList<String> modes = new ArrayList<String>();
+                modes.add("ECM");
+                String[] stringArray = {};
+                if(game.getOptions().booleanOption("tacops_eccm")) {
+                    modes.add("ECCM");
+                    if(misc.getType().hasFlag(MiscType.F_ANGEL_ECM)) {
+                        modes.add("ECM & ECCM");
+                    }
+                }
+                if(game.getOptions().booleanOption("tacops_ghost_target")) {
+                    if(misc.getType().hasFlag(MiscType.F_ANGEL_ECM)) {
+                        modes.add("ECM & Ghost Targets");
+                        modes.add("ECCM & Ghost Targets");
+                    } else {
+                        modes.add("Ghost Targets");
+                    }
+                }
+                ((MiscType) misc.getType()).setModes(modes.toArray(stringArray));
             }
         }
 
@@ -7129,31 +7129,31 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     }
     
     public int getEvasionBonus() {
-    	if(isProne()) {
-    		return 0;
-    	}
-    	
-    	if(this instanceof SmallCraft) {
-    		return 2;
-    	} else  if (this instanceof Jumpship) {
-    		return 1;
-    	} else if (this instanceof Aero) {
-    		return 3;
-    	} else {
-    		if(game.getOptions().booleanOption("tacops_skilled_evasion")) {
-    			int piloting = crew.getPiloting();
-    			if(piloting < 2) {
-    				return 3;
-    			} else if(piloting < 4) {
-    				return 2;
-    			} else if(piloting < 6) {
-    				return 1;
-    			}
-    		} else {
-    			return 1;
-    		}
-    	}
-    	return 0;
+        if(isProne()) {
+            return 0;
+        }
+        
+        if(this instanceof SmallCraft) {
+            return 2;
+        } else  if (this instanceof Jumpship) {
+            return 1;
+        } else if (this instanceof Aero) {
+            return 3;
+        } else {
+            if(game.getOptions().booleanOption("tacops_skilled_evasion")) {
+                int piloting = crew.getPiloting();
+                if(piloting < 2) {
+                    return 3;
+                } else if(piloting < 4) {
+                    return 2;
+                } else if(piloting < 6) {
+                    return 1;
+                }
+            } else {
+                return 1;
+            }
+        }
+        return 0;
     }
     
     
@@ -7166,23 +7166,23 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     }
     
     public Vector<Sensor> getSensors() {
-    	return sensors;
+        return sensors;
     }
     
     public Sensor getActiveSensor() {
-    	return activeSensor;
+        return activeSensor;
     }
     
     public Sensor getNextSensor() {
-    	return nextSensor;
+        return nextSensor;
     }
     
     public void setNextSensor(Sensor s) {
-    	this.nextSensor = s;
+        this.nextSensor = s;
     }
     
     public int getSensorCheck() {
-    	return sensorCheck;
+        return sensorCheck;
     }
     
     public boolean hasModularArmor() {
@@ -7264,15 +7264,15 @@ public abstract class Entity extends TurnOrdered implements Serializable, Transp
     }
     
     public int getGhostTargetRoll() {
-    	return ghostTargetRoll;
+        return ghostTargetRoll;
     }
     
     public int getGhostTargetRollMoS() {
-    	return ghostTargetRoll - (getCrew().getSensorOps() + 2);
+        return ghostTargetRoll - (getCrew().getSensorOps() + 2);
     }
     
     public int getGhostTargetOverride() {
-    	return ghostTargetOverride;
+        return ghostTargetOverride;
     }
     
     public int getCoolantFailureAmount(){

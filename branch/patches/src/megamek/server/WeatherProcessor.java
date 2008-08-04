@@ -84,7 +84,7 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
     }
 
     private void resolveWeather() {
-    	ITerrainFactory tf = Terrains.getTerrainFactory();
+        ITerrainFactory tf = Terrains.getTerrainFactory();
         IBoard board = game.getBoard();
         int width = board.getWidth();
         int height = board.getHeight();
@@ -94,59 +94,59 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
         boolean ice = false;
         
         if(!conditions.isTerrainAffected())
-        	return;
+            return;
         
         debugTime("resolve weather 1", true);
 
         //first we need to increment the conditions
         if(conditions.getWeather() == PlanetaryConditions.WE_MOD_SNOW && game.getBoard().onGround()) {
-        	modSnowTurn = modSnowTurn + 1;
-        	if(modSnowTurn == 9) {
-        		lightSnow = true;
-        	}
-        	if(modSnowTurn == 19) {
-        		deepSnow = true;
-        		ice = true;
-        	}
+            modSnowTurn = modSnowTurn + 1;
+            if(modSnowTurn == 9) {
+                lightSnow = true;
+            }
+            if(modSnowTurn == 19) {
+                deepSnow = true;
+                ice = true;
+            }
         }
         if(conditions.getWeather() == PlanetaryConditions.WE_HEAVY_SNOW && game.getBoard().onGround()) {  
-        	heavySnowTurn = heavySnowTurn + 1;
-        	if(heavySnowTurn == 4) {
-        		lightSnow = true;
-        	}
-        	if(heavySnowTurn == 14) {
-        		deepSnow = true;
-        	}
-        	if(heavySnowTurn == 19) {
-        		ice = true;
-        	}
+            heavySnowTurn = heavySnowTurn + 1;
+            if(heavySnowTurn == 4) {
+                lightSnow = true;
+            }
+            if(heavySnowTurn == 14) {
+                deepSnow = true;
+            }
+            if(heavySnowTurn == 19) {
+                ice = true;
+            }
         }
         if(conditions.getWeather() == PlanetaryConditions.WE_SLEET && game.getBoard().onGround()) {  
-        	sleetTurn = sleetTurn + 1;
-        	if(sleetTurn == 14) {
-        		ice = true;
-        	}
+            sleetTurn = sleetTurn + 1;
+            if(sleetTurn == 14) {
+                ice = true;
+            }
         }
         if(conditions.getWeather() == PlanetaryConditions.WE_ICE_STORM && game.getBoard().onGround()) {  
-        	iceTurn = iceTurn + 1;
-        	if(iceTurn == 14) {
-        		ice = true;
-        	}
+            iceTurn = iceTurn + 1;
+            if(iceTurn == 14) {
+                ice = true;
+            }
         }
         
         if(lightSnow) {
-        	Report r = new Report(5505, Report.PUBLIC);
+            Report r = new Report(5505, Report.PUBLIC);
             vPhaseReport.addElement(r);
         }
         if(deepSnow) {
-        	Report r = new Report(5510, Report.PUBLIC);
+            Report r = new Report(5510, Report.PUBLIC);
             vPhaseReport.addElement(r);
         }
         if(ice) {
-        	Report r = new Report(5515, Report.PUBLIC);
+            Report r = new Report(5515, Report.PUBLIC);
             vPhaseReport.addElement(r);
         }
-        	
+            
         // Cycle through all hexes, checking for the appropriate weather changes
         for (int currentXCoord = 0; currentXCoord < width; currentXCoord++ ) {
             for (int currentYCoord = 0; currentYCoord < height; currentYCoord++) {
@@ -155,68 +155,68 @@ public class WeatherProcessor extends DynamicTerrainProcessor {
 
                 //check for fires and potentially put them out
                 if (currentHex.containsTerrain(Terrains.FIRE)
-                		&& conditions.putOutFire()) {
+                        && conditions.putOutFire()) {
                     server.removeFire(currentCoords, "weather conditions");           
                 }   
                 
                 if(ice && !currentHex.containsTerrain(Terrains.ICE) 
-                		&& currentHex.containsTerrain(Terrains.WATER)) {
-                	currentHex.addTerrain(tf.createTerrain(Terrains.ICE, 1));
-                	server.sendChangedHex(currentCoords);
+                        && currentHex.containsTerrain(Terrains.WATER)) {
+                    currentHex.addTerrain(tf.createTerrain(Terrains.ICE, 1));
+                    server.sendChangedHex(currentCoords);
                 }
                 
                 if(lightSnow
-                		&& !currentHex.containsTerrain(Terrains.SNOW)
-                		&& !(currentHex.containsTerrain(Terrains.WATER) && !currentHex.containsTerrain(Terrains.ICE))) {
-                	currentHex.addTerrain(tf.createTerrain(Terrains.SNOW, 1));
-                	server.sendChangedHex(currentCoords);
+                        && !currentHex.containsTerrain(Terrains.SNOW)
+                        && !(currentHex.containsTerrain(Terrains.WATER) && !currentHex.containsTerrain(Terrains.ICE))) {
+                    currentHex.addTerrain(tf.createTerrain(Terrains.SNOW, 1));
+                    server.sendChangedHex(currentCoords);
                 }
                 
                 if(deepSnow && !(currentHex.terrainLevel(Terrains.SNOW) > 1)
-                		&& !(currentHex.containsTerrain(Terrains.WATER) && !currentHex.containsTerrain(Terrains.ICE))) {
-                	currentHex.addTerrain(tf.createTerrain(Terrains.SNOW, 2));
-                	server.sendChangedHex(currentCoords);
+                        && !(currentHex.containsTerrain(Terrains.WATER) && !currentHex.containsTerrain(Terrains.ICE))) {
+                    currentHex.addTerrain(tf.createTerrain(Terrains.SNOW, 2));
+                    server.sendChangedHex(currentCoords);
                 }
                 
                 //check for the melting of any snow or ice
                 if(currentHex.terrainLevel(Terrains.SNOW) > 1
-                		&& currentHex.containsTerrain(Terrains.FIRE) && currentHex.getFireTurn() == 3) {
-                	currentHex.removeTerrain(Terrains.SNOW);
-                	if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
-                		currentHex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
-                	}
+                        && currentHex.containsTerrain(Terrains.FIRE) && currentHex.getFireTurn() == 3) {
+                    currentHex.removeTerrain(Terrains.SNOW);
+                    if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
+                        currentHex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
+                    }
                 }
                 
                 if(currentHex.terrainLevel(Terrains.SNOW) == 1
-                		&& currentHex.containsTerrain(Terrains.FIRE) && currentHex.getFireTurn() == 1) {
-                	currentHex.removeTerrain(Terrains.SNOW);
-                	if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
-                		currentHex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
-                	}
+                        && currentHex.containsTerrain(Terrains.FIRE) && currentHex.getFireTurn() == 1) {
+                    currentHex.removeTerrain(Terrains.SNOW);
+                    if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
+                        currentHex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
+                    }
                 }
                 
                 if(currentHex.containsTerrain(Terrains.ICE) 
-                		&& currentHex.containsTerrain(Terrains.FIRE) && currentHex.getFireTurn() == 2) {
-                	currentHex.removeTerrain(Terrains.ICE);
-                	if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
-                		currentHex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
-                	}
+                        && currentHex.containsTerrain(Terrains.FIRE) && currentHex.getFireTurn() == 2) {
+                    currentHex.removeTerrain(Terrains.ICE);
+                    if(!currentHex.containsTerrain(Terrains.MUD) && !currentHex.containsTerrain(Terrains.WATER)) {
+                        currentHex.addTerrain(tf.createTerrain(Terrains.MUD, 1));
+                    }
                 }
                 
                 //check for rapids/torrents created by wind
                 //FIXME: This doesn't seem to be doing anything
                 if(conditions.getWindStrength() > PlanetaryConditions.WI_MOD_GALE 
-                		&& currentHex.containsTerrain(Terrains.WATER) && currentHex.depth() > 0) {
-                	
-                	if(conditions.getWindStrength() > PlanetaryConditions.WI_STORM) {
-                		if(!(currentHex.terrainLevel(Terrains.RAPIDS) > 1)) {
-                			currentHex.addTerrain(tf.createTerrain(Terrains.RAPIDS, 2));
-                		}
-                	} else {
-                		if(!currentHex.containsTerrain(Terrains.RAPIDS)) {
-                    		currentHex.addTerrain(tf.createTerrain(Terrains.RAPIDS, 1));
-                    	}
-                	}               	
+                        && currentHex.containsTerrain(Terrains.WATER) && currentHex.depth() > 0) {
+                    
+                    if(conditions.getWindStrength() > PlanetaryConditions.WI_STORM) {
+                        if(!(currentHex.terrainLevel(Terrains.RAPIDS) > 1)) {
+                            currentHex.addTerrain(tf.createTerrain(Terrains.RAPIDS, 2));
+                        }
+                    } else {
+                        if(!currentHex.containsTerrain(Terrains.RAPIDS)) {
+                            currentHex.addTerrain(tf.createTerrain(Terrains.RAPIDS, 1));
+                        }
+                    }                   
                 }
             }
         }

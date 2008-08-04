@@ -75,7 +75,7 @@ public class PushAttackAction extends DisplacementAttackAction {
         }
         
         if(ae.isEvading()) {
-        	return "attacker is evading.";
+            return "attacker is evading.";
         }
         
         return extendedBladeImpossible;
@@ -289,7 +289,7 @@ public class PushAttackAction extends DisplacementAttackAction {
 
         //evading
         if(te.isEvading()) {
-        	toHit.addModifier(te.getEvasionBonus(), "target is evading");
+            toHit.addModifier(te.getEvasionBonus(), "target is evading");
         }
         
         toHit.append(nightModifiers(game, target, null, ae, false));

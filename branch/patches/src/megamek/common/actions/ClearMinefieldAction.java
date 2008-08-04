@@ -29,6 +29,6 @@ public class ClearMinefieldAction extends AbstractEntityAction {
     }
     
     public Minefield getMinefield() {
-    	return mf;
+        return mf;
     }
 }

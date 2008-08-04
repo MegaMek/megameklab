@@ -2821,12 +2821,12 @@ public class MechDisplay extends BufferedPanel {
             refreshSensorChoices(en);
             
             if(null != en.getActiveSensor()) {
-	            curSensorsL.setText((Messages.getString("MechDisplay.CurrentSensors"))
-	                    .concat(" ").concat(
-	                            Sensor.getSensorName(en.getActiveSensor().getType())));
+                curSensorsL.setText((Messages.getString("MechDisplay.CurrentSensors"))
+                        .concat(" ").concat(
+                                Sensor.getSensorName(en.getActiveSensor().getType())));
             } else {
-            	curSensorsL.setText((Messages.getString("MechDisplay.CurrentSensors"))
-	                    .concat(" None"));
+                curSensorsL.setText((Messages.getString("MechDisplay.CurrentSensors"))
+                        .concat(" None"));
             }
 
             targSysL.setText((Messages.getString("MechDisplay.TargSysLabel"))
@@ -2836,28 +2836,28 @@ public class MechDisplay extends BufferedPanel {
 
         
         private void refreshSensorChoices(Entity en) {
-        	chSensors.removeAll();
-        	for(int i = 0; i < en.getSensors().size(); i++) {
-        		Sensor sensor = en.getSensors().elementAt(i);
-        		String condition = "";
-        		if(sensor.isBAP() && !en.hasBAP(false)) {
-        			condition = " (Disabled)";
-        		}
-        		chSensors.add(Sensor.getSensorName(sensor.getType()) + condition);
-        		if(sensor.getType() == en.getNextSensor().getType()) {
-        			chSensors.select(i);
-        		}
-        	}
+            chSensors.removeAll();
+            for(int i = 0; i < en.getSensors().size(); i++) {
+                Sensor sensor = en.getSensors().elementAt(i);
+                String condition = "";
+                if(sensor.isBAP() && !en.hasBAP(false)) {
+                    condition = " (Disabled)";
+                }
+                chSensors.add(Sensor.getSensorName(sensor.getType()) + condition);
+                if(sensor.getType() == en.getNextSensor().getType()) {
+                    chSensors.select(i);
+                }
+            }
         }
         
         public void itemStateChanged(ItemEvent ev) {
-        	if (ev.getItemSelectable() == chSensors) { 
-        		Entity en = clientgui.getClient().game.getEntity(myMechId);
-        		en.setNextSensor(en.getSensors().elementAt(chSensors.getSelectedIndex()));
-        		refreshSensorChoices(en);
-        		clientgui.systemMessage(Messages.getString("MechDisplay.willSwitchAtEnd", new Object[] { "Active Sensors", Sensor.getSensorName(en.getSensors().elementAt(chSensors.getSelectedIndex()).getType()) }));//$NON-NLS-1$
-        		clientgui.getClient().sendUpdateEntity(clientgui.getClient().game.getEntity(myMechId));
-        	}
+            if (ev.getItemSelectable() == chSensors) { 
+                Entity en = clientgui.getClient().game.getEntity(myMechId);
+                en.setNextSensor(en.getSensors().elementAt(chSensors.getSelectedIndex()));
+                refreshSensorChoices(en);
+                clientgui.systemMessage(Messages.getString("MechDisplay.willSwitchAtEnd", new Object[] { "Active Sensors", Sensor.getSensorName(en.getSensors().elementAt(chSensors.getSelectedIndex()).getType()) }));//$NON-NLS-1$
+                clientgui.getClient().sendUpdateEntity(clientgui.getClient().game.getEntity(myMechId));
+            }
         }
 
         public void actionPerformed(ActionEvent ae) {

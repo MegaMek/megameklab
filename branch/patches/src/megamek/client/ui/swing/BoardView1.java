@@ -1552,9 +1552,9 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
                             new Integer(le.getLightSmoke()) }));
                 }
                 if (le.getHeavySmoke() > 0) {
-                	message.append(Messages.getString(
-                			"BoardView1.HeavySmoke", new Object[] { //$NON-NLS-1$
-                					new Integer(le.getHeavySmoke()) }));
+                    message.append(Messages.getString(
+                            "BoardView1.HeavySmoke", new Object[] { //$NON-NLS-1$
+                                    new Integer(le.getHeavySmoke()) }));
                 }
                 if (le.isTargetCover()) {
                     message.append(Messages
@@ -2354,8 +2354,8 @@ public class BoardView1 extends JPanel implements IBoardView, Scrollable,
                     && !(entity instanceof Infantry && ((Infantry) entity)
                             .getDugIn() == Infantry.DUG_IN_NONE)
                             && !(entity instanceof Aero 
-                            		&& ((Aero)entity).isSpheroid()
-                            		&& game.getBoard().inAtmosphere())) {
+                                    && ((Aero)entity).isSpheroid()
+                                    && game.getBoard().inAtmosphere())) {
                 graph.drawPolygon(facingPolys[entity.getFacing()]);
             }
 

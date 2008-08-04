@@ -359,7 +359,7 @@ public class LRMSwarmHandler extends LRMHandler {
         }
         
         if(game.getPlanetaryConditions().hasEMI()) {
-        	nMissilesModifier -= 2;
+            nMissilesModifier -= 2;
         }
 
         int swarmMissilesLeft = waa.getSwarmMissiles();

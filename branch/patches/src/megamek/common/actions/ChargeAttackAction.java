@@ -248,7 +248,7 @@ public class ChargeAttackAction extends DisplacementAttackAction {
 
         //evading bonuses (
         if(te.isEvading()) {
-        	toHit.addModifier(te.getEvasionBonus(), "target is evading");
+            toHit.addModifier(te.getEvasionBonus(), "target is evading");
         }
         
         // determine hit direction
@@ -306,7 +306,7 @@ public class ChargeAttackAction extends DisplacementAttackAction {
 
         //no evading
         if(md.contains(MovePath.STEP_EVADE)) {
-        	return new ToHitData(TargetRoll.IMPOSSIBLE, "No evading while charging");
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "No evading while charging");
         }
         
         // determine last valid step

@@ -535,29 +535,29 @@ public class WeaponAttackAction extends AbstractAttackAction implements
 
         //evading bonuses (
         if(target.getTargetType() == Targetable.TYPE_ENTITY && te.isEvading()) {
-        	toHit.addModifier(te.getEvasionBonus(), "target is evading");
+            toHit.addModifier(te.getEvasionBonus(), "target is evading");
         }
       
         //ghost target modifier
         if(game.getOptions().booleanOption("tacops_ghost_target")) {
-	        int ghostTargetMod = Compute.getGhostTargetNumber(ae, ae.getPosition(), target.getPosition());
-	        if(ghostTargetMod > -1 && !(ae instanceof Infantry && !(ae instanceof BattleArmor))) {
-	        	int bapMod = 0;
-	        	if(ae.hasBAP())
-	        		bapMod = 1;
-	        	int tcMod = 0;
-	        	if (ae.hasTargComp()
-	                    && wtype.hasFlag(WeaponType.F_DIRECT_FIRE)
-	                    && (!usesAmmo || !((atype.getAmmoType() == AmmoType.T_AC_LBX || atype
-	                            .getAmmoType() == AmmoType.T_AC_LBX_THB) && atype
-	                            .getMunitionType() == AmmoType.M_CLUSTER))) {
-	        		tcMod = 2;
-	        	}
-	        	int ghostTargetMoF = (ae.getCrew().getSensorOps() + ghostTargetMod) - (ae.getGhostTargetOverride() + bapMod + tcMod);
-	        	if(ghostTargetMoF > 0) {
-	        		toHit.addModifier(Math.min(4, ghostTargetMoF / 2), "ghost targets");
-	        	}
-	        }
+            int ghostTargetMod = Compute.getGhostTargetNumber(ae, ae.getPosition(), target.getPosition());
+            if(ghostTargetMod > -1 && !(ae instanceof Infantry && !(ae instanceof BattleArmor))) {
+                int bapMod = 0;
+                if(ae.hasBAP())
+                    bapMod = 1;
+                int tcMod = 0;
+                if (ae.hasTargComp()
+                        && wtype.hasFlag(WeaponType.F_DIRECT_FIRE)
+                        && (!usesAmmo || !((atype.getAmmoType() == AmmoType.T_AC_LBX || atype
+                                .getAmmoType() == AmmoType.T_AC_LBX_THB) && atype
+                                .getMunitionType() == AmmoType.M_CLUSTER))) {
+                    tcMod = 2;
+                }
+                int ghostTargetMoF = (ae.getCrew().getSensorOps() + ghostTargetMod) - (ae.getGhostTargetOverride() + bapMod + tcMod);
+                if(ghostTargetMoF > 0) {
+                    toHit.addModifier(Math.min(4, ghostTargetMoF / 2), "ghost targets");
+                }
+            }
         }
         
         //Aeros may suffer from criticals
@@ -813,62 +813,62 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         //weather mods (not in space)
         int weatherMod = game.getPlanetaryConditions().getWeatherHitPenalty(ae);
         if(weatherMod != 0 && !game.getBoard().inSpace()) {
-        	toHit.addModifier(weatherMod,game.getPlanetaryConditions().getWeatherCurrentName());
+            toHit.addModifier(weatherMod,game.getPlanetaryConditions().getWeatherCurrentName());
         }
         
         //wind mods (not in space)
         if(!game.getBoard().inSpace()) {
-        	int windCond = game.getPlanetaryConditions().getWindStrength();
-        	if(windCond == PlanetaryConditions.WI_MOD_GALE) {
-        		if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
-        			toHit.addModifier(1, PlanetaryConditions.getWindDisplayableName(windCond));
-        		}
-        	}
-        	else if(windCond == PlanetaryConditions.WI_STRONG_GALE) {
-        		if(wtype.hasFlag(WeaponType.F_BALLISTIC)) { 
-        			toHit.addModifier(1, PlanetaryConditions.getWindDisplayableName(windCond));
-        		}
-        		else if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
-        			toHit.addModifier(2, PlanetaryConditions.getWindDisplayableName(windCond));
-        		}
-        	} else if(windCond == PlanetaryConditions.WI_STORM) {
-        		if(wtype.hasFlag(WeaponType.F_BALLISTIC)) { 
-        			toHit.addModifier(2, PlanetaryConditions.getWindDisplayableName(windCond));
-        		}
-        		else if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
-        			toHit.addModifier(3, PlanetaryConditions.getWindDisplayableName(windCond));
-        		}
-        	} else if(windCond == PlanetaryConditions.WI_TORNADO_F13) {
-        		if(wtype.hasFlag(WeaponType.F_ENERGY)) { 
-        			toHit.addModifier(2, PlanetaryConditions.getWindDisplayableName(windCond));
-        		}
-        		else { 
-        			toHit.addModifier(3, PlanetaryConditions.getWindDisplayableName(windCond));
-        		}
-        	} else if(windCond == PlanetaryConditions.WI_TORNADO_F4) {
-        		toHit.addModifier(3, PlanetaryConditions.getWindDisplayableName(windCond));
-        	}
+            int windCond = game.getPlanetaryConditions().getWindStrength();
+            if(windCond == PlanetaryConditions.WI_MOD_GALE) {
+                if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
+                    toHit.addModifier(1, PlanetaryConditions.getWindDisplayableName(windCond));
+                }
+            }
+            else if(windCond == PlanetaryConditions.WI_STRONG_GALE) {
+                if(wtype.hasFlag(WeaponType.F_BALLISTIC)) { 
+                    toHit.addModifier(1, PlanetaryConditions.getWindDisplayableName(windCond));
+                }
+                else if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
+                    toHit.addModifier(2, PlanetaryConditions.getWindDisplayableName(windCond));
+                }
+            } else if(windCond == PlanetaryConditions.WI_STORM) {
+                if(wtype.hasFlag(WeaponType.F_BALLISTIC)) { 
+                    toHit.addModifier(2, PlanetaryConditions.getWindDisplayableName(windCond));
+                }
+                else if(wtype.hasFlag(WeaponType.F_MISSILE)) { 
+                    toHit.addModifier(3, PlanetaryConditions.getWindDisplayableName(windCond));
+                }
+            } else if(windCond == PlanetaryConditions.WI_TORNADO_F13) {
+                if(wtype.hasFlag(WeaponType.F_ENERGY)) { 
+                    toHit.addModifier(2, PlanetaryConditions.getWindDisplayableName(windCond));
+                }
+                else { 
+                    toHit.addModifier(3, PlanetaryConditions.getWindDisplayableName(windCond));
+                }
+            } else if(windCond == PlanetaryConditions.WI_TORNADO_F4) {
+                toHit.addModifier(3, PlanetaryConditions.getWindDisplayableName(windCond));
+            }
         }
         
         //fog mods (not in space)
         if(wtype.hasFlag(WeaponType.F_ENERGY) 
-        		&& !game.getBoard().inSpace() 
-        		&& game.getPlanetaryConditions().getFog() == PlanetaryConditions.FOG_HEAVY) {
-        	toHit.addModifier(1, "heavy fog");
+                && !game.getBoard().inSpace() 
+                && game.getPlanetaryConditions().getFog() == PlanetaryConditions.FOG_HEAVY) {
+            toHit.addModifier(1, "heavy fog");
         }
         
         //gravity mods (not in space)
         if(!game.getBoard().inSpace()) {
-        	int mod = (int)Math.ceil(Math.abs((game.getPlanetaryConditions().getGravity() - 1.0f) / 0.2f));
-        	if(mod != 0 && (wtype.hasFlag(WeaponType.F_BALLISTIC) || wtype.hasFlag(WeaponType.F_MISSILE))) {
-        		toHit.addModifier(mod, "gravity");
-        	}      	
+            int mod = (int)Math.ceil(Math.abs((game.getPlanetaryConditions().getGravity() - 1.0f) / 0.2f));
+            if(mod != 0 && (wtype.hasFlag(WeaponType.F_BALLISTIC) || wtype.hasFlag(WeaponType.F_MISSILE))) {
+                toHit.addModifier(mod, "gravity");
+            }          
         }
         
         //Electro-Magnetic Interference
         if(game.getPlanetaryConditions().hasEMI() &&
-        		!(ae instanceof Infantry && !(ae instanceof BattleArmor))) {
-        	toHit.addModifier(2, "EMI");
+                !(ae instanceof Infantry && !(ae instanceof BattleArmor))) {
+            toHit.addModifier(2, "EMI");
         }
         
         // handle LAM speial rules
@@ -1971,12 +1971,12 @@ public class WeaponAttackAction extends AbstractAttackAction implements
         //check wind conditions
         int windCond = game.getPlanetaryConditions().getWindStrength();
         if(windCond == PlanetaryConditions.WI_TORNADO_F13 && wtype.hasFlag(WeaponType.F_MISSILE) && !game.getBoard().inSpace()) {
-        	return "No missile fire in a tornado";
+            return "No missile fire in a tornado";
         }
         
         if(windCond == PlanetaryConditions.WI_TORNADO_F13 && !game.getBoard().inSpace() && 
-        		(wtype.hasFlag(WeaponType.F_MISSILE) || wtype.hasFlag(WeaponType.F_BALLISTIC))) {
-        	return "No missile or ballistic fire in an F4 tornado";
+                (wtype.hasFlag(WeaponType.F_MISSILE) || wtype.hasFlag(WeaponType.F_BALLISTIC))) {
+            return "No missile or ballistic fire in an F4 tornado";
         }
         
         // check if indirect fire is valid

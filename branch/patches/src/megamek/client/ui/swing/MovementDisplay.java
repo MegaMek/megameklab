@@ -1002,8 +1002,8 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
             // first check for stalling
             if (client.game.getBoard().inAtmosphere() && !a.isVSTOL() 
-            		&& !a.isSpheroid() && !client.game.getPlanetaryConditions().isVacuum()
-            		&& ((md == null && a.getCurrentVelocity() == 0) || (md != null && md.getFinalVelocity() == 0))) {
+                    && !a.isSpheroid() && !client.game.getPlanetaryConditions().isVacuum()
+                    && ((md == null && a.getCurrentVelocity() == 0) || (md != null && md.getFinalVelocity() == 0))) {
 
                 // add a stall to the movement path
                 md.addStep(MovePath.STEP_STALL);
@@ -1044,7 +1044,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
                     // need to check for stall here as well
                     if (vel == 0 && !(a.isSpheroid() || client.game.getPlanetaryConditions().isVacuum()) 
-                    		&& client.game.getBoard().inAtmosphere() && !a.isVSTOL()) {
+                            && client.game.getBoard().inAtmosphere() && !a.isVSTOL()) {
                         // add a stall to the movement path
                         md.addStep(MovePath.STEP_STALL);
                     }
@@ -1496,7 +1496,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
                 // stalling out
                 if (md.getFinalVelocity() == 0 && !(a.isSpheroid() || client.game.getPlanetaryConditions().isVacuum()) 
-                		&& client.game.getBoard().inAtmosphere() && !a.isVSTOL()) {
+                        && client.game.getBoard().inAtmosphere() && !a.isVSTOL()) {
                     rollTarget = a.checkStall(md.getFinalVelocity(), overallMoveType);
                     nagReport.append(addNag(rollTarget));
                 }
@@ -2067,9 +2067,9 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
         }
         
         if(ce instanceof Protomech) {
-        	setRecklessEnabled(false);
+            setRecklessEnabled(false);
         } else {
-        	setRecklessEnabled(null == cmd || cmd.length() == 0);
+            setRecklessEnabled(null == cmd || cmd.length() == 0);
         }
     }
 
@@ -2554,7 +2554,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
 
         int overallMoveType = IEntityMovementType.MOVE_NONE;
         if(null != cmd) {
-        	overallMoveType = cmd.getLastStepMovementType();
+            overallMoveType = cmd.getLastStepMovementType();
         }
         // bring up dialog to dump bombs, then make a control roll and report
         // success or failure
@@ -2801,7 +2801,7 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
                 choices[loop] = Minefield.getDisplayableName(mfs.elementAt(loop).getType());
             }
             SingleChoiceDialog choiceDialog = new SingleChoiceDialog(clientgui.frame, Messages.getString("MovementDisplay.ChooseMinefieldDialog.title"), //$NON-NLS-1$
-            		Messages.getString("MovementDisplay.ChooseMinefieldDialog.message"), choices);
+                    Messages.getString("MovementDisplay.ChooseMinefieldDialog.message"), choices);
             choiceDialog.setVisible(true);
             Minefield mf = null;
             if (choiceDialog.getAnswer() == true) {
@@ -2929,8 +2929,8 @@ public class MovementDisplay extends StatusBarPhaseDisplay implements ActionList
             clientgui.bv.repaint();
         } else if (ev.getActionCommand().equals(MOVE_LOWER_ELEVATION)) {
             if (ce instanceof Aero && null != cmd.getLastStep() 
-            		&& cmd.getLastStep().getNDown() == 1 && cmd.getLastStep().getVelocity() < 12 
-            		&& !(((Aero) ce).isSpheroid() || client.game.getPlanetaryConditions().isVacuum())) {
+                    && cmd.getLastStep().getNDown() == 1 && cmd.getLastStep().getVelocity() < 12 
+                    && !(((Aero) ce).isSpheroid() || client.game.getPlanetaryConditions().isVacuum())) {
                 cmd.addStep(MovePath.STEP_ACC, true);
             }
             cmd.addStep(MovePath.STEP_DOWN);

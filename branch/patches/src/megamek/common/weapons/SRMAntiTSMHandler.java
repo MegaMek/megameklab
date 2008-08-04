@@ -90,7 +90,7 @@ public class SRMAntiTSMHandler extends SRMHandler {
         }
 
         if(game.getPlanetaryConditions().hasEMI()) {
-        	nMissilesModifier -= 2;
+            nMissilesModifier -= 2;
         }
         
         // Add ams mod

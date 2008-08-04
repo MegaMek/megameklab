@@ -59,7 +59,7 @@ public class LRMScatterableHandler extends MissileWeaponHandler {
         //only report to player if mine delivery
         int whoReport = Report.PLAYER;
         if(atype.getMunitionType() == AmmoType.M_FLARE) {
-        	whoReport = Report.PUBLIC;
+            whoReport = Report.PUBLIC;
         }    
         if (!bMissed) {
             r = new Report(3190, whoReport);

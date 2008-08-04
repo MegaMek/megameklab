@@ -222,16 +222,16 @@ public class Game implements Serializable, IGame {
     }
     
     public void resetMinefieldDensity(Vector<Minefield> newMinefields) {
-    	if(newMinefields.size() < 1) {
-    		return;
-    	}
-    	Vector<Minefield> mfs = minefields.get(newMinefields.firstElement().getCoords());
-    	mfs.clear();
-    	for (int i = 0; i < newMinefields.size(); i++) {
+        if(newMinefields.size() < 1) {
+            return;
+        }
+        Vector<Minefield> mfs = minefields.get(newMinefields.firstElement().getCoords());
+        mfs.clear();
+        for (int i = 0; i < newMinefields.size(); i++) {
             Minefield mf = newMinefields.elementAt(i);
             addMinefieldHelper(mf);
         }
-    	processGameEvent(new GameBoardChangeEvent(this));  	
+        processGameEvent(new GameBoardChangeEvent(this));      
     }
 
     protected void addMinefieldHelper(Minefield mf) {
@@ -2880,11 +2880,11 @@ public class Game implements Serializable, IGame {
     }
     
     public PlanetaryConditions getPlanetaryConditions() {
-    	return planetaryConditions;
+        return planetaryConditions;
     }
     
     public void setPlanetaryConditions(PlanetaryConditions conditions) {
-    	if (null == conditions) {
+        if (null == conditions) {
             System.err.println("Can't set the planetary conditions to null!");
         } else {
             this.planetaryConditions = conditions;

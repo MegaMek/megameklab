@@ -103,15 +103,15 @@ public class UltraWeaponHandler extends AmmoWeaponHandler {
         int shotsHit;
         int nMod = 0;
         if(bGlancing) 
-        	nMod -= 4;
+            nMod -= 4;
         if(game.getPlanetaryConditions().hasEMI())
-        	nMod -= 2;
+            nMod -= 2;
         switch (howManyShots) {
             case 1:
                 shotsHit = 1;
                 break;
             default:
-            	shotsHit = allShotsHit() ? howManyShots : Compute
+                shotsHit = allShotsHit() ? howManyShots : Compute
                             .missilesHit(howManyShots, nMod);
             
                 // report number of shots that hit only when weapon doesn't jam

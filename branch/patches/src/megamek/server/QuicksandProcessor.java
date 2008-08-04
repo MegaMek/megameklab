@@ -84,20 +84,20 @@ public class QuicksandProcessor extends DynamicTerrainProcessor {
 
                 //check for quicksand that has been around at least one turn
                 if(currentHex.terrainLevel(Terrains.SWAMP) == 3) {
-                	//sink any units that occupy this hex
-                	Enumeration<Entity> entities = game.getEntities(currentCoords);
+                    //sink any units that occupy this hex
+                    Enumeration<Entity> entities = game.getEntities(currentCoords);
                     while (entities.hasMoreElements()) {
                         final Entity entity = entities.nextElement();
                         if(entity.isStuck()) {
-                        	server.doSinkEntity(entity);
+                            server.doSinkEntity(entity);
                         }
                     }
                 }
                 // check for any quicksand created this turn
                 else if (currentHex.terrainLevel(Terrains.SWAMP) == 2){
-                	currentHex.removeTerrain(Terrains.SWAMP);
-                	currentHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SWAMP, 3));               	
-                	server.sendChangedHex(currentCoords);
+                    currentHex.removeTerrain(Terrains.SWAMP);
+                    currentHex.addTerrain(Terrains.getTerrainFactory().createTerrain(Terrains.SWAMP, 3));                   
+                    server.sendChangedHex(currentCoords);
                 }
             }
 

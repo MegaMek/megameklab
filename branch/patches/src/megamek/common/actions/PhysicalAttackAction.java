@@ -64,7 +64,7 @@ public class PhysicalAttackAction extends AbstractAttackAction {
         
         //can't make a physical attack if you are evading
         if(ae.isEvading()) {
-        	return "Attacker is evading.";
+            return "Attacker is evading.";
         }
 
         if (target.getTargetType() == Targetable.TYPE_ENTITY) {
@@ -207,7 +207,7 @@ public class PhysicalAttackAction extends AbstractAttackAction {
             
             //evading bonuses (
             if(te.isEvading()) {
-            	toHit.addModifier(te.getEvasionBonus(), "target is evading");
+                toHit.addModifier(te.getEvasionBonus(), "target is evading");
             }
         }
     }

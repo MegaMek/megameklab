@@ -172,30 +172,30 @@ public class Infantry extends Entity implements Serializable {
      * return this infantry's walk mp, adjusted for planetary conditions
      */
     public int getWalkMP(boolean gravity, boolean ignoreheat) {
-    	int mp = getOriginalWalkMP();
-    	if(null != game) {
-    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
-    		if(weatherMod != 0) {
-    			mp = Math.max(mp + weatherMod, 0);
-    		} 
-    	}  	
-    	if (gravity) {
+        int mp = getOriginalWalkMP();
+        if(null != game) {
+            int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+            if(weatherMod != 0) {
+                mp = Math.max(mp + weatherMod, 0);
+            } 
+        }      
+        if (gravity) {
             mp = applyGravityEffectsOnMP(mp);
         }
-    	return mp;
+        return mp;
     }
     
     /**
      * Return this Infantry's run MP.
      */
     public int getRunMP(boolean gravity, boolean ignoreheat) {
-    	int j = getOriginalRunMP();
-    	if(null != game) {
-    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
-    		if(weatherMod != 0) {
-    			j = Math.max(j + weatherMod, 0);
-    		} 
-    	}  
+        int j = getOriginalRunMP();
+        if(null != game) {
+            int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+            if(weatherMod != 0) {
+                j = Math.max(j + weatherMod, 0);
+            } 
+        }  
         if (gravity)
             j = applyGravityEffectsOnMP(j);
         return j;
@@ -219,7 +219,7 @@ public class Infantry extends Entity implements Serializable {
      * Get this infantry's jump MP, adjusted for weather conditions
      */
     public int getJumpMP(boolean gravity) {
-    	return getJumpMP();
+        return getJumpMP();
     }
     
     /**
@@ -229,16 +229,16 @@ public class Infantry extends Entity implements Serializable {
     public int getJumpMP() {
         int mp = applyGravityEffectsOnMP(getOriginalJumpMP());
         int windP = 0;
-    	if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
-    		if(windCond == PlanetaryConditions.WI_MOD_GALE) {
-    			windP++;
-    		}
-    		if(windCond >= PlanetaryConditions.WI_STRONG_GALE) {
-    			return 0;
-    		}
-    	}
-    	mp = Math.max(mp - windP, 0);
+        if(null != game) {
+            int windCond = game.getPlanetaryConditions().getWindStrength();
+            if(windCond == PlanetaryConditions.WI_MOD_GALE) {
+                windP++;
+            }
+            if(windCond >= PlanetaryConditions.WI_STRONG_GALE) {
+                return 0;
+            }
+        }
+        mp = Math.max(mp - windP, 0);
         return mp;
     }
     
@@ -693,7 +693,7 @@ public class Infantry extends Entity implements Serializable {
                 "entering boggy terrain");
         int bgMod = curHex.getBogDownModifier(getMovementMode(), false);
         if (!lastPos.equals(curPos) && bgMod != TargetRoll.AUTOMATIC_SUCCESS && step.getMovementType() != IEntityMovementType.MOVE_JUMP && (this.getMovementMode() != IEntityMovementMode.HOVER) && (this.getMovementMode() != IEntityMovementMode.VTOL) && (this.getMovementMode() != IEntityMovementMode.WIGE) && step.getElevation() == 0 && !isPavementStep) {
-        	roll.append(new PilotingRollData(getId(), bgMod, "avoid bogging down"));   	
+            roll.append(new PilotingRollData(getId(), bgMod, "avoid bogging down"));       
         } else {
             roll.addModifier(TargetRoll.CHECK_FALSE, "Check false: Not entering bog-down terrain, or jumping/hovering over such terrain");
         }

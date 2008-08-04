@@ -138,7 +138,7 @@ public class DfaAttackAction extends DisplacementAttackAction {
         
         //no evading
         if(md.contains(MovePath.STEP_EVADE)) {
-        	return new ToHitData(TargetRoll.IMPOSSIBLE, "No evading while charging");
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "No evading while charging");
         }
 
         // Can't target a entity conducting a swarm attack.
@@ -358,7 +358,7 @@ public class DfaAttackAction extends DisplacementAttackAction {
 
         //evading bonuses (
         if(te.isEvading()) {
-        	toHit.addModifier(te.getEvasionBonus(), "target is evading");
+            toHit.addModifier(te.getEvasionBonus(), "target is evading");
         }
         
         if (te != null) {

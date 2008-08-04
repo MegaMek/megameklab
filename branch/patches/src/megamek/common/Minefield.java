@@ -67,28 +67,28 @@ public class Minefield implements Serializable, Cloneable {
     }
     
     public static Minefield createMinefield(Coords coords, int playerId, int type, int density) {
-    	return createMinefield(coords, playerId, type, density, 0);
+        return createMinefield(coords, playerId, type, density, 0);
     }
     
     public static Minefield createMinefield(Coords coords, int playerId, int type, int density, boolean sea, int depth) {
-    	return createMinefield(coords, playerId, type, density, 0, sea, depth);
+        return createMinefield(coords, playerId, type, density, 0, sea, depth);
     }
     
     public static Minefield createMinefield(Coords coords, int playerId, int type, int density, int setting) {
-    	return createMinefield(coords, playerId, type, density, setting, false, 0);
+        return createMinefield(coords, playerId, type, density, setting, false, 0);
     }
 
     public static Minefield createMinefield(Coords coords, int playerId, int type, int density, int setting, boolean sea, int depth) {
-    	Minefield mf = new Minefield();
-    	
-    	mf.type = type;
-    	mf.density = density;
-    	mf.coords = coords;
-    	mf.playerId = playerId;
-    	mf.setting = setting;
-    	mf.sea = sea;
-    	mf.depth = depth;
-    	return mf;
+        Minefield mf = new Minefield();
+        
+        mf.type = type;
+        mf.density = density;
+        mf.coords = coords;
+        mf.playerId = playerId;
+        mf.setting = setting;
+        mf.sea = sea;
+        mf.depth = depth;
+        return mf;
     }
     
     
@@ -144,14 +144,14 @@ public class Minefield implements Serializable, Cloneable {
      * what do we need to roll to trigger this mine
      * @return
      */
-    public int getTrigger() {	
-    	if(density < 15) {
-    		return 9;
-    	} else if (density < 25) {
-    		return 8;
-    	} else {
-    		return 7;
-    	}
+    public int getTrigger() {    
+        if(density < 15) {
+            return 9;
+        } else if (density < 25) {
+            return 8;
+        } else {
+            return 7;
+        }
     }
 
     public boolean isSeaBased() {
@@ -171,7 +171,7 @@ public class Minefield implements Serializable, Cloneable {
     }
     
     public int getDepth() {
-    	return depth;
+        return depth;
     }
 
     public String getName() {
@@ -183,11 +183,11 @@ public class Minefield implements Serializable, Cloneable {
     }
     
     public void setDetonated(boolean b) {
-    	this.detonated = b;
+        this.detonated = b;
     }
     
     public boolean hasDetonated() {
-    	return detonated;
+        return detonated;
     }
     
     /**
@@ -197,13 +197,13 @@ public class Minefield implements Serializable, Cloneable {
      *                    a result of another minefield in the same hex explodin
      */
     public void checkReduction(int bonus, boolean direct) {
-    	boolean isReduced = ((Compute.d6(2) + bonus) >= getTrigger()) || (direct && getType() != Minefield.TYPE_CONVENTIONAL && getType() != Minefield.TYPE_INFERNO);
-    	if(getType() == Minefield.TYPE_CONVENTIONAL && getDensity() < 10) {
-    		isReduced = false;
-    	}
-    	if(isReduced) {
-    		setDensity(getDensity() - 5);
-    	}    
+        boolean isReduced = ((Compute.d6(2) + bonus) >= getTrigger()) || (direct && getType() != Minefield.TYPE_CONVENTIONAL && getType() != Minefield.TYPE_INFERNO);
+        if(getType() == Minefield.TYPE_CONVENTIONAL && getDensity() < 10) {
+            isReduced = false;
+        }
+        if(isReduced) {
+            setDensity(getDensity() - 5);
+        }    
     }
     
 }

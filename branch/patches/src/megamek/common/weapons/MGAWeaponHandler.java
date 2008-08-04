@@ -89,7 +89,7 @@ public class MGAWeaponHandler extends MGHandler {
         int shotsHit;
         int nMod = 0;
         if(game.getPlanetaryConditions().hasEMI()) {
-        	nMod -= 2;
+            nMod -= 2;
         }
         switch (howManyShots) {
             case 1:

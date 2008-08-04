@@ -280,104 +280,104 @@ public class DeployMinefieldDisplay extends StatusBarPhaseDisplay implements
         boolean sea = false;
         IHex hex = client.game.getBoard().getHex(coords);
         if(hex.containsTerrain(Terrains.WATER)) {
-        	sea = true;
+            sea = true;
         }
 
         if(remove) {
-        	if (!client.game.containsMinefield(coords))
-        		return;
-        	Enumeration mfs = client.game.getMinefields(coords).elements();
-        	ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
-        	while(mfs.hasMoreElements()) {
-        		Minefield mf = (Minefield)mfs.nextElement();  
-	            if (mf.getPlayerId() == client.getLocalPlayer().getId()) {
-	                butDone.setEnabled(false);
-	                mfRemoved.add(mf);
-	                deployedMinefields.removeElement(mf);
-	                if(mf.getType() == Minefield.TYPE_CONVENTIONAL) {
-	                	p.setNbrMFConventional(p.getNbrMFConventional() + 1);
-	                } 
-	                else if (mf.getType() == Minefield.TYPE_COMMAND_DETONATED) {
-	                	 p.setNbrMFCommand(p.getNbrMFCommand() + 1);
-	                }
-	                else if (mf.getType() == Minefield.TYPE_VIBRABOMB) {
-	                	 p.setNbrMFVibra(p.getNbrMFVibra() + 1);
-	                }
-	                else if (mf.getType() == Minefield.TYPE_ACTIVE) {
-	                	 p.setNbrMFActive(p.getNbrMFActive() + 1);
-	                }
-	                else if (mf.getType() == Minefield.TYPE_INFERNO) {
-	                	 p.setNbrMFInferno(p.getNbrMFInferno() + 1);
-	                }
-	            }
-        	}
-        	for(Minefield mf : mfRemoved) {
-        		client.game.removeMinefield(mf);
-        	}
+            if (!client.game.containsMinefield(coords))
+                return;
+            Enumeration mfs = client.game.getMinefields(coords).elements();
+            ArrayList<Minefield> mfRemoved = new ArrayList<Minefield>();
+            while(mfs.hasMoreElements()) {
+                Minefield mf = (Minefield)mfs.nextElement();  
+                if (mf.getPlayerId() == client.getLocalPlayer().getId()) {
+                    butDone.setEnabled(false);
+                    mfRemoved.add(mf);
+                    deployedMinefields.removeElement(mf);
+                    if(mf.getType() == Minefield.TYPE_CONVENTIONAL) {
+                        p.setNbrMFConventional(p.getNbrMFConventional() + 1);
+                    } 
+                    else if (mf.getType() == Minefield.TYPE_COMMAND_DETONATED) {
+                         p.setNbrMFCommand(p.getNbrMFCommand() + 1);
+                    }
+                    else if (mf.getType() == Minefield.TYPE_VIBRABOMB) {
+                         p.setNbrMFVibra(p.getNbrMFVibra() + 1);
+                    }
+                    else if (mf.getType() == Minefield.TYPE_ACTIVE) {
+                         p.setNbrMFActive(p.getNbrMFActive() + 1);
+                    }
+                    else if (mf.getType() == Minefield.TYPE_INFERNO) {
+                         p.setNbrMFInferno(p.getNbrMFInferno() + 1);
+                    }
+                }
+            }
+            for(Minefield mf : mfRemoved) {
+                client.game.removeMinefield(mf);
+            }
         } else {
-        	//first check that there is not already a mine of this type deployed
-        	Enumeration mfs = client.game.getMinefields(coords).elements();
-        	while(mfs.hasMoreElements()) {
-        		Minefield mf = (Minefield)mfs.nextElement(); 
-        		if((deployM && mf.getType() == Minefield.TYPE_CONVENTIONAL) ||
-        				(deployC && mf.getType() == Minefield.TYPE_COMMAND_DETONATED) ||
-        				(deployV && mf.getType() == Minefield.TYPE_VIBRABOMB) ||
-        				(deployA && mf.getType() == Minefield.TYPE_ACTIVE) ||
-        				(deployI && mf.getType() == Minefield.TYPE_INFERNO)) {
-        			new AlertDialog(
+            //first check that there is not already a mine of this type deployed
+            Enumeration mfs = client.game.getMinefields(coords).elements();
+            while(mfs.hasMoreElements()) {
+                Minefield mf = (Minefield)mfs.nextElement(); 
+                if((deployM && mf.getType() == Minefield.TYPE_CONVENTIONAL) ||
+                        (deployC && mf.getType() == Minefield.TYPE_COMMAND_DETONATED) ||
+                        (deployV && mf.getType() == Minefield.TYPE_VIBRABOMB) ||
+                        (deployA && mf.getType() == Minefield.TYPE_ACTIVE) ||
+                        (deployI && mf.getType() == Minefield.TYPE_INFERNO)) {
+                    new AlertDialog(
                             clientgui.frame,
                             Messages
                                     .getString("DeployMinefieldDisplay.IllegalPlacement"), Messages.getString("DeployMinefieldDisplay.DuplicateMinefield")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
                     return;
-        		}
-        	}
-        	
+                }
+            }
+            
             Minefield mf;
             if(sea && !(deployM || deployI)) {
-        		new AlertDialog(
+                new AlertDialog(
                         clientgui.frame,
                         Messages
                                 .getString("DeployMinefieldDisplay.IllegalPlacement"), Messages.getString("DeployMinefieldDisplay.WaterPlacement")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
-        	}    
-        	int depth = 0;
+            }    
+            int depth = 0;
             if (deployM) {        
-            	if(sea) {
-            		SeaMineDepthDialog smd = new SeaMineDepthDialog(clientgui.frame, hex.depth());
-            		smd.setVisible(true);
-            		//              Hack warning...
-            		clientgui.bv.stopScrolling();
-            		depth = smd.getDepth();
-            	}
-            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                if(sea) {
+                    SeaMineDepthDialog smd = new SeaMineDepthDialog(clientgui.frame, hex.depth());
+                    smd.setVisible(true);
+                    //              Hack warning...
+                    clientgui.bv.stopScrolling();
+                    depth = smd.getDepth();
+                }
+                MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
                 mfd.setVisible(true);
                 //              Hack warning...
                 clientgui.bv.stopScrolling();
                 mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_CONVENTIONAL, mfd.getDensity(), sea, depth);
                 p.setNbrMFConventional(p.getNbrMFConventional() - 1);
             } else if (deployC) {
-            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
                 mfd.setVisible(true);
                 //              Hack warning...
                 clientgui.bv.stopScrolling();
                 mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_COMMAND_DETONATED, mfd.getDensity(), sea, depth);
                 p.setNbrMFCommand(p.getNbrMFCommand() - 1);
             } else if (deployA) {
-            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
                 mfd.setVisible(true);
                 //              Hack warning...
                 clientgui.bv.stopScrolling();
                 mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_ACTIVE, mfd.getDensity());
                 p.setNbrMFActive(p.getNbrMFActive() - 1);
             } else if (deployI) {
-            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
                 mfd.setVisible(true);
                 //              Hack warning...
                 clientgui.bv.stopScrolling();
                 mf = Minefield.createMinefield(coords, p.getId(), Minefield.TYPE_INFERNO, mfd.getDensity(), sea, depth);
                 p.setNbrMFInferno(p.getNbrMFInferno() - 1);
             } else if (deployV) {
-            	MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
+                MineDensityDialog mfd = new MineDensityDialog(clientgui.frame);
                 mfd.setVisible(true);
                 //              Hack warning...
                 clientgui.bv.stopScrolling();

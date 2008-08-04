@@ -85,7 +85,7 @@ public class LRMAntiTSMHandler extends LRMHandler {
         }
         
         if(game.getPlanetaryConditions().hasEMI()) {
-        	nMissilesModifier -= 2;
+            nMissilesModifier -= 2;
         }
 
 

@@ -268,11 +268,11 @@ public class Mounted implements Serializable, RoundUpdated {
                         .getString("Mounted.CommandDetonatedMine"));
                 break;
             case MINE_ACTIVE:
-            	desc = new StringBuffer(Messages.getString("Mounted.ActiveMine"));
-            	break;
+                desc = new StringBuffer(Messages.getString("Mounted.ActiveMine"));
+                break;
             case MINE_INFERNO:
-            	desc = new StringBuffer(Messages.getString("Mounted.InfernoMine"));
-            	break;
+                desc = new StringBuffer(Messages.getString("Mounted.InfernoMine"));
+                break;
             case -1:
             default:
                 desc = new StringBuffer(type.getDesc());

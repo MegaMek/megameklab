@@ -716,9 +716,9 @@ public class MoveStep implements Serializable {
                 setMp(1);
                 break;
             case MovePath.STEP_EVADE:
-            	setEvading(true);
-            	if(entity instanceof Aero)
-            		setMp(2);
+                setEvading(true);
+                if(entity instanceof Aero)
+                    setMp(2);
                 break;
             case MovePath.STEP_ROLL:
                 if(prev.isRolled) {
@@ -1416,7 +1416,7 @@ public class MoveStep implements Serializable {
             //unless velocity is zero ASFs must move forward one hex before making turns
             if(!game.useVectorMove() && !isManeuver() && 
                     !(game.getBoard().inAtmosphere() 
-                    		&& (a.isSpheroid() || game.getPlanetaryConditions().isVacuum())) &&
+                            && (a.isSpheroid() || game.getPlanetaryConditions().isVacuum())) &&
                     distance == 0 && velocity != 0 && 
                     (type == MovePath.STEP_TURN_LEFT || type == MovePath.STEP_TURN_RIGHT)) {
                 return;
@@ -1508,7 +1508,7 @@ public class MoveStep implements Serializable {
             
             //check to make sure there is velocity left to spend
             if(getVelocityLeft() >= 0 || (game.getBoard().inAtmosphere() 
-            		&& (a.isSpheroid() || game.getPlanetaryConditions().isVacuum()))) {
+                    && (a.isSpheroid() || game.getPlanetaryConditions().isVacuum()))) {
                 if (getMpUsed() <= tmpSafeTh) {
                     movementType = IEntityMovementType.MOVE_SAFE_THRUST;
                 } else if(getMpUsed() <= entity.getRunMPwithoutMASC()) {
@@ -1583,10 +1583,10 @@ public class MoveStep implements Serializable {
         }
         //check for evasion
         if (type == MovePath.STEP_EVADE) {
-        	if(entity.hasHipCrit()) {
-        		movementType = IEntityMovementType.MOVE_ILLEGAL;
-        		return;
-        	}
+            if(entity.hasHipCrit()) {
+                movementType = IEntityMovementType.MOVE_ILLEGAL;
+                return;
+            }
             movementType = prev.movementType;
         }
 
@@ -1912,10 +1912,10 @@ public class MoveStep implements Serializable {
         
         //only walking speed in Tornados
         if(game.getPlanetaryConditions().getWindStrength() == PlanetaryConditions.WI_TORNADO_F4) {
-        	if(movementType != IEntityMovementType.MOVE_WALK) {
-        		movementType = IEntityMovementType.MOVE_ILLEGAL;
-        		return;
-        	}
+            if(movementType != IEntityMovementType.MOVE_WALK) {
+                movementType = IEntityMovementType.MOVE_ILLEGAL;
+                return;
+            }
         }
     }
 
@@ -1948,25 +1948,25 @@ public class MoveStep implements Serializable {
 
         //check for fog
         if(game.getPlanetaryConditions().getFog() == PlanetaryConditions.FOG_LIGHT &&
-        		!game.getBoard().inSpace() && parent.isCareful()) {
-        	mp += 1;
+                !game.getBoard().inSpace() && parent.isCareful()) {
+            mp += 1;
         } else if(game.getPlanetaryConditions().getFog() == PlanetaryConditions.FOG_HEAVY &&
-        		!game.getBoard().inSpace() && parent.isCareful()) {
-        	mp += 2;
+                !game.getBoard().inSpace() && parent.isCareful()) {
+            mp += 2;
         }
         
         //According to emails with TPTB, poor light should also increase mp costs as per
         //the table on p. 36 of TacOps
         //TODO: waiting to hear whether searchlights affect this
         if(game.getPlanetaryConditions().getLight() == PlanetaryConditions.L_FULL_MOON &&
-        		!game.getBoard().inSpace() && parent.isCareful()) {
-        	mp += 1;
+                !game.getBoard().inSpace() && parent.isCareful()) {
+            mp += 1;
         } else if(game.getPlanetaryConditions().getLight() == PlanetaryConditions.L_MOONLESS &&
-        		!game.getBoard().inSpace() && parent.isCareful()) {
-        	mp += 2;
+                !game.getBoard().inSpace() && parent.isCareful()) {
+            mp += 2;
         } else if(game.getPlanetaryConditions().getLight() == PlanetaryConditions.L_PITCH_BLACK &&
-        		!game.getBoard().inSpace() && parent.isCareful()) {
-        	mp += 3;
+                !game.getBoard().inSpace() && parent.isCareful()) {
+            mp += 3;
         }
         
         // VTOLs pay 1 for everything
@@ -2004,7 +2004,7 @@ public class MoveStep implements Serializable {
                 }
                 //if using non-careful movement on ice then reduce cost
                 if(destHex.containsTerrain(Terrains.ICE) && !parent.isCareful()) {
-                	mp--;
+                    mp--;
                 }
                 
             }
@@ -2594,7 +2594,7 @@ public class MoveStep implements Serializable {
     }
     
     public Minefield getMinefield() {
-    	return mf;
+        return mf;
     }
 
 }

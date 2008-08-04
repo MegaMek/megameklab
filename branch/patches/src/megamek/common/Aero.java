@@ -189,11 +189,11 @@ public class Aero
         int j = getOriginalWalkMP();
         j = Math.max(0, j - getCargoMpReduction());
         if(null != game) {
-    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
-    		if(weatherMod != 0) {
-    			j = Math.max(j + weatherMod, 0);
-    		} 
-    	}  	
+            int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+            if(weatherMod != 0) {
+                j = Math.max(j + weatherMod, 0);
+            } 
+        }      
         //get bomb load
         j = Math.max(0, j - (int)Math.ceil(getBombPoints()/5.0));
         

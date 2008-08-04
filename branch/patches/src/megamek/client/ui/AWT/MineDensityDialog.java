@@ -39,8 +39,8 @@ public class MineDensityDialog extends Dialog implements ActionListener {
 
     private Button butOk = new Button(Messages.getString("Okay")); //$NON-NLS-1$
     private Label labDensity = new Label(Messages
-			.getString("MineDensityDialog.labDensity"), Label.RIGHT); //$NON-NLS-1$
-	private Choice choDensity = new Choice();
+            .getString("MineDensityDialog.labDensity"), Label.RIGHT); //$NON-NLS-1$
+    private Choice choDensity = new Choice();
 
     private int density = 5;
     private Frame frame = null;
@@ -52,11 +52,11 @@ public class MineDensityDialog extends Dialog implements ActionListener {
 
         butOk.addActionListener(this);
 
-		choDensity.removeAll();
-		for(int i =5; i < 35; i = i + 5) {
-			choDensity.add(Integer.toString(i));
-		}
-		choDensity.select(0);
+        choDensity.removeAll();
+        for(int i =5; i < 35; i = i + 5) {
+            choDensity.add(Integer.toString(i));
+        }
+        choDensity.select(0);
 
         setLayout(gridbag);
 
@@ -94,7 +94,7 @@ public class MineDensityDialog extends Dialog implements ActionListener {
 
     public void actionPerformed(ActionEvent actionEvent) {
         if (actionEvent.getSource() == butOk) {
-        	density = Integer.parseInt(choDensity.getSelectedItem());
+            density = Integer.parseInt(choDensity.getSelectedItem());
         }
         this.setVisible(false);
     }

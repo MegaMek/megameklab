@@ -182,7 +182,7 @@ public class FlamerHeatHandler extends WeaponHandler {
         //you do a normal ignition as though for intentional fires
         if (bldg != null
                 && server.tryIgniteHex(target.getPosition(), subjectId, true,false,
-                		new TargetRoll(wtype.getFireTN(), wtype.getName()), 5, vPhaseReport)) {
+                        new TargetRoll(wtype.getFireTN(), wtype.getName()), 5, vPhaseReport)) {
             return;
         }
         vPhaseReport.addAll(server.tryClearHex(target.getPosition(), nDamage, subjectId));

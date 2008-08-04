@@ -274,7 +274,7 @@ public class BattleArmor extends Infantry implements Serializable {
     }
 
     public int getWalkMP() {
-    	return getWalkMP(true, true);
+        return getWalkMP(true, true);
     }
     
     /**
@@ -284,11 +284,11 @@ public class BattleArmor extends Infantry implements Serializable {
     public int getWalkMP(boolean gravity, boolean ignoreheat) {
         int j = getOriginalWalkMP();
         if(null != game) {
-    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
-    		if(weatherMod != 0) {
-    			j = Math.max(j + weatherMod, 0);
-    		} 
-    	}  	
+            int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+            if(weatherMod != 0) {
+                j = Math.max(j + weatherMod, 0);
+            } 
+        }      
         if (gravity)
             j = applyGravityEffectsOnMP(j);
         return j;
@@ -301,18 +301,18 @@ public class BattleArmor extends Infantry implements Serializable {
     public int getRunMP(boolean gravity, boolean ignoreheat) {
         int j = getOriginalRunMP();
         if(null != game) {
-    		int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
-    		if(weatherMod != 0) {
-    			j = Math.max(j + weatherMod, 0);
-    		} 
-    	}  
+            int weatherMod = game.getPlanetaryConditions().getMovementMods(this);
+            if(weatherMod != 0) {
+                j = Math.max(j + weatherMod, 0);
+            } 
+        }  
         if (gravity)
             j = applyGravityEffectsOnMP(j);
         return j;
     }
     
     public int getJumpMP(boolean gravity) {
-    	return getJumpMP();
+        return getJumpMP();
     }
 
     /**
@@ -324,13 +324,13 @@ public class BattleArmor extends Infantry implements Serializable {
         if (this.isBurdened()) {
             return 0;
         }      
-    	if(null != game) {
-    		int windCond = game.getPlanetaryConditions().getWindStrength();
-    		if(windCond >= PlanetaryConditions.WI_STORM) {
-    			return 0;
-    		}
-    	}
-    	int mp = applyGravityEffectsOnMP(getOriginalJumpMP());
+        if(null != game) {
+            int windCond = game.getPlanetaryConditions().getWindStrength();
+            if(windCond >= PlanetaryConditions.WI_STORM) {
+                return 0;
+            }
+        }
+        int mp = applyGravityEffectsOnMP(getOriginalJumpMP());
         return mp;
     }
 

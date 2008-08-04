@@ -54,11 +54,11 @@ public class SeaMineDepthDialog extends JDialog implements ActionListener {
         butOk.addActionListener(this);
         
         
-		choDepth.removeAllItems();
-		for(int i =0; i < (totalDepth + 1); i++) {
-			choDepth.addItem(Integer.toString(i));
-		}
-		choDepth.setSelectedIndex(0);
+        choDepth.removeAllItems();
+        for(int i =0; i < (totalDepth + 1); i++) {
+            choDepth.addItem(Integer.toString(i));
+        }
+        choDepth.setSelectedIndex(0);
         
         getContentPane().setLayout(gridbag);
         c.fill = GridBagConstraints.VERTICAL;
@@ -91,8 +91,8 @@ public class SeaMineDepthDialog extends JDialog implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-    	if (actionEvent.getSource() == butOk) {
-        	depth = Integer.parseInt((String)choDepth.getSelectedItem());
+        if (actionEvent.getSource() == butOk) {
+            depth = Integer.parseInt((String)choDepth.getSelectedItem());
         }
         this.setVisible(false);
     }

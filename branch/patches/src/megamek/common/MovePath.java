@@ -277,7 +277,7 @@ public class MovePath implements Cloneable, Serializable {
             } else if(step.hasNoCost()) {
                 step = new MoveStep(this, step.getType(), step.hasNoCost());
             } else if(null != step.getMinefield()) {
-            	step = new MoveStep(this, step.getType(), step.getMinefield());
+                step = new MoveStep(this, step.getType(), step.getMinefield());
             } else {
             
                 step = new MoveStep(this, step.getType());
@@ -984,10 +984,10 @@ public class MovePath implements Cloneable, Serializable {
     }
     
     public boolean isCareful() {
-    	return careful;
+        return careful;
     }
     
     public void setCareful(boolean b) {
-    	this.careful = b;
+        this.careful = b;
     }
 }

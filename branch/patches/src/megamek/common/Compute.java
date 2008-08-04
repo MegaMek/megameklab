@@ -1340,9 +1340,9 @@ public class Compute {
             return new ToHitData();
         }
 
-	if (game.getOptions().booleanOption("tacops_standing_still") &&
+    if (game.getOptions().booleanOption("tacops_standing_still") &&
             entity.moved==IEntityMovementType.MOVE_NONE &&
-			!entity.isImmobile() &&
+            !entity.isImmobile() &&
             !(entity instanceof Infantry || entity instanceof VTOL ||
               entity instanceof GunEmplacement)) {
             ToHitData toHit = new ToHitData();
@@ -1450,34 +1450,34 @@ public class Compute {
             woodsText = "target in ultra heavy " + woodsText;
         }
         if (hex.terrainLevel(Terrains.SMOKE) == 1) {
-        	toHit.addModifier(1, "target in light smoke");
+            toHit.addModifier(1, "target in light smoke");
         } else if (hex.terrainLevel(Terrains.SMOKE) > 1) {
-        	if (eistatus > 0) {
-        		toHit.addModifier(1, "target in heavy smoke");
-        	} else {
-        		toHit.addModifier(2, "target in heavy smoke");
-        	}
+            if (eistatus > 0) {
+                toHit.addModifier(1, "target in heavy smoke");
+            } else {
+                toHit.addModifier(2, "target in heavy smoke");
+            }
         }
         if (hex.terrainLevel(Terrains.GEYSER) == 2) {
-        	if (eistatus > 0) {
-        		toHit.addModifier(1, "target in erupting geyser");
-        	} else {
-        		toHit.addModifier(2, "target in erupting geyser");
-        	}
+            if (eistatus > 0) {
+                toHit.addModifier(1, "target in erupting geyser");
+            } else {
+                toHit.addModifier(2, "target in erupting geyser");
+            }
         }
         if (!game.getOptions().booleanOption("tacops_woods_cover") && !isVTOL && !(t.getTargetType() == Targetable.TYPE_HEX_CLEAR || t.getTargetType() == Targetable.TYPE_HEX_IGNITE || t.getTargetType() == Targetable.TYPE_HEX_BOMB || t.getTargetType() == Targetable.TYPE_HEX_ARTILLERY || t.getTargetType() == Targetable.TYPE_MINEFIELD_DELIVER)) {
-        	if (woodsLevel == 1 && eistatus != 2) {
-        		toHit.addModifier(1, woodsText);
-        	} else if (woodsLevel > 1) {
-        		if (eistatus > 0) {
-        			toHit.addModifier(woodsLevel - 1, woodsText);
-        		} else {
-        			toHit.addModifier(woodsLevel, woodsText);
-        		}
-        	}
+            if (woodsLevel == 1 && eistatus != 2) {
+                toHit.addModifier(1, woodsText);
+            } else if (woodsLevel > 1) {
+                if (eistatus > 0) {
+                    toHit.addModifier(woodsLevel - 1, woodsText);
+                } else {
+                    toHit.addModifier(woodsLevel, woodsText);
+                }
+            }
         }
         if(hex.containsTerrain(Terrains.INDUSTRIAL)) {
-        	toHit.addModifier(+1, "target in heavy industrial zone");
+            toHit.addModifier(+1, "target in heavy industrial zone");
         }
         //space screens; bonus depends on number (level)
         if(hex.terrainLevel(Terrains.SCREEN) > 0) {
@@ -1499,7 +1499,7 @@ public class Compute {
             toHit.addModifier(-2, "target stuck in swamp");
         }
         if(entityTarget instanceof Infantry && hex.containsTerrain(Terrains.FIELDS)) {
-        	toHit.addModifier(+1, "target in planted fields");
+            toHit.addModifier(+1, "target in planted fields");
         }
         return toHit;
     }
@@ -2270,7 +2270,7 @@ public class Compute {
      */
     public static boolean canSee(IGame game, Entity ae, Targetable target) {
         boolean teSpotlight = false;
-    	if (target.getTargetType() == Targetable.TYPE_ENTITY) {
+        if (target.getTargetType() == Targetable.TYPE_ENTITY) {
             Entity te = (Entity) target;
             teSpotlight = te.usedSearchlight();
             if (te.isOffBoard()) {
@@ -2281,19 +2281,19 @@ public class Compute {
         //check visual range based on planetary conditions
         int visualRange = game.getPlanetaryConditions().getVisualRange(ae, teSpotlight);
         if(target.getTargetType() == Targetable.TYPE_ENTITY) {
-        	Entity te = (Entity) target;
-        	//check for an active null signature system
-        	//TODO: implement void signature
-        	/*
-        	if(te.hasActiveVoidSig()) {
-        		visualRange = visualRange / 4;
-        	} 
-        	*/
-        	//check for visual camoflauge
-        	//else 
-        	if(te.hasWorkingMisc(MiscType.F_VISUAL_CAMO, -1)) {
-        		visualRange = visualRange / 2;
-        	}
+            Entity te = (Entity) target;
+            //check for an active null signature system
+            //TODO: implement void signature
+            /*
+            if(te.hasActiveVoidSig()) {
+                visualRange = visualRange / 4;
+            } 
+            */
+            //check for visual camoflauge
+            //else 
+            if(te.hasWorkingMisc(MiscType.F_VISUAL_CAMO, -1)) {
+                visualRange = visualRange / 2;
+            }
         }
         //smoke in los
         visualRange -= LosEffects.calculateLos(game, ae.getId(), target).getLightSmoke();
@@ -2304,7 +2304,7 @@ public class Compute {
         boolean inSensorRange = ae.getPosition() != null && target.getPosition() != null && ae.getPosition().distance(target.getPosition()) <= sensorRange;
         
         if (!inSensorRange && ae.getPosition() != null && target.getPosition() != null && ae.getPosition().distance(target.getPosition()) > visualRange) {
-        	return false;
+            return false;
         }
         
         return LosEffects.calculateLos(game, ae.getId(), target).canSee() && ae.getCrew().isActive() || inSensorRange;
@@ -2314,54 +2314,54 @@ public class Compute {
      * Checks whether the target is within sensor range of the current entity
      */
     private static int getSensorRange(IGame game, Entity ae, Targetable target) {
-    	
-    	Sensor sensor = ae.getActiveSensor();
-    	if(null == sensor) {
-    		return 0;
-    	}
-    	//only works for entities
-    	if(target.getTargetType() != Targetable.TYPE_ENTITY) {
-    		return 0;
-    	}
-    	Entity te = (Entity)target;
-    	
-    	//if this sensor is an active probe and it is critted, then no can see
-    	if(sensor.isBAP() && !ae.hasBAP(false)) {
-    		return 0;
-    	}
-    	
-    	//if we are crossing water then only magscan will work unless we are a naval vessel
-    	if(LosEffects.calculateLos(game, ae.getId(), target).isBlockedByWater() 
-    			&& sensor.getType() != Sensor.TYPE_MEK_MAGSCAN && sensor.getType() != Sensor.TYPE_VEE_MAGSCAN
-    			&& ae.getMovementMode() != IEntityMovementMode.HYDROFOIL && ae.getMovementMode() != IEntityMovementMode.NAVAL) {
-    		return 0;
-    	}
-    	
-    	int check = ae.getSensorCheck();
-    	check += sensor.getModsForStealth(te);
-    	//ECM bubbles
-    	check += sensor.getModForECM(ae);
-    		
-    	//get the range bracket (0 - none; 1 - short; 2 - medium; 3 - long)
-    	int bracket = 0;
-    	if(check == 7 || check == 8)
-    		bracket = 1;
-    	if(check == 5 || check == 6)
-    		bracket = 2;
-    	if(check < 5)
-    		bracket = 3;
-    		
-    	//now get the range
-    	int maxrange = sensor.getRange(bracket);   
+        
+        Sensor sensor = ae.getActiveSensor();
+        if(null == sensor) {
+            return 0;
+        }
+        //only works for entities
+        if(target.getTargetType() != Targetable.TYPE_ENTITY) {
+            return 0;
+        }
+        Entity te = (Entity)target;
+        
+        //if this sensor is an active probe and it is critted, then no can see
+        if(sensor.isBAP() && !ae.hasBAP(false)) {
+            return 0;
+        }
+        
+        //if we are crossing water then only magscan will work unless we are a naval vessel
+        if(LosEffects.calculateLos(game, ae.getId(), target).isBlockedByWater() 
+                && sensor.getType() != Sensor.TYPE_MEK_MAGSCAN && sensor.getType() != Sensor.TYPE_VEE_MAGSCAN
+                && ae.getMovementMode() != IEntityMovementMode.HYDROFOIL && ae.getMovementMode() != IEntityMovementMode.NAVAL) {
+            return 0;
+        }
+        
+        int check = ae.getSensorCheck();
+        check += sensor.getModsForStealth(te);
+        //ECM bubbles
+        check += sensor.getModForECM(ae);
+            
+        //get the range bracket (0 - none; 1 - short; 2 - medium; 3 - long)
+        int bracket = 0;
+        if(check == 7 || check == 8)
+            bracket = 1;
+        if(check == 5 || check == 6)
+            bracket = 2;
+        if(check < 5)
+            bracket = 3;
+            
+        //now get the range
+        int maxrange = sensor.getRange(bracket);   
 
-    	//adjust the range based on LOS and planetary conditions
-    	maxrange = sensor.adjustRange(maxrange, game, LosEffects.calculateLos(game, ae.getId(), target));
-    	
-    	//now adjust for anything about the target entity (size, heat, etc)
-    	maxrange = sensor.entityAdjustments(maxrange, te, game);
-    	
-    	return maxrange;
-    	
+        //adjust the range based on LOS and planetary conditions
+        maxrange = sensor.adjustRange(maxrange, game, LosEffects.calculateLos(game, ae.getId(), target));
+        
+        //now adjust for anything about the target entity (size, heat, etc)
+        maxrange = sensor.entityAdjustments(maxrange, te, game);
+        
+        return maxrange;
+        
     }
     
     public static int targetSideTable(Coords inPosition, Targetable target) {
@@ -2555,7 +2555,7 @@ public class Compute {
      * @return
      */
     public static boolean isAffectedByECM(Entity ae, Coords a, Coords b) {
-    	return getECMFieldSize(ae, a, b) > 0;
+        return getECMFieldSize(ae, a, b) > 0;
     }
     
     /**
@@ -2688,7 +2688,7 @@ public class Compute {
      *         enemy or friendly fields.
      */
     public static boolean isAffectedByAngelECM(Entity ae, Coords a, Coords b) {
-    	return getAngelECMFieldSize(ae, a, b) > 0;
+        return getAngelECMFieldSize(ae, a, b) > 0;
     }
     
     public static int getAngelECMFieldSize(Entity ae, Coords a, Coords b) {
@@ -2789,16 +2789,16 @@ public class Compute {
      * target roll. -1 if no Ghost Targets
      */
     public static int getGhostTargetNumber(Entity ae, Coords a, Coords b) {
-    	if (a == null || b == null)
+        if (a == null || b == null)
             return 0;
 
         // Only grab enemies with active ECM
-    	//need to create two hashtables for ghost targeting, one with mods 
-    	//and one with booleans indicating that this ghost target was intersected
-    	//the keys will be the entity id
-    	Hashtable<Integer, Boolean> hEnemyGTCrossed = new Hashtable<Integer, Boolean>();
-    	Hashtable<Integer, Integer> hEnemyGTMods = new Hashtable<Integer, Integer>();
-    	Vector<Coords> vEnemyECMCoords = new Vector<Coords>(16);
+        //need to create two hashtables for ghost targeting, one with mods 
+        //and one with booleans indicating that this ghost target was intersected
+        //the keys will be the entity id
+        Hashtable<Integer, Boolean> hEnemyGTCrossed = new Hashtable<Integer, Boolean>();
+        Hashtable<Integer, Integer> hEnemyGTMods = new Hashtable<Integer, Integer>();
+        Vector<Coords> vEnemyECMCoords = new Vector<Coords>(16);
         Vector<Integer> vEnemyECMRanges = new Vector<Integer>(16);
         Vector<Coords> vEnemyGTCoords = new Vector<Coords>(16);
         Vector<Integer> vEnemyGTRanges = new Vector<Integer>(16);
@@ -2907,18 +2907,18 @@ public class Compute {
             }
             
             if(ecmStatus >= 0) {
-            	//find any new Ghost Targets that we have crossed
-	            ranges = vEnemyGTRanges.elements();
-	            Enumeration<Integer> ids = vEnemyGTId.elements();
-	            for (Enumeration<Coords> e = vEnemyGTCoords.elements(); e.hasMoreElements();) {
-	                Coords enemyGTCoords = e.nextElement();
-	                int range = ranges.nextElement().intValue();
-	                int id = ids.nextElement().intValue();
-	                int nDist = c.distance(enemyGTCoords);
-	                if (nDist <= range && !hEnemyGTCrossed.get(id)) {
-	                    hEnemyGTCrossed.put(id, true);
-	                }
-	            }
+                //find any new Ghost Targets that we have crossed
+                ranges = vEnemyGTRanges.elements();
+                Enumeration<Integer> ids = vEnemyGTId.elements();
+                for (Enumeration<Coords> e = vEnemyGTCoords.elements(); e.hasMoreElements();) {
+                    Coords enemyGTCoords = e.nextElement();
+                    int range = ranges.nextElement().intValue();
+                    int id = ids.nextElement().intValue();
+                    int nDist = c.distance(enemyGTCoords);
+                    if (nDist <= range && !hEnemyGTCrossed.get(id)) {
+                        hEnemyGTCrossed.put(id, true);
+                    }
+                }
             }
         }
         
@@ -2928,14 +2928,14 @@ public class Compute {
         int highestMod = -1;
         Enumeration ids = hEnemyGTCrossed.keys();
         while(ids.hasMoreElements()) {
-        	int id = (Integer)ids.nextElement();
-        	if(hEnemyGTCrossed.get(id)) {
-        		if(hEnemyGTMods.get(id) > highestMod) {
-        			highestMod = hEnemyGTMods.get(id);
-        		} else {
-        			totalGT++;
-        		}
-        	}
+            int id = (Integer)ids.nextElement();
+            if(hEnemyGTCrossed.get(id)) {
+                if(hEnemyGTMods.get(id) > highestMod) {
+                    highestMod = hEnemyGTMods.get(id);
+                } else {
+                    totalGT++;
+                }
+            }
         }
         return highestMod + totalGT;
     }

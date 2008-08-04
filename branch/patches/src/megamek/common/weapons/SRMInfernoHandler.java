@@ -85,7 +85,7 @@ public class SRMInfernoHandler extends SRMHandler {
         if (entityTarget != null
                 && (bldg == null && wtype.getFireTN() != TargetRoll.IMPOSSIBLE)) {
             server.tryIgniteHex(target.getPosition(), subjectId, false, true,
-            		new TargetRoll(wtype.getFireTN(), wtype.getName()), 3,
+                    new TargetRoll(wtype.getFireTN(), wtype.getName()), 3,
                     vPhaseReport);
         }
 
@@ -398,7 +398,7 @@ public class SRMInfernoHandler extends SRMHandler {
         }
         
         if(game.getPlanetaryConditions().hasEMI()) {
-        	nMissilesModifier -= 2;
+            nMissilesModifier -= 2;
         }
 
         // add AMS mods
@@ -466,7 +466,7 @@ public class SRMInfernoHandler extends SRMHandler {
         //you do a normal ignition as though for intentional fires
         if (bldg != null
                 && server.tryIgniteHex(target.getPosition(), subjectId, false, true,
-                		new TargetRoll(wtype.getFireTN(), wtype.getName()), 5, vPhaseReport)) {
+                        new TargetRoll(wtype.getFireTN(), wtype.getName()), 5, vPhaseReport)) {
             return;
         }
         vPhaseReport.addAll(server.tryClearHex(target.getPosition(), nDamage, subjectId));

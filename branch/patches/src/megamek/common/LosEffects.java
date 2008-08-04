@@ -342,7 +342,7 @@ public class LosEffects {
         LosEffects finalLoS = calculateLos(game, ai);
         finalLoS.setMinimumWaterDepth(ai.minimumWaterDepth);
         finalLoS.hasLoS = !finalLoS.blocked && finalLoS.screen < 1 && finalLoS.plantedFields < 6 
-        	    && finalLoS.heavyIndustrial < 3
+                && finalLoS.heavyIndustrial < 3
                 && (finalLoS.lightWoods + finalLoS.lightSmoke)
                         + ((finalLoS.heavyWoods + finalLoS.heavySmoke) * 2)
                         + (finalLoS.ultraWoods * 3) < 3;
@@ -429,11 +429,11 @@ public class LosEffects {
         }
 
         if(plantedFields > 5) {
-        	return new ToHitData(TargetRoll.IMPOSSIBLE, "LOS blocked by planted fields.");
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "LOS blocked by planted fields.");
         }
         
         if(heavyIndustrial > 2) {
-        	return new ToHitData(TargetRoll.IMPOSSIBLE, "LOS blocked by heavy industrial zones.");
+            return new ToHitData(TargetRoll.IMPOSSIBLE, "LOS blocked by heavy industrial zones.");
         }
         
         if (screen > 0) {
@@ -446,12 +446,12 @@ public class LosEffects {
         }
 
         if(plantedFields > 0) {
-        	modifiers.addModifier((int)Math.floor(plantedFields / 2.0), plantedFields
+            modifiers.addModifier((int)Math.floor(plantedFields / 2.0), plantedFields
                     + " intervening planted fields");
         }
         
         if(heavyIndustrial > 0) {
-        	modifiers.addModifier(heavyIndustrial, heavyIndustrial
+            modifiers.addModifier(heavyIndustrial, heavyIndustrial
                     + " intervening heavy industrial zones");
         }
         
@@ -746,9 +746,9 @@ public class LosEffects {
                             .distance(coords))) {
                 los.blocked = true;
                 if(hex.terrainLevel(Terrains.BLDG_CF) > 90) 
-                	los.hardBuildings++;
+                    los.hardBuildings++;
                 else if(bldgEl > 0)
-                	los.softBuildings++;
+                    los.softBuildings++;
             }
             //for sensors I need to know whether this would have been blocked by a "hill"
             if (hexEl > (ai.targetAbsHeight
@@ -766,9 +766,9 @@ public class LosEffects {
                         .distance(coords) == 1)) {
             los.blocked = true;
             if(hex.terrainLevel(Terrains.BLDG_CF) > 90) 
-            	los.hardBuildings++;
+                los.hardBuildings++;
             else if(bldgEl > 0)
-            	los.softBuildings++;
+                los.softBuildings++;
         }
         //for sensors I need to know whether this would have been blocked by a "hill"
         if ((hexEl > ai.attackAbsHeight && hexEl + bldgEl > ai.targetAbsHeight)
@@ -776,7 +776,7 @@ public class LosEffects {
                         .distance(coords) == 1)
                 || (hexEl + bldgEl > ai.targetAbsHeight && ai.targetPos
                         .distance(coords) == 1)) {
-        	los.blockedByHill = true;
+            los.blockedByHill = true;
         }
         // check if there's a clear hex between the targets that's higher than
         // one of them, if we're in underwater combat
@@ -795,17 +795,17 @@ public class LosEffects {
             //heavy industrial zones can vary in height up to 10 levels, so lets 
             //put all of this into a for loop
             for(int level = 1; level < 11; level++) {
-            	if((hexEl + level > ai.attackAbsHeight && hexEl + level > ai.targetAbsHeight)
+                if((hexEl + level > ai.attackAbsHeight && hexEl + level > ai.targetAbsHeight)
                         || (hexEl + level > ai.attackAbsHeight && ai.attackPos
                                 .distance(coords) == 1)
                         || (hexEl + level > ai.targetAbsHeight && ai.targetPos
-                                .distance(coords) == 1)) {     		
-            		//check industrial zone
-            		if(hex.terrainLevel(Terrains.INDUSTRIAL) == level) {
-            			los.heavyIndustrial++;
-            		}
-            		//TODO: might as well put everything in here to save some time
-            	}
+                                .distance(coords) == 1)) {             
+                    //check industrial zone
+                    if(hex.terrainLevel(Terrains.INDUSTRIAL) == level) {
+                        los.heavyIndustrial++;
+                    }
+                    //TODO: might as well put everything in here to save some time
+                }
             }           
             //planted fields only rise one level above the terrain
             if((hexEl + 1 > ai.attackAbsHeight && hexEl + 2 > ai.targetAbsHeight)
@@ -813,9 +813,9 @@ public class LosEffects {
                             .distance(coords) == 1)
                     || (hexEl + 1 > ai.targetAbsHeight && ai.targetPos
                             .distance(coords) == 1)) { 
-            	if (hex.containsTerrain(Terrains.FIELDS)) {
-            		los.plantedFields++;
-            	}
+                if (hex.containsTerrain(Terrains.FIELDS)) {
+                    los.plantedFields++;
+                }
             }
             if ((hexEl + 2 > ai.attackAbsHeight && hexEl + 2 > ai.targetAbsHeight)
                     || (hexEl + 2 > ai.attackAbsHeight && ai.attackPos
@@ -825,21 +825,21 @@ public class LosEffects {
                 // smoke and woods stack for
                 // LOS
                 // so check them both
-            	if (hex.containsTerrain(Terrains.SMOKE)) {
-            		if (hex.terrainLevel(Terrains.SMOKE) == 1) {
-            			los.lightSmoke++;
-            		} else if (hex.terrainLevel(Terrains.SMOKE) > 1) {
-            			los.heavySmoke++;
-            		}
-            	}
+                if (hex.containsTerrain(Terrains.SMOKE)) {
+                    if (hex.terrainLevel(Terrains.SMOKE) == 1) {
+                        los.lightSmoke++;
+                    } else if (hex.terrainLevel(Terrains.SMOKE) > 1) {
+                        los.heavySmoke++;
+                    }
+                }
 
-            	if (hex.terrainLevel(Terrains.WOODS) == 1
-            			|| hex.terrainLevel(Terrains.JUNGLE) == 1) {
-            		los.lightWoods++;
-            	} else if (hex.terrainLevel(Terrains.WOODS) == 2
-            			|| hex.terrainLevel(Terrains.JUNGLE) == 2) {
-            		los.heavyWoods++;
-            	}
+                if (hex.terrainLevel(Terrains.WOODS) == 1
+                        || hex.terrainLevel(Terrains.JUNGLE) == 1) {
+                    los.lightWoods++;
+                } else if (hex.terrainLevel(Terrains.WOODS) == 2
+                        || hex.terrainLevel(Terrains.JUNGLE) == 2) {
+                    los.heavyWoods++;
+                }
             }
             //ultra woods/jungle rise three levels above the terrain
             if ((hexEl + 3 > ai.attackAbsHeight && hexEl + 3 > ai.targetAbsHeight)
@@ -847,11 +847,11 @@ public class LosEffects {
                             .distance(coords) == 1)
                     || (hexEl + 3 > ai.targetAbsHeight && ai.targetPos
                             .distance(coords) == 1)) {
-            	
-            	if (hex.terrainLevel(Terrains.WOODS) == 3
-            			|| hex.terrainLevel(Terrains.JUNGLE) == 3) {
-            		los.ultraWoods++;
-            	}
+                
+                if (hex.terrainLevel(Terrains.WOODS) == 3
+                        || hex.terrainLevel(Terrains.JUNGLE) == 3) {
+                    los.ultraWoods++;
+                }
             }
         }
         

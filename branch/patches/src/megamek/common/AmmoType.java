@@ -6849,10 +6849,10 @@ public class AmmoType extends EquipmentType {
 
     public static boolean canClearMinefield(AmmoType at) {
 
-    	//first the normal munition types
+        //first the normal munition types
         if (at != null &&
             ( ((at.getAmmoType() == T_LRM ||
-              at.getAmmoType() == T_LRM_STREAK ||		
+              at.getAmmoType() == T_LRM_STREAK ||        
               at.getAmmoType() == T_EXLRM ||
               at.getAmmoType() == T_PXLRM ||
               at.getAmmoType() == T_MRM  ||
@@ -6868,16 +6868,16 @@ public class AmmoType extends EquipmentType {
         if(at != null && 
               (at.getAmmoType() == T_ATM && at.getRackSize() >= 12 && at.getMunitionType() != M_EXTENDED_RANGE) ||
               (at.getAmmoType() == T_ATM && at.getRackSize() >= 9 && at.getMunitionType() == M_HIGH_EXPLOSIVE)) {
-        	return true;
+            return true;
         }
         
         //Artillery
         if(at != null &&
-        		((at.getAmmoType() == T_ARROW_IV || 
-        				at.getAmmoType() == T_LONG_TOM ||
-        				at.getAmmoType() == T_SNIPER ||
-        				at.getAmmoType() == T_THUMPER) && at.getMunitionType() == M_STANDARD)) {
-        	return true;
+                ((at.getAmmoType() == T_ARROW_IV || 
+                        at.getAmmoType() == T_LONG_TOM ||
+                        at.getAmmoType() == T_SNIPER ||
+                        at.getAmmoType() == T_THUMPER) && at.getMunitionType() == M_STANDARD)) {
+            return true;
         }
         
         //TODO: mine clearance munitions

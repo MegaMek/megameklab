@@ -43,31 +43,31 @@ import megamek.common.PlanetaryConditions;
  * @version
  */
 public class PlanetaryConditionsDialog extends Dialog implements ActionListener {
-	
-	private static final long serialVersionUID = -4426594323169113468L;
-	
-	private ClientGUI client;
-	private PlanetaryConditions conditions;
-	private Label labLight = new Label(Messages
-			.getString("PlanetaryConditionsDialog.labLight"), Label.RIGHT); //$NON-NLS-1$
-	private Choice choLight = new Choice();
-	private Label labWeather = new Label(Messages
-			.getString("PlanetaryConditionsDialog.labWeather"), Label.RIGHT); //$NON-NLS-1$
-	private Choice choWeather = new Choice();
-	private Label labWind = new Label(Messages
-			.getString("PlanetaryConditionsDialog.labWind"), Label.RIGHT); //$NON-NLS-1$
-	private Choice choWind = new Choice();
-	private Label labAtmosphere = new Label(Messages
-			.getString("PlanetaryConditionsDialog.labAtmosphere"), Label.RIGHT); //$NON-NLS-1$
-	private Choice choAtmosphere = new Choice();
-	private Label labFog = new Label(Messages
-			.getString("PlanetaryConditionsDialog.labFog"), Label.RIGHT); //$NON-NLS-1$
-	private Choice choFog = new Choice();
-	private Checkbox cShiftWindDir = new Checkbox(Messages
+    
+    private static final long serialVersionUID = -4426594323169113468L;
+    
+    private ClientGUI client;
+    private PlanetaryConditions conditions;
+    private Label labLight = new Label(Messages
+            .getString("PlanetaryConditionsDialog.labLight"), Label.RIGHT); //$NON-NLS-1$
+    private Choice choLight = new Choice();
+    private Label labWeather = new Label(Messages
+            .getString("PlanetaryConditionsDialog.labWeather"), Label.RIGHT); //$NON-NLS-1$
+    private Choice choWeather = new Choice();
+    private Label labWind = new Label(Messages
+            .getString("PlanetaryConditionsDialog.labWind"), Label.RIGHT); //$NON-NLS-1$
+    private Choice choWind = new Choice();
+    private Label labAtmosphere = new Label(Messages
+            .getString("PlanetaryConditionsDialog.labAtmosphere"), Label.RIGHT); //$NON-NLS-1$
+    private Choice choAtmosphere = new Choice();
+    private Label labFog = new Label(Messages
+            .getString("PlanetaryConditionsDialog.labFog"), Label.RIGHT); //$NON-NLS-1$
+    private Choice choFog = new Choice();
+    private Checkbox cShiftWindDir = new Checkbox(Messages
             .getString("PlanetaryConditionsDialog.shiftWindDir"));
-	private Checkbox cShiftWindStr = new Checkbox(Messages
+    private Checkbox cShiftWindStr = new Checkbox(Messages
             .getString("PlanetaryConditionsDialog.shiftWindStr"));
-	private Label labTemp = new Label(Messages
+    private Label labTemp = new Label(Messages
             .getString("PlanetaryConditionsDialog.labTemp"), Label.RIGHT); //$NON-NLS-1$
     private TextField fldTemp = new TextField(4);
     private Label labGrav = new Label(Messages
@@ -77,14 +77,14 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
             .getString("PlanetaryConditionsDialog.EMI"));   
     private Checkbox cTerrainAffected = new Checkbox(Messages
             .getString("PlanetaryConditionsDialog.TerrainAffected"));
-	    	
-	private Panel panButtons = new Panel();	
-	private Button butOkay = new Button(Messages.getString("Okay")); //$NON-NLS-1$
-	private Button butCancel = new Button(Messages.getString("Cancel")); //$NON-NLS-1$
-	
-	private Panel panOptions = new Panel();
-	
-	/**
+            
+    private Panel panButtons = new Panel();    
+    private Button butOkay = new Button(Messages.getString("Okay")); //$NON-NLS-1$
+    private Button butCancel = new Button(Messages.getString("Cancel")); //$NON-NLS-1$
+    
+    private Panel panOptions = new Panel();
+    
+    /**
      * Initialize this dialog.
      * 
      * @param frame - the <code>Frame</code> parent of this dialog.
@@ -130,16 +130,16 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
 
         
     }
-	
-	
-	/** Creates new PlanetaryConditionsDialog */
-	public PlanetaryConditionsDialog(ClientGUI client) {
-		super(client.frame, Messages.getString("PlanetaryConditionsDialog.title"), true); //$NON-NLS-1$
-		this.client = client;
-		this.init(client.frame, client.getClient().game.getPlanetaryConditions());
-	}    
-	
-	private void setupButtons() {
+    
+    
+    /** Creates new PlanetaryConditionsDialog */
+    public PlanetaryConditionsDialog(ClientGUI client) {
+        super(client.frame, Messages.getString("PlanetaryConditionsDialog.title"), true); //$NON-NLS-1$
+        this.client = client;
+        this.init(client.frame, client.getClient().game.getPlanetaryConditions());
+    }    
+    
+    private void setupButtons() {
         butOkay.addActionListener(this);
         butCancel.addActionListener(this);
 
@@ -163,12 +163,12 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
         gridbag.setConstraints(butCancel, c);
         panButtons.add(butCancel);
     }
-	
-	private void setupConditions() {
-		
-		refreshConditions();
-		
-		GridBagLayout gridbag = new GridBagLayout();
+    
+    private void setupConditions() {
+        
+        refreshConditions();
+        
+        GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         panOptions.setLayout(gridbag);
 
@@ -266,139 +266,139 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
         gridbag.setConstraints(cTerrainAffected, c);
         panOptions.add(cTerrainAffected);
         
-	}
-	
-	public void update(PlanetaryConditions conditions) {
+    }
+    
+    public void update(PlanetaryConditions conditions) {
         this.conditions = (PlanetaryConditions)conditions.clone();
         refreshConditions();
     }
-	
-	private void refreshConditions() {
-		
-		choLight.removeAll();
-		for(int i = 0; i < PlanetaryConditions.L_SIZE; i++) {
-			choLight.add(PlanetaryConditions.getLightDisplayableName(i));
-		}
-		choLight.select(conditions.getLight());	
-		
-		choWeather.removeAll();
-		for(int i = 0; i < PlanetaryConditions.WE_SIZE; i++) {
-			choWeather.add(PlanetaryConditions.getWeatherDisplayableName(i));
-		}
-		choWeather.select(conditions.getWeather());	
-		
-		choWind.removeAll();
-		for(int i = 0; i < PlanetaryConditions.WI_SIZE; i++) {
-			choWind.add(PlanetaryConditions.getWindDisplayableName(i));
-		}
-		choWind.select(conditions.getWindStrength());	
-		
-		choAtmosphere.removeAll();
-		for(int i = 0; i < PlanetaryConditions.ATMO_SIZE; i++) {
-			choAtmosphere.add(PlanetaryConditions.getAtmosphereDisplayableName(i));
-		}
-		choAtmosphere.select(conditions.getAtmosphere());	
-		
-		choFog.removeAll();
-		for(int i = 0; i < PlanetaryConditions.FOG_SIZE; i++) {
-			choFog.add(PlanetaryConditions.getFogDisplayableName(i));
-		}
-		choFog.select(conditions.getFog());	
-		
-		cShiftWindDir.setState(conditions.shiftingWindDirection());
-		cShiftWindStr.setState(conditions.shiftingWindStrength());
-		
-		fldTemp.setText(Integer.toString(conditions.getTemperature()));
-		fldGrav.setText(Float.toString(conditions.getGravity()));
-		
-		cEMI.setState(conditions.hasEMI());
-		
-		cTerrainAffected.setState(conditions.isTerrainAffected());
-	}
-	
-	public void send() {
-		
-		//make the changes to the planetary conditions
-		conditions.setLight(choLight.getSelectedIndex());
-		conditions.setWeather(choWeather.getSelectedIndex());
-		conditions.setWindStrength(choWind.getSelectedIndex());
-		conditions.setAtmosphere(choAtmosphere.getSelectedIndex());
-		conditions.setFog(choFog.getSelectedIndex());
-		conditions.setShiftingWindDirection(cShiftWindDir.getState());
-		conditions.setShiftingWindStrength(cShiftWindStr.getState());
-		conditions.setTemperature(Integer.parseInt(fldTemp.getText()));
-		conditions.setGravity(Float.parseFloat(fldGrav.getText()));
-		conditions.setEMI(cEMI.getState());
-		conditions.setTerrainAffected(cTerrainAffected.getState());
-			
-		client.getClient().sendPlanetaryConditions(conditions);
-	}
-	
-	public void actionPerformed(ActionEvent e) {
+    
+    private void refreshConditions() {
+        
+        choLight.removeAll();
+        for(int i = 0; i < PlanetaryConditions.L_SIZE; i++) {
+            choLight.add(PlanetaryConditions.getLightDisplayableName(i));
+        }
+        choLight.select(conditions.getLight());    
+        
+        choWeather.removeAll();
+        for(int i = 0; i < PlanetaryConditions.WE_SIZE; i++) {
+            choWeather.add(PlanetaryConditions.getWeatherDisplayableName(i));
+        }
+        choWeather.select(conditions.getWeather());    
+        
+        choWind.removeAll();
+        for(int i = 0; i < PlanetaryConditions.WI_SIZE; i++) {
+            choWind.add(PlanetaryConditions.getWindDisplayableName(i));
+        }
+        choWind.select(conditions.getWindStrength());    
+        
+        choAtmosphere.removeAll();
+        for(int i = 0; i < PlanetaryConditions.ATMO_SIZE; i++) {
+            choAtmosphere.add(PlanetaryConditions.getAtmosphereDisplayableName(i));
+        }
+        choAtmosphere.select(conditions.getAtmosphere());    
+        
+        choFog.removeAll();
+        for(int i = 0; i < PlanetaryConditions.FOG_SIZE; i++) {
+            choFog.add(PlanetaryConditions.getFogDisplayableName(i));
+        }
+        choFog.select(conditions.getFog());    
+        
+        cShiftWindDir.setState(conditions.shiftingWindDirection());
+        cShiftWindStr.setState(conditions.shiftingWindStrength());
+        
+        fldTemp.setText(Integer.toString(conditions.getTemperature()));
+        fldGrav.setText(Float.toString(conditions.getGravity()));
+        
+        cEMI.setState(conditions.hasEMI());
+        
+        cTerrainAffected.setState(conditions.isTerrainAffected());
+    }
+    
+    public void send() {
+        
+        //make the changes to the planetary conditions
+        conditions.setLight(choLight.getSelectedIndex());
+        conditions.setWeather(choWeather.getSelectedIndex());
+        conditions.setWindStrength(choWind.getSelectedIndex());
+        conditions.setAtmosphere(choAtmosphere.getSelectedIndex());
+        conditions.setFog(choFog.getSelectedIndex());
+        conditions.setShiftingWindDirection(cShiftWindDir.getState());
+        conditions.setShiftingWindStrength(cShiftWindStr.getState());
+        conditions.setTemperature(Integer.parseInt(fldTemp.getText()));
+        conditions.setGravity(Float.parseFloat(fldGrav.getText()));
+        conditions.setEMI(cEMI.getState());
+        conditions.setTerrainAffected(cTerrainAffected.getState());
+            
+        client.getClient().sendPlanetaryConditions(conditions);
+    }
+    
+    public void actionPerformed(ActionEvent e) {
         if (e.getSource() == butOkay) {
-        	//check for reasonable values and some conditionals
-        	int temper = 25;
-        	float grav = (float)1.0;
-        	try {
-    			temper = Integer.parseInt(fldTemp.getText());
-    		} catch (NumberFormatException er) {
+            //check for reasonable values and some conditionals
+            int temper = 25;
+            float grav = (float)1.0;
+            try {
+                temper = Integer.parseInt(fldTemp.getText());
+            } catch (NumberFormatException er) {
                 new AlertDialog(
                         client.frame,
                         Messages
                                 .getString("PlanetaryConditionsDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidTemperature")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
             }
-    		try {
-    			grav = Float.parseFloat(fldGrav.getText());
-    		} catch (NumberFormatException er) {
+            try {
+                grav = Float.parseFloat(fldGrav.getText());
+            } catch (NumberFormatException er) {
                 new AlertDialog(
                         client.frame,
                         Messages
                                 .getString("PlanetaryConditionsDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidGravity")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
             }
-    		
-    		if(temper > 200 || temper < -200) {
-    			new AlertDialog(
+            
+            if(temper > 200 || temper < -200) {
+                new AlertDialog(
                         client.frame,
                         Messages
                                 .getString("PlanetaryConditionsDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidTemperature")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
-    		}
+            }
    
-    		if(grav < 0.1 || grav > 10.0) {
-    			new AlertDialog(
+            if(grav < 0.1 || grav > 10.0) {
+                new AlertDialog(
                         client.frame,
                         Messages
                                 .getString("PlanetaryConditionsDialog.NumberFormatError"), Messages.getString("PlanetaryConditionsDialog.EnterValidGravity")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
-    		}
-    		
-    		//can't combine certain wind conditions with certain atmospheres
-    		int wind = choWind.getSelectedIndex();
-    		int atmo = choAtmosphere.getSelectedIndex();
-    		if(atmo == PlanetaryConditions.ATMO_VACUUM && wind > PlanetaryConditions.WI_NONE) {
-    			new AlertDialog(
+            }
+            
+            //can't combine certain wind conditions with certain atmospheres
+            int wind = choWind.getSelectedIndex();
+            int atmo = choAtmosphere.getSelectedIndex();
+            if(atmo == PlanetaryConditions.ATMO_VACUUM && wind > PlanetaryConditions.WI_NONE) {
+                new AlertDialog(
                         client.frame,
                         Messages
                                 .getString("PlanetaryConditionsDialog.Incompatible"), Messages.getString("PlanetaryConditionsDialog.VacuumWind")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
-    		}
-    		if(atmo == PlanetaryConditions.ATMO_TRACE && wind > PlanetaryConditions.WI_STORM) {
-    			new AlertDialog(
+            }
+            if(atmo == PlanetaryConditions.ATMO_TRACE && wind > PlanetaryConditions.WI_STORM) {
+                new AlertDialog(
                         client.frame,
                         Messages
                                 .getString("PlanetaryConditionsDialog.Incompatible"), Messages.getString("PlanetaryConditionsDialog.TraceWind")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
-    		}
-    		if(atmo == PlanetaryConditions.ATMO_THIN && wind > PlanetaryConditions.WI_TORNADO_F13) {
-    			new AlertDialog(
+            }
+            if(atmo == PlanetaryConditions.ATMO_THIN && wind > PlanetaryConditions.WI_TORNADO_F13) {
+                new AlertDialog(
                         client.frame,
                         Messages
                                 .getString("PlanetaryConditionsDialog.Incompatible"), Messages.getString("PlanetaryConditionsDialog.ThinWind")).setVisible(true); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
-    		}
-    		
+            }
+            
             if (client != null) {
                 send();
             }
@@ -406,6 +406,6 @@ public class PlanetaryConditionsDialog extends Dialog implements ActionListener 
             refreshConditions();
         }
         this.setVisible(false);
-	}
+    }
 }
     

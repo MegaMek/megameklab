@@ -221,7 +221,7 @@ public class MechFileParser {
             ent.getSensors().add(new Sensor(Sensor.TYPE_VEE_SEISMIC));
             ent.setNextSensor(ent.getSensors().firstElement());
         }
-    	
+        
         // Walk through the list of equipment.
         for (Mounted m : ent.getMisc()) {
 
@@ -362,28 +362,28 @@ public class MechFileParser {
             //now find any active probes and add them to the sensor list
             //choose this sensor if added
             if(m.getType().hasFlag(MiscType.F_BAP)) {
-            	if(m.getType().getInternalName().equals(Sensor.BAP)) {
-            		ent.getSensors().add(new Sensor(Sensor.TYPE_BAP));
-            		ent.setNextSensor(ent.getSensors().lastElement());
-            	} else if(m.getType().getInternalName().equals(Sensor.BLOODHOUND)) {
-            		ent.getSensors().add(new Sensor(Sensor.TYPE_BLOODHOUND));
-            		ent.setNextSensor(ent.getSensors().lastElement());
-            	} else if(m.getType().getInternalName().equals(Sensor.WATCHDOG)) {
-            		ent.getSensors().add(new Sensor(Sensor.TYPE_WATCHDOG));
-            		ent.setNextSensor(ent.getSensors().lastElement());
-            	} else if(m.getType().getInternalName().equals(Sensor.CLAN_AP)) {
-            		ent.getSensors().add(new Sensor(Sensor.TYPE_CLAN_BAP));
-            		ent.setNextSensor(ent.getSensors().lastElement());
-            	} else if(m.getType().getInternalName().equals(Sensor.LIGHT_AP)) {
-            		ent.getSensors().add(new Sensor(Sensor.TYPE_LIGHT_AP));
-            		ent.setNextSensor(ent.getSensors().lastElement());
-            	} else if(m.getType().getInternalName().equals(Sensor.CLIMPROVED)) {
-            		ent.getSensors().add(new Sensor(Sensor.TYPE_BA_IMPROVED));
-            		ent.setNextSensor(ent.getSensors().lastElement());
-            	} else if(m.getType().getInternalName().equals(Sensor.ISIMPROVED)) {
-            		ent.getSensors().add(new Sensor(Sensor.TYPE_BA_IMPROVED));
-            		ent.setNextSensor(ent.getSensors().lastElement());
-            	}
+                if(m.getType().getInternalName().equals(Sensor.BAP)) {
+                    ent.getSensors().add(new Sensor(Sensor.TYPE_BAP));
+                    ent.setNextSensor(ent.getSensors().lastElement());
+                } else if(m.getType().getInternalName().equals(Sensor.BLOODHOUND)) {
+                    ent.getSensors().add(new Sensor(Sensor.TYPE_BLOODHOUND));
+                    ent.setNextSensor(ent.getSensors().lastElement());
+                } else if(m.getType().getInternalName().equals(Sensor.WATCHDOG)) {
+                    ent.getSensors().add(new Sensor(Sensor.TYPE_WATCHDOG));
+                    ent.setNextSensor(ent.getSensors().lastElement());
+                } else if(m.getType().getInternalName().equals(Sensor.CLAN_AP)) {
+                    ent.getSensors().add(new Sensor(Sensor.TYPE_CLAN_BAP));
+                    ent.setNextSensor(ent.getSensors().lastElement());
+                } else if(m.getType().getInternalName().equals(Sensor.LIGHT_AP)) {
+                    ent.getSensors().add(new Sensor(Sensor.TYPE_LIGHT_AP));
+                    ent.setNextSensor(ent.getSensors().lastElement());
+                } else if(m.getType().getInternalName().equals(Sensor.CLIMPROVED)) {
+                    ent.getSensors().add(new Sensor(Sensor.TYPE_BA_IMPROVED));
+                    ent.setNextSensor(ent.getSensors().lastElement());
+                } else if(m.getType().getInternalName().equals(Sensor.ISIMPROVED)) {
+                    ent.getSensors().add(new Sensor(Sensor.TYPE_BA_IMPROVED));
+                    ent.setNextSensor(ent.getSensors().lastElement());
+                }
             }
             
             if (ent instanceof Mech

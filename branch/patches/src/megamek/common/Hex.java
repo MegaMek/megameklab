@@ -197,7 +197,7 @@ public class Hex implements IHex, Serializable {
         }
         //not so fast ultra jungles and woods are three levels high
         if(terrainLevel(Terrains.WOODS) > 2 || terrainLevel(Terrains.JUNGLE) > 2) {
-        	maxFeature = 3;
+            maxFeature = 3;
         }     
 
         //account for heavy industrial zones, which can vary in height
@@ -439,37 +439,37 @@ public class Hex implements IHex, Serializable {
      * Get the fire ignition modifier for this hex, based on its terrain
      */
     public int getIgnitionModifier() {
-    	int mod = 0;
-    	for (int i = 0; i < terrains.length; i++) {
+        int mod = 0;
+        for (int i = 0; i < terrains.length; i++) {
             if (terrains[i] != null)
                 mod += terrains[i].ignitionModifier();
         }
-    	return mod;
+        return mod;
     }
     
     /**
      * Is this hex ignitable?
      */
     public boolean isIgnitable() {
-    	return (containsTerrain(Terrains.WOODS) 
-    			|| containsTerrain(Terrains.JUNGLE) 
-    			|| containsTerrain(Terrains.BUILDING)
-    			|| containsTerrain(Terrains.FUEL_TANK)
-    			|| containsTerrain(Terrains.FIELDS)
-    			|| containsTerrain(Terrains.INDUSTRIAL));
-    	
+        return (containsTerrain(Terrains.WOODS) 
+                || containsTerrain(Terrains.JUNGLE) 
+                || containsTerrain(Terrains.BUILDING)
+                || containsTerrain(Terrains.FUEL_TANK)
+                || containsTerrain(Terrains.FIELDS)
+                || containsTerrain(Terrains.INDUSTRIAL));
+        
     }
     
     public int getFireTurn() {
-    	return fireTurn;
+        return fireTurn;
     }
     
     public void incrementFireTurn() {
-    	fireTurn = fireTurn + 1;
+        fireTurn = fireTurn + 1;
     }
     
     public void resetFireTurn() {
-    	fireTurn = 0;
+        fireTurn = 0;
     }
     
     /**
@@ -477,23 +477,23 @@ public class Hex implements IHex, Serializable {
      * If there is no bog-down chance in this hex, then it returns TargetRoll.AUTOMATIC_SUCCESS
      */
     public int getBogDownModifier(int moveType, boolean largeVee) {
-    	int mod = TargetRoll.AUTOMATIC_SUCCESS;
-    	for (int i = 0; i < terrains.length; i++) {
+        int mod = TargetRoll.AUTOMATIC_SUCCESS;
+        for (int i = 0; i < terrains.length; i++) {
             if (terrains[i] != null && mod < terrains[i].getBogDownModifier(moveType, largeVee))
                 mod = terrains[i].getBogDownModifier(moveType, largeVee);
         }
-    	return mod;
+        return mod;
     }
     
     /**
      * get any modifiers to a an unstuck roll in this hex.
      */
     public int getUnstuckModifier(int elev) {
-    	int mod = 0;
-    	for (int i = 0; i < terrains.length; i++) {
+        int mod = 0;
+        for (int i = 0; i < terrains.length; i++) {
             if (terrains[i] != null)
                 mod += terrains[i].getUnstuckModifier(elev);
         }
-    	return mod;
+        return mod;
     }
 }
