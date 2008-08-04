@@ -42,6 +42,7 @@ public class ISSilverBulletGauss extends GaussWeapon {
         this.name = "Silver Bullet Gauss Rifle";
         this.setInternalName("ISSBGR");
         this.addLookupName("IS Silver Bullet Gauss Rifle");
+        this.addLookupName("ISSBGaussRifle");
         this.heat = 1;
         this.damage = 15;
         this.rackSize = 15;
