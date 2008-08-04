@@ -38,8 +38,8 @@ public class ISBinaryLaserCannon extends LaserWeapon {
         this.addLookupName("ISBlazer");
         this.addLookupName("ISBinaryLaserCannon");
         this.addLookupName("ISBinaryLaser");
-        this.heat = 12;
-        this.damage = 16;
+        this.heat = 16;
+        this.damage = 12;
         this.shortRange = 5;
         this.mediumRange = 10;
         this.longRange = 15;
@@ -50,7 +50,7 @@ public class ISBinaryLaserCannon extends LaserWeapon {
         this.waterExtremeRange = 12;
         this.tonnage = 9.0f;
         this.criticals = 4;
-        this.bv = 296;
+        this.bv = 222;
         this.cost = 200000;
         this.shortAV = 16;
         this.medAV = 16;
