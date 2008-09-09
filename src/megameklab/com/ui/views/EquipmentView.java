@@ -44,13 +44,13 @@ import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.UnitUtil;
 
-public class EquipmentView extends JPanel implements ActionListener {
+public class EquipmentView extends View implements ActionListener {
 
     /**
      * 
      */
     private static final long serialVersionUID = 799195356642563937L;
-    private Mech unit;
+
     private RefreshListener refresh;
 
     private JPanel mainPanel = new JPanel();
@@ -74,7 +74,7 @@ public class EquipmentView extends JPanel implements ActionListener {
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
     public EquipmentView(Mech unit) {
-        this.unit = unit;
+        super(unit);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
@@ -136,7 +136,15 @@ public class EquipmentView extends JPanel implements ActionListener {
         for (EquipmentType eq : masterEquipmentList) {
             if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
             // IS
-                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
+                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 
+                            && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) 
+                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 
+                            && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 
+                            || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) 
+                            || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 
+                                    && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 
+                                    || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 
+                                    || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
 
                     // Clan
                     || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3))) && eq instanceof MiscType) {

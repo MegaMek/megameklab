@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -48,16 +49,17 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 
-public class StructureTab extends JPanel implements ActionListener, KeyListener {
+public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     /**
      * 
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
-    Mech unit;
+    
     String[] engineTypes = { "I.C.E.", "Standard", "XL", "Light", "XXL", "Compact" };
     JComboBox engineType = new JComboBox(engineTypes);
     JComboBox walkMP;
@@ -73,9 +75,12 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
     JComboBox techLevel = new JComboBox(techLevels);
     JTextField era = new JTextField(3);
     RefreshListener refresh = null;
+    JCheckBox omniCB = new JCheckBox("Omni");
+    JCheckBox quadCB = new JCheckBox("Quad");
+    
     private CriticalView critView = null;
 
-    public StructureTab(Entity unit) {
+    public StructureTab(Mech unit) {
         JScrollPane scroll = new JScrollPane();
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -83,10 +88,10 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         scroll.setWheelScrollingEnabled(true);
         JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, enginePanel(), scroll);
 
-        this.unit = (Mech) unit;
+        this.unit = unit;
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         // this.add(enginePanel());
-        critView = new CriticalView((Mech) unit, false, refresh);
+        critView = new CriticalView(unit, false, refresh);
         scroll.setViewportView(critView);
 
         this.add(splitter);
@@ -107,6 +112,9 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         maxSize.setSize(80, 5);
 
+        masterPanel.add(omniCB);
+        masterPanel.add(quadCB);
+        
         masterPanel.add(createLabel("Era:", maxSize));
         masterPanel.add(era);
 
@@ -157,6 +165,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
     public void refresh() {
         removeAllActionListeners();
+        quadCB.setSelected(unit instanceof QuadMech);
         era.setText(Integer.toString(unit.getYear()));
         gyroType.setSelectedIndex(unit.getGyroType());
         engineType.setSelectedIndex(unit.getEngine().getEngineType());
@@ -199,6 +208,7 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
 
         walkMP.setSelectedIndex(unit.getWalkMP() - 1);
 
+        critView.updateMech(unit);
         critView.refresh();
 
         addAllActionListeners();
@@ -334,6 +344,13 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
             UnitUtil.resetCriticalsAndMounts(unit);
             addAllActionListeners();
             refresh.refreshAll();
+        } else if (e.getSource() instanceof JCheckBox) {
+            JCheckBox check = (JCheckBox)e.getSource();
+            
+            if ( check.equals(omniCB) ) {
+                unit.setOmni(omniCB.isSelected());
+            }
+            refresh.refreshAll();
         }
 
     }
@@ -393,6 +410,8 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         techLevel.removeActionListener(this);
         techType.removeActionListener(this);
         era.removeKeyListener(this);
+        omniCB.removeActionListener(this);
+        quadCB.removeActionListener(this);
     }
 
     public void addAllActionListeners() {
@@ -406,6 +425,8 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         techLevel.addActionListener(this);
         techType.addActionListener(this);
         era.addKeyListener(this);
+        omniCB.addActionListener(this);
+        quadCB.addActionListener(this);
 
     }
 
@@ -436,5 +457,9 @@ public class StructureTab extends JPanel implements ActionListener, KeyListener 
         else
             unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), false);
         addHeatSinkMounts();
+    }
+    
+    public boolean isQuad() {
+        return quadCB.isSelected();
     }
 }

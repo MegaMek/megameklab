@@ -21,18 +21,17 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
+import megameklab.com.ui.tabs.ITab;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SpringLayoutHelper;
 
 import megamek.common.Mech;
 
-public class Header extends JPanel implements KeyListener{
+public class Header extends ITab implements KeyListener{
 
-    private Mech unit;
     private RefreshListener refresh;
     private JTextField chassis = new JTextField(5);
     private JTextField model = new JTextField(5);
@@ -71,6 +70,10 @@ public class Header extends JPanel implements KeyListener{
         refresh.refreshHeader();
     }
 
+    public void refresh() {
+        
+    }
+    
     public void keyTyped(KeyEvent e) {
     }
     
