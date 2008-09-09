@@ -36,13 +36,12 @@ import megameklab.com.ui.util.CriticalTable;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.RefreshListener;
 
-public class BuildView extends JPanel implements ActionListener {
+public class BuildView extends View implements ActionListener {
 
     /**
      * 
      */
     private static final long serialVersionUID = 799195356642563937L;
-    private Mech unit;
 
     private JPanel mainPanel = new JPanel();
     private CriticalTableModel equipmentList;
@@ -52,7 +51,7 @@ public class BuildView extends JPanel implements ActionListener {
     private int engineHeatSinkCount = 0;
 
     public BuildView(Mech unit) {
-        this.unit = unit;
+        super(unit);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);

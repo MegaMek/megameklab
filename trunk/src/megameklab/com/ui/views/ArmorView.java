@@ -30,17 +30,12 @@ import megameklab.com.ui.util.RefreshListener;
 
 import megamek.common.Mech;
 
-public class ArmorView extends JPanel implements KeyListener {
+public class ArmorView extends View implements KeyListener {
 
     /**
      * 
      */
     private static final long serialVersionUID = 799195356642563937L;
-
-    // private EntityVerifier entityVerifier = new EntityVerifier(new
-    // File("data/mechfiles/UnitVerifierOptions.xml"));
-    private Mech unit;
-    // private TestMech testMech;
 
     private JPanel mainPanel = new JPanel();
 
@@ -89,7 +84,7 @@ public class ArmorView extends JPanel implements KeyListener {
 
     public ArmorView(Mech unit) {
 
-        this.unit = unit;
+        super(unit);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 

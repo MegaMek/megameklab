@@ -30,13 +30,13 @@ import megamek.common.loaders.MtfFile;
 import megameklab.com.ui.util.DropTargetCriticalList;
 import megameklab.com.ui.util.RefreshListener;
 
-public class CriticalView extends JPanel {
+public class CriticalView extends View {
 
     /**
      * 
      */
     private static final long serialVersionUID = -6960975031034494605L;
-    private Mech unit;
+
     private JPanel laPanel = new JPanel();
     private JPanel raPanel = new JPanel();
     private JPanel llPanel = new JPanel();
@@ -52,7 +52,7 @@ public class CriticalView extends JPanel {
     private boolean showEmpty = false;
 
     public CriticalView(Mech unit, boolean showEmpty, RefreshListener refresh) {
-        this.unit = unit;
+        super(unit);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
         

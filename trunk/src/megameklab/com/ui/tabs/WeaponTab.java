@@ -16,7 +16,6 @@
 
 package megameklab.com.ui.tabs;
 
-import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
 import megamek.common.Mech;
@@ -24,7 +23,7 @@ import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SpringLayoutHelper;
 import megameklab.com.ui.views.WeaponView;
 
-public class WeaponTab extends JPanel{
+public class WeaponTab extends ITab{
 
     /**
      * 
@@ -34,6 +33,7 @@ public class WeaponTab extends JPanel{
     private RefreshListener refresh;
     
     public WeaponTab(Mech unit){
+        this.unit = unit;
         this.weapon = new WeaponView(unit);
         this.setLayout(new SpringLayout());
         this.add(weapon);
@@ -43,6 +43,7 @@ public class WeaponTab extends JPanel{
     }
 
     public void refresh() {
+        weapon.updateMech(unit);
         weapon.refresh();
     }
 

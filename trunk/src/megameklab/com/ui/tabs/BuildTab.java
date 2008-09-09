@@ -31,25 +31,23 @@ import megameklab.com.ui.util.SpringLayoutHelper;
 import megameklab.com.ui.views.BuildView;
 import megameklab.com.ui.views.CriticalView;
 
-import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 
-public class BuildTab extends JPanel implements ActionListener{
+public class BuildTab extends ITab implements ActionListener{
 
     /**
      * 
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
-    Mech unit;
     RefreshListener refresh = null;
     private CriticalView critView = null;
     private CriticalTableModel critList;
     private BuildView buildView = null;
     
-    public BuildTab(Entity unit, EquipmentTab equipment, WeaponTab weapons) {
-        this.unit = (Mech) unit;
+    public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons) {
+        this.unit = unit;
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         
         critView = new CriticalView(this.unit, true, refresh);
@@ -77,6 +75,8 @@ public class BuildTab extends JPanel implements ActionListener{
 
     public void refresh() {
         removeAllActionListeners();
+        critView.updateMech(unit);
+        buildView.updateMech(unit);
         critView.refresh();
         buildView.refresh();
         addAllActionListeners();

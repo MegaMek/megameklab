@@ -50,13 +50,12 @@ import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.UnitUtil;
 
-public class WeaponView extends JPanel implements ActionListener {
+public class WeaponView extends View implements ActionListener {
 
     /**
      * 
      */
     private static final long serialVersionUID = 799195356642563937L;
-    private Mech unit;
     private RefreshListener refresh;
 
     private JPanel mainPanel = new JPanel();
@@ -109,7 +108,7 @@ public class WeaponView extends JPanel implements ActionListener {
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
     public WeaponView(Mech unit) {
-        this.unit = unit;
+        super(unit);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));

@@ -48,6 +48,7 @@ import megamek.common.BipedMech;
 import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 
 public class MainUI extends JFrame implements RefreshListener {
@@ -97,6 +98,15 @@ public class MainUI extends JFrame implements RefreshListener {
         });
         file.add(item);
 
+        item = new JMenuItem("Reset");
+        item.setMnemonic('R');
+        item.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               jMenuResetEntity_actionPerformed(e);
+           }
+        });
+        file.add(item);
+        
         file.addSeparator();
 
         item = new JMenuItem();
@@ -119,7 +129,8 @@ public class MainUI extends JFrame implements RefreshListener {
         });
 
         //ConfigPane.setMinimumSize(new Dimension(300, 300));
-        createNewMech();
+        createNewMech(false);
+        this.setTitle(entity.getChassis()+" "+entity.getModel()+".mtf");
         setJMenuBar(menuBar);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -165,6 +176,13 @@ public class MainUI extends JFrame implements RefreshListener {
         loadUnit();
     }
 
+    public void jMenuResetEntity_actionPerformed(ActionEvent event) {
+        createNewMech(false);
+        structureTab.updateMech(entity);
+        refreshStructure();
+        refreshAll();
+    }
+    
     public void reloadTabs() {
         masterPanel.removeAll();
         ConfigPane.removeAll();
@@ -203,10 +221,14 @@ public class MainUI extends JFrame implements RefreshListener {
         System.exit(0);
     }
 
-    public void createNewMech() {
+    public void createNewMech(boolean isQuad) {
         
-        entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
-
+        if ( isQuad ) {
+            entity = new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
+        } else {
+            entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
+        }
+        
         entity.setYear(2075);
         entity.setTechLevel(TechConstants.T_IS_LEVEL_1);
         entity.setWeight(25);
@@ -228,15 +250,24 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void refreshAll() {
+        
+        if ( (structureTab.isQuad() && !(entity instanceof QuadMech)) 
+                || (!structureTab.isQuad() && entity instanceof QuadMech) ) {
+            createNewMech(structureTab.isQuad());
+            structureTab.updateMech(entity);
+            armorTab.updateMech(entity);
+            equipmentTab.updateMech(entity);
+            weaponTab.updateMech(entity);
+            buildTab.updateMech(entity);
+            statusbar.updateMech(entity);
+            header.updateMech(entity);
+        }
         statusbar.refresh();
         structureTab.refresh();
         armorTab.refresh();
         equipmentTab.refresh();
         weaponTab.refresh();
         buildTab.refresh();
-        
-        this.setTitle(entity.getChassis()+" "+entity.getModel()+".mtf");
-        header = new Header(entity);
     }
 
     public void refreshArmor() {

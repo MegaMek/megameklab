@@ -42,14 +42,13 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 
-public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
+public class ArmorTab extends ITab implements ActionListener, ChangeListener {
 
     /**
      * 
      */
     private static final long serialVersionUID = -7235362583437251408L;
 
-    private Mech unit;
     private ArmorView armor;
     private RefreshListener refresh = null;
     private JComboBox armorCombo = new JComboBox(EquipmentType.armorNames);
@@ -77,6 +76,7 @@ public class ArmorTab extends JPanel implements ActionListener, ChangeListener {
     }
 
     public void refresh() {
+        armor.updateMech(unit);
         armor.refresh();
     }
 

@@ -29,14 +29,15 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
+import megameklab.com.ui.tabs.ITab;
 
-public class StatusBar extends JPanel {
+public class StatusBar extends ITab {
 
     /**
      * 
      */
     private static final long serialVersionUID = -6754327753693500675L;
-    private Mech unit;
+
     private JPanel heatPanel = new JPanel();
     private JPanel tonnagePanel = new JPanel();
     private JPanel movementPanel = new JPanel();
