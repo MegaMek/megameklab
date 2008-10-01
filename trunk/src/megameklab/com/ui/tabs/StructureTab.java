@@ -71,7 +71,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     JComboBox heatSinkNumber;
     String[] techTypes = { "I.S.", "Clan" };
     JComboBox techType = new JComboBox(techTypes);
-    String[] techLevels = { "1", "2", "3", "4" };
+    String[] techLevels = { "Basic", "Advanced", "Experimental", "Unoffical" };
     JComboBox techLevel = new JComboBox(techLevels);
     JTextField era = new JTextField(3);
     RefreshListener refresh = null;
@@ -180,16 +180,22 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         if (unit.isClan()) {
             techType.setSelectedIndex(1);
-            if (unit.getTechLevel() <= TechConstants.T_CLAN_LEVEL_2)
+            if (unit.getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL)
+                techLevel.setSelectedIndex(3);
+            else if (unit.getTechLevel() >= TechConstants.T_CLAN_EXPERIMENTAL)
+                techLevel.setSelectedIndex(2);
+            else if (unit.getTechLevel() >= TechConstants.T_CLAN_ADVANCED)
                 techLevel.setSelectedIndex(1);
             else
-                techLevel.setSelectedIndex(2);
+                techLevel.setSelectedIndex(0);
         } else {
             techType.setSelectedIndex(0);
 
-            if (unit.getTechLevel() >= TechConstants.T_IS_LEVEL_3)
+            if (unit.getTechLevel() >= TechConstants.T_IS_UNOFFICIAL)
+                techLevel.setSelectedIndex(3);
+            else if (unit.getTechLevel() >= TechConstants.T_IS_EXPERIMENTAL)
                 techLevel.setSelectedIndex(2);
-            else if (unit.getTechLevel() >= TechConstants.T_IS_LEVEL_2)
+            else if (unit.getTechLevel() >= TechConstants.T_IS_ADVANCED)
                 techLevel.setSelectedIndex(1);
             else
                 techLevel.setSelectedIndex(0);
@@ -319,20 +325,40 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 updateHeatSinks();
             } else if (combo.equals(techLevel) || combo.equals(techType)) {
                 if (techType.getSelectedIndex() > 0) {
-                    if (techLevel.getSelectedIndex() < 2) {
-                        unit.setTechLevel(TechConstants.T_CLAN_LEVEL_2);
-                    } else
-                        unit.setTechLevel(TechConstants.T_CLAN_LEVEL_3);
+                    switch (techLevel.getSelectedIndex()) {
+                    case 0:
+                        unit.setTechLevel(TechConstants.T_CLAN_TW);
+                        break;
+                    case 1:
+                        unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        break;
+                    case 2:
+                        unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        break;
+                    case 3:
+                        unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                        break;
+                    default:
+                        unit.setTechLevel(TechConstants.T_CLAN_TW);
+                        break;
+                    }
+
                 } else {
                     switch (techLevel.getSelectedIndex()) {
                     case 0:
-                        unit.setTechLevel(TechConstants.T_IS_LEVEL_1);
+                        unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
                         break;
                     case 1:
-                        unit.setTechLevel(TechConstants.T_IS_LEVEL_2);
+                        unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                        break;
+                    case 2:
+                        unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        break;
+                    case 3:
+                        unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
                         break;
                     default:
-                        unit.setTechLevel(TechConstants.T_IS_LEVEL_3);
+                        unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
                         break;
 
                     }

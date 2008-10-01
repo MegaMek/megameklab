@@ -1,9 +1,11 @@
 VERSION HISTORY:
 ----------------
-
-V 0.0.0.2
+V 0.0.0.2 (10/01/08)
 + Bug 1989465: Clan XL engine wrong crit slots
 + Bug 1989467: Targeting Computer crits
++ Added Omni Option
++ Added Quad Option
++ Converted to new MegaMek Tech Constants
 
 V 0.0.0.1 (06/09/2008)
 + Added History File
