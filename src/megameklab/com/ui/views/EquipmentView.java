@@ -134,20 +134,7 @@ public class EquipmentView extends View implements ActionListener {
         equipmentTypes = new TreeMap<String, EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
-            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
-            // IS
-                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 
-                            && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) 
-                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 
-                            && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 
-                            || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) 
-                            || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 
-                                    && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 
-                                    || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 
-                                    || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
-
-                    // Clan
-                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3))) && eq instanceof MiscType) {
+            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
                 equipmentTypes.put(eq.getName(), eq);
                 equipmentCombo.addItem(eq.getName());
             }

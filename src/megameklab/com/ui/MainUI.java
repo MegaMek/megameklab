@@ -230,7 +230,7 @@ public class MainUI extends JFrame implements RefreshListener {
         }
         
         entity.setYear(2075);
-        entity.setTechLevel(TechConstants.T_IS_LEVEL_1);
+        entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
         entity.setWeight(25);
         entity.setEngine(new Engine(25,Engine.NORMAL_ENGINE,0));
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
@@ -246,6 +246,9 @@ public class MainUI extends JFrame implements RefreshListener {
             entity.setArmor(0, loc);
             entity.setArmor(0, loc,true);
         }
+        
+        entity.setChassis("New");
+        entity.setModel("Mek");
         
     }
 

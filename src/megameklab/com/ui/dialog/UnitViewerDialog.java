@@ -384,17 +384,14 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
                 }
 
                 if (/* Weight */
-                (nClass == EntityWeightClass.SIZE || mechs[x].getWeightClass() == nClass) && /*
-                                                                                                 * Technology
-                                                                                                 * Level
-                                                                                                 */
-                ((nType == TechConstants.T_ALL) || (nType == mechs[x].getType()) || ((nType == TechConstants.T_LEVEL_2_ALL) && ((mechs[x].getType() == TechConstants.T_IS_LEVEL_1) || (mechs[x].getType() == TechConstants.T_IS_LEVEL_2) || (mechs[x].getType() == TechConstants.T_CLAN_LEVEL_2))) || ((nType == TechConstants.T_IS_LEVEL_2_ALL) && ((mechs[x].getType() == TechConstants.T_IS_LEVEL_1) || (mechs[x].getType() == TechConstants.T_IS_LEVEL_2)))) && /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Unit
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Type
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * (Mek,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * Infantry,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * etc.)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
+                (nClass == EntityWeightClass.SIZE || mechs[x].getWeightClass() == nClass) && 
+                /*
+                * Technology Level
+                */
+                ((nType == TechConstants.T_ALL) 
+                        || (nType == mechs[x].getType()) 
+                        || ((nType == TechConstants.T_IS_TW_ALL) && (mechs[x].getType() <= TechConstants.T_IS_TW_NON_BOX || mechs[x].getType() == TechConstants.T_INTRO_BOXSET))
+                        || (nType == TechConstants.T_TW_ALL && ( mechs[x].getType() <= TechConstants.T_IS_TW_NON_BOX || mechs[x].getType() <= TechConstants.T_INTRO_BOXSET || mechs[x].getType() <= TechConstants.T_CLAN_TW)) ) && 
                 (nUnitType == UnitType.SIZE || mechs[x].getUnitType().equals(UnitType.getTypeName(nUnitType)))) {
                     vMechs.add(mechs[x]);
                 }
@@ -461,14 +458,22 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         //int nUnitType = chUnitType.getSelectedIndex();
         for (Enumeration<EquipmentType> e = EquipmentType.getAllTypes(); e.hasMoreElements();) {
             EquipmentType et = e.nextElement();
-            if (et instanceof WeaponType && (et.getTechLevel() == nType || (nType == TechConstants.T_ALL) || ((nType == TechConstants.T_LEVEL_2_ALL) && ((et.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (et.getTechLevel() == TechConstants.T_IS_LEVEL_2) || (et.getTechLevel() == TechConstants.T_CLAN_LEVEL_2))) || ((nType == TechConstants.T_IS_LEVEL_2_ALL || nType == TechConstants.T_IS_LEVEL_2) && ((et.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (et.getTechLevel() == TechConstants.T_IS_LEVEL_2))))) {
+            if (et instanceof WeaponType && 
+                    (et.getTechLevel() == nType || 
+                            ((nType == TechConstants.T_ALL) 
+                                    || ((nType == TechConstants.T_IS_TW_ALL) && (et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() == TechConstants.T_INTRO_BOXSET))
+                                    || (nType == TechConstants.T_TW_ALL && ( et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() <= TechConstants.T_INTRO_BOXSET || et.getTechLevel() <= TechConstants.T_CLAN_TW)) ) ) ) { 
                 if (!(nUnitType == UnitType.SIZE) && ((UnitType.getTypeName(nUnitType).equals("Mek") || UnitType.getTypeName(nUnitType).equals("Tank")) && (et.hasFlag(WeaponType.F_INFANTRY) || et.hasFlag(WeaponType.F_INFANTRY_ONLY)))) {
                     continue;
                 }
                 m_cWeapons1.addItem(et.getName());
                 m_cWeapons2.addItem(et.getName());
             }
-            if (et instanceof MiscType && (et.getTechLevel() == nType || (nType == TechConstants.T_ALL) || ((nType == TechConstants.T_LEVEL_2_ALL) && ((et.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (et.getTechLevel() == TechConstants.T_IS_LEVEL_2) || (et.getTechLevel() == TechConstants.T_CLAN_LEVEL_2))) || ((nType == TechConstants.T_IS_LEVEL_2_ALL || nType == TechConstants.T_IS_LEVEL_2) && ((et.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (et.getTechLevel() == TechConstants.T_IS_LEVEL_2))))) {
+            if (et instanceof MiscType &&                     
+                    (et.getTechLevel() == nType || 
+                    ((nType == TechConstants.T_ALL) 
+                            || ((nType == TechConstants.T_IS_TW_ALL) && (et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() == TechConstants.T_INTRO_BOXSET))
+                            || (nType == TechConstants.T_TW_ALL && ( et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() <= TechConstants.T_INTRO_BOXSET || et.getTechLevel() <= TechConstants.T_CLAN_TW)) ) ) ) { 
                 m_cEquipment.addItem(et.getName());
             }
         }

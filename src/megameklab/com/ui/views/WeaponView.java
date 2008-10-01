@@ -226,61 +226,37 @@ public class WeaponView extends View implements ActionListener {
         equipmentTypes = new TreeMap<String, EquipmentType>();
 
         for (EquipmentType eq : masterLaserWeaponList) {
-            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
-            // IS
-                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
-                    // Clan
-                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
                 equipmentTypes.put(eq.getName(), eq);
                 laserWeaponCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterLaserAmmoList) {
-            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
-            // IS
-                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
-                    // Clan
-                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
                 equipmentTypes.put(eq.getName(), eq);
                 laserAmmoCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterMissileWeaponList) {
-            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
-            // IS
-                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
-                    // Clan
-                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
                 equipmentTypes.put(eq.getName(), eq);
                 missileWeaponCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterMissileAmmoList) {
-            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
-            // IS
-                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
-                    // Clan
-                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
                 equipmentTypes.put(eq.getName(), eq);
                 missileAmmoCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterBallisticWeaponList) {
-            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
-            // IS
-                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
-                    // Clan
-                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
                 equipmentTypes.put(eq.getName(), eq);
                 ballisticWeaponCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterBallisticAmmoList) {
-            if ((eq.getTechLevel() == TechConstants.T_ALL || eq.getTechLevel() == TechConstants.T_ALLOWED_ALL || eq.getTechLevel() == TechConstants.T_TECH_UNKNOWN
-            // IS
-                    || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_1 && eq.getTechLevel() == TechConstants.T_IS_LEVEL_1) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_2 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2)) || (unit.getTechLevel() == TechConstants.T_IS_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_IS_LEVEL_1 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_2 || eq.getTechLevel() == TechConstants.T_IS_LEVEL_3))
-                    // Clan
-                    || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 && eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2) || (unit.getTechLevel() == TechConstants.T_CLAN_LEVEL_3 && (eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_2 || eq.getTechLevel() == TechConstants.T_CLAN_LEVEL_3)))) {
+            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
                 equipmentTypes.put(eq.getName(), eq);
                 ballisticAmmoCombo.addItem(eq.getName());
             }
