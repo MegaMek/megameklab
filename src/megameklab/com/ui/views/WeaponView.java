@@ -392,7 +392,9 @@ public class WeaponView extends View implements ActionListener {
         } else {
             return;
         }
-        UnitUtil.updateTC(unit);
+        if ( unit.hasTargComp() ){
+            UnitUtil.updateTC(unit);
+        }
         fireTableRefresh();
 
     }
