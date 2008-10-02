@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v 0.0.0.5-dev
+
 v 0.0.0.4 (10/2/08)
 + Bug: Wrong Targeting computer getting set.
 + Bug: Tech Levels not completely separating Equipment/Weapons 
