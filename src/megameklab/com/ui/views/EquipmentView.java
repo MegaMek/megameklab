@@ -39,7 +39,6 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.TechConstants;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.UnitUtil;
@@ -134,7 +133,7 @@ public class EquipmentView extends View implements ActionListener {
         equipmentTypes = new TreeMap<String, EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
-            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
+            if (UnitUtil.isLegal(unit,eq.getTechLevel())){
                 equipmentTypes.put(eq.getName(), eq);
                 equipmentCombo.addItem(eq.getName());
             }

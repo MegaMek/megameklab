@@ -23,6 +23,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.TechConstants;
 
 public class UnitUtil {
     
@@ -263,5 +264,31 @@ public class UnitUtil {
         }
     }
 
+    public static boolean isLegal(Entity unit, int techLevel ){
+        
+        boolean legalTech = TechConstants.isLegal(unit.getTechLevel(),techLevel,true);
+        
+        if ( !legalTech ){
+            return legalTech;
+        }
+        
+        if ( unit.isMixedTech() ){
+            return true;
+        }
+        
+        if ( unit.getTechLevel() >= TechConstants.T_IS_ADVANCED ){
+            if ( unit.isClan() ){
+                if ( techLevel == TechConstants.T_INTRO_BOXSET || techLevel == TechConstants.T_IS_TW_NON_BOX || techLevel == TechConstants.T_IS_ADVANCED || techLevel == TechConstants.T_IS_EXPERIMENTAL || techLevel == TechConstants.T_IS_UNOFFICIAL ){
+                    return false;
+                }
+            }else{
+                if ( techLevel == TechConstants.T_CLAN_TW || techLevel == TechConstants.T_CLAN_ADVANCED || techLevel == TechConstants.T_CLAN_EXPERIMENTAL || techLevel == TechConstants.T_CLAN_UNOFFICIAL){
+                    return false;
+                }
+            }
+        }
+        
+        return legalTech;
+    }
 
 }

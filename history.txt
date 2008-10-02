@@ -1,5 +1,12 @@
 VERSION HISTORY:
 ----------------
+v 0.0.0.4 (10/2/08)
++ Bug: Wrong Targeting computer getting set.
++ Bug: Tech Levels not completely separating Equipment/Weapons 
++ Added separate lists for Clan/Is TechLevel
++ Added separate lists for Clan/Is Engine Types
++ Added separate lists for Clan/Is HeatSinks
+
 v 0.0.0.3 (10/1/08)
 + Added Omni Option
 + Added Quad Option
