@@ -60,19 +60,22 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private static final long serialVersionUID = -6756011847500605874L;
 
     
-    String[] engineTypes = { "I.C.E.", "Standard", "XL", "Light", "XXL", "Compact" };
-    JComboBox engineType = new JComboBox(engineTypes);
+    String[] isEngineTypes = { "I.C.E.", "Standard", "XL", "Light", "XXL", "Compact" };
+    String[] clanEngineTypes = { "I.C.E.", "Standard", "XL", "XXL"};
+    JComboBox engineType = new JComboBox(isEngineTypes);
     JComboBox walkMP;
     JComboBox gyroType = new JComboBox(Mech.GYRO_SHORT_STRING);
     JComboBox weightClass;
     JComboBox cockpitType = new JComboBox(Mech.COCKPIT_SHORT_STRING);
-    String[] heatSinkTypes = { "Single", "Double", "Compact", "Laser" };
-    JComboBox heatSinkType = new JComboBox(heatSinkTypes);
+    String[] clanHeatSinkTypes = { "Single", "Double", "Compact", "Laser" };
+    String[] isHeatSinkTypes = { "Single", "Double", "Compact"};
+    JComboBox heatSinkType = new JComboBox(isHeatSinkTypes);
     JComboBox heatSinkNumber;
     String[] techTypes = { "I.S.", "Clan" };
     JComboBox techType = new JComboBox(techTypes);
-    String[] techLevels = { "Basic", "Advanced", "Experimental", "Unoffical" };
-    JComboBox techLevel = new JComboBox(techLevels);
+    String[] isTechLevels = { "Intro", "Basic", "Advanced", "Experimental", "Unoffical" };
+    String[] clanTechLevels = { "Basic", "Advanced", "Experimental", "Unoffical" };
+    JComboBox techLevel = new JComboBox(isTechLevels);
     JTextField era = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
@@ -168,7 +171,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         quadCB.setSelected(unit instanceof QuadMech);
         era.setText(Integer.toString(unit.getYear()));
         gyroType.setSelectedIndex(unit.getGyroType());
-        engineType.setSelectedIndex(unit.getEngine().getEngineType());
         weightClass.setSelectedIndex((int) (unit.getWeight() / 5) - 2);
         cockpitType.setSelectedIndex(unit.getCockpitType());
         try {
@@ -179,6 +181,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         if (unit.isClan()) {
+            
+            if ( unit.getEngine().getEngineType() == Engine.XXL_ENGINE ){
+                engineType.setSelectedIndex(3);
+            }else{
+                engineType.setSelectedIndex(unit.getEngine().getEngineType());
+            }
             techType.setSelectedIndex(1);
             if (unit.getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL)
                 techLevel.setSelectedIndex(3);
@@ -189,20 +197,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             else
                 techLevel.setSelectedIndex(0);
         } else {
+            engineType.setSelectedIndex(unit.getEngine().getEngineType());
             techType.setSelectedIndex(0);
 
             if (unit.getTechLevel() >= TechConstants.T_IS_UNOFFICIAL)
-                techLevel.setSelectedIndex(3);
+                techLevel.setSelectedIndex(4);
             else if (unit.getTechLevel() >= TechConstants.T_IS_EXPERIMENTAL)
-                techLevel.setSelectedIndex(2);
+                techLevel.setSelectedIndex(3);
             else if (unit.getTechLevel() >= TechConstants.T_IS_ADVANCED)
+                techLevel.setSelectedIndex(2);
+            else if (unit.getTechLevel() >= TechConstants.T_IS_TW_NON_BOX)
                 techLevel.setSelectedIndex(1);
             else
                 techLevel.setSelectedIndex(0);
 
         }
 
-        if (unit.hasLaserHeatSinks())
+        if (unit.hasLaserHeatSinks() && unit.isClan())
             heatSinkType.setSelectedIndex(3);
         else if (unit.hasDoubleHeatSinks()) {
             if (hasCompactHeatSinks(unit))
@@ -262,7 +273,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 } else {
                     removeSystemCrits(Mech.SYSTEM_ENGINE);
                     if (unit.isClan()) {
-                        unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), Engine.CLAN_ENGINE));
+                        int type = engineType.getSelectedIndex();
+                        
+                        if ( type > Engine.XL_ENGINE ){
+                            type = Engine.XXL_ENGINE;
+                        }
+                        unit.setEngine(new Engine(rating, type, Engine.CLAN_ENGINE));
                     } else {
                         unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), 0));
                     }
@@ -324,8 +340,22 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
                 updateHeatSinks();
             } else if (combo.equals(techLevel) || combo.equals(techType)) {
+                int unitTechLevel = techLevel.getSelectedIndex(); 
+                engineType.removeAllItems();
+                techLevel.removeAllItems();
+                heatSinkType.removeAllItems();
                 if (techType.getSelectedIndex() > 0) {
-                    switch (techLevel.getSelectedIndex()) {
+                    
+                    for ( String item : clanEngineTypes ){
+                        engineType.addItem(item);
+                    }
+                    for ( String item : clanHeatSinkTypes ){
+                        heatSinkType.addItem(item);
+                    }
+                    for ( String item : clanTechLevels ){
+                        techLevel.addItem(item);
+                    }
+                    switch (unitTechLevel) {
                     case 0:
                         unit.setTechLevel(TechConstants.T_CLAN_TW);
                         break;
@@ -344,23 +374,32 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
 
                 } else {
-                    switch (techLevel.getSelectedIndex()) {
+                    for ( String item : isEngineTypes ){
+                        engineType.addItem(item);
+                    }
+                    for ( String item : isHeatSinkTypes ){
+                        heatSinkType.addItem(item);
+                    }
+                    for ( String item : isTechLevels ){
+                        techLevel.addItem(item);
+                    }
+
+                    switch (unitTechLevel) {
                     case 0:
                         unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
                         break;
                     case 1:
-                        unit.setTechLevel(TechConstants.T_IS_ADVANCED);
-                        break;
-                    case 2:
-                        unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                        break;
-                    case 3:
-                        unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                        break;
-                    default:
                         unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
                         break;
-
+                    case 2:
+                        unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                        break;
+                    case 3:
+                        unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        break;
+                    default:
+                        unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                    break;
                     }
                 }
                 addAllActionListeners();

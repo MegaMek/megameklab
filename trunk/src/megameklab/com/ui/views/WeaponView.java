@@ -39,7 +39,6 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
-import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.InfantryWeapon;
 import megamek.common.weapons.NavalACWeapon;
@@ -226,37 +225,37 @@ public class WeaponView extends View implements ActionListener {
         equipmentTypes = new TreeMap<String, EquipmentType>();
 
         for (EquipmentType eq : masterLaserWeaponList) {
-            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
+            if (UnitUtil.isLegal(unit,eq.getTechLevel())){
                 equipmentTypes.put(eq.getName(), eq);
                 laserWeaponCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterLaserAmmoList) {
-            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
+            if (UnitUtil.isLegal(unit,eq.getTechLevel())){
                 equipmentTypes.put(eq.getName(), eq);
                 laserAmmoCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterMissileWeaponList) {
-            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
+            if (UnitUtil.isLegal(unit,eq.getTechLevel())){
                 equipmentTypes.put(eq.getName(), eq);
                 missileWeaponCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterMissileAmmoList) {
-            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
+            if (UnitUtil.isLegal(unit,eq.getTechLevel())){
                 equipmentTypes.put(eq.getName(), eq);
                 missileAmmoCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterBallisticWeaponList) {
-            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
+            if (UnitUtil.isLegal(unit,eq.getTechLevel())){
                 equipmentTypes.put(eq.getName(), eq);
                 ballisticWeaponCombo.addItem(eq.getName());
             }
         }
         for (EquipmentType eq : masterBallisticAmmoList) {
-            if (TechConstants.isLegal(unit.getTechLevel(),eq.getTechLevel(),true)){
+            if (UnitUtil.isLegal(unit,eq.getTechLevel())){
                 equipmentTypes.put(eq.getName(), eq);
                 ballisticAmmoCombo.addItem(eq.getName());
             }
