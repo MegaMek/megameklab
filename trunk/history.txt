@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v 0.0.0.5-dev
++ Bug 1989468: Hand / Lower Arm Actuator cannot be removed
 
 v 0.0.0.4 (10/2/08)
 + Bug: Wrong Targeting computer getting set.

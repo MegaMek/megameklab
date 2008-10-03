@@ -36,6 +36,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import megamek.common.AmmoType;
+import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.LocationFullException;
@@ -146,7 +147,8 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
         if (e.getButton() == MouseEvent.BUTTON1 || ( e.getButton() == MouseEvent.BUTTON3 && this.getSelectedIndex() >= 0 ) ) {
 
             Mounted mount = getMounted();
-
+            int location = getCritLocation();
+            
             if (mount != null) {
                 JPopupMenu popup = new JPopupMenu();
                 popup.setAutoscrolls(true);
@@ -177,6 +179,49 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                         });
                         popup.add(info);
                     }
+                }
+                popup.show(this, e.getX(), e.getY());
+            }else if ( unit instanceof BipedMech && (location == Mech.LOC_LARM || location == Mech.LOC_RARM) ) {
+                JPopupMenu popup = new JPopupMenu();
+                popup.setAutoscrolls(true);
+                if ( unit.getCritical(location,3) == null ) {
+                    JMenuItem info = new JMenuItem("Add Hand");
+                    info.setActionCommand(Integer.toString(location));
+                    info.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            addHand(Integer.parseInt(e.getActionCommand()));
+                        }
+                    });
+                    popup.add(info);
+                }else {
+                    JMenuItem info = new JMenuItem("Remove Hand");
+                    info.setActionCommand(Integer.toString(location));
+                    info.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            removeHand(Integer.parseInt(e.getActionCommand()));
+                        }
+                    });
+                    popup.add(info);
+                }
+
+                if ( unit.getCritical(location,2) == null ) {
+                    JMenuItem info = new JMenuItem("Add Lower Arm");
+                    info.setActionCommand(Integer.toString(location));
+                    info.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            addArm(Integer.parseInt(e.getActionCommand()));
+                        }
+                    });
+                    popup.add(info);
+                }else {
+                    JMenuItem info = new JMenuItem("Remove Lower Arm");
+                    info.setActionCommand(Integer.toString(location));
+                    info.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            removeArm(Integer.parseInt(e.getActionCommand()));
+                        }
+                    });
+                    popup.add(info);
                 }
                 popup.show(this, e.getX(), e.getY());
             }
@@ -234,5 +279,30 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
 
     private int getCritLocation() {
         return Integer.parseInt(this.getName());
+    }
+    
+    
+    private void addHand(int location ) {
+        unit.setCritical(location, 3, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_HAND));
+        addArm(location);
+    }
+    
+    private void removeHand(int location) {
+        unit.setCritical(location, 3, null);
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
+    }
+    
+    private void removeArm(int location) {
+        unit.setCritical(location, 2, null);
+        removeHand(location);
+    }
+    
+    private void addArm(int location) {
+        unit.setCritical(location, 2, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_LOWER_ARM));
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
     }
 }
