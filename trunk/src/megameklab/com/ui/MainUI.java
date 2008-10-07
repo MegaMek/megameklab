@@ -17,12 +17,34 @@
 package megameklab.com.ui;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.ImageObserver;
+import java.awt.print.PageFormat;
+import java.awt.print.Pageable;
+import java.awt.print.Paper;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintService;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -58,6 +80,8 @@ public class MainUI extends JFrame implements RefreshListener {
      */
     private static final long serialVersionUID = -5836932822468918198L;
     private static final String VERSION = "0.0.0.5-dev";
+    private static int numberOfPages = 1;
+
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
     JMenu file = new JMenu("File");
@@ -72,10 +96,10 @@ public class MainUI extends JFrame implements RefreshListener {
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
-    
+
     public MainUI() {
 
-        System.out.println("Staring MegaMekLab version: "+VERSION);
+        System.out.println("Staring MegaMekLab version: " + VERSION);
         file.setMnemonic('F');
         JMenuItem item = new JMenuItem();
 
@@ -87,13 +111,13 @@ public class MainUI extends JFrame implements RefreshListener {
             }
         });
         file.add(item);
-        
+
         item = new JMenuItem();
         item.setText("Save");
         item.setMnemonic('S');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SaveMechToMTF.getInstance(entity, entity.getChassis()+" "+entity.getModel()+".mtf").save();
+                SaveMechToMTF.getInstance(entity, entity.getChassis() + " " + entity.getModel() + ".mtf").save();
             }
         });
         file.add(item);
@@ -101,12 +125,21 @@ public class MainUI extends JFrame implements RefreshListener {
         item = new JMenuItem("Reset");
         item.setMnemonic('R');
         item.addActionListener(new ActionListener() {
-           public void actionPerformed(ActionEvent e) {
-               jMenuResetEntity_actionPerformed(e);
-           }
+            public void actionPerformed(ActionEvent e) {
+                jMenuResetEntity_actionPerformed(e);
+            }
         });
         file.add(item);
-        
+
+        item = new JMenuItem("Print");
+        item.setMnemonic('P');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuPrint_actionPerformed(e);
+            }
+        });
+        file.add(item);
+
         file.addSeparator();
 
         item = new JMenuItem();
@@ -124,21 +157,21 @@ public class MainUI extends JFrame implements RefreshListener {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                    System.exit(0);
+                System.exit(0);
             }
         });
 
-        //ConfigPane.setMinimumSize(new Dimension(300, 300));
+        // ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewMech(false);
-        this.setTitle(entity.getChassis()+" "+entity.getModel()+".mtf");
+        this.setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
         setJMenuBar(menuBar);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setViewportView(masterPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         this.add(scroll);
-        Dimension maxSize = new Dimension(800,600);
-        //masterPanel.setPreferredSize(new Dimension(600,400));
+        Dimension maxSize = new Dimension(800, 600);
+        // masterPanel.setPreferredSize(new Dimension(600,400));
         scroll.setPreferredSize(maxSize);
         setResizable(true);
         setSize(maxSize);
@@ -150,18 +183,18 @@ public class MainUI extends JFrame implements RefreshListener {
         this.setVisible(true);
         repaint();
         refreshAll();
-    }   
+    }
 
     private void loadUnit() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
-        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog,0);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, 0);
         viewer.setVisible(true);
 
         if (viewer != null) {
-            
-            if ( !(viewer.getSelectedEntity() instanceof Mech) )
+
+            if (!(viewer.getSelectedEntity() instanceof Mech))
                 return;
-            entity = (Mech)viewer.getSelectedEntity();
+            entity = (Mech) viewer.getSelectedEntity();
             viewer.setVisible(false);
             viewer.dispose();
             this.setVisible(false);
@@ -182,33 +215,44 @@ public class MainUI extends JFrame implements RefreshListener {
         refreshStructure();
         refreshAll();
     }
-    
+
+    public void jMenuPrint_actionPerformed(ActionEvent event) {
+
+        SimplePrint sp = new SimplePrint();
+
+        sp.print();
+
+        /*
+         * Grab the image. fImg = getToolkit().getImage(fImageName); JLabel printLabel = new JLabel(); printLabel.setIcon(new ImageIcon(fImg)); JFrame printFrame = new JFrame(); printFrame.add(printLabel); printFrame.pack(); printFrame.repaint(); printFrame.setVisible(true); // Create the PrintJob object PrintJob pjb = printFrame.getToolkit().getPrintJob(printFrame, "Print Test", null); if (pjb != null) { Graphics pg = pjb.getGraphics(); if (pg != null) { paint(pg); // Paint all components on the frame pg.dispose(); // flush page } pjb.end(); } printFrame.setVisible(false);
+         */
+
+    }
+
     public void reloadTabs() {
         masterPanel.removeAll();
         ConfigPane.removeAll();
-        
-        masterPanel.setLayout(new BoxLayout(masterPanel,BoxLayout.Y_AXIS));
+
+        masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
         structureTab = new StructureTab(entity);
         armorTab = new ArmorTab(entity);
         header = new Header(entity);
         statusbar = new StatusBar(entity);
         equipmentTab = new EquipmentTab(entity);
         weaponTab = new WeaponTab(entity);
-        buildTab = new BuildTab(entity,equipmentTab,weaponTab);
+        buildTab = new BuildTab(entity, equipmentTab, weaponTab);
         header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
         armorTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         weaponTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
-        
+
         ConfigPane.addTab("Structure", structureTab);
         ConfigPane.addTab("Armor", armorTab);
         ConfigPane.addTab("Equipment", equipmentTab);
         ConfigPane.addTab("Weapons", weaponTab);
         ConfigPane.addTab("Build", buildTab);
-        
-        
+
         masterPanel.add(header);
         masterPanel.add(ConfigPane);
         masterPanel.add(statusbar);
@@ -222,17 +266,17 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void createNewMech(boolean isQuad) {
-        
-        if ( isQuad ) {
+
+        if (isQuad) {
             entity = new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
         } else {
             entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
         }
-        
+
         entity.setYear(2075);
         entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
         entity.setWeight(25);
-        entity.setEngine(new Engine(25,Engine.NORMAL_ENGINE,0));
+        entity.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
@@ -240,22 +284,21 @@ public class MainUI extends JFrame implements RefreshListener {
         entity.addEngineCrits();
         entity.addCockpit();
         entity.addEngineSinks(entity.getEngine().integralHeatSinkCapacity(), false);
-        
+
         entity.autoSetInternal();
-        for ( int loc = 0; loc <= Mech.LOC_LLEG; loc++ ) {
+        for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
             entity.setArmor(0, loc);
-            entity.setArmor(0, loc,true);
+            entity.setArmor(0, loc, true);
         }
-        
+
         entity.setChassis("New");
         entity.setModel("Mek");
-        
+
     }
 
     public void refreshAll() {
-        
-        if ( (structureTab.isQuad() && !(entity instanceof QuadMech)) 
-                || (!structureTab.isQuad() && entity instanceof QuadMech) ) {
+
+        if ((structureTab.isQuad() && !(entity instanceof QuadMech)) || (!structureTab.isQuad() && entity instanceof QuadMech)) {
             createNewMech(structureTab.isQuad());
             structureTab.updateMech(entity);
             armorTab.updateMech(entity);
@@ -283,11 +326,11 @@ public class MainUI extends JFrame implements RefreshListener {
 
     public void refreshEquipment() {
         equipmentTab.refresh();
-        
+
     }
 
     public void refreshHeader() {
-        this.setTitle(entity.getChassis()+" "+entity.getModel()+".mtf");
+        this.setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
     }
 
     public void refreshStatus() {
@@ -300,6 +343,119 @@ public class MainUI extends JFrame implements RefreshListener {
 
     public void refreshWeapons() {
         weaponTab.refresh();
+    }
+
+}
+
+class SimplePrint implements Printable, ImageObserver {
+
+    protected Image awtImage = null;
+    String fImageName = "./data/images/TWBiPed.JPG";
+
+    public SimplePrint() {
+        awtImage = Toolkit.getDefaultToolkit().createImage(fImageName);
+        System.out.println("Width: " + awtImage.getWidth(null));
+        System.out.println("Height: " + awtImage.getHeight(null));
+    }
+
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+        if (pageIndex >= 1)
+            return Printable.NO_SUCH_PAGE;
+        Graphics2D g2d = (Graphics2D) graphics;
+        // f.setPaper(this.paper);
+        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+        if (awtImage != null) {
+            printImage(g2d, awtImage);
+            return Printable.PAGE_EXISTS;
+        } else
+            return Printable.NO_SUCH_PAGE;
+    }
+
+    public void printImage(Graphics2D g2d, Image image) {
+        System.out.println("printImage(Graphics2D g2d, Image image)");
+        if ((image == null) || (g2d == null))
+            return;
+        int x = 0;
+        int y = 0;
+        g2d.drawImage(image, x, y, this);
+        Font font = new Font("Serif", Font.PLAIN, 30);
+        g2d.setFont(font);
+        g2d.drawString("Batch Header - SALES", 100, 100);
+        g2d.drawString("SALES Batch Header - 02353 BT: 00", 5, 500);
+        font = new Font("Serif", Font.BOLD, 30);
+        g2d.setFont(font);
+        g2d.drawString("Batch Number - 02353", 100, 135);
+        font = new Font("Serif", Font.BOLD, 15);
+        g2d.setFont(font);
+        g2d.drawString("12997001.063.00", 85, 155);
+        g2d.drawString("03/04/2003 11:06 AM", 225, 155);
+        g2d.drawString("12997001.063.00", 125, 525);
+        g2d.drawString("03/04/2003 11:06 AM", 255, 525);
+        font = new Font("Serif", Font.PLAIN, 12);
+        g2d.setFont(font);
+        g2d.drawString("RECEIPT DATE :", 15, 555);
+        g2d.drawString("SCREENER ID :", 15, 575);
+        g2d.drawString("TRANS CODE :", 15, 595);
+        g2d.drawString("TOTAL COUPONS :", 15, 615);
+        g2d.drawString("TOTAL CHECKS :", 215, 615);
+        g2d.drawString("ITEM VALUE :", 15, 635);
+
+        g2d.drawString("SSS4S012S02352S0228003S9997S00S02S0000000300S4", 85, 655);
+
+        // g2d.drawString("SSS4S012S02352S0228003S9997S00S02S0000000300S4", printLoc1.x, printLoc1.y);
+
+    }
+
+    public void print() {
+
+        // Image fImg;
+
+        FileInputStream recordSheetStream = null;
+        try {
+            recordSheetStream = new FileInputStream(fImageName);
+            if (recordSheetStream == null) {
+                return;
+            }
+
+            DocFlavor myFormat = DocFlavor.INPUT_STREAM.JPEG;
+            // Create a Doc
+            Doc myDoc = new SimpleDoc(recordSheetStream, myFormat, null);
+            PrinterJob pj = PrinterJob.getPrinterJob();
+
+            if (pj.printDialog()) {
+                Paper paper = new Paper();
+                PageFormat pageFormat = new PageFormat();
+                pageFormat = pj.defaultPage();
+                paper.setImageableArea(72, 72, 750, 900);
+                paper.setSize(800, 1000);
+                pageFormat.setPaper(paper);
+                pageFormat.setOrientation(PageFormat.PORTRAIT);
+
+                pj.setPrintable(this, pageFormat);
+                // lookupPrintServices(myFormat, aset);
+                // Create a print job from one of the print services
+                // if (services.length > 0) {
+                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+                aset.add(new Copies(pj.getCopies()));
+                PrintService services = pj.getPrintService();
+                // lookupPrintServices(myFormat, aset);
+                // Create a print job from one of the print services
+                // if (services.length > 0) {
+                DocPrintJob job = services.createPrintJob();
+                job.print(myDoc, aset);
+                //pj.print();
+
+            }
+            recordSheetStream.close();
+        } catch (FileNotFoundException ffne) {
+            ffne.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+        return false;
     }
 
 }
