@@ -80,8 +80,7 @@ public class MainUI extends JFrame implements RefreshListener {
      */
     private static final long serialVersionUID = -5836932822468918198L;
     private static final String VERSION = "0.0.0.5-dev";
-    private static int numberOfPages = 1;
-
+ 
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
     JMenu file = new JMenu("File");
@@ -348,7 +347,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
 }
 
-class SimplePrint implements Printable, ImageObserver {
+class SimplePrint implements Printable {
 
     protected Image awtImage = null;
     private Mech mech = null;
@@ -378,13 +377,24 @@ class SimplePrint implements Printable, ImageObserver {
         System.out.println("printImage(Graphics2D g2d, Image image)");
         if ((image == null) || (g2d == null))
             return;
-        int x = 0;
-        int y = 0;
-        g2d.drawImage(image, x, y, 540, 720, this);
+        int x = 18;
+        int y = 18;
+        g2d.drawImage(image, x, y, 558, 738, null);
         Font font = new Font("Serif", Font.PLAIN, 12);
         g2d.setFont(font);
-        g2d.drawString(mech.getChassis()+" "+mech.getModel(), 40, 108);
+        //x = x
+        //y - 41
+        g2d.drawString(mech.getChassis()+" "+mech.getModel(), 51, 118);
+        g2d.drawString(Integer.toString(mech.getWalkMP()), 81, 143);
+        g2d.drawString(Integer.toString(mech.getRunMP()), 81, 154);
+        g2d.drawString(Integer.toString(mech.getJumpMP()), 81, 165);
+        g2d.drawString(Float.toString(mech.getWeight()), 175, 133);
 
+        if ( mech.isClan() ) {
+            g2d.drawString("X", 208, 155);
+        } else {
+            g2d.drawString("X", 208, 165);
+        }
     }
 
     public void print() {
@@ -408,8 +418,8 @@ class SimplePrint implements Printable, ImageObserver {
                 Paper paper = new Paper();
                 PageFormat pageFormat = new PageFormat();
                 pageFormat = pj.defaultPage();
-                paper.setImageableArea(0, 0, 540, 720);
-                paper.setSize(540, 720);
+                paper.setImageableArea(0, 0, 612, 792);
+                paper.setSize(612, 792);
                 pageFormat.setPaper(paper);
                 pageFormat.setOrientation(PageFormat.PORTRAIT);
 
@@ -437,9 +447,4 @@ class SimplePrint implements Printable, ImageObserver {
             ex.printStackTrace();
         }
     }
-
-    public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
-        return false;
-    }
-
 }
