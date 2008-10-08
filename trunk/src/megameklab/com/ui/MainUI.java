@@ -217,8 +217,9 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuPrint_actionPerformed(ActionEvent event) {
+       String fImageName = "./data/images/TWBiPed2.JPG";
 
-        SimplePrint sp = new SimplePrint();
+        SimplePrint sp = new SimplePrint(getToolkit().getImage(fImageName), entity);
 
         sp.print();
 
@@ -350,10 +351,12 @@ public class MainUI extends JFrame implements RefreshListener {
 class SimplePrint implements Printable, ImageObserver {
 
     protected Image awtImage = null;
-    String fImageName = "./data/images/TWBiPed.JPG";
-
-    public SimplePrint() {
-        awtImage = Toolkit.getDefaultToolkit().createImage(fImageName);
+    private Mech mech = null;
+    
+    public SimplePrint(Image image, Mech unit) {
+        awtImage = image;
+        mech = unit;
+        
         System.out.println("Width: " + awtImage.getWidth(null));
         System.out.println("Height: " + awtImage.getHeight(null));
     }
@@ -377,78 +380,59 @@ class SimplePrint implements Printable, ImageObserver {
             return;
         int x = 0;
         int y = 0;
-        g2d.drawImage(image, x, y, this);
-        Font font = new Font("Serif", Font.PLAIN, 30);
+        g2d.drawImage(image, x, y, 540, 720, this);
+        Font font = new Font("Serif", Font.PLAIN, 12);
         g2d.setFont(font);
-        g2d.drawString("Batch Header - SALES", 100, 100);
-        g2d.drawString("SALES Batch Header - 02353 BT: 00", 5, 500);
-        font = new Font("Serif", Font.BOLD, 30);
-        g2d.setFont(font);
-        g2d.drawString("Batch Number - 02353", 100, 135);
-        font = new Font("Serif", Font.BOLD, 15);
-        g2d.setFont(font);
-        g2d.drawString("12997001.063.00", 85, 155);
-        g2d.drawString("03/04/2003 11:06 AM", 225, 155);
-        g2d.drawString("12997001.063.00", 125, 525);
-        g2d.drawString("03/04/2003 11:06 AM", 255, 525);
-        font = new Font("Serif", Font.PLAIN, 12);
-        g2d.setFont(font);
-        g2d.drawString("RECEIPT DATE :", 15, 555);
-        g2d.drawString("SCREENER ID :", 15, 575);
-        g2d.drawString("TRANS CODE :", 15, 595);
-        g2d.drawString("TOTAL COUPONS :", 15, 615);
-        g2d.drawString("TOTAL CHECKS :", 215, 615);
-        g2d.drawString("ITEM VALUE :", 15, 635);
-
-        g2d.drawString("SSS4S012S02352S0228003S9997S00S02S0000000300S4", 85, 655);
-
-        // g2d.drawString("SSS4S012S02352S0228003S9997S00S02S0000000300S4", printLoc1.x, printLoc1.y);
+        g2d.drawString(mech.getChassis()+" "+mech.getModel(), 40, 108);
 
     }
 
     public void print() {
 
         // Image fImg;
+        String fImageName = "./data/images/TWBiPed.JPG";
 
-        FileInputStream recordSheetStream = null;
+        //FileInputStream recordSheetStream = null;
         try {
-            recordSheetStream = new FileInputStream(fImageName);
+            /*recordSheetStream = new FileInputStream(fImageName);
             if (recordSheetStream == null) {
                 return;
-            }
+            }*/
 
-            DocFlavor myFormat = DocFlavor.INPUT_STREAM.JPEG;
+            //DocFlavor myFormat = DocFlavor.INPUT_STREAM.JPEG;
             // Create a Doc
-            Doc myDoc = new SimpleDoc(recordSheetStream, myFormat, null);
+            //Doc myDoc = new SimpleDoc(recordSheetStream, myFormat, null);
             PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
                 Paper paper = new Paper();
                 PageFormat pageFormat = new PageFormat();
                 pageFormat = pj.defaultPage();
-                paper.setImageableArea(72, 72, 750, 900);
-                paper.setSize(800, 1000);
+                paper.setImageableArea(0, 0, 540, 720);
+                paper.setSize(540, 720);
                 pageFormat.setPaper(paper);
                 pageFormat.setOrientation(PageFormat.PORTRAIT);
 
                 pj.setPrintable(this, pageFormat);
+                pj.setJobName(mech.getChassis()+" "+mech.getModel());
+                
                 // lookupPrintServices(myFormat, aset);
                 // Create a print job from one of the print services
                 // if (services.length > 0) {
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-                aset.add(new Copies(pj.getCopies()));
-                PrintService services = pj.getPrintService();
+                //PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+                //aset.add(new Copies(pj.getCopies()));
+                //PrintService services = pj.getPrintService();
                 // lookupPrintServices(myFormat, aset);
                 // Create a print job from one of the print services
                 // if (services.length > 0) {
-                DocPrintJob job = services.createPrintJob();
-                job.print(myDoc, aset);
-                //pj.print();
+                //DocPrintJob job = services.createPrintJob();
+                //job.print(myDoc, aset);
+                pj.print();
 
             }
-            recordSheetStream.close();
-        } catch (FileNotFoundException ffne) {
-            ffne.printStackTrace();
+            //recordSheetStream.close();
+        //} catch (FileNotFoundException ffne) {
+          //  ffne.printStackTrace();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
