@@ -17,34 +17,12 @@
 package megameklab.com.ui;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.ImageObserver;
-import java.awt.print.PageFormat;
-import java.awt.print.Pageable;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintService;
-import javax.print.SimpleDoc;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Copies;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -62,6 +40,7 @@ import megameklab.com.ui.tabs.BuildTab;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.StructureTab;
 import megameklab.com.ui.tabs.WeaponTab;
+import megameklab.com.ui.util.PrintMech;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SaveMechToMTF;
 
@@ -218,14 +197,9 @@ public class MainUI extends JFrame implements RefreshListener {
     public void jMenuPrint_actionPerformed(ActionEvent event) {
        String fImageName = "./data/images/TWBiPed.JPG";
 
-        SimplePrint sp = new SimplePrint(getToolkit().getImage(fImageName), entity);
+        PrintMech sp = new PrintMech(getToolkit().getImage(fImageName), entity);
 
         sp.print();
-
-        /*
-         * Grab the image. fImg = getToolkit().getImage(fImageName); JLabel printLabel = new JLabel(); printLabel.setIcon(new ImageIcon(fImg)); JFrame printFrame = new JFrame(); printFrame.add(printLabel); printFrame.pack(); printFrame.repaint(); printFrame.setVisible(true); // Create the PrintJob object PrintJob pjb = printFrame.getToolkit().getPrintJob(printFrame, "Print Test", null); if (pjb != null) { Graphics pg = pjb.getGraphics(); if (pg != null) { paint(pg); // Paint all components on the frame pg.dispose(); // flush page } pjb.end(); } printFrame.setVisible(false);
-         */
-
     }
 
     public void reloadTabs() {
@@ -345,106 +319,4 @@ public class MainUI extends JFrame implements RefreshListener {
         weaponTab.refresh();
     }
 
-}
-
-class SimplePrint implements Printable {
-
-    protected Image awtImage = null;
-    private Mech mech = null;
-    
-    public SimplePrint(Image image, Mech unit) {
-        awtImage = image;
-        mech = unit;
-        
-        System.out.println("Width: " + awtImage.getWidth(null));
-        System.out.println("Height: " + awtImage.getHeight(null));
-    }
-
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1)
-            return Printable.NO_SUCH_PAGE;
-        Graphics2D g2d = (Graphics2D) graphics;
-        // f.setPaper(this.paper);
-        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-        if (awtImage != null) {
-            printImage(g2d, awtImage);
-            return Printable.PAGE_EXISTS;
-        } else
-            return Printable.NO_SUCH_PAGE;
-    }
-
-    public void printImage(Graphics2D g2d, Image image) {
-        System.out.println("printImage(Graphics2D g2d, Image image)");
-        if ((image == null) || (g2d == null))
-            return;
-        int x = 18;
-        int y = 18;
-        g2d.drawImage(image, x, y, 558, 738, null);
-        Font font = new Font("Serif", Font.PLAIN, 12);
-        g2d.setFont(font);
-        //x = x
-        //y - 41
-        g2d.drawString(mech.getChassis()+" "+mech.getModel(), 51, 118);
-        g2d.drawString(Integer.toString(mech.getWalkMP()), 81, 143);
-        g2d.drawString(Integer.toString(mech.getRunMP()), 81, 154);
-        g2d.drawString(Integer.toString(mech.getJumpMP()), 81, 165);
-        g2d.drawString(Float.toString(mech.getWeight()), 175, 133);
-
-        if ( mech.isClan() ) {
-            g2d.drawString("X", 208, 155);
-        } else {
-            g2d.drawString("X", 208, 165);
-        }
-    }
-
-    public void print() {
-
-        // Image fImg;
-        String fImageName = "./data/images/TWBiPed.JPG";
-
-        //FileInputStream recordSheetStream = null;
-        try {
-            /*recordSheetStream = new FileInputStream(fImageName);
-            if (recordSheetStream == null) {
-                return;
-            }*/
-
-            //DocFlavor myFormat = DocFlavor.INPUT_STREAM.JPEG;
-            // Create a Doc
-            //Doc myDoc = new SimpleDoc(recordSheetStream, myFormat, null);
-            PrinterJob pj = PrinterJob.getPrinterJob();
-
-            if (pj.printDialog()) {
-                Paper paper = new Paper();
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.defaultPage();
-                paper.setImageableArea(0, 0, 612, 792);
-                paper.setSize(612, 792);
-                pageFormat.setPaper(paper);
-                pageFormat.setOrientation(PageFormat.PORTRAIT);
-
-                pj.setPrintable(this, pageFormat);
-                pj.setJobName(mech.getChassis()+" "+mech.getModel());
-                
-                // lookupPrintServices(myFormat, aset);
-                // Create a print job from one of the print services
-                // if (services.length > 0) {
-                //PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-                //aset.add(new Copies(pj.getCopies()));
-                //PrintService services = pj.getPrintService();
-                // lookupPrintServices(myFormat, aset);
-                // Create a print job from one of the print services
-                // if (services.length > 0) {
-                //DocPrintJob job = services.createPrintJob();
-                //job.print(myDoc, aset);
-                pj.print();
-
-            }
-            //recordSheetStream.close();
-        //} catch (FileNotFoundException ffne) {
-          //  ffne.printStackTrace();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 }
