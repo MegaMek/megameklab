@@ -217,7 +217,7 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuPrint_actionPerformed(ActionEvent event) {
-       String fImageName = "./data/images/TWBiPed2.JPG";
+       String fImageName = "./data/images/TWBiPed.JPG";
 
         SimplePrint sp = new SimplePrint(getToolkit().getImage(fImageName), entity);
 
