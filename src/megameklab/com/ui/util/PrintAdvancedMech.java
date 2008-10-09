@@ -39,12 +39,12 @@ import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.SRMWeapon;
 
-public class PrintMech implements Printable {
+public class PrintAdvancedMech implements Printable {
 
     protected Image awtImage = null;
     private Mech mech = null;
     
-    public PrintMech (Image image, Mech unit) {
+    public PrintAdvancedMech (Image image, Mech unit) {
         awtImage = image;
         mech = unit;
         
@@ -88,39 +88,59 @@ public class PrintMech implements Printable {
     }
 
     private void printMechData(Graphics2D g2d){
-        Font font = new Font("Arial", Font.PLAIN, 12);
+        Font font = new Font("Arial", Font.PLAIN, 11);
         g2d.setFont(font);
 
         g2d.drawString(mech.getChassis()+" "+mech.getModel(), 49, 119);
         g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
-        g2d.drawString(Integer.toString(mech.getRunMP()), 79, 155);
-        g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
+        g2d.drawString(Integer.toString(mech.getRunMP()), 79, 154);
+        g2d.drawString(Integer.toString(mech.getWalkMP()*2), 79, 164);
+        g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 174);
         g2d.drawString(Float.toString(mech.getWeight()), 173, 134);
 
+        switch ( mech.getCockpitType()) {
+        case Mech.COCKPIT_STANDARD:
+            g2d.drawString("X", 294, 205);
+            break;
+        case Mech.COCKPIT_SMALL:
+            g2d.drawString("X", 294, 214);
+            break;
+        case Mech.COCKPIT_DUAL:
+            g2d.drawString("X", 367, 196);
+            break;
+        case Mech.COCKPIT_COMMAND_CONSOLE:
+            g2d.drawString("X", 367, 205);
+            break;
+        case Mech.COCKPIT_TORSO_MOUNTED:
+            g2d.drawString("X", 367, 214);
+            break;
+        }
+        
+        
         if ( mech.isClan() ) {
-            g2d.drawString("X", 205, 156);
-        } else {
-            g2d.drawString("X", 205, 166);
+            g2d.drawString("X", 209, 154);
+        } else if ( mech.isMixedTech() ){
+            g2d.drawString("X", 209, 174);
+        }else {
+            g2d.drawString("X", 209, 164);
         }
         
         //Cost/BV
-        g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 349);
+        g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 359);
 
         DecimalFormat myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(mech.getCost())+" C", 54, 349);
+        g2d.drawString(myFormatter.format(mech.getCost())+" C", 54, 359);
     }
     
     private void printHeatSinks(Graphics2D g2d){
         Font font = new Font("Arial", Font.BOLD, 11);
         g2d.setFont(font);
         //Heat Sinks
-        g2d.drawString(Integer.toString(mech.heatSinks()), 497, 598);
+        g2d.drawString(Integer.toString(mech.heatSinks()), 402, 594);
         if ( mech.hasDoubleHeatSinks() ) {
-            g2d.drawString(Integer.toString(mech.heatSinks()*2), 520, 598);
-            g2d.drawString("X", 527, 723);
+            g2d.drawString(Integer.toString(mech.heatSinks()*2), 424, 594);
         }else {
-            g2d.drawString(Integer.toString(mech.heatSinks()), 520, 598);
-            g2d.drawString("X", 527, 708);
+            g2d.drawString(Integer.toString(mech.heatSinks()), 424, 594);
         }
         
     }
@@ -129,16 +149,16 @@ public class PrintMech implements Printable {
         //Armor
         Font font = new Font("Arial", Font.BOLD, 11);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_HEAD)), 485, 47);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT)), 434, 61);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RT)), 510, 61);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_HEAD)), 485, 48);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT)), 435, 61);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RT)), 509, 61);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_CT)), 475, 222);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LARM)), 397, 217);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RARM)), 547, 217);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RARM)), 546, 217);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LLEG)), 390, 273);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RLEG)), 555, 273);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RLEG)), 554, 273);
         //Rear
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT,true)), 402, 363);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT,true)), 403, 363);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_CT,true)), 480, 279);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RT,true)), 545, 363);
         //Internal
@@ -147,14 +167,14 @@ public class PrintMech implements Printable {
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LARM)), 391, 479);
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RARM)), 531, 481);
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_CT)), 460, 511);
-        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LLEG)), 403, 541);
-        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RLEG)), 519, 541);
+        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LLEG)), 403, 550);
+        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RLEG)), 519, 550);
     }
     
     private void printLACrits(Graphics2D g2d) {
     
-        int lineStart = 56;
-        int linePoint = 408;
+        int lineStart = 58;
+        int linePoint = 410;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
@@ -189,8 +209,8 @@ public class PrintMech implements Printable {
     
     private void printRACrits(Graphics2D g2d) {
         
-        int lineStart = 292;
-        int linePoint = 408;
+        int lineStart = 294;
+        int linePoint = 410;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
@@ -225,7 +245,7 @@ public class PrintMech implements Printable {
     
     private void printCTCrits(Graphics2D g2d) {
         
-        int lineStart = 174;
+        int lineStart = 176;
         int linePoint = 469;
         int lineFeed = 8;
 
@@ -261,7 +281,7 @@ public class PrintMech implements Printable {
     
     private void printLTCrits(Graphics2D g2d) {
         
-        int lineStart = 56;
+        int lineStart = 58;
         int linePoint = 545;
         int lineFeed = 8;
 
@@ -297,7 +317,7 @@ public class PrintMech implements Printable {
     
     private void printRTCrits(Graphics2D g2d) {
         
-        int lineStart = 292;
+        int lineStart = 294;
         int linePoint = 545;
         int lineFeed = 8;
 
@@ -333,7 +353,7 @@ public class PrintMech implements Printable {
     
     private void printHeadCrits(Graphics2D g2d) {
         
-        int lineStart = 174;
+        int lineStart = 176;
         int linePoint = 401;
         int lineFeed = 8;
 
@@ -366,7 +386,7 @@ public class PrintMech implements Printable {
     
     private void printLLCrits(Graphics2D g2d) {
         
-        int lineStart = 56;
+        int lineStart = 58;
         int linePoint = 682;
         int lineFeed = 8;
 
@@ -399,7 +419,7 @@ public class PrintMech implements Printable {
     
     private void printRLCrits(Graphics2D g2d) {
         
-        int lineStart = 292;
+        int lineStart = 294;
         int linePoint = 682;
         int lineFeed = 8;
 
@@ -440,7 +460,7 @@ public class PrintMech implements Printable {
         int shtPoint = 181;
         int medPoint = 199;
         int longPoint = 215;
-        int linePoint = 206;
+        int linePoint = 210;
         
         int lineFeed = 11;
         
@@ -474,29 +494,6 @@ public class PrintMech implements Printable {
 
         }
         
-       /* for ( Mounted eq : mech.getWeaponList() ){
-            
-            if ( eq.getLocation() == Mech.LOC_NONE ){
-                continue;
-            }
-            
-            Hashtable<String,equipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
-            
-            if ( eqHash.containsKey(eq.getName()) ){
-                equipmentInfo eqi = eqHash.get(eq.getName());
-                
-                if ( eq.getType().getTechLevel() != eqi.techLevel ){
-                    eqi = new equipmentInfo(eq);
-                }else {
-                    eqi.count++;
-                }
-                eqHash.put(eq.getName(),eqi);
-            } else {
-                equipmentInfo eqi = new equipmentInfo(eq);
-                eqHash.put(eq.getName(), eqi );
-            }
-        }*/
-
         Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
         

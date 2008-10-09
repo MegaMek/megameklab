@@ -113,9 +113,9 @@ public class CriticalView extends View {
                         if (critName.length() > 10){
                             critName.setLength(10);
                             critName.append("...");
-                            if ( m.isRearMounted() ){
-                                critName.append("(R)");
-                            }
+                        }
+                        if ( m.isRearMounted() ){
+                            critName.append("(R)");
                         }
                         
                         critNames.add(critName.toString());

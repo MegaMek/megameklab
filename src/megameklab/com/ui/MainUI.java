@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.print.Printable;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -40,6 +41,7 @@ import megameklab.com.ui.tabs.BuildTab;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.StructureTab;
 import megameklab.com.ui.tabs.WeaponTab;
+import megameklab.com.ui.util.PrintAdvancedMech;
 import megameklab.com.ui.util.PrintMech;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SaveMechToMTF;
@@ -109,14 +111,27 @@ public class MainUI extends JFrame implements RefreshListener {
         });
         file.add(item);
 
-        item = new JMenuItem("Print");
-        item.setMnemonic('P');
+        JMenu printMenu = new JMenu("Print");
+        printMenu.setMnemonic('P');
+        item = new JMenuItem("Standard Record Sheet");
+        item.setMnemonic('S');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuPrint_actionPerformed(e);
             }
         });
-        file.add(item);
+        printMenu.add(item);
+        
+        item = new JMenuItem("Advanced Record Sheet");
+        item.setMnemonic('A');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuAdvancedPrint_actionPerformed(e);
+            }
+        });
+        printMenu.add(item);
+        
+        file.add(printMenu);
 
         file.addSeparator();
 
@@ -195,12 +210,20 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuPrint_actionPerformed(ActionEvent event) {
-       String fImageName = "./data/images/TWBiPed.JPG";
+       String fImageName = "./data/images/twbiped.png";
 
         PrintMech sp = new PrintMech(getToolkit().getImage(fImageName), entity);
 
         sp.print();
     }
+
+    public void jMenuAdvancedPrint_actionPerformed(ActionEvent event) {
+        String fImageName = "./data/images/tobiped.png";
+
+         PrintAdvancedMech sp = new PrintAdvancedMech(getToolkit().getImage(fImageName), entity);
+
+         sp.print();
+     }
 
     public void reloadTabs() {
         masterPanel.removeAll();
