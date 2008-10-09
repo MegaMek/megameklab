@@ -2,6 +2,10 @@ VERSION HISTORY:
 ----------------
 v 0.0.0.5-dev
 + Bug 1989468: Hand / Lower Arm Actuator cannot be removed
++ Bug: Heat Sinks not loading and unloading correctly
++ Bug: Splitable weapons not loading and unloading correctly
++ Bug: SRM ammo showing up in Ballistic ammo list
++ Bug: Mech reseting when Engine/Cockpit/TechLevel/Gyro/Heatsinks changed 
 
 v 0.0.0.4 (10/2/08)
 + Bug: Wrong Targeting computer getting set.

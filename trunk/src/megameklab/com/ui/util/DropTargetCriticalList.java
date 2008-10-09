@@ -78,17 +78,44 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
             Transferable t = dtde.getTransferable();
             dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE | DnDConstants.ACTION_LINK);
             try {
+                int externalEngineHS = unit.getEngine().integralHeatSinkCapacity();
+                
                 String mountName = (String) t.getTransferData(DataFlavor.stringFlavor);
                 Mounted eq = null;
                 for (Mounted mount : unit.getEquipment()) {
                     if (mount.getLocation() == Entity.LOC_NONE && mount.getType().getInternalName().equals(mountName)) {
+                        if ( UnitUtil.isHeatSink(mount) && externalEngineHS-- > 0 ){
+                            continue;
+                        }
                         eq = mount;
                         break;
                     }
                 }
 
-                unit.addEquipment(eq, location, false);
-                changeMountStatus(eq, location, false);
+                if ( eq.getType().isSpreadable() || eq.isSplitable() ){
+                    int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
+                    int critsUsed = 0;
+                    int primaryLocation = location;
+                    int nextLocation = unit.getTransferLocation(location);
+                    int emptyCrits = unit.getEmptyCriticals(location)-1;
+                    
+                    //No big splitables in the head!
+                    if ( nextLocation == Mech.LOC_DESTROYED || ( unit.getEmptyCriticals(location)+unit.getEmptyCriticals(nextLocation) < totalCrits )){
+                        throw new LocationFullException();
+                    }
+                    for ( ; critsUsed < totalCrits; critsUsed++ ){
+                        unit.addEquipment(eq, location, false);
+                        if ( critsUsed == emptyCrits){
+                            location = nextLocation;
+                            totalCrits -= critsUsed;
+                            critsUsed = 0;
+                        }
+                    }
+                    changeMountStatus(eq, primaryLocation, nextLocation, false);
+                } else {
+                    unit.addEquipment(eq, location, false);
+                    changeMountStatus(eq, location, false);
+                }
                 if (refresh != null) {
                     refresh.refreshAll();
                 }
@@ -103,10 +130,16 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
     }
 
     private void changeMountStatus(Mounted eq, int location, boolean rear) {
+        changeMountStatus(eq, location, -1, rear);
+    }
+    
+    private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
         if (eq.getType() instanceof Weapon) {
             for (Mounted mount : unit.getWeaponList()) {
                 if ( mount == eq) {
                     mount.setLocation(location, rear);
+                    mount.setSecondLocation(secondaryLocation,rear);
+                    mount.setSplit(secondaryLocation > -1);
                     break;
                 }
             }
@@ -114,6 +147,8 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
             for (Mounted mount : unit.getAmmo()) {
                 if ( mount == eq) {
                     mount.setLocation(location);
+                    mount.setSecondLocation(secondaryLocation);
+                    mount.setSplit(secondaryLocation > -1);
                     break;
                 }
             }
@@ -121,6 +156,8 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
             for (Mounted mount : unit.getMisc()) {
                 if ( mount == eq) {
                     mount.setLocation(location);
+                    mount.setSecondLocation(secondaryLocation);
+                    mount.setSplit(secondaryLocation > -1);
                     break;
                 }
             }
@@ -148,11 +185,11 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
 
             Mounted mount = getMounted();
             int location = getCritLocation();
+            JPopupMenu popup = new JPopupMenu();
             
             if (mount != null) {
-                JPopupMenu popup = new JPopupMenu();
                 popup.setAutoscrolls(true);
-                JMenuItem info = new JMenuItem("Remove");
+                JMenuItem info = new JMenuItem("Remove " + mount.getName());
                 info.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         removeCrit();
@@ -163,7 +200,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                 if (mount.getType() instanceof WeaponType && mount.getLocation() != Mech.LOC_LARM && mount.getLocation() != Mech.LOC_RARM) {
 
                     if (!mount.isRearMounted()) {
-                        info = new JMenuItem("Make Rear Facing");
+                        info = new JMenuItem("Make "+mount.getName()+" Rear Facing");
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 changeWeaponFacing(true);
@@ -171,7 +208,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                         });
                         popup.add(info);
                     } else {
-                        info = new JMenuItem("Make Forward Facing");
+                        info = new JMenuItem("Make "+mount.getName()+" Forward Facing");
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 changeWeaponFacing(false);
@@ -180,20 +217,20 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                         popup.add(info);
                     }
                 }
-                popup.show(this, e.getX(), e.getY());
-            }else if ( unit instanceof BipedMech && (location == Mech.LOC_LARM || location == Mech.LOC_RARM) ) {
-                JPopupMenu popup = new JPopupMenu();
+            }
+            
+            if ( unit instanceof BipedMech && (location == Mech.LOC_LARM || location == Mech.LOC_RARM) ) {
                 popup.setAutoscrolls(true);
-                if ( unit.getCritical(location,3) == null ) {
+                if ( unit.getCritical(location,3) == null || unit.getCritical(location,3).getType() != CriticalSlot.TYPE_SYSTEM) {
                     JMenuItem info = new JMenuItem("Add Hand");
                     info.setActionCommand(Integer.toString(location));
                     info.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             addHand(Integer.parseInt(e.getActionCommand()));
                         }
-                    });
+                    }); 
                     popup.add(info);
-                }else {
+                }else if ( unit.getCritical(location,3) != null && unit.getCritical(location,3).getType() == CriticalSlot.TYPE_SYSTEM ) {
                     JMenuItem info = new JMenuItem("Remove Hand");
                     info.setActionCommand(Integer.toString(location));
                     info.addActionListener(new ActionListener() {
@@ -204,7 +241,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                     popup.add(info);
                 }
 
-                if ( unit.getCritical(location,2) == null ) {
+                if ( unit.getCritical(location,2) == null || unit.getCritical(location,2).getType() != CriticalSlot.TYPE_SYSTEM) {
                     JMenuItem info = new JMenuItem("Add Lower Arm");
                     info.setActionCommand(Integer.toString(location));
                     info.addActionListener(new ActionListener() {
@@ -213,7 +250,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                         }
                     });
                     popup.add(info);
-                }else {
+                }else if ( unit.getCritical(location,2) != null && unit.getCritical(location,2).getType() == CriticalSlot.TYPE_SYSTEM ){
                     JMenuItem info = new JMenuItem("Remove Lower Arm");
                     info.setActionCommand(Integer.toString(location));
                     info.addActionListener(new ActionListener() {
@@ -223,8 +260,12 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                     });
                     popup.add(info);
                 }
+            }
+            
+            if ( popup.getComponentCount() > 0 ){
                 popup.show(this, e.getX(), e.getY());
             }
+
         }
     }
 
@@ -235,7 +276,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
         CriticalSlot crit = getCrit();
         Mounted mount = null;
         try {
-            if (crit != null) {
+            if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 mount = unit.getEquipment(crit.getIndex());
             }
         } catch (Exception ex) {
@@ -283,6 +324,13 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
     
     
     private void addHand(int location ) {
+        CriticalSlot cs = unit.getCritical(location, 3);
+        
+        if ( cs != null ){
+            Mounted mount = unit.getEquipment(cs.getIndex());
+            UnitUtil.removeCriticals(unit, mount);
+            changeMountStatus(mount, Mech.LOC_NONE, false);
+        }
         unit.setCritical(location, 3, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_HAND));
         addArm(location);
     }
@@ -300,6 +348,14 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
     }
     
     private void addArm(int location) {
+        CriticalSlot cs = unit.getCritical(location, 2);
+        
+        if ( cs != null ){
+            Mounted mount = unit.getEquipment(cs.getIndex());
+            UnitUtil.removeCriticals(unit, mount);
+            changeMountStatus(mount, Mech.LOC_NONE, false);
+        }
+
         unit.setCritical(location, 2, new CriticalSlot(CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_LOWER_ARM));
         if (refresh != null) {
             refresh.refreshAll();
