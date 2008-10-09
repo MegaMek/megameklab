@@ -201,7 +201,7 @@ public class WeaponView extends View implements ActionListener {
                 }
                 if (ammo.getAmmoType() == AmmoType.T_PLASMA) {
                     masterLaserAmmoList.add(eq);
-                } else if (ammo.hasFlag(AmmoType.F_HOTLOAD)) {
+                } else if (ammo.hasFlag(AmmoType.F_HOTLOAD) || ammo.getAmmoType() == AmmoType.T_SRM  || ammo.getAmmoType() == AmmoType.T_SRM_ADVANCED  || ammo.getAmmoType() == AmmoType.T_SRM_STREAK  || ammo.getAmmoType() == AmmoType.T_SRM_TORPEDO) {
                     masterMissileAmmoList.add(eq);
                 } else {
                     masterBallisticAmmoList.add(eq);

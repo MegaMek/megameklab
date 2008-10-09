@@ -23,7 +23,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -44,11 +43,7 @@ import megameklab.com.ui.views.CriticalView;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 
@@ -59,16 +54,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
-    
     String[] isEngineTypes = { "I.C.E.", "Standard", "XL", "Light", "XXL", "Compact" };
-    String[] clanEngineTypes = { "I.C.E.", "Standard", "XL", "XXL"};
+    String[] clanEngineTypes = { "I.C.E.", "Standard", "XL", "XXL" };
     JComboBox engineType = new JComboBox(isEngineTypes);
     JComboBox walkMP;
     JComboBox gyroType = new JComboBox(Mech.GYRO_SHORT_STRING);
     JComboBox weightClass;
     JComboBox cockpitType = new JComboBox(Mech.COCKPIT_SHORT_STRING);
     String[] clanHeatSinkTypes = { "Single", "Double", "Compact", "Laser" };
-    String[] isHeatSinkTypes = { "Single", "Double", "Compact"};
+    String[] isHeatSinkTypes = { "Single", "Double", "Compact" };
     JComboBox heatSinkType = new JComboBox(isHeatSinkTypes);
     JComboBox heatSinkNumber;
     String[] techTypes = { "I.S.", "Clan" };
@@ -80,7 +74,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox quadCB = new JCheckBox("Quad");
-    
+
     private CriticalView critView = null;
 
     public StructureTab(Mech unit) {
@@ -117,7 +111,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         masterPanel.add(omniCB);
         masterPanel.add(quadCB);
-        
+
         masterPanel.add(createLabel("Era:", maxSize));
         masterPanel.add(era);
 
@@ -148,8 +142,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(weightClass);
 
         Vector<String> heatSinks = new Vector<String>(1, 1);
-        for (int count = 0; count < 40; count++)
+        for (int count = 10; count < 50; count++) {
             heatSinks.add(Integer.toString(count));
+        }
 
         heatSinkNumber = new JComboBox(heatSinks.toArray());
 
@@ -175,16 +170,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         cockpitType.setSelectedIndex(unit.getCockpitType());
         try {
             // heatSinkNumber.setSelectedIndex(unit.heatSinks() + unit.getEngine().getCountEngineHeatSinks());
-            heatSinkNumber.setSelectedIndex(unit.heatSinks());
+            heatSinkNumber.setSelectedIndex(unit.heatSinks() - 10);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         if (unit.isClan()) {
-            
-            if ( unit.getEngine().getEngineType() == Engine.XXL_ENGINE ){
+
+            if (unit.getEngine().getEngineType() == Engine.XXL_ENGINE) {
                 engineType.setSelectedIndex(3);
-            }else{
+            } else {
                 engineType.setSelectedIndex(unit.getEngine().getEngineType());
             }
             techType.setSelectedIndex(1);
@@ -216,7 +211,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         if (unit.hasLaserHeatSinks() && unit.isClan())
             heatSinkType.setSelectedIndex(3);
         else if (unit.hasDoubleHeatSinks()) {
-            if (hasCompactHeatSinks(unit))
+            if (UnitUtil.hasCompactHeatSinks(unit))
                 heatSinkType.setSelectedIndex(2);
             else
                 heatSinkType.setSelectedIndex(1);
@@ -242,180 +237,188 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         return label;
     }
 
-    private boolean hasCompactHeatSinks(Mech unit) {
-
-        if (!unit.hasDoubleHeatSinks() || unit.hasLaserHeatSinks())
-            return false;
-
-        for (Mounted mounted : unit.getMisc()) {
-            if (mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mounted.getType().hasFlag(MiscType.F_HEAT_SINK)) {
-
-                if (mounted.getType().getInternalName().indexOf("Compact") > -1)
-                    return true;
-
-                return false;
-            }
-        }
-
-        return false;
-    }
-
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() instanceof JComboBox) {
             JComboBox combo = (JComboBox) e.getSource();
             removeAllActionListeners();
 
-            if (combo.equals(engineType) || combo.equals(walkMP)) {
-                int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
-                if (rating > 500) {
-                    JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    removeSystemCrits(Mech.SYSTEM_ENGINE);
-                    if (unit.isClan()) {
-                        int type = engineType.getSelectedIndex();
-                        
-                        if ( type > Engine.XL_ENGINE ){
-                            type = Engine.XXL_ENGINE;
-                        }
-                        unit.setEngine(new Engine(rating, type, Engine.CLAN_ENGINE));
+            try {
+                if (combo.equals(engineType) || combo.equals(walkMP)) {
+                    int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                    if (rating > 500) {
+                        JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), 0));
+                        removeSystemCrits(Mech.SYSTEM_ENGINE);
+                        if (unit.isClan()) {
+                            int type = engineType.getSelectedIndex();
+
+                            if (type > Engine.XL_ENGINE) {
+                                type = Engine.XXL_ENGINE;
+                            }
+                            unit.setEngine(new Engine(rating, type, Engine.CLAN_ENGINE));
+                        } else {
+                            unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), 0));
+                        }
+                        unit.addEngineCrits();
+                        UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + 10, heatSinkType.getSelectedIndex());
                     }
-                    unit.addEngineCrits();
-                    updateHeatSinks();
-                }
-            } else if (combo.equals(gyroType)) {
-                unit.setGyroType(combo.getSelectedIndex());
-                removeSystemCrits(Mech.SYSTEM_GYRO);
+                } else if (combo.equals(gyroType)) {
+                    unit.setGyroType(combo.getSelectedIndex());
+                    removeSystemCrits(Mech.SYSTEM_GYRO);
 
-                switch (unit.getGyroType()) {
-                case Mech.GYRO_COMPACT:
-                    unit.addCompactGyro();
-                    break;
-                case Mech.GYRO_HEAVY_DUTY:
-                    unit.addHeavyDutyGyro();
-                    break;
-                case Mech.GYRO_XL:
-                    unit.addXLGyro();
-                    break;
-                default:
-                    unit.addGyro();
-                }
-            } else if (combo.equals(cockpitType)) {
-                unit.setCockpitType(combo.getSelectedIndex());
-                removeSystemCrits(Mech.SYSTEM_COCKPIT);
-                removeSystemCrits(Mech.SYSTEM_LIFE_SUPPORT);
-                removeSystemCrits(Mech.SYSTEM_SENSORS);
+                    switch (unit.getGyroType()) {
+                    case Mech.GYRO_COMPACT:
+                        unit.addCompactGyro();
+                        break;
+                    case Mech.GYRO_HEAVY_DUTY:
+                        unit.addHeavyDutyGyro();
+                        break;
+                    case Mech.GYRO_XL:
+                        unit.addXLGyro();
+                        break;
+                    default:
+                        unit.addGyro();
+                    }
+                } else if (combo.equals(cockpitType)) {
+                    unit.setCockpitType(combo.getSelectedIndex());
+                    removeSystemCrits(Mech.SYSTEM_COCKPIT);
+                    removeSystemCrits(Mech.SYSTEM_LIFE_SUPPORT);
+                    removeSystemCrits(Mech.SYSTEM_SENSORS);
 
-                switch (unit.getCockpitType()) {
-                case Mech.COCKPIT_COMMAND_CONSOLE:
-                    unit.addCommandConsole();
-                    break;
-                case Mech.COCKPIT_DUAL:
-                    unit.addDualCockpit();
-                    break;
-                case Mech.COCKPIT_SMALL:
-                    unit.addSmallCockpit();
-                    break;
-                case Mech.COCKPIT_TORSO_MOUNTED:
-                    removeSystemCrits(Mech.SYSTEM_ENGINE);
-                    unit.addTorsoMountedCockpit();
-                    unit.addEngineCrits();
-                    break;
-                default:
-                    unit.addCockpit();
-                }
-            } else if (combo.equals(weightClass)) {
-                int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
-                if (rating > 500) {
-                    JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
-                    unit.autoSetInternal();
+                    switch (unit.getCockpitType()) {
+                    case Mech.COCKPIT_COMMAND_CONSOLE:
+                        unit.addCommandConsole();
+                        break;
+                    case Mech.COCKPIT_DUAL:
+                        unit.addDualCockpit();
+                        break;
+                    case Mech.COCKPIT_SMALL:
+                        unit.addSmallCockpit();
+                        break;
+                    case Mech.COCKPIT_TORSO_MOUNTED:
+                        removeSystemCrits(Mech.SYSTEM_ENGINE);
+                        unit.addTorsoMountedCockpit();
+                        unit.addEngineCrits();
+                        break;
+                    default:
+                        unit.addCockpit();
+                    }
+                } else if (combo.equals(weightClass)) {
+                    int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                    if (rating > 500) {
+                        JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
+                        unit.autoSetInternal();
+                        addAllActionListeners();
+                        engineType.setSelectedIndex(engineType.getSelectedIndex());
+                        removeAllActionListeners();
+                    }
+                } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
+                    UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + 10, heatSinkType.getSelectedIndex());
+                } else if (combo.equals(techLevel)) {
+                    int unitTechLevel = techLevel.getSelectedIndex();
+
+                    if (unit.isClan()) {
+                        switch (unitTechLevel) {
+                        case 0:
+                            unit.setTechLevel(TechConstants.T_CLAN_TW);
+                            break;
+                        case 1:
+                            unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                            break;
+                        case 2:
+                            unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            break;
+                        case 3:
+                            unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                            break;
+                        default:
+                            unit.setTechLevel(TechConstants.T_CLAN_TW);
+                            break;
+                        }
+
+                    } else {
+                        switch (unitTechLevel) {
+                        case 0:
+                            unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                            break;
+                        case 1:
+                            unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                            break;
+                        case 2:
+                            unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                            break;
+                        case 3:
+                            unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            break;
+                        default:
+                            unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                            break;
+                        }
+
+                    }
+                    refresh.refreshArmor();
+                    refresh.refreshEquipment();
+                    refresh.refreshWeapons();
                     addAllActionListeners();
-                    engineType.setSelectedIndex(engineType.getSelectedIndex());
+                    return;
+                } else if (combo.equals(techType)) {
+                    if (techType.getSelectedIndex() > 0 && !unit.isClan()) {
+                        engineType.removeAllItems();
+                        techLevel.removeAllItems();
+                        heatSinkType.removeAllItems();
+
+                        for (String item : clanEngineTypes) {
+                            engineType.addItem(item);
+                        }
+                        for (String item : clanHeatSinkTypes) {
+                            heatSinkType.addItem(item);
+                        }
+                        for (String item : clanTechLevels) {
+                            techLevel.addItem(item);
+                        }
+                        unit.setTechLevel(TechConstants.T_CLAN_TW);
+                    } else if (unit.isClan()) {
+                        engineType.removeAllItems();
+                        techLevel.removeAllItems();
+                        heatSinkType.removeAllItems();
+
+                        for (String item : isEngineTypes) {
+                            engineType.addItem(item);
+                        }
+                        for (String item : isHeatSinkTypes) {
+                            heatSinkType.addItem(item);
+                        }
+                        for (String item : isTechLevels) {
+                            techLevel.addItem(item);
+                        }
+
+                        unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                    } else {
+                        addAllActionListeners();
+                        return;
+                    }
+                    addAllActionListeners();
+                    engineType.setSelectedIndex(1);
                     removeAllActionListeners();
                 }
-            } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
-                updateHeatSinks();
-            } else if (combo.equals(techLevel) || combo.equals(techType)) {
-                int unitTechLevel = techLevel.getSelectedIndex(); 
-                engineType.removeAllItems();
-                techLevel.removeAllItems();
-                heatSinkType.removeAllItems();
-                if (techType.getSelectedIndex() > 0) {
-                    
-                    for ( String item : clanEngineTypes ){
-                        engineType.addItem(item);
-                    }
-                    for ( String item : clanHeatSinkTypes ){
-                        heatSinkType.addItem(item);
-                    }
-                    for ( String item : clanTechLevels ){
-                        techLevel.addItem(item);
-                    }
-                    switch (unitTechLevel) {
-                    case 0:
-                        unit.setTechLevel(TechConstants.T_CLAN_TW);
-                        break;
-                    case 1:
-                        unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                        break;
-                    case 2:
-                        unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                        break;
-                    case 3:
-                        unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
-                        break;
-                    default:
-                        unit.setTechLevel(TechConstants.T_CLAN_TW);
-                        break;
-                    }
-
-                } else {
-                    for ( String item : isEngineTypes ){
-                        engineType.addItem(item);
-                    }
-                    for ( String item : isHeatSinkTypes ){
-                        heatSinkType.addItem(item);
-                    }
-                    for ( String item : isTechLevels ){
-                        techLevel.addItem(item);
-                    }
-
-                    switch (unitTechLevel) {
-                    case 0:
-                        unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
-                        break;
-                    case 1:
-                        unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                        break;
-                    case 2:
-                        unit.setTechLevel(TechConstants.T_IS_ADVANCED);
-                        break;
-                    case 3:
-                        unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                        break;
-                    default:
-                        unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                    break;
-                    }
-                }
                 addAllActionListeners();
-                engineType.setSelectedIndex(1);
-                removeAllActionListeners();
+                refresh.refreshAll();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                addAllActionListeners();
             }
-            UnitUtil.resetCriticalsAndMounts(unit);
-            addAllActionListeners();
-            refresh.refreshAll();
         } else if (e.getSource() instanceof JCheckBox) {
-            JCheckBox check = (JCheckBox)e.getSource();
-            
-            if ( check.equals(omniCB) ) {
+            JCheckBox check = (JCheckBox) e.getSource();
+
+            if (check.equals(omniCB)) {
                 unit.setOmni(omniCB.isSelected());
+            } else {
+                // Create Quad
+                refresh.refreshAll();
             }
-            refresh.refreshAll();
         }
 
     }
@@ -431,35 +434,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
                 if (cs.getIndex() == systemType)
                     unit.setCritical(loc, slot, null);
-            }
-        }
-    }
-
-    public void removeHeatSinks() {
-
-        ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(unit.getMisc());
-        for (Mounted eq : equipmentList) {
-            if (eq.getType().hasFlag(MiscType.F_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))
-                unit.getMisc().remove(eq);
-        }
-    }
-
-    private void addHeatSinkMounts() {
-        int heatSinks = heatSinkNumber.getSelectedIndex() - unit.getEngine().integralHeatSinkCapacity();
-        EquipmentType sinkType;
-
-        if (heatSinkType.getSelectedIndex() == 1 || heatSinkType.getSelectedIndex() == 3) {
-            sinkType = EquipmentType.get(unit.isClan() ? "CLDoubleHeatSink" : "ISDoubleHeatSink");
-        } else {
-            sinkType = EquipmentType.get("Heat Sink");
-        }
-
-        for (; heatSinks > 0; heatSinks--) {
-
-            try {
-                unit.addEquipment(new Mounted(unit, sinkType), Entity.LOC_NONE, false);
-            } catch (Exception ex) {
-                ex.printStackTrace();
             }
         }
     }
@@ -514,16 +488,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         refresh = l;
     }
 
-    private void updateHeatSinks() {
-        removeHeatSinks();
-        refresh.refreshEquipment();
-        if (heatSinkType.getSelectedIndex() == 1 || heatSinkType.getSelectedIndex() == 3)
-            unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), true);
-        else
-            unit.addEngineSinks(heatSinkNumber.getSelectedIndex(), false);
-        addHeatSinkMounts();
-    }
-    
     public boolean isQuad() {
         return quadCB.isSelected();
     }

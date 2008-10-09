@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.print.Printable;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -45,6 +44,7 @@ import megameklab.com.ui.util.PrintAdvancedMech;
 import megameklab.com.ui.util.PrintMech;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SaveMechToMTF;
+import megameklab.com.ui.util.UnitUtil;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
@@ -280,7 +280,7 @@ public class MainUI extends JFrame implements RefreshListener {
         entity.addGyro();
         entity.addEngineCrits();
         entity.addCockpit();
-        entity.addEngineSinks(entity.getEngine().integralHeatSinkCapacity(), false);
+        UnitUtil.updateHeatSinks(entity, 10, 0);
 
         entity.autoSetInternal();
         for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
