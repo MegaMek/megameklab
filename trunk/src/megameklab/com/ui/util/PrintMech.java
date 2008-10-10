@@ -452,7 +452,7 @@ public class PrintMech implements Printable {
         
         for ( Mounted eq : mech.getEquipment() ){
             
-            if ( eq.getType() instanceof AmmoType || eq.getLocation() == Mech.LOC_NONE ){
+            if ( eq.getType() instanceof AmmoType || eq.getLocation() == Mech.LOC_NONE || !UnitUtil.isPrintableEquipment(eq.getType()) ){
                 continue;
             }
             

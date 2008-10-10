@@ -31,6 +31,7 @@ import java.util.Hashtable;
 
 import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
+import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
@@ -43,11 +44,11 @@ public class PrintAdvancedMech implements Printable {
 
     protected Image awtImage = null;
     private Mech mech = null;
-    
-    public PrintAdvancedMech (Image image, Mech unit) {
+
+    public PrintAdvancedMech(Image image, Mech unit) {
         awtImage = image;
         mech = unit;
-        
+
         System.out.println("Width: " + awtImage.getWidth(null));
         System.out.println("Height: " + awtImage.getHeight(null));
     }
@@ -87,18 +88,18 @@ public class PrintAdvancedMech implements Printable {
         printRLCrits(g2d);
     }
 
-    private void printMechData(Graphics2D g2d){
+    private void printMechData(Graphics2D g2d) {
         Font font = new Font("Arial", Font.PLAIN, 11);
         g2d.setFont(font);
 
-        g2d.drawString(mech.getChassis()+" "+mech.getModel(), 49, 119);
+        g2d.drawString(mech.getChassis() + " " + mech.getModel(), 49, 119);
         g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
         g2d.drawString(Integer.toString(mech.getRunMP()), 79, 154);
-        g2d.drawString(Integer.toString(mech.getWalkMP()*2), 79, 164);
+        g2d.drawString(Integer.toString(mech.getWalkMP() * 2), 79, 164);
         g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 174);
         g2d.drawString(Float.toString(mech.getWeight()), 173, 134);
 
-        switch ( mech.getCockpitType()) {
+        switch (mech.getCockpitType()) {
         case Mech.COCKPIT_STANDARD:
             g2d.drawString("X", 294, 205);
             break;
@@ -115,38 +116,93 @@ public class PrintAdvancedMech implements Printable {
             g2d.drawString("X", 367, 214);
             break;
         }
-        
-        
-        if ( mech.isClan() ) {
+
+        switch (mech.getArmorType()) {
+        case EquipmentType.T_ARMOR_STANDARD:
+            g2d.drawString("X", 367, 249);
+            break;
+        case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+            g2d.drawString("X", 367, 258);
+            break;
+        case EquipmentType.T_ARMOR_LAMELLOR_FERRO_CARBIDE:
+            g2d.drawString("X", 367, 267);
+            break;
+        case EquipmentType.T_ARMOR_LIGHT_FERRO:
+            g2d.drawString("X", 367, 276);
+            break;
+        case EquipmentType.T_ARMOR_HEAVY_FERRO:
+            g2d.drawString("X", 367, 285);
+            break;
+        case EquipmentType.T_ARMOR_STEALTH:
+            g2d.drawString("X", 367, 294);
+            break;
+        case EquipmentType.T_ARMOR_HARDENED:
+            g2d.drawString("X", 367, 309);
+            break;
+        case EquipmentType.T_ARMOR_REACTIVE:
+            g2d.drawString("X", 367, 319);
+            break;
+        case EquipmentType.T_ARMOR_REFLECTIVE:
+            g2d.drawString("X", 367, 329);
+            break;
+        case EquipmentType.T_ARMOR_COMMERCIAL:
+            g2d.drawString("X", 367, 345);
+            break;
+        default:
+            g2d.drawString("X", 367, 249);
+            break;
+
+        }
+
+        switch (mech.getStructureType()) {
+        case EquipmentType.T_STRUCTURE_STANDARD:
+            g2d.drawString("X", 297, 259);
+            break;
+        case EquipmentType.T_STRUCTURE_ENDO_STEEL:
+            g2d.drawString("X", 297, 268);
+            break;
+        case EquipmentType.T_STRUCTURE_REINFORCED:
+            g2d.drawString("X", 297, 286);
+            break;
+        case EquipmentType.T_STRUCTURE_COMPOSITE:
+            g2d.drawString("X", 297, 295);
+            break;
+        case EquipmentType.T_STRUCTURE_INDUSTRIAL:
+            g2d.drawString("X", 297, 303);
+            break;
+
+        }
+
+        if (mech.isClan()) {
             g2d.drawString("X", 209, 154);
-        } else if ( mech.isMixedTech() ){
+        } else if (mech.isMixedTech()) {
             g2d.drawString("X", 209, 174);
-        }else {
+        } else {
             g2d.drawString("X", 209, 164);
         }
-        
-        //Cost/BV
+
+        // Cost/BV
         g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 359);
 
         DecimalFormat myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(mech.getCost())+" C", 54, 359);
+        g2d.drawString(myFormatter.format(mech.getCost()) + " C", 54, 359);
     }
-    
-    private void printHeatSinks(Graphics2D g2d){
+
+    private void printHeatSinks(Graphics2D g2d) {
         Font font = new Font("Arial", Font.BOLD, 11);
         g2d.setFont(font);
-        //Heat Sinks
+        // Heat Sinks
         g2d.drawString(Integer.toString(mech.heatSinks()), 402, 594);
-        if ( mech.hasDoubleHeatSinks() ) {
-            g2d.drawString(Integer.toString(mech.heatSinks()*2), 424, 594);
-        }else {
+        if (mech.hasDoubleHeatSinks()) {
+            g2d.drawString(Integer.toString(mech.heatSinks() * 2), 424, 594);
+        } else {
             g2d.drawString(Integer.toString(mech.heatSinks()), 424, 594);
         }
-        
+
     }
-    
-    private void printArmor(Graphics2D g2d){
-        //Armor
+
+    private void printArmor(Graphics2D g2d) {
+        // Armor
         Font font = new Font("Arial", Font.BOLD, 11);
         g2d.setFont(font);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_HEAD)), 485, 48);
@@ -157,11 +213,11 @@ public class PrintAdvancedMech implements Printable {
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RARM)), 546, 217);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LLEG)), 390, 273);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RLEG)), 554, 273);
-        //Rear
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT,true)), 403, 363);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_CT,true)), 480, 279);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RT,true)), 545, 363);
-        //Internal
+        // Rear
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT, true)), 403, 363);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_CT, true)), 480, 279);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RT, true)), 545, 363);
+        // Internal
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LT)), 432, 404);
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RT)), 525, 404);
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LARM)), 391, 479);
@@ -170,19 +226,19 @@ public class PrintAdvancedMech implements Printable {
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LLEG)), 403, 550);
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RLEG)), 519, 550);
     }
-    
+
     private void printLACrits(Graphics2D g2d) {
-    
+
         int lineStart = 58;
         int linePoint = 410;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
         g2d.setFont(font);
-        
-        for ( int slot = 0; slot < 12; slot++ ) {
+
+        for (int slot = 0; slot < 12; slot++) {
             CriticalSlot cs = mech.getCritical(Mech.LOC_LARM, slot);
-            
+
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -190,35 +246,35 @@ public class PrintAdvancedMech implements Printable {
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
                 StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20){
+                if (critName.length() > 20) {
                     critName.setLength(20);
                     critName.append("...");
                 }
-                if ( m.isRearMounted() ){
+                if (m.isRearMounted()) {
                     critName.append("(R)");
                 }
                 g2d.drawString(critName.toString(), lineStart, linePoint);
             }
             linePoint += lineFeed;
-            
-            if ( slot == 5 ) {
-                linePoint += lineFeed-1;
+
+            if (slot == 5) {
+                linePoint += lineFeed - 1;
             }
         }
     }
-    
+
     private void printRACrits(Graphics2D g2d) {
-        
+
         int lineStart = 294;
         int linePoint = 410;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
         g2d.setFont(font);
-        
-        for ( int slot = 0; slot < 12; slot++ ) {
+
+        for (int slot = 0; slot < 12; slot++) {
             CriticalSlot cs = mech.getCritical(Mech.LOC_RARM, slot);
-            
+
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -226,35 +282,35 @@ public class PrintAdvancedMech implements Printable {
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
                 StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20){
+                if (critName.length() > 20) {
                     critName.setLength(20);
                     critName.append("...");
                 }
-                if ( m.isRearMounted() ){
+                if (m.isRearMounted()) {
                     critName.append("(R)");
                 }
                 g2d.drawString(critName.toString(), lineStart, linePoint);
             }
             linePoint += lineFeed;
-            
-            if ( slot == 5 ) {
-                linePoint += lineFeed-1;
+
+            if (slot == 5) {
+                linePoint += lineFeed - 1;
             }
         }
     }
-    
+
     private void printCTCrits(Graphics2D g2d) {
-        
+
         int lineStart = 176;
         int linePoint = 469;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
         g2d.setFont(font);
-        
-        for ( int slot = 0; slot < 12; slot++ ) {
+
+        for (int slot = 0; slot < 12; slot++) {
             CriticalSlot cs = mech.getCritical(Mech.LOC_CT, slot);
-            
+
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -262,35 +318,35 @@ public class PrintAdvancedMech implements Printable {
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
                 StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20){
+                if (critName.length() > 20) {
                     critName.setLength(20);
                     critName.append("...");
                 }
-                if ( m.isRearMounted() ){
+                if (m.isRearMounted()) {
                     critName.append("(R)");
                 }
                 g2d.drawString(critName.toString(), lineStart, linePoint);
             }
             linePoint += lineFeed;
-            
-            if ( slot == 5 ) {
-                linePoint += lineFeed-1;
+
+            if (slot == 5) {
+                linePoint += lineFeed - 1;
             }
         }
     }
-    
+
     private void printLTCrits(Graphics2D g2d) {
-        
+
         int lineStart = 58;
         int linePoint = 545;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
         g2d.setFont(font);
-        
-        for ( int slot = 0; slot < 12; slot++ ) {
+
+        for (int slot = 0; slot < 12; slot++) {
             CriticalSlot cs = mech.getCritical(Mech.LOC_LT, slot);
-            
+
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -298,35 +354,35 @@ public class PrintAdvancedMech implements Printable {
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
                 StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20){
+                if (critName.length() > 20) {
                     critName.setLength(20);
                     critName.append("...");
                 }
-                if ( m.isRearMounted() ){
+                if (m.isRearMounted()) {
                     critName.append("(R)");
                 }
                 g2d.drawString(critName.toString(), lineStart, linePoint);
             }
             linePoint += lineFeed;
-            
-            if ( slot == 5 ) {
-                linePoint += lineFeed-1;
+
+            if (slot == 5) {
+                linePoint += lineFeed - 1;
             }
         }
     }
-    
+
     private void printRTCrits(Graphics2D g2d) {
-        
+
         int lineStart = 294;
         int linePoint = 545;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
         g2d.setFont(font);
-        
-        for ( int slot = 0; slot < 12; slot++ ) {
+
+        for (int slot = 0; slot < 12; slot++) {
             CriticalSlot cs = mech.getCritical(Mech.LOC_RT, slot);
-            
+
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -334,35 +390,35 @@ public class PrintAdvancedMech implements Printable {
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
                 StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20){
+                if (critName.length() > 20) {
                     critName.setLength(20);
                     critName.append("...");
                 }
-                if ( m.isRearMounted() ){
+                if (m.isRearMounted()) {
                     critName.append("(R)");
                 }
                 g2d.drawString(critName.toString(), lineStart, linePoint);
             }
             linePoint += lineFeed;
-            
-            if ( slot == 5 ) {
-                linePoint += lineFeed-1;
+
+            if (slot == 5) {
+                linePoint += lineFeed - 1;
             }
         }
     }
-    
+
     private void printHeadCrits(Graphics2D g2d) {
-        
+
         int lineStart = 176;
         int linePoint = 401;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
         g2d.setFont(font);
-        
-        for ( int slot = 0; slot < 6; slot++ ) {
+
+        for (int slot = 0; slot < 6; slot++) {
             CriticalSlot cs = mech.getCritical(Mech.LOC_HEAD, slot);
-            
+
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -370,32 +426,32 @@ public class PrintAdvancedMech implements Printable {
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
                 StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20){
+                if (critName.length() > 20) {
                     critName.setLength(20);
                     critName.append("...");
                 }
-                if ( m.isRearMounted() ){
+                if (m.isRearMounted()) {
                     critName.append("(R)");
                 }
                 g2d.drawString(critName.toString(), lineStart, linePoint);
             }
             linePoint += lineFeed;
-            
+
         }
     }
-    
+
     private void printLLCrits(Graphics2D g2d) {
-        
+
         int lineStart = 58;
         int linePoint = 682;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
         g2d.setFont(font);
-        
-        for ( int slot = 0; slot < 6; slot++ ) {
+
+        for (int slot = 0; slot < 6; slot++) {
             CriticalSlot cs = mech.getCritical(Mech.LOC_LLEG, slot);
-            
+
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -403,32 +459,32 @@ public class PrintAdvancedMech implements Printable {
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
                 StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20){
+                if (critName.length() > 20) {
                     critName.setLength(20);
                     critName.append("...");
                 }
-                if ( m.isRearMounted() ){
+                if (m.isRearMounted()) {
                     critName.append("(R)");
                 }
                 g2d.drawString(critName.toString(), lineStart, linePoint);
             }
             linePoint += lineFeed;
-            
+
         }
     }
-    
+
     private void printRLCrits(Graphics2D g2d) {
-        
+
         int lineStart = 294;
         int linePoint = 682;
         int lineFeed = 8;
 
         Font font = new Font("Arial", Font.PLAIN, 9);
         g2d.setFont(font);
-        
-        for ( int slot = 0; slot < 6; slot++ ) {
+
+        for (int slot = 0; slot < 6; slot++) {
             CriticalSlot cs = mech.getCritical(Mech.LOC_RLEG, slot);
-            
+
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -436,21 +492,21 @@ public class PrintAdvancedMech implements Printable {
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
                 StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20){
+                if (critName.length() > 20) {
                     critName.setLength(20);
                     critName.append("...");
                 }
-                if ( m.isRearMounted() ){
+                if (m.isRearMounted()) {
                     critName.append("(R)");
                 }
                 g2d.drawString(critName.toString(), lineStart, linePoint);
             }
             linePoint += lineFeed;
-            
+
         }
     }
-    
-    private void printWeaponsNEquipment(Graphics2D g2d){
+
+    private void printWeaponsNEquipment(Graphics2D g2d) {
         int qtyPoint = 26;
         int typePoint = 38;
         int locPoint = 109;
@@ -461,69 +517,69 @@ public class PrintAdvancedMech implements Printable {
         int medPoint = 199;
         int longPoint = 215;
         int linePoint = 210;
-        
-        int lineFeed = 11;
-        
-        ArrayList<Hashtable<String,equipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String,equipmentInfo>>(Mech.LOC_LLEG+1);
 
-        for ( int pos = 0; pos <= Mech.LOC_LLEG; pos++){
-            equipmentLocations.add(pos,new Hashtable<String,equipmentInfo>());
+        int lineFeed = 11;
+
+        ArrayList<Hashtable<String, equipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, equipmentInfo>>(Mech.LOC_LLEG + 1);
+
+        for (int pos = 0; pos <= Mech.LOC_LLEG; pos++) {
+            equipmentLocations.add(pos, new Hashtable<String, equipmentInfo>());
         }
-        
-        for ( Mounted eq : mech.getEquipment() ){
-            
-            if ( eq.getType() instanceof AmmoType || eq.getLocation() == Mech.LOC_NONE ){
+
+        for (Mounted eq : mech.getEquipment()) {
+
+            if (eq.getType() instanceof AmmoType || eq.getLocation() == Mech.LOC_NONE || !UnitUtil.isPrintableEquipment(eq.getType())) {
                 continue;
             }
-            
-            Hashtable<String,equipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
-            
-            if ( eqHash.containsKey(eq.getName()) ){
+
+            Hashtable<String, equipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
+
+            if (eqHash.containsKey(eq.getName())) {
                 equipmentInfo eqi = eqHash.get(eq.getName());
-                
-                if ( eq.getType().getTechLevel() != eqi.techLevel ){
+
+                if (eq.getType().getTechLevel() != eqi.techLevel) {
                     eqi = new equipmentInfo(eq);
-                }else {
+                } else {
                     eqi.count++;
                 }
-                eqHash.put(eq.getName(),eqi);
+                eqHash.put(eq.getName(), eqi);
             } else {
                 equipmentInfo eqi = new equipmentInfo(eq);
-                eqHash.put(eq.getName(), eqi );
+                eqHash.put(eq.getName(), eqi);
             }
 
         }
-        
+
         Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
-        
-        for ( int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++){
-            
-            Hashtable<String,equipmentInfo> eqHash = equipmentLocations.get(pos);
-            
-            if ( eqHash.size() < 1 ){
+
+        for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
+
+            Hashtable<String, equipmentInfo> eqHash = equipmentLocations.get(pos);
+
+            if (eqHash.size() < 1) {
                 continue;
             }
-            
+
             int count = 0;
-            
-            for ( equipmentInfo eqi : eqHash.values() ){ 
-                if ( count >= 12 ){
+
+            for (equipmentInfo eqi : eqHash.values()) {
+                if (count >= 12) {
                     break;
                 }
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
-                
-                if ( name.length() > 20 ){
-                    name = name.substring(0,18)+"..";
+
+                if (name.length() > 20) {
+                    name = name.substring(0, 18) + "..";
                 }
-                if ( eqi.isRear ){
+                if (eqi.isRear) {
                     name += "(R)";
                 }
-                
+
                 g2d.drawString(name, typePoint, linePoint);
                 g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
-                if ( eqi.isWeapon ){
+                if (eqi.isWeapon) {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
                     g2d.drawString(eqi.damage, damagePoint, linePoint);
                     g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
@@ -536,12 +592,12 @@ public class PrintAdvancedMech implements Printable {
             }
         }
 
-        
     }
-    
+
     public void print() {
 
-        try {            PrinterJob pj = PrinterJob.getPrinterJob();
+        try {
+            PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
                 Paper paper = new Paper();
@@ -553,8 +609,8 @@ public class PrintAdvancedMech implements Printable {
                 pageFormat.setOrientation(PageFormat.PORTRAIT);
 
                 pj.setPrintable(this, pageFormat);
-                pj.setJobName(mech.getChassis()+" "+mech.getModel());
-                
+                pj.setJobName(mech.getChassis() + " " + mech.getModel());
+
                 pj.print();
 
             }
@@ -562,8 +618,8 @@ public class PrintAdvancedMech implements Printable {
             ex.printStackTrace();
         }
     }
-    
-    private class equipmentInfo{
+
+    private class equipmentInfo {
         public int count = 0;
         public String name = "";
         public int minRange = 0;
@@ -575,28 +631,28 @@ public class PrintAdvancedMech implements Printable {
         public int techLevel = TechConstants.T_INTRO_BOXSET;
         public boolean isWeapon = false;
         public boolean isRear = false;
-        
-        public equipmentInfo(Mounted mount){
+
+        public equipmentInfo(Mounted mount) {
             this.name = mount.getName();
             this.count = 1;
             this.techLevel = mount.getType().getTechLevel();
             this.isRear = mount.isRearMounted();
-            
-            if ( mount.getType() instanceof WeaponType ){
-                WeaponType weapon = (WeaponType)mount.getType();
+
+            if (mount.getType() instanceof WeaponType) {
+                WeaponType weapon = (WeaponType) mount.getType();
                 this.minRange = Math.max(0, weapon.minimumRange);
                 this.isWeapon = true;
-                if ( weapon.getDamage() < 0 ){
-                    if ( weapon instanceof SRMWeapon ){
+                if (weapon.getDamage() < 0) {
+                    if (weapon instanceof SRMWeapon) {
                         damage = "2/hit";
-                    }else if ( weapon instanceof LRMWeapon ){
+                    } else if (weapon instanceof LRMWeapon) {
                         damage = "1/hit";
-                    }else if ( weapon instanceof ATMWeapon ){
+                    } else if (weapon instanceof ATMWeapon) {
                         damage = "3/2/1";
-                    }else {
+                    } else {
                         damage = Integer.toString(weapon.getRackSize());
                     }
-                }else {
+                } else {
                     this.damage = Integer.toString(weapon.getDamage());
                 }
                 this.shtRange = weapon.shortRange;

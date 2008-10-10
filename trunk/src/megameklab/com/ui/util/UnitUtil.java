@@ -392,6 +392,19 @@ public class UnitUtil {
     }
 
     /**
+     * Checks if EquipmentType is a heat sink
+     * @param eq
+     * @return
+     */
+    public static boolean isHeatSink(EquipmentType eq) {
+        if (eq instanceof MiscType && (eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Removes all heat sinks from the mek
      * 
      * @param unit
@@ -463,6 +476,10 @@ public class UnitUtil {
      */
     public static boolean isPrintableEquipment(EquipmentType eq){
         if ( eq instanceof MiscType && (eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_MASC) || eq.hasFlag(MiscType.F_TSM)) ){
+            return false;
+        }
+        
+        if ( UnitUtil.isHeatSink(eq) ) {
             return false;
         }
         
