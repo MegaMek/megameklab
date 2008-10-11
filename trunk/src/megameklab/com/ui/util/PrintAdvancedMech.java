@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.util;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -44,6 +45,9 @@ public class PrintAdvancedMech implements Printable {
 
     protected Image awtImage = null;
     private Mech mech = null;
+    private Dimension fillRec = new Dimension(8,8);
+    private Dimension fillRecArc = new Dimension(4,4);
+
 
     public PrintAdvancedMech(Image image, Mech unit) {
         awtImage = image;
@@ -101,111 +105,113 @@ public class PrintAdvancedMech implements Printable {
 
         switch (mech.getCockpitType()) {
         case Mech.COCKPIT_STANDARD:
-            g2d.drawString("X", 294, 205);
+            g2d.fillRoundRect(294, 197, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case Mech.COCKPIT_SMALL:
-            g2d.drawString("X", 294, 214);
+            g2d.fillRoundRect(294, 206, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case Mech.COCKPIT_DUAL:
-            g2d.drawString("X", 367, 196);
+            g2d.fillRoundRect(367, 188, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case Mech.COCKPIT_COMMAND_CONSOLE:
-            g2d.drawString("X", 367, 205);
+            g2d.fillRoundRect(367, 197, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case Mech.COCKPIT_TORSO_MOUNTED:
-            g2d.drawString("X", 367, 214);
+            g2d.fillRoundRect(367, 206, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         }
 
         switch (mech.getArmorType()) {
         case EquipmentType.T_ARMOR_STANDARD:
-            g2d.drawString("X", 367, 249);
+            g2d.fillRoundRect(367, 241, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-            g2d.drawString("X", 367, 258);
+            g2d.fillRoundRect(367, 250, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_ARMOR_LAMELLOR_FERRO_CARBIDE:
-            g2d.drawString("X", 367, 267);
+            g2d.fillRoundRect(367, 259, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_ARMOR_LIGHT_FERRO:
-            g2d.drawString("X", 367, 276);
+            g2d.fillRoundRect(367, 268, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_ARMOR_HEAVY_FERRO:
-            g2d.drawString("X", 367, 285);
+            g2d.fillRoundRect(367, 277, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_ARMOR_STEALTH:
-            g2d.drawString("X", 367, 294);
+            g2d.fillRoundRect(367, 286, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_ARMOR_HARDENED:
-            g2d.drawString("X", 367, 309);
+            g2d.fillRoundRect(367, 301, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_ARMOR_REACTIVE:
-            g2d.drawString("X", 367, 319);
+            g2d.fillRoundRect(367, 311, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_ARMOR_REFLECTIVE:
-            g2d.drawString("X", 367, 329);
+            g2d.fillRoundRect(367, 321, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_ARMOR_COMMERCIAL:
-            g2d.drawString("X", 367, 345);
+            g2d.fillRoundRect(367, 337, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         default:
-            g2d.drawString("X", 367, 249);
+            g2d.fillRoundRect(367, 241, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
 
         }
 
         switch (mech.getStructureType()) {
         case EquipmentType.T_STRUCTURE_STANDARD:
-            g2d.drawString("X", 297, 259);
+            g2d.fillRoundRect(297, 251, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_STRUCTURE_ENDO_STEEL:
-            g2d.drawString("X", 297, 268);
+            g2d.fillRoundRect(297, 260, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_STRUCTURE_REINFORCED:
-            g2d.drawString("X", 297, 286);
+            g2d.fillRoundRect(297, 278, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_STRUCTURE_COMPOSITE:
-            g2d.drawString("X", 297, 295);
+            g2d.fillRoundRect(297, 287, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case EquipmentType.T_STRUCTURE_INDUSTRIAL:
-            g2d.drawString("X", 297, 303);
+            g2d.fillRoundRect(297, 295, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
 
         }
 
         switch ( mech.getGyroType() ) {
         case Mech.GYRO_STANDARD:
-            g2d.drawString("X", 297, 319);
+            g2d.fillRoundRect(297, 311, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case Mech.GYRO_COMPACT:
-            g2d.drawString("X", 297, 328);
+            g2d.fillRoundRect(297, 320, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case Mech.GYRO_HEAVY_DUTY:
-            g2d.drawString("X", 297, 337);
+            g2d.fillRoundRect(297, 329, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         case Mech.GYRO_XL:
-            g2d.drawString("X", 297, 346);
+            g2d.fillRoundRect(297, 338, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         }
         
         if ( UnitUtil.hasCompactHeatSinks(mech) ) {
-            g2d.drawString("X", 367, 363);
+            g2d.fillRoundRect(367, 355, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }else if ( mech.hasLaserHeatSinks() ) {
-            g2d.drawString("X", 367, 372);
+            g2d.fillRoundRect(367, 364, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }else if ( mech.hasDoubleHeatSinks() ) {
-            g2d.drawString("X", 297, 369);
+            g2d.fillRoundRect(297, 361, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }else {
-            g2d.drawString("X", 297, 360);
+            g2d.fillRoundRect(297, 352, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }
         
         if (mech.isClan()) {
-            g2d.drawString("X", 209, 154);
-        } else if (mech.isMixedTech()) {
-            g2d.drawString("X", 209, 174);
+            g2d.fillRoundRect(209, 146, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         } else {
-            g2d.drawString("X", 209, 164);
+            g2d.fillRoundRect(209, 156, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }
 
+        if (mech.isMixedTech()) {
+            g2d.fillRoundRect(209, 166, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        }
+        
         // Cost/BV
         g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 359);
 
