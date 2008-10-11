@@ -41,7 +41,9 @@ import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.StructureTab;
 import megameklab.com.ui.tabs.WeaponTab;
 import megameklab.com.ui.util.PrintAdvancedMech;
+import megameklab.com.ui.util.PrintAdvancedQuad;
 import megameklab.com.ui.util.PrintMech;
+import megameklab.com.ui.util.PrintQuad;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.SaveMechToMTF;
 import megameklab.com.ui.util.UnitUtil;
@@ -210,19 +212,38 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuPrint_actionPerformed(ActionEvent event) {
-       String fImageName = "./data/images/twbiped.png";
-
-        PrintMech sp = new PrintMech(getToolkit().getImage(fImageName), entity);
-
-        sp.print();
+        
+        if ( entity instanceof QuadMech ) {
+            String fImageName = "./data/images/twquad.png";
+            
+            PrintQuad sp = new PrintQuad(getToolkit().getImage(fImageName), entity);
+    
+            sp.print();
+        }else {
+            String fImageName = "./data/images/twbiped.png";
+    
+            PrintMech sp = new PrintMech(getToolkit().getImage(fImageName), entity);
+    
+            sp.print();
+        }
     }
 
     public void jMenuAdvancedPrint_actionPerformed(ActionEvent event) {
-        String fImageName = "./data/images/tobiped.png";
-
-         PrintAdvancedMech sp = new PrintAdvancedMech(getToolkit().getImage(fImageName), entity);
-
-         sp.print();
+        
+        if ( entity instanceof QuadMech ) {
+            String fImageName = "./data/images/toquad.png";
+            
+            PrintAdvancedQuad sp = new PrintAdvancedQuad(getToolkit().getImage(fImageName), entity);
+   
+            sp.print();
+           
+        }else {
+             String fImageName = "./data/images/tobiped.png";
+    
+             PrintAdvancedMech sp = new PrintAdvancedMech(getToolkit().getImage(fImageName), entity);
+    
+             sp.print();
+        }
      }
 
     public void reloadTabs() {
