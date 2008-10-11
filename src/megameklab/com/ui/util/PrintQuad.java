@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.util;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -43,6 +44,9 @@ public class PrintQuad implements Printable {
 
     protected Image awtImage = null;
     private Mech mech = null;
+    private Dimension fillRec = new Dimension(8,8);
+    private Dimension fillRecArc = new Dimension(4,4);
+
     
     public PrintQuad (Image image, Mech unit) {
         awtImage = image;
@@ -98,9 +102,9 @@ public class PrintQuad implements Printable {
         g2d.drawString(Float.toString(mech.getWeight()), 173, 134);
 
         if ( mech.isClan() ) {
-            g2d.drawString("X", 205, 156);
+            g2d.fillRoundRect(205, 148, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         } else {
-            g2d.drawString("X", 205, 166);
+            g2d.fillRoundRect(205, 158, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }
         
         //Cost/BV
@@ -117,10 +121,10 @@ public class PrintQuad implements Printable {
         g2d.drawString(Integer.toString(mech.heatSinks()), 497, 598);
         if ( mech.hasDoubleHeatSinks() ) {
             g2d.drawString(Integer.toString(mech.heatSinks()*2), 520, 598);
-            g2d.drawString("X", 527, 723);
+            g2d.fillRoundRect(527, 715, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }else {
             g2d.drawString(Integer.toString(mech.heatSinks()), 520, 598);
-            g2d.drawString("X", 527, 708);
+            g2d.fillRoundRect(527, 700, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }
         
     }
