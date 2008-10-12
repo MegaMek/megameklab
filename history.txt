@@ -1,6 +1,8 @@
 VERSION HISTORY:
 ----------------
-v 0.0.0.5-dev
+v 0.0.0.6-dev
+
+v 0.0.0.5 (10/12/08)
 + Bug 1989468: Hand / Lower Arm Actuator cannot be removed
 + Bug: Heat Sinks not loading and unloading correctly
 + Bug: Splitable weapons not loading and unloading correctly
