@@ -22,6 +22,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -61,22 +62,21 @@ public class PrintMech implements Printable {
             return Printable.NO_SUCH_PAGE;
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
-        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
         if (awtImage != null) {
-            printImage(g2d, awtImage);
+            printImage(g2d, awtImage, pageFormat);
             return Printable.PAGE_EXISTS;
         } else
             return Printable.NO_SUCH_PAGE;
     }
 
-    public void printImage(Graphics2D g2d, Image image) {
-        System.out.println("printImage(Graphics2D g2d, Image image)");
+    public void printImage(Graphics2D g2d, Image image, PageFormat pageFormat) {
+        //System.out.println("printImage(Graphics2D g2d, Image image)");
         if ((image == null) || (g2d == null))
             return;
-        int x = 18;
-        int y = 18;
-        g2d.drawImage(image, x, y, 558, 738, null);
-
+        
+        //g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(), (int)pageFormat.getImageableHeight(), null);
+        g2d.drawImage(image, 18, 18, 558, 738, null);
+        
         printMechData(g2d);
         printHeatSinks(g2d);
         printArmor(g2d);
@@ -112,6 +112,10 @@ public class PrintMech implements Printable {
         printHeadStruct(g2d);
         printLLStruct(g2d);
         printRLStruct(g2d);
+        
+        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+        g2d.scale(pageFormat.getImageableWidth(),pageFormat.getImageableHeight());
+        
     }
 
     private void printMechData(Graphics2D g2d) {
