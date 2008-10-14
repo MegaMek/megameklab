@@ -45,7 +45,7 @@ public class PrintMech implements Printable {
 
     protected Image awtImage = null;
     private Mech mech = null;
-    private Dimension fillRec = new Dimension(8, 8);
+    private Dimension fillRec = new Dimension(9, 9);
     private Dimension fillRecArc = new Dimension(4, 4);
 
     public PrintMech(Image image, Mech unit) {
@@ -125,9 +125,9 @@ public class PrintMech implements Printable {
         g2d.drawString(Float.toString(mech.getWeight()), 173, 134);
 
         if (mech.isClan()) {
-            g2d.fillRoundRect(205, 148, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            g2d.fillRoundRect(204, 147, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         } else {
-            g2d.fillRoundRect(205, 158, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            g2d.fillRoundRect(204, 157, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }
 
         // Cost/BV
@@ -144,10 +144,10 @@ public class PrintMech implements Printable {
         g2d.drawString(Integer.toString(mech.heatSinks()), 497, 598);
         if (mech.hasDoubleHeatSinks()) {
             g2d.drawString(Integer.toString(mech.heatSinks() * 2), 520, 598);
-            g2d.fillRoundRect(527, 715, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            g2d.fillRoundRect(526, 716, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         } else {
             g2d.drawString(Integer.toString(mech.heatSinks()), 520, 598);
-            g2d.fillRoundRect(527, 700, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            g2d.fillRoundRect(526, 701, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }
 
     }
@@ -555,13 +555,13 @@ public class PrintMech implements Printable {
             PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
-                Paper paper = new Paper();
+                //Paper paper = new Paper();
                 PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.defaultPage();
-                paper.setImageableArea(0, 0, 612, 792);
-                paper.setSize(612, 792);
-                pageFormat.setPaper(paper);
-                pageFormat.setOrientation(PageFormat.PORTRAIT);
+                pageFormat = pj.getPageFormat(null);
+
+                Paper p = pageFormat.getPaper();
+                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                pageFormat.setPaper(p);
 
                 pj.setPrintable(this, pageFormat);
                 pj.setJobName(mech.getChassis() + " " + mech.getModel());
