@@ -414,7 +414,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
     private void populateChoices() {
 
-        for (int i = 0; i < EntityWeightClass.SIZE; i++) {
+        for (int i = 0; i <= EntityWeightClass.WEIGHT_ASSAULT; i++) {
             chWeightClass.addItem(EntityWeightClass.getClassName(i));
         }
         chWeightClass.addItem("All"); //$NON-NLS-1$
