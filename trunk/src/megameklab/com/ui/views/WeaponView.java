@@ -41,10 +41,16 @@ import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.InfantryWeapon;
+import megamek.common.weapons.LRMWeapon;
+import megamek.common.weapons.LRTWeapon;
+import megamek.common.weapons.MRMWeapon;
 import megamek.common.weapons.NavalACWeapon;
 import megamek.common.weapons.NavalGaussWeapon;
 import megamek.common.weapons.NavalLaserWeapon;
 import megamek.common.weapons.NavalPPCWeapon;
+import megamek.common.weapons.RLWeapon;
+import megamek.common.weapons.SRMWeapon;
+import megamek.common.weapons.SRTWeapon;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.RefreshListener;
 import megameklab.com.ui.util.UnitUtil;
@@ -173,13 +179,17 @@ public class WeaponView extends View implements ActionListener {
 
                 WeaponType weapon = (WeaponType) eq;
 
-                if ((weapon.getName().startsWith("LRM") || weapon.getName().startsWith("LRT") || weapon.getName().startsWith("RL")) && weapon.getRackSize() != 5 && weapon.getRackSize() != 10 && weapon.getRackSize() != 15 && weapon.getRackSize() != 20) {
+                if ((weapon instanceof LRMWeapon || weapon instanceof LRTWeapon ) && weapon.getRackSize() != 5 && weapon.getRackSize() != 10 && weapon.getRackSize() != 15 && weapon.getRackSize() != 20) {
                     continue;
                 }
-                if ((weapon.getName().startsWith("SRM") || weapon.getName().startsWith("SRT")) && weapon.getRackSize() != 2 && weapon.getRackSize() != 4 && weapon.getRackSize() != 6) {
+                if ((weapon instanceof SRMWeapon || weapon instanceof SRTWeapon) && weapon.getRackSize() != 2 && weapon.getRackSize() != 4 && weapon.getRackSize() != 6) {
                     continue;
                 }
-                if (weapon.getName().startsWith("MRM") && weapon.getRackSize() < 5) {
+                if (weapon instanceof MRMWeapon && weapon.getRackSize() < 5) {
+                    continue;
+                }
+                
+                if ( weapon instanceof RLWeapon && weapon.getRackSize() < 10 ){
                     continue;
                 }
                 
