@@ -19,9 +19,9 @@ package megameklab.com.ui;
 import java.awt.Color;
 import java.io.File;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SpringLayout;
 
 import megamek.common.AmmoType;
 import megamek.common.Mech;
@@ -30,6 +30,7 @@ import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 import megameklab.com.ui.tabs.ITab;
+import megameklab.com.ui.util.SpringLayoutHelper;
 
 public class StatusBar extends ITab {
 
@@ -53,12 +54,13 @@ public class StatusBar extends ITab {
         this.unit = unit;
 
         testEntity = new TestMech(unit, entityVerifier.mechOption, null);
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        this.setLayout(new SpringLayout());
         this.add(movementPanel());
         this.add(bvPanel());
         this.add(tonnagePanel());
         this.add(heatPanel());
 
+        SpringLayoutHelper.setupSpringGrid(this, 4);
         refresh();
     }
 

@@ -185,7 +185,8 @@ public class CriticalTableModel extends AbstractTableModel {
     public void removeMounted(int row) {
         UnitUtil.removeMounted(unit,(EquipmentType) this.getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
-
     
-
+    public Vector<EquipmentType> getCrits(){
+        return crits;
+    }
 }

@@ -35,7 +35,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
-import megamek.common.AmmoType;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
@@ -43,7 +42,6 @@ import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
-import megamek.common.weapons.Weapon;
 
 public class DropTargetCriticalList extends JList implements DropTargetListener, MouseListener {
 
@@ -134,35 +132,9 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
     }
     
     private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
-        if (eq.getType() instanceof Weapon) {
-            for (Mounted mount : unit.getWeaponList()) {
-                if ( mount == eq) {
-                    mount.setLocation(location, rear);
-                    mount.setSecondLocation(secondaryLocation,rear);
-                    mount.setSplit(secondaryLocation > -1);
-                    break;
-                }
-            }
-        } else if (eq.getType() instanceof AmmoType) {
-            for (Mounted mount : unit.getAmmo()) {
-                if ( mount == eq) {
-                    mount.setLocation(location);
-                    mount.setSecondLocation(secondaryLocation);
-                    mount.setSplit(secondaryLocation > -1);
-                    break;
-                }
-            }
-        } else {
-            for (Mounted mount : unit.getMisc()) {
-                if ( mount == eq) {
-                    mount.setLocation(location);
-                    mount.setSecondLocation(secondaryLocation);
-                    mount.setSplit(secondaryLocation > -1);
-                    break;
-                }
-            }
-        }
 
+        UnitUtil.changeMountStatus(unit, eq, location, secondaryLocation, rear);
+        
         if (refresh != null) {
             refresh.refreshAll();
         }

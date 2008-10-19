@@ -17,7 +17,6 @@
 package megameklab.com.ui;
 
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +40,7 @@ import megameklab.com.ui.tabs.BuildTab;
 import megameklab.com.ui.tabs.EquipmentTab;
 import megameklab.com.ui.tabs.StructureTab;
 import megameklab.com.ui.tabs.WeaponTab;
+import megameklab.com.ui.util.CConfig;
 import megameklab.com.ui.util.PrintAdvancedMech;
 import megameklab.com.ui.util.PrintAdvancedQuad;
 import megameklab.com.ui.util.PrintMech;
@@ -64,7 +64,7 @@ public class MainUI extends JFrame implements RefreshListener {
      */
     private static final long serialVersionUID = -5836932822468918198L;
     private static final String VERSION = "0.0.0.6-dev";
- 
+
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
     JMenu file = new JMenu("File");
@@ -79,9 +79,11 @@ public class MainUI extends JFrame implements RefreshListener {
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
-
+    public CConfig config;
+    
     public MainUI() {
 
+        config = new CConfig();
         System.out.println("Staring MegaMekLab version: " + VERSION);
         file.setMnemonic('F');
         JMenuItem item = new JMenuItem();
@@ -153,6 +155,16 @@ public class MainUI extends JFrame implements RefreshListener {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
+                config.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
+                //Only save position and size if not maximized or minimized.
+                if ( getExtendedState() == JFrame.NORMAL ) {
+                    config.setParam("WINDOWHEIGHT", Integer.toString(getHeight()));
+                    config.setParam("WINDOWWIDTH", Integer.toString(getWidth()));
+                    config.setParam("WINDOWLEFT", Integer.toString(getX()));
+                    config.setParam("WINDOWTOP", Integer.toString(getY()));
+                }
+                config.saveConfig();
+
                 System.exit(0);
             }
         });
@@ -166,14 +178,15 @@ public class MainUI extends JFrame implements RefreshListener {
         scroll.setViewportView(masterPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         this.add(scroll);
-        Dimension maxSize = new Dimension(800, 600);
+        Dimension maxSize = new Dimension(config.getIntParam("WINDOWWIDTH"), config.getIntParam("WINDOWHEIGHT"));
         // masterPanel.setPreferredSize(new Dimension(600,400));
-        scroll.setPreferredSize(maxSize);
+        //scroll.setPreferredSize(maxSize);
         setResizable(true);
         setSize(maxSize);
         setMaximumSize(maxSize);
         setPreferredSize(maxSize);
-        setExtendedState(Frame.NORMAL);
+        setExtendedState(config.getIntParam("WINDOWSTATE"));
+        setLocation(config.getIntParam("WINDOWLEFT"),config.getIntParam("WINDOWTOP"));
 
         reloadTabs();
         this.setVisible(true);
@@ -206,10 +219,25 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
+        
         createNewMech(false);
         structureTab.updateMech(entity);
-        refreshStructure();
-        refreshAll();
+        armorTab.updateMech(entity);
+        equipmentTab.updateMech(entity);
+        weaponTab.updateMech(entity);
+        buildTab.updateMech(entity);
+        statusbar.updateMech(entity);
+        header.updateMech(entity);
+        
+        weaponTab.getView().removeAllWeapons();
+        equipmentTab.getView().removeAllEquipment();
+        
+        statusbar.refresh();
+        structureTab.refresh();
+        armorTab.refresh();
+        equipmentTab.refresh();
+        weaponTab.refresh();
+        buildTab.refresh();
     }
 
     public void jMenuPrint_actionPerformed(ActionEvent event) {
