@@ -170,8 +170,14 @@ public class EquipmentView extends View implements ActionListener {
 
             EquipmentType eq = (EquipmentType) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             if ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK))) {
+                try {
                 equipmentList.removeCrit(location);
                 equipmentList.refreshModel();
+                }catch (ArrayIndexOutOfBoundsException aioobe) {
+                    return;
+                }catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             } else {
                 location++;
             }
@@ -214,7 +220,7 @@ public class EquipmentView extends View implements ActionListener {
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.TSM));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TARGETINGCOMPUTER)) {
-                if (!unit.hasTargComp()) {
+                if (!UnitUtil.hasTargComp(unit)) {
                     UnitUtil.updateTC(unit);
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.TARGETINGCOMPUTER));
                 }
@@ -238,16 +244,20 @@ public class EquipmentView extends View implements ActionListener {
                 }
             }
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
-            for (int count = 0; count < equipmentList.getRowCount(); count++) {
-                equipmentList.removeMounted(count);
-            }
-            equipmentList.removeAllCrits();
+            removeAllEquipment();
         } else {
             return;
         }
         fireTableRefresh();
     }
 
+    public void removeAllEquipment() {
+        for (int count = 0; count < equipmentList.getRowCount(); count++) {
+            equipmentList.removeMounted(count);
+        }
+        equipmentList.removeAllCrits();
+    }
+    
     private void fireTableRefresh() {
         equipmentList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension(this.getWidth() * 90 / 100, this.getHeight() * 8 / 10));

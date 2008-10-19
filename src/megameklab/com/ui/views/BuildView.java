@@ -44,16 +44,17 @@ public class BuildView extends View implements ActionListener {
     private static final long serialVersionUID = 799195356642563937L;
 
     private JPanel mainPanel = new JPanel();
+    
     private CriticalTableModel equipmentList;
     private Vector<EquipmentType> masterEquipmentList = new Vector<EquipmentType>(10, 1);
     private CriticalTable equipmentTable = new CriticalTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private int engineHeatSinkCount = 0;
-
+    
     public BuildView(Mech unit) {
         super(unit);
 
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
 
         this.equipmentTable.setModel(equipmentList);
@@ -66,7 +67,7 @@ public class BuildView extends View implements ActionListener {
         equipmentScroll.setPreferredSize(new Dimension(this.getWidth(), this.getHeight()));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
-
+        
         mainPanel.add(equipmentScroll);
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
@@ -114,9 +115,9 @@ public class BuildView extends View implements ActionListener {
 
     public void refresh() {
         removeAllListeners();
-        addAllListeners();
         loadEquipmentTable();
         fireTableRefresh();
+        addAllListeners();
     }
 
     private void removeAllListeners() {

@@ -26,6 +26,7 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
+import megamek.common.weapons.Weapon;
 
 public class UnitUtil {
 
@@ -50,8 +51,8 @@ public class UnitUtil {
      * @param eq
      * @return
      */
-    public static boolean isTSMorTC(EquipmentType eq) {
-        return eq instanceof MiscType && (eq.hasFlag(MiscType.F_TSM) || eq.hasFlag(MiscType.F_TARGCOMP));
+    public static boolean isTSM(EquipmentType eq) {
+        return eq instanceof MiscType && (eq.hasFlag(MiscType.F_TSM));
     }
 
     /**
@@ -62,7 +63,7 @@ public class UnitUtil {
      * @return
      */
     public static int getCritsUsed(Mech unit, EquipmentType eq) {
-        if (UnitUtil.isArmorOrStructure(eq) || UnitUtil.isTSMorTC(eq)) {
+        if (UnitUtil.isArmorOrStructure(eq) || UnitUtil.isTSM(eq)) {
             return 1;
         }
 
@@ -284,6 +285,7 @@ public class UnitUtil {
      * @param unit
      */
     public static void updateTC(Mech unit) {
+        
         UnitUtil.removeTCCrits(unit);
         UnitUtil.removeTCMounts(unit);
         createTCMounts(unit);
@@ -310,13 +312,13 @@ public class UnitUtil {
             return;
         }
 
-        for (; TCCount > 0; TCCount--) {
+//        for (; TCCount > 0; TCCount--) {
             try {
                 unit.addEquipment(new Mounted(unit, EquipmentType.get(TargetingComputerType)), Entity.LOC_NONE, false);
             } catch (Exception ex) {
 
             }
-        }
+  //      }
     }
 
     /**
@@ -475,7 +477,12 @@ public class UnitUtil {
      * @return
      */
     public static boolean isPrintableEquipment(EquipmentType eq){
-        if ( eq instanceof MiscType && (eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_MASC) || eq.hasFlag(MiscType.F_TSM)) ){
+        
+        if ( !eq.isHittable()  ) {
+            return false;
+        }
+            
+        if ( eq instanceof MiscType && eq.hasFlag(MiscType.F_MASC) ){
             return false;
         }
         
@@ -486,4 +493,48 @@ public class UnitUtil {
         return true;
 
     }
+    
+    public static void changeMountStatus(Entity unit, Mounted eq, int location, int secondaryLocation, boolean rear) {
+        if (eq.getType() instanceof Weapon) {
+            for (Mounted mount : unit.getWeaponList()) {
+                if ( mount == eq) {
+                    mount.setLocation(location, rear);
+                    mount.setSecondLocation(secondaryLocation,rear);
+                    mount.setSplit(secondaryLocation > -1);
+                    break;
+                }
+            }
+        } else if (eq.getType() instanceof AmmoType) {
+            for (Mounted mount : unit.getAmmo()) {
+                if ( mount == eq) {
+                    mount.setLocation(location);
+                    mount.setSecondLocation(secondaryLocation);
+                    mount.setSplit(secondaryLocation > -1);
+                    break;
+                }
+            }
+        } else {
+            for (Mounted mount : unit.getMisc()) {
+                if ( mount == eq) {
+                    mount.setLocation(location);
+                    mount.setSecondLocation(secondaryLocation);
+                    mount.setSplit(secondaryLocation > -1);
+                    break;
+                }
+            }
+        }
+
+    }
+    
+    public static boolean hasTargComp(Entity unit) {
+        
+        for ( Mounted mount : unit.getEquipment() ) {
+            if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
 }
