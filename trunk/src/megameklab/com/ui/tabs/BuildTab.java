@@ -38,7 +38,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 
-public class BuildTab extends ITab implements ActionListener{
+public class BuildTab extends ITab implements ActionListener {
 
     /**
      * 
@@ -51,31 +51,30 @@ public class BuildTab extends ITab implements ActionListener{
     private BuildView buildView = null;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
-    
+
     private JButton autoFillButton = new JButton("Auto Fill");
     private JButton resetButton = new JButton("Reset");
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
-    
 
     public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons) {
         this.unit = unit;
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        
+
         critView = new CriticalView(this.unit, true, refresh);
         buildView = new BuildView(this.unit);
 
         mainPanel.add(buildView);
-        
+
         autoFillButton.setActionCommand(AUTOFILLCOMMAND);
         resetButton.setActionCommand(RESETCOMMAND);
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
-        
+
         mainPanel.add(buttonPanel);
-        
+
         this.add(critView);
         this.add(mainPanel);
         refresh();
@@ -84,9 +83,9 @@ public class BuildTab extends ITab implements ActionListener{
     public JPanel availableCritsPanel() {
         JPanel masterPanel = new JPanel(new SpringLayout());
         Dimension maxSize = new Dimension();
-        
+
         masterPanel.add(buildView);
-        
+
         SpringLayoutHelper.setupSpringGrid(masterPanel, 1);
         maxSize.setSize(300, 5);
         masterPanel.setPreferredSize(maxSize);
@@ -116,22 +115,29 @@ public class BuildTab extends ITab implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e) {
-        if ( e.getActionCommand().equals(AUTOFILLCOMMAND) ) {
+        if (e.getActionCommand().equals(AUTOFILLCOMMAND)) {
             autoFillCrits();
-        }else if ( e.getActionCommand().equals(RESETCOMMAND) ) {
+        } else if (e.getActionCommand().equals(RESETCOMMAND)) {
             resetCrits();
         }
     }
 
     private void autoFillCrits() {
 
-        for ( int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++ ) {
-            for ( EquipmentType eq : buildView.getTableModel().getCrits()) {
-                int externalEngineHS = unit.getEngine().integralHeatSinkCapacity();
+        for (EquipmentType eq : buildView.getTableModel().getCrits()) {
+            int externalEngineHS = unit.getEngine().integralHeatSinkCapacity();
+            for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
+                
+                int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
+                int critsUsed = UnitUtil.getCritsUsed(unit, eq); 
+                if ( continuousNumberOfCrits < critsUsed ) {
+                    continue;
+                }
+                
                 Mounted foundMount = null;
                 for (Mounted mount : unit.getEquipment()) {
-                    if (mount.getLocation() == Entity.LOC_NONE && mount.getType().getInternalName().equals(eq.getName())) {
-                        if ( UnitUtil.isHeatSink(mount) && externalEngineHS-- > 0 ){
+                    if (mount.getLocation() == Entity.LOC_NONE && mount.getType().getInternalName().equals(eq.getInternalName())) {
+                        if (UnitUtil.isHeatSink(mount) && externalEngineHS-- > 0) {
                             continue;
                         }
                         foundMount = mount;
@@ -139,28 +145,30 @@ public class BuildTab extends ITab implements ActionListener{
                     }
                 }
 
-                if ( foundMount != null && eq.getCriticals(unit) <= unit.getEmptyCriticals(location) ) {
+                if (foundMount != null ) {
                     try {
-                        unit.addEquipment(eq, location, false);
+                        unit.addEquipment(foundMount, location, false);
                         UnitUtil.changeMountStatus(unit, foundMount, location, Mech.LOC_NONE, false);
-                    }catch(Exception ex) {
+                        break;
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 }
             }
         }
         refresh.refreshAll();
-        
+
     }
-    
+
     private void resetCrits() {
-        for ( Mounted mount : unit.getEquipment() ) {
+        for (Mounted mount : unit.getEquipment()) {
             UnitUtil.removeCriticals(unit, mount);
-            UnitUtil.changeMountStatus(unit,mount, Mech.LOC_NONE, Mech.LOC_NONE, false);
+        }
+        for (Mounted mount : unit.getEquipment()) {
+            UnitUtil.changeMountStatus(unit, mount, Mech.LOC_NONE, Mech.LOC_NONE, false);
         }
         refresh.refreshAll();
     }
-    
 
     public void removeAllActionListeners() {
         autoFillButton.removeActionListener(this);
@@ -176,8 +184,8 @@ public class BuildTab extends ITab implements ActionListener{
         refresh = l;
         critView.updateRefresh(refresh);
     }
-    
-    public void addCrit(EquipmentType eq){
+
+    public void addCrit(EquipmentType eq) {
         critList.addCrit(eq);
     }
 
