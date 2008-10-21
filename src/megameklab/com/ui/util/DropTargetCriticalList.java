@@ -90,8 +90,8 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                     }
                 }
 
-                if ( eq.getType().isSpreadable() || eq.isSplitable() ){
-                    int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
+                int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
+                if ( (eq.getType().isSpreadable() || eq.isSplitable()) && totalCrits > 1){
                     int critsUsed = 0;
                     int primaryLocation = location;
                     int nextLocation = unit.getTransferLocation(location);
@@ -99,8 +99,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                     
                     //No big splitables in the head!
                     if ( nextLocation == Mech.LOC_DESTROYED || ( unit.getEmptyCriticals(location)+unit.getEmptyCriticals(nextLocation) < totalCrits )){
-                        throw new LocationFullException();
-                    }
+                        throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());                    }
                     for ( ; critsUsed < totalCrits; critsUsed++ ){
                         unit.addEquipment(eq, location, false);
                         if ( critsUsed == emptyCrits){
@@ -110,12 +109,11 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                         }
                     }
                     changeMountStatus(eq, primaryLocation, nextLocation, false);
-                } else {
+                } else if ( UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits ){
                     unit.addEquipment(eq, location, false);
                     changeMountStatus(eq, location, false);
-                }
-                if (refresh != null) {
-                    refresh.refreshAll();
+                } else {
+                    throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());
                 }
             } catch (LocationFullException lfe) {
                 JOptionPane.showMessageDialog(this, lfe.getMessage(), "Location Full", JOptionPane.INFORMATION_MESSAGE);

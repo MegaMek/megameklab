@@ -118,10 +118,14 @@ public class PrintMech implements Printable {
     }
 
     private void printMechData(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 12);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 10);
         g2d.setFont(font);
 
         g2d.drawString(mech.getChassis() + " " + mech.getModel(), 49, 119);
+        
+        font = new Font("Eurostile Bold", Font.BOLD, 8);
+        g2d.setFont(font);
+        
         g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
         g2d.drawString(Integer.toString(mech.getRunMP()), 79, 155);
         g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
@@ -137,11 +141,11 @@ public class PrintMech implements Printable {
         g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 349);
 
         DecimalFormat myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(mech.getCost()) + " C", 54, 349);
+        g2d.drawString(myFormatter.format(mech.getCost()) + " C-Bills", 54, 349);
     }
 
     private void printHeatSinks(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.BOLD, 11);
+        Font font = new Font("Eurostile Regular", Font.BOLD, 8);
         g2d.setFont(font);
         // Heat Sinks
         g2d.drawString(Integer.toString(mech.heatSinks()), 497, 598);
@@ -157,28 +161,28 @@ public class PrintMech implements Printable {
 
     private void printArmor(Graphics2D g2d) {
         // Armor
-        Font font = new Font("Arial", Font.BOLD, 11);
+        Font font = new Font("Eurostile Regular", Font.BOLD, 8);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_HEAD)), 485, 47);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT)), 434, 61);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RT)), 510, 61);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_HEAD)), 487, 46);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT)), 436, 60);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RT)), 511, 60);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_CT)), 475, 222);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LARM)), 397, 217);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RARM)), 547, 217);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LLEG)), 390, 273);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RLEG)), 555, 273);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LARM)), 400, 215);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RARM)), 548, 215);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LLEG)), 391, 273);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RLEG)), 556, 273);
         // Rear
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT, true)), 402, 363);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_CT, true)), 480, 279);
-        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RT, true)), 545, 363);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_LT, true)), 405, 362);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_CT, true)), 482, 278);
+        g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_RT, true)), 548, 362);
         // Internal
-        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LT)), 432, 404);
-        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RT)), 525, 404);
-        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LARM)), 391, 479);
-        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RARM)), 531, 481);
-        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_CT)), 460, 511);
-        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LLEG)), 403, 541);
-        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RLEG)), 519, 541);
+        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LT)), 433, 403);
+        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RT)), 526, 403);
+        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LARM)), 392, 480);
+        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RARM)), 532, 480);
+        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_CT)), 461, 509);
+        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LLEG)), 405, 538);
+        g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RLEG)), 520, 539);
     }
 
     private void printLACrits(Graphics2D g2d) {
@@ -187,7 +191,7 @@ public class PrintMech implements Printable {
         int linePoint = 408;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
         for (int slot = 0; slot < 12; slot++) {
@@ -223,7 +227,7 @@ public class PrintMech implements Printable {
         int linePoint = 408;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
         for (int slot = 0; slot < 12; slot++) {
@@ -259,7 +263,7 @@ public class PrintMech implements Printable {
         int linePoint = 469;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
         for (int slot = 0; slot < 12; slot++) {
@@ -295,7 +299,7 @@ public class PrintMech implements Printable {
         int linePoint = 545;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
         for (int slot = 0; slot < 12; slot++) {
@@ -331,7 +335,7 @@ public class PrintMech implements Printable {
         int linePoint = 545;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
         for (int slot = 0; slot < 12; slot++) {
@@ -367,7 +371,7 @@ public class PrintMech implements Printable {
         int linePoint = 401;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
         for (int slot = 0; slot < 6; slot++) {
@@ -400,7 +404,7 @@ public class PrintMech implements Printable {
         int linePoint = 682;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
         for (int slot = 0; slot < 6; slot++) {
@@ -433,7 +437,7 @@ public class PrintMech implements Printable {
         int linePoint = 682;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
         for (int slot = 0; slot < 6; slot++) {
@@ -504,7 +508,7 @@ public class PrintMech implements Printable {
 
         }
 
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 10);
         g2d.setFont(font);
 
         for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
@@ -1092,7 +1096,7 @@ public class PrintMech implements Printable {
     }
 
     private void printRTRArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension topColumn = new Dimension(495, 308);

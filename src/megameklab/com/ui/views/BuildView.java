@@ -35,6 +35,7 @@ import megamek.common.Mounted;
 import megameklab.com.ui.util.CriticalTable;
 import megameklab.com.ui.util.CriticalTableModel;
 import megameklab.com.ui.util.RefreshListener;
+import megameklab.com.ui.util.UnitUtil;
 
 public class BuildView extends View implements ActionListener {
 
@@ -105,7 +106,7 @@ public class BuildView extends View implements ActionListener {
     }
 
     private boolean isEngineHeatSink(Mounted mount) {
-        if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK)) && engineHeatSinkCount > 0) {
+        if (UnitUtil.isHeatSink(mount) && engineHeatSinkCount > 0) {
             engineHeatSinkCount--;
             return engineHeatSinkCount >= 0;
         }

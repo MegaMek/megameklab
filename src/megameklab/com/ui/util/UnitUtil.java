@@ -536,5 +536,21 @@ public class UnitUtil {
         
         return false;
     }
+    
+    public static int getHighestContinuousNumberOfCrits(Entity unit, int location) {
+        int highestNumberOfCrits = 0;
+        int currentCritCount = 0;
+        
+        for ( int slot = 0; slot < unit.getNumberOfCriticals(location); slot++ ) {
+            if ( unit.getCritical(location, slot) == null ) {
+                currentCritCount++;
+            }else {
+                currentCritCount = 0;
+            }
+            highestNumberOfCrits = Math.max(currentCritCount, highestNumberOfCrits);
+        }
+        
+        return highestNumberOfCrits;
+    }
 
 }
