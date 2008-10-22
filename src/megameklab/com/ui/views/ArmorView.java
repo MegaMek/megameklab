@@ -42,7 +42,8 @@ public class ArmorView extends View implements KeyListener {
     private JPanel headPanel = new JPanel();
     private JPanel torsoPanel = new JPanel();
     private JPanel legPanel = new JPanel();
-
+    private JPanel rearPanel = new JPanel();
+        
     private JPanel laPanel = new JPanel();
     private JPanel raPanel = new JPanel();
     private JPanel llPanel = new JPanel();
@@ -51,6 +52,10 @@ public class ArmorView extends View implements KeyListener {
     private JPanel rtPanel = new JPanel();
     private JPanel ctPanel = new JPanel();
 
+    private JPanel ltrPanel = new JPanel();
+    private JPanel ctrPanel = new JPanel();
+    private JPanel rtrPanel = new JPanel();
+    
     private JTextField laArmorField = new JTextField(2);
     private JTextField raArmorField = new JTextField(2);
     private JTextField llArmorField = new JTextField(2);
@@ -59,6 +64,7 @@ public class ArmorView extends View implements KeyListener {
     private JTextField rtArmorField = new JTextField(2);
     private JTextField ctArmorField = new JTextField(2);
     private JTextField hdArmorField = new JTextField(2);
+
     private JTextField rtrArmorField = new JTextField(2);
     private JTextField ltrArmorField = new JTextField(2);
     private JTextField ctrArmorField = new JTextField(2);
@@ -71,15 +77,13 @@ public class ArmorView extends View implements KeyListener {
     private JLabel rtArmorMaxLabel = new JLabel();
     private JLabel ctArmorMaxLabel = new JLabel();
 
-    private JLabel laISLabel = new JLabel();
-    private JLabel raISLabel = new JLabel();
-    private JLabel llISLabel = new JLabel();
-    private JLabel rlISLabel = new JLabel();
-    private JLabel rtISLabel = new JLabel();
-    private JLabel ltISLabel = new JLabel();
-    private JLabel ctISLabel = new JLabel();
-    private JLabel hdISLabel = new JLabel();
+    private JLabel ltrArmorMaxLabel = new JLabel();
+    private JLabel rtrArmorMaxLabel = new JLabel();
+    private JLabel ctrArmorMaxLabel = new JLabel();
 
+    private JLabel currentArmorLabel = new JLabel();
+    private JLabel maxArmorLabel = new JLabel();
+    
     private RefreshListener refresh;
 
     public ArmorView(Mech unit) {
@@ -98,6 +102,10 @@ public class ArmorView extends View implements KeyListener {
         ctPanel.setLayout(new BoxLayout(ctPanel, BoxLayout.Y_AXIS));
         rtPanel.setLayout(new BoxLayout(rtPanel, BoxLayout.Y_AXIS));
 
+        rtrPanel.setLayout(new BoxLayout(rtrPanel, BoxLayout.Y_AXIS));
+        ctrPanel.setLayout(new BoxLayout(ctrPanel, BoxLayout.Y_AXIS));
+        ltrPanel.setLayout(new BoxLayout(ltrPanel, BoxLayout.Y_AXIS));
+
         mainPanel.add(headPanel);
 
         laPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
@@ -105,6 +113,10 @@ public class ArmorView extends View implements KeyListener {
         ltPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rtPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         ctPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+
+        ltrPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        rtrPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        ctrPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
         torsoPanel.add(laPanel);
         torsoPanel.add(ltPanel);
@@ -116,7 +128,7 @@ public class ArmorView extends View implements KeyListener {
         legPanel.add(llPanel);
         legPanel.add(rlPanel);
         mainPanel.add(legPanel);
-
+        
         laArmorField.setToolTipText("Front Armor");
         raArmorField.setToolTipText("Front Armor");
         llArmorField.setToolTipText("Front Armor");
@@ -157,9 +169,9 @@ public class ArmorView extends View implements KeyListener {
                     masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
                     topPanel.add(hdArmorField);
                     topPanel.add(new JLabel("/ 9", JLabel.TRAILING));
+                    masterPanel.add(new JLabel(unit.getLocationName(location)));
                     masterPanel.add(topPanel);
                     bottomPanel = new JPanel();
-                    bottomPanel.add(hdISLabel);
                     masterPanel.add(bottomPanel);
                     masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
                     headPanel.add(new JPanel());
@@ -181,46 +193,65 @@ public class ArmorView extends View implements KeyListener {
                     masterPanel.add(laArmorField);
                     masterPanel.add(new JLabel("/", JLabel.TRAILING));
                     masterPanel.add(laArmorMaxLabel);
+                    laPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     laPanel.add(masterPanel);
-                    laPanel.add(laISLabel);
                     break;
                 case Mech.LOC_RARM:
                     masterPanel = new JPanel();
                     masterPanel.add(raArmorField);
                     masterPanel.add(new JLabel("/", JLabel.TRAILING));
                     masterPanel.add(raArmorMaxLabel);
+                    raPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     raPanel.add(masterPanel);
-                    raPanel.add(raISLabel);
                     break;
                 case Mech.LOC_CT:
                     masterPanel = new JPanel();
                     masterPanel.add(ctArmorField);
-                    masterPanel.add(new JLabel("(", JLabel.TRAILING));
-                    masterPanel.add(ctrArmorField);
-                    masterPanel.add(new JLabel(")/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
                     masterPanel.add(ctArmorMaxLabel);
+                    ctPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     ctPanel.add(masterPanel);
-                    ctPanel.add(ctISLabel);
+                    masterPanel = new JPanel();
+                    masterPanel.add(ctrArmorField);
+                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(ctrArmorMaxLabel);
+                    ctrPanel.add(new JPanel());
+                    ctrPanel.add(new JPanel());
+                    ctrPanel.add(new JLabel(unit.getLocationAbbr(location)+"r"));
+                    ctrPanel.add(masterPanel);
+                    ctrPanel.add(new JPanel());
                     break;
                 case Mech.LOC_LT:
                     masterPanel = new JPanel();
                     masterPanel.add(ltArmorField);
-                    masterPanel.add(new JLabel("("));
-                    masterPanel.add(ltrArmorField);
-                    masterPanel.add(new JLabel(")/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
                     masterPanel.add(ltArmorMaxLabel);
+                    ltPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     ltPanel.add(masterPanel);
-                    ltPanel.add(ltISLabel);
+                    masterPanel = new JPanel();
+                    masterPanel.add(ltrArmorField);
+                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(ltrArmorMaxLabel);
+                    ltrPanel.add(new JPanel());
+                    ltrPanel.add(new JLabel(unit.getLocationAbbr(location)+"r"));
+                    ltrPanel.add(masterPanel);
+                    ltrPanel.add(new JPanel());
                     break;
                 case Mech.LOC_RT:
                     masterPanel = new JPanel();
                     masterPanel.add(rtArmorField);
-                    masterPanel.add(new JLabel("("));
-                    masterPanel.add(rtrArmorField);
-                    masterPanel.add(new JLabel(")/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
                     masterPanel.add(rtArmorMaxLabel);
+                    rtPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     rtPanel.add(masterPanel);
-                    rtPanel.add(rtISLabel);
+                    masterPanel = new JPanel();
+                    masterPanel.add(rtrArmorField);
+                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(rtrArmorMaxLabel);
+                    rtrPanel.add(new JPanel());
+                    rtrPanel.add(new JLabel(unit.getLocationAbbr(location)+"r"));
+                    rtrPanel.add(masterPanel);
+                    rtrPanel.add(new JPanel());
                     break;
                 case Mech.LOC_LLEG:
                     masterPanel = new JPanel();
@@ -230,9 +261,9 @@ public class ArmorView extends View implements KeyListener {
                     topPanel.add(llArmorField);
                     topPanel.add(new JLabel("/", JLabel.TRAILING));
                     topPanel.add(llArmorMaxLabel);
+                    masterPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     masterPanel.add(topPanel);
                     bottomPanel = new JPanel();
-                    bottomPanel.add(llISLabel);
                     masterPanel.add(bottomPanel);
                     masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
                     llPanel.add(new JPanel());
@@ -249,9 +280,9 @@ public class ArmorView extends View implements KeyListener {
                     topPanel.add(rlArmorField);
                     topPanel.add(new JLabel("/", JLabel.TRAILING));
                     topPanel.add(rlArmorMaxLabel);
+                    masterPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     masterPanel.add(topPanel);
                     bottomPanel = new JPanel();
-                    bottomPanel.add(rlISLabel);
                     masterPanel.add(bottomPanel);
                     masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
                     rlPanel.add(new JPanel());
@@ -264,7 +295,27 @@ public class ArmorView extends View implements KeyListener {
             }
         }
 
+        rearPanel.add(ltrPanel);
+        rearPanel.add(ctrPanel);
+        rearPanel.add(rtrPanel);
+        
         this.add(mainPanel);
+        this.add(rearPanel);
+        
+        JPanel totalArmorPanel = new JPanel();
+        JPanel headerPanel = new JPanel();
+        JPanel bottomPanel = new JPanel();
+        
+        totalArmorPanel.setLayout(new BoxLayout(totalArmorPanel,BoxLayout.Y_AXIS));
+        headerPanel.add(new JLabel("Current/Total Armor"));
+        bottomPanel.add(currentArmorLabel);
+        bottomPanel.add(new JLabel("/",JLabel.TRAILING));
+        bottomPanel.add(maxArmorLabel);
+        
+        totalArmorPanel.add(headerPanel);
+        totalArmorPanel.add(bottomPanel);
+        
+        this.add(totalArmorPanel);
         //refresh();
         addAllListeners();
     }
@@ -279,7 +330,6 @@ public class ArmorView extends View implements KeyListener {
             switch (location) {
             case Mech.LOC_HEAD:
                 hdArmorField.setText(unit.getArmorString(location));
-                hdISLabel.setText(unit.getInternalString(location));
                 if (unit.getArmor(location) > 9)
                     hdArmorField.setBackground(Color.RED);
                 else
@@ -287,7 +337,6 @@ public class ArmorView extends View implements KeyListener {
                 break;
             case Mech.LOC_LARM:
                 laArmorField.setText(unit.getArmorString(location));
-                laISLabel.setText(unit.getInternalString(location));
                 if (unit.getArmor(location) > maxArmor)
                     laArmorField.setBackground(Color.RED);
                 else
@@ -296,7 +345,6 @@ public class ArmorView extends View implements KeyListener {
                 break;
             case Mech.LOC_RARM:
                 raArmorField.setText(unit.getArmorString(location));
-                raISLabel.setText(unit.getInternalString(location));
                 if (unit.getArmor(location) > maxArmor)
                     raArmorField.setBackground(Color.RED);
                 else
@@ -306,36 +354,35 @@ public class ArmorView extends View implements KeyListener {
             case Mech.LOC_CT:
                 ctArmorField.setText(unit.getArmorString(location));
                 ctrArmorField.setText(unit.getArmorString(location, true));
-                ctISLabel.setText(unit.getInternalString(location));
                 if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor)
                     ctArmorField.setBackground(Color.RED);
                 else
                     ctArmorField.setBackground(Color.white);
                 ctArmorMaxLabel.setText(Integer.toString(maxArmor));
+                ctrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
                 break;
             case Mech.LOC_LT:
                 ltArmorField.setText(unit.getArmorString(location));
                 ltrArmorField.setText(unit.getArmorString(location, true));
-                ltISLabel.setText(unit.getInternalString(location));
                 if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor)
                     ltArmorField.setBackground(Color.RED);
                 else
                     ltArmorField.setBackground(Color.white);
                 ltArmorMaxLabel.setText(Integer.toString(maxArmor));
+                ltrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
                 break;
             case Mech.LOC_RT:
                 rtArmorField.setText(unit.getArmorString(location));
                 rtrArmorField.setText(unit.getArmorString(location, true));
-                rtISLabel.setText(unit.getInternalString(location));
                 if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor)
                     rtArmorField.setBackground(Color.RED);
                 else
                     rtArmorField.setBackground(Color.white);
                 rtArmorMaxLabel.setText(Integer.toString(maxArmor));
+                rtrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
                 break;
             case Mech.LOC_LLEG:
                 llArmorField.setText(unit.getArmorString(location));
-                llISLabel.setText(unit.getInternalString(location));
                 if (unit.getArmor(location) > maxArmor)
                     llArmorField.setBackground(Color.RED);
                 else
@@ -344,7 +391,6 @@ public class ArmorView extends View implements KeyListener {
                 break;
             case Mech.LOC_RLEG:
                 rlArmorField.setText(unit.getArmorString(location));
-                rlISLabel.setText(unit.getInternalString(location));
                 if (unit.getArmor(location) > maxArmor)
                     rlArmorField.setBackground(Color.RED);
                 else
@@ -354,6 +400,10 @@ public class ArmorView extends View implements KeyListener {
             }
 
         }
+        
+        currentArmorLabel.setText(Integer.toString(unit.getTotalOArmor()));
+        //Total Possible armor is Internal*2 +3 for the extra 3 armor the head can support.
+        maxArmorLabel.setText(Integer.toString((unit.getTotalOInternal()*2)+3));
     }
 
     private void addAllListeners() {

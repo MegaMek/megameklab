@@ -71,7 +71,7 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
     private RefreshListener refresh;
 
     private JPanel mainPanel = new JPanel();
-    private JTabbedPane leftPanel = new JTabbedPane(JTabbedPane.LEFT);
+    private JTabbedPane leftPanel = new JTabbedPane(JTabbedPane.RIGHT);
     private JPanel rightPanel = new JPanel();
     private JPanel buttonPanel = new JPanel();
 
