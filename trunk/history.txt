@@ -8,6 +8,7 @@ v 0.0.0.6-dev
 + Bug: multiple TC mounts getting added
 + Added Correct fonts for Record Sheets
 + Task 151466: Add Add All and Clear buttons to Build tab
++ Task 151464: Redesign Armor Tab
  
 v 0.0.0.5 (10/12/08)
 + Bug 1989468: Hand / Lower Arm Actuator cannot be removed
