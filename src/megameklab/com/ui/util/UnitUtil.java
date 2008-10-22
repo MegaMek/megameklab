@@ -380,6 +380,25 @@ public class UnitUtil {
     }
 
     /**
+     * Checks if the unit has laser heatsinks.
+     * @param unit
+     * @return
+     */
+    public static boolean hasLaserHeatSinks(Mech unit) {
+
+        if (!unit.hasDoubleHeatSinks())
+            return false;
+
+        for (Mounted mounted : unit.getMisc()) {
+            if (mounted.getType().hasFlag(MiscType.F_LASER_HEAT_SINK)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * checks if Mounted is a heat sink
      * 
      * @param eq
@@ -438,11 +457,7 @@ public class UnitUtil {
         int heatSinks = hsAmount - unit.getEngine().integralHeatSinkCapacity();
         EquipmentType sinkType;
 
-        if (hsType == 1 || hsType == 3) {
-            sinkType = EquipmentType.get(unit.isClan() ? "CLDoubleHeatSink" : "ISDoubleHeatSink");
-        } else {
-            sinkType = EquipmentType.get("Heat Sink");
-        }
+        sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan()));
 
         for (; heatSinks > 0; heatSinks--) {
 
@@ -454,6 +469,38 @@ public class UnitUtil {
         }
     }
 
+    public static String getHeatSinkType(int type, boolean clan){
+        String heatSinkType = "Heat Sink";
+        if ( clan){
+            
+            switch(type){
+            case 0:
+                heatSinkType = "Heat Sink";
+                break;
+            case 1:
+                heatSinkType = "CLDoubleHeatSink";
+                break;
+            case 2:
+                heatSinkType = "CLLaser Heat Sink";
+                break;
+            }
+        }else{
+            switch(type){
+            case 0:
+                heatSinkType = "Heat Sink";
+                break;
+            case 1:
+                heatSinkType = "ISDoubleHeatSink";
+                break;
+                
+            case 2:
+                heatSinkType = "IS2 Compact Heat Sinks";
+                break;
+            }
+        }
+
+        return heatSinkType;
+    }
     /**
      * updates the heat sinks.
      * 
@@ -463,10 +510,9 @@ public class UnitUtil {
      */
     public static void updateHeatSinks(Mech unit, int hsAmount, int hsType) {
         UnitUtil.removeHeatSinks(unit);
-        if (hsType == 1 || hsType == 3)
-            unit.addEngineSinks(hsAmount, true);
-        else
-            unit.addEngineSinks(hsAmount, false);
+        
+        unit.addEngineSinks(hsAmount, UnitUtil.getHeatSinkType(hsType, unit.isClan()));
+
         UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
     }
 

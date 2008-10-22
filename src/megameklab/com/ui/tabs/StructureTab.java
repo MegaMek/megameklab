@@ -61,7 +61,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     JComboBox gyroType = new JComboBox(Mech.GYRO_SHORT_STRING);
     JComboBox weightClass;
     JComboBox cockpitType = new JComboBox(Mech.COCKPIT_SHORT_STRING);
-    String[] clanHeatSinkTypes = { "Single", "Double", "Compact", "Laser" };
+    String[] clanHeatSinkTypes = { "Single", "Double", "Laser" };
     String[] isHeatSinkTypes = { "Single", "Double", "Compact" };
     JComboBox heatSinkType = new JComboBox(isHeatSinkTypes);
     JComboBox heatSinkNumber;
@@ -208,8 +208,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         }
 
-        if (unit.hasLaserHeatSinks() && unit.isClan())
-            heatSinkType.setSelectedIndex(3);
+        if (UnitUtil.hasLaserHeatSinks(unit))
+            heatSinkType.setSelectedIndex(2);
         else if (unit.hasDoubleHeatSinks()) {
             if (UnitUtil.hasCompactHeatSinks(unit))
                 heatSinkType.setSelectedIndex(2);
