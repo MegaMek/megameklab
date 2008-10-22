@@ -10,6 +10,8 @@ v 0.0.0.6-dev
 + Task 151466: Add Add All and Clear buttons to Build tab
 + Task 151464: Redesign Armor Tab
 + Task 151465: MegaMek: Fix adding Compact and Laser HS to Engines
++ New MegaMek.jar (0.33.34-MW102208-6067) with Laser and Compact HS 
+	compatiblity for engines
  
 v 0.0.0.5 (10/12/08)
 + Bug 1989468: Hand / Lower Arm Actuator cannot be removed
