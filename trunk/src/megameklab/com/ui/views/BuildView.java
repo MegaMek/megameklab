@@ -30,7 +30,6 @@ import javax.swing.ListSelectionModel;
 
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megameklab.com.ui.util.CriticalTable;
 import megameklab.com.ui.util.CriticalTableModel;
