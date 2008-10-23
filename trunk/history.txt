@@ -12,7 +12,8 @@ v 0.0.0.6-dev
 + Task 151465: MegaMek: Fix adding Compact and Laser HS to Engines
 + New MegaMek.jar (0.33.34-MW102208-6067) with Laser and Compact HS 
 	compatiblity for engines
- 
++ Added Connecting lines for Multi Crit Mounts
+
 v 0.0.0.5 (10/12/08)
 + Bug 1989468: Hand / Lower Arm Actuator cannot be removed
 + Bug: Heat Sinks not loading and unloading correctly
