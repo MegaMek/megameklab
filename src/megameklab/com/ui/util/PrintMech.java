@@ -47,13 +47,21 @@ public class PrintMech implements Printable {
     private Mech mech = null;
     private Dimension fillRec = new Dimension(9, 9);
     private Dimension fillRecArc = new Dimension(4, 4);
-
+    
+    private Mounted startingMount = null;
+    private int startMountx = 0;
+    private int startMounty = 0;
+    private int endMountx = 0;
+    private int endMounty = 0;
+    
     public PrintMech(Image image, Mech unit) {
         awtImage = image;
         mech = unit;
 
-        System.out.println("Width: " + awtImage.getWidth(null));
-        System.out.println("Height: " + awtImage.getHeight(null));
+        if ( awtImage != null ) {
+            System.out.println("Width: " + awtImage.getWidth(null));
+            System.out.println("Height: " + awtImage.getHeight(null));
+        }
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -61,16 +69,13 @@ public class PrintMech implements Printable {
             return Printable.NO_SUCH_PAGE;
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
-        if (awtImage != null) {
-            printImage(g2d, awtImage, pageFormat);
-            return Printable.PAGE_EXISTS;
-        } else
-            return Printable.NO_SUCH_PAGE;
+        printImage(g2d, awtImage, pageFormat);
+        return Printable.PAGE_EXISTS;
     }
 
     public void printImage(Graphics2D g2d, Image image, PageFormat pageFormat) {
         //System.out.println("printImage(Graphics2D g2d, Image image)");
-        if ((image == null) || (g2d == null))
+        if ( g2d == null )
             return;
         
         //g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(), (int)pageFormat.getImageableHeight(), null);
@@ -199,10 +204,15 @@ public class PrintMech implements Printable {
 
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
+                setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
                 StringBuffer critName = new StringBuffer(m.getName());
                 if (critName.length() > 20) {
                     critName.setLength(20);
@@ -219,6 +229,7 @@ public class PrintMech implements Printable {
                 linePoint += lineFeed - 1;
             }
         }
+        setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
     }
 
     private void printRACrits(Graphics2D g2d) {
@@ -235,10 +246,14 @@ public class PrintMech implements Printable {
 
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
+                setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
                 StringBuffer critName = new StringBuffer(m.getName());
                 if (critName.length() > 20) {
                     critName.setLength(20);
@@ -255,6 +270,8 @@ public class PrintMech implements Printable {
                 linePoint += lineFeed - 1;
             }
         }
+       setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint-lineFeed/2, g2d);
+
     }
 
     private void printCTCrits(Graphics2D g2d) {
@@ -271,10 +288,14 @@ public class PrintMech implements Printable {
 
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
+                setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
                 StringBuffer critName = new StringBuffer(m.getName());
                 if (critName.length() > 20) {
                     critName.setLength(20);
@@ -291,6 +312,7 @@ public class PrintMech implements Printable {
                 linePoint += lineFeed - 1;
             }
         }
+        setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
     }
 
     private void printLTCrits(Graphics2D g2d) {
@@ -307,10 +329,15 @@ public class PrintMech implements Printable {
 
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
+                setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
                 StringBuffer critName = new StringBuffer(m.getName());
                 if (critName.length() > 20) {
                     critName.setLength(20);
@@ -327,6 +354,7 @@ public class PrintMech implements Printable {
                 linePoint += lineFeed - 1;
             }
         }
+        setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
     }
 
     private void printRTCrits(Graphics2D g2d) {
@@ -334,7 +362,7 @@ public class PrintMech implements Printable {
         int lineStart = 292;
         int linePoint = 545;
         int lineFeed = 8;
-
+        
         Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
@@ -343,10 +371,14 @@ public class PrintMech implements Printable {
 
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
+
+                setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
                 StringBuffer critName = new StringBuffer(m.getName());
                 if (critName.length() > 20) {
                     critName.setLength(20);
@@ -363,6 +395,7 @@ public class PrintMech implements Printable {
                 linePoint += lineFeed - 1;
             }
         }
+        setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
     }
 
     private void printHeadCrits(Graphics2D g2d) {
@@ -379,10 +412,15 @@ public class PrintMech implements Printable {
 
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
+                setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
                 StringBuffer critName = new StringBuffer(m.getName());
                 if (critName.length() > 20) {
                     critName.setLength(20);
@@ -396,6 +434,7 @@ public class PrintMech implements Printable {
             linePoint += lineFeed;
 
         }
+        setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
     }
 
     private void printLLCrits(Graphics2D g2d) {
@@ -412,10 +451,14 @@ public class PrintMech implements Printable {
 
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
+                setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
                 StringBuffer critName = new StringBuffer(m.getName());
                 if (critName.length() > 20) {
                     critName.setLength(20);
@@ -429,6 +472,7 @@ public class PrintMech implements Printable {
             linePoint += lineFeed;
 
         }
+        setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
     }
 
     private void printRLCrits(Graphics2D g2d) {
@@ -445,10 +489,14 @@ public class PrintMech implements Printable {
 
             if (cs == null) {
                 g2d.drawString("Roll Again", lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                 Mounted m = mech.getEquipment(cs.getIndex());
+                setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
                 StringBuffer critName = new StringBuffer(m.getName());
                 if (critName.length() > 20) {
                     critName.setLength(20);
@@ -462,6 +510,7 @@ public class PrintMech implements Printable {
             linePoint += lineFeed;
 
         }
+        setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
@@ -1652,5 +1701,47 @@ public class PrintMech implements Printable {
         g2d.drawOval(462, 398, circle.width, circle.width);
         g2d.drawOval(458, 405, circle.width, circle.width);
         g2d.drawOval(467, 405, circle.width, circle.width);
+    }
+    
+    private void setCritConnection(Mounted m, int startx, int starty, int endx, int endy, Graphics2D g2d) {
+        if ( m == null ) {
+            printCritConnection(g2d, startMountx, startMounty, endMountx, endMounty );
+            startingMount = null;
+            startMountx = startx;
+            startMounty = starty;
+            endMountx = endx;
+            endMounty = endy;
+        }
+        else if ( startingMount == null && UnitUtil.getCritsUsed(mech, m.getType()) > 1) {
+            startingMount = m;
+            startMountx = startx;
+            startMounty = starty;
+            endMountx = endx;
+            endMounty = endy;
+        } else if ( !m.equals(startingMount) ){
+            printCritConnection(g2d, startMountx, startMounty, endMountx, endMounty );
+            if ( UnitUtil.getCritsUsed(mech, m.getType()) > 1 ) {
+                startingMount = m;
+            } else {
+                startingMount = null;
+            }
+            startMountx = startx;
+            startMounty = starty;
+            endMountx = endx;
+            endMounty = endy;
+        } else if ( m.equals(startingMount) ) {
+            endMounty = endy;
+        }
+
+    }
+    
+    private void printCritConnection(Graphics2D g2d, int startx, int starty, int endx, int endy) {
+        if ( starty == endy) {
+            return;
+        }
+        
+        g2d.drawLine(startx-1, starty, startx-4, starty);
+        g2d.drawLine(startx-4, starty, endx-4, endy);
+        g2d.drawLine(endx-1, endy, endx-4, endy);
     }
 }
