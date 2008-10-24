@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.util;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -48,7 +49,12 @@ public class PrintAdvancedMech implements Printable {
     private Dimension fillRec = new Dimension(8,8);
     private Dimension fillRecArc = new Dimension(4,4);
 
-
+    private Mounted startingMount = null;
+    private int startMountx = 0;
+    private int startMounty = 0;
+    private int endMountx = 0;
+    private int endMounty = 0;
+    
     public PrintAdvancedMech(Image image, Mech unit) {
         awtImage = image;
         mech = unit;
@@ -62,21 +68,17 @@ public class PrintAdvancedMech implements Printable {
             return Printable.NO_SUCH_PAGE;
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
-        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-        if (awtImage != null) {
-            printImage(g2d, awtImage);
-            return Printable.PAGE_EXISTS;
-        } else
-            return Printable.NO_SUCH_PAGE;
+        printImage(g2d, awtImage, pageFormat);
+        return Printable.PAGE_EXISTS;
     }
 
-    public void printImage(Graphics2D g2d, Image image) {
-        System.out.println("printImage(Graphics2D g2d, Image image)");
-        if ((image == null) || (g2d == null))
+    public void printImage(Graphics2D g2d, Image image, PageFormat pageFormat) {
+        //System.out.println("printImage(Graphics2D g2d, Image image)");
+        if ( g2d == null )
             return;
-        int x = 18;
-        int y = 18;
-        g2d.drawImage(image, x, y, 558, 738, null);
+        
+        //g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(), (int)pageFormat.getImageableHeight(), null);
+        g2d.drawImage(image, 18, 18, 558, 738, null);
 
         printMechData(g2d);
         printHeatSinks(g2d);
@@ -90,13 +92,44 @@ public class PrintAdvancedMech implements Printable {
         printHeadCrits(g2d);
         printLLCrits(g2d);
         printRLCrits(g2d);
+        
+        // Armor Pips
+        printLAArmor(g2d);
+        printRAArmor(g2d);
+        printLTArmor(g2d);
+        printRTArmor(g2d);
+        printCTArmor(g2d);
+        printLLArmor(g2d);
+        printRLArmor(g2d);
+        printLTRArmor(g2d);
+        printRTRArmor(g2d);
+        printCTRArmor(g2d);
+        printHeadArmor(g2d);
+        
+        //Internal Pips
+        printLAStruct(g2d);
+        printRAStruct(g2d);
+        printLTStruct(g2d);
+        printRTStruct(g2d);
+        printCTStruct(g2d);
+        printHeadStruct(g2d);
+        printLLStruct(g2d);
+        printRLStruct(g2d);
+        
+        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+        g2d.scale(pageFormat.getImageableWidth(),pageFormat.getImageableHeight());
+
     }
 
     private void printMechData(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 11);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 10);
         g2d.setFont(font);
 
         g2d.drawString(mech.getChassis() + " " + mech.getModel(), 49, 119);
+
+        font = new Font("Eurostile Bold", Font.BOLD, 8);
+        g2d.setFont(font);
+
         g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
         g2d.drawString(Integer.toString(mech.getRunMP()), 79, 154);
         g2d.drawString(Integer.toString(mech.getWalkMP() * 2), 79, 164);
@@ -216,11 +249,11 @@ public class PrintAdvancedMech implements Printable {
         g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 359);
 
         DecimalFormat myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(mech.getCost()) + " C", 54, 359);
+        g2d.drawString(myFormatter.format(mech.getCost()) + " C-Bills", 52, 359);
     }
 
     private void printHeatSinks(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.BOLD, 11);
+        Font font = new Font("Eurostile Regular", Font.BOLD, 8);
         g2d.setFont(font);
         // Heat Sinks
         g2d.drawString(Integer.toString(mech.heatSinks()), 402, 594);
@@ -260,281 +293,75 @@ public class PrintAdvancedMech implements Printable {
 
     private void printLACrits(Graphics2D g2d) {
 
-        int lineStart = 58;
-        int linePoint = 410;
+        int lineStart = 60;
+        int linePoint = 408;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.PLAIN, 9);
-        g2d.setFont(font);
-
-        for (int slot = 0; slot < 12; slot++) {
-            CriticalSlot cs = mech.getCritical(Mech.LOC_LARM, slot);
-
-            if (cs == null) {
-                g2d.drawString("Roll Again", lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
-                StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20) {
-                    critName.setLength(20);
-                    critName.append("...");
-                }
-                if (m.isRearMounted()) {
-                    critName.append("(R)");
-                }
-                g2d.drawString(critName.toString(), lineStart, linePoint);
-            }
-            linePoint += lineFeed;
-
-            if (slot == 5) {
-                linePoint += lineFeed - 1;
-            }
-        }
+        printLocationCriticals(g2d, Mech.LOC_LARM, lineStart, linePoint, lineFeed);
+        
     }
 
     private void printRACrits(Graphics2D g2d) {
 
-        int lineStart = 294;
-        int linePoint = 410;
+        int lineStart = 298;
+        int linePoint = 408;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.PLAIN, 9);
-        g2d.setFont(font);
-
-        for (int slot = 0; slot < 12; slot++) {
-            CriticalSlot cs = mech.getCritical(Mech.LOC_RARM, slot);
-
-            if (cs == null) {
-                g2d.drawString("Roll Again", lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
-                StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20) {
-                    critName.setLength(20);
-                    critName.append("...");
-                }
-                if (m.isRearMounted()) {
-                    critName.append("(R)");
-                }
-                g2d.drawString(critName.toString(), lineStart, linePoint);
-            }
-            linePoint += lineFeed;
-
-            if (slot == 5) {
-                linePoint += lineFeed - 1;
-            }
-        }
+        printLocationCriticals(g2d, Mech.LOC_RARM, lineStart, linePoint, lineFeed);
     }
 
     private void printCTCrits(Graphics2D g2d) {
 
-        int lineStart = 176;
+        int lineStart = 178;
         int linePoint = 469;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.PLAIN, 9);
-        g2d.setFont(font);
-
-        for (int slot = 0; slot < 12; slot++) {
-            CriticalSlot cs = mech.getCritical(Mech.LOC_CT, slot);
-
-            if (cs == null) {
-                g2d.drawString("Roll Again", lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
-                StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20) {
-                    critName.setLength(20);
-                    critName.append("...");
-                }
-                if (m.isRearMounted()) {
-                    critName.append("(R)");
-                }
-                g2d.drawString(critName.toString(), lineStart, linePoint);
-            }
-            linePoint += lineFeed;
-
-            if (slot == 5) {
-                linePoint += lineFeed - 1;
-            }
-        }
+        printLocationCriticals(g2d, Mech.LOC_CT, lineStart, linePoint, lineFeed);
     }
 
     private void printLTCrits(Graphics2D g2d) {
 
-        int lineStart = 58;
+        int lineStart = 60;
         int linePoint = 545;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.PLAIN, 9);
-        g2d.setFont(font);
-
-        for (int slot = 0; slot < 12; slot++) {
-            CriticalSlot cs = mech.getCritical(Mech.LOC_LT, slot);
-
-            if (cs == null) {
-                g2d.drawString("Roll Again", lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
-                StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20) {
-                    critName.setLength(20);
-                    critName.append("...");
-                }
-                if (m.isRearMounted()) {
-                    critName.append("(R)");
-                }
-                g2d.drawString(critName.toString(), lineStart, linePoint);
-            }
-            linePoint += lineFeed;
-
-            if (slot == 5) {
-                linePoint += lineFeed - 1;
-            }
-        }
+        printLocationCriticals(g2d, Mech.LOC_LT, lineStart, linePoint, lineFeed);
     }
 
     private void printRTCrits(Graphics2D g2d) {
 
-        int lineStart = 294;
+        int lineStart = 298;
         int linePoint = 545;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.PLAIN, 9);
-        g2d.setFont(font);
-
-        for (int slot = 0; slot < 12; slot++) {
-            CriticalSlot cs = mech.getCritical(Mech.LOC_RT, slot);
-
-            if (cs == null) {
-                g2d.drawString("Roll Again", lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
-                StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20) {
-                    critName.setLength(20);
-                    critName.append("...");
-                }
-                if (m.isRearMounted()) {
-                    critName.append("(R)");
-                }
-                g2d.drawString(critName.toString(), lineStart, linePoint);
-            }
-            linePoint += lineFeed;
-
-            if (slot == 5) {
-                linePoint += lineFeed - 1;
-            }
-        }
+        printLocationCriticals(g2d, Mech.LOC_RT, lineStart, linePoint, lineFeed);
     }
 
     private void printHeadCrits(Graphics2D g2d) {
 
-        int lineStart = 176;
+        int lineStart = 178;
         int linePoint = 401;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.PLAIN, 9);
-        g2d.setFont(font);
-
-        for (int slot = 0; slot < 6; slot++) {
-            CriticalSlot cs = mech.getCritical(Mech.LOC_HEAD, slot);
-
-            if (cs == null) {
-                g2d.drawString("Roll Again", lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
-                StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20) {
-                    critName.setLength(20);
-                    critName.append("...");
-                }
-                if (m.isRearMounted()) {
-                    critName.append("(R)");
-                }
-                g2d.drawString(critName.toString(), lineStart, linePoint);
-            }
-            linePoint += lineFeed;
-
-        }
+        printLocationCriticals(g2d, Mech.LOC_HEAD, lineStart, linePoint, lineFeed);
     }
 
     private void printLLCrits(Graphics2D g2d) {
 
-        int lineStart = 58;
+        int lineStart = 60;
         int linePoint = 682;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.PLAIN, 9);
-        g2d.setFont(font);
-
-        for (int slot = 0; slot < 6; slot++) {
-            CriticalSlot cs = mech.getCritical(Mech.LOC_LLEG, slot);
-
-            if (cs == null) {
-                g2d.drawString("Roll Again", lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
-                StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20) {
-                    critName.setLength(20);
-                    critName.append("...");
-                }
-                if (m.isRearMounted()) {
-                    critName.append("(R)");
-                }
-                g2d.drawString(critName.toString(), lineStart, linePoint);
-            }
-            linePoint += lineFeed;
-
-        }
+        printLocationCriticals(g2d, Mech.LOC_LLEG, lineStart, linePoint, lineFeed);
     }
 
     private void printRLCrits(Graphics2D g2d) {
 
-        int lineStart = 294;
+        int lineStart = 298;
         int linePoint = 682;
         int lineFeed = 8;
 
-        Font font = new Font("Arial", Font.PLAIN, 9);
-        g2d.setFont(font);
-
-        for (int slot = 0; slot < 6; slot++) {
-            CriticalSlot cs = mech.getCritical(Mech.LOC_RLEG, slot);
-
-            if (cs == null) {
-                g2d.drawString("Roll Again", lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
-            } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
-                StringBuffer critName = new StringBuffer(m.getName());
-                if (critName.length() > 20) {
-                    critName.setLength(20);
-                    critName.append("...");
-                }
-                if (m.isRearMounted()) {
-                    critName.append("(R)");
-                }
-                g2d.drawString(critName.toString(), lineStart, linePoint);
-            }
-            linePoint += lineFeed;
-
-        }
+        printLocationCriticals(g2d, Mech.LOC_RLEG, lineStart, linePoint, lineFeed);
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
@@ -581,7 +408,7 @@ public class PrintAdvancedMech implements Printable {
 
         }
 
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
         g2d.setFont(font);
 
         for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
@@ -598,17 +425,44 @@ public class PrintAdvancedMech implements Printable {
                 if (count >= 12) {
                     break;
                 }
+                font = new Font("Eurostile Bold", Font.BOLD, 8);
+                g2d.setFont(font);
+                
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                if (name.length() > 20) {
-                    name = name.substring(0, 18) + "..";
-                }
                 if (eqi.isRear) {
                     name += "(R)";
                 }
 
+                if (name.length() > 70) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 1);
+                    g2d.setFont(font);
+                }else if (name.length() > 60) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 2);
+                    g2d.setFont(font);
+                }else if (name.length() > 50) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 3);
+                    g2d.setFont(font);
+                }else if (name.length() > 40) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 4);
+                    g2d.setFont(font);
+                }else if (name.length() > 30) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 5);
+                    g2d.setFont(font);
+                }else if (name.length() > 20) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 6);
+                    g2d.setFont(font);
+                }else if (name.length() >= 10) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 7);
+                    g2d.setFont(font);
+                }
+
+
                 g2d.drawString(name, typePoint, linePoint);
+                font = new Font("Eurostile Bold", Font.BOLD, 8);
+                g2d.setFont(font);
+                
                 g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
                 if (eqi.isWeapon) {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
@@ -631,13 +485,13 @@ public class PrintAdvancedMech implements Printable {
             PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
-                Paper paper = new Paper();
+                //Paper paper = new Paper();
                 PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.defaultPage();
-                paper.setImageableArea(0, 0, 612, 792);
-                paper.setSize(612, 792);
-                pageFormat.setPaper(paper);
-                pageFormat.setOrientation(PageFormat.PORTRAIT);
+                pageFormat = pj.getPageFormat(null);
+
+                Paper p = pageFormat.getPaper();
+                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                pageFormat.setPaper(p);
 
                 pj.setPrintable(this, pageFormat);
                 pj.setJobName(mech.getChassis() + " " + mech.getModel());
@@ -693,4 +547,1143 @@ public class PrintAdvancedMech implements Printable {
             }
         }
     }
+    
+    private void printRLArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(6, 6);
+        Dimension topColumn = new Dimension(499, 177);
+        Dimension middleColumn = new Dimension(509, 248);
+        Dimension bottomColumn = new Dimension(529, 266);
+        Dimension footColumn = new Dimension(519, 290);
+        Dimension pipShift = new Dimension(8, -2);
+
+        int totalArmor = mech.getArmor(Mech.LOC_RLEG);
+
+        int pips = Math.min(20, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            topColumn.width += pipShift.width;
+            topColumn.height += pipShift.height;
+            if (pos % 2 == 0) {
+                pipShift.width *= -1;
+                topColumn.width += pipShift.width + 1;
+                pipShift.height *= -1;
+                topColumn.height += pipShift.height + 7;
+            }
+
+            if (pos % 4 == 0) {
+                topColumn.width += 2;
+            }
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(12, totalArmor);
+
+        totalArmor -= pips;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
+            middleColumn.width += pipShift.width;
+            middleColumn.height += pipShift.height;
+            if (pos % 4 == 0) {
+                pipShift.width *= -1;
+                middleColumn.width += pipShift.width + 1;
+                pipShift.height *= -1;
+                middleColumn.height += pipShift.height + 7;
+            }
+
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(6, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
+            bottomColumn.width += pipShift.width;
+            bottomColumn.height += pipShift.height;
+            if (pos % 2 == 0) {
+                pipShift.width *= -1;
+                bottomColumn.width += pipShift.width + 1;
+                pipShift.height *= -1;
+                bottomColumn.height += pipShift.height + 7;
+            }
+        }
+
+        pips = Math.min(4, totalArmor);
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(footColumn.width, footColumn.height, circle.width, circle.width);
+            footColumn.width += pipShift.width;
+        }
+
+    }
+
+    private void printLLArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(6, 6);
+        Dimension topColumn = new Dimension(443, 175);
+        Dimension middleColumn = new Dimension(420, 243);
+        Dimension bottomColumn = new Dimension(430, 268);
+        Dimension footColumn = new Dimension(406, 290);
+        Dimension pipShift = new Dimension(8, 2);
+
+        int totalArmor = mech.getArmor(Mech.LOC_LLEG);
+
+        int pips = Math.min(20, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            topColumn.width += pipShift.width;
+            topColumn.height += pipShift.height;
+            if (pos % 2 == 0) {
+                pipShift.width *= -1;
+                topColumn.width += pipShift.width - 1;
+                pipShift.height *= -1;
+                topColumn.height += pipShift.height + 7;
+                // topColumn.height += pipShift.height;
+            }
+
+            if (pos % 4 == 0) {
+                topColumn.width -= 2;
+            }
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(12, totalArmor);
+
+        totalArmor -= pips;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
+            middleColumn.width += pipShift.width;
+            middleColumn.height += pipShift.height;
+            if (pos % 4 == 0) {
+                pipShift.width *= -1;
+                middleColumn.width += pipShift.width - 1;
+                pipShift.height *= -1;
+                middleColumn.height += pipShift.height + 7;
+                // topColumn.height += pipShift.height;
+            }
+
+            // if ( pos % 4 == 0 ) {
+            // topColumn.width -=2;
+            // }
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(6, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
+            bottomColumn.width += pipShift.width;
+            bottomColumn.height += pipShift.height;
+            if (pos % 2 == 0) {
+                pipShift.width *= -1;
+                bottomColumn.width += pipShift.width - 1;
+                pipShift.height *= -1;
+                bottomColumn.height += pipShift.height + 7;
+                // topColumn.height += pipShift.height;
+            }
+        }
+
+        pips = Math.min(4, totalArmor);
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(footColumn.width, footColumn.height, circle.width, circle.width);
+            footColumn.width += pipShift.width;
+        }
+
+    }
+
+    private void printLAArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(6, 6);
+        Dimension rightColumn = new Dimension(417, 73);
+        Dimension centerColumn = new Dimension(409, 80);
+        Dimension leftColumn = new Dimension(402, 86);
+        Dimension pipShift = new Dimension(-1, 7);
+
+        int totalArmor = mech.getArmor(Mech.LOC_LARM);
+
+        int pips = Math.min(12, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(centerColumn.width, centerColumn.height, circle.width, circle.width);
+            centerColumn.height += pipShift.height;
+            if (pos % 3 != 0) {
+                centerColumn.width += pipShift.width;
+            }
+
+            if (pos == 7 || pos == 8) {
+                centerColumn.height++;
+            }
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(12, totalArmor);
+
+        totalArmor -= pips;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(rightColumn.width, rightColumn.height, circle.width, circle.width);
+            rightColumn.height += pipShift.height;
+            if (pos % 3 != 0) {
+                rightColumn.width += pipShift.width;
+            }
+
+            if (pos == 8) {
+                rightColumn.height += pipShift.height + 3;
+                rightColumn.width += pipShift.width;
+            }
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(10, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(leftColumn.width, leftColumn.height, circle.width, circle.width);
+            leftColumn.height += pipShift.height;
+            if (pos % 3 != 0) {
+                leftColumn.width += pipShift.width;
+            }
+            if (pos == 6) {
+                leftColumn.height += pipShift.height + 3;
+                leftColumn.width += pipShift.width;
+            }
+        }
+
+    }
+
+    private void printRAArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(6, 6);
+        Dimension rightColumn = new Dimension(548, 86);
+        Dimension centerColumn = new Dimension(540, 80);
+        Dimension leftColumn = new Dimension(533, 73);
+        Dimension pipShift = new Dimension(1, 7);
+
+        int totalArmor = mech.getArmor(Mech.LOC_LARM);
+
+        int pips = Math.min(12, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(centerColumn.width, centerColumn.height, circle.width, circle.width);
+            centerColumn.height += pipShift.height;
+            if (pos % 3 != 0) {
+                centerColumn.width += pipShift.width;
+            }
+
+            if (pos == 7 || pos == 8) {
+                centerColumn.height++;
+            }
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(12, totalArmor);
+
+        totalArmor -= pips;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(leftColumn.width, leftColumn.height, circle.width, circle.width);
+            leftColumn.height += pipShift.height;
+            if (pos % 3 != 0) {
+                leftColumn.width += pipShift.width;
+            }
+
+            if (pos == 8) {
+                leftColumn.height += pipShift.height + 3;
+                leftColumn.width += pipShift.width;
+            }
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(10, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(rightColumn.width, rightColumn.height, circle.width, circle.width);
+            rightColumn.height += pipShift.height;
+            if (pos % 3 != 0) {
+                rightColumn.width += pipShift.width;
+            }
+            if (pos == 6) {
+                rightColumn.height += pipShift.height + 3;
+                rightColumn.width += pipShift.width;
+            }
+        }
+
+    }
+
+    private void printLTArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(5, 5);
+        Dimension topColumn = new Dimension(430, 84);
+        Dimension middleColumn = new Dimension(452, 120);
+        Dimension bottomColumn = new Dimension(437, 155);
+        Dimension pipShift = new Dimension(6, 7);
+    
+        int totalArmor = mech.getArmor(Mech.LOC_LT);
+    
+        int pips = Math.min(25, totalArmor);
+    
+        totalArmor -= pips;
+    
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            topColumn.width += pipShift.width;
+            if (pos % 5 == 0) {
+                topColumn.height += pipShift.height;
+                pipShift.width *= -1;
+                topColumn.width += pipShift.width;
+            }
+        }
+    
+        if (totalArmor < 1) {
+            return;
+        }
+    
+        pips = Math.min(10, totalArmor);
+    
+        totalArmor -= pips;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
+            middleColumn.width += pipShift.width;
+            if (pos % 2 == 0) {
+                middleColumn.height += pipShift.height;
+                middleColumn.width += 1;
+                pipShift.width *= -1;
+                middleColumn.width += pipShift.width;
+            }
+    
+        }
+    
+        if (totalArmor < 1) {
+            return;
+        }
+    
+        pips = Math.min(7, totalArmor);
+    
+        totalArmor -= pips;
+    
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
+            bottomColumn.width += pipShift.width;
+            if (pos == 2) {
+                bottomColumn.width++;
+            } else if (pos == 4) {
+                bottomColumn.height += pipShift.height;
+                pipShift.width *= -1;
+                bottomColumn.width += pipShift.width;
+            } else if (pos == 6) {
+                bottomColumn.width--;
+            }
+        }
+    
+    }
+
+    private void printLTRArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension topColumn = new Dimension(437, 308);
+        Dimension pipShift = new Dimension(5, 5);
+
+        int totalArmor = mech.getArmor(Mech.LOC_LT,true);
+
+        int pips = Math.min(35, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            topColumn.width += pipShift.width;
+            if (pos % 5 == 0) {
+                topColumn.height += pipShift.height;
+                pipShift.width *= -1;
+                if ( pos >= 30 ) {
+                    topColumn.width += pipShift.width;
+                } else {
+                    topColumn.width += pipShift.width*2;
+                }
+            }
+        }
+    }
+
+    private void printRTArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(5, 5);
+        Dimension topColumn = new Dimension(497, 84);
+        Dimension middleColumn = new Dimension(505, 120);
+        Dimension bottomColumn = new Dimension(495, 155);
+        Dimension pipShift = new Dimension(6, 7);
+
+        int totalArmor = mech.getArmor(Mech.LOC_RT);
+
+        int pips = Math.min(25, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            topColumn.width += pipShift.width;
+            if (pos % 5 == 0) {
+                topColumn.height += pipShift.height;
+                pipShift.width *= -1;
+                topColumn.width += pipShift.width;
+            }
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(10, totalArmor);
+
+        totalArmor -= pips;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
+            middleColumn.width += pipShift.width;
+            if (pos % 2 == 0) {
+                middleColumn.height += pipShift.height;
+                middleColumn.width -= 1;
+                pipShift.width *= -1;
+                middleColumn.width += pipShift.width;
+            }
+
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(7, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
+            bottomColumn.width += pipShift.width;
+            if (pos == 2) {
+                bottomColumn.width++;
+            } else if (pos == 4) {
+                bottomColumn.height += pipShift.height;
+                pipShift.width *= -1;
+                bottomColumn.width += pipShift.width - 5;
+            } else if (pos == 5) {
+                bottomColumn.width -= 2;
+            }
+        }
+
+    }
+
+    private void printRTRArmor(Graphics2D g2d) {
+        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension topColumn = new Dimension(495, 308);
+        Dimension pipShift = new Dimension(5, 5);
+
+        int totalArmor = mech.getArmor(Mech.LOC_RT,true);
+
+        int pips = Math.min(35, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            topColumn.width += pipShift.width;
+            if (pos % 5 == 0) {
+                topColumn.height += pipShift.height;
+                pipShift.width *= -1;
+                if ( pos >= 30 ) {
+                    topColumn.width += pipShift.width;
+                } 
+            }
+        }
+    }
+
+    private void printCTArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(5, 5);
+        Dimension topColumn = new Dimension(464, 100);
+        Dimension middleColumn = new Dimension(481, 167);
+        Dimension bottomColumn = new Dimension(475, 180);
+        Dimension pipShift = new Dimension(6, 6);
+
+        int totalArmor = mech.getArmor(Mech.LOC_CT);
+
+        int pips = Math.min(55, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            topColumn.width += pipShift.width;
+            if (pos % 5 == 0) {
+                topColumn.height += pipShift.height;
+                pipShift.width *= -1;
+                topColumn.width += pipShift.width;
+            }
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        pips = Math.min(6, totalArmor);
+
+        totalArmor -= pips;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
+            middleColumn.width += pipShift.width;
+            if (pos % 3 == 0) {
+                middleColumn.height += pipShift.height;
+                pipShift.width *= -1;
+                middleColumn.width += pipShift.width;
+            }
+
+        }
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
+
+    }
+
+    private void printHeadArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(5, 5);
+        Dimension fillCircle = new Dimension(3, 3);
+
+        if (mech.getArmor(Mech.LOC_HEAD) >= 1) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(475, 69, circle.width, circle.height);
+            g2d.setColor(Color.white);
+            g2d.fillOval(476, 70, fillCircle.width, fillCircle.height);
+        }
+
+        if (mech.getArmor(Mech.LOC_HEAD) >= 2) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(472, 73, circle.width, circle.height);
+            g2d.setColor(Color.white);
+            g2d.fillOval(473, 74, fillCircle.width, fillCircle.height);
+        }
+
+        if (mech.getArmor(Mech.LOC_HEAD) >= 3) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(478, 73, circle.width, circle.height);
+            g2d.setColor(Color.white);
+            g2d.fillOval(479, 74, fillCircle.width, fillCircle.height);
+        }
+
+        if (mech.getArmor(Mech.LOC_HEAD) >= 4) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(469, 78, circle.width, circle.height);
+            g2d.setColor(Color.white);
+            g2d.fillOval(470, 79, fillCircle.width, fillCircle.height);
+        }
+
+        if (mech.getArmor(Mech.LOC_HEAD) >= 5) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(475, 78, circle.width, circle.height);
+            g2d.setColor(Color.white);
+            g2d.fillOval(476, 79, fillCircle.width, fillCircle.height);
+        }
+
+        if (mech.getArmor(Mech.LOC_HEAD) >= 6) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(481, 78, circle.width, circle.height);
+            g2d.setColor(Color.white);
+            g2d.fillOval(482, 79, fillCircle.width, fillCircle.height);
+        }
+
+        if (mech.getArmor(Mech.LOC_HEAD) >= 7) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(469, 83, circle.width, circle.height);
+            g2d.setColor(Color.white);
+            g2d.fillOval(470, 84, fillCircle.width, fillCircle.height);
+        }
+
+        if (mech.getArmor(Mech.LOC_HEAD) >= 8) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(475, 83, circle.width, circle.height);
+            g2d.setColor(Color.white);
+            g2d.fillOval(476, 84, fillCircle.width, fillCircle.height);
+        }
+
+        if (mech.getArmor(Mech.LOC_HEAD) >= 9) {
+            g2d.setColor(Color.black);
+            g2d.fillOval(481, 83, circle.width, circle.height);
+            g2d.setColor(Color.white);
+            g2d.fillOval(482, 84, fillCircle.width, fillCircle.height);
+        }
+        g2d.setColor(Color.black);
+    }
+
+    private void printCTRArmor(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension topColumn = new Dimension(470, 295);
+        Dimension pipShift = new Dimension(5, 5);
+
+        int totalArmor = mech.getArmor(Mech.LOC_CT,true);
+
+        int pips = Math.min(56, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            topColumn.width += pipShift.width;
+            if (pos % 4 == 0) {
+                topColumn.height += pipShift.height;
+                pipShift.width *= -1;
+                topColumn.width += pipShift.width*2;
+            }
+        }
+    }
+    
+    private void printLAStruct(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension column = new Dimension(419, 409);
+        Dimension pipShift = new Dimension(4, 4);
+    
+        int totalArmor = mech.getInternal(Mech.LOC_LARM);
+    
+        int pips = Math.min(16, totalArmor);
+    
+        totalArmor -= pips;
+    
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+            pipShift.width *= -1;
+            column.width += pipShift.width;
+    
+            if ( pos % 4 == 0 ) {
+                column.width -= 2;
+            }
+            
+        }
+        
+        if ( totalArmor > 0 ) {
+            column.height += pipShift.height;
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+        }
+    }
+
+    private void printLLStruct(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension column = new Dimension(441, 471);
+        Dimension pipShift = new Dimension(4, 4);
+
+        int totalArmor = mech.getInternal(Mech.LOC_LLEG);
+
+        int pips = Math.min(18, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+            column.width += pipShift.width;
+            pipShift.width *= -1;
+
+            if ( pos % 4 == 0 ) {
+                column.width -= 3;
+            }
+            
+        }
+        
+        if ( totalArmor < 1 ) {
+            return;
+        }
+        
+        pips = Math.min(2, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height+2;            
+        }
+        
+        if ( totalArmor < 1 ) {
+            return;
+        }
+        column.height -= 3;
+        column.width -= pipShift.width+1;
+        g2d.drawOval(column.width, column.height, circle.width, circle.width);
+    }
+
+    private void printRLStruct(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension column = new Dimension(484, 471);
+        Dimension pipShift = new Dimension(4, 4);
+
+        int totalArmor = mech.getInternal(Mech.LOC_RLEG);
+
+        int pips = Math.min(18, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+            column.width -= pipShift.width;
+            pipShift.width *= -1;
+
+            if ( pos % 4 == 0 ) {
+                column.width += 3;
+            }
+            
+        }
+        
+        if ( totalArmor < 1 ) {
+            return;
+        }
+        
+        pips = Math.min(2, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height+2;            
+        }
+        
+        if ( totalArmor < 1 ) {
+            return;
+        }
+        column.height -= 3;
+        column.width += pipShift.width+1;
+        g2d.drawOval(column.width, column.height, circle.width, circle.width);
+    }
+
+    private void printRAStruct(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension column = new Dimension(506, 409);
+        Dimension pipShift = new Dimension(4, 4);
+
+        int totalArmor = mech.getInternal(Mech.LOC_RARM);
+
+        int pips = Math.min(16, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+            pipShift.width *= -1;
+            column.width -= pipShift.width;
+
+            if ( pos % 4 == 0 ) {
+                column.width += 2;
+            }
+            
+        }
+        
+        if ( totalArmor > 0 ) {
+            column.height += pipShift.height;
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+        }
+    }
+
+    private void printLTStruct(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension column = new Dimension(435, 411);
+        Dimension pipShift = new Dimension(5, 5);
+
+        int totalArmor = mech.getInternal(Mech.LOC_LT);
+
+        int pips = Math.min(12, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.width += pipShift.width;
+
+            if ( pos % 3 == 0 ) {
+                column.height += pipShift.height;
+                pipShift.width *= -1;
+                column.width += pipShift.width;
+            }
+            
+        }
+        
+        if ( totalArmor < 1 ) {
+            return;
+        }
+
+        pips = Math.min(2, totalArmor);
+
+        totalArmor -= pips;
+
+        column.width += pipShift.width*2;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+        }
+
+        if ( totalArmor < 1 ) {
+            return;
+        }
+
+        pips = Math.min(2, totalArmor);
+
+        totalArmor -= pips;
+
+        column.width += pipShift.width/2;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+        }
+
+        if ( totalArmor < 1 ) {
+            return;
+        }
+
+        pips = Math.min(1, totalArmor);
+
+        totalArmor -= pips;
+
+        column.width += pipShift.width/2;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+        }
+        
+        if ( totalArmor < 1 ) {
+            return;
+        }
+
+        pips = Math.min(4, totalArmor);
+
+        totalArmor -= pips;
+        pipShift.width *= -1;
+        column.height += pipShift.height/2;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.width += pipShift.width;
+            
+            if ( pos % 2 == 0 ) {
+                pipShift.width *= -1;
+                column.height += pipShift.height;
+            }
+        }
+
+    }
+    
+    private void printRTStruct(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension column = new Dimension(481, 411);
+        Dimension pipShift = new Dimension(5, 5);
+
+        int totalArmor = mech.getInternal(Mech.LOC_LT);
+
+        int pips = Math.min(12, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.width += pipShift.width;
+
+            if ( pos % 3 == 0 ) {
+                column.height += pipShift.height;
+                pipShift.width *= -1;
+                column.width += pipShift.width;
+            }
+            
+        }
+        
+        if ( totalArmor < 1 ) {
+            return;
+        }
+
+        pips = Math.min(2, totalArmor);
+
+        totalArmor -= pips;
+
+        
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+        }
+
+        if ( totalArmor < 1 ) {
+            return;
+        }
+
+        pips = Math.min(2, totalArmor);
+
+        totalArmor -= pips;
+
+        column.width -= pipShift.width/2;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+        }
+
+        if ( totalArmor < 1 ) {
+            return;
+        }
+
+        pips = Math.min(1, totalArmor);
+
+        totalArmor -= pips;
+
+        column.width -= pipShift.width/2;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.height += pipShift.height;
+        }
+        
+        if ( totalArmor < 1 ) {
+            return;
+        }
+
+        pips = Math.min(4, totalArmor);
+
+        totalArmor -= pips;
+        //pipShift.width *= -1;
+        column.height += pipShift.height/2;
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.width += pipShift.width;
+            
+            if ( pos % 2 == 0 ) {
+                pipShift.width *= -1;
+                column.height += pipShift.height;
+            }
+        }
+
+    }
+
+    private void printCTStruct(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        Dimension column = new Dimension(457, 419);
+        Dimension pipShift = new Dimension(5,5);
+
+        int totalArmor = mech.getInternal(Mech.LOC_CT);
+
+        int pips = Math.min(27, totalArmor);
+
+        totalArmor -= pips;
+
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.width += pipShift.width;
+
+            if ( pos % 3 == 0 ) {
+                column.height += pipShift.height;
+                pipShift.width *= -1;
+                column.width += pipShift.width;
+            }
+            
+        }
+        
+        if ( totalArmor < 1 ) {
+            return;
+        }
+
+        pips = Math.min(4, totalArmor);
+
+        totalArmor -= pips;
+
+        column.height += pipShift.height;
+        column.width += pipShift.width/2;
+        
+        for (int pos = 1; pos <= pips; pos++) {
+            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            column.width += pipShift.width;
+            if ( pos % 2 == 0 ) {
+                column.height += pipShift.height;
+                pipShift.width *= -1;
+                column.width += pipShift.width;
+            }
+        }
+    }
+    
+    private void printHeadStruct(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+        Dimension circle = new Dimension(4, 4);
+        
+        g2d.drawOval(462, 398, circle.width, circle.width);
+        g2d.drawOval(458, 405, circle.width, circle.width);
+        g2d.drawOval(467, 405, circle.width, circle.width);
+    }
+
+    private void setCritConnection(Mounted m, int startx, int starty, int endx, int endy, Graphics2D g2d) {
+        if ( m == null ) {
+            printCritConnection(g2d, startMountx, startMounty, endMountx, endMounty );
+            startingMount = null;
+            startMountx = startx;
+            startMounty = starty;
+            endMountx = endx;
+            endMounty = endy;
+        }
+        else if ( startingMount == null && UnitUtil.getCritsUsed(mech, m.getType()) > 1) {
+            startingMount = m;
+            startMountx = startx;
+            startMounty = starty;
+            endMountx = endx;
+            endMounty = endy;
+        } else if ( !m.equals(startingMount) ){
+            printCritConnection(g2d, startMountx, startMounty, endMountx, endMounty );
+            if ( UnitUtil.getCritsUsed(mech, m.getType()) > 1 ) {
+                startingMount = m;
+            } else {
+                startingMount = null;
+            }
+            startMountx = startx;
+            startMounty = starty;
+            endMountx = endx;
+            endMounty = endy;
+        } else if ( m.equals(startingMount) ) {
+            endMounty = endy;
+        }
+
+    }
+    
+    private void printCritConnection(Graphics2D g2d, int startx, int starty, int endx, int endy) {
+        if ( starty == endy) {
+            return;
+        }
+        
+        g2d.drawLine(startx-1, starty, startx-4, starty);
+        g2d.drawLine(startx-4, starty, endx-4, endy);
+        g2d.drawLine(endx-1, endy, endx-4, endy);
+    }
+    
+    private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
+        Font font;
+        for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
+            font = new Font("Eurostile Bold", Font.BOLD, 8);
+            g2d.setFont(font);
+            CriticalSlot cs = mech.getCritical(location, slot);
+
+            if (cs == null) {
+                g2d.drawString("Roll Again", lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+            } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+                g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+            } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                Mounted m = mech.getEquipment(cs.getIndex());
+                setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
+                StringBuffer critName = new StringBuffer(m.getName());
+                
+                if ( m.getType() instanceof AmmoType ) {
+                    critName.append(" (");
+                    critName.append(((AmmoType)m.getType()).getShots());
+                    critName.append(")");
+                }
+                if (critName.length() >= 52) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 1);
+                    g2d.setFont(font);
+                }else if (critName.length() >= 46) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 2);
+                    g2d.setFont(font);
+                }else if (critName.length() >= 40) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 3);
+                    g2d.setFont(font);
+                }else if (critName.length() >= 34) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 4);
+                    g2d.setFont(font);
+                }else if (critName.length() >= 28) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 5);
+                    g2d.setFont(font);
+                }else if (critName.length() >= 22) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 6);
+                    g2d.setFont(font);
+                }else if (critName.length() >= 16) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 7);
+                    g2d.setFont(font);
+                }
+                
+                if (m.isRearMounted()) {
+                    critName.append("(R)");
+                }
+                g2d.drawString(critName.toString(), lineStart, linePoint);
+            }
+            linePoint += lineFeed;
+            
+            if ( slot > 0 && slot % 2 == 0 ) {
+                linePoint++;
+            }
+            
+            if ( slot == 5 ) {
+                linePoint += lineFeed/2;
+            }
+
+        }
+        setCritConnection(null, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
+
+    }
+
 }

@@ -14,6 +14,10 @@ v 0.0.0.6-dev
 	compatiblity for engines
 + Added Connecting lines for Multi Crit Mounts
 + RFE 2165204: RFE showing total armor
++ re-factored  crit printing code
++ Updated Advanced Biped RS
++ Added Higher RS Quad RS
+
 
 v 0.0.0.5 (10/12/08)
 + Bug 1989468: Hand / Lower Arm Actuator cannot be removed
