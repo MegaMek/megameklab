@@ -13,6 +13,7 @@ v 0.0.0.6-dev
 + New MegaMek.jar (0.33.34-MW102208-6067) with Laser and Compact HS 
 	compatiblity for engines
 + Added Connecting lines for Multi Crit Mounts
++ RFE 2165204: RFE showing total armor
 
 v 0.0.0.5 (10/12/08)
 + Bug 1989468: Hand / Lower Arm Actuator cannot be removed
