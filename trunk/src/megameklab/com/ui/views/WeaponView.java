@@ -289,6 +289,10 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
             if (eq instanceof WeaponType) {
 
                 WeaponType weapon = (WeaponType) eq;
+                
+                if ( weapon.getTonnage(unit) <= 0 ){
+                    continue;
+                }
 
                 if ((weapon instanceof LRMWeapon || weapon instanceof LRTWeapon) && weapon.getRackSize() != 5 && weapon.getRackSize() != 10 && weapon.getRackSize() != 15 && weapon.getRackSize() != 20) {
                     continue;
