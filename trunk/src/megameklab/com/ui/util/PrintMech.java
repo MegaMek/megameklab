@@ -323,21 +323,44 @@ public class PrintMech implements Printable {
                 if (count >= 12) {
                     break;
                 }
+                font = new Font("Eurostile Bold", Font.BOLD, 8);
+                g2d.setFont(font);
+                
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                if (name.length() > 20) {
-                    name = name.substring(0, 18) + "..";
-                }
                 if (eqi.isRear) {
                     name += "(R)";
                 }
 
-                font = new Font("Arial", Font.BOLD, 6);
-                g2d.setFont(font);
+                if (name.length() > 70) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 1);
+                    g2d.setFont(font);
+                }else if (name.length() > 60) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 2);
+                    g2d.setFont(font);
+                }else if (name.length() > 50) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 3);
+                    g2d.setFont(font);
+                }else if (name.length() > 40) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 4);
+                    g2d.setFont(font);
+                }else if (name.length() > 30) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 5);
+                    g2d.setFont(font);
+                }else if (name.length() > 20) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 6);
+                    g2d.setFont(font);
+                }else if (name.length() >= 10) {
+                    font = new Font("Eurostile Bold", Font.BOLD, 7);
+                    g2d.setFont(font);
+                }
+
+
                 g2d.drawString(name, typePoint, linePoint);
-                font = new Font("Arial", Font.PLAIN, 8);
+                font = new Font("Eurostile Bold", Font.BOLD, 8);
                 g2d.setFont(font);
+                
                 g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
                 if (eqi.isWeapon) {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);

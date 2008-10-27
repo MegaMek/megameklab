@@ -16,7 +16,8 @@ v 0.0.0.6-dev
 + RFE 2165204: RFE showing total armor
 + re-factored  crit printing code
 + Updated Advanced Biped RS
-+ Added Higher RS Quad RS
++ Added Higher Res Quad RS
++ Finished Quad RS print outs Standard and Advanced.
 
 
 v 0.0.0.5 (10/12/08)
