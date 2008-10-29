@@ -532,6 +532,10 @@ public class UnitUtil {
             return false;
         }
         
+        if ( eq instanceof MiscType && ( eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_JUMP_BOOSTER)) ){
+            return false;
+        }
+        
         if ( UnitUtil.isHeatSink(eq) ) {
             return false;
         }

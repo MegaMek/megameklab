@@ -250,9 +250,12 @@ public class MainUI extends JFrame implements RefreshListener {
             sp.print();
         }else {
             String fImageName = "./data/images/twbiped.png";
-    
-            Image image = getToolkit().getImage(fImageName);
-            PrintMech sp = new PrintMech(image, entity);
+            String mekHud = "./data/images/hud.png";
+            
+            Image image = getToolkit().createImage(fImageName);
+            Image hudImage = getToolkit().createImage(mekHud);
+            
+            PrintMech sp = new PrintMech(image, hudImage, entity);
     
             sp.print();
         }
