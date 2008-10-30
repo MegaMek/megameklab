@@ -252,8 +252,8 @@ public class MainUI extends JFrame implements RefreshListener {
             String fImageName = "./data/images/twbiped.png";
             String mekHud = "./data/images/hud.png";
             
-            Image image = getToolkit().createImage(fImageName);
-            Image hudImage = getToolkit().createImage(mekHud);
+            Image image = getToolkit().getImage(fImageName);
+            Image hudImage = getToolkit().getImage(mekHud);
             
             PrintMech sp = new PrintMech(image, hudImage, entity);
     

@@ -185,7 +185,9 @@ public class CConfig {
             config.store(ps,"Client Config Backup");
             fos.close();
             ps.close();
-        } catch (Exception ex) {
+        }catch (FileNotFoundException fnfe){
+            
+        }catch (Exception ex) {
             ex.printStackTrace();
             return;
         }
@@ -195,7 +197,9 @@ public class CConfig {
 			config.store(ps,"Client Config");
 			fos.close();
 			ps.close();
-		} catch (Exception ex) {
+		}catch (FileNotFoundException fnfe){
+            
+        } catch (Exception ex) {
 		    ex.printStackTrace();
 		}
 	}
