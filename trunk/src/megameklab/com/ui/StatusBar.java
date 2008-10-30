@@ -31,6 +31,7 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 import megameklab.com.ui.tabs.ITab;
 import megameklab.com.ui.util.SpringLayoutHelper;
+import megameklab.com.ui.util.UnitUtil;
 
 public class StatusBar extends ITab {
 
@@ -87,7 +88,8 @@ public class StatusBar extends ITab {
         float currentTonnage;
 
         currentTonnage = testEntity.calculateWeight();
-
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
+        
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tonnagePanel.add(tons);
         
@@ -117,6 +119,7 @@ public class StatusBar extends ITab {
         testEntity = new TestMech(unit, entityVerifier.mechOption, null);
 
         currentTonnage = testEntity.calculateWeight();
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
         
         int totalHeat = calculateTotalHeat();
         if ( unit.hasDoubleHeatSinks() ){

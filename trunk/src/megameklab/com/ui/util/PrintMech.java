@@ -176,10 +176,10 @@ public class PrintMech implements Printable {
 
         // Heat Sinks
         if (mech.hasDoubleHeatSinks()) {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " {" + Integer.toString(mech.heatSinks() * 2) + ")", 502, 595);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks() * 2) + ")", 502, 595);
             g2d.drawString("Double", 502, 603);
         } else {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " {" + Integer.toString(mech.heatSinks()) + ")", 502, 595);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks()) + ")", 502, 595);
             g2d.drawString("Single", 502, 603);
         }
 
@@ -1614,6 +1614,7 @@ public class PrintMech implements Printable {
                 } else if (m.getType() instanceof AmmoType) {
                     AmmoType ammo = (AmmoType) m.getType();
 
+                   
                     String ammoName = ammo.getName();
 
                     if (ammoName.toLowerCase().indexOf("ammo") > -1) {
@@ -1670,9 +1671,11 @@ public class PrintMech implements Printable {
 
     private void printMekImage(Graphics2D g2d, Image img) {
         
-        int width = Math.min(200,img.getWidth(null));
-        int height = Math.min(165, img.getHeight(null));
-        g2d.drawImage(img, 235, 172, height, width, null);
+        int width = Math.min(165,img.getWidth(null));
+        int height = Math.min(200, img.getHeight(null));
+        g2d.drawImage(img, 235, 172, width, height, null);
+        
+        //g2d.drawRect(235, 172, 165, 200);
     }
 
 }

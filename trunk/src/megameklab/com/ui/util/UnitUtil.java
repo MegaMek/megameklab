@@ -603,4 +603,15 @@ public class UnitUtil {
         return highestNumberOfCrits;
     }
 
+    public static double getUnallocatedAmmoTonnage(Entity unit) {
+        double tonnage = 0;
+        
+        for (Mounted mount : unit.getAmmo() ) {
+            if ( mount.getLocation() == Entity.LOC_NONE ) {
+                tonnage += mount.getType().getTonnage(unit);
+            }
+        }
+        
+        return tonnage;
+    }
 }
