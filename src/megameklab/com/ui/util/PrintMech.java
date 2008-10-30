@@ -22,6 +22,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -29,12 +30,14 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Mech;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
@@ -133,12 +136,12 @@ public class PrintMech implements Printable {
     }
 
     private void printMechData(Graphics2D g2d) {
-        Font font = new Font("Eurostile Bold", Font.BOLD, 10);
+        Font font = new Font("Eurostile Eurostile LT Std", Font.BOLD, 10);
         g2d.setFont(font);
 
-        g2d.drawString(mech.getChassis() + " " + mech.getModel(), 49, 119);
+        g2d.drawString(mech.getChassis().toUpperCase() + " " + mech.getModel().toUpperCase(), 49, 121);
 
-        font = new Font("Eurostile Regular", Font.PLAIN, 8);
+        font = new Font("Eurostile LT Std", Font.PLAIN, 8);
         g2d.setFont(font);
 
         g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
@@ -162,10 +165,11 @@ public class PrintMech implements Printable {
         g2d.drawString(Integer.toString(mech.getYear()), 188, 155);
 
         // Cost/BV
-        g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 350);
+        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        g2d.drawString(myFormatter.format(mech.calculateBattleValue(true)), 150, 350);
 
-        DecimalFormat myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(mech.getCost()) + " C-Bills", 52, 350);
+        myFormatter = new DecimalFormat("#,###.##");
+        g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
 
         g2d.drawString("2008", 102.5f, 745f);
     }
@@ -202,7 +206,7 @@ public class PrintMech implements Printable {
 
     private void printArmor(Graphics2D g2d) {
         // Armor
-        Font font = new Font("Eurostile Regular", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 6);
         g2d.setFont(font);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485, 46);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 434, 60);
@@ -342,7 +346,7 @@ public class PrintMech implements Printable {
 
         }
 
-        Font font = new Font("Eurostile Regular", Font.BOLD, 10);
+        Font font = new Font("Eurostile LT Std", Font.BOLD, 10);
         g2d.setFont(font);
 
         for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
@@ -359,7 +363,7 @@ public class PrintMech implements Printable {
                 if (count >= 12) {
                     break;
                 }
-                font = new Font("Eurostile Regular", Font.PLAIN, 8);
+                font = new Font("Eurostile LT Std", Font.PLAIN, 7);
                 g2d.setFont(font);
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
@@ -370,29 +374,34 @@ public class PrintMech implements Printable {
                 }
 
                 if (name.length() > 70) {
-                    font = new Font("Eurostile Regular", Font.PLAIN, 1);
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 1);
                     g2d.setFont(font);
                 } else if (name.length() > 60) {
-                    font = new Font("Eurostile Regular", Font.PLAIN, 2);
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 2);
                     g2d.setFont(font);
                 } else if (name.length() > 50) {
-                    font = new Font("Eurostile Regular", Font.PLAIN, 3);
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 3);
                     g2d.setFont(font);
                 } else if (name.length() > 40) {
-                    font = new Font("Eurostile Regular", Font.PLAIN, 4);
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 4);
                     g2d.setFont(font);
                 } else if (name.length() > 30) {
-                    font = new Font("Eurostile Regular", Font.PLAIN, 5);
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 5);
                     g2d.setFont(font);
                 } else if (name.length() > 20) {
-                    font = new Font("Eurostile Regular", Font.PLAIN, 6);
-                    g2d.setFont(font);
-                } else if (name.length() >= 10) {
-                    font = new Font("Eurostile Regular", Font.PLAIN, 7);
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 6);
                     g2d.setFont(font);
                 }
 
-                g2d.drawString(name, typePoint, linePoint);
+                if ( eqi.c3Level == eqi.C3I ){
+                    printC3iName(g2d, typePoint, linePoint, font);
+                } else if ( eqi.c3Level == eqi.C3S ){
+                    printC3sName(g2d, typePoint, linePoint, font);
+                } else if ( eqi.c3Level == eqi.C3M ){
+                    printC3mName(g2d, typePoint, linePoint, font);
+                } else {
+                    g2d.drawString(name, typePoint, linePoint);
+                }
                 font = new Font("Eurostile Regular", Font.PLAIN, 8);
                 g2d.setFont(font);
 
@@ -462,7 +471,12 @@ public class PrintMech implements Printable {
         public int techLevel = TechConstants.T_INTRO_BOXSET;
         public boolean isWeapon = false;
         public boolean isRear = false;
-
+        public int c3Level = 0;
+        
+        public int C3S = 1;
+        public int C3M = 2;
+        public int C3I = 3;
+        
         public equipmentInfo(Mounted mount) {
             this.name = mount.getName();
             this.count = 1;
@@ -470,6 +484,10 @@ public class PrintMech implements Printable {
             this.isRear = mount.isRearMounted();
 
             if (mount.getType() instanceof WeaponType) {
+                if ( mount.getType().hasFlag(WeaponType.F_C3M) ){
+                    c3Level = C3M;
+                }
+                
                 WeaponType weapon = (WeaponType) mount.getType();
                 this.minRange = Math.max(0, weapon.minimumRange);
                 this.isWeapon = true;
@@ -490,12 +508,16 @@ public class PrintMech implements Printable {
                 this.medRange = weapon.mediumRange;
                 this.longRange = weapon.longRange;
                 this.heat = weapon.getHeat();
+            } else if ( mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I) ){
+                c3Level = C3I;
+            } else if ( mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S) ){
+                c3Level = C3S;
             }
         }
     }
 
     private void printRLArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile Regular", Font.PLAIN, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(6, 6);
         Dimension topColumn = new Dimension(499, 177);
@@ -1566,12 +1588,12 @@ public class PrintMech implements Printable {
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
         Font font;
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
-            font = new Font("Eurostile Bold", Font.BOLD, 8);
+            font = new Font("Eurostile LT Std", Font.BOLD, 7);
             g2d.setFont(font);
             CriticalSlot cs = mech.getCritical(location, slot);
 
             if (cs == null) {
-                font = new Font("Eurostile Regular", Font.PLAIN, 8);
+                font = new Font("Eurostile LT Std", Font.PLAIN, 7);
                 g2d.setFont(font);
                 g2d.drawString("Roll Again", lineStart, linePoint);
                 setCritConnection(null, lineStart, linePoint, lineStart, linePoint, g2d);
@@ -1600,7 +1622,13 @@ public class PrintMech implements Printable {
                     }
                     g2d.drawString(engineName, lineStart, linePoint);
                 } else {
-                    g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
+                    String critName = mech.getSystemName(cs.getIndex());
+                    
+                    if ( critName.indexOf("Standard") > -1 ){
+                        critName = critName.replace("Standard ", "");
+                    }
+                    
+                    g2d.drawString(critName, lineStart, linePoint);
                 }
                 setCritConnection(null, lineStart, linePoint, lineStart, linePoint, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
@@ -1621,38 +1649,43 @@ public class PrintMech implements Printable {
                         ammoName = ammoName.substring(0, ammoName.toLowerCase().indexOf("ammo")) + ammoName.substring(ammoName.toLowerCase().indexOf("ammo") + 4);
                     }
                     critName = new StringBuffer("Ammo (");
-                    critName.append(ammoName);
+                    critName.append(ammoName.trim());
                     critName.append(") ");
                     critName.append(((AmmoType) m.getType()).getShots());
                 }
-
+                
                 if (!m.getType().isHittable()) {
-                    font = new Font("Eurostile Regular", Font.PLAIN, 8);
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 7);
                     g2d.setFont(font);
                 } else if (critName.length() >= 80) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 1);
+                    font = new Font("Eurostile LT Std", Font.BOLD, 1);
                     g2d.setFont(font);
                 } else if (critName.length() >= 70) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 2);
+                    font = new Font("Eurostile LT Std", Font.BOLD, 2);
                     g2d.setFont(font);
                 } else if (critName.length() >= 60) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 3);
+                    font = new Font("Eurostile LT Std", Font.BOLD, 3);
                     g2d.setFont(font);
                 } else if (critName.length() >= 50) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 4);
+                    font = new Font("Eurostile LT Std", Font.BOLD, 4);
                     g2d.setFont(font);
                 } else if (critName.length() >= 40) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 5);
+                    font = new Font("Eurostile LT Std", Font.BOLD, 5);
                     g2d.setFont(font);
                 } else if (critName.length() >= 30) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 6);
-                    g2d.setFont(font);
-                } else if (critName.length() >= 20) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 7);
+                    font = new Font("Eurostile LT Std", Font.BOLD, 6);
                     g2d.setFont(font);
                 }
 
-                g2d.drawString(critName.toString(), lineStart, linePoint);
+                if ( m.getType() instanceof MiscType && m.getType().hasFlag(MiscType.F_C3I)){
+                    printC3iName(g2d, lineStart, linePoint, font);
+                } else if ( m.getType() instanceof MiscType && m.getType().hasFlag(MiscType.F_C3S)){
+                    printC3sName(g2d, lineStart, linePoint, font);
+                } else if ( m.getType() instanceof WeaponType && m.getType().hasFlag(WeaponType.F_C3M)){
+                    printC3mName(g2d, lineStart, linePoint, font);
+                } else {
+                    g2d.drawString(critName.toString(), lineStart, linePoint);
+                }
             }
             linePoint += lineFeed;
 
@@ -1669,6 +1702,39 @@ public class PrintMech implements Printable {
 
     }
 
+    private void printC3iName(Graphics2D g2d, int lineStart, int linePoint, Font font){
+        HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
+        attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+        g2d.drawString("Improved C  CPU", lineStart, linePoint);
+        font = font.deriveFont(attrMap);
+        g2d.setFont(font);
+        
+        if ( font.isBold() ){
+            g2d.drawString("3", lineStart+39, linePoint);
+        }else {
+            g2d.drawString("3", lineStart+36, linePoint);
+        }
+    }
+
+    private void printC3sName(Graphics2D g2d, int lineStart, int linePoint, Font font){
+        HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
+        attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+        g2d.drawString("C  Slave", lineStart, linePoint);
+        font = font.deriveFont(attrMap);
+        g2d.setFont(font);
+        g2d.drawString("3", lineStart+5, linePoint);
+
+    }
+    
+    private void printC3mName(Graphics2D g2d, int lineStart, int linePoint, Font font){
+        HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
+        attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+        g2d.drawString("C  Master", lineStart, linePoint);
+        font = font.deriveFont(attrMap);
+        g2d.setFont(font);
+        g2d.drawString("3", lineStart+5, linePoint);
+    }
+    
     private void printMekImage(Graphics2D g2d, Image img) {
         
         int width = Math.min(165,img.getWidth(null));
