@@ -1643,15 +1643,10 @@ public class PrintMech implements Printable {
                     AmmoType ammo = (AmmoType) m.getType();
 
                    
-                    String ammoName = ammo.getName();
-
-                    if (ammoName.toLowerCase().indexOf("ammo") > -1) {
-                        ammoName = ammoName.substring(0, ammoName.toLowerCase().indexOf("ammo")) + ammoName.substring(ammoName.toLowerCase().indexOf("ammo") + 4);
-                    }
                     critName = new StringBuffer("Ammo (");
-                    critName.append(ammoName.trim());
+                    critName.append(ammo.getShortName().trim());
                     critName.append(") ");
-                    critName.append(((AmmoType) m.getType()).getShots());
+                    critName.append(ammo.getShots());
                 }
                 
                 if (!m.getType().isHittable()) {
