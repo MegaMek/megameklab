@@ -17,10 +17,11 @@
 package megameklab.com;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-import megameklab.com.ui.MainUI;
+import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
 
@@ -29,6 +30,9 @@ public class MegaMekLab {
 
         if (args.length < 1) {
             try {
+                if ( !new File("./logs/").exists() ){
+                    new File("./logs/").mkdir();
+                }
                 PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(logFileName), 64));
                 System.setOut(ps);
                 System.setErr(ps);
