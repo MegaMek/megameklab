@@ -16,8 +16,10 @@
 
 package megameklab.com.ui.Mek;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -25,7 +27,9 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -49,6 +53,7 @@ import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SaveMechToMTF;
 import megameklab.com.util.UnitUtil;
 
+import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
@@ -68,6 +73,7 @@ public class MainUI extends JFrame implements RefreshListener {
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
     JMenu file = new JMenu("File");
+    JMenu help = new JMenu("Help");
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
@@ -149,7 +155,19 @@ public class MainUI extends JFrame implements RefreshListener {
             }
         });
         file.add(item);
+        
+        item = new JMenuItem();
+        item.setText("About");
+        item.setMnemonic('A');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuHelpAbout_actionPerformed();
+            }
+        });
+        help.add(item);
+        
         menuBar.add(file);
+        menuBar.add(help);
 
         setLocation(getLocation().x + 10, getLocation().y);
         addWindowListener(new WindowAdapter() {
@@ -278,6 +296,58 @@ public class MainUI extends JFrame implements RefreshListener {
              sp.print();
         }
      }
+    
+    // Show data about MegaMekLab
+    public void jMenuHelpAbout_actionPerformed() {
+
+        // make the dialog
+        JDialog dlg = new JDialog(this, "MegaMekLab Info");
+
+        // set up the contents
+        JPanel child = new JPanel();
+        child.setLayout(new BoxLayout(child, BoxLayout.Y_AXIS));
+
+        // set the text up.
+        JLabel mekwars = new JLabel("MegaMekLab Version: " + VERSION);
+        JLabel version = new JLabel("MegaMek Version: " + MegaMek.VERSION);
+        JLabel license1 = new JLabel("MegaMekLab software is under GPL. See");
+        JLabel license2 = new JLabel("license.txt in ./Docs/licenses for details.");
+        JLabel license3 = new JLabel("Project Info:");
+        JLabel license4 = new JLabel("       http://www.sourceforge.net/projects/megameklab       ");
+
+        // center everything
+        mekwars.setAlignmentX(Component.CENTER_ALIGNMENT);
+        version.setAlignmentX(Component.CENTER_ALIGNMENT);
+        license1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        license2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        license3.setAlignmentX(Component.CENTER_ALIGNMENT);
+        license4.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // add to child panel
+        child.add(new JLabel("\n"));
+        child.add(mekwars);
+        child.add(version);
+        child.add(new JLabel("\n"));
+        child.add(license1);
+        child.add(license2);
+        child.add(new JLabel("\n"));
+        child.add(license3);
+        child.add(license4);
+        child.add(new JLabel("\n"));
+
+        // then add child panel to the content pane.
+        dlg.getContentPane().add(child);
+
+        // set the location of the dialog
+        Dimension dlgSize = dlg.getPreferredSize();
+        Dimension frmSize = getSize();
+        Point loc = getLocation();
+        dlg.setLocation((frmSize.width - dlgSize.width) / 2 + loc.x, (frmSize.height - dlgSize.height) / 2 + loc.y);
+        dlg.setModal(true);
+        dlg.setResizable(false);
+        dlg.pack();
+        dlg.setVisible(true);
+    }
 
     public void reloadTabs() {
         masterPanel.removeAll();

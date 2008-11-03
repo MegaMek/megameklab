@@ -1582,9 +1582,9 @@ public class PrintMech implements Printable {
             return;
         }
 
-        g2d.drawLine(startx - 1, starty - 7, startx - 4, starty - 7);
-        g2d.drawLine(startx - 4, starty - 7, endx - 4, endy);
-        g2d.drawLine(endx - 1, endy, endx - 4, endy);
+        g2d.drawLine(startx - 1, starty - 6, startx - 4, starty - 6);
+        g2d.drawLine(startx - 4, starty - 6, endx - 4, endy);
+        g2d.drawLine(endx - 1, endy+1, endx - 4, endy+1);
     }
 
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
