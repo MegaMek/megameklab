@@ -37,7 +37,7 @@ public class MegaMekLab {
                 runtime.exec(call);
                 System.exit(0);
             }catch(Exception ex){
-                
+                ex.printStackTrace();
             }
         }
         if (args.length < 1) {
