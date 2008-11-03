@@ -28,6 +28,18 @@ public class MegaMekLab {
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
 
+        Runtime runtime = Runtime.getRuntime();  
+        
+        //Need at least 256m to run MegaMekLab
+        if ( runtime.maxMemory() < 256000000 ){  
+            try{
+                String[] call = { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
+                runtime.exec(call);
+                System.exit(0);
+            }catch(Exception ex){
+                
+            }
+        }
         if (args.length < 1) {
             try {
                 if ( !new File("./logs/").exists() ){

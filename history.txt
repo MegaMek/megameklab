@@ -8,7 +8,7 @@ V 0.0.0.7-dev
 + added StartMegaMekLab.bat
 + added StartMegaMekLab.sh
 + updated build.xml to default to java 1.6
-
++ MML now starts up with min memory needed to print
 
 v 0.0.0.6 (10/27/08 08:43 PST)
 + Bug 2165193: RL 5
