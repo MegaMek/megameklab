@@ -88,8 +88,12 @@ public class UnitUtil {
         if (equipment == null) {
             return;
         }
-
-        UnitUtil.removeCriticals(unit, equipment);
+        
+        if (equipment.getName().equals(UnitUtil.TSM)) {
+            UnitUtil.removeTSMCrits(unit);
+        }else {
+            UnitUtil.removeCriticals(unit, equipment);
+        }
 
         if (equipment.getName().equals(UnitUtil.TSM)) {
             UnitUtil.removeTSMMounts(unit);
@@ -198,23 +202,26 @@ public class UnitUtil {
      */
     public static void removeCriticals(Mech unit, Mounted eq) {
 
-        if (eq.getType().getName().equals(UnitUtil.TSM)) {
-            UnitUtil.removeTSMCrits(unit);
-        } else if (eq.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER)) {
+        if (eq.getLocation() == Mech.LOC_NONE) {
+            return;
+        }
+        /*
+         * if (eq.getType().getName().equals(UnitUtil.TSM)) {
+         * UnitUtil.removeTSMCrits(unit); } else
+         */
+        if (eq.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER)) {
             UnitUtil.removeTCCrits(unit);
         } else if (eq.isSplitable() || eq.getType().isSpreadable()) {
             UnitUtil.removeSplitCriticals(unit, eq);
         } else {
+            int critsUsed = UnitUtil.getCritsUsed(unit, eq.getType());
             int location = eq.getLocation();
-            if (location != Mech.LOC_NONE) {
-                int critsUsed = UnitUtil.getCritsUsed(unit, eq.getType());
-                for (int slot = 0; slot < unit.getNumberOfCriticals(location) && critsUsed > 0; slot++) {
-                    CriticalSlot cs = unit.getCritical(location, slot);
-                    if (cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT && cs.getIndex() == unit.getEquipmentNum(eq)) {
-                        cs = null;
-                        unit.setCritical(location, slot, cs);
-                        --critsUsed;
-                    }
+            for (int slot = 0; slot < unit.getNumberOfCriticals(location) && critsUsed > 0; slot++) {
+                CriticalSlot cs = unit.getCritical(location, slot);
+                if (cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT && cs.getIndex() == unit.getEquipmentNum(eq)) {
+                    cs = null;
+                    unit.setCritical(location, slot, cs);
+                    --critsUsed;
                 }
             }
         }
@@ -509,7 +516,12 @@ public class UnitUtil {
      * @param hsType
      */
     public static void updateHeatSinks(Mech unit, int hsAmount, int hsType) {
+        
+        int heatSinkIndex = unit.heatSinks();
+        
         UnitUtil.removeHeatSinks(unit);
+        
+        UnitUtil.resetCritIndexes(unit, heatSinkIndex);
         
         unit.addEngineSinks(hsAmount, UnitUtil.getHeatSinkType(hsType, unit.isClan()));
 
@@ -613,5 +625,43 @@ public class UnitUtil {
         }
         
         return tonnage;
+    }
+
+    public static int getFirstHeatSinkIndex(Mech unit) {
+        
+        for ( int pos = 0; pos < unit.getEquipment().size(); pos++ ) {
+            if ( unit.getEquipment(pos) != null && UnitUtil.isHeatSink(unit.getEquipment(pos)) ) {
+                return pos;
+            }
+        }
+        
+        return Integer.MAX_VALUE;
+    }
+    
+    public static void resetCritIndexes(Mech unit, int totalHeatSinks) {
+     
+        for (int location = 0; location <= Mech.LOC_LLEG; location++ ) {
+            for ( int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+                CriticalSlot cs = unit.getCritical(location, slot);
+                
+                if ( cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT && cs.getIndex() >= totalHeatSinks ) {
+                    int shift = cs.getIndex() - totalHeatSinks;
+                    cs.setIndex(shift);
+                    
+                }
+            }
+        }
+    }
+    
+    public static double getTotalArmorTonnage(Mech unit) {
+        
+        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());
+        if (unit.getArmorType() == EquipmentType.T_ARMOR_HARDENED)
+            armorPerTon = 8.0;
+        double points = unit.getTotalInternal()*2;
+        double armorWeight = points / armorPerTon;
+        armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
+
+        return armorWeight;
     }
 }

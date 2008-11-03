@@ -73,8 +73,8 @@
 			deprecation="true"
 			destdir="${build}"
 			srcdir="${src}"
-			target="1.5"
-			source="1.5"
+			target="1.6"
+			source="1.6"
 		>
 		</javac>
 		<touch

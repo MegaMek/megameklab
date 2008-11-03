@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package megameklab.com.util;
+package megameklab.com.ui.Mek.Printing;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -44,6 +44,7 @@ import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.SRMWeapon;
+import megameklab.com.util.UnitUtil;
 
 public class PrintMech implements Printable {
 
@@ -131,7 +132,7 @@ public class PrintMech implements Printable {
         printRLStruct(g2d);
 
 
-        g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+        //g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
     }

@@ -17,8 +17,12 @@
 package megameklab.com.ui.Mek.tabs;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -27,6 +31,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -42,7 +47,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 
-public class ArmorTab extends ITab implements ActionListener, ChangeListener {
+public class ArmorTab extends ITab implements ActionListener, ChangeListener, KeyListener {
 
     /**
      * 
@@ -56,7 +61,8 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
 
     private JButton allocateArmorButton = new JButton("Allocate");
     private JSlider armorSlider = new JSlider();
-
+    private JTextField armorTonnage = new JTextField(5);
+    
     private JPanel buttonPanel = new JPanel();
 
     public ArmorTab(Mech unit) {
@@ -68,7 +74,7 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
         this.add(ButtonPanel());
         this.add(armor);
         SpringLayoutHelper.setupSpringGrid(this, 1);
-
+        setTotalTonnage();
         refresh();
 
         addAllListeners();
@@ -76,6 +82,9 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
     }
 
     public void refresh() {
+        removeAllListeners();
+        setTotalTonnage();
+        addAllListeners();
         armor.updateMech(unit);
         armor.refresh();
     }
@@ -120,33 +129,43 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
 
         armorSlider.setMinimum(0);
         armorSlider.setMaximum(100);
-        armorSlider.setMinorTickSpacing(5);
-        armorSlider.setMajorTickSpacing(10);
+        armorSlider.setMinorTickSpacing(1);
+        armorSlider.setMajorTickSpacing(5);
         armorSlider.setValue(100);
         armorSlider.setPaintTicks(true);
         armorSlider.setPaintLabels(true);
         armorSlider.setPaintTrack(true);
-        armorSlider.addChangeListener(this);
         armorSlider.setSnapToTicks(true);
 
+        armorTonnage.setToolTipText("Total Tonnage of Armor");
+        Dimension size = new Dimension(10,10);
+        armorTonnage.setMaximumSize(size);
+        armorTonnage.setPreferredSize(size);
+        
         JPanel sliderPanel = new JPanel(new SpringLayout());
         sliderPanel.add(armorSlider);
+        sliderPanel.add(new JLabel("Armor Tonnage:",JLabel.TRAILING));
+        sliderPanel.add(armorTonnage);
         sliderPanel.add(allocateArmorButton);
-        SpringLayoutHelper.setupSpringGrid(sliderPanel, 2);
+        SpringLayoutHelper.setupSpringGrid(sliderPanel, 4);
 
         buttonPanel.add(sliderPanel);
-
+        
         return buttonPanel;
     }
 
     private void addAllListeners() {
         armorCombo.addActionListener(this);
         structureCombo.addActionListener(this);
+        armorTonnage.addKeyListener(this);
+        armorSlider.addChangeListener(this);
     }
 
     private void removeAllListeners() {
         armorCombo.removeActionListener(this);
         structureCombo.removeActionListener(this);
+        armorTonnage.removeKeyListener(this);
+        armorSlider.removeChangeListener(this);
     }
 
     private void allocateArmorActionPerformed() {
@@ -157,7 +176,7 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
 
     public void stateChanged(ChangeEvent arg0) {
         armorSlider.setToolTipText(Integer.toString(armorSlider.getValue()));
-
+        setTotalTonnage();
     }
 
     private void createArmorMounts() {
@@ -228,6 +247,51 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
                 }
             }
         }
+    }
+    
+    private void setTotalTonnage() {
+        double maxTonnage = UnitUtil.getTotalArmorTonnage(unit);
+        double currentTonnage = 0;
+        
+        DecimalFormat myFormatter = new DecimalFormat("0.00");
+        if ( armorSlider.getValue() > 0 ) {
+            currentTonnage = maxTonnage * ((double)armorSlider.getValue() / 100);
+        }
+        armorTonnage.setText(myFormatter.format(currentTonnage));
+    }
+
+    public void keyPressed(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void keyReleased(KeyEvent arg0) {
+        
+        if ( arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE || arg0.getKeyChar() == '.') {
+            return;
+        }
+        
+        removeAllListeners();
+        try {
+            double newTonnage = Double.parseDouble(armorTonnage.getText());
+            double totalTonnage = UnitUtil.getTotalArmorTonnage(unit); 
+            if ( newTonnage >  totalTonnage ) {
+                armorSlider.setValue(100);
+                setTotalTonnage();
+            } else {
+                double percent = (newTonnage/totalTonnage) * 100;
+                armorSlider.setValue((int)Math.round(percent));
+                setTotalTonnage();
+            }
+        }catch (Exception ex) {
+            setTotalTonnage();
+        }
+        addAllListeners();
+    }
+
+    public void keyTyped(KeyEvent arg0) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -104,28 +104,38 @@ public class CriticalView extends View {
                     if (cs == null) {
                         if (showEmpty)
                             critNames.add(MtfFile.EMPTY);
-                        continue;
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                         critNames.add(unit.getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                        Mounted m = unit.getEquipment(cs.getIndex());
-                        StringBuffer critName = new StringBuffer(m.getName());
-                        if (critName.length() > 10){
-                            critName.setLength(10);
-                            critName.append("...");
+                        try {
+                            Mounted m = unit.getEquipment(cs.getIndex());
+                            //Critical didn't get removed.  Remove it now.
+                            if ( m == null ) {
+                                unit.setCritical(location, slot, null);
+                                if (showEmpty) {
+                                    critNames.add(MtfFile.EMPTY);
+                                }
+                            } else {
+                                StringBuffer critName = new StringBuffer(m.getName());
+                                if (critName.length() > 15){
+                                    critName.setLength(15);
+                                    critName.append("...");
+                                }
+                                if ( m.isRearMounted() ){
+                                    critName.append("(R)");
+                                }
+                                
+                                critNames.add(critName.toString());
+                            }
+                        }catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-                        if ( m.isRearMounted() ){
-                            critName.append("(R)");
-                        }
-                        
-                        critNames.add(critName.toString());
-                        
                     }
                 }
                 DropTargetCriticalList CriticalSlotList = new DropTargetCriticalList(critNames,unit,refresh);
                 CriticalSlotList.setVisibleRowCount(critNames.size());
                 CriticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                CriticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
+                CriticalSlotList.setFont(new Font("Eurostile LT Std", Font.BOLD, 10));
                 CriticalSlotList.setName(Integer.toString(location));
                 switch (location) {
                 case Mech.LOC_HEAD:

@@ -108,8 +108,11 @@ public class EquipmentView extends View implements ActionListener {
 
         mainPanel.add(rightPanel);
 
+        masterEquipmentList.add(EquipmentType.get("CLTAG"));
+        masterEquipmentList.add(EquipmentType.get("ISC3MasterUnit"));
+        masterEquipmentList.add(EquipmentType.get("ISTAG"));
+        
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
-
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
@@ -131,7 +134,7 @@ public class EquipmentView extends View implements ActionListener {
 
         equipmentCombo.removeAllItems();
         equipmentTypes = new TreeMap<String, EquipmentType>();
-
+        
         for (EquipmentType eq : masterEquipmentList) {
             if (UnitUtil.isLegal(unit,eq.getTechLevel())){
                 equipmentTypes.put(eq.getName(), eq);
@@ -252,10 +255,12 @@ public class EquipmentView extends View implements ActionListener {
     }
 
     public void removeAllEquipment() {
+        removeHeatSinks();
         for (int count = 0; count < equipmentList.getRowCount(); count++) {
             equipmentList.removeMounted(count);
         }
         equipmentList.removeAllCrits();
+        loadHeatSinks();
     }
     
     private void fireTableRefresh() {
