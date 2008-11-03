@@ -2,7 +2,7 @@
 <!-- This is an ant build file. See: "http://jakarta.apache.org/ant"-->
 <project
 	default="compile"
-	name="MekWars"
+	name="MegaMekLab"
 >
 	<!-- Global properties for this build -->
 	<property
@@ -73,8 +73,8 @@
 			deprecation="true"
 			destdir="${build}"
 			srcdir="${src}"
-			target="1.6"
-			source="1.6"
+			target="1.5"
+			source="1.5"
 		>
 		</javac>
 		<touch

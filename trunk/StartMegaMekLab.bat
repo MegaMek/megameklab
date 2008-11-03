@@ -1,1 +1,0 @@
-java  -Xmx512m -jar MegaMekLab.jar
