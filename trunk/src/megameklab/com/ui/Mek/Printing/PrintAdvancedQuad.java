@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package megameklab.com.util;
+package megameklab.com.ui.Mek.Printing;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -32,6 +32,7 @@ import java.util.Hashtable;
 
 import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
+import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
@@ -39,8 +40,9 @@ import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.SRMWeapon;
+import megameklab.com.util.UnitUtil;
 
-public class PrintQuad implements Printable {
+public class PrintAdvancedQuad implements Printable {
 
     protected Image awtImage = null;
     private Mech mech = null;
@@ -53,10 +55,10 @@ public class PrintQuad implements Printable {
     private int endMountx = 0;
     private int endMounty = 0;
     
-    public PrintQuad (Image image, Mech unit) {
+    public PrintAdvancedQuad(Image image, Mech unit) {
         awtImage = image;
         mech = unit;
-        
+
         System.out.println("Width: " + awtImage.getWidth(null));
         System.out.println("Height: " + awtImage.getHeight(null));
     }
@@ -121,50 +123,148 @@ public class PrintQuad implements Printable {
 
     }
 
-    private void printMechData(Graphics2D g2d){
-        Font font = new Font("Eurostile Bold", Font.BOLD, 10);
+    private void printMechData(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.PLAIN, 11);
         g2d.setFont(font);
 
-        g2d.drawString(mech.getChassis()+" "+mech.getModel(), 49, 119);
-
-        font = new Font("Eurostile Bold", Font.BOLD, 8);
-        g2d.setFont(font);
-        
+        g2d.drawString(mech.getChassis() + " " + mech.getModel(), 49, 119);
         g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
-        g2d.drawString(Integer.toString(mech.getRunMP()), 79, 155);
-        g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
+        g2d.drawString(Integer.toString(mech.getRunMP()), 79, 154);
+        g2d.drawString(Integer.toString(mech.getWalkMP() * 2), 79, 164);
+        g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 174);
         g2d.drawString(Float.toString(mech.getWeight()), 173, 134);
 
-        if ( mech.isClan() ) {
-            g2d.fillRoundRect(205, 148, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
-        } else {
-            g2d.fillRoundRect(205, 158, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        switch (mech.getCockpitType()) {
+        case Mech.COCKPIT_STANDARD:
+            g2d.fillRoundRect(294, 197, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case Mech.COCKPIT_SMALL:
+            g2d.fillRoundRect(294, 206, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case Mech.COCKPIT_DUAL:
+            g2d.fillRoundRect(367, 188, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case Mech.COCKPIT_COMMAND_CONSOLE:
+            g2d.fillRoundRect(367, 197, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case Mech.COCKPIT_TORSO_MOUNTED:
+            g2d.fillRoundRect(367, 206, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        }
+
+        switch (mech.getArmorType()) {
+        case EquipmentType.T_ARMOR_STANDARD:
+            g2d.fillRoundRect(367, 241, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+            g2d.fillRoundRect(367, 250, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_ARMOR_LAMELLOR_FERRO_CARBIDE:
+            g2d.fillRoundRect(367, 259, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_ARMOR_LIGHT_FERRO:
+            g2d.fillRoundRect(367, 268, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_ARMOR_HEAVY_FERRO:
+            g2d.fillRoundRect(367, 277, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_ARMOR_STEALTH:
+            g2d.fillRoundRect(367, 286, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_ARMOR_HARDENED:
+            g2d.fillRoundRect(367, 301, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_ARMOR_REACTIVE:
+            g2d.fillRoundRect(367, 311, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_ARMOR_REFLECTIVE:
+            g2d.fillRoundRect(367, 321, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_ARMOR_COMMERCIAL:
+            g2d.fillRoundRect(367, 337, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        default:
+            g2d.fillRoundRect(367, 241, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+
+        }
+
+        switch (mech.getStructureType()) {
+        case EquipmentType.T_STRUCTURE_STANDARD:
+            g2d.fillRoundRect(297, 251, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_STRUCTURE_ENDO_STEEL:
+            g2d.fillRoundRect(297, 260, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_STRUCTURE_REINFORCED:
+            g2d.fillRoundRect(297, 278, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_STRUCTURE_COMPOSITE:
+            g2d.fillRoundRect(297, 287, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case EquipmentType.T_STRUCTURE_INDUSTRIAL:
+            g2d.fillRoundRect(297, 295, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+
+        }
+
+        switch ( mech.getGyroType() ) {
+        case Mech.GYRO_STANDARD:
+            g2d.fillRoundRect(297, 311, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case Mech.GYRO_COMPACT:
+            g2d.fillRoundRect(297, 320, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case Mech.GYRO_HEAVY_DUTY:
+            g2d.fillRoundRect(297, 329, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
+        case Mech.GYRO_XL:
+            g2d.fillRoundRect(297, 338, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+            break;
         }
         
-        //Cost/BV
-        g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 349);
+        if ( UnitUtil.hasCompactHeatSinks(mech) ) {
+            g2d.fillRoundRect(367, 355, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        }else if ( mech.hasLaserHeatSinks() ) {
+            g2d.fillRoundRect(367, 364, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        }else if ( mech.hasDoubleHeatSinks() ) {
+            g2d.fillRoundRect(297, 361, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        }else {
+            g2d.fillRoundRect(297, 352, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        }
+        
+        if (mech.isClan()) {
+            g2d.fillRoundRect(209, 146, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        } else {
+            g2d.fillRoundRect(209, 156, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        }
+
+        if (mech.isMixedTech()) {
+            g2d.fillRoundRect(209, 166, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        }
+        
+        // Cost/BV
+        g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 359);
 
         DecimalFormat myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(mech.getCost())+" C-Bills", 52, 349);
+        g2d.drawString(myFormatter.format(mech.getCost()) + " C", 54, 359);
     }
-    
-    private void printHeatSinks(Graphics2D g2d){
-        Font font = new Font("Eurostile Regular", Font.BOLD, 8);
+
+    private void printHeatSinks(Graphics2D g2d) {
+        Font font = new Font("Arial", Font.BOLD, 11);
         g2d.setFont(font);
-        //Heat Sinks
-        g2d.drawString(Integer.toString(mech.heatSinks()), 497, 598);
-        if ( mech.hasDoubleHeatSinks() ) {
-            g2d.drawString(Integer.toString(mech.heatSinks()*2), 520, 598);
-            g2d.fillRoundRect(527, 715, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
-        }else {
-            g2d.drawString(Integer.toString(mech.heatSinks()), 520, 598);
-            g2d.fillRoundRect(527, 700, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
+        // Heat Sinks
+        g2d.drawString(Integer.toString(mech.heatSinks()), 402, 594);
+        if (mech.hasDoubleHeatSinks()) {
+            g2d.drawString(Integer.toString(mech.heatSinks() * 2), 424, 594);
+        } else {
+            g2d.drawString(Integer.toString(mech.heatSinks()), 424, 594);
         }
-        
+
     }
-    
-    private void printArmor(Graphics2D g2d){
-        //Armor
+
+    private void printArmor(Graphics2D g2d) {
+        // Armor
         Font font = new Font("Eurostile Regular", Font.BOLD, 8);
         g2d.setFont(font);
         g2d.drawString(Integer.toString(mech.getArmor(Mech.LOC_HEAD)), 485, 47);
@@ -188,11 +288,11 @@ public class PrintQuad implements Printable {
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_LLEG)), 395, 532);
         g2d.drawString(Integer.toString(mech.getInternal(Mech.LOC_RLEG)), 526, 532);
     }
-    
+
     private void printLACrits(Graphics2D g2d) {
-    
-        int lineStart = 56;
-        int linePoint = 438;
+        
+        int lineStart = 60;
+        int linePoint = 440;
         int lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_LARM, lineStart, linePoint, lineFeed);
@@ -200,8 +300,8 @@ public class PrintQuad implements Printable {
     
     private void printRACrits(Graphics2D g2d) {
         
-        int lineStart = 292;
-        int linePoint = 438;
+        int lineStart = 298;
+        int linePoint = 440;
         int lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_RARM, lineStart, linePoint, lineFeed);
@@ -209,7 +309,7 @@ public class PrintQuad implements Printable {
     
     private void printCTCrits(Graphics2D g2d) {
         
-        int lineStart = 174;
+        int lineStart = 178;
         int linePoint = 469;
         int lineFeed = 8;
 
@@ -218,8 +318,8 @@ public class PrintQuad implements Printable {
     
     private void printLTCrits(Graphics2D g2d) {
         
-        int lineStart = 56;
-        int linePoint = 523;
+        int lineStart = 60;
+        int linePoint = 545;
         int lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_LT, lineStart, linePoint, lineFeed);
@@ -227,8 +327,8 @@ public class PrintQuad implements Printable {
     
     private void printRTCrits(Graphics2D g2d) {
         
-        int lineStart = 292;
-        int linePoint = 523;
+        int lineStart = 298;
+        int linePoint = 545;
         int lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_RT, lineStart, linePoint, lineFeed);
@@ -236,7 +336,7 @@ public class PrintQuad implements Printable {
     
     private void printHeadCrits(Graphics2D g2d) {
         
-        int lineStart = 174;
+        int lineStart = 178;
         int linePoint = 401;
         int lineFeed = 8;
 
@@ -245,8 +345,8 @@ public class PrintQuad implements Printable {
     
     private void printLLCrits(Graphics2D g2d) {
         
-        int lineStart = 56;
-        int linePoint = 660;
+        int lineStart = 60;
+        int linePoint = 683;
         int lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_LLEG, lineStart, linePoint, lineFeed);
@@ -254,14 +354,14 @@ public class PrintQuad implements Printable {
     
     private void printRLCrits(Graphics2D g2d) {
         
-        int lineStart = 292;
-        int linePoint = 660;
+        int lineStart = 298;
+        int linePoint = 683;
         int lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_RLEG, lineStart, linePoint, lineFeed);
     }
     
-    private void printWeaponsNEquipment(Graphics2D g2d){
+    private void printWeaponsNEquipment(Graphics2D g2d) {
         int qtyPoint = 26;
         int typePoint = 38;
         int locPoint = 109;
@@ -271,46 +371,45 @@ public class PrintQuad implements Printable {
         int shtPoint = 181;
         int medPoint = 199;
         int longPoint = 215;
-        int linePoint = 206;
-        
-        int lineFeed = 11;
-        
-        ArrayList<Hashtable<String,equipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String,equipmentInfo>>(Mech.LOC_LLEG+1);
+        int linePoint = 210;
 
-        for ( int pos = 0; pos <= Mech.LOC_LLEG; pos++){
-            equipmentLocations.add(pos,new Hashtable<String,equipmentInfo>());
+        int lineFeed = 11;
+
+        ArrayList<Hashtable<String, equipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, equipmentInfo>>(Mech.LOC_LLEG + 1);
+
+        for (int pos = 0; pos <= Mech.LOC_LLEG; pos++) {
+            equipmentLocations.add(pos, new Hashtable<String, equipmentInfo>());
         }
-        
-        for ( Mounted eq : mech.getEquipment() ){
-            
-            if ( eq.getType() instanceof AmmoType || eq.getLocation() == Mech.LOC_NONE || !UnitUtil.isPrintableEquipment(eq.getType()) ){
+
+        for (Mounted eq : mech.getEquipment()) {
+
+            if (eq.getType() instanceof AmmoType || eq.getLocation() == Mech.LOC_NONE || !UnitUtil.isPrintableEquipment(eq.getType())) {
                 continue;
             }
-            
-            Hashtable<String,equipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
-            
-            if ( eqHash.containsKey(eq.getName()) ){
+
+            Hashtable<String, equipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
+
+            if (eqHash.containsKey(eq.getName())) {
                 equipmentInfo eqi = eqHash.get(eq.getName());
-                
-                if ( eq.getType().getTechLevel() != eqi.techLevel ){
+
+                if (eq.getType().getTechLevel() != eqi.techLevel) {
                     eqi = new equipmentInfo(eq);
-                }else {
+                } else {
                     eqi.count++;
                 }
-                eqHash.put(eq.getName(),eqi);
+                eqHash.put(eq.getName(), eqi);
             } else {
                 equipmentInfo eqi = new equipmentInfo(eq);
-                eqHash.put(eq.getName(), eqi );
+                eqHash.put(eq.getName(), eqi);
             }
 
         }
-        
 
         Font font = new Font("Eurostile Bold", Font.BOLD, 10);
         g2d.setFont(font);
 
-        for ( int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++){
-            
+        for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
+
             Hashtable<String, equipmentInfo> eqHash = equipmentLocations.get(pos);
 
             if (eqHash.size() < 1) {
@@ -374,12 +473,12 @@ public class PrintQuad implements Printable {
                 count++;
             }
         }
+
     }
-    
+
     public void print() {
 
-        try {            
-            
+        try {
             PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
@@ -392,8 +491,8 @@ public class PrintQuad implements Printable {
                 pageFormat.setOrientation(PageFormat.PORTRAIT);
 
                 pj.setPrintable(this, pageFormat);
-                pj.setJobName(mech.getChassis()+" "+mech.getModel());
-                
+                pj.setJobName(mech.getChassis() + " " + mech.getModel());
+
                 pj.print();
 
             }
@@ -401,8 +500,8 @@ public class PrintQuad implements Printable {
             ex.printStackTrace();
         }
     }
-    
-    private class equipmentInfo{
+
+    private class equipmentInfo {
         public int count = 0;
         public String name = "";
         public int minRange = 0;
@@ -414,28 +513,28 @@ public class PrintQuad implements Printable {
         public int techLevel = TechConstants.T_INTRO_BOXSET;
         public boolean isWeapon = false;
         public boolean isRear = false;
-        
-        public equipmentInfo(Mounted mount){
+
+        public equipmentInfo(Mounted mount) {
             this.name = mount.getName();
             this.count = 1;
             this.techLevel = mount.getType().getTechLevel();
             this.isRear = mount.isRearMounted();
-            
-            if ( mount.getType() instanceof WeaponType ){
-                WeaponType weapon = (WeaponType)mount.getType();
+
+            if (mount.getType() instanceof WeaponType) {
+                WeaponType weapon = (WeaponType) mount.getType();
                 this.minRange = Math.max(0, weapon.minimumRange);
                 this.isWeapon = true;
-                if ( weapon.getDamage() < 0 ){
-                    if ( weapon instanceof SRMWeapon ){
+                if (weapon.getDamage() < 0) {
+                    if (weapon instanceof SRMWeapon) {
                         damage = "2/hit";
-                    }else if ( weapon instanceof LRMWeapon ){
+                    } else if (weapon instanceof LRMWeapon) {
                         damage = "1/hit";
-                    }else if ( weapon instanceof ATMWeapon ){
+                    } else if (weapon instanceof ATMWeapon) {
                         damage = "3/2/1";
-                    }else {
+                    } else {
                         damage = Integer.toString(weapon.getRackSize());
                     }
-                }else {
+                } else {
                     this.damage = Integer.toString(weapon.getDamage());
                 }
                 this.shtRange = weapon.shortRange;

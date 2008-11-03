@@ -4,6 +4,11 @@ V 0.0.0.7-dev
 + Bug: Support PPC showing up for Mechs
 + Updated MegaMek.jar
 + Created new folders for future expansion.
++ Bug 2165237: double heat sinks not removable
++ added StartMegaMekLab.bat
++ added StartMegaMekLab.sh
++ updated build.xml to default to java 1.6
+
 
 v 0.0.0.6 (10/27/08 08:43 PST)
 + Bug 2165193: RL 5
