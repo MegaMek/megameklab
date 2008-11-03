@@ -28,18 +28,6 @@ public class MegaMekLab {
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
 
-        Runtime runtime = Runtime.getRuntime();  
-        
-        //Need at least 256m to run MegaMekLab
-        if ( runtime.maxMemory() < 256000000 ){  
-            try{
-                String[] call = { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
-                runtime.exec(call);
-                System.exit(0);
-            }catch(Exception ex){
-                ex.printStackTrace();
-            }
-        }
         if (args.length < 1) {
             try {
                 if ( !new File("./logs/").exists() ){
@@ -50,6 +38,19 @@ public class MegaMekLab {
                 System.setErr(ps);
             } catch (Exception ex) {
                 System.err.println("Unable to redirect output");
+            }
+            Runtime runtime = Runtime.getRuntime();  
+
+            System.out.println("Memory Allocated ["+runtime.maxMemory()/1000+"]");
+            //Need at least 256m to run MegaMekLab
+            if ( runtime.maxMemory() < 256000000 ){  
+                try{
+                    String[] call = { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
+                    runtime.exec(call);
+                    System.exit(0);
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
             }
         }
         new MainUI();
