@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -40,10 +41,12 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
+import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 
-public class EquipmentView extends View implements ActionListener {
+public class EquipmentView extends IView implements ActionListener {
 
     /**
      * 
@@ -122,6 +125,7 @@ public class EquipmentView extends View implements ActionListener {
             }
         }
 
+        Collections.sort(masterEquipmentList,StringUtils.equipmentTypeComparator());
         this.add(mainPanel);
         loadEquipmentTable();
     }

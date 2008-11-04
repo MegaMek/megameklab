@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
@@ -36,7 +37,9 @@ import megameklab.com.ui.Mek.views.CriticalView;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.QuadMech;
 
 public class BuildTab extends ITab implements ActionListener {
 
@@ -127,6 +130,16 @@ public class BuildTab extends ITab implements ActionListener {
         for (EquipmentType eq : buildView.getTableModel().getCrits()) {
             int externalEngineHS = unit.getEngine().integralHeatSinkCapacity();
             for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
+                
+                if ( eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))){
+                    if ( unit instanceof QuadMech ){
+                        continue;
+                    }
+                    
+                    if ( location != Mech.LOC_RARM && location != Mech.LOC_LARM ){
+                        continue;
+                    }
+                }
                 
                 int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
                 int critsUsed = UnitUtil.getCritsUsed(unit, eq); 

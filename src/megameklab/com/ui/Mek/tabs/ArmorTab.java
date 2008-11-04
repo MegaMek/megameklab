@@ -36,6 +36,7 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;

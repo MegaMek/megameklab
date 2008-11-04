@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -43,26 +44,25 @@ import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.InfantryWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.MRMWeapon;
-import megamek.common.weapons.NavalACWeapon;
-import megamek.common.weapons.NavalGaussWeapon;
-import megamek.common.weapons.NavalLaserWeapon;
-import megamek.common.weapons.NavalPPCWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.SRTWeapon;
 
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
+import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 
-public class WeaponView extends View implements ActionListener, MouseListener, KeyListener {
+public class WeaponView extends IView implements ActionListener, MouseListener, KeyListener {
 
     /**
      * 
@@ -81,6 +81,7 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
     private JButton missileAmmoAddButton = new JButton("Add");
     private JButton ballisticWeaponAddButton = new JButton("Add");
     private JButton ballisticAmmoAddButton = new JButton("Add");
+    private JButton physicalWeaponButton = new JButton("Add");
     private JButton removeButton = new JButton("Remove");
     private JButton removeAllButton = new JButton("Remove All");
 
@@ -90,6 +91,7 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
     private JScrollPane missileAmmoScroll = new JScrollPane();
     private JScrollPane ballisticWeaponScroll = new JScrollPane();
     private JScrollPane ballisticAmmoScroll = new JScrollPane();
+    private JScrollPane physicalWeaponScroll = new JScrollPane();
 
     private JPanel laserPane = new JPanel();
     private JPanel laserAmmoPane = new JPanel();
@@ -97,6 +99,7 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
     private JPanel missileAmmoPane = new JPanel();
     private JPanel ballisticPane = new JPanel();
     private JPanel ballisticAmmoPane = new JPanel();
+    private JPanel physicalWeaponPane = new JPanel();
 
     private JList laserWeaponCombo = new JList();
     private JList laserAmmoCombo = new JList();
@@ -104,11 +107,13 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
     private JList missileAmmoCombo = new JList();
     private JList ballisticWeaponCombo = new JList();
     private JList ballisticAmmoCombo = new JList();
+    private JList physicalWeaponCombo = new JList();
 
     private CriticalTableModel weaponList;
     private Vector<EquipmentType> masterLaserWeaponList = new Vector<EquipmentType>(10, 1);
     private Vector<EquipmentType> masterMissileWeaponList = new Vector<EquipmentType>(10, 1);
     private Vector<EquipmentType> masterBallisticWeaponList = new Vector<EquipmentType>(10, 1);
+    private Vector<EquipmentType> masterPhysicalWeaponList = new Vector<EquipmentType>(10, 1);
 
     private Vector<EquipmentType> subLaserWeaponList = new Vector<EquipmentType>(10, 1);
     private Vector<EquipmentType> subLaserAmmoList = new Vector<EquipmentType>(10, 1);
@@ -116,6 +121,7 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
     private Vector<EquipmentType> subMissileAmmoList = new Vector<EquipmentType>(10, 1);
     private Vector<EquipmentType> subBallisticWeaponList = new Vector<EquipmentType>(10, 1);
     private Vector<EquipmentType> subBallisticAmmoList = new Vector<EquipmentType>(10, 1);
+    private Vector<EquipmentType> subPhysicalWeaponList = new Vector<EquipmentType>(10, 1);
 
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
@@ -126,6 +132,7 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
     private String MISSILEAMMOADD_COMMAND = "ADDMISSILEAMMO";
     private String BALLISTICWEAPONADD_COMMAND = "ADDBALLISTICWEAPON";
     private String BALLISTICAMMOADD_COMMAND = "ADDBALLISTICAMMO";
+    private String PHYSICALWEAPONADD_COMMAND = "ADDPHYSICALWEAPON";
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
@@ -208,6 +215,15 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
         ballisticAmmoPane.setBackground(Color.WHITE);
         ballisticAmmoScroll.setViewportView(ballisticAmmoPane);
 
+        physicalWeaponScroll.setWheelScrollingEnabled(true);
+        physicalWeaponScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        physicalWeaponScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        physicalWeaponScroll.setPreferredSize(new Dimension(180, 350));
+        physicalWeaponScroll.setMaximumSize(new Dimension(180, 350));
+        physicalWeaponScroll.setBackground(Color.WHITE);
+        physicalWeaponPane.setBackground(Color.WHITE);
+        physicalWeaponScroll.setViewportView(physicalWeaponPane);
+
         Font listFont = new Font("Eurostyle Lt Std Bold", Font.BOLD, 10);
         laserPane.add(laserWeaponCombo);
         laserWeaponCombo.setFixedCellWidth(165);
@@ -236,6 +252,12 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
         ballisticAmmoCombo.setAutoscrolls(true);
         ballisticAmmoCombo.setFont(listFont);
 
+
+        physicalWeaponPane.add(physicalWeaponCombo);
+        physicalWeaponCombo.setFixedCellWidth(165);
+        physicalWeaponCombo.setAutoscrolls(true);
+        physicalWeaponCombo.setFont(listFont);
+
         JPanel tab = new JPanel();
         tab.setLayout(new SpringLayout());
         tab.add(laserWeaponScroll);
@@ -263,6 +285,14 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
         SpringLayoutHelper.setupSpringGrid(tab, 1);
         leftPanel.addTab("Ballistic", tab);
 
+        tab = new JPanel();
+        tab.setLayout(new SpringLayout());
+        tab.add(physicalWeaponScroll);
+        tab.add(physicalWeaponButton);
+        SpringLayoutHelper.setupSpringGrid(tab, 1);
+        leftPanel.addTab("Physical", tab);
+
+
         buttonPanel.add(removeButton);
         buttonPanel.add(removeAllButton);
 
@@ -282,7 +312,7 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
         while (weaponTypes.hasMoreElements()) {
             EquipmentType eq = weaponTypes.nextElement();
 
-            if (eq instanceof InfantryWeapon || eq instanceof NavalACWeapon || eq instanceof NavalGaussWeapon || eq instanceof NavalLaserWeapon || eq instanceof NavalPPCWeapon) {
+            if (eq instanceof InfantryWeapon ) {
                 continue;
             }
 
@@ -291,6 +321,10 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
                 WeaponType weapon = (WeaponType) eq;
                 
                 if ( weapon.getTonnage(unit) <= 0 ){
+                    continue;
+                }
+                
+                if (  weapon.isCapital() || weapon.isSubCapital() ){
                     continue;
                 }
 
@@ -319,9 +353,19 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
                 } else if (eq.hasFlag(WeaponType.F_MISSILE) && weapon.getAmmoType() != AmmoType.T_NA) {
                     masterMissileWeaponList.add(eq);
                 }
+            }else if ( eq instanceof MiscType && ( eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON)) ){
+                if ( eq.hasFlag(MiscType.F_CLUB) && ( eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB)) ){
+                    continue;
+                }
+                masterPhysicalWeaponList.add(eq);
             }
         }
 
+        Collections.sort(masterLaserWeaponList,StringUtils.equipmentTypeComparator());
+        Collections.sort(masterBallisticWeaponList,StringUtils.equipmentTypeComparator());
+        Collections.sort(masterMissileWeaponList,StringUtils.equipmentTypeComparator());
+        Collections.sort(masterPhysicalWeaponList,StringUtils.equipmentTypeComparator());
+        
         loadWeaponsTable();
     }
 
@@ -330,6 +374,7 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
         subLaserWeaponList.removeAllElements();
         subMissileWeaponList.removeAllElements();
         subBallisticWeaponList.removeAllElements();
+        subPhysicalWeaponList.removeAllElements();
 
         Vector<String> equipmentList = new Vector<String>();
         for (EquipmentType eq : masterLaserWeaponList) {
@@ -357,6 +402,15 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
             }
         }
         ballisticWeaponCombo.setListData(equipmentList);
+
+        equipmentList = new Vector<String>();
+        for (EquipmentType eq : masterPhysicalWeaponList) {
+            if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
+                subPhysicalWeaponList.add(eq);
+                equipmentList.add(eq.getName());
+            }
+        }
+        physicalWeaponCombo.setListData(equipmentList);
     }
 
     private void loadWeaponsTable() {
@@ -393,6 +447,9 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
         ballisticAmmoAddButton.removeActionListener(this);
         ballisticWeaponCombo.removeMouseListener(this);
         ballisticWeaponCombo.removeKeyListener(this);
+        physicalWeaponButton.removeActionListener(this);
+        physicalWeaponCombo.removeMouseListener(this);
+        physicalWeaponCombo.removeKeyListener(this);
         removeButton.removeActionListener(this);
         removeAllButton.removeActionListener(this);
     }
@@ -421,6 +478,11 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
         laserWeaponCombo.addKeyListener(this);
         missileWeaponCombo.addKeyListener(this);
         ballisticWeaponCombo.addKeyListener(this);
+        
+        physicalWeaponButton.addActionListener(this);
+        physicalWeaponCombo.addMouseListener(this);
+        physicalWeaponCombo.addKeyListener(this);
+
 
         removeButton.addActionListener(this);
         removeAllButton.addActionListener(this);
@@ -431,6 +493,7 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
         missileAmmoAddButton.setActionCommand(MISSILEAMMOADD_COMMAND);
         ballisticWeaponAddButton.setActionCommand(BALLISTICWEAPONADD_COMMAND);
         ballisticAmmoAddButton.setActionCommand(BALLISTICAMMOADD_COMMAND);
+        physicalWeaponButton.setActionCommand(PHYSICALWEAPONADD_COMMAND);
 
         removeButton.setActionCommand(REMOVE_COMMAND);
         removeAllButton.setActionCommand(REMOVEALL_COMMAND);
@@ -490,6 +553,15 @@ public class WeaponView extends View implements ActionListener, MouseListener, K
                 if (ballisticAmmoCombo.getSelectedIndex() > -1) {
                     unit.addEquipment(new Mounted(unit, subBallisticAmmoList.elementAt(ballisticAmmoCombo.getSelectedIndex())), Entity.LOC_NONE, false);
                     weaponList.addCrit(subBallisticAmmoList.elementAt(ballisticAmmoCombo.getSelectedIndex()));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else if (e.getActionCommand().equals(PHYSICALWEAPONADD_COMMAND)) {
+            try {
+                if (physicalWeaponCombo.getSelectedIndex() > -1) {
+                    unit.addEquipment(new Mounted(unit, subPhysicalWeaponList.elementAt(physicalWeaponCombo.getSelectedIndex())), Entity.LOC_NONE, false);
+                    weaponList.addCrit(subPhysicalWeaponList.elementAt(physicalWeaponCombo.getSelectedIndex()));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

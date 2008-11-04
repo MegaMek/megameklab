@@ -13,7 +13,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package megameklab.com.ui.Mek.tabs;
+package megameklab.com.util;
 
 import javax.swing.JPanel;
 

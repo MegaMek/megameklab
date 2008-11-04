@@ -29,7 +29,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
-import megameklab.com.ui.Mek.tabs.ITab;
+import megameklab.com.util.ITab;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 

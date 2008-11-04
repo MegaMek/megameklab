@@ -28,9 +28,10 @@ import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.loaders.MtfFile;
 import megameklab.com.util.DropTargetCriticalList;
+import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
-public class CriticalView extends View {
+public class CriticalView extends IView {
 
     /**
      * 

@@ -40,7 +40,9 @@ import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.QuadMech;
 import megamek.common.WeaponType;
 
 public class DropTargetCriticalList extends JList implements DropTargetListener, MouseListener {
@@ -87,6 +89,18 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                         }
                         eq = mount;
                         break;
+                    }
+                }
+
+                if ( eq.getType() instanceof MiscType && (eq.getType().hasFlag(MiscType.F_CLUB) || eq.getType().hasFlag(MiscType.F_HAND_WEAPON))){
+                    if ( unit instanceof QuadMech ){
+                        JOptionPane.showMessageDialog(this, "Quads Cannot use Physcial Weapons!", "Not Physicals For Quads", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+                    
+                    if ( location != Mech.LOC_RARM && location != Mech.LOC_LARM ){
+                        JOptionPane.showMessageDialog(this, "Physical Weapons can only go in the arms!", "Bad Location", JOptionPane.INFORMATION_MESSAGE);
+                        return;
                     }
                 }
 

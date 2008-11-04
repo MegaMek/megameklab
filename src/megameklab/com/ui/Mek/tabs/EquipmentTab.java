@@ -19,6 +19,7 @@ package megameklab.com.ui.Mek.tabs;
 import javax.swing.SpringLayout;
 
 import megamek.common.Mech;
+import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.ui.Mek.views.EquipmentView;
