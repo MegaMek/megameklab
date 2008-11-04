@@ -26,11 +26,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
 import megamek.common.Mech;
 
-public class ArmorView extends View implements KeyListener {
+public class ArmorView extends IView implements KeyListener {
 
     /**
      * 

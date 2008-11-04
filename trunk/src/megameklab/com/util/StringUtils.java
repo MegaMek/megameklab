@@ -14,25 +14,23 @@
  * for more details.
  */
 
-package megameklab.com.ui.Mek.views;
+package megameklab.com.util;
 
-import javax.swing.JPanel;
+import java.util.Comparator;
 
-import megamek.common.Mech;
+import megamek.common.EquipmentType;
 
-public class View extends JPanel{
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -6741722012756653309L;
-    Mech unit;
-    public View(Mech unit) {
-        this.unit  = unit;
+public class StringUtils{ 
+ 
+    public static Comparator<? super EquipmentType> equipmentTypeComparator() {
+        return new Comparator<EquipmentType>() {
+            public int compare(EquipmentType eq1, EquipmentType eq2) {
+                String s1 = eq1.getName().toLowerCase();
+                String s2 = eq2.getName().toLowerCase();
+                return s1.compareTo(s2);
+            }
+        };
     }
     
-    public void updateMech(Mech unit) {
-        this.unit = unit;
-    }
-
 }
+

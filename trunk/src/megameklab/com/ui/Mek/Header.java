@@ -24,7 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import megameklab.com.ui.Mek.tabs.ITab;
+import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 

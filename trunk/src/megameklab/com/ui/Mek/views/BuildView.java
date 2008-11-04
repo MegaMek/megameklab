@@ -33,10 +33,11 @@ import megamek.common.Mech;
 import megamek.common.Mounted;
 import megameklab.com.util.CriticalTable;
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class BuildView extends View implements ActionListener {
+public class BuildView extends IView implements ActionListener {
 
     /**
      * 
