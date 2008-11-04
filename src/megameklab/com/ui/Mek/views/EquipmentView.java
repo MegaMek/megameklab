@@ -114,6 +114,8 @@ public class EquipmentView extends IView implements ActionListener {
         masterEquipmentList.add(EquipmentType.get("CLTAG"));
         masterEquipmentList.add(EquipmentType.get("ISC3MasterUnit"));
         masterEquipmentList.add(EquipmentType.get("ISTAG"));
+        masterEquipmentList.add(EquipmentType.get("IS Coolant Pod"));
+        masterEquipmentList.add(EquipmentType.get("Clan Coolant Pod"));
         
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         while (miscTypes.hasMoreElements()) {
