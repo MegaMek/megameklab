@@ -13,7 +13,8 @@ V 0.0.0.7-dev
 + Added Checks for physical weapons.
 + New MegaMek.jar
 + Added coolant pods.
-
++ Bug: Reflective and Reactive armor not calculating the correct amount of crits
+ 
 v 0.0.0.6 (10/27/08 08:43 PST)
 + Bug 2165193: RL 5
 + Bug 2171816: IS missile ammo listed as ballistic

@@ -42,7 +42,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isArmorOrStructure(EquipmentType eq) {
-        return eq instanceof MiscType && (eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_FERRO_FIBROUS));
+        return eq instanceof MiscType && (eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_REACTIVE)  || eq.hasFlag(MiscType.F_REFLECTIVE));
     }
 
     /**
