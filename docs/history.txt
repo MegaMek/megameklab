@@ -15,6 +15,7 @@ V 0.0.0.7-dev
 + Added coolant pods.
 + Bug: Reflective and Reactive armor not calculating the correct amount of crits
 + new MegaMek.jar
++ Bug 2165186: RL ammo
 
 v 0.0.0.6 (10/27/08 08:43 PST)
 + Bug 2165193: RL 5
