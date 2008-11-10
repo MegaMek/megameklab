@@ -87,8 +87,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
     // these indices should match up with the static values in the
     // MechSummaryComparator
-    private String[] saSorts = { "Name", "Ref", "Weight", "BV" };// , "Year"
-                                                                    // };
+    private String[] saSorts = { "Name", "Ref", "Weight", "BV" , "Year"};
 
     private MechSummary[] mechsCurrent;
     private UnitLoadingDialog unitLoadingDialog;
@@ -98,8 +97,6 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
     private JLabel labelType = new JLabel("Tech: ", SwingConstants.RIGHT);
     private JComboBox chType = new JComboBox();
-    //private JLabel labelUnitType = new JLabel("Type: ", SwingConstants.RIGHT);
-    //private JComboBox chUnitType = new JComboBox();
     private JLabel labelWeightClass = new JLabel("Class: ", SwingConstants.RIGHT);
     private JComboBox chWeightClass = new JComboBox();
     private JLabel labelSort = new JLabel("Sort: ", SwingConstants.RIGHT);
@@ -210,8 +207,9 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         mechViewRight.setFont(new Font("Monospaced", Font.PLAIN, 11));
         mechList.setFont(new Font("Monospaced", Font.PLAIN, 11));
 
-        for (int x = 0; x < saSorts.length; x++)
+        for (int x = 0; x < saSorts.length; x++){
             chSort.addItem(saSorts[x]);
+        }
 
         // set up the upper panel (combo boxes, preview image)
         //pPreview = new MechInfo(mwclient);
@@ -230,9 +228,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         pParams.add(chWeightClass);
         pParams.add(labelType);
         pParams.add(chType);
-/*        pParams.add(labelUnitType);
-        pParams.add(chUnitType);
-  */      pParams.add(labelSort);
+        pParams.add(labelSort);
         pParams.add(chSort);
         pParams.doLayout();
 
@@ -249,7 +245,6 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         // add all the listeners
         chWeightClass.addItemListener(this);
         chType.addItemListener(this);
-      //  chUnitType.addItemListener(this);
         chSort.addItemListener(this);
         mechList.addListSelectionListener(this);
         mechList.addKeyListener(this);
@@ -361,7 +356,6 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         Vector<MechSummary> vMechs = new Vector<MechSummary>(1, 1);
 
         int nType = chType.getSelectedIndex();
-        //int nUnitType = chUnitType.getSelectedIndex();
         int nClass = chWeightClass.getSelectedIndex();
 
         MechSummary[] mechs = MechSummaryCache.getInstance().getAllMechs();
@@ -392,7 +386,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
                         || (nType == mechs[x].getType()) 
                         || ((nType == TechConstants.T_IS_TW_ALL) && (mechs[x].getType() <= TechConstants.T_IS_TW_NON_BOX || mechs[x].getType() == TechConstants.T_INTRO_BOXSET))
                         || (nType == TechConstants.T_TW_ALL && ( mechs[x].getType() <= TechConstants.T_IS_TW_NON_BOX || mechs[x].getType() <= TechConstants.T_INTRO_BOXSET || mechs[x].getType() <= TechConstants.T_CLAN_TW)) ) && 
-                (nUnitType == UnitType.SIZE || mechs[x].getUnitType().equals(UnitType.getTypeName(nUnitType)))) {
+                (nUnitType == UnitType.SIZE || mechs[x].getUnitType().equals(UnitType.getTypeName(nUnitType))) ) {
                     vMechs.add(mechs[x]);
                 }
             }
@@ -530,7 +524,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
     private String formatMech(MechSummary ms) {
 
         String result = "";
-        result = makeLength(ms.getModel(), 12) + " " + makeLength(ms.getChassis(), 10) + " " + makeLength(Integer.toString(ms.getTons()), 3) + " " + makeLength(Integer.toString(ms.getBV()), 5);
+        result = makeLength(ms.getModel(), 12) + " " + makeLength(ms.getChassis(), 10) + " " + makeLength(Integer.toString(ms.getYear()), 4) + " " + makeLength(Integer.toString(ms.getTons()), 3) + " " + makeLength(Integer.toString(ms.getBV()), 5);
 
         return result;
     }

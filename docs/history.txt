@@ -16,6 +16,7 @@ V 0.0.0.7-dev
 + Bug: Reflective and Reactive armor not calculating the correct amount of crits
 + new MegaMek.jar
 + Bug 2165186: RL ammo
++ RFE 2224344: Sort by Year in Unit Viewer
 
 v 0.0.0.6 (10/27/08 08:43 PST)
 + Bug 2165193: RL 5
