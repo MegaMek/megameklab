@@ -394,7 +394,7 @@ public class MainUI extends JFrame implements RefreshListener {
             entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
         }
 
-        entity.setYear(2075);
+        entity.setYear(2750);
         entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
         entity.setWeight(25);
         entity.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
