@@ -18,12 +18,17 @@ package megameklab.com.ui.Mek;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -57,6 +62,8 @@ import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
+import megamek.common.Entity;
+import megamek.common.EntityListFile;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.QuadMech;
@@ -129,6 +136,15 @@ public class MainUI extends JFrame implements RefreshListener {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuPrint_actionPerformed(e);
+            }
+        });
+        printMenu.add(item);
+
+        item = new JMenuItem("Standard Record Sheet From MUL");
+        item.setMnemonic('M');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuPrintMulMechs_actionPerformed(e);
             }
         });
         printMenu.add(item);
@@ -263,7 +279,10 @@ public class MainUI extends JFrame implements RefreshListener {
         if ( entity instanceof QuadMech ) {
             String fImageName = "./data/images/twquad.png";
             
-            PrintQuad sp = new PrintQuad(getToolkit().getImage(fImageName), entity);
+            ArrayList<Mech>mechList = new ArrayList<Mech>();
+            mechList.add(entity);
+
+            PrintQuad sp = new PrintQuad(getToolkit().getImage(fImageName), mechList);
     
             sp.print();
         }else {
@@ -273,12 +292,73 @@ public class MainUI extends JFrame implements RefreshListener {
             Image image = getToolkit().getImage(fImageName);
             Image hudImage = getToolkit().getImage(mekHud);
             
-            PrintMech sp = new PrintMech(image, hudImage, entity);
+            ArrayList<Mech>mechList = new ArrayList<Mech>();
+            mechList.add(entity);
+            
+            PrintMech sp = new PrintMech(image, hudImage, mechList);
     
             sp.print();
         }
     }
 
+    public void jMenuPrintMulMechs_actionPerformed(ActionEvent event) {
+        ArrayList<Mech> quadList = new ArrayList<Mech>();
+        ArrayList<Mech> bipedList = new ArrayList<Mech>();
+        
+        FileDialog f = new FileDialog(new JDialog(), "Load Mul");
+        f.setDirectory(System.getProperty("user.dir"));
+        f.setFilenameFilter(new FilenameFilter() {
+            public boolean accept(final File dir, final String name) {
+                return (null != name && name.endsWith(".mul"));
+            }
+        });
+        f.setVisible(true);
+        
+        if ( f.getFile() != null ) {
+            Vector<Entity> loadedUnits = new Vector<Entity>();
+            try {
+                loadedUnits = EntityListFile.loadFrom(new File(f.getDirectory()+f.getFile()));
+                loadedUnits.trimToSize();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return;
+            }
+
+            for ( Entity unit : loadedUnits ) {
+                if ( unit instanceof QuadMech ) {
+                    quadList.add((Mech)unit);
+                }else if ( unit instanceof BipedMech ) {
+                    bipedList.add((Mech)unit);
+                }
+            }
+            
+            String fImageName = "./data/images/twbiped.png";
+            String mekHud = "./data/images/hud.png";
+            
+            Image image = getToolkit().getImage(fImageName);
+            Image hudImage = getToolkit().getImage(mekHud);
+            
+            if ( bipedList.size() > 0 ) {
+                PrintMech printMech = new PrintMech(image, hudImage, bipedList);
+        
+                printMech.print();
+            }
+            
+            fImageName = "./data/images/twquad.png";
+            
+            image = getToolkit().getImage(fImageName);
+            hudImage = getToolkit().getImage(mekHud);
+
+            if ( quadList.size() > 0 ) {
+                PrintQuad printQuad = new PrintQuad(image, quadList);
+        
+                printQuad.print();
+            }
+            
+        }
+        
+    }
+    
     public void jMenuAdvancedPrint_actionPerformed(ActionEvent event) {
         
         if ( entity instanceof QuadMech ) {
