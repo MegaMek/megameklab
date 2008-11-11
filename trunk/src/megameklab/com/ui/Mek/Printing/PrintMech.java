@@ -51,17 +51,18 @@ public class PrintMech implements Printable {
     protected Image awtImage = null;
     protected Image awtHud = null;
     private Mech mech = null;
-
+    private ArrayList<Mech> mechList;
+    
     private Mounted startingMount = null;
     private int startMountx = 0;
     private int startMounty = 0;
     private int endMountx = 0;
     private int endMounty = 0;
 
-    public PrintMech(Image image, Image hudImage, Mech unit) {
+    public PrintMech(Image image, Image hudImage, ArrayList<Mech>list) {
         awtImage = image;
         awtHud = hudImage;
-        mech = unit;
+        mechList = list;
 
         if (awtImage != null) {
             System.out.println("Width: " + awtImage.getWidth(null));
@@ -451,9 +452,14 @@ public class PrintMech implements Printable {
                 pageFormat.setPaper(p);
 
                 pj.setPrintable(this, pageFormat);
-                pj.setJobName(mech.getChassis() + " " + mech.getModel());
-
-                pj.print();
+                
+                for ( Mech currentMech : mechList ) {
+                    
+                    this.mech = currentMech;
+                    pj.setJobName(mech.getChassis() + " " + mech.getModel());
+    
+                    pj.print();
+                }
 
             }
         } catch (Exception ex) {
