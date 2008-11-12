@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+V 0.0.0.8-dev
+
 V 0.0.0.7 (11/12/08 11:07 PDT)
 + Bug: Support PPC showing up for Mechs
 + Updated MegaMek.jar
