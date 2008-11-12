@@ -109,7 +109,7 @@ public class CriticalView extends IView {
                         critNames.add(unit.getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         try {
-                            Mounted m = unit.getEquipment(cs.getIndex());
+                            Mounted m = cs.getMount();
                             //Critical didn't get removed.  Remove it now.
                             if ( m == null ) {
                                 unit.setCritical(location, slot, null);
