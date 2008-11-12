@@ -218,7 +218,7 @@ public class UnitUtil {
             int location = eq.getLocation();
             for (int slot = 0; slot < unit.getNumberOfCriticals(location) && critsUsed > 0; slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
-                if (cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT && cs.getIndex() == unit.getEquipmentNum(eq)) {
+                if (cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT && cs.getMount() == eq) {
                     cs = null;
                     unit.setCritical(location, slot, cs);
                     --critsUsed;
@@ -517,11 +517,7 @@ public class UnitUtil {
      */
     public static void updateHeatSinks(Mech unit, int hsAmount, int hsType) {
         
-        int heatSinkIndex = unit.heatSinks();
-        
         UnitUtil.removeHeatSinks(unit);
-        
-        UnitUtil.resetCritIndexes(unit, heatSinkIndex);
         
         unit.addEngineSinks(hsAmount, UnitUtil.getHeatSinkType(hsType, unit.isClan()));
 
@@ -627,32 +623,6 @@ public class UnitUtil {
         return tonnage;
     }
 
-    public static int getFirstHeatSinkIndex(Mech unit) {
-        
-        for ( int pos = 0; pos < unit.getEquipment().size(); pos++ ) {
-            if ( unit.getEquipment(pos) != null && UnitUtil.isHeatSink(unit.getEquipment(pos)) ) {
-                return pos;
-            }
-        }
-        
-        return Integer.MAX_VALUE;
-    }
-    
-    public static void resetCritIndexes(Mech unit, int totalHeatSinks) {
-     
-        for (int location = 0; location <= Mech.LOC_LLEG; location++ ) {
-            for ( int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                CriticalSlot cs = unit.getCritical(location, slot);
-                
-                if ( cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT && cs.getIndex() >= totalHeatSinks ) {
-                    int shift = cs.getIndex() - totalHeatSinks;
-                    cs.setIndex(shift);
-                    
-                }
-            }
-        }
-    }
-    
     public static double getTotalArmorTonnage(Mech unit) {
         
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());

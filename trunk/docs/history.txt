@@ -18,6 +18,8 @@ V 0.0.0.7-dev
 + Bug 2165186: RL ammo
 + RFE 2224344: Sort by Year in Unit Viewer
 + RFE 2224336: Printing all mechs in a .Mul File
++ New MegaMek.jar
++ Bug: Wrong equipment being listed when equipment is removed.
 
 v 0.0.0.6 (10/27/08 08:43 PST)
 + Bug 2165193: RL 5

@@ -170,7 +170,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         viewFluff = false;
 
         // construct 2 text boxes
-        mechViewLeft = new JTextArea(17, 29);
+        mechViewLeft = new JTextArea(17, 25);
         mechViewRight = new JTextArea(17, 34);
         unitFluff = new JTextArea(10, 40);
 
