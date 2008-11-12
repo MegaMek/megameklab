@@ -9,6 +9,7 @@
 	<property name="build" value="classes" />
 	<property name="docdir" value="docs" />
 	<property name="svndir" value="svndev" />
+	<property name="releasedir" value="../Releases" />
 
 	<!-- same as builddir but under svn -->
 	<property name="svnbuilddir" value="${svndir}/${build}" />
@@ -31,7 +32,23 @@
 			</include>
 		</fileset>
 	</path>
-	
+
+	<!-- Build the list of the lib/*.jar files to be included in the "Class-Path" attribute of the jar's manifest dynamically.  -->
+	<pathconvert pathsep=" " property="jarclasspath">
+		<path>
+			<!-- We'll include the jars in the "lib" directory -->
+			<fileset dir="lib/">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<mapper>
+			<chainedmapper>
+				<flattenmapper />
+				<globmapper from="*" to="lib/*" />
+			</chainedmapper>
+		</mapper>
+	</pathconvert>
+
 	<target description="Initialize system before build" name="init">
 		<!-- Create the time stamp -->
 		<tstamp>
@@ -42,24 +59,15 @@
 
 	</target>
 	<target depends="init" description="Compile java sources into class files" name="compile">
-		<javac classpathref="project.classpath" debug="true" deprecation="true" destdir="${build}" srcdir="${src}" target="1.5" source="1.5">
+		<javac classpathref="project.classpath" debug="true" deprecation="true" destdir="${basedir}" srcdir="${src}" target="1.6" source="1.6">
 		</javac>
-		<touch file="${timestampfile}">
-		</touch>
 	</target>
-	<target name="doc">
-		<mkdir dir="${doc}">
-		</mkdir>
-		<javadoc classpath="${basedir}" destdir="${doc}" package="yes" packagenames="megamek.*" sourcepath="${src}" windowtitle="MegaMekLab API">
-		</javadoc>
-	</target>
+
 	<target description="Remove all compiled and generated files" name="clean">
 		<!-- Delete the ${build} directory tree -->
-		<delete file="MegaMekLabLab.jar">
+		<delete file="MegaMekLab.jar">
 		</delete>
 		<delete dir="${build}">
-		</delete>
-		<delete dir="${doc}">
 		</delete>
 		<delete file="${timestampfile}">
 		</delete>
@@ -138,20 +146,10 @@
 			</classpath>
 		</javac>
 
-		<!-- jar -->
-		<jar basedir="${svnbuilddir}" jarfile="${svndir}/${megameklab}">
-			<fileset dir="${svndir}/${src}" includes="**/*.properties" />
-			<manifest>
-				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Class-Path" value=". ${jarclasspath}" />
-				<attribute name="Main-Class" value="${jarmainclass}" />
-			</manifest>
-		</jar>
-
+		<jar basedir="${svnbuilddir}" compress="true" destfile="${svndir}/${megameklab}" excludes="" includes="**" jarfile="${svndir}/${megameklab}" manifest="manifest.txt"/>
+		
 		<!-- Ensure that the log directory exists. -->
 		<mkdir dir="${svndir}/${logdir}" />
-		<touch file="${svndir}/${timestampfile}" />
-
 	</target>
 
 	<target name="svndev-package" depends="svndev-build">
@@ -160,7 +158,7 @@
 		<!-- keep in mind that directory references for 'excludes' are -->
 		<!-- relative to the zip-tasks basedir but 'zipfile' uses the -->
 		<!-- absolute (project) ${basedir} -->
-		<zip zipfile="${basedir}/megameklab${DSTAMP}.zip" basedir="${svndir}" excludes="${build}/ ${src}/ build.xml manifest.txt" />
+		<zip zipfile="${releasedir}/MegaMekLab0.0.0.x.zip" basedir="${svndir}" excludes="${build}/ ${src}/ build.xml manifest.txt" />
 	</target>
 
 	<target name="svndev-clean">
