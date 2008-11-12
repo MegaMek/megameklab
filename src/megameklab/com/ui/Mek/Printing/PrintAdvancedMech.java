@@ -47,6 +47,7 @@ public class PrintAdvancedMech implements Printable {
 
     protected Image awtImage = null;
     private Mech mech = null;
+    private ArrayList<Mech> mechList;
     private Dimension fillRec = new Dimension(8,8);
     private Dimension fillRecArc = new Dimension(4,4);
 
@@ -56,9 +57,9 @@ public class PrintAdvancedMech implements Printable {
     private int endMountx = 0;
     private int endMounty = 0;
     
-    public PrintAdvancedMech(Image image, Mech unit) {
+    public PrintAdvancedMech(Image image, ArrayList<Mech>list) {
         awtImage = image;
-        mech = unit;
+        mechList = list;
 
         System.out.println("Width: " + awtImage.getWidth(null));
         System.out.println("Height: " + awtImage.getHeight(null));
@@ -495,9 +496,13 @@ public class PrintAdvancedMech implements Printable {
                 pageFormat.setPaper(p);
 
                 pj.setPrintable(this, pageFormat);
-                pj.setJobName(mech.getChassis() + " " + mech.getModel());
-
-                pj.print();
+                for ( Mech currentMech : mechList ) {
+                    
+                    this.mech = currentMech;
+                    pj.setJobName(mech.getChassis() + " " + mech.getModel());
+    
+                    pj.print();
+                }
 
             }
         } catch (Exception ex) {

@@ -131,32 +131,50 @@ public class MainUI extends JFrame implements RefreshListener {
 
         JMenu printMenu = new JMenu("Print");
         printMenu.setMnemonic('P');
-        item = new JMenuItem("Standard Record Sheet");
-        item.setMnemonic('S');
+        
+        JMenu standardRecordSheet = new JMenu("Standard Record Sheet");
+        standardRecordSheet.setMnemonic('S');
+        
+        item = new JMenuItem("Current Unit");
+        item.setMnemonic('C');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuPrint_actionPerformed(e);
             }
         });
-        printMenu.add(item);
+        standardRecordSheet.add(item);
 
-        item = new JMenuItem("Standard Record Sheet From MUL");
-        item.setMnemonic('M');
+        item = new JMenuItem("From MUL");
+        item.setMnemonic('F');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuPrintMulMechs_actionPerformed(e);
             }
         });
-        printMenu.add(item);
+        standardRecordSheet.add(item);
+        printMenu.add(standardRecordSheet);
         
-        item = new JMenuItem("Advanced Record Sheet");
-        item.setMnemonic('A');
+        JMenu advancedRecordSheet = new JMenu("Advanced Record Sheet");
+        advancedRecordSheet.setMnemonic('A');
+        
+        item = new JMenuItem("Current Unit");
+        item.setMnemonic('C');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuAdvancedPrint_actionPerformed(e);
             }
         });
-        printMenu.add(item);
+        advancedRecordSheet.add(item);
+
+        item = new JMenuItem("From MUL");
+        item.setMnemonic('F');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuPrintAdvancedMulMechs_actionPerformed(e);
+            }
+        });
+        advancedRecordSheet.add(item);
+        printMenu.add(advancedRecordSheet);
         
         file.add(printMenu);
 
@@ -364,18 +382,82 @@ public class MainUI extends JFrame implements RefreshListener {
         if ( entity instanceof QuadMech ) {
             String fImageName = "./data/images/toquad.png";
             
-            PrintAdvancedQuad sp = new PrintAdvancedQuad(getToolkit().getImage(fImageName), entity);
+            ArrayList<Mech>mechList = new ArrayList<Mech>();
+            mechList.add(entity);
+
+            PrintAdvancedQuad sp = new PrintAdvancedQuad(getToolkit().getImage(fImageName), mechList);
    
             sp.print();
            
         }else {
              String fImageName = "./data/images/tobiped.png";
     
-             PrintAdvancedMech sp = new PrintAdvancedMech(getToolkit().getImage(fImageName), entity);
+             ArrayList<Mech>mechList = new ArrayList<Mech>();
+             mechList.add(entity);
+
+             PrintAdvancedMech sp = new PrintAdvancedMech(getToolkit().getImage(fImageName), mechList);
     
              sp.print();
         }
      }
+    
+    public void jMenuPrintAdvancedMulMechs_actionPerformed(ActionEvent event) {
+        ArrayList<Mech> quadList = new ArrayList<Mech>();
+        ArrayList<Mech> bipedList = new ArrayList<Mech>();
+        
+        FileDialog f = new FileDialog(new JDialog(), "Load Mul");
+        f.setDirectory(System.getProperty("user.dir"));
+        f.setFilenameFilter(new FilenameFilter() {
+            public boolean accept(final File dir, final String name) {
+                return (null != name && name.endsWith(".mul"));
+            }
+        });
+        f.setVisible(true);
+        
+        if ( f.getFile() != null ) {
+            Vector<Entity> loadedUnits = new Vector<Entity>();
+            try {
+                loadedUnits = EntityListFile.loadFrom(new File(f.getDirectory()+f.getFile()));
+                loadedUnits.trimToSize();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return;
+            }
+
+            for ( Entity unit : loadedUnits ) {
+                if ( unit instanceof QuadMech ) {
+                    quadList.add((Mech)unit);
+                }else if ( unit instanceof BipedMech ) {
+                    bipedList.add((Mech)unit);
+                }
+            }
+            
+            String fImageName = "./data/images/tobiped.png";
+            String mekHud = "./data/images/hud.png";
+            
+            Image image = getToolkit().getImage(fImageName);
+            Image hudImage = getToolkit().getImage(mekHud);
+            
+            if ( bipedList.size() > 0 ) {
+                PrintAdvancedMech printMech = new PrintAdvancedMech(image, bipedList);
+        
+                printMech.print();
+            }
+            
+            fImageName = "./data/images/toquad.png";
+            
+            image = getToolkit().getImage(fImageName);
+            hudImage = getToolkit().getImage(mekHud);
+
+            if ( quadList.size() > 0 ) {
+                PrintAdvancedQuad printQuad = new PrintAdvancedQuad(image, quadList);
+        
+                printQuad.print();
+            }
+            
+        }
+        
+    }
     
     // Show data about MegaMekLab
     public void jMenuHelpAbout_actionPerformed() {
