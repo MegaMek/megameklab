@@ -109,7 +109,7 @@
 		<copy todir="${basedir}" overwrite="true">
 			<fileset dir="${svndir}" includes="*.jar" />
 		</copy>
-		<echo message="New '${megameklab}' has been build and installed" />
+		<echo message="New '${megameklab}' has been built and installed" />
 	</target>
 
 	<target name="updateInstalledMedia" description="Gets the newest datafiles from svn">
