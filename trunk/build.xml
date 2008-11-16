@@ -1,173 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This is an ant build file. See: "http://jakarta.apache.org/ant"-->
-<project default="compile" name="MegaMekLab">
+<project
+	default="compile"
+	name="MegaMekLab"
+>
 	<!-- Global properties for this build -->
-	<property name="src" value="src" />
-	<property name="libdir" value="lib" />
-	<property name="logdir" value="logs" />
-	<property name="datadir" value="data" />
-	<property name="build" value="classes" />
-	<property name="docdir" value="docs" />
-	<property name="svndir" value="svndev" />
-	<property name="releasedir" value="../Releases" />
-
-	<!-- same as builddir but under svn -->
-	<property name="svnbuilddir" value="${svndir}/${build}" />
-
-	<!-- svnroot used for svn authentification -->
-	<property name="svnroot" value="https://megameklab.svn.sourceforge.net/svnroot/megameklab/trunk" />
-
-	<property name="timestampfile" value="timestamp" />
-
-	<property name="megameklab" value="MegaMekLab.jar" />
-	<property name="jarmainclass" value="megameklab.com.MegaMekLab" />
-
-	<property name="jarmanifest" value="manifest.txt">
+	<property
+		name="src"
+		value="src"
+	>
 	</property>
-	<path id="project.classpath">
-		<pathelement path="${build}">
+	<property
+		name="build"
+		value="${basedir}/classes"
+	>
+	</property>
+	<property
+		name="timestampfile"
+		value="timestamp"
+	>
+	</property>
+
+	<property
+			name="megameklab"
+			value="MegaMekLab.jar"
+	>
+	</property>
+
+	<property
+		name="jarmanifest"
+		value="manifest.txt"
+	>
+	</property>
+	<path
+		id="project.classpath"
+	>
+		<pathelement
+			path="${build}"
+		>
 		</pathelement>
-		<fileset dir="${basedir}">
-			<include name="MegaMek.jar">
+		<fileset
+			dir="${basedir}"
+		>
+			<include
+				name="MegaMek.jar"
+			>
 			</include>
 		</fileset>
 	</path>
-
-	<!-- Build the list of the lib/*.jar files to be included in the "Class-Path" attribute of the jar's manifest dynamically.  -->
-	<pathconvert pathsep=" " property="jarclasspath">
-		<path>
-			<!-- We'll include the jars in the "lib" directory -->
-			<fileset dir="lib/">
-				<include name="*.jar" />
-			</fileset>
-		</path>
-		<mapper>
-			<chainedmapper>
-				<flattenmapper />
-				<globmapper from="*" to="lib/*" />
-			</chainedmapper>
-		</mapper>
-	</pathconvert>
-
-	<target description="Initialize system before build" name="init">
+	<target
+		description="Initialize system before build"
+		name="init"
+	>
 		<!-- Create the time stamp -->
 		<tstamp>
 		</tstamp>
 		<!-- Ensure that the build directory exists. -->
-		<mkdir dir="${build}">
+		<mkdir
+			dir="${build}"
+		>
 		</mkdir>
 
 	</target>
-	<target depends="init" description="Compile java sources into class files" name="compile">
-		<javac classpathref="project.classpath" debug="true" deprecation="true" destdir="${basedir}" srcdir="${src}" target="1.6" source="1.6">
+	<target
+		depends="init"
+		description="Compile java sources into class files"
+		name="compile"
+	>
+		<javac
+			classpathref="project.classpath"
+			debug="true"
+			deprecation="true"
+			destdir="${build}"
+			srcdir="${src}"
+			target="1.5"
+			source="1.5"
+		>
 		</javac>
+		<touch
+			file="${timestampfile}"
+		>
+		</touch>
 	</target>
-
-	<target description="Remove all compiled and generated files" name="clean">
+	<target
+		name="doc"
+	>
+		<mkdir
+			dir="${doc}"
+		>
+		</mkdir>
+		<javadoc
+			classpath="${basedir}"
+			destdir="${doc}"
+			package="yes"
+			packagenames="megamek.*"
+			sourcepath="${src}"
+			windowtitle="MegaMek API"
+		>
+		</javadoc>
+	</target>
+	<target
+		description="Remove all compiled and generated files"
+		name="clean"
+	>
 		<!-- Delete the ${build} directory tree -->
-		<delete file="MegaMekLab.jar">
+		<delete
+			file="MegaMekLab.jar"
+		>
 		</delete>
-		<delete dir="${build}">
+		<delete
+			dir="${build}"
+		>
 		</delete>
-		<delete file="${timestampfile}">
+		<delete
+			dir="${doc}"
+		>
 		</delete>
-		<delete dir="dist">
+		<delete
+			file="${timestampfile}"
+		>
+		</delete>
+		<delete
+			dir="dist"
+		>
 		</delete>
 	</target>
-	<target depends="compile" description="Create application jar file" name="megameklab-jar">
-		<delete file="${megameklab}">
+	<target
+		depends="compile"
+		description="Create application jar file"
+		name="megameklab-jar"
+	>
+		<delete
+			file="${megameklab}"
+		>
 		</delete>
-		<jar basedir="${build}" compress="true" destfile="${megameklab}" excludes="" includes="**" jarfile="${megameklab}" manifest="manifest.txt">
+		<jar
+			basedir="${build}"
+			compress="true"
+			destfile="${megameklab}"
+			excludes=""
+			includes="**"
+			jarfile="${megameklab}"
+			manifest="manifest.txt"
+		>
 		</jar>
 	</target>
-
-	<!-- generates the updated code & media package and the regular package (containing both) -->
-	<target name="packageAll" description="Generates code" depends="svndev-get, svndev-build, svndev-package">
-	</target>
-
-	<target name="packageCode" description="Generates code package only" depends="svndev-get, svndev-build">
-		<zip basedir="${svndir}" zipfile="${basedir}/megameklab${DSTAMP}.zip" includes="${megameklab} docs/history.txt license.txt" />
-	</target>
-
-	<target name="updateInstalledCode" description="Compiles, jars and installs the newest sources from svn." depends="svndev-init">
-		<!-- get the code -->
-		<antcall target="svndev-clean" />
-		<exec executable="svn">
-			<arg line="export ${svnroot}/${src} ${svndir}/${src}" />
-		</exec>
-		<exec executable="svn">
-			<arg line="export ${svnroot}/${propdir} ${svndir}/${propdir}" />
-		</exec>
-		<!-- downloading precompiled libraries that are needed for a successful build -->
-		<exec executable="svn">
-			<arg line="export ${svnroot}/${libdir} ${svndir}/${libdir}" />
-		</exec>
-
-		<antcall target="svndev-build" />
-
-		<!-- Copy new MegaMekLab.jar and potentially updated libraries into user dir -->
-		<copy todir="${basedir}" overwrite="true">
-			<fileset dir="${svndir}" includes="*.jar" />
-		</copy>
-		<echo message="New '${megameklab}' has been built and installed" />
-	</target>
-
-	<target name="updateInstalledMedia" description="Gets the newest datafiles from svn">
-		<!-- data files will be directly downloaded over existing ones -->
-		<exec executable="svn">
-			<arg line="export ${svnroot}/${datadir} ${svndir}/${datadir}" />
-		</exec>
-
-		<echo message="datafiles updated." />
-	</target>
-
-	<target name="svndev-init">
-		<tstamp />
-		<delete dir="${svndir}" />
-	</target>
-
-	<!-- following svndev-* tasks get, build & package the current version from svn -->
-	<target name="svndev-get" depends="svndev-init">
-		<exec executable="svn">
-			<arg line="export ${svnroot} ${svndir}" />
-		</exec>
-	</target>
-
-	<target name="svndev-build" depends="svndev-init">
-		<mkdir dir="${svnbuilddir}" />
-
-		<!-- compile -->
-		<echo message="building MegaMekLab from svn sources" />
-		<javac debug="true" debuglevel="lines,source" target="1.6" source="1.6" destdir="${svnbuilddir}" srcdir="${svndir}/${src}" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
-			<classpath>
-				<pathelement location="${svndir}" />
-				<fileset dir="${svndir}/${libdir}" includes="*.jar" />
-				<fileset dir="${svndir}" includes="MegaMek.jar" />
-			</classpath>
-		</javac>
-
-		<jar basedir="${svnbuilddir}" compress="true" destfile="${svndir}/${megameklab}" excludes="" includes="**" jarfile="${svndir}/${megameklab}" manifest="manifest.txt"/>
-		
-		<!-- Ensure that the log directory exists. -->
-		<mkdir dir="${svndir}/${logdir}" />
-	</target>
-
-	<target name="svndev-package" depends="svndev-build">
-		<delete file="${svndir}/${TinyXMLsrc}" />
-		<!-- zip file generation from svn sources -->
-		<!-- keep in mind that directory references for 'excludes' are -->
-		<!-- relative to the zip-tasks basedir but 'zipfile' uses the -->
-		<!-- absolute (project) ${basedir} -->
-		<zip zipfile="${releasedir}/MegaMekLab0.0.0.x.zip" basedir="${svndir}" excludes="${build}/ ${src}/ build.xml manifest.txt" />
-	</target>
-
-	<target name="svndev-clean">
-		<delete dir="${svndir}" />
-	</target>
-
-	<target name="svndev" depends="svndev-init, svndev-get, svndev-build, svndev-package" />
-
-	<target name="cleansvn" description="removes everything inside 'svndev' and the dir itself">
-		<delete dir="${svndir}/" />
-	</target>
+	
 </project>
