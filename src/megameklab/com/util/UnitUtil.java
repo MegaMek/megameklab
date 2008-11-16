@@ -634,4 +634,49 @@ public class UnitUtil {
 
         return armorWeight;
     }
+    
+    public static void reIndexCrits(Mech unit){
+        
+        for ( int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++ ){
+            for ( int slot = 0; slot < unit.getNumberOfCriticals(location); slot++ ){
+                CriticalSlot cs = unit.getCritical(location, slot);
+                
+                if ( cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT ){
+                    cs.setIndex(unit.getEquipmentNum(cs.getMount()));
+                }
+            }
+        }
+    }
+    
+    public static void compactCriticals(Mech mech) {
+        for (int loc = 0; loc < mech.locations(); loc++) {
+            compactCriticals(mech, loc);
+        }
+    }
+
+    private static void compactCriticals(Mech mech, int loc) {
+        if (loc == Mech.LOC_HEAD) {
+            // This location has an empty slot inbetween systems crits
+            // which will mess up parsing if compacted.
+            return;
+        }
+        int firstEmpty = -1;
+        for (int slot = 0; slot < mech.getNumberOfCriticals(loc); slot++) {
+            CriticalSlot cs = mech.getCritical(loc, slot);
+
+            if (cs == null && firstEmpty == -1) {
+                firstEmpty = slot;
+            }
+            if (firstEmpty != -1 && cs != null) {
+                // move this to the first empty slot
+                mech.setCritical(loc, firstEmpty, cs);
+                // mark the old slot empty
+                mech.setCritical(loc, slot, null);
+                // restart just after the moved slot's new location
+                slot = firstEmpty;
+                firstEmpty = -1;
+            }
+        }
+    }
+
 }

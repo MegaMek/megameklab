@@ -115,6 +115,8 @@ public class MainUI extends JFrame implements RefreshListener {
         item.setMnemonic('S');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                UnitUtil.compactCriticals(entity);
+                UnitUtil.reIndexCrits(entity);
                 SaveMechToMTF.getInstance(entity, entity.getChassis() + " " + entity.getModel() + ".mtf").save();
             }
         });
