@@ -169,7 +169,7 @@ public class PrintMech implements Printable {
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
-        g2d.drawString(myFormatter.format(mech.calculateBattleValue(true)), 150, 350);
+        g2d.drawString(myFormatter.format(mech.calculateBattleValue(true,true)), 150, 350);
 
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);

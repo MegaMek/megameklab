@@ -145,7 +145,7 @@ public class PrintQuad implements Printable {
         }
         
         //Cost/BV
-        g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 349);
+        g2d.drawString(Integer.toString(mech.calculateBattleValue(true,true)), 159, 349);
 
         DecimalFormat myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost())+" C-Bills", 52, 349);

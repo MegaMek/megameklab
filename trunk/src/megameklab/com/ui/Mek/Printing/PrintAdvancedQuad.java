@@ -246,7 +246,7 @@ public class PrintAdvancedQuad implements Printable {
         }
         
         // Cost/BV
-        g2d.drawString(Integer.toString(mech.calculateBattleValue(true)), 159, 359);
+        g2d.drawString(Integer.toString(mech.calculateBattleValue(true,true)), 159, 359);
 
         DecimalFormat myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost()) + " C", 54, 359);
