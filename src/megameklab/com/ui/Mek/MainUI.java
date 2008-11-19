@@ -297,7 +297,7 @@ public class MainUI extends JFrame implements RefreshListener {
     public void jMenuPrint_actionPerformed(ActionEvent event) {
         
         if ( entity instanceof QuadMech ) {
-            String fImageName = "./data/images/twquad.png";
+            String fImageName = "./data/images/recordsheets/twquad.png";
             
             ArrayList<Mech>mechList = new ArrayList<Mech>();
             mechList.add(entity);
@@ -306,8 +306,8 @@ public class MainUI extends JFrame implements RefreshListener {
     
             sp.print();
         }else {
-            String fImageName = "./data/images/twbiped.png";
-            String mekHud = "./data/images/hud.png";
+            String fImageName = "./data/images/recordsheets/twbiped.png";
+            String mekHud = "./data/images/fluff/hud.png";
             
             Image image = getToolkit().getImage(fImageName);
             Image hudImage = getToolkit().getImage(mekHud);
@@ -352,8 +352,8 @@ public class MainUI extends JFrame implements RefreshListener {
                 }
             }
             
-            String fImageName = "./data/images/twbiped.png";
-            String mekHud = "./data/images/hud.png";
+            String fImageName = "./data/images/recordsheets/twbiped.png";
+            String mekHud = "./data/images/fluff/hud.png";
             
             Image image = getToolkit().getImage(fImageName);
             Image hudImage = getToolkit().getImage(mekHud);
@@ -364,7 +364,7 @@ public class MainUI extends JFrame implements RefreshListener {
                 printMech.print();
             }
             
-            fImageName = "./data/images/twquad.png";
+            fImageName = "./data/images/recordsheets/twquad.png";
             
             image = getToolkit().getImage(fImageName);
             hudImage = getToolkit().getImage(mekHud);
@@ -382,7 +382,7 @@ public class MainUI extends JFrame implements RefreshListener {
     public void jMenuAdvancedPrint_actionPerformed(ActionEvent event) {
         
         if ( entity instanceof QuadMech ) {
-            String fImageName = "./data/images/toquad.png";
+            String fImageName = "./data/images/recordsheets/toquad.png";
             
             ArrayList<Mech>mechList = new ArrayList<Mech>();
             mechList.add(entity);
@@ -392,7 +392,7 @@ public class MainUI extends JFrame implements RefreshListener {
             sp.print();
            
         }else {
-             String fImageName = "./data/images/tobiped.png";
+             String fImageName = "./data/images/recordsheets/tobiped.png";
     
              ArrayList<Mech>mechList = new ArrayList<Mech>();
              mechList.add(entity);
@@ -434,8 +434,8 @@ public class MainUI extends JFrame implements RefreshListener {
                 }
             }
             
-            String fImageName = "./data/images/tobiped.png";
-            String mekHud = "./data/images/hud.png";
+            String fImageName = "./data/images/recordsheets/tobiped.png";
+            String mekHud = "./data/images/fluff/hud.png";
             
             Image image = getToolkit().getImage(fImageName);
             Image hudImage = getToolkit().getImage(mekHud);
@@ -446,7 +446,7 @@ public class MainUI extends JFrame implements RefreshListener {
                 printMech.print();
             }
             
-            fImageName = "./data/images/toquad.png";
+            fImageName = "./data/images/recordsheets/toquad.png";
             
             image = getToolkit().getImage(fImageName);
             hudImage = getToolkit().getImage(mekHud);

@@ -40,6 +40,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Sensor;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -122,7 +123,7 @@ public class EquipmentView extends IView implements ActionListener {
             EquipmentType eq = miscTypes.nextElement();
 
             if (eq instanceof MiscType && !eq.hasFlag(MiscType.F_ASSAULT_CLAW) && !eq.hasFlag(MiscType.F_BOARDING_CLAW) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && !eq.hasFlag(MiscType.F_PARAFOIL) && !eq.hasFlag(MiscType.F_MINE) && !eq.hasFlag(MiscType.F_TOOLS) && !eq.hasFlag(MiscType.F_REACTIVE) && !eq.hasFlag(MiscType.F_REFLECTIVE) && !eq.hasFlag(MiscType.F_HAND_WEAPON) && !eq.hasFlag(MiscType.F_FERRO_FIBROUS) && !eq.hasFlag(MiscType.F_FIRE_RESISTANT) && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS) && !eq.hasFlag(MiscType.F_ENDO_STEEL) && !eq.hasFlag(MiscType.F_LIFTHOIST) && !eq.hasFlag(MiscType.F_SEARCHLIGHT) && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION) && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION) && !eq.hasFlag(MiscType.F_HEAT_SINK) && !eq.hasFlag(MiscType.F_LASER_HEAT_SINK) && !eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) && !eq.hasFlag(MiscType.F_STEALTH)
-                    && !eq.getName().equals(EquipmentType.getStructureTypeName(MiscType.T_STRUCTURE_STANDARD)) && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED)) && !eq.getName().equals(BattleArmor.SINGLE_HEX_ECM)) {
+                    && !eq.getName().equals(EquipmentType.getStructureTypeName(MiscType.T_STRUCTURE_STANDARD)) && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED)) && !eq.getName().equals(BattleArmor.SINGLE_HEX_ECM) && !eq.getInternalName().equals(Sensor.CLBALIGHT_AP) && !eq.getInternalName().equals(Sensor.ISBALIGHT_AP)) {
                 masterEquipmentList.add(eq);
             }
         }
