@@ -17,6 +17,7 @@
 package megameklab.com.util;
 
 import java.awt.Image;
+import java.io.File;
 
 import javax.swing.ImageIcon;
 
@@ -55,23 +56,68 @@ public class ImageHelper {
     public static Image getFluffImage(Entity unit){
         Image fluff = null;
         
+        fluff = getFluffPNG(unit);
         
+        if ( fluff == null ){
+            fluff = getFluffJPG(unit);
+        }
         
+        if ( fluff == null ) {
+            fluff = getFluffGIF(unit);
+        }
+        
+        if ( fluff == null ) {
+            fluff = new ImageIcon(fluffPath+"hud.png").getImage();
+        }
         return fluff;
     }
     
     public static Image getFluffPNG(Entity unit){
         Image fluff = null;
         
+        String fluffFile = unit.getChassis() + " " + unit.getModel()+".png";
+        if ( new File(fluffFile.toLowerCase()).exists() ) {
+            fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+        }
         
+        if ( fluff == null ) {
+            fluffFile = unit.getChassis()+".png";
+            if ( new File(fluffFile.toLowerCase()).exists() ) {
+                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+            }
+        }
         
+        if ( fluff == null ) {
+            fluffFile = unit.getModel()+".png";
+            if ( new File(fluffFile.toLowerCase()).exists() ) {
+                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+            }
+        }
+
         return fluff;
     }
 
     public static Image getFluffJPG(Entity unit){
         Image fluff = null;
         
+        String fluffFile = unit.getChassis() + " " + unit.getModel()+".jpg";
+        if ( new File(fluffFile.toLowerCase()).exists() ) {
+            fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+        }
         
+        if ( fluff == null ) {
+            fluffFile = unit.getChassis()+".jpg";
+            if ( new File(fluffFile.toLowerCase()).exists() ) {
+                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+            }
+        }
+        
+        if ( fluff == null ) {
+            fluffFile = unit.getModel()+".jpg";
+            if ( new File(fluffFile.toLowerCase()).exists() ) {
+                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+            }
+        }
         
         return fluff;
     }
@@ -79,8 +125,25 @@ public class ImageHelper {
     public static Image getFluffGIF(Entity unit){
         Image fluff = null;
         
+        String fluffFile = unit.getChassis() + " " + unit.getModel()+".gif";
+        if ( new File(fluffFile.toLowerCase()).exists() ) {
+            fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+        }
         
+        if ( fluff == null ) {
+            fluffFile = unit.getChassis()+".gif";
+            if ( new File(fluffFile.toLowerCase()).exists() ) {
+                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+            }
+        }
         
+        if ( fluff == null ) {
+            fluffFile = unit.getModel()+".gif";
+            if ( new File(fluffFile.toLowerCase()).exists() ) {
+                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+            }
+        }
+
         return fluff;
     }
 
