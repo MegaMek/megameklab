@@ -75,47 +75,47 @@ public class ImageHelper {
     public static Image getFluffPNG(Entity unit){
         Image fluff = null;
         
-        String fluffFile = unit.getChassis() + " " + unit.getModel()+".png";
+        String fluffFile = fluffPath+unit.getChassis() + " " + unit.getModel()+".png";
         if ( new File(fluffFile.toLowerCase()).exists() ) {
-            fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+            fluff = new ImageIcon(fluffFile).getImage();
         }
         
         if ( fluff == null ) {
-            fluffFile = unit.getChassis()+".png";
+            fluffFile = fluffPath+unit.getModel()+".png";
             if ( new File(fluffFile.toLowerCase()).exists() ) {
-                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
-            }
-        }
-        
-        if ( fluff == null ) {
-            fluffFile = unit.getModel()+".png";
-            if ( new File(fluffFile.toLowerCase()).exists() ) {
-                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+                fluff = new ImageIcon(fluffFile).getImage();
             }
         }
 
+        if ( fluff == null ) {
+            fluffFile = fluffPath+unit.getChassis()+".png";
+            if ( new File(fluffFile.toLowerCase()).exists() ) {
+                fluff = new ImageIcon(fluffFile).getImage();
+            }
+        }
+        
         return fluff;
     }
 
     public static Image getFluffJPG(Entity unit){
         Image fluff = null;
         
-        String fluffFile = unit.getChassis() + " " + unit.getModel()+".jpg";
+        String fluffFile = fluffPath+unit.getChassis() + " " + unit.getModel()+".jpg";
         if ( new File(fluffFile.toLowerCase()).exists() ) {
-            fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+            fluff = new ImageIcon(fluffFile).getImage();
         }
         
         if ( fluff == null ) {
-            fluffFile = unit.getChassis()+".jpg";
+            fluffFile = fluffPath+unit.getModel()+".jpg";
             if ( new File(fluffFile.toLowerCase()).exists() ) {
-                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+                fluff = new ImageIcon(fluffFile).getImage();
             }
         }
         
         if ( fluff == null ) {
-            fluffFile = unit.getModel()+".jpg";
+            fluffFile = fluffPath+unit.getChassis()+".jpg";
             if ( new File(fluffFile.toLowerCase()).exists() ) {
-                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+                fluff = new ImageIcon(fluffFile).getImage();
             }
         }
         
@@ -125,25 +125,25 @@ public class ImageHelper {
     public static Image getFluffGIF(Entity unit){
         Image fluff = null;
         
-        String fluffFile = unit.getChassis() + " " + unit.getModel()+".gif";
+        String fluffFile = fluffPath+unit.getChassis() + " " + unit.getModel()+".gif";
         if ( new File(fluffFile.toLowerCase()).exists() ) {
-            fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+            fluff = new ImageIcon(fluffFile).getImage();
         }
         
         if ( fluff == null ) {
-            fluffFile = unit.getChassis()+".gif";
+            fluffFile = fluffPath+unit.getModel()+".gif";
             if ( new File(fluffFile.toLowerCase()).exists() ) {
-                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
-            }
-        }
-        
-        if ( fluff == null ) {
-            fluffFile = unit.getModel()+".gif";
-            if ( new File(fluffFile.toLowerCase()).exists() ) {
-                fluff = new ImageIcon(fluffPath+fluffFile).getImage();
+                fluff = new ImageIcon(fluffFile).getImage();
             }
         }
 
+        if ( fluff == null ) {
+            fluffFile = fluffPath+unit.getChassis()+".gif";
+            if ( new File(fluffFile.toLowerCase()).exists() ) {
+                fluff = new ImageIcon(fluffFile).getImage();
+            }
+        }
+        
         return fluff;
     }
 

@@ -61,7 +61,7 @@ public class PrintMech implements Printable {
     private int endMounty = 0;
 
     public PrintMech(ArrayList<Mech>list) {
-        awtImage = ImageHelper.getRecordSheet(mech, false);
+        awtImage = ImageHelper.getRecordSheet(list.get(0), false);
         mechList = list;
 
         if (awtImage != null) {
@@ -1735,7 +1735,7 @@ public class PrintMech implements Printable {
     
     private void printMekImage(Graphics2D g2d, Image img) {
         
-        int width = Math.min(165,img.getWidth(null));
+        int width = Math.min(148,img.getWidth(null));
         int height = Math.min(200, img.getHeight(null));
         g2d.drawImage(img, 235, 172, width, height, null);
         
