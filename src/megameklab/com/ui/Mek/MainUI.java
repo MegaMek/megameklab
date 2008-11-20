@@ -32,7 +32,6 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -298,12 +297,10 @@ public class MainUI extends JFrame implements RefreshListener {
     public void jMenuPrint_actionPerformed(ActionEvent event) {
         
         if ( entity instanceof QuadMech ) {
-            String fImageName = "./data/images/recordsheets/twquad.png";
-            
             ArrayList<Mech>mechList = new ArrayList<Mech>();
             mechList.add(entity);
 
-            PrintQuad sp = new PrintQuad(getToolkit().getImage(fImageName), mechList);
+            PrintQuad sp = new PrintQuad(mechList);
     
             sp.print();
         }else {
@@ -353,12 +350,8 @@ public class MainUI extends JFrame implements RefreshListener {
                 printMech.print();
             }
             
-            String fImageName = "./data/images/recordsheets/twquad.png";
-            
-            Image image = getToolkit().getImage(fImageName);
-
             if ( quadList.size() > 0 ) {
-                PrintQuad printQuad = new PrintQuad(image, quadList);
+                PrintQuad printQuad = new PrintQuad(quadList);
         
                 printQuad.print();
             }
@@ -423,10 +416,8 @@ public class MainUI extends JFrame implements RefreshListener {
             }
             
             String fImageName = "./data/images/recordsheets/tobiped.png";
-            String mekHud = "./data/images/fluff/hud.png";
             
             Image image = getToolkit().getImage(fImageName);
-            Image hudImage = getToolkit().getImage(mekHud);
             
             if ( bipedList.size() > 0 ) {
                 PrintAdvancedMech printMech = new PrintAdvancedMech(image, bipedList);
@@ -437,7 +428,6 @@ public class MainUI extends JFrame implements RefreshListener {
             fImageName = "./data/images/recordsheets/toquad.png";
             
             image = getToolkit().getImage(fImageName);
-            hudImage = getToolkit().getImage(mekHud);
 
             if ( quadList.size() > 0 ) {
                 PrintAdvancedQuad printQuad = new PrintAdvancedQuad(image, quadList);
