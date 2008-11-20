@@ -68,12 +68,6 @@ public class PrintMech implements Printable {
             System.out.println("Width: " + awtImage.getWidth(null));
             System.out.println("Height: " + awtImage.getHeight(null));
         }
-
-        if (awtHud != null) {
-            System.out.println("Hud Width: " + awtHud.getWidth(null));
-            System.out.println("Hud Height: " + awtHud.getHeight(null));
-        }
-
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -456,7 +450,7 @@ public class PrintMech implements Printable {
                 for ( Mech currentMech : mechList ) {
                     
                     this.mech = currentMech;
-                    this.awtHud = null;
+                    this.awtHud = ImageHelper.getFluffImage(currentMech);
                     pj.setJobName(mech.getChassis() + " " + mech.getModel());
     
                     pj.print();
