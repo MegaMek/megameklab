@@ -5,6 +5,7 @@ V 0.0.0.8-dev
 + Moved Record Sheets to ./data/images/recordsheets
 + Moved Hud images to ./data/images/fluff
 + BA Light Active Probe showing up in Mek Equipment List
++ Record Sheet Image printed based on Unit Name.
 
 V 0.0.0.7 (11/12/08 11:07 PDT)
 + Bug: Support PPC showing up for Mechs
