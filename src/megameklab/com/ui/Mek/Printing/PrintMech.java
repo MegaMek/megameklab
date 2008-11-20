@@ -44,6 +44,7 @@ import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.SRMWeapon;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
 public class PrintMech implements Printable {
@@ -59,9 +60,8 @@ public class PrintMech implements Printable {
     private int endMountx = 0;
     private int endMounty = 0;
 
-    public PrintMech(Image image, Image hudImage, ArrayList<Mech>list) {
-        awtImage = image;
-        awtHud = hudImage;
+    public PrintMech(ArrayList<Mech>list) {
+        awtImage = ImageHelper.getRecordSheet(mech, false);
         mechList = list;
 
         if (awtImage != null) {
@@ -456,6 +456,7 @@ public class PrintMech implements Printable {
                 for ( Mech currentMech : mechList ) {
                     
                     this.mech = currentMech;
+                    this.awtHud = null;
                     pj.setJobName(mech.getChassis() + " " + mech.getModel());
     
                     pj.print();
