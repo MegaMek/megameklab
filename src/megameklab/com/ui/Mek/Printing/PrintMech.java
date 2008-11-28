@@ -41,10 +41,9 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
-import megamek.common.weapons.ATMWeapon;
-import megamek.common.weapons.LRMWeapon;
-import megamek.common.weapons.SRMWeapon;
+import megamek.common.weapons.MMLWeapon;
 import megameklab.com.util.ImageHelper;
+import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 
 public class PrintMech implements Printable {
@@ -53,14 +52,14 @@ public class PrintMech implements Printable {
     protected Image awtHud = null;
     private Mech mech = null;
     private ArrayList<Mech> mechList;
-    
+
     private Mounted startingMount = null;
     private int startMountx = 0;
     private int startMounty = 0;
     private int endMountx = 0;
     private int endMounty = 0;
 
-    public PrintMech(ArrayList<Mech>list) {
+    public PrintMech(ArrayList<Mech> list) {
         awtImage = ImageHelper.getRecordSheet(list.get(0), false);
         mechList = list;
 
@@ -86,7 +85,8 @@ public class PrintMech implements Printable {
             return;
 
         System.gc();
-        // g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(), (int)pageFormat.getImageableHeight(), null);
+        // g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(),
+        // (int)pageFormat.getImageableHeight(), null);
         g2d.drawImage(image, 18, 18, 558, 738, null);
         printMekImage(g2d, hud);
 
@@ -126,8 +126,8 @@ public class PrintMech implements Printable {
         printLLStruct(g2d);
         printRLStruct(g2d);
 
-
-        //g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+        // g2d.translate(pageFormat.getImageableX(),
+        // pageFormat.getImageableY());
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
     }
@@ -163,7 +163,7 @@ public class PrintMech implements Printable {
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
-        g2d.drawString(myFormatter.format(mech.calculateBattleValue(true,true)), 150, 350);
+        g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 150, 350);
 
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
@@ -304,7 +304,7 @@ public class PrintMech implements Printable {
         int typePoint = 38;
         int locPoint = 109;
         int heatPoint = 128;
-        int damagePoint = 145;
+        int damagePoint = 142;
         int minPoint = 167;
         int shtPoint = 181;
         int medPoint = 199;
@@ -312,6 +312,8 @@ public class PrintMech implements Printable {
         int linePoint = 206;
 
         int lineFeed = 11;
+
+        boolean newLineNeeded = false;
 
         ArrayList<Hashtable<String, equipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, equipmentInfo>>(Mech.LOC_LLEG + 1);
 
@@ -357,6 +359,8 @@ public class PrintMech implements Printable {
             int count = 0;
 
             for (equipmentInfo eqi : eqHash.values()) {
+                newLineNeeded = false;
+
                 if (count >= 12) {
                     break;
                 }
@@ -390,11 +394,11 @@ public class PrintMech implements Printable {
                     g2d.setFont(font);
                 }
 
-                if ( eqi.c3Level == eqi.C3I ){
+                if (eqi.c3Level == eqi.C3I) {
                     printC3iName(g2d, typePoint, linePoint, font);
-                } else if ( eqi.c3Level == eqi.C3S ){
+                } else if (eqi.c3Level == eqi.C3S) {
                     printC3sName(g2d, typePoint, linePoint, font);
-                } else if ( eqi.c3Level == eqi.C3M ){
+                } else if (eqi.c3Level == eqi.C3M) {
                     printC3mName(g2d, typePoint, linePoint, font);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
@@ -405,18 +409,51 @@ public class PrintMech implements Printable {
                 g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
                 if (eqi.isWeapon) {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
-                    g2d.drawString(eqi.damage, damagePoint, linePoint);
-                    if ( eqi.minRange > 0 ){
-                        g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
-                    } else {
+
+                    if (eqi.isMML) {
+                        g2d.drawString("[M,S,C]", damagePoint, linePoint);
+                        linePoint += lineFeed;
+                        g2d.drawString("LRM", typePoint, linePoint);
+                        g2d.drawString("1/Msl", damagePoint, linePoint);
+                        g2d.drawString("6", minPoint, linePoint);
+                        g2d.drawString("7", shtPoint, linePoint);
+                        g2d.drawString("14", medPoint, linePoint);
+                        g2d.drawString("21", longPoint, linePoint);
+                        linePoint += lineFeed;
+                        g2d.drawString("SRM", typePoint, linePoint);
+                        g2d.drawString("2/Msl", damagePoint, linePoint);
                         g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
+                        g2d.drawString("3", shtPoint, linePoint);
+                        g2d.drawString("6", medPoint, linePoint);
+                        g2d.drawString("9", longPoint, linePoint);
+                        
+                    } else {
+                        if (eqi.damage.trim().length() > 6) {
+                            g2d.drawString(eqi.damage.substring(0, eqi.damage.indexOf('[')), damagePoint, linePoint);
+                            String damageInfo = eqi.damage.substring(eqi.damage.indexOf('['));
+                            if (damageInfo.length() <= 4) {
+                                g2d.drawString(damageInfo, damagePoint, linePoint + lineFeed);
+                            } else if (damageInfo.length() <= 7) {
+                                g2d.drawString(damageInfo, damagePoint - damageInfo.length() / 2, linePoint + lineFeed);
+                            } else {
+                                g2d.drawString(damageInfo, damagePoint - damageInfo.length(), linePoint + lineFeed);
+                            }
+                            newLineNeeded = true;
+                        } else {
+                            g2d.drawString(eqi.damage, damagePoint, linePoint);
+                        }
+                        if (eqi.minRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
+                        } else {
+                            g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
+                        }
+                        g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
+                        g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
+                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
                     }
-                    g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
-                    g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
-                    g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
                 } else {
                     g2d.drawLine(heatPoint, linePoint - 2, heatPoint + 6, linePoint - 2);
-                    g2d.drawLine(damagePoint, linePoint - 2, damagePoint + 6, linePoint - 2);
+                    g2d.drawString(eqi.damage, damagePoint, linePoint);
                     g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
                     g2d.drawLine(shtPoint, linePoint - 2, shtPoint + 6, linePoint - 2);
                     g2d.drawLine(medPoint, linePoint - 2, medPoint + 6, linePoint - 2);
@@ -425,6 +462,9 @@ public class PrintMech implements Printable {
                 }
 
                 linePoint += lineFeed;
+                if (newLineNeeded) {
+                    linePoint += lineFeed;
+                }
                 count++;
             }
         }
@@ -446,13 +486,13 @@ public class PrintMech implements Printable {
                 pageFormat.setPaper(p);
 
                 pj.setPrintable(this, pageFormat);
-                
-                for ( Mech currentMech : mechList ) {
-                    
+
+                for (Mech currentMech : mechList) {
+
                     this.mech = currentMech;
                     this.awtHud = ImageHelper.getFluffImage(currentMech);
                     pj.setJobName(mech.getChassis() + " " + mech.getModel());
-    
+
                     pj.print();
                 }
 
@@ -469,51 +509,42 @@ public class PrintMech implements Printable {
         public int shtRange = 0;
         public int medRange = 0;
         public int longRange = 0;
-        public String damage = "";
+        public String damage = "[E]";
         public int heat = 0;
         public int techLevel = TechConstants.T_INTRO_BOXSET;
         public boolean isWeapon = false;
         public boolean isRear = false;
+        public boolean isMML = false;
         public int c3Level = 0;
-        
+
         public int C3S = 1;
         public int C3M = 2;
         public int C3I = 3;
-        
+
         public equipmentInfo(Mounted mount) {
             this.name = mount.getName();
             this.count = 1;
             this.techLevel = mount.getType().getTechLevel();
             this.isRear = mount.isRearMounted();
 
+            this.damage = StringUtils.getEquipmentInfo(mech, mount);
+
             if (mount.getType() instanceof WeaponType) {
-                if ( mount.getType().hasFlag(WeaponType.F_C3M) ){
+                if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                     c3Level = C3M;
                 }
-                
                 WeaponType weapon = (WeaponType) mount.getType();
                 this.minRange = Math.max(0, weapon.minimumRange);
                 this.isWeapon = true;
-                if (weapon.getDamage() < 0) {
-                    if (weapon instanceof SRMWeapon) {
-                        damage = "2/hit";
-                    } else if (weapon instanceof LRMWeapon) {
-                        damage = "1/hit";
-                    } else if (weapon instanceof ATMWeapon) {
-                        damage = "3/2/1";
-                    } else {
-                        damage = Integer.toString(weapon.getRackSize());
-                    }
-                } else {
-                    this.damage = Integer.toString(weapon.getDamage());
-                }
+
+                this.isMML = weapon instanceof MMLWeapon;
                 this.shtRange = weapon.shortRange;
                 this.medRange = weapon.mediumRange;
                 this.longRange = weapon.longRange;
                 this.heat = weapon.getHeat();
-            } else if ( mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I) ){
+            } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I)) {
                 c3Level = C3I;
-            } else if ( mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S) ){
+            } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S)) {
                 c3Level = C3S;
             }
         }
@@ -833,6 +864,7 @@ public class PrintMech implements Printable {
         Dimension middleColumn = new Dimension(452, 120);
         Dimension bottomColumn = new Dimension(437, 155);
         Dimension pipShift = new Dimension(6, 7);
+        int pipsPerLine = 5;
 
         int totalArmor = mech.getArmor(Mech.LOC_LT);
 
@@ -840,10 +872,22 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
 
+        if (pips <= 10) {
+            pipsPerLine = 3;
+            pipShift.width += 3;
+            pipShift.height += 3;
+        } else if (pips <= 15) {
+            pipsPerLine = 3;
+            pipShift.width += 2;
+        } else if (pips <= 20) {
+            pipsPerLine = 4;
+            pipShift.width += 1;
+        }
+
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
             topColumn.width += pipShift.width;
-            if (pos % 5 == 0) {
+            if (pos % pipsPerLine == 0) {
                 topColumn.height += pipShift.height;
                 pipShift.width *= -1;
                 topColumn.width += pipShift.width;
@@ -855,6 +899,8 @@ public class PrintMech implements Printable {
         }
 
         pips = Math.min(10, totalArmor);
+        pipShift.width = 6;
+        pipShift.height = 7;
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
@@ -929,17 +975,29 @@ public class PrintMech implements Printable {
         Dimension middleColumn = new Dimension(505, 120);
         Dimension bottomColumn = new Dimension(495, 155);
         Dimension pipShift = new Dimension(6, 7);
-
+        int pipsPerLine = 5;
         int totalArmor = mech.getArmor(Mech.LOC_RT);
 
         int pips = Math.min(25, totalArmor);
 
         totalArmor -= pips;
 
+        if (pips <= 10) {
+            pipsPerLine = 3;
+            pipShift.width += 3;
+            pipShift.height += 3;
+        } else if (pips <= 15) {
+            pipsPerLine = 3;
+            pipShift.width += 2;
+        } else if (pips <= 20) {
+            pipsPerLine = 4;
+            pipShift.width += 1;
+        }
+
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
             topColumn.width += pipShift.width;
-            if (pos % 5 == 0) {
+            if (pos % pipsPerLine == 0) {
                 topColumn.height += pipShift.height;
                 pipShift.width *= -1;
                 topColumn.width += pipShift.width;
@@ -951,8 +1009,9 @@ public class PrintMech implements Printable {
         }
 
         pips = Math.min(10, totalArmor);
-
+        pipShift = new Dimension(6, 7);
         totalArmor -= pips;
+
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
             middleColumn.width += pipShift.width;
@@ -1585,7 +1644,7 @@ public class PrintMech implements Printable {
 
         g2d.drawLine(startx - 1, starty - 6, startx - 4, starty - 6);
         g2d.drawLine(startx - 4, starty - 6, endx - 4, endy);
-        g2d.drawLine(endx - 1, endy+1, endx - 4, endy+1);
+        g2d.drawLine(endx - 1, endy + 1, endx - 4, endy + 1);
     }
 
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
@@ -1601,10 +1660,10 @@ public class PrintMech implements Printable {
                 g2d.drawString("Roll Again", lineStart, linePoint);
                 setCritConnection(null, lineStart, linePoint, lineStart, linePoint, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                if ( cs.getIndex() == Mech.SYSTEM_ENGINE ){
+                if (cs.getIndex() == Mech.SYSTEM_ENGINE) {
                     String engineName = "Fusion Engine";
-                    
-                    switch ( mech.getEngine().getEngineType() ){
+
+                    switch (mech.getEngine().getEngineType()) {
                     case Engine.COMBUSTION_ENGINE:
                         engineName = "I.C.E.";
                         break;
@@ -1620,17 +1679,17 @@ public class PrintMech implements Printable {
                     case Engine.COMPACT_ENGINE:
                         engineName = "Compact Fusion Engine";
                         break;
-                        default:
-                            break;
+                    default:
+                        break;
                     }
                     g2d.drawString(engineName, lineStart, linePoint);
                 } else {
                     String critName = mech.getSystemName(cs.getIndex());
-                    
-                    if ( critName.indexOf("Standard") > -1 ){
+
+                    if (critName.indexOf("Standard") > -1) {
                         critName = critName.replace("Standard ", "");
                     }
-                    
+
                     g2d.drawString(critName, lineStart, linePoint);
                 }
                 setCritConnection(null, lineStart, linePoint, lineStart, linePoint, g2d);
@@ -1645,13 +1704,12 @@ public class PrintMech implements Printable {
                 } else if (m.getType() instanceof AmmoType) {
                     AmmoType ammo = (AmmoType) m.getType();
 
-                   
                     critName = new StringBuffer("Ammo (");
                     critName.append(ammo.getShortName().trim());
                     critName.append(") ");
                     critName.append(ammo.getShots());
                 }
-                
+
                 if (!m.getType().isHittable()) {
                     font = new Font("Eurostile LT Std", Font.PLAIN, 7);
                     g2d.setFont(font);
@@ -1675,11 +1733,11 @@ public class PrintMech implements Printable {
                     g2d.setFont(font);
                 }
 
-                if ( m.getType() instanceof MiscType && m.getType().hasFlag(MiscType.F_C3I)){
+                if (m.getType() instanceof MiscType && m.getType().hasFlag(MiscType.F_C3I)) {
                     printC3iName(g2d, lineStart, linePoint, font);
-                } else if ( m.getType() instanceof MiscType && m.getType().hasFlag(MiscType.F_C3S)){
+                } else if (m.getType() instanceof MiscType && m.getType().hasFlag(MiscType.F_C3S)) {
                     printC3sName(g2d, lineStart, linePoint, font);
-                } else if ( m.getType() instanceof WeaponType && m.getType().hasFlag(WeaponType.F_C3M)){
+                } else if (m.getType() instanceof WeaponType && m.getType().hasFlag(WeaponType.F_C3M)) {
                     printC3mName(g2d, lineStart, linePoint, font);
                 } else {
                     g2d.drawString(critName.toString(), lineStart, linePoint);
@@ -1700,46 +1758,46 @@ public class PrintMech implements Printable {
 
     }
 
-    private void printC3iName(Graphics2D g2d, int lineStart, int linePoint, Font font){
+    private void printC3iName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         g2d.drawString("Improved C  CPU", lineStart, linePoint);
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
-        
-        if ( font.isBold() ){
-            g2d.drawString("3", lineStart+39, linePoint);
-        }else {
-            g2d.drawString("3", lineStart+36, linePoint);
+
+        if (font.isBold()) {
+            g2d.drawString("3", lineStart + 39, linePoint);
+        } else {
+            g2d.drawString("3", lineStart + 36, linePoint);
         }
     }
 
-    private void printC3sName(Graphics2D g2d, int lineStart, int linePoint, Font font){
+    private void printC3sName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         g2d.drawString("C  Slave", lineStart, linePoint);
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
-        g2d.drawString("3", lineStart+5, linePoint);
+        g2d.drawString("3", lineStart + 5, linePoint);
 
     }
-    
-    private void printC3mName(Graphics2D g2d, int lineStart, int linePoint, Font font){
+
+    private void printC3mName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         g2d.drawString("C  Master", lineStart, linePoint);
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
-        g2d.drawString("3", lineStart+5, linePoint);
+        g2d.drawString("3", lineStart + 5, linePoint);
     }
-    
+
     private void printMekImage(Graphics2D g2d, Image img) {
-        
-        int width = Math.min(148,img.getWidth(null));
+
+        int width = Math.min(148, img.getWidth(null));
         int height = Math.min(200, img.getHeight(null));
         g2d.drawImage(img, 235, 172, width, height, null);
-        
-        //g2d.drawRect(235, 172, 165, 200);
+
+        // g2d.drawRect(235, 172, 165, 200);
     }
 
 }

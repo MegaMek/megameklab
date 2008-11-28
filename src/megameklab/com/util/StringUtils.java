@@ -18,10 +18,26 @@ package megameklab.com.util;
 
 import java.util.Comparator;
 
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
+import megamek.common.actions.ClubAttackAction;
+import megamek.common.weapons.ATMWeapon;
+import megamek.common.weapons.EnergyWeapon;
+import megamek.common.weapons.FlamerWeapon;
+import megamek.common.weapons.HAGWeapon;
+import megamek.common.weapons.ISSnubNosePPC;
+import megamek.common.weapons.LBXACWeapon;
+import megamek.common.weapons.LRMWeapon;
+import megamek.common.weapons.MGWeapon;
+import megamek.common.weapons.PulseLaserWeapon;
+import megamek.common.weapons.SRMWeapon;
+import megamek.common.weapons.UACWeapon;
 
-public class StringUtils{ 
- 
+public class StringUtils {
+
     public static Comparator<? super EquipmentType> equipmentTypeComparator() {
         return new Comparator<EquipmentType>() {
             public int compare(EquipmentType eq1, EquipmentType eq2) {
@@ -31,6 +47,74 @@ public class StringUtils{
             }
         };
     }
-    
-}
 
+    public static String getEquipmentInfo(Entity unit, Mounted mount) {
+        String info = "";
+
+        if (mount.getType() instanceof WeaponType) {
+            WeaponType weapon = (WeaponType) mount.getType();
+            if (weapon.getDamage() < 0) {
+                if (weapon instanceof SRMWeapon) {
+                    info = "2/Msl [M,C]";
+                } else if (weapon instanceof LRMWeapon) {
+                    info = "1/Msl [M,C,S]";
+                } else if (weapon instanceof ATMWeapon) {
+                    info = "3/2/1 [M,C,S]";
+                } else {
+                    info = Integer.toString(weapon.getRackSize());
+                }
+            } else if ( weapon instanceof UACWeapon ) {
+                info = Integer.toString(weapon.getDamage());
+                info += "/Sht [DB,R,C]"; 
+            } else if ( weapon instanceof ISSnubNosePPC ) {
+                info = "10/8/5 [DE,V]";
+            } else {
+                info = Integer.toString(weapon.getDamage());
+                info += " [";
+
+                if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
+                    info += "DB,";
+                }
+                if ( UnitUtil.isAMS(weapon) ) {
+                    info += "PD,";
+                } else if (weapon instanceof PulseLaserWeapon) {
+                    info += "P,";
+                } else if (weapon instanceof EnergyWeapon) {
+                    info += "DE,";
+                }
+
+                if (weapon instanceof LBXACWeapon || weapon instanceof HAGWeapon) {
+                    info += "C,F,";
+                }
+
+                if ( weapon instanceof UACWeapon ) {
+                    info += "R,";
+                }
+                if (UnitUtil.hasSwitchableAmmo(weapon)) {
+                    info += "S,";
+                }
+
+                if (weapon instanceof MGWeapon) {
+                    info += "AI,";
+                }
+
+                if (weapon instanceof FlamerWeapon) {
+                    info += "H,AI,";
+                }
+
+                if (weapon.isExplosive()) {
+                    info += "X,";
+                }
+
+                info = info.substring(0, info.length() - 1) + "]";
+
+            }
+        } else if ( mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_CLUB) ) {
+            info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false));
+        }
+            else {
+            info = "  [E]";
+        }
+        return info;
+    }
+}

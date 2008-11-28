@@ -26,6 +26,17 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
+import megamek.common.WeaponType;
+import megamek.common.weapons.CLAMS;
+import megamek.common.weapons.CLLaserAMS;
+import megamek.common.weapons.EnergyWeapon;
+import megamek.common.weapons.HAGWeapon;
+import megamek.common.weapons.HVACWeapon;
+import megamek.common.weapons.ISAMS;
+import megamek.common.weapons.ISLaserAMS;
+import megamek.common.weapons.MGWeapon;
+import megamek.common.weapons.ThunderBoltWeapon;
+import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.Weapon;
 
 public class UnitUtil {
@@ -677,6 +688,45 @@ public class UnitUtil {
                 firstEmpty = -1;
             }
         }
+    }
+    
+    public static boolean isAMS(WeaponType weapon ) {
+        return weapon instanceof ISAMS || weapon instanceof CLAMS || weapon instanceof CLLaserAMS || weapon instanceof ISLaserAMS;
+    }
+    
+    public static boolean hasSwitchableAmmo(WeaponType weapon ) {
+        
+        
+        if ( weapon instanceof EnergyWeapon ) {
+            return false;
+        }
+        
+        if ( weapon instanceof UACWeapon ) {
+            return false; 
+        }
+        
+        if ( weapon instanceof HVACWeapon ) {
+            return false;
+        }
+        
+        if ( weapon instanceof HAGWeapon ) {
+            return false;
+        }
+        
+        if ( weapon instanceof MGWeapon ) {
+            return false;
+        }
+        
+        if ( UnitUtil.isAMS(weapon) ) {
+            return false;
+        }
+        
+        if ( weapon instanceof ThunderBoltWeapon ) {
+            return false;
+        }
+        
+        
+        return true;
     }
 
 }
