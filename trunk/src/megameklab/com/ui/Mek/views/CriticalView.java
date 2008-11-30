@@ -112,22 +112,29 @@ public class CriticalView extends IView {
                             Mounted m = cs.getMount();
                             //Critical didn't get removed.  Remove it now.
                             if ( m == null ) {
-                                unit.setCritical(location, slot, null);
-                                if (showEmpty) {
-                                    critNames.add(MtfFile.EMPTY);
-                                }
-                            } else {
-                                StringBuffer critName = new StringBuffer(m.getName());
-                                if (critName.length() > 15){
-                                    critName.setLength(15);
-                                    critName.append("...");
-                                }
-                                if ( m.isRearMounted() ){
-                                    critName.append("(R)");
-                                }
                                 
-                                critNames.add(critName.toString());
+                                m = unit.getEquipment(cs.getIndex());
+                                
+                                if ( m == null ) {
+                                    unit.setCritical(location, slot, null);
+                                    if (showEmpty) {
+                                        critNames.add(MtfFile.EMPTY);
+                                    }
+                                    continue;
+                                }
+                                cs.setMount(m);
+                            } 
+                            StringBuffer critName = new StringBuffer(m.getName());
+                            if (critName.length() > 15){
+                                critName.setLength(15);
+                                critName.append("...");
                             }
+                            if ( m.isRearMounted() ){
+                                critName.append("(R)");
+                            }
+                            
+                            critNames.add(critName.toString());
+                        
                         }catch (Exception ex) {
                             ex.printStackTrace();
                         }

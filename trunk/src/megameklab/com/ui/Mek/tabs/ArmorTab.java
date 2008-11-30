@@ -76,10 +76,7 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener, Ke
         this.add(armor);
         SpringLayoutHelper.setupSpringGrid(this, 1);
         setTotalTonnage();
-        refresh();
-
         addAllListeners();
-
     }
 
     public void refresh() {
@@ -102,7 +99,9 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener, Ke
             unit.setStructureType(structureCombo.getSelectedIndex());
             removeArmorMounts();
             createArmorMounts();
-            refresh.refreshAll();
+            if ( refresh != null ) {
+                refresh.refreshAll();
+            }
         }
         addAllListeners();
     }
@@ -261,6 +260,18 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener, Ke
         armorTonnage.setText(myFormatter.format(currentTonnage));
     }
 
+    public void setArmorType(int type) {
+        removeAllListeners();
+        this.armorCombo.setSelectedIndex(type);
+        addAllListeners();
+    }
+    
+    public void setStructureType(int type) {
+        removeAllListeners();
+        this.structureCombo.setSelectedIndex(type);
+        addAllListeners();
+    }
+    
     public void keyPressed(KeyEvent arg0) {
         // TODO Auto-generated method stub
         
