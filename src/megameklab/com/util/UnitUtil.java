@@ -30,6 +30,7 @@ import megamek.common.WeaponType;
 import megamek.common.weapons.CLAMS;
 import megamek.common.weapons.CLLaserAMS;
 import megamek.common.weapons.EnergyWeapon;
+import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.HVACWeapon;
 import megamek.common.weapons.ISAMS;
@@ -698,6 +699,10 @@ public class UnitUtil {
         
         
         if ( weapon instanceof EnergyWeapon ) {
+            return false;
+        }
+        
+        if ( weapon instanceof GaussWeapon ) {
             return false;
         }
         

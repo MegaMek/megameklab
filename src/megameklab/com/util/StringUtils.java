@@ -24,10 +24,12 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
+import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
+import megamek.common.weapons.ISSilverBulletGauss;
 import megamek.common.weapons.ISSnubNosePPC;
 import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.LRMWeapon;
@@ -60,14 +62,14 @@ public class StringUtils {
                     info = "1/Msl [M,C,S]";
                 } else if (weapon instanceof ATMWeapon) {
                     info = "3/2/1 [M,C,S]";
+                } else if ( weapon instanceof ISSnubNosePPC ) {
+                    info = "10/8/5 [DE,V]";
                 } else {
                     info = Integer.toString(weapon.getRackSize());
                 }
             } else if ( weapon instanceof UACWeapon ) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R,C]"; 
-            } else if ( weapon instanceof ISSnubNosePPC ) {
-                info = "10/8/5 [DE,V]";
             } else {
                 info = Integer.toString(weapon.getDamage());
                 info += " [";
@@ -83,15 +85,18 @@ public class StringUtils {
                     info += "DE,";
                 }
 
-                if (weapon instanceof LBXACWeapon || weapon instanceof HAGWeapon) {
-                    info += "C,F,";
+                if (weapon instanceof LBXACWeapon) {
+                    info += "C/F/";
+                } else if ( weapon instanceof HAGWeapon || weapon instanceof ISSilverBulletGauss) {
+                    info += "C/F,";
+                }
+                
+                if (UnitUtil.hasSwitchableAmmo(weapon)) {
+                    info += "S,";
                 }
 
                 if ( weapon instanceof UACWeapon ) {
                     info += "R,";
-                }
-                if (UnitUtil.hasSwitchableAmmo(weapon)) {
-                    info += "S,";
                 }
 
                 if (weapon instanceof MGWeapon) {
@@ -102,7 +107,7 @@ public class StringUtils {
                     info += "H,AI,";
                 }
 
-                if (weapon.isExplosive()) {
+                if (weapon.isExplosive() && !(weapon instanceof ACWeapon)) {
                     info += "X,";
                 }
 

@@ -16,13 +16,22 @@
 
 package megameklab.com.util;
 
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.font.TextAttribute;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 import javax.swing.ImageIcon;
 
+import megamek.common.AmmoType;
 import megamek.common.BipedMech;
 import megamek.common.Entity;
+import megamek.common.Mech;
+import megamek.common.Mounted;
 import megamek.common.QuadMech;
 
 
@@ -145,6 +154,235 @@ public class ImageHelper {
         }
         
         return fluff;
+    }
+
+    public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d) {
+        int qtyPoint = 26;
+        int typePoint = 38;
+        int locPoint = 109;
+        int heatPoint = 128;
+        int damagePoint = 142;
+        int minPoint = 167;
+        int shtPoint = 181;
+        int medPoint = 199;
+        int longPoint = 215;
+        int linePoint = 204;
+
+        int lineFeed = 9;
+
+        boolean newLineNeeded = false;
+
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Mech.LOC_LLEG + 1);
+
+        for (int pos = 0; pos <= Mech.LOC_LLEG; pos++) {
+            equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
+        }
+
+        for (Mounted eq : mech.getEquipment()) {
+
+            if (eq.getType() instanceof AmmoType || eq.getLocation() == Mech.LOC_NONE || !UnitUtil.isPrintableEquipment(eq.getType())) {
+                continue;
+            }
+
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
+
+            if (eqHash.containsKey(eq.getName())) {
+                EquipmentInfo eqi = eqHash.get(eq.getName());
+
+                if (eq.getType().getTechLevel() != eqi.techLevel) {
+                    eqi = new EquipmentInfo(mech,eq);
+                } else {
+                    eqi.count++;
+                }
+                eqHash.put(eq.getName(), eqi);
+            } else {
+                EquipmentInfo eqi = new EquipmentInfo(mech,eq);
+                eqHash.put(eq.getName(), eqi);
+            }
+
+        }
+
+        Font font = new Font("Eurostile LT Std", Font.BOLD, 10);
+        g2d.setFont(font);
+
+        for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
+
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
+
+            if (eqHash.size() < 1) {
+                continue;
+            }
+
+            int count = 0;
+
+            for (EquipmentInfo eqi : eqHash.values()) {
+                newLineNeeded = false;
+
+                if (count >= 12) {
+                    break;
+                }
+                font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+                g2d.setFont(font);
+
+                g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
+                String name = eqi.name.trim();
+
+                if (eqi.isRear) {
+                    name += "(R)";
+                }
+
+                if (name.length() > 70) {
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 1);
+                    g2d.setFont(font);
+                } else if (name.length() > 60) {
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 2);
+                    g2d.setFont(font);
+                } else if (name.length() > 50) {
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 3);
+                    g2d.setFont(font);
+                } else if (name.length() > 40) {
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 4);
+                    g2d.setFont(font);
+                } else if (name.length() > 30) {
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 5);
+                    g2d.setFont(font);
+                } else if (name.length() > 20) {
+                    font = new Font("Eurostile LT Std", Font.PLAIN, 6);
+                    g2d.setFont(font);
+                }
+
+                if (eqi.c3Level == eqi.C3I) {
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font);
+                } else if (eqi.c3Level == eqi.C3S) {
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font);
+                } else if (eqi.c3Level == eqi.C3M) {
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font);
+                } else {
+                    g2d.drawString(name, typePoint, linePoint);
+                }
+                font = new Font("Eurostile Regular", Font.PLAIN, 7);
+                g2d.setFont(font);
+
+                g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
+                if (eqi.isWeapon) {
+                    g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
+
+                    if (eqi.isMML) {
+                        g2d.drawString("[M,S,C]", damagePoint, linePoint);
+                        linePoint += lineFeed;
+                        g2d.drawString("LRM", typePoint, linePoint);
+                        g2d.drawString("1/Msl", damagePoint, linePoint);
+                        g2d.drawString("6", minPoint, linePoint);
+                        g2d.drawString("7", shtPoint, linePoint);
+                        g2d.drawString("14", medPoint, linePoint);
+                        g2d.drawString("21", longPoint, linePoint);
+                        linePoint += lineFeed;
+                        g2d.drawString("SRM", typePoint, linePoint);
+                        g2d.drawString("2/Msl", damagePoint, linePoint);
+                        g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
+                        g2d.drawString("3", shtPoint, linePoint);
+                        g2d.drawString("6", medPoint, linePoint);
+                        g2d.drawString("9", longPoint, linePoint);
+                        
+                    } else if (eqi.isATM) {
+                        g2d.drawString("[M,S,C]", damagePoint, linePoint);
+                        linePoint += lineFeed;
+                        g2d.drawString("Standard", typePoint, linePoint);
+                        g2d.drawString("2/Msl", damagePoint, linePoint);
+                        g2d.drawString("4", minPoint, linePoint);
+                        g2d.drawString("5", shtPoint, linePoint);
+                        g2d.drawString("10", medPoint, linePoint);
+                        g2d.drawString("15", longPoint, linePoint);
+                        linePoint += lineFeed;
+                        g2d.drawString("Extended-Range", typePoint, linePoint);
+                        g2d.drawString("1/Msl", damagePoint, linePoint);
+                        g2d.drawString("4", minPoint, linePoint);
+                        g2d.drawString("9", shtPoint, linePoint);
+                        g2d.drawString("18", medPoint, linePoint);
+                        g2d.drawString("27", longPoint, linePoint);
+                        linePoint += lineFeed;
+                        g2d.drawString("High-Explosive", typePoint, linePoint);
+                        g2d.drawString("3/Msl", damagePoint, linePoint);
+                        g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
+                        g2d.drawString("3", shtPoint, linePoint);
+                        g2d.drawString("6", medPoint, linePoint);
+                        g2d.drawString("9", longPoint, linePoint);
+                        
+                    } else {
+                        if (eqi.damage.trim().length() > 6) {
+                            g2d.drawString(eqi.damage.substring(0, eqi.damage.indexOf('[')), damagePoint, linePoint);
+                            String damageInfo = eqi.damage.substring(eqi.damage.indexOf('['));
+                            if (damageInfo.length() <= 4) {
+                                g2d.drawString(damageInfo, damagePoint, linePoint + lineFeed);
+                            } else if (damageInfo.length() <= 7) {
+                                g2d.drawString(damageInfo, damagePoint - damageInfo.length() / 2, linePoint + lineFeed);
+                            } else {
+                                g2d.drawString(damageInfo, damagePoint - damageInfo.length(), linePoint + lineFeed);
+                            }
+                            newLineNeeded = true;
+                        } else {
+                            g2d.drawString(eqi.damage, damagePoint, linePoint);
+                        }
+                        if (eqi.minRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
+                        } else {
+                            g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
+                        }
+                        g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
+                        g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
+                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                    }
+                } else {
+                    g2d.drawLine(heatPoint, linePoint - 2, heatPoint + 6, linePoint - 2);
+                    g2d.drawString(eqi.damage, damagePoint, linePoint);
+                    g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
+                    g2d.drawLine(shtPoint, linePoint - 2, shtPoint + 6, linePoint - 2);
+                    g2d.drawLine(medPoint, linePoint - 2, medPoint + 6, linePoint - 2);
+                    g2d.drawLine(longPoint, linePoint - 2, longPoint + 6, linePoint - 2);
+
+                }
+
+                linePoint += lineFeed;
+                if (newLineNeeded) {
+                    linePoint += lineFeed;
+                }
+                count++;
+            }
+        }
+
+    }
+
+    public static void printC3iName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
+        HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
+        attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+        g2d.drawString("Improved C  CPU", lineStart, linePoint);
+        font = font.deriveFont(attrMap);
+        g2d.setFont(font);
+
+        if (font.isBold()) {
+            g2d.drawString("3", lineStart + 39, linePoint);
+        } else {
+            g2d.drawString("3", lineStart + 36, linePoint);
+        }
+    }
+
+    public static void printC3sName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
+        HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
+        attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+        g2d.drawString("C  Slave", lineStart, linePoint);
+        font = font.deriveFont(attrMap);
+        g2d.setFont(font);
+        g2d.drawString("3", lineStart + 5, linePoint);
+
+    }
+
+    public static void printC3mName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
+        HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
+        attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+        g2d.drawString("C  Master", lineStart, linePoint);
+        font = font.deriveFont(attrMap);
+        g2d.setFont(font);
+        g2d.drawString("3", lineStart + 5, linePoint);
     }
 
 

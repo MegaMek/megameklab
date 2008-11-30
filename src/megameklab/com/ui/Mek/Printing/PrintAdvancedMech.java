@@ -29,18 +29,13 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
-import megamek.common.TechConstants;
-import megamek.common.WeaponType;
-import megamek.common.weapons.ATMWeapon;
-import megamek.common.weapons.LRMWeapon;
-import megamek.common.weapons.SRMWeapon;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
 public class PrintAdvancedMech implements Printable {
@@ -367,118 +362,8 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
-        int qtyPoint = 26;
-        int typePoint = 38;
-        int locPoint = 109;
-        int heatPoint = 128;
-        int damagePoint = 145;
-        int minPoint = 167;
-        int shtPoint = 181;
-        int medPoint = 199;
-        int longPoint = 215;
-        int linePoint = 210;
 
-        int lineFeed = 11;
-
-        ArrayList<Hashtable<String, equipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, equipmentInfo>>(Mech.LOC_LLEG + 1);
-
-        for (int pos = 0; pos <= Mech.LOC_LLEG; pos++) {
-            equipmentLocations.add(pos, new Hashtable<String, equipmentInfo>());
-        }
-
-        for (Mounted eq : mech.getEquipment()) {
-
-            if (eq.getType() instanceof AmmoType || eq.getLocation() == Mech.LOC_NONE || !UnitUtil.isPrintableEquipment(eq.getType())) {
-                continue;
-            }
-
-            Hashtable<String, equipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
-
-            if (eqHash.containsKey(eq.getName())) {
-                equipmentInfo eqi = eqHash.get(eq.getName());
-
-                if (eq.getType().getTechLevel() != eqi.techLevel) {
-                    eqi = new equipmentInfo(eq);
-                } else {
-                    eqi.count++;
-                }
-                eqHash.put(eq.getName(), eqi);
-            } else {
-                equipmentInfo eqi = new equipmentInfo(eq);
-                eqHash.put(eq.getName(), eqi);
-            }
-
-        }
-
-        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
-        g2d.setFont(font);
-
-        for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
-
-            Hashtable<String, equipmentInfo> eqHash = equipmentLocations.get(pos);
-
-            if (eqHash.size() < 1) {
-                continue;
-            }
-
-            int count = 0;
-
-            for (equipmentInfo eqi : eqHash.values()) {
-                if (count >= 12) {
-                    break;
-                }
-                font = new Font("Eurostile Bold", Font.BOLD, 8);
-                g2d.setFont(font);
-                
-                g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
-                String name = eqi.name.trim();
-
-                if (eqi.isRear) {
-                    name += "(R)";
-                }
-
-                if (name.length() > 70) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 1);
-                    g2d.setFont(font);
-                }else if (name.length() > 60) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 2);
-                    g2d.setFont(font);
-                }else if (name.length() > 50) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 3);
-                    g2d.setFont(font);
-                }else if (name.length() > 40) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 4);
-                    g2d.setFont(font);
-                }else if (name.length() > 30) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 5);
-                    g2d.setFont(font);
-                }else if (name.length() > 20) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 6);
-                    g2d.setFont(font);
-                }else if (name.length() >= 10) {
-                    font = new Font("Eurostile Bold", Font.BOLD, 7);
-                    g2d.setFont(font);
-                }
-
-
-                g2d.drawString(name, typePoint, linePoint);
-                font = new Font("Eurostile Bold", Font.BOLD, 8);
-                g2d.setFont(font);
-                
-                g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
-                if (eqi.isWeapon) {
-                    g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
-                    g2d.drawString(eqi.damage, damagePoint, linePoint);
-                    g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
-                    g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
-                    g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
-                    g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
-                }
-                linePoint += lineFeed;
-                count++;
-            }
-        }
-
+        ImageHelper.printMechWeaponsNEquipment(mech, g2d);
     }
 
     public void print() {
@@ -510,50 +395,6 @@ public class PrintAdvancedMech implements Printable {
         }
     }
 
-    private class equipmentInfo {
-        public int count = 0;
-        public String name = "";
-        public int minRange = 0;
-        public int shtRange = 0;
-        public int medRange = 0;
-        public int longRange = 0;
-        public String damage = "";
-        public int heat = 0;
-        public int techLevel = TechConstants.T_INTRO_BOXSET;
-        public boolean isWeapon = false;
-        public boolean isRear = false;
-
-        public equipmentInfo(Mounted mount) {
-            this.name = mount.getName();
-            this.count = 1;
-            this.techLevel = mount.getType().getTechLevel();
-            this.isRear = mount.isRearMounted();
-
-            if (mount.getType() instanceof WeaponType) {
-                WeaponType weapon = (WeaponType) mount.getType();
-                this.minRange = Math.max(0, weapon.minimumRange);
-                this.isWeapon = true;
-                if (weapon.getDamage() < 0) {
-                    if (weapon instanceof SRMWeapon) {
-                        damage = "2/hit";
-                    } else if (weapon instanceof LRMWeapon) {
-                        damage = "1/hit";
-                    } else if (weapon instanceof ATMWeapon) {
-                        damage = "3/2/1";
-                    } else {
-                        damage = Integer.toString(weapon.getRackSize());
-                    }
-                } else {
-                    this.damage = Integer.toString(weapon.getDamage());
-                }
-                this.shtRange = weapon.shortRange;
-                this.medRange = weapon.mediumRange;
-                this.longRange = weapon.longRange;
-                this.heat = weapon.getHeat();
-            }
-        }
-    }
-    
     private void printRLArmor(Graphics2D g2d) {
         Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);

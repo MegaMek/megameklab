@@ -7,6 +7,10 @@ V 0.0.0.8-dev
 + BA Light Active Probe showing up in Mek Equipment List
 + Record Sheet Image printed based on Unit Name.
 + Updated Record Sheets to show weapon damage types
++ New MegaMek.jar
++ Updated Record Sheets to make LT RT and CT pips more dynamic for Bipeds
++ Updated Ammo Short Names for MML and LB-X
++ Updated Damage notation for IS Snubnose PPC
 
 V 0.0.0.7 (11/12/08 11:07 PDT)
 + Bug: Support PPC showing up for Mechs

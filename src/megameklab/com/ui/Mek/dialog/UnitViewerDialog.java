@@ -56,7 +56,7 @@ import javax.swing.event.ListSelectionListener;
 
 import megameklab.com.util.SpringLayoutHelper;
 
-import megamek.client.ui.swing.MechView;
+import megamek.client.ui.MechView;
 import megamek.client.ui.swing.UnitFailureDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Entity;
