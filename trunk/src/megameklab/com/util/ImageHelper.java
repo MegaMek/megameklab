@@ -170,7 +170,7 @@ public class ImageHelper {
         int longPoint = 215;
         int linePoint = 204;
 
-        int lineFeed = 9;
+        int lineFeed = 10;
 
         boolean newLineNeeded = false;
 
@@ -204,7 +204,7 @@ public class ImageHelper {
 
         }
 
-        Font font = new Font("Eurostile LT Std", Font.BOLD, 10);
+        Font font = new Font("Eurostile", Font.BOLD, 10);
         g2d.setFont(font);
 
         for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
@@ -223,29 +223,29 @@ public class ImageHelper {
                 if (count >= 12) {
                     break;
                 }
-                font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+                font = new Font("Eurostile", Font.PLAIN, 7);
                 g2d.setFont(font);
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
                 if (name.length() > 70) {
-                    font = new Font("Eurostile LT Std", Font.PLAIN, 1);
+                    font = new Font("Eurostile", Font.PLAIN, 1);
                     g2d.setFont(font);
                 } else if (name.length() > 60) {
-                    font = new Font("Eurostile LT Std", Font.PLAIN, 2);
+                    font = new Font("Eurostile", Font.PLAIN, 2);
                     g2d.setFont(font);
                 } else if (name.length() > 50) {
-                    font = new Font("Eurostile LT Std", Font.PLAIN, 3);
+                    font = new Font("Eurostile", Font.PLAIN, 3);
                     g2d.setFont(font);
                 } else if (name.length() > 40) {
-                    font = new Font("Eurostile LT Std", Font.PLAIN, 4);
+                    font = new Font("Eurostile", Font.PLAIN, 4);
                     g2d.setFont(font);
                 } else if (name.length() > 30) {
-                    font = new Font("Eurostile LT Std", Font.PLAIN, 5);
+                    font = new Font("Eurostile", Font.PLAIN, 5);
                     g2d.setFont(font);
                 } else if (name.length() > 20) {
-                    font = new Font("Eurostile LT Std", Font.PLAIN, 6);
+                    font = new Font("Eurostile", Font.PLAIN, 6);
                     g2d.setFont(font);
                 }
 
@@ -258,7 +258,7 @@ public class ImageHelper {
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
-                font = new Font("Eurostile Regular", Font.PLAIN, 7);
+                font = new Font("Eurostile", Font.PLAIN, 7);
                 g2d.setFont(font);
 
                 g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
@@ -267,7 +267,7 @@ public class ImageHelper {
 
                     if (eqi.isMML) {
                         ImageHelper.printCenterString(g2d,"[M,S,C]", font , damagePoint, linePoint);
-                        linePoint += lineFeed;
+                        linePoint += lineFeed-2;
                         
                         g2d.drawString("LRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d,"1/Msl", font , damagePoint, linePoint);
@@ -275,7 +275,7 @@ public class ImageHelper {
                         g2d.drawString("7", shtPoint, linePoint);
                         g2d.drawString("14", medPoint, linePoint);
                         g2d.drawString("21", longPoint, linePoint);
-                        linePoint += lineFeed;
+                        linePoint += lineFeed-2;
                         
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d,"2/Msl", font , damagePoint, linePoint);
@@ -286,7 +286,7 @@ public class ImageHelper {
                         
                     } else if (eqi.isATM) {
                         ImageHelper.printCenterString(g2d,"[M,S,C]", font , damagePoint, linePoint);
-                        linePoint += lineFeed;
+                        linePoint += lineFeed-2;
 
                         ImageHelper.printCenterString(g2d,"Standard", font , damagePoint, linePoint);
                         g2d.drawString("2/Msl", damagePoint, linePoint);
@@ -294,7 +294,7 @@ public class ImageHelper {
                         g2d.drawString("5", shtPoint, linePoint);
                         g2d.drawString("10", medPoint, linePoint);
                         g2d.drawString("15", longPoint, linePoint);
-                        linePoint += lineFeed;
+                        linePoint += lineFeed-2;
                         
                         ImageHelper.printCenterString(g2d,"Extended-Range", font , damagePoint, linePoint);
                         g2d.drawString("1/Msl", damagePoint, linePoint);
@@ -302,7 +302,7 @@ public class ImageHelper {
                         g2d.drawString("9", shtPoint, linePoint);
                         g2d.drawString("18", medPoint, linePoint);
                         g2d.drawString("27", longPoint, linePoint);
-                        linePoint += lineFeed;
+                        linePoint += lineFeed-2;
 
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d,"3/Msl", font , damagePoint, linePoint);
@@ -313,8 +313,12 @@ public class ImageHelper {
                         
                     } else {
                         if (eqi.damage.trim().length() > 6) {
+                            font = new Font("Eurostile", Font.PLAIN, 6);
+                            g2d.setFont(font);
                             ImageHelper.printCenterString(g2d,eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            ImageHelper.printCenterString(g2d,eqi.damage.substring(eqi.damage.indexOf('[')), font , damagePoint, linePoint + lineFeed);
+                            font = new Font("Eurostile", Font.PLAIN, 7);
+                            g2d.setFont(font);
+                            ImageHelper.printCenterString(g2d,eqi.damage.substring(eqi.damage.indexOf('[')), font , damagePoint, linePoint + lineFeed-2);
                             newLineNeeded = true;
                         } else {
                             ImageHelper.printCenterString(g2d,eqi.damage, font , damagePoint, linePoint);
@@ -355,9 +359,9 @@ public class ImageHelper {
         g2d.setFont(font);
 
         if (font.isBold()) {
-            g2d.drawString("3", lineStart + 39, linePoint);
+            g2d.drawString("3", lineStart + 35, linePoint);
         } else {
-            g2d.drawString("3", lineStart + 36, linePoint);
+            g2d.drawString("3", lineStart + 32, linePoint);
         }
     }
 
@@ -367,7 +371,7 @@ public class ImageHelper {
         g2d.drawString("C  Slave", lineStart, linePoint);
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
-        g2d.drawString("3", lineStart + 5, linePoint);
+        g2d.drawString("3", lineStart + 2, linePoint);
 
     }
 
@@ -377,7 +381,7 @@ public class ImageHelper {
         g2d.drawString("C  Master", lineStart, linePoint);
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
-        g2d.drawString("3", lineStart + 5, linePoint);
+        g2d.drawString("3", lineStart + 2, linePoint);
     }
 
     public static void printCenterString(Graphics2D g2d, String info, Font font, int printWidth, int printHeight) {

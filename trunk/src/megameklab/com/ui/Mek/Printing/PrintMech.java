@@ -27,6 +27,7 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -54,6 +55,9 @@ public class PrintMech implements Printable {
     private int endMountx = 0;
     private int endMounty = 0;
 
+    private Font euroFont = null;
+    private Font euroBoldFont = null;
+    
     public PrintMech(ArrayList<Mech> list) {
         awtImage = ImageHelper.getRecordSheet(list.get(0), false);
         mechList = list;
@@ -61,6 +65,26 @@ public class PrintMech implements Printable {
         if (awtImage != null) {
             System.out.println("Width: " + awtImage.getWidth(null));
             System.out.println("Height: " + awtImage.getHeight(null));
+        }
+        
+        String fName = "./fonts/Eurosti.TTF";
+        try {
+          InputStream is = PrintMech.class.getResourceAsStream(fName);
+          euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (Exception ex) {
+          ex.printStackTrace();
+          System.err.println(fName + " not loaded.  Using serif font.");
+          euroFont = new Font("serif", Font.PLAIN, 24);
+        }
+        
+        fName = "./fonts/Eurostib.TTF";
+        try {
+          InputStream is = PrintMech.class.getResourceAsStream(fName);
+          euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (Exception ex) {
+          ex.printStackTrace();
+          System.err.println(fName + " not loaded.  Using serif font.");
+          euroFont = new Font("serif", Font.PLAIN, 24);
         }
     }
 
@@ -128,12 +152,12 @@ public class PrintMech implements Printable {
     }
 
     private void printMechData(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.BOLD, 10);
+        Font font = new Font("Eurostile", Font.BOLD, 10);
         g2d.setFont(font);
 
         g2d.drawString(mech.getChassis().toUpperCase() + " " + mech.getModel().toUpperCase(), 49, 121);
 
-        font = new Font("Eurostile LT Std", Font.PLAIN, 8);
+        font = new Font("Eurostile", Font.PLAIN, 8);
         g2d.setFont(font);
 
         g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
@@ -182,6 +206,9 @@ public class PrintMech implements Printable {
         Dimension column = new Dimension(504, 612);
         Dimension pipShift = new Dimension(9, 9);
 
+        font = new Font("Arial", Font.PLAIN, 8);
+        g2d.setFont(font);
+
         for (int pos = 1; pos <= mech.heatSinks(); pos++) {
             g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
@@ -197,7 +224,7 @@ public class PrintMech implements Printable {
 
     private void printArmor(Graphics2D g2d) {
         // Armor
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 6);
+        Font font = new Font("Eurostile", Font.PLAIN, 6);
         g2d.setFont(font);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485, 46);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 434, 60);
@@ -330,7 +357,7 @@ public class PrintMech implements Printable {
     }
 
     private void printRLArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension topColumn = new Dimension(499, 181);
         Dimension middleColumn = new Dimension(509, 252);
@@ -415,7 +442,7 @@ public class PrintMech implements Printable {
     }
 
     private void printLLArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension topColumn = new Dimension(443, 179);
         Dimension middleColumn = new Dimension(417, 247);
@@ -506,7 +533,7 @@ public class PrintMech implements Printable {
     }
 
     private void printLAArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension rightColumn = new Dimension(417, 77);
         Dimension centerColumn = new Dimension(409, 84);
@@ -590,7 +617,7 @@ public class PrintMech implements Printable {
     }
 
     private void printRAArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension rightColumn = new Dimension(548, 90);
         Dimension centerColumn = new Dimension(540, 84);
@@ -673,11 +700,11 @@ public class PrintMech implements Printable {
     }
 
     private void printLTArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension topColumn = new Dimension(430, 88);
         Dimension middleColumn = new Dimension(445, 126);
-        Dimension bottomColumn = new Dimension(438, 161);
+        Dimension bottomColumn = new Dimension(437, 161);
         Dimension topPipShift = new Dimension(6, 7);
         Dimension middlePipShift = new Dimension(6, 7);
         Dimension bottomPipShift = new Dimension(6, 7);
@@ -758,7 +785,7 @@ public class PrintMech implements Printable {
     }
 
     private void printLTRArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension topColumn = new Dimension(437, 312);
         Dimension pipShift = new Dimension(5, 5);
@@ -794,7 +821,7 @@ public class PrintMech implements Printable {
     }
 
     private void printRTArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension topColumn = new Dimension(520, 88);
         Dimension middleColumn = new Dimension(504, 126);
@@ -882,7 +909,7 @@ public class PrintMech implements Printable {
     }
 
     private void printRTRArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension topColumn = new Dimension(514, 312);
         Dimension pipShift = new Dimension(5, 5);
@@ -919,13 +946,14 @@ public class PrintMech implements Printable {
     }
 
     private void printCTArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension topColumn = new Dimension(464, 105);
         Dimension middleColumn = new Dimension(481, 172);
         Dimension bottomColumn = new Dimension(475, 185);
         Dimension pipShift = new Dimension(6, 6);
 
+        
         int totalArmor = mech.getArmor(Mech.LOC_CT);
 
         int pips = Math.min(55, totalArmor);
@@ -1032,7 +1060,7 @@ public class PrintMech implements Printable {
     }
 
     private void printHeadArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
 
         Dimension fillCircle = new Dimension(4, 4);
@@ -1103,7 +1131,7 @@ public class PrintMech implements Printable {
     }
 
     private void printCTRArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         Dimension topColumn = new Dimension(470, 299);
         Dimension pipShift = new Dimension(5, 5);
@@ -1135,7 +1163,7 @@ public class PrintMech implements Printable {
     }
 
     private void printLAStruct(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
         Dimension column = new Dimension(419, 413);
         Dimension pipShift = new Dimension(4, 4);
@@ -1165,7 +1193,7 @@ public class PrintMech implements Printable {
     }
 
     private void printLLStruct(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
         Dimension column = new Dimension(441, 475);
         Dimension pipShift = new Dimension(4, 4);
@@ -1210,7 +1238,7 @@ public class PrintMech implements Printable {
     }
 
     private void printRLStruct(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
         Dimension column = new Dimension(484, 475);
         Dimension pipShift = new Dimension(4, 4);
@@ -1255,7 +1283,7 @@ public class PrintMech implements Printable {
     }
 
     private void printRAStruct(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
         Dimension column = new Dimension(506, 413);
         Dimension pipShift = new Dimension(4, 4);
@@ -1285,7 +1313,7 @@ public class PrintMech implements Printable {
     }
 
     private void printLTStruct(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
         Dimension column = new Dimension(435, 415);
         Dimension pipShift = new Dimension(5, 5);
@@ -1372,7 +1400,7 @@ public class PrintMech implements Printable {
     }
 
     private void printRTStruct(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
         Dimension column = new Dimension(481, 415);
         Dimension pipShift = new Dimension(5, 5);
@@ -1458,7 +1486,7 @@ public class PrintMech implements Printable {
     }
 
     private void printCTStruct(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
         Dimension column = new Dimension(457, 423);
         Dimension pipShift = new Dimension(5, 5);
@@ -1504,12 +1532,12 @@ public class PrintMech implements Printable {
     }
 
     private void printHeadStruct(Graphics2D g2d) {
-        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
 
-        g2d.drawString("O",462, 398);
-        g2d.drawString("O",458, 405);
-        g2d.drawString("O",467, 405);
+        g2d.drawString("O",463, 403);
+        g2d.drawString("O",460, 410);
+        g2d.drawString("O",466, 410);
     }
 
     private void setCritConnection(Mounted m, int startx, int starty, int endx, int endy, Graphics2D g2d) {
@@ -1556,12 +1584,12 @@ public class PrintMech implements Printable {
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
         Font font;
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
-            font = new Font("Eurostile LT Std", Font.BOLD, 7);
+            font = new Font("Eurostile", Font.BOLD, 7);
             g2d.setFont(font);
             CriticalSlot cs = mech.getCritical(location, slot);
 
             if (cs == null) {
-                font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+                font = new Font("Eurostile", Font.PLAIN, 7);
                 g2d.setFont(font);
                 g2d.drawString("Roll Again", lineStart, linePoint);
                 setCritConnection(null, lineStart, linePoint, lineStart, linePoint, g2d);
@@ -1621,25 +1649,25 @@ public class PrintMech implements Printable {
                 }
 
                 if (!m.getType().isHittable()) {
-                    font = new Font("Eurostile LT Std", Font.PLAIN, 7);
+                    font = new Font("Eurostile", Font.PLAIN, 7);
                     g2d.setFont(font);
                 } else if (critName.length() >= 80) {
-                    font = new Font("Eurostile LT Std", Font.BOLD, 1);
+                    font = new Font("Eurostile", Font.BOLD, 1);
                     g2d.setFont(font);
                 } else if (critName.length() >= 70) {
-                    font = new Font("Eurostile LT Std", Font.BOLD, 2);
+                    font = new Font("Eurostile", Font.BOLD, 2);
                     g2d.setFont(font);
                 } else if (critName.length() >= 60) {
-                    font = new Font("Eurostile LT Std", Font.BOLD, 3);
+                    font = new Font("Eurostile", Font.BOLD, 3);
                     g2d.setFont(font);
                 } else if (critName.length() >= 50) {
-                    font = new Font("Eurostile LT Std", Font.BOLD, 4);
+                    font = new Font("Eurostile", Font.BOLD, 4);
                     g2d.setFont(font);
                 } else if (critName.length() >= 40) {
-                    font = new Font("Eurostile LT Std", Font.BOLD, 5);
+                    font = new Font("Eurostile", Font.BOLD, 5);
                     g2d.setFont(font);
                 } else if (critName.length() >= 30) {
-                    font = new Font("Eurostile LT Std", Font.BOLD, 6);
+                    font = new Font("Eurostile", Font.BOLD, 6);
                     g2d.setFont(font);
                 }
 
