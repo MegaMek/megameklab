@@ -17,9 +17,11 @@
 package megameklab.com.util;
 
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.font.TextAttribute;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,7 +163,7 @@ public class ImageHelper {
         int typePoint = 38;
         int locPoint = 109;
         int heatPoint = 128;
-        int damagePoint = 142;
+        int damagePoint = 150;
         int minPoint = 167;
         int shtPoint = 181;
         int medPoint = 199;
@@ -227,10 +229,6 @@ public class ImageHelper {
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                if (eqi.isRear) {
-                    name += "(R)";
-                }
-
                 if (name.length() > 70) {
                     font = new Font("Eurostile LT Std", Font.PLAIN, 1);
                     g2d.setFont(font);
@@ -268,41 +266,46 @@ public class ImageHelper {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
 
                     if (eqi.isMML) {
-                        g2d.drawString("[M,S,C]", damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d,"[M,S,C]", font , damagePoint, linePoint);
                         linePoint += lineFeed;
+                        
                         g2d.drawString("LRM", typePoint, linePoint);
-                        g2d.drawString("1/Msl", damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d,"1/Msl", font , damagePoint, linePoint);
                         g2d.drawString("6", minPoint, linePoint);
                         g2d.drawString("7", shtPoint, linePoint);
                         g2d.drawString("14", medPoint, linePoint);
                         g2d.drawString("21", longPoint, linePoint);
                         linePoint += lineFeed;
+                        
                         g2d.drawString("SRM", typePoint, linePoint);
-                        g2d.drawString("2/Msl", damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d,"2/Msl", font , damagePoint, linePoint);
                         g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
                         
                     } else if (eqi.isATM) {
-                        g2d.drawString("[M,S,C]", damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d,"[M,S,C]", font , damagePoint, linePoint);
                         linePoint += lineFeed;
-                        g2d.drawString("Standard", typePoint, linePoint);
+
+                        ImageHelper.printCenterString(g2d,"Standard", font , damagePoint, linePoint);
                         g2d.drawString("2/Msl", damagePoint, linePoint);
                         g2d.drawString("4", minPoint, linePoint);
                         g2d.drawString("5", shtPoint, linePoint);
                         g2d.drawString("10", medPoint, linePoint);
                         g2d.drawString("15", longPoint, linePoint);
                         linePoint += lineFeed;
-                        g2d.drawString("Extended-Range", typePoint, linePoint);
+                        
+                        ImageHelper.printCenterString(g2d,"Extended-Range", font , damagePoint, linePoint);
                         g2d.drawString("1/Msl", damagePoint, linePoint);
                         g2d.drawString("4", minPoint, linePoint);
                         g2d.drawString("9", shtPoint, linePoint);
                         g2d.drawString("18", medPoint, linePoint);
                         g2d.drawString("27", longPoint, linePoint);
                         linePoint += lineFeed;
+
                         g2d.drawString("High-Explosive", typePoint, linePoint);
-                        g2d.drawString("3/Msl", damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d,"3/Msl", font , damagePoint, linePoint);
                         g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
@@ -310,18 +313,11 @@ public class ImageHelper {
                         
                     } else {
                         if (eqi.damage.trim().length() > 6) {
-                            g2d.drawString(eqi.damage.substring(0, eqi.damage.indexOf('[')), damagePoint, linePoint);
-                            String damageInfo = eqi.damage.substring(eqi.damage.indexOf('['));
-                            if (damageInfo.length() <= 4) {
-                                g2d.drawString(damageInfo, damagePoint, linePoint + lineFeed);
-                            } else if (damageInfo.length() <= 7) {
-                                g2d.drawString(damageInfo, damagePoint - damageInfo.length() / 2, linePoint + lineFeed);
-                            } else {
-                                g2d.drawString(damageInfo, damagePoint - damageInfo.length(), linePoint + lineFeed);
-                            }
+                            ImageHelper.printCenterString(g2d,eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
+                            ImageHelper.printCenterString(g2d,eqi.damage.substring(eqi.damage.indexOf('[')), font , damagePoint, linePoint + lineFeed);
                             newLineNeeded = true;
                         } else {
-                            g2d.drawString(eqi.damage, damagePoint, linePoint);
+                            ImageHelper.printCenterString(g2d,eqi.damage, font , damagePoint, linePoint);
                         }
                         if (eqi.minRange > 0) {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
@@ -334,12 +330,11 @@ public class ImageHelper {
                     }
                 } else {
                     g2d.drawLine(heatPoint, linePoint - 2, heatPoint + 6, linePoint - 2);
-                    g2d.drawString(eqi.damage, damagePoint, linePoint);
+                    ImageHelper.printCenterString(g2d,eqi.damage, font , damagePoint-2, linePoint);
                     g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
                     g2d.drawLine(shtPoint, linePoint - 2, shtPoint + 6, linePoint - 2);
                     g2d.drawLine(medPoint, linePoint - 2, medPoint + 6, linePoint - 2);
                     g2d.drawLine(longPoint, linePoint - 2, longPoint + 6, linePoint - 2);
-
                 }
 
                 linePoint += lineFeed;
@@ -385,5 +380,18 @@ public class ImageHelper {
         g2d.drawString("3", lineStart + 5, linePoint);
     }
 
+    public static void printCenterString(Graphics2D g2d, String info, Font font, int printWidth, int printHeight) {
+        int textWidth = ImageHelper.getStringWidth(g2d, info, font);
+        
+        g2d.drawString(info, printWidth - (textWidth / 2), printHeight);
+       
+    }
+    
+    public static int getStringWidth(Graphics2D g2d, String info, Font font) {
+        FontMetrics fm   = g2d.getFontMetrics(font);
+        Rectangle2D rect = fm.getStringBounds(info, g2d);
+
+        return (int)(rect.getWidth());
+    }
 
 }

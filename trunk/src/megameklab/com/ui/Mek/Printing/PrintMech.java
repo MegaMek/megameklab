@@ -128,7 +128,7 @@ public class PrintMech implements Printable {
     }
 
     private void printMechData(Graphics2D g2d) {
-        Font font = new Font("Eurostile Eurostile LT Std", Font.BOLD, 10);
+        Font font = new Font("Eurostile LT Std", Font.BOLD, 10);
         g2d.setFont(font);
 
         g2d.drawString(mech.getChassis().toUpperCase() + " " + mech.getModel().toUpperCase(), 49, 121);
@@ -179,12 +179,11 @@ public class PrintMech implements Printable {
             g2d.drawString("Single", 502, 603);
         }
 
-        Dimension circle = new Dimension(7, 7);
         Dimension column = new Dimension(504, 612);
         Dimension pipShift = new Dimension(9, 9);
 
         for (int pos = 1; pos <= mech.heatSinks(); pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
 
             if (pos % 10 == 0) {
@@ -331,13 +330,12 @@ public class PrintMech implements Printable {
     }
 
     private void printRLArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile Regular", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(6, 6);
-        Dimension topColumn = new Dimension(499, 177);
-        Dimension middleColumn = new Dimension(509, 248);
-        Dimension bottomColumn = new Dimension(529, 266);
-        Dimension footColumn = new Dimension(519, 290);
+        Dimension topColumn = new Dimension(499, 181);
+        Dimension middleColumn = new Dimension(509, 252);
+        Dimension bottomColumn = new Dimension(529, 270);
+        Dimension footColumn = new Dimension(519, 294);
         Dimension pipShift = new Dimension(8, -2);
 
         int totalArmor = mech.getArmor(Mech.LOC_RLEG);
@@ -346,11 +344,16 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
 
+        int maxPipsPerTopColumn = 2;
+        if ( pips < 17 ) {
+            maxPipsPerTopColumn = 1;
+        }
+
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            g2d.drawString("O",topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
             topColumn.height += pipShift.height;
-            if (pos % 2 == 0) {
+            if (pos % maxPipsPerTopColumn == 0) {
                 pipShift.width *= -1;
                 topColumn.width += pipShift.width + 1;
                 pipShift.height *= -1;
@@ -370,7 +373,7 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
+            g2d.drawString("O",middleColumn.width, middleColumn.height);
             middleColumn.width += pipShift.width;
             middleColumn.height += pipShift.height;
             if (pos % 4 == 0) {
@@ -391,7 +394,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
+            g2d.drawString("O",bottomColumn.width, bottomColumn.height);
             bottomColumn.width += pipShift.width;
             bottomColumn.height += pipShift.height;
             if (pos % 2 == 0) {
@@ -405,20 +408,19 @@ public class PrintMech implements Printable {
         pips = Math.min(4, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(footColumn.width, footColumn.height, circle.width, circle.width);
+            g2d.drawString("O",footColumn.width, footColumn.height);
             footColumn.width += pipShift.width;
         }
 
     }
 
     private void printLLArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(6, 6);
-        Dimension topColumn = new Dimension(443, 175);
-        Dimension middleColumn = new Dimension(420, 243);
-        Dimension bottomColumn = new Dimension(430, 268);
-        Dimension footColumn = new Dimension(406, 290);
+        Dimension topColumn = new Dimension(443, 179);
+        Dimension middleColumn = new Dimension(417, 247);
+        Dimension bottomColumn = new Dimension(430, 272);
+        Dimension footColumn = new Dimension(406, 294);
         Dimension pipShift = new Dimension(8, 2);
 
         int totalArmor = mech.getArmor(Mech.LOC_LLEG);
@@ -427,11 +429,16 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
 
+        int maxPipsPerTopColumn = 2;
+        if ( pips < 17 ) {
+            maxPipsPerTopColumn = 1;
+        }
+
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            g2d.drawString("O",topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
             topColumn.height += pipShift.height;
-            if (pos % 2 == 0) {
+            if (pos % maxPipsPerTopColumn == 0) {
                 pipShift.width *= -1;
                 topColumn.width += pipShift.width - 1;
                 pipShift.height *= -1;
@@ -452,7 +459,7 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
+            g2d.drawString("O",middleColumn.width, middleColumn.height);
             middleColumn.width += pipShift.width;
             middleColumn.height += pipShift.height;
             if (pos % 4 == 0) {
@@ -477,7 +484,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
+            g2d.drawString("O",bottomColumn.width, bottomColumn.height);
             bottomColumn.width += pipShift.width;
             bottomColumn.height += pipShift.height;
             if (pos % 2 == 0) {
@@ -492,29 +499,35 @@ public class PrintMech implements Printable {
         pips = Math.min(4, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(footColumn.width, footColumn.height, circle.width, circle.width);
+            g2d.drawString("O",footColumn.width, footColumn.height);
             footColumn.width += pipShift.width;
         }
 
     }
 
     private void printLAArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(6, 6);
-        Dimension rightColumn = new Dimension(417, 73);
-        Dimension centerColumn = new Dimension(409, 80);
-        Dimension leftColumn = new Dimension(402, 86);
+        Dimension rightColumn = new Dimension(417, 77);
+        Dimension centerColumn = new Dimension(409, 84);
+        Dimension leftColumn = new Dimension(402, 90);
         Dimension pipShift = new Dimension(-1, 7);
 
         int totalArmor = mech.getArmor(Mech.LOC_LARM);
+
+        if (totalArmor < 1) {
+            return;
+        }
 
         int pips = Math.min(12, totalArmor);
 
         totalArmor -= pips;
 
+        if ( pips < 12 ) {
+            pipShift.height = (pipShift.height*12)/pips;
+        }
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(centerColumn.width, centerColumn.height, circle.width, circle.width);
+            g2d.drawString("O",centerColumn.width, centerColumn.height);
             centerColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 centerColumn.width += pipShift.width;
@@ -531,9 +544,13 @@ public class PrintMech implements Printable {
 
         pips = Math.min(12, totalArmor);
 
+        if ( pips < 8 ) {
+            pipShift.height = (pipShift.height*8)/pips;
+        }
+
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(rightColumn.width, rightColumn.height, circle.width, circle.width);
+            g2d.drawString("O",rightColumn.width, rightColumn.height);
             rightColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 rightColumn.width += pipShift.width;
@@ -551,10 +568,15 @@ public class PrintMech implements Printable {
 
         pips = Math.min(10, totalArmor);
 
+        if ( pips < 6 ) {
+            pipShift.height = (pipShift.height*6)/pips;
+            leftColumn.width -= 2;
+        }
+        
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(leftColumn.width, leftColumn.height, circle.width, circle.width);
+            g2d.drawString("O",leftColumn.width, leftColumn.height);
             leftColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 leftColumn.width += pipShift.width;
@@ -568,22 +590,29 @@ public class PrintMech implements Printable {
     }
 
     private void printRAArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(6, 6);
-        Dimension rightColumn = new Dimension(548, 86);
-        Dimension centerColumn = new Dimension(540, 80);
-        Dimension leftColumn = new Dimension(533, 73);
+        Dimension rightColumn = new Dimension(548, 90);
+        Dimension centerColumn = new Dimension(540, 84);
+        Dimension leftColumn = new Dimension(533, 77);
         Dimension pipShift = new Dimension(1, 7);
 
         int totalArmor = mech.getArmor(Mech.LOC_LARM);
+
+        if (totalArmor < 1) {
+            return;
+        }
 
         int pips = Math.min(12, totalArmor);
 
         totalArmor -= pips;
 
+        if ( pips < 12 ) {
+            pipShift.height = (pipShift.height*12)/pips;
+        }
+
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(centerColumn.width, centerColumn.height, circle.width, circle.width);
+            g2d.drawString("O",centerColumn.width, centerColumn.height);
             centerColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 centerColumn.width += pipShift.width;
@@ -601,8 +630,11 @@ public class PrintMech implements Printable {
         pips = Math.min(12, totalArmor);
 
         totalArmor -= pips;
+        if ( pips < 8 ) {
+            pipShift.height = (pipShift.height*8)/pips;
+        }
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(leftColumn.width, leftColumn.height, circle.width, circle.width);
+            g2d.drawString("O",leftColumn.width, leftColumn.height);
             leftColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 leftColumn.width += pipShift.width;
@@ -621,9 +653,13 @@ public class PrintMech implements Printable {
         pips = Math.min(10, totalArmor);
 
         totalArmor -= pips;
-
+        if ( pips < 6 ) {
+            pipShift.height = (pipShift.height*6)/pips;
+            leftColumn.width -= 2;
+        }
+        
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(rightColumn.width, rightColumn.height, circle.width, circle.width);
+            g2d.drawString("O",rightColumn.width, rightColumn.height);
             rightColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 rightColumn.width += pipShift.width;
@@ -637,12 +673,11 @@ public class PrintMech implements Printable {
     }
 
     private void printLTArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(5, 5);
-        Dimension topColumn = new Dimension(430, 84);
-        Dimension middleColumn = new Dimension(445, 122);
-        Dimension bottomColumn = new Dimension(438, 157);
+        Dimension topColumn = new Dimension(430, 88);
+        Dimension middleColumn = new Dimension(445, 126);
+        Dimension bottomColumn = new Dimension(438, 161);
         Dimension topPipShift = new Dimension(6, 7);
         Dimension middlePipShift = new Dimension(6, 7);
         Dimension bottomPipShift = new Dimension(6, 7);
@@ -658,9 +693,9 @@ public class PrintMech implements Printable {
 
 
         if (totalArmor < 36) {
-            topPipsPerLine = (totalArmor/10)+1;
-            topPipShift.width += 4-(totalArmor/10);
-            topPipShift.height += 3-(totalArmor/10);
+            topPipsPerLine = (int)Math.ceil((double)totalArmor/10d);
+            topPipShift.width += 4-(int)Math.ceil((double)totalArmor/10d);
+            topPipShift.height += Math.max(0, 2-(int)Math.ceil((double)totalArmor/10d));
             maxTopPips = Math.min(20,(totalArmor*60)/100);
             maxMiddlePips = (totalArmor*24)/100;
             maxBottemPips = totalArmor - (maxTopPips+maxMiddlePips);
@@ -673,7 +708,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            g2d.drawString("O",topColumn.width, topColumn.height);
             topColumn.width += topPipShift.width;
             if (pos % topPipsPerLine == 0) {
                 topColumn.height += topPipShift.height;
@@ -689,7 +724,7 @@ public class PrintMech implements Printable {
         pips = Math.min(maxMiddlePips, totalArmor);
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
+            g2d.drawString("O",middleColumn.width, middleColumn.height);
             middleColumn.width += middlePipShift.width;
             if (pos % middlePipsPerLine == 0) {
                 middleColumn.height += middlePipShift.height;
@@ -710,7 +745,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
+            g2d.drawString("O",bottomColumn.width, bottomColumn.height);
             bottomColumn.width += bottomPipShift.width;
             if (pos % 4 == 0) {
                 bottomColumn.height += bottomPipShift.height;
@@ -723,22 +758,30 @@ public class PrintMech implements Printable {
     }
 
     private void printLTRArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension topColumn = new Dimension(437, 308);
+        Dimension topColumn = new Dimension(437, 312);
         Dimension pipShift = new Dimension(5, 5);
-
+        int pipsPerLine = 5;
         int totalArmor = mech.getArmor(Mech.LOC_LT, true);
 
+        if ( totalArmor < 1 ) {
+            return;
+        }
+        
         int pips = Math.min(35, totalArmor);
 
         totalArmor -= pips;
 
+        if ( pips < 30 ) {
+            pipsPerLine = (int)Math.ceil((double)pips/5d);
+            pipShift.height += Math.max(0,4 - (pips/6));
+        }
+        
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            g2d.drawString("O",topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
-            if (pos % 5 == 0) {
+            if (pos % pipsPerLine == 0) {
                 topColumn.height += pipShift.height;
                 pipShift.width *= -1;
                 if (pos >= 30) {
@@ -751,12 +794,11 @@ public class PrintMech implements Printable {
     }
 
     private void printRTArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(5, 5);
-        Dimension topColumn = new Dimension(497, 84);
-        Dimension middleColumn = new Dimension(498, 122);
-        Dimension bottomColumn = new Dimension(496, 157);
+        Dimension topColumn = new Dimension(520, 88);
+        Dimension middleColumn = new Dimension(504, 126);
+        Dimension bottomColumn = new Dimension(512, 161);
         Dimension topPipShift = new Dimension(6, 7);
         Dimension middlePipShift = new Dimension(6, 7);
         Dimension bottomPipShift = new Dimension(6, 7);
@@ -772,9 +814,9 @@ public class PrintMech implements Printable {
 
 
         if (totalArmor < 36) {
-            topPipsPerLine = (totalArmor/10)+1;
-            topPipShift.width += 4-(totalArmor/10);
-            topPipShift.height += 3-(totalArmor/10);
+            topPipsPerLine = (int)Math.ceil((double)totalArmor/10d);
+            topPipShift.width += 4-(int)Math.ceil((double)totalArmor/10d);
+            topPipShift.height += Math.max(0, 2-(int)Math.ceil((double)totalArmor/10d));
             maxTopPips = Math.min(20,(totalArmor*60)/100);
             maxMiddlePips = (totalArmor*24)/100;
             maxBottemPips = totalArmor - (maxTopPips+maxMiddlePips);
@@ -788,12 +830,13 @@ public class PrintMech implements Printable {
 
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
-            topColumn.width += topPipShift.width;
+            //g2d.drawString("O",topColumn.width, topColumn.height);
+            g2d.drawString("O",topColumn.width, topColumn.height);
+            topColumn.width -= topPipShift.width;
             if (pos % topPipsPerLine == 0) {
                 topColumn.height += topPipShift.height;
                 topPipShift.width *= -1;
-                topColumn.width += topPipShift.width;
+                topColumn.width -= topPipShift.width;
             }
         }
 
@@ -805,18 +848,16 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
-            middleColumn.width += middlePipShift.width;
+            g2d.drawString("O",middleColumn.width, middleColumn.height);
+            middleColumn.width -= middlePipShift.width;
             if (pos % middlePipsPerLine == 0) {
                 middleColumn.height += middlePipShift.height;
                 middleColumn.width -= 1;
                 middlePipShift.width *= -1;
                 if ( middlePipsPerLine > 1) {
-                    middleColumn.width += middlePipShift.width;
+                    middleColumn.width -= middlePipShift.width;
                 }
-                
             }
-
         }
 
         if (totalArmor < 1) {
@@ -828,51 +869,61 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
-            bottomColumn.width += bottomPipShift.width;
+            g2d.drawString("O",bottomColumn.width, bottomColumn.height);
+            bottomColumn.width -= bottomPipShift.width;
             if (pos % 4 == 0) {
                 bottomColumn.height += bottomPipShift.height;
-                bottomColumn.width += 1;
+                bottomColumn.width -= 1;
                 bottomPipShift.width *= -1;
-                bottomColumn.width += bottomPipShift.width;
+                bottomColumn.width -= bottomPipShift.width;
             }
         }
 
     }
 
     private void printRTRArmor(Graphics2D g2d) {
-        Font font = new Font("Eurostile Bold", Font.BOLD, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension topColumn = new Dimension(495, 308);
+        Dimension topColumn = new Dimension(514, 312);
         Dimension pipShift = new Dimension(5, 5);
 
-        int totalArmor = mech.getArmor(Mech.LOC_RT, true);
+        int pipsPerLine = 5;
+        int totalArmor = mech.getArmor(Mech.LOC_LT, true);
 
+        if ( totalArmor < 1 ) {
+            return;
+        }
+        
         int pips = Math.min(35, totalArmor);
 
         totalArmor -= pips;
 
+        if ( pips < 30 ) {
+            pipsPerLine = (int)Math.ceil((double)pips/5d);
+            pipShift.height += Math.max(0,4 - (pips/6));
+        }
+        
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
-            topColumn.width += pipShift.width;
-            if (pos % 5 == 0) {
+            g2d.drawString("O",topColumn.width, topColumn.height);
+            topColumn.width -= pipShift.width;
+            if (pos % pipsPerLine == 0) {
                 topColumn.height += pipShift.height;
                 pipShift.width *= -1;
                 if (pos >= 30) {
-                    topColumn.width += pipShift.width;
+                    topColumn.width -= pipShift.width;
+                } else {
+                    topColumn.width -= pipShift.width * 2;
                 }
             }
         }
     }
 
     private void printCTArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.ITALIC, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(5, 5);
-        Dimension topColumn = new Dimension(464, 100);
-        Dimension middleColumn = new Dimension(481, 167);
-        Dimension bottomColumn = new Dimension(475, 180);
+        Dimension topColumn = new Dimension(464, 105);
+        Dimension middleColumn = new Dimension(481, 172);
+        Dimension bottomColumn = new Dimension(475, 185);
         Dimension pipShift = new Dimension(6, 6);
 
         int totalArmor = mech.getArmor(Mech.LOC_CT);
@@ -885,14 +936,14 @@ public class PrintMech implements Printable {
         if ( pips <= 35 ) {
             int pipsPerLine = 4;
             boolean threePerLine = true;
-            topColumn = new Dimension(462, 100);
-            Dimension fourRowColumn = new Dimension(462, 100);
-            Dimension threeRowColumn = new Dimension(466, 100);
+            topColumn = new Dimension(462, 105);
+            Dimension fourRowColumn = new Dimension(462, 105);
+            Dimension threeRowColumn = new Dimension(466, 105);
             pipShift.width += 3;
             pipShift.height += 3;
 
             for (int pos = 1; pos <= pips; pos++) {
-                g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+                g2d.drawString("O",topColumn.width, topColumn.height);
                 if ( pos == 14 ) {
                     pipShift.width -= 1;
                     fourRowColumn.width += 1;
@@ -922,18 +973,18 @@ public class PrintMech implements Printable {
         
         if ( pips <= 55 ) {
             int pipsPerLine = 4;
-            topColumn = new Dimension(464, 100);
+            topColumn = new Dimension(464, 105);
             if ( pips >= 50 ) {
-                topColumn = new Dimension(466, 100);
+                topColumn = new Dimension(466, 105);
             } else {
-                topColumn = new Dimension(464, 100);
+                topColumn = new Dimension(464, 105);
             }
 
             pipShift.width += Math.min(1,5-(pips/10));
             pipShift.height += 5-(pips/10);
 
             for (int pos = 1; pos <= pips; pos++) {
-                g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+                g2d.drawString("O",topColumn.width, topColumn.height);
                 topColumn.width += pipShift.width;
                 if (pos % pipsPerLine == 0) {
                     topColumn.height += pipShift.height;
@@ -945,7 +996,7 @@ public class PrintMech implements Printable {
         }
         
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            g2d.drawString("O",topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
             if (pos % 5 == 0) {
                 topColumn.height += pipShift.height;
@@ -962,7 +1013,7 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
+            g2d.drawString("O",middleColumn.width, middleColumn.height);
             middleColumn.width += pipShift.width;
             if (pos % 3 == 0) {
                 middleColumn.height += pipShift.height;
@@ -976,98 +1027,106 @@ public class PrintMech implements Printable {
             return;
         }
 
-        g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
+        g2d.drawString("O",bottomColumn.width, bottomColumn.height);
 
     }
 
     private void printHeadArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(5, 5);
-        Dimension fillCircle = new Dimension(3, 3);
+
+        Dimension fillCircle = new Dimension(4, 4);
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 1) {
-            g2d.setColor(Color.black);
-            g2d.fillOval(475, 69, circle.width, circle.height);
             g2d.setColor(Color.white);
-            g2d.fillOval(476, 70, fillCircle.width, fillCircle.height);
+            g2d.fillOval(476, 68, fillCircle.width, fillCircle.height);
+            g2d.setColor(Color.black);
+            g2d.drawString("O",475, 73);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 2) {
-            g2d.setColor(Color.black);
-            g2d.fillOval(472, 73, circle.width, circle.height);
             g2d.setColor(Color.white);
             g2d.fillOval(473, 74, fillCircle.width, fillCircle.height);
+            g2d.setColor(Color.black);
+            g2d.drawString("O",472, 79);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 3) {
-            g2d.setColor(Color.black);
-            g2d.fillOval(478, 73, circle.width, circle.height);
             g2d.setColor(Color.white);
             g2d.fillOval(479, 74, fillCircle.width, fillCircle.height);
+            g2d.setColor(Color.black);
+            g2d.drawString("O",478, 79);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 4) {
-            g2d.setColor(Color.black);
-            g2d.fillOval(469, 78, circle.width, circle.height);
             g2d.setColor(Color.white);
             g2d.fillOval(470, 79, fillCircle.width, fillCircle.height);
+            g2d.setColor(Color.black);
+            g2d.drawString("O",469, 84);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 5) {
-            g2d.setColor(Color.black);
-            g2d.fillOval(475, 78, circle.width, circle.height);
             g2d.setColor(Color.white);
             g2d.fillOval(476, 79, fillCircle.width, fillCircle.height);
+            g2d.setColor(Color.black);
+            g2d.drawString("O",475, 84);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 6) {
-            g2d.setColor(Color.black);
-            g2d.fillOval(481, 78, circle.width, circle.height);
             g2d.setColor(Color.white);
             g2d.fillOval(482, 79, fillCircle.width, fillCircle.height);
+            g2d.setColor(Color.black);
+            g2d.drawString("O",481, 84);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 7) {
-            g2d.setColor(Color.black);
-            g2d.fillOval(469, 83, circle.width, circle.height);
             g2d.setColor(Color.white);
-            g2d.fillOval(470, 84, fillCircle.width, fillCircle.height);
+            g2d.fillOval(470, 85, fillCircle.width, fillCircle.height);
+            g2d.setColor(Color.black);
+            g2d.drawString("O",469, 90);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 8) {
-            g2d.setColor(Color.black);
-            g2d.fillOval(475, 83, circle.width, circle.height);
             g2d.setColor(Color.white);
-            g2d.fillOval(476, 84, fillCircle.width, fillCircle.height);
+            g2d.fillOval(476, 85, fillCircle.width, fillCircle.height);
+            g2d.setColor(Color.black);
+            g2d.drawString("O",475, 90);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 9) {
-            g2d.setColor(Color.black);
-            g2d.fillOval(481, 83, circle.width, circle.height);
             g2d.setColor(Color.white);
-            g2d.fillOval(482, 84, fillCircle.width, fillCircle.height);
+            g2d.fillOval(482, 85, fillCircle.width, fillCircle.height);
+            g2d.setColor(Color.black);
+            g2d.drawString("O",481, 90);
         }
         g2d.setColor(Color.black);
     }
 
     private void printCTRArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension topColumn = new Dimension(470, 295);
+        Dimension topColumn = new Dimension(470, 299);
         Dimension pipShift = new Dimension(5, 5);
-
+        int pipsPerRow = 4;
         int totalArmor = mech.getArmor(Mech.LOC_CT, true);
 
+        if ( totalArmor < 1 ) {
+            return;
+        }
+        
         int pips = Math.min(56, totalArmor);
 
         totalArmor -= pips;
 
+        if ( pips < 40 ) {
+            pipsPerRow = Math.min(4, (int)Math.ceil((double)pips/5d));
+            pipShift.height += 11 - (pips/4);
+        }
+        
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
+            g2d.drawString("O",topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
-            if (pos % 4 == 0) {
+            if (pos % pipsPerRow == 0) {
                 topColumn.height += pipShift.height;
                 pipShift.width *= -1;
                 topColumn.width += pipShift.width * 2;
@@ -1076,10 +1135,9 @@ public class PrintMech implements Printable {
     }
 
     private void printLAStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension column = new Dimension(419, 409);
+        Dimension column = new Dimension(419, 413);
         Dimension pipShift = new Dimension(4, 4);
 
         int totalArmor = mech.getInternal(Mech.LOC_LARM);
@@ -1089,7 +1147,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
             pipShift.width *= -1;
             column.width += pipShift.width;
@@ -1102,15 +1160,14 @@ public class PrintMech implements Printable {
 
         if (totalArmor > 0) {
             column.height += pipShift.height;
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
         }
     }
 
     private void printLLStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension column = new Dimension(441, 471);
+        Dimension column = new Dimension(441, 475);
         Dimension pipShift = new Dimension(4, 4);
 
         int totalArmor = mech.getInternal(Mech.LOC_LLEG);
@@ -1120,7 +1177,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
             column.width += pipShift.width;
             pipShift.width *= -1;
@@ -1140,7 +1197,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height + 2;
         }
 
@@ -1149,14 +1206,13 @@ public class PrintMech implements Printable {
         }
         column.height -= 3;
         column.width -= pipShift.width + 1;
-        g2d.drawOval(column.width, column.height, circle.width, circle.width);
+        g2d.drawString("O",column.width, column.height);
     }
 
     private void printRLStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension column = new Dimension(484, 471);
+        Dimension column = new Dimension(484, 475);
         Dimension pipShift = new Dimension(4, 4);
 
         int totalArmor = mech.getInternal(Mech.LOC_RLEG);
@@ -1166,7 +1222,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
             column.width -= pipShift.width;
             pipShift.width *= -1;
@@ -1186,7 +1242,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height + 2;
         }
 
@@ -1195,14 +1251,13 @@ public class PrintMech implements Printable {
         }
         column.height -= 3;
         column.width += pipShift.width + 1;
-        g2d.drawOval(column.width, column.height, circle.width, circle.width);
+        g2d.drawString("O",column.width, column.height);
     }
 
     private void printRAStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension column = new Dimension(506, 409);
+        Dimension column = new Dimension(506, 413);
         Dimension pipShift = new Dimension(4, 4);
 
         int totalArmor = mech.getInternal(Mech.LOC_RARM);
@@ -1212,7 +1267,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
             pipShift.width *= -1;
             column.width -= pipShift.width;
@@ -1225,15 +1280,14 @@ public class PrintMech implements Printable {
 
         if (totalArmor > 0) {
             column.height += pipShift.height;
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
         }
     }
 
     private void printLTStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension column = new Dimension(435, 411);
+        Dimension column = new Dimension(435, 415);
         Dimension pipShift = new Dimension(5, 5);
 
         int totalArmor = mech.getInternal(Mech.LOC_LT);
@@ -1243,7 +1297,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 3 == 0) {
@@ -1264,7 +1318,7 @@ public class PrintMech implements Printable {
 
         column.width += pipShift.width * 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1278,7 +1332,7 @@ public class PrintMech implements Printable {
 
         column.width += pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1292,7 +1346,7 @@ public class PrintMech implements Printable {
 
         column.width += pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1306,7 +1360,7 @@ public class PrintMech implements Printable {
         pipShift.width *= -1;
         column.height += pipShift.height / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 2 == 0) {
@@ -1318,10 +1372,9 @@ public class PrintMech implements Printable {
     }
 
     private void printRTStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension column = new Dimension(481, 411);
+        Dimension column = new Dimension(481, 415);
         Dimension pipShift = new Dimension(5, 5);
 
         int totalArmor = mech.getInternal(Mech.LOC_LT);
@@ -1331,7 +1384,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 3 == 0) {
@@ -1351,7 +1404,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1365,7 +1418,7 @@ public class PrintMech implements Printable {
 
         column.width -= pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1379,7 +1432,7 @@ public class PrintMech implements Printable {
 
         column.width -= pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1393,7 +1446,7 @@ public class PrintMech implements Printable {
         // pipShift.width *= -1;
         column.height += pipShift.height / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 2 == 0) {
@@ -1405,10 +1458,9 @@ public class PrintMech implements Printable {
     }
 
     private void printCTStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
-        Dimension column = new Dimension(457, 419);
+        Dimension column = new Dimension(457, 423);
         Dimension pipShift = new Dimension(5, 5);
 
         int totalArmor = mech.getInternal(Mech.LOC_CT);
@@ -1418,7 +1470,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 3 == 0) {
@@ -1441,7 +1493,7 @@ public class PrintMech implements Printable {
         column.width += pipShift.width / 2;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawOval(column.width, column.height, circle.width, circle.width);
+            g2d.drawString("O",column.width, column.height);
             column.width += pipShift.width;
             if (pos % 2 == 0) {
                 column.height += pipShift.height;
@@ -1452,13 +1504,12 @@ public class PrintMech implements Printable {
     }
 
     private void printHeadStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Eurostile LT Std", Font.PLAIN, 7);
         g2d.setFont(font);
-        Dimension circle = new Dimension(4, 4);
 
-        g2d.drawOval(462, 398, circle.width, circle.width);
-        g2d.drawOval(458, 405, circle.width, circle.width);
-        g2d.drawOval(467, 405, circle.width, circle.width);
+        g2d.drawString("O",462, 398);
+        g2d.drawString("O",458, 405);
+        g2d.drawString("O",467, 405);
     }
 
     private void setCritConnection(Mounted m, int startx, int starty, int endx, int endy, Graphics2D g2d) {
