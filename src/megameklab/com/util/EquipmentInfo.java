@@ -34,7 +34,6 @@ import megamek.common.weapons.MMLWeapon;
         public int heat = 0;
         public int techLevel = TechConstants.T_INTRO_BOXSET;
         public boolean isWeapon = false;
-        public boolean isRear = false;
         public boolean isMML = false;
         public boolean isATM = false;
         
@@ -47,9 +46,11 @@ import megamek.common.weapons.MMLWeapon;
         public EquipmentInfo(Entity unit, Mounted mount) {
 
             this.name = mount.getName();
+            if ( mount.isRearMounted() ) {
+                name += " (R)";
+            }
             this.count = 1;
             this.techLevel = mount.getType().getTechLevel();
-            this.isRear = mount.isRearMounted();
 
             this.damage = StringUtils.getEquipmentInfo(unit, mount);
 

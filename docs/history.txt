@@ -12,6 +12,7 @@ V 0.0.0.8-dev
 + Updated Ammo Short Names for MML and LB-X
 + Updated Damage notation for IS Snubnose PPC
 + Bug: Endo Steel not loading from MTF
++ Updated Record Sheet changes
 
 V 0.0.0.7 (11/12/08 11:07 PDT)
 + Bug: Support PPC showing up for Mechs
