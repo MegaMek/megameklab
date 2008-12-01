@@ -23,6 +23,8 @@ import java.awt.Image;
 import java.awt.font.TextAttribute;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -36,125 +38,154 @@ import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 
-
-
 public class ImageHelper {
     public static String recordSheetPath = "./data/images/recordsheets/";
     public static String fluffPath = "./data/images/fluff/";
+    public static Font euroFont = null;
+    public static Font euroBoldFont = null;
+
     
-    
-    public static Image getRecordSheet(Entity unit, boolean advanced){
+    private static void  loadFonts(){
         
-        Image recordSheet = null;
-        
-        if ( unit instanceof BipedMech ){
-            if ( advanced ){
-                recordSheet = new ImageIcon(recordSheetPath+"tobiped.png").getImage();
-            }else {
-                recordSheet = new ImageIcon(recordSheetPath+"twbiped.png").getImage();
-            }
-        } else if ( unit instanceof QuadMech ){
-            if ( advanced ){
-                recordSheet = new ImageIcon(recordSheetPath+"toquad.png").getImage();
-            }else {
-                recordSheet = new ImageIcon(recordSheetPath+"twquad.png").getImage();
-            }
+        if ( euroFont != null && euroBoldFont != null ){
+            return;
         }
         
+        String fName = "./data/fonts/Eurosti.TTF";
+        try {
+            File fontFile = new File(fName);
+            InputStream is = new FileInputStream(fontFile);
+            euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.err.println(fName + " not loaded.  Using Arial font.");
+            euroFont = new Font("Arial", Font.PLAIN, 8);
+        }
+
+        fName = "./data/fonts/Eurostib.TTF";
+        try {
+            File fontFile = new File(fName);
+            InputStream is = new FileInputStream(fontFile);
+            euroBoldFont = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.err.println(fName + " not loaded.  Using Arial font.");
+            euroBoldFont = new Font("Arial", Font.PLAIN, 8);
+        }
+    }
+
+    public static Image getRecordSheet(Entity unit, boolean advanced) {
+
+        Image recordSheet = null;
+
+        if (unit instanceof BipedMech) {
+            if (advanced) {
+                recordSheet = new ImageIcon(recordSheetPath + "tobiped.png").getImage();
+            } else {
+                recordSheet = new ImageIcon(recordSheetPath + "twbiped.png").getImage();
+            }
+        } else if (unit instanceof QuadMech) {
+            if (advanced) {
+                recordSheet = new ImageIcon(recordSheetPath + "toquad.png").getImage();
+            } else {
+                recordSheet = new ImageIcon(recordSheetPath + "twquad.png").getImage();
+            }
+        }
+
         return recordSheet;
     }
-    
-    public static Image getFluffImage(Entity unit){
+
+    public static Image getFluffImage(Entity unit) {
         Image fluff = null;
-        
+
         fluff = getFluffPNG(unit);
-        
-        if ( fluff == null ){
+
+        if (fluff == null) {
             fluff = getFluffJPG(unit);
         }
-        
-        if ( fluff == null ) {
+
+        if (fluff == null) {
             fluff = getFluffGIF(unit);
         }
-        
-        if ( fluff == null ) {
-            fluff = new ImageIcon(fluffPath+"hud.png").getImage();
+
+        if (fluff == null) {
+            fluff = new ImageIcon(fluffPath + "hud.png").getImage();
         }
         return fluff;
     }
-    
-    public static Image getFluffPNG(Entity unit){
+
+    public static Image getFluffPNG(Entity unit) {
         Image fluff = null;
-        
-        String fluffFile = fluffPath+unit.getChassis() + " " + unit.getModel()+".png";
-        if ( new File(fluffFile.toLowerCase()).exists() ) {
+
+        String fluffFile = fluffPath + unit.getChassis() + " " + unit.getModel() + ".png";
+        if (new File(fluffFile.toLowerCase()).exists()) {
             fluff = new ImageIcon(fluffFile).getImage();
         }
-        
-        if ( fluff == null ) {
-            fluffFile = fluffPath+unit.getModel()+".png";
-            if ( new File(fluffFile.toLowerCase()).exists() ) {
+
+        if (fluff == null) {
+            fluffFile = fluffPath + unit.getModel() + ".png";
+            if (new File(fluffFile.toLowerCase()).exists()) {
                 fluff = new ImageIcon(fluffFile).getImage();
             }
         }
 
-        if ( fluff == null ) {
-            fluffFile = fluffPath+unit.getChassis()+".png";
-            if ( new File(fluffFile.toLowerCase()).exists() ) {
+        if (fluff == null) {
+            fluffFile = fluffPath + unit.getChassis() + ".png";
+            if (new File(fluffFile.toLowerCase()).exists()) {
                 fluff = new ImageIcon(fluffFile).getImage();
             }
         }
-        
+
         return fluff;
     }
 
-    public static Image getFluffJPG(Entity unit){
+    public static Image getFluffJPG(Entity unit) {
         Image fluff = null;
-        
-        String fluffFile = fluffPath+unit.getChassis() + " " + unit.getModel()+".jpg";
-        if ( new File(fluffFile.toLowerCase()).exists() ) {
+
+        String fluffFile = fluffPath + unit.getChassis() + " " + unit.getModel() + ".jpg";
+        if (new File(fluffFile.toLowerCase()).exists()) {
             fluff = new ImageIcon(fluffFile).getImage();
         }
-        
-        if ( fluff == null ) {
-            fluffFile = fluffPath+unit.getModel()+".jpg";
-            if ( new File(fluffFile.toLowerCase()).exists() ) {
+
+        if (fluff == null) {
+            fluffFile = fluffPath + unit.getModel() + ".jpg";
+            if (new File(fluffFile.toLowerCase()).exists()) {
                 fluff = new ImageIcon(fluffFile).getImage();
             }
         }
-        
-        if ( fluff == null ) {
-            fluffFile = fluffPath+unit.getChassis()+".jpg";
-            if ( new File(fluffFile.toLowerCase()).exists() ) {
+
+        if (fluff == null) {
+            fluffFile = fluffPath + unit.getChassis() + ".jpg";
+            if (new File(fluffFile.toLowerCase()).exists()) {
                 fluff = new ImageIcon(fluffFile).getImage();
             }
         }
-        
+
         return fluff;
     }
 
-    public static Image getFluffGIF(Entity unit){
+    public static Image getFluffGIF(Entity unit) {
         Image fluff = null;
-        
-        String fluffFile = fluffPath+unit.getChassis() + " " + unit.getModel()+".gif";
-        if ( new File(fluffFile.toLowerCase()).exists() ) {
+
+        String fluffFile = fluffPath + unit.getChassis() + " " + unit.getModel() + ".gif";
+        if (new File(fluffFile.toLowerCase()).exists()) {
             fluff = new ImageIcon(fluffFile).getImage();
         }
-        
-        if ( fluff == null ) {
-            fluffFile = fluffPath+unit.getModel()+".gif";
-            if ( new File(fluffFile.toLowerCase()).exists() ) {
+
+        if (fluff == null) {
+            fluffFile = fluffPath + unit.getModel() + ".gif";
+            if (new File(fluffFile.toLowerCase()).exists()) {
                 fluff = new ImageIcon(fluffFile).getImage();
             }
         }
 
-        if ( fluff == null ) {
-            fluffFile = fluffPath+unit.getChassis()+".gif";
-            if ( new File(fluffFile.toLowerCase()).exists() ) {
+        if (fluff == null) {
+            fluffFile = fluffPath + unit.getChassis() + ".gif";
+            if (new File(fluffFile.toLowerCase()).exists()) {
                 fluff = new ImageIcon(fluffFile).getImage();
             }
         }
-        
+
         return fluff;
     }
 
@@ -173,6 +204,8 @@ public class ImageHelper {
         int lineFeed = 10;
 
         boolean newLineNeeded = false;
+        
+        loadFonts();
 
         ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Mech.LOC_LLEG + 1);
 
@@ -192,19 +225,19 @@ public class ImageHelper {
                 EquipmentInfo eqi = eqHash.get(eq.getName());
 
                 if (eq.getType().getTechLevel() != eqi.techLevel) {
-                    eqi = new EquipmentInfo(mech,eq);
+                    eqi = new EquipmentInfo(mech, eq);
                 } else {
                     eqi.count++;
                 }
                 eqHash.put(eq.getName(), eqi);
             } else {
-                EquipmentInfo eqi = new EquipmentInfo(mech,eq);
+                EquipmentInfo eqi = new EquipmentInfo(mech, eq);
                 eqHash.put(eq.getName(), eqi);
             }
 
         }
 
-        Font font = new Font("Eurostile", Font.BOLD, 10);
+        Font font = euroBoldFont.deriveFont(10.0f);
         g2d.setFont(font);
 
         for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
@@ -223,29 +256,29 @@ public class ImageHelper {
                 if (count >= 12) {
                     break;
                 }
-                font = new Font("Eurostile", Font.PLAIN, 7);
+                font = euroFont.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
                 if (name.length() > 70) {
-                    font = new Font("Eurostile", Font.PLAIN, 1);
+                    font = euroFont.deriveFont(1.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 60) {
-                    font = new Font("Eurostile", Font.PLAIN, 2);
+                    font = euroFont.deriveFont(2.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 50) {
-                    font = new Font("Eurostile", Font.PLAIN, 3);
+                    font = euroFont.deriveFont(3.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 40) {
-                    font = new Font("Eurostile", Font.PLAIN, 4);
+                    font = euroFont.deriveFont(4.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 30) {
-                    font = new Font("Eurostile", Font.PLAIN, 5);
+                    font = euroFont.deriveFont(5.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 20) {
-                    font = new Font("Eurostile", Font.PLAIN, 6);
+                    font = euroFont.deriveFont(6.0f);
                     g2d.setFont(font);
                 }
 
@@ -258,7 +291,7 @@ public class ImageHelper {
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
-                font = new Font("Eurostile", Font.PLAIN, 7);
+                font = euroFont.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
@@ -266,62 +299,62 @@ public class ImageHelper {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
 
                     if (eqi.isMML) {
-                        ImageHelper.printCenterString(g2d,"[M,S,C]", font , damagePoint, linePoint);
-                        linePoint += lineFeed-2;
-                        
+                        ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
+                        linePoint += lineFeed - 2;
+
                         g2d.drawString("LRM", typePoint, linePoint);
-                        ImageHelper.printCenterString(g2d,"1/Msl", font , damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d, "1/Msl", font, damagePoint, linePoint);
                         g2d.drawString("6", minPoint, linePoint);
                         g2d.drawString("7", shtPoint, linePoint);
                         g2d.drawString("14", medPoint, linePoint);
                         g2d.drawString("21", longPoint, linePoint);
-                        linePoint += lineFeed-2;
-                        
+                        linePoint += lineFeed - 2;
+
                         g2d.drawString("SRM", typePoint, linePoint);
-                        ImageHelper.printCenterString(g2d,"2/Msl", font , damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
                         g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
-                        
-                    } else if (eqi.isATM) {
-                        ImageHelper.printCenterString(g2d,"[M,S,C]", font , damagePoint, linePoint);
-                        linePoint += lineFeed-2;
 
-                        ImageHelper.printCenterString(g2d,"Standard", font , damagePoint, linePoint);
+                    } else if (eqi.isATM) {
+                        ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
+                        linePoint += lineFeed - 2;
+
+                        ImageHelper.printCenterString(g2d, "Standard", font, damagePoint, linePoint);
                         g2d.drawString("2/Msl", damagePoint, linePoint);
                         g2d.drawString("4", minPoint, linePoint);
                         g2d.drawString("5", shtPoint, linePoint);
                         g2d.drawString("10", medPoint, linePoint);
                         g2d.drawString("15", longPoint, linePoint);
-                        linePoint += lineFeed-2;
-                        
-                        ImageHelper.printCenterString(g2d,"Extended-Range", font , damagePoint, linePoint);
+                        linePoint += lineFeed - 2;
+
+                        ImageHelper.printCenterString(g2d, "Extended-Range", font, damagePoint, linePoint);
                         g2d.drawString("1/Msl", damagePoint, linePoint);
                         g2d.drawString("4", minPoint, linePoint);
                         g2d.drawString("9", shtPoint, linePoint);
                         g2d.drawString("18", medPoint, linePoint);
                         g2d.drawString("27", longPoint, linePoint);
-                        linePoint += lineFeed-2;
+                        linePoint += lineFeed - 2;
 
                         g2d.drawString("High-Explosive", typePoint, linePoint);
-                        ImageHelper.printCenterString(g2d,"3/Msl", font , damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
                         g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
-                        
+
                     } else {
                         if (eqi.damage.trim().length() > 6) {
-                            font = new Font("Eurostile", Font.PLAIN, 6);
+                            font = euroFont.deriveFont(6.0f);
                             g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d,eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            font = new Font("Eurostile", Font.PLAIN, 7);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
+                            font = euroFont.deriveFont(7.0f);
                             g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d,eqi.damage.substring(eqi.damage.indexOf('[')), font , damagePoint, linePoint + lineFeed-2);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 2);
                             newLineNeeded = true;
                         } else {
-                            ImageHelper.printCenterString(g2d,eqi.damage, font , damagePoint, linePoint);
+                            ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint, linePoint);
                         }
                         if (eqi.minRange > 0) {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
@@ -334,7 +367,7 @@ public class ImageHelper {
                     }
                 } else {
                     g2d.drawLine(heatPoint, linePoint - 2, heatPoint + 6, linePoint - 2);
-                    ImageHelper.printCenterString(g2d,eqi.damage, font , damagePoint-2, linePoint);
+                    ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
                     g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
                     g2d.drawLine(shtPoint, linePoint - 2, shtPoint + 6, linePoint - 2);
                     g2d.drawLine(medPoint, linePoint - 2, medPoint + 6, linePoint - 2);
@@ -355,23 +388,22 @@ public class ImageHelper {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         g2d.drawString("Improved C  CPU", lineStart, linePoint);
+        int stringWidth = ImageHelper.getStringWidth(g2d, "Improved C", font);
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
 
-        if (font.isBold()) {
-            g2d.drawString("3", lineStart + 35, linePoint);
-        } else {
-            g2d.drawString("3", lineStart + 32, linePoint);
-        }
+        g2d.drawString("3", lineStart + stringWidth, linePoint);
     }
 
     public static void printC3sName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         g2d.drawString("C  Slave", lineStart, linePoint);
+        int stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
-        g2d.drawString("3", lineStart + 2, linePoint);
+        g2d.drawString("3", lineStart + stringWidth, linePoint);
 
     }
 
@@ -379,23 +411,25 @@ public class ImageHelper {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         g2d.drawString("C  Master", lineStart, linePoint);
+        int stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
-        g2d.drawString("3", lineStart + 2, linePoint);
+        g2d.drawString("3", lineStart + stringWidth, linePoint);
     }
 
     public static void printCenterString(Graphics2D g2d, String info, Font font, int printWidth, int printHeight) {
         int textWidth = ImageHelper.getStringWidth(g2d, info, font);
-        
+
         g2d.drawString(info, printWidth - (textWidth / 2), printHeight);
-       
+
     }
-    
+
     public static int getStringWidth(Graphics2D g2d, String info, Font font) {
-        FontMetrics fm   = g2d.getFontMetrics(font);
+        FontMetrics fm = g2d.getFontMetrics(font);
         Rectangle2D rect = fm.getStringBounds(info, g2d);
 
-        return (int)(rect.getWidth());
+        return (int) (rect.getWidth());
     }
 
 }
