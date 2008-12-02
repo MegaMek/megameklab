@@ -290,7 +290,7 @@ public class PrintQuad implements Printable {
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelper.printMechWeaponsNEquipment(mech, g2d);
+        ImageHelper.printMechWeaponsNEquipment(mech, g2d,new Font("Arial", Font.PLAIN, 8),new Font("Arial", Font.PLAIN, 8));
     }
 
     public void print() {

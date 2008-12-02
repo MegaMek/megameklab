@@ -23,8 +23,6 @@ import java.awt.Image;
 import java.awt.font.TextAttribute;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -41,39 +39,8 @@ import megamek.common.QuadMech;
 public class ImageHelper {
     public static String recordSheetPath = "./data/images/recordsheets/";
     public static String fluffPath = "./data/images/fluff/";
-    public static Font euroFont = null;
-    public static Font euroBoldFont = null;
 
     
-    private static void  loadFonts(){
-        
-        if ( euroFont != null && euroBoldFont != null ){
-            return;
-        }
-        
-        String fName = "./data/fonts/Eurosti.TTF";
-        try {
-            File fontFile = new File(fName);
-            InputStream is = new FileInputStream(fontFile);
-            euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println(fName + " not loaded.  Using Arial font.");
-            euroFont = new Font("Arial", Font.PLAIN, 8);
-        }
-
-        fName = "./data/fonts/Eurostib.TTF";
-        try {
-            File fontFile = new File(fName);
-            InputStream is = new FileInputStream(fontFile);
-            euroBoldFont = Font.createFont(Font.TRUETYPE_FONT, is);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println(fName + " not loaded.  Using Arial font.");
-            euroBoldFont = new Font("Arial", Font.PLAIN, 8);
-        }
-    }
-
     public static Image getRecordSheet(Entity unit, boolean advanced) {
 
         Image recordSheet = null;
@@ -189,7 +156,7 @@ public class ImageHelper {
         return fluff;
     }
 
-    public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d) {
+    public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d,Font euroFont, Font euroBoldFont) {
         int qtyPoint = 26;
         int typePoint = 38;
         int locPoint = 109;
@@ -205,8 +172,6 @@ public class ImageHelper {
 
         boolean newLineNeeded = false;
         
-        loadFonts();
-
         ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Mech.LOC_LLEG + 1);
 
         for (int pos = 0; pos <= Mech.LOC_LLEG; pos++) {

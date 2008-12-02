@@ -74,6 +74,7 @@ public class PrintMech implements Printable {
             File fontFile = new File(fName);
             InputStream is = new FileInputStream(fontFile);
             euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            is.close();
         } catch (Exception ex) {
             ex.printStackTrace();
             System.err.println(fName + " not loaded.  Using Arial font.");
@@ -85,6 +86,7 @@ public class PrintMech implements Printable {
             File fontFile = new File(fName);
             InputStream is = new FileInputStream(fontFile);
             euroBoldFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            is.close();
         } catch (Exception ex) {
             ex.printStackTrace();
             System.err.println(fName + " not loaded.  Using Arial font.");
@@ -110,8 +112,7 @@ public class PrintMech implements Printable {
         System.gc();
         // g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(),
         // (int)pageFormat.getImageableHeight(), null);
-        g2d.drawImage(image, 18, 18, 558, 738, null);
-        g2d.drawImage(image, 18, 18, 558, 738, null);
+        g2d.drawImage(image, 18, 18, 558, 738, Color.BLACK, null);
         printMekImage(g2d, hud);
 
         printMechData(g2d);
@@ -327,7 +328,7 @@ public class PrintMech implements Printable {
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelper.printMechWeaponsNEquipment(mech, g2d);
+        ImageHelper.printMechWeaponsNEquipment(mech, g2d, euroFont, euroBoldFont);
     }
 
     public void print() {
@@ -1700,9 +1701,9 @@ public class PrintMech implements Printable {
 
         int width = Math.min(148, img.getWidth(null));
         int height = Math.min(200, img.getHeight(null));
-        g2d.drawImage(img, 235, 172, width, height, null);
-
-        // g2d.drawRect(235, 172, 165, 200);
+        int drawingX = 235 + ((148-width)/2);
+        int drawingY = 172 + ((200 - height)/2);
+        g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
     }
 
 }
