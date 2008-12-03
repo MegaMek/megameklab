@@ -640,7 +640,7 @@ public class UnitUtil {
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());
         if (unit.getArmorType() == EquipmentType.T_ARMOR_HARDENED)
             armorPerTon = 8.0;
-        double points = unit.getTotalInternal()*2;
+        double points = (unit.getTotalInternal()*2)+3;
         double armorWeight = points / armorPerTon;
         armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
 
