@@ -240,6 +240,7 @@ public class ArmorTab extends ITab implements ActionListener{
         
         DecimalFormat myFormatter = new DecimalFormat("0.00");
         armorTonnage.setText(myFormatter.format(currentTonnage));
+        armorTonnage.setToolTipText("Max Tonnage: "+UnitUtil.getTotalArmorTonnage(unit));
     }
 
     public void setArmorType(int type) {
