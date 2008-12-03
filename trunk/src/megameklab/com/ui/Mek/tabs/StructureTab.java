@@ -68,8 +68,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     JComboBox heatSinkNumber;
     String[] techTypes = { "I.S.", "Clan" };
     JComboBox techType = new JComboBox(techTypes);
-    String[] isTechLevels = { "Intro", "Basic", "Advanced", "Experimental", "Unoffical" };
-    String[] clanTechLevels = { "Basic", "Advanced", "Experimental", "Unoffical" };
+    String[] isTechLevels = { "Intro", "Standard", "Advanced", "Experimental", "Unoffical" };
+    String[] clanTechLevels = { "Standard", "Advanced", "Experimental", "Unoffical" };
     JComboBox techLevel = new JComboBox(isTechLevels);
     JTextField era = new JTextField(3);
     RefreshListener refresh = null;

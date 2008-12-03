@@ -483,14 +483,16 @@ public class ArmorView extends IView implements KeyListener {
     public void keyTyped(KeyEvent arg0) {
     }
 
-    public void allocateArmor(int percent) {
+    public void allocateArmor(double percent) {
+        double totalArmor = (unit.getTotalOInternal()*2)+3;
         for (int location = 0; location <= Mech.LOC_LLEG; location++) {
-            int IS = (unit.getInternal(location) * 2);
-            double maxArmor = (double)IS * (double)percent / 100;
+            double IS = (unit.getInternal(location) * 2);
+            double maxArmor = Math.min(IS * percent,totalArmor);
 
             switch (location) {
             case Mech.LOC_HEAD:
-                unit.initializeArmor(9, location);
+                maxArmor = Math.min(totalArmor,9);
+                unit.initializeArmor((int)maxArmor, location);
                 break;
             case Mech.LOC_CT:
             case Mech.LOC_LT:
@@ -504,6 +506,8 @@ public class ArmorView extends IView implements KeyListener {
                 unit.initializeArmor((int)maxArmor, location);
                 break;
             }
+            totalArmor -= maxArmor;
+            
         }
 
         removeAllListeners();
