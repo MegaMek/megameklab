@@ -193,6 +193,8 @@ public class PrintMech implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
 
+        font = new Font("Arial",Font.PLAIN,8);
+        g2d.setFont(font);
         g2d.drawString("2008", 102.5f, 745f);
     }
 
