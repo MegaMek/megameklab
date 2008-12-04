@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -59,6 +60,7 @@ import megameklab.com.util.SaveMechToMTF;
 import megameklab.com.util.UnitUtil;
 
 import megamek.MegaMek;
+import megamek.client.ui.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
@@ -68,6 +70,9 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
+import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestMech;
 
 public class MainUI extends JFrame implements RefreshListener {
 
@@ -81,6 +86,7 @@ public class MainUI extends JFrame implements RefreshListener {
     JMenuBar menuBar = new JMenuBar();
     JMenu file = new JMenu("File");
     JMenu help = new JMenu("Help");
+    JMenu validate = new JMenu("Validate");
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
@@ -202,7 +208,18 @@ public class MainUI extends JFrame implements RefreshListener {
         });
         help.add(item);
         
+        item = new JMenuItem();
+        item.setText("Validate Current Unit");
+        item.setMnemonic('V');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuValidateUnit_actionPerformed();
+            }
+        });
+        validate.add(item);
+        
         menuBar.add(file);
+        menuBar.add(validate);
         menuBar.add(help);
 
         setLocation(getLocation().x + 10, getLocation().y);
@@ -251,7 +268,9 @@ public class MainUI extends JFrame implements RefreshListener {
     private void loadUnit() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
         UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, 0);
-        viewer.setVisible(true);
+        
+        viewer.run();
+        //viewer.setVisible(true);
 
         if (viewer != null) {
 
@@ -437,6 +456,26 @@ public class MainUI extends JFrame implements RefreshListener {
             
         }
         
+    }
+    
+
+    // Show Validation data.
+    public void jMenuValidateUnit_actionPerformed() {
+
+        EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
+        StringBuffer sb = new StringBuffer();
+        TestEntity testEntity = null;
+        testEntity = new TestMech((Mech) entity, entityVerifier.mechOption, null);
+        if (testEntity != null) {
+            testEntity.correctEntity(sb, true);
+        }
+
+        if ( sb.length() > 0 ){
+            JOptionPane.showMessageDialog(this, sb.toString(),"Unit Validation",JOptionPane.ERROR_MESSAGE);
+        } else{
+            JOptionPane.showMessageDialog(this, "Validation Passed","Unit Validation",JOptionPane.INFORMATION_MESSAGE);
+        }
+            
     }
     
     // Show data about MegaMekLab

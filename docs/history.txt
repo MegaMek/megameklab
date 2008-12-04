@@ -15,6 +15,7 @@ V 0.0.0.8-dev
 + Updated Record Sheet changes
 + Euro Fonts now dynamically load for printing Record Sheets.
 + Removed Armor Slider
++ Added Validation Menu Item.
 
 V 0.0.0.7 (11/12/08 11:07 PDT)
 + Bug: Support PPC showing up for Mechs
