@@ -214,11 +214,8 @@ public class PrintMech implements Printable {
         Dimension column = new Dimension(504, 612);
         Dimension pipShift = new Dimension(9, 9);
 
-        font = new Font("Arial", Font.PLAIN, 8);
-        g2d.setFont(font);
-
         for (int pos = 1; pos <= mech.heatSinks(); pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawHeatSinkPip(g2d, column.height, column.width);
             column.height += pipShift.height;
 
             if (pos % 10 == 0) {
@@ -365,8 +362,6 @@ public class PrintMech implements Printable {
     }
 
     private void printRLArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension topColumn = new Dimension(499, 181);
         Dimension middleColumn = new Dimension(509, 252);
         Dimension bottomColumn = new Dimension(529, 270);
@@ -385,7 +380,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", topColumn.width, topColumn.height);
+            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
             topColumn.height += pipShift.height;
             if (pos % maxPipsPerTopColumn == 0) {
@@ -408,7 +403,7 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", middleColumn.width, middleColumn.height);
+            ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
             middleColumn.width += pipShift.width;
             middleColumn.height += pipShift.height;
             if (pos % 4 == 0) {
@@ -429,7 +424,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", bottomColumn.width, bottomColumn.height);
+            ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
             bottomColumn.width += pipShift.width;
             bottomColumn.height += pipShift.height;
             if (pos % 2 == 0) {
@@ -443,15 +438,13 @@ public class PrintMech implements Printable {
         pips = Math.min(4, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", footColumn.width, footColumn.height);
+            ImageHelper.drawArmorPip(g2d, footColumn.width, footColumn.height);
             footColumn.width += pipShift.width;
         }
 
     }
 
     private void printLLArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension topColumn = new Dimension(443, 179);
         Dimension middleColumn = new Dimension(417, 247);
         Dimension bottomColumn = new Dimension(430, 272);
@@ -470,7 +463,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", topColumn.width, topColumn.height);
+            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
             topColumn.height += pipShift.height;
             if (pos % maxPipsPerTopColumn == 0) {
@@ -494,7 +487,7 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", middleColumn.width, middleColumn.height);
+            ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
             middleColumn.width += pipShift.width;
             middleColumn.height += pipShift.height;
             if (pos % 4 == 0) {
@@ -519,7 +512,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", bottomColumn.width, bottomColumn.height);
+            ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
             bottomColumn.width += pipShift.width;
             bottomColumn.height += pipShift.height;
             if (pos % 2 == 0) {
@@ -534,15 +527,13 @@ public class PrintMech implements Printable {
         pips = Math.min(4, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", footColumn.width, footColumn.height);
+            ImageHelper.drawArmorPip(g2d, footColumn.width, footColumn.height);
             footColumn.width += pipShift.width;
         }
 
     }
 
     private void printLAArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension rightColumn = new Dimension(417, 77);
         Dimension centerColumn = new Dimension(409, 84);
         Dimension leftColumn = new Dimension(402, 90);
@@ -562,7 +553,7 @@ public class PrintMech implements Printable {
             pipShift.height = (pipShift.height * 12) / pips;
         }
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", centerColumn.width, centerColumn.height);
+            ImageHelper.drawArmorPip(g2d, centerColumn.width, centerColumn.height);
             centerColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 centerColumn.width += pipShift.width;
@@ -585,7 +576,7 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", rightColumn.width, rightColumn.height);
+            ImageHelper.drawArmorPip(g2d, rightColumn.width, rightColumn.height);
             rightColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 rightColumn.width += pipShift.width;
@@ -611,7 +602,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", leftColumn.width, leftColumn.height);
+            ImageHelper.drawArmorPip(g2d, leftColumn.width, leftColumn.height);
             leftColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 leftColumn.width += pipShift.width;
@@ -625,8 +616,6 @@ public class PrintMech implements Printable {
     }
 
     private void printRAArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension rightColumn = new Dimension(548, 90);
         Dimension centerColumn = new Dimension(540, 84);
         Dimension leftColumn = new Dimension(533, 77);
@@ -647,7 +636,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", centerColumn.width, centerColumn.height);
+            ImageHelper.drawArmorPip(g2d, centerColumn.width, centerColumn.height);
             centerColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 centerColumn.width += pipShift.width;
@@ -669,7 +658,7 @@ public class PrintMech implements Printable {
             pipShift.height = (pipShift.height * 8) / pips;
         }
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", leftColumn.width, leftColumn.height);
+            ImageHelper.drawArmorPip(g2d, leftColumn.width, leftColumn.height);
             leftColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 leftColumn.width += pipShift.width;
@@ -694,7 +683,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", rightColumn.width, rightColumn.height);
+            ImageHelper.drawArmorPip(g2d, rightColumn.width, rightColumn.height);
             rightColumn.height += pipShift.height;
             if (pos % 3 != 0) {
                 rightColumn.width += pipShift.width;
@@ -708,8 +697,6 @@ public class PrintMech implements Printable {
     }
 
     private void printLTArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension topColumn = new Dimension(430, 88);
         Dimension middleColumn = new Dimension(445, 126);
         Dimension bottomColumn = new Dimension(437, 161);
@@ -727,7 +714,7 @@ public class PrintMech implements Printable {
         int totalArmor = mech.getArmor(Mech.LOC_LT);
 
         if (totalArmor < 36) {
-            topPipsPerLine = (int) Math.ceil((double) totalArmor / 10d);
+            topPipsPerLine = (int) Math.ceil((double) totalArmor / 8d);
             topPipShift.width += 4 - (int) Math.ceil((double) totalArmor / 10d);
             topPipShift.height += Math.max(0, 2 - (int) Math.ceil((double) totalArmor / 10d));
             maxTopPips = Math.min(20, (totalArmor * 60) / 100);
@@ -742,7 +729,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", topColumn.width, topColumn.height);
+            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
             topColumn.width += topPipShift.width;
             if (pos % topPipsPerLine == 0) {
                 topColumn.height += topPipShift.height;
@@ -758,7 +745,7 @@ public class PrintMech implements Printable {
         pips = Math.min(maxMiddlePips, totalArmor);
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", middleColumn.width, middleColumn.height);
+            ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
             middleColumn.width += middlePipShift.width;
             if (pos % middlePipsPerLine == 0) {
                 middleColumn.height += middlePipShift.height;
@@ -779,7 +766,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", bottomColumn.width, bottomColumn.height);
+            ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
             bottomColumn.width += bottomPipShift.width;
             if (pos % 4 == 0) {
                 bottomColumn.height += bottomPipShift.height;
@@ -792,8 +779,6 @@ public class PrintMech implements Printable {
     }
 
     private void printLTRArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension topColumn = new Dimension(437, 312);
         Dimension pipShift = new Dimension(5, 5);
         int pipsPerLine = 5;
@@ -813,7 +798,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", topColumn.width, topColumn.height);
+            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
             if (pos % pipsPerLine == 0) {
                 topColumn.height += pipShift.height;
@@ -828,8 +813,6 @@ public class PrintMech implements Printable {
     }
 
     private void printRTArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension topColumn = new Dimension(520, 88);
         Dimension middleColumn = new Dimension(504, 126);
         Dimension bottomColumn = new Dimension(512, 161);
@@ -847,7 +830,7 @@ public class PrintMech implements Printable {
         int totalArmor = mech.getArmor(Mech.LOC_RT);
 
         if (totalArmor < 36) {
-            topPipsPerLine = (int) Math.ceil((double) totalArmor / 10d);
+            topPipsPerLine = (int) Math.ceil((double) totalArmor / 8d);
             topPipShift.width += 4 - (int) Math.ceil((double) totalArmor / 10d);
             topPipShift.height += Math.max(0, 2 - (int) Math.ceil((double) totalArmor / 10d));
             maxTopPips = Math.min(20, (totalArmor * 60) / 100);
@@ -863,7 +846,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= pips; pos++) {
             // g2d.drawString("O",topColumn.width, topColumn.height);
-            g2d.drawString("O", topColumn.width, topColumn.height);
+            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
             topColumn.width -= topPipShift.width;
             if (pos % topPipsPerLine == 0) {
                 topColumn.height += topPipShift.height;
@@ -880,7 +863,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", middleColumn.width, middleColumn.height);
+            ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
             middleColumn.width -= middlePipShift.width;
             if (pos % middlePipsPerLine == 0) {
                 middleColumn.height += middlePipShift.height;
@@ -901,7 +884,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", bottomColumn.width, bottomColumn.height);
+            ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
             bottomColumn.width -= bottomPipShift.width;
             if (pos % 4 == 0) {
                 bottomColumn.height += bottomPipShift.height;
@@ -914,8 +897,6 @@ public class PrintMech implements Printable {
     }
 
     private void printRTRArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension topColumn = new Dimension(514, 312);
         Dimension pipShift = new Dimension(5, 5);
 
@@ -936,7 +917,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", topColumn.width, topColumn.height);
+            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
             topColumn.width -= pipShift.width;
             if (pos % pipsPerLine == 0) {
                 topColumn.height += pipShift.height;
@@ -951,8 +932,6 @@ public class PrintMech implements Printable {
     }
 
     private void printCTArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension topColumn = new Dimension(464, 105);
         Dimension middleColumn = new Dimension(481, 172);
         Dimension bottomColumn = new Dimension(475, 185);
@@ -975,7 +954,7 @@ public class PrintMech implements Printable {
             pipShift.height += 3;
 
             for (int pos = 1; pos <= pips; pos++) {
-                g2d.drawString("O", topColumn.width, topColumn.height);
+                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
                 if (pos == 14) {
                     pipShift.width -= 1;
                     fourRowColumn.width += 1;
@@ -1016,7 +995,7 @@ public class PrintMech implements Printable {
             pipShift.height += 5 - (pips / 10);
 
             for (int pos = 1; pos <= pips; pos++) {
-                g2d.drawString("O", topColumn.width, topColumn.height);
+                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
                 topColumn.width += pipShift.width;
                 if (pos % pipsPerLine == 0) {
                     topColumn.height += pipShift.height;
@@ -1028,7 +1007,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", topColumn.width, topColumn.height);
+            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
             if (pos % 5 == 0) {
                 topColumn.height += pipShift.height;
@@ -1045,7 +1024,7 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", middleColumn.width, middleColumn.height);
+            ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
             middleColumn.width += pipShift.width;
             if (pos % 3 == 0) {
                 middleColumn.height += pipShift.height;
@@ -1059,7 +1038,7 @@ public class PrintMech implements Printable {
             return;
         }
 
-        g2d.drawString("O", bottomColumn.width, bottomColumn.height);
+        ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
 
     }
 
@@ -1073,70 +1052,68 @@ public class PrintMech implements Printable {
             g2d.setColor(Color.white);
             g2d.fillOval(476, 68, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            g2d.drawString("O", 475, 73);
+            ImageHelper.drawArmorPip(g2d, 475, 73);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 2) {
             g2d.setColor(Color.white);
             g2d.fillOval(473, 74, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            g2d.drawString("O", 472, 79);
+            ImageHelper.drawArmorPip(g2d, 472, 79);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 3) {
             g2d.setColor(Color.white);
             g2d.fillOval(479, 74, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            g2d.drawString("O", 478, 79);
+            ImageHelper.drawArmorPip(g2d, 478, 79);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 4) {
             g2d.setColor(Color.white);
             g2d.fillOval(470, 79, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            g2d.drawString("O", 469, 84);
+            ImageHelper.drawArmorPip(g2d, 469, 84);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 5) {
             g2d.setColor(Color.white);
             g2d.fillOval(476, 79, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            g2d.drawString("O", 475, 84);
+            ImageHelper.drawArmorPip(g2d, 475, 84);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 6) {
             g2d.setColor(Color.white);
             g2d.fillOval(482, 79, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            g2d.drawString("O", 481, 84);
+            ImageHelper.drawArmorPip(g2d, 481, 84);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 7) {
             g2d.setColor(Color.white);
             g2d.fillOval(470, 85, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            g2d.drawString("O", 469, 90);
+            ImageHelper.drawArmorPip(g2d, 469, 90);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 8) {
             g2d.setColor(Color.white);
             g2d.fillOval(476, 85, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            g2d.drawString("O", 475, 90);
+            ImageHelper.drawArmorPip(g2d, 475, 90);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 9) {
             g2d.setColor(Color.white);
             g2d.fillOval(482, 85, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            g2d.drawString("O", 481, 90);
+            ImageHelper.drawArmorPip(g2d, 481, 90);
         }
         g2d.setColor(Color.black);
     }
 
     private void printCTRArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
         Dimension topColumn = new Dimension(470, 299);
         Dimension pipShift = new Dimension(5, 5);
         int pipsPerRow = 4;
@@ -1156,7 +1133,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", topColumn.width, topColumn.height);
+            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
             topColumn.width += pipShift.width;
             if (pos % pipsPerRow == 0) {
                 topColumn.height += pipShift.height;
@@ -1167,8 +1144,6 @@ public class PrintMech implements Printable {
     }
 
     private void printLAStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 6);
-        g2d.setFont(font);
         Dimension column = new Dimension(419, 413);
         Dimension pipShift = new Dimension(4, 4);
 
@@ -1179,7 +1154,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
             pipShift.width *= -1;
             column.width += pipShift.width;
@@ -1192,13 +1167,11 @@ public class PrintMech implements Printable {
 
         if (totalArmor > 0) {
             column.height += pipShift.height;
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
         }
     }
 
     private void printLLStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 6);
-        g2d.setFont(font);
         Dimension column = new Dimension(441, 475);
         Dimension pipShift = new Dimension(4, 4);
 
@@ -1209,7 +1182,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
             column.width += pipShift.width;
             pipShift.width *= -1;
@@ -1229,7 +1202,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height + 2;
         }
 
@@ -1238,12 +1211,10 @@ public class PrintMech implements Printable {
         }
         column.height -= 3;
         column.width -= pipShift.width + 1;
-        g2d.drawString("O", column.width, column.height);
+        ImageHelper.drawISPip(g2d, column.width, column.height);
     }
 
     private void printRLStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 6);
-        g2d.setFont(font);
         Dimension column = new Dimension(484, 475);
         Dimension pipShift = new Dimension(4, 4);
 
@@ -1254,7 +1225,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
             column.width -= pipShift.width;
             pipShift.width *= -1;
@@ -1274,7 +1245,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height + 2;
         }
 
@@ -1283,12 +1254,10 @@ public class PrintMech implements Printable {
         }
         column.height -= 3;
         column.width += pipShift.width + 1;
-        g2d.drawString("O", column.width, column.height);
+        ImageHelper.drawISPip(g2d, column.width, column.height);
     }
 
     private void printRAStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 6);
-        g2d.setFont(font);
         Dimension column = new Dimension(506, 413);
         Dimension pipShift = new Dimension(4, 4);
 
@@ -1299,7 +1268,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
             pipShift.width *= -1;
             column.width -= pipShift.width;
@@ -1312,13 +1281,11 @@ public class PrintMech implements Printable {
 
         if (totalArmor > 0) {
             column.height += pipShift.height;
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
         }
     }
 
     private void printLTStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 6);
-        g2d.setFont(font);
         Dimension column = new Dimension(435, 415);
         Dimension pipShift = new Dimension(5, 5);
 
@@ -1329,7 +1296,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 3 == 0) {
@@ -1350,7 +1317,7 @@ public class PrintMech implements Printable {
 
         column.width += pipShift.width * 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1364,7 +1331,7 @@ public class PrintMech implements Printable {
 
         column.width += pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1378,7 +1345,7 @@ public class PrintMech implements Printable {
 
         column.width += pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1392,7 +1359,7 @@ public class PrintMech implements Printable {
         pipShift.width *= -1;
         column.height += pipShift.height / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 2 == 0) {
@@ -1404,8 +1371,6 @@ public class PrintMech implements Printable {
     }
 
     private void printRTStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 6);
-        g2d.setFont(font);
         Dimension column = new Dimension(481, 415);
         Dimension pipShift = new Dimension(5, 5);
 
@@ -1416,7 +1381,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 3 == 0) {
@@ -1436,7 +1401,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1450,7 +1415,7 @@ public class PrintMech implements Printable {
 
         column.width -= pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1464,7 +1429,7 @@ public class PrintMech implements Printable {
 
         column.width -= pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.height += pipShift.height;
         }
 
@@ -1478,7 +1443,7 @@ public class PrintMech implements Printable {
         // pipShift.width *= -1;
         column.height += pipShift.height / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 2 == 0) {
@@ -1490,8 +1455,6 @@ public class PrintMech implements Printable {
     }
 
     private void printCTStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 6);
-        g2d.setFont(font);
         Dimension column = new Dimension(457, 423);
         Dimension pipShift = new Dimension(5, 5);
 
@@ -1502,7 +1465,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.width += pipShift.width;
 
             if (pos % 3 == 0) {
@@ -1525,7 +1488,7 @@ public class PrintMech implements Printable {
         column.width += pipShift.width / 2;
 
         for (int pos = 1; pos <= pips; pos++) {
-            g2d.drawString("O", column.width, column.height);
+            ImageHelper.drawISPip(g2d, column.width, column.height);
             column.width += pipShift.width;
             if (pos % 2 == 0) {
                 column.height += pipShift.height;
@@ -1536,12 +1499,9 @@ public class PrintMech implements Printable {
     }
 
     private void printHeadStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 6);
-        g2d.setFont(font);
-
-        g2d.drawString("O", 463, 403);
-        g2d.drawString("O", 460, 410);
-        g2d.drawString("O", 466, 410);
+        ImageHelper.drawISPip(g2d, 463, 403);
+        ImageHelper.drawISPip(g2d, 460, 410);
+        ImageHelper.drawISPip(g2d, 466, 410);
     }
 
     private void setCritConnection(Mounted m, int startx, int starty, int endx, int endy, Graphics2D g2d) {
