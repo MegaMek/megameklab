@@ -60,7 +60,6 @@ import megameklab.com.util.SaveMechToMTF;
 import megameklab.com.util.UnitUtil;
 
 import megamek.MegaMek;
-import megamek.client.ui.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
