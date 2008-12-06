@@ -64,11 +64,11 @@ public class PrintMech implements Printable {
         awtImage = ImageHelper.getRecordSheet(list.get(0), false);
         mechList = list;
 
-        if (awtImage != null) {
+/*        if (awtImage != null) {
             System.out.println("Width: " + awtImage.getWidth(null));
             System.out.println("Height: " + awtImage.getHeight(null));
         }
-
+*/
         String fName = "./data/fonts/Eurosti.TTF";
         try {
             File fontFile = new File(fName);
@@ -229,7 +229,7 @@ public class PrintMech implements Printable {
 
     private void printArmor(Graphics2D g2d) {
         // Armor
-        Font font = euroFont.deriveFont(6.0f);
+        Font font = euroFont.deriveFont(7.0f);
         g2d.setFont(font);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485, 46);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 434, 60);
