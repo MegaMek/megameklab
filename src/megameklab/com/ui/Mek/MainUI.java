@@ -44,7 +44,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
-import megameklab.com.ui.Mek.dialog.UnitViewerDialog;
+import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.ui.Mek.tabs.ArmorTab;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
