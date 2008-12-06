@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package megameklab.com.ui.Mek.dialog;
+package megameklab.com.ui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -378,7 +378,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
                 }
 
                 if (/* Weight */
-                (nClass == EntityWeightClass.SIZE || mechs[x].getWeightClass() == nClass) && 
+                (nClass == chWeightClass.getItemCount()-1 || mechs[x].getWeightClass() == nClass) && 
                 /*
                 * Technology Level
                 */
