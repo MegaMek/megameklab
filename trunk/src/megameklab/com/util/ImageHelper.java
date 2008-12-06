@@ -397,22 +397,22 @@ public class ImageHelper {
         return (int) (rect.getWidth());
     }
 
-    public static void drawArmorPip(Graphics2D g2d, int height, int width){
+    public static void drawArmorPip(Graphics2D g2d, int width, int height){
         Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("O", height, width);
+        g2d.drawString("O", width, height);
     }
     
-    public static void drawISPip(Graphics2D g2d, int height, int width){
+    public static void drawISPip(Graphics2D g2d, int width, int height){
         Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
-        g2d.drawString("O", height, width);
+        g2d.drawString("O", width, height);
     }
     
-    public static void drawHeatSinkPip(Graphics2D g2d, int height, int width){
+    public static void drawHeatSinkPip(Graphics2D g2d, int width, int height){
         Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
-        g2d.drawString("O", height, width);
+        g2d.drawString("O", width, height);
     }
 
 
