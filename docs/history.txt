@@ -1,6 +1,8 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.8-dev
+V 0.0.0.9-dev
+
+V 0.0.0.8 (12/08/08 10:00:00 PST)
 + Added the rest of the TW Record Sheets
 + Moved Record Sheets to ./data/images/recordsheets
 + Moved Hud images to ./data/images/fluff
