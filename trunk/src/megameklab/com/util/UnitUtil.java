@@ -734,4 +734,30 @@ public class UnitUtil {
         return true;
     }
 
-}
+    public static void expandUnitMounts(Entity unit) {
+        
+        for ( int location = 0; location <= Mech.LOC_LLEG; location++ ) {
+            for ( int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+                CriticalSlot cs = unit.getCritical(location, slot);
+                if ( cs == null || cs.getType() == CriticalSlot.TYPE_SYSTEM ) {
+                    continue;
+                }
+                
+                if ( cs.getMount() == null ) {
+                    Mounted mount = unit.getEquipment(cs.getIndex());
+                    
+                    if ( UnitUtil.isArmorOrStructure(mount.getType()) || UnitUtil.isTSM(mount.getType()) ) {
+                        Mounted newMount = new Mounted(unit,mount.getType());
+                        newMount.setLocation(location, mount.isRearMounted());
+                        cs.setMount(newMount);
+                        unit.getEquipment().add(newMount);
+                        unit.getMisc().add(newMount);
+                        cs.setIndex(unit.getEquipmentNum(newMount));
+                    }else {
+                        cs.setMount(mount);
+                    }
+                }
+            }
+        }
+    }
+}   
