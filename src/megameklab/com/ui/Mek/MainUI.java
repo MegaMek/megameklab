@@ -553,6 +553,7 @@ public class MainUI extends JFrame implements RefreshListener {
         armorTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         weaponTab.addRefreshedListener(this);
+        weaponTab.getView().updateWeaponsList();
         buildTab.addRefreshedListener(this);
 
         ConfigPane.addTab("Structure", structureTab);
