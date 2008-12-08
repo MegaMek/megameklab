@@ -276,6 +276,8 @@ public class MainUI extends JFrame implements RefreshListener {
             if (!(viewer.getSelectedEntity() instanceof Mech))
                 return;
             entity = (Mech) viewer.getSelectedEntity();
+            UnitUtil.expandUnitMounts(entity);
+            
             viewer.setVisible(false);
             viewer.dispose();
             this.setVisible(false);

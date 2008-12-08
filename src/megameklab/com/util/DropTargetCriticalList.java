@@ -261,6 +261,9 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
         Mounted mount = null;
         try {
             if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                if ( crit.getMount() != null ) {
+                    return crit.getMount();
+                }
                 mount = unit.getEquipment(crit.getIndex());
             }
         } catch (Exception ex) {
