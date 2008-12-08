@@ -21,6 +21,7 @@ V 0.0.0.8-dev
 + New MegaMek.jar
 + Bug: Selecting All for weight class displayed nothing 
 + Bug: Multi-Crit Armor and TSM can not be edited when loading unit from file
++ Bug: Shields not loading correctly.
 
 V 0.0.0.7 (11/12/08 11:07 PDT)
 + Bug: Support PPC showing up for Mechs
