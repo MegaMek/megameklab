@@ -256,7 +256,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         physicalWeaponPane.setBackground(Color.WHITE);
         physicalWeaponScroll.setViewportView(physicalWeaponPane);
 
-        Font listFont = new Font("Eurostyle Lt Std Bold", Font.BOLD, 10);
+        Font listFont = new Font("Arial",Font.PLAIN,10);
         laserPane.add(laserWeaponCombo);
         laserWeaponCombo.setFixedCellWidth(165);
         laserWeaponCombo.setAutoscrolls(true);
@@ -497,7 +497,6 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         loadWeaponCombos();
         addAllListeners();
         fireTableRefresh();
-
     }
 
     private void removeAllListeners() {
@@ -783,12 +782,4 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         }
     }
     
-    public void updateWeaponsList() {
-        weaponList.addCrit(masterLaserWeaponList.elementAt(0));
-        refresh();
-        weaponList.addCrit(masterLaserWeaponList.elementAt(0));
-        refresh();
-        removeAllWeapons();
-    }
-
 }

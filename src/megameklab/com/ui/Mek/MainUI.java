@@ -101,6 +101,7 @@ public class MainUI extends JFrame implements RefreshListener {
     
     public MainUI() {
 
+        UnitUtil.loadFonts();
         config = new CConfig();
         System.out.println("Staring MegaMekLab version: " + VERSION);
         file.setMnemonic('F');
@@ -280,7 +281,7 @@ public class MainUI extends JFrame implements RefreshListener {
             
             viewer.setVisible(false);
             viewer.dispose();
-            this.setVisible(false);
+
             reloadTabs();
             this.setVisible(true);
             this.repaint();
@@ -553,7 +554,6 @@ public class MainUI extends JFrame implements RefreshListener {
         armorTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         weaponTab.addRefreshedListener(this);
-        weaponTab.getView().updateWeaponsList();
         buildTab.addRefreshedListener(this);
 
         ConfigPane.addTab("Structure", structureTab);

@@ -16,6 +16,10 @@
 
 package megameklab.com.util;
 
+import java.awt.Font;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import megamek.common.AmmoType;
@@ -46,6 +50,10 @@ public class UnitUtil {
     public static String ISTARGETINGCOMPUTER = "ISTargeting Computer";
     public static String CLTARGETINGCOMPUTER = "CLTargeting Computer";
     public static String TSM = "TSM";
+
+    private static Font euroFont = null;
+    private static Font euroBoldFont = null;
+
 
     /**
      * tells is EquipementType is armor or Structure that uses crits/mounted
@@ -759,5 +767,52 @@ public class UnitUtil {
                 }
             }
         }
+    }
+    
+    public static void loadFonts(){
+
+        if ( euroFont != null && euroBoldFont != null ){
+            return;
+        }
+        
+        String fName = "./data/fonts/Eurosti.TTF";
+        try {
+            File fontFile = new File(fName);
+            InputStream is = new FileInputStream(fontFile);
+            euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            is.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.err.println(fName + " not loaded.  Using Arial font.");
+            euroFont = new Font("Arial", Font.PLAIN, 8);
+        }
+
+        fName = "./data/fonts/Eurostib.TTF";
+        try {
+            File fontFile = new File(fName);
+            InputStream is = new FileInputStream(fontFile);
+            euroBoldFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            is.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.err.println(fName + " not loaded.  Using Arial font.");
+            euroBoldFont = new Font("Arial", Font.PLAIN, 8);
+        }
+
+    }
+    
+    public static Font deriveFont(float pointSize){
+           return UnitUtil.deriveFont(false, pointSize);
+    }
+    
+    public static Font deriveFont(boolean boldFont, float pointSize){
+        
+        loadFonts();
+        
+        if ( boldFont ){
+            return euroBoldFont.deriveFont(pointSize);
+        }
+        
+        return euroFont.deriveFont(pointSize);
     }
 }   

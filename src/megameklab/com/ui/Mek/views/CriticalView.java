@@ -143,7 +143,7 @@ public class CriticalView extends IView {
                 DropTargetCriticalList CriticalSlotList = new DropTargetCriticalList(critNames,unit,refresh);
                 CriticalSlotList.setVisibleRowCount(critNames.size());
                 CriticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                CriticalSlotList.setFont(new Font("Eurostile LT Std", Font.BOLD, 10));
+                CriticalSlotList.setFont(new Font("Arial",Font.PLAIN,10));
                 CriticalSlotList.setName(Integer.toString(location));
                 switch (location) {
                 case Mech.LOC_HEAD:
