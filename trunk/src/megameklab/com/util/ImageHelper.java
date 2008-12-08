@@ -156,7 +156,7 @@ public class ImageHelper {
         return fluff;
     }
 
-    public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d,Font euroFont, Font euroBoldFont) {
+    public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d) {
         int qtyPoint = 26;
         int typePoint = 38;
         int locPoint = 109;
@@ -202,7 +202,7 @@ public class ImageHelper {
 
         }
 
-        Font font = euroBoldFont.deriveFont(10.0f);
+        Font font = UnitUtil.deriveFont(true,10.0f);
         g2d.setFont(font);
 
         for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
@@ -221,29 +221,29 @@ public class ImageHelper {
                 if (count >= 12) {
                     break;
                 }
-                font = euroFont.deriveFont(7.0f);
+                font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
                 if (name.length() > 70) {
-                    font = euroFont.deriveFont(1.0f);
+                    font = UnitUtil.deriveFont(1.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 60) {
-                    font = euroFont.deriveFont(2.0f);
+                    font = UnitUtil.deriveFont(2.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 50) {
-                    font = euroFont.deriveFont(3.0f);
+                    font = UnitUtil.deriveFont(3.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 40) {
-                    font = euroFont.deriveFont(4.0f);
+                    font = UnitUtil.deriveFont(4.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 30) {
-                    font = euroFont.deriveFont(5.0f);
+                    font = UnitUtil.deriveFont(5.0f);
                     g2d.setFont(font);
                 } else if (name.length() > 20) {
-                    font = euroFont.deriveFont(6.0f);
+                    font = UnitUtil.deriveFont(6.0f);
                     g2d.setFont(font);
                 }
 
@@ -256,7 +256,7 @@ public class ImageHelper {
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
-                font = euroFont.deriveFont(7.0f);
+                font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
@@ -311,10 +311,10 @@ public class ImageHelper {
 
                     } else {
                         if (eqi.damage.trim().length() > 6) {
-                            font = euroFont.deriveFont(6.0f);
+                            font = UnitUtil.deriveFont(6.0f);
                             g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            font = euroFont.deriveFont(7.0f);
+                            font = UnitUtil.deriveFont(7.0f);
                             g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 2);
                             newLineNeeded = true;

@@ -26,9 +26,6 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -56,9 +53,6 @@ public class PrintQuad implements Printable {
     private int endMountx = 0;
     private int endMounty = 0;
 
-    private Font euroFont = null;
-    private Font euroBoldFont = null;
-
     public PrintQuad(ArrayList<Mech> list) {
         awtImage = ImageHelper.getRecordSheet(list.get(0), false);
         mechList = list;
@@ -66,31 +60,6 @@ public class PrintQuad implements Printable {
     //    System.out.println("Width: " + awtImage.getWidth(null));
       //  System.out.println("Height: " + awtImage.getHeight(null));
 
-        String fName = "./data/fonts/Eurosti.TTF";
-        try {
-            
-            File fontFile = new File(fName);
-            InputStream is = new FileInputStream(fontFile);
-            euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
-            is.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println(fName + " not loaded.  Using Arial font.");
-            System.err.println("Current Path "+ new File(fName).getAbsolutePath());
-            euroFont = new Font("Arial", Font.PLAIN, 8);
-        }
-
-        fName = "./data/fonts/Eurostib.TTF";
-        try {
-            File fontFile = new File(fName);
-            InputStream is = new FileInputStream(fontFile);
-            euroBoldFont = Font.createFont(Font.TRUETYPE_FONT, is);
-            is.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println(fName + " not loaded.  Using Arial font.");
-            euroBoldFont = new Font("Arial", Font.PLAIN, 8);
-        }
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -154,12 +123,12 @@ public class PrintQuad implements Printable {
     }
 
     private void printMechData(Graphics2D g2d) {
-        Font font = euroBoldFont.deriveFont(10.0f);
+        Font font = UnitUtil.deriveFont(true,10.0f);
         g2d.setFont(font);
 
         g2d.drawString(mech.getChassis().toUpperCase() + " " + mech.getModel().toUpperCase(), 49, 121);
 
-        font = euroFont.deriveFont(8.0f);
+        font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
@@ -195,7 +164,7 @@ public class PrintQuad implements Printable {
     }
 
     private void printHeatSinks(Graphics2D g2d) {
-        Font font = euroBoldFont.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(true,8.0f);
         g2d.setFont(font);
 
         // Heat Sinks
@@ -225,7 +194,7 @@ public class PrintQuad implements Printable {
 
     private void printArmor(Graphics2D g2d) {
         // Armor
-        Font font = euroFont.deriveFont(7.0f);
+        Font font = UnitUtil.deriveFont(7.0f);
         g2d.setFont(font);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485, 47);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 393, 138);
@@ -323,7 +292,7 @@ public class PrintQuad implements Printable {
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelper.printMechWeaponsNEquipment(mech, g2d,new Font("Arial", Font.PLAIN, 8),new Font("Arial", Font.PLAIN, 8));
+        ImageHelper.printMechWeaponsNEquipment(mech, g2d);
     }
 
     public void print() {
@@ -1125,12 +1094,12 @@ public class PrintQuad implements Printable {
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
         Font font;
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
-            font = euroBoldFont.deriveFont(7.0f);
+            font = UnitUtil.deriveFont(true,7.0f);
             g2d.setFont(font);
             CriticalSlot cs = mech.getCritical(location, slot);
 
             if (cs == null) {
-                font = euroFont.deriveFont(7.0f);
+                font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
                 g2d.drawString("Roll Again", lineStart, linePoint);
                 setCritConnection(null, lineStart, linePoint, lineStart, linePoint, g2d);
@@ -1186,25 +1155,25 @@ public class PrintQuad implements Printable {
                 }
 
                 if (!m.getType().isHittable()) {
-                    font = euroFont.deriveFont(7.0f);
+                    font = UnitUtil.deriveFont(7.0f);
                     g2d.setFont(font);
                 } else if (critName.length() >= 80) {
-                    font = euroBoldFont.deriveFont(1.0f);
+                    font = UnitUtil.deriveFont(true,1.0f);
                     g2d.setFont(font);
                 } else if (critName.length() >= 70) {
-                    font = euroBoldFont.deriveFont(2.0f);
+                    font = UnitUtil.deriveFont(true,2.0f);
                     g2d.setFont(font);
                 } else if (critName.length() >= 60) {
-                    font = euroBoldFont.deriveFont(3.0f);
+                    font = UnitUtil.deriveFont(true,3.0f);
                     g2d.setFont(font);
                 } else if (critName.length() >= 50) {
-                    font = euroBoldFont.deriveFont(4.0f);
+                    font = UnitUtil.deriveFont(true,4.0f);
                     g2d.setFont(font);
                 } else if (critName.length() >= 40) {
-                    font = euroBoldFont.deriveFont(5.0f);
+                    font = UnitUtil.deriveFont(true,5.0f);
                     g2d.setFont(font);
                 } else if (critName.length() >= 30) {
-                    font = euroBoldFont.deriveFont(6.0f);
+                    font = UnitUtil.deriveFont(true,6.0f);
                     g2d.setFont(font);
                 }
 
