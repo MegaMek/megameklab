@@ -18,6 +18,7 @@ package megameklab.com.util;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Sensor;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
@@ -73,6 +74,12 @@ import megamek.common.weapons.MMLWeapon;
                 c3Level = C3I;
             } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S)) {
                 c3Level = C3S;
+            } else if ( mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_ECM) ){
+                if ( mount.getType().getInternalName().equals(Sensor.WATCHDOG)){
+                    this.longRange = 4;
+                } else{
+                    this.longRange = 6;
+                }
             }
         }
     }

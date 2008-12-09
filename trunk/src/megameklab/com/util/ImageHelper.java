@@ -227,25 +227,7 @@ public class ImageHelper {
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                if (name.length() > 70) {
-                    font = UnitUtil.deriveFont(1.0f);
-                    g2d.setFont(font);
-                } else if (name.length() > 60) {
-                    font = UnitUtil.deriveFont(2.0f);
-                    g2d.setFont(font);
-                } else if (name.length() > 50) {
-                    font = UnitUtil.deriveFont(3.0f);
-                    g2d.setFont(font);
-                } else if (name.length() > 40) {
-                    font = UnitUtil.deriveFont(4.0f);
-                    g2d.setFont(font);
-                } else if (name.length() > 30) {
-                    font = UnitUtil.deriveFont(5.0f);
-                    g2d.setFont(font);
-                } else if (name.length() > 20) {
-                    font = UnitUtil.deriveFont(6.0f);
-                    g2d.setFont(font);
-                }
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
                 if (eqi.c3Level == eqi.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font);
@@ -336,7 +318,11 @@ public class ImageHelper {
                     g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
                     g2d.drawLine(shtPoint, linePoint - 2, shtPoint + 6, linePoint - 2);
                     g2d.drawLine(medPoint, linePoint - 2, medPoint + 6, linePoint - 2);
-                    g2d.drawLine(longPoint, linePoint - 2, longPoint + 6, linePoint - 2);
+                    if ( eqi.longRange > 0 ){
+                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                    }else {
+                        g2d.drawLine(longPoint, linePoint - 2, longPoint + 6, linePoint - 2);
+                    }
                 }
 
                 linePoint += lineFeed;
