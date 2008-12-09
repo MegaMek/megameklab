@@ -25,7 +25,6 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.weapons.ACWeapon;
-import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
@@ -35,6 +34,7 @@ import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MGWeapon;
 import megamek.common.weapons.PulseLaserWeapon;
+import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.UACWeapon;
 
@@ -58,10 +58,8 @@ public class StringUtils {
             if (weapon.getDamage() < 0) {
                 if (weapon instanceof SRMWeapon) {
                     info = "2/Msl [M,C]";
-                } else if (weapon instanceof LRMWeapon) {
+                } else if (weapon instanceof LRMWeapon || weapon instanceof RLWeapon) {
                     info = "1/Msl [M,C,S]";
-                } else if (weapon instanceof ATMWeapon) {
-                    info = "3/2/1 [M,C,S]";
                 } else if ( weapon instanceof ISSnubNosePPC ) {
                     info = "10/8/5 [DE,V]";
                 } else {

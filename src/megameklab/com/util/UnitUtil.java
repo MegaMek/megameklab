@@ -17,6 +17,7 @@
 package megameklab.com.util;
 
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -815,4 +816,15 @@ public class UnitUtil {
         
         return euroFont.deriveFont(pointSize);
     }
+    
+    public static Font getNewFont(Graphics2D g2d, String info, boolean bold, int stringWidth, float pointSize){
+        Font font = UnitUtil.deriveFont(bold,pointSize);
+        
+        while ( ImageHelper.getStringWidth(g2d, info, font) > stringWidth && pointSize > 0 ){
+            pointSize -= .1;
+            font = UnitUtil.deriveFont(true,pointSize);
+        }
+        return font;
+    }
 }   
+
