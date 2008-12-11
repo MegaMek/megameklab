@@ -1158,7 +1158,7 @@ public class PrintQuad implements Printable {
                     font = UnitUtil.deriveFont(7.0f);
                     g2d.setFont(font);
                 } else {
-                    g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), false, 86, 7.0f));
+                    g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), true, 86, 7.0f));
                 }
 
                 if (m.getType() instanceof MiscType && m.getType().hasFlag(MiscType.F_C3I)) {
