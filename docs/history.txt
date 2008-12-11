@@ -8,6 +8,8 @@ V 0.0.0.9-dev
 + Equipment Names now fit into Crit slots and weapon and equipment fields better.
 + Added new Method UnitUntils.getNewFont(Graphics2D, String, boolean, int, float)
 + RFE: Save last known settings in unit dialog
++ New MegaMek.jar
++ Bug: Heavy GR not printing correct damage.
 
 V 0.0.0.8 (12/08/08 10:00:00 PST)
 + Added the rest of the TW Record Sheets

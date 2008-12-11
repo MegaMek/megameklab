@@ -24,63 +24,70 @@ import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.MMLWeapon;
 
-    public class EquipmentInfo {
-        public int count = 0;
-        public String name = "";
-        public int minRange = 0;
-        public int shtRange = 0;
-        public int medRange = 0;
-        public int longRange = 0;
-        public String damage = "[E]";
-        public int heat = 0;
-        public int techLevel = TechConstants.T_INTRO_BOXSET;
-        public boolean isWeapon = false;
-        public boolean isMML = false;
-        public boolean isATM = false;
-        
-        public int c3Level = 0;
+public class EquipmentInfo {
+    public int count = 0;
+    public String name = "";
+    public int minRange = 0;
+    public int shtRange = 0;
+    public int medRange = 0;
+    public int longRange = 0;
+    public String damage = "[E]";
+    public int heat = 0;
+    public int techLevel = TechConstants.T_INTRO_BOXSET;
+    public boolean isWeapon = false;
+    public boolean isMML = false;
+    public boolean isATM = false;
 
-        public int C3S = 1;
-        public int C3M = 2;
-        public int C3I = 3;
+    public int c3Level = 0;
 
-        public EquipmentInfo(Entity unit, Mounted mount) {
+    public int C3S = 1;
+    public int C3M = 2;
+    public int C3I = 3;
 
-            this.name = mount.getName();
-            if ( mount.isRearMounted() ) {
-                name += " (R)";
+    public EquipmentInfo(Entity unit, Mounted mount) {
+
+        name = mount.getName();
+        if (mount.isRearMounted()) {
+            name += " (R)";
+        }
+        count = 1;
+        techLevel = mount.getType().getTechLevel();
+
+        damage = StringUtils.getEquipmentInfo(unit, mount);
+
+        if (mount.getType() instanceof WeaponType) {
+            if (mount.getType().hasFlag(WeaponType.F_C3M)) {
+                c3Level = C3M;
             }
-            this.count = 1;
-            this.techLevel = mount.getType().getTechLevel();
+            WeaponType weapon = (WeaponType) mount.getType();
+            minRange = Math.max(0, weapon.minimumRange);
+            isWeapon = true;
 
-            this.damage = StringUtils.getEquipmentInfo(unit, mount);
+            isMML = weapon instanceof MMLWeapon;
+            isATM = weapon instanceof ATMWeapon;
 
-            if (mount.getType() instanceof WeaponType) {
-                if (mount.getType().hasFlag(WeaponType.F_C3M)) {
-                    c3Level = C3M;
-                }
-                WeaponType weapon = (WeaponType) mount.getType();
-                this.minRange = Math.max(0, weapon.minimumRange);
-                this.isWeapon = true;
-
-                this.isMML = weapon instanceof MMLWeapon;
-                this.isATM = weapon instanceof ATMWeapon;
-                
-                this.shtRange = weapon.shortRange;
-                this.medRange = weapon.mediumRange;
-                this.longRange = weapon.longRange;
-                this.heat = weapon.getHeat();
-            } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I)) {
-                c3Level = C3I;
-            } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S)) {
-                c3Level = C3S;
-            } else if ( mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_ECM) ){
-                if ( mount.getType().getInternalName().equals(Sensor.WATCHDOG)){
-                    this.longRange = 4;
-                } else{
-                    this.longRange = 6;
-                }
+            shtRange = weapon.shortRange;
+            medRange = weapon.mediumRange;
+            longRange = weapon.longRange;
+            heat = weapon.getHeat();
+        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I)) {
+            c3Level = C3I;
+        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S)) {
+            c3Level = C3S;
+        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_ECM)) {
+            if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
+                longRange = 4;
+            } else {
+                longRange = 6;
+            }
+        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_BAP)) {
+            if (mount.getType().getInternalName().equals(Sensor.BAP)) {
+                longRange = 4;
+            } else if (mount.getType().getInternalName().equals(Sensor.BLOODHOUND)) {
+                longRange = 6;
+            } else if (mount.getType().getInternalName().equals(Sensor.CLAN_AP)) {
+                longRange = 5;
             }
         }
     }
-
+}
