@@ -34,19 +34,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
-
-import megameklab.com.util.ITab;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
-import megameklab.com.util.UnitUtil;
-import megameklab.com.ui.Mek.views.CriticalView;
+import javax.swing.SwingConstants;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Mech;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
+import megameklab.com.ui.Mek.views.CriticalView;
+import megameklab.com.util.ITab;
+import megameklab.com.util.RefreshListener;
+import megameklab.com.util.SpringLayoutHelper;
+import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements ActionListener, KeyListener {
 
@@ -80,14 +81,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     public StructureTab(Mech unit) {
         JScrollPane scroll = new JScrollPane();
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setAutoscrolls(true);
         scroll.setWheelScrollingEnabled(true);
         JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, enginePanel(), scroll);
 
         this.unit = unit;
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         // this.add(enginePanel());
         critView = new CriticalView(unit, false, refresh);
         scroll.setViewportView(critView);
@@ -134,8 +135,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         Vector<String> weightClasses = new Vector<String>(1, 1);
 
-        for (int weight = 10; weight < 101; weight += 5)
+        for (int weight = 10; weight < 101; weight += 5) {
             weightClasses.add(Integer.toString(weight));
+        }
 
         weightClass = new JComboBox(weightClasses.toArray());
 
@@ -165,6 +167,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     public void refresh() {
         removeAllActionListeners();
         quadCB.setSelected(unit instanceof QuadMech);
+        omniCB.setSelected(unit.isOmni());
         era.setText(Integer.toString(unit.getYear()));
         gyroType.setSelectedIndex(unit.getGyroType());
         weightClass.setSelectedIndex((int) (unit.getWeight() / 5) - 2);
@@ -184,40 +187,44 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 engineType.setSelectedIndex(unit.getEngine().getEngineType());
             }
             techType.setSelectedIndex(1);
-            if (unit.getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL)
+            if (unit.getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL) {
                 techLevel.setSelectedIndex(3);
-            else if (unit.getTechLevel() >= TechConstants.T_CLAN_EXPERIMENTAL)
+            } else if (unit.getTechLevel() >= TechConstants.T_CLAN_EXPERIMENTAL) {
                 techLevel.setSelectedIndex(2);
-            else if (unit.getTechLevel() >= TechConstants.T_CLAN_ADVANCED)
+            } else if (unit.getTechLevel() >= TechConstants.T_CLAN_ADVANCED) {
                 techLevel.setSelectedIndex(1);
-            else
+            } else {
                 techLevel.setSelectedIndex(0);
+            }
         } else {
             engineType.setSelectedIndex(unit.getEngine().getEngineType());
             techType.setSelectedIndex(0);
 
-            if (unit.getTechLevel() >= TechConstants.T_IS_UNOFFICIAL)
+            if (unit.getTechLevel() >= TechConstants.T_IS_UNOFFICIAL) {
                 techLevel.setSelectedIndex(4);
-            else if (unit.getTechLevel() >= TechConstants.T_IS_EXPERIMENTAL)
+            } else if (unit.getTechLevel() >= TechConstants.T_IS_EXPERIMENTAL) {
                 techLevel.setSelectedIndex(3);
-            else if (unit.getTechLevel() >= TechConstants.T_IS_ADVANCED)
+            } else if (unit.getTechLevel() >= TechConstants.T_IS_ADVANCED) {
                 techLevel.setSelectedIndex(2);
-            else if (unit.getTechLevel() >= TechConstants.T_IS_TW_NON_BOX)
+            } else if (unit.getTechLevel() >= TechConstants.T_IS_TW_NON_BOX) {
                 techLevel.setSelectedIndex(1);
-            else
+            } else {
                 techLevel.setSelectedIndex(0);
+            }
 
         }
 
-        if (UnitUtil.hasLaserHeatSinks(unit))
+        if (UnitUtil.hasLaserHeatSinks(unit)) {
             heatSinkType.setSelectedIndex(2);
-        else if (unit.hasDoubleHeatSinks()) {
-            if (UnitUtil.hasCompactHeatSinks(unit))
+        } else if (unit.hasDoubleHeatSinks()) {
+            if (UnitUtil.hasCompactHeatSinks(unit)) {
                 heatSinkType.setSelectedIndex(2);
-            else
+            } else {
                 heatSinkType.setSelectedIndex(1);
-        } else
+            }
+        } else {
             heatSinkType.setSelectedIndex(0);
+        }
 
         walkMP.setSelectedIndex(unit.getWalkMP() - 1);
 
@@ -229,7 +236,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     public JLabel createLabel(String text, Dimension maxSize) {
 
-        JLabel label = new JLabel(text, JLabel.TRAILING);
+        JLabel label = new JLabel(text, SwingConstants.TRAILING);
 
         label.setMaximumSize(maxSize);
         label.setMinimumSize(maxSize);
@@ -430,11 +437,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = unit.getCritical(loc, slot);
 
-                if (cs == null || cs.getType() != CriticalSlot.TYPE_SYSTEM)
+                if (cs == null || cs.getType() != CriticalSlot.TYPE_SYSTEM) {
                     continue;
+                }
 
-                if (cs.getIndex() == systemType)
+                if (cs.getIndex() == systemType) {
                     unit.setCritical(loc, slot, null);
+                }
             }
         }
     }

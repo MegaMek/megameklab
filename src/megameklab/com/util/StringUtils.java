@@ -28,6 +28,7 @@ import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
+import megamek.common.weapons.ISHGaussRifle;
 import megamek.common.weapons.ISSilverBulletGauss;
 import megamek.common.weapons.ISSnubNosePPC;
 import megamek.common.weapons.LBXACWeapon;
@@ -60,14 +61,16 @@ public class StringUtils {
                     info = "2/Msl [M,C]";
                 } else if (weapon instanceof LRMWeapon || weapon instanceof RLWeapon) {
                     info = "1/Msl [M,C,S]";
-                } else if ( weapon instanceof ISSnubNosePPC ) {
+                } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
+                } else if (weapon instanceof ISHGaussRifle) {
+                    info = "25/20/10 [DB,X]";
                 } else {
                     info = Integer.toString(weapon.getRackSize());
                 }
-            } else if ( weapon instanceof UACWeapon ) {
+            } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
-                info += "/Sht [DB,R,C]"; 
+                info += "/Sht [DB,R,C]";
             } else {
                 info = Integer.toString(weapon.getDamage());
                 info += " [";
@@ -75,7 +78,7 @@ public class StringUtils {
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
                     info += "DB,";
                 }
-                if ( UnitUtil.isAMS(weapon) ) {
+                if (UnitUtil.isAMS(weapon)) {
                     info += "PD,";
                 } else if (weapon instanceof PulseLaserWeapon) {
                     info += "P,";
@@ -85,15 +88,15 @@ public class StringUtils {
 
                 if (weapon instanceof LBXACWeapon) {
                     info += "C/F/";
-                } else if ( weapon instanceof HAGWeapon || weapon instanceof ISSilverBulletGauss) {
+                } else if (weapon instanceof HAGWeapon || weapon instanceof ISSilverBulletGauss) {
                     info += "C/F,";
                 }
-                
+
                 if (UnitUtil.hasSwitchableAmmo(weapon)) {
                     info += "S,";
                 }
 
-                if ( weapon instanceof UACWeapon ) {
+                if (weapon instanceof UACWeapon) {
                     info += "R,";
                 }
 
@@ -112,10 +115,9 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
-        } else if ( mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_CLUB) ) {
+        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_CLUB)) {
             info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false));
-        }
-            else {
+        } else {
             info = "  [E]";
         }
         return info;
