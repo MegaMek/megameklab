@@ -10,6 +10,9 @@ V 0.0.0.9-dev
 + RFE: Save last known settings in unit dialog
 + New MegaMek.jar
 + Bug: Heavy GR not printing correct damage.
++ Bug: One Shot ammo showing up in Build List when loading from file
++ TSM now prints as Triple-Strength Myomer in crit location
++ Added TSM, Masc, Super Charger Notation to Record Sheet
 
 V 0.0.0.8 (12/08/08 10:00:00 PST)
 + Added the rest of the TW Record Sheets

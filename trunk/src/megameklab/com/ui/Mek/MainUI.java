@@ -280,6 +280,7 @@ public class MainUI extends JFrame implements RefreshListener {
                 return;
             }
             entity = (Mech) viewer.getSelectedEntity();
+            UnitUtil.removeOneShotAmmo(entity);
             UnitUtil.expandUnitMounts(entity);
 
             viewer.setVisible(false);
