@@ -50,6 +50,7 @@ public class EquipmentInfo {
         if (mount.isRearMounted()) {
             name += " (R)";
         }
+
         count = 1;
         techLevel = mount.getType().getTechLevel();
 
