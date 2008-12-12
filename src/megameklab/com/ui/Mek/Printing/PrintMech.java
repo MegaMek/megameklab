@@ -33,11 +33,11 @@ import java.util.ArrayList;
 import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
+import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
-
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
@@ -58,16 +58,15 @@ public class PrintMech implements Printable {
         awtImage = ImageHelper.getRecordSheet(list.get(0), false);
         mechList = list;
 
-/*        if (awtImage != null) {
-            System.out.println("Width: " + awtImage.getWidth(null));
-            System.out.println("Height: " + awtImage.getHeight(null));
-        }
-*/
+        /*
+         * if (awtImage != null) { System.out.println("Width: " + awtImage.getWidth(null)); System.out.println("Height: " + awtImage.getHeight(null)); }
+         */
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1)
+        if (pageIndex >= 1) {
             return Printable.NO_SUCH_PAGE;
+        }
 
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
@@ -77,8 +76,9 @@ public class PrintMech implements Printable {
 
     public void printImage(Graphics2D g2d, Image image, Image hud, PageFormat pageFormat) {
         // System.out.println("printImage(Graphics2D g2d, Image image)");
-        if (g2d == null)
+        if (g2d == null) {
             return;
+        }
 
         System.gc();
         // g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(),
@@ -129,7 +129,7 @@ public class PrintMech implements Printable {
     }
 
     private void printMechData(Graphics2D g2d) {
-        Font font = UnitUtil.deriveFont(true,10.0f);
+        Font font = UnitUtil.deriveFont(true, 10.0f);
         g2d.setFont(font);
 
         g2d.drawString(mech.getChassis().toUpperCase() + " " + mech.getModel().toUpperCase(), 49, 121);
@@ -137,8 +137,23 @@ public class PrintMech implements Printable {
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
-        g2d.drawString(Integer.toString(mech.getRunMP()), 79, 155);
+        if (mech.hasTSM()) {
+            int walkTSM = mech.getWalkMP() + 1;
+            int runTSM = (int) Math.ceil(walkTSM * 1.5) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79, 144);
+            g2d.drawString(Integer.toString(mech.getRunMP()) + " [" + runTSM + "]", 79, 155);
+        } else if (mech.getMASC() != null && mech.getSuperCharger() != null) {
+            int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
+            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+        } else if (mech.getMASC() != null || mech.getSuperCharger() != null) {
+            int mascMP = (mech.getWalkMP() * 2) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
+            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+        } else {
+            g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
+            g2d.drawString(Integer.toString(mech.getRunMP()), 79, 155);
+        }
         g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
 
         int tonnage = (int) Math.ceil(mech.getWeight());
@@ -164,13 +179,13 @@ public class PrintMech implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
 
-        font = new Font("Arial",Font.PLAIN,8);
+        font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
         g2d.drawString("2008", 102.5f, 745f);
     }
 
     private void printHeatSinks(Graphics2D g2d) {
-        Font font = UnitUtil.deriveFont(true,8.0f);
+        Font font = UnitUtil.deriveFont(true, 8.0f);
         g2d.setFont(font);
 
         // Heat Sinks
@@ -319,8 +334,8 @@ public class PrintMech implements Printable {
 
                 for (Mech currentMech : mechList) {
 
-                    this.mech = currentMech;
-                    this.awtHud = ImageHelper.getFluffImage(currentMech);
+                    mech = currentMech;
+                    awtHud = ImageHelper.getFluffImage(currentMech);
                     pj.setJobName(mech.getChassis() + " " + mech.getModel());
 
                     pj.print();
@@ -685,9 +700,9 @@ public class PrintMech implements Printable {
         int totalArmor = mech.getArmor(Mech.LOC_LT);
 
         if (totalArmor < 36) {
-            topPipsPerLine = (int) Math.ceil((double) totalArmor / 8d);
-            topPipShift.width += 4 - (int) Math.ceil((double) totalArmor / 10d);
-            topPipShift.height += Math.max(0, 2 - (int) Math.ceil((double) totalArmor / 10d));
+            topPipsPerLine = (int) Math.ceil(totalArmor / 8d);
+            topPipShift.width += 4 - (int) Math.ceil(totalArmor / 10d);
+            topPipShift.height += Math.max(0, 2 - (int) Math.ceil(totalArmor / 10d));
             maxTopPips = Math.min(20, (totalArmor * 60) / 100);
             maxMiddlePips = (totalArmor * 24) / 100;
             maxBottemPips = totalArmor - (maxTopPips + maxMiddlePips);
@@ -764,7 +779,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         if (pips < 30) {
-            pipsPerLine = (int) Math.ceil((double) pips / 5d);
+            pipsPerLine = (int) Math.ceil(pips / 5d);
             pipShift.height += Math.max(0, 4 - (pips / 6));
         }
 
@@ -801,9 +816,9 @@ public class PrintMech implements Printable {
         int totalArmor = mech.getArmor(Mech.LOC_RT);
 
         if (totalArmor < 36) {
-            topPipsPerLine = (int) Math.ceil((double) totalArmor / 8d);
-            topPipShift.width += 4 - (int) Math.ceil((double) totalArmor / 10d);
-            topPipShift.height += Math.max(0, 2 - (int) Math.ceil((double) totalArmor / 10d));
+            topPipsPerLine = (int) Math.ceil(totalArmor / 8d);
+            topPipShift.width += 4 - (int) Math.ceil(totalArmor / 10d);
+            topPipShift.height += Math.max(0, 2 - (int) Math.ceil(totalArmor / 10d));
             maxTopPips = Math.min(20, (totalArmor * 60) / 100);
             maxMiddlePips = (totalArmor * 24) / 100;
             maxBottemPips = totalArmor - (maxTopPips + maxMiddlePips);
@@ -883,7 +898,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         if (pips < 30) {
-            pipsPerLine = (int) Math.ceil((double) pips / 5d);
+            pipsPerLine = (int) Math.ceil(pips / 5d);
             pipShift.height += Math.max(0, 4 - (pips / 6));
         }
 
@@ -1099,7 +1114,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         if (pips < 40) {
-            pipsPerRow = Math.min(4, (int) Math.ceil((double) pips / 5d));
+            pipsPerRow = Math.min(4, (int) Math.ceil(pips / 5d));
             pipShift.height += 11 - (pips / 4);
         }
 
@@ -1519,7 +1534,7 @@ public class PrintMech implements Printable {
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
         Font font;
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
-            font = UnitUtil.deriveFont(true,7.0f);
+            font = UnitUtil.deriveFont(true, 7.0f);
             g2d.setFont(font);
             CriticalSlot cs = mech.getCritical(location, slot);
 
@@ -1571,6 +1586,11 @@ public class PrintMech implements Printable {
 
                 StringBuffer critName = new StringBuffer(m.getName());
 
+                if (UnitUtil.isTSM(m.getType())) {
+                    critName.setLength(0);
+                    critName.append("Triple-Strength Myomer");
+                }
+
                 if (m.isRearMounted()) {
                     critName.append("(R)");
                 } else if (m.getType() instanceof AmmoType) {
@@ -1583,7 +1603,7 @@ public class PrintMech implements Printable {
                 }
 
                 if (!m.getType().isHittable()) {
-                    font = UnitUtil.deriveFont(true,7.0f);
+                    font = UnitUtil.deriveFont(true, 7.0f);
                     g2d.setFont(font);
                 } else {
                     g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), true, 86, 7.0f));
@@ -1618,8 +1638,8 @@ public class PrintMech implements Printable {
 
         int width = Math.min(148, img.getWidth(null));
         int height = Math.min(200, img.getHeight(null));
-        int drawingX = 235 + ((148-width)/2);
-        int drawingY = 172 + ((200 - height)/2);
+        int drawingX = 235 + ((148 - width) / 2);
+        int drawingY = 172 + ((200 - height) / 2);
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
     }
 
