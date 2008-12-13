@@ -1581,7 +1581,7 @@ public class PrintMech implements Printable {
                 }
                 setCritConnection(null, lineStart, linePoint, lineStart, linePoint, g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
+                Mounted m = cs.getMount();
                 setCritConnection(m, lineStart, linePoint, lineStart, linePoint, g2d);
 
                 StringBuffer critName = new StringBuffer(m.getName());
