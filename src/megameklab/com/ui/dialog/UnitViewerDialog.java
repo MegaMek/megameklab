@@ -28,6 +28,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -749,6 +750,8 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         // else
         MechSummary ms = mechsCurrent[selected];
         try {
+            //For some unknown reason the base path gets screwed up after you print so this sets the source file to the full path.
+            ms.setSourceFile(new File(ms.getSourceFile().getAbsolutePath()));
             Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName()).getEntity();
             previewMech(entity);
         } catch (EntityLoadingException ex) {
