@@ -102,7 +102,7 @@ public class PrintMech implements Printable {
         // Armor Pips
         printLAArmor(g2d);
         printRAArmor(g2d);
-        printLTArmor(g2d);
+        printLTArmor(g2d, mech.getOArmor(Mech.LOC_LT), true);
         printRTArmor(g2d);
         printCTArmor(g2d);
         printLLArmor(g2d);
@@ -682,7 +682,7 @@ public class PrintMech implements Printable {
 
     }
 
-    private void printLTArmor(Graphics2D g2d) {
+    private void printLTArmor(Graphics2D g2d, int totalArmor, boolean firstPass) {
         Dimension topColumn = new Dimension(430, 88);
         Dimension middleColumn = new Dimension(445, 126);
         Dimension bottomColumn = new Dimension(437, 161);
@@ -697,9 +697,7 @@ public class PrintMech implements Printable {
         int topPipsPerLine = 5;
         int middlePipsPerLine = 2;
 
-        int totalArmor = mech.getArmor(Mech.LOC_LT);
-
-        if (totalArmor < 36) {
+        /*if (totalArmor < 36) {
             topPipsPerLine = (int) Math.ceil(totalArmor / 8d);
             topPipShift.width += 4 - (int) Math.ceil(totalArmor / 10d);
             topPipShift.height += Math.max(0, 2 - (int) Math.ceil(totalArmor / 10d));
@@ -709,13 +707,15 @@ public class PrintMech implements Printable {
             if (maxMiddlePips <= 5) {
                 middlePipsPerLine = 1;
             }
-        }
+        }*/
 
-        int pips = Math.min(maxTopPips, totalArmor);
-        totalArmor -= pips;
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
+        for (int pos = 1; pos <= maxTopPips; pos++) {
+            if ( (pos % 2 == 0 && firstPass) || ( pos % 2 != 0 && !firstPass)) {
+                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
+                if ( --totalArmor == 0 ) {
+                    return;
+                }
+            }
             topColumn.width += topPipShift.width;
             if (pos % topPipsPerLine == 0) {
                 topColumn.height += topPipShift.height;
@@ -728,10 +728,13 @@ public class PrintMech implements Printable {
             return;
         }
 
-        pips = Math.min(maxMiddlePips, totalArmor);
-        totalArmor -= pips;
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
+        for (int pos = 1; pos <= maxMiddlePips; pos++) {
+            if ( (pos % 2 == 0 && firstPass) || ( pos % 2 != 0 && !firstPass)) {
+                ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
+                if ( --totalArmor == 0 ) {
+                    return;
+                }
+            }
             middleColumn.width += middlePipShift.width;
             if (pos % middlePipsPerLine == 0) {
                 middleColumn.height += middlePipShift.height;
@@ -741,18 +744,20 @@ public class PrintMech implements Printable {
                     middleColumn.width += middlePipShift.width;
                 }
             }
+            
         }
 
         if (totalArmor < 1) {
             return;
         }
 
-        pips = Math.min(maxBottemPips, totalArmor);
-
-        totalArmor -= pips;
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
+        for (int pos = 1; pos <= maxBottemPips; pos++) {
+            if ( (pos % 2 == 0 && firstPass) || ( pos % 2 != 0 && !firstPass)) {
+                ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
+                if ( --totalArmor == 0 ) {
+                    return;
+                }
+            }
             bottomColumn.width += bottomPipShift.width;
             if (pos % 4 == 0) {
                 bottomColumn.height += bottomPipShift.height;
@@ -762,6 +767,9 @@ public class PrintMech implements Printable {
             }
         }
 
+        if ( totalArmor > 0 ) {
+            printLTArmor(g2d, totalArmor, false);
+        }
     }
 
     private void printLTRArmor(Graphics2D g2d) {
