@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@ public class ImageHelper {
     public static String recordSheetPath = "./data/images/recordsheets/";
     public static String fluffPath = "./data/images/fluff/";
 
-    
+
     public static Image getRecordSheet(Entity unit, boolean advanced) {
 
         Image recordSheet = null;
@@ -65,14 +65,14 @@ public class ImageHelper {
     public static Image getFluffImage(Entity unit) {
         Image fluff = null;
 
-        fluff = getFluffPNG(unit);
+        fluff = ImageHelper.getFluffPNG(unit);
 
         if (fluff == null) {
-            fluff = getFluffJPG(unit);
+            fluff = ImageHelper.getFluffJPG(unit);
         }
 
         if (fluff == null) {
-            fluff = getFluffGIF(unit);
+            fluff = ImageHelper.getFluffGIF(unit);
         }
 
         if (fluff == null) {
@@ -171,7 +171,7 @@ public class ImageHelper {
         int lineFeed = 10;
 
         boolean newLineNeeded = false;
-        
+
         ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Mech.LOC_LLEG + 1);
 
         for (int pos = 0; pos <= Mech.LOC_LLEG; pos++) {
@@ -180,7 +180,7 @@ public class ImageHelper {
 
         for (Mounted eq : mech.getEquipment()) {
 
-            if (eq.getType() instanceof AmmoType || eq.getLocation() == Mech.LOC_NONE || !UnitUtil.isPrintableEquipment(eq.getType())) {
+            if (eq.getType() instanceof AmmoType || eq.getLocation() == Entity.LOC_NONE || !UnitUtil.isPrintableEquipment(eq.getType())) {
                 continue;
             }
 
@@ -267,7 +267,7 @@ public class ImageHelper {
                     } else if (eqi.isATM) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
                         linePoint += lineFeed - 2;
-                        
+
                         g2d.drawString("Standard", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
                         g2d.drawString("4", minPoint, linePoint);
@@ -383,19 +383,19 @@ public class ImageHelper {
         return (int) (rect.getWidth());
     }
 
-    public static void drawArmorPip(Graphics2D g2d, int width, int height){
+    public static void drawArmorPip(Graphics2D g2d, float width, float height){
         Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("O", width, height);
     }
-    
-    public static void drawISPip(Graphics2D g2d, int width, int height){
+
+    public static void drawISPip(Graphics2D g2d, float width, float height){
         Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
         g2d.drawString("O", width, height);
     }
-    
-    public static void drawHeatSinkPip(Graphics2D g2d, int width, int height){
+
+    public static void drawHeatSinkPip(Graphics2D g2d, float width, float height){
         Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
         g2d.drawString("O", width, height);
