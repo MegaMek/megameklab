@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -348,11 +348,11 @@ public class PrintMech implements Printable {
     }
 
     private void printRLArmor(Graphics2D g2d) {
-        Dimension topColumn = new Dimension(499, 181);
-        Dimension middleColumn = new Dimension(509, 252);
-        Dimension bottomColumn = new Dimension(529, 270);
-        Dimension footColumn = new Dimension(519, 294);
-        Dimension pipShift = new Dimension(8, -2);
+        float[] topColumn = {499, 181};
+        float[] middleColumn = {509, 253};
+        float[] bottomColumn = {531, 270};
+        float[] footColumn = {519, 296};
+        float[] pipShift = {8, -2};
 
         int totalArmor = mech.getArmor(Mech.LOC_RLEG);
 
@@ -366,18 +366,14 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
-            topColumn.width += pipShift.width;
-            topColumn.height += pipShift.height;
+            ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
+            topColumn[0] += pipShift[0];
+            topColumn[1] += pipShift[1];
             if (pos % maxPipsPerTopColumn == 0) {
-                pipShift.width *= -1;
-                topColumn.width += pipShift.width + 1;
-                pipShift.height *= -1;
-                topColumn.height += pipShift.height + 7;
-            }
-
-            if (pos % 4 == 0) {
-                topColumn.width += 2;
+                pipShift[0] *= -1;
+                topColumn[0] += pipShift[0] + 1.8f;
+                pipShift[1] *= -1;
+                topColumn[1] += pipShift[1] + 7;
             }
         }
 
@@ -389,14 +385,14 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
-            middleColumn.width += pipShift.width;
-            middleColumn.height += pipShift.height;
+            ImageHelper.drawArmorPip(g2d, middleColumn[0], middleColumn[1]);
+            middleColumn[0] += pipShift[0];
+            middleColumn[1] += pipShift[1];
             if (pos % 4 == 0) {
-                pipShift.width *= -1;
-                middleColumn.width += pipShift.width + 1;
-                pipShift.height *= -1;
-                middleColumn.height += pipShift.height + 7;
+                pipShift[0] *= -1;
+                middleColumn[0] += pipShift[0] + 1.8f;
+                pipShift[1] *= -1;
+                middleColumn[1] += pipShift[1] + 7;
             }
 
         }
@@ -410,32 +406,32 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
-            bottomColumn.width += pipShift.width;
-            bottomColumn.height += pipShift.height;
+            ImageHelper.drawArmorPip(g2d, bottomColumn[0], bottomColumn[1]);
+            bottomColumn[0] += pipShift[0];
+            bottomColumn[1] += pipShift[1];
             if (pos % 2 == 0) {
-                pipShift.width *= -1;
-                bottomColumn.width += pipShift.width + 1;
-                pipShift.height *= -1;
-                bottomColumn.height += pipShift.height + 7;
+                pipShift[0] *= -1;
+                bottomColumn[0] += pipShift[0] + 1.8f;
+                pipShift[1] *= -1;
+                bottomColumn[1] += pipShift[1] + 7;
             }
         }
 
         pips = Math.min(4, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, footColumn.width, footColumn.height);
-            footColumn.width += pipShift.width;
+            ImageHelper.drawArmorPip(g2d, footColumn[0], footColumn[1]);
+            footColumn[0] += pipShift[0];
         }
 
     }
 
     private void printLLArmor(Graphics2D g2d) {
-        Dimension topColumn = new Dimension(443, 179);
-        Dimension middleColumn = new Dimension(417, 247);
-        Dimension bottomColumn = new Dimension(430, 272);
-        Dimension footColumn = new Dimension(406, 294);
-        Dimension pipShift = new Dimension(8, 2);
+        float[] topColumn = {443, 179};
+        float[] middleColumn = {417, 247};
+        float[] bottomColumn = {427.6f, 272};
+        float[] footColumn = {406, 296};
+        float[] pipShift = {8, 2};
 
         int totalArmor = mech.getArmor(Mech.LOC_LLEG);
 
@@ -449,20 +445,16 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
-            topColumn.width += pipShift.width;
-            topColumn.height += pipShift.height;
+            ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
+            topColumn[0] += pipShift[0];
+            topColumn[1] += pipShift[1];
             if (pos % maxPipsPerTopColumn == 0) {
-                pipShift.width *= -1;
-                topColumn.width += pipShift.width - 1;
-                pipShift.height *= -1;
-                topColumn.height += pipShift.height + 7;
-                // topColumn.height += pipShift.height;
+                pipShift[0] *= -1;
+                topColumn[0] += pipShift[0] - 1.8f;
+                pipShift[1] *= -1;
+                topColumn[1] += pipShift[1] + 7;
             }
 
-            if (pos % 4 == 0) {
-                topColumn.width -= 2;
-            }
         }
 
         if (totalArmor < 1) {
@@ -473,20 +465,15 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
-            middleColumn.width += pipShift.width;
-            middleColumn.height += pipShift.height;
+            ImageHelper.drawArmorPip(g2d, middleColumn[0], middleColumn[1]);
+            middleColumn[0] += pipShift[0];
+            middleColumn[1] += pipShift[1];
             if (pos % 4 == 0) {
-                pipShift.width *= -1;
-                middleColumn.width += pipShift.width - 1;
-                pipShift.height *= -1;
-                middleColumn.height += pipShift.height + 7;
-                // topColumn.height += pipShift.height;
+                pipShift[0] *= -1;
+                middleColumn[0] += pipShift[0] - 1.8f;
+                pipShift[1] *= -1;
+                middleColumn[1] += pipShift[1] + 7;
             }
-
-            // if ( pos % 4 == 0 ) {
-            // topColumn.width -=2;
-            // }
         }
 
         if (totalArmor < 1) {
@@ -498,23 +485,22 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
-            bottomColumn.width += pipShift.width;
-            bottomColumn.height += pipShift.height;
+            ImageHelper.drawArmorPip(g2d, bottomColumn[0], bottomColumn[1]);
+            bottomColumn[0] += pipShift[0];
+            bottomColumn[1] += pipShift[1];
             if (pos % 2 == 0) {
-                pipShift.width *= -1;
-                bottomColumn.width += pipShift.width - 1;
-                pipShift.height *= -1;
-                bottomColumn.height += pipShift.height + 7;
-                // topColumn.height += pipShift.height;
+                pipShift[0] *= -1;
+                bottomColumn[0] += pipShift[0] - 1.9f;
+                pipShift[1] *= -1;
+                bottomColumn[1] += pipShift[1] + 7;
             }
         }
 
         pips = Math.min(4, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, footColumn.width, footColumn.height);
-            footColumn.width += pipShift.width;
+            ImageHelper.drawArmorPip(g2d, footColumn[0], footColumn[1]);
+            footColumn[0] += pipShift[0];
         }
 
     }
