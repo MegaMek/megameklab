@@ -267,17 +267,17 @@ public class ImageHelper {
                     } else if (eqi.isATM) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
                         linePoint += lineFeed - 2;
-
-                        ImageHelper.printCenterString(g2d, "Standard", font, damagePoint, linePoint);
-                        g2d.drawString("2/Msl", damagePoint, linePoint);
+                        
+                        g2d.drawString("Standard", typePoint, linePoint);
+                        ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
                         g2d.drawString("4", minPoint, linePoint);
                         g2d.drawString("5", shtPoint, linePoint);
                         g2d.drawString("10", medPoint, linePoint);
                         g2d.drawString("15", longPoint, linePoint);
                         linePoint += lineFeed - 2;
 
-                        ImageHelper.printCenterString(g2d, "Extended-Range", font, damagePoint, linePoint);
-                        g2d.drawString("1/Msl", damagePoint, linePoint);
+                        g2d.drawString("Extended-Range", typePoint, linePoint);
+                        ImageHelper.printCenterString(g2d, "1/Msl", font, damagePoint, linePoint);
                         g2d.drawString("4", minPoint, linePoint);
                         g2d.drawString("9", shtPoint, linePoint);
                         g2d.drawString("18", medPoint, linePoint);

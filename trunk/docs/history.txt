@@ -16,6 +16,7 @@ V 0.0.0.9-dev
 + Bug: wrong mounts being printed.
 + New MegaMek.jar
 + Bug: would not load new unit after saving or printing
++ Bug: Atm ammo not printing out correctly 
 
 V 0.0.0.8 (12/08/08 10:00:00 PST)
 + Added the rest of the TW Record Sheets
