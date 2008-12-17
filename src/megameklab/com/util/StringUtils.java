@@ -29,6 +29,7 @@ import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.ISHGaussRifle;
+import megamek.common.weapons.ISPlasmaRifle;
 import megamek.common.weapons.ISSilverBulletGauss;
 import megamek.common.weapons.ISSnubNosePPC;
 import megamek.common.weapons.LBXACWeapon;
@@ -71,7 +72,10 @@ public class StringUtils {
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R,C]";
-            } else {
+            } else if ( weapon instanceof ISPlasmaRifle) {
+                info = "10 [DE,H,AI]";
+            }
+            else {
                 info = Integer.toString(weapon.getDamage());
                 info += " [";
 
