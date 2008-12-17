@@ -845,4 +845,16 @@ public class UnitUtil {
             unit.getAmmo().remove(mount);
         }
     }
+    
+    public static boolean hasAmmo(Entity unit, int location) {
+        
+        for ( Mounted mount : unit.getAmmo()) {
+         
+            if ( mount.getLocation() == location ) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }

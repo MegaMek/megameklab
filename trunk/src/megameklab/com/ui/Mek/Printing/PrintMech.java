@@ -99,17 +99,29 @@ public class PrintMech implements Printable {
         printLLCrits(g2d);
         printRLCrits(g2d);
 
+        //If its clan print case for the crits.
+        if ( mech.isClan() ) {
+            printLACase(g2d);
+            printLLCase(g2d);
+            printLTCase(g2d);
+            printHeadCase(g2d);
+            printCTCase(g2d);
+            printRACase(g2d);
+            printRTCase(g2d);
+            printRLCase(g2d);
+        }
+
         // Armor Pips
-        printLAArmor(g2d, mech.getOArmor(Mech.LOC_LARM), true);
-        printRAArmor(g2d, mech.getOArmor(Mech.LOC_RARM), true);
-        printLTArmor(g2d, mech.getOArmor(Mech.LOC_LT), true);
-        printRTArmor(g2d, mech.getOArmor(Mech.LOC_RT), true);
-        printCTArmor(g2d, mech.getOArmor(Mech.LOC_CT), true);
+        printLAArmor(g2d, mech.getArmor(Mech.LOC_LARM), true);
+        printRAArmor(g2d, mech.getArmor(Mech.LOC_RARM), true);
+        printLTArmor(g2d, mech.getArmor(Mech.LOC_LT), true);
+        printRTArmor(g2d, mech.getArmor(Mech.LOC_RT), true);
+        printCTArmor(g2d, mech.getArmor(Mech.LOC_CT), true);
         printLLArmor(g2d);
         printRLArmor(g2d);
-        printLTRArmor(g2d, mech.getOArmor(Mech.LOC_LT,true), true);
-        printRTRArmor(g2d, mech.getOArmor(Mech.LOC_RT,true), true);
-        printCTRArmor(g2d, mech.getOArmor(Mech.LOC_CT,true), true);
+        printLTRArmor(g2d, mech.getArmor(Mech.LOC_LT,true), true);
+        printRTRArmor(g2d, mech.getArmor(Mech.LOC_RT,true), true);
+        printCTRArmor(g2d, mech.getArmor(Mech.LOC_CT,true), true);
         printHeadArmor(g2d);
 
         // Internal Pips
@@ -356,6 +368,10 @@ public class PrintMech implements Printable {
 
         int totalArmor = mech.getArmor(Mech.LOC_RLEG);
 
+        if (totalArmor < 1) {
+            return;
+        }
+
         int pips = Math.min(20, totalArmor);
 
         totalArmor -= pips;
@@ -433,7 +449,12 @@ public class PrintMech implements Printable {
         float[] footColumn = {406, 296};
         float[] pipShift = {8, 2};
 
+        
         int totalArmor = mech.getArmor(Mech.LOC_LLEG);
+
+        if (totalArmor < 1) {
+            return;
+        }
 
         int pips = Math.min(20, totalArmor);
 
@@ -678,6 +699,10 @@ public class PrintMech implements Printable {
         Dimension middlePipShift = new Dimension(6, 7);
         Dimension bottomPipShift = new Dimension(6, 7);
 
+        if (totalArmor < 1) {
+            return;
+        }
+
         int maxTopPips = 25;
         int maxMiddlePips = 10;
         int maxBottemPips = 7;
@@ -793,6 +818,10 @@ public class PrintMech implements Printable {
         Dimension middlePipShift = new Dimension(6, 7);
         Dimension bottomPipShift = new Dimension(6, 7);
 
+        if (totalArmor < 1) {
+            return;
+        }
+
         int maxTopPips = 25;
         int maxMiddlePips = 10;
         int maxBottemPips = 7;
@@ -858,6 +887,10 @@ public class PrintMech implements Printable {
         Dimension topColumn = new Dimension(514, 312);
         Dimension pipShift = new Dimension(5, 5);
 
+        if (totalArmor < 1) {
+            return;
+        }
+
         for (int pos = 1; pos <= 35; pos++) {
             if ( (firstPass && pos % 2 == 0) || (!firstPass && pos % 2 != 0 ) ) {
                 ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
@@ -892,6 +925,10 @@ public class PrintMech implements Printable {
         Dimension bottomColumn = new Dimension(475, 185);
         Dimension pipShift = new Dimension(6, 6);
 */
+        if (totalArmor < 1) {
+            return;
+        }
+
         for (int pos = 1; pos <= 55; pos++) {
             if ( (firstPass && pos % 2 == 0) || (!firstPass && pos % 2 != 0 ) ) {
                 ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
@@ -1012,6 +1049,10 @@ public class PrintMech implements Printable {
     private void printCTRArmor(Graphics2D g2d, int totalArmor, boolean firstPass) {
         Dimension topColumn = new Dimension(470, 299);
         Dimension pipShift = new Dimension(5, 5);
+
+        if (totalArmor < 1) {
+            return;
+        }
 
         for (int pos = 1; pos <= 56; pos++) {
             if ( (firstPass && pos % 2 == 0) || (!firstPass && pos % 2 != 0 ) ) {
@@ -1547,4 +1588,107 @@ public class PrintMech implements Printable {
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
     }
 
+    private void printLACase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_LARM) ) {
+            return;
+        }
+        
+        int lineStart = 98;
+        int linePoint = 398;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printRACase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_RARM) ) {
+            return;
+        }
+        
+        int lineStart = 342;
+        int linePoint = 398;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+    
+    private void printLLCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_LLEG) ) {
+            return;
+        }
+        
+        int lineStart = 93;
+        int linePoint = 671;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printLTCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_LT) ) {
+            return;
+        }
+        
+        int lineStart = 104;
+        int linePoint = 534;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printHeadCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_HEAD) ) {
+            return;
+        }
+        
+        int lineStart = 196;
+        int linePoint = 388;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printRTCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_RT) ) {
+            return;
+        }
+        
+        int lineStart = 348;
+        int linePoint = 534;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printRLCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_RLEG) ) {
+            return;
+        }
+        
+        int lineStart = 338;
+        int linePoint = 671;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+   private void printCTCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_CT) ) {
+            return;
+        }
+        
+        int lineStart = 236;
+        int linePoint = 458;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
 }

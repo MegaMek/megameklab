@@ -97,6 +97,18 @@ public class PrintQuad implements Printable {
         printLLCrits(g2d);
         printRLCrits(g2d);
 
+        //If its clan print case for the crits.
+        if ( mech.isClan() ) {
+            printLACase(g2d);
+            printLLCase(g2d);
+            printLTCase(g2d);
+            printHeadCase(g2d);
+            printCTCase(g2d);
+            printRACase(g2d);
+            printRTCase(g2d);
+            printRLCase(g2d);
+        }
+
         // Armor Pips
         printLAArmor(g2d);
         printRAArmor(g2d);
@@ -1214,6 +1226,110 @@ public class PrintQuad implements Printable {
         g2d.drawImage(img, 235, 172, width, height, null);
 
         // g2d.drawRect(235, 172, 165, 200);
+    }
+
+    private void printLACase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_LARM) ) {
+            return;
+        }
+        
+        int lineStart = 98;
+        int linePoint = 398;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printRACase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_RARM) ) {
+            return;
+        }
+        
+        int lineStart = 342;
+        int linePoint = 398;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+    
+    private void printLLCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_LLEG) ) {
+            return;
+        }
+        
+        int lineStart = 93;
+        int linePoint = 671;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printLTCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_LT) ) {
+            return;
+        }
+        
+        int lineStart = 104;
+        int linePoint = 534;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printHeadCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_HEAD) ) {
+            return;
+        }
+        
+        int lineStart = 196;
+        int linePoint = 388;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printRTCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_RT) ) {
+            return;
+        }
+        
+        int lineStart = 348;
+        int linePoint = 534;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printRLCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_RLEG) ) {
+            return;
+        }
+        
+        int lineStart = 338;
+        int linePoint = 671;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+   private void printCTCase(Graphics2D g2d) {
+        
+        if ( !UnitUtil.hasAmmo(mech, Mech.LOC_CT) ) {
+            return;
+        }
+        
+        int lineStart = 236;
+        int linePoint = 458;
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
+        g2d.drawString("(CASE)", lineStart, linePoint);
     }
 
 }
