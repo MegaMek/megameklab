@@ -20,6 +20,8 @@ V 0.0.0.9-dev
 + Improved leg armor printing
 + Bug: Total heat not calculating correctly for IJJ's
 + changed how armor pips are calculated for printing
++ Bug: Plasma Rifle not printing correct weapons data.
++ RFE: added case label to crit locations for Clan mek. 
 
 V 0.0.0.8 (12/08/08 10:00:00 PST)
 + Added the rest of the TW Record Sheets
