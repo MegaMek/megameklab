@@ -18,6 +18,8 @@ V 0.0.0.9-dev
 + Bug: would not load new unit after saving or printing
 + Bug: Atm ammo not printing out correctly 
 + Improved leg armor printing
++ Bug: Total heat not calculating correctly for IJJ's
++ changed how armor pips are calculated for printing
 
 V 0.0.0.8 (12/08/08 10:00:00 PST)
 + Added the rest of the TW Record Sheets
