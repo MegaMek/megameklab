@@ -66,14 +66,14 @@ public class StringUtils {
                     info = "10/8/5 [DE,V]";
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "25/20/10 [DB,X]";
+                }  else if ( weapon instanceof ISPlasmaRifle) {
+                    info = "10 [DE,H,AI]";
                 } else {
                     info = Integer.toString(weapon.getRackSize());
                 }
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R,C]";
-            } else if ( weapon instanceof ISPlasmaRifle) {
-                info = "10 [DE,H,AI]";
             }
             else {
                 info = Integer.toString(weapon.getDamage());

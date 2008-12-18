@@ -109,10 +109,10 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                     int critsUsed = 0;
                     int primaryLocation = location;
                     int nextLocation = unit.getTransferLocation(location);
-                    int emptyCrits = unit.getEmptyCriticals(location)-1;
+                    int emptyCrits = unit.getEmptyCriticals(location);
                     
                     //No big splitables in the head!
-                    if ( nextLocation == Mech.LOC_DESTROYED || ( unit.getEmptyCriticals(location)+unit.getEmptyCriticals(nextLocation) < totalCrits )){
+                    if ( unit.getEmptyCriticals(location) < totalCrits && (nextLocation == Mech.LOC_DESTROYED || ( unit.getEmptyCriticals(location)+unit.getEmptyCriticals(nextLocation) < totalCrits )) ){
                         throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());                    }
                     for ( ; critsUsed < totalCrits; critsUsed++ ){
                         unit.addEquipment(eq, location, false);
