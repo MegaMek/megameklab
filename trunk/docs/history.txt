@@ -22,6 +22,9 @@ V 0.0.0.9-dev
 + changed how armor pips are calculated for printing
 + Bug: Plasma Rifle not printing correct weapons data.
 + RFE: added case label to crit locations for Clan mek. 
++ New MegaMek.jar
++ Bug: Could not place splitable weapons in CT even if they fit.
++ Bug: Plasma Rifle still not printing correctly.
 
 V 0.0.0.8 (12/08/08 10:00:00 PST)
 + Added the rest of the TW Record Sheets
