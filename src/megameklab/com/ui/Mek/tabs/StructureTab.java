@@ -257,7 +257,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        removeSystemCrits(Mech.SYSTEM_ENGINE);
+                    	unit.clearEngineCrits();
+                        //removeSystemCrits(Mech.SYSTEM_ENGINE);
                         if (unit.isClan()) {
                             int type = engineType.getSelectedIndex();
 
@@ -273,11 +274,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
                 } else if (combo.equals(gyroType)) {
                     unit.setGyroType(combo.getSelectedIndex());
-                    removeSystemCrits(Mech.SYSTEM_GYRO);
+                    unit.clearGyroCrits();
+                    //removeSystemCrits(Mech.SYSTEM_GYRO);
 
                     switch (unit.getGyroType()) {
                     case Mech.GYRO_COMPACT:
                         unit.addCompactGyro();
+                    	unit.clearEngineCrits();
+                        unit.addEngineCritsWithCompactGyro();
                         break;
                     case Mech.GYRO_HEAVY_DUTY:
                         unit.addHeavyDutyGyro();
@@ -290,9 +294,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
                 } else if (combo.equals(cockpitType)) {
                     unit.setCockpitType(combo.getSelectedIndex());
-                    removeSystemCrits(Mech.SYSTEM_COCKPIT);
+                    unit.clearCockpitCrits();
+                    /*removeSystemCrits(Mech.SYSTEM_COCKPIT);
                     removeSystemCrits(Mech.SYSTEM_LIFE_SUPPORT);
-                    removeSystemCrits(Mech.SYSTEM_SENSORS);
+                    removeSystemCrits(Mech.SYSTEM_SENSORS);*/
 
                     switch (unit.getCockpitType()) {
                     case Mech.COCKPIT_COMMAND_CONSOLE:
