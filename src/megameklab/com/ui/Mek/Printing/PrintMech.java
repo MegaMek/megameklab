@@ -1047,8 +1047,8 @@ public class PrintMech implements Printable {
     }
 
     private void printCTRArmor(Graphics2D g2d, int totalArmor, boolean firstPass) {
-        Dimension topColumn = new Dimension(470, 299);
-        Dimension pipShift = new Dimension(5, 5);
+        float[] topColumn = new float[]{470, 301};
+        float[] pipShift = new float[]{5f, 5f};
 
         if (totalArmor < 1) {
             return;
@@ -1056,16 +1056,16 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= 56; pos++) {
             if ( (firstPass && pos % 2 == 0) || (!firstPass && pos % 2 != 0 ) ) {
-                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
+                ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
                 if ( --totalArmor == 0 ) {
                     return;
                 }
             }
-            topColumn.width += pipShift.width;
+            topColumn[0] += pipShift[0];
             if (pos % 4 == 0) {
-                topColumn.height += pipShift.height;
-                pipShift.width *= -1;
-                topColumn.width += pipShift.width * 2;
+                topColumn[1] += pipShift[1];
+                pipShift[0] *= -1;
+                topColumn[0] += pipShift[0] * 2;
             }
         }
         
