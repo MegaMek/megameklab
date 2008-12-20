@@ -738,6 +738,9 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             if (list.equals(laserWeaponCombo)) {
                 WeaponType weapon = (WeaponType) subLaserWeaponList.elementAt(list.getSelectedIndex());
 
+                if ( weapon.hasFlag(WeaponType.F_ONESHOT) ){
+                	return;
+                }
                 Vector<String> equipmentList = new Vector<String>();
                 if (weapon.getAmmoType() != AmmoType.T_NA) {
                     for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
@@ -750,6 +753,10 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 laserAmmoCombo.setListData(equipmentList);
             } else if (list.equals(missileWeaponCombo)) {
                 WeaponType weapon = (WeaponType) subMissileWeaponList.elementAt(list.getSelectedIndex());
+                
+                if ( weapon.hasFlag(WeaponType.F_ONESHOT) ){
+                	return;
+                }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if (ammo.getRackSize() == weapon.getRackSize() && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
@@ -760,6 +767,9 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 missileAmmoCombo.setListData(equipmentList);
             } else if (list.equals(ballisticWeaponCombo)) {
                 WeaponType weapon = (WeaponType) subBallisticWeaponList.elementAt(list.getSelectedIndex());
+                if ( weapon.hasFlag(WeaponType.F_ONESHOT) ){
+                	return;
+                }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if (ammo.getRackSize() == weapon.getRackSize() && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
@@ -770,6 +780,9 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 ballisticAmmoCombo.setListData(equipmentList);
             } else if (list.equals(artilleryWeaponCombo)) {
                 WeaponType weapon = (WeaponType) subArtilleryWeaponList.elementAt(list.getSelectedIndex());
+                if ( weapon.hasFlag(WeaponType.F_ONESHOT) ){
+                	return;
+                }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if (ammo.getRackSize() == weapon.getRackSize() && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
