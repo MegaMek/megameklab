@@ -25,9 +25,11 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.weapons.ACWeapon;
+import megamek.common.weapons.CLPlasmaCannon;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
+import megamek.common.weapons.ISC3M;
 import megamek.common.weapons.ISHGaussRifle;
 import megamek.common.weapons.ISPlasmaRifle;
 import megamek.common.weapons.ISSilverBulletGauss;
@@ -35,6 +37,7 @@ import megamek.common.weapons.ISSnubNosePPC;
 import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MGWeapon;
+import megamek.common.weapons.MRMWeapon;
 import megamek.common.weapons.PulseLaserWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
@@ -57,18 +60,27 @@ public class StringUtils {
 
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
-            if (weapon.getDamage() < 0) {
+            if ( weapon instanceof ISC3M ){
+            	info = "  [E]";
+            }else if (weapon.getDamage() < 0) {
                 if (weapon instanceof SRMWeapon) {
                     info = "2/Msl [M,C]";
                 } else if (weapon instanceof LRMWeapon || weapon instanceof RLWeapon) {
                     info = "1/Msl [M,C,S]";
+                } else if ( weapon instanceof MRMWeapon ){
+                	info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "25/20/10 [DB,X]";
-                }  else if ( weapon instanceof ISPlasmaRifle) {
+                } else if ( weapon instanceof ISPlasmaRifle) {
                     info = "10 [DE,H,AI]";
-                } else {
+                } else if ( weapon instanceof CLPlasmaCannon) {
+                    info = "[DE,H,AI]";
+                } else if (weapon instanceof HAGWeapon) {
+                	info = Integer.toString(weapon.getRackSize());
+                    info += " [C/F]";
+                }else {
                     info = Integer.toString(weapon.getRackSize());
                 }
             } else if (weapon instanceof UACWeapon) {
@@ -92,7 +104,7 @@ public class StringUtils {
 
                 if (weapon instanceof LBXACWeapon) {
                     info += "C/F/";
-                } else if (weapon instanceof HAGWeapon || weapon instanceof ISSilverBulletGauss) {
+                } else if (weapon instanceof ISSilverBulletGauss) {
                     info += "C/F,";
                 }
 

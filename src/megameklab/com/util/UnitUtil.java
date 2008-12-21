@@ -826,7 +826,7 @@ public class UnitUtil {
 
         while (ImageHelper.getStringWidth(g2d, info, font) > stringWidth && pointSize > 0) {
             pointSize -= .1;
-            font = UnitUtil.deriveFont(true, pointSize);
+            font = UnitUtil.deriveFont(bold, pointSize);
         }
         return font;
     }
