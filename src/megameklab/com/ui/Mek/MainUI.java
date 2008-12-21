@@ -43,6 +43,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
@@ -81,7 +82,7 @@ public class MainUI extends JFrame implements RefreshListener {
      * 
      */
     private static final long serialVersionUID = -5836932822468918198L;
-    private static final String VERSION = "0.0.0.9-104";
+    private static final String VERSION = "0.0.0.9-106";
 
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
@@ -216,6 +217,16 @@ public class MainUI extends JFrame implements RefreshListener {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuValidateUnit_actionPerformed();
+            }
+        });
+        validate.add(item);
+
+        item = new JMenuItem();
+        item.setText("BV Calculations");
+        item.setMnemonic('B');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuBVCalculations_actionPerformed();
             }
         });
         validate.add(item);
@@ -464,6 +475,37 @@ public class MainUI extends JFrame implements RefreshListener {
 
     }
 
+    // Show BV Calculations
+    
+    public void jMenuBVCalculations_actionPerformed(){
+    	String bvText = entity.getBVText();
+    	
+    	JScrollPane scroll = new JScrollPane();
+    	JPanel panel = new JPanel();
+    	JTextArea text = new JTextArea();
+    	
+    	scroll.setViewportView(panel);
+    	scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    	scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    	panel.add(text);
+    	
+    	text.setText(bvText);
+    	
+    	scroll.setVisible(true);
+    	
+    	JDialog jdialog = new JDialog();
+    	
+    	jdialog.add(scroll);
+    	Dimension size = new Dimension(config.getIntParam("WINDOWWIDTH")/2,config.getIntParam("WINDOWHEIGHT"));
+    	
+    	jdialog.setPreferredSize(size);
+    	jdialog.setMinimumSize(size);
+    	
+    	jdialog.setLocationRelativeTo(this);
+    	jdialog.setVisible(true);
+        //JOptionPane.showMessageDialog(this, bvText, "BV Calculations", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
     // Show Validation data.
     public void jMenuValidateUnit_actionPerformed() {
 

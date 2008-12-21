@@ -624,8 +624,14 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         } else if (e.getActionCommand().equals(BALLISTICWEAPONADD_COMMAND)) {
             try {
                 if (ballisticWeaponCombo.getSelectedIndex() > -1) {
-                    unit.addEquipment(new Mounted(unit, subBallisticWeaponList.elementAt(ballisticWeaponCombo.getSelectedIndex())), Entity.LOC_NONE, false);
+                    Mounted mount = new Mounted(unit, subBallisticWeaponList.elementAt(ballisticWeaponCombo.getSelectedIndex())); 
+                    unit.addEquipment(mount, Entity.LOC_NONE, false);
                     weaponList.addCrit(subBallisticWeaponList.elementAt(ballisticWeaponCombo.getSelectedIndex()));
+                    //MegaMek automatically adds a ton of ammo for onshots for tracking. We do not need this in MLab
+                    if ( mount.getType().hasFlag(WeaponType.F_ONESHOT) ){
+                        unit.getEquipment().remove(unit.getEquipment().size()-1);
+                        unit.getAmmo().remove(unit.getAmmo().size()-1);
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

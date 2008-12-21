@@ -48,7 +48,7 @@ public class EquipmentInfo {
 
         name = mount.getName();
         if (mount.isRearMounted()) {
-            name += " (R)";
+            name += "(R)";
         }
 
         count = 1;
