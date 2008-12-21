@@ -166,9 +166,9 @@ public class ImageHelper {
         int shtPoint = 181;
         int medPoint = 199;
         int longPoint = 215;
-        int linePoint = 204;
+        float linePoint = 204f;
 
-        int lineFeed = 10;
+        float lineFeed = 8.5f;
 
         boolean newLineNeeded = false;
 
@@ -186,6 +186,11 @@ public class ImageHelper {
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
 
+            String equipmentName = eq.getName();
+            if ( eq.isRearMounted() ){
+            	equipmentName += "(R)";
+            }
+            
             if (eqHash.containsKey(eq.getName())) {
                 EquipmentInfo eqi = eqHash.get(eq.getName());
 
@@ -215,7 +220,23 @@ public class ImageHelper {
 
             int count = 0;
 
+            ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
+            
+            EquipmentInfo artemisEQ = null;
+            
+            if ( eqHash.containsKey("Artemis IV FCS")){
+        		artemisEQ = eqHash.get("Artemis IV FCS");
+        		artemisEQ.count = 1;
+        		eqHash.remove("Artemis IV FCS");
+            }
             for (EquipmentInfo eqi : eqHash.values()) {
+            	equipmentList.add(eqi);
+            	
+            	if ( (eqi.isMML || eqi.name.indexOf("LRM") > -1 || eqi.name.indexOf("SRM") > -1) && artemisEQ != null){
+            		equipmentList.add(artemisEQ);
+            	}
+            }
+            for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
 
                 if (count >= 12) {
@@ -259,7 +280,7 @@ public class ImageHelper {
 
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
+                        g2d.drawLine(minPoint, (int)linePoint - 2, minPoint + 6, (int)linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -286,7 +307,7 @@ public class ImageHelper {
 
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
+                        g2d.drawLine(minPoint, (int)linePoint - 2, minPoint + 6, (int)linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -306,22 +327,22 @@ public class ImageHelper {
                         if (eqi.minRange > 0) {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
                         } else {
-                            g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
+                            g2d.drawLine(minPoint, (int)linePoint - 2, minPoint + 6, (int)linePoint - 2);
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
                     }
                 } else {
-                    g2d.drawLine(heatPoint, linePoint - 2, heatPoint + 6, linePoint - 2);
+                    g2d.drawLine(heatPoint, (int)linePoint - 2, heatPoint + 6, (int)linePoint - 2);
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
-                    g2d.drawLine(minPoint, linePoint - 2, minPoint + 6, linePoint - 2);
-                    g2d.drawLine(shtPoint, linePoint - 2, shtPoint + 6, linePoint - 2);
-                    g2d.drawLine(medPoint, linePoint - 2, medPoint + 6, linePoint - 2);
+                    g2d.drawLine(minPoint, (int)linePoint - 2, minPoint + 6, (int)linePoint - 2);
+                    g2d.drawLine(shtPoint, (int)linePoint - 2, shtPoint + 6, (int)linePoint - 2);
+                    g2d.drawLine(medPoint, (int)linePoint - 2, medPoint + 6, (int)linePoint - 2);
                     if ( eqi.longRange > 0 ){
-                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int)linePoint);
                     }else {
-                        g2d.drawLine(longPoint, linePoint - 2, longPoint + 6, linePoint - 2);
+                        g2d.drawLine(longPoint, (int)linePoint - 2, longPoint + 6, (int)linePoint - 2);
                     }
                 }
 
@@ -335,7 +356,7 @@ public class ImageHelper {
 
     }
 
-    public static void printC3iName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
+    public static void printC3iName(Graphics2D g2d, int lineStart, float linePoint, Font font) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         g2d.drawString("Improved C  CPU", lineStart, linePoint);
@@ -346,7 +367,7 @@ public class ImageHelper {
         g2d.drawString("3", lineStart + stringWidth, linePoint);
     }
 
-    public static void printC3sName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
+    public static void printC3sName(Graphics2D g2d, int lineStart, float linePoint, Font font) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         g2d.drawString("C  Slave", lineStart, linePoint);
@@ -358,7 +379,7 @@ public class ImageHelper {
 
     }
 
-    public static void printC3mName(Graphics2D g2d, int lineStart, int linePoint, Font font) {
+    public static void printC3mName(Graphics2D g2d, int lineStart, float linePoint, Font font) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         g2d.drawString("C  Master", lineStart, linePoint);
@@ -369,7 +390,7 @@ public class ImageHelper {
         g2d.drawString("3", lineStart + stringWidth, linePoint);
     }
 
-    public static void printCenterString(Graphics2D g2d, String info, Font font, int printWidth, int printHeight) {
+    public static void printCenterString(Graphics2D g2d, String info, Font font, int printWidth, float printHeight) {
         int textWidth = ImageHelper.getStringWidth(g2d, info, font);
 
         g2d.drawString(info, printWidth - (textWidth / 2), printHeight);

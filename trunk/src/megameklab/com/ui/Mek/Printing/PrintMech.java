@@ -1543,8 +1543,13 @@ public class PrintMech implements Printable {
 
                     critName = new StringBuffer("Ammo (");
                     critName.append(ammo.getShortName().trim());
+                    if ( critName.toString().endsWith("Ammo") ){
+                    	critName.setLength(critName.length()-5);
+                    	critName.trimToSize();
+                    }
                     critName.append(") ");
                     critName.append(ammo.getShots());
+                    
                 }
 
                 if (!m.getType().isHittable()) {
