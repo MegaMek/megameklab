@@ -89,14 +89,15 @@ public class EquipmentView extends IView implements ActionListener {
 
         equipmentList = new CriticalTableModel(unit, CriticalTableModel.EQUIPMENT);
 
-        this.equipmentTable.setModel(equipmentList);
-        this.equipmentList.initColumnSizes(this.equipmentTable);
-        for (int i = 0; i < this.equipmentList.getColumnCount(); i++)
-            this.equipmentTable.getColumnModel().getColumn(i).setCellRenderer(this.equipmentList.getRenderer());
+        equipmentTable.setModel(equipmentList);
+        equipmentList.initColumnSizes(equipmentTable);
+        for (int i = 0; i < equipmentList.getColumnCount(); i++) {
+            equipmentTable.getColumnModel().getColumn(i).setCellRenderer(equipmentList.getRenderer());
+        }
 
-        this.equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         // equipmentScroll.setToolTipText("");
-        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() * 3 / 4));
+        equipmentScroll.setPreferredSize(new Dimension(getWidth() / 2, getHeight() * 3 / 4));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
 
@@ -117,18 +118,18 @@ public class EquipmentView extends IView implements ActionListener {
         masterEquipmentList.add(EquipmentType.get("ISTAG"));
         masterEquipmentList.add(EquipmentType.get("IS Coolant Pod"));
         masterEquipmentList.add(EquipmentType.get("Clan Coolant Pod"));
-        
+
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
             if (eq instanceof MiscType && !eq.hasFlag(MiscType.F_ASSAULT_CLAW) && !eq.hasFlag(MiscType.F_BOARDING_CLAW) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && !eq.hasFlag(MiscType.F_PARAFOIL) && !eq.hasFlag(MiscType.F_MINE) && !eq.hasFlag(MiscType.F_TOOLS) && !eq.hasFlag(MiscType.F_REACTIVE) && !eq.hasFlag(MiscType.F_REFLECTIVE) && !eq.hasFlag(MiscType.F_HAND_WEAPON) && !eq.hasFlag(MiscType.F_FERRO_FIBROUS) && !eq.hasFlag(MiscType.F_FIRE_RESISTANT) && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS) && !eq.hasFlag(MiscType.F_ENDO_STEEL) && !eq.hasFlag(MiscType.F_LIFTHOIST) && !eq.hasFlag(MiscType.F_SEARCHLIGHT) && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION) && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION) && !eq.hasFlag(MiscType.F_HEAT_SINK) && !eq.hasFlag(MiscType.F_LASER_HEAT_SINK) && !eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) && !eq.hasFlag(MiscType.F_STEALTH)
-                    && !eq.getName().equals(EquipmentType.getStructureTypeName(MiscType.T_STRUCTURE_STANDARD)) && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED)) && !eq.getName().equals(BattleArmor.SINGLE_HEX_ECM) && !eq.getInternalName().equals(Sensor.CLBALIGHT_AP) && !eq.getInternalName().equals(Sensor.ISBALIGHT_AP)) {
+                    && !eq.getName().equals(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD)) && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED)) && !eq.getName().equals(BattleArmor.SINGLE_HEX_ECM) && !eq.getInternalName().equals(Sensor.CLBALIGHT_AP) && !eq.getInternalName().equals(Sensor.ISBALIGHT_AP)) {
                 masterEquipmentList.add(eq);
             }
         }
 
-        Collections.sort(masterEquipmentList,StringUtils.equipmentTypeComparator());
+        Collections.sort(masterEquipmentList, StringUtils.equipmentTypeComparator());
         this.add(mainPanel);
         loadEquipmentTable();
     }
@@ -141,9 +142,9 @@ public class EquipmentView extends IView implements ActionListener {
 
         equipmentCombo.removeAllItems();
         equipmentTypes = new TreeMap<String, EquipmentType>();
-        
+
         for (EquipmentType eq : masterEquipmentList) {
-            if (UnitUtil.isLegal(unit,eq.getTechLevel())){
+            if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 equipmentTypes.put(eq.getName(), eq);
                 equipmentCombo.addItem(eq.getName());
             }
@@ -181,11 +182,11 @@ public class EquipmentView extends IView implements ActionListener {
             EquipmentType eq = (EquipmentType) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             if ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK))) {
                 try {
-                equipmentList.removeCrit(location);
-                equipmentList.refreshModel();
-                }catch (ArrayIndexOutOfBoundsException aioobe) {
+                    equipmentList.removeCrit(location);
+                    equipmentList.refreshModel();
+                } catch (ArrayIndexOutOfBoundsException aioobe) {
                     return;
-                }catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else {
@@ -269,10 +270,11 @@ public class EquipmentView extends IView implements ActionListener {
         equipmentList.removeAllCrits();
         loadHeatSinks();
     }
-    
+
     private void fireTableRefresh() {
+        equipmentList.updateMech(unit);
         equipmentList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() * 90 / 100, this.getHeight() * 8 / 10));
+        equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
         equipmentScroll.repaint();
         updateJumpMP();
         if (refresh != null) {
@@ -314,5 +316,5 @@ public class EquipmentView extends IView implements ActionListener {
             }
         }
     }
-    
+
 }

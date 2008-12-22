@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.9-dev
+V 0.0.0.9
 + Bug: Weapons not loading.
 + Added deriveFont method to UnitUtils
 + Added loadFonts Method to UnitUtils
@@ -31,6 +31,8 @@ V 0.0.0.9-dev
 + New MegaMek.jar
 + Updated Crit Locations for Bipeds and Quads
 + New MegaMek.jar
++ Bug: Armor not resetting when unit is reset.
++ Bug: New Mek not getting updated to all parts of Application when reset is issued or new unit loaded.
 
 V 0.0.0.8 (12/08/08 10:00:00 PST)
 + Added the rest of the TW Record Sheets

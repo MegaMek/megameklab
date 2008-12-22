@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
@@ -45,30 +46,31 @@ public class BuildView extends IView implements ActionListener {
     private static final long serialVersionUID = 799195356642563937L;
 
     private JPanel mainPanel = new JPanel();
-    
+
     private CriticalTableModel equipmentList;
     private Vector<EquipmentType> masterEquipmentList = new Vector<EquipmentType>(10, 1);
     private CriticalTable equipmentTable = new CriticalTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private int engineHeatSinkCount = 0;
-    
+
     public BuildView(Mech unit) {
         super(unit);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
 
-        this.equipmentTable.setModel(equipmentList);
-        this.equipmentList.initColumnSizes(this.equipmentTable);
-        for (int i = 0; i < this.equipmentList.getColumnCount(); i++)
-            this.equipmentTable.getColumnModel().getColumn(i).setCellRenderer(this.equipmentList.getRenderer());
+        equipmentTable.setModel(equipmentList);
+        equipmentList.initColumnSizes(equipmentTable);
+        for (int i = 0; i < equipmentList.getColumnCount(); i++) {
+            equipmentTable.getColumnModel().getColumn(i).setCellRenderer(equipmentList.getRenderer());
+        }
 
-        this.equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         // equipmentScroll.setToolTipText("");
-        equipmentScroll.setPreferredSize(new Dimension(this.getWidth(), this.getHeight()));
+        equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
-        
+
         mainPanel.add(equipmentScroll);
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
@@ -89,17 +91,17 @@ public class BuildView extends IView implements ActionListener {
         equipmentList.removeAllCrits();
         engineHeatSinkCount = unit.getEngine().integralHeatSinkCapacity();
         for (Mounted mount : unit.getWeaponList()) {
-            if (mount.getLocation() == Mech.LOC_NONE) {
+            if (mount.getLocation() == Entity.LOC_NONE) {
                 equipmentList.addCrit(mount.getType());
             }
         }
         for (Mounted mount : unit.getAmmo()) {
-            if (mount.getLocation() == Mech.LOC_NONE) {
+            if (mount.getLocation() == Entity.LOC_NONE) {
                 equipmentList.addCrit(mount.getType());
             }
         }
         for (Mounted mount : unit.getMisc()) {
-            if (mount.getLocation() == Mech.LOC_NONE && !isEngineHeatSink(mount)) {
+            if (mount.getLocation() == Entity.LOC_NONE && !isEngineHeatSink(mount)) {
                 equipmentList.addCrit(mount.getType());
             }
         }
@@ -110,7 +112,7 @@ public class BuildView extends IView implements ActionListener {
             engineHeatSinkCount--;
             return engineHeatSinkCount >= 0;
         }
-        
+
         return false;
     }
 
@@ -132,16 +134,17 @@ public class BuildView extends IView implements ActionListener {
     }
 
     private void fireTableRefresh() {
+        equipmentList.updateMech(unit);
         equipmentList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(this.getWidth() * 90 / 100, this.getHeight() * 90 / 100));
+        equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 90 / 100));
         equipmentScroll.repaint();
     }
 
     public CriticalTableModel getTableModel() {
-        return this.equipmentList;
+        return equipmentList;
     }
 
     public JTable getTable() {
-        return this.equipmentTable;
+        return equipmentTable;
     }
 }
