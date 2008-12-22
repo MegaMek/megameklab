@@ -30,20 +30,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-
-import megameklab.com.util.ITab;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
-import megameklab.com.util.UnitUtil;
-import megameklab.com.ui.Mek.views.ArmorView;
+import javax.swing.SwingConstants;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
+import megameklab.com.ui.Mek.views.ArmorView;
+import megameklab.com.util.ITab;
+import megameklab.com.util.RefreshListener;
+import megameklab.com.util.SpringLayoutHelper;
+import megameklab.com.util.UnitUtil;
 
-public class ArmorTab extends ITab implements ActionListener{
+public class ArmorTab extends ITab implements ActionListener {
 
     /**
      * 
@@ -57,7 +57,7 @@ public class ArmorTab extends ITab implements ActionListener{
 
     private JButton allocateArmorButton = new JButton("Allocate");
     private JTextField armorTonnage = new JTextField(5);
-    
+
     private JPanel buttonPanel = new JPanel();
 
     public ArmorTab(Mech unit) {
@@ -65,12 +65,17 @@ public class ArmorTab extends ITab implements ActionListener{
         this.unit = unit;
         armor = new ArmorView(this.unit);
 
-        this.setLayout(new SpringLayout());
+        setLayout(new SpringLayout());
         this.add(ButtonPanel());
         this.add(armor);
         SpringLayoutHelper.setupSpringGrid(this, 1);
         setTotalTonnage();
         addAllListeners();
+    }
+
+    public void resetArmor() {
+        armorCombo.setSelectedIndex(0);
+        structureCombo.setSelectedIndex(0);
     }
 
     public void refresh() {
@@ -93,7 +98,7 @@ public class ArmorTab extends ITab implements ActionListener{
             unit.setStructureType(structureCombo.getSelectedIndex());
             removeArmorMounts();
             createArmorMounts();
-            if ( refresh != null ) {
+            if (refresh != null) {
                 refresh.refreshAll();
             }
         }
@@ -103,9 +108,9 @@ public class ArmorTab extends ITab implements ActionListener{
     public JPanel ButtonPanel() {
         JPanel masterPanel = new JPanel(new SpringLayout());
 
-        masterPanel.add(new JLabel("Armor", JLabel.TRAILING));
+        masterPanel.add(new JLabel("Armor", SwingConstants.TRAILING));
         masterPanel.add(armorCombo);
-        masterPanel.add(new JLabel("Structure", JLabel.TRAILING));
+        masterPanel.add(new JLabel("Structure", SwingConstants.TRAILING));
         masterPanel.add(structureCombo);
 
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
@@ -122,18 +127,18 @@ public class ArmorTab extends ITab implements ActionListener{
         });
 
         armorTonnage.setToolTipText("Total Tonnage of Armor");
-        Dimension size = new Dimension(40,10);
+        Dimension size = new Dimension(40, 10);
         armorTonnage.setMaximumSize(size);
         armorTonnage.setPreferredSize(size);
-        
+
         JPanel sliderPanel = new JPanel(new SpringLayout());
-        sliderPanel.add(new JLabel("Armor Tonnage:",JLabel.TRAILING));
+        sliderPanel.add(new JLabel("Armor Tonnage:", SwingConstants.TRAILING));
         sliderPanel.add(armorTonnage);
         sliderPanel.add(allocateArmorButton);
         SpringLayoutHelper.setupSpringGrid(sliderPanel, 4);
 
         buttonPanel.add(sliderPanel);
-        
+
         return buttonPanel;
     }
 
@@ -150,19 +155,19 @@ public class ArmorTab extends ITab implements ActionListener{
     private void allocateArmorActionPerformed() {
         double maxArmor = UnitUtil.getTotalArmorTonnage(unit);
         double currentArmor = 0;
-        
+
         try {
             currentArmor = Double.parseDouble(armorTonnage.getText());
-            if ( currentArmor > maxArmor ){
+            if (currentArmor > maxArmor) {
                 currentArmor = maxArmor;
                 armorTonnage.setText(Double.toString(currentArmor));
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             currentArmor = maxArmor;
             armorTonnage.setText(Double.toString(maxArmor));
         }
-        
-        armor.allocateArmor(currentArmor/maxArmor);
+
+        armor.allocateArmor(currentArmor / maxArmor);
     }
 
     private void createArmorMounts() {
@@ -234,24 +239,24 @@ public class ArmorTab extends ITab implements ActionListener{
             }
         }
     }
-    
+
     private void setTotalTonnage() {
         double currentTonnage = unit.getArmorWeight();
-        
+
         DecimalFormat myFormatter = new DecimalFormat("0.00");
         armorTonnage.setText(myFormatter.format(currentTonnage));
-        armorTonnage.setToolTipText("Max Tonnage: "+UnitUtil.getTotalArmorTonnage(unit));
+        armorTonnage.setToolTipText("Max Tonnage: " + UnitUtil.getTotalArmorTonnage(unit));
     }
 
     public void setArmorType(int type) {
         removeAllListeners();
-        this.armorCombo.setSelectedIndex(type);
+        armorCombo.setSelectedIndex(type);
         addAllListeners();
     }
-    
+
     public void setStructureType(int type) {
         removeAllListeners();
-        this.structureCombo.setSelectedIndex(type);
+        structureCombo.setSelectedIndex(type);
         addAllListeners();
     }
 

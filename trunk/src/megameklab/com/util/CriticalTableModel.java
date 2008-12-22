@@ -49,15 +49,15 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int EQUIPMENTTABLE = 0;
     public final static int WEAPONTABLE = 1;
     public final static int BUILDTABLE = 2;
-    
+
     private int tableType = EQUIPMENTTABLE;
-    
+
     String[] columnNames = { "Name", "Tons", "Crits", };
 
     String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", };
 
     public int getColumnCount() {
-        return this.columnNames.length;
+        return columnNames.length;
     }
 
     public CriticalTableModel(Mech unit, int tableType) {
@@ -69,13 +69,17 @@ public class CriticalTableModel extends AbstractTableModel {
         this.unit = unit;
     }
 
+    public void updateMech(Mech unit) {
+        this.unit = unit;
+    }
+
     public void refreshModel() {
         // do a resort
-        this.sortedEquipment = new EquipmentType[] {};
-        if (this.crits.size() > 0) {
-            this.sortedEquipment = this.crits.toArray(sortedEquipment);
+        sortedEquipment = new EquipmentType[] {};
+        if (crits.size() > 0) {
+            sortedEquipment = crits.toArray(sortedEquipment);
         }
-        this.fireTableDataChanged();
+        fireTableDataChanged();
     }
 
     public void initColumnSizes(JTable table) {
@@ -84,7 +88,7 @@ public class CriticalTableModel extends AbstractTableModel {
         int headerWidth = 0;
         int cellWidth = 0;
         CriticalTableModel model = this;
-        for (int i = 0; i < this.getColumnCount(); i++) {
+        for (int i = 0; i < getColumnCount(); i++) {
             column = table.getColumnModel().getColumn(i);
             comp = table.getDefaultRenderer(model.getColumnClass(i)).getTableCellRendererComponent(table, longValues[i], false, false, 0, i);
             cellWidth = comp.getPreferredSize().width;
@@ -93,7 +97,7 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public int getRowCount() {
-        return this.sortedEquipment.length;
+        return sortedEquipment.length;
     }
 
     @Override
@@ -107,19 +111,22 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int row, int col) {
-        if (row < 0)
+        if (row < 0) {
             return "";
-        if (row >= sortedEquipment.length)
+        }
+        if (row >= sortedEquipment.length) {
             return "";
-        EquipmentType crit = this.sortedEquipment[row];
+        }
+        EquipmentType crit = sortedEquipment[row];
         switch (col) {
         case NAME:
             return crit.getName();
         case TONNAGE:
             return crit.getTonnage(unit);
         case CRITS:
-            if ( tableType == BUILDTABLE )
+            if (tableType == BUILDTABLE) {
                 return UnitUtil.getCritsUsed(unit, crit);
+            }
             return crit.getCriticals(unit);
         case EQUIPMENT:
             return crit;
@@ -152,8 +159,9 @@ public class CriticalTableModel extends AbstractTableModel {
 
             JLabel c = new JLabel();
             c.setOpaque(true);
-            if (crits.size() < row || row < 0)
+            if (crits.size() < row || row < 0) {
                 return c;
+            }
             if (table.getModel().getValueAt(row, column) != null) {
                 c.setText(table.getModel().getValueAt(row, column).toString());
             }
@@ -183,10 +191,10 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public void removeMounted(int row) {
-        UnitUtil.removeMounted(unit,(EquipmentType) this.getValueAt(row, CriticalTableModel.EQUIPMENT));
+        UnitUtil.removeMounted(unit, (EquipmentType) getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
-    
-    public Vector<EquipmentType> getCrits(){
+
+    public Vector<EquipmentType> getCrits() {
         return crits;
     }
 }
