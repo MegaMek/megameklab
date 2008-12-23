@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 V 0.0.0.10-dev
++ Quads not saving correctly
 
 V 0.0.0.9
 + Bug: Weapons not loading.
