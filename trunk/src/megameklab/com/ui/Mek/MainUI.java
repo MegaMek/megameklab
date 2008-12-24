@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -46,6 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
@@ -81,7 +82,7 @@ import megameklab.com.util.UnitUtil;
 public class MainUI extends JFrame implements RefreshListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -5836932822468918198L;
     private static final String VERSION = "0.0.0.10-100";
@@ -105,10 +106,15 @@ public class MainUI extends JFrame implements RefreshListener {
     public CConfig config;
 
     public MainUI() {
-
         UnitUtil.loadFonts();
         config = new CConfig();
         System.out.println("Staring MegaMekLab version: " + VERSION);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            System.out.println("Setting look and feel failed: ");
+            e.printStackTrace();
+        }
         file.setMnemonic('F');
         JMenuItem item = new JMenuItem();
 
