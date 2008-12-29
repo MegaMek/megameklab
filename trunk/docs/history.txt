@@ -3,6 +3,7 @@ VERSION HISTORY:
 V 0.0.0.10-dev
 + Quads not saving correctly
 + Use system look and feel
++ Added Gyro pip image for HD Gyros
 
 V 0.0.0.9
 + Bug: Weapons not loading.

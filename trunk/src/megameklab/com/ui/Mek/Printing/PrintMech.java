@@ -196,6 +196,10 @@ public class PrintMech implements Printable {
 		font = new Font("Arial", Font.PLAIN, 8);
 		g2d.setFont(font);
 		g2d.drawString("2008", 102.5f, 745f);
+
+		if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
+			g2d.drawImage(ImageHelper.getGyroPipImage(), 235, 588, 9, 8, null);
+		}
 	}
 
 	private void printHeatSinks(Graphics2D g2d) {
