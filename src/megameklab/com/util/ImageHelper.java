@@ -194,18 +194,18 @@ public class ImageHelper {
 				equipmentName += "(R)";
 			}
 
-			if (eqHash.containsKey(eq.getName())) {
-				EquipmentInfo eqi = eqHash.get(eq.getName());
+			if (eqHash.containsKey(equipmentName)) {
+				EquipmentInfo eqi = eqHash.get(equipmentName);
 
 				if (eq.getType().getTechLevel() != eqi.techLevel) {
 					eqi = new EquipmentInfo(mech, eq);
 				} else {
 					eqi.count++;
 				}
-				eqHash.put(eq.getName(), eqi);
+				eqHash.put(equipmentName, eqi);
 			} else {
 				EquipmentInfo eqi = new EquipmentInfo(mech, eq);
-				eqHash.put(eq.getName(), eqi);
+				eqHash.put(equipmentName, eqi);
 			}
 
 		}

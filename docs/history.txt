@@ -4,6 +4,7 @@ V 0.0.0.10-dev
 + Quads not saving correctly
 + Use system look and feel
 + Added Gyro pip image for HD Gyros
++ Bug: Rear facing weapons getting counted as forward facing weapons in the same location
 
 V 0.0.0.9
 + Bug: Weapons not loading.
