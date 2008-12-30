@@ -6,6 +6,8 @@ V 0.0.0.10-dev
 + Added Gyro pip image for HD Gyros
 + Bug: Rear facing weapons getting counted as forward facing weapons in the same location
 + Cosmetic update to recordsheet print out
++ RFE: Select the secondary location for splitable weapons
++ New MegaMek.jar
 
 V 0.0.0.9
 + Bug: Weapons not loading.
