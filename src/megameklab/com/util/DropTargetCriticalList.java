@@ -115,7 +115,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
 
                     if (eq.getType().getCriticals(unit) > unit.getEmptyCriticals(location)) {
                         if (location >= Mech.LOC_RT) {
-                            String[] locations = { "Center Torso", "Right Leg" };
+                            String[] locations = { "Center Torso", "Right Leg", "Right Arm" };
                             JComboBox combo = new JComboBox(locations);
                             JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 
@@ -133,10 +133,12 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
 
                             if (combo.getSelectedIndex() == 1) {
                                 nextLocation = Mech.LOC_RLEG;
+                            } else if (combo.getSelectedIndex() == 2) {
+                                nextLocation = Mech.LOC_RARM;
                             }
 
                         } else if (location <= Mech.LOC_LT) {
-                            String[] locations = { "Center Torso", "Left Leg" };
+                            String[] locations = { "Center Torso", "Left Leg", "Leg Arm" };
                             JComboBox combo = new JComboBox(locations);
                             JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 
@@ -154,6 +156,8 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
 
                             if (combo.getSelectedIndex() == 1) {
                                 nextLocation = Mech.LOC_LLEG;
+                            } else if (combo.getSelectedIndex() == 2) {
+                                nextLocation = Mech.LOC_LARM;
                             }
 
                         } else if (location == Mech.LOC_CT) {
