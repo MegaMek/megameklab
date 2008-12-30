@@ -55,39 +55,48 @@ public class StringUtils {
         };
     }
 
+    public static Comparator<? super EquipmentInfo> equipmentInfoComparator() {
+        return new Comparator<EquipmentInfo>() {
+            public int compare(EquipmentInfo eq1, EquipmentInfo eq2) {
+                String s1 = eq1.name.toLowerCase();
+                String s2 = eq2.name.toLowerCase();
+                return s1.compareTo(s2);
+            }
+        };
+    }
+
     public static String getEquipmentInfo(Entity unit, Mounted mount) {
         String info = "";
 
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
-            if ( weapon instanceof ISC3M ){
-            	info = "  [E]";
-            }else if (weapon.getDamage() < 0) {
+            if (weapon instanceof ISC3M) {
+                info = "  [E]";
+            } else if (weapon.getDamage() < 0) {
                 if (weapon instanceof SRMWeapon) {
                     info = "2/Msl [M,C]";
                 } else if (weapon instanceof LRMWeapon || weapon instanceof RLWeapon) {
                     info = "1/Msl [M,C,S]";
-                } else if ( weapon instanceof MRMWeapon ){
-                	info = "1/Msl [M,C]";
+                } else if (weapon instanceof MRMWeapon) {
+                    info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "25/20/10 [DB,X]";
-                } else if ( weapon instanceof ISPlasmaRifle) {
+                } else if (weapon instanceof ISPlasmaRifle) {
                     info = "10 [DE,H,AI]";
-                } else if ( weapon instanceof CLPlasmaCannon) {
+                } else if (weapon instanceof CLPlasmaCannon) {
                     info = "[DE,H,AI]";
                 } else if (weapon instanceof HAGWeapon) {
-                	info = Integer.toString(weapon.getRackSize());
+                    info = Integer.toString(weapon.getRackSize());
                     info += " [C/F]";
-                }else {
+                } else {
                     info = Integer.toString(weapon.getRackSize());
                 }
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R,C]";
-            }
-            else {
+            } else {
                 info = Integer.toString(weapon.getDamage());
                 info += " [";
 
