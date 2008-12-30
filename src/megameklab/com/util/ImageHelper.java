@@ -24,6 +24,7 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 
@@ -177,9 +178,9 @@ public class ImageHelper {
         int shtPoint = 181;
         int medPoint = 199;
         int longPoint = 215;
-        float linePoint = 204f;
+        float linePoint = 201f;
 
-        float lineFeed = 8.5f;
+        float lineFeed = 6.7f;
 
         boolean newLineNeeded = false;
 
@@ -240,13 +241,21 @@ public class ImageHelper {
                 artemisEQ.count = 1;
                 eqHash.remove("Artemis IV FCS");
             }
+
             for (EquipmentInfo eqi : eqHash.values()) {
                 equipmentList.add(eqi);
 
+            }
+
+            Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
+
+            for (int eqPos = 0; eqPos < equipmentList.size(); eqPos++) {
+                EquipmentInfo eqi = equipmentList.get(eqPos);
                 if ((eqi.isMML || eqi.name.indexOf("LRM") > -1 || eqi.name.indexOf("SRM") > -1) && artemisEQ != null) {
-                    equipmentList.add(artemisEQ);
+                    equipmentList.add(++eqPos, artemisEQ);
                 }
             }
+
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
 
@@ -279,7 +288,7 @@ public class ImageHelper {
 
                     if (eqi.isMML) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
-                        linePoint += lineFeed - 2;
+                        linePoint += lineFeed - 1.0f;
 
                         g2d.drawString("LRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "1/Msl", font, damagePoint, linePoint);
@@ -287,7 +296,7 @@ public class ImageHelper {
                         g2d.drawString("7", shtPoint, linePoint);
                         g2d.drawString("14", medPoint, linePoint);
                         g2d.drawString("21", longPoint, linePoint);
-                        linePoint += lineFeed - 2;
+                        linePoint += lineFeed - 1.0f;
 
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
@@ -298,7 +307,7 @@ public class ImageHelper {
 
                     } else if (eqi.isATM) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
-                        linePoint += lineFeed - 2;
+                        linePoint += lineFeed - 1.0f;
 
                         g2d.drawString("Standard", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
@@ -306,7 +315,7 @@ public class ImageHelper {
                         g2d.drawString("5", shtPoint, linePoint);
                         g2d.drawString("10", medPoint, linePoint);
                         g2d.drawString("15", longPoint, linePoint);
-                        linePoint += lineFeed - 2;
+                        linePoint += lineFeed - 1.0f;
 
                         g2d.drawString("Extended-Range", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "1/Msl", font, damagePoint, linePoint);
@@ -314,7 +323,7 @@ public class ImageHelper {
                         g2d.drawString("9", shtPoint, linePoint);
                         g2d.drawString("18", medPoint, linePoint);
                         g2d.drawString("27", longPoint, linePoint);
-                        linePoint += lineFeed - 2;
+                        linePoint += lineFeed - 1.0f;
 
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
@@ -324,13 +333,13 @@ public class ImageHelper {
                         g2d.drawString("9", longPoint, linePoint);
 
                     } else {
-                        if (eqi.damage.trim().length() > 6) {
+                        if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
                             font = UnitUtil.deriveFont(6.0f);
                             g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
                             font = UnitUtil.deriveFont(7.0f);
                             g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 2);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
                             newLineNeeded = true;
                         } else {
                             ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint, linePoint);
