@@ -193,7 +193,7 @@ public class PrintMech implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
-        g2d.drawString("2008", 102.5f, 745f);
+        g2d.drawString("2009", 102.5f, 745f);
 
     }
 
