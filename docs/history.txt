@@ -8,6 +8,7 @@ V 0.0.0.10-dev
 + Cosmetic update to recordsheet print out
 + RFE: Select the secondary location for splitable weapons
 + New MegaMek.jar
++ New Mech Templates
 
 V 0.0.0.9
 + Bug: Weapons not loading.
