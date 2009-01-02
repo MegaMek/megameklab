@@ -187,9 +187,9 @@ public class PrintQuad implements Printable {
 		myFormatter = new DecimalFormat("#,###.##");
 		g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
 
-		font = new Font("Arial", Font.PLAIN, 8);
+		font = new Font("Arial", Font.BOLD, 7);
 		g2d.setFont(font);
-		g2d.drawString("2008", 102.5f, 745f);
+		g2d.drawString("2009", 106.5f, 744.5f);
 
 		if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
 			g2d.drawImage(ImageHelper.getGyroPipImage(), 235, 588, 9, 8, null);
@@ -1177,6 +1177,7 @@ public class PrintQuad implements Printable {
 				setCritConnection(null, lineStart, linePoint, lineStart, linePoint, g2d);
 			} else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
 				Mounted m = cs.getMount();
+
 				setCritConnection(m, lineStart, linePoint, lineStart, linePoint, g2d);
 
 				StringBuffer critName = new StringBuffer(m.getName());
@@ -1207,12 +1208,7 @@ public class PrintQuad implements Printable {
 					critName.append(ammo.getShots());
 				}
 
-				if (!m.getType().isHittable()) {
-					font = UnitUtil.deriveFont(7.0f);
-					g2d.setFont(font);
-				} else {
-					g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), true, 86, 7.0f));
-				}
+				g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 86, 7.0f));
 
 				if (m.getType() instanceof MiscType && m.getType().hasFlag(MiscType.F_C3I)) {
 					ImageHelper.printC3iName(g2d, lineStart, linePoint, font);
