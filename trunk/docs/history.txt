@@ -9,6 +9,8 @@ V 0.0.0.10-dev
 + RFE: Select the secondary location for splitable weapons
 + New MegaMek.jar
 + New Mech Templates
++ New MegaMek.jar
++ Started work on printing Vehicle Record Sheets
 
 V 0.0.0.9
 + Bug: Weapons not loading.
