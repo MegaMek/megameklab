@@ -59,6 +59,7 @@ import megamek.common.EntityListFile;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.QuadMech;
+import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
 import megamek.common.verifier.EntityVerifier;
@@ -73,6 +74,7 @@ import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
 import megameklab.com.ui.Mek.tabs.WeaponTab;
+import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.RefreshListener;
@@ -85,7 +87,7 @@ public class MainUI extends JFrame implements RefreshListener {
      *
      */
 	private static final long serialVersionUID = -5836932822468918198L;
-	private static final String VERSION = "0.0.0.10-106";
+	private static final String VERSION = "0.0.0.10-107";
 
 	Mech entity = null;
 	JMenuBar menuBar = new JMenuBar();
@@ -192,6 +194,15 @@ public class MainUI extends JFrame implements RefreshListener {
 		});
 		advancedRecordSheet.add(item);
 		printMenu.add(advancedRecordSheet);
+
+		item = new JMenuItem("Vehicle");
+		item.setMnemonic('V');
+		item.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jMenuPrintVehicle_actionPerformed(e);
+			}
+		});
+		printMenu.add(item);
 
 		file.add(printMenu);
 
@@ -350,9 +361,38 @@ public class MainUI extends JFrame implements RefreshListener {
 		}
 	}
 
+	public void jMenuPrintVehicle_actionPerformed(ActionEvent event) {
+
+		UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+		UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.TANK, config);
+
+		viewer.run();
+		// viewer.setVisible(true);
+
+		Tank tank = null;
+		if (viewer != null) {
+
+			if (!(viewer.getSelectedEntity() instanceof Tank)) {
+				return;
+			}
+			tank = (Tank) viewer.getSelectedEntity();
+
+			viewer.setVisible(false);
+			viewer.dispose();
+		}
+
+		ArrayList<Tank> tankList = new ArrayList<Tank>();
+		tankList.add(tank);
+
+		PrintVehicle sp = new PrintVehicle(tankList);
+
+		sp.print();
+	}
+
 	public void jMenuPrintMulMechs_actionPerformed(ActionEvent event) {
 		ArrayList<Mech> quadList = new ArrayList<Mech>();
 		ArrayList<Mech> bipedList = new ArrayList<Mech>();
+		ArrayList<Tank> tankList = new ArrayList<Tank>();
 
 		FileDialog f = new FileDialog(new JDialog(), "Load Mul");
 		f.setDirectory(System.getProperty("user.dir"));
@@ -384,6 +424,8 @@ public class MainUI extends JFrame implements RefreshListener {
 					UnitUtil.expandUnitMounts(unit);
 
 					bipedList.add((Mech) unit);
+				} else if (unit instanceof Tank) {
+					tankList.add((Tank) unit);
 				}
 			}
 
@@ -399,6 +441,11 @@ public class MainUI extends JFrame implements RefreshListener {
 				printQuad.print();
 			}
 
+			if (tankList.size() > 0) {
+				PrintVehicle printTank = new PrintVehicle(tankList);
+
+				printTank.print();
+			}
 		}
 
 	}
