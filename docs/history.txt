@@ -13,6 +13,7 @@ V 0.0.0.10-dev
 + Started work on printing Vehicle Record Sheets
 + Bug: CASE not printing for GR but printing for GR and Plasma Ammo
 + New MegaMek.jar
++ Bug: Heat Sink Pips not printing for Bipeds
 
 V 0.0.0.9
 + Bug: Weapons not loading.

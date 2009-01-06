@@ -89,7 +89,6 @@ public class PrintMech implements Printable {
 		printMekImage(g2d, hud);
 
 		printMechData(g2d);
-		printHeatSinks(g2d);
 		printArmor(g2d);
 		printWeaponsNEquipment(g2d);
 		printLACrits(g2d);
@@ -135,6 +134,7 @@ public class PrintMech implements Printable {
 		printHeadStruct(g2d);
 		printLLStruct(g2d);
 		printRLStruct(g2d);
+        printHeatSinks(g2d);
 
 		// g2d.translate(pageFormat.getImageableX(),
 		// pageFormat.getImageableY());
@@ -208,19 +208,19 @@ public class PrintMech implements Printable {
 		g2d.setFont(font);
 
 		// Heat Sinks
-		if (mech.hasDoubleHeatSinks()) {
-			g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks() * 2) + ")", 502, 595);
-			g2d.drawString("Double", 502, 603);
-		} else {
-			g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks()) + ")", 502, 595);
-			g2d.drawString("Single", 502, 603);
-		}
+        if (mech.hasDoubleHeatSinks()) {
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks() * 2) + ")", 502, 595);
+            g2d.drawString("Double", 502, 603);
+        } else {
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks()) + ")", 502, 595);
+            g2d.drawString("Single", 502, 603);
+        }
 
-		Dimension column = new Dimension(504, 612);
+        Dimension column = new Dimension(504, 612);
 		Dimension pipShift = new Dimension(9, 9);
 
 		for (int pos = 1; pos <= mech.heatSinks(); pos++) {
-			ImageHelper.drawHeatSinkPip(g2d, column.height, column.width);
+			ImageHelper.drawHeatSinkPip(g2d, column.width, column.height);
 			column.height += pipShift.height;
 
 			if (pos % 10 == 0) {
