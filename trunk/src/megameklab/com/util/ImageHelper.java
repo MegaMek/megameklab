@@ -16,6 +16,7 @@
 
 package megameklab.com.util;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -656,6 +657,7 @@ public class ImageHelper {
 	public static void drawHeatSinkPip(Graphics2D g2d, float width, float height) {
 		Font font = new Font("Arial", Font.PLAIN, 8);
 		g2d.setFont(font);
+		g2d.setColor(Color.BLACK);
 		g2d.drawString("O", width, height);
 	}
 
