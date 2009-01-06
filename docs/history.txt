@@ -11,6 +11,8 @@ V 0.0.0.10-dev
 + New Mech Templates
 + New MegaMek.jar
 + Started work on printing Vehicle Record Sheets
++ Bug: CASE not printing for GR but printing for GR and Plasma Ammo
++ New MegaMek.jar
 
 V 0.0.0.9
 + Bug: Weapons not loading.
