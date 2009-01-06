@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -58,7 +58,7 @@ public class UnitUtil {
 
     /**
      * tells is EquipementType is armor or Structure that uses crits/mounted
-     * 
+     *
      * @param eq
      * @return
      */
@@ -68,7 +68,7 @@ public class UnitUtil {
 
     /**
      * tells if EquipmentType is TSM or TargetComp
-     * 
+     *
      * @param eq
      * @return
      */
@@ -78,7 +78,7 @@ public class UnitUtil {
 
     /**
      * Returns the number of crits used by EquipmentType eq, 1 if armor or structure EquipmentType
-     * 
+     *
      * @param unit
      * @param eq
      * @return
@@ -93,7 +93,7 @@ public class UnitUtil {
 
     /**
      * Removes a Mounted object from the units various equipment lists
-     * 
+     *
      * @param unit
      * @param eq
      */
@@ -136,7 +136,7 @@ public class UnitUtil {
 
     /**
      * Removes TSM Mounts from the Mek.
-     * 
+     *
      * @param Unit
      */
     public static void removeTSMMounts(Mech unit) {
@@ -154,7 +154,7 @@ public class UnitUtil {
 
     /**
      * Removes Targetting Computer Mounts from the Mech
-     * 
+     *
      * @param unit
      */
     public static void removeTCMounts(Mech unit) {
@@ -172,7 +172,7 @@ public class UnitUtil {
 
     /**
      * Removes all TSM crits from
-     * 
+     *
      * @param unit
      * @param unit
      */
@@ -195,7 +195,7 @@ public class UnitUtil {
 
     /**
      * Removes all Targeting computer crits form the Mech
-     * 
+     *
      * @param unit
      */
     public static void removeTCCrits(Mech unit) {
@@ -217,7 +217,7 @@ public class UnitUtil {
 
     /**
      * Sets the corresponding critical slots to null for the Mounted object.
-     * 
+     *
      * @param unit
      * @param eq
      */
@@ -249,7 +249,7 @@ public class UnitUtil {
 
     /**
      * Removes crits for weapons that have split locations
-     * 
+     *
      * @param unit
      * @param eq
      */
@@ -285,7 +285,7 @@ public class UnitUtil {
 
     /**
      * Reset all the Crits and Mounts on the Unit.
-     * 
+     *
      * @param unit
      */
     public static void resetCriticalsAndMounts(Mech unit) {
@@ -308,7 +308,7 @@ public class UnitUtil {
 
     /**
      * Updates TC Crits and Mounts based on weapons on a unit or if the TC has been removed.
-     * 
+     *
      * @param unit
      */
     public static void updateTC(Mech unit) {
@@ -320,7 +320,7 @@ public class UnitUtil {
 
     /**
      * Creates TC Mounts and Criticals for a Unit.
-     * 
+     *
      * @param unit
      */
     public static void createTCMounts(Mech unit) {
@@ -350,7 +350,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if unit can use the techlevel
-     * 
+     *
      * @param unit
      * @param techLevel
      * @return Boolean if the tech level is legal for the passed unit
@@ -384,7 +384,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if the unit uses compact heat sinks
-     * 
+     *
      * @param unit
      * @return
      */
@@ -410,7 +410,7 @@ public class UnitUtil {
 
     /**
      * Checks if the unit has laser heatsinks.
-     * 
+     *
      * @param unit
      * @return
      */
@@ -431,7 +431,7 @@ public class UnitUtil {
 
     /**
      * checks if Mounted is a heat sink
-     * 
+     *
      * @param eq
      * @return
      */
@@ -445,7 +445,7 @@ public class UnitUtil {
 
     /**
      * Checks if EquipmentType is a heat sink
-     * 
+     *
      * @param eq
      * @return
      */
@@ -459,7 +459,7 @@ public class UnitUtil {
 
     /**
      * Removes all heat sinks from the mek
-     * 
+     *
      * @param unit
      */
     public static void removeHeatSinks(Mech unit) {
@@ -480,7 +480,7 @@ public class UnitUtil {
 
     /**
      * adds all heat sinks to the mech
-     * 
+     *
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -536,7 +536,7 @@ public class UnitUtil {
 
     /**
      * updates the heat sinks.
-     * 
+     *
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -552,7 +552,7 @@ public class UnitUtil {
 
     /**
      * simple method to let us know if eq should be printed on the weapons and equipment section of the Record sheet.
-     * 
+     *
      * @param eq
      * @return
      */
@@ -850,9 +850,10 @@ public class UnitUtil {
 
     public static boolean hasAmmo(Entity unit, int location) {
 
-        for (Mounted mount : unit.getAmmo()) {
+        for (Mounted mount : unit.getEquipment()) {
 
-            if (mount.getLocation() == location) {
+
+            if (mount.getType().isExplosive() && mount.getLocation() == location) {
                 return true;
             }
         }
