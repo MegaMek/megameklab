@@ -395,10 +395,10 @@ public class ImageHelper {
 		int typePoint = 38;
 		int locPoint = 124;
 		int damagePoint = 150;
-		int minPoint = 167;
-		int shtPoint = 181;
-		int medPoint = 199;
-		int longPoint = 215;
+		int minPoint = 166;
+        int shtPoint = 177;
+        int medPoint = 195;
+        int longPoint = 211;
 		float linePoint = 212f;
 
 		float lineFeed = 6.7f;
@@ -416,6 +416,7 @@ public class ImageHelper {
 			if (eq.getType() instanceof AmmoType || eq.getLocation() == Entity.LOC_NONE || !UnitUtil.isPrintableEquipment(eq.getType())) {
 				continue;
 			}
+
 
 			Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
 
@@ -503,7 +504,12 @@ public class ImageHelper {
 				font = UnitUtil.deriveFont(7.0f);
 				g2d.setFont(font);
 
-				g2d.drawString(tank.getLocationAbbr(pos), locPoint, linePoint);
+				String location = tank.getLocationAbbr(pos);
+
+                if (location.equalsIgnoreCase("TU")) {
+                    location = "T";
+                }
+                g2d.drawString(location, locPoint, linePoint);
 				if (eqi.isWeapon) {
 					if (eqi.isMML) {
 						ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
@@ -647,6 +653,12 @@ public class ImageHelper {
 		g2d.setFont(font);
 		g2d.drawString("O", width, height);
 	}
+
+    public static void drawTankArmorPip(Graphics2D g2d, float width, float height) {
+        Font font = new Font("Arial", Font.PLAIN, 9);
+        g2d.setFont(font);
+        g2d.drawString("O", width, height);
+    }
 
 	public static void drawISPip(Graphics2D g2d, float width, float height) {
 		Font font = new Font("Arial", Font.PLAIN, 6);
