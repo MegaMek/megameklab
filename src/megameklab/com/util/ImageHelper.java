@@ -38,6 +38,7 @@ import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
+import megamek.common.VTOL;
 
 public class ImageHelper {
 	public static String recordSheetPath = "./data/images/recordsheets/";
@@ -60,16 +61,36 @@ public class ImageHelper {
 			} else {
 				recordSheet = new ImageIcon(path + "twquad.png").getImage();
 			}
-		} else if (unit instanceof Tank) {
-			if (advanced) {
-				recordSheet = new ImageIcon(path + "twvehicleturret.png").getImage();
-			} else {
-				recordSheet = new ImageIcon(path + "twvehicle.png").getImage();
-			}
-		}
+		} else if (unit instanceof VTOL) {
+            recordSheet = new ImageIcon(path + "twvee-vtol.png").getImage();
+        } else if (unit instanceof Tank) {
+		    String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + ".png";
+            recordSheet = new ImageIcon(path + imageName).getImage();
+        }
 
 		return recordSheet;
 	}
+
+	public static Image getTableImage(Entity unit) {
+        Image table = null;
+        String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
+
+        if (unit instanceof VTOL) {
+            table = new ImageIcon(path + "twvee-vtoltables.png").getImage();
+        } else if (unit instanceof Tank) {
+            table = new ImageIcon(path + "twvee-groundtables.png").getImage();
+        }
+        return table;
+    }
+
+    public static Image getTurretImage(Entity unit) {
+        Image table = null;
+        String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
+
+        table = new ImageIcon(path + "twvee-turret.png").getImage();
+
+        return table;
+    }
 
 	public static Image getGyroPipImage() {
 		String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
