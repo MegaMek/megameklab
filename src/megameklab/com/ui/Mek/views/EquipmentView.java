@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@ import megameklab.com.util.UnitUtil;
 public class EquipmentView extends IView implements ActionListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 799195356642563937L;
 
@@ -123,8 +123,8 @@ public class EquipmentView extends IView implements ActionListener {
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if (eq instanceof MiscType && !eq.hasFlag(MiscType.F_ASSAULT_CLAW) && !eq.hasFlag(MiscType.F_BOARDING_CLAW) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && !eq.hasFlag(MiscType.F_PARAFOIL) && !eq.hasFlag(MiscType.F_MINE) && !eq.hasFlag(MiscType.F_TOOLS) && !eq.hasFlag(MiscType.F_REACTIVE) && !eq.hasFlag(MiscType.F_REFLECTIVE) && !eq.hasFlag(MiscType.F_HAND_WEAPON) && !eq.hasFlag(MiscType.F_FERRO_FIBROUS) && !eq.hasFlag(MiscType.F_FIRE_RESISTANT) && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS) && !eq.hasFlag(MiscType.F_ENDO_STEEL) && !eq.hasFlag(MiscType.F_LIFTHOIST) && !eq.hasFlag(MiscType.F_SEARCHLIGHT) && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION) && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION) && !eq.hasFlag(MiscType.F_HEAT_SINK) && !eq.hasFlag(MiscType.F_LASER_HEAT_SINK) && !eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) && !eq.hasFlag(MiscType.F_STEALTH)
-                    && !eq.getName().equals(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD)) && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED)) && !eq.getName().equals(BattleArmor.SINGLE_HEX_ECM) && !eq.getInternalName().equals(Sensor.CLBALIGHT_AP) && !eq.getInternalName().equals(Sensor.ISBALIGHT_AP)) {
+            if (eq instanceof MiscType && !eq.hasFlag(MiscType.F_ASSAULT_CLAW) && !eq.hasFlag(MiscType.F_VIBROCLAW) && !eq.hasFlag(MiscType.F_BOARDING_CLAW) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && !eq.hasFlag(MiscType.F_PARAFOIL) && !eq.hasFlag(MiscType.F_MINE) && !eq.hasFlag(MiscType.F_TOOLS) && !eq.hasFlag(MiscType.F_REACTIVE) && !eq.hasFlag(MiscType.F_REFLECTIVE) && !eq.hasFlag(MiscType.F_HAND_WEAPON) && !eq.hasFlag(MiscType.F_FERRO_FIBROUS) && !eq.hasFlag(MiscType.F_FIRE_RESISTANT) && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS) && !eq.hasFlag(MiscType.F_ENDO_STEEL) && !eq.hasFlag(MiscType.F_LIFTHOIST) && !eq.hasFlag(MiscType.F_SEARCHLIGHT) && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION) && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION) && !eq.hasFlag(MiscType.F_HEAT_SINK) && !eq.hasFlag(MiscType.F_LASER_HEAT_SINK)
+                    && !eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) && !eq.hasFlag(MiscType.F_STEALTH) && !eq.getName().equals(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD)) && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED)) && !eq.getName().equals(BattleArmor.SINGLE_HEX_ECM) && !eq.getInternalName().equals(Sensor.CLBALIGHT_AP) && !eq.getInternalName().equals(Sensor.ISBALIGHT_AP) && !eq.getName().equals(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL)) && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_COMMERCIAL))) {
                 masterEquipmentList.add(eq);
             }
         }
