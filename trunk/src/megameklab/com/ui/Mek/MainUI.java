@@ -51,6 +51,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
 import megamek.MegaMek;
+import megamek.client.ui.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
@@ -247,6 +248,16 @@ public class MainUI extends JFrame implements RefreshListener {
 			}
 		});
 		validate.add(item);
+
+        item = new JMenuItem();
+        item.setText("Unit Specs");
+        item.setMnemonic('s');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuUnitSpecs_actionPerformed();
+            }
+        });
+        validate.add(item);
 
 		menuBar.add(file);
 		menuBar.add(validate);
@@ -575,6 +586,62 @@ public class MainUI extends JFrame implements RefreshListener {
 		// JOptionPane.showMessageDialog(this, bvText, "BV Calculations",
 		// JOptionPane.INFORMATION_MESSAGE);
 	}
+
+    public void jMenuUnitSpecs_actionPerformed() {
+
+        HTMLEditorKit kit = new HTMLEditorKit();
+
+        MechView mechView = null;
+        try {
+            mechView = new MechView(entity, true);
+        } catch (Exception e) {
+            // error unit didn't load right. this is bad news.
+        }
+
+        StringBuffer unitSpecs = new StringBuffer("<html><body>");
+        unitSpecs.append(mechView.getMechReadoutBasic().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
+        unitSpecs.append(mechView.getMechReadoutLoadout().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
+        unitSpecs.append("</body></html>");
+
+        // System.err.println(unitSpecs.toString());
+        JEditorPane textPane = new JEditorPane("text/html", "");
+        JScrollPane scroll = new JScrollPane();
+
+        textPane.setEditable(false);
+        textPane.setCaret(new DefaultCaret());
+        textPane.setEditorKit(kit);
+
+        scroll.setViewportView(textPane);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        textPane.setText(unitSpecs.toString());
+
+        scroll.setVisible(true);
+
+        JDialog jdialog = new JDialog();
+
+        jdialog.add(scroll);
+        Dimension size = new Dimension(config.getIntParam("WINDOWWIDTH") / 2, config.getIntParam("WINDOWHEIGHT"));
+
+        jdialog.setPreferredSize(size);
+        jdialog.setMinimumSize(size);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+        // text.setPreferredSize(size);
+
+        jdialog.setLocationRelativeTo(this);
+        jdialog.setVisible(true);
+
+        try {
+            textPane.setSelectionStart(0);
+            textPane.setSelectionEnd(0);
+        } catch (Exception ex) {
+        }
+
+        // JOptionPane.showMessageDialog(this, bvText, "BV Calculations",
+        // JOptionPane.INFORMATION_MESSAGE);
+    }
 
 	// Show Validation data.
 	public void jMenuValidateUnit_actionPerformed() {

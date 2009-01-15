@@ -15,6 +15,7 @@ V 0.0.0.10-dev
 + New MegaMek.jar
 + Bug: Heat Sink Pips not printing for Bipeds
 + Added Industrial Text to Mech Printout
++ Added Tech Printout.
 
 V 0.0.0.9
 + Bug: Weapons not loading.
