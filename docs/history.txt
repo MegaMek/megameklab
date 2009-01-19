@@ -16,6 +16,8 @@ V 0.0.0.10-dev
 + Bug: Heat Sink Pips not printing for Bipeds
 + Added Industrial Text to Mech Printout
 + Added Tech Printout.
++ Print Primitive Mech engines as Primitive Engines
++ Fix tabs in sourcecode
 
 V 0.0.0.9
 + Bug: Weapons not loading.
