@@ -249,7 +249,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     if (unit.isPrimitive()) {
                         double dRating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
                         dRating *= 1.2;
-                        dRating = dRating - dRating % 5 + 5;
+                        if (dRating % 5 != 0) {
+                            dRating = dRating - dRating % 5 + 5;
+                        }
                         rating = (int)dRating;
                     }
                     if (rating > 500) {
@@ -321,7 +323,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     if (unit.isPrimitive()) {
                         double dRating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
                         dRating *= 1.2;
-                        dRating = dRating - dRating % 5 + 5;
+                        if (dRating % 5 != 0) {
+                            dRating = dRating - dRating % 5 + 5;
+                        }
                         rating = (int)dRating;
                     }
                     if (rating > 500) {
