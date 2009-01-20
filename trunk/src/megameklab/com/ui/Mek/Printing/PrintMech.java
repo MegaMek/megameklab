@@ -186,7 +186,7 @@ public class PrintMech implements Printable {
 
         if (mech.isIndustrial()) {
             if (mech.isPrimitive()) {
-                g2d.drawString("(Primitive Industrial)", 166.5f, 155);
+                g2d.drawString("(Primitive Industrial)", 160.5f, 155);
             } else {
                 g2d.drawString("(Industrial)", 182.5f, 155);
             }
