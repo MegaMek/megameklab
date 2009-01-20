@@ -123,8 +123,41 @@ public class EquipmentView extends IView implements ActionListener {
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if (eq instanceof MiscType && !eq.hasFlag(MiscType.F_ASSAULT_CLAW) && !eq.hasFlag(MiscType.F_VIBROCLAW) && !eq.hasFlag(MiscType.F_BOARDING_CLAW) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && !eq.hasFlag(MiscType.F_PARAFOIL) && !eq.hasFlag(MiscType.F_MINE) && !eq.hasFlag(MiscType.F_TOOLS) && !eq.hasFlag(MiscType.F_REACTIVE) && !eq.hasFlag(MiscType.F_REFLECTIVE) && !eq.hasFlag(MiscType.F_HAND_WEAPON) && !eq.hasFlag(MiscType.F_FERRO_FIBROUS) && !eq.hasFlag(MiscType.F_FIRE_RESISTANT) && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS) && !eq.hasFlag(MiscType.F_ENDO_STEEL) && !eq.hasFlag(MiscType.F_LIFTHOIST) && !eq.hasFlag(MiscType.F_SEARCHLIGHT) && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION) && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION) && !eq.hasFlag(MiscType.F_HEAT_SINK) && !eq.hasFlag(MiscType.F_LASER_HEAT_SINK)
-                    && !eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) && !eq.hasFlag(MiscType.F_STEALTH) && !eq.getName().equals(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD)) && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED)) && !eq.getName().equals(BattleArmor.SINGLE_HEX_ECM) && !eq.getInternalName().equals(Sensor.CLBALIGHT_AP) && !eq.getInternalName().equals(Sensor.ISBALIGHT_AP) && !eq.getName().equals(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL)) && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_COMMERCIAL))) {
+            if ((eq instanceof MiscType)
+                    && !eq.hasFlag(MiscType.F_ASSAULT_CLAW)
+                    && !eq.hasFlag(MiscType.F_VIBROCLAW)
+                    && !eq.hasFlag(MiscType.F_BOARDING_CLAW)
+                    && !eq.hasFlag(MiscType.F_CLUB)
+                    && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP)
+                    && !eq.hasFlag(MiscType.F_PARAFOIL)
+                    && !eq.hasFlag(MiscType.F_MINE)
+                    && !eq.hasFlag(MiscType.F_TOOLS)
+                    && !eq.hasFlag(MiscType.F_REACTIVE)
+                    && !eq.hasFlag(MiscType.F_REFLECTIVE)
+                    && !eq.hasFlag(MiscType.F_HAND_WEAPON)
+                    && !eq.hasFlag(MiscType.F_FERRO_FIBROUS)
+                    && !eq.hasFlag(MiscType.F_FIRE_RESISTANT)
+                    && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS)
+                    && !eq.hasFlag(MiscType.F_ENDO_STEEL)
+                    && !eq.hasFlag(MiscType.F_LIFTHOIST)
+                    && !eq.hasFlag(MiscType.F_SEARCHLIGHT)
+                    && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION)
+                    && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION)
+                    && !eq.hasFlag(MiscType.F_HEAT_SINK)
+                    && !eq.hasFlag(MiscType.F_LASER_HEAT_SINK)
+                    && !eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
+                    && !eq.hasFlag(MiscType.F_STEALTH)
+                    && !eq.getName().equals(
+                                    EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD))
+                    && !eq.getName().equals(
+                                    EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED))
+                    && !eq.getName().equals(BattleArmor.SINGLE_HEX_ECM)
+                    && !eq.getInternalName().equals(Sensor.CLBALIGHT_AP)
+                    && !eq.getInternalName().equals(Sensor.ISBALIGHT_AP)
+                    && !eq.getName().equals(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL))
+                    && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_COMMERCIAL))
+                    && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL))
+                    && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_INDUSTRIAL))) {
                 masterEquipmentList.add(eq);
             }
         }
@@ -227,8 +260,18 @@ public class EquipmentView extends IView implements ActionListener {
         if (e.getActionCommand().equals(ADD_COMMAND)) {
             if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TSM)) {
                 if (!unit.hasTSM()) {
-                    createTSMMounts();
+                    createSpreadMounts(UnitUtil.TSM);
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.TSM));
+                }
+            } if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.INDUSTRIALTSM)) {
+                if (!unit.hasIndustrialTSM()) {
+                    createSpreadMounts(UnitUtil.ENVIROSEAL);
+                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.INDUSTRIALTSM));
+                }
+            } if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.ENVIROSEAL)) {
+                if (!unit.hasEnvironmentalSealing()) {
+                    createSpreadMounts(UnitUtil.ENVIROSEAL);
+                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.ENVIROSEAL));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TARGETINGCOMPUTER)) {
                 if (!UnitUtil.hasTargComp(unit)) {
@@ -299,18 +342,18 @@ public class EquipmentView extends IView implements ActionListener {
         return equipmentList;
     }
 
-    private void createTSMMounts() {
-        int TSMCount = 0;
+    private void createSpreadMounts(String equip) {
+        int crits = 0;
 
-        TSMCount = EquipmentType.get(UnitUtil.TSM).getCriticals(unit);
+        crits = EquipmentType.get(equip).getCriticals(unit);
 
-        if (TSMCount < 1) {
+        if (crits < 1) {
             return;
         }
 
-        for (; TSMCount > 0; TSMCount--) {
+        for (; crits > 0; crits--) {
             try {
-                unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil.TSM)), Entity.LOC_NONE, false);
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(equip)), Entity.LOC_NONE, false);
             } catch (Exception ex) {
 
             }

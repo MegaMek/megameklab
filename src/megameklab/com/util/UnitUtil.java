@@ -52,6 +52,8 @@ public class UnitUtil {
     public static String ISTARGETINGCOMPUTER = "ISTargeting Computer";
     public static String CLTARGETINGCOMPUTER = "CLTargeting Computer";
     public static String TSM = "TSM";
+    public static String INDUSTRIALTSM = "Industrial TSM";
+    public static String ENVIROSEAL = "Environmental Sealing";
 
     private static Font euroFont = null;
     private static Font euroBoldFont = null;
@@ -111,15 +113,17 @@ public class UnitUtil {
         }
 
         if (equipment.getName().equals(UnitUtil.TSM)) {
-            UnitUtil.removeTSMCrits(unit);
+            UnitUtil.removeCrits(unit, UnitUtil.TSM);
+        } else if (equipment.getName().equals(UnitUtil.INDUSTRIALTSM)) {
+            UnitUtil.removeCrits(unit, UnitUtil.INDUSTRIALTSM);
         } else {
             UnitUtil.removeCriticals(unit, equipment);
         }
 
         if (equipment.getName().equals(UnitUtil.TSM)) {
-            UnitUtil.removeTSMMounts(unit);
+            UnitUtil.removeMounts(unit, UnitUtil.TSM);
         } else if (equipment.getName().equals(UnitUtil.TARGETINGCOMPUTER)) {
-            UnitUtil.removeTCMounts(unit);
+            UnitUtil.removeMounts(unit, UnitUtil.TARGETINGCOMPUTER);
         } else {
             unit.getEquipment().remove(equipment);
 
@@ -135,15 +139,15 @@ public class UnitUtil {
     }
 
     /**
-     * Removes TSM Mounts from the Mek.
+     * Removes mounts of a certain type from the Mek.
      *
      * @param Unit
      */
-    public static void removeTSMMounts(Mech unit) {
+    public static void removeMounts(Mech unit, String mountName) {
 
         for (int pos = 0; pos < unit.getEquipment().size();) {
             Mounted mount = unit.getEquipment().get(pos);
-            if (mount.getType().getName().equals(UnitUtil.TSM)) {
+            if (mount.getType().getName().equals(mountName)) {
                 unit.getEquipment().remove(pos);
                 unit.getMisc().remove(mount);
             } else {
@@ -152,31 +156,13 @@ public class UnitUtil {
         }
     }
 
+
     /**
-     * Removes Targetting Computer Mounts from the Mech
+     * Removes all crits of a certain type from
      *
      * @param unit
      */
-    public static void removeTCMounts(Mech unit) {
-
-        for (int pos = 0; pos < unit.getEquipment().size();) {
-            Mounted mount = unit.getEquipment().get(pos);
-            if (mount.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER)) {
-                unit.getEquipment().remove(pos);
-                unit.getMisc().remove(mount);
-            } else {
-                pos++;
-            }
-        }
-    }
-
-    /**
-     * Removes all TSM crits from
-     *
-     * @param unit
-     * @param unit
-     */
-    public static void removeTSMCrits(Mech unit) {
+    public static void removeCrits(Mech unit, String critType) {
 
         for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
@@ -184,29 +170,7 @@ public class UnitUtil {
                 if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted mount = unit.getEquipment(crit.getIndex());
 
-                    if ((mount != null) && mount.getType().getName().equals(UnitUtil.TSM)) {
-                        crit = null;
-                        unit.setCritical(location, slot, crit);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Removes all Targeting computer crits form the Mech
-     *
-     * @param unit
-     */
-    public static void removeTCCrits(Mech unit) {
-
-        for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                CriticalSlot crit = unit.getCritical(location, slot);
-                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    Mounted mount = unit.getEquipment(crit.getIndex());
-
-                    if ((mount != null) && (mount.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER))) {
+                    if ((mount != null) && mount.getType().getName().equals(critType)) {
                         crit = null;
                         unit.setCritical(location, slot, crit);
                     }
@@ -230,7 +194,7 @@ public class UnitUtil {
          * if (eq.getType().getName().equals(UnitUtil.TSM)) { UnitUtil.removeTSMCrits(unit); } else
          */
         if (eq.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER)) {
-            UnitUtil.removeTCCrits(unit);
+            UnitUtil.removeCrits(unit, UnitUtil.TARGETINGCOMPUTER);
         } else if (eq.isSplitable() || eq.getType().isSpreadable()) {
             UnitUtil.removeSplitCriticals(unit, eq);
         } else {
@@ -313,8 +277,8 @@ public class UnitUtil {
      */
     public static void updateTC(Mech unit) {
 
-        UnitUtil.removeTCCrits(unit);
-        UnitUtil.removeTCMounts(unit);
+        UnitUtil.removeCrits(unit, UnitUtil.TARGETINGCOMPUTER);
+        UnitUtil.removeMounts(unit, UnitUtil.TARGETINGCOMPUTER);
         createTCMounts(unit);
     }
 
