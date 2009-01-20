@@ -23,6 +23,7 @@ V 0.0.0.10-dev
 + Start implementing primitive Mechs
 + Print Industrial/Primitive/Primitive Industrial Mechs
 + Update of IndustrialMech construction
++ Updated MegaMek.jar
 
 V 0.0.0.9
 + Bug: Weapons not loading.
