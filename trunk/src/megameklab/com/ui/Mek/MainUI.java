@@ -308,6 +308,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
 	private void loadUnit() {
 		UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+		unitLoadingDialog.setVisible(true);
 		UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.MEK, config);
 
 		viewer.run();
