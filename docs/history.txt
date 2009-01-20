@@ -26,6 +26,7 @@ V 0.0.0.10-dev
 + Updated MegaMek.jar
 + fix primitive industrial sring centering
 + fix primitive Mech engine rating
++ Print Industrial/Primitive string also on Quad RS
 
 V 0.0.0.9
 + Bug: Weapons not loading.
