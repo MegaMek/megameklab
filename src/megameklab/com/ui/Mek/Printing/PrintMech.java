@@ -185,9 +185,18 @@ public class PrintMech implements Printable {
         g2d.drawString(techBase, 177, 145);
 
         if (mech.isIndustrial()) {
-            g2d.drawString("Industrial", 182.5f, 155);
+            if (mech.isPrimitive()) {
+                g2d.drawString("(Primitive Industrial)", 166.5f, 155);
+            } else {
+                g2d.drawString("(Industrial)", 182.5f, 155);
+            }
+
             g2d.drawString(Integer.toString(mech.getYear()), 188, 165);
-        } else {
+        } else if (mech.isPrimitive()) {
+            g2d.drawString("(Primitive)", 182.5f, 155);
+            g2d.drawString(Integer.toString(mech.getYear()), 188, 165);
+        }
+        else {
             g2d.drawString(Integer.toString(mech.getYear()), 188, 155);
         }
 

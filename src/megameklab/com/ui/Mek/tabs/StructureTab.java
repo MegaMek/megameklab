@@ -56,8 +56,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
-    String[] isEngineTypes = { "I.C.E.", "Standard", "XL", "Light", "XXL", "Compact" };
-    String[] clanEngineTypes = { "I.C.E.", "Standard", "XL", "XXL" };
+    String[] isEngineTypes = { "I.C.E.", "Standard", "XL", "XXL", "Fuel Cell", "Light", "Compact", "Fission" };
+    String[] clanEngineTypes = { "I.C.E.", "Standard", "XL", "XXL", "Fuel Cell" };
     JComboBox engineType = new JComboBox(isEngineTypes);
     JComboBox walkMP;
     JComboBox gyroType = new JComboBox(Mech.GYRO_SHORT_STRING);
@@ -144,12 +144,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(createLabel("Weight:", maxSize));
         masterPanel.add(weightClass);
 
-        Vector<String> heatSinks = new Vector<String>(1, 1);
-        for (int count = 10; count < 50; count++) {
-            heatSinks.add(Integer.toString(count));
-        }
-
-        heatSinkNumber = new JComboBox(heatSinks.toArray());
+        heatSinkNumber = new JComboBox();
 
         masterPanel.add(createLabel("Heat Sinks:", maxSize));
         masterPanel.add(heatSinkType);
@@ -172,20 +167,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         gyroType.setSelectedIndex(unit.getGyroType());
         weightClass.setSelectedIndex((int) (unit.getWeight() / 5) - 2);
         cockpitType.setSelectedIndex(unit.getCockpitType());
-        try {
-            // heatSinkNumber.setSelectedIndex(unit.heatSinks() + unit.getEngine().getCountEngineHeatSinks());
-            heatSinkNumber.setSelectedIndex(unit.heatSinks() - 10);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        heatSinkNumber.removeAllItems();
+        Vector<String> heatSinks = new Vector<String>(1, 1);
+        for (int count = unit.getEngine().getWeightFreeEngineHeatSinks(); count < 50; count++) {
+            heatSinks.add(Integer.toString(count));
         }
-
+        for (String sinkNumber: heatSinks) {
+            heatSinkNumber.addItem(sinkNumber);
+        }
+        heatSinkNumber.setSelectedIndex(unit.heatSinks() - unit.getEngine().getWeightFreeEngineHeatSinks());
+        engineType.setSelectedIndex(unit.getEngine().getEngineType());
         if (unit.isClan()) {
 
-            if (unit.getEngine().getEngineType() == Engine.XXL_ENGINE) {
-                engineType.setSelectedIndex(3);
-            } else {
-                engineType.setSelectedIndex(unit.getEngine().getEngineType());
-            }
             techType.setSelectedIndex(1);
             if (unit.getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL) {
                 techLevel.setSelectedIndex(3);
@@ -197,7 +190,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 techLevel.setSelectedIndex(0);
             }
         } else {
-            engineType.setSelectedIndex(unit.getEngine().getEngineType());
             techType.setSelectedIndex(0);
 
             if (unit.getTechLevel() >= TechConstants.T_IS_UNOFFICIAL) {
@@ -264,29 +256,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
                         unit.clearEngineCrits();
-                        //removeSystemCrits(Mech.SYSTEM_ENGINE);
+                        int type = engineType.getSelectedIndex();
                         if (unit.isClan()) {
-                            int type = engineType.getSelectedIndex();
-
-                            if (type > Engine.XL_ENGINE) {
-                                type = Engine.XXL_ENGINE;
-                            }
                             unit.setEngine(new Engine(rating, type, Engine.CLAN_ENGINE));
                         } else {
-                            unit.setEngine(new Engine(rating, engineType.getSelectedIndex(), 0));
+                            unit.setEngine(new Engine(rating, type, 0));
                         }
                         unit.addEngineCrits();
-                        UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + 10, heatSinkType.getSelectedIndex());
+                        int autoSinks = unit.getEngine().getWeightFreeEngineHeatSinks();
+                        UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
                     }
                 } else if (combo.equals(gyroType)) {
                     unit.setGyroType(combo.getSelectedIndex());
                     unit.clearGyroCrits();
-                    //removeSystemCrits(Mech.SYSTEM_GYRO);
 
                     switch (unit.getGyroType()) {
                     case Mech.GYRO_COMPACT:
                         unit.addCompactGyro();
-                    	unit.clearEngineCrits();
+                        unit.clearEngineCrits();
                         unit.addEngineCritsWithCompactGyro();
                         break;
                     case Mech.GYRO_HEAVY_DUTY:
@@ -301,9 +288,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 } else if (combo.equals(cockpitType)) {
                     unit.setCockpitType(combo.getSelectedIndex());
                     unit.clearCockpitCrits();
-                    /*removeSystemCrits(Mech.SYSTEM_COCKPIT);
-                    removeSystemCrits(Mech.SYSTEM_LIFE_SUPPORT);
-                    removeSystemCrits(Mech.SYSTEM_SENSORS);*/
 
                     switch (unit.getCockpitType()) {
                     case Mech.COCKPIT_COMMAND_CONSOLE:
@@ -350,7 +334,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         removeAllActionListeners();
                     }
                 } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
-                    UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + 10, heatSinkType.getSelectedIndex());
+                    int autoSinks = unit.getEngine().getWeightFreeEngineHeatSinks();
+                    UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
 
