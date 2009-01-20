@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -52,7 +52,7 @@ import megameklab.com.util.UnitUtil;
 public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
@@ -254,10 +254,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             try {
                 if (combo.equals(engineType) || combo.equals(walkMP)) {
                     int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                    if (unit.isPrimitive()) {
+                        double dRating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                        dRating *= 1.2;
+                        dRating = dRating - dRating % 5 + 5;
+                        rating = (int)dRating;
+                    }
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
-                    	unit.clearEngineCrits();
+                        unit.clearEngineCrits();
                         //removeSystemCrits(Mech.SYSTEM_ENGINE);
                         if (unit.isClan()) {
                             int type = engineType.getSelectedIndex();
@@ -314,11 +320,26 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         unit.addTorsoMountedCockpit();
                         unit.addEngineCrits();
                         break;
+                    case Mech.COCKPIT_INDUSTRIAL:
+                        unit.addIndustrialCockpit();
+                        break;
+                    case Mech.COCKPIT_PRIMITIVE:
+                        unit.addPrimitiveCockpit();
+                        break;
+                    case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
+                        unit.addIndustrialPrimitiveCockpit();
+                        break;
                     default:
                         unit.addCockpit();
                     }
                 } else if (combo.equals(weightClass)) {
                     int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                    if (unit.isPrimitive()) {
+                        double dRating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                        dRating *= 1.2;
+                        dRating = dRating - dRating % 5 + 5;
+                        rating = (int)dRating;
+                    }
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
@@ -378,7 +399,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     addAllActionListeners();
                     return;
                 } else if (combo.equals(techType)) {
-                    if (techType.getSelectedIndex() > 0 && !unit.isClan()) {
+                    if ((techType.getSelectedIndex() > 0) && !unit.isClan()) {
                         engineType.removeAllItems();
                         techLevel.removeAllItems();
                         heatSinkType.removeAllItems();
@@ -442,7 +463,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = unit.getCritical(loc, slot);
 
-                if (cs == null || cs.getType() != CriticalSlot.TYPE_SYSTEM) {
+                if ((cs == null) || (cs.getType() != CriticalSlot.TYPE_SYSTEM)) {
                     continue;
                 }
 

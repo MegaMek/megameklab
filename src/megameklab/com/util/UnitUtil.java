@@ -63,7 +63,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isArmorOrStructure(EquipmentType eq) {
-        return eq instanceof MiscType && (eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_REACTIVE) || eq.hasFlag(MiscType.F_REFLECTIVE));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_REACTIVE) || eq.hasFlag(MiscType.F_REFLECTIVE));
     }
 
     /**
@@ -73,7 +73,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isTSM(EquipmentType eq) {
-        return eq instanceof MiscType && (eq.hasFlag(MiscType.F_TSM));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_TSM));
     }
 
     /**
@@ -181,10 +181,10 @@ public class UnitUtil {
         for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot crit = unit.getCritical(location, slot);
-                if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted mount = unit.getEquipment(crit.getIndex());
 
-                    if (mount != null && mount.getType().getName().equals(UnitUtil.TSM)) {
+                    if ((mount != null) && mount.getType().getName().equals(UnitUtil.TSM)) {
                         crit = null;
                         unit.setCritical(location, slot, crit);
                     }
@@ -203,10 +203,10 @@ public class UnitUtil {
         for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot crit = unit.getCritical(location, slot);
-                if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted mount = unit.getEquipment(crit.getIndex());
 
-                    if (mount != null && (mount.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER))) {
+                    if ((mount != null) && (mount.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER))) {
                         crit = null;
                         unit.setCritical(location, slot, crit);
                     }
@@ -236,9 +236,9 @@ public class UnitUtil {
         } else {
             int critsUsed = UnitUtil.getCritsUsed(unit, eq.getType());
             int location = eq.getLocation();
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location) && critsUsed > 0; slot++) {
+            for (int slot = 0; (slot < unit.getNumberOfCriticals(location)) && (critsUsed > 0); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
-                if (cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT && cs.getMount() == eq) {
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount() == eq)) {
                     cs = null;
                     unit.setCritical(location, slot, cs);
                     --critsUsed;
@@ -258,9 +258,9 @@ public class UnitUtil {
         int location = eq.getLocation();
         if (location != Entity.LOC_NONE) {
             int critsUsed = UnitUtil.getCritsUsed(unit, eq.getType());
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location) && critsUsed > 0; slot++) {
+            for (int slot = 0; (slot < unit.getNumberOfCriticals(location)) && (critsUsed > 0); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
-                if (cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT && cs.getIndex() == unit.getEquipmentNum(eq)) {
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getIndex() == unit.getEquipmentNum(eq))) {
                     cs = null;
                     unit.setCritical(location, slot, cs);
                     --critsUsed;
@@ -271,9 +271,9 @@ public class UnitUtil {
         location = eq.getSecondLocation();
         if (location != Entity.LOC_NONE) {
             int critsUsed = UnitUtil.getCritsUsed(unit, eq.getType());
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location) && critsUsed > 0; slot++) {
+            for (int slot = 0; (slot < unit.getNumberOfCriticals(location)) && (critsUsed > 0); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
-                if (cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT && cs.getIndex() == unit.getEquipmentNum(eq)) {
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getIndex() == unit.getEquipmentNum(eq))) {
                     cs = null;
                     unit.setCritical(location, slot, cs);
                     --critsUsed;
@@ -293,7 +293,7 @@ public class UnitUtil {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
 
-                if (cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     cs = null;
                     unit.setCritical(location, slot, cs);
                 }
@@ -369,11 +369,11 @@ public class UnitUtil {
 
         if (unit.getTechLevel() >= TechConstants.T_IS_ADVANCED) {
             if (unit.isClan()) {
-                if (techLevel == TechConstants.T_INTRO_BOXSET || techLevel == TechConstants.T_IS_TW_NON_BOX || techLevel == TechConstants.T_IS_ADVANCED || techLevel == TechConstants.T_IS_EXPERIMENTAL || techLevel == TechConstants.T_IS_UNOFFICIAL) {
+                if ((techLevel == TechConstants.T_INTRO_BOXSET) || (techLevel == TechConstants.T_IS_TW_NON_BOX) || (techLevel == TechConstants.T_IS_ADVANCED) || (techLevel == TechConstants.T_IS_EXPERIMENTAL) || (techLevel == TechConstants.T_IS_UNOFFICIAL)) {
                     return false;
                 }
             } else {
-                if (techLevel == TechConstants.T_CLAN_TW || techLevel == TechConstants.T_CLAN_ADVANCED || techLevel == TechConstants.T_CLAN_EXPERIMENTAL || techLevel == TechConstants.T_CLAN_UNOFFICIAL) {
+                if ((techLevel == TechConstants.T_CLAN_TW) || (techLevel == TechConstants.T_CLAN_ADVANCED) || (techLevel == TechConstants.T_CLAN_EXPERIMENTAL) || (techLevel == TechConstants.T_CLAN_UNOFFICIAL)) {
                     return false;
                 }
             }
@@ -436,7 +436,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isHeatSink(Mounted eq) {
-        if (eq.getType() instanceof MiscType && (eq.getType().hasFlag(MiscType.F_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
+        if ((eq.getType() instanceof MiscType) && (eq.getType().hasFlag(MiscType.F_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
             return true;
         }
 
@@ -450,7 +450,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isHeatSink(EquipmentType eq) {
-        if (eq instanceof MiscType && (eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
             return true;
         }
 
@@ -562,11 +562,11 @@ public class UnitUtil {
             return false;
         }
 
-        if (eq instanceof MiscType && eq.hasFlag(MiscType.F_MASC)) {
+        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_MASC)) {
             return false;
         }
 
-        if (eq instanceof MiscType && (eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_JUMP_BOOSTER))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_JUMP_BOOSTER))) {
             return false;
         }
 
@@ -613,7 +613,7 @@ public class UnitUtil {
     public static boolean hasTargComp(Entity unit) {
 
         for (Mounted mount : unit.getEquipment()) {
-            if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
                 return true;
             }
         }
@@ -662,13 +662,21 @@ public class UnitUtil {
         return armorWeight;
     }
 
+    public static int getArmorPoints(Mech unit, double armorTons) {
+        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());
+        if (unit.getArmorType() == EquipmentType.T_ARMOR_HARDENED) {
+            armorPerTon = 8.0;
+        }
+        return (int)Math.floor(armorPerTon * armorTons);
+    }
+
     public static void reIndexCrits(Mech unit) {
 
         for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
 
-                if (cs != null && cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     cs.setIndex(unit.getEquipmentNum(cs.getMount()));
                 }
             }
@@ -691,10 +699,10 @@ public class UnitUtil {
         for (int slot = 0; slot < mech.getNumberOfCriticals(loc); slot++) {
             CriticalSlot cs = mech.getCritical(loc, slot);
 
-            if (cs == null && firstEmpty == -1) {
+            if ((cs == null) && (firstEmpty == -1)) {
                 firstEmpty = slot;
             }
-            if (firstEmpty != -1 && cs != null) {
+            if ((firstEmpty != -1) && (cs != null)) {
                 // move this to the first empty slot
                 mech.setCritical(loc, firstEmpty, cs);
                 // mark the old slot empty
@@ -707,7 +715,7 @@ public class UnitUtil {
     }
 
     public static boolean isAMS(WeaponType weapon) {
-        return weapon instanceof ISAMS || weapon instanceof CLAMS || weapon instanceof CLLaserAMS || weapon instanceof ISLaserAMS;
+        return (weapon instanceof ISAMS) || (weapon instanceof CLAMS) || (weapon instanceof CLLaserAMS) || (weapon instanceof ISLaserAMS);
     }
 
     public static boolean hasSwitchableAmmo(WeaponType weapon) {
@@ -752,7 +760,7 @@ public class UnitUtil {
         for (int location = 0; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
-                if (cs == null || cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+                if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                     continue;
                 }
 
@@ -778,7 +786,7 @@ public class UnitUtil {
 
     public static void loadFonts() {
 
-        if (euroFont != null && euroBoldFont != null) {
+        if ((euroFont != null) && (euroBoldFont != null)) {
             return;
         }
 
@@ -826,7 +834,7 @@ public class UnitUtil {
     public static Font getNewFont(Graphics2D g2d, String info, boolean bold, int stringWidth, float pointSize) {
         Font font = UnitUtil.deriveFont(bold, pointSize);
 
-        while (ImageHelper.getStringWidth(g2d, info, font) > stringWidth && pointSize > 0) {
+        while ((ImageHelper.getStringWidth(g2d, info, font) > stringWidth) && (pointSize > 0)) {
             pointSize -= .1;
             font = UnitUtil.deriveFont(bold, pointSize);
         }
@@ -853,7 +861,7 @@ public class UnitUtil {
         for (Mounted mount : unit.getEquipment()) {
 
 
-            if (mount.getType().isExplosive() && mount.getLocation() == location) {
+            if (mount.getType().isExplosive() && (mount.getLocation() == location)) {
                 return true;
             }
         }
