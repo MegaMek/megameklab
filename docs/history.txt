@@ -18,6 +18,9 @@ V 0.0.0.10-dev
 + Added Tech Printout.
 + Print Primitive Mech engines as Primitive Engines
 + Fix tabs in sourcecode
++ Improved auto armor allocation
++ Show amount of unallocated armor points
++ Start implementing primitive Mechs
 
 V 0.0.0.9
 + Bug: Weapons not loading.

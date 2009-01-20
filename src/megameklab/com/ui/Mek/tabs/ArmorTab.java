@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ import megameklab.com.util.UnitUtil;
 public class ArmorTab extends ITab implements ActionListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -7235362583437251408L;
 
@@ -167,7 +167,7 @@ public class ArmorTab extends ITab implements ActionListener {
             armorTonnage.setText(Double.toString(maxArmor));
         }
 
-        armor.allocateArmor(currentArmor / maxArmor);
+        armor.allocateArmor(currentArmor);
     }
 
     private void createArmorMounts() {
@@ -177,7 +177,7 @@ public class ArmorTab extends ITab implements ActionListener {
         armorCount = EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType())).getCriticals(unit);
         ISCount = EquipmentType.get(EquipmentType.getStructureTypeName(unit.getStructureType())).getCriticals(unit);
 
-        if (armorCount < 1 && ISCount < 1) {
+        if ((armorCount < 1) && (ISCount < 1)) {
             return;
         }
 
@@ -228,10 +228,10 @@ public class ArmorTab extends ITab implements ActionListener {
         for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot crit = unit.getCritical(location, slot);
-                if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted mount = unit.getEquipment(crit.getIndex());
 
-                    if (mount != null && UnitUtil.isArmorOrStructure(mount.getType())) {
+                    if ((mount != null) && UnitUtil.isArmorOrStructure(mount.getType())) {
                         crit = null;
                         unit.setCritical(location, slot, crit);
                     }

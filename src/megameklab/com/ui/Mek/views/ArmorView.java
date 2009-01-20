@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -25,16 +25,17 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import megameklab.com.util.IView;
-import megameklab.com.util.RefreshListener;
+import javax.swing.SwingConstants;
 
 import megamek.common.Mech;
+import megameklab.com.util.IView;
+import megameklab.com.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
 
 public class ArmorView extends IView implements KeyListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 799195356642563937L;
 
@@ -44,7 +45,7 @@ public class ArmorView extends IView implements KeyListener {
     private JPanel torsoPanel = new JPanel();
     private JPanel legPanel = new JPanel();
     private JPanel rearPanel = new JPanel();
-        
+
     private JPanel laPanel = new JPanel();
     private JPanel raPanel = new JPanel();
     private JPanel llPanel = new JPanel();
@@ -56,7 +57,7 @@ public class ArmorView extends IView implements KeyListener {
     private JPanel ltrPanel = new JPanel();
     private JPanel ctrPanel = new JPanel();
     private JPanel rtrPanel = new JPanel();
-    
+
     private JTextField laArmorField = new JTextField(2);
     private JTextField raArmorField = new JTextField(2);
     private JTextField llArmorField = new JTextField(2);
@@ -84,7 +85,8 @@ public class ArmorView extends IView implements KeyListener {
 
     private JLabel currentArmorLabel = new JLabel();
     private JLabel maxArmorLabel = new JLabel();
-    
+    private JLabel unallocatedPointsLabel = new JLabel();
+
     private RefreshListener refresh;
 
     public ArmorView(Mech unit) {
@@ -129,7 +131,7 @@ public class ArmorView extends IView implements KeyListener {
         legPanel.add(llPanel);
         legPanel.add(rlPanel);
         mainPanel.add(legPanel);
-        
+
         laArmorField.setToolTipText("Front Armor");
         raArmorField.setToolTipText("Front Armor");
         llArmorField.setToolTipText("Front Armor");
@@ -169,7 +171,7 @@ public class ArmorView extends IView implements KeyListener {
                     JPanel bottomPanel = new JPanel();
                     masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
                     topPanel.add(hdArmorField);
-                    topPanel.add(new JLabel("/ 9", JLabel.TRAILING));
+                    topPanel.add(new JLabel("/ 9", SwingConstants.TRAILING));
                     masterPanel.add(new JLabel(unit.getLocationName(location)));
                     masterPanel.add(topPanel);
                     bottomPanel = new JPanel();
@@ -192,7 +194,7 @@ public class ArmorView extends IView implements KeyListener {
                 case Mech.LOC_LARM:
                     masterPanel = new JPanel();
                     masterPanel.add(laArmorField);
-                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(laArmorMaxLabel);
                     laPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     laPanel.add(masterPanel);
@@ -200,7 +202,7 @@ public class ArmorView extends IView implements KeyListener {
                 case Mech.LOC_RARM:
                     masterPanel = new JPanel();
                     masterPanel.add(raArmorField);
-                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(raArmorMaxLabel);
                     raPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     raPanel.add(masterPanel);
@@ -208,13 +210,13 @@ public class ArmorView extends IView implements KeyListener {
                 case Mech.LOC_CT:
                     masterPanel = new JPanel();
                     masterPanel.add(ctArmorField);
-                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(ctArmorMaxLabel);
                     ctPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     ctPanel.add(masterPanel);
                     masterPanel = new JPanel();
                     masterPanel.add(ctrArmorField);
-                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(ctrArmorMaxLabel);
                     ctrPanel.add(new JPanel());
                     ctrPanel.add(new JPanel());
@@ -225,13 +227,13 @@ public class ArmorView extends IView implements KeyListener {
                 case Mech.LOC_LT:
                     masterPanel = new JPanel();
                     masterPanel.add(ltArmorField);
-                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(ltArmorMaxLabel);
                     ltPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     ltPanel.add(masterPanel);
                     masterPanel = new JPanel();
                     masterPanel.add(ltrArmorField);
-                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(ltrArmorMaxLabel);
                     ltrPanel.add(new JPanel());
                     ltrPanel.add(new JLabel(unit.getLocationAbbr(location)+"r"));
@@ -241,13 +243,13 @@ public class ArmorView extends IView implements KeyListener {
                 case Mech.LOC_RT:
                     masterPanel = new JPanel();
                     masterPanel.add(rtArmorField);
-                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(rtArmorMaxLabel);
                     rtPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     rtPanel.add(masterPanel);
                     masterPanel = new JPanel();
                     masterPanel.add(rtrArmorField);
-                    masterPanel.add(new JLabel("/", JLabel.TRAILING));
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(rtrArmorMaxLabel);
                     rtrPanel.add(new JPanel());
                     rtrPanel.add(new JLabel(unit.getLocationAbbr(location)+"r"));
@@ -260,7 +262,7 @@ public class ArmorView extends IView implements KeyListener {
                     bottomPanel = new JPanel();
                     masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
                     topPanel.add(llArmorField);
-                    topPanel.add(new JLabel("/", JLabel.TRAILING));
+                    topPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     topPanel.add(llArmorMaxLabel);
                     masterPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     masterPanel.add(topPanel);
@@ -279,7 +281,7 @@ public class ArmorView extends IView implements KeyListener {
                     bottomPanel = new JPanel();
                     masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
                     topPanel.add(rlArmorField);
-                    topPanel.add(new JLabel("/", JLabel.TRAILING));
+                    topPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     topPanel.add(rlArmorMaxLabel);
                     masterPanel.add(new JLabel(unit.getLocationAbbr(location)));
                     masterPanel.add(topPanel);
@@ -299,23 +301,24 @@ public class ArmorView extends IView implements KeyListener {
         rearPanel.add(ltrPanel);
         rearPanel.add(ctrPanel);
         rearPanel.add(rtrPanel);
-        
+
         this.add(mainPanel);
         this.add(rearPanel);
-        
+
         JPanel totalArmorPanel = new JPanel();
         JPanel headerPanel = new JPanel();
         JPanel bottomPanel = new JPanel();
-        
+
         totalArmorPanel.setLayout(new BoxLayout(totalArmorPanel,BoxLayout.Y_AXIS));
-        headerPanel.add(new JLabel("Current/Total Armor"));
+        headerPanel.add(new JLabel("Current/Maximum Armor"));
         bottomPanel.add(currentArmorLabel);
-        bottomPanel.add(new JLabel("/",JLabel.TRAILING));
+        bottomPanel.add(new JLabel("/",SwingConstants.TRAILING));
         bottomPanel.add(maxArmorLabel);
-        
+
         totalArmorPanel.add(headerPanel);
         totalArmorPanel.add(bottomPanel);
-        
+        totalArmorPanel.add(unallocatedPointsLabel);
+
         this.add(totalArmorPanel);
         //refresh();
         addAllListeners();
@@ -331,80 +334,90 @@ public class ArmorView extends IView implements KeyListener {
             switch (location) {
             case Mech.LOC_HEAD:
                 hdArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > 9)
+                if (unit.getArmor(location) > 9) {
                     hdArmorField.setBackground(Color.RED);
-                else
+                } else {
                     hdArmorField.setBackground(Color.white);
+                }
                 break;
             case Mech.LOC_LARM:
                 laArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > maxArmor)
+                if (unit.getArmor(location) > maxArmor) {
                     laArmorField.setBackground(Color.RED);
-                else
+                } else {
                     laArmorField.setBackground(Color.white);
+                }
                 laArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             case Mech.LOC_RARM:
                 raArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > maxArmor)
+                if (unit.getArmor(location) > maxArmor) {
                     raArmorField.setBackground(Color.RED);
-                else
+                } else {
                     raArmorField.setBackground(Color.white);
+                }
                 raArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             case Mech.LOC_CT:
                 ctArmorField.setText(unit.getArmorString(location));
                 ctrArmorField.setText(unit.getArmorString(location, true));
-                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor)
+                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor) {
                     ctArmorField.setBackground(Color.RED);
-                else
+                } else {
                     ctArmorField.setBackground(Color.white);
+                }
                 ctArmorMaxLabel.setText(Integer.toString(maxArmor));
                 ctrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
                 break;
             case Mech.LOC_LT:
                 ltArmorField.setText(unit.getArmorString(location));
                 ltrArmorField.setText(unit.getArmorString(location, true));
-                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor)
+                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor) {
                     ltArmorField.setBackground(Color.RED);
-                else
+                } else {
                     ltArmorField.setBackground(Color.white);
+                }
                 ltArmorMaxLabel.setText(Integer.toString(maxArmor));
                 ltrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
                 break;
             case Mech.LOC_RT:
                 rtArmorField.setText(unit.getArmorString(location));
                 rtrArmorField.setText(unit.getArmorString(location, true));
-                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor)
+                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor) {
                     rtArmorField.setBackground(Color.RED);
-                else
+                } else {
                     rtArmorField.setBackground(Color.white);
+                }
                 rtArmorMaxLabel.setText(Integer.toString(maxArmor));
                 rtrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
                 break;
             case Mech.LOC_LLEG:
                 llArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > maxArmor)
+                if (unit.getArmor(location) > maxArmor) {
                     llArmorField.setBackground(Color.RED);
-                else
+                } else {
                     llArmorField.setBackground(Color.white);
+                }
                 llArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             case Mech.LOC_RLEG:
                 rlArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > maxArmor)
+                if (unit.getArmor(location) > maxArmor) {
                     rlArmorField.setBackground(Color.RED);
-                else
+                } else {
                     rlArmorField.setBackground(Color.white);
+                }
                 rlArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             }
 
         }
-        
+
         currentArmorLabel.setText(Integer.toString(unit.getTotalOArmor()));
         //Total Possible armor is Internal*2 +3 for the extra 3 armor the head can support.
         maxArmorLabel.setText(Integer.toString((unit.getTotalOInternal()*2)+3));
+        //unallocated armorpoints
+        unallocatedPointsLabel.setText("Unallocated: "+(UnitUtil.getArmorPoints(unit, unit.getArmorWeight())-unit.getTotalOArmor()));
     }
 
     private void addAllListeners() {
@@ -451,22 +464,25 @@ public class ArmorView extends IView implements KeyListener {
             int value = Integer.parseInt(field.getText());
             switch (location) {
             case Mech.LOC_CT:
-                if (field.equals(ctrArmorField))
+                if (field.equals(ctrArmorField)) {
                     unit.initializeRearArmor(value, location);
-                else
+                } else {
                     unit.initializeArmor(value, location);
+                }
                 break;
             case Mech.LOC_RT:
-                if (field.equals(rtrArmorField))
+                if (field.equals(rtrArmorField)) {
                     unit.initializeRearArmor(value, location);
-                else
+                } else {
                     unit.initializeArmor(value, location);
+                }
                 break;
             case Mech.LOC_LT:
-                if (field.equals(ltrArmorField))
+                if (field.equals(ltrArmorField)) {
                     unit.initializeRearArmor(value, location);
-                else
+                } else {
                     unit.initializeArmor(value, location);
+                }
                 break;
             default:
                 unit.initializeArmor(value, location);
@@ -483,31 +499,38 @@ public class ArmorView extends IView implements KeyListener {
     public void keyTyped(KeyEvent arg0) {
     }
 
-    public void allocateArmor(double percent) {
+    public void allocateArmor(double tons) {
+        double pointsToAllocate = UnitUtil.getArmorPoints(unit, tons);
         double totalArmor = (unit.getTotalOInternal()*2)+3;
+        if (pointsToAllocate > totalArmor) {
+            pointsToAllocate = totalArmor;
+        }
+        double percent = pointsToAllocate/totalArmor;
+        //put 5 times the percentage of total possible armor into the head
+        int headArmor = (int)Math.min(Math.floor(percent*9*5), 9);
+        unit.initializeArmor(headArmor, Mech.LOC_HEAD);
+        pointsToAllocate -= headArmor;
         for (int location = 0; location <= Mech.LOC_LLEG; location++) {
             double IS = (unit.getInternal(location) * 2);
-            double maxArmor = Math.min(IS * percent,totalArmor);
-
+            double allocate = Math.min(IS * percent,pointsToAllocate);
             switch (location) {
             case Mech.LOC_HEAD:
-                maxArmor = Math.min(totalArmor,9);
-                unit.initializeArmor((int)maxArmor, location);
                 break;
             case Mech.LOC_CT:
             case Mech.LOC_LT:
             case Mech.LOC_RT:
-                double rear = Math.floor(maxArmor * .25);
-                double front = Math.ceil(maxArmor * .75);
+                double rear = Math.floor(allocate * .25);
+                double front = Math.ceil(allocate * .75);
+                pointsToAllocate -= (int)rear;
+                pointsToAllocate -= (int)front;
                 unit.initializeArmor((int)front, location);
                 unit.initializeRearArmor((int)rear, location);
                 break;
             default:
-                unit.initializeArmor((int)maxArmor, location);
+                unit.initializeArmor((int)allocate, location);
+                pointsToAllocate -= (int)allocate;
                 break;
             }
-            totalArmor -= maxArmor;
-            
         }
 
         removeAllListeners();
