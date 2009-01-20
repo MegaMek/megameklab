@@ -326,8 +326,6 @@ public class ArmorView extends IView implements KeyListener {
 
     public void refresh() {
 
-        // testMech = new TestMech(unit, entityVerifier.mechOption, null);
-
         for (int location = 0; location < unit.locations(); location++) {
 
             int maxArmor = unit.getOInternal(location) * 2;
