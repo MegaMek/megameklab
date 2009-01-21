@@ -17,6 +17,7 @@
 package megameklab.com.util;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -83,7 +84,7 @@ public class ImageHelper {
         return table;
     }
 
-    public static Image getTurretImage(Entity unit) {
+    public static Image getTurretImage() {
         Image table = null;
         String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
 
@@ -412,6 +413,10 @@ public class ImageHelper {
     }
 
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d) {
+        ImageHelper.printTankWeaponsNEquipment(tank, g2d, 0);
+    }
+
+    public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float offset) {
         int qtyPoint = 26;
         int typePoint = 38;
         int locPoint = 124;
@@ -420,7 +425,7 @@ public class ImageHelper {
         int shtPoint = 177;
         int medPoint = 195;
         int longPoint = 211;
-        float linePoint = 212f;
+        float linePoint = 212f + offset;
 
         float lineFeed = 6.7f;
 
@@ -678,7 +683,18 @@ public class ImageHelper {
     public static void drawTankArmorPip(Graphics2D g2d, float width, float height) {
         Font font = new Font("Arial", Font.PLAIN, 9);
         g2d.setFont(font);
+        g2d.setColor(Color.BLACK);
+        g2d.setBackground(Color.WHITE);
         g2d.drawString("O", width, height);
+    }
+
+    public static void drawTankISPip(Graphics2D g2d, int width, int height) {
+        Dimension circle = new Dimension(7, 7);
+        Dimension fillCircle = new Dimension(5, 5);
+        g2d.setColor(Color.black);
+        g2d.fillOval(width, height, circle.width, circle.height);
+        g2d.setColor(Color.white);
+        g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
     }
 
     public static void drawISPip(Graphics2D g2d, float width, float height) {

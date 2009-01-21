@@ -27,6 +27,11 @@ V 0.0.0.10-dev
 + fix primitive industrial sring centering
 + fix primitive Mech engine rating
 + Print Industrial/Primitive string also on Quad RS
++ Added IS for Vehicles
++ Added secondPageMargin global variable for space between data in RS 1 and RS 2
++ Modified code to use the new secondPageMargin variable.
++ Added new Method ImageHelper.drawTankISPip
++ Added code to print Data for second vehicle
 
 V 0.0.0.9
 + Bug: Weapons not loading.
