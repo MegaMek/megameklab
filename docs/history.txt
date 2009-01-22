@@ -32,6 +32,8 @@ V 0.0.0.10-dev
 + Modified code to use the new secondPageMargin variable.
 + Added new Method ImageHelper.drawTankISPip
 + Added code to print Data for second vehicle
++ New MegaMek.jar
++ MixTech now supported
 
 V 0.0.0.9
 + Bug: Weapons not loading.

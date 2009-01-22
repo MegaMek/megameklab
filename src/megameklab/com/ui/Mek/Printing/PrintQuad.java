@@ -173,10 +173,16 @@ public class PrintQuad implements Printable {
         g2d.drawString(Integer.toString(tonnage), 177, 134);
 
         String techBase = "Inner Sphere";
-        if (mech.isClan()) {
+
+        if (mech.isMixedTech()) {
+            if (mech.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (mech.isClan()) {
             techBase = "Clan";
         }
-        g2d.drawString(techBase, 177, 145);
 
         if (mech.isIndustrial()) {
             if (mech.isPrimitive()) {
@@ -200,6 +206,9 @@ public class PrintQuad implements Printable {
 
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
+
+        g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
+        g2d.drawString(techBase, 177, 145);
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
