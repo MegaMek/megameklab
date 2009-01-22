@@ -67,7 +67,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     String[] isHeatSinkTypes = { "Single", "Double", "Compact" };
     JComboBox heatSinkType = new JComboBox(isHeatSinkTypes);
     JComboBox heatSinkNumber;
-    String[] techTypes = { "I.S.", "Clan" };
+    String[] techTypes = { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
     JComboBox techType = new JComboBox(techTypes);
     String[] isTechLevels = { "Intro", "Standard", "Advanced", "Experimental", "Unoffical" };
     String[] clanTechLevels = { "Standard", "Advanced", "Experimental", "Unoffical" };
@@ -177,7 +177,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
         heatSinkNumber.setSelectedIndex(unit.heatSinks() - unit.getEngine().getWeightFreeEngineHeatSinks());
         engineType.setSelectedIndex(unit.getEngine().getEngineType());
-        if (unit.isClan()) {
+
+        if (unit.isMixedTech()) {
+            if (unit.isClan()) {
+                techType.setSelectedIndex(3);
+                if (unit.getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL) {
+                    techLevel.setSelectedIndex(3);
+                } else if (unit.getTechLevel() >= TechConstants.T_CLAN_EXPERIMENTAL) {
+                    techLevel.setSelectedIndex(2);
+                } else {
+                    techLevel.setSelectedIndex(1);
+                }
+            } else {
+                techType.setSelectedIndex(2);
+
+                if (unit.getTechLevel() >= TechConstants.T_IS_UNOFFICIAL) {
+                    techLevel.setSelectedIndex(4);
+                } else if (unit.getTechLevel() >= TechConstants.T_IS_EXPERIMENTAL) {
+                    techLevel.setSelectedIndex(3);
+                } else {
+                    techLevel.setSelectedIndex(2);
+                }
+            }
+        } else if (unit.isClan()) {
 
             techType.setSelectedIndex(1);
             if (unit.getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL) {
@@ -347,6 +369,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         switch (unitTechLevel) {
                         case 0:
                             unit.setTechLevel(TechConstants.T_CLAN_TW);
+                            addAllActionListeners();
+                            techType.setSelectedIndex(1);
+                            removeAllActionListeners();
                             break;
                         case 1:
                             unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
@@ -366,9 +391,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         switch (unitTechLevel) {
                         case 0:
                             unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                            addAllActionListeners();
+                            techType.setSelectedIndex(0);
+                            removeAllActionListeners();
                             break;
                         case 1:
                             unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                            addAllActionListeners();
+                            techType.setSelectedIndex(0);
+                            removeAllActionListeners();
                             break;
                         case 2:
                             unit.setTechLevel(TechConstants.T_IS_ADVANCED);
@@ -388,7 +419,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     addAllActionListeners();
                     return;
                 } else if (combo.equals(techType)) {
-                    if ((techType.getSelectedIndex() > 0) && !unit.isClan()) {
+                    if (techType.getSelectedIndex() == 1 && (!unit.isClan() || unit.isMixedTech())) {
                         engineType.removeAllItems();
                         techLevel.removeAllItems();
                         heatSinkType.removeAllItems();
@@ -402,8 +433,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
                         }
+
                         unit.setTechLevel(TechConstants.T_CLAN_TW);
-                    } else if (unit.isClan()) {
+                        unit.setMixedTech(false);
+                    } else if (techType.getSelectedIndex() == 0 && (unit.isClan() || unit.isMixedTech())) {
                         engineType.removeAllItems();
                         techLevel.removeAllItems();
                         heatSinkType.removeAllItems();
@@ -419,6 +452,43 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         }
 
                         unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                        unit.setMixedTech(false);
+
+                    } else if (techType.getSelectedIndex() == 2 && (!unit.isMixedTech() || unit.isClan())) {
+                        engineType.removeAllItems();
+                        techLevel.removeAllItems();
+                        heatSinkType.removeAllItems();
+
+                        for (String item : isEngineTypes) {
+                            engineType.addItem(item);
+                        }
+                        for (String item : isHeatSinkTypes) {
+                            heatSinkType.addItem(item);
+                        }
+                        for (String item : isTechLevels) {
+                            techLevel.addItem(item);
+                        }
+
+                        unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                        unit.setMixedTech(true);
+
+                    } else if (techType.getSelectedIndex() == 3 && (!unit.isMixedTech() || !unit.isClan())) {
+                        engineType.removeAllItems();
+                        techLevel.removeAllItems();
+                        heatSinkType.removeAllItems();
+
+                        for (String item : clanEngineTypes) {
+                            engineType.addItem(item);
+                        }
+                        for (String item : clanHeatSinkTypes) {
+                            heatSinkType.addItem(item);
+                        }
+                        for (String item : clanTechLevels) {
+                            techLevel.addItem(item);
+                        }
+
+                        unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        unit.setMixedTech(true);
                     } else {
                         addAllActionListeners();
                         return;
