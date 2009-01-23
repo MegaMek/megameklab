@@ -681,7 +681,12 @@ public class ImageHelper {
     }
 
     public static void drawTankArmorPip(Graphics2D g2d, float width, float height) {
+        ImageHelper.drawTankArmorPip(g2d, width, height, 9.0f);
+    }
+
+    public static void drawTankArmorPip(Graphics2D g2d, float width, float height, float fontsize) {
         Font font = new Font("Arial", Font.PLAIN, 9);
+        font = font.deriveFont(fontsize);
         g2d.setFont(font);
         g2d.setColor(Color.BLACK);
         g2d.setBackground(Color.WHITE);
