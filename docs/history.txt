@@ -34,6 +34,10 @@ V 0.0.0.10-dev
 + Added code to print Data for second vehicle
 + New MegaMek.jar
 + MixTech now supported
++ Bug: Cannot split to left or right arm.
++ RFE: Have a Save Dialog.
++ New MegaMek.jar
++ Bug: One Shot ammo causing crits to load incorrectly
 
 V 0.0.0.9
 + Bug: Weapons not loading.

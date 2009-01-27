@@ -27,7 +27,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -79,7 +81,6 @@ import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SaveMechToMTF;
 import megameklab.com.util.UnitUtil;
 
 public class MainUI extends JFrame implements RefreshListener {
@@ -88,7 +89,7 @@ public class MainUI extends JFrame implements RefreshListener {
      *
      */
 	private static final long serialVersionUID = -5836932822468918198L;
-	private static final String VERSION = "0.0.0.10-115";
+	private static final String VERSION = "0.0.0.10-116";
 
 	Mech entity = null;
 	JMenuBar menuBar = new JMenuBar();
@@ -348,9 +349,36 @@ public class MainUI extends JFrame implements RefreshListener {
 	public void jMenuSaveEntity_actionPerformed(ActionEvent event) {
 		UnitUtil.compactCriticals(entity);
 		UnitUtil.reIndexCrits(entity);
-		SaveMechToMTF.getInstance(entity, entity.getChassis() + " " + entity.getModel() + ".mtf");
 
-		JOptionPane.showMessageDialog(this, entity.getChassis() + " " + entity.getModel() + " saved to ./data/mechfiles/" + entity.getChassis() + " " + entity.getModel() + ".mtf");
+        FileDialog fDialog = new FileDialog(this, "Save Short Op As", FileDialog.SAVE);
+
+        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+
+        fDialog.setDirectory(filePathName);
+        fDialog.setFile(entity.getChassis() + " " + entity.getModel() + ".mtf");
+        fDialog.setLocationRelativeTo(this);
+
+        fDialog.setVisible(true);
+
+
+        if (fDialog.getFile() != null) {
+            filePathName = fDialog.getDirectory() + fDialog.getFile();
+        } else {
+            return;
+        }
+
+        try {
+            FileOutputStream out = new FileOutputStream(filePathName);
+            PrintStream p = new PrintStream(out);
+            p.println(entity.getMtf());
+            p.close();
+            out.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+		JOptionPane.showMessageDialog(this, entity.getChassis() + " " + entity.getModel() + " saved to " + filePathName);
 
 	}
 
@@ -406,13 +434,16 @@ public class MainUI extends JFrame implements RefreshListener {
 		ArrayList<Mech> bipedList = new ArrayList<Mech>();
 		ArrayList<Tank> tankList = new ArrayList<Tank>();
 
-		FileDialog f = new FileDialog(new JDialog(), "Load Mul");
+		FileDialog f = new FileDialog(this, "Load Mul");
 		f.setDirectory(System.getProperty("user.dir"));
-		f.setFilenameFilter(new FilenameFilter() {
-			public boolean accept(final File dir, final String name) {
-				return (null != name && name.endsWith(".mul"));
-			}
-		});
+		f.setFile("*.mul");
+		/*f.setFilenameFilter(new FilenameFilter() {
+        	public boolean accept(final File dir, final String name) {
+        		return (null != name && name.endsWith(".mul"));
+        	}
+        });*/
+
+
 		f.setVisible(true);
 
 		if (f.getFile() != null) {
