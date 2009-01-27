@@ -38,6 +38,7 @@ V 0.0.0.10-dev
 + RFE: Have a Save Dialog.
 + New MegaMek.jar
 + Bug: One Shot ammo causing crits to load incorrectly
++ Bug: Enviromental Sealing weighing too much
 
 V 0.0.0.9
 + Bug: Weapons not loading.
