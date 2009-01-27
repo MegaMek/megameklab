@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -25,6 +25,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.weapons.ACWeapon;
+import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.CLPlasmaCannon;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.FlamerWeapon;
@@ -90,6 +91,9 @@ public class StringUtils {
                 } else if (weapon instanceof HAGWeapon) {
                     info = Integer.toString(weapon.getRackSize());
                     info += " [C/F]";
+                } else if (weapon instanceof ArtilleryWeapon) {
+                    info = Integer.toString(weapon.getRackSize());
+                    info += "[AE,S,F]";
                 } else {
                     info = Integer.toString(weapon.getRackSize());
                 }

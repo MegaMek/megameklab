@@ -265,7 +265,7 @@ public class EquipmentView extends IView implements ActionListener {
                 }
             } if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.INDUSTRIALTSM)) {
                 if (!unit.hasIndustrialTSM()) {
-                    createSpreadMounts(UnitUtil.ENVIROSEAL);
+                    createSpreadMounts(UnitUtil.INDUSTRIALTSM);
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.INDUSTRIALTSM));
                 }
             } if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.ENVIROSEAL)) {
@@ -351,9 +351,20 @@ public class EquipmentView extends IView implements ActionListener {
             return;
         }
 
+        float tonnageAmount = 0;
+        if (equip.equals(UnitUtil.ENVIROSEAL) && crits > 1) {
+            tonnageAmount = EquipmentType.get(equip).getTonnage(unit)/8;
+        }
+
         for (; crits > 0; crits--) {
             try {
-                unit.addEquipment(new Mounted(unit, EquipmentType.get(equip)), Entity.LOC_NONE, false);
+                if (equip.equals(UnitUtil.ENVIROSEAL) && crits > 1) {
+                    Mounted mount = new Mounted(unit, EquipmentType.get(equip));
+                    mount.getType().setTonange(tonnageAmount);
+                    unit.addEquipment(mount, Entity.LOC_NONE, false);
+                } else{
+                    unit.addEquipment(new Mounted(unit, EquipmentType.get(equip)), Entity.LOC_NONE, false);
+                }
             } catch (Exception ex) {
 
             }

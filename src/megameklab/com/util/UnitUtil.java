@@ -65,7 +65,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isArmorOrStructure(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_REACTIVE) || eq.hasFlag(MiscType.F_REFLECTIVE));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_REACTIVE) || eq.hasFlag(MiscType.F_REFLECTIVE) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING));
     }
 
     /**
@@ -75,7 +75,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isTSM(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_TSM));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_TSM) || eq.hasFlag((MiscType.F_INDUSTRIAL_TSM)));
     }
 
     /**
@@ -116,6 +116,8 @@ public class UnitUtil {
             UnitUtil.removeCrits(unit, UnitUtil.TSM);
         } else if (equipment.getName().equals(UnitUtil.INDUSTRIALTSM)) {
             UnitUtil.removeCrits(unit, UnitUtil.INDUSTRIALTSM);
+        } else if (equipment.getName().equals(UnitUtil.ENVIROSEAL)) {
+            UnitUtil.removeCrits(unit, UnitUtil.ENVIROSEAL);
         } else {
             UnitUtil.removeCriticals(unit, equipment);
         }
@@ -124,6 +126,10 @@ public class UnitUtil {
             UnitUtil.removeMounts(unit, UnitUtil.TSM);
         } else if (equipment.getName().equals(UnitUtil.TARGETINGCOMPUTER)) {
             UnitUtil.removeMounts(unit, UnitUtil.TARGETINGCOMPUTER);
+        } else if (equipment.getName().equals(UnitUtil.INDUSTRIALTSM)) {
+            UnitUtil.removeMounts(unit, UnitUtil.INDUSTRIALTSM);
+        } else if (equipment.getName().equals(UnitUtil.ENVIROSEAL)) {
+            UnitUtil.removeMounts(unit, UnitUtil.ENVIROSEAL);
         } else {
             unit.getEquipment().remove(equipment);
 
