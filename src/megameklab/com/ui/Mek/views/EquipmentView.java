@@ -360,7 +360,7 @@ public class EquipmentView extends IView implements ActionListener {
             try {
                 if (equip.equals(UnitUtil.ENVIROSEAL) && crits > 1) {
                     Mounted mount = new Mounted(unit, EquipmentType.get(equip));
-                    mount.getType().setTonange(tonnageAmount);
+                    mount.getType().setTonnage(tonnageAmount);
                     unit.addEquipment(mount, Entity.LOC_NONE, false);
                 } else{
                     unit.addEquipment(new Mounted(unit, EquipmentType.get(equip)), Entity.LOC_NONE, false);
