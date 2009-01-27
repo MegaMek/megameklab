@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@ import megamek.common.WeaponType;
 public class DropTargetCriticalList extends JList implements DropTargetListener, MouseListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 6847511182922982125L;
     private Mech unit;
@@ -114,7 +114,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                     int emptyCrits = unit.getEmptyCriticals(location);
 
                     if (eq.getType().getCriticals(unit) > unit.getEmptyCriticals(location)) {
-                        if (location >= Mech.LOC_RT) {
+                        if (location == Mech.LOC_RT) {
                             String[] locations = { "Center Torso", "Right Leg", "Right Arm" };
                             JComboBox combo = new JComboBox(locations);
                             JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
@@ -137,7 +137,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                                 nextLocation = Mech.LOC_RARM;
                             }
 
-                        } else if (location <= Mech.LOC_LT) {
+                        } else if (location == Mech.LOC_LT) {
                             String[] locations = { "Center Torso", "Left Leg", "Leg Arm" };
                             JComboBox combo = new JComboBox(locations);
                             JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
