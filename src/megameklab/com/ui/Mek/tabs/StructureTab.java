@@ -109,7 +109,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         walkMP = new JComboBox(walkMPs.toArray());
 
-        maxSize.setSize(80, 5);
+        Vector<String> weightClasses = new Vector<String>(1, 1);
+
+        for (int weight = 10; weight < 101; weight += 5) {
+            weightClasses.add(Integer.toString(weight));
+        }
+
+        weightClass = new JComboBox(weightClasses.toArray());
+
+        heatSinkNumber = new JComboBox();
+
+        maxSize.setSize(80, 20);
 
         masterPanel.add(omniCB);
         masterPanel.add(quadCB);
@@ -133,24 +143,26 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(createLabel("Cockpit:", maxSize));
         masterPanel.add(cockpitType);
 
-        Vector<String> weightClasses = new Vector<String>(1, 1);
-
-        for (int weight = 10; weight < 101; weight += 5) {
-            weightClasses.add(Integer.toString(weight));
-        }
-
-        weightClass = new JComboBox(weightClasses.toArray());
-
         masterPanel.add(createLabel("Weight:", maxSize));
         masterPanel.add(weightClass);
-
-        heatSinkNumber = new JComboBox();
 
         masterPanel.add(createLabel("Heat Sinks:", maxSize));
         masterPanel.add(heatSinkType);
 
         masterPanel.add(createLabel("Number:", maxSize));
         masterPanel.add(heatSinkNumber);
+
+        this.setFieldSize(walkMP, maxSize);
+        this.setFieldSize(walkMP, maxSize);
+        this.setFieldSize(era, maxSize);
+        this.setFieldSize(techType, maxSize);
+        this.setFieldSize(techLevel, maxSize);
+        this.setFieldSize(engineType, maxSize);
+        this.setFieldSize(gyroType, maxSize);
+        this.setFieldSize(cockpitType, maxSize);
+        this.setFieldSize(weightClass, maxSize);
+        this.setFieldSize(heatSinkNumber, maxSize);
+        this.setFieldSize(heatSinkType, maxSize);
 
         SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
 
@@ -257,6 +269,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         label.setPreferredSize(maxSize);
 
         return label;
+    }
+
+    public void setFieldSize(JComboBox box, Dimension maxSize) {
+        box.setPreferredSize(maxSize);
+        box.setMaximumSize(maxSize);
+        box.setMinimumSize(maxSize);
+    }
+
+    public void setFieldSize(JTextField box, Dimension maxSize) {
+        box.setPreferredSize(maxSize);
+        box.setMaximumSize(maxSize);
+        box.setMinimumSize(maxSize);
     }
 
     public void actionPerformed(ActionEvent e) {
