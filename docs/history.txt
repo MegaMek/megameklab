@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.10-dev
+V 0.0.0.10 (Release 01/28/2008 2:22:00 PST)
 + Quads not saving correctly
 + Use system look and feel
 + Added Gyro pip image for HD Gyros
