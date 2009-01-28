@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -25,14 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
-
-import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.ITab;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
-import megameklab.com.util.UnitUtil;
-import megameklab.com.ui.Mek.views.BuildView;
-import megameklab.com.ui.Mek.views.CriticalView;
+import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -40,11 +33,18 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
+import megameklab.com.ui.Mek.views.BuildView;
+import megameklab.com.ui.Mek.views.CriticalView;
+import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.ITab;
+import megameklab.com.util.RefreshListener;
+import megameklab.com.util.SpringLayoutHelper;
+import megameklab.com.util.UnitUtil;
 
 public class BuildTab extends ITab implements ActionListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
@@ -62,7 +62,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons) {
         this.unit = unit;
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
@@ -71,7 +71,9 @@ public class BuildTab extends ITab implements ActionListener {
 
         mainPanel.add(buildView);
 
+        autoFillButton.setMnemonic('A');
         autoFillButton.setActionCommand(AUTOFILLCOMMAND);
+        resetButton.setMnemonic('R');
         resetButton.setActionCommand(RESETCOMMAND);
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
@@ -108,7 +110,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     public JLabel createLabel(String text, Dimension maxSize) {
 
-        JLabel label = new JLabel(text, JLabel.TRAILING);
+        JLabel label = new JLabel(text, SwingConstants.TRAILING);
 
         label.setMaximumSize(maxSize);
         label.setMinimumSize(maxSize);
@@ -130,23 +132,23 @@ public class BuildTab extends ITab implements ActionListener {
         for (EquipmentType eq : buildView.getTableModel().getCrits()) {
             int externalEngineHS = unit.getEngine().integralHeatSinkCapacity();
             for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
-                
+
                 if ( eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))){
                     if ( unit instanceof QuadMech ){
                         continue;
                     }
-                    
+
                     if ( location != Mech.LOC_RARM && location != Mech.LOC_LARM ){
                         continue;
                     }
                 }
-                
+
                 int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
-                int critsUsed = UnitUtil.getCritsUsed(unit, eq); 
+                int critsUsed = UnitUtil.getCritsUsed(unit, eq);
                 if ( continuousNumberOfCrits < critsUsed ) {
                     continue;
                 }
-                
+
                 Mounted foundMount = null;
                 for (Mounted mount : unit.getEquipment()) {
                     if (mount.getLocation() == Entity.LOC_NONE && mount.getType().getInternalName().equals(eq.getInternalName())) {
@@ -161,7 +163,7 @@ public class BuildTab extends ITab implements ActionListener {
                 if (foundMount != null ) {
                     try {
                         unit.addEquipment(foundMount, location, false);
-                        UnitUtil.changeMountStatus(unit, foundMount, location, Mech.LOC_NONE, false);
+                        UnitUtil.changeMountStatus(unit, foundMount, location, Entity.LOC_NONE, false);
                         break;
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -178,7 +180,7 @@ public class BuildTab extends ITab implements ActionListener {
             UnitUtil.removeCriticals(unit, mount);
         }
         for (Mounted mount : unit.getEquipment()) {
-            UnitUtil.changeMountStatus(unit, mount, Mech.LOC_NONE, Mech.LOC_NONE, false);
+            UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         refresh.refreshAll();
     }
