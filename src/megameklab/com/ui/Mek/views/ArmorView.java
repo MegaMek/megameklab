@@ -100,7 +100,8 @@ public class ArmorView extends IView implements ChangeListener {
 
     private JLabel currentArmorLabel = new JLabel();
     private JLabel maxArmorLabel = new JLabel();
-    private JLabel unallocatedPointsLabel = new JLabel();
+    private JLabel unallocatedPointsLabel = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsField = new JLabel();
 
     private RefreshListener refresh;
 
@@ -370,6 +371,7 @@ public class ArmorView extends IView implements ChangeListener {
         JPanel totalArmorPanel = new JPanel();
         JPanel headerPanel = new JPanel();
         JPanel bottomPanel = new JPanel();
+        JPanel pointsPanel = new JPanel();
 
         totalArmorPanel.setLayout(new BoxLayout(totalArmorPanel,BoxLayout.Y_AXIS));
         headerPanel.add(new JLabel("Current/Maximum Armor"));
@@ -377,9 +379,13 @@ public class ArmorView extends IView implements ChangeListener {
         bottomPanel.add(new JLabel("/",SwingConstants.TRAILING));
         bottomPanel.add(maxArmorLabel);
 
+        unallocatedPointsField.setHorizontalAlignment(SwingConstants.LEADING);
+        pointsPanel.add(unallocatedPointsLabel);
+        pointsPanel.add(unallocatedPointsField);
+
         totalArmorPanel.add(headerPanel);
         totalArmorPanel.add(bottomPanel);
-        totalArmorPanel.add(unallocatedPointsLabel);
+        totalArmorPanel.add(pointsPanel);
 
         this.add(totalArmorPanel);
         //refresh();
@@ -469,7 +475,7 @@ public class ArmorView extends IView implements ChangeListener {
         //Total Possible armor is Internal*2 +3 for the extra 3 armor the head can support.
         maxArmorLabel.setText(Integer.toString((unit.getTotalOInternal()*2)+3));
         //unallocated armorpoints
-        unallocatedPointsLabel.setText("Unallocated: "+(UnitUtil.getArmorPoints(unit, unit.getArmorWeight())-unit.getTotalOArmor()));
+        unallocatedPointsField.setText(Integer.toString(UnitUtil.getArmorPoints(unit, unit.getArmorWeight()) - unit.getTotalOArmor()));
     }
 
     public void addRefreshedListener(RefreshListener l) {
