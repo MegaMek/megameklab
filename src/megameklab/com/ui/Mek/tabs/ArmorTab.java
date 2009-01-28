@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -28,7 +27,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
@@ -56,7 +56,8 @@ public class ArmorTab extends ITab implements ActionListener {
     private JComboBox structureCombo = new JComboBox(EquipmentType.structureNames);
 
     private JButton allocateArmorButton = new JButton("Allocate");
-    private JTextField armorTonnage = new JTextField(5);
+    private JButton maximizeArmorButton = new JButton("Maximize Armor");
+    private JSpinner armorTonnage = new JSpinner(new SpinnerNumberModel(0, 0, 0, 0.5));
 
     private JPanel buttonPanel = new JPanel();
 
@@ -82,6 +83,7 @@ public class ArmorTab extends ITab implements ActionListener {
         removeAllListeners();
         setTotalTonnage();
         addAllListeners();
+        ((SpinnerNumberModel)armorTonnage.getModel()).setMaximum(UnitUtil.getTotalArmorTonnage(unit));
         armor.updateMech(unit);
         armor.refresh();
     }
@@ -122,12 +124,18 @@ public class ArmorTab extends ITab implements ActionListener {
 
         allocateArmorButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                allocateArmorActionPerformed();
+                armor.allocateArmor((Double)armorTonnage.getValue());
+            }
+        });
+
+        maximizeArmorButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                maximizeArmor();
             }
         });
 
         armorTonnage.setToolTipText("Total Tonnage of Armor");
-        Dimension size = new Dimension(40, 10);
+        Dimension size = new Dimension(45, 10);
         armorTonnage.setMaximumSize(size);
         armorTonnage.setPreferredSize(size);
 
@@ -135,6 +143,7 @@ public class ArmorTab extends ITab implements ActionListener {
         sliderPanel.add(new JLabel("Armor Tonnage:", SwingConstants.TRAILING));
         sliderPanel.add(armorTonnage);
         sliderPanel.add(allocateArmorButton);
+        sliderPanel.add(maximizeArmorButton);
         SpringLayoutHelper.setupSpringGrid(sliderPanel, 4);
 
         buttonPanel.add(sliderPanel);
@@ -152,22 +161,10 @@ public class ArmorTab extends ITab implements ActionListener {
         structureCombo.removeActionListener(this);
     }
 
-    private void allocateArmorActionPerformed() {
+    private void maximizeArmor() {
         double maxArmor = UnitUtil.getTotalArmorTonnage(unit);
-        double currentArmor = 0;
-
-        try {
-            currentArmor = Double.parseDouble(armorTonnage.getText());
-            if (currentArmor > maxArmor) {
-                currentArmor = maxArmor;
-                armorTonnage.setText(Double.toString(currentArmor));
-            }
-        } catch (Exception ex) {
-            currentArmor = maxArmor;
-            armorTonnage.setText(Double.toString(maxArmor));
-        }
-
-        armor.allocateArmor(currentArmor);
+        armor.allocateArmor(maxArmor);
+        armorTonnage.setValue(maxArmor);
     }
 
     private void createArmorMounts() {
@@ -242,9 +239,7 @@ public class ArmorTab extends ITab implements ActionListener {
 
     private void setTotalTonnage() {
         double currentTonnage = unit.getArmorWeight();
-
-        DecimalFormat myFormatter = new DecimalFormat("0.00");
-        armorTonnage.setText(myFormatter.format(currentTonnage));
+        armorTonnage.setValue(currentTonnage);
         armorTonnage.setToolTipText("Max Tonnage: " + UnitUtil.getTotalArmorTonnage(unit));
     }
 

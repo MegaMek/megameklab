@@ -43,6 +43,8 @@ V 0.0.0.10-dev
     on currently selected walking speed
 + Bug: Null Sig and Void Sig not working correctly
 + Improved armor allocation algorithm
++ Changed armor distribution tab to use spinners instead of TextFields
++ fixed bug with cockpittype setting
 
 V 0.0.0.9
 + Bug: Weapons not loading.
