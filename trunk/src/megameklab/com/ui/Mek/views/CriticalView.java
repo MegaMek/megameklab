@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@ import megameklab.com.util.RefreshListener;
 public class CriticalView extends IView {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6960975031034494605L;
 
@@ -56,7 +56,7 @@ public class CriticalView extends IView {
         super(unit);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
-        
+
         JPanel mainPanel = new JPanel();
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -84,7 +84,7 @@ public class CriticalView extends IView {
     public void updateRefresh(RefreshListener refresh){
         this.refresh = refresh;
     }
-    
+
     public void refresh() {
         laPanel.removeAll();
         raPanel.removeAll();
@@ -103,8 +103,9 @@ public class CriticalView extends IView {
                 for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                     CriticalSlot cs = unit.getCritical(location, slot);
                     if (cs == null) {
-                        if (showEmpty)
+                        if (showEmpty) {
                             critNames.add(MtfFile.EMPTY);
+                        }
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                         critNames.add(unit.getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
@@ -112,9 +113,9 @@ public class CriticalView extends IView {
                             Mounted m = cs.getMount();
                             //Critical didn't get removed.  Remove it now.
                             if ( m == null ) {
-                                
+
                                 m = unit.getEquipment(cs.getIndex());
-                                
+
                                 if ( m == null ) {
                                     unit.setCritical(location, slot, null);
                                     if (showEmpty) {
@@ -123,7 +124,7 @@ public class CriticalView extends IView {
                                     continue;
                                 }
                                 cs.setMount(m);
-                            } 
+                            }
                             StringBuffer critName = new StringBuffer(m.getName());
                             if (critName.length() > 15){
                                 critName.setLength(15);
@@ -132,15 +133,15 @@ public class CriticalView extends IView {
                             if ( m.isRearMounted() ){
                                 critName.append("(R)");
                             }
-                            
+
                             critNames.add(critName.toString());
-                        
+
                         }catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
                 }
-                DropTargetCriticalList CriticalSlotList = new DropTargetCriticalList(critNames,unit,refresh);
+                DropTargetCriticalList CriticalSlotList = new DropTargetCriticalList(critNames, unit, refresh, showEmpty);
                 CriticalSlotList.setVisibleRowCount(critNames.size());
                 CriticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 CriticalSlotList.setFont(new Font("Arial",Font.PLAIN,10));
