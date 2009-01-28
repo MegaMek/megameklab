@@ -26,8 +26,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -176,128 +178,71 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         equipmentScroll.setViewportView(equipmentTable);
 
         Dimension size = new Dimension(180, 150);
+        List<JPanel> tPanels = new ArrayList<JPanel>();
+        List<JScrollPane> tScrollPanes = new ArrayList<JScrollPane>();
+        tPanels.add(laserPane);
+        tPanels.add(laserAmmoPane);
+        tPanels.add(missilePane);
+        tPanels.add(missileAmmoPane);
+        tPanels.add(ballisticPane);
+        tPanels.add(ballisticAmmoPane);
+        tPanels.add(artilleryPane);
+        tPanels.add(artilleryAmmoPane);
+        tPanels.add(physicalWeaponPane);
+        tScrollPanes.add(laserWeaponScroll);
+        tScrollPanes.add(laserAmmoScroll);
+        tScrollPanes.add(missileWeaponScroll);
+        tScrollPanes.add(missileAmmoScroll);
+        tScrollPanes.add(ballisticWeaponScroll);
+        tScrollPanes.add(ballisticAmmoScroll);
+        tScrollPanes.add(artilleryWeaponScroll);
+        tScrollPanes.add(artilleryAmmoScroll);
+        tScrollPanes.add(physicalWeaponScroll);
 
-        laserWeaponScroll.setWheelScrollingEnabled(true);
-        laserWeaponScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        laserWeaponScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        laserWeaponScroll.setPreferredSize(size);
-        laserWeaponScroll.setMaximumSize(size);
-        laserWeaponScroll.setBackground(Color.WHITE);
-        laserPane.setBackground(Color.WHITE);
-        laserWeaponScroll.setViewportView(laserPane);
-
-        laserAmmoScroll.setWheelScrollingEnabled(true);
-        laserAmmoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        laserAmmoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        laserAmmoScroll.setPreferredSize(size);
-        laserAmmoScroll.setMaximumSize(size);
-        laserAmmoScroll.setBackground(Color.WHITE);
-        laserAmmoPane.setBackground(Color.WHITE);
-        laserAmmoScroll.setViewportView(laserAmmoPane);
-
-        missileWeaponScroll.setWheelScrollingEnabled(true);
-        missileWeaponScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        missileWeaponScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        missileWeaponScroll.setPreferredSize(size);
-        missileWeaponScroll.setMaximumSize(size);
-        missileWeaponScroll.setBackground(Color.WHITE);
-        missilePane.setBackground(Color.WHITE);
-        missileWeaponScroll.setViewportView(missilePane);
-
-        missileAmmoScroll.setWheelScrollingEnabled(true);
-        missileAmmoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        missileAmmoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        missileAmmoScroll.setPreferredSize(size);
-        missileAmmoScroll.setMaximumSize(size);
-        missileAmmoScroll.setBackground(Color.WHITE);
-        missileAmmoPane.setBackground(Color.WHITE);
-        missileAmmoScroll.setViewportView(missileAmmoPane);
-
-        ballisticWeaponScroll.setWheelScrollingEnabled(true);
-        ballisticWeaponScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        ballisticWeaponScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        ballisticWeaponScroll.setPreferredSize(size);
-        ballisticWeaponScroll.setMaximumSize(size);
-        ballisticWeaponScroll.setBackground(Color.WHITE);
-        ballisticPane.setBackground(Color.WHITE);
-        ballisticWeaponScroll.setViewportView(ballisticPane);
-
-        ballisticAmmoScroll.setWheelScrollingEnabled(true);
-        ballisticAmmoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        ballisticAmmoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        ballisticAmmoScroll.setPreferredSize(size);
-        ballisticAmmoScroll.setMaximumSize(size);
-        ballisticAmmoScroll.setBackground(Color.WHITE);
-        ballisticAmmoPane.setBackground(Color.WHITE);
-        ballisticAmmoScroll.setViewportView(ballisticAmmoPane);
-
-        artilleryWeaponScroll.setWheelScrollingEnabled(true);
-        artilleryWeaponScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        artilleryWeaponScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        artilleryWeaponScroll.setPreferredSize(size);
-        artilleryWeaponScroll.setMaximumSize(size);
-        artilleryWeaponScroll.setBackground(Color.WHITE);
-        artilleryPane.setBackground(Color.WHITE);
-        artilleryWeaponScroll.setViewportView(artilleryPane);
-
-        artilleryAmmoScroll.setWheelScrollingEnabled(true);
-        artilleryAmmoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        artilleryAmmoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        artilleryAmmoScroll.setPreferredSize(size);
-        artilleryAmmoScroll.setMaximumSize(size);
-        artilleryAmmoScroll.setBackground(Color.WHITE);
-        artilleryAmmoPane.setBackground(Color.WHITE);
-        artilleryAmmoScroll.setViewportView(artilleryAmmoPane);
-
-        physicalWeaponScroll.setWheelScrollingEnabled(true);
-        physicalWeaponScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        physicalWeaponScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        physicalWeaponScroll.setPreferredSize(new Dimension(180, 350));
-        physicalWeaponScroll.setMaximumSize(new Dimension(180, 350));
-        physicalWeaponScroll.setBackground(Color.WHITE);
-        physicalWeaponPane.setBackground(Color.WHITE);
-        physicalWeaponScroll.setViewportView(physicalWeaponPane);
+        // match JPanels to JScrollPanes, and set
+        // scrollpane properties
+        for (JScrollPane tScrollPane : tScrollPanes) {
+            tScrollPane.setWheelScrollingEnabled(true);
+            tScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            tScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            tScrollPane.setPreferredSize(size);
+            tScrollPane.setMaximumSize(size);
+            tScrollPane.setBackground(Color.WHITE);
+            tPanels.get(tScrollPanes.indexOf(tScrollPane)).setBackground(Color.WHITE);
+            tScrollPane.setViewportView(tPanels.get(tScrollPanes.indexOf(tScrollPane)));
+        }
 
         Font listFont = new Font("Arial", Font.PLAIN, 10);
         laserPane.add(laserWeaponCombo);
-        laserWeaponCombo.setFixedCellWidth(165);
-        laserWeaponCombo.setAutoscrolls(true);
+        laserWeaponCombo.setFixedCellWidth(155);
         laserWeaponCombo.setFont(listFont);
         laserAmmoPane.add(laserAmmoCombo);
-        laserAmmoCombo.setFixedCellWidth(165);
-        laserAmmoCombo.setAutoscrolls(true);
+        laserAmmoCombo.setFixedCellWidth(155);
         laserAmmoCombo.setFont(listFont);
 
         missilePane.add(missileWeaponCombo);
-        missileWeaponCombo.setFixedCellWidth(165);
-        missileWeaponCombo.setAutoscrolls(true);
+        missileWeaponCombo.setFixedCellWidth(155);
         missileWeaponCombo.setFont(listFont);
         missileAmmoPane.add(missileAmmoCombo);
-        missileAmmoCombo.setFixedCellWidth(165);
-        missileAmmoCombo.setAutoscrolls(true);
+        missileAmmoCombo.setFixedCellWidth(155);
         missileAmmoCombo.setFont(listFont);
 
         ballisticPane.add(ballisticWeaponCombo);
-        ballisticWeaponCombo.setFixedCellWidth(165);
-        ballisticWeaponCombo.setAutoscrolls(true);
+        ballisticWeaponCombo.setFixedCellWidth(155);
         ballisticWeaponCombo.setFont(listFont);
         ballisticAmmoPane.add(ballisticAmmoCombo);
-        ballisticAmmoCombo.setFixedCellWidth(165);
-        ballisticAmmoCombo.setAutoscrolls(true);
+        ballisticAmmoCombo.setFixedCellWidth(155);
         ballisticAmmoCombo.setFont(listFont);
 
         artilleryPane.add(artilleryWeaponCombo);
-        artilleryWeaponCombo.setFixedCellWidth(165);
-        artilleryWeaponCombo.setAutoscrolls(true);
+        artilleryWeaponCombo.setFixedCellWidth(155);
         artilleryWeaponCombo.setFont(listFont);
         artilleryAmmoPane.add(artilleryAmmoCombo);
-        artilleryAmmoCombo.setFixedCellWidth(165);
-        artilleryAmmoCombo.setAutoscrolls(true);
+        artilleryAmmoCombo.setFixedCellWidth(155);
         artilleryAmmoCombo.setFont(listFont);
 
         physicalWeaponPane.add(physicalWeaponCombo);
-        physicalWeaponCombo.setFixedCellWidth(165);
-        physicalWeaponCombo.setAutoscrolls(true);
+        physicalWeaponCombo.setFixedCellWidth(155);
         physicalWeaponCombo.setFont(listFont);
 
         JPanel tab = new JPanel();
@@ -382,34 +327,34 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     continue;
                 }
 
-                if ((weapon instanceof LRMWeapon || weapon instanceof LRTWeapon) && weapon.getRackSize() != 5 && weapon.getRackSize() != 10 && weapon.getRackSize() != 15 && weapon.getRackSize() != 20) {
+                if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon)) && (weapon.getRackSize() != 5) && (weapon.getRackSize() != 10) && (weapon.getRackSize() != 15) && (weapon.getRackSize() != 20)) {
                     continue;
                 }
-                if ((weapon instanceof SRMWeapon || weapon instanceof SRTWeapon) && weapon.getRackSize() != 2 && weapon.getRackSize() != 4 && weapon.getRackSize() != 6) {
+                if (((weapon instanceof SRMWeapon) || (weapon instanceof SRTWeapon)) && (weapon.getRackSize() != 2) && (weapon.getRackSize() != 4) && (weapon.getRackSize() != 6)) {
                     continue;
                 }
-                if (weapon instanceof MRMWeapon && weapon.getRackSize() < 10) {
-                    continue;
-                }
-
-                if (weapon instanceof RLWeapon && weapon.getRackSize() < 10) {
+                if ((weapon instanceof MRMWeapon) && (weapon.getRackSize() < 10)) {
                     continue;
                 }
 
-                if (weapon.hasFlag(WeaponType.F_ENERGY) || (weapon.hasFlag(WeaponType.F_PLASMA) && weapon.getAmmoType() == AmmoType.T_PLASMA)) {
+                if ((weapon instanceof RLWeapon) && (weapon.getRackSize() < 10)) {
+                    continue;
+                }
 
-                    if (weapon.hasFlag(WeaponType.F_ENERGY) && weapon.hasFlag(WeaponType.F_PLASMA) && weapon.getAmmoType() == AmmoType.T_NA) {
+                if (weapon.hasFlag(WeaponType.F_ENERGY) || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
+
+                    if (weapon.hasFlag(WeaponType.F_ENERGY) && weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_NA)) {
                         continue;
                     }
                     masterLaserWeaponList.add(eq);
-                } else if (eq.hasFlag(WeaponType.F_BALLISTIC) && weapon.getAmmoType() != AmmoType.T_NA) {
+                } else if (eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.T_NA)) {
                     masterBallisticWeaponList.add(eq);
-                } else if (eq.hasFlag(WeaponType.F_MISSILE) && weapon.getAmmoType() != AmmoType.T_NA) {
+                } else if (eq.hasFlag(WeaponType.F_MISSILE) && (weapon.getAmmoType() != AmmoType.T_NA)) {
                     masterMissileWeaponList.add(eq);
                 } else if (weapon instanceof ArtilleryWeapon) {
                     masterArtilleryWeaponList.add(eq);
                 }
-            } else if (eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))) {
+            } else if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))) {
                 if (eq.hasFlag(MiscType.F_CLUB) && (eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB))) {
                     continue;
                 }
@@ -588,7 +533,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        } else if (e.getActionCommand().equals(LASERAMMOADD_COMMAND) && subLaserAmmoList.size() > 0) {
+        } else if (e.getActionCommand().equals(LASERAMMOADD_COMMAND) && (subLaserAmmoList.size() > 0)) {
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     unit.addEquipment(new Mounted(unit, subLaserAmmoList.elementAt(laserAmmoCombo.getSelectedIndex())), Entity.LOC_NONE, false);
@@ -751,7 +696,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 Vector<String> equipmentList = new Vector<String>();
                 if (weapon.getAmmoType() != AmmoType.T_NA) {
                     for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                        if (ammo.getRackSize() == weapon.getRackSize() && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                        if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                             subLaserAmmoList.add(ammo);
                             equipmentList.add(ammo.getName());
                         }
@@ -766,7 +711,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if (ammo.getRackSize() == weapon.getRackSize() && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                         subMissileAmmoList.add(ammo);
                         equipmentList.add(ammo.getName());
                     }
@@ -779,7 +724,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if (ammo.getRackSize() == weapon.getRackSize() && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                         subBallisticAmmoList.add(ammo);
                         equipmentList.add(ammo.getName());
                     }
@@ -792,7 +737,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if (ammo.getRackSize() == weapon.getRackSize() && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                         subArtilleryAmmoList.add(ammo);
                         equipmentList.add(ammo.getName());
                     }
