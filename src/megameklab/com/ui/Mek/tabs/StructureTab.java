@@ -269,34 +269,36 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 // we need to do cockpit also here, because cockpitType determines
                 // if a mech is primitive and thus needs a larger engine
                 if (combo.equals(engineType) || combo.equals(walkMP) || combo.equals(cockpitType)) {
-                    unit.setCockpitType(combo.getSelectedIndex());
-                    unit.clearCockpitCrits();
-                    switch (unit.getCockpitType()) {
-                    case Mech.COCKPIT_COMMAND_CONSOLE:
-                        unit.addCommandConsole();
-                        break;
-                    case Mech.COCKPIT_DUAL:
-                        unit.addDualCockpit();
-                        break;
-                    case Mech.COCKPIT_SMALL:
-                        unit.addSmallCockpit();
-                        break;
-                    case Mech.COCKPIT_TORSO_MOUNTED:
-                        removeSystemCrits(Mech.SYSTEM_ENGINE);
-                        unit.addTorsoMountedCockpit();
-                        unit.addEngineCrits();
-                        break;
-                    case Mech.COCKPIT_INDUSTRIAL:
-                        unit.addIndustrialCockpit();
-                        break;
-                    case Mech.COCKPIT_PRIMITIVE:
-                        unit.addPrimitiveCockpit();
-                        break;
-                    case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
-                        unit.addIndustrialPrimitiveCockpit();
-                        break;
-                    default:
-                        unit.addCockpit();
+                    if (combo.equals(cockpitType)) {
+                        unit.setCockpitType(combo.getSelectedIndex());
+                        unit.clearCockpitCrits();
+                        switch (unit.getCockpitType()) {
+                        case Mech.COCKPIT_COMMAND_CONSOLE:
+                            unit.addCommandConsole();
+                            break;
+                        case Mech.COCKPIT_DUAL:
+                            unit.addDualCockpit();
+                            break;
+                        case Mech.COCKPIT_SMALL:
+                            unit.addSmallCockpit();
+                            break;
+                        case Mech.COCKPIT_TORSO_MOUNTED:
+                            removeSystemCrits(Mech.SYSTEM_ENGINE);
+                            unit.addTorsoMountedCockpit();
+                            unit.addEngineCrits();
+                            break;
+                        case Mech.COCKPIT_INDUSTRIAL:
+                            unit.addIndustrialCockpit();
+                            break;
+                        case Mech.COCKPIT_PRIMITIVE:
+                            unit.addPrimitiveCockpit();
+                            break;
+                        case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
+                            unit.addIndustrialPrimitiveCockpit();
+                            break;
+                        default:
+                            unit.addCockpit();
+                        }
                     }
                     int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
                     if (unit.isPrimitive()) {

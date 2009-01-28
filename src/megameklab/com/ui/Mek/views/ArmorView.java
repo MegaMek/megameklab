@@ -17,22 +17,24 @@
 package megameklab.com.ui.Mek.views;
 
 import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import megamek.common.Mech;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class ArmorView extends IView implements KeyListener {
+public class ArmorView extends IView implements ChangeListener {
 
     /**
      *
@@ -58,18 +60,31 @@ public class ArmorView extends IView implements KeyListener {
     private JPanel ctrPanel = new JPanel();
     private JPanel rtrPanel = new JPanel();
 
-    private JTextField laArmorField = new JTextField(2);
-    private JTextField raArmorField = new JTextField(2);
-    private JTextField llArmorField = new JTextField(2);
-    private JTextField rlArmorField = new JTextField(2);
-    private JTextField ltArmorField = new JTextField(2);
-    private JTextField rtArmorField = new JTextField(2);
-    private JTextField ctArmorField = new JTextField(2);
-    private JTextField hdArmorField = new JTextField(2);
+    private SpinnerNumberModel laArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel raArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel llArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel rlArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel ltArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel rtArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel ctArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel hdArmorModel = new SpinnerNumberModel();
 
-    private JTextField rtrArmorField = new JTextField(2);
-    private JTextField ltrArmorField = new JTextField(2);
-    private JTextField ctrArmorField = new JTextField(2);
+    private SpinnerNumberModel rtrArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel ltrArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel ctrArmorModel = new SpinnerNumberModel();
+
+    private JSpinner laArmorField = new JSpinner(laArmorModel);
+    private JSpinner raArmorField = new JSpinner(raArmorModel);
+    private JSpinner llArmorField = new JSpinner(llArmorModel);
+    private JSpinner rlArmorField = new JSpinner(rlArmorModel);
+    private JSpinner ltArmorField = new JSpinner(ltArmorModel);
+    private JSpinner rtArmorField = new JSpinner(rtArmorModel);
+    private JSpinner ctArmorField = new JSpinner(ctArmorModel);
+    private JSpinner hdArmorField = new JSpinner(hdArmorModel);
+
+    private JSpinner rtrArmorField = new JSpinner(rtrArmorModel);
+    private JSpinner ltrArmorField = new JSpinner(ltrArmorModel);
+    private JSpinner ctrArmorField = new JSpinner(ctrArmorModel);
 
     private JLabel laArmorMaxLabel = new JLabel();
     private JLabel raArmorMaxLabel = new JLabel();
@@ -132,18 +147,6 @@ public class ArmorView extends IView implements KeyListener {
         legPanel.add(rlPanel);
         mainPanel.add(legPanel);
 
-        laArmorField.setToolTipText("Front Armor");
-        raArmorField.setToolTipText("Front Armor");
-        llArmorField.setToolTipText("Front Armor");
-        rlArmorField.setToolTipText("Front Armor");
-        ltArmorField.setToolTipText("Front Armor");
-        rtArmorField.setToolTipText("Front Armor");
-        ctArmorField.setToolTipText("Front Armor");
-        hdArmorField.setToolTipText("Front Armor");
-        rtrArmorField.setToolTipText("Rear Armor");
-        ltrArmorField.setToolTipText("Rear Armor");
-        ctrArmorField.setToolTipText("Rear Armor");
-
         laArmorField.setName(Integer.toString(Mech.LOC_LARM));
         raArmorField.setName(Integer.toString(Mech.LOC_RARM));
         llArmorField.setName(Integer.toString(Mech.LOC_LLEG));
@@ -155,6 +158,65 @@ public class ArmorView extends IView implements KeyListener {
         rtrArmorField.setName(Integer.toString(Mech.LOC_RT));
         ltrArmorField.setName(Integer.toString(Mech.LOC_LT));
         ctrArmorField.setName(Integer.toString(Mech.LOC_CT));
+
+        Dimension size = new Dimension(38, 20);
+        laArmorField.setPreferredSize(size);
+        raArmorField.setPreferredSize(size);
+        llArmorField.setPreferredSize(size);
+        rlArmorField.setPreferredSize(size);
+        ltArmorField.setPreferredSize(size);
+        rtArmorField.setPreferredSize(size);
+        ctArmorField.setPreferredSize(size);
+        hdArmorField.setPreferredSize(size);
+        rtrArmorField.setPreferredSize(size);
+        ltrArmorField.setPreferredSize(size);
+        ctrArmorField.setPreferredSize(size);
+        laArmorField.setMaximumSize(size);
+        raArmorField.setMaximumSize(size);
+        llArmorField.setMaximumSize(size);
+        rlArmorField.setMaximumSize(size);
+        ltArmorField.setMaximumSize(size);
+        rtArmorField.setMaximumSize(size);
+        ctArmorField.setMaximumSize(size);
+        hdArmorField.setMaximumSize(size);
+        rtrArmorField.setMaximumSize(size);
+        ltrArmorField.setMaximumSize(size);
+        ctrArmorField.setMaximumSize(size);
+        laArmorField.setMinimumSize(size);
+        raArmorField.setMinimumSize(size);
+        llArmorField.setMinimumSize(size);
+        rlArmorField.setMinimumSize(size);
+        ltArmorField.setMinimumSize(size);
+        rtArmorField.setMinimumSize(size);
+        ctArmorField.setMinimumSize(size);
+        hdArmorField.setMinimumSize(size);
+        rtrArmorField.setMinimumSize(size);
+        ltrArmorField.setMinimumSize(size);
+        ctrArmorField.setMinimumSize(size);
+
+        laArmorField.addChangeListener(this);
+        raArmorField.addChangeListener(this);
+        llArmorField.addChangeListener(this);
+        rlArmorField.addChangeListener(this);
+        ltArmorField.addChangeListener(this);
+        rtArmorField.addChangeListener(this);
+        ctArmorField.addChangeListener(this);
+        hdArmorField.addChangeListener(this);
+        rtrArmorField.addChangeListener(this);
+        ltrArmorField.addChangeListener(this);
+        ctrArmorField.addChangeListener(this);
+
+        laArmorField.setToolTipText("Front Armor");
+        raArmorField.setToolTipText("Front Armor");
+        llArmorField.setToolTipText("Front Armor");
+        rlArmorField.setToolTipText("Front Armor");
+        ltArmorField.setToolTipText("Front Armor");
+        rtArmorField.setToolTipText("Front Armor");
+        ctArmorField.setToolTipText("Front Armor");
+        hdArmorField.setToolTipText("Front Armor");
+        rtrArmorField.setToolTipText("Rear Armor");
+        ltrArmorField.setToolTipText("Rear Armor");
+        ctrArmorField.setToolTipText("Rear Armor");
 
         torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
         legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
@@ -321,7 +383,6 @@ public class ArmorView extends IView implements KeyListener {
 
         this.add(totalArmorPanel);
         //refresh();
-        addAllListeners();
     }
 
     public void refresh() {
@@ -331,80 +392,73 @@ public class ArmorView extends IView implements KeyListener {
             int maxArmor = unit.getOInternal(location) * 2;
             switch (location) {
             case Mech.LOC_HEAD:
-                hdArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > 9) {
-                    hdArmorField.setBackground(Color.RED);
-                } else {
-                    hdArmorField.setBackground(Color.white);
-                }
+                hdArmorModel.setValue(Math.min(9,unit.getArmor(location)));
+                hdArmorModel.setMaximum(9);
+                hdArmorModel.setStepSize(1);
+                hdArmorModel.setMinimum(0);
                 break;
             case Mech.LOC_LARM:
-                laArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > maxArmor) {
-                    laArmorField.setBackground(Color.RED);
-                } else {
-                    laArmorField.setBackground(Color.white);
-                }
+                laArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                laArmorModel.setMaximum(maxArmor);
+                laArmorModel.setStepSize(1);
+                laArmorModel.setMinimum(0);
                 laArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             case Mech.LOC_RARM:
-                raArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > maxArmor) {
-                    raArmorField.setBackground(Color.RED);
-                } else {
-                    raArmorField.setBackground(Color.white);
-                }
+                raArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                raArmorModel.setMaximum(maxArmor);
+                raArmorModel.setStepSize(1);
+                raArmorModel.setMinimum(0);
                 raArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             case Mech.LOC_CT:
-                ctArmorField.setText(unit.getArmorString(location));
-                ctrArmorField.setText(unit.getArmorString(location, true));
-                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor) {
-                    ctArmorField.setBackground(Color.RED);
-                } else {
-                    ctArmorField.setBackground(Color.white);
-                }
+                ctArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                ctArmorModel.setMaximum(maxArmor);
+                ctArmorModel.setStepSize(1);
+                ctArmorModel.setMinimum(0);
+                ctrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor-unit.getArmor(location)));
+                ctrArmorModel.setMaximum(maxArmor-unit.getArmor(location));
+                ctrArmorModel.setStepSize(1);
+                ctrArmorModel.setMinimum(0);
                 ctArmorMaxLabel.setText(Integer.toString(maxArmor));
                 ctrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
                 break;
             case Mech.LOC_LT:
-                ltArmorField.setText(unit.getArmorString(location));
-                ltrArmorField.setText(unit.getArmorString(location, true));
-                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor) {
-                    ltArmorField.setBackground(Color.RED);
-                } else {
-                    ltArmorField.setBackground(Color.white);
-                }
+                ltArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                ltArmorModel.setMaximum(maxArmor);
+                ltArmorModel.setStepSize(1);
+                ltArmorModel.setMinimum(0);
+                ltrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor-unit.getArmor(location)));
+                ltrArmorModel.setMaximum(maxArmor-unit.getArmor(location));
+                ltrArmorModel.setStepSize(1);
+                ltrArmorModel.setMinimum(0);
                 ltArmorMaxLabel.setText(Integer.toString(maxArmor));
                 ltrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
                 break;
             case Mech.LOC_RT:
-                rtArmorField.setText(unit.getArmorString(location));
-                rtrArmorField.setText(unit.getArmorString(location, true));
-                if (unit.getArmor(location) + unit.getArmor(location, true) > maxArmor) {
-                    rtArmorField.setBackground(Color.RED);
-                } else {
-                    rtArmorField.setBackground(Color.white);
-                }
+                rtArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                rtArmorModel.setMaximum(maxArmor);
+                rtArmorModel.setStepSize(1);
+                rtArmorModel.setMinimum(0);
+                rtrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor-unit.getArmor(location)));
+                rtrArmorModel.setMaximum(maxArmor-unit.getArmor(location));
+                rtrArmorModel.setStepSize(1);
+                rtrArmorModel.setMinimum(0);
                 rtArmorMaxLabel.setText(Integer.toString(maxArmor));
                 rtrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
                 break;
             case Mech.LOC_LLEG:
-                llArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > maxArmor) {
-                    llArmorField.setBackground(Color.RED);
-                } else {
-                    llArmorField.setBackground(Color.white);
-                }
+                llArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                llArmorModel.setMaximum(maxArmor);
+                llArmorModel.setStepSize(1);
+                llArmorModel.setMinimum(0);
                 llArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             case Mech.LOC_RLEG:
-                rlArmorField.setText(unit.getArmorString(location));
-                if (unit.getArmor(location) > maxArmor) {
-                    rlArmorField.setBackground(Color.RED);
-                } else {
-                    rlArmorField.setBackground(Color.white);
-                }
+                rlArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                rlArmorModel.setMaximum(maxArmor);
+                rlArmorModel.setStepSize(1);
+                rlArmorModel.setMinimum(0);
                 rlArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             }
@@ -418,83 +472,8 @@ public class ArmorView extends IView implements KeyListener {
         unallocatedPointsLabel.setText("Unallocated: "+(UnitUtil.getArmorPoints(unit, unit.getArmorWeight())-unit.getTotalOArmor()));
     }
 
-    private void addAllListeners() {
-        laArmorField.addKeyListener(this);
-        raArmorField.addKeyListener(this);
-        llArmorField.addKeyListener(this);
-        rlArmorField.addKeyListener(this);
-        ltArmorField.addKeyListener(this);
-        rtArmorField.addKeyListener(this);
-        ctArmorField.addKeyListener(this);
-        hdArmorField.addKeyListener(this);
-        rtrArmorField.addKeyListener(this);
-        ltrArmorField.addKeyListener(this);
-        ctrArmorField.addKeyListener(this);
-    }
-
-    private void removeAllListeners() {
-        laArmorField.removeKeyListener(this);
-        raArmorField.removeKeyListener(this);
-        llArmorField.removeKeyListener(this);
-        rlArmorField.removeKeyListener(this);
-        ltArmorField.removeKeyListener(this);
-        rtArmorField.removeKeyListener(this);
-        ctArmorField.removeKeyListener(this);
-        hdArmorField.removeKeyListener(this);
-        rtrArmorField.removeKeyListener(this);
-        ltrArmorField.removeKeyListener(this);
-        ctrArmorField.removeKeyListener(this);
-    }
-
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-    }
-
-    public void keyPressed(KeyEvent arg0) {
-    }
-
-    public void keyReleased(KeyEvent arg0) {
-        addAllListeners();
-
-        try {
-            JTextField field = (JTextField) arg0.getSource();
-            int location = Integer.parseInt(field.getName());
-            int value = Integer.parseInt(field.getText());
-            switch (location) {
-            case Mech.LOC_CT:
-                if (field.equals(ctrArmorField)) {
-                    unit.initializeRearArmor(value, location);
-                } else {
-                    unit.initializeArmor(value, location);
-                }
-                break;
-            case Mech.LOC_RT:
-                if (field.equals(rtrArmorField)) {
-                    unit.initializeRearArmor(value, location);
-                } else {
-                    unit.initializeArmor(value, location);
-                }
-                break;
-            case Mech.LOC_LT:
-                if (field.equals(ltrArmorField)) {
-                    unit.initializeRearArmor(value, location);
-                } else {
-                    unit.initializeArmor(value, location);
-                }
-                break;
-            default:
-                unit.initializeArmor(value, location);
-                break;
-            }
-            refresh.refreshStatus();
-            refresh();
-        } catch (Exception ex) {
-        }
-
-        removeAllListeners();
-    }
-
-    public void keyTyped(KeyEvent arg0) {
     }
 
     public void allocateArmor(double tons) {
@@ -532,10 +511,10 @@ public class ArmorView extends IView implements KeyListener {
         }
         allocateLeftoverPoints(pointsToAllocate);
 
-        removeAllListeners();
         refresh();
-        addAllListeners();
-        refresh.refreshStatus();
+        if (refresh != null) {
+            refresh.refreshStatus();
+        }
     }
 
     /**
@@ -627,5 +606,41 @@ public class ArmorView extends IView implements KeyListener {
                 return;
             }
         }
+    }
+
+    public void stateChanged(ChangeEvent e) {
+        JSpinner field = (JSpinner) e.getSource();
+        int location = Integer.parseInt(field.getName());
+        int value = (Integer)field.getModel().getValue();
+        switch (location) {
+        case Mech.LOC_CT:
+            if (field.equals(ctrArmorField)) {
+                unit.initializeRearArmor(value, location);
+            } else {
+                unit.initializeArmor(value, location);
+            }
+            break;
+        case Mech.LOC_RT:
+            if (field.equals(rtrArmorField)) {
+                unit.initializeRearArmor(value, location);
+            } else {
+                unit.initializeArmor(value, location);
+            }
+            break;
+        case Mech.LOC_LT:
+            if (field.equals(ltrArmorField)) {
+                unit.initializeRearArmor(value, location);
+            } else {
+                unit.initializeArmor(value, location);
+            }
+            break;
+        default:
+            unit.initializeArmor(value, location);
+            break;
+        }
+        if (refresh != null) {
+            refresh.refreshStatus();
+        }
+        refresh();
     }
 }
