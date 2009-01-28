@@ -266,7 +266,38 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             removeAllActionListeners();
 
             try {
-                if (combo.equals(engineType) || combo.equals(walkMP)) {
+                // we need to do cockpit also here, because cockpitType determines
+                // if a mech is primitive and thus needs a larger engine
+                if (combo.equals(engineType) || combo.equals(walkMP) || combo.equals(cockpitType)) {
+                    unit.setCockpitType(combo.getSelectedIndex());
+                    unit.clearCockpitCrits();
+                    switch (unit.getCockpitType()) {
+                    case Mech.COCKPIT_COMMAND_CONSOLE:
+                        unit.addCommandConsole();
+                        break;
+                    case Mech.COCKPIT_DUAL:
+                        unit.addDualCockpit();
+                        break;
+                    case Mech.COCKPIT_SMALL:
+                        unit.addSmallCockpit();
+                        break;
+                    case Mech.COCKPIT_TORSO_MOUNTED:
+                        removeSystemCrits(Mech.SYSTEM_ENGINE);
+                        unit.addTorsoMountedCockpit();
+                        unit.addEngineCrits();
+                        break;
+                    case Mech.COCKPIT_INDUSTRIAL:
+                        unit.addIndustrialCockpit();
+                        break;
+                    case Mech.COCKPIT_PRIMITIVE:
+                        unit.addPrimitiveCockpit();
+                        break;
+                    case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
+                        unit.addIndustrialPrimitiveCockpit();
+                        break;
+                    default:
+                        unit.addCockpit();
+                    }
                     int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
                     if (unit.isPrimitive()) {
                         double dRating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
@@ -308,37 +339,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         break;
                     default:
                         unit.addGyro();
-                    }
-                } else if (combo.equals(cockpitType)) {
-                    unit.setCockpitType(combo.getSelectedIndex());
-                    unit.clearCockpitCrits();
-
-                    switch (unit.getCockpitType()) {
-                    case Mech.COCKPIT_COMMAND_CONSOLE:
-                        unit.addCommandConsole();
-                        break;
-                    case Mech.COCKPIT_DUAL:
-                        unit.addDualCockpit();
-                        break;
-                    case Mech.COCKPIT_SMALL:
-                        unit.addSmallCockpit();
-                        break;
-                    case Mech.COCKPIT_TORSO_MOUNTED:
-                        removeSystemCrits(Mech.SYSTEM_ENGINE);
-                        unit.addTorsoMountedCockpit();
-                        unit.addEngineCrits();
-                        break;
-                    case Mech.COCKPIT_INDUSTRIAL:
-                        unit.addIndustrialCockpit();
-                        break;
-                    case Mech.COCKPIT_PRIMITIVE:
-                        unit.addPrimitiveCockpit();
-                        break;
-                    case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
-                        unit.addIndustrialPrimitiveCockpit();
-                        break;
-                    default:
-                        unit.addCockpit();
                     }
                 } else if (combo.equals(weightClass)) {
                     int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
@@ -419,7 +419,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     addAllActionListeners();
                     return;
                 } else if (combo.equals(techType)) {
-                    if (techType.getSelectedIndex() == 1 && (!unit.isClan() || unit.isMixedTech())) {
+                    if ((techType.getSelectedIndex() == 1) && (!unit.isClan() || unit.isMixedTech())) {
                         engineType.removeAllItems();
                         techLevel.removeAllItems();
                         heatSinkType.removeAllItems();
@@ -436,7 +436,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
                         unit.setTechLevel(TechConstants.T_CLAN_TW);
                         unit.setMixedTech(false);
-                    } else if (techType.getSelectedIndex() == 0 && (unit.isClan() || unit.isMixedTech())) {
+                    } else if ((techType.getSelectedIndex() == 0) && (unit.isClan() || unit.isMixedTech())) {
                         engineType.removeAllItems();
                         techLevel.removeAllItems();
                         heatSinkType.removeAllItems();
@@ -454,7 +454,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
                         unit.setMixedTech(false);
 
-                    } else if (techType.getSelectedIndex() == 2 && (!unit.isMixedTech() || unit.isClan())) {
+                    } else if ((techType.getSelectedIndex() == 2) && (!unit.isMixedTech() || unit.isClan())) {
                         engineType.removeAllItems();
                         techLevel.removeAllItems();
                         heatSinkType.removeAllItems();
@@ -472,7 +472,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         unit.setTechLevel(TechConstants.T_IS_ADVANCED);
                         unit.setMixedTech(true);
 
-                    } else if (techType.getSelectedIndex() == 3 && (!unit.isMixedTech() || !unit.isClan())) {
+                    } else if ((techType.getSelectedIndex() == 3) && (!unit.isMixedTech() || !unit.isClan())) {
                         engineType.removeAllItems();
                         techLevel.removeAllItems();
                         heatSinkType.removeAllItems();

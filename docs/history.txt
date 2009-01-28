@@ -39,6 +39,8 @@ V 0.0.0.10-dev
 + New MegaMek.jar
 + Bug: One Shot ammo causing crits to load incorrectly
 + Bug: Enviromental Sealing weighing too much
++ Bug: changing cockpittype to primitive didn't recalculate engine rating based
+    on currently selected walking speed
 
 V 0.0.0.9
 + Bug: Weapons not loading.
