@@ -743,12 +743,12 @@ public class MainUI extends JFrame implements RefreshListener {
         ConfigPane.removeAll();
 
         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
-        armorTab = new ArmorTab(entity);
-        armorTab.setArmorType(entity.getArmorType());
-        armorTab.setStructureType(entity.getStructureType());
-        armorTab.refresh();
 
         structureTab = new StructureTab(entity);
+
+        armorTab = new ArmorTab(entity);
+        armorTab.setArmorType(entity.getArmorType());
+        armorTab.refresh();
 
         header = new Header(entity);
         statusbar = new StatusBar(entity);
