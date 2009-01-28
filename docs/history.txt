@@ -57,6 +57,8 @@ V 0.0.0.10-dev
 + Added Mnemonic for all buttons on the weapons tab
 + Added Mnemonic for all buttons on Equipment Tab
 + Added Mnemonic on all buttons for Build tab
++ Vehicle RS done
++ Bug: Spreadable Crits not working correctly.
 
 V 0.0.0.9
 + Bug: Weapons not loading.

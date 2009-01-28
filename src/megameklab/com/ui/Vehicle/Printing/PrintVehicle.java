@@ -83,6 +83,8 @@ public class PrintVehicle implements Printable {
 
         // Armor Pips
         printFrontArmor(g2d, tank.getOArmor(Tank.LOC_FRONT), true, false);
+        printLeftArmor(g2d, tank.getOArmor(Tank.LOC_LEFT), false);
+        printRightArmor(g2d, tank.getOArmor(Tank.LOC_RIGHT), false);
         printRearArmor(g2d, tank.getOArmor(Tank.LOC_REAR), false);
         printTurretArmor(g2d, tank.getOArmor(Tank.LOC_TURRET), false);
 
@@ -97,6 +99,8 @@ public class PrintVehicle implements Printable {
         if (tank2 != null) {
             // Armor Pips
             printFrontArmor(g2d, tank2.getOArmor(Tank.LOC_FRONT), true, true);
+            printLeftArmor(g2d, tank2.getOArmor(Tank.LOC_LEFT), true);
+            printRightArmor(g2d, tank2.getOArmor(Tank.LOC_RIGHT), true);
             printRearArmor(g2d, tank2.getOArmor(Tank.LOC_REAR), true);
             printTurretArmor(g2d, tank2.getOArmor(Tank.LOC_TURRET), true);
 
@@ -358,7 +362,7 @@ public class PrintVehicle implements Printable {
 
         for (int pos = 1; pos <= 72; pos++) {
             if ((firstPass && pos % 2 == 0) || (!firstPass && pos % 2 != 0)) {
-                ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
+                ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], 8.0f);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -374,7 +378,7 @@ public class PrintVehicle implements Printable {
         pipShift[0] *= -1;
         for (int pos = 1; pos <= 16; pos++) {
             if ((firstPass && pos % 2 == 0) || (!firstPass && pos % 2 != 0)) {
-                ImageHelper.drawArmorPip(g2d, middleColumn[0], middleColumn[1]);
+                ImageHelper.drawTankArmorPip(g2d, middleColumn[0], middleColumn[1], 8.0f);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -389,7 +393,7 @@ public class PrintVehicle implements Printable {
 
         for (int pos = 1; pos <= 18; pos++) {
             if ((firstPass && pos % 2 == 0) || (!firstPass && pos % 2 != 0)) {
-                ImageHelper.drawArmorPip(g2d, bottomColumn[0], bottomColumn[1]);
+                ImageHelper.drawTankArmorPip(g2d, bottomColumn[0], bottomColumn[1], 8.0f);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -404,7 +408,7 @@ public class PrintVehicle implements Printable {
 
         if (firstPass) {
             for (int pos = 0; pos < 10; pos++) {
-                ImageHelper.drawArmorPip(g2d, extraArmor[pos][0], extraArmor[pos][1]);
+                ImageHelper.drawTankArmorPip(g2d, extraArmor[pos][0], extraArmor[pos][1], 8.0f);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -598,6 +602,155 @@ public class PrintVehicle implements Printable {
             }
         }
 
+    }
+
+    private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+        float[] topColumn = new float[] { 418, 93 };
+        float[] pipShift = new float[] { 7, 7 };
+        float fontSize = 9.0f;
+
+        /*        if (totalArmor > 68) {
+                    fontSize = 8.0f;
+                    pipShift = new float[] { 6f, 6f };
+                    topColumn = new float[] { 418.5f, 92 };
+                }*/
+
+        if (secondImage) {
+            topColumn[1] += secondPageMargin;
+        }
+
+        for (int pos = 0; pos < totalArmor; pos++) {
+            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
+
+            switch (pos) {
+            case 0:
+            case 1:
+            case 3:
+                topColumn[1] += pipShift[1];
+                break;
+            case 4:
+                pipShift[0] *= -1;
+                break;
+            case 6:
+            case 9:
+            case 12:
+            case 16:
+            case 20:
+            case 25:
+            case 31:
+            case 38:
+            case 41:
+            case 44:
+            case 49:
+            case 51:
+            case 53:
+            case 57:
+            case 58:
+            case 59:
+            case 62:
+            case 65:
+            case 68:
+            case 71:
+            case 77:
+            case 78:
+            case 79:
+                topColumn[1] += pipShift[1];
+                pipShift[0] *= -1;
+                break;
+            case 35:
+            case 47:
+            case 75:
+                topColumn[1] += pipShift[1];
+                pipShift[0] *= -1;
+                topColumn[0] += pipShift[0];
+                break;
+            case 55:
+                topColumn[1] += pipShift[1];
+                topColumn[0] -= pipShift[0] * .25;
+                pipShift[0] *= -1;
+                break;
+
+            default:
+                topColumn[0] += pipShift[0];
+                break;
+            }
+        }
+    }
+
+    private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+        float[] topColumn = new float[] { 530.5f, 93 };
+        float[] pipShift = new float[] { 7, 7 };
+        float fontSize = 9.0f;
+
+        /*        if (totalArmor > 68) {
+                    fontSize = 8.0f;
+                    pipShift = new float[] { 6f, 6f };
+                    topColumn = new float[] { 418.5f, 92 };
+                }*/
+
+        if (secondImage) {
+            topColumn[1] += secondPageMargin;
+        }
+
+        for (int pos = 0; pos < totalArmor; pos++) {
+            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
+
+            switch (pos) {
+            case 0:
+            case 1:
+            case 3:
+                topColumn[1] += pipShift[1];
+                break;
+            case 4:
+                pipShift[0] *= -1;
+                break;
+            case 6:
+            case 9:
+            case 12:
+            case 16:
+            case 20:
+            case 25:
+            case 31:
+            case 38:
+            case 41:
+            case 49:
+            case 51:
+            case 53:
+            case 57:
+            case 58:
+            case 59:
+            case 62:
+            case 65:
+            case 68:
+            case 71:
+            case 77:
+            case 78:
+            case 79:
+                topColumn[1] += pipShift[1];
+                pipShift[0] *= -1;
+                break;
+            case 35:
+            case 47:
+            case 75:
+                topColumn[1] += pipShift[1];
+                pipShift[0] *= -1;
+                topColumn[0] -= pipShift[0];
+                break;
+            case 44:
+                topColumn[1] += pipShift[1];
+                topColumn[0] -= pipShift[0] * .25;
+                pipShift[0] *= -1;
+                break;
+            case 55:
+                topColumn[1] += pipShift[1];
+                topColumn[0] += pipShift[0] * .25;
+                pipShift[0] *= -1;
+                break;
+            default:
+                topColumn[0] -= pipShift[0];
+                break;
+            }
+        }
     }
 
     private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
