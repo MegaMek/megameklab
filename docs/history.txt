@@ -52,6 +52,9 @@ V 0.0.0.10-dev
 + Moved IS to structure tab
 + fixed a bug where changing armor type would remove equipment such as void-sig,
     null-sig, environmental sealing
++ Bug: Changing Tab in weapons tab and going back you where unable to add ammo
+   without reselecting the weapon.
++ Added Mnemonic for all buttons on the weapons tab
 
 V 0.0.0.9
 + Bug: Weapons not loading.
