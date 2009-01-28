@@ -66,6 +66,15 @@ public class ArmorTab extends ITab implements ActionListener {
         this.unit = unit;
         armor = new ArmorView(this.unit);
 
+        Dimension comboSize = new Dimension(150, 20);
+
+        armorCombo.setMaximumSize(comboSize);
+        armorCombo.setPreferredSize(comboSize);
+        armorCombo.setMinimumSize(comboSize);
+        structureCombo.setMaximumSize(comboSize);
+        structureCombo.setPreferredSize(comboSize);
+        structureCombo.setMinimumSize(comboSize);
+
         setLayout(new SpringLayout());
         this.add(ButtonPanel());
         this.add(armor);

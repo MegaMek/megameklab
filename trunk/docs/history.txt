@@ -45,6 +45,8 @@ V 0.0.0.10-dev
 + Improved armor allocation algorithm
 + Changed armor distribution tab to use spinners instead of TextFields
 + fixed bug with cockpittype setting
++ Made Header Panel transparent
++ Clean up the Armor tab some more.
 
 V 0.0.0.9
 + Bug: Weapons not loading.
