@@ -47,6 +47,7 @@ V 0.0.0.10-dev
 + fixed bug with cockpittype setting
 + Made Header Panel transparent
 + Clean up the Armor tab some more.
++ Added dimenions to comboboxes and text fields in Structure Tab
 
 V 0.0.0.9
 + Bug: Weapons not loading.
