@@ -369,6 +369,18 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         Collections.sort(masterArtilleryWeaponList, StringUtils.equipmentTypeComparator());
 
         loadWeaponsTable();
+        removeButton.setMnemonic('R');
+        removeAllButton.setMnemonic('L');
+        laserWeaponAddButton.setMnemonic('A');
+        laserAmmoAddButton.setMnemonic('d');
+        missileWeaponAddButton.setMnemonic('A');
+        missileAmmoAddButton.setMnemonic('d');
+        ballisticWeaponAddButton.setMnemonic('A');
+        ballisticAmmoAddButton.setMnemonic('d');
+        artilleryWeaponAddButton.setMnemonic('A');
+        artilleryAmmoAddButton.setMnemonic('d');
+        physicalWeaponButton.setMnemonic('A');
+
     }
 
     private void loadWeaponCombos() {
@@ -518,9 +530,6 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
 
         removeButton.setActionCommand(REMOVE_COMMAND);
         removeAllButton.setActionCommand(REMOVEALL_COMMAND);
-
-        removeButton.setMnemonic('R');
-        removeAllButton.setMnemonic('L');
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -666,7 +675,9 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     }
 
     public void mouseReleased(MouseEvent e) {
-        loadAmmo(e.getComponent());
+        if (e.getSource() instanceof JList) {
+            loadAmmo(e.getComponent());
+        }
     }
 
     public void keyPressed(KeyEvent arg0) {
@@ -680,14 +691,11 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     }
 
     private void loadAmmo(Component o) {
-        subLaserAmmoList.removeAllElements();
-        subMissileAmmoList.removeAllElements();
-        subBallisticAmmoList.removeAllElements();
-        subArtilleryAmmoList.removeAllElements();
 
         if (o instanceof JList) {
             JList list = (JList) o;
             if (list.equals(laserWeaponCombo)) {
+                subLaserAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subLaserWeaponList.elementAt(list.getSelectedIndex());
 
                 if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
@@ -704,6 +712,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 laserAmmoCombo.setListData(equipmentList);
             } else if (list.equals(missileWeaponCombo)) {
+                subMissileAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subMissileWeaponList.elementAt(list.getSelectedIndex());
 
                 if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
@@ -718,6 +727,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 missileAmmoCombo.setListData(equipmentList);
             } else if (list.equals(ballisticWeaponCombo)) {
+                subBallisticAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subBallisticWeaponList.elementAt(list.getSelectedIndex());
                 if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
                     return;
@@ -731,6 +741,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 ballisticAmmoCombo.setListData(equipmentList);
             } else if (list.equals(artilleryWeaponCombo)) {
+                subArtilleryAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subArtilleryWeaponList.elementAt(list.getSelectedIndex());
                 if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
                     return;
@@ -747,4 +758,4 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         }
     }
 
-}
+ }

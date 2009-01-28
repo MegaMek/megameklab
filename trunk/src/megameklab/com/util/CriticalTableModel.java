@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@ import megamek.common.WeaponType;
 public class CriticalTableModel extends AbstractTableModel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 7615555055651822051L;
 
@@ -149,13 +149,13 @@ public class CriticalTableModel extends AbstractTableModel {
     private class Renderer extends DefaultTableCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 149542030113164984L;
 
         @Override
-        public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            java.awt.Component d = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component d = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             JLabel c = new JLabel();
             c.setOpaque(true);
