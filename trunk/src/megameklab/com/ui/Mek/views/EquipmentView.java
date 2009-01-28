@@ -263,15 +263,25 @@ public class EquipmentView extends IView implements ActionListener {
                     createSpreadMounts(UnitUtil.TSM);
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.TSM));
                 }
-            } if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.INDUSTRIALTSM)) {
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.INDUSTRIALTSM)) {
                 if (!unit.hasIndustrialTSM()) {
                     createSpreadMounts(UnitUtil.INDUSTRIALTSM);
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.INDUSTRIALTSM));
                 }
-            } if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.ENVIROSEAL)) {
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.ENVIROSEAL)) {
                 if (!unit.hasEnvironmentalSealing()) {
                     createSpreadMounts(UnitUtil.ENVIROSEAL);
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.ENVIROSEAL));
+                }
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.NULLSIG)) {
+                if (!unit.hasEnvironmentalSealing()) {
+                    createSpreadMounts(UnitUtil.NULLSIG);
+                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.NULLSIG));
+                }
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.VOIDSIG)) {
+                if (!unit.hasEnvironmentalSealing()) {
+                    createSpreadMounts(UnitUtil.VOIDSIG);
+                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.VOIDSIG));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TARGETINGCOMPUTER)) {
                 if (!UnitUtil.hasTargComp(unit)) {
