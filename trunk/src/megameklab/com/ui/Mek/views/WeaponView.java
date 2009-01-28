@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -67,7 +67,7 @@ import megameklab.com.util.UnitUtil;
 public class WeaponView extends IView implements ActionListener, MouseListener, KeyListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 799195356642563937L;
     private RefreshListener refresh;
@@ -709,7 +709,6 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     }
 
     public void mouseClicked(MouseEvent e) {
-        loadAmmo(e.getComponent());
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -722,6 +721,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     }
 
     public void mouseReleased(MouseEvent e) {
+        loadAmmo(e.getComponent());
     }
 
     public void keyPressed(KeyEvent arg0) {
