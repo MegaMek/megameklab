@@ -40,7 +40,11 @@ import javax.swing.SwingConstants;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megameklab.com.ui.Mek.views.CriticalView;
@@ -76,6 +80,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox quadCB = new JCheckBox("Quad");
+    JComboBox structureCombo = new JComboBox(EquipmentType.structureNames);
 
     private CriticalView critView = null;
 
@@ -119,7 +124,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         heatSinkNumber = new JComboBox();
 
-        maxSize.setSize(80, 20);
+        maxSize.setSize(110, 20);
 
         masterPanel.add(omniCB);
         masterPanel.add(quadCB);
@@ -152,6 +157,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(createLabel("Number:", maxSize));
         masterPanel.add(heatSinkNumber);
 
+        masterPanel.add(createLabel("Structure:", maxSize));
+        masterPanel.add(structureCombo);
+
         this.setFieldSize(walkMP, maxSize);
         this.setFieldSize(walkMP, maxSize);
         this.setFieldSize(era, maxSize);
@@ -163,6 +171,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         this.setFieldSize(weightClass, maxSize);
         this.setFieldSize(heatSinkNumber, maxSize);
         this.setFieldSize(heatSinkType, maxSize);
+        this.setFieldSize(structureCombo, maxSize);
 
         SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
 
@@ -189,6 +198,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
         heatSinkNumber.setSelectedIndex(unit.heatSinks() - unit.getEngine().getWeightFreeEngineHeatSinks());
         engineType.setSelectedIndex(unit.getEngine().getEngineType());
+        structureCombo.setSelectedIndex(unit.getStructureType());
 
         if (unit.isMixedTech()) {
             if (unit.isClan()) {
@@ -347,6 +357,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         int autoSinks = unit.getEngine().getWeightFreeEngineHeatSinks();
                         UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
                     }
+                } else if (combo.equals(structureCombo)) {
+                    removeISMounts();
+                    unit.setStructureType(structureCombo.getSelectedIndex());
+                    createISMounts();
                 } else if (combo.equals(gyroType)) {
                     unit.setGyroType(combo.getSelectedIndex());
                     unit.clearGyroCrits();
@@ -572,6 +586,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         era.removeKeyListener(this);
         omniCB.removeActionListener(this);
         quadCB.removeActionListener(this);
+        structureCombo.removeActionListener(this);
     }
 
     public void addAllActionListeners() {
@@ -587,6 +602,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         era.addKeyListener(this);
         omniCB.addActionListener(this);
         quadCB.addActionListener(this);
+        structureCombo.addActionListener(this);
 
     }
 
@@ -611,5 +627,55 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     public boolean isQuad() {
         return quadCB.isSelected();
+    }
+
+    private void createISMounts() {
+        int isCount = 0;
+        isCount = EquipmentType.get(EquipmentType.getStructureTypeName(unit.getStructureType())).getCriticals(unit);
+        if (isCount < 1) {
+            return;
+        }
+        for (; isCount > 0; isCount--) {
+            try {
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getStructureTypeName(unit.getStructureType()))), Entity.LOC_NONE, false);
+            } catch (Exception ex) {
+            }
+        }
+    }
+
+    private void removeISCrits() {
+        for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
+            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+                CriticalSlot crit = unit.getCritical(location, slot);
+                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    Mounted mount = unit.getEquipment(crit.getIndex());
+
+                    if ((mount != null) && (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ENDO_STEEL)) {
+                        crit = null;
+                        unit.setCritical(location, slot, crit);
+                    }
+                }
+            }
+        }
+    }
+
+    private void removeISMounts() {
+        removeISCrits();
+        for (int pos = 0; pos < unit.getEquipment().size();) {
+            Mounted mount = unit.getEquipment().get(pos);
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ENDO_STEEL)) {
+                unit.getEquipment().remove(pos);
+            } else {
+                pos++;
+            }
+        }
+        for (int pos = 0; pos < unit.getMisc().size();) {
+            Mounted mount = unit.getMisc().get(pos);
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ENDO_STEEL)) {
+                unit.getMisc().remove(pos);
+            } else {
+                pos++;
+            }
+        }
     }
 }

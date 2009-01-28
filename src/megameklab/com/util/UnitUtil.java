@@ -61,13 +61,23 @@ public class UnitUtil {
     private static Font euroBoldFont = null;
 
     /**
-     * tells is EquipementType is armor or Structure that uses crits/mounted
+     * tells is EquipementType is an equipment that uses crits/mounted and is spread
+     * across multiple locations
      *
      * @param eq
      * @return
      */
-    public static boolean isArmorOrStructure(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_REACTIVE) || eq.hasFlag(MiscType.F_REFLECTIVE) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG));
+    public static boolean isSpreadEquipment(EquipmentType eq) {
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_NULLSIG) ||  eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_REACTIVE) || eq.hasFlag(MiscType.F_REFLECTIVE) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG));
+    }
+
+    /**
+     * telss if the EquipmentType is a type of armor
+     * @param eq
+     * @return
+     */
+    public static boolean isArmor(EquipmentType eq) {
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_STEALTH));
     }
 
     /**
@@ -88,7 +98,7 @@ public class UnitUtil {
      * @return
      */
     public static int getCritsUsed(Mech unit, EquipmentType eq) {
-        if (UnitUtil.isArmorOrStructure(eq) || UnitUtil.isTSM(eq)) {
+        if (UnitUtil.isSpreadEquipment(eq) || UnitUtil.isTSM(eq)) {
             return 1;
         }
 
@@ -747,12 +757,12 @@ public class UnitUtil {
                 if (cs.getMount() == null) {
                     Mounted mount = unit.getEquipment(cs.getIndex());
 
-                    if (UnitUtil.isArmorOrStructure(mount.getType()) || UnitUtil.isTSM(mount.getType())) {
+                    if (UnitUtil.isSpreadEquipment(mount.getType()) || UnitUtil.isTSM(mount.getType())) {
                         Mounted newMount = new Mounted(unit, mount.getType());
                         newMount.setLocation(location, mount.isRearMounted());
                         cs.setMount(newMount);
                         unit.getEquipment().add(newMount);
-                        if (!UnitUtil.isArmorOrStructure(mount.getType())) {
+                        if (!UnitUtil.isSpreadEquipment(mount.getType())) {
                             unit.getMisc().add(newMount);
                         }
                         cs.setIndex(unit.getEquipmentNum(newMount));

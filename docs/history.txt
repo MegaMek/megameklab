@@ -49,6 +49,9 @@ V 0.0.0.10-dev
 + Clean up the Armor tab some more.
 + Added dimensions to comboboxes and text fields in Structure Tab
 + Fixed scrollbar issue in Weapons tab
++ Moved IS to structure tab
++ fixed a bug where changing armor type would remove equipment such as void-sig,
+    null-sig, environmental sealing
 
 V 0.0.0.9
 + Bug: Weapons not loading.

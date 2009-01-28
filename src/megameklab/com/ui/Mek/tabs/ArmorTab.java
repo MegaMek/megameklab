@@ -53,7 +53,7 @@ public class ArmorTab extends ITab implements ActionListener {
     private ArmorView armor;
     private RefreshListener refresh = null;
     private JComboBox armorCombo = new JComboBox(EquipmentType.armorNames);
-    private JComboBox structureCombo = new JComboBox(EquipmentType.structureNames);
+
 
     private JButton allocateArmorButton = new JButton("Allocate");
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
@@ -71,9 +71,6 @@ public class ArmorTab extends ITab implements ActionListener {
         armorCombo.setMaximumSize(comboSize);
         armorCombo.setPreferredSize(comboSize);
         armorCombo.setMinimumSize(comboSize);
-        structureCombo.setMaximumSize(comboSize);
-        structureCombo.setPreferredSize(comboSize);
-        structureCombo.setMinimumSize(comboSize);
 
         setLayout(new SpringLayout());
         this.add(ButtonPanel());
@@ -81,11 +78,6 @@ public class ArmorTab extends ITab implements ActionListener {
         SpringLayoutHelper.setupSpringGrid(this, 1);
         setTotalTonnage();
         addAllListeners();
-    }
-
-    public void resetArmor() {
-        armorCombo.setSelectedIndex(0);
-        structureCombo.setSelectedIndex(0);
     }
 
     public void refresh() {
@@ -106,7 +98,6 @@ public class ArmorTab extends ITab implements ActionListener {
         removeAllListeners();
         if (arg0.getSource() instanceof JComboBox) {
             unit.setArmorType(armorCombo.getSelectedIndex());
-            unit.setStructureType(structureCombo.getSelectedIndex());
             removeArmorMounts();
             createArmorMounts();
             if (refresh != null) {
@@ -121,8 +112,6 @@ public class ArmorTab extends ITab implements ActionListener {
 
         masterPanel.add(new JLabel("Armor", SwingConstants.TRAILING));
         masterPanel.add(armorCombo);
-        masterPanel.add(new JLabel("Structure", SwingConstants.TRAILING));
-        masterPanel.add(structureCombo);
 
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
@@ -162,12 +151,10 @@ public class ArmorTab extends ITab implements ActionListener {
 
     private void addAllListeners() {
         armorCombo.addActionListener(this);
-        structureCombo.addActionListener(this);
     }
 
     private void removeAllListeners() {
         armorCombo.removeActionListener(this);
-        structureCombo.removeActionListener(this);
     }
 
     private void maximizeArmor() {
@@ -178,12 +165,10 @@ public class ArmorTab extends ITab implements ActionListener {
 
     private void createArmorMounts() {
         int armorCount = 0;
-        int ISCount = 0;
 
         armorCount = EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType())).getCriticals(unit);
-        ISCount = EquipmentType.get(EquipmentType.getStructureTypeName(unit.getStructureType())).getCriticals(unit);
 
-        if ((armorCount < 1) && (ISCount < 1)) {
+        if (armorCount < 1) {
             return;
         }
 
@@ -191,18 +176,8 @@ public class ArmorTab extends ITab implements ActionListener {
             try {
                 unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), Entity.LOC_NONE, false);
             } catch (Exception ex) {
-
             }
         }
-
-        for (; ISCount > 0; ISCount--) {
-            try {
-                unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getStructureTypeName(unit.getStructureType()))), Entity.LOC_NONE, false);
-            } catch (Exception ex) {
-
-            }
-        }
-
     }
 
     private void removeArmorMounts() {
@@ -211,7 +186,7 @@ public class ArmorTab extends ITab implements ActionListener {
 
         for (int pos = 0; pos < unit.getEquipment().size();) {
             Mounted mount = unit.getEquipment().get(pos);
-            if (UnitUtil.isArmorOrStructure(mount.getType())) {
+            if (UnitUtil.isArmor(mount.getType())) {
                 unit.getEquipment().remove(pos);
             } else {
                 pos++;
@@ -220,7 +195,7 @@ public class ArmorTab extends ITab implements ActionListener {
 
         for (int pos = 0; pos < unit.getMisc().size();) {
             Mounted mount = unit.getMisc().get(pos);
-            if (UnitUtil.isArmorOrStructure(mount.getType())) {
+            if (UnitUtil.isArmor(mount.getType())) {
                 unit.getMisc().remove(pos);
             } else {
                 pos++;
@@ -237,7 +212,7 @@ public class ArmorTab extends ITab implements ActionListener {
                 if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted mount = unit.getEquipment(crit.getIndex());
 
-                    if ((mount != null) && UnitUtil.isArmorOrStructure(mount.getType())) {
+                    if ((mount != null) && UnitUtil.isArmor(mount.getType())) {
                         crit = null;
                         unit.setCritical(location, slot, crit);
                     }
@@ -257,11 +232,4 @@ public class ArmorTab extends ITab implements ActionListener {
         armorCombo.setSelectedIndex(type);
         addAllListeners();
     }
-
-    public void setStructureType(int type) {
-        removeAllListeners();
-        structureCombo.setSelectedIndex(type);
-        addAllListeners();
-    }
-
 }
