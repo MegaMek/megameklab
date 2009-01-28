@@ -165,6 +165,10 @@ public class EquipmentView extends IView implements ActionListener {
         Collections.sort(masterEquipmentList, StringUtils.equipmentTypeComparator());
         this.add(mainPanel);
         loadEquipmentTable();
+
+        addButton.setMnemonic('A');
+        removeButton.setMnemonic('R');
+        removeAllButton.setMnemonic('l');
     }
 
     public void addRefreshedListener(RefreshListener l) {
