@@ -41,6 +41,7 @@ V 0.0.0.10-dev
 + Bug: Enviromental Sealing weighing too much
 + Bug: changing cockpittype to primitive didn't recalculate engine rating based
     on currently selected walking speed
++ Bug: Null Sig and Void Sig not working correctly
 
 V 0.0.0.9
 + Bug: Weapons not loading.
