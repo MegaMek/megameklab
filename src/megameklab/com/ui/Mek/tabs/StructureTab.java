@@ -409,21 +409,26 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         switch (unitTechLevel) {
                         case 0:
                             unit.setTechLevel(TechConstants.T_CLAN_TW);
+                            unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
                             addAllActionListeners();
                             techType.setSelectedIndex(1);
                             removeAllActionListeners();
                             break;
                         case 1:
                             unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                            unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
                             break;
                         case 2:
                             unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            unit.setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                             break;
                         case 3:
                             unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                            unit.setArmorTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
                             break;
                         default:
                             unit.setTechLevel(TechConstants.T_CLAN_TW);
+                            unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
                             break;
                         }
 
@@ -431,24 +436,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         switch (unitTechLevel) {
                         case 0:
                             unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                            unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
                             addAllActionListeners();
                             techType.setSelectedIndex(0);
                             removeAllActionListeners();
                             break;
                         case 1:
                             unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                            unit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
                             addAllActionListeners();
                             techType.setSelectedIndex(0);
                             removeAllActionListeners();
                             break;
                         case 2:
                             unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                            unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
                             break;
                         case 3:
                             unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            unit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                             break;
                         default:
                             unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                            unit.setArmorTechLevel(TechConstants.T_IS_UNOFFICIAL);
                             break;
                         }
 
@@ -475,6 +485,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         }
 
                         unit.setTechLevel(TechConstants.T_CLAN_TW);
+                        unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
                         unit.setMixedTech(false);
                     } else if ((techType.getSelectedIndex() == 0) && (unit.isClan() || unit.isMixedTech())) {
                         engineType.removeAllItems();
@@ -492,6 +503,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         }
 
                         unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                        unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
                         unit.setMixedTech(false);
 
                     } else if ((techType.getSelectedIndex() == 2) && (!unit.isMixedTech() || unit.isClan())) {
@@ -510,6 +522,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         }
 
                         unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                        unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
                         unit.setMixedTech(true);
 
                     } else if ((techType.getSelectedIndex() == 3) && (!unit.isMixedTech() || !unit.isClan())) {
@@ -528,6 +541,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         }
 
                         unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
                         unit.setMixedTech(true);
                     } else {
                         addAllActionListeners();

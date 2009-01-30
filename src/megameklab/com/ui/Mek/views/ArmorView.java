@@ -17,7 +17,6 @@
 package megameklab.com.ui.Mek.views;
 
 import java.awt.Color;
-import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -160,52 +159,7 @@ public class ArmorView extends IView implements ChangeListener {
         ltrArmorField.setName(Integer.toString(Mech.LOC_LT));
         ctrArmorField.setName(Integer.toString(Mech.LOC_CT));
 
-        Dimension size = new Dimension(38, 20);
-        laArmorField.setPreferredSize(size);
-        raArmorField.setPreferredSize(size);
-        llArmorField.setPreferredSize(size);
-        rlArmorField.setPreferredSize(size);
-        ltArmorField.setPreferredSize(size);
-        rtArmorField.setPreferredSize(size);
-        ctArmorField.setPreferredSize(size);
-        hdArmorField.setPreferredSize(size);
-        rtrArmorField.setPreferredSize(size);
-        ltrArmorField.setPreferredSize(size);
-        ctrArmorField.setPreferredSize(size);
-        laArmorField.setMaximumSize(size);
-        raArmorField.setMaximumSize(size);
-        llArmorField.setMaximumSize(size);
-        rlArmorField.setMaximumSize(size);
-        ltArmorField.setMaximumSize(size);
-        rtArmorField.setMaximumSize(size);
-        ctArmorField.setMaximumSize(size);
-        hdArmorField.setMaximumSize(size);
-        rtrArmorField.setMaximumSize(size);
-        ltrArmorField.setMaximumSize(size);
-        ctrArmorField.setMaximumSize(size);
-        laArmorField.setMinimumSize(size);
-        raArmorField.setMinimumSize(size);
-        llArmorField.setMinimumSize(size);
-        rlArmorField.setMinimumSize(size);
-        ltArmorField.setMinimumSize(size);
-        rtArmorField.setMinimumSize(size);
-        ctArmorField.setMinimumSize(size);
-        hdArmorField.setMinimumSize(size);
-        rtrArmorField.setMinimumSize(size);
-        ltrArmorField.setMinimumSize(size);
-        ctrArmorField.setMinimumSize(size);
-
-        laArmorField.addChangeListener(this);
-        raArmorField.addChangeListener(this);
-        llArmorField.addChangeListener(this);
-        rlArmorField.addChangeListener(this);
-        ltArmorField.addChangeListener(this);
-        rtArmorField.addChangeListener(this);
-        ctArmorField.addChangeListener(this);
-        hdArmorField.addChangeListener(this);
-        rtrArmorField.addChangeListener(this);
-        ltrArmorField.addChangeListener(this);
-        ctrArmorField.addChangeListener(this);
+        addAllListeners();
 
         laArmorField.setToolTipText("Front Armor");
         raArmorField.setToolTipText("Front Armor");
@@ -391,8 +345,36 @@ public class ArmorView extends IView implements ChangeListener {
         //refresh();
     }
 
-    public void refresh() {
+    private void addAllListeners() {
+        laArmorField.addChangeListener(this);
+        raArmorField.addChangeListener(this);
+        llArmorField.addChangeListener(this);
+        rlArmorField.addChangeListener(this);
+        ltArmorField.addChangeListener(this);
+        rtArmorField.addChangeListener(this);
+        ctArmorField.addChangeListener(this);
+        hdArmorField.addChangeListener(this);
+        rtrArmorField.addChangeListener(this);
+        ltrArmorField.addChangeListener(this);
+        ctrArmorField.addChangeListener(this);
+    }
 
+    private void removeAllListeners() {
+        laArmorField.removeChangeListener(this);
+        raArmorField.removeChangeListener(this);
+        llArmorField.removeChangeListener(this);
+        rlArmorField.removeChangeListener(this);
+        ltArmorField.removeChangeListener(this);
+        rtArmorField.removeChangeListener(this);
+        ctArmorField.removeChangeListener(this);
+        hdArmorField.removeChangeListener(this);
+        rtrArmorField.removeChangeListener(this);
+        ltrArmorField.removeChangeListener(this);
+        ctrArmorField.removeChangeListener(this);
+    }
+
+    public void refresh() {
+        removeAllListeners();
         for (int location = 0; location < unit.locations(); location++) {
 
             int maxArmor = unit.getOInternal(location) * 2;
@@ -468,7 +450,6 @@ public class ArmorView extends IView implements ChangeListener {
                 rlArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             }
-
         }
 
         currentArmorLabel.setText(Integer.toString(unit.getTotalOArmor()));
@@ -476,6 +457,7 @@ public class ArmorView extends IView implements ChangeListener {
         maxArmorLabel.setText(Integer.toString((unit.getTotalOInternal()*2)+3));
         //unallocated armorpoints
         unallocatedPointsField.setText(Integer.toString(UnitUtil.getArmorPoints(unit, unit.getArmorWeight()) - unit.getTotalOArmor()));
+        addAllListeners();
     }
 
     public void addRefreshedListener(RefreshListener l) {
