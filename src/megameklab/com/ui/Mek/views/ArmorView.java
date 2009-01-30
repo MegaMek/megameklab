@@ -17,6 +17,9 @@
 package megameklab.com.ui.Mek.views;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -84,6 +87,7 @@ public class ArmorView extends IView implements ChangeListener {
     private JSpinner rtrArmorField = new JSpinner(rtrArmorModel);
     private JSpinner ltrArmorField = new JSpinner(ltrArmorModel);
     private JSpinner ctrArmorField = new JSpinner(ctrArmorModel);
+    private List<JSpinner> armorFieldList = new ArrayList<JSpinner>();
 
     private JLabel laArmorMaxLabel = new JLabel();
     private JLabel raArmorMaxLabel = new JLabel();
@@ -96,6 +100,7 @@ public class ArmorView extends IView implements ChangeListener {
     private JLabel ltrArmorMaxLabel = new JLabel();
     private JLabel rtrArmorMaxLabel = new JLabel();
     private JLabel ctrArmorMaxLabel = new JLabel();
+    private List<JLabel> armorMaxLabelList = new ArrayList<JLabel>();
 
     private JLabel currentArmorLabel = new JLabel();
     private JLabel maxArmorLabel = new JLabel();
@@ -159,19 +164,50 @@ public class ArmorView extends IView implements ChangeListener {
         ltrArmorField.setName(Integer.toString(Mech.LOC_LT));
         ctrArmorField.setName(Integer.toString(Mech.LOC_CT));
 
-        addAllListeners();
+        armorFieldList.add(laArmorField);
+        armorFieldList.add(raArmorField);
+        armorFieldList.add(llArmorField);
+        armorFieldList.add(rlArmorField);
+        armorFieldList.add(ltArmorField);
+        armorFieldList.add(rtArmorField);
+        armorFieldList.add(ctArmorField);
+        armorFieldList.add(hdArmorField);
+        armorFieldList.add(ltrArmorField);
+        armorFieldList.add(ctrArmorField);
+        armorFieldList.add(rtrArmorField);
 
-        laArmorField.setToolTipText("Front Armor");
-        raArmorField.setToolTipText("Front Armor");
-        llArmorField.setToolTipText("Front Armor");
-        rlArmorField.setToolTipText("Front Armor");
-        ltArmorField.setToolTipText("Front Armor");
-        rtArmorField.setToolTipText("Front Armor");
-        ctArmorField.setToolTipText("Front Armor");
-        hdArmorField.setToolTipText("Front Armor");
+        Dimension size = new Dimension(35, 20);
+        for (JSpinner spinner : armorFieldList) {
+            spinner.setToolTipText("Front Armor");
+            spinner.setSize(size);
+            spinner.setMaximumSize(size);
+            spinner.setPreferredSize(size);
+            spinner.setMinimumSize(size);
+        }
         rtrArmorField.setToolTipText("Rear Armor");
         ltrArmorField.setToolTipText("Rear Armor");
         ctrArmorField.setToolTipText("Rear Armor");
+
+        armorMaxLabelList.add(laArmorMaxLabel);
+        armorMaxLabelList.add(raArmorMaxLabel);
+        armorMaxLabelList.add(llArmorMaxLabel);
+        armorMaxLabelList.add(rlArmorMaxLabel);
+        armorMaxLabelList.add(ltArmorMaxLabel);
+        armorMaxLabelList.add(rtArmorMaxLabel);
+        armorMaxLabelList.add(ctArmorMaxLabel);
+        armorMaxLabelList.add(ltrArmorMaxLabel);
+        armorMaxLabelList.add(ctrArmorMaxLabel);
+        armorMaxLabelList.add(rtrArmorMaxLabel);
+
+        Dimension labelSize = new Dimension(15,20);
+        for (JLabel label : armorMaxLabelList) {
+            label.setSize(labelSize);
+            label.setMaximumSize(labelSize);
+            label.setPreferredSize(labelSize);
+            label.setMinimumSize(labelSize);
+        }
+
+        addAllListeners();
 
         torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
         legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
@@ -188,7 +224,12 @@ public class ArmorView extends IView implements ChangeListener {
                     JPanel bottomPanel = new JPanel();
                     masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
                     topPanel.add(hdArmorField);
-                    topPanel.add(new JLabel("/ 9", SwingConstants.TRAILING));
+                    JLabel label = new JLabel("/ 9", SwingConstants.TRAILING);
+                    label.setSize(labelSize);
+                    label.setMaximumSize(labelSize);
+                    label.setPreferredSize(labelSize);
+                    label.setMinimumSize(labelSize);
+                    topPanel.add(label);
                     masterPanel.add(new JLabel(unit.getLocationName(location)));
                     masterPanel.add(topPanel);
                     bottomPanel = new JPanel();
@@ -346,31 +387,15 @@ public class ArmorView extends IView implements ChangeListener {
     }
 
     private void addAllListeners() {
-        laArmorField.addChangeListener(this);
-        raArmorField.addChangeListener(this);
-        llArmorField.addChangeListener(this);
-        rlArmorField.addChangeListener(this);
-        ltArmorField.addChangeListener(this);
-        rtArmorField.addChangeListener(this);
-        ctArmorField.addChangeListener(this);
-        hdArmorField.addChangeListener(this);
-        rtrArmorField.addChangeListener(this);
-        ltrArmorField.addChangeListener(this);
-        ctrArmorField.addChangeListener(this);
+        for (JSpinner spinner : armorFieldList) {
+            spinner.addChangeListener(this);
+        }
     }
 
     private void removeAllListeners() {
-        laArmorField.removeChangeListener(this);
-        raArmorField.removeChangeListener(this);
-        llArmorField.removeChangeListener(this);
-        rlArmorField.removeChangeListener(this);
-        ltArmorField.removeChangeListener(this);
-        rtArmorField.removeChangeListener(this);
-        ctArmorField.removeChangeListener(this);
-        hdArmorField.removeChangeListener(this);
-        rtrArmorField.removeChangeListener(this);
-        ltrArmorField.removeChangeListener(this);
-        ctrArmorField.removeChangeListener(this);
+        for (JSpinner spinner : armorFieldList) {
+            spinner.removeChangeListener(this);
+        }
     }
 
     public void refresh() {
