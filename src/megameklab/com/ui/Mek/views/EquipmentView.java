@@ -370,7 +370,8 @@ public class EquipmentView extends IView implements ActionListener {
 
         float tonnageAmount = 0;
         if (equip.equals(UnitUtil.ENVIROSEAL) && (crits > 1)) {
-            tonnageAmount = EquipmentType.get(equip).getTonnage(unit)/8;
+            tonnageAmount = EquipmentType.get(equip).getTonnage(unit);
+            tonnageAmount /= 8;
         }
         if (equip.equals(UnitUtil.TRACKS) && (crits > 1)) {
             tonnageAmount = EquipmentType.get(equip).getTonnage(unit)/EquipmentType.get(equip).getCriticals(unit);
