@@ -66,6 +66,7 @@ import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
+import megamek.common.VTOL;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
@@ -78,6 +79,7 @@ import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
 import megameklab.com.ui.Mek.tabs.WeaponTab;
+import megameklab.com.ui.Vehicle.Printing.PrintVTOL;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.util.CConfig;
@@ -90,7 +92,7 @@ public class MainUI extends JFrame implements RefreshListener {
      *
      */
     private static final long serialVersionUID = -5836932822468918198L;
-    private static final String VERSION = "0.0.0.11-Dev-101";
+    private static final String VERSION = "0.0.0.11-Dev-102";
 
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
@@ -213,14 +215,26 @@ public class MainUI extends JFrame implements RefreshListener {
         advancedRecordSheet.add(item);
         printMenu.add(advancedRecordSheet);
 
-        item = new JMenuItem("Vehicle");
+        JMenu vehicleMenu = new JMenu("Vehicle");
+        item = new JMenuItem("Tank");
+        item.setMnemonic('T');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuPrintTank_actionPerformed(e);
+            }
+        });
+        vehicleMenu.add(item);
+
+        item = new JMenuItem("VTOL");
         item.setMnemonic('V');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                jMenuPrintVehicle_actionPerformed(e);
+                jMenuPrintVTOL_actionPerformed(e);
             }
         });
-        printMenu.add(item);
+        vehicleMenu.add(item);
+
+        printMenu.add(vehicleMenu);
 
         file.add(printMenu);
 
@@ -454,7 +468,7 @@ public class MainUI extends JFrame implements RefreshListener {
         }
     }
 
-    public void jMenuPrintVehicle_actionPerformed(ActionEvent event) {
+    public void jMenuPrintTank_actionPerformed(ActionEvent event) {
 
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
         UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.TANK, config);
@@ -478,10 +492,35 @@ public class MainUI extends JFrame implements RefreshListener {
         sp.print();
     }
 
+    public void jMenuPrintVTOL_actionPerformed(ActionEvent event) {
+
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.VTOL, config);
+
+        viewer.run();
+
+        VTOL vtol = null;
+        if (!(viewer.getSelectedEntity() instanceof VTOL)) {
+            return;
+        }
+        vtol = (VTOL) viewer.getSelectedEntity();
+
+        viewer.setVisible(false);
+        viewer.dispose();
+
+        ArrayList<VTOL> vtolList = new ArrayList<VTOL>();
+        vtolList.add(vtol);
+
+        PrintVTOL sp = new PrintVTOL(vtolList);
+
+        sp.print();
+    }
+
     public void jMenuPrintMulMechs_actionPerformed(ActionEvent event) {
         ArrayList<Mech> quadList = new ArrayList<Mech>();
         ArrayList<Mech> bipedList = new ArrayList<Mech>();
         ArrayList<Tank> tankList = new ArrayList<Tank>();
+        ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
 
         FileDialog f = new FileDialog(this, "Load Mul");
         f.setDirectory(System.getProperty("user.dir"));
@@ -516,6 +555,8 @@ public class MainUI extends JFrame implements RefreshListener {
                     UnitUtil.expandUnitMounts(unit);
 
                     bipedList.add((Mech) unit);
+                } else if (unit instanceof VTOL) {
+                    VTOLList.add((VTOL) unit);
                 } else if (unit instanceof Tank) {
                     tankList.add((Tank) unit);
                 }
@@ -537,6 +578,12 @@ public class MainUI extends JFrame implements RefreshListener {
                 PrintVehicle printTank = new PrintVehicle(tankList);
 
                 printTank.print();
+            }
+
+            if (VTOLList.size() > 0) {
+                PrintVTOL printVTOL = new PrintVTOL(VTOLList);
+
+                printVTOL.print();
             }
         }
 
