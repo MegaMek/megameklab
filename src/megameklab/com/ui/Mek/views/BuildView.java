@@ -104,6 +104,8 @@ public class BuildView extends IView implements ActionListener {
             }
         }
 
+        Collections.sort(masterEquipmentList, StringUtils.equipmentTypeComparator());
+
         // Time to Sort
         // HeatSinks first
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
