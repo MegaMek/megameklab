@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,6 +38,7 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
+import megamek.common.TechConstants;
 import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -58,6 +60,7 @@ public class ArmorTab extends ITab implements ActionListener {
     private JButton allocateArmorButton = new JButton("Allocate");
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
     private JSpinner armorTonnage = new JSpinner(new SpinnerNumberModel(0, 0, 0, 0.5));
+    private JCheckBox clanArmor = new JCheckBox("Clan Armor");
 
     private JPanel buttonPanel = new JPanel();
 
@@ -82,9 +85,11 @@ public class ArmorTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllListeners();
+        clanArmor.setVisible(unit.isMixedTech());
+        clanArmor.setSelected(unit.isClanArmor());
         setTotalTonnage();
         addAllListeners();
-        ((SpinnerNumberModel)armorTonnage.getModel()).setMaximum(UnitUtil.getTotalArmorTonnage(unit));
+        ((SpinnerNumberModel)armorTonnage.getModel()).setMaximum(UnitUtil.getMaximumArmorTonnage(unit));
         armor.updateMech(unit);
         armor.refresh();
     }
@@ -104,6 +109,30 @@ public class ArmorTab extends ITab implements ActionListener {
                 refresh.refreshAll();
             }
         }
+        if (arg0.getSource().equals(allocateArmorButton)) {
+            armor.allocateArmor((Double)armorTonnage.getValue());
+        }
+        if (arg0.getSource().equals(maximizeArmorButton)) {
+            maximizeArmor();
+        }
+        if (arg0.getSource().equals(clanArmor)) {
+            if (clanArmor.isSelected()) {
+                if (unit.isClan()) {
+                    unit.setArmorTechLevel(unit.getTechLevel());
+                } else {
+                    unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
+                }
+            } else if (unit.isClan()) {
+                unit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            } else {
+                unit.setArmorTechLevel(unit.getTechLevel());
+            }
+            removeArmorMounts();
+            createArmorMounts();
+            if (refresh != null) {
+                refresh.refreshAll();
+            }
+        }
         addAllListeners();
     }
 
@@ -112,25 +141,19 @@ public class ArmorTab extends ITab implements ActionListener {
 
         masterPanel.add(new JLabel("Armor", SwingConstants.TRAILING));
         masterPanel.add(armorCombo);
+        masterPanel.add(clanArmor);
 
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
-        SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
+        SpringLayoutHelper.setupSpringGrid(masterPanel, 3);
 
         buttonPanel.add(masterPanel);
         buttonPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        allocateArmorButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                armor.allocateArmor((Double)armorTonnage.getValue());
-            }
-        });
+        allocateArmorButton.addActionListener(this);
 
-        maximizeArmorButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                maximizeArmor();
-            }
-        });
+        maximizeArmorButton.addActionListener(this);
+        clanArmor.addActionListener(this);
 
         armorTonnage.setToolTipText("Total Tonnage of Armor");
         Dimension size = new Dimension(45, 10);
@@ -158,7 +181,7 @@ public class ArmorTab extends ITab implements ActionListener {
     }
 
     private void maximizeArmor() {
-        double maxArmor = UnitUtil.getTotalArmorTonnage(unit);
+        double maxArmor = UnitUtil.getMaximumArmorTonnage(unit);
         armor.allocateArmor(maxArmor);
         armorTonnage.setValue(maxArmor);
     }
@@ -224,7 +247,7 @@ public class ArmorTab extends ITab implements ActionListener {
     private void setTotalTonnage() {
         double currentTonnage = unit.getArmorWeight();
         armorTonnage.setValue(currentTonnage);
-        armorTonnage.setToolTipText("Max Tonnage: " + UnitUtil.getTotalArmorTonnage(unit));
+        armorTonnage.setToolTipText("Max Tonnage: " + UnitUtil.getMaximumArmorTonnage(unit));
     }
 
     public void setArmorType(int type) {

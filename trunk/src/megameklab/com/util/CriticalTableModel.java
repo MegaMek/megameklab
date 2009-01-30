@@ -159,7 +159,7 @@ public class CriticalTableModel extends AbstractTableModel {
 
             JLabel c = new JLabel();
             c.setOpaque(true);
-            if (crits.size() < row || row < 0) {
+            if ((crits.size() < row) || (row < 0)) {
                 return c;
             }
             if (table.getModel().getValueAt(row, column) != null) {

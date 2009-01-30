@@ -56,6 +56,7 @@ public class UnitUtil {
     public static String ENVIROSEAL = "Environmental Sealing";
     public static String NULLSIG = "Null Signature System";
     public static String VOIDSIG = "Void Signature System";
+    public static String TRACKS = "Tracks";
 
     private static Font euroFont = null;
     private static Font euroBoldFont = null;
@@ -68,7 +69,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isSpreadEquipment(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_ENDO_STEEL));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_TRACKS));
     }
 
     /**
@@ -126,33 +127,27 @@ public class UnitUtil {
 
         if (equipment.getName().equals(UnitUtil.TSM)) {
             UnitUtil.removeCrits(unit, UnitUtil.TSM);
+            UnitUtil.removeMounts(unit, UnitUtil.TSM);
         } else if (equipment.getName().equals(UnitUtil.INDUSTRIALTSM)) {
             UnitUtil.removeCrits(unit, UnitUtil.INDUSTRIALTSM);
-        } else if (equipment.getName().equals(UnitUtil.ENVIROSEAL)) {
-            UnitUtil.removeCrits(unit, UnitUtil.ENVIROSEAL);
-        } else if (equipment.getName().equals(UnitUtil.NULLSIG)) {
-            UnitUtil.removeCrits(unit, UnitUtil.NULLSIG);
-        } else if (equipment.getName().equals(UnitUtil.VOIDSIG)) {
-            UnitUtil.removeCrits(unit, UnitUtil.VOIDSIG);
-        } else {
-            UnitUtil.removeCriticals(unit, equipment);
-        }
-
-        if (equipment.getName().equals(UnitUtil.TSM)) {
-            UnitUtil.removeMounts(unit, UnitUtil.TSM);
-        } else if (equipment.getName().equals(UnitUtil.TARGETINGCOMPUTER)) {
             UnitUtil.removeMounts(unit, UnitUtil.TARGETINGCOMPUTER);
-        } else if (equipment.getName().equals(UnitUtil.INDUSTRIALTSM)) {
-            UnitUtil.removeMounts(unit, UnitUtil.INDUSTRIALTSM);
         } else if (equipment.getName().equals(UnitUtil.ENVIROSEAL)) {
+            EquipmentType.get(UnitUtil.ENVIROSEAL).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+            UnitUtil.removeCrits(unit, UnitUtil.ENVIROSEAL);
             UnitUtil.removeMounts(unit, UnitUtil.ENVIROSEAL);
         } else if (equipment.getName().equals(UnitUtil.NULLSIG)) {
+            UnitUtil.removeCrits(unit, UnitUtil.NULLSIG);
             UnitUtil.removeMounts(unit, UnitUtil.NULLSIG);
         } else if (equipment.getName().equals(UnitUtil.VOIDSIG)) {
+            UnitUtil.removeCrits(unit, UnitUtil.VOIDSIG);
             UnitUtil.removeMounts(unit, UnitUtil.VOIDSIG);
+        } else if (equipment.getName().equals(UnitUtil.TRACKS)){
+            EquipmentType.get(UnitUtil.TRACKS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+            UnitUtil.removeCrits(unit, UnitUtil.TRACKS);
+            UnitUtil.removeMounts(unit, UnitUtil.TRACKS);
         } else {
+            UnitUtil.removeCriticals(unit, equipment);
             unit.getEquipment().remove(equipment);
-
             if (equipment.getType() instanceof MiscType) {
                 unit.getMisc().remove(equipment);
             } else if (equipment.getType() instanceof AmmoType) {
@@ -161,7 +156,6 @@ public class UnitUtil {
                 unit.getWeaponList().remove(equipment);
             }
         }
-
     }
 
     /**
@@ -639,7 +633,7 @@ public class UnitUtil {
         return tonnage;
     }
 
-    public static double getTotalArmorTonnage(Mech unit) {
+    public static double getMaximumArmorTonnage(Mech unit) {
 
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());
         if (unit.getArmorType() == EquipmentType.T_ARMOR_HARDENED) {
@@ -747,7 +741,7 @@ public class UnitUtil {
 
     /**
      * Expands crits that are a single mount by have multiple spreadable crits Such as TSM, Endo Steel, Reactive armor.
-     * 
+     *
      * @param unit
      */
     public static void expandUnitMounts(Entity unit) {

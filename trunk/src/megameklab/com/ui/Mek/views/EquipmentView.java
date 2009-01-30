@@ -139,7 +139,6 @@ public class EquipmentView extends IView implements ActionListener {
                     && !eq.hasFlag(MiscType.F_FIRE_RESISTANT)
                     && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS)
                     && !eq.hasFlag(MiscType.F_ENDO_STEEL)
-                    && !eq.hasFlag(MiscType.F_LIFTHOIST)
                     && !eq.hasFlag(MiscType.F_SEARCHLIGHT)
                     && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION)
                     && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION)
@@ -278,16 +277,21 @@ public class EquipmentView extends IView implements ActionListener {
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.ENVIROSEAL));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.NULLSIG)) {
-                if (!unit.hasEnvironmentalSealing()) {
+                if (!unit.hasNullSig()) {
                     createSpreadMounts(UnitUtil.NULLSIG);
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.NULLSIG));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.VOIDSIG)) {
-                if (!unit.hasEnvironmentalSealing()) {
+                if (!unit.hasVoidSig()) {
                     createSpreadMounts(UnitUtil.VOIDSIG);
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.VOIDSIG));
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TARGETINGCOMPUTER)) {
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TRACKS)) {
+                if (!unit.hasTracks()) {
+                    createSpreadMounts(UnitUtil.TRACKS);
+                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.TRACKS));
+                }
+            }else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TARGETINGCOMPUTER)) {
                 if (!UnitUtil.hasTargComp(unit)) {
                     UnitUtil.updateTC(unit);
                     equipmentList.addCrit(equipmentTypes.get(UnitUtil.TARGETINGCOMPUTER));
@@ -366,13 +370,16 @@ public class EquipmentView extends IView implements ActionListener {
         }
 
         float tonnageAmount = 0;
-        if (equip.equals(UnitUtil.ENVIROSEAL) && crits > 1) {
+        if (equip.equals(UnitUtil.ENVIROSEAL) && (crits > 1)) {
             tonnageAmount = EquipmentType.get(equip).getTonnage(unit)/8;
+        }
+        if (equip.equals(UnitUtil.TRACKS) && (crits > 1)) {
+            tonnageAmount = EquipmentType.get(equip).getTonnage(unit)/EquipmentType.get(equip).getCriticals(unit);
         }
 
         for (; crits > 0; crits--) {
             try {
-                if (equip.equals(UnitUtil.ENVIROSEAL) && crits > 1) {
+                if ((equip.equals(UnitUtil.ENVIROSEAL) || equip.equals(UnitUtil.TRACKS)) && (crits > 1)) {
                     Mounted mount = new Mounted(unit, EquipmentType.get(equip));
                     mount.getType().setTonnage(tonnageAmount);
                     unit.addEquipment(mount, Entity.LOC_NONE, false);
