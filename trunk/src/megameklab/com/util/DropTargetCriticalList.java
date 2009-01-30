@@ -45,7 +45,6 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
-import megamek.common.WeaponType;
 
 public class DropTargetCriticalList extends JList implements DropTargetListener, MouseListener {
 
@@ -259,7 +258,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                     });
                     popup.add(info);
 
-                    if (mount.getType() instanceof WeaponType && mount.getLocation() != Mech.LOC_LARM && mount.getLocation() != Mech.LOC_RARM) {
+                    if (mount.getLocation() != Mech.LOC_LARM && mount.getLocation() != Mech.LOC_RARM) {
 
                         if (!mount.isRearMounted()) {
                             info = new JMenuItem("Make " + mount.getName() + " Rear Facing");

@@ -575,8 +575,8 @@ public class UnitUtil {
         } else if (eq.getType() instanceof AmmoType) {
             for (Mounted mount : unit.getAmmo()) {
                 if (mount == eq) {
-                    mount.setLocation(location);
-                    mount.setSecondLocation(secondaryLocation);
+                    mount.setLocation(location, rear);
+                    mount.setSecondLocation(secondaryLocation, rear);
                     mount.setSplit(secondaryLocation > -1);
                     break;
                 }
@@ -584,8 +584,8 @@ public class UnitUtil {
         } else {
             for (Mounted mount : unit.getMisc()) {
                 if (mount == eq) {
-                    mount.setLocation(location);
-                    mount.setSecondLocation(secondaryLocation);
+                    mount.setLocation(location, rear);
+                    mount.setSecondLocation(secondaryLocation, rear);
                     mount.setSplit(secondaryLocation > -1);
                     break;
                 }
@@ -874,7 +874,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if something is a Jump Jet
-     * 
+     *
      * @param eq
      * @return
      */
