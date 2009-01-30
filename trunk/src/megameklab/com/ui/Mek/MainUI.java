@@ -61,6 +61,7 @@ import megamek.common.Entity;
 import megamek.common.EntityListFile;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.MechFileParser;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -122,14 +123,29 @@ public class MainUI extends JFrame implements RefreshListener {
         file.setMnemonic('F');
         JMenuItem item = new JMenuItem();
 
-        item.setText("Load");
-        item.setMnemonic('L');
+        JMenu loadMenu = new JMenu("Load");
+        loadMenu.setMnemonic('L');
+
+        item.setText("From Cache");
+        item.setMnemonic('C');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadEntity_actionPerformed(e);
             }
         });
-        file.add(item);
+        loadMenu.add(item);
+
+        item = new JMenuItem();
+        item.setText("From File");
+        item.setMnemonic('F');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuLoadEntityFromFile_actionPerformed(e);
+            }
+        });
+        loadMenu.add(item);
+
+        file.add(loadMenu);
 
         item = new JMenuItem();
         item.setText("Save");
@@ -330,8 +346,49 @@ public class MainUI extends JFrame implements RefreshListener {
         refreshAll();
     }
 
+    private void loadUnitFromFile() {
+
+        FileDialog fDialog = new FileDialog(this, "Load Mech", FileDialog.LOAD);
+
+        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+
+        fDialog.setDirectory(filePathName);
+        fDialog.setFile("*.mtf");
+        fDialog.setLocationRelativeTo(this);
+
+        fDialog.setVisible(true);
+
+        if (fDialog.getFile() == null) {
+            return;
+        }
+
+
+        try {
+            Entity tempEntity = new MechFileParser(new File(fDialog.getDirectory(), fDialog.getFile())).getEntity();
+            if (!(tempEntity instanceof Mech)) {
+                return;
+            }
+
+            entity = (Mech) tempEntity;
+            UnitUtil.removeOneShotAmmo(entity);
+            UnitUtil.expandUnitMounts(entity);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            createNewMech(false);
+        }
+        reloadTabs();
+        setVisible(true);
+        this.repaint();
+        refreshAll();
+    }
+
     public void jMenuLoadEntity_actionPerformed(ActionEvent event) {
         loadUnit();
+    }
+
+    public void jMenuLoadEntityFromFile_actionPerformed(ActionEvent event) {
+        loadUnitFromFile();
     }
 
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
