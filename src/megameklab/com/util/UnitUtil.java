@@ -871,4 +871,20 @@ public class UnitUtil {
 
         return false;
     }
+
+    /**
+     * Checks to see if something is a Jump Jet
+     * 
+     * @param eq
+     * @return
+     */
+    public static boolean isJumpJet(EquipmentType eq) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_JUMP_BOOSTER) || eq.hasFlag(MiscType.F_JUMP_JET))) {
+            return true;
+        }
+
+        return false;
+    }
+
+
 }
