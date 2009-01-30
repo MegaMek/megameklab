@@ -12,6 +12,7 @@ V 0.0.0.11-Dev-100
 + updated MegaMek.jar for searchlights and gyro weight problem
 + enabled searchlights
 + RFE: Print VTOL Record Sheets
++ New MegaMek.jar
 
 
 V 0.0.0.10 (Release 01/28/2008 2:22:00 PST)
