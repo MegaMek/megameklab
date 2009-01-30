@@ -139,7 +139,6 @@ public class EquipmentView extends IView implements ActionListener {
                     && !eq.hasFlag(MiscType.F_FIRE_RESISTANT)
                     && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS)
                     && !eq.hasFlag(MiscType.F_ENDO_STEEL)
-                    && !eq.hasFlag(MiscType.F_SEARCHLIGHT)
                     && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION)
                     && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION)
                     && !eq.hasFlag(MiscType.F_HEAT_SINK)
