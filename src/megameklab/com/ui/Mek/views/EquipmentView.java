@@ -189,7 +189,7 @@ public class EquipmentView extends IView implements ActionListener {
     private void loadEquipmentTable() {
         for (Mounted mount : unit.getMisc()) {
 
-            if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK))) {
+            if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_ENDO_STEEL) || UnitUtil.isArmor(mount.getType()))) {
                 continue;
             }
             equipmentList.addCrit(mount.getType());

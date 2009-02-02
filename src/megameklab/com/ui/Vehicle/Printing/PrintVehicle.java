@@ -117,12 +117,12 @@ public class PrintVehicle implements Printable {
     }
 
     private void printTankData(Graphics2D g2d) {
-        Font font = UnitUtil.deriveFont(true, 10.0f);
-        g2d.setFont(font);
+        String tankName = tank.getChassis().toUpperCase() + " " + tank.getModel().toUpperCase();
 
-        g2d.drawString(tank.getChassis().toUpperCase() + " " + tank.getModel().toUpperCase(), 49, 121);
+        g2d.setFont(UnitUtil.getNewFont(g2d, tankName, true, 180, 10.0f));
+        g2d.drawString(tankName, 49, 121);
 
-        font = UnitUtil.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         g2d.drawString(Integer.toString(tank.getWalkMP()), 79, 144);
@@ -189,12 +189,12 @@ public class PrintVehicle implements Printable {
     }
 
     private void printTank2Data(Graphics2D g2d) {
-        Font font = UnitUtil.deriveFont(true, 10.0f);
-        g2d.setFont(font);
+        String tankName = tank2.getChassis().toUpperCase() + " " + tank2.getModel().toUpperCase();
 
-        g2d.drawString(tank2.getChassis().toUpperCase() + " " + tank2.getModel().toUpperCase(), 49, 492);
+        g2d.setFont(UnitUtil.getNewFont(g2d, tankName, true, 180, 10.0f));
+        g2d.drawString(tankName, 49, 121);
 
-        font = UnitUtil.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         g2d.drawString(Integer.toString(tank2.getWalkMP()), 79, 515);
