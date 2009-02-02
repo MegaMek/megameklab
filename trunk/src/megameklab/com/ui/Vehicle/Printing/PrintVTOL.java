@@ -111,12 +111,12 @@ public class PrintVTOL implements Printable {
     }
 
     private void printVTOLData(Graphics2D g2d) {
-        Font font = UnitUtil.deriveFont(true, 10.0f);
-        g2d.setFont(font);
+        String VTOLName = vtol.getChassis().toUpperCase() + " " + vtol.getModel().toUpperCase();
 
-        g2d.drawString(vtol.getChassis().toUpperCase() + " " + vtol.getModel().toUpperCase(), 49, 121);
+        g2d.setFont(UnitUtil.getNewFont(g2d, VTOLName, true, 180, 10.0f));
+        g2d.drawString(VTOLName, 49, 121);
 
-        font = UnitUtil.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         g2d.drawString(Integer.toString(vtol.getWalkMP()), 79, 144);
@@ -181,12 +181,12 @@ public class PrintVTOL implements Printable {
     }
 
     private void printVTOL2Data(Graphics2D g2d) {
-        Font font = UnitUtil.deriveFont(true, 10.0f);
-        g2d.setFont(font);
+        String VTOLName = vtol2.getChassis().toUpperCase() + " " + vtol2.getModel().toUpperCase();
 
-        g2d.drawString(vtol2.getChassis().toUpperCase() + " " + vtol2.getModel().toUpperCase(), 49, 492);
+        g2d.setFont(UnitUtil.getNewFont(g2d, VTOLName, true, 180, 10.0f));
+        g2d.drawString(VTOLName, 49, 121);
 
-        font = UnitUtil.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         g2d.drawString(Integer.toString(vtol2.getWalkMP()), 79, 515);
