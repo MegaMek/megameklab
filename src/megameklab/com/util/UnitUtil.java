@@ -900,4 +900,20 @@ public class UnitUtil {
             return true;
         }
     }
+
+    public static String getCritName(Entity unit, EquipmentType eq) {
+        if (unit.isMixedTech() && eq.getTechLevel() != TechConstants.T_ALLOWED_ALL) {
+
+            if (unit.isClan() && !UnitUtil.isClanEquipment(eq)) {
+                return eq.getName() + " (IS)";
+            }
+
+            if (!unit.isClan() && UnitUtil.isClanEquipment(eq)) {
+                return eq.getName() + " (Clan)";
+            }
+        }
+
+        return eq.getName();
+    }
+
 }

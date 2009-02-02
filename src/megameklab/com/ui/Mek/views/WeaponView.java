@@ -759,17 +759,6 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     }
 
     private String getName(EquipmentType eq) {
-        if (unit.isMixedTech()) {
-
-            if (unit.isClan() && !UnitUtil.isClanEquipment(eq)) {
-                return eq.getName() + " (IS)";
-            }
-
-            if (!unit.isClan() && UnitUtil.isClanEquipment(eq)) {
-                return eq.getName() + " (Clan)";
-            }
-        }
-
-        return eq.getName();
+        return UnitUtil.getCritName(unit, eq);
     }
  }
