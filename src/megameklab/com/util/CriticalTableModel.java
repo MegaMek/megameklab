@@ -120,7 +120,7 @@ public class CriticalTableModel extends AbstractTableModel {
         EquipmentType crit = sortedEquipment[row];
         switch (col) {
         case NAME:
-            return crit.getName();
+            return UnitUtil.getCritName(unit, crit);
         case TONNAGE:
             return crit.getTonnage(unit);
         case CRITS:

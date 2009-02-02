@@ -16,9 +16,11 @@
 
 package megameklab.com.ui.Mek.views;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
@@ -126,8 +128,8 @@ public class CriticalView extends IView {
                                 cs.setMount(m);
                             }
                             StringBuffer critName = new StringBuffer(m.getName());
-                            if (critName.length() > 15){
-                                critName.setLength(15);
+                            if (critName.length() > 25) {
+                                critName.setLength(25);
                                 critName.append("...");
                             }
                             if ( m.isRearMounted() ){
@@ -146,6 +148,7 @@ public class CriticalView extends IView {
                 CriticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 CriticalSlotList.setFont(new Font("Arial",Font.PLAIN,10));
                 CriticalSlotList.setName(Integer.toString(location));
+                CriticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
                 switch (location) {
                 case Mech.LOC_HEAD:
                     headPanel.add(CriticalSlotList);

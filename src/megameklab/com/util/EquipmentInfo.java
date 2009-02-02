@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ public class EquipmentInfo {
 
     public EquipmentInfo(Entity unit, Mounted mount) {
 
-        name = mount.getName();
+        name = UnitUtil.getCritName(unit, mount.getType());
         if (mount.isRearMounted()) {
             name += "(R)";
         }
