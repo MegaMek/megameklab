@@ -137,12 +137,12 @@ public class PrintQuad implements Printable {
     }
 
     private void printMechData(Graphics2D g2d) {
-        Font font = UnitUtil.deriveFont(true, 10.0f);
-        g2d.setFont(font);
+        String mekName = mech.getChassis().toUpperCase() + " " + mech.getModel().toUpperCase();
 
-        g2d.drawString(mech.getChassis().toUpperCase() + " " + mech.getModel().toUpperCase(), 49, 121);
+        g2d.setFont(UnitUtil.getNewFont(g2d, mekName, true, 180, 10.0f));
+        g2d.drawString(mekName, 49, 121);
 
-        font = UnitUtil.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         if (mech.hasTSM()) {
