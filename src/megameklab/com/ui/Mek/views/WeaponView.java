@@ -395,7 +395,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         for (EquipmentType eq : masterLaserWeaponList) {
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 subLaserWeaponList.add(eq);
-                equipmentList.add(eq.getName());
+                equipmentList.add(getName(eq));
             }
         }
         laserWeaponCombo.setListData(equipmentList);
@@ -404,7 +404,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         for (EquipmentType eq : masterMissileWeaponList) {
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 subMissileWeaponList.add(eq);
-                equipmentList.add(eq.getName());
+                equipmentList.add(getName(eq));
             }
         }
         missileWeaponCombo.setListData(equipmentList);
@@ -413,7 +413,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         for (EquipmentType eq : masterBallisticWeaponList) {
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 subBallisticWeaponList.add(eq);
-                equipmentList.add(eq.getName());
+                equipmentList.add(getName(eq));
             }
         }
         ballisticWeaponCombo.setListData(equipmentList);
@@ -422,7 +422,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         for (EquipmentType eq : masterArtilleryWeaponList) {
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 subArtilleryWeaponList.add(eq);
-                equipmentList.add(eq.getName());
+                equipmentList.add(getName(eq));
             }
         }
         artilleryWeaponCombo.setListData(equipmentList);
@@ -431,7 +431,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         for (EquipmentType eq : masterPhysicalWeaponList) {
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 subPhysicalWeaponList.add(eq);
-                equipmentList.add(eq.getName());
+                equipmentList.add(getName(eq));
             }
         }
         physicalWeaponCombo.setListData(equipmentList);
@@ -706,7 +706,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                         if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                             subLaserAmmoList.add(ammo);
-                            equipmentList.add(ammo.getName());
+                            equipmentList.add(getName(ammo));
                         }
                     }
                 }
@@ -722,7 +722,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                         subMissileAmmoList.add(ammo);
-                        equipmentList.add(ammo.getName());
+                        equipmentList.add(getName(ammo));
                     }
                 }
                 missileAmmoCombo.setListData(equipmentList);
@@ -736,7 +736,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                         subBallisticAmmoList.add(ammo);
-                        equipmentList.add(ammo.getName());
+                        equipmentList.add(getName(ammo));
                     }
                 }
                 ballisticAmmoCombo.setListData(equipmentList);
@@ -750,7 +750,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                         subArtilleryAmmoList.add(ammo);
-                        equipmentList.add(ammo.getName());
+                        equipmentList.add(getName(ammo));
                     }
                 }
                 artilleryAmmoCombo.setListData(equipmentList);
@@ -758,4 +758,18 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         }
     }
 
+    private String getName(EquipmentType eq) {
+        if (unit.isMixedTech()) {
+
+            if (unit.isClan() && !UnitUtil.isClanEquipment(eq)) {
+                return eq.getName() + " (IS)";
+            }
+
+            if (!unit.isClan() && UnitUtil.isClanEquipment(eq)) {
+                return eq.getName() + " (Clan)";
+            }
+        }
+
+        return eq.getName();
+    }
  }

@@ -887,4 +887,17 @@ public class UnitUtil {
     }
 
 
+    public static boolean isClanEquipment(EquipmentType eq) {
+        switch (eq.getTechLevel()) {
+        case TechConstants.T_INTRO_BOXSET:
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_IS_UNOFFICIAL:
+            return false;
+            default:
+            return true;
+        }
+    }
 }
