@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@ import megamek.common.EquipmentType;
 public class CriticalTable extends JTable implements DragGestureListener, DragSourceListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -5215375829853683877L;
     private DragSource dragSource;
@@ -43,13 +43,13 @@ public class CriticalTable extends JTable implements DragGestureListener, DragSo
     public CriticalTable() {
         dragSource = new DragSource();
         dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
-
     }
 
     public void dragGestureRecognized(DragGestureEvent dge) {
         if (dge.getTriggerEvent().getSource() instanceof CriticalTable ) {
             CriticalTable crit = (CriticalTable) dge.getTriggerEvent().getSource();
-            int row = crit.rowAtPoint(((MouseEvent) dge.getTriggerEvent()).getPoint());
+            MouseEvent me = ((MouseEvent) dge.getTriggerEvent());
+            int row = crit.rowAtPoint(me.getPoint());
             EquipmentType eq = null;
             try{
                 eq = (EquipmentType) crit.getModel().getValueAt(row, CriticalTableModel.EQUIPMENT);
@@ -83,8 +83,6 @@ public class CriticalTable extends JTable implements DragGestureListener, DragSo
     }
 
     public void dropActionChanged(DragSourceDragEvent dsde) {
-        // TODO Auto-generated method stub
-
     }
 
 }

@@ -62,7 +62,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
         this.unit = unit;
         this.refresh = refresh;
         this.buildView = buildView;
-        setCellRenderer(new CritListCellRenderer(unit));
+        setCellRenderer(new CritListCellRenderer(unit, true));
         addMouseListener(this);
     }
 
@@ -73,7 +73,6 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
     }
 
     public void dragOver(DropTargetDragEvent dtde) {
-
     }
 
     public void drop(DropTargetDropEvent dtde) {
