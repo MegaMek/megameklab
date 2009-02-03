@@ -165,7 +165,10 @@ public class CriticalTableModel extends AbstractTableModel {
             if (table.getModel().getValueAt(row, column) != null) {
                 c.setText(table.getModel().getValueAt(row, column).toString());
             }
-            c.setToolTipText("<HTML>" + table.getValueAt(row, CriticalTableModel.NAME) + "<br>Crits: " + table.getValueAt(row, CriticalTableModel.CRITS) + "<br>Tonnage: " + table.getValueAt(row, CriticalTableModel.TONNAGE) + "</html>");
+
+            EquipmentType eq = sortedEquipment[row];
+            c.setToolTipText(UnitUtil.getToolTipInfo(unit, eq));
+
 
             if (isSelected) {
                 c.setForeground(d.getForeground());
