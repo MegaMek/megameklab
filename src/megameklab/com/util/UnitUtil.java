@@ -21,6 +21,7 @@ import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -914,6 +915,25 @@ public class UnitUtil {
         }
 
         return eq.getName();
+    }
+
+    public static String getToolTipInfo(Entity unit, EquipmentType eq) {
+        DecimalFormat myFormatter = new DecimalFormat("#,##0");
+        StringBuilder sb = new StringBuilder("<HTML>");
+        sb.append(eq.getName());
+        sb.append("<br>Crits: ");
+        sb.append(eq.getCriticals(unit));
+        sb.append("<br>Tonnage: ");
+        sb.append(eq.getTonnage(unit));
+        if (eq instanceof WeaponType) {
+            sb.append("<br>Heat: ");
+            sb.append(((WeaponType) eq).getHeat());
+        }
+        sb.append("<Br>Cost: ");
+        sb.append(myFormatter.format((int) eq.getCost()));
+        sb.append(" CBills");
+        sb.append("</html>");
+        return sb.toString();
     }
 
 }

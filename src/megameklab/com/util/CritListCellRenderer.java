@@ -34,15 +34,16 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     private JList list = null;
     private int index = -1;
     private Entity unit = null;
-
+    private boolean useColor = false;
 
     /**
      *
      */
     private static final long serialVersionUID = 1599368063832366744L;
 
-    public CritListCellRenderer(Entity unit) {
+    public CritListCellRenderer(Entity unit, boolean useColor) {
         this.unit = unit;
+        this.useColor = useColor;
     }
 
     @Override
@@ -55,22 +56,21 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
         if (cs != null) {
 
-            if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+            if (cs.getType() == CriticalSlot.TYPE_SYSTEM && useColor) {
                 label.setForeground(Color.green.darker());
-
-                label.setToolTipText("<HTML>" + label.getText() + "<br>Crits: " + unit.getNumberOfCriticals(cs.getType(), cs.getIndex(), getCritLocation()) + "</html>");
             } else if (cs.getMount() != null) {
 
                 Mounted mount = cs.getMount();
 
-                label.setText(UnitUtil.getCritName(unit, mount.getType()));
-                if (mount.getType() instanceof WeaponType) {
-                    label.setForeground(Color.red.darker());
-                } else if (mount.getType() instanceof AmmoType) {
-                    label.setForeground(Color.blue.darker());
+                if (useColor) {
+                    label.setText(UnitUtil.getCritName(unit, mount.getType()));
+                    if (mount.getType() instanceof WeaponType) {
+                        label.setForeground(Color.red.darker());
+                    } else if (mount.getType() instanceof AmmoType) {
+                        label.setForeground(Color.blue.darker());
+                    }
                 }
-
-                label.setToolTipText("<HTML>" + label.getText() + "<br>Crits: " + mount.getType().getCriticals(unit) + "<br>Tonnage: " + mount.getType().getTonnage(unit) + "</html>");
+                label.setToolTipText(UnitUtil.getToolTipInfo(unit, mount.getType()));
             }
 
         }
