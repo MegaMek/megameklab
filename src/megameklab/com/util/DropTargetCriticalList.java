@@ -73,6 +73,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
     }
 
     public void dragOver(DropTargetDragEvent dtde) {
+
     }
 
     public void drop(DropTargetDropEvent dtde) {

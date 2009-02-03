@@ -26,7 +26,6 @@ import javax.swing.JList;
 import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
-import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 
@@ -57,23 +56,25 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         if (cs != null) {
 
             if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                label.setForeground(Color.GREEN);
+                label.setForeground(Color.green.darker());
+
+                label.setToolTipText("<HTML>" + label.getText() + "<br>Crits: " + unit.getNumberOfCriticals(cs.getType(), cs.getIndex(), getCritLocation()) + "</html>");
             } else if (cs.getMount() != null) {
 
                 Mounted mount = cs.getMount();
 
+                label.setText(UnitUtil.getCritName(unit, mount.getType()));
                 if (mount.getType() instanceof WeaponType) {
-                    label.setForeground(Color.RED);
+                    label.setForeground(Color.red.darker());
                 } else if (mount.getType() instanceof AmmoType) {
-                    label.setForeground(Color.BLUE);
+                    label.setForeground(Color.blue.darker());
                 }
 
-                int size = UnitUtil.getCritsUsed((Mech) unit, mount.getType());
-                if (unit instanceof Mech && size > 1) {
-                    label.setText("(" + size + ") " + label.getText());
-                }
+                label.setToolTipText("<HTML>" + label.getText() + "<br>Crits: " + mount.getType().getCriticals(unit) + "<br>Tonnage: " + mount.getType().getTonnage(unit) + "</html>");
             }
+
         }
+
 
         return label;
     }
