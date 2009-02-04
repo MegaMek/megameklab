@@ -63,7 +63,13 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 Mounted mount = cs.getMount();
 
                 if (useColor) {
-                    label.setText(UnitUtil.getCritName(unit, mount.getType()));
+                    String name = UnitUtil.getCritName(unit, mount.getType());
+
+                    if (mount.isRearMounted()) {
+                        name += "(R)";
+                    }
+                    label.setText(name);
+
                     if (mount.getType() instanceof WeaponType) {
                         label.setForeground(Color.red.darker());
                     } else if (mount.getType() instanceof AmmoType) {

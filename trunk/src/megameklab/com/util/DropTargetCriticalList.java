@@ -26,6 +26,7 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
@@ -62,7 +63,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
         this.unit = unit;
         this.refresh = refresh;
         this.buildView = buildView;
-        setCellRenderer(new CritListCellRenderer(unit, true));
+        setCellRenderer(new CritListCellRenderer(unit, buildView));
         addMouseListener(this);
     }
 
@@ -244,9 +245,25 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
     public void mousePressed(MouseEvent e) {
 
         if (buildView) {
-            if (e.getButton() == MouseEvent.BUTTON1 || (e.getButton() == MouseEvent.BUTTON3 && getSelectedIndex() >= 0)) {
 
+            if (e.getButton() == MouseEvent.BUTTON2) {
+                setSelectedIndex(locationToIndex(e.getPoint()));
+                removeCrit();
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
+
+                setSelectedIndex(locationToIndex(e.getPoint()));
+
+                if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
+                    removeCrit();
+                    return;
+                }
                 Mounted mount = getMounted();
+
+                if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
+                    changeWeaponFacing(!mount.isRearMounted());
+                    return;
+                }
+
                 int location = getCritLocation();
                 JPopupMenu popup = new JPopupMenu();
 

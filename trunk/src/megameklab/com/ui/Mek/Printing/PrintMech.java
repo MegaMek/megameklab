@@ -1568,7 +1568,7 @@ public class PrintMech implements Printable {
 
                 setCritConnection(m, lineStart, linePoint, lineStart, linePoint, g2d);
 
-                StringBuffer critName = new StringBuffer(m.getName());
+                StringBuffer critName = new StringBuffer(UnitUtil.getCritName(mech, m.getType()));
 
                 if (UnitUtil.isTSM(m.getType())) {
                     critName.setLength(0);
