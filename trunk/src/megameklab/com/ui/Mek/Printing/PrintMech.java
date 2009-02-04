@@ -1577,7 +1577,7 @@ public class PrintMech implements Printable {
 
                 if (m.isRearMounted()) {
                     critName.append("(R)");
-                } else if (m.getType() instanceof AmmoType) {
+                } else if (m.getType() instanceof AmmoType && ((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD) {
                     AmmoType ammo = (AmmoType) m.getType();
 
                     critName = new StringBuffer("Ammo (");
