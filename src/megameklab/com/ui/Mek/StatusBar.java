@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
 import megamek.common.AmmoType;
+import megamek.common.Engine;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
@@ -36,7 +37,7 @@ import megameklab.com.util.UnitUtil;
 public class StatusBar extends ITab {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6754327753693500675L;
 
@@ -50,12 +51,12 @@ public class StatusBar extends ITab {
     private JLabel heatSink = new JLabel();
     private EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
     private TestMech testEntity = null;
-    
+
     public StatusBar(Mech unit) {
         this.unit = unit;
 
         testEntity = new TestMech(unit, entityVerifier.mechOption, null);
-        this.setLayout(new SpringLayout());
+        setLayout(new SpringLayout());
         this.add(movementPanel());
         this.add(bvPanel());
         this.add(tonnagePanel());
@@ -69,12 +70,12 @@ public class StatusBar extends ITab {
         int walk = unit.getOriginalWalkMP();
         int run = unit.getOriginalRunMPwithoutMASC();
         int jump = unit.getOriginalJumpMP();
-            
+
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
         movementPanel.add(move);
         return movementPanel;
     }
-    
+
     public JPanel bvPanel() {
         int bv = unit.calculateBattleValue();
         bvLabel.setText("BV: " + bv);
@@ -82,31 +83,31 @@ public class StatusBar extends ITab {
 
         return bvPanel;
     }
-    
+
     public JPanel tonnagePanel() {
         float tonnage = unit.getWeight();
         float currentTonnage;
 
         currentTonnage = testEntity.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
-        
+
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tonnagePanel.add(tons);
-        
+
         return tonnagePanel;
     }
-    
+
     public JPanel heatPanel() {
         int heat = unit.heatSinks();
 
         heatSink.setText("Heat: 0/" + heat);
         heatPanel.add(heatSink);
-     
+
         return heatPanel;
     }
-    
+
     public void refresh() {
-        
+
         int walk = unit.getOriginalWalkMP();
         int run = unit.getOriginalRunMPwithoutMASC();
         int jump = unit.getOriginalJumpMP();
@@ -114,18 +115,18 @@ public class StatusBar extends ITab {
         float tonnage = unit.getWeight();
         float currentTonnage;
         int bv = unit.calculateBattleValue();
-         
+
 
         testEntity = new TestMech(unit, entityVerifier.mechOption, null);
 
         currentTonnage = testEntity.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
-        
+
         int totalHeat = calculateTotalHeat();
         if ( unit.hasDoubleHeatSinks() ){
             heat*=2;
         }
-        
+
         heatSink.setText("Heat: "+totalHeat+"/" + heat);
         heatSink.setToolTipText("Total Heat Generated/Total Heat Dissipated");
         if ( totalHeat > heat ){
@@ -133,36 +134,43 @@ public class StatusBar extends ITab {
         }else{
             heatSink.setForeground(Color.black);
         }
-            
+
         tons.setText("Tonnage: " +currentTonnage+"/"+ tonnage);
         tons.setToolTipText("Current Tonnage/Max Tonnage");
-        if ( currentTonnage > tonnage )
+        if ( currentTonnage > tonnage ) {
             tons.setForeground(Color.red);
-        else
+        } else {
             tons.setForeground(Color.black);
-        
+        }
+
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
-        
+
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
         move.setToolTipText("Walk/Run/Jump MP");
 
-        
+
     }
-    
+
     public int calculateTotalHeat(){
         int heat = 0;
-        
+
         if ( unit.getOriginalJumpMP() > 0 ){
             if ( unit.getJumpType() == Mech.JUMP_IMPROVED ) {
                 heat += Math.max(3, unit.getOriginalJumpMP()/2 );
             } else if ( unit.getJumpType() != Mech.JUMP_BOOSTER ) {
                 heat += Math.max(3, unit.getOriginalJumpMP() );
             }
-        }else{
+            if (unit.getEngine().getEngineType() == Engine.XXL_ENGINE) {
+                heat *= 2;
+            }
+        } else if ( unit.getEngine().getEngineType() == Engine.XXL_ENGINE ){
+            heat += 6;
+        }
+        else{
             heat += 2;
         }
-        
+
         for (Mounted mounted : unit.getWeaponList()) {
             WeaponType wtype = (WeaponType) mounted.getType();
             double weaponHeat = wtype.getHeat();
