@@ -1,6 +1,9 @@
 VERSION HISTORY:
 ----------------
 V 0.0.0.12-Dev
++ Bug: Incorrect Total heat showing for XXL engines
+- Removed color coding from CritView in Structure tab
++ RFE: Added the ablity to select and add multiple weapons/ammo at once
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm
