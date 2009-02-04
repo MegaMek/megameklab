@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+V 0.0.0.12-Dev
+
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm
 + Added Lift Hoists
