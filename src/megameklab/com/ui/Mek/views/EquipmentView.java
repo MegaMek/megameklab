@@ -181,18 +181,7 @@ public class EquipmentView extends IView implements ActionListener {
         for (EquipmentType eq : masterEquipmentList) {
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 equipmentTypes.put(eq.getName(), eq);
-                if (unit.isMixedTech()) {
-
-                    if (unit.isClan() && !UnitUtil.isClanEquipment(eq)) {
-                        equipmentCombo.addItem(eq.getName() + " (IS)");
-                    } else if (!unit.isClan() && UnitUtil.isClanEquipment(eq)) {
-                        equipmentCombo.addItem(eq.getName() + " (Clan)");
-                    } else {
-                        equipmentCombo.addItem(eq.getName());
-                    }
-                } else {
-                    equipmentCombo.addItem(eq.getName());
-                }
+                equipmentCombo.addItem(UnitUtil.getCritName(unit, eq));
             }
         }
     }
