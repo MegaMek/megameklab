@@ -84,7 +84,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
             Transferable t = dtde.getTransferable();
             dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE | DnDConstants.ACTION_LINK);
             try {
-                int externalEngineHS = UnitUtil.getBaseChassieHeatSinks(unit);
+                int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(unit);
 
                 String mountName = (String) t.getTransferData(DataFlavor.stringFlavor);
                 Mounted eq = null;
