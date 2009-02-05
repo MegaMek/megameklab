@@ -36,6 +36,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
@@ -184,21 +185,50 @@ public class PrintQuad implements Printable {
             techBase = "Clan";
         }
 
+        int nextDataLine = 153;
+        int startLine = 188;
+        int lineFeed = 8;
+
         if (mech.isIndustrial()) {
             if (mech.isPrimitive()) {
-                g2d.drawString("(Primitive Industrial)", 160.5f, 155);
+                ImageHelper.printCenterString(g2d, "(Primitive Industrial)", font, startLine, nextDataLine);
             } else {
-                g2d.drawString("(Industrial)", 182.5f, 155);
+                ImageHelper.printCenterString(g2d, "(Industrial)", font, startLine, nextDataLine);
             }
 
-            g2d.drawString(Integer.toString(mech.getYear()), 188, 165);
+            nextDataLine += lineFeed;
         } else if (mech.isPrimitive()) {
-            g2d.drawString("(Primitive)", 182.5f, 155);
-            g2d.drawString(Integer.toString(mech.getYear()), 188, 165);
+            ImageHelper.printCenterString(g2d, "(Primitive)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+        } else {
+
+            switch (mech.getTechLevel()) {
+
+            case TechConstants.T_INTRO_BOXSET:
+                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_TW_NON_BOX:
+            case TechConstants.T_IS_TW_ALL:
+                break;
+            case TechConstants.T_IS_ADVANCED:
+            case TechConstants.T_CLAN_ADVANCED:
+                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_EXPERIMENTAL:
+            case TechConstants.T_CLAN_EXPERIMENTAL:
+                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_UNOFFICIAL:
+            case TechConstants.T_CLAN_UNOFFICIAL:
+                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            }
         }
-        else {
-            g2d.drawString(Integer.toString(mech.getYear()), 188, 155);
-        }
+        ImageHelper.printCenterString(g2d, Integer.toString(mech.getYear()), font, startLine, nextDataLine);
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");

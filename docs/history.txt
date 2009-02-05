@@ -5,6 +5,17 @@ V 0.0.0.12-Dev
 - Removed color coding from CritView in Structure tab
 + RFE: Added the ablity to select and add multiple weapons/ammo at once
 + Bug: Mixed Tech not printing the correct Weapon Tech in Crit slots
++ Bug: TC not working for MixedTech Units
++ Bug: Autofill button not creating the correct amount of crits for splitable equipment
++ RFE: The ability to set base chassie heat sinks for omni meks
++ RFE: Control+Right click auto removes a crit from the build tab
++ RFE: Alt+Right Click auto sets the crit to rear facing on the build tab
++ Bug: HarJel showing in the Weapons & Equipment Section
++ Bug: UMU's showing in the Weapons & Equipment Section
++ Bug: Armor showing in the Weapons & Equipment Section
++ Bug: Endo Steel showing in the Weapons & Equipment Section 
++ Bug: Claws now showing damage in the Weapons & Equipment Section
++ New MegaMek.jar
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm

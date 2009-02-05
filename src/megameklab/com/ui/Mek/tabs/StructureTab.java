@@ -28,6 +28,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -71,6 +72,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     String[] isHeatSinkTypes = { "Single", "Double", "Compact" };
     JComboBox heatSinkType = new JComboBox(isHeatSinkTypes);
     JComboBox heatSinkNumber;
+    JComboBox baseChassisHeatSinks;
     String[] techTypes = { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
     JComboBox techType = new JComboBox(techTypes);
     String[] isTechLevels = { "Intro", "Standard", "Advanced", "Experimental", "Unoffical" };
@@ -81,6 +83,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox quadCB = new JCheckBox("Quad");
     JComboBox structureCombo = new JComboBox(EquipmentType.structureNames);
+    Dimension maxSize = new Dimension();
+    JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:", SwingConstants.TRAILING);
+    JLabel structureLabel = new JLabel("Structure:", SwingConstants.TRAILING);
+    JPanel masterPanel;
 
     private CriticalView critView = null;
 
@@ -103,8 +109,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     }
 
     public JPanel enginePanel() {
-        JPanel masterPanel = new JPanel(new SpringLayout());
-        Dimension maxSize = new Dimension();
+        masterPanel = new JPanel(new SpringLayout());
 
         Vector<String> walkMPs = new Vector<String>(26, 1);
 
@@ -123,6 +128,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         weightClass = new JComboBox(weightClasses.toArray());
 
         heatSinkNumber = new JComboBox();
+        baseChassisHeatSinks = new JComboBox();
 
         maxSize.setSize(110, 20);
 
@@ -157,21 +163,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(createLabel("Number:", maxSize));
         masterPanel.add(heatSinkNumber);
 
-        masterPanel.add(createLabel("Structure:", maxSize));
+        masterPanel.add(structureLabel);
         masterPanel.add(structureCombo);
 
-        this.setFieldSize(walkMP, maxSize);
-        this.setFieldSize(walkMP, maxSize);
-        this.setFieldSize(era, maxSize);
-        this.setFieldSize(techType, maxSize);
-        this.setFieldSize(techLevel, maxSize);
-        this.setFieldSize(engineType, maxSize);
-        this.setFieldSize(gyroType, maxSize);
-        this.setFieldSize(cockpitType, maxSize);
-        this.setFieldSize(weightClass, maxSize);
-        this.setFieldSize(heatSinkNumber, maxSize);
-        this.setFieldSize(heatSinkType, maxSize);
-        this.setFieldSize(structureCombo, maxSize);
+        setFieldSize(walkMP, maxSize);
+        setFieldSize(era, maxSize);
+        setFieldSize(techType, maxSize);
+        setFieldSize(techLevel, maxSize);
+        setFieldSize(engineType, maxSize);
+        setFieldSize(gyroType, maxSize);
+        setFieldSize(cockpitType, maxSize);
+        setFieldSize(weightClass, maxSize);
+        setFieldSize(heatSinkNumber, maxSize);
+        setFieldSize(heatSinkType, maxSize);
+        setFieldSize(structureCombo, maxSize);
+        setFieldSize(structureLabel, maxSize);
+        setFieldSize(baseChassisHeatSinks, maxSize);
+        setFieldSize(baseChassisHeatSinksLabel, maxSize);
 
         SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
 
@@ -182,21 +190,46 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     public void refresh() {
         removeAllActionListeners();
-        quadCB.setSelected(unit instanceof QuadMech);
         omniCB.setSelected(unit.isOmni());
+        quadCB.setSelected(unit instanceof QuadMech);
         era.setText(Integer.toString(unit.getYear()));
         gyroType.setSelectedIndex(unit.getGyroType());
         weightClass.setSelectedIndex((int) (unit.getWeight() / 5) - 2);
         cockpitType.setSelectedIndex(unit.getCockpitType());
         heatSinkNumber.removeAllItems();
-        Vector<String> heatSinks = new Vector<String>(1, 1);
+        baseChassisHeatSinks.removeAllItems();
+
         for (int count = unit.getEngine().getWeightFreeEngineHeatSinks(); count < 50; count++) {
-            heatSinks.add(Integer.toString(count));
+            heatSinkNumber.addItem(Integer.toString(count));
         }
-        for (String sinkNumber: heatSinks) {
-            heatSinkNumber.addItem(sinkNumber);
+
+        for (int count = 0; count <= unit.getEngine().integralHeatSinkCapacity(); count++) {
+            baseChassisHeatSinks.addItem(Integer.toString(count));
         }
+
         heatSinkNumber.setSelectedIndex(unit.heatSinks() - unit.getEngine().getWeightFreeEngineHeatSinks());
+        baseChassisHeatSinks.setSelectedIndex(Math.max(0, unit.getEngine().getBaseChassieHeatSinks()));
+
+        if (unit.isOmni()) {
+            masterPanel.remove(structureLabel);
+            masterPanel.remove(structureCombo);
+            masterPanel.add(baseChassisHeatSinksLabel);
+            masterPanel.add(baseChassisHeatSinks);
+            masterPanel.add(structureLabel);
+            masterPanel.add(structureCombo);
+            unit.getEngine().setBaseChassieHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
+            SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
+            masterPanel.setVisible(false);
+            masterPanel.setVisible(true);
+        } else {
+            masterPanel.remove(baseChassisHeatSinksLabel);
+            masterPanel.remove(baseChassisHeatSinks);
+            unit.getEngine().setBaseChassieHeatSinks(-1);
+            SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
+            masterPanel.setVisible(false);
+            masterPanel.setVisible(true);
+        }
+
         engineType.setSelectedIndex(unit.getEngine().getEngineType());
         structureCombo.setSelectedIndex(unit.getStructureType());
 
@@ -268,26 +301,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         critView.refresh();
 
         addAllActionListeners();
+
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
 
         JLabel label = new JLabel(text, SwingConstants.TRAILING);
 
-        label.setMaximumSize(maxSize);
-        label.setMinimumSize(maxSize);
-        label.setPreferredSize(maxSize);
-
+        setFieldSize(label, maxSize);
         return label;
     }
 
-    public void setFieldSize(JComboBox box, Dimension maxSize) {
-        box.setPreferredSize(maxSize);
-        box.setMaximumSize(maxSize);
-        box.setMinimumSize(maxSize);
-    }
-
-    public void setFieldSize(JTextField box, Dimension maxSize) {
+    public void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
@@ -400,6 +425,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         removeAllActionListeners();
                     }
                 } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
+                    int autoSinks = unit.getEngine().getWeightFreeEngineHeatSinks();
+                    UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
+                } else if (combo.equals(baseChassisHeatSinks)) {
+                    unit.getEngine().setBaseChassieHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
                     int autoSinks = unit.getEngine().getWeightFreeEngineHeatSinks();
                     UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
                 } else if (combo.equals(techLevel)) {
@@ -562,10 +591,27 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
             if (check.equals(omniCB)) {
                 unit.setOmni(omniCB.isSelected());
-            } else {
-                // Create Quad
-                refresh.refreshAll();
+                if (unit.isOmni()) {
+                    masterPanel.remove(structureLabel);
+                    masterPanel.remove(structureCombo);
+                    masterPanel.add(baseChassisHeatSinksLabel);
+                    masterPanel.add(baseChassisHeatSinks);
+                    masterPanel.add(structureLabel);
+                    masterPanel.add(structureCombo);
+                    unit.getEngine().setBaseChassieHeatSinks(10 + baseChassisHeatSinks.getSelectedIndex());
+                } else {
+                    masterPanel.remove(baseChassisHeatSinksLabel);
+                    masterPanel.remove(baseChassisHeatSinks);
+                    unit.getEngine().setBaseChassieHeatSinks(-1);
+                }
+                SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
+                masterPanel.setVisible(false);
+                masterPanel.setVisible(true);
+                int autoSinks = unit.getEngine().getWeightFreeEngineHeatSinks();
+                UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
             }
+            refresh.refreshAll();
+
         }
 
     }
@@ -601,6 +647,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         omniCB.removeActionListener(this);
         quadCB.removeActionListener(this);
         structureCombo.removeActionListener(this);
+        baseChassisHeatSinks.removeActionListener(this);
     }
 
     public void addAllActionListeners() {
@@ -617,6 +664,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         omniCB.addActionListener(this);
         quadCB.addActionListener(this);
         structureCombo.addActionListener(this);
+        baseChassisHeatSinks.addActionListener(this);
 
     }
 
