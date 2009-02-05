@@ -130,7 +130,7 @@ public class BuildTab extends ITab implements ActionListener {
     private void autoFillCrits() {
 
         for (EquipmentType eq : buildView.getTableModel().getCrits()) {
-            int externalEngineHS = unit.getEngine().integralHeatSinkCapacity();
+            int externalEngineHS = UnitUtil.getBaseChassieHeatSinks(unit);
             for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
 
                 if ( eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))){
@@ -162,7 +162,14 @@ public class BuildTab extends ITab implements ActionListener {
 
                 if (foundMount != null ) {
                     try {
-                        unit.addEquipment(foundMount, location, false);
+
+                        if (foundMount.isSplit() || foundMount.isSplitable() && critsUsed > 1) {
+                            for (int count = 0; count < critsUsed; count++) {
+                                unit.addEquipment(eq, location, false);
+                            }
+                        } else {
+                            unit.addEquipment(foundMount, location, false);
+                        }
                         UnitUtil.changeMountStatus(unit, foundMount, location, Entity.LOC_NONE, false);
                         break;
                     } catch (Exception ex) {

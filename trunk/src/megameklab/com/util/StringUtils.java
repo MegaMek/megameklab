@@ -144,7 +144,7 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
-        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_CLUB)) {
+        } else if (mount.getType() instanceof MiscType && (mount.getType().hasFlag(MiscType.F_CLUB) || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
             info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false));
         } else {
             info = "  [E]";
