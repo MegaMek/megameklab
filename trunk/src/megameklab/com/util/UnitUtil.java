@@ -41,7 +41,6 @@ import megamek.common.weapons.ISLaserAMS;
 import megamek.common.weapons.MGWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
-import megamek.common.weapons.Weapon;
 
 public class UnitUtil {
 
@@ -493,7 +492,7 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, int hsType) {
-        int engineHSCapacity = UnitUtil.getBaseChassieHeatSinks(unit);
+        int engineHSCapacity = UnitUtil.getBaseChassisHeatSinks(unit);
 
         int heatSinks = hsAmount - engineHSCapacity;
         EquipmentType sinkType;
@@ -554,7 +553,7 @@ public class UnitUtil {
 
         UnitUtil.removeHeatSinks(unit);
 
-        unit.addEngineSinks(hsAmount, UnitUtil.getHeatSinkType(hsType, unit.isClan()), UnitUtil.getBaseChassieHeatSinks(unit));
+        unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit)));
 
         UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
     }
@@ -595,35 +594,9 @@ public class UnitUtil {
     }
 
     public static void changeMountStatus(Entity unit, Mounted eq, int location, int secondaryLocation, boolean rear) {
-        if (eq.getType() instanceof Weapon) {
-            for (Mounted mount : unit.getWeaponList()) {
-                if (mount == eq) {
-                    mount.setLocation(location, rear);
-                    mount.setSecondLocation(secondaryLocation, rear);
-                    mount.setSplit(secondaryLocation > -1);
-                    break;
-                }
-            }
-        } else if (eq.getType() instanceof AmmoType) {
-            for (Mounted mount : unit.getAmmo()) {
-                if (mount == eq) {
-                    mount.setLocation(location, rear);
-                    mount.setSecondLocation(secondaryLocation, rear);
-                    mount.setSplit(secondaryLocation > -1);
-                    break;
-                }
-            }
-        } else {
-            for (Mounted mount : unit.getMisc()) {
-                if (mount == eq) {
-                    mount.setLocation(location, rear);
-                    mount.setSecondLocation(secondaryLocation, rear);
-                    mount.setSplit(secondaryLocation > -1);
-                    break;
-                }
-            }
-        }
-
+        eq.setLocation(location, rear);
+        eq.setSecondLocation(secondaryLocation, rear);
+        eq.setSplit(secondaryLocation > -1);
     }
 
     public static boolean hasTargComp(Entity unit) {
@@ -961,17 +934,22 @@ public class UnitUtil {
             sb.append(((WeaponType) eq).getHeat());
         }
         sb.append("<Br>Cost: ");
-        sb.append(myFormatter.format((int) eq.getCost()));
+
+        double cost = eq.getCost();
+        if (cost == EquipmentType.COST_VARIABLE) {
+            cost = eq.resolveVariableCost(unit);
+        }
+        sb.append(myFormatter.format(cost));
         sb.append(" CBills");
         sb.append("</html>");
         return sb.toString();
     }
 
-    public static int getBaseChassieHeatSinks(Mech unit) {
+    public static int getBaseChassisHeatSinks(Mech unit) {
         int engineHSCapacity = unit.getEngine().integralHeatSinkCapacity();
 
         if (unit.isOmni()) {
-            engineHSCapacity = Math.min(engineHSCapacity, unit.getEngine().getBaseChassieHeatSinks());
+            engineHSCapacity = Math.min(engineHSCapacity, unit.getEngine().getBaseChassisHeatSinks());
         }
 
         return engineHSCapacity;

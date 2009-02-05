@@ -243,6 +243,10 @@ public class PrintMech implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
 
+        if (mech.hasCompositeStructure()) {
+            g2d.setFont(UnitUtil.getNewFont(g2d, EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_COMPOSITE), true, 35, 10.0f));
+            g2d.drawString(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_COMPOSITE), 448, 523);
+        }
 
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
         g2d.drawString(techBase, 177, 145);

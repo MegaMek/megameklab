@@ -196,7 +196,7 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadHeatSinks() {
-        int engineHeatSinks = UnitUtil.getBaseChassieHeatSinks(unit);
+        int engineHeatSinks = UnitUtil.getBaseChassisHeatSinks(unit);
         for (Mounted mount : unit.getMisc()) {
 
             if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK))) {

@@ -208,7 +208,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         heatSinkNumber.setSelectedIndex(unit.heatSinks() - unit.getEngine().getWeightFreeEngineHeatSinks());
-        baseChassisHeatSinks.setSelectedIndex(Math.max(0, unit.getEngine().getBaseChassieHeatSinks()));
+        baseChassisHeatSinks.setSelectedIndex(Math.max(0, unit.getEngine().getBaseChassisHeatSinks()));
 
         if (unit.isOmni()) {
             masterPanel.remove(structureLabel);
@@ -217,14 +217,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             masterPanel.add(baseChassisHeatSinks);
             masterPanel.add(structureLabel);
             masterPanel.add(structureCombo);
-            unit.getEngine().setBaseChassieHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
+            unit.getEngine().setBaseChassisHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
             SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
             masterPanel.setVisible(false);
             masterPanel.setVisible(true);
         } else {
             masterPanel.remove(baseChassisHeatSinksLabel);
             masterPanel.remove(baseChassisHeatSinks);
-            unit.getEngine().setBaseChassieHeatSinks(-1);
+            unit.getEngine().setBaseChassisHeatSinks(-1);
             SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
             masterPanel.setVisible(false);
             masterPanel.setVisible(true);
@@ -343,8 +343,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                             break;
                         case Mech.COCKPIT_TORSO_MOUNTED:
                             removeSystemCrits(Mech.SYSTEM_ENGINE);
-                            unit.addTorsoMountedCockpit();
                             unit.addEngineCrits();
+                            unit.addTorsoMountedCockpit();
                             break;
                         case Mech.COCKPIT_INDUSTRIAL:
                             unit.addIndustrialCockpit();
@@ -428,7 +428,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     int autoSinks = unit.getEngine().getWeightFreeEngineHeatSinks();
                     UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
                 } else if (combo.equals(baseChassisHeatSinks)) {
-                    unit.getEngine().setBaseChassieHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
+                    unit.getEngine().setBaseChassisHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
                     int autoSinks = unit.getEngine().getWeightFreeEngineHeatSinks();
                     UnitUtil.updateHeatSinks(unit, heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
                 } else if (combo.equals(techLevel)) {
@@ -598,11 +598,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     masterPanel.add(baseChassisHeatSinks);
                     masterPanel.add(structureLabel);
                     masterPanel.add(structureCombo);
-                    unit.getEngine().setBaseChassieHeatSinks(10 + baseChassisHeatSinks.getSelectedIndex());
+                    unit.getEngine().setBaseChassisHeatSinks(10 + baseChassisHeatSinks.getSelectedIndex());
                 } else {
                     masterPanel.remove(baseChassisHeatSinksLabel);
                     masterPanel.remove(baseChassisHeatSinks);
-                    unit.getEngine().setBaseChassieHeatSinks(-1);
+                    unit.getEngine().setBaseChassisHeatSinks(-1);
                 }
                 SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
                 masterPanel.setVisible(false);

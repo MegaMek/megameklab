@@ -57,8 +57,11 @@ public class BuildTab extends ITab implements ActionListener {
 
     private JButton autoFillButton = new JButton("Auto Fill");
     private JButton resetButton = new JButton("Reset");
+    private JButton compactButton = new JButton("Compact");
+
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
+    private String COMPACTCOMMAND = "compactbuttoncommand";
 
     public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons) {
         this.unit = unit;
@@ -75,8 +78,11 @@ public class BuildTab extends ITab implements ActionListener {
         autoFillButton.setActionCommand(AUTOFILLCOMMAND);
         resetButton.setMnemonic('R');
         resetButton.setActionCommand(RESETCOMMAND);
+        compactButton.setMnemonic('C');
+        compactButton.setActionCommand(COMPACTCOMMAND);
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
+        buttonPanel.add(compactButton);
 
         mainPanel.add(buttonPanel);
 
@@ -124,13 +130,15 @@ public class BuildTab extends ITab implements ActionListener {
             autoFillCrits();
         } else if (e.getActionCommand().equals(RESETCOMMAND)) {
             resetCrits();
+        } else if (e.getActionCommand().equals(COMPACTCOMMAND)) {
+            compactCrits();
         }
     }
 
     private void autoFillCrits() {
 
         for (EquipmentType eq : buildView.getTableModel().getCrits()) {
-            int externalEngineHS = UnitUtil.getBaseChassieHeatSinks(unit);
+            int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(unit);
             for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
 
                 if ( eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))){
@@ -163,9 +171,9 @@ public class BuildTab extends ITab implements ActionListener {
                 if (foundMount != null ) {
                     try {
 
-                        if (foundMount.isSplit() || foundMount.isSplitable() && critsUsed > 1) {
+                        if (foundMount.getType().isSpreadable() || foundMount.isSplitable() && critsUsed > 1) {
                             for (int count = 0; count < critsUsed; count++) {
-                                unit.addEquipment(eq, location, false);
+                                unit.addEquipment(foundMount, location, false);
                             }
                         } else {
                             unit.addEquipment(foundMount, location, false);
@@ -192,14 +200,22 @@ public class BuildTab extends ITab implements ActionListener {
         refresh.refreshAll();
     }
 
+    private void compactCrits() {
+        UnitUtil.compactCriticals(unit);
+        UnitUtil.reIndexCrits(unit);
+        refresh.refreshAll();
+    }
+
     public void removeAllActionListeners() {
         autoFillButton.removeActionListener(this);
         resetButton.removeActionListener(this);
+        compactButton.removeActionListener(this);
     }
 
     public void addAllActionListeners() {
         autoFillButton.addActionListener(this);
         resetButton.addActionListener(this);
+        compactButton.addActionListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
