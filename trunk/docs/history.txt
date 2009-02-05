@@ -16,6 +16,7 @@ V 0.0.0.12-Dev
 + Bug: Endo Steel showing in the Weapons & Equipment Section 
 + Bug: Claws now showing damage in the Weapons & Equipment Section
 + New MegaMek.jar
++ Added Help on how to add images to Record Sheets.
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm
