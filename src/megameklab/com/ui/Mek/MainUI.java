@@ -46,6 +46,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -256,6 +257,16 @@ public class MainUI extends JFrame implements RefreshListener {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuHelpAbout_actionPerformed();
+            }
+        });
+        help.add(item);
+
+        item = new JMenuItem();
+        item.setText("Record Sheet Images");
+        item.setMnemonic('R');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuHelpFluff_actionPerformed();
             }
         });
         help.add(item);
@@ -777,6 +788,7 @@ public class MainUI extends JFrame implements RefreshListener {
         EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
         StringBuffer sb = new StringBuffer();
         TestEntity testEntity = null;
+
         testEntity = new TestMech(entity, entityVerifier.mechOption, null);
 
         testEntity.correctEntity(sb, true);
@@ -827,6 +839,42 @@ public class MainUI extends JFrame implements RefreshListener {
         child.add(license3);
         child.add(license4);
         child.add(new JLabel("\n"));
+
+        // then add child panel to the content pane.
+        dlg.getContentPane().add(child);
+
+        // set the location of the dialog
+        Dimension dlgSize = dlg.getPreferredSize();
+        Dimension frmSize = getSize();
+        Point loc = getLocation();
+        dlg.setLocation((frmSize.width - dlgSize.width) / 2 + loc.x, (frmSize.height - dlgSize.height) / 2 + loc.y);
+        dlg.setModal(true);
+        dlg.setResizable(false);
+        dlg.pack();
+        dlg.setVisible(true);
+    }
+
+    // Show how to create fluff images for Record Sheets
+    public void jMenuHelpFluff_actionPerformed() {
+
+        // make the dialog
+        JDialog dlg = new JDialog(this, "Image Help");
+
+        // set up the contents
+        JPanel child = new JPanel();
+        child.setLayout(new BoxLayout(child, BoxLayout.Y_AXIS));
+
+        // set the text up.
+        JTextArea recordSheetImageHelp = new JTextArea();
+
+        recordSheetImageHelp.setEditable(false);
+
+        recordSheetImageHelp.setText("To add a fluff image to a record sheet the following steps need to be taken\nPlease Note that currently only \'Mechs use fluff Images\nPlace the image you want to use in the data/images/fluff folder\nMegaMekLab will attempt to match the name of the \'Mech your are printing\nwith the images in the fluff folder.\nThe following is an example of how MegaMekLab look for the image\nExample\nYour \'Mech is called Archer ARC-7Q\nMegaMekLab would look for the following\n\nArcher ARC-7Q.jpg/png/gif\nARC-7Q.jpg/png/gif\nArcher.jpg/png/gif\nhud.png\n");
+        // center everything
+        recordSheetImageHelp.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // add to child panel
+        child.add(recordSheetImageHelp);
 
         // then add child panel to the content pane.
         dlg.getContentPane().add(child);
