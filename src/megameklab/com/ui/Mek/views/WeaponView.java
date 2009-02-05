@@ -673,7 +673,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         }
 
         if (UnitUtil.hasTargComp(unit)) {
-            UnitUtil.updateTC(unit);
+            UnitUtil.updateTC(unit, UnitUtil.hasClanTC(unit));
         }
         fireTableRefresh();
 

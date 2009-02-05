@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -70,7 +69,7 @@ public class EquipmentView extends IView implements ActionListener {
     private Vector<EquipmentType> masterEquipmentList = new Vector<EquipmentType>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
-    private TreeMap<String, EquipmentType> equipmentTypes;
+    private Vector<EquipmentType> equipmentTypes;
 
     private String ADD_COMMAND = "ADD";
     private String REMOVE_COMMAND = "REMOVE";
@@ -176,11 +175,11 @@ public class EquipmentView extends IView implements ActionListener {
     private void loadEquipmentCombo() {
 
         equipmentCombo.removeAllItems();
-        equipmentTypes = new TreeMap<String, EquipmentType>();
+        equipmentTypes = new Vector<EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
-                equipmentTypes.put(eq.getName(), eq);
+                equipmentTypes.add(eq);
                 equipmentCombo.addItem(UnitUtil.getCritName(unit, eq));
             }
         }
@@ -197,7 +196,7 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadHeatSinks() {
-        int engineHeatSinks = unit.getEngine().integralHeatSinkCapacity();
+        int engineHeatSinks = UnitUtil.getBaseChassieHeatSinks(unit);
         for (Mounted mount : unit.getMisc()) {
 
             if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK))) {
@@ -263,46 +262,47 @@ public class EquipmentView extends IView implements ActionListener {
             if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TSM)) {
                 if (!unit.hasTSM()) {
                     createSpreadMounts(UnitUtil.TSM);
-                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.TSM));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.INDUSTRIALTSM)) {
                 if (!unit.hasIndustrialTSM()) {
                     createSpreadMounts(UnitUtil.INDUSTRIALTSM);
-                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.INDUSTRIALTSM));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.ENVIROSEAL)) {
                 if (!unit.hasEnvironmentalSealing()) {
                     createSpreadMounts(UnitUtil.ENVIROSEAL);
-                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.ENVIROSEAL));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.NULLSIG)) {
                 if (!unit.hasNullSig()) {
                     createSpreadMounts(UnitUtil.NULLSIG);
-                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.NULLSIG));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.VOIDSIG)) {
                 if (!unit.hasVoidSig()) {
                     createSpreadMounts(UnitUtil.VOIDSIG);
-                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.VOIDSIG));
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TRACKS)) {
                 if (!unit.hasTracks()) {
                     createSpreadMounts(UnitUtil.TRACKS);
-                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.TRACKS));
                 }
-            }else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TARGETINGCOMPUTER)) {
+            } else if (equipmentCombo.getSelectedItem().toString().startsWith(UnitUtil.TARGETINGCOMPUTER)) {
                 if (!UnitUtil.hasTargComp(unit)) {
-                    UnitUtil.updateTC(unit);
-                    equipmentList.addCrit(equipmentTypes.get(UnitUtil.TARGETINGCOMPUTER));
+
+                    boolean isClan = false;
+                    if (unit.isMixedTech()) {
+                        String tcType =equipmentCombo.getSelectedItem().toString().trim();
+                        if ( (tcType.endsWith("(Clan)") && !unit.isClan()) || (unit.isClan() && !tcType.endsWith("(IS)"))) {
+                            isClan = true;
+                        }
+                    }
+                    UnitUtil.updateTC(unit, isClan);
                 }
             } else {
                 try {
-                    unit.addEquipment(new Mounted(unit, equipmentTypes.get(equipmentCombo.getSelectedItem().toString())), Entity.LOC_NONE, false);
+                    unit.addEquipment(new Mounted(unit, equipmentTypes.elementAt(equipmentCombo.getSelectedIndex())), Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                equipmentList.addCrit(equipmentTypes.get(equipmentCombo.getSelectedItem().toString()));
             }
+            equipmentList.addCrit(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()));
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
 
             int startRow = equipmentTable.getSelectedRow();

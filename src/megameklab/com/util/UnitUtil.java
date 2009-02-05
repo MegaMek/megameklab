@@ -1,11 +1,11 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
@@ -164,7 +164,7 @@ public class UnitUtil {
 
         for (int pos = 0; pos < unit.getEquipment().size();) {
             Mounted mount = unit.getEquipment().get(pos);
-            if (mount.getType().getName().equals(mountName)) {
+            if (mount.getType().getName().equals(mountName) || mount.getType().getInternalName().equals(mountName)) {
                 unit.getEquipment().remove(pos);
                 unit.getMisc().remove(mount);
             } else {
@@ -187,7 +187,7 @@ public class UnitUtil {
                 if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted mount = unit.getEquipment(crit.getIndex());
 
-                    if ((mount != null) && mount.getType().getName().equals(critType)) {
+                    if ((mount != null) && (mount.getType().getName().equals(critType) || mount.getType().getInternalName().equals(critType))) {
                         crit = null;
                         unit.setCritical(location, slot, crit);
                     }
@@ -210,7 +210,7 @@ public class UnitUtil {
         /*
          * if (eq.getType().getName().equals(UnitUtil.TSM)) { UnitUtil.removeTSMCrits(unit); } else
          */
-        if (eq.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER)) {
+        if (eq.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER) || eq.getType().getInternalName().equals(UnitUtil.CLTARGETINGCOMPUTER) || eq.getType().getInternalName().equals(UnitUtil.ISTARGETINGCOMPUTER)) {
             UnitUtil.removeCrits(unit, UnitUtil.TARGETINGCOMPUTER);
         } else if (eq.isSplitable() || eq.getType().isSpreadable()) {
             UnitUtil.removeSplitCriticals(unit, eq);
@@ -288,15 +288,35 @@ public class UnitUtil {
     }
 
     /**
+     * Check to see if the unit is using Clan TC
+     *
+     * @param unit
+     * @return
+     */
+    public static boolean hasClanTC(Mech unit) {
+
+        for (Mounted mount : unit.getMisc()) {
+            if (mount.getType().getInternalName().equals(CLTARGETINGCOMPUTER)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Updates TC Crits and Mounts based on weapons on a unit or if the TC has been removed.
      *
      * @param unit
      */
-    public static void updateTC(Mech unit) {
+    public static void updateTC(Mech unit, boolean isClan) {
 
         UnitUtil.removeCrits(unit, UnitUtil.TARGETINGCOMPUTER);
+        UnitUtil.removeCrits(unit, UnitUtil.ISTARGETINGCOMPUTER);
+        UnitUtil.removeCrits(unit, UnitUtil.CLTARGETINGCOMPUTER);
         UnitUtil.removeMounts(unit, UnitUtil.TARGETINGCOMPUTER);
-        createTCMounts(unit);
+        UnitUtil.removeMounts(unit, UnitUtil.ISTARGETINGCOMPUTER);
+        UnitUtil.removeMounts(unit, UnitUtil.CLTARGETINGCOMPUTER);
+        createTCMounts(unit, isClan);
     }
 
     /**
@@ -304,11 +324,17 @@ public class UnitUtil {
      *
      * @param unit
      */
-    public static void createTCMounts(Mech unit) {
+    public static void createTCMounts(Mech unit, boolean isClan) {
         int TCCount = 0;
         String TargetingComputerType = "";
 
-        if (unit.isClan()) {
+        if (unit.isMixedTech()) {
+            if (isClan) {
+                TargetingComputerType = UnitUtil.CLTARGETINGCOMPUTER;
+            } else {
+                TargetingComputerType = UnitUtil.ISTARGETINGCOMPUTER;
+            }
+        } else if (unit.isClan()) {
             TargetingComputerType = UnitUtil.CLTARGETINGCOMPUTER;
         } else {
             TargetingComputerType = UnitUtil.ISTARGETINGCOMPUTER;
@@ -467,7 +493,9 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, int hsType) {
-        int heatSinks = hsAmount - unit.getEngine().integralHeatSinkCapacity();
+        int engineHSCapacity = UnitUtil.getBaseChassieHeatSinks(unit);
+
+        int heatSinks = hsAmount - engineHSCapacity;
         EquipmentType sinkType;
 
         sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan()));
@@ -526,7 +554,7 @@ public class UnitUtil {
 
         UnitUtil.removeHeatSinks(unit);
 
-        unit.addEngineSinks(hsAmount, UnitUtil.getHeatSinkType(hsType, unit.isClan()));
+        unit.addEngineSinks(hsAmount, UnitUtil.getHeatSinkType(hsType, unit.isClan()), UnitUtil.getBaseChassieHeatSinks(unit));
 
         UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
     }
@@ -539,15 +567,22 @@ public class UnitUtil {
      */
     public static boolean isPrintableEquipment(EquipmentType eq) {
 
+        if (UnitUtil.isArmor(eq)) {
+            return false;
+        }
+
+        if (UnitUtil.isSpreadEquipment(eq)) {
+            return false;
+        }
+
+        if ( UnitUtil.isJumpJet(eq) ){
+            return false;
+        }
         if (!eq.isHittable()) {
             return false;
         }
 
-        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_MASC)) {
-            return false;
-        }
-
-        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_JUMP_BOOSTER))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC) || eq.hasFlag(MiscType.F_HARJEL))) {
             return false;
         }
 
@@ -758,9 +793,9 @@ public class UnitUtil {
                         newMount.setLocation(location, mount.isRearMounted());
                         cs.setMount(newMount);
                         unit.getEquipment().add(newMount);
-                        if (!UnitUtil.isSpreadEquipment(mount.getType())) {
+                        // if (!UnitUtil.isSpreadEquipment(mount.getType())) {
                             unit.getMisc().add(newMount);
-                        }
+                        // }
                         cs.setIndex(unit.getEquipmentNum(newMount));
                     } else {
                         cs.setMount(mount);
@@ -876,7 +911,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isJumpJet(EquipmentType eq) {
-        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_JUMP_BOOSTER) || eq.hasFlag(MiscType.F_JUMP_JET))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_JUMP_BOOSTER) || eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU))) {
             return true;
         }
 
@@ -932,4 +967,13 @@ public class UnitUtil {
         return sb.toString();
     }
 
+    public static int getBaseChassieHeatSinks(Mech unit) {
+        int engineHSCapacity = unit.getEngine().integralHeatSinkCapacity();
+
+        if (unit.isOmni()) {
+            engineHSCapacity = Math.min(engineHSCapacity, unit.getEngine().getBaseChassieHeatSinks());
+        }
+
+        return engineHSCapacity;
+    }
 }
