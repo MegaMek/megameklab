@@ -21,6 +21,7 @@ V 0.0.0.12-Dev
 + Bug: Torso Mounted Cockpit Not allocating correctly
 + RFE: Compact Critical Button for Build Tab
 + Added Composite String to Record Sheet
++ Adjusted Composite String on Biped RS
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm
