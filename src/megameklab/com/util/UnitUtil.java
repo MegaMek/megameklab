@@ -581,7 +581,7 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC) || eq.hasFlag(MiscType.F_HARJEL))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS))) {
             return false;
         }
 
