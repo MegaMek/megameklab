@@ -84,6 +84,7 @@ import megameklab.com.ui.Vehicle.Printing.PrintVTOL;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.util.CConfig;
+import megameklab.com.util.ConfigurationDialog;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
@@ -238,6 +239,16 @@ public class MainUI extends JFrame implements RefreshListener {
         printMenu.add(vehicleMenu);
 
         file.add(printMenu);
+
+        item = new JMenuItem("Configuration");
+        item.setMnemonic('C');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuConfiguration_actionPerformed(e);
+            }
+        });
+        file.add(item);
+
 
         file.addSeparator();
 
@@ -890,13 +901,18 @@ public class MainUI extends JFrame implements RefreshListener {
         dlg.setVisible(true);
     }
 
+    public void jMenuConfiguration_actionPerformed(ActionEvent event) {
+        new ConfigurationDialog(config);
+    }
+
+
     public void reloadTabs() {
         masterPanel.removeAll();
         ConfigPane.removeAll();
 
         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
 
-        structureTab = new StructureTab(entity);
+        structureTab = new StructureTab(entity, config);
 
         armorTab = new ArmorTab(entity);
         armorTab.setArmorType(entity.getArmorType());
@@ -906,7 +922,7 @@ public class MainUI extends JFrame implements RefreshListener {
         statusbar = new StatusBar(entity);
         equipmentTab = new EquipmentTab(entity);
         weaponTab = new WeaponTab(entity);
-        buildTab = new BuildTab(entity, equipmentTab, weaponTab);
+        buildTab = new BuildTab(entity, equipmentTab, weaponTab, config);
         header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
         armorTab.addRefreshedListener(this);

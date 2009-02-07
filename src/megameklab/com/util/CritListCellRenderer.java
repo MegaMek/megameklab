@@ -35,15 +35,16 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     private int index = -1;
     private Entity unit = null;
     private boolean useColor = false;
-
+    private CConfig config;
     /**
      *
      */
     private static final long serialVersionUID = 1599368063832366744L;
 
-    public CritListCellRenderer(Entity unit, boolean useColor) {
+    public CritListCellRenderer(Entity unit, boolean useColor, CConfig config) {
         this.unit = unit;
         this.useColor = useColor;
+        this.config = config;
     }
 
     @Override
@@ -57,7 +58,15 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         if (cs != null) {
 
             if (cs.getType() == CriticalSlot.TYPE_SYSTEM && useColor) {
-                label.setForeground(Color.green.darker());
+                try {
+                    label.setBackground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_SYSTEMS_BACKGROUND))));
+                } catch (Exception ex) {
+                }
+                try {
+                    label.setForeground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_SYSTEMS_FOREGROUND))));
+                } catch (Exception ex) {
+                }
+
             } else if (cs.getMount() != null) {
 
                 Mounted mount = cs.getMount();
@@ -71,9 +80,33 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                     label.setText(name);
 
                     if (mount.getType() instanceof WeaponType) {
-                        label.setForeground(Color.red.darker());
+                        try {
+                            label.setBackground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_WEAPONS_BACKGROUND))));
+                        } catch (Exception ex) {
+                        }
+                        try {
+                            label.setForeground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_WEAPONS_FOREGROUND))));
+                        } catch (Exception ex) {
+                        }
                     } else if (mount.getType() instanceof AmmoType) {
-                        label.setForeground(Color.blue.darker());
+                        try {
+                            label.setBackground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_AMMO_BACKGROUND))));
+                        } catch (Exception ex) {
+                        }
+                        try {
+                            label.setForeground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_AMMO_FOREGROUND))));
+                        } catch (Exception ex) {
+                        }
+
+                    } else {
+                        try {
+                            label.setBackground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_EQUIPMENT_BACKGROUND))));
+                        } catch (Exception ex) {
+                        }
+                        try {
+                            label.setForeground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_EQUIPMENT_FOREGROUND))));
+                        } catch (Exception ex) {
+                        }
                     }
                 }
                 label.setToolTipText(UnitUtil.getToolTipInfo(unit, mount.getType()));
