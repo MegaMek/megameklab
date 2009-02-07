@@ -887,23 +887,33 @@ public class ImageHelper {
         return (int) (rect.getWidth());
     }
 
-    public static void drawArmorPip(Graphics2D g2d, float width, float height) {
+    public static void drawArmorPip(Graphics2D g2d, float width, float height, boolean hardened) {
         Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("O", width, height);
+        if (hardened) {
+            // print a middle-dot inside the "O" for hardened armor (0X00B7 is
+            // the unicode middle-dot character
+            g2d.drawString(new Character((char) 0x00B7).toString(), (float) (width+1.75), height);
+        }
     }
 
-    public static void drawTankArmorPip(Graphics2D g2d, float width, float height) {
-        ImageHelper.drawTankArmorPip(g2d, width, height, 9.0f);
+    public static void drawTankArmorPip(Graphics2D g2d, float width, float height, boolean hardened) {
+        ImageHelper.drawTankArmorPip(g2d, width, height, 9.0f, hardened);
     }
 
-    public static void drawTankArmorPip(Graphics2D g2d, float width, float height, float fontsize) {
+    public static void drawTankArmorPip(Graphics2D g2d, float width, float height, float fontsize, boolean hardened) {
         Font font = new Font("Arial", Font.PLAIN, 9);
         font = font.deriveFont(fontsize);
         g2d.setFont(font);
         g2d.setColor(Color.BLACK);
         g2d.setBackground(Color.WHITE);
         g2d.drawString("O", width, height);
+        if (hardened) {
+            // print a middle-dot inside the "O" for hardened armor (0X00B7 is
+            // the unicode middle-dot character
+            g2d.drawString(new Character((char) 0x00B7).toString(), (float) (width+1.75), height);
+        }
     }
 
     public static void drawTankISPip(Graphics2D g2d, int width, int height) {

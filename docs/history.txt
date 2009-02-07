@@ -25,6 +25,7 @@ V 0.0.0.12-Dev
 + New MegaMek.jar
 + RFE: Crit color configuration dialog.
 + Label locations in CriticalView
++ RFE: Draw dot inside armor bubble when unit has hardened armor
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm
