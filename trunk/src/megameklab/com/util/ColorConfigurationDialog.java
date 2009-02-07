@@ -113,7 +113,6 @@ public final class ColorConfigurationDialog extends JDialog implements ActionLis
         return masterColor;
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equals(saveCommand)) {
