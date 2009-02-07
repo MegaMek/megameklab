@@ -434,7 +434,7 @@ public class PrintQuad implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.height += pipShift.height;
         }
 
@@ -452,7 +452,7 @@ public class PrintQuad implements Printable {
 
         column.width -= pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
 
             if (pos % pipsPerColumn == 0) {
@@ -477,7 +477,7 @@ public class PrintQuad implements Printable {
         column.width += pipShift.width * 2;
         pipShift.width *= -1;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
 
             if (pos % 4 == 0) {
@@ -500,7 +500,7 @@ public class PrintQuad implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.height += pipShift.height;
         }
 
@@ -518,7 +518,7 @@ public class PrintQuad implements Printable {
 
         column.width -= pipShift.width / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
 
             if (pos % pipsPerColumn == 0) {
@@ -543,7 +543,7 @@ public class PrintQuad implements Printable {
         column.width += pipShift.width * 2;
         pipShift.width *= -1;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
 
             if (pos % 4 == 0) {
@@ -567,7 +567,7 @@ public class PrintQuad implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
             if (pos % pipsPerColumn == 0) {
                 column.height += pipShift.height;
@@ -599,7 +599,7 @@ public class PrintQuad implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
             if (pos % pipsPerColumn == 0) {
                 column.height += pipShift.height;
@@ -644,7 +644,7 @@ public class PrintQuad implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
             if (pos % pipsPerLine == 0) {
                 column.height += pipShift.height;
@@ -672,7 +672,7 @@ public class PrintQuad implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
         }
 
@@ -688,7 +688,7 @@ public class PrintQuad implements Printable {
         pipShift.width *= -1;
         column.width += pipShift.width;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
         }
 
@@ -705,7 +705,7 @@ public class PrintQuad implements Printable {
         pipShift.width *= -1;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
         }
 
@@ -721,7 +721,7 @@ public class PrintQuad implements Printable {
         pipShift.width *= -1;
         column.width += pipShift.width;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
             if (pos % 5 == 0) {
                 column.height += pipShift.height;
@@ -739,7 +739,7 @@ public class PrintQuad implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
 
             if (pos % 4 == 0) {
@@ -756,7 +756,7 @@ public class PrintQuad implements Printable {
         pips = Math.min(3, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
         }
 
@@ -787,7 +787,7 @@ public class PrintQuad implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
             if (pos % pipsPerLine == 0) {
                 column.height += pipShift.height;
@@ -810,7 +810,7 @@ public class PrintQuad implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
         }
 
@@ -826,7 +826,7 @@ public class PrintQuad implements Printable {
         // pipShift.width *= -1;
         column.width -= pipShift.width * 2;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
         }
 
@@ -843,7 +843,7 @@ public class PrintQuad implements Printable {
         // pipShift.width *= -1;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
         }
 
@@ -859,7 +859,7 @@ public class PrintQuad implements Printable {
         // pipShift.width *= -1;
         column.width -= pipShift.width * 4;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
             if (pos % 5 == 0) {
                 column.height += pipShift.height;
@@ -877,7 +877,7 @@ public class PrintQuad implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
 
             if (pos % 4 == 0) {
@@ -894,7 +894,7 @@ public class PrintQuad implements Printable {
         pips = Math.min(3, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
         }
     }
@@ -920,7 +920,7 @@ public class PrintQuad implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
             if (pos % pipsPerLine == 0) {
                 column.height += pipShift.height;
@@ -941,7 +941,7 @@ public class PrintQuad implements Printable {
         int pips = mech.getArmor(Mech.LOC_HEAD);
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, head.width, head.height);
+            ImageHelper.drawArmorPip(g2d, head.width, head.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             head.width += pipShift.width;
             if ((pos == 4) || (pos == 7)) {
                 head.height += pipShift.height;
@@ -963,7 +963,7 @@ public class PrintQuad implements Printable {
         pipShift.height += Math.max(0, 8 - (pips / 5));
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
+            ImageHelper.drawArmorPip(g2d, column.width, column.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
             column.width += pipShift.width;
             if (pos % 5 == 0) {
                 column.height += pipShift.height;
@@ -1254,7 +1254,7 @@ public class PrintQuad implements Printable {
 
                 if (m.isRearMounted()) {
                     critName.append("(R)");
-                } else if (m.getType() instanceof AmmoType && ((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD) {
+                } else if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                     AmmoType ammo = (AmmoType) m.getType();
 
                     critName = new StringBuffer("Ammo (");
