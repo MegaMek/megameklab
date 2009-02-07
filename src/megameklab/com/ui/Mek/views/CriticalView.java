@@ -29,6 +29,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.loaders.MtfFile;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.DropTargetCriticalList;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -52,12 +53,14 @@ public class CriticalView extends IView {
     private JPanel legPanel = new JPanel();
     private RefreshListener refresh;
 
+    private CConfig config;
     private boolean showEmpty = false;
 
-    public CriticalView(Mech unit, boolean showEmpty, RefreshListener refresh) {
+    public CriticalView(Mech unit, boolean showEmpty, RefreshListener refresh, CConfig config) {
         super(unit);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
+        this.config = config;
 
         JPanel mainPanel = new JPanel();
 
@@ -143,7 +146,7 @@ public class CriticalView extends IView {
                         }
                     }
                 }
-                DropTargetCriticalList CriticalSlotList = new DropTargetCriticalList(critNames, unit, refresh, showEmpty);
+                DropTargetCriticalList CriticalSlotList = new DropTargetCriticalList(critNames, unit, refresh, showEmpty, config);
                 CriticalSlotList.setVisibleRowCount(critNames.size());
                 CriticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 CriticalSlotList.setFont(new Font("Arial",Font.PLAIN,10));

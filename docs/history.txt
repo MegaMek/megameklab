@@ -23,6 +23,7 @@ V 0.0.0.12-Dev
 + Added Composite String to Record Sheet
 + Adjusted Composite String on Biped RS
 + New MegaMek.jar
++ RFE: Crit color configuration dialog.
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm

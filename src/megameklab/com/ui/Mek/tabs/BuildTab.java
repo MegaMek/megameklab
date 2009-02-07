@@ -35,6 +35,7 @@ import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megameklab.com.ui.Mek.views.BuildView;
 import megameklab.com.ui.Mek.views.CriticalView;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -63,13 +64,13 @@ public class BuildTab extends ITab implements ActionListener {
     private String RESETCOMMAND = "resetbuttoncommand";
     private String COMPACTCOMMAND = "compactbuttoncommand";
 
-    public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons) {
+    public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons, CConfig config) {
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new CriticalView(this.unit, true, refresh);
+        critView = new CriticalView(this.unit, true, refresh, config);
         buildView = new BuildView(this.unit);
 
         mainPanel.add(buildView);
