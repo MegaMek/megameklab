@@ -49,6 +49,7 @@ import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megameklab.com.ui.Mek.views.CriticalView;
+import megameklab.com.util.CConfig;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
@@ -90,7 +91,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private CriticalView critView = null;
 
-    public StructureTab(Mech unit) {
+    public StructureTab(Mech unit, CConfig config) {
         JScrollPane scroll = new JScrollPane();
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -101,7 +102,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         // this.add(enginePanel());
-        critView = new CriticalView(unit, false, refresh);
+        critView = new CriticalView(unit, false, refresh, config);
         scroll.setViewportView(critView);
 
         this.add(splitter);
