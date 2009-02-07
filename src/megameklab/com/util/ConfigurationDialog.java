@@ -142,7 +142,6 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         return null;
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equals(saveCommand)) {
