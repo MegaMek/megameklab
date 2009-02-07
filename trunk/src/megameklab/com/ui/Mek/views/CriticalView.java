@@ -28,6 +28,7 @@ import javax.swing.ListSelectionModel;
 import megamek.common.CriticalSlot;
 import megamek.common.Mech;
 import megamek.common.Mounted;
+import megamek.common.QuadMech;
 import megamek.common.loaders.MtfFile;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.DropTargetCriticalList;
@@ -70,11 +71,15 @@ public class CriticalView extends IView {
         torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
         legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
 
+        headPanel.setBorder(BorderFactory.createTitledBorder("Head"));
         mainPanel.add(headPanel);
 
         torsoPanel.add(laPanel);
+        ltPanel.setBorder(BorderFactory.createTitledBorder("Left Torso"));
         torsoPanel.add(ltPanel);
+        ctPanel.setBorder(BorderFactory.createTitledBorder("Center Torso"));
         torsoPanel.add(ctPanel);
+        rtPanel.setBorder(BorderFactory.createTitledBorder("Right Torso"));
         torsoPanel.add(rtPanel);
         torsoPanel.add(raPanel);
         mainPanel.add(torsoPanel);
@@ -146,43 +151,66 @@ public class CriticalView extends IView {
                         }
                     }
                 }
-                DropTargetCriticalList CriticalSlotList = new DropTargetCriticalList(critNames, unit, refresh, showEmpty, config);
-                CriticalSlotList.setVisibleRowCount(critNames.size());
-                CriticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                CriticalSlotList.setFont(new Font("Arial",Font.PLAIN,10));
-                CriticalSlotList.setName(Integer.toString(location));
-                CriticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
+                if (critNames.size() == 0) {
+                    critNames.add(MtfFile.EMPTY);
+                }
+                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(critNames, unit, refresh, showEmpty, config);
+                criticalSlotList.setVisibleRowCount(critNames.size());
+                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                criticalSlotList.setFont(new Font("Arial",Font.PLAIN,10));
+                criticalSlotList.setName(Integer.toString(location));
+                criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
                 switch (location) {
                 case Mech.LOC_HEAD:
-                    headPanel.add(CriticalSlotList);
+                    headPanel.add(criticalSlotList);
                     headPanel.repaint();
                     break;
                 case Mech.LOC_LARM:
-                    laPanel.add(CriticalSlotList);
+                    if (unit instanceof QuadMech) {
+                        laPanel.setBorder(BorderFactory.createTitledBorder("Front Left Leg"));
+                    } else {
+                        laPanel.setBorder(BorderFactory.createTitledBorder("Left Leg"));
+                    }
+                    laPanel.add(criticalSlotList);
                     laPanel.repaint();
                     break;
                 case Mech.LOC_RARM:
-                    raPanel.add(CriticalSlotList);
+                    if (unit instanceof QuadMech) {
+                        raPanel.setBorder(BorderFactory.createTitledBorder("Front Right Leg"));
+                    } else {
+                        raPanel.setBorder(BorderFactory.createTitledBorder("Right Leg"));
+                    }
+                    raPanel.add(criticalSlotList);
                     raPanel.repaint();
                     break;
                 case Mech.LOC_CT:
-                    ctPanel.add(CriticalSlotList);
+                    ctPanel.add(criticalSlotList);
                     ctPanel.repaint();
                     break;
                 case Mech.LOC_LT:
-                    ltPanel.add(CriticalSlotList);
+                    ltPanel.add(criticalSlotList);
                     ltPanel.repaint();
                     break;
                 case Mech.LOC_RT:
-                    rtPanel.add(CriticalSlotList);
+                    rtPanel.add(criticalSlotList);
                     rtPanel.repaint();
                     break;
                 case Mech.LOC_LLEG:
-                    llPanel.add(CriticalSlotList);
+                    if (unit instanceof QuadMech) {
+                        llPanel.setBorder(BorderFactory.createTitledBorder("Rear Left Leg"));
+                    } else {
+                        llPanel.setBorder(BorderFactory.createTitledBorder("Left Leg"));
+                    }
+                    llPanel.add(criticalSlotList);
                     llPanel.repaint();
                     break;
                 case Mech.LOC_RLEG:
-                    rlPanel.add(CriticalSlotList);
+                    if (unit instanceof QuadMech) {
+                        rlPanel.setBorder(BorderFactory.createTitledBorder("Rear Right Leg"));
+                    } else {
+                        rlPanel.setBorder(BorderFactory.createTitledBorder("Right Leg"));
+                    }
+                    rlPanel.add(criticalSlotList);
                     rlPanel.repaint();
                     break;
                 }
