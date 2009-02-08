@@ -24,7 +24,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import megamek.common.Engine;
-import megamek.common.EquipmentType;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.util.ImageHelper;
@@ -78,11 +77,11 @@ public class PrintVTOL implements Printable {
         printWeaponsNEquipment(g2d);
 
         // Armor Pips
-        printFrontArmor(g2d, vtol.getOArmor(Tank.LOC_FRONT), false, vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
-        printLeftArmor(g2d, vtol.getOArmor(Tank.LOC_LEFT), false, vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
-        printRightArmor(g2d, vtol.getOArmor(Tank.LOC_RIGHT), false, vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
-        printRearArmor(g2d, vtol.getOArmor(Tank.LOC_REAR), false, vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
-        printRotorArmor(g2d, vtol.getOArmor(VTOL.LOC_ROTOR), false, vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+        printFrontArmor(g2d, vtol.getOArmor(Tank.LOC_FRONT), false);
+        printLeftArmor(g2d, vtol.getOArmor(Tank.LOC_LEFT), false);
+        printRightArmor(g2d, vtol.getOArmor(Tank.LOC_RIGHT), false);
+        printRearArmor(g2d, vtol.getOArmor(Tank.LOC_REAR), false);
+        printRotorArmor(g2d, vtol.getOArmor(VTOL.LOC_ROTOR), false);
 
         // Internal Pips
         printFrontStruct(g2d, vtol.getOInternal(Tank.LOC_FRONT), false);
@@ -93,11 +92,11 @@ public class PrintVTOL implements Printable {
 
         if (vtol2 != null) {
             // Armor Pips
-            printFrontArmor(g2d, vtol2.getOArmor(Tank.LOC_FRONT), true, vtol2.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
-            printLeftArmor(g2d, vtol2.getOArmor(Tank.LOC_LEFT), true, vtol2.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
-            printRightArmor(g2d, vtol2.getOArmor(Tank.LOC_RIGHT), true, vtol2.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
-            printRearArmor(g2d, vtol2.getOArmor(Tank.LOC_REAR), true, vtol2.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
-            printRotorArmor(g2d, vtol2.getOArmor(VTOL.LOC_ROTOR), true, vtol2.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            printFrontArmor(g2d, vtol2.getOArmor(Tank.LOC_FRONT), true);
+            printLeftArmor(g2d, vtol2.getOArmor(Tank.LOC_LEFT), true);
+            printRightArmor(g2d, vtol2.getOArmor(Tank.LOC_RIGHT), true);
+            printRearArmor(g2d, vtol2.getOArmor(Tank.LOC_REAR), true);
+            printRotorArmor(g2d, vtol2.getOArmor(VTOL.LOC_ROTOR), true);
 
             // Internal Pips
             printFrontStruct(g2d, vtol2.getOInternal(Tank.LOC_FRONT), true);
@@ -325,7 +324,7 @@ public class PrintVTOL implements Printable {
         }
     }
 
-    private void printFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hardened) {
+    private void printFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         float[] topColumn = { 461, 82 };
         float[] middleColumn = { 456, 88 };
         float[] pipShift = { 6, 6 };
@@ -341,13 +340,13 @@ public class PrintVTOL implements Printable {
         int pips = Math.min(5, totalArmor);
         totalArmor -= pips;
         for (int pos = 1; pos <= 5; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], 8.0f, hardened);
+            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], 8.0f);
             topColumn[0] += pipShift[0];
         }
 
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, middleColumn[0], middleColumn[1], 8.0f, hardened);
+            ImageHelper.drawTankArmorPip(g2d, middleColumn[0], middleColumn[1], 8.0f);
             middleColumn[0] += pipShift[0];
             if (pos % 7 == 0) {
                 middleColumn[1] += pipShift[1];
@@ -357,7 +356,7 @@ public class PrintVTOL implements Printable {
         }
     }
 
-    private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hardened) {
+    private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         int[] topColumn = new int[] { 475, 252 };
         int[] pipShift = new int[] { 6, 6 };
         float fontSize = 8.0f;
@@ -377,23 +376,23 @@ public class PrintVTOL implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-                ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize, hardened);
+                ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
             topColumn[1] += pipShift[1];
         }
 
     }
 
-    private void printRotorArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hardened) {
+    private void printRotorArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
 
         float[][] armor = { { 392, 154.5f }, { 552, 154.5f } };
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, armor[pos][0], armor[pos][1], hardened);
+            ImageHelper.drawTankArmorPip(g2d, armor[pos][0], armor[pos][1]);
         }
 
     }
 
-    private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hardened) {
+    private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         float[] topColumn = new float[] { 443, 106 };
         float[] pipShift = new float[] { 6, 6 };
         float fontSize = 8.0f;
@@ -403,7 +402,7 @@ public class PrintVTOL implements Printable {
         }
 
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize, hardened);
+            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
 
             switch (pos) {
             case 0:
@@ -439,7 +438,7 @@ public class PrintVTOL implements Printable {
         }
     }
 
-    private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hardened) {
+    private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         float[] topColumn = new float[] { 503, 106 };
         float[] pipShift = new float[] { 6, 6 };
         float fontSize = 8.0f;
@@ -455,7 +454,7 @@ public class PrintVTOL implements Printable {
         }
 
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize, hardened);
+            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
 
             switch (pos) {
             case 0:
