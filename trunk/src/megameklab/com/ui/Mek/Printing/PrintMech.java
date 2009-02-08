@@ -452,7 +452,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
             topColumn[0] += pipShift[0];
             topColumn[1] += pipShift[1];
             if (pos % maxPipsPerTopColumn == 0) {
@@ -471,7 +471,7 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, middleColumn[0], middleColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, middleColumn[0], middleColumn[1]);
             middleColumn[0] += pipShift[0];
             middleColumn[1] += pipShift[1];
             if (pos % 4 == 0) {
@@ -492,7 +492,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, bottomColumn[0], bottomColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, bottomColumn[0], bottomColumn[1]);
             bottomColumn[0] += pipShift[0];
             bottomColumn[1] += pipShift[1];
             if (pos % 2 == 0) {
@@ -506,7 +506,7 @@ public class PrintMech implements Printable {
         pips = Math.min(4, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, footColumn[0], footColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, footColumn[0], footColumn[1]);
             footColumn[0] += pipShift[0];
         }
 
@@ -535,7 +535,7 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
             topColumn[0] += pipShift[0];
             topColumn[1] += pipShift[1];
             if (pos % maxPipsPerTopColumn == 0) {
@@ -555,7 +555,7 @@ public class PrintMech implements Printable {
 
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, middleColumn[0], middleColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, middleColumn[0], middleColumn[1]);
             middleColumn[0] += pipShift[0];
             middleColumn[1] += pipShift[1];
             if (pos % 4 == 0) {
@@ -575,7 +575,7 @@ public class PrintMech implements Printable {
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, bottomColumn[0], bottomColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, bottomColumn[0], bottomColumn[1]);
             bottomColumn[0] += pipShift[0];
             bottomColumn[1] += pipShift[1];
             if (pos % 2 == 0) {
@@ -589,7 +589,7 @@ public class PrintMech implements Printable {
         pips = Math.min(4, totalArmor);
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, footColumn[0], footColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, footColumn[0], footColumn[1]);
             footColumn[0] += pipShift[0];
         }
 
@@ -614,7 +614,7 @@ public class PrintMech implements Printable {
         // }
         for (int pos = 1; pos <= pips; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, centerColumn.width, centerColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, centerColumn.width, centerColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -642,7 +642,7 @@ public class PrintMech implements Printable {
         // totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, rightColumn.width, rightColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, rightColumn.width, rightColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -672,7 +672,7 @@ public class PrintMech implements Printable {
         // totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, leftColumn.width, leftColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, leftColumn.width, leftColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -704,7 +704,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= 12; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, centerColumn.width, centerColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, centerColumn.width, centerColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -721,7 +721,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= 12; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, leftColumn.width, leftColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, leftColumn.width, leftColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -739,7 +739,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= 10; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, rightColumn.width, rightColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, rightColumn.width, rightColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -790,7 +790,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= maxTopPips; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -805,7 +805,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= maxMiddlePips; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -823,7 +823,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= maxBottemPips; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -853,7 +853,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= 35; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -896,7 +896,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= maxTopPips; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -911,7 +911,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= maxMiddlePips; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, middleColumn.width, middleColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -929,7 +929,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= maxBottemPips; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, bottomColumn.width, bottomColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -958,7 +958,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= 35; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, topColumn.width, topColumn.height);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -996,7 +996,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= 55; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -1014,7 +1014,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= 6; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, middleColumn[0], middleColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, middleColumn[0], middleColumn[1]);
                 if (--totalArmor == 0) {
                     return;
                 }
@@ -1029,7 +1029,7 @@ public class PrintMech implements Printable {
         }
 
         if (!firstPass) {
-            ImageHelper.drawArmorPip(g2d, bottomColumn[0], bottomColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, bottomColumn[0], bottomColumn[1]);
             if (--totalArmor == 0) {
                 return;
             }
@@ -1050,63 +1050,63 @@ public class PrintMech implements Printable {
             g2d.setColor(Color.white);
             g2d.fillOval(476, 68, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 475, 73, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, 475, 73);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 2) {
             g2d.setColor(Color.white);
             g2d.fillOval(473, 74, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 472, 79, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, 472, 79);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 3) {
             g2d.setColor(Color.white);
             g2d.fillOval(479, 74, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 478, 79, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, 478, 79);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 4) {
             g2d.setColor(Color.white);
             g2d.fillOval(470, 79, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 469, 84, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, 469, 84);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 5) {
             g2d.setColor(Color.white);
             g2d.fillOval(476, 79, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 475, 84, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, 475, 84);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 6) {
             g2d.setColor(Color.white);
             g2d.fillOval(482, 79, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 481, 84, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, 481, 84);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 7) {
             g2d.setColor(Color.white);
             g2d.fillOval(470, 85, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 469, 90, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, 469, 90);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 8) {
             g2d.setColor(Color.white);
             g2d.fillOval(476, 85, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 475, 90, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, 475, 90);
         }
 
         if (mech.getArmor(Mech.LOC_HEAD) >= 9) {
             g2d.setColor(Color.white);
             g2d.fillOval(482, 85, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 481, 90, mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+            ImageHelper.drawArmorPip(g2d, 481, 90);
         }
         g2d.setColor(Color.black);
     }
@@ -1121,7 +1121,7 @@ public class PrintMech implements Printable {
 
         for (int pos = 1; pos <= 56; pos++) {
             if ((firstPass && (pos % 2 == 0)) || (!firstPass && (pos % 2 != 0))) {
-                ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1], mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED);
+                ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
                 if (--totalArmor == 0) {
                     return;
                 }
