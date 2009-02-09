@@ -30,7 +30,6 @@ import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.loaders.MtfFile;
-import megameklab.com.util.CConfig;
 import megameklab.com.util.DropTargetCriticalList;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -54,14 +53,12 @@ public class CriticalView extends IView {
     private JPanel legPanel = new JPanel();
     private RefreshListener refresh;
 
-    private CConfig config;
     private boolean showEmpty = false;
 
-    public CriticalView(Mech unit, boolean showEmpty, RefreshListener refresh, CConfig config) {
+    public CriticalView(Mech unit, boolean showEmpty, RefreshListener refresh) {
         super(unit);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
-        this.config = config;
 
         JPanel mainPanel = new JPanel();
 
@@ -71,15 +68,15 @@ public class CriticalView extends IView {
         torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
         legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
 
-        headPanel.setBorder(BorderFactory.createTitledBorder("Head"));
+        headPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Head"));
         mainPanel.add(headPanel);
 
         torsoPanel.add(laPanel);
-        ltPanel.setBorder(BorderFactory.createTitledBorder("Left Torso"));
+        ltPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Torso"));
         torsoPanel.add(ltPanel);
-        ctPanel.setBorder(BorderFactory.createTitledBorder("Center Torso"));
+        ctPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Center Torso"));
         torsoPanel.add(ctPanel);
-        rtPanel.setBorder(BorderFactory.createTitledBorder("Right Torso"));
+        rtPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Torso"));
         torsoPanel.add(rtPanel);
         torsoPanel.add(raPanel);
         mainPanel.add(torsoPanel);
@@ -154,7 +151,7 @@ public class CriticalView extends IView {
                 if (critNames.size() == 0) {
                     critNames.add(MtfFile.EMPTY);
                 }
-                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(critNames, unit, refresh, showEmpty, config);
+                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(critNames, unit, refresh, showEmpty);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setFont(new Font("Arial",Font.PLAIN,10));
@@ -167,18 +164,18 @@ public class CriticalView extends IView {
                     break;
                 case Mech.LOC_LARM:
                     if (unit instanceof QuadMech) {
-                        laPanel.setBorder(BorderFactory.createTitledBorder("Front Left Leg"));
+                        laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front Left Leg"));
                     } else {
-                        laPanel.setBorder(BorderFactory.createTitledBorder("Left Leg"));
+                        laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Leg"));
                     }
                     laPanel.add(criticalSlotList);
                     laPanel.repaint();
                     break;
                 case Mech.LOC_RARM:
                     if (unit instanceof QuadMech) {
-                        raPanel.setBorder(BorderFactory.createTitledBorder("Front Right Leg"));
+                        raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front Right Leg"));
                     } else {
-                        raPanel.setBorder(BorderFactory.createTitledBorder("Right Leg"));
+                        raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Leg"));
                     }
                     raPanel.add(criticalSlotList);
                     raPanel.repaint();
@@ -197,18 +194,18 @@ public class CriticalView extends IView {
                     break;
                 case Mech.LOC_LLEG:
                     if (unit instanceof QuadMech) {
-                        llPanel.setBorder(BorderFactory.createTitledBorder("Rear Left Leg"));
+                        llPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Left Leg"));
                     } else {
-                        llPanel.setBorder(BorderFactory.createTitledBorder("Left Leg"));
+                        llPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Leg"));
                     }
                     llPanel.add(criticalSlotList);
                     llPanel.repaint();
                     break;
                 case Mech.LOC_RLEG:
                     if (unit instanceof QuadMech) {
-                        rlPanel.setBorder(BorderFactory.createTitledBorder("Rear Right Leg"));
+                        rlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Right Leg"));
                     } else {
-                        rlPanel.setBorder(BorderFactory.createTitledBorder("Right Leg"));
+                        rlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Leg"));
                     }
                     rlPanel.add(criticalSlotList);
                     rlPanel.repaint();

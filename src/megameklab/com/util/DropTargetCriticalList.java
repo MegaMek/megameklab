@@ -57,13 +57,13 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
     private RefreshListener refresh;
     private boolean buildView = false;
 
-    public DropTargetCriticalList(Vector<String> vector, Mech unit, RefreshListener refresh, boolean buildView, CConfig config) {
+    public DropTargetCriticalList(Vector<String> vector, Mech unit, RefreshListener refresh, boolean buildView) {
         super(vector);
         new DropTarget(this, this);
         this.unit = unit;
         this.refresh = refresh;
         this.buildView = buildView;
-        setCellRenderer(new CritListCellRenderer(unit, buildView, config));
+        setCellRenderer(new CritListCellRenderer(unit, buildView));
         addMouseListener(this);
     }
 

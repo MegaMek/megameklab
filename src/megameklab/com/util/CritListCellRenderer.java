@@ -16,7 +16,6 @@
 
 package megameklab.com.util;
 
-import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;
@@ -28,6 +27,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
+import megameklab.com.ui.Mek.MainUI;
 
 public class CritListCellRenderer extends DefaultListCellRenderer {
 
@@ -35,16 +35,15 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     private int index = -1;
     private Entity unit = null;
     private boolean useColor = false;
-    private CConfig config;
+
     /**
      *
      */
     private static final long serialVersionUID = 1599368063832366744L;
 
-    public CritListCellRenderer(Entity unit, boolean useColor, CConfig config) {
+    public CritListCellRenderer(Entity unit, boolean useColor) {
         this.unit = unit;
         this.useColor = useColor;
-        this.config = config;
     }
 
     @Override
@@ -58,15 +57,8 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         if (cs != null) {
 
             if (cs.getType() == CriticalSlot.TYPE_SYSTEM && useColor) {
-                try {
-                    label.setBackground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_SYSTEMS_BACKGROUND))));
-                } catch (Exception ex) {
-                }
-                try {
-                    label.setForeground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_SYSTEMS_FOREGROUND))));
-                } catch (Exception ex) {
-                }
-
+                label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_SYSTEMS));
+                label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_SYSTEMS));
             } else if (cs.getMount() != null) {
 
                 Mounted mount = cs.getMount();
@@ -80,33 +72,14 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                     label.setText(name);
 
                     if (mount.getType() instanceof WeaponType) {
-                        try {
-                            label.setBackground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_WEAPONS_BACKGROUND))));
-                        } catch (Exception ex) {
-                        }
-                        try {
-                            label.setForeground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_WEAPONS_FOREGROUND))));
-                        } catch (Exception ex) {
-                        }
+                        label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_WEAPONS));
+                        label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_WEAPONS));
                     } else if (mount.getType() instanceof AmmoType) {
-                        try {
-                            label.setBackground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_AMMO_BACKGROUND))));
-                        } catch (Exception ex) {
-                        }
-                        try {
-                            label.setForeground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_AMMO_FOREGROUND))));
-                        } catch (Exception ex) {
-                        }
-
+                        label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_AMMO));
+                        label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_AMMO));
                     } else {
-                        try {
-                            label.setBackground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_EQUIPMENT_BACKGROUND))));
-                        } catch (Exception ex) {
-                        }
-                        try {
-                            label.setForeground(Color.getColor("", Integer.parseInt(config.getParam(CConfig.CONFIG_EQUIPMENT_FOREGROUND))));
-                        } catch (Exception ex) {
-                        }
+                        label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
+                        label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
                     }
                 }
                 label.setToolTipText(UnitUtil.getToolTipInfo(unit, mount.getType()));

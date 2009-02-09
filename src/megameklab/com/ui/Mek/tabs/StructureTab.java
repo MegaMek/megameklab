@@ -102,7 +102,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         // this.add(enginePanel());
-        critView = new CriticalView(unit, false, refresh, config);
+        critView = new CriticalView(unit, false, refresh);
         scroll.setViewportView(critView);
 
         this.add(splitter);

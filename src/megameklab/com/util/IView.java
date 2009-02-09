@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -21,16 +21,16 @@ import javax.swing.JPanel;
 import megamek.common.Mech;
 
 public class IView extends JPanel{
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -6741722012756653309L;
     public Mech unit;
     public IView(Mech unit) {
         this.unit  = unit;
     }
-    
+
     public void updateMech(Mech unit) {
         this.unit = unit;
     }
