@@ -12,7 +12,6 @@
 
 package megameklab.com.util;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -25,6 +24,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
+
+import megameklab.com.ui.Mek.MainUI;
 
 public final class ConfigurationDialog extends JDialog implements ActionListener {
 
@@ -48,12 +49,9 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     private JPanel MasterPanel = new JPanel();
     private JPanel ConfigPane = new JPanel(new SpringLayout());
 
-    private CConfig config;
-
-    public ConfigurationDialog(CConfig config) {
+    public ConfigurationDialog() {
 
         //stored values.
-        this.config = config;
         setTitle(windowName);
 
         //Set the tooltips and actions for dialouge buttons
@@ -107,16 +105,9 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         JLabel baseLabel = new JLabel(fieldName);
         baseLabel.setName(fieldName);
         baseLabel.setOpaque(true);
-        try {
-            baseLabel.setBackground(Color.getColor("", Integer.parseInt(config.getParam(fieldName + CConfig.CONFIG_BACKGROUND))));
-        } catch (Exception ex) {
+        baseLabel.setBackground(MainUI.config.getBackgroundColor(fieldName));
+        baseLabel.setForeground(MainUI.config.getForegroundColor(fieldName));
 
-        }
-        try {
-            baseLabel.setForeground(Color.getColor("", Integer.parseInt(config.getParam(fieldName + CConfig.CONFIG_FOREGROUND))));
-        } catch (Exception ex) {
-
-        }
         ConfigPane.add(baseLabel);
         baseButton = new JButton("Foreground");
         baseButton.setName(fieldName + CConfig.CONFIG_FOREGROUND);
@@ -145,11 +136,11 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equals(saveCommand)) {
-            config.saveConfig();
+            MainUI.config.saveConfig();
             dialog.dispose();
             return;
         } else if (command.equals(cancelCommand)) {
-            config.loadConfigFile();
+            MainUI.config.loadConfigFile();
             dialog.dispose();
         } else if (e.getSource() instanceof JButton) {
             JButton newButton = (JButton) e.getSource();
@@ -167,7 +158,7 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
                 colorConfig = new ColorConfigurationDialog(newButton.getName().replace("-", " "), label.getBackground());
                 label.setBackground(colorConfig.getColor());
             }
-            config.setParam(newButton.getName(), Integer.toString(colorConfig.getColor().getRGB()));
+            MainUI.config.setParam(newButton.getName(), Integer.toString(colorConfig.getColor().getRGB()));
             colorConfig.dispose();
             label.repaint();
         }

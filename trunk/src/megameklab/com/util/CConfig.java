@@ -16,6 +16,7 @@
 
 package megameklab.com.util;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -214,6 +215,28 @@ public class CConfig {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public Color getForegroundColor(String fieldName) {
+        Color masterColor = Color.black;
+
+        try {
+            masterColor = Color.getColor("", Integer.parseInt(getParam(fieldName + CConfig.CONFIG_FOREGROUND)));
+        } catch (Exception ex) {
+
+        }
+        return masterColor;
+    }
+
+    public Color getBackgroundColor(String fieldName) {
+        Color masterColor = Color.WHITE;
+
+        try {
+            masterColor = Color.getColor("", Integer.parseInt(getParam(fieldName + CConfig.CONFIG_BACKGROUND)));
+        } catch (Exception ex) {
+
+        }
+            return masterColor;
     }
 
 }
