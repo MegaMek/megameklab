@@ -243,9 +243,28 @@ public class PrintMech implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
 
+        String isName = "";
+
         if (mech.hasCompositeStructure()) {
-            g2d.setFont(UnitUtil.getNewFont(g2d, EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_COMPOSITE), true, 44, 10.0f));
-            g2d.drawString(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_COMPOSITE), 442, 553);
+            isName = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_COMPOSITE);
+        } else if (mech.hasReinforcedStructure()) {
+            isName = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_REINFORCED);
+        }
+
+        if (isName.trim().length() > 0) {
+            g2d.setFont(UnitUtil.getNewFont(g2d, isName, true, 44, 10.0f));
+            g2d.drawString(isName, 442, 553);
+        }
+
+        String armorName = "";
+
+        if (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED) {
+            armorName = EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED);
+        }
+
+        if (armorName.trim().length() > 0) {
+            g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
+            g2d.drawString(armorName, 461, 249);
         }
 
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
@@ -1541,6 +1560,20 @@ public class PrintMech implements Printable {
         g2d.drawLine(endx - 1, endy, endx - 4, endy);
     }
 
+    /**
+     * Print the critcals for a Mek in the specific location
+     * 
+     * @param g2d
+     *            The 2d Graphics object use to print
+     * @param location
+     *            Current location of the Mek
+     * @param lineStart
+     *            Where to start printing x
+     * @param linePoint
+     *            Where to Start printing y
+     * @param lineFeed
+     *            How much to move down to the next line.
+     */
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
         Font font;
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
@@ -1613,12 +1646,15 @@ public class PrintMech implements Printable {
                     AmmoType ammo = (AmmoType) m.getType();
 
                     critName = new StringBuffer("Ammo (");
-                    critName.append(ammo.getShortName().trim());
+                    // Remove Text (Clan) from the name
+                    critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
+                    // Remove any additional Ammo text.
                     if (critName.toString().endsWith("Ammo")) {
                         critName.setLength(critName.length() - 5);
                         critName.trimToSize();
                     }
 
+                    // Remove Capable with the name
                     if (critName.indexOf("-capable") > -1) {
                         int startPos = critName.indexOf("-capable");
                         critName.delete(startPos, startPos + "-capable".length());

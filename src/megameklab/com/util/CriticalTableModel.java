@@ -16,7 +16,6 @@
 
 package megameklab.com.util;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.util.Vector;
 
@@ -26,9 +25,11 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import megamek.common.AmmoType;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.WeaponType;
+import megameklab.com.ui.Mek.MainUI;
 
 public class CriticalTableModel extends AbstractTableModel {
 
@@ -176,7 +177,17 @@ public class CriticalTableModel extends AbstractTableModel {
                 return c;
             }
 
-            c.setBackground(Color.white);
+
+
+            String equipmentType = CConfig.CONFIG_EQUIPMENT;
+
+            if ( eq instanceof WeaponType ){
+                equipmentType = CConfig.CONFIG_WEAPONS;
+            } else if ( eq instanceof AmmoType ){
+                equipmentType = CConfig.CONFIG_AMMO;
+            }
+            c.setBackground(MainUI.config.getBackgroundColor(equipmentType));
+            c.setForeground(MainUI.config.getForegroundColor(equipmentType));
             return c;
         }
     }

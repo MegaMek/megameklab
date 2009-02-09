@@ -112,7 +112,7 @@ public class MainUI extends JFrame implements RefreshListener {
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
-    public CConfig config;
+    public static CConfig config;
 
     public MainUI() {
         UnitUtil.loadFonts();
@@ -902,7 +902,7 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuConfiguration_actionPerformed(ActionEvent event) {
-        new ConfigurationDialog(config);
+        new ConfigurationDialog();
     }
 
 

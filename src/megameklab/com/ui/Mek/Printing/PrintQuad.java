@@ -237,9 +237,27 @@ public class PrintQuad implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
 
+        String isName = "";
         if (mech.hasCompositeStructure()) {
-            g2d.setFont(UnitUtil.getNewFont(g2d, EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_COMPOSITE), true, 38, 10.0f));
-            g2d.drawString(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_COMPOSITE), 448, 554);
+            isName = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_COMPOSITE);
+        } else if (mech.hasReinforcedStructure()) {
+            isName = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_REINFORCED);
+        }
+
+        if (isName.trim().length() > 0) {
+            g2d.setFont(UnitUtil.getNewFont(g2d, isName, true, 44, 10.0f));
+            g2d.drawString(isName, 444, 556);
+        }
+
+        String armorName = "";
+
+        if ( mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ){
+            armorName = EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED);
+        }
+
+        if (armorName.trim().length() > 0) {
+            g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
+            g2d.drawString(armorName, 461, 279);
         }
 
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
@@ -1258,7 +1276,9 @@ public class PrintQuad implements Printable {
                     AmmoType ammo = (AmmoType) m.getType();
 
                     critName = new StringBuffer("Ammo (");
-                    critName.append(ammo.getShortName().trim());
+                    // Remove Text (Clan) from the name
+                    critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
+                    // Remove any additional Ammo text.
                     if (critName.toString().endsWith("Ammo")) {
                         critName.setLength(critName.length() - 5);
                         critName.trimToSize();

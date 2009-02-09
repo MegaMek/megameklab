@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -19,27 +19,27 @@ package megameklab.com.ui.Mek.tabs;
 import javax.swing.SpringLayout;
 
 import megamek.common.Mech;
+import megameklab.com.ui.Mek.views.EquipmentView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
-import megameklab.com.ui.Mek.views.EquipmentView;
 
 public class EquipmentTab extends ITab {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 3978675469713289404L;
 
     private EquipmentView equipment;
-    
-    public EquipmentTab(Mech unit){
+
+    public EquipmentTab(Mech unit) {
         this.unit = unit;
-        this.equipment = new EquipmentView(unit);
-        this.setLayout(new SpringLayout());
+        equipment = new EquipmentView(unit);
+        setLayout(new SpringLayout());
         this.add(equipment);
         SpringLayoutHelper.setupSpringGrid(this,1);
-        
+
         refresh();
     }
 

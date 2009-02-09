@@ -70,7 +70,7 @@ public class BuildTab extends ITab implements ActionListener {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new CriticalView(this.unit, true, refresh, config);
+        critView = new CriticalView(this.unit, true, refresh);
         buildView = new BuildView(this.unit);
 
         mainPanel.add(buildView);
