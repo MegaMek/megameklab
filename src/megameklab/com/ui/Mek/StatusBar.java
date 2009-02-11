@@ -122,7 +122,7 @@ public class StatusBar extends ITab {
         currentTonnage = testEntity.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
 
-        int totalHeat = calculateTotalHeat();
+        double totalHeat = calculateTotalHeat();
         if ( unit.hasDoubleHeatSinks() ){
             heat*=2;
         }
@@ -152,8 +152,8 @@ public class StatusBar extends ITab {
 
     }
 
-    public int calculateTotalHeat(){
-        int heat = 0;
+    public double calculateTotalHeat(){
+        double heat = 0;
 
         if ( unit.getOriginalJumpMP() > 0 ){
             if ( unit.getJumpType() == Mech.JUMP_IMPROVED ) {
@@ -182,7 +182,7 @@ public class StatusBar extends ITab {
             }
 
             // one shot weapons count 1/4
-            if (wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER
+            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER)
                     || wtype.hasFlag(WeaponType.F_ONESHOT)) {
                 weaponHeat *= 0.25;
             }
