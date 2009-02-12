@@ -33,13 +33,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
-import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.Sensor;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -144,17 +142,8 @@ public class EquipmentView extends IView implements ActionListener {
                     && !eq.hasFlag(MiscType.F_LASER_HEAT_SINK)
                     && !eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
                     && !eq.hasFlag(MiscType.F_STEALTH)
-                    && !eq.getName().equals(
-                                    EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD))
-                    && !eq.getName().equals(
-                                    EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED))
-                    && !eq.getName().equals(BattleArmor.SINGLE_HEX_ECM)
-                    && !eq.getInternalName().equals(Sensor.CLBALIGHT_AP)
-                    && !eq.getInternalName().equals(Sensor.ISBALIGHT_AP)
-                    && !eq.getName().equals(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL))
-                    && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_COMMERCIAL))
-                    && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL))
-                    && !eq.getName().equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_INDUSTRIAL))) {
+                    && !eq.hasFlag(MiscType.F_BA_EQUIPMENT)
+                    && !UnitUtil.isArmorOrStructure(eq)) {
                 masterEquipmentList.add(eq);
             }
         }

@@ -29,6 +29,10 @@ V 0.0.0.12-Dev
 + RFE: added fore and back ground color to Crit Table
 + New MegaMek.jar
 + Added support for armored components
++ Bug: BA equipment showing in Equipment List
++ Bug: Armor Showing in Equipment List
++ Bug: Structure showing in Equipment List
++ New MegaMek.jar
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm
