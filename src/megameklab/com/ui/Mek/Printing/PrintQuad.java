@@ -1246,6 +1246,11 @@ public class PrintQuad implements Printable {
                 default:
                     break;
                 }
+
+                if (cs.isArmored()) {
+                        engineName = "O " + engineName;
+                }
+
                 g2d.drawString(engineName, lineStart, linePoint);
                 } else {
                     String critName = mech.getSystemName(cs.getIndex());
@@ -1254,6 +1259,9 @@ public class PrintQuad implements Printable {
                         critName = critName.replace("Standard ", "");
                     }
 
+                    if (cs.isArmored()) {
+                        critName = "O " + critName;
+                    }
                     g2d.drawString(critName, lineStart, linePoint);
                 }
                 setCritConnection(null, lineStart, linePoint, lineStart, linePoint, g2d);
@@ -1264,6 +1272,9 @@ public class PrintQuad implements Printable {
 
                 StringBuffer critName = new StringBuffer(UnitUtil.getCritName(mech, m.getType()));
 
+                if (m.isArmored()) {
+                    critName.insert(0, "O ");
+                }
 
                 if (UnitUtil.isTSM(m.getType())) {
                     critName.setLength(0);
@@ -1298,11 +1309,11 @@ public class PrintQuad implements Printable {
                 g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 86, 7.0f));
 
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
-                    ImageHelper.printC3iName(g2d, lineStart, linePoint, font);
+                    ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3S)) {
-                    ImageHelper.printC3sName(g2d, lineStart, linePoint, font);
+                    ImageHelper.printC3sName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3M)) {
-                    ImageHelper.printC3mName(g2d, lineStart, linePoint, font);
+                    ImageHelper.printC3mName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else {
                     g2d.drawString(critName.toString(), lineStart, linePoint);
                 }

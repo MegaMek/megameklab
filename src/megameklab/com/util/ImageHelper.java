@@ -307,11 +307,11 @@ public class ImageHelper {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
                 if (eqi.c3Level == eqi.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font);
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == eqi.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font);
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == eqi.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font);
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
@@ -519,11 +519,11 @@ public class ImageHelper {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
                 if (eqi.c3Level == eqi.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font);
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == eqi.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font);
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == eqi.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font);
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
@@ -732,11 +732,11 @@ public class ImageHelper {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
                 if (eqi.c3Level == eqi.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font);
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == eqi.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font);
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == eqi.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font);
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
@@ -839,22 +839,36 @@ public class ImageHelper {
 
     }
 
-    public static void printC3iName(Graphics2D g2d, int lineStart, float linePoint, Font font) {
+    public static void printC3iName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
-        g2d.drawString("Improved C  CPU", lineStart, linePoint);
-        int stringWidth = ImageHelper.getStringWidth(g2d, "Improved C", font);
+        int stringWidth;
+        if (isArmored) {
+            g2d.drawString("O Improved C  CPU", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O Improved C", font);
+        } else {
+            g2d.drawString("Improved C  CPU", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "Improved C", font);
+        }
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
 
         g2d.drawString("3", lineStart + stringWidth, linePoint);
     }
 
-    public static void printC3sName(Graphics2D g2d, int lineStart, float linePoint, Font font) {
+    public static void printC3sName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
-        g2d.drawString("C  Slave", lineStart, linePoint);
-        int stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+        int stringWidth;
+        if (isArmored) {
+            g2d.drawString("O C  Slave", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C  Slave", font);
+        } else {
+            g2d.drawString("C  Slave", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C  Slave", font);
+        }
+
+        stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
 
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
@@ -862,11 +876,19 @@ public class ImageHelper {
 
     }
 
-    public static void printC3mName(Graphics2D g2d, int lineStart, float linePoint, Font font) {
+    public static void printC3mName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
-        g2d.drawString("C  Master", lineStart, linePoint);
-        int stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+        int stringWidth;
+        if (isArmored) {
+            g2d.drawString("O C  Master", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C  Master", font);
+        } else {
+            g2d.drawString("C  Master", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C  Master", font);
+        }
+
+        stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
 
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
