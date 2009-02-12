@@ -65,7 +65,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isSpreadEquipment(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_ENDO_STEEL) || eq.hasFlag(MiscType.F_TRACKS));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_TRACKS));
     }
 
     /**
@@ -74,7 +74,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isArmor(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_FERRO_FIBROUS) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_REACTIVE) || eq.hasFlag(MiscType.F_REFLECTIVE));
+        return isArmorOrStructure(eq);
     }
 
     /**
@@ -1097,4 +1097,20 @@ public class UnitUtil {
         }
     }
 
+    public static boolean isArmorOrStructure(EquipmentType eq) {
+
+        for (String armor : EquipmentType.armorNames) {
+            if (eq.getName().equals(armor)) {
+                return true;
+            }
+        }
+
+        for (String structure : EquipmentType.structureNames) {
+            if (eq.getName().equals(structure)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
