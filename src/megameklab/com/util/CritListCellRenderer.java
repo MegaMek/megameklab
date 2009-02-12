@@ -16,8 +16,10 @@
 
 package megameklab.com.util;
 
+import java.awt.Color;
 import java.awt.Component;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -56,9 +58,14 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
         if (cs != null) {
 
-            if (cs.getType() == CriticalSlot.TYPE_SYSTEM && useColor) {
-                label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_SYSTEMS));
-                label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_SYSTEMS));
+            if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+                if (useColor) {
+                    label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_SYSTEMS));
+                    label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_SYSTEMS));
+                }
+                if (cs.isArmored()) {
+                    label.setText(label.getText() + " (A)");
+                }
             } else if (cs.getMount() != null) {
 
                 Mounted mount = cs.getMount();
@@ -68,6 +75,9 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
                     if (mount.isRearMounted()) {
                         name += "(R)";
+                    }
+                    if (mount.isArmored()) {
+                        name += " (A)";
                     }
                     label.setText(name);
 
@@ -82,12 +92,15 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                         label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
                     }
                 }
-                label.setToolTipText(UnitUtil.getToolTipInfo(unit, mount.getType()));
+                label.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
             }
 
         }
 
 
+        if (cs != null && UnitUtil.isLastCrit(unit, cs, index, getCritLocation())) {
+            label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0, 0, 0)));
+        }
         return label;
     }
 
