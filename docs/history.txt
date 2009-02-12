@@ -27,6 +27,8 @@ V 0.0.0.12-Dev
 + Label locations in CriticalView
 + Removed (Clan) text from Ammo when printing crits
 + RFE: added fore and back ground color to Crit Table
++ New MegaMek.jar
++ Added support for armored components
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm

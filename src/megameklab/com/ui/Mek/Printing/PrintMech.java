@@ -1562,7 +1562,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     * 
+     *
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
@@ -1642,6 +1642,8 @@ public class PrintMech implements Printable {
 
                 if (m.isRearMounted()) {
                     critName.append("(R)");
+                } else if (m.getType() instanceof MiscType && (m.getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
+                    critName.append("[OOOOOOOOOO]");
                 } else if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                     AmmoType ammo = (AmmoType) m.getType();
 

@@ -46,6 +46,7 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
+import megamek.common.TechConstants;
 
 public class DropTargetCriticalList extends JList implements DropTargetListener, MouseListener {
 
@@ -257,15 +258,41 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
                     removeCrit();
                     return;
                 }
-                Mounted mount = getMounted();
 
+                int location = getCritLocation();
+                JPopupMenu popup = new JPopupMenu();
+
+                CriticalSlot cs = getCrit();
+
+                if (cs != null && (unit.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL || unit.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL || unit.getTechLevel() == TechConstants.T_IS_UNOFFICIAL || unit.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL)) {
+                    if (cs.isArmored()) {
+                        JMenuItem info = new JMenuItem("Remove Armoring");
+                        info.setActionCommand(Integer.toString(location));
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                changeArmoring();
+                            }
+                        });
+                        popup.add(info);
+
+                    } else {
+                        JMenuItem info = new JMenuItem("Add Armoring");
+                        info.setActionCommand(Integer.toString(location));
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                changeArmoring();
+                            }
+                        });
+                        popup.add(info);
+                    }
+                }
+
+                Mounted mount = getMounted();
                 if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
                     changeWeaponFacing(!mount.isRearMounted());
                     return;
                 }
 
-                int location = getCritLocation();
-                JPopupMenu popup = new JPopupMenu();
 
                 if (mount != null) {
                     popup.setAutoscrolls(true);
@@ -445,4 +472,23 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
             refresh.refreshAll();
         }
     }
+
+    private void changeArmoring() {
+        CriticalSlot cs = getCrit();
+
+        if (cs != null) {
+            if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                Mounted mount = getMounted();
+                mount.setArmored(!cs.isArmored());
+                UnitUtil.updateCritsArmoredStatus(unit, mount);
+            } else {
+                cs.setArmored(!cs.isArmored());
+                UnitUtil.updateCritsArmoredStatus(unit, cs, getCritLocation());
+            }
+        }
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
+    }
+
 }

@@ -28,6 +28,7 @@ import javax.swing.table.TableColumn;
 import megamek.common.AmmoType;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megameklab.com.ui.Mek.MainUI;
 
@@ -168,7 +169,7 @@ public class CriticalTableModel extends AbstractTableModel {
             }
 
             EquipmentType eq = sortedEquipment[row];
-            c.setToolTipText(UnitUtil.getToolTipInfo(unit, eq));
+            c.setToolTipText(UnitUtil.getToolTipInfo(unit, new Mounted(unit, eq)));
 
 
             if (isSelected) {
