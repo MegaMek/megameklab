@@ -1005,7 +1005,7 @@ public class UnitUtil {
                 return true;
             }
 
-            int numberOfCrits = slot - originalMount.getType().getCriticals(unit);
+            int numberOfCrits = slot - (originalMount.getType().getCriticals(unit) - 1);
 
             if (numberOfCrits < 0) {
                 return false;
