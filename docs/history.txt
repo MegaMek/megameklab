@@ -33,6 +33,9 @@ V 0.0.0.12-Dev
 + Bug: Armor Showing in Equipment List
 + Bug: Structure showing in Equipment List
 + New MegaMek.jar
++ RFE: Add Source Field
++ RFE: Added Source Field to Print outs next to Era
++ New MegaMek.jar
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm
