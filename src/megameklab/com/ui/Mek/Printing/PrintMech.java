@@ -234,7 +234,6 @@ public class PrintMech implements Printable {
                 break;
             }
         }
-        ImageHelper.printCenterString(g2d, Integer.toString(mech.getYear()), font, startLine, nextDataLine);
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
@@ -266,6 +265,10 @@ public class PrintMech implements Printable {
             g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
             g2d.drawString(armorName, 461, 249);
         }
+
+        String yearFluff = mech.getYear() + " " + mech.getSource();
+        g2d.setFont(UnitUtil.getNewFont(g2d, yearFluff.trim(), false, 80, 8.0f));
+        ImageHelper.printCenterString(g2d, yearFluff.trim(), font, startLine, nextDataLine);
 
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
         g2d.drawString(techBase, 177, 145);
@@ -1614,6 +1617,11 @@ public class PrintMech implements Printable {
                     default:
                         break;
                     }
+
+                    if (cs.isArmored()) {
+                        engineName = "O " + engineName;
+                    }
+
                     g2d.drawString(engineName, lineStart, linePoint);
                 } else {
                     String critName = mech.getSystemName(cs.getIndex());
@@ -1621,6 +1629,11 @@ public class PrintMech implements Printable {
                     if (critName.indexOf("Standard") > -1) {
                         critName = critName.replace("Standard ", "");
                     }
+
+                    if (cs.isArmored()) {
+                        critName = "O " + critName;
+                    }
+
 
                     if (((cs.getIndex() >= Mech.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mech.ACTUATOR_HAND)) || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                         critName += " Actuator";
@@ -1634,6 +1647,10 @@ public class PrintMech implements Printable {
                 setCritConnection(m, lineStart, linePoint, lineStart, linePoint, g2d);
 
                 StringBuffer critName = new StringBuffer(UnitUtil.getCritName(mech, m.getType()));
+
+                if (m.isArmored()) {
+                    critName.insert(0, "O ");
+                }
 
                 if (UnitUtil.isTSM(m.getType())) {
                     critName.setLength(0);

@@ -80,6 +80,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     String[] clanTechLevels = { "Standard", "Advanced", "Experimental", "Unoffical" };
     JComboBox techLevel = new JComboBox(isTechLevels);
     JTextField era = new JTextField(3);
+    JTextField source = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox quadCB = new JCheckBox("Quad");
@@ -139,6 +140,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(createLabel("Era:", maxSize));
         masterPanel.add(era);
 
+        masterPanel.add(createLabel("Source:", maxSize));
+        masterPanel.add(source);
+
         masterPanel.add(createLabel("Tech:", maxSize));
         masterPanel.add(techType);
         masterPanel.add(createLabel("Tech Level:", maxSize));
@@ -169,6 +173,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         setFieldSize(walkMP, maxSize);
         setFieldSize(era, maxSize);
+        setFieldSize(source, maxSize);
         setFieldSize(techType, maxSize);
         setFieldSize(techLevel, maxSize);
         setFieldSize(engineType, maxSize);
@@ -194,6 +199,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         omniCB.setSelected(unit.isOmni());
         quadCB.setSelected(unit instanceof QuadMech);
         era.setText(Integer.toString(unit.getYear()));
+        source.setText(unit.getSource());
         gyroType.setSelectedIndex(unit.getGyroType());
         weightClass.setSelectedIndex((int) (unit.getWeight() / 5) - 2);
         cockpitType.setSelectedIndex(unit.getCockpitType());
@@ -645,6 +651,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         techLevel.removeActionListener(this);
         techType.removeActionListener(this);
         era.removeKeyListener(this);
+        source.removeKeyListener(this);
         omniCB.removeActionListener(this);
         quadCB.removeActionListener(this);
         structureCombo.removeActionListener(this);
@@ -662,6 +669,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         techLevel.addActionListener(this);
         techType.addActionListener(this);
         era.addKeyListener(this);
+        source.addKeyListener(this);
         omniCB.addActionListener(this);
         quadCB.addActionListener(this);
         structureCombo.addActionListener(this);
@@ -674,10 +682,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     }
 
     public void keyReleased(KeyEvent e) {
-        try {
-            unit.setYear(Integer.parseInt(era.getText()));
-        } catch (Exception ex) {
-            unit.setYear(2075);
+
+        if (e.getSource().equals(era)) {
+            try {
+                unit.setYear(Integer.parseInt(era.getText()));
+            } catch (Exception ex) {
+                unit.setYear(2075);
+            }
+        } else if (e.getSource().equals(source)) {
+            unit.setSource(source.getText());
         }
     }
 

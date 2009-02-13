@@ -228,7 +228,9 @@ public class PrintQuad implements Printable {
                 break;
             }
         }
-        ImageHelper.printCenterString(g2d, Integer.toString(mech.getYear()), font, startLine, nextDataLine);
+
+        String yearFluff = mech.getYear() + " " + mech.getSource();
+        ImageHelper.printCenterString(g2d, yearFluff.trim(), font, startLine, nextDataLine);
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
