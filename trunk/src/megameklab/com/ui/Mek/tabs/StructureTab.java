@@ -375,6 +375,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         }
                         rating = (int)dRating;
                     }
+                    if ((rating > 400) && (unit.getGyroType() == Mech.GYRO_XL)) {
+                        JOptionPane.showMessageDialog(this, "That speed would require a large engine, which doesn't fit", "Bad Engine", JOptionPane.ERROR_MESSAGE);
+                    }
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
@@ -394,23 +397,27 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     unit.setStructureType(structureCombo.getSelectedIndex());
                     createISMounts();
                 } else if (combo.equals(gyroType)) {
-                    unit.setGyroType(combo.getSelectedIndex());
-                    unit.clearGyroCrits();
+                    if (unit.getEngine().hasFlag(Engine.LARGE_ENGINE) && (combo.getSelectedIndex() == Mech.GYRO_XL)) {
+                        JOptionPane.showMessageDialog(this, "A XL gyro does not fit with a large engine installed", "Bad Gyro", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        unit.setGyroType(combo.getSelectedIndex());
+                        unit.clearGyroCrits();
 
-                    switch (unit.getGyroType()) {
-                    case Mech.GYRO_COMPACT:
-                        unit.addCompactGyro();
-                        unit.clearEngineCrits();
-                        unit.addEngineCritsWithCompactGyro();
-                        break;
-                    case Mech.GYRO_HEAVY_DUTY:
-                        unit.addHeavyDutyGyro();
-                        break;
-                    case Mech.GYRO_XL:
-                        unit.addXLGyro();
-                        break;
-                    default:
-                        unit.addGyro();
+                        switch (unit.getGyroType()) {
+                        case Mech.GYRO_COMPACT:
+                            unit.addCompactGyro();
+                            unit.clearEngineCrits();
+                            unit.addEngineCrits();
+                            break;
+                        case Mech.GYRO_HEAVY_DUTY:
+                            unit.addHeavyDutyGyro();
+                            break;
+                        case Mech.GYRO_XL:
+                            unit.addXLGyro();
+                            break;
+                        default:
+                            unit.addGyro();
+                        }
                     }
                 } else if (combo.equals(weightClass)) {
                     int rating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());

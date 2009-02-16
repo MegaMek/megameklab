@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import megamek.common.AmmoType;
@@ -161,13 +162,12 @@ public class UnitUtil {
      */
     public static void removeMounts(Mech unit, String mountName) {
 
-        for (int pos = 0; pos < unit.getEquipment().size();) {
-            Mounted mount = unit.getEquipment().get(pos);
+        ListIterator<Mounted> iterator = unit.getEquipment().listIterator();
+        while (iterator.hasNext()) {
+            Mounted mount = iterator.next();
             if (mount.getType().getName().equals(mountName) || mount.getType().getInternalName().equals(mountName)) {
-                unit.getEquipment().remove(pos);
+                iterator.remove();
                 unit.getMisc().remove(mount);
-            } else {
-                pos++;
             }
         }
     }
@@ -907,7 +907,7 @@ public class UnitUtil {
     }
 
     public static String getCritName(Entity unit, EquipmentType eq) {
-        if (unit.isMixedTech() && eq.getTechLevel() != TechConstants.T_ALLOWED_ALL) {
+        if (unit.isMixedTech() && (eq.getTechLevel() != TechConstants.T_ALLOWED_ALL)) {
 
             if (unit.isClan() && !UnitUtil.isClanEquipment(eq)) {
                 return eq.getName() + " (IS)";
@@ -980,12 +980,12 @@ public class UnitUtil {
         if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
 
             for (int position = 0; position < unit.getNumberOfCriticals(location); position++) {
-                if (cs.getIndex() == Mech.SYSTEM_ENGINE && slot >= 3 && position < 3) {
+                if ((cs.getIndex() == Mech.SYSTEM_ENGINE) && (slot >= 3) && (position < 3)) {
                     position = 3;
                 }
                 CriticalSlot crit = unit.getCritical(location, position);
 
-                if ( crit != null && crit.getType() == CriticalSlot.TYPE_SYSTEM && crit.getIndex() == cs.getIndex() ){
+                if ( (crit != null) && (crit.getType() == CriticalSlot.TYPE_SYSTEM) && (crit.getIndex() == cs.getIndex()) ){
                     lastIndex = position;
                 } else if (position > slot) {
                     break;
@@ -1013,7 +1013,7 @@ public class UnitUtil {
             for (int position = slot; position >= numberOfCrits; position--) {
                 CriticalSlot crit = unit.getCritical(location, position);
 
-                if (crit == null || crit.getType() != CriticalSlot.TYPE_EQUIPMENT) {
+                if ((crit == null) || (crit.getType() != CriticalSlot.TYPE_EQUIPMENT)) {
                     return false;
                 }
 
@@ -1040,28 +1040,28 @@ public class UnitUtil {
     public static void updateCritsArmoredStatus(Entity unit, Mounted mount) {
         for (int position = 0; position < unit.getNumberOfCriticals(mount.getLocation()); position++) {
             CriticalSlot cs = unit.getCritical(mount.getLocation(), position);
-            if (cs == null || cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+            if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                 continue;
             }
 
-            if (cs.getMount() != null && cs.getMount().equals(mount)) {
+            if ((cs.getMount() != null) && cs.getMount().equals(mount)) {
                 cs.setArmored(mount.isArmored());
-            } else if (unit.getEquipment(cs.getIndex()) != null && unit.getEquipment(cs.getIndex()).equals(mount)) {
+            } else if ((unit.getEquipment(cs.getIndex()) != null) && unit.getEquipment(cs.getIndex()).equals(mount)) {
                 cs.setArmored(mount.isArmored());
             }
 
         }
 
-        if ((mount.isSplitable() || mount.getType().isSpreadable()) && mount.getSecondLocation() != Entity.LOC_NONE) {
+        if ((mount.isSplitable() || mount.getType().isSpreadable()) && (mount.getSecondLocation() != Entity.LOC_NONE)) {
             for (int position = 0; position < unit.getNumberOfCriticals(mount.getSecondLocation()); position++) {
                 CriticalSlot cs = unit.getCritical(mount.getLocation(), position);
-                if (cs == null || cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+                if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                     continue;
                 }
 
-                if (cs.getMount() != null && cs.getMount().equals(mount)) {
+                if ((cs.getMount() != null) && cs.getMount().equals(mount)) {
                     cs.setArmored(mount.isArmored());
-                } else if (unit.getEquipment(cs.getIndex()) != null && unit.getEquipment(cs.getIndex()).equals(mount)) {
+                } else if ((unit.getEquipment(cs.getIndex()) != null) && unit.getEquipment(cs.getIndex()).equals(mount)) {
                     cs.setArmored(mount.isArmored());
                 }
 
@@ -1071,7 +1071,7 @@ public class UnitUtil {
 
     public static void updateCritsArmoredStatus(Entity unit, CriticalSlot cs, int location) {
 
-        if ( cs == null || cs.getType() == CriticalSlot.TYPE_EQUIPMENT ){
+        if ( (cs == null) || (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) ){
             return;
         }
 
@@ -1080,7 +1080,7 @@ public class UnitUtil {
                 for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                     CriticalSlot newCrit = unit.getCritical(loc, slot);
 
-                    if (newCrit != null && newCrit.getType() == CriticalSlot.TYPE_SYSTEM && newCrit.getIndex() == cs.getIndex()) {
+                    if ((newCrit != null) && (newCrit.getType() == CriticalSlot.TYPE_SYSTEM) && (newCrit.getIndex() == cs.getIndex())) {
                         newCrit.setArmored(cs.isArmored());
                     }
                 }
@@ -1090,7 +1090,7 @@ public class UnitUtil {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot newCrit = unit.getCritical(location, slot);
 
-                if (newCrit != null && newCrit.getType() == CriticalSlot.TYPE_SYSTEM && newCrit.getIndex() == cs.getIndex()) {
+                if ((newCrit != null) && (newCrit.getType() == CriticalSlot.TYPE_SYSTEM) && (newCrit.getIndex() == cs.getIndex())) {
                     newCrit.setArmored(cs.isArmored());
                 }
             }
