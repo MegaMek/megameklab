@@ -166,7 +166,7 @@ public class CriticalView extends IView {
                     if (unit instanceof QuadMech) {
                         laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Front Left Leg"));
                     } else {
-                        laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Left Leg"));
+                        laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Left Arm"));
                     }
                     laPanel.add(criticalSlotList);
                     laPanel.repaint();
@@ -175,7 +175,7 @@ public class CriticalView extends IView {
                     if (unit instanceof QuadMech) {
                         raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Front Right Leg"));
                     } else {
-                        raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Right Leg"));
+                        raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Right Arm"));
                     }
                     raPanel.add(criticalSlotList);
                     raPanel.repaint();
