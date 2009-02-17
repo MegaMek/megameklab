@@ -426,7 +426,7 @@ public class PrintQuad implements Printable {
                 for (Mech currentMech : mechList) {
 
                     mech = currentMech;
-                    awtHud = ImageHelper.getFluffImage(currentMech, "Mech");
+                    awtHud = ImageHelper.getFluffImage(currentMech, "mech");
                     pj.setJobName(mech.getChassis() + " " + mech.getModel());
 
                     try {
