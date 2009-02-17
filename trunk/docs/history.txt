@@ -39,6 +39,8 @@ V 0.0.0.12-Dev
 + Fixed engine setting when compact gyro is used
 + Fixed right arm/left arm labels for bipeds
 + New MegaMek.jar
++ Bug: Second Tank Name not printing.
++ Bug: LS/RS Armor Pip 5 Printing in the same location as Armor Pip 4
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm

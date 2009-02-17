@@ -192,7 +192,7 @@ public class PrintVehicle implements Printable {
         String tankName = tank2.getChassis().toUpperCase() + " " + tank2.getModel().toUpperCase();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, tankName, true, 180, 10.0f));
-        g2d.drawString(tankName, 49, 121);
+        g2d.drawString(tankName, 49, 494);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
@@ -625,51 +625,52 @@ public class PrintVehicle implements Printable {
             switch (pos) {
             case 0:
             case 1:
-            case 3:
                 topColumn[1] += pipShift[1];
                 break;
-            case 4:
-                pipShift[0] *= -1;
-                break;
-            case 6:
-            case 9:
-            case 12:
-            case 16:
-            case 20:
-            case 25:
-            case 31:
-            case 38:
-            case 41:
-            case 44:
-            case 49:
-            case 51:
-            case 53:
+            case 3:
+            case 5:
+            case 8:
+            case 11:
+            case 15:
+            case 19:
+            case 24:
+            case 30:
+            case 37:
+            case 40:
+            case 43:
+            case 48:
+            case 50:
+            case 52:
+            case 56:
             case 57:
             case 58:
-            case 59:
-            case 62:
-            case 65:
-            case 68:
-            case 71:
+            case 61:
+            case 64:
+            case 67:
+            case 70:
+            case 76:
             case 77:
             case 78:
-            case 79:
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 break;
-            case 35:
-            case 47:
-            case 75:
+            case 34:
+            case 46:
+            case 74:
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 topColumn[0] += pipShift[0];
                 break;
-            case 55:
+            case 54:
                 topColumn[1] += pipShift[1];
                 topColumn[0] -= pipShift[0] * .25;
                 pipShift[0] *= -1;
                 break;
-
+            case 73:
+                topColumn[1] += pipShift[1];
+                topColumn[0] -= pipShift[0];
+                pipShift[0] *= -1;
+                break;
             default:
                 topColumn[0] += pipShift[0];
                 break;
@@ -698,52 +699,54 @@ public class PrintVehicle implements Printable {
             switch (pos) {
             case 0:
             case 1:
-            case 3:
                 topColumn[1] += pipShift[1];
                 break;
-            case 4:
-                pipShift[0] *= -1;
-                break;
-            case 6:
-            case 9:
-            case 12:
-            case 16:
-            case 20:
-            case 25:
-            case 31:
-            case 38:
-            case 41:
-            case 49:
-            case 51:
-            case 53:
+            case 3:
+            case 5:
+            case 8:
+            case 11:
+            case 15:
+            case 19:
+            case 24:
+            case 30:
+            case 37:
+            case 40:
+            case 48:
+            case 50:
+            case 52:
+            case 56:
             case 57:
             case 58:
-            case 59:
-            case 62:
-            case 65:
-            case 68:
-            case 71:
+            case 61:
+            case 64:
+            case 67:
+            case 70:
+            case 76:
             case 77:
             case 78:
-            case 79:
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 break;
-            case 35:
-            case 47:
-            case 75:
+            case 34:
+            case 46:
+            case 74:
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 topColumn[0] -= pipShift[0];
                 break;
-            case 44:
+            case 43:
                 topColumn[1] += pipShift[1];
                 topColumn[0] -= pipShift[0] * .25;
                 pipShift[0] *= -1;
                 break;
-            case 55:
+            case 54:
                 topColumn[1] += pipShift[1];
                 topColumn[0] += pipShift[0] * .25;
+                pipShift[0] *= -1;
+                break;
+            case 73:
+                topColumn[1] += pipShift[1];
+                topColumn[0] += pipShift[0];
                 pipShift[0] *= -1;
                 break;
             default:
