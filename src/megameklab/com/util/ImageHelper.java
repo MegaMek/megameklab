@@ -105,18 +105,18 @@ public class ImageHelper {
         return image;
     }
 
-    public static Image getFluffImage(Entity unit) {
+    public static Image getFluffImage(Entity unit, String dir) {
         Image fluff = null;
 
-        String path = new File(fluffPath).getAbsolutePath() + File.separatorChar;
-        fluff = ImageHelper.getFluffPNG(unit);
+        String path = new File(fluffPath).getAbsolutePath() + File.separatorChar + dir + File.separatorChar;
+        fluff = ImageHelper.getFluffPNG(unit, path);
 
         if (fluff == null) {
-            fluff = ImageHelper.getFluffJPG(unit);
+            fluff = ImageHelper.getFluffJPG(unit, path);
         }
 
         if (fluff == null) {
-            fluff = ImageHelper.getFluffGIF(unit);
+            fluff = ImageHelper.getFluffGIF(unit, path);
         }
 
         if (fluff == null) {
@@ -125,10 +125,9 @@ public class ImageHelper {
         return fluff;
     }
 
-    public static Image getFluffPNG(Entity unit) {
+    public static Image getFluffPNG(Entity unit, String path) {
         Image fluff = null;
 
-        String path = new File(fluffPath).getAbsolutePath() + File.separatorChar;
         String fluffFile = path + unit.getChassis() + " " + unit.getModel() + ".png";
         if (new File(fluffFile.toLowerCase()).exists()) {
             fluff = new ImageIcon(fluffFile).getImage();
@@ -151,10 +150,9 @@ public class ImageHelper {
         return fluff;
     }
 
-    public static Image getFluffJPG(Entity unit) {
+    public static Image getFluffJPG(Entity unit, String path) {
         Image fluff = null;
 
-        String path = new File(fluffPath).getAbsolutePath() + File.separatorChar;
         String fluffFile = path + unit.getChassis() + " " + unit.getModel() + ".jpg";
         if (new File(fluffFile.toLowerCase()).exists()) {
             fluff = new ImageIcon(fluffFile).getImage();
@@ -177,10 +175,8 @@ public class ImageHelper {
         return fluff;
     }
 
-    public static Image getFluffGIF(Entity unit) {
+    public static Image getFluffGIF(Entity unit, String path) {
         Image fluff = null;
-
-        String path = new File(fluffPath).getAbsolutePath() + File.separatorChar;
 
         String fluffFile = path + unit.getChassis() + " " + unit.getModel() + ".gif";
         if (new File(fluffFile.toLowerCase()).exists()) {
