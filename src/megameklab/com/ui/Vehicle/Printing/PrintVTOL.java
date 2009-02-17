@@ -184,7 +184,7 @@ public class PrintVTOL implements Printable {
         String VTOLName = vtol2.getChassis().toUpperCase() + " " + vtol2.getModel().toUpperCase();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, VTOLName, true, 180, 10.0f));
-        g2d.drawString(VTOLName, 49, 121);
+        g2d.drawString(VTOLName, 49, 494);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
