@@ -434,7 +434,7 @@ public class PrintMech implements Printable {
                 for (Mech currentMech : mechList) {
 
                     mech = currentMech;
-                    awtHud = ImageHelper.getFluffImage(currentMech);
+                    awtHud = ImageHelper.getFluffImage(currentMech, "Mech");
                     pj.setJobName(mech.getChassis() + " " + mech.getModel());
 
                     try {
