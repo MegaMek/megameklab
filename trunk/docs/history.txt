@@ -42,6 +42,7 @@ V 0.0.0.12-Dev
 + Bug: Second Tank Name not printing.
 + Bug: LS/RS Armor Pip 5 Printing in the same location as Armor Pip 4
 + Moved Mech fluff images to Mech sub folder.
++ added Ammo Text to Vehicles
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm

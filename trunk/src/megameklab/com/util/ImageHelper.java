@@ -408,6 +408,52 @@ public class ImageHelper {
 
     }
 
+    public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int offset) {
+
+        if (vehicle.getAmmo().size() < 1 ){
+            return;
+        }
+
+        int pointY = 340 + offset;
+        int pointX = 22;
+
+        HashMap<String, Integer> ammoHash = new HashMap<String, Integer>();
+
+        for (Mounted ammo : vehicle.getAmmo()) {
+            AmmoType aType = (AmmoType) ammo.getType();
+            String shortName = aType.getShortName().replace("Ammo", "");
+            shortName = shortName.replace('(', '.').replace(')', '.').replace(".Clan.", "");
+            shortName = shortName.replace("-capable", "");
+            shortName = shortName.replaceAll("[0-9]", "");
+            shortName = shortName.trim();
+            if (aType.getRackSize() > 0) {
+                shortName += " " + aType.getRackSize();
+            }
+
+            if (ammoHash.containsKey(shortName)) {
+                int currentAmmo = ammoHash.get(shortName);
+                currentAmmo += aType.getShots();
+                ammoHash.put(shortName, currentAmmo);
+            } else {
+                int currentAmmo = aType.getShots();
+                ammoHash.put(shortName, currentAmmo);
+            }
+        }
+        StringBuffer sb = new StringBuffer("Ammo: ");
+
+        for (String ammo : ammoHash.keySet()) {
+            sb.append("(");
+            sb.append(ammo);
+            sb.append(") ");
+            sb.append(ammoHash.get(ammo));
+            sb.append(", ");
+        }
+
+        sb.setLength(sb.length() - 2);
+        g2d.setFont(UnitUtil.getNewFont(g2d, sb.toString(), false, 200, 7.0f));
+        g2d.drawString(sb.toString(), pointX, pointY);
+    }
+
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d) {
         ImageHelper.printTankWeaponsNEquipment(tank, g2d, 0);
     }
@@ -620,6 +666,7 @@ public class ImageHelper {
             }
         }
 
+        printVehicleAmmo(tank, g2d, (int) offset);
     }
 
     public static void printVTOLWeaponsNEquipment(Tank tank, Graphics2D g2d) {
@@ -832,7 +879,7 @@ public class ImageHelper {
                 count++;
             }
         }
-
+        printVehicleAmmo(tank, g2d, (int) offset);
     }
 
     public static void printC3iName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
