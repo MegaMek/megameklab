@@ -44,6 +44,8 @@ V 0.0.0.12-Dev
 + Moved Mech fluff images to Mech sub folder.
 + added Ammo Text to Vehicles
 + Bug: Crits not being removed correctly
++ Bug: A/B/MPods not printing the correct Damage notations
+
 
 V 0.0.0.11 (Release 02/04/2008 9:29:00 PST)
 + Updated MegaMek.jar for Tracks, Spot Welders, Salvage Arm

@@ -210,6 +210,7 @@ public class PrintQuad implements Printable {
                 break;
             case TechConstants.T_IS_TW_NON_BOX:
             case TechConstants.T_IS_TW_ALL:
+            case TechConstants.T_CLAN_TW:
                 break;
             case TechConstants.T_IS_ADVANCED:
             case TechConstants.T_CLAN_ADVANCED:

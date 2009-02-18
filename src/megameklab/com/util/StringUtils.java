@@ -26,6 +26,7 @@ import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
+import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.CLPlasmaCannon;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.FlamerWeapon;
@@ -100,14 +101,15 @@ public class StringUtils {
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R,C]";
-            } else {
+            }
+            else {
                 info = Integer.toString(weapon.getDamage());
                 info += " [";
 
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
                     info += "DB,";
                 }
-                if (UnitUtil.isAMS(weapon)) {
+                if (UnitUtil.isAMS(weapon) || weapon instanceof BPodWeapon) {
                     info += "PD,";
                 } else if (weapon instanceof PulseLaserWeapon) {
                     info += "P,";
@@ -129,7 +131,7 @@ public class StringUtils {
                     info += "R,";
                 }
 
-                if (weapon instanceof MGWeapon) {
+                if (weapon instanceof MGWeapon || weapon instanceof BPodWeapon) {
                     info += "AI,";
                 }
 
@@ -141,12 +143,19 @@ public class StringUtils {
                     info += "X,";
                 }
 
+                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                    info += "OS,";
+                }
+
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
         } else if (mount.getType() instanceof MiscType && (mount.getType().hasFlag(MiscType.F_CLUB) || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
             info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false));
-        } else {
+        } else if (mount.getType() instanceof MiscType && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
+            info = "[PD,OS,AI]";
+        }
+                else {
             info = "  [E]";
         }
         return info;
