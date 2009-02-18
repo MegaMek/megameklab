@@ -31,6 +31,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
+import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.CLAMS;
 import megamek.common.weapons.CLLaserAMS;
 import megamek.common.weapons.EnergyWeapon;
@@ -40,6 +41,7 @@ import megamek.common.weapons.HVACWeapon;
 import megamek.common.weapons.ISAMS;
 import megamek.common.weapons.ISLaserAMS;
 import megamek.common.weapons.MGWeapon;
+import megamek.common.weapons.MPodWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 
@@ -755,6 +757,13 @@ public class UnitUtil {
             return false;
         }
 
+        if (weapon instanceof MPodWeapon) {
+            return false;
+        }
+
+        if (weapon instanceof BPodWeapon) {
+            return false;
+        }
         return true;
     }
 
