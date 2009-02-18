@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.12-Dev
+V 0.0.0.12 (02/18/2009 8:40 UTC-8)
 + Bug: Incorrect Total heat showing for XXL engines
 - Removed color coding from CritView in Structure tab
 + RFE: Added the ablity to select and add multiple weapons/ammo at once
