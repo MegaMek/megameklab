@@ -38,6 +38,7 @@ public class CConfig {
     public static final String CONFIG_AMMO = "Ammo";
     public static final String CONFIG_EQUIPMENT = "Equipment";
     public static final String CONFIG_SYSTEMS = "Systems";
+    public static final String CONFIG_EMPTY = "Empty";
 
     public static final String CONFIG_FOREGROUND = "-Foreground";
     public static final String CONFIG_BACKGROUND = "-Background";
@@ -50,6 +51,8 @@ public class CConfig {
     public static final String CONFIG_EQUIPMENT_BACKGROUND = "Equipment-Background";
     public static final String CONFIG_SYSTEMS_FOREGROUND = "Systems-Foreground";
     public static final String CONFIG_SYSTEMS_BACKGROUND = "Systems-Background";
+    public static final String CONFIG_EMPTY_FOREGROUND = "Empty-Foreground";
+    public static final String CONFIG_EMPTY_BACKGROUND = "Empty-Background";
 
     private Properties config;//config. player values.
 

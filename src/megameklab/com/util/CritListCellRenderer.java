@@ -95,12 +95,16 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 label.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
             }
 
+        } else if (useColor) {
+            label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_EMPTY));
+            label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_EMPTY));
         }
 
 
         if (cs != null && UnitUtil.isLastCrit(unit, cs, index, getCritLocation())) {
             label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0, 0, 0)));
         }
+
         return label;
     }
 

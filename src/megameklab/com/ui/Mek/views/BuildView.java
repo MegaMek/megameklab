@@ -35,8 +35,8 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.weapons.Weapon;
-import megameklab.com.util.CriticalTable;
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.CriticalTransferHandler;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
@@ -53,7 +53,7 @@ public class BuildView extends IView implements ActionListener {
 
     private CriticalTableModel equipmentList;
     private Vector<EquipmentType> masterEquipmentList = new Vector<EquipmentType>(10, 1);
-    private CriticalTable equipmentTable = new CriticalTable();
+    private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private int engineHeatSinkCount = 0;
 
@@ -64,10 +64,16 @@ public class BuildView extends IView implements ActionListener {
         equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
+        equipmentTable.setDragEnabled(true);
+        CriticalTransferHandler cth = new CriticalTransferHandler(unit, null);
+        equipmentTable.setTransferHandler(cth);
+
         equipmentList.initColumnSizes(equipmentTable);
+
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             equipmentTable.getColumnModel().getColumn(i).setCellRenderer(equipmentList.getRenderer());
         }
+
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         // equipmentScroll.setToolTipText("");
@@ -79,7 +85,9 @@ public class BuildView extends IView implements ActionListener {
 
         this.add(mainPanel);
         // loadEquipmentTable();
+
     }
+
 
     public void addRefreshedListener(RefreshListener l) {
     }

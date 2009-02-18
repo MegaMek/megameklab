@@ -1,5 +1,9 @@
 VERSION HISTORY:
 ----------------
+V 0.0.0.13-DEV
++ Changed Drag and Drop Code.
++ RFE: set the foreground and background colors for empty crits
+
 V 0.0.0.12 (02/18/2009 8:40 UTC-8)
 + Bug: Incorrect Total heat showing for XXL engines
 - Removed color coding from CritView in Structure tab
