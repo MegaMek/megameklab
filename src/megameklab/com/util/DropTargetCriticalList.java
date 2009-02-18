@@ -264,7 +264,7 @@ public class DropTargetCriticalList extends JList implements DropTargetListener,
 
                 CriticalSlot cs = getCrit();
 
-                if (cs != null && (unit.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL || unit.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL || unit.getTechLevel() == TechConstants.T_IS_UNOFFICIAL || unit.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL)) {
+                if (UnitUtil.isArmorable(cs) && (unit.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL || unit.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL || unit.getTechLevel() == TechConstants.T_IS_UNOFFICIAL || unit.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL)) {
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");
                         info.setActionCommand(Integer.toString(location));

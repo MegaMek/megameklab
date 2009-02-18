@@ -209,9 +209,9 @@ public class UnitUtil {
         /*
          * if (eq.getType().getName().equals(UnitUtil.TSM)) { UnitUtil.removeTSMCrits(unit); } else
          */
-        if (eq.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER) || eq.getType().getInternalName().equals(UnitUtil.CLTARGETINGCOMPUTER) || eq.getType().getInternalName().equals(UnitUtil.ISTARGETINGCOMPUTER)) {
+         if (UnitUtil.isTargettingComputer(eq)) {
             UnitUtil.removeCrits(unit, UnitUtil.TARGETINGCOMPUTER);
-        } else if (eq.isSplitable() || eq.getType().isSpreadable()) {
+        } else if ((eq.getType() instanceof WeaponType) && (eq.isSplitable() || eq.getType().isSpreadable())) {
             UnitUtil.removeSplitCriticals(unit, eq);
         } else {
             int critsUsed = UnitUtil.getCritsUsed(unit, eq.getType());
@@ -227,6 +227,20 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Tells if param EQ is a targetting computer.
+     *
+     * @param eq
+     *            Mounted that might be a targetting computer
+     * @return True if is a targetting computer false if not.
+     */
+    public static boolean isTargettingComputer(Mounted eq) {
+        if (eq.getType().getName().equals(UnitUtil.TARGETINGCOMPUTER) || eq.getType().getInternalName().equals(UnitUtil.CLTARGETINGCOMPUTER) || eq.getType().getInternalName().equals(UnitUtil.ISTARGETINGCOMPUTER)) {
+            return true;
+        }
+
+        return false;
+    }
     /**
      * Removes crits for weapons that have split locations
      *
@@ -1112,5 +1126,31 @@ public class UnitUtil {
         }
 
         return false;
+    }
+
+    public static boolean isArmorable(CriticalSlot cs) {
+        if (cs == null) {
+            return false;
+        }
+
+        if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+            return true;
+        }
+
+        Mounted mount = cs.getMount();
+        if (mount == null) {
+            return false;
+        }
+
+        if (UnitUtil.isArmorOrStructure(mount.getType())) {
+            return false;
+        }
+
+        if (UnitUtil.isTSM(mount.getType())) {
+            return false;
+        }
+
+
+        return true;
     }
 }
