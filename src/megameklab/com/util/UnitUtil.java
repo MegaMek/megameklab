@@ -1159,7 +1159,15 @@ public class UnitUtil {
             return false;
         }
 
+        if (mount.getType() instanceof MiscType) {
+            MiscType misc = (MiscType) mount.getType();
+            if (misc.hasFlag(MiscType.F_HARJEL) || misc.hasFlag(MiscType.F_SPIKES) || misc.hasFlag(MiscType.F_REACTIVE) || misc.hasFlag(MiscType.F_MODULAR_ARMOR) || misc.isShield()) {
+                return false;
+            }
+        }
+
 
         return true;
     }
+
 }
