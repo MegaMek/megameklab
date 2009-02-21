@@ -56,6 +56,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import megamek.MegaMek;
 import megamek.client.ui.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.Aero;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -71,6 +72,7 @@ import megamek.common.VTOL;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
+import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Mek.Printing.PrintAdvancedMech;
 import megameklab.com.ui.Mek.Printing.PrintAdvancedQuad;
 import megameklab.com.ui.Mek.Printing.PrintMech;
@@ -239,6 +241,20 @@ public class MainUI extends JFrame implements RefreshListener {
         printMenu.add(vehicleMenu);
 
         file.add(printMenu);
+
+        JMenu spaceMenu = new JMenu("Space Craft");
+        spaceMenu.setMnemonic('S');
+
+        item = new JMenuItem("Aero");
+        item.setMnemonic('A');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuPrintAero_actionPerformed(e);
+            }
+        });
+        spaceMenu.add(item);
+
+        printMenu.add(spaceMenu);
 
         item = new JMenuItem("Configuration");
         item.setMnemonic('C');
@@ -538,11 +554,36 @@ public class MainUI extends JFrame implements RefreshListener {
         sp.print();
     }
 
+    public void jMenuPrintAero_actionPerformed(ActionEvent event) {
+
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.AERO, config);
+
+        viewer.run();
+
+        Aero aero = null;
+        if (!(viewer.getSelectedEntity() instanceof Aero)) {
+            return;
+        }
+        aero = (Aero) viewer.getSelectedEntity();
+
+        viewer.setVisible(false);
+        viewer.dispose();
+
+        ArrayList<Aero> aeroList = new ArrayList<Aero>();
+        aeroList.add(aero);
+
+        PrintAero sp = new PrintAero(aeroList);
+
+        sp.print();
+    }
+
     public void jMenuPrintMulMechs_actionPerformed(ActionEvent event) {
         ArrayList<Mech> quadList = new ArrayList<Mech>();
         ArrayList<Mech> bipedList = new ArrayList<Mech>();
         ArrayList<Tank> tankList = new ArrayList<Tank>();
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
+        ArrayList<Aero> aeroList = new ArrayList<Aero>();
 
         FileDialog f = new FileDialog(this, "Load Mul");
         f.setDirectory(System.getProperty("user.dir"));
@@ -581,6 +622,8 @@ public class MainUI extends JFrame implements RefreshListener {
                     VTOLList.add((VTOL) unit);
                 } else if (unit instanceof Tank) {
                     tankList.add((Tank) unit);
+                } else if (unit instanceof Aero) {
+                    aeroList.add((Aero) unit);
                 }
             }
 
@@ -600,6 +643,12 @@ public class MainUI extends JFrame implements RefreshListener {
                 PrintVehicle printTank = new PrintVehicle(tankList);
 
                 printTank.print();
+            }
+
+            if (aeroList.size() > 0) {
+                PrintAero printAero = new PrintAero(aeroList);
+
+                printAero.print();
             }
 
             if (VTOLList.size() > 0) {
