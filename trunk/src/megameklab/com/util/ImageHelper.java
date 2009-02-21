@@ -32,6 +32,7 @@ import java.util.Hashtable;
 
 import javax.swing.ImageIcon;
 
+import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BipedMech;
 import megamek.common.Entity;
@@ -44,6 +45,11 @@ import megamek.common.VTOL;
 public class ImageHelper {
     public static String recordSheetPath = "./data/images/recordsheets/";
     public static String fluffPath = "./data/images/fluff/";
+
+
+    public static Image getRecordSheet(Entity unit) {
+        return ImageHelper.getRecordSheet(unit, false);
+    }
 
     public static Image getRecordSheet(Entity unit, boolean advanced) {
 
@@ -67,6 +73,8 @@ public class ImageHelper {
         } else if (unit instanceof Tank) {
             String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + ".png";
             recordSheet = new ImageIcon(path + imageName).getImage();
+        } else if (unit instanceof Aero) {
+            recordSheet = new ImageIcon(path + "twaero.png").getImage();
         }
 
         return recordSheet;
@@ -96,12 +104,6 @@ public class ImageHelper {
     public static Image getGyroPipImage() {
         String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
         Image image = new ImageIcon(path + "gyropip.png").getImage();
-        return image;
-    }
-
-    public static Image getBlankImage() {
-        String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
-        Image image = new ImageIcon(path + "blankimage.png").getImage();
         return image;
     }
 
@@ -408,6 +410,20 @@ public class ImageHelper {
 
     }
 
+    public static void printAeroFuel(Aero aero, Graphics2D g2d){
+        int pointY = 330;
+        int pointX = 22;
+        String fuel = "Fuel: ";
+
+        g2d.setFont(UnitUtil.getNewFont(g2d, fuel, true, 200, 7.0f));
+        g2d.drawString(fuel, pointX, pointY);
+        pointX += ImageHelper.getStringWidth(g2d, fuel, g2d.getFont());
+
+        String fuelAmount = String.format("%1$s Points", aero.getFuel());
+        g2d.setFont(UnitUtil.getNewFont(g2d, fuelAmount, false, 200, 7.0f));
+        g2d.drawString(fuelAmount, pointX, pointY);
+    }
+
     public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int offset) {
 
         if (vehicle.getAmmo().size() < 1 ){
@@ -440,6 +456,9 @@ public class ImageHelper {
             }
         }
         StringBuffer sb = new StringBuffer("Ammo: ");
+        g2d.setFont(UnitUtil.getNewFont(g2d, sb.toString(), true, 20, 7.0f));
+        g2d.drawString(sb.toString(), pointX, pointY);
+        pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
 
         for (String ammo : ammoHash.keySet()) {
             sb.append("(");
@@ -473,7 +492,7 @@ public class ImageHelper {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Mech.LOC_LLEG + 1);
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Tank.LOC_TURRET + 1);
 
         for (int pos = 0; pos <= Tank.LOC_TURRET; pos++) {
             equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
@@ -688,7 +707,7 @@ public class ImageHelper {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Mech.LOC_LLEG + 1);
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Tank.LOC_TURRET + 1);
 
         for (int pos = 0; pos <= Tank.LOC_TURRET; pos++) {
             equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
@@ -986,11 +1005,187 @@ public class ImageHelper {
         g2d.drawString("O", width, height);
     }
 
+    public static void drawAeroArmorPip(Graphics2D g2d, float width, float height) {
+        ImageHelper.drawAeroArmorPip(g2d, width, height, 9.0f);
+    }
+
+    public static void drawAeroArmorPip(Graphics2D g2d, float width, float height, float fontsize) {
+        Font font = new Font("Arial", Font.PLAIN, 9);
+        font = font.deriveFont(fontsize);
+        g2d.setFont(font);
+        g2d.setColor(Color.BLACK);
+        g2d.setBackground(Color.WHITE);
+        g2d.drawString("O", width, height);
+    }
+
+    public static void drawAeroISPip(Graphics2D g2d, int width, int height) {
+        Dimension circle = new Dimension(7, 7);
+        Dimension fillCircle = new Dimension(5, 5);
+        g2d.setColor(Color.black);
+        g2d.fillOval(width, height, circle.width, circle.height);
+        g2d.setColor(Color.white);
+        g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
+    }
+
+
     public static void drawHeatSinkPip(Graphics2D g2d, float width, float height) {
         Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
         g2d.setColor(Color.BLACK);
         g2d.drawString("O", width, height);
     }
+
+    public static void printAeroWeaponsNEquipment(Aero aero, Graphics2D g2d) {
+        int qtyPoint = 26;
+        int typePoint = 38;
+        int locPoint = 109;
+        int heatPoint = 133;
+        int shtPoint = 151;
+        int medPoint = 169;
+        int longPoint = 192;
+        int erPoint = 211;
+        float linePoint = 202f;
+
+        float lineFeed = 6.7f;
+
+        boolean newLineNeeded = false;
+
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Aero.LOC_WINGS + 1);
+
+        for (int pos = 0; pos <= Aero.LOC_WINGS; pos++) {
+            equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
+        }
+
+        for (Mounted eq : aero.getEquipment()) {
+
+            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType())) {
+                continue;
+            }
+
+
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
+
+            String equipmentName = eq.getName();
+            if (eq.isRearMounted()) {
+                equipmentName += "(R)";
+            }
+
+            if (eqHash.containsKey(equipmentName)) {
+                EquipmentInfo eqi = eqHash.get(equipmentName);
+
+                if (eq.getType().getTechLevel() != eqi.techLevel) {
+                    eqi = new EquipmentInfo(aero, eq);
+                } else {
+                    eqi.count++;
+                }
+                eqHash.put(equipmentName, eqi);
+            } else {
+                EquipmentInfo eqi = new EquipmentInfo(aero, eq);
+                eqHash.put(equipmentName, eqi);
+            }
+
+        }
+
+        Font font = UnitUtil.deriveFont(true, 10.0f);
+        g2d.setFont(font);
+
+        for (int pos = Aero.LOC_NOSE; pos <= Aero.LOC_AFT; pos++) {
+
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
+
+            if (eqHash.size() < 1) {
+                continue;
+            }
+
+            int count = 0;
+
+            ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
+
+            EquipmentInfo artemisEQ = null;
+
+            if (eqHash.containsKey("Artemis IV FCS")) {
+                artemisEQ = eqHash.get("Artemis IV FCS");
+                artemisEQ.count = 1;
+                eqHash.remove("Artemis IV FCS");
+            }
+
+            for (EquipmentInfo eqi : eqHash.values()) {
+                equipmentList.add(eqi);
+
+            }
+
+            Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
+
+            for (int eqPos = 0; eqPos < equipmentList.size(); eqPos++) {
+                EquipmentInfo eqi = equipmentList.get(eqPos);
+                if ((eqi.isMML || (eqi.name.indexOf("LRM") > -1) || (eqi.name.indexOf("SRM") > -1)) && (artemisEQ != null)) {
+                    equipmentList.add(++eqPos, artemisEQ);
+                }
+            }
+
+            for (EquipmentInfo eqi : equipmentList) {
+                newLineNeeded = false;
+
+                if (count >= 12) {
+                    break;
+                }
+                font = UnitUtil.deriveFont(7.0f);
+                g2d.setFont(font);
+
+                g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
+                String name = eqi.name.trim() + " " + eqi.damage.trim();
+
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
+
+                if (eqi.c3Level == eqi.C3I) {
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == eqi.C3S) {
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == eqi.C3M) {
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
+                } else {
+                    g2d.drawString(name, typePoint, linePoint);
+                }
+                font = UnitUtil.deriveFont(7.0f);
+                g2d.setFont(font);
+
+                String location = aero.getLocationAbbr(pos);
+
+                g2d.drawString(location, locPoint, linePoint);
+                ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat), font, heatPoint, linePoint);
+                if (eqi.shtRange > 0) {
+                    g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, (int) linePoint);
+                } else {
+                    g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                }
+
+                if (eqi.medRange > 0) {
+                    g2d.drawString(Integer.toString(eqi.medRange), medPoint, (int) linePoint);
+                } else {
+                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                }
+                if (eqi.longRange > 0) {
+                    g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
+                } else {
+                    g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                }
+                if (eqi.erRange > 0) {
+                    g2d.drawString(Integer.toString(eqi.erRange), erPoint, (int) linePoint);
+                } else {
+                    g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                }
+
+                linePoint += lineFeed;
+                if (newLineNeeded) {
+                    linePoint += lineFeed;
+                }
+                count++;
+            }
+        }
+
+        printVehicleAmmo(aero, g2d, -18);
+        printAeroFuel(aero, g2d);
+    }
+
 
 }

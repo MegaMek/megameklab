@@ -15,6 +15,7 @@
  */
 package megameklab.com.util;
 
+import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -31,6 +32,7 @@ public class EquipmentInfo {
     public int shtRange = 0;
     public int medRange = 0;
     public int longRange = 0;
+    public int erRange = 0;
     public String damage = "[E]";
     public int heat = 0;
     public int techLevel = TechConstants.T_INTRO_BOXSET;
@@ -43,6 +45,60 @@ public class EquipmentInfo {
     public int C3S = 1;
     public int C3M = 2;
     public int C3I = 3;
+
+    public EquipmentInfo(Aero aero, Mounted mount) {
+        name = UnitUtil.getCritName(aero, mount.getType());
+        if (mount.isRearMounted()) {
+            name += "(R)";
+        }
+
+        count = 1;
+        techLevel = mount.getType().getTechLevel();
+
+        damage = StringUtils.getEquipmentInfo(aero, mount);
+
+        if (mount.getType() instanceof WeaponType) {
+            if (mount.getType().hasFlag(WeaponType.F_C3M)) {
+                c3Level = C3M;
+            }
+            WeaponType weapon = (WeaponType) mount.getType();
+            minRange = Math.max(0, weapon.minimumRange);
+            isWeapon = true;
+
+            isMML = weapon instanceof MMLWeapon;
+            isATM = weapon instanceof ATMWeapon;
+
+            shtRange = (int) weapon.shortAV;
+            if (weapon.maxRange >= WeaponType.RANGE_MED) {
+                medRange = (int) weapon.medAV;
+            }
+            if (weapon.maxRange >= WeaponType.RANGE_LONG) {
+                longRange = (int) weapon.longAV;
+            }
+            if (weapon.maxRange >= WeaponType.RANGE_EXT) {
+                erRange = (int) weapon.extAV;
+            }
+            heat = weapon.getHeat();
+        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I)) {
+            c3Level = C3I;
+        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S)) {
+            c3Level = C3S;
+        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_ECM)) {
+            if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
+                longRange = 4;
+            } else {
+                longRange = 6;
+            }
+        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_BAP)) {
+            if (mount.getType().getInternalName().equals(Sensor.BAP)) {
+                longRange = 4;
+            } else if (mount.getType().getInternalName().equals(Sensor.BLOODHOUND)) {
+                longRange = 6;
+            } else if (mount.getType().getInternalName().equals(Sensor.CLAN_AP)) {
+                longRange = 5;
+            }
+        }
+    }
 
     public EquipmentInfo(Entity unit, Mounted mount) {
 
