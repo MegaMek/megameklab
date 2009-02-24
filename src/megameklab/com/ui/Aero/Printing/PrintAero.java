@@ -24,6 +24,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import megamek.common.Aero;
 import megameklab.com.util.ImageHelper;
@@ -205,49 +206,57 @@ public class PrintAero implements Printable {
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = { 302, 170 };
-        float[] pipShift = { 8, 7 };
+        float[] topColumn = { 302, 165 };
+        float[] pipShift = { 7, 7 };
+        float maxColumns = 25;
 
-        float maxRows = 7;
-        float maxColumns = 23;
-        float shift = (float) Math.ceil(totalArmor / maxColumns);
-        pipShift[1] = (maxRows / shift) * 7;
-
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawAeroArmorPip(g2d, topColumn[0], topColumn[1]);
+        Vector<float[]> pipPlotter = new Vector<float[]>(200);
+        for (int pos = 1; pos <= 200; pos++) {
+            //ImageHelper.drawAeroArmorPip(g2d, topColumn[0], topColumn[1]);
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if (pos % maxColumns == 0) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
-                if (pos > totalArmor - maxColumns) {
+                topColumn[0] += pipShift[0];
+                /*if (pos > totalArmor - maxColumns) {
                     topColumn[0] += pipShift[0] * ((maxColumns - (totalArmor - pos)) / 2);
                 } else {
                     topColumn[0] += pipShift[0] / 2;
-                }
+                }*/
+            }
+        }
+
+        int pipSpace = 200 / totalArmor;
+        for (int pos = 0; pos < 200; pos += pipSpace) {
+            ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            if (--totalArmor <= 0) {
+                return;
             }
         }
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[] { 360, 310 };
-        float[] pipShift = new float[] { 8, 7 };
-        float maxRows = 21;
-        float maxColumns = 8;
+        float[] topColumn = new float[] { 374, 303 };
+        float[] pipShift = new float[] { 7, 7 };
+        float maxColumns = 6;
 
-        float shift = (float) Math.ceil(totalArmor / maxColumns);
-        pipShift[1] = (maxRows / shift) * 7;
-
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawAeroArmorPip(g2d, topColumn[0], topColumn[1]);
+        Vector<float[]> pipPlotter = new Vector<float[]>(132);
+        for (int pos = 1; pos <= 132; pos++) {
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if (pos % maxColumns == 0) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
-                if (pos > totalArmor - maxColumns) {
-                    topColumn[0] += pipShift[0] * ((maxColumns - (totalArmor - pos)) / 2);
-                } else {
-                    topColumn[0] += pipShift[0] / 2;
-                }
+                topColumn[0] += pipShift[0];
+            }
+        }
+
+        int pipSpace = 132 / totalArmor;
+        for (int pos = 0; pos < 132; pos += pipSpace) {
+            ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            if (--totalArmor <= 0) {
+                return;
             }
         }
 
@@ -255,115 +264,156 @@ public class PrintAero implements Printable {
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor) {
         float[] topColumn = new float[] { 336.5f, 325 };
-        float[] pipShift = new float[] { 7, 8 };
+        float[] pipShift = new float[] { 7, 7 };
 
         int numberPerRow = 3;
         int curretNumber = 0;
-        pipShift[1] += 2 * Math.max(0, 7 - (totalArmor / 8));
-        for (int pos = 1; pos < totalArmor; pos++) {
-            ImageHelper.drawAeroArmorPip(g2d, topColumn[0], topColumn[1]);
+        Vector<float[]> pipPlotter = new Vector<float[]>(132);
+
+        for (int pos = 1; pos < 148; pos++) {
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
 
             if (++curretNumber == numberPerRow) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
-                if (pos > totalArmor - numberPerRow) {
-                    topColumn[0] += pipShift[0] * ((numberPerRow - (totalArmor - pos)) / 2);
-                } else {
-                    topColumn[0] += pipShift[0] / 2;
-                }
 
                 curretNumber = 0;
-                if (pos == 79) {
+                if (pos == 18) {
+                    topColumn[0] -= pipShift[0] * .8;
+                    numberPerRow++;
+                } else if (pos == 48) {
+                    topColumn[0] -= Math.abs(pipShift[0]) * 1.6;
+                } else if (pos == 76) {
+                    topColumn[0] -= Math.abs(pipShift[0]) * 1.6;
+                } else if (pos == 104) {
                     numberPerRow = 13;
-                    topColumn[0] -= Math.abs(pipShift[0] * .8);
-                } else if (pos == 92) {
-                   topColumn[0] += Math.abs(pipShift[0] * .4);
-                } else if (numberPerRow < 14) {
+                    topColumn[0] -= Math.abs(pipShift[0]) * 1.5;
+                } else if (pos == 130) {
+                    numberPerRow = 11;
+                    topColumn[0] -= Math.abs(pipShift[0]) * 1.5;
+                } else if (pos == 141) {
+                    numberPerRow = 8;
+                    topColumn[0] += Math.abs(pipShift[0]) * 3.5;
+                } else if (numberPerRow < 13) {
                     if (numberPerRow == 7) {
-                        numberPerRow = 12;
-                    } else if( numberPerRow == 12){
+                        numberPerRow = 9;
+                        // topColumn[0] += Math.abs(pipShift[0]);
+                    } else if (numberPerRow == 9) {
                         numberPerRow = 14;
-                        topColumn[0] -= Math.abs(pipShift[0] * 1.5);
-                    }
-                    else {
+                        topColumn[0] -= pipShift[0] * 4;
+                    } else {
                         numberPerRow++;
                     }
 
-                    topColumn[0] -= Math.abs(pipShift[0] * .8);
+                    if (pipShift[0] < 0) {
+                        topColumn[0] += pipShift[0];
+                    }
+                } else {
+                    topColumn[0] += pipShift[0];
                 }
 
+            }
+        }
+
+        int pipSpace = 148 / totalArmor;
+        for (int pos = 0; pos < 148; pos += pipSpace) {
+            ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            if (--totalArmor <= 0) {
+                return;
             }
         }
     }
 
     private void printRightArmor(Graphics2D g2d, int totalArmor) {
         float[] topColumn = new float[] { 429, 325 };
-        float[] pipShift = new float[] { 7, 8 };
+        float[] pipShift = new float[] { 7, 7 };
 
         int numberPerRow = 3;
         int curretNumber = 0;
-        pipShift[1] += 2 * Math.max(0, 7 - (totalArmor / 8));
-        for (int pos = 1; pos < totalArmor; pos++) {
-            ImageHelper.drawAeroArmorPip(g2d, topColumn[0], topColumn[1]);
+        Vector<float[]> pipPlotter = new Vector<float[]>(132);
+
+        for (int pos = 1; pos < 148; pos++) {
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+
             topColumn[0] += pipShift[0];
 
             if (++curretNumber == numberPerRow) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
-                if (pos > totalArmor - numberPerRow) {
-                    topColumn[0] += pipShift[0] * ((numberPerRow - (totalArmor - pos)) / 2);
-                } else {
-                    topColumn[0] += pipShift[0] / 2;
-                }
 
                 curretNumber = 0;
-                if (pos == 65) {
-                    topColumn[0] += Math.abs(pipShift[0] * .6);
-                } else if (pos == 79) {
+                if (pos == 18) {
+                    topColumn[0] += pipShift[0] * 2;
+                } else if (pos == 103) {
                     numberPerRow = 13;
-                    topColumn[0] -= Math.abs(pipShift[0] * 1.2);
-                } else if (pos == 92) {
-                    topColumn[0] += Math.abs(pipShift[0] * .65);
-                } else if (numberPerRow < 14) {
+                    topColumn[0] += pipShift[0] * 1.5;
+                } else if (pos == 116) {
+                    numberPerRow = 12;
+                    topColumn[0] += pipShift[0];
+                } else if (pos == 128) {
+                    numberPerRow = 11;
+                    topColumn[0] += pipShift[0] * 1.5;
+                } else if (pos == 139) {
+                    numberPerRow = 8;
+                    topColumn[0] += pipShift[0];
+                } else if (numberPerRow < 13) {
                     if (numberPerRow == 7) {
                         numberPerRow = 12;
                         topColumn[0] += Math.abs(pipShift[0] * 4);
-                    } else if (numberPerRow == 12) {
+                    } else if (numberPerRow == 6) {
+                        numberPerRow = 9;
+                        topColumn[0] -= pipShift[0] * 2;
+                    } else if (numberPerRow == 9) {
                         numberPerRow = 14;
-                        // topColumn[0] += Math.abs(pipShift[0] * 2);
                     } else {
                         numberPerRow++;
                     }
 
-                    topColumn[0] += Math.abs(pipShift[0] * .8);
+                    if (pipShift[0] > 0) {
+                        topColumn[0] += pipShift[0];
+                    }
+                } else if (pipShift[0] > 0) {
+                    topColumn[0] += pipShift[0] * .8;
+                } else if (pipShift[0] < 0) {
+                    topColumn[0] += pipShift[0] * .2;
                 }
 
             }
         }
+
+        int pipSpace = 148 / totalArmor;
+        for (int pos = 0; pos < 148; pos += pipSpace) {
+            ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            if (--totalArmor <= 0) {
+                return;
+            }
+        }
+
     }
 
     private void printStruct(Graphics2D g2d, int totalArmor) {
         int[] topColumn = new int[] { 366, 265 };
-        int[] pipShift = new int[] { 7, 9 };
+        int[] pipShift = new int[] { 7, 7 };
 
-        if (totalArmor < 8) {
-            topColumn[0] += pipShift[0] * ((8 - (totalArmor)) / 2);
-        }
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawAeroISPip(g2d, topColumn[0], topColumn[1]);
+        Vector<int[]> pipPlotter = new Vector<int[]>(132);
+        for (int pos = 1; pos <= 32; pos++) {
+            pipPlotter.add(new int[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if (pos % 8 == 0) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
-                if (pos > totalArmor - 8) {
-                    topColumn[0] += pipShift[0] * ((8 - (totalArmor - pos)) / 2);
-                } else {
-                    topColumn[0] += pipShift[0];
-                }
+                topColumn[0] += pipShift[0];
             }
         }
 
+        int pipSpace = 32 / totalArmor;
+        for (int pos = 0; pos < 32; pos += pipSpace) {
+             ImageHelper.drawAeroISPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+             if (--totalArmor <= 0) {
+                 return;
+             }
+         }
     }
 
     private void printAeroImage(Graphics2D g2d, Image img) {
