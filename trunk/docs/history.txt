@@ -6,6 +6,7 @@ V 0.0.0.13-DEV
 + Changes to what crits can be armored
 + Aero RS
 + Update Aero Armor on RS's
++ Bug: Techlevel set wrong when loading a clan mech from a file
 
 V 0.0.0.12 (02/18/2009 8:40 UTC-8)
 + Bug: Incorrect Total heat showing for XXL engines
