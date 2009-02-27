@@ -28,6 +28,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
@@ -309,26 +310,26 @@ public class PrintQuad implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(7.0f);
         g2d.setFont(font);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485, 47);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 393, 138);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT)) + ")", 553, 138);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT)) + ")", 475, 209);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LARM)) + ")", 401, 309);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RARM)) + ")", 549, 310);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LLEG)) + ")", 448, 297);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RLEG)) + ")", 501, 300);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_HEAD)), 485, 45);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_LT)), 393, 138);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_RT)), 553, 138);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_CT)), 475, 209);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_LARM)), 401, 309);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_RARM)), 549, 310);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_LLEG)), 448, 297);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_RLEG)), 501, 300);
         // Rear
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT, true)) + ")", 406, 357);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT, true)) + ")", 506, 368);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT, true)) + ")", 542, 357);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_LT, true)), 406, 357);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_CT, true)), 506, 366);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_RT, true)), 542, 357);
         // Internal
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LT)) + ")", 400, 418);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RT)) + ")", 521, 418);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LARM)) + ")", 398, 483);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RARM)) + ")", 523, 484);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_CT)) + ")", 459, 511);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LLEG)) + ")", 395, 532);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RLEG)) + ")", 526, 532);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_LT)), 400, 418);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_RT)), 521, 418);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_LARM)), 398, 483);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_RARM)), 523, 484);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_CT)), 459, 511);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_LLEG)), 395, 532);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_RLEG)), 526, 532);
     }
 
     private void printLACrits(Graphics2D g2d) {
@@ -445,513 +446,377 @@ public class PrintQuad implements Printable {
     }
 
     private void printRLArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(504, 142);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 504, 142 };
+        float[] pipShift = { 6, 6 };
 
         int totalArmor = mech.getArmor(Mech.LOC_RLEG);
-        int pips = Math.min(4, totalArmor);
+        int pips = 4;
         int pipsPerColumn = 2;
 
-        totalArmor -= pips;
-
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.height += pipShift.height;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[1] += pipShift[1];
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
+        pips = 30;
 
-        pips = Math.min(30, totalArmor);
-
-        totalArmor -= pips;
-
-        if (pips < 18) {
-            pipsPerColumn = 1;
-        }
-
-        column.width -= pipShift.width / 2;
+        column[0] -= pipShift[0] / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
 
             if (pos % pipsPerColumn == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
 
             if (pos % 8 == 0) {
-                column.height++;
+                column[1]++;
             }
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
+        pips = 8;
 
-        pips = Math.min(30, totalArmor);
-
-        totalArmor -= pips;
-
-        column.width += pipShift.width * 2;
-        pipShift.width *= -1;
+        column[0] += pipShift[0] * 2;
+        pipShift[0] *= -1;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
 
             if (pos % 4 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
 
         }
+
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLLArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(448, 142);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 448, 142 };
+        float[] pipShift = { 6, 6 };
 
         int totalArmor = mech.getArmor(Mech.LOC_LLEG);
-        int pips = Math.min(4, totalArmor);
+        int pips = 4;
         int pipsPerColumn = 2;
 
-        totalArmor -= pips;
-
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.height += pipShift.height;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[1] += pipShift[1];
         }
 
         if (totalArmor < 1) {
             return;
         }
 
-        pips = Math.min(30, totalArmor);
+        pips = 30;
 
-        totalArmor -= pips;
-
-        if (pips < 18) {
-            pipsPerColumn = 1;
-        }
-
-        column.width -= pipShift.width / 2;
+        column[0] -= pipShift[0] / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
 
             if (pos % pipsPerColumn == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
 
             if (pos % 8 == 0) {
-                column.height++;
+                column[1]++;
             }
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
+        pips = 8;
 
-        pips = Math.min(30, totalArmor);
-
-        totalArmor -= pips;
-
-        column.width += pipShift.width * 2;
-        pipShift.width *= -1;
+        column[0] += pipShift[0] * 2;
+        pipShift[0] *= -1;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
 
             if (pos % 4 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
 
         }
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLAArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(422, 145);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 422, 145 };
+        float[] pipShift = { 6, 6 };
         int pipsPerColumn = 2;
 
-        int pips = mech.getArmor(Mech.LOC_LARM);
+        int totalArmor = mech.getArmor(Mech.LOC_LARM);
 
-        if (pips < 22) {
-            pipsPerColumn = 1;
-        }
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= 42; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
             if (pos % pipsPerColumn == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
-                column.width -= 1;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
+                column[0] -= 1;
             }
 
             if (pos % 4 == 0) {
-                column.width += 1;
+                column[0] += 1;
             }
 
             if (pos % 8 == 0) {
-                column.height += 1;
+                column[1] += 1;
             }
         }
-
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRAArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(525, 147);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 525, 147 };
+        float[] pipShift = { 6, 6 };
         int pipsPerColumn = 2;
 
-        int pips = mech.getArmor(Mech.LOC_RARM);
+        int totalArmor = mech.getArmor(Mech.LOC_RARM);
 
-        if (pips < 22) {
-            pipsPerColumn = 1;
-        }
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= 42; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
             if (pos % pipsPerColumn == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
-                column.width += 1;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
+                column[0] += 1;
             }
 
             if (pos % 4 == 0) {
-                column.width -= 1;
+                column[0] -= 1;
             }
 
             if (pos % 8 == 0) {
-                column.height += 1;
+                column[1] += 1;
             }
         }
-
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLTArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(424, 69);
-        Dimension pipShift = new Dimension(5, 7);
-        int pips = mech.getArmor(Mech.LOC_LT);
+        float[] column = { 424, 69 };
+        float[] pipShift = { 5, 7 };
+        int totalArmor = mech.getArmor(Mech.LOC_LT);
         int pipsPerLine = 5;
 
-        if (pips <= 10) {
-            pipsPerLine = 3;
-            pipShift.width += 5;
-            pipShift.height += 7;
-        } else if (pips <= 15) {
-            pipsPerLine = 3;
-            pipShift.width += 4;
-            pipShift.height += 6;
-        } else if (pips <= 20) {
-            pipsPerLine = 4;
-            pipShift.width += 3;
-            pipShift.height += 5;
-        } else if (pips <= 30) {
-            pipsPerLine = 5;
-            pipShift.width += 1;
-            pipShift.height += 4;
-        }
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= 42; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
             if (pos % pipsPerLine == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
             if (pos == 40) {
-                column.width += pipShift.width * 4;
-                pipShift.width *= -1;
+                column[0] += pipShift[0] * 4;
+                pipShift[0] *= -1;
             }
         }
-
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLTRArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(450, 311);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 450, 311 };
+        float[] pipShift = { 6, 6 };
 
         int totalArmor = Math.min(30, mech.getArmor(Mech.LOC_LT, true));
 
-        int pips = Math.min(2, totalArmor);
+        int pips = 2;
 
-        pipShift.height += Math.max(0, 4 - (totalArmor / 5));
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= pips; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
+        }
 
-        totalArmor -= pips;
+        pips = 3;
+
+        column[1] += pipShift[1];
+        pipShift[0] *= -1;
+        column[0] += pipShift[0];
+        for (int pos = 1; pos <= pips; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
+        }
+
+        pips = 4;
+
+        column[1] += pipShift[1];
+        // column[0] += pipShift[0];
+        pipShift[0] *= -1;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
+        pips = 10;
 
-        pips = Math.min(3, totalArmor);
-
-        totalArmor -= pips;
-
-        column.height += pipShift.height;
-        pipShift.width *= -1;
-        column.width += pipShift.width;
+        column[1] += pipShift[1];
+        pipShift[0] *= -1;
+        column[0] += pipShift[0];
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
-        }
-
-        if (totalArmor < 1) {
-            return;
-        }
-
-        pips = Math.min(4, totalArmor);
-
-        totalArmor -= pips;
-
-        column.height += pipShift.height;
-        // column.width += pipShift.width;
-        pipShift.width *= -1;
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
-        }
-
-        if (totalArmor < 1) {
-            return;
-        }
-
-        pips = Math.min(10, totalArmor);
-
-        totalArmor -= pips;
-
-        column.height += pipShift.height;
-        pipShift.width *= -1;
-        column.width += pipShift.width;
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
             if (pos % 5 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
-
-        pips = Math.min(8, totalArmor);
-
-        totalArmor -= pips;
-
+        pips = 8;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
 
             if (pos % 4 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
-
-        pips = Math.min(3, totalArmor);
+        pips = 3;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
         }
 
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRTArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(507, 69);
-        Dimension pipShift = new Dimension(5, 7);
-        int pips = mech.getArmor(Mech.LOC_RT);
+        float[] column = { 507, 69 };
+        float[] pipShift = { 5, 7 };
+        int totalArmor = mech.getArmor(Mech.LOC_RT);
         int pipsPerLine = 5;
 
-        if (pips <= 10) {
-            pipsPerLine = 3;
-            pipShift.width += 5;
-            pipShift.height += 7;
-        } else if (pips <= 15) {
-            pipsPerLine = 3;
-            pipShift.width += 4;
-            pipShift.height += 6;
-        } else if (pips <= 20) {
-            pipsPerLine = 4;
-            pipShift.width += 3;
-            pipShift.height += 5;
-        } else if (pips <= 30) {
-            pipsPerLine = 5;
-            pipShift.width += 1;
-            pipShift.height += 4;
-        }
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= 42; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
             if (pos % pipsPerLine == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
         }
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRTRArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(496, 311);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 496, 311 };
+        float[] pipShift = { 6, 6 };
 
         int totalArmor = Math.min(30, mech.getArmor(Mech.LOC_RT, true));
 
-        int pips = Math.min(2, totalArmor);
+        int pips = 2;
 
-        pipShift.height += Math.max(0, 4 - (totalArmor / 5));
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= pips; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
+        }
 
-        totalArmor -= pips;
+        pips = 3;
+
+        column[1] += pipShift[1];
+        // pipShift[0] *= -1;
+        column[0] -= pipShift[0] * 2;
+        for (int pos = 1; pos <= pips; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
+        }
+
+        pips = 4;
+
+        column[1] += pipShift[1];
+        column[0] -= pipShift[0] * 3;
+        // pipShift[0] *= -1;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
+        pips = 10;
 
-        pips = Math.min(3, totalArmor);
-
-        totalArmor -= pips;
-
-        column.height += pipShift.height;
-        // pipShift.width *= -1;
-        column.width -= pipShift.width * 2;
+        column[1] += pipShift[1];
+        // pipShift[0] *= -1;
+        column[0] -= pipShift[0] * 4;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
-        }
-
-        if (totalArmor < 1) {
-            return;
-        }
-
-        pips = Math.min(4, totalArmor);
-
-        totalArmor -= pips;
-
-        column.height += pipShift.height;
-        column.width -= pipShift.width * 3;
-        // pipShift.width *= -1;
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
-        }
-
-        if (totalArmor < 1) {
-            return;
-        }
-
-        pips = Math.min(10, totalArmor);
-
-        totalArmor -= pips;
-
-        column.height += pipShift.height;
-        // pipShift.width *= -1;
-        column.width -= pipShift.width * 4;
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
             if (pos % 5 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
-
-        pips = Math.min(8, totalArmor);
-
-        totalArmor -= pips;
+        pips = 8;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
 
             if (pos % 4 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
-
-        pips = Math.min(3, totalArmor);
+        pips = 3;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
         }
+
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printCTArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(462, 108);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 462, 108 };
+        float[] pipShift = { 6, 6 };
 
-        int pips = mech.getArmor(Mech.LOC_CT);
+        int totalArmor = mech.getArmor(Mech.LOC_CT);
 
         int pipsPerLine = 6;
 
-        if (pips <= 20) {
-            pipsPerLine = 3;
-            pipShift.width += 3;
-            pipShift.height += 3;
-        } else if (pips <= 30) {
-            pipsPerLine = 4;
-            pipShift.width += 2;
-        } else if (pips <= 40) {
-            pipsPerLine = 5;
-            pipShift.width += 1;
-        }
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= 62; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
             if (pos % pipsPerLine == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
             if (pos == 60) {
-                column.width += pipShift.width * 2;
+                column[0] += pipShift[0] * 2;
             }
         }
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printHeadArmor(Graphics2D g2d) {
@@ -976,189 +841,186 @@ public class PrintQuad implements Printable {
     }
 
     private void printCTRArmor(Graphics2D g2d) {
-        Dimension column = new Dimension(464, 308);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 464, 308 };
+        float[] pipShift = { 6, 6 };
 
-        int pips = Math.min(45, mech.getArmor(Mech.LOC_CT, true));
+        int totalArmor = Math.min(45, mech.getArmor(Mech.LOC_CT, true));
 
-        pipShift.height += Math.max(0, 8 - (pips / 5));
-
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawArmorPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= 45; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
             if (pos % 5 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
         }
+        printArmorPoints(g2d, pipPlotter, totalArmor);
+
     }
 
     private void printLAStruct(Graphics2D g2d) {
-        Dimension column = new Dimension(427, 471);
-        Dimension pipShift = new Dimension(4, 4);
+        float[] column = { 427, 471 };
+        float[] pipShift = { 4, 4 };
 
         int totalArmor = mech.getInternal(Mech.LOC_LARM);
 
-        int pips = Math.min(21, totalArmor);
+        int pips = 21;
 
-        totalArmor -= pips;
-
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawISPip(g2d, column.width, column.height);
-            column.height += pipShift.height;
-            pipShift.width *= -1;
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[1] += pipShift[1];
+            pipShift[0] *= -1;
+            column[0] += pipShift[0];
 
             if (pos % 4 == 0) {
-                column.width -= 1;
+                column[0] -= 1;
             }
 
         }
-
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLLStruct(Graphics2D g2d) {
-        Dimension column = new Dimension(445, 465);
-        Dimension pipShift = new Dimension(4, 4);
+        float[] column = { 445, 465 };
+        float[] pipShift = { 4, 4 };
 
         int totalArmor = mech.getInternal(Mech.LOC_LLEG);
 
-        int pips = Math.min(21, totalArmor);
+        int pips = 21;
 
-        totalArmor -= pips;
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawISPip(g2d, column.width, column.height);
-            column.height += pipShift.height;
-            pipShift.width *= -1;
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[1] += pipShift[1];
+            pipShift[0] *= -1;
+            column[0] += pipShift[0];
         }
-
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRLStruct(Graphics2D g2d) {
-        Dimension column = new Dimension(480, 465);
-        Dimension pipShift = new Dimension(4, 4);
+        float[] column = { 480, 465 };
+        float[] pipShift = { 4, 4 };
 
         int totalArmor = mech.getInternal(Mech.LOC_RLEG);
 
-        int pips = Math.min(21, totalArmor);
+        int pips = 21;
 
-        totalArmor -= pips;
-
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawISPip(g2d, column.width, column.height);
-            column.height += pipShift.height;
-            column.width += pipShift.width;
-            pipShift.width *= -1;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[1] += pipShift[1];
+            column[0] += pipShift[0];
+            pipShift[0] *= -1;
         }
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRAStruct(Graphics2D g2d) {
-        Dimension column = new Dimension(498, 471);
-        Dimension pipShift = new Dimension(4, 4);
+        float[] column = { 498, 471 };
+        float[] pipShift = { 4, 4 };
 
         int totalArmor = mech.getInternal(Mech.LOC_RARM);
 
-        int pips = Math.min(21, totalArmor);
+        int pips = 21;
 
-        totalArmor -= pips;
-
+        Vector<float[]> pipPlotter = new Vector<float[]>(pips);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawISPip(g2d, column.width, column.height);
-            column.height += pipShift.height;
-            pipShift.width *= -1;
-            column.width -= pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[1] += pipShift[1];
+            pipShift[0] *= -1;
+            column[0] -= pipShift[0];
 
             if (pos % 4 == 0) {
-                column.width += 1;
+                column[0] += 1;
             }
 
         }
+        printISPoints(g2d, pipPlotter, totalArmor);
 
     }
 
     private void printLTStruct(Graphics2D g2d) {
-        Dimension column = new Dimension(424, 416);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 424, 416 };
+        float[] pipShift = { 6, 6 };
 
-        int pips = mech.getInternal(Mech.LOC_LT);
+        int totalArmor = mech.getInternal(Mech.LOC_LT);
 
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawISPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= 20; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
 
             if (pos % 4 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
 
         }
+        printISPoints(g2d, pipPlotter, totalArmor);
 
     }
 
     private void printRTStruct(Graphics2D g2d) {
-        Dimension column = new Dimension(484, 416);
-        Dimension pipShift = new Dimension(6, 6);
+        float[] column = { 484, 416 };
+        float[] pipShift = { 6, 6 };
 
-        int pips = mech.getInternal(Mech.LOC_RT);
+        int totalArmor = mech.getInternal(Mech.LOC_RT);
 
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawISPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
+        for (int pos = 1; pos <= 20; pos++) {
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
 
             if (pos % 4 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
 
             if (pos == 20) {
-                column.width += pipShift.width * 3;
+                column[0] += pipShift[0] * 3;
             }
 
         }
-
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printCTStruct(Graphics2D g2d) {
-        Dimension column = new Dimension(454, 433);
-        Dimension pipShift = new Dimension(6, 5);
+        float[] column = { 454, 433 };
+        float[] pipShift = { 6, 5 };
 
         int totalArmor = mech.getInternal(Mech.LOC_CT);
 
-        int pips = Math.min(28, totalArmor);
+        int pips = 28;
 
-        totalArmor -= pips;
-
+        Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawISPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
 
             if (pos % 4 == 0) {
-                column.height += pipShift.height;
-                pipShift.width *= -1;
-                column.width += pipShift.width;
+                column[1] += pipShift[1];
+                pipShift[0] *= -1;
+                column[0] += pipShift[0];
             }
 
         }
 
-        if (totalArmor < 1) {
-            return;
-        }
+        pips = 3;
 
-        pips = Math.min(3, totalArmor);
-
-        totalArmor -= pips;
-
-        column.width += pipShift.width / 2;
+        column[0] += pipShift[0] / 2;
 
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawISPip(g2d, column.width, column.height);
-            column.width += pipShift.width;
+            pipPlotter.add(new float[] { column[0], column[1] });
+            column[0] += pipShift[0];
         }
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printHeadStruct(Graphics2D g2d) {
@@ -1447,6 +1309,30 @@ public class PrintQuad implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         g2d.drawString("(CASE)", lineStart, linePoint);
+    }
+
+    private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {
+        pipPoints.trimToSize();
+        float pipSpace = pipPoints.size() / totalArmor;
+        for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
+            int currentPip = (int) pos;
+            ImageHelper.drawArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
+            if (--totalArmor <= 0) {
+                return;
+            }
+        }
+    }
+
+    private void printISPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {
+        pipPoints.trimToSize();
+        float pipSpace = pipPoints.size() / totalArmor;
+        for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
+            int currentPip = (int) pos;
+            ImageHelper.drawISPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
+            if (--totalArmor <= 0) {
+                return;
+            }
+        }
     }
 
 }
