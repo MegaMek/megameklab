@@ -7,6 +7,7 @@ V 0.0.0.13-DEV
 + Aero RS
 + Update Aero Armor on RS's
 + Bug: Techlevel set wrong when loading a clan mech from a file
++ Updated RS for Mechs and Tanks with new pip algorithm
 
 V 0.0.0.12 (02/18/2009 8:40 UTC-8)
 + Bug: Incorrect Total heat showing for XXL engines
