@@ -237,11 +237,42 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             masterPanel.setVisible(true);
         }
 
+        if (unit.isClan()) {
+            engineType.removeAllItems();
+            techLevel.removeAllItems();
+            heatSinkType.removeAllItems();
+            for (String item : clanEngineTypes) {
+                engineType.addItem(item);
+            }
+            for (String item : clanHeatSinkTypes) {
+                heatSinkType.addItem(item);
+            }
+            for (String item : clanTechLevels) {
+                techLevel.addItem(item);
+            }
+        } else {
+            engineType.removeAllItems();
+            techLevel.removeAllItems();
+            heatSinkType.removeAllItems();
+            for (String item : isEngineTypes) {
+                engineType.addItem(item);
+            }
+            for (String item : isHeatSinkTypes) {
+                heatSinkType.addItem(item);
+            }
+            for (String item : isTechLevels) {
+                techLevel.addItem(item);
+            }
+
+        }
+
+
         engineType.setSelectedIndex(unit.getEngine().getEngineType());
         structureCombo.setSelectedIndex(unit.getStructureType());
 
         if (unit.isMixedTech()) {
             if (unit.isClan()) {
+
                 techType.setSelectedIndex(3);
                 if (unit.getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL) {
                     techLevel.setSelectedIndex(3);
