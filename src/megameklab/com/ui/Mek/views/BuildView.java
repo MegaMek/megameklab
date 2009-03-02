@@ -149,7 +149,7 @@ public class BuildView extends IView implements ActionListener {
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (masterEquipmentList.get(pos) instanceof MiscType && UnitUtil.isArmor(masterEquipmentList.get(pos)) && UnitUtil.isTSM(masterEquipmentList.get(pos)) && !masterEquipmentList.get(pos).hasFlag(MiscType.F_ENDO_STEEL)) {
+            if (masterEquipmentList.get(pos) instanceof MiscType && UnitUtil.isArmor(masterEquipmentList.get(pos)) && UnitUtil.isTSM(masterEquipmentList.get(pos))) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
