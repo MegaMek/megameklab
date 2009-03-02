@@ -72,12 +72,19 @@ public class UnitUtil {
     }
 
     /**
-     * telss if the EquipmentType is a type of armor
+     * tells if the EquipmentType is a type of armor
+     * 
      * @param eq
      * @return
      */
     public static boolean isArmor(EquipmentType eq) {
-        return isArmorOrStructure(eq);
+        for (String armor : EquipmentType.armorNames) {
+            if (eq.getName().equals(armor)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -98,7 +105,7 @@ public class UnitUtil {
      * @return
      */
     public static int getCritsUsed(Mech unit, EquipmentType eq) {
-        if (UnitUtil.isSpreadEquipment(eq) || UnitUtil.isTSM(eq) || UnitUtil.isArmor(eq)) {
+        if (UnitUtil.isSpreadEquipment(eq) || UnitUtil.isTSM(eq) || UnitUtil.isArmorOrStructure(eq)) {
             return 1;
         }
 
@@ -578,7 +585,7 @@ public class UnitUtil {
      */
     public static boolean isPrintableEquipment(EquipmentType eq) {
 
-        if (UnitUtil.isArmor(eq)) {
+        if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
 
@@ -780,7 +787,7 @@ public class UnitUtil {
                 if (cs.getMount() == null) {
                     Mounted mount = unit.getEquipment(cs.getIndex());
 
-                    if (UnitUtil.isSpreadEquipment(mount.getType()) || UnitUtil.isTSM(mount.getType()) || UnitUtil.isArmor(mount.getType())) {
+                    if (UnitUtil.isSpreadEquipment(mount.getType()) || UnitUtil.isTSM(mount.getType()) || UnitUtil.isArmorOrStructure(mount.getType())) {
                         Mounted newMount = new Mounted(unit, mount.getType());
                         newMount.setLocation(location, mount.isRearMounted());
                         cs.setMount(newMount);
