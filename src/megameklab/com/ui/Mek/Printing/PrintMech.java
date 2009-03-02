@@ -1414,7 +1414,7 @@ public class PrintMech implements Printable {
 
                     critName = new StringBuffer("Ammo (");
                     // Remove Text (Clan) from the name
-                    critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
+                    critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").replaceAll("[0-9]", "").trim());
                     // Remove any additional Ammo text.
                     if (critName.toString().endsWith("Ammo")) {
                         critName.setLength(critName.length() - 5);
@@ -1427,6 +1427,12 @@ public class PrintMech implements Printable {
                         critName.delete(startPos, startPos + "-capable".length());
                         critName.trimToSize();
                     }
+
+                    // Trim trailing spaces.
+                    while (critName.charAt(critName.length() - 1) == ' ') {
+                        critName.setLength(critName.length() - 1);
+                    }
+                    critName.trimToSize();
                     critName.append(") ");
                     critName.append(ammo.getShots());
 
