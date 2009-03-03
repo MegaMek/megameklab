@@ -27,15 +27,18 @@ import megamek.common.weapons.MMLWeapon;
 
 public class EquipmentInfo {
     public int count = 0;
-    public String name = "";
     public int minRange = 0;
     public int shtRange = 0;
     public int medRange = 0;
     public int longRange = 0;
     public int erRange = 0;
-    public String damage = "[E]";
     public int heat = 0;
     public int techLevel = TechConstants.T_INTRO_BOXSET;
+    public int secondaryLocation = Entity.LOC_NONE;
+
+    public String name = "";
+    public String damage = "[E]";
+
     public boolean isWeapon = false;
     public boolean isMML = false;
     public boolean isATM = false;
@@ -79,6 +82,8 @@ public class EquipmentInfo {
                 erRange = (int) weapon.extAV;
             }
             heat = weapon.getHeat();
+            secondaryLocation = mount.getSecondLocation();
+
         } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
         } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S)) {
@@ -127,6 +132,7 @@ public class EquipmentInfo {
             medRange = weapon.mediumRange;
             longRange = weapon.longRange;
             heat = weapon.getHeat();
+            secondaryLocation = mount.getSecondLocation();
         } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
         } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S)) {
