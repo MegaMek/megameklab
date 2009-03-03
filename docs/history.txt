@@ -12,6 +12,8 @@ V 0.0.0.13-DEV
 + Bug: TC not restting correctly if Engine size changes for HS.
 + Bug: Adding FF armor caused Endo Steel crits to go bye bye
 + Bug: Ammo Launcher size showing for non-standard munitions.
++ RFE: Move armored option to bottom of popup menu
++ Bug: Split weapons not showing up correctly in the weapons and equipment location
 
 V 0.0.0.12 (02/18/2009 8:40 UTC-8)
 + Bug: Incorrect Total heat showing for XXL engines

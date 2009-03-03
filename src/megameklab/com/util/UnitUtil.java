@@ -57,6 +57,12 @@ public class UnitUtil {
     public static String VOIDSIG = "Void Signature System";
     public static String TRACKS = "Tracks";
 
+    public static int TECH_INTRO = 0;
+    public static int TECH_STANDARD = 1;
+    public static int TECH_ADVANCED = 2;
+    public static int TECH_EXPERIMENTAL = 3;
+    public static int TECH_UNOFFICAL = 4;
+
     private static Font euroFont = null;
     private static Font euroBoldFont = null;
 
@@ -73,7 +79,7 @@ public class UnitUtil {
 
     /**
      * tells if the EquipmentType is a type of armor
-     * 
+     *
      * @param eq
      * @return
      */
@@ -1193,5 +1199,32 @@ public class UnitUtil {
         UnitUtil.removeMounts(unit, UnitUtil.TARGETINGCOMPUTER);
         UnitUtil.removeMounts(unit, UnitUtil.ISTARGETINGCOMPUTER);
         UnitUtil.removeMounts(unit, UnitUtil.CLTARGETINGCOMPUTER);
+    }
+
+    /**
+     * Returns the units tech type.
+     *
+     * @param unit
+     * @return
+     */
+    public static int getUnitTechType(Entity unit) {
+        switch (unit.getTechLevel()) {
+        case TechConstants.T_INTRO_BOXSET:
+            return UnitUtil.TECH_INTRO;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            return UnitUtil.TECH_STANDARD;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            return UnitUtil.TECH_ADVANCED;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            return UnitUtil.TECH_EXPERIMENTAL;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            return UnitUtil.TECH_UNOFFICAL;
+        }
+        return UnitUtil.TECH_INTRO;
     }
 }

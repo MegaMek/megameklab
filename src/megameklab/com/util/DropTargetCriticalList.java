@@ -34,7 +34,6 @@ import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.Mech;
 import megamek.common.Mounted;
-import megamek.common.TechConstants;
 
 public class DropTargetCriticalList extends JList implements MouseListener {
 
@@ -112,29 +111,6 @@ public class DropTargetCriticalList extends JList implements MouseListener {
 
                 CriticalSlot cs = getCrit();
 
-                if (UnitUtil.isArmorable(cs) && (unit.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL || unit.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL || unit.getTechLevel() == TechConstants.T_IS_UNOFFICIAL || unit.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL)) {
-                    if (cs.isArmored()) {
-                        JMenuItem info = new JMenuItem("Remove Armoring");
-                        info.setActionCommand(Integer.toString(location));
-                        info.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                changeArmoring();
-                            }
-                        });
-                        popup.add(info);
-
-                    } else {
-                        JMenuItem info = new JMenuItem("Add Armoring");
-                        info.setActionCommand(Integer.toString(location));
-                        info.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                changeArmoring();
-                            }
-                        });
-                        popup.add(info);
-                    }
-                }
-
                 Mounted mount = getMounted();
                 if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
                     changeWeaponFacing(!mount.isRearMounted());
@@ -211,6 +187,29 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 removeArm(Integer.parseInt(e.getActionCommand()));
+                            }
+                        });
+                        popup.add(info);
+                    }
+                }
+
+                if (UnitUtil.isArmorable(cs) && (UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL || UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_UNOFFICAL)) {
+                    if (cs.isArmored()) {
+                        JMenuItem info = new JMenuItem("Remove Armoring");
+                        info.setActionCommand(Integer.toString(location));
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                changeArmoring();
+                            }
+                        });
+                        popup.add(info);
+
+                    } else {
+                        JMenuItem info = new JMenuItem("Add Armoring");
+                        info.setActionCommand(Integer.toString(location));
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                changeArmoring();
                             }
                         });
                         popup.add(info);

@@ -205,7 +205,7 @@ public class ImageHelper {
     public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d) {
         int qtyPoint = 26;
         int typePoint = 38;
-        int locPoint = 109;
+        int locPoint = 115;
         int heatPoint = 128;
         int damagePoint = 150;
         int minPoint = 167;
@@ -316,7 +316,13 @@ public class ImageHelper {
                 font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
-                g2d.drawString(mech.getLocationAbbr(pos), locPoint, linePoint);
+                String location = mech.getLocationAbbr(pos);
+
+                if (eqi.secondaryLocation != Entity.LOC_NONE) {
+                    location = String.format("%1$s/%2$s", mech.getLocationAbbr(pos), mech.getLocationAbbr(eqi.secondaryLocation));
+                }
+
+                ImageHelper.printCenterString(g2d, location, font, locPoint, linePoint);
                 if (eqi.isWeapon) {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
 
