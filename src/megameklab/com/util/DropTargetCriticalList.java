@@ -151,6 +151,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                 }
 
                 if (unit instanceof BipedMech && (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
+                    popup.addSeparator();
                     popup.setAutoscrolls(true);
                     if (unit.getCritical(location, 3) == null || unit.getCritical(location, 3).getType() != CriticalSlot.TYPE_SYSTEM) {
                         JMenuItem info = new JMenuItem("Add Hand");
@@ -194,6 +195,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                 }
 
                 if (UnitUtil.isArmorable(cs) && (UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL || UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_UNOFFICAL)) {
+                    popup.addSeparator();
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");
                         info.setActionCommand(Integer.toString(location));
