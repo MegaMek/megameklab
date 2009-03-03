@@ -15,7 +15,7 @@ V 0.0.0.13 (03/03/2009 10:36 UTC-8)
 + RFE: Move armored option to bottom of popup menu
 + Bug: Split weapons not showing up correctly in the weapons and equipment location
 + Bug: Artemis IV not showing the correct count in weapons and equipment
-
+ 
 V 0.0.0.12 (02/18/2009 8:40 UTC-8)
 + Bug: Incorrect Total heat showing for XXL engines
 - Removed color coding from CritView in Structure tab

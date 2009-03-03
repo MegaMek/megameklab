@@ -49,6 +49,19 @@ public class EquipmentInfo {
     public int C3M = 2;
     public int C3I = 3;
 
+    /**
+     * base class.
+     */
+    public EquipmentInfo() {
+
+    }
+
+    /**
+     * Info for Aeros
+     *
+     * @param aero
+     * @param mount
+     */
     public EquipmentInfo(Aero aero, Mounted mount) {
         name = UnitUtil.getCritName(aero, mount.getType());
         if (mount.isRearMounted()) {
@@ -105,6 +118,12 @@ public class EquipmentInfo {
         }
     }
 
+    /**
+     * Info for non Aero Entities.
+     *
+     * @param unit
+     * @param mount
+     */
     public EquipmentInfo(Entity unit, Mounted mount) {
 
         name = UnitUtil.getCritName(unit, mount.getType());
@@ -152,5 +171,31 @@ public class EquipmentInfo {
                 longRange = 5;
             }
         }
+    }
+
+    @Override
+    public EquipmentInfo clone(){
+        EquipmentInfo clone = new EquipmentInfo();
+
+        clone.count = count;
+        clone.minRange = minRange;
+        clone.shtRange = shtRange;
+        clone.medRange = medRange;
+        clone.longRange = longRange;
+        clone.erRange = erRange;
+        clone.heat = heat;
+        clone.techLevel = techLevel;
+        clone.secondaryLocation = secondaryLocation;
+
+        clone.name = name;
+        clone.damage = damage;
+
+        clone.isWeapon = isWeapon;
+        clone.isMML = isMML;
+        clone.isATM = isATM;
+
+        clone.c3Level = c3Level;
+
+        return clone;
     }
 }

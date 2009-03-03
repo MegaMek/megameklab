@@ -286,8 +286,9 @@ public class ImageHelper {
             for (int eqPos = 0; eqPos < equipmentList.size(); eqPos++) {
                 EquipmentInfo eqi = equipmentList.get(eqPos);
                 if ((eqi.isMML || (eqi.name.indexOf("LRM") > -1) || (eqi.name.indexOf("SRM") > -1)) && (artemisEQ != null)) {
-                    artemisEQ.count = eqi.count;
-                    equipmentList.add(++eqPos, artemisEQ);
+                    EquipmentInfo clone = artemisEQ.clone();
+                    clone.count = eqi.count;
+                    equipmentList.add(++eqPos, clone);
                 }
             }
 
