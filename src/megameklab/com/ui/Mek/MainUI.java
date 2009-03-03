@@ -69,6 +69,7 @@ import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
 import megamek.common.VTOL;
+import megamek.common.loaders.BLKTankFile;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
@@ -96,7 +97,7 @@ public class MainUI extends JFrame implements RefreshListener {
      *
      */
     private static final long serialVersionUID = -5836932822468918198L;
-    private static final String VERSION = "0.0.0.13-102";
+    private static final String VERSION = "0.0.0.13-104";
 
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
@@ -455,7 +456,7 @@ public class MainUI extends JFrame implements RefreshListener {
         UnitUtil.compactCriticals(entity);
         UnitUtil.reIndexCrits(entity);
 
-        FileDialog fDialog = new FileDialog(this, "Save Short Op As", FileDialog.SAVE);
+        FileDialog fDialog = new FileDialog(this, "Save As", FileDialog.SAVE);
 
         String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
 
@@ -479,6 +480,48 @@ public class MainUI extends JFrame implements RefreshListener {
             p.close();
             out.close();
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        JOptionPane.showMessageDialog(this, entity.getChassis() + " " + entity.getModel() + " saved to " + filePathName);
+
+    }
+
+    public void jMenuSaveTankTest_actionPerformed(ActionEvent event) {
+
+        FileDialog fDialog = new FileDialog(this, "Save As", FileDialog.SAVE);
+
+        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.TANK, config);
+
+        viewer.run();
+
+        Tank tank = null;
+        if (!(viewer.getSelectedEntity() instanceof Tank)) {
+            return;
+        }
+        tank = (Tank) viewer.getSelectedEntity();
+
+        viewer.setVisible(false);
+        viewer.dispose();
+
+        fDialog.setDirectory(filePathName);
+        fDialog.setFile(tank.getChassis() + " " + tank.getModel() + ".blk");
+        fDialog.setLocationRelativeTo(this);
+
+        fDialog.setVisible(true);
+
+        if (fDialog.getFile() != null) {
+            filePathName = fDialog.getDirectory() + fDialog.getFile();
+        } else {
+            return;
+        }
+
+        try {
+            BLKTankFile.encode(filePathName, tank);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
