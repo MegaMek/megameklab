@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.13-DEV
+V 0.0.0.13 (03/03/2009 10:36 UTC-8)
 + Changed Drag and Drop Code.
 + RFE: set the foreground and background colors for empty crits
 + Changes to what crits can be armored

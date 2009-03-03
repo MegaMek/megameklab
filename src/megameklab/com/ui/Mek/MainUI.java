@@ -97,7 +97,7 @@ public class MainUI extends JFrame implements RefreshListener {
      *
      */
     private static final long serialVersionUID = -5836932822468918198L;
-    private static final String VERSION = "0.0.0.13-104";
+    private static final String VERSION = "0.0.0.13";
 
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
