@@ -896,6 +896,35 @@ public class UnitUtil {
         }
     }
 
+    public static void removeClanCase(Entity unit) {
+        ArrayList<Mounted> caseList = new ArrayList<Mounted>();
+
+        for (Mounted mount : unit.getMisc()) {
+            if (mount.getType().getInternalName().equals("CLCASE")) {
+                caseList.add(mount);
+            }
+        }
+
+        for (Mounted mount : caseList) {
+            int index = unit.getEquipment().indexOf(mount);
+            unit.getEquipment().remove(mount);
+            unit.getMisc().remove(mount);
+
+            for (int location = 0; location <= Mech.LOC_LLEG; location++) {
+                for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+                    CriticalSlot cs = unit.getCritical(location, slot);
+                    if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
+                        continue;
+                    }
+
+                    if (cs.getIndex() >= index) {
+                        cs.setIndex(cs.getIndex() - 1);
+                    }
+                }
+            }
+        }
+    }
+
     public static boolean hasAmmo(Entity unit, int location) {
 
         for (Mounted mount : unit.getEquipment()) {
@@ -1226,5 +1255,11 @@ public class UnitUtil {
             return UnitUtil.TECH_UNOFFICAL;
         }
         return UnitUtil.TECH_INTRO;
+    }
+
+    public static void updateLoadedMech(Mech unit) {
+        UnitUtil.removeOneShotAmmo(unit);
+        UnitUtil.removeClanCase(unit);
+        UnitUtil.expandUnitMounts(unit);
     }
 }
