@@ -1164,7 +1164,7 @@ public class PrintMech implements Printable {
     }
 
     private void printRTStruct(Graphics2D g2d) {
-        float[] column = { 481, 415 };
+        float[] column = { 480f, 415 };
         float[] pipShift = { 5, 5 };
 
         int totalArmor = mech.getInternal(Mech.LOC_LT);

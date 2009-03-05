@@ -97,7 +97,7 @@ public class MainUI extends JFrame implements RefreshListener {
      *
      */
     private static final long serialVersionUID = -5836932822468918198L;
-    private static final String VERSION = "0.0.0.13";
+    private static final String VERSION = "0.0.0.14-Dev-100";
 
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
@@ -387,9 +387,8 @@ public class MainUI extends JFrame implements RefreshListener {
             return;
         }
         entity = (Mech) viewer.getSelectedEntity();
-        UnitUtil.removeOneShotAmmo(entity);
-        UnitUtil.expandUnitMounts(entity);
 
+        UnitUtil.updateLoadedMech(entity);
         viewer.setVisible(false);
         viewer.dispose();
 
@@ -423,9 +422,7 @@ public class MainUI extends JFrame implements RefreshListener {
             }
 
             entity = (Mech) tempEntity;
-            UnitUtil.removeOneShotAmmo(entity);
-            UnitUtil.expandUnitMounts(entity);
-
+            UnitUtil.updateLoadedMech(entity);
         } catch (Exception ex) {
             ex.printStackTrace();
             createNewMech(false);

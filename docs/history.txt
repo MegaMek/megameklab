@@ -1,5 +1,8 @@
 VERSION HISTORY:
 ----------------
+V 0.0.0.14-Dev-100
++ Bug: Clan case getting loaded as 0 crit 0 ton equipment.
+
 V 0.0.0.13 (03/03/2009 10:36 UTC-8)
 + Changed Drag and Drop Code.
 + RFE: set the foreground and background colors for empty crits
@@ -15,7 +18,9 @@ V 0.0.0.13 (03/03/2009 10:36 UTC-8)
 + RFE: Move armored option to bottom of popup menu
 + Bug: Split weapons not showing up correctly in the weapons and equipment location
 + Bug: Artemis IV not showing the correct count in weapons and equipment
- 
++ Bug: Armored Components not loading correctly.
++ RFE: Mek RT Struct Pips shifted towards the CT a bit
+
 V 0.0.0.12 (02/18/2009 8:40 UTC-8)
 + Bug: Incorrect Total heat showing for XXL engines
 - Removed color coding from CritView in Structure tab
