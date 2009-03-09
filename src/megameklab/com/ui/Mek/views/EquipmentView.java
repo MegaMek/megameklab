@@ -110,40 +110,11 @@ public class EquipmentView extends IView implements ActionListener {
 
         mainPanel.add(rightPanel);
 
-        masterEquipmentList.add(EquipmentType.get("CLTAG"));
-        masterEquipmentList.add(EquipmentType.get("ISC3MasterUnit"));
-        masterEquipmentList.add(EquipmentType.get("ISTAG"));
-        masterEquipmentList.add(EquipmentType.get("IS Coolant Pod"));
-        masterEquipmentList.add(EquipmentType.get("Clan Coolant Pod"));
-
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if ((eq instanceof MiscType)
-                    && !eq.hasFlag(MiscType.F_ASSAULT_CLAW)
-                    && !eq.hasFlag(MiscType.F_VIBROCLAW)
-                    && !eq.hasFlag(MiscType.F_BOARDING_CLAW)
-                    && !eq.hasFlag(MiscType.F_CLUB)
-                    && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP)
-                    && !eq.hasFlag(MiscType.F_PARAFOIL)
-                    && !eq.hasFlag(MiscType.F_MINE)
-                    && !eq.hasFlag(MiscType.F_TOOLS)
-                    && !eq.hasFlag(MiscType.F_REACTIVE)
-                    && !eq.hasFlag(MiscType.F_REFLECTIVE)
-                    && !eq.hasFlag(MiscType.F_HAND_WEAPON)
-                    && !eq.hasFlag(MiscType.F_FERRO_FIBROUS)
-                    && !eq.hasFlag(MiscType.F_FIRE_RESISTANT)
-                    && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS)
-                    && !eq.hasFlag(MiscType.F_ENDO_STEEL)
-                    && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION)
-                    && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION)
-                    && !eq.hasFlag(MiscType.F_HEAT_SINK)
-                    && !eq.hasFlag(MiscType.F_LASER_HEAT_SINK)
-                    && !eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
-                    && !eq.hasFlag(MiscType.F_STEALTH)
-                    && !eq.hasFlag(MiscType.F_BA_EQUIPMENT)
-                    && !UnitUtil.isArmorOrStructure(eq)) {
+            if (UnitUtil.isMechEquipment(eq)) {
                 masterEquipmentList.add(eq);
             }
         }
@@ -180,7 +151,9 @@ public class EquipmentView extends IView implements ActionListener {
             if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || UnitUtil.isArmorOrStructure(mount.getType()))) {
                 continue;
             }
-            equipmentList.addCrit(mount.getType());
+            if (UnitUtil.isMechEquipment(mount.getType())) {
+                equipmentList.addCrit(mount.getType());
+            }
         }
     }
 
