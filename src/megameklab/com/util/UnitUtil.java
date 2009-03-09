@@ -40,8 +40,15 @@ import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.HVACWeapon;
 import megamek.common.weapons.ISAMS;
 import megamek.common.weapons.ISLaserAMS;
+import megamek.common.weapons.InfantryWeapon;
+import megamek.common.weapons.LRMWeapon;
+import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.MGWeapon;
 import megamek.common.weapons.MPodWeapon;
+import megamek.common.weapons.MRMWeapon;
+import megamek.common.weapons.RLWeapon;
+import megamek.common.weapons.SRMWeapon;
+import megamek.common.weapons.SRTWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 
@@ -1261,5 +1268,64 @@ public class UnitUtil {
         UnitUtil.removeOneShotAmmo(unit);
         UnitUtil.removeClanCase(unit);
         UnitUtil.expandUnitMounts(unit);
+    }
+
+    public static boolean isMechWeapon(EquipmentType eq, Mech unit){
+        if (eq instanceof InfantryWeapon) {
+            return false;
+        }
+
+        if (eq instanceof WeaponType) {
+
+            WeaponType weapon = (WeaponType) eq;
+
+            if (weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
+                return false;
+            }
+
+            if (weapon.getTonnage(unit) <= 0) {
+                return false;
+            }
+
+            if (weapon.isCapital() || weapon.isSubCapital()) {
+                return false;
+            }
+
+            if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon)) && (weapon.getRackSize() != 5) && (weapon.getRackSize() != 10) && (weapon.getRackSize() != 15) && (weapon.getRackSize() != 20)) {
+                return false;
+            }
+            if (((weapon instanceof SRMWeapon) || (weapon instanceof SRTWeapon)) && (weapon.getRackSize() != 2) && (weapon.getRackSize() != 4) && (weapon.getRackSize() != 6)) {
+                return false;
+            }
+            if ((weapon instanceof MRMWeapon) && (weapon.getRackSize() < 10)) {
+                return false;
+            }
+
+            if ((weapon instanceof RLWeapon) && (weapon.getRackSize() < 10)) {
+                return false;
+            }
+
+            if (weapon.hasFlag(WeaponType.F_ENERGY) || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
+
+                if (weapon.hasFlag(WeaponType.F_ENERGY) && weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_NA)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean isMechEquipment(EquipmentType eq) {
+        if ( eq.equals(EquipmentType.get("CLTAG")) ||
+                eq.equals(EquipmentType.get("ISC3MasterUnit")) || eq.equals(EquipmentType.get("ISTAG")) || eq.equals(EquipmentType.get("IS Coolant Pod")) || eq.equals(EquipmentType.get("Clan Coolant Pod"))) {
+            return true;
+        }
+
+        if ((eq instanceof MiscType) && !eq.hasFlag(MiscType.F_ASSAULT_CLAW) && !eq.hasFlag(MiscType.F_VIBROCLAW) && !eq.hasFlag(MiscType.F_BOARDING_CLAW) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && !eq.hasFlag(MiscType.F_PARAFOIL) && !eq.hasFlag(MiscType.F_MINE) && !eq.hasFlag(MiscType.F_TOOLS) && !eq.hasFlag(MiscType.F_HAND_WEAPON) && !eq.hasFlag(MiscType.F_FIRE_RESISTANT) && !eq.hasFlag(MiscType.F_ARMORED_CHASSIS) && !eq.hasFlag(MiscType.F_TRACTOR_MODIFICATION) && !eq.hasFlag(MiscType.F_VACUUM_PROTECTION) && !eq.hasFlag(MiscType.F_HEAT_SINK) && !eq.hasFlag(MiscType.F_LASER_HEAT_SINK) && !eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) && !eq.hasFlag(MiscType.F_BA_EQUIPMENT)
+                && !UnitUtil.isArmorOrStructure(eq) && !eq.hasFlag(MiscType.F_AP_POD)) {
+            return true;
+        }
+
+        return false;
     }
 }
