@@ -52,13 +52,6 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ArtilleryWeapon;
-import megamek.common.weapons.InfantryWeapon;
-import megamek.common.weapons.LRMWeapon;
-import megamek.common.weapons.LRTWeapon;
-import megamek.common.weapons.MRMWeapon;
-import megamek.common.weapons.RLWeapon;
-import megamek.common.weapons.SRMWeapon;
-import megamek.common.weapons.SRTWeapon;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -317,7 +310,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         while (weaponTypes.hasMoreElements()) {
             EquipmentType eq = weaponTypes.nextElement();
 
-            if (eq instanceof InfantryWeapon) {
+            if (!UnitUtil.isMechWeapon(eq, unit)) {
                 continue;
             }
 
@@ -325,41 +318,11 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
 
                 WeaponType weapon = (WeaponType) eq;
 
-                if (weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
-                    continue;
-                }
-
-                if (weapon.getTonnage(unit) <= 0) {
-                    continue;
-                }
-
-                if (weapon.isCapital() || weapon.isSubCapital()) {
-                    continue;
-                }
-
-                if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon)) && (weapon.getRackSize() != 5) && (weapon.getRackSize() != 10) && (weapon.getRackSize() != 15) && (weapon.getRackSize() != 20)) {
-                    continue;
-                }
-                if (((weapon instanceof SRMWeapon) || (weapon instanceof SRTWeapon)) && (weapon.getRackSize() != 2) && (weapon.getRackSize() != 4) && (weapon.getRackSize() != 6)) {
-                    continue;
-                }
-                if ((weapon instanceof MRMWeapon) && (weapon.getRackSize() < 10)) {
-                    continue;
-                }
-
-                if ((weapon instanceof RLWeapon) && (weapon.getRackSize() < 10)) {
-                    continue;
-                }
-
                 if (weapon.hasFlag(WeaponType.F_ENERGY) || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
-
-                    if (weapon.hasFlag(WeaponType.F_ENERGY) && weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_NA)) {
-                        continue;
-                    }
                     masterLaserWeaponList.add(eq);
-                } else if (eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.T_NA)) {
+                } else if ((eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.T_NA))) {
                     masterBallisticWeaponList.add(eq);
-                } else if (eq.hasFlag(WeaponType.F_MISSILE) && (weapon.getAmmoType() != AmmoType.T_NA)) {
+                } else if ((eq.hasFlag(WeaponType.F_MISSILE) && (weapon.getAmmoType() != AmmoType.T_NA))) {
                     masterMissileWeaponList.add(eq);
                 } else if (weapon instanceof ArtilleryWeapon) {
                     masterArtilleryWeaponList.add(eq);
@@ -369,6 +332,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     continue;
                 }
                 masterPhysicalWeaponList.add(eq);
+            } else if ((eq instanceof MiscType && eq.hasFlag(MiscType.F_AP_POD))) {
+                masterBallisticWeaponList.add(eq);
             }
         }
 
@@ -449,8 +414,11 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
 
     private void loadWeaponsTable() {
         for (Mounted mount : unit.getWeaponList()) {
-            weaponList.addCrit(mount.getType());
+            if (UnitUtil.isMechWeapon(mount.getType(), unit)) {
+                weaponList.addCrit(mount.getType());
+            }
         }
+
         for (Mounted mount : unit.getAmmo()) {
             weaponList.addCrit(mount.getType());
         }
