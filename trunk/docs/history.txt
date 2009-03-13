@@ -1,9 +1,10 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.14-Dev-100
+V 0.0.0.14-Dev
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.
 + Bug: Equipment showing as weapons and weapons showing as equipment on loaded units
-
++ BattleArmor Record Sheets now print
++ New MegaMek.jar
 
 V 0.0.0.13 (03/03/2009 10:36 UTC-8)
 + Changed Drag and Drop Code.
