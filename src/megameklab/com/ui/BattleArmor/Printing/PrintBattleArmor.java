@@ -156,8 +156,8 @@ public class PrintBattleArmor implements Printable {
             Image trooper = ImageHelper.getBATrooper(pos);
             g2d.drawImage(trooper, x, y, 158, 18, null);
             g2d.drawImage(ImageHelper.getFluffImage(BattleArmor, "BattleArmor"), x + 10, y + 2, 10, 14, null);
-            ImageHelper.drawBAISPip(g2d, x + 25, y + 6);
-            float pipX = x + 33;
+            ImageHelper.drawBAISPip(g2d, x + 23, y + 6);
+            float pipX = x + 31;
             float pipY = y + 12.5f;
             for (int armor = 0; armor < BattleArmor.getOArmor(pos); armor++) {
                 ImageHelper.drawBAArmorPip(g2d, pipX, pipY);

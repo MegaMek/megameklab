@@ -99,7 +99,7 @@ public class MainUI extends JFrame implements RefreshListener {
      *
      */
     private static final long serialVersionUID = -5836932822468918198L;
-    private static final String VERSION = "0.0.0.14-Dev-101";
+    private static final String VERSION = "0.0.0.14-Dev-102";
 
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
@@ -190,14 +190,6 @@ public class MainUI extends JFrame implements RefreshListener {
         });
         standardRecordSheet.add(item);
 
-        item = new JMenuItem("From MUL");
-        item.setMnemonic('F');
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuPrintMulMechs_actionPerformed(e);
-            }
-        });
-        standardRecordSheet.add(item);
         printMenu.add(standardRecordSheet);
 
         JMenu advancedRecordSheet = new JMenu("Advanced Record Sheet");
@@ -269,6 +261,16 @@ public class MainUI extends JFrame implements RefreshListener {
         spaceMenu.add(item);
 
         printMenu.add(spaceMenu);
+
+        printMenu.addSeparator();
+        item = new JMenuItem("From MUL");
+        item.setMnemonic('M');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuPrintMulMechs_actionPerformed(e);
+            }
+        });
+        printMenu.add(item);
 
         item = new JMenuItem("Configuration");
         item.setMnemonic('C');
