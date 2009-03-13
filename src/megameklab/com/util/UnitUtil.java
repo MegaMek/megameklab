@@ -23,6 +23,7 @@ import java.util.ListIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -43,12 +44,15 @@ import megamek.common.weapons.ISLaserAMS;
 import megamek.common.weapons.InfantryWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.LRTWeapon;
+import megamek.common.weapons.LegAttack;
 import megamek.common.weapons.MGWeapon;
 import megamek.common.weapons.MPodWeapon;
 import megamek.common.weapons.MRMWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.SRTWeapon;
+import megamek.common.weapons.StopSwarmAttack;
+import megamek.common.weapons.SwarmAttack;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 
@@ -621,6 +625,9 @@ public class UnitUtil {
             return false;
         }
 
+        if (eq instanceof LegAttack || eq instanceof SwarmAttack || eq instanceof StopSwarmAttack) {
+            return false;
+        }
         return true;
 
     }
@@ -1326,6 +1333,46 @@ public class UnitUtil {
             return true;
         }
 
+        return false;
+    }
+
+    public static boolean canSwarm(BattleArmor ba) {
+
+        for (Mounted eq : ba.getEquipment()) {
+            if (eq.getType() instanceof SwarmAttack || eq.getType() instanceof StopSwarmAttack) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean canLegAttack(BattleArmor ba) {
+
+        for (Mounted eq : ba.getEquipment()) {
+            if (eq.getType() instanceof LegAttack) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean canRide(BattleArmor ba) {
+
+        for (Mounted eq : ba.getEquipment()) {
+            if (eq.getType() instanceof MiscType && eq.getType().hasFlag(MiscType.F_BOARDING_CLAW)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasInfantryWeapons(BattleArmor ba) {
+
+        for (Mounted eq : ba.getEquipment()) {
+            if (eq.getType() instanceof InfantryWeapon) {
+                return true;
+            }
+        }
         return false;
     }
 }

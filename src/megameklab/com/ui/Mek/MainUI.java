@@ -57,6 +57,7 @@ import megamek.MegaMek;
 import megamek.client.ui.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Aero;
+import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -74,6 +75,7 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megameklab.com.ui.Aero.Printing.PrintAero;
+import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Mek.Printing.PrintAdvancedMech;
 import megameklab.com.ui.Mek.Printing.PrintAdvancedQuad;
 import megameklab.com.ui.Mek.Printing.PrintMech;
@@ -238,6 +240,17 @@ public class MainUI extends JFrame implements RefreshListener {
             }
         });
         vehicleMenu.add(item);
+
+        printMenu.add(vehicleMenu);
+
+        item = new JMenuItem("Battle Armor");
+        item.setMnemonic('B');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuPrintBA_actionPerformed(e);
+            }
+        });
+        printMenu.add(item);
 
         printMenu.add(vehicleMenu);
 
@@ -594,6 +607,30 @@ public class MainUI extends JFrame implements RefreshListener {
         sp.print();
     }
 
+    public void jMenuPrintBA_actionPerformed(ActionEvent event) {
+
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.BATTLE_ARMOR, config);
+
+        viewer.run();
+
+        BattleArmor ba = null;
+        if (!(viewer.getSelectedEntity() instanceof BattleArmor)) {
+            return;
+        }
+        ba = (BattleArmor) viewer.getSelectedEntity();
+
+        viewer.setVisible(false);
+        viewer.dispose();
+
+        ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
+        baList.add(ba);
+
+        PrintBattleArmor sp = new PrintBattleArmor(baList);
+
+        sp.print();
+    }
+
     public void jMenuPrintAero_actionPerformed(ActionEvent event) {
 
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
@@ -624,6 +661,7 @@ public class MainUI extends JFrame implements RefreshListener {
         ArrayList<Tank> tankList = new ArrayList<Tank>();
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
         ArrayList<Aero> aeroList = new ArrayList<Aero>();
+        ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
 
         FileDialog f = new FileDialog(this, "Load Mul");
         f.setDirectory(System.getProperty("user.dir"));
@@ -664,6 +702,8 @@ public class MainUI extends JFrame implements RefreshListener {
                     tankList.add((Tank) unit);
                 } else if (unit instanceof Aero) {
                     aeroList.add((Aero) unit);
+                } else if (unit instanceof BattleArmor) {
+                    baList.add((BattleArmor) unit);
                 }
             }
 
@@ -695,6 +735,12 @@ public class MainUI extends JFrame implements RefreshListener {
                 PrintVTOL printVTOL = new PrintVTOL(VTOLList);
 
                 printVTOL.print();
+            }
+
+            if (baList.size() > 0) {
+                PrintBattleArmor printBA = new PrintBattleArmor(baList);
+
+                printBA.print();
             }
         }
 
