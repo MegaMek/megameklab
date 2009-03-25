@@ -5,6 +5,10 @@ V 0.0.0.14-Dev
 + Bug: Equipment showing as weapons and weapons showing as equipment on loaded units
 + BattleArmor Record Sheets now print
 + New MegaMek.jar
++ New MegaMek.jar
++ RFE: Print Underwater for UMU movement instead of Jumping on Biped and Quad RS
+- Removed Jumping text from Biped and Quad RS Templates
+- Removed access to Advanced RS for Biped and Quad for printing.
 
 V 0.0.0.13 (03/03/2009 10:36 UTC-8)
 + Changed Drag and Drop Code.
