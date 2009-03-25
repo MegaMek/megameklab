@@ -164,7 +164,26 @@ public class PrintQuad implements Printable {
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMP()), 79, 155);
         }
-        g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
+
+        if (mech.hasUMU()) {
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+            String movment = "Underwater: ";
+            g2d.drawString(movment, 34, 166);
+
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+            g2d.drawString(Integer.toString(mech.getAllUMUCount()), 79, 166);
+        } else if (mech.getJumpMP() > 0) {
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+            String movment = "Jumping: ";
+            g2d.drawString(movment, 34, 166);
+
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+            g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
+        }
 
         int tonnage = (int) Math.ceil(mech.getWeight());
 

@@ -99,7 +99,7 @@ public class MainUI extends JFrame implements RefreshListener {
      *
      */
     private static final long serialVersionUID = -5836932822468918198L;
-    private static final String VERSION = "0.0.0.14-Dev-102";
+    private static final String VERSION = "0.0.0.14-Dev-103";
 
     Mech entity = null;
     JMenuBar menuBar = new JMenuBar();
@@ -178,8 +178,8 @@ public class MainUI extends JFrame implements RefreshListener {
         JMenu printMenu = new JMenu("Print");
         printMenu.setMnemonic('P');
 
-        JMenu standardRecordSheet = new JMenu("Standard Record Sheet");
-        standardRecordSheet.setMnemonic('S');
+        /*JMenu standardRecordSheet = new JMenu("Standard Record Sheet");
+        standardRecordSheet.setMnemonic('S');*/
 
         item = new JMenuItem("Current Unit");
         item.setMnemonic('C');
@@ -188,31 +188,31 @@ public class MainUI extends JFrame implements RefreshListener {
                 jMenuPrint_actionPerformed(e);
             }
         });
-        standardRecordSheet.add(item);
+        // standardRecordSheet.add(item);
 
-        printMenu.add(standardRecordSheet);
+        printMenu.add(item);
 
-        JMenu advancedRecordSheet = new JMenu("Advanced Record Sheet");
-        advancedRecordSheet.setMnemonic('A');
+        /*        JMenu advancedRecordSheet = new JMenu("Advanced Record Sheet");
+                advancedRecordSheet.setMnemonic('A');
 
-        item = new JMenuItem("Current Unit");
-        item.setMnemonic('C');
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuAdvancedPrint_actionPerformed(e);
-            }
-        });
-        advancedRecordSheet.add(item);
+                item = new JMenuItem("Current Unit");
+                item.setMnemonic('C');
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        jMenuAdvancedPrint_actionPerformed(e);
+                    }
+                });
+                advancedRecordSheet.add(item);
 
-        item = new JMenuItem("From MUL");
-        item.setMnemonic('F');
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuPrintAdvancedMulMechs_actionPerformed(e);
-            }
-        });
-        advancedRecordSheet.add(item);
-        printMenu.add(advancedRecordSheet);
+                item = new JMenuItem("From MUL");
+                item.setMnemonic('F');
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        jMenuPrintAdvancedMulMechs_actionPerformed(e);
+                    }
+                });
+                advancedRecordSheet.add(item);
+                printMenu.add(advancedRecordSheet);*/
 
         JMenu vehicleMenu = new JMenu("Vehicle");
         item = new JMenuItem("Tank");
