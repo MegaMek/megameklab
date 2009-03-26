@@ -1,6 +1,8 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.14-Dev
+V 0.0.0.15-Dev
+
+V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.
 + Bug: Equipment showing as weapons and weapons showing as equipment on loaded units
 + BattleArmor Record Sheets now print
