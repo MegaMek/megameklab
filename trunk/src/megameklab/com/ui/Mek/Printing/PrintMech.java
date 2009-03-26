@@ -174,7 +174,7 @@ public class PrintMech implements Printable {
         if (mech.hasUMU()) {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
-            String movment = "Underwater: ";
+            String movment = "UMU: ";
             g2d.drawString(movment, 34, 166);
 
             font = UnitUtil.deriveFont(8.0f);
@@ -289,9 +289,31 @@ public class PrintMech implements Printable {
             g2d.drawString(armorName, 461, 249);
         }
 
-        String yearFluff = mech.getYear() + " " + mech.getSource();
-        g2d.setFont(UnitUtil.getNewFont(g2d, yearFluff.trim(), false, 80, 8.0f));
-        ImageHelper.printCenterString(g2d, yearFluff.trim(), font, startLine, nextDataLine);
+        if (mech.getSource() != null && mech.getSource().trim().length() > 0) {
+            String sourceFluff = "Era: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(sourceFluff, 138, nextDataLine);
+
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(mech.getSource(), 177, nextDataLine);
+
+        } else {
+            String yearFluff = "Year: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(yearFluff, 138, nextDataLine);
+
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(String.format("%1$s", mech.getYear()), 177, nextDataLine);
+
+        }
 
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
         g2d.drawString(techBase, 177, 145);
