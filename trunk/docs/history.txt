@@ -10,6 +10,8 @@ V 0.0.0.14-Dev
 - Removed Jumping text from Biped and Quad RS Templates
 - Removed access to Advanced RS for Biped and Quad for printing.
 + Changed Underwater to UMU for UMU Movement
++ New MegaMek Jar
+
 
 V 0.0.0.13 (03/03/2009 10:36 UTC-8)
 + Changed Drag and Drop Code.
