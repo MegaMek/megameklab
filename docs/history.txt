@@ -9,6 +9,7 @@ V 0.0.0.14-Dev
 + RFE: Print Underwater for UMU movement instead of Jumping on Biped and Quad RS
 - Removed Jumping text from Biped and Quad RS Templates
 - Removed access to Advanced RS for Biped and Quad for printing.
++ Changed Underwater to UMU for UMU Movement
 
 V 0.0.0.13 (03/03/2009 10:36 UTC-8)
 + Changed Drag and Drop Code.

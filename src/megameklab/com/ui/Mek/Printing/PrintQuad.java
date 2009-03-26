@@ -168,7 +168,7 @@ public class PrintQuad implements Printable {
         if (mech.hasUMU()) {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
-            String movment = "Underwater: ";
+            String movment = "UMU: ";
             g2d.drawString(movment, 34, 166);
 
             font = UnitUtil.deriveFont(8.0f);
