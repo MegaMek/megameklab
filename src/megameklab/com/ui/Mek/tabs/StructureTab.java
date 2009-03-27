@@ -137,10 +137,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(omniCB);
         masterPanel.add(quadCB);
 
-        masterPanel.add(createLabel("Era:", maxSize));
+        masterPanel.add(createLabel("Year:", maxSize));
         masterPanel.add(era);
 
-        masterPanel.add(createLabel("Source:", maxSize));
+        masterPanel.add(createLabel("Source/Era:", maxSize));
         masterPanel.add(source);
 
         masterPanel.add(createLabel("Tech:", maxSize));
