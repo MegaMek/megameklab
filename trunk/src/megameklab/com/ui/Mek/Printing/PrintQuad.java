@@ -174,7 +174,7 @@ public class PrintQuad implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
             g2d.drawString(Integer.toString(mech.getAllUMUCount()), 79, 166);
-        } else if (mech.getJumpMP() > 0) {
+        } else {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
             String movment = "Jumping: ";
