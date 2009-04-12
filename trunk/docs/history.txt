@@ -1,6 +1,9 @@
 VERSION HISTORY:
 ----------------
 V 0.0.0.15-Dev
++ Updated CASE text for Clan Quads
++ added shield image for Biped Mechs
++ added code to print out shield pips
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.
@@ -15,9 +18,6 @@ V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + New MegaMek Jar
 + Bug: Jumping MP not showing when Mechs do not have JJ's
 + New MegaMek.jar
-+ Updated CASE text for Clan Quads
-+ added shield image for Biped Mechs
-
 
 V 0.0.0.13 (03/03/2009 10:36 UTC-8)
 + Changed Drag and Drop Code.
