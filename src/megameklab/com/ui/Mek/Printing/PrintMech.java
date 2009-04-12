@@ -91,6 +91,9 @@ public class PrintMech implements Printable {
 		printMekImage(g2d, hud);
 		if (mech.hasShield()) {
 			g2d.drawImage(ImageHelper.getShieldImage(), 382, 18, 193, 352, null, null);
+
+			printLeftShield(g2d);
+			printRightShield(g2d);
 		}
 
 		printMechData(g2d);
@@ -1630,6 +1633,100 @@ public class PrintMech implements Printable {
 			ImageHelper.drawISPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
 			if (--totalArmor <= 0) {
 				return;
+			}
+		}
+	}
+
+	private void printLeftShield(Graphics2D g2d) {
+
+		if (!mech.hasShield()) {
+			return;
+		}
+		int[] DCColumn = { 391, 27 };
+		int[] lineFeed = { 6, 6 };
+		int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM);
+		int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_LARM);
+
+		int[] xPoints;
+		int[] yPoints;
+		int size = 2;
+
+		for (int pos = 1; pos <= DC; pos++) {
+			xPoints = new int[] { DCColumn[0], DCColumn[0] - size, DCColumn[0], DCColumn[0] + size };
+			yPoints = new int[] { DCColumn[1], DCColumn[1] + size, DCColumn[1] + size * 2, DCColumn[1] + size };
+
+			g2d.drawPolygon(xPoints, yPoints, 4);
+
+			DCColumn[0] += lineFeed[0];
+
+			if (pos % 4 == 0) {
+				lineFeed[0] *= -1;
+				DCColumn[0] += lineFeed[0];
+				DCColumn[1] += lineFeed[1];
+			}
+		}
+
+		int[] DAColumn = { 388, 82 };
+
+		for (int pos = 1; pos <= DA; pos++) {
+			xPoints = new int[] { DAColumn[0], DAColumn[0] - size, DAColumn[0], DAColumn[0] + size };
+			yPoints = new int[] { DAColumn[1], DAColumn[1] + size, DAColumn[1] + size * 2, DAColumn[1] + size };
+
+			g2d.drawPolygon(xPoints, yPoints, 4);
+
+			DAColumn[0] += lineFeed[0];
+
+			if (pos % 2 == 0) {
+				lineFeed[0] *= -1;
+				DAColumn[0] += lineFeed[0];
+				DAColumn[1] += lineFeed[1];
+			}
+		}
+	}
+
+	private void printRightShield(Graphics2D g2d) {
+
+		if (!mech.hasShield()) {
+			return;
+		}
+		int[] DCColumn = { 566, 27 };
+		int[] lineFeed = { -6, 6 };
+		int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM);
+		int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_RARM);
+
+		int[] xPoints;
+		int[] yPoints;
+		int size = 2;
+
+		for (int pos = 1; pos <= DC; pos++) {
+			xPoints = new int[] { DCColumn[0], DCColumn[0] - size, DCColumn[0], DCColumn[0] + size };
+			yPoints = new int[] { DCColumn[1], DCColumn[1] + size, DCColumn[1] + size * 2, DCColumn[1] + size };
+
+			g2d.drawPolygon(xPoints, yPoints, 4);
+
+			DCColumn[0] += lineFeed[0];
+
+			if (pos % 4 == 0) {
+				lineFeed[0] *= -1;
+				DCColumn[0] += lineFeed[0];
+				DCColumn[1] += lineFeed[1];
+			}
+		}
+
+		int[] DAColumn = { 568, 82 };
+
+		for (int pos = 1; pos <= DA; pos++) {
+			xPoints = new int[] { DAColumn[0], DAColumn[0] - size, DAColumn[0], DAColumn[0] + size };
+			yPoints = new int[] { DAColumn[1], DAColumn[1] + size, DAColumn[1] + size * 2, DAColumn[1] + size };
+
+			g2d.drawPolygon(xPoints, yPoints, 4);
+
+			DAColumn[0] += lineFeed[0];
+
+			if (pos % 2 == 0) {
+				lineFeed[0] *= -1;
+				DAColumn[0] += lineFeed[0];
+				DAColumn[1] += lineFeed[1];
 			}
 		}
 	}
