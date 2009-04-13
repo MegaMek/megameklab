@@ -22,6 +22,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
@@ -1468,5 +1470,13 @@ public class ImageHelper {
 		g2d.setColor(Color.BLACK);
 		g2d.setBackground(Color.WHITE);
 		g2d.drawString("O", width, height);
+	}
+
+	public static void drawDiamond(Graphics2D g2d, float xPos, float yPos) {
+		Font font = new Font("Arial", Font.PLAIN, 7);
+		GlyphVector gv = font.createGlyphVector(new FontRenderContext(g2d.getTransform(), true, true), "\u02C4");
+		g2d.drawGlyphVector(gv, xPos, yPos);
+		gv = font.createGlyphVector(new FontRenderContext(g2d.getTransform(), true, true), "\u02C5");
+		g2d.drawGlyphVector(gv, xPos, yPos + 2.9f);
 	}
 }
