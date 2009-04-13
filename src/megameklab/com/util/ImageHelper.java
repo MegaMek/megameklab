@@ -123,6 +123,18 @@ public class ImageHelper {
 		return image;
 	}
 
+	public static Image getRightShieldImage() {
+		String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
+		Image image = new ImageIcon(path + "twbiped-shield-right.png").getImage();
+		return image;
+	}
+
+	public static Image getLeftShieldImage() {
+		String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
+		Image image = new ImageIcon(path + "twbiped-shield-left.png").getImage();
+		return image;
+	}
+
 	public static Image getFluffImage(Entity unit, String dir) {
 		Image fluff = null;
 
