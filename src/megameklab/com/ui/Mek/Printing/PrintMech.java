@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.Mek.Printing;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -1642,21 +1643,14 @@ public class PrintMech implements Printable {
 		if (!mech.hasShield()) {
 			return;
 		}
-		int[] DCColumn = { 391, 27 };
-		int[] lineFeed = { 6, 6 };
+		g2d.setStroke(new BasicStroke(.5f));
+		float[] DCColumn = { 390, 30.5f };
+		float[] lineFeed = { 5, 6.7f };
 		int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM);
 		int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_LARM);
 
-		int[] xPoints;
-		int[] yPoints;
-		int size = 2;
-
 		for (int pos = 1; pos <= DC; pos++) {
-			xPoints = new int[] { DCColumn[0], DCColumn[0] - size, DCColumn[0], DCColumn[0] + size };
-			yPoints = new int[] { DCColumn[1], DCColumn[1] + size, DCColumn[1] + size * 2, DCColumn[1] + size };
-
-			g2d.drawPolygon(xPoints, yPoints, 4);
-
+			ImageHelper.drawDiamond(g2d, DCColumn[0], DCColumn[1]);
 			DCColumn[0] += lineFeed[0];
 
 			if (pos % 4 == 0) {
@@ -1666,13 +1660,11 @@ public class PrintMech implements Printable {
 			}
 		}
 
-		int[] DAColumn = { 388, 82 };
+		int[] DAColumn = { 386, 82 };
+		lineFeed = new float[] { 5, 7f };
 
 		for (int pos = 1; pos <= DA; pos++) {
-			xPoints = new int[] { DAColumn[0], DAColumn[0] - size, DAColumn[0], DAColumn[0] + size };
-			yPoints = new int[] { DAColumn[1], DAColumn[1] + size, DAColumn[1] + size * 2, DAColumn[1] + size };
-
-			g2d.drawPolygon(xPoints, yPoints, 4);
+			ImageHelper.drawDiamond(g2d, DAColumn[0], DAColumn[1]);
 
 			DAColumn[0] += lineFeed[0];
 
@@ -1682,6 +1674,7 @@ public class PrintMech implements Printable {
 				DAColumn[1] += lineFeed[1];
 			}
 		}
+		g2d.setStroke(new BasicStroke(1));
 	}
 
 	private void printRightShield(Graphics2D g2d) {
@@ -1689,20 +1682,14 @@ public class PrintMech implements Printable {
 		if (!mech.hasShield()) {
 			return;
 		}
-		int[] DCColumn = { 566, 27 };
-		int[] lineFeed = { -6, 6 };
+		g2d.setStroke(new BasicStroke(.5f));
+		float[] DCColumn = { 562, 30.5f };
+		float[] lineFeed = { -5, 6.7f };
 		int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM);
 		int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_RARM);
 
-		int[] xPoints;
-		int[] yPoints;
-		int size = 2;
-
 		for (int pos = 1; pos <= DC; pos++) {
-			xPoints = new int[] { DCColumn[0], DCColumn[0] - size, DCColumn[0], DCColumn[0] + size };
-			yPoints = new int[] { DCColumn[1], DCColumn[1] + size, DCColumn[1] + size * 2, DCColumn[1] + size };
-
-			g2d.drawPolygon(xPoints, yPoints, 4);
+			ImageHelper.drawDiamond(g2d, DCColumn[0], DCColumn[1]);
 
 			DCColumn[0] += lineFeed[0];
 
@@ -1713,13 +1700,11 @@ public class PrintMech implements Printable {
 			}
 		}
 
-		int[] DAColumn = { 568, 82 };
+		float[] DAColumn = { 566, 82 };
+		lineFeed = new float[] { -5, 7f };
 
 		for (int pos = 1; pos <= DA; pos++) {
-			xPoints = new int[] { DAColumn[0], DAColumn[0] - size, DAColumn[0], DAColumn[0] + size };
-			yPoints = new int[] { DAColumn[1], DAColumn[1] + size, DAColumn[1] + size * 2, DAColumn[1] + size };
-
-			g2d.drawPolygon(xPoints, yPoints, 4);
+			ImageHelper.drawDiamond(g2d, DAColumn[0], DAColumn[1]);
 
 			DAColumn[0] += lineFeed[0];
 
@@ -1729,6 +1714,7 @@ public class PrintMech implements Printable {
 				DAColumn[1] += lineFeed[1];
 			}
 		}
+		g2d.setStroke(new BasicStroke(1));
 	}
 
 }
