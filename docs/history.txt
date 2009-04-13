@@ -5,6 +5,9 @@ V 0.0.0.15-Dev
 + added shield image for Biped Mechs
 + added code to print out shield pips
 + Changed shield pips from polygons to unicode characters
++ Updated shield pips
++ added new right and left shield images
++ added Era field to Aero RS
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.
