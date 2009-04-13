@@ -91,7 +91,14 @@ public class PrintMech implements Printable {
 		g2d.drawImage(image, 18, 18, 558, 738, Color.BLACK, null);
 		printMekImage(g2d, hud);
 		if (mech.hasShield()) {
-			g2d.drawImage(ImageHelper.getShieldImage(), 382, 18, 193, 352, null, null);
+
+			if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0 && UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0) {
+				g2d.drawImage(ImageHelper.getShieldImage(), 382, 18, 193, 352, null, null);
+			} else if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) {
+				g2d.drawImage(ImageHelper.getRightShieldImage(), 382, 18, 193, 352, null, null);
+			} else {
+				g2d.drawImage(ImageHelper.getLeftShieldImage(), 382, 18, 193, 352, null, null);
+			}
 
 			printLeftShield(g2d);
 			printRightShield(g2d);
@@ -1644,13 +1651,13 @@ public class PrintMech implements Printable {
 			return;
 		}
 		g2d.setStroke(new BasicStroke(.5f));
-		float[] DCColumn = { 390, 30.5f };
-		float[] lineFeed = { 5, 6.7f };
+		float[] DCColumn = { 390, 32f };
+		float[] lineFeed = { 5, 6f };
 		int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM);
 		int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_LARM);
 
 		for (int pos = 1; pos <= DC; pos++) {
-			ImageHelper.drawDiamond(g2d, DCColumn[0], DCColumn[1]);
+			ImageHelper.drawArmorPip(g2d, DCColumn[0], DCColumn[1]);
 			DCColumn[0] += lineFeed[0];
 
 			if (pos % 4 == 0) {
@@ -1661,18 +1668,18 @@ public class PrintMech implements Printable {
 		}
 
 		int[] DAColumn = { 386, 82 };
-		lineFeed = new float[] { 5, 7f };
+		lineFeed = new float[] { 4f, 7f };
 
 		for (int pos = 1; pos <= DA; pos++) {
 			ImageHelper.drawDiamond(g2d, DAColumn[0], DAColumn[1]);
 
 			DAColumn[0] += lineFeed[0];
 
-			if (pos % 2 == 0) {
-				lineFeed[0] *= -1;
-				DAColumn[0] += lineFeed[0];
-				DAColumn[1] += lineFeed[1];
-			}
+			// if (pos % 2 == 0) {
+			lineFeed[0] *= -1;
+			// DAColumn[0] += lineFeed[0];
+			DAColumn[1] += lineFeed[1];
+			// }
 		}
 		g2d.setStroke(new BasicStroke(1));
 	}
@@ -1683,13 +1690,13 @@ public class PrintMech implements Printable {
 			return;
 		}
 		g2d.setStroke(new BasicStroke(.5f));
-		float[] DCColumn = { 562, 30.5f };
-		float[] lineFeed = { -5, 6.7f };
+		float[] DCColumn = { 562, 32f };
+		float[] lineFeed = { -5, 6f };
 		int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM);
 		int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_RARM);
 
 		for (int pos = 1; pos <= DC; pos++) {
-			ImageHelper.drawDiamond(g2d, DCColumn[0], DCColumn[1]);
+			ImageHelper.drawArmorPip(g2d, DCColumn[0], DCColumn[1]);
 
 			DCColumn[0] += lineFeed[0];
 
@@ -1701,18 +1708,18 @@ public class PrintMech implements Printable {
 		}
 
 		float[] DAColumn = { 566, 82 };
-		lineFeed = new float[] { -5, 7f };
+		lineFeed = new float[] { -4, 7f };
 
 		for (int pos = 1; pos <= DA; pos++) {
 			ImageHelper.drawDiamond(g2d, DAColumn[0], DAColumn[1]);
 
 			DAColumn[0] += lineFeed[0];
 
-			if (pos % 2 == 0) {
-				lineFeed[0] *= -1;
-				DAColumn[0] += lineFeed[0];
-				DAColumn[1] += lineFeed[1];
-			}
+			// if (pos % 2 == 0) {
+			lineFeed[0] *= -1;
+			// DAColumn[0] += lineFeed[0];
+			DAColumn[1] += lineFeed[1];
+			// }
 		}
 		g2d.setStroke(new BasicStroke(1));
 	}
