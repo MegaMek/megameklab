@@ -49,7 +49,7 @@ public class BuildTab extends ITab implements ActionListener {
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
-    RefreshListener refresh = null;
+    private RefreshListener refresh = null;
     private CriticalView critView = null;
     private CriticalTableModel critList;
     private BuildView buildView = null;
@@ -142,19 +142,19 @@ public class BuildTab extends ITab implements ActionListener {
             int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(unit);
             for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
 
-                if ( eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))){
-                    if ( unit instanceof QuadMech ){
+                if (eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))) {
+                    if (unit instanceof QuadMech) {
                         continue;
                     }
 
-                    if ( location != Mech.LOC_RARM && location != Mech.LOC_LARM ){
+                    if (location != Mech.LOC_RARM && location != Mech.LOC_LARM) {
                         continue;
                     }
                 }
 
                 int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
                 int critsUsed = UnitUtil.getCritsUsed(unit, eq);
-                if ( continuousNumberOfCrits < critsUsed ) {
+                if (continuousNumberOfCrits < critsUsed) {
                     continue;
                 }
 
@@ -169,7 +169,7 @@ public class BuildTab extends ITab implements ActionListener {
                     }
                 }
 
-                if (foundMount != null ) {
+                if (foundMount != null) {
                     try {
 
                         if (foundMount.getType().isSpreadable() || foundMount.isSplitable() && critsUsed > 1) {
@@ -226,6 +226,12 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void addCrit(EquipmentType eq) {
         critList.addCrit(eq);
+    }
+
+    public void refreshAll() {
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
     }
 
 }
