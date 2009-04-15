@@ -57,23 +57,13 @@ public class CriticalTransferHandler extends TransferHandler {
         }
 
         if (info.getComponent() instanceof DropTargetCriticalList) {
-            DropTargetCriticalList list = (DropTargetCriticalList)info.getComponent();
+            DropTargetCriticalList list = (DropTargetCriticalList) info.getComponent();
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
-                int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(unit);
-
                 String mountName = (String) t.getTransferData(DataFlavor.stringFlavor);
-                Mounted eq = null;
-                for (Mounted mount : unit.getEquipment()) {
-                    if (mount.getLocation() == Entity.LOC_NONE && mount.getType().getInternalName().equals(mountName)) {
-                        if (UnitUtil.isHeatSink(mount) && externalEngineHS-- > 0) {
-                            continue;
-                        }
-                        eq = mount;
-                        break;
-                    }
-                }
+
+                Mounted eq = UnitUtil.getMounted(unit, mountName);
 
                 if (eq.getType() instanceof MiscType && (eq.getType().hasFlag(MiscType.F_CLUB) || eq.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
                     if (unit instanceof QuadMech) {
@@ -195,7 +185,6 @@ public class CriticalTransferHandler extends TransferHandler {
         return false;
     }
 
-
     @Override
     public boolean canImport(TransferSupport info) {
         // Check for String flavor
@@ -230,4 +219,4 @@ public class CriticalTransferHandler extends TransferHandler {
         }
     }
 
- }
+}

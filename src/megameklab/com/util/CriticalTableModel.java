@@ -171,20 +171,17 @@ public class CriticalTableModel extends AbstractTableModel {
             EquipmentType eq = sortedEquipment[row];
             c.setToolTipText(UnitUtil.getToolTipInfo(unit, new Mounted(unit, eq)));
 
-
             if (isSelected) {
                 c.setForeground(d.getForeground());
                 c.setBackground(d.getBackground());
                 return c;
             }
 
-
-
             String equipmentType = CConfig.CONFIG_EQUIPMENT;
 
-            if ( eq instanceof WeaponType ){
+            if (eq instanceof WeaponType) {
                 equipmentType = CConfig.CONFIG_WEAPONS;
-            } else if ( eq instanceof AmmoType ){
+            } else if (eq instanceof AmmoType) {
                 equipmentType = CConfig.CONFIG_AMMO;
             }
             c.setBackground(MainUI.config.getBackgroundColor(equipmentType));
