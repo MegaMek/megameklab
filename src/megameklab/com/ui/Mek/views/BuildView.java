@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -264,148 +265,112 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
             Mounted eq = UnitUtil.getMounted(unit, ((EquipmentType) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT)).getInternalName());
 
-            int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
+            final int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
+            String[] locations;
+            String[] abbrLocations;
+
+            if (unit instanceof BipedMech) {
+                locations = BipedMech.LOCATION_NAMES;
+                abbrLocations = BipedMech.LOCATION_NAMES;
+            } else {
+                locations = QuadMech.LOCATION_NAMES;
+                abbrLocations = QuadMech.LOCATION_NAMES;
+            }
+
             if (eq.getType().isSpreadable() || eq.isSplitable()) {
-                for (int location = Mech.LOC_RT; location <= Mech.LOC_LLEG; location++) {
+                int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(unit);
+                if (critSpace[Mech.LOC_RT] >= 1) {
+                    JMenu rtMenu = new JMenu(locations[Mech.LOC_RT]);
 
-                    if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
-                        if (unit instanceof BipedMech) {
-                            item = new JMenuItem("Add to " + BipedMech.LOCATION_NAMES[location]);
-                        } else {
-                            item = new JMenuItem("Add to " + QuadMech.LOCATION_NAMES[location]);
-                        }
-
-                        final int loc = location;
+                    if (critSpace[Mech.LOC_RT] >= totalCrits) {
+                        item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_RT]));
                         item.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
-                                jMenuLoadComponent_actionPerformed(loc, selectedRow);
+                                jMenuLoadComponent_actionPerformed(Mech.LOC_RT, selectedRow);
                             }
                         });
-                        popup.add(item);
-                    } else {
-                        String[] locations;
-                        int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(unit);
-                        if (unit instanceof BipedMech) {
-                            locations = BipedMech.LOCATION_ABBRS;
-                        } else {
-                            locations = QuadMech.LOCATION_ABBRS;
-                        }
-                        switch (location) {
-                        case Mech.LOC_RARM:
-                            if (critSpace[location] + critSpace[Mech.LOC_RT] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_RARM], locations[Mech.LOC_RT]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RARM, Mech.LOC_RT, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                                break;
-                            }
-                        case Mech.LOC_LARM:
-                            if (critSpace[location] + critSpace[Mech.LOC_LT] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_LARM], locations[Mech.LOC_LT]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LARM, Mech.LOC_LT, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                            }
-                            break;
-                        case Mech.LOC_RT:
-                            if (critSpace[location] + critSpace[Mech.LOC_RARM] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_RT], locations[Mech.LOC_RARM]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RT, Mech.LOC_RARM, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                            }
-                            if (critSpace[location] + critSpace[Mech.LOC_RLEG] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_RT], locations[Mech.LOC_RLEG]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RT, Mech.LOC_RLEG, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                            }
-                            if (critSpace[location] + critSpace[Mech.LOC_CT] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_RT], locations[Mech.LOC_CT]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RT, Mech.LOC_CT, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                                break;
-                            }
-                        case Mech.LOC_LT:
-                            if (critSpace[location] + critSpace[Mech.LOC_LARM] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_LT], locations[Mech.LOC_LARM]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LT, Mech.LOC_LARM, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                            }
-                            if (critSpace[location] + critSpace[Mech.LOC_LLEG] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_LT], locations[Mech.LOC_LLEG]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LT, Mech.LOC_LLEG, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                            }
-                            if (critSpace[location] + critSpace[Mech.LOC_CT] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_LT], locations[Mech.LOC_CT]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LT, Mech.LOC_CT, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                                break;
-                            }
-                        case Mech.LOC_RLEG:
-                            if (critSpace[location] + critSpace[Mech.LOC_RT] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_RLEG], locations[Mech.LOC_RT]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RLEG, Mech.LOC_RT, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                            }
-                            break;
-                        case Mech.LOC_LLEG:
-                            if (critSpace[location] + critSpace[Mech.LOC_LT] >= totalCrits) {
-                                item = new JMenuItem(String.format("Add to %1$s/%2$s", locations[Mech.LOC_LLEG], locations[Mech.LOC_LT]));
-                                item.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LLEG, Mech.LOC_LT, selectedRow);
-                                    }
-                                });
-                                popup.add(item);
-                            }
-                            break;
-                        }
+                        rtMenu.add(item);
                     }
+
+                    int[] splitLocations = new int[] { Mech.LOC_CT, Mech.LOC_RARM, Mech.LOC_RLEG };
+
+                    for (int location = 0; location < 3; location++) {
+                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mech.LOC_RT], abbrLocations[splitLocations[location]]));
+                        int subCrits = critSpace[splitLocations[location]];
+                        for (int slots = 1; slots <= subCrits; slots++) {
+                            final int primarySlots = totalCrits - slots;
+                            item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)", abbrLocations[Mech.LOC_RT], primarySlots, abbrLocations[splitLocations[location]], slots));
+
+                            final int secondaryLocation = splitLocations[location];
+                            item.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RT, secondaryLocation, primarySlots, selectedRow);
+                                }
+                            });
+                            subMenu.add(item);
+                        }
+                        rtMenu.add(subMenu);
+                    }
+                    popup.add(rtMenu);
+                } else if (critSpace[Mech.LOC_RARM] >= totalCrits) {
+                    item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_RARM]));
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            jMenuLoadSplitComponent_actionPerformed(Mech.LOC_RARM, Mech.LOC_RARM, totalCrits, selectedRow);
+                        }
+                    });
+                    popup.add(item);
+                }
+
+                if (critSpace[Mech.LOC_LT] >= 1) {
+                    JMenu ltMenu = new JMenu(locations[Mech.LOC_LT]);
+
+                    if (critSpace[Mech.LOC_LT] >= totalCrits) {
+                        item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_LT]));
+                        item.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                jMenuLoadComponent_actionPerformed(Mech.LOC_LT, selectedRow);
+                            }
+                        });
+                        ltMenu.add(item);
+                    }
+
+                    int[] splitLocations = new int[] { Mech.LOC_CT, Mech.LOC_LARM, Mech.LOC_LLEG };
+
+                    for (int location = 0; location < 3; location++) {
+                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mech.LOC_LT], abbrLocations[splitLocations[location]]));
+                        int subCrits = critSpace[splitLocations[location]];
+                        for (int slots = 1; slots <= subCrits; slots++) {
+                            final int primarySlots = totalCrits - slots;
+                            item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)", abbrLocations[Mech.LOC_LT], primarySlots, abbrLocations[splitLocations[location]], slots));
+
+                            final int secondaryLocation = splitLocations[location];
+                            item.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LT, secondaryLocation, primarySlots, selectedRow);
+                                }
+                            });
+                            subMenu.add(item);
+                        }
+                        ltMenu.add(subMenu);
+                    }
+                    popup.add(ltMenu);
+
+                } else if (critSpace[Mech.LOC_LARM] >= totalCrits) {
+                    item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_LARM]));
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            jMenuLoadSplitComponent_actionPerformed(Mech.LOC_LARM, Mech.LOC_LARM, totalCrits, selectedRow);
+                        }
+                    });
+                    popup.add(item);
                 }
 
             } else {
                 for (int location = 0; location <= Mech.LOC_LLEG; location++) {
 
                     if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
-                        if (unit instanceof BipedMech) {
-                            item = new JMenuItem("Add to " + BipedMech.LOCATION_NAMES[location]);
-                        } else {
-                            item = new JMenuItem("Add to " + QuadMech.LOCATION_NAMES[location]);
-                        }
+                        item = new JMenuItem("Add to " + locations[location]);
 
                         final int loc = location;
                         item.addActionListener(new ActionListener() {
@@ -427,10 +392,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
     }
 
-    private void jMenuLoadSplitComponent_actionPerformed(int location, int secondaryLocation, int selectedRow) {
+    private void jMenuLoadSplitComponent_actionPerformed(int location, int secondaryLocation, int primarySlots, int selectedRow) {
         Mounted eq = UnitUtil.getMounted(unit, ((EquipmentType) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT)).getInternalName());
         int crits = UnitUtil.getCritsUsed(unit, eq.getType());
-        int openSlots = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
+        int openSlots = Math.min(primarySlots, UnitUtil.getHighestContinuousNumberOfCrits(unit, location));
         eq.setSecondLocation(secondaryLocation);
 
         for (int slot = 0; slot < openSlots; slot++) {
