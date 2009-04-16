@@ -312,7 +312,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                         rtMenu.add(subMenu);
                     }
                     popup.add(rtMenu);
-                } else if (critSpace[Mech.LOC_RARM] >= totalCrits) {
+                }
+
+                if (critSpace[Mech.LOC_RARM] >= totalCrits) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_RARM]));
                     item.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
@@ -356,7 +358,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     }
                     popup.add(ltMenu);
 
-                } else if (critSpace[Mech.LOC_LARM] >= totalCrits) {
+                }
+
+                if (critSpace[Mech.LOC_LARM] >= totalCrits) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_LARM]));
                     item.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
