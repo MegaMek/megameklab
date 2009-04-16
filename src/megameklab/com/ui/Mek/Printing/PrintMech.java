@@ -93,11 +93,11 @@ public class PrintMech implements Printable {
         if (mech.hasShield()) {
 
             if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0 && UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0) {
-                g2d.drawImage(ImageHelper.getShieldImage(), 382, 18, 193, 352, null, null);
+                g2d.drawImage(ImageHelper.getShieldImage(), 382, 18, 193, 351, null, null);
             } else if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) {
-                g2d.drawImage(ImageHelper.getRightShieldImage(), 382, 18, 193, 352, null, null);
+                g2d.drawImage(ImageHelper.getRightShieldImage(), 382, 18, 193, 351, null, null);
             } else {
-                g2d.drawImage(ImageHelper.getLeftShieldImage(), 382, 18, 193, 352, null, null);
+                g2d.drawImage(ImageHelper.getLeftShieldImage(), 382, 18, 193, 351, null, null);
             }
 
             printLeftShield(g2d);
@@ -1023,7 +1023,7 @@ public class PrintMech implements Printable {
     }
 
     private void printCTRArmor(Graphics2D g2d) {
-        float[] topColumn = new float[] { 470, 301 };
+        float[] topColumn = new float[] { 470, 300 };
         float[] pipShift = new float[] { 5f, 5f };
 
         int totalArmor = mech.getOArmor(Mech.LOC_CT, true);
@@ -1667,7 +1667,7 @@ public class PrintMech implements Printable {
             }
         }
 
-        int[] DAColumn = { 387, 82 };
+        float[] DAColumn = { 387, 82.5f };
         lineFeed = new float[] { 4f, ImageHelper.getDiamondSize(g2d) };
 
         for (int pos = 1; pos <= DA; pos++) {
@@ -1707,7 +1707,7 @@ public class PrintMech implements Printable {
             }
         }
 
-        float[] DAColumn = { 565, 82 };
+        float[] DAColumn = { 565, 82.5f };
         lineFeed = new float[] { -4, ImageHelper.getDiamondSize(g2d) };
 
         for (int pos = 1; pos <= DA; pos++) {
