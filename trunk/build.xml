@@ -32,6 +32,12 @@
 		value="manifest.txt"
 	>
 	</property>
+     <property
+          name="splashdir"
+          value="${basedir}/data/images/splash"
+     >
+     </property>
+
 	<path
 		id="project.classpath"
 	>
@@ -143,6 +149,8 @@
 			jarfile="${megameklab}"
 			manifest="manifest.txt"
 		>
+			
+	          <fileset dir="${splashdir}" includes="**/*.gif **/*.jpg" />
 		</jar>
 	</target>
 	

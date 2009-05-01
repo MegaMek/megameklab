@@ -18,21 +18,50 @@ package megameklab.com.util;
 
 import javax.swing.JPanel;
 
+import megamek.common.Aero;
+import megamek.common.BattleArmor;
+import megamek.common.Entity;
 import megamek.common.Mech;
+import megamek.common.Tank;
+import megamek.common.VTOL;
 
-public class IView extends JPanel{
+public class IView extends JPanel {
 
     /**
      *
      */
     private static final long serialVersionUID = -6741722012756653309L;
-    public Mech unit;
-    public IView(Mech unit) {
-        this.unit  = unit;
-    }
+    public Entity unit;
 
-    public void updateMech(Mech unit) {
+    public IView(Mech unit) {
         this.unit = unit;
     }
 
+    public IView(Tank unit) {
+        this.unit = unit;
+    }
+
+    public void updateUnit(Entity unit) {
+        this.unit = unit;
+    }
+
+    public Mech getMech() {
+        return (Mech) unit;
+    }
+
+    public Tank getTank() {
+        return (Tank) unit;
+    }
+
+    public VTOL getVTOL() {
+        return (VTOL) unit;
+    }
+
+    public Aero getAero() {
+        return (Aero) unit;
+    }
+
+    public BattleArmor getBA() {
+        return (BattleArmor) unit;
+    }
 }

@@ -158,7 +158,7 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadHeatSinks() {
-        int engineHeatSinks = UnitUtil.getBaseChassisHeatSinks(unit);
+        int engineHeatSinks = UnitUtil.getBaseChassisHeatSinks(getMech());
         for (Mounted mount : unit.getMisc()) {
 
             if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK))) {
@@ -179,7 +179,6 @@ public class EquipmentView extends IView implements ActionListener {
             if ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK))) {
                 try {
                     equipmentList.removeCrit(location);
-                    equipmentList.refreshModel();
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     return;
                 } catch (Exception ex) {
@@ -194,8 +193,7 @@ public class EquipmentView extends IView implements ActionListener {
     public void refresh() {
         removeAllListeners();
         loadEquipmentCombo();
-        removeHeatSinks();
-        loadHeatSinks();
+        updateEquipment();
         addAllListeners();
         fireTableRefresh();
     }
@@ -222,11 +220,11 @@ public class EquipmentView extends IView implements ActionListener {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
             if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TSM)) {
-                if (!unit.hasTSM()) {
+                if (!getMech().hasTSM()) {
                     createSpreadMounts(UnitUtil.TSM);
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.INDUSTRIALTSM)) {
-                if (!unit.hasIndustrialTSM()) {
+                if (!getMech().hasIndustrialTSM()) {
                     createSpreadMounts(UnitUtil.INDUSTRIALTSM);
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.ENVIROSEAL)) {
@@ -234,15 +232,15 @@ public class EquipmentView extends IView implements ActionListener {
                     createSpreadMounts(UnitUtil.ENVIROSEAL);
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.NULLSIG)) {
-                if (!unit.hasNullSig()) {
+                if (!getMech().hasNullSig()) {
                     createSpreadMounts(UnitUtil.NULLSIG);
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.VOIDSIG)) {
-                if (!unit.hasVoidSig()) {
+                if (!getMech().hasVoidSig()) {
                     createSpreadMounts(UnitUtil.VOIDSIG);
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TRACKS)) {
-                if (!unit.hasTracks()) {
+                if (!getMech().hasTracks()) {
                     createSpreadMounts(UnitUtil.TRACKS);
                 }
             } else if (equipmentCombo.getSelectedItem().toString().startsWith(UnitUtil.TARGETINGCOMPUTER)) {
@@ -250,16 +248,16 @@ public class EquipmentView extends IView implements ActionListener {
 
                     boolean isClan = false;
                     if (unit.isMixedTech()) {
-                        String tcType =equipmentCombo.getSelectedItem().toString().trim();
-                        if ( (tcType.endsWith("(Clan)") && !unit.isClan()) || (unit.isClan() && !tcType.endsWith("(IS)"))) {
+                        String tcType = equipmentCombo.getSelectedItem().toString().trim();
+                        if ((tcType.endsWith("(Clan)") && !unit.isClan()) || (unit.isClan() && !tcType.endsWith("(IS)"))) {
                             isClan = true;
                         }
                     }
-                    UnitUtil.updateTC(unit, isClan);
+                    UnitUtil.updateTC(getMech(), isClan);
                 }
             } else {
                 try {
-                    unit.addEquipment(new Mounted(unit, equipmentTypes.elementAt(equipmentCombo.getSelectedIndex())), Entity.LOC_NONE, false);
+                    getMech().addEquipment(new Mounted(unit, equipmentTypes.elementAt(equipmentCombo.getSelectedIndex())), Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -284,6 +282,13 @@ public class EquipmentView extends IView implements ActionListener {
         fireTableRefresh();
     }
 
+    public void updateEquipment() {
+        removeHeatSinks();
+        equipmentList.removeAllCrits();
+        loadHeatSinks();
+        loadEquipmentTable();
+    }
+
     public void removeAllEquipment() {
         removeHeatSinks();
         for (int count = 0; count < equipmentList.getRowCount(); count++) {
@@ -294,7 +299,7 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateMech(unit);
+        equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
         equipmentScroll.repaint();
@@ -336,7 +341,7 @@ public class EquipmentView extends IView implements ActionListener {
             tonnageAmount /= 8;
         }
         if (equip.equals(UnitUtil.TRACKS) && (crits > 1)) {
-            tonnageAmount = EquipmentType.get(equip).getTonnage(unit)/EquipmentType.get(equip).getCriticals(unit);
+            tonnageAmount = EquipmentType.get(equip).getTonnage(unit) / EquipmentType.get(equip).getCriticals(unit);
         }
 
         for (; crits > 0; crits--) {
@@ -344,9 +349,9 @@ public class EquipmentView extends IView implements ActionListener {
                 if ((equip.equals(UnitUtil.ENVIROSEAL) || equip.equals(UnitUtil.TRACKS)) && (crits > 1)) {
                     Mounted mount = new Mounted(unit, EquipmentType.get(equip));
                     mount.getType().setTonnage(tonnageAmount);
-                    unit.addEquipment(mount, Entity.LOC_NONE, false);
-                } else{
-                    unit.addEquipment(new Mounted(unit, EquipmentType.get(equip)), Entity.LOC_NONE, false);
+                    getMech().addEquipment(mount, Entity.LOC_NONE, false);
+                } else {
+                    getMech().addEquipment(new Mounted(unit, EquipmentType.get(equip)), Entity.LOC_NONE, false);
                 }
             } catch (Exception ex) {
 

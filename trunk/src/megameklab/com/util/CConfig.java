@@ -30,7 +30,7 @@ import java.util.Properties;
  */
 public class CConfig {
 
-    //VARIABLES
+    // VARIABLES
     public static final String CONFIG_FILE = "./data/config.txt";
     public static final String CONFIG_BACKUP_FILE = "./data/config.txt.bak";
 
@@ -54,36 +54,35 @@ public class CConfig {
     public static final String CONFIG_EMPTY_FOREGROUND = "Empty-Foreground";
     public static final String CONFIG_EMPTY_BACKGROUND = "Empty-Background";
 
-    private Properties config;//config. player values.
+    private static Properties config;// config. player values.
 
-    //CONSTRUCTOR
+    // CONSTRUCTOR
     public CConfig() {
 
         config = setDefaults();
-        //check to see if a config is present. if not, make one.
-        if ( !(new File(CONFIG_FILE).exists()) && !(new File(CONFIG_BACKUP_FILE).exists()) ) {
+        // check to see if a config is present. if not, make one.
+        if (!(new File(CONFIG_FILE).exists()) && !(new File(CONFIG_BACKUP_FILE).exists())) {
             createConfig();
         }
 
-        loadConfigFile();
+        CConfig.loadConfigFile();
     }
 
-    //METHODS
+    // METHODS
     /**
-     * Private method that loads hardcoded defaults. These are loaded
-     * before the players config values, adding any new configs in their
-     * default position and ensuring that no config value is even missing.
+     * Private method that loads hardcoded defaults. These are loaded before the
+     * players config values, adding any new configs in their default position
+     * and ensuring that no config value is even missing.
      */
     private Properties setDefaults() {
         Properties defaults = new Properties();
 
-        //Window Locations
+        // Window Locations
         defaults.setProperty("WINDOWSTATE", "0");
         defaults.setProperty("WINDOWHEIGHT", "600");
         defaults.setProperty("WINDOWWIDTH", "800");
         defaults.setProperty("WINDOWLEFT", "0");
         defaults.setProperty("WINDOWTOP", "0");
-
 
         return defaults;
     }
@@ -91,7 +90,7 @@ public class CConfig {
     /**
      * Loads the Config file.
      */
-    public void loadConfigFile() {
+    public static void loadConfigFile() {
         try {
             File configfile = new File(CONFIG_FILE);
             FileInputStream fis = new FileInputStream(configfile);
@@ -127,7 +126,7 @@ public class CConfig {
         }
     }
 
-    //Creates a new config file
+    // Creates a new config file
     public void createConfig() {
         try {
             FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
@@ -143,7 +142,7 @@ public class CConfig {
     /**
      * Get a config value.
      */
-    public String getParam(String param) {
+    public static String getParam(String param) {
         String tparam = null;
 
         if (param.endsWith(":")) {
@@ -159,15 +158,15 @@ public class CConfig {
     /**
      * Set a config value.
      */
-    public void setParam(String param, String value) {
+    public static void setParam(String param, String value) {
         config.setProperty(param, value);
     }
 
     /**
      * See if a paramater is enabled (YES, TRUE or ON).
      */
-    public boolean isParam(String param) {
-        String tparam = getParam(param);
+    public static boolean isParam(String param) {
+        String tparam = CConfig.getParam(param);
         if (tparam.equalsIgnoreCase("YES") || tparam.equalsIgnoreCase("TRUE") || tparam.equalsIgnoreCase("ON")) {
             return true;
         }
@@ -175,14 +174,13 @@ public class CConfig {
     }
 
     /**
-     * Return the int value of a given config property. Return
-     * a 0 if the property is a non-number. Used mostly by the
-     * misc. mail tab checks.
+     * Return the int value of a given config property. Return a 0 if the
+     * property is a non-number. Used mostly by the misc. mail tab checks.
      */
-    public int getIntParam(String param) {
+    public static int getIntParam(String param) {
         int toReturn;
         try {
-            toReturn = Integer.parseInt(getParam(param));
+            toReturn = Integer.parseInt(CConfig.getParam(param));
         } catch (Exception ex) {
             return 0;
         }
@@ -192,54 +190,54 @@ public class CConfig {
     /**
      * Write the config file out to ./data/mwconfig.txt.
      */
-    public void saveConfig() {
+    public static void saveConfig() {
 
         try {
 
             FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE);
             PrintStream ps = new PrintStream(fos);
-            config.store(ps,"Client Config Backup");
+            config.store(ps, "Client Config Backup");
             fos.close();
             ps.close();
-        }catch (FileNotFoundException fnfe){
+        } catch (FileNotFoundException fnfe) {
 
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return;
         }
         try {
             FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
             PrintStream ps = new PrintStream(fos);
-            config.store(ps,"Client Config");
+            config.store(ps, "Client Config");
             fos.close();
             ps.close();
-        }catch (FileNotFoundException fnfe){
+        } catch (FileNotFoundException fnfe) {
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public Color getForegroundColor(String fieldName) {
+    public static Color getForegroundColor(String fieldName) {
         Color masterColor = Color.black;
 
         try {
-            masterColor = Color.getColor("", Integer.parseInt(getParam(fieldName + CConfig.CONFIG_FOREGROUND)));
+            masterColor = Color.getColor("", Integer.parseInt(CConfig.getParam(fieldName + CConfig.CONFIG_FOREGROUND)));
         } catch (Exception ex) {
 
         }
         return masterColor;
     }
 
-    public Color getBackgroundColor(String fieldName) {
+    public static Color getBackgroundColor(String fieldName) {
         Color masterColor = Color.WHITE;
 
         try {
-            masterColor = Color.getColor("", Integer.parseInt(getParam(fieldName + CConfig.CONFIG_BACKGROUND)));
+            masterColor = Color.getColor("", Integer.parseInt(CConfig.getParam(fieldName + CConfig.CONFIG_BACKGROUND)));
         } catch (Exception ex) {
 
         }
-            return masterColor;
+        return masterColor;
     }
 
 }

@@ -26,11 +26,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import megamek.common.AmmoType;
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
-import megameklab.com.ui.Mek.MainUI;
 
 public class CriticalTableModel extends AbstractTableModel {
 
@@ -41,7 +40,8 @@ public class CriticalTableModel extends AbstractTableModel {
 
     public EquipmentType[] sortedEquipment = {};
     public Vector<EquipmentType> crits = new Vector<EquipmentType>();
-    public Mech unit;
+    public Entity unit;
+
     public final static int NAME = 0;
     public final static int TONNAGE = 1;
     public final static int CRITS = 2;
@@ -62,8 +62,9 @@ public class CriticalTableModel extends AbstractTableModel {
         return columnNames.length;
     }
 
-    public CriticalTableModel(Mech unit, int tableType) {
+    public CriticalTableModel(Entity unit, int tableType) {
         this.tableType = tableType;
+
         if (tableType == WEAPONTABLE) {
             longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", };
             columnNames = new String[] { "Name", "Tons", "Crits", "Heat", };
@@ -71,7 +72,7 @@ public class CriticalTableModel extends AbstractTableModel {
         this.unit = unit;
     }
 
-    public void updateMech(Mech unit) {
+    public void updateUnit(Entity unit) {
         this.unit = unit;
     }
 
@@ -184,8 +185,8 @@ public class CriticalTableModel extends AbstractTableModel {
             } else if (eq instanceof AmmoType) {
                 equipmentType = CConfig.CONFIG_AMMO;
             }
-            c.setBackground(MainUI.config.getBackgroundColor(equipmentType));
-            c.setForeground(MainUI.config.getForegroundColor(equipmentType));
+            c.setBackground(CConfig.getBackgroundColor(equipmentType));
+            c.setForeground(CConfig.getForegroundColor(equipmentType));
             return c;
         }
     }

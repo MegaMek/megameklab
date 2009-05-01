@@ -30,9 +30,9 @@ import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.loaders.MtfFile;
-import megameklab.com.util.DropTargetCriticalList;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
+import megameklab.com.util.Mech.DropTargetCriticalList;
 
 public class CriticalView extends IView {
 
@@ -88,7 +88,7 @@ public class CriticalView extends IView {
         this.add(mainPanel);
     }
 
-    public void updateRefresh(RefreshListener refresh){
+    public void updateRefresh(RefreshListener refresh) {
         this.refresh = refresh;
     }
 
@@ -114,16 +114,16 @@ public class CriticalView extends IView {
                             critNames.add(MtfFile.EMPTY);
                         }
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                        critNames.add(unit.getSystemName(cs.getIndex()));
+                        critNames.add(getMech().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         try {
                             Mounted m = cs.getMount();
-                            //Critical didn't get removed.  Remove it now.
-                            if ( m == null ) {
+                            // Critical didn't get removed. Remove it now.
+                            if (m == null) {
 
                                 m = unit.getEquipment(cs.getIndex());
 
-                                if ( m == null ) {
+                                if (m == null) {
                                     unit.setCritical(location, slot, null);
                                     if (showEmpty) {
                                         critNames.add(MtfFile.EMPTY);
@@ -137,13 +137,13 @@ public class CriticalView extends IView {
                                 critName.setLength(25);
                                 critName.append("...");
                             }
-                            if ( m.isRearMounted() ){
+                            if (m.isRearMounted()) {
                                 critName.append("(R)");
                             }
 
                             critNames.add(critName.toString());
 
-                        }catch (Exception ex) {
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -151,16 +151,15 @@ public class CriticalView extends IView {
                 if (critNames.size() == 0) {
                     critNames.add(MtfFile.EMPTY);
                 }
-                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(critNames, unit, refresh, showEmpty);
+                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(critNames, getMech(), refresh, showEmpty);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                criticalSlotList.setFont(new Font("Arial",Font.PLAIN,10));
+                criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
                 criticalSlotList.setName(Integer.toString(location));
                 criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
                 switch (location) {
                 case Mech.LOC_HEAD:
                     headPanel.add(criticalSlotList);
-                    headPanel.repaint();
                     break;
                 case Mech.LOC_LARM:
                     if (unit instanceof QuadMech) {
@@ -169,7 +168,6 @@ public class CriticalView extends IView {
                         laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Left Arm"));
                     }
                     laPanel.add(criticalSlotList);
-                    laPanel.repaint();
                     break;
                 case Mech.LOC_RARM:
                     if (unit instanceof QuadMech) {
@@ -178,19 +176,15 @@ public class CriticalView extends IView {
                         raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Right Arm"));
                     }
                     raPanel.add(criticalSlotList);
-                    raPanel.repaint();
                     break;
                 case Mech.LOC_CT:
                     ctPanel.add(criticalSlotList);
-                    ctPanel.repaint();
                     break;
                 case Mech.LOC_LT:
                     ltPanel.add(criticalSlotList);
-                    ltPanel.repaint();
                     break;
                 case Mech.LOC_RT:
                     rtPanel.add(criticalSlotList);
-                    rtPanel.repaint();
                     break;
                 case Mech.LOC_LLEG:
                     if (unit instanceof QuadMech) {
@@ -199,7 +193,6 @@ public class CriticalView extends IView {
                         llPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Leg"));
                     }
                     llPanel.add(criticalSlotList);
-                    llPanel.repaint();
                     break;
                 case Mech.LOC_RLEG:
                     if (unit instanceof QuadMech) {
@@ -208,10 +201,17 @@ public class CriticalView extends IView {
                         rlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Leg"));
                     }
                     rlPanel.add(criticalSlotList);
-                    rlPanel.repaint();
                     break;
                 }
             }
+            ctPanel.repaint();
+            raPanel.repaint();
+            headPanel.repaint();
+            laPanel.repaint();
+            ltPanel.repaint();
+            rtPanel.repaint();
+            llPanel.repaint();
+            rlPanel.repaint();
         }
     }
 }

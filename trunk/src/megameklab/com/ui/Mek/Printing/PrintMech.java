@@ -297,7 +297,7 @@ public class PrintMech implements Printable {
 
             g2d.drawString(sourceFluff, 138, nextDataLine);
 
-            font = UnitUtil.deriveFont(8.0f);
+            font = UnitUtil.getNewFont(g2d, mech.getSource(), false, 52, 8.0f);
             g2d.setFont(font);
 
             g2d.drawString(mech.getSource(), 177, nextDataLine);
@@ -1650,9 +1650,8 @@ public class PrintMech implements Printable {
         if (!mech.hasShield()) {
             return;
         }
-        g2d.setStroke(new BasicStroke(.5f));
-        float[] DCColumn = { 390, 32f };
-        float[] lineFeed = { 5, 6f };
+        int[] DCColumn = { 390, 32 };
+        int[] lineFeed = { 5, 6 };
         int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM);
         int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_LARM);
 
@@ -1667,8 +1666,8 @@ public class PrintMech implements Printable {
             }
         }
 
-        float[] DAColumn = { 387, 82.5f };
-        lineFeed = new float[] { 4f, ImageHelper.getDiamondSize(g2d) };
+        int[] DAColumn = { 387, 82 };
+        lineFeed = new int[] { 4, 6 };
 
         for (int pos = 1; pos <= DA; pos++) {
             ImageHelper.drawDiamond(g2d, DAColumn[0], DAColumn[1]);
@@ -1689,9 +1688,9 @@ public class PrintMech implements Printable {
         if (!mech.hasShield()) {
             return;
         }
-        g2d.setStroke(new BasicStroke(.5f));
-        float[] DCColumn = { 562, 32f };
-        float[] lineFeed = { -5, 6f };
+        // g2d.setStroke(new BasicStroke(.5f));
+        int[] DCColumn = { 562, 32 };
+        int[] lineFeed = { -5, 6 };
         int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM);
         int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_RARM);
 
@@ -1707,8 +1706,8 @@ public class PrintMech implements Printable {
             }
         }
 
-        float[] DAColumn = { 565, 82.5f };
-        lineFeed = new float[] { -4, ImageHelper.getDiamondSize(g2d) };
+        int[] DAColumn = { 565, 82 };
+        lineFeed = new int[] { -4, 6 };
 
         for (int pos = 1; pos <= DA; pos++) {
             ImageHelper.drawDiamond(g2d, DAColumn[0], DAColumn[1]);

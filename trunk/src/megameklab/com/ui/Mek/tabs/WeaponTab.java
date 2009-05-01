@@ -19,12 +19,12 @@ package megameklab.com.ui.Mek.tabs;
 import javax.swing.SpringLayout;
 
 import megamek.common.Mech;
+import megameklab.com.ui.Mek.views.WeaponView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
-import megameklab.com.ui.Mek.views.WeaponView;
 
-public class WeaponTab extends ITab{
+public class WeaponTab extends ITab {
 
     /**
      * 
@@ -32,19 +32,19 @@ public class WeaponTab extends ITab{
     private static final long serialVersionUID = 3978675469713289404L;
     private WeaponView weapon;
     private RefreshListener refresh;
-    
-    public WeaponTab(Mech unit){
+
+    public WeaponTab(Mech unit) {
         this.unit = unit;
-        this.weapon = new WeaponView(unit);
-        this.setLayout(new SpringLayout());
+        weapon = new WeaponView(unit);
+        setLayout(new SpringLayout());
         this.add(weapon);
-        SpringLayoutHelper.setupSpringGrid(this,1);
-        
+        SpringLayoutHelper.setupSpringGrid(this, 1);
+
         refresh();
     }
 
     public void refresh() {
-        weapon.updateMech(unit);
+        weapon.updateUnit(unit);
         weapon.refresh();
     }
 
@@ -53,8 +53,8 @@ public class WeaponTab extends ITab{
         weapon.addRefreshedListener(refresh);
     }
 
-    public WeaponView getView(){
+    public WeaponView getView() {
         return weapon;
     }
-    
+
 }
