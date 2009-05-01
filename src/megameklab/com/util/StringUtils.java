@@ -40,9 +40,11 @@ import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MGWeapon;
 import megamek.common.weapons.MRMWeapon;
+import megamek.common.weapons.NarcWeapon;
 import megamek.common.weapons.PulseLaserWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
+import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 
 public class StringUtils {
@@ -95,14 +97,19 @@ public class StringUtils {
                 } else if (weapon instanceof ArtilleryWeapon) {
                     info = Integer.toString(weapon.getRackSize());
                     info += "[AE,S,F]";
+                } else if (weapon instanceof ThunderBoltWeapon) {
+                    info = Integer.toString(weapon.getRackSize());
+                    info += "[M]";
+                } else if (weapon instanceof NarcWeapon) {
+                    info = "[M]";
                 } else {
                     info = Integer.toString(weapon.getRackSize());
                 }
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R,C]";
-            }
-            else {
+            } else {
+
                 info = Integer.toString(weapon.getDamage());
                 info += " [";
 
@@ -151,11 +158,14 @@ public class StringUtils {
 
             }
         } else if (mount.getType() instanceof MiscType && (mount.getType().hasFlag(MiscType.F_CLUB) || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
-            info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false));
+            if (mount.getType().hasSubType(MiscType.S_CLAW) || mount.getType().hasSubType(MiscType.S_CLAW_THB)) {
+                info = Integer.toString((int) Math.ceil(unit.getWeight() / 7.0));
+            } else {
+                info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false));
+            }
         } else if (mount.getType() instanceof MiscType && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
             info = "[PD,OS,AI]";
-        }
-                else {
+        } else {
             info = "  [E]";
         }
         return info;

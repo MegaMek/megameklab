@@ -20,9 +20,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
@@ -30,10 +28,7 @@ import javax.swing.TransferHandler;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
-import megamek.common.Mech;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.QuadMech;
 
 public class CriticalTransferHandler extends TransferHandler {
 
@@ -41,11 +36,11 @@ public class CriticalTransferHandler extends TransferHandler {
      *
      */
     private static final long serialVersionUID = -5215375829853683877L;
-    private Mech unit;
+    private Entity unit;
     private int location;
     private RefreshListener refresh;
 
-    public CriticalTransferHandler(Mech unit, RefreshListener refresh) {
+    public CriticalTransferHandler(Entity unit, RefreshListener refresh) {
         this.unit = unit;
         this.refresh = refresh;
     }
@@ -65,111 +60,9 @@ public class CriticalTransferHandler extends TransferHandler {
 
                 Mounted eq = UnitUtil.getMounted(unit, mountName);
 
-                if (eq.getType() instanceof MiscType && (eq.getType().hasFlag(MiscType.F_CLUB) || eq.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
-                    if (unit instanceof QuadMech) {
-                        JOptionPane.showMessageDialog(null, "Quads Cannot use Physcial Weapons!", "Not Physicals For Quads", JOptionPane.INFORMATION_MESSAGE);
-                        return false;
-                    }
-
-                    if (location != Mech.LOC_RARM && location != Mech.LOC_LARM) {
-                        JOptionPane.showMessageDialog(null, "Physical Weapons can only go in the arms!", "Bad Location", JOptionPane.INFORMATION_MESSAGE);
-                        return false;
-                    }
-                }
-
                 int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
-                if ((eq.getType().isSpreadable() || eq.isSplitable()) && totalCrits > 1) {
-                    int critsUsed = 0;
-                    int primaryLocation = location;
-                    int nextLocation = unit.getTransferLocation(location);
-                    int emptyCrits = unit.getEmptyCriticals(location);
-
-                    if (eq.getType().getCriticals(unit) > unit.getEmptyCriticals(location)) {
-                        if (location == Mech.LOC_RT) {
-                            String[] locations = { "Center Torso", "Right Leg", "Right Arm" };
-                            JComboBox combo = new JComboBox(locations);
-                            JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-
-                            JDialog dlg = jop.createDialog("Select secondary location.");
-                            combo.grabFocus();
-                            combo.getEditor().selectAll();
-
-                            dlg.setVisible(true);
-
-                            int value = ((Integer) jop.getValue()).intValue();
-
-                            if (value == JOptionPane.CANCEL_OPTION) {
-                                return false;
-                            }
-
-                            if (combo.getSelectedIndex() == 1) {
-                                nextLocation = Mech.LOC_RLEG;
-                            } else if (combo.getSelectedIndex() == 2) {
-                                nextLocation = Mech.LOC_RARM;
-                            }
-
-                        } else if (location == Mech.LOC_LT) {
-                            String[] locations = { "Center Torso", "Left Leg", "Leg Arm" };
-                            JComboBox combo = new JComboBox(locations);
-                            JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-
-                            JDialog dlg = jop.createDialog("Select secondary location.");
-                            combo.grabFocus();
-                            combo.getEditor().selectAll();
-
-                            dlg.setVisible(true);
-
-                            int value = ((Integer) jop.getValue()).intValue();
-
-                            if (value == JOptionPane.CANCEL_OPTION) {
-                                return false;
-                            }
-
-                            if (combo.getSelectedIndex() == 1) {
-                                nextLocation = Mech.LOC_LLEG;
-                            } else if (combo.getSelectedIndex() == 2) {
-                                nextLocation = Mech.LOC_LARM;
-                            }
-
-                        } else if (location == Mech.LOC_CT) {
-                            String[] locations = { "Left Torso", "Right Torso" };
-                            JComboBox combo = new JComboBox(locations);
-                            JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-
-                            JDialog dlg = jop.createDialog(null, "Select secondary location.");
-                            combo.grabFocus();
-                            combo.getEditor().selectAll();
-
-                            dlg.setVisible(true);
-
-                            int value = ((Integer) jop.getValue()).intValue();
-
-                            if (value == JOptionPane.CANCEL_OPTION) {
-                                return false;
-                            }
-
-                            if (combo.getSelectedIndex() == 1) {
-                                nextLocation = Mech.LOC_RT;
-                            } else {
-                                nextLocation = Mech.LOC_LT;
-                            }
-                        }
-                    }
-                    // No big splitables in the head!
-                    if (emptyCrits < totalCrits && (nextLocation == Entity.LOC_DESTROYED || (unit.getEmptyCriticals(location) + unit.getEmptyCriticals(nextLocation) < totalCrits))) {
-                        throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());
-                    }
-                    for (; critsUsed < totalCrits; critsUsed++) {
-                        unit.addEquipment(eq, location, false);
-                        if (unit.getEmptyCriticals(location) == 0) {
-                            location = nextLocation;
-                            totalCrits -= critsUsed;
-                            critsUsed = 0;
-                        }
-                    }
-                    changeMountStatus(eq, primaryLocation, nextLocation, false);
-                } else if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
-                    unit.addEquipment(eq, location, false);
+                if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
+                    // unit.addEquipment(eq.getType(), location, false);
                     changeMountStatus(eq, location, false);
                 } else {
                     throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());

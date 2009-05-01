@@ -55,7 +55,7 @@ public class StatusBar extends ITab {
     public StatusBar(Mech unit) {
         this.unit = unit;
 
-        testEntity = new TestMech(unit, entityVerifier.mechOption, null);
+        testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
         setLayout(new SpringLayout());
         this.add(movementPanel());
         this.add(bvPanel());
@@ -67,9 +67,9 @@ public class StatusBar extends ITab {
     }
 
     public JPanel movementPanel() {
-        int walk = unit.getOriginalWalkMP();
-        int run = unit.getOriginalRunMPwithoutMASC();
-        int jump = unit.getOriginalJumpMP();
+        int walk = getMech().getOriginalWalkMP();
+        int run = getMech().getOriginalRunMPwithoutMASC();
+        int jump = getMech().getOriginalJumpMP();
 
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
         movementPanel.add(move);
@@ -77,7 +77,7 @@ public class StatusBar extends ITab {
     }
 
     public JPanel bvPanel() {
-        int bv = unit.calculateBattleValue();
+        int bv = getMech().calculateBattleValue();
         bvLabel.setText("BV: " + bv);
         bvPanel.add(bvLabel);
 
@@ -85,11 +85,11 @@ public class StatusBar extends ITab {
     }
 
     public JPanel tonnagePanel() {
-        float tonnage = unit.getWeight();
+        float tonnage = getMech().getWeight();
         float currentTonnage;
 
         currentTonnage = testEntity.calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tonnagePanel.add(tons);
@@ -98,7 +98,7 @@ public class StatusBar extends ITab {
     }
 
     public JPanel heatPanel() {
-        int heat = unit.heatSinks();
+        int heat = getMech().heatSinks();
 
         heatSink.setText("Heat: 0/" + heat);
         heatPanel.add(heatSink);
@@ -108,36 +108,35 @@ public class StatusBar extends ITab {
 
     public void refresh() {
 
-        int walk = unit.getOriginalWalkMP();
-        int run = unit.getOriginalRunMPwithoutMASC();
-        int jump = unit.getOriginalJumpMP();
-        int heat = unit.getNumberOfSinks();
-        float tonnage = unit.getWeight();
+        int walk = getMech().getOriginalWalkMP();
+        int run = getMech().getOriginalRunMPwithoutMASC();
+        int jump = getMech().getOriginalJumpMP();
+        int heat = getMech().getNumberOfSinks();
+        float tonnage = getMech().getWeight();
         float currentTonnage;
-        int bv = unit.calculateBattleValue();
+        int bv = getMech().calculateBattleValue();
 
-
-        testEntity = new TestMech(unit, entityVerifier.mechOption, null);
+        testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
 
         currentTonnage = testEntity.calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
 
         double totalHeat = calculateTotalHeat();
-        if ( unit.hasDoubleHeatSinks() ){
-            heat*=2;
+        if (getMech().hasDoubleHeatSinks()) {
+            heat *= 2;
         }
 
-        heatSink.setText("Heat: "+totalHeat+"/" + heat);
+        heatSink.setText("Heat: " + totalHeat + "/" + heat);
         heatSink.setToolTipText("Total Heat Generated/Total Heat Dissipated");
-        if ( totalHeat > heat ){
+        if (totalHeat > heat) {
             heatSink.setForeground(Color.red);
-        }else{
+        } else {
             heatSink.setForeground(Color.black);
         }
 
-        tons.setText("Tonnage: " +currentTonnage+"/"+ tonnage);
+        tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tons.setToolTipText("Current Tonnage/Max Tonnage");
-        if ( currentTonnage > tonnage ) {
+        if (currentTonnage > tonnage) {
             tons.setForeground(Color.red);
         } else {
             tons.setForeground(Color.black);
@@ -149,47 +148,42 @@ public class StatusBar extends ITab {
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
         move.setToolTipText("Walk/Run/Jump MP");
 
-
     }
 
-    public double calculateTotalHeat(){
+    public double calculateTotalHeat() {
         double heat = 0;
 
-        if ( unit.getOriginalJumpMP() > 0 ){
-            if ( unit.getJumpType() == Mech.JUMP_IMPROVED ) {
-                heat += Math.max(3, unit.getOriginalJumpMP()/2 );
-            } else if ( unit.getJumpType() != Mech.JUMP_BOOSTER ) {
-                heat += Math.max(3, unit.getOriginalJumpMP() );
+        if (getMech().getOriginalJumpMP() > 0) {
+            if (getMech().getJumpType() == Mech.JUMP_IMPROVED) {
+                heat += Math.max(3, getMech().getOriginalJumpMP() / 2);
+            } else if (getMech().getJumpType() != Mech.JUMP_BOOSTER) {
+                heat += Math.max(3, getMech().getOriginalJumpMP());
             }
-            if (unit.getEngine().getEngineType() == Engine.XXL_ENGINE) {
+            if (getMech().getEngine().getEngineType() == Engine.XXL_ENGINE) {
                 heat *= 2;
             }
-        } else if ( unit.getEngine().getEngineType() == Engine.XXL_ENGINE ){
+        } else if (getMech().getEngine().getEngineType() == Engine.XXL_ENGINE) {
             heat += 6;
-        }
-        else{
+        } else {
             heat += 2;
         }
 
-        for (Mounted mounted : unit.getWeaponList()) {
+        for (Mounted mounted : getMech().getWeaponList()) {
             WeaponType wtype = (WeaponType) mounted.getType();
             double weaponHeat = wtype.getHeat();
 
             // only count non-damaged equipment
-            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed()
-                    || mounted.isBreached()) {
+            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed() || mounted.isBreached()) {
                 continue;
             }
 
             // one shot weapons count 1/4
-            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER)
-                    || wtype.hasFlag(WeaponType.F_ONESHOT)) {
+            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER) || wtype.hasFlag(WeaponType.F_ONESHOT)) {
                 weaponHeat *= 0.25;
             }
 
             // double heat for ultras
-            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA)
-                    || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA) || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
                 weaponHeat *= 2;
             }
 
@@ -199,9 +193,7 @@ public class StatusBar extends ITab {
             }
 
             // half heat for streaks
-            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
-                    || (wtype.getAmmoType() == AmmoType.T_MRM_STREAK)
-                    || (wtype.getAmmoType() == AmmoType.T_LRM_STREAK)) {
+            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK) || (wtype.getAmmoType() == AmmoType.T_MRM_STREAK) || (wtype.getAmmoType() == AmmoType.T_LRM_STREAK)) {
                 weaponHeat *= 0.5;
             }
             heat += weaponHeat;

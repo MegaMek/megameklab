@@ -112,7 +112,8 @@ public class PrintAero implements Printable {
 
             g2d.drawString(sourceFluff, 138, 155);
 
-            font = UnitUtil.deriveFont(8.0f);
+            font = UnitUtil.getNewFont(g2d, aero.getSource(), false, 52, 8.0f);
+
             g2d.setFont(font);
 
             g2d.drawString(aero.getSource(), 177, 155);
