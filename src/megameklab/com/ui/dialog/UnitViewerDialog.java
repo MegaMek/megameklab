@@ -91,7 +91,6 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
     private MechSummary[] mechsCurrent;
     private UnitLoadingDialog unitLoadingDialog;
-    private CConfig config = null;
 
     private StringBuilder m_sbSearch = new StringBuilder();
     private long m_nLastSearch = 0;
@@ -102,6 +101,8 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
     private JComboBox chWeightClass = new JComboBox();
     private JLabel labelSort = new JLabel("Sort: ", SwingConstants.RIGHT);
     private JComboBox chSort = new JComboBox();
+    private JLabel labelUnit = new JLabel("Unit: ", SwingConstants.RIGHT);
+    private JComboBox chUnit = new JComboBox();
     private JPanel pParams = new JPanel();
     private JPanel textBoxSpring = new JPanel(new SpringLayout());
     private JPanel springHolder = new JPanel(new SpringLayout());
@@ -158,7 +159,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
     Entity selectedUnit = null;
 
-    public UnitViewerDialog(JFrame frame, UnitLoadingDialog uld, int unitType, CConfig config) {
+    public UnitViewerDialog(JFrame frame, UnitLoadingDialog uld, int unitType) {
 
         super(frame, "Unit Selector", true);
 
@@ -166,7 +167,6 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         nUnitType = unitType;
 
         // save params
-        this.config = config;
         unitLoadingDialog = uld;
         viewFluff = false;
 
@@ -225,6 +225,11 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
         // lay out the combo boxes
         pParams.setLayout(new GridLayout(4, 2));
+
+        if (unitType == -1) {
+            pParams.add(labelUnit);
+            pParams.add(chUnit);
+        }
         pParams.add(labelWeightClass);
         pParams.add(chWeightClass);
         pParams.add(labelType);
@@ -247,6 +252,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         chWeightClass.addItemListener(this);
         chType.addItemListener(this);
         chSort.addItemListener(this);
+        chUnit.addItemListener(this);
         mechList.addListSelectionListener(this);
         mechList.addKeyListener(this);
         bCancel.addActionListener(this);
@@ -273,7 +279,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         }
 
         try {
-            String previousIndex = config.getParam("UNITVIEWERUNIT");
+            String previousIndex = CConfig.getParam("UNITVIEWERUNIT");
             mechList.setSelectedValue(previousIndex, true);
         } catch (Exception e) {
             mechList.setSelectedIndex(-1);
@@ -350,20 +356,20 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
     }
 
     private void populateJComboBoxs() {
-        String weight = config.getParam("UNITVIEWERWEIGHT");
+        String weight = CConfig.getParam("UNITVIEWERWEIGHT");
         chWeightClass.setSelectedItem(weight);
-        String tech = config.getParam("UNITVIEWERTECH");
+        String tech = CConfig.getParam("UNITVIEWERTECH");
         chType.setSelectedItem(tech);
     }
 
     private void saveComboBoxSettings() {
 
-        config.setParam("UNITVIEWERWEIGHT", (String) chWeightClass.getSelectedItem());
-        config.setParam("UNITVIEWERTECH", (String) chType.getSelectedItem());
+        CConfig.setParam("UNITVIEWERWEIGHT", (String) chWeightClass.getSelectedItem());
+        CConfig.setParam("UNITVIEWERTECH", (String) chType.getSelectedItem());
         if (mechList.getSelectedValue() != null) {
-            config.setParam("UNITVIEWERUNIT", mechList.getSelectedValue().toString());
+            CConfig.setParam("UNITVIEWERUNIT", mechList.getSelectedValue().toString());
         }
-        config.saveConfig();
+        CConfig.saveConfig();
     }
 
     private void filterMechs() {
@@ -376,6 +382,11 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
         int nType = chType.getSelectedIndex();
         int nClass = chWeightClass.getSelectedIndex();
+        int nUnit = nUnitType;
+
+        if (nUnit == -1) {
+            nUnit = chUnit.getSelectedIndex();
+        }
 
         MechSummary[] mechs = MechSummaryCache.getInstance().getAllMechs();
 
@@ -388,7 +399,9 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         try {
             for (MechSummary mech : mechs) {
                 /*
-                 * A hacky check which prevents errors units from being added to the unit viewer lists, leaving only "valid" units from the dataset.
+                 * A hacky check which prevents errors units from being added to
+                 * the unit viewer lists, leaving only "valid" units from the
+                 * dataset.
                  */
                 if (mech.getName().startsWith("Error")) {
                     continue;
@@ -399,7 +412,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
                 /*
                  * Technology Level
                  */
-                ((nType == TechConstants.T_ALL) || (nType == mech.getType()) || ((nType == TechConstants.T_IS_TW_ALL) && (mech.getType() <= TechConstants.T_IS_TW_NON_BOX || mech.getType() == TechConstants.T_INTRO_BOXSET)) || (nType == TechConstants.T_TW_ALL && (mech.getType() <= TechConstants.T_IS_TW_NON_BOX || mech.getType() <= TechConstants.T_INTRO_BOXSET || mech.getType() <= TechConstants.T_CLAN_TW))) && (nUnitType == UnitType.SIZE || mech.getUnitType().equals(UnitType.getTypeName(nUnitType)))) {
+                ((nType == TechConstants.T_ALL) || (nType == mech.getType()) || ((nType == TechConstants.T_IS_TW_ALL) && (mech.getType() <= TechConstants.T_IS_TW_NON_BOX || mech.getType() == TechConstants.T_INTRO_BOXSET)) || (nType == TechConstants.T_TW_ALL && (mech.getType() <= TechConstants.T_IS_TW_NON_BOX || mech.getType() <= TechConstants.T_INTRO_BOXSET || mech.getType() <= TechConstants.T_CLAN_TW))) && (nUnit == UnitType.SIZE || mech.getUnitType().equals(UnitType.getTypeName(nUnit)))) {
                     vMechs.add(mech);
                 }
             }
@@ -410,18 +423,18 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         mechsCurrent = new MechSummary[vMechs.size()];
         m_count = vMechs.size();
 
-        if (!calledByAdvancedSearch && (m_old_nType != nType || m_old_nUnitType != nUnitType)) {
+        if (!calledByAdvancedSearch && (m_old_nType != nType || m_old_nUnitType != nUnit)) {
             populateWeaponsAndEquipmentChoices();
         }
         m_old_nType = nType;
-        m_old_nUnitType = nUnitType;
+        m_old_nUnitType = nUnit;
         vMechs.copyInto(mechsCurrent);
         sortMechs();
     }
 
     private void populateChoices() {
 
-        for (int i = 0; i <= EntityWeightClass.WEIGHT_ASSAULT; i++) {
+        for (int i = 0; i < EntityWeightClass.SIZE; i++) {
             chWeightClass.addItem(EntityWeightClass.getClassName(i));
         }
         chWeightClass.addItem("All"); //$NON-NLS-1$
@@ -432,9 +445,11 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         }
         chType.setSelectedIndex(0);
 
-        /*
-         * for (int i = 0; i < UnitType.SIZE; i++) { chUnitType.addItem(UnitType.getTypeDisplayableName(i)); } chUnitType.addItem("All"); //$NON-NLS-1$ chUnitType.setSelectedIndex(0);
-         */
+        for (int i = 0; i < UnitType.SIZE; i++) {
+            chUnit.addItem(UnitType.getTypeDisplayableName(i));
+        }
+        chUnit.setSelectedIndex(0);
+
         m_cWalk.addItem("At Least");
         m_cWalk.addItem("Equal To");
         m_cWalk.addItem("No More Than");
@@ -459,11 +474,16 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         m_tWeapons2.setText("");
         m_chkEquipment.setSelected(false);
         int nType = chType.getSelectedIndex();
-        // int nUnitType = chUnitType.getSelectedIndex();
+        int uType = nUnitType;
+
+        if (nUnitType == -1) {
+            uType = chUnit.getSelectedIndex();
+        }
+
         for (Enumeration<EquipmentType> e = EquipmentType.getAllTypes(); e.hasMoreElements();) {
             EquipmentType et = e.nextElement();
             if (et instanceof WeaponType && (et.getTechLevel() == nType || ((nType == TechConstants.T_ALL) || ((nType == TechConstants.T_IS_TW_ALL) && (et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() == TechConstants.T_INTRO_BOXSET)) || (nType == TechConstants.T_TW_ALL && (et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() <= TechConstants.T_INTRO_BOXSET || et.getTechLevel() <= TechConstants.T_CLAN_TW))))) {
-                if (!(nUnitType == UnitType.SIZE) && ((UnitType.getTypeName(nUnitType).equals("Mek") || UnitType.getTypeName(nUnitType).equals("Tank")) && (et.hasFlag(WeaponType.F_INFANTRY) || et.hasFlag(WeaponType.F_INFANTRY_ONLY)))) {
+                if (!(nUnitType == UnitType.SIZE) && ((UnitType.getTypeName(uType).equals("Mek") || UnitType.getTypeName(uType).equals("Tank")) && (et.hasFlag(WeaponType.F_INFANTRY) || et.hasFlag(WeaponType.F_INFANTRY_ONLY)))) {
                     continue;
                 }
                 m_cWeapons1.addItem(et.getName());
@@ -750,7 +770,8 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         // else
         MechSummary ms = mechsCurrent[selected];
         try {
-            //For some unknown reason the base path gets screwed up after you print so this sets the source file to the full path.
+            // For some unknown reason the base path gets screwed up after you
+            // print so this sets the source file to the full path.
             ms.setSourceFile(new File(ms.getSourceFile().getAbsolutePath()));
             Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName()).getEntity();
             previewMech(entity);
@@ -768,7 +789,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
         if (ie.getSource() == chSort) {
             sortMechs();
-        } else if (ie.getSource() == chWeightClass || ie.getSource() == chType) {
+        } else if (ie.getSource() == chWeightClass || ie.getSource() == chType || ie.getSource() == chUnit) {
             filterMechs();
         }
 
@@ -801,7 +822,12 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         // null entity, so load a default unit.
         if (entity == null) {
             /*
-             * try { MechSummary ms = MechSummaryCache.getInstance().getMech("Error OMG-UR-FD"); selectedUnit = new MechFileParser(ms.getSourceFile(), ms.getEntryName()).getEntity(); populateTextFields = false; } catch (EntityLoadingException e) { // this would be very very bad ... }
+             * try { MechSummary ms =
+             * MechSummaryCache.getInstance().getMech("Error OMG-UR-FD");
+             * selectedUnit = new MechFileParser(ms.getSourceFile(),
+             * ms.getEntryName()).getEntity(); populateTextFields = false; }
+             * catch (EntityLoadingException e) { // this would be very very bad
+             * ... }
              */
             return;
         }

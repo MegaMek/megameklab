@@ -35,7 +35,6 @@ import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megameklab.com.ui.Mek.views.BuildView;
 import megameklab.com.ui.Mek.views.CriticalView;
-import megameklab.com.util.CConfig;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -64,14 +63,14 @@ public class BuildTab extends ITab implements ActionListener {
     private String RESETCOMMAND = "resetbuttoncommand";
     private String COMPACTCOMMAND = "compactbuttoncommand";
 
-    public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons, CConfig config) {
+    public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons) {
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new CriticalView(this.unit, true, refresh);
-        buildView = new BuildView(this.unit);
+        critView = new CriticalView(getMech(), true, refresh);
+        buildView = new BuildView(getMech());
 
         mainPanel.add(buildView);
 
@@ -108,8 +107,8 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        critView.updateMech(unit);
-        buildView.updateMech(unit);
+        critView.updateUnit(unit);
+        buildView.updateUnit(unit);
         critView.refresh();
         buildView.refresh();
         addAllActionListeners();
@@ -139,8 +138,8 @@ public class BuildTab extends ITab implements ActionListener {
     private void autoFillCrits() {
 
         for (EquipmentType eq : buildView.getTableModel().getCrits()) {
-            int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(unit);
-            for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
+            int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(getMech());
+            for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
 
                 if (eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))) {
                     if (unit instanceof QuadMech) {
@@ -174,10 +173,10 @@ public class BuildTab extends ITab implements ActionListener {
 
                         if (foundMount.getType().isSpreadable() || foundMount.isSplitable() && critsUsed > 1) {
                             for (int count = 0; count < critsUsed; count++) {
-                                unit.addEquipment(foundMount, location, false);
+                                getMech().addEquipment(foundMount, location, false);
                             }
                         } else {
-                            unit.addEquipment(foundMount, location, false);
+                            getMech().addEquipment(foundMount, location, false);
                         }
                         UnitUtil.changeMountStatus(unit, foundMount, location, Entity.LOC_NONE, false);
                         break;
@@ -193,7 +192,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void resetCrits() {
         for (Mounted mount : unit.getEquipment()) {
-            UnitUtil.removeCriticals(unit, mount);
+            UnitUtil.removeCriticals(getMech(), mount);
         }
         for (Mounted mount : unit.getEquipment()) {
             UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
@@ -202,8 +201,8 @@ public class BuildTab extends ITab implements ActionListener {
     }
 
     private void compactCrits() {
-        UnitUtil.compactCriticals(unit);
-        UnitUtil.reIndexCrits(unit);
+        UnitUtil.compactCriticals(getMech());
+        UnitUtil.reIndexCrits(getMech());
         refresh.refreshAll();
     }
 

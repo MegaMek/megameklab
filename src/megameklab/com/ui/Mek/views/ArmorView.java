@@ -199,7 +199,7 @@ public class ArmorView extends IView implements ChangeListener {
         armorMaxLabelList.add(ctrArmorMaxLabel);
         armorMaxLabelList.add(rtrArmorMaxLabel);
 
-        Dimension labelSize = new Dimension(15,20);
+        Dimension labelSize = new Dimension(15, 20);
         for (JLabel label : armorMaxLabelList) {
             label.setSize(labelSize);
             label.setMaximumSize(labelSize);
@@ -278,7 +278,7 @@ public class ArmorView extends IView implements ChangeListener {
                     masterPanel.add(ctrArmorMaxLabel);
                     ctrPanel.add(new JPanel());
                     ctrPanel.add(new JPanel());
-                    ctrPanel.add(new JLabel(unit.getLocationAbbr(location)+"r"));
+                    ctrPanel.add(new JLabel(unit.getLocationAbbr(location) + "r"));
                     ctrPanel.add(masterPanel);
                     ctrPanel.add(new JPanel());
                     break;
@@ -294,7 +294,7 @@ public class ArmorView extends IView implements ChangeListener {
                     masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(ltrArmorMaxLabel);
                     ltrPanel.add(new JPanel());
-                    ltrPanel.add(new JLabel(unit.getLocationAbbr(location)+"r"));
+                    ltrPanel.add(new JLabel(unit.getLocationAbbr(location) + "r"));
                     ltrPanel.add(masterPanel);
                     ltrPanel.add(new JPanel());
                     break;
@@ -310,7 +310,7 @@ public class ArmorView extends IView implements ChangeListener {
                     masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                     masterPanel.add(rtrArmorMaxLabel);
                     rtrPanel.add(new JPanel());
-                    rtrPanel.add(new JLabel(unit.getLocationAbbr(location)+"r"));
+                    rtrPanel.add(new JLabel(unit.getLocationAbbr(location) + "r"));
                     rtrPanel.add(masterPanel);
                     rtrPanel.add(new JPanel());
                     break;
@@ -368,10 +368,10 @@ public class ArmorView extends IView implements ChangeListener {
         JPanel bottomPanel = new JPanel();
         JPanel pointsPanel = new JPanel();
 
-        totalArmorPanel.setLayout(new BoxLayout(totalArmorPanel,BoxLayout.Y_AXIS));
+        totalArmorPanel.setLayout(new BoxLayout(totalArmorPanel, BoxLayout.Y_AXIS));
         headerPanel.add(new JLabel("Current/Maximum Armor"));
         bottomPanel.add(currentArmorLabel);
-        bottomPanel.add(new JLabel("/",SwingConstants.TRAILING));
+        bottomPanel.add(new JLabel("/", SwingConstants.TRAILING));
         bottomPanel.add(maxArmorLabel);
 
         unallocatedPointsField.setHorizontalAlignment(SwingConstants.LEADING);
@@ -383,7 +383,7 @@ public class ArmorView extends IView implements ChangeListener {
         totalArmorPanel.add(pointsPanel);
 
         this.add(totalArmorPanel);
-        //refresh();
+        // refresh();
     }
 
     private void addAllListeners() {
@@ -405,70 +405,70 @@ public class ArmorView extends IView implements ChangeListener {
             int maxArmor = unit.getOInternal(location) * 2;
             switch (location) {
             case Mech.LOC_HEAD:
-                hdArmorModel.setValue(Math.min(9,unit.getArmor(location)));
+                hdArmorModel.setValue(Math.min(9, unit.getArmor(location)));
                 hdArmorModel.setMaximum(9);
                 hdArmorModel.setStepSize(1);
                 hdArmorModel.setMinimum(0);
                 break;
             case Mech.LOC_LARM:
-                laArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                laArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
                 laArmorModel.setMaximum(maxArmor);
                 laArmorModel.setStepSize(1);
                 laArmorModel.setMinimum(0);
                 laArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             case Mech.LOC_RARM:
-                raArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                raArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
                 raArmorModel.setMaximum(maxArmor);
                 raArmorModel.setStepSize(1);
                 raArmorModel.setMinimum(0);
                 raArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             case Mech.LOC_CT:
-                ctArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                ctArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
                 ctArmorModel.setMaximum(maxArmor);
                 ctArmorModel.setStepSize(1);
                 ctArmorModel.setMinimum(0);
-                ctrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor-unit.getArmor(location)));
-                ctrArmorModel.setMaximum(maxArmor-unit.getArmor(location));
+                ctrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor - unit.getArmor(location)));
+                ctrArmorModel.setMaximum(maxArmor - unit.getArmor(location));
                 ctrArmorModel.setStepSize(1);
                 ctrArmorModel.setMinimum(0);
                 ctArmorMaxLabel.setText(Integer.toString(maxArmor));
-                ctrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
+                ctrArmorMaxLabel.setText(Integer.toString(maxArmor - unit.getArmor(location)));
                 break;
             case Mech.LOC_LT:
-                ltArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                ltArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
                 ltArmorModel.setMaximum(maxArmor);
                 ltArmorModel.setStepSize(1);
                 ltArmorModel.setMinimum(0);
-                ltrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor-unit.getArmor(location)));
-                ltrArmorModel.setMaximum(maxArmor-unit.getArmor(location));
+                ltrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor - unit.getArmor(location)));
+                ltrArmorModel.setMaximum(maxArmor - unit.getArmor(location));
                 ltrArmorModel.setStepSize(1);
                 ltrArmorModel.setMinimum(0);
                 ltArmorMaxLabel.setText(Integer.toString(maxArmor));
-                ltrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
+                ltrArmorMaxLabel.setText(Integer.toString(maxArmor - unit.getArmor(location)));
                 break;
             case Mech.LOC_RT:
-                rtArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                rtArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
                 rtArmorModel.setMaximum(maxArmor);
                 rtArmorModel.setStepSize(1);
                 rtArmorModel.setMinimum(0);
-                rtrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor-unit.getArmor(location)));
-                rtrArmorModel.setMaximum(maxArmor-unit.getArmor(location));
+                rtrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor - unit.getArmor(location)));
+                rtrArmorModel.setMaximum(maxArmor - unit.getArmor(location));
                 rtrArmorModel.setStepSize(1);
                 rtrArmorModel.setMinimum(0);
                 rtArmorMaxLabel.setText(Integer.toString(maxArmor));
-                rtrArmorMaxLabel.setText(Integer.toString(maxArmor-unit.getArmor(location)));
+                rtrArmorMaxLabel.setText(Integer.toString(maxArmor - unit.getArmor(location)));
                 break;
             case Mech.LOC_LLEG:
-                llArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                llArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
                 llArmorModel.setMaximum(maxArmor);
                 llArmorModel.setStepSize(1);
                 llArmorModel.setMinimum(0);
                 llArmorMaxLabel.setText(Integer.toString(maxArmor));
                 break;
             case Mech.LOC_RLEG:
-                rlArmorModel.setValue(Math.min(maxArmor,unit.getArmor(location)));
+                rlArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
                 rlArmorModel.setMaximum(maxArmor);
                 rlArmorModel.setStepSize(1);
                 rlArmorModel.setMinimum(0);
@@ -478,9 +478,10 @@ public class ArmorView extends IView implements ChangeListener {
         }
 
         currentArmorLabel.setText(Integer.toString(unit.getTotalOArmor()));
-        //Total Possible armor is Internal*2 +3 for the extra 3 armor the head can support.
-        maxArmorLabel.setText(Integer.toString((unit.getTotalOInternal()*2)+3));
-        //unallocated armorpoints
+        // Total Possible armor is Internal*2 +3 for the extra 3 armor the head
+        // can support.
+        maxArmorLabel.setText(Integer.toString((unit.getTotalOInternal() * 2) + 3));
+        // unallocated armorpoints
         unallocatedPointsField.setText(Integer.toString(UnitUtil.getArmorPoints(unit, unit.getArmorWeight()) - unit.getTotalOArmor()));
         addAllListeners();
     }
@@ -491,18 +492,18 @@ public class ArmorView extends IView implements ChangeListener {
 
     public void allocateArmor(double tons) {
         double pointsToAllocate = UnitUtil.getArmorPoints(unit, tons);
-        double totalArmor = (unit.getTotalOInternal()*2)+3;
+        double totalArmor = (unit.getTotalOInternal() * 2) + 3;
         if (pointsToAllocate > totalArmor) {
             pointsToAllocate = totalArmor;
         }
-        double percent = pointsToAllocate/totalArmor;
-        //put 5 times the percentage of total possible armor into the head
-        int headArmor = (int)Math.min(Math.floor(percent*9*5), 9);
+        double percent = pointsToAllocate / totalArmor;
+        // put 5 times the percentage of total possible armor into the head
+        int headArmor = (int) Math.min(Math.floor(percent * 9 * 5), 9);
         unit.initializeArmor(headArmor, Mech.LOC_HEAD);
         pointsToAllocate -= headArmor;
-        for (int location = 0; location <= Mech.LOC_LLEG; location++) {
+        for (int location = 0; location < unit.locations(); location++) {
             double IS = (unit.getInternal(location) * 2);
-            double allocate = Math.min(IS * percent,pointsToAllocate);
+            double allocate = Math.min(IS * percent, pointsToAllocate);
             switch (location) {
             case Mech.LOC_HEAD:
                 break;
@@ -511,14 +512,14 @@ public class ArmorView extends IView implements ChangeListener {
             case Mech.LOC_RT:
                 double rear = Math.floor(allocate * .25);
                 double front = Math.ceil(allocate * .75);
-                pointsToAllocate -= (int)rear;
-                pointsToAllocate -= (int)front;
-                unit.initializeArmor((int)front, location);
-                unit.initializeRearArmor((int)rear, location);
+                pointsToAllocate -= (int) rear;
+                pointsToAllocate -= (int) front;
+                unit.initializeArmor((int) front, location);
+                getMech().initializeRearArmor((int) rear, location);
                 break;
             default:
-                unit.initializeArmor((int)allocate, location);
-                pointsToAllocate -= (int)allocate;
+                unit.initializeArmor((int) allocate, location);
+                pointsToAllocate -= (int) allocate;
                 break;
             }
         }
@@ -532,79 +533,79 @@ public class ArmorView extends IView implements ChangeListener {
 
     /**
      * allocate any leftover points one-by-one
-     * @param points the amount of points left over
+     * 
+     * @param points
+     *            the amount of points left over
      */
     private void allocateLeftoverPoints(double points) {
         while (points >= 1) {
             // if two or more are left, add armor to symmetrical locations,
             // to torso, legs, arms, in that order
             if (points >= 2) {
-                if ((unit.getOArmor(Mech.LOC_LT) + unit.getOArmor(Mech.LOC_LT, true) < (unit.getOInternal(Mech.LOC_LT) * 2)) &&
-                        (unit.getOArmor(Mech.LOC_RT) + unit.getOArmor(Mech.LOC_RT, true) < (unit.getOInternal(Mech.LOC_RT) * 2))) {
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LT)+1, Mech.LOC_LT);
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RT)+1, Mech.LOC_RT);
+                if ((unit.getOArmor(Mech.LOC_LT) + unit.getOArmor(Mech.LOC_LT, true) < (unit.getOInternal(Mech.LOC_LT) * 2)) && (unit.getOArmor(Mech.LOC_RT) + unit.getOArmor(Mech.LOC_RT, true) < (unit.getOInternal(Mech.LOC_RT) * 2))) {
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LT) + 1, Mech.LOC_LT);
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RT) + 1, Mech.LOC_RT);
                     points -= 2;
-                } else if ((unit.getOArmor(Mech.LOC_LLEG) < (unit.getOInternal(Mech.LOC_LLEG) * 2)) &&
-                        (unit.getOArmor(Mech.LOC_RLEG) < (unit.getOInternal(Mech.LOC_RLEG) * 2))) {
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LLEG)+1, Mech.LOC_LLEG);
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RLEG)+1, Mech.LOC_RLEG);
+                } else if ((unit.getOArmor(Mech.LOC_LLEG) < (unit.getOInternal(Mech.LOC_LLEG) * 2)) && (unit.getOArmor(Mech.LOC_RLEG) < (unit.getOInternal(Mech.LOC_RLEG) * 2))) {
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LLEG) + 1, Mech.LOC_LLEG);
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RLEG) + 1, Mech.LOC_RLEG);
                     points -= 2;
-                } else if ((unit.getOArmor(Mech.LOC_LARM) < (unit.getOInternal(Mech.LOC_LARM) * 2)) &&
-                        (unit.getOArmor(Mech.LOC_RARM) < (unit.getOInternal(Mech.LOC_RARM) * 2))) {
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LARM)+1, Mech.LOC_LARM);
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RARM)+1, Mech.LOC_RARM);
+                } else if ((unit.getOArmor(Mech.LOC_LARM) < (unit.getOInternal(Mech.LOC_LARM) * 2)) && (unit.getOArmor(Mech.LOC_RARM) < (unit.getOInternal(Mech.LOC_RARM) * 2))) {
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LARM) + 1, Mech.LOC_LARM);
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RARM) + 1, Mech.LOC_RARM);
                     points -= 2;
                 }
-            // otherwise, first add to the head, and then even out uneven allocation
+                // otherwise, first add to the head, and then even out uneven
+                // allocation
             } else if (unit.getOArmor(Mech.LOC_HEAD) < 9) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_HEAD)+1, Mech.LOC_HEAD);
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_HEAD) + 1, Mech.LOC_HEAD);
                 points--;
             } else if (unit.getOArmor(Mech.LOC_LT) < unit.getOArmor(Mech.LOC_RT)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_LT)+1, Mech.LOC_LT);
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_LT) + 1, Mech.LOC_LT);
                 points--;
             } else if (unit.getOArmor(Mech.LOC_RT) < unit.getOArmor(Mech.LOC_LT)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_RT)+1, Mech.LOC_RT);
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_RT) + 1, Mech.LOC_RT);
                 points--;
             } else if (unit.getOArmor(Mech.LOC_RARM) < unit.getOArmor(Mech.LOC_LARM)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_RARM)+1, Mech.LOC_RARM);
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_RARM) + 1, Mech.LOC_RARM);
                 points--;
             } else if (unit.getOArmor(Mech.LOC_LARM) < unit.getOArmor(Mech.LOC_RARM)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_LARM)+1, Mech.LOC_LARM);
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_LARM) + 1, Mech.LOC_LARM);
                 points--;
             } else if (unit.getOArmor(Mech.LOC_RLEG) < unit.getArmor(Mech.LOC_LLEG)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_RLEG)+1, Mech.LOC_RLEG);
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_RLEG) + 1, Mech.LOC_RLEG);
                 points--;
             } else if (unit.getOArmor(Mech.LOC_LLEG) < unit.getOArmor(Mech.LOC_RLEG)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_LLEG)+1, Mech.LOC_LLEG);
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_LLEG) + 1, Mech.LOC_LLEG);
                 points--;
-            // if nothing is uneven, add to the CT
+                // if nothing is uneven, add to the CT
             } else if ((unit.getOArmor(Mech.LOC_CT) + unit.getOArmor(Mech.LOC_CT, true) < (unit.getOInternal(Mech.LOC_CT) * 2))) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_CT)+1, Mech.LOC_CT);
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_CT) + 1, Mech.LOC_CT);
                 points--;
             }
             // if only one is left, and head and CT have max, remove one from CT
-            // so symmetric locations can get extra, unless they are already at max
+            // so symmetric locations can get extra, unless they are already at
+            // max
             if (points == 1) {
-                if ((unit.getOArmor(Mech.LOC_HEAD) == 9) &&
-                        ((unit.getOArmor(Mech.LOC_CT) + unit.getOArmor(Mech.LOC_CT, true)) == unit.getOInternal(Mech.LOC_CT) * 2)) {
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_CT)-1, Mech.LOC_CT);
+                if ((unit.getOArmor(Mech.LOC_HEAD) == 9) && ((unit.getOArmor(Mech.LOC_CT) + unit.getOArmor(Mech.LOC_CT, true)) == unit.getOInternal(Mech.LOC_CT) * 2)) {
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_CT) - 1, Mech.LOC_CT);
                     points++;
                 }
             }
             // if all locations have max, return
             boolean toReturn = true;
-            for (int location = 0; location <= Mech.LOC_LLEG; location++) {
+            for (int location = 0; location < unit.locations(); location++) {
                 double is = (unit.getInternal(location) * 2);
                 switch (location) {
                 case Mech.LOC_HEAD:
-                    if (is+3 > unit.getOArmor(location)) {
+                    if (is + 3 > unit.getOArmor(location)) {
                         toReturn = false;
                     }
                     break;
                 case Mech.LOC_CT:
                 case Mech.LOC_LT:
                 case Mech.LOC_RT:
-                    if (is > unit.getOArmor(location)+unit.getOArmor(location, true)) {
+                    if (is > unit.getOArmor(location) + unit.getOArmor(location, true)) {
                         toReturn = false;
                     }
                     break;
@@ -624,25 +625,25 @@ public class ArmorView extends IView implements ChangeListener {
     public void stateChanged(ChangeEvent e) {
         JSpinner field = (JSpinner) e.getSource();
         int location = Integer.parseInt(field.getName());
-        int value = (Integer)field.getModel().getValue();
+        int value = (Integer) field.getModel().getValue();
         switch (location) {
         case Mech.LOC_CT:
             if (field.equals(ctrArmorField)) {
-                unit.initializeRearArmor(value, location);
+                getMech().initializeRearArmor(value, location);
             } else {
                 unit.initializeArmor(value, location);
             }
             break;
         case Mech.LOC_RT:
             if (field.equals(rtrArmorField)) {
-                unit.initializeRearArmor(value, location);
+                getMech().initializeRearArmor(value, location);
             } else {
                 unit.initializeArmor(value, location);
             }
             break;
         case Mech.LOC_LT:
             if (field.equals(ltrArmorField)) {
-                unit.initializeRearArmor(value, location);
+                getMech().initializeRearArmor(value, location);
             } else {
                 unit.initializeArmor(value, location);
             }

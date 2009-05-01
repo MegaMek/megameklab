@@ -56,7 +56,6 @@ public class ArmorTab extends ITab implements ActionListener {
     private RefreshListener refresh = null;
     private JComboBox armorCombo = new JComboBox(EquipmentType.armorNames);
 
-
     private JButton allocateArmorButton = new JButton("Allocate");
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
     private JSpinner armorTonnage = new JSpinner(new SpinnerNumberModel(0, 0, 0, 0.5));
@@ -67,7 +66,7 @@ public class ArmorTab extends ITab implements ActionListener {
     public ArmorTab(Mech unit) {
 
         this.unit = unit;
-        armor = new ArmorView(this.unit);
+        armor = new ArmorView(getMech());
 
         Dimension comboSize = new Dimension(150, 20);
 
@@ -89,8 +88,8 @@ public class ArmorTab extends ITab implements ActionListener {
         clanArmor.setSelected(unit.isClanArmor());
         setTotalTonnage();
         addAllListeners();
-        ((SpinnerNumberModel)armorTonnage.getModel()).setMaximum(UnitUtil.getMaximumArmorTonnage(unit));
-        armor.updateMech(unit);
+        ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil.getMaximumArmorTonnage(unit));
+        armor.updateUnit(unit);
         armor.refresh();
     }
 
@@ -110,7 +109,7 @@ public class ArmorTab extends ITab implements ActionListener {
             }
         }
         if (arg0.getSource().equals(allocateArmorButton)) {
-            armor.allocateArmor((Double)armorTonnage.getValue());
+            armor.allocateArmor((Double) armorTonnage.getValue());
         }
         if (arg0.getSource().equals(maximizeArmorButton)) {
             maximizeArmor();
@@ -197,7 +196,7 @@ public class ArmorTab extends ITab implements ActionListener {
 
         for (; armorCount > 0; armorCount--) {
             try {
-                unit.addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), Entity.LOC_NONE, false);
+                getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), Entity.LOC_NONE, false);
             } catch (Exception ex) {
             }
         }
@@ -229,7 +228,7 @@ public class ArmorTab extends ITab implements ActionListener {
 
     private void removeArmorCrits() {
 
-        for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
+        for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot crit = unit.getCritical(location, slot);
                 if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {

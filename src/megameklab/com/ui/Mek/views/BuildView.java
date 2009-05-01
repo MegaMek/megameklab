@@ -44,11 +44,11 @@ import megamek.common.QuadMech;
 import megamek.common.weapons.Weapon;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.CriticalTransferHandler;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
+import megameklab.com.util.Mech.CriticalTransferHandler;
 
 public class BuildView extends IView implements ActionListener, MouseListener {
 
@@ -102,7 +102,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        engineHeatSinkCount = UnitUtil.getBaseChassisHeatSinks(unit);
+        engineHeatSinkCount = UnitUtil.getBaseChassisHeatSinks(getMech());
         for (Mounted mount : unit.getMisc()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount)) {
                 masterEquipmentList.add(mount.getType());
@@ -224,7 +224,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateMech(unit);
+        equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 90 / 100));
         equipmentScroll.repaint();
@@ -274,7 +274,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
 
             if (eq.getType().isSpreadable() || eq.isSplitable()) {
-                int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(unit);
+                int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMech());
                 if (critSpace[Mech.LOC_RT] >= 1) {
                     JMenu rtMenu = new JMenu(locations[Mech.LOC_RT]);
 
@@ -367,7 +367,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 }
 
             } else {
-                for (int location = 0; location <= Mech.LOC_LLEG; location++) {
+                for (int location = 0; location < unit.locations(); location++) {
 
                     if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
                         item = new JMenuItem("Add to " + locations[location]);
@@ -399,7 +399,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         for (int slot = 0; slot < openSlots; slot++) {
             try {
-                unit.addEquipment(eq, location, false);
+                getMech().addEquipment(eq, location, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -408,7 +408,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         crits -= openSlots;
         for (int slot = 0; slot < crits; slot++) {
             try {
-                unit.addEquipment(eq, secondaryLocation, false);
+                getMech().addEquipment(eq, secondaryLocation, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -424,7 +424,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
         Mounted eq = UnitUtil.getMounted(unit, ((EquipmentType) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT)).getInternalName());
         try {
-            unit.addEquipment(eq, location, false);
+            getMech().addEquipment(eq, location, false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

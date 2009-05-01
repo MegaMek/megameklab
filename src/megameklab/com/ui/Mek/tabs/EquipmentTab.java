@@ -38,13 +38,13 @@ public class EquipmentTab extends ITab {
         equipment = new EquipmentView(unit);
         setLayout(new SpringLayout());
         this.add(equipment);
-        SpringLayoutHelper.setupSpringGrid(this,1);
+        SpringLayoutHelper.setupSpringGrid(this, 1);
 
         refresh();
     }
 
     public void refresh() {
-        equipment.updateMech(unit);
+        equipment.updateUnit(unit);
         equipment.refresh();
     }
 
@@ -52,7 +52,7 @@ public class EquipmentTab extends ITab {
         equipment.addRefreshedListener(l);
     }
 
-    public EquipmentView getView(){
+    public EquipmentView getView() {
         return equipment;
     }
 }

@@ -48,6 +48,7 @@ import megamek.common.VTOL;
 public class ImageHelper {
     public static String recordSheetPath = "./data/images/recordsheets/";
     public static String fluffPath = "./data/images/fluff/";
+    public static String imagePath = "./data/images/";
 
     public static Image getRecordSheet(Entity unit) {
         return ImageHelper.getRecordSheet(unit, false);
@@ -1502,13 +1503,10 @@ public class ImageHelper {
         return (float) size;
     }
 
-    public static void drawDiamond(Graphics2D g2d, float xPos, float yPos) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
-
-        GlyphVector gv = font.createGlyphVector(new FontRenderContext(g2d.getTransform(), true, true), "\u02C4");
-        g2d.drawGlyphVector(gv, xPos, yPos);
-        gv = font.createGlyphVector(new FontRenderContext(g2d.getTransform(), true, true), "\u02C5");
-        g2d.drawGlyphVector(gv, xPos, yPos + (float) gv.getOutline().getBounds2D().getHeight());
+    public static void drawDiamond(Graphics2D g2d, int xPos, int yPos) {
+        String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
+        Image img = new ImageIcon(path + "shielddiamond.png").getImage();
+        g2d.drawImage(img, xPos, yPos, 5, 5, null);
 
     }
 }

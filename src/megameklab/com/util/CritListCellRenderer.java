@@ -29,7 +29,6 @@ import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
-import megameklab.com.ui.Mek.MainUI;
 
 public class CritListCellRenderer extends DefaultListCellRenderer {
 
@@ -50,7 +49,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
-        JLabel label = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
+        JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
         this.index = index;
 
@@ -60,8 +59,8 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
             if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 if (useColor) {
-                    label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_SYSTEMS));
-                    label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_SYSTEMS));
+                    label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_SYSTEMS));
+                    label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_SYSTEMS));
                 }
                 if (cs.isArmored()) {
                     label.setText(label.getText() + " (A)");
@@ -82,24 +81,23 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                     label.setText(name);
 
                     if (mount.getType() instanceof WeaponType) {
-                        label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_WEAPONS));
-                        label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_WEAPONS));
+                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
+                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS));
                     } else if (mount.getType() instanceof AmmoType) {
-                        label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_AMMO));
-                        label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_AMMO));
+                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
+                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_AMMO));
                     } else {
-                        label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
-                        label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
+                        label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
+                        label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
                     }
                 }
                 label.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
             }
 
         } else if (useColor) {
-            label.setBackground(MainUI.config.getBackgroundColor(CConfig.CONFIG_EMPTY));
-            label.setForeground(MainUI.config.getForegroundColor(CConfig.CONFIG_EMPTY));
+            label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EMPTY));
+            label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
         }
-
 
         if (cs != null && UnitUtil.isLastCrit(unit, cs, index, getCritLocation())) {
             label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0, 0, 0)));

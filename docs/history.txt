@@ -10,6 +10,13 @@ V 0.0.0.15-Dev
 + added Era field to Aero RS
 + RFE: Add context menu on build tab build table to add component to unit
 + RFE: Set Split Ratio for Splitable equipment
++ Bug: Claws showing as Tonnage/5 instead of Tonnage/7 for damage.
++ Added Tank UI
++ Added splash screens
++ RFE 2780128: Add delete to right click menu on build tab 
++ Added new diamond image for Shield.
++ Updated code to use new MegaMek Equipment Flags
++ New MegaMek.jar
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.

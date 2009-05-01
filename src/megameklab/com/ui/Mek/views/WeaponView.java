@@ -413,13 +413,13 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     }
 
     private void loadWeaponsTable() {
-        for (Mounted mount : unit.getWeaponList()) {
-            if (UnitUtil.isMechWeapon(mount.getType(), unit)) {
+        for (Mounted mount : getMech().getWeaponList()) {
+            if (UnitUtil.isMechWeapon(mount.getType(), getMech())) {
                 weaponList.addCrit(mount.getType());
             }
         }
 
-        for (Mounted mount : unit.getAmmo()) {
+        for (Mounted mount : getMech().getAmmo()) {
             weaponList.addCrit(mount.getType());
         }
     }
@@ -431,6 +431,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     public void refresh() {
         removeAllListeners();
         loadWeaponCombos();
+        weaponList.removeAllCrits();
+        loadWeaponsTable();
         addAllListeners();
         fireTableRefresh();
     }
@@ -460,7 +462,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     }
 
     private void fireTableRefresh() {
-        weaponList.updateMech(unit);
+        weaponList.updateUnit(unit);
         weaponList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension(getWidth() * 65 / 100, getHeight() * 80 / 100));
         equipmentScroll.repaint();
@@ -515,7 +517,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserWeaponCombo.getSelectedIndices()) {
-                        unit.addEquipment(new Mounted(unit, subLaserWeaponList.elementAt(index)), Entity.LOC_NONE, false);
+                        getMech().addEquipment(new Mounted(unit, subLaserWeaponList.elementAt(index)), Entity.LOC_NONE, false);
                         weaponList.addCrit(subLaserWeaponList.elementAt(index));
                     }
                 }
@@ -526,7 +528,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserAmmoCombo.getSelectedIndices()) {
-                        unit.addEquipment(new Mounted(unit, subLaserAmmoList.elementAt(index)), Entity.LOC_NONE, false);
+                        getMech().addEquipment(new Mounted(unit, subLaserAmmoList.elementAt(index)), Entity.LOC_NONE, false);
                         weaponList.addCrit(subLaserAmmoList.elementAt(index));
                     }
                 }
@@ -538,13 +540,14 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 if (missileWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : missileWeaponCombo.getSelectedIndices()) {
                         Mounted mount = new Mounted(unit, subMissileWeaponList.elementAt(index));
-                        unit.addEquipment(mount, Entity.LOC_NONE, false);
+                        getMech().addEquipment(mount, Entity.LOC_NONE, false);
                         weaponList.addCrit(subMissileWeaponList.elementAt(index));
 
-                        // MegaMek automatically adds a ton of ammo for onshots for tracking. We do not need this in MLab
+                        // MegaMek automatically adds a ton of ammo for onshots
+                        // for tracking. We do not need this in MLab
                         if (mount.getType().hasFlag(WeaponType.F_ONESHOT)) {
-                            unit.getEquipment().remove(unit.getEquipment().size() - 1);
-                            unit.getAmmo().remove(unit.getAmmo().size() - 1);
+                            getMech().getEquipment().remove(getMech().getEquipment().size() - 1);
+                            getMech().getAmmo().remove(getMech().getAmmo().size() - 1);
                         }
                     }
                 }
@@ -555,7 +558,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (missileAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : missileAmmoCombo.getSelectedIndices()) {
-                        unit.addEquipment(new Mounted(unit, subMissileAmmoList.elementAt(index)), Entity.LOC_NONE, false);
+                        getMech().addEquipment(new Mounted(unit, subMissileAmmoList.elementAt(index)), Entity.LOC_NONE, false);
                         weaponList.addCrit(subMissileAmmoList.elementAt(index));
                     }
                 }
@@ -567,12 +570,13 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 if (ballisticWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticWeaponCombo.getSelectedIndices()) {
                         Mounted mount = new Mounted(unit, subBallisticWeaponList.elementAt(index));
-                        unit.addEquipment(mount, Entity.LOC_NONE, false);
+                        getMech().addEquipment(mount, Entity.LOC_NONE, false);
                         weaponList.addCrit(subBallisticWeaponList.elementAt(index));
-                        // MegaMek automatically adds a ton of ammo for onshots for tracking. We do not need this in MLab
+                        // MegaMek automatically adds a ton of ammo for onshots
+                        // for tracking. We do not need this in MLab
                         if (mount.getType().hasFlag(WeaponType.F_ONESHOT)) {
-                            unit.getEquipment().remove(unit.getEquipment().size() - 1);
-                            unit.getAmmo().remove(unit.getAmmo().size() - 1);
+                            getMech().getEquipment().remove(getMech().getEquipment().size() - 1);
+                            getMech().getAmmo().remove(getMech().getAmmo().size() - 1);
                         }
                     }
                 }
@@ -583,7 +587,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (ballisticAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticAmmoCombo.getSelectedIndices()) {
-                        unit.addEquipment(new Mounted(unit, subBallisticAmmoList.elementAt(index)), Entity.LOC_NONE, false);
+                        getMech().addEquipment(new Mounted(unit, subBallisticAmmoList.elementAt(index)), Entity.LOC_NONE, false);
                         weaponList.addCrit(subBallisticAmmoList.elementAt(index));
                     }
                 }
@@ -594,7 +598,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (artilleryWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryWeaponCombo.getSelectedIndices()) {
-                        unit.addEquipment(new Mounted(unit, subArtilleryWeaponList.elementAt(index)), Entity.LOC_NONE, false);
+                        getMech().addEquipment(new Mounted(unit, subArtilleryWeaponList.elementAt(index)), Entity.LOC_NONE, false);
                         weaponList.addCrit(subArtilleryWeaponList.elementAt(index));
                     }
                 }
@@ -605,7 +609,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (artilleryAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryAmmoCombo.getSelectedIndices()) {
-                        unit.addEquipment(new Mounted(unit, subArtilleryAmmoList.elementAt(index)), Entity.LOC_NONE, false);
+                        getMech().addEquipment(new Mounted(unit, subArtilleryAmmoList.elementAt(index)), Entity.LOC_NONE, false);
                         weaponList.addCrit(subArtilleryAmmoList.elementAt(index));
                     }
                 }
@@ -616,7 +620,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (physicalWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : physicalWeaponCombo.getSelectedIndices()) {
-                        unit.addEquipment(new Mounted(unit, subPhysicalWeaponList.elementAt(index)), Entity.LOC_NONE, false);
+                        getMech().addEquipment(new Mounted(unit, subPhysicalWeaponList.elementAt(index)), Entity.LOC_NONE, false);
                         weaponList.addCrit(subPhysicalWeaponList.elementAt(index));
                     }
                 }
@@ -641,7 +645,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         }
 
         if (UnitUtil.hasTargComp(unit)) {
-            UnitUtil.updateTC(unit, UnitUtil.hasClanTC(unit));
+            UnitUtil.updateTC(getMech(), UnitUtil.hasClanTC(getMech()));
         }
         fireTableRefresh();
 
@@ -754,4 +758,4 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         }
     }
 
- }
+}

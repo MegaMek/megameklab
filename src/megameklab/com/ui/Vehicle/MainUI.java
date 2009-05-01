@@ -1,5 +1,5 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * MegaMekLab - Copyright (C) 2009
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package megameklab.com.ui.Mek;
+package megameklab.com.ui.Vehicle;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -26,8 +26,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -52,24 +50,23 @@ import javax.swing.text.html.HTMLEditorKit;
 import megamek.MegaMek;
 import megamek.client.ui.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.BipedMech;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.Mech;
 import megamek.common.MechFileParser;
-import megamek.common.QuadMech;
+import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
+import megamek.common.loaders.BLKTankFile;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestMech;
+import megamek.common.verifier.TestTank;
 import megameklab.com.MegaMekLab;
-import megameklab.com.ui.Mek.tabs.ArmorTab;
-import megameklab.com.ui.Mek.tabs.BuildTab;
-import megameklab.com.ui.Mek.tabs.EquipmentTab;
-import megameklab.com.ui.Mek.tabs.StructureTab;
-import megameklab.com.ui.Mek.tabs.WeaponTab;
+import megameklab.com.ui.Vehicle.tabs.ArmorTab;
+import megameklab.com.ui.Vehicle.tabs.BuildTab;
+import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
+import megameklab.com.ui.Vehicle.tabs.StructureTab;
+import megameklab.com.ui.Vehicle.tabs.WeaponTab;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.ConfigurationDialog;
@@ -84,7 +81,7 @@ public class MainUI extends JFrame implements RefreshListener {
      */
     private static final long serialVersionUID = -5836932822468918198L;
 
-    Mech entity = null;
+    Tank entity = null;
     JMenuBar menuBar = new JMenuBar();
     JMenu file = new JMenu("File");
     JMenu help = new JMenu("Help");
@@ -117,21 +114,31 @@ public class MainUI extends JFrame implements RefreshListener {
 
         JMenu unitMenu = new JMenu("New Unit");
         unitMenu.setMnemonic('N');
-        item.setText("Tank");
-        item.setMnemonic('T');
+        item.setText("Mech");
+        item.setMnemonic('M');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                jMenuLoadVehicle();
+                jMenuLoadMech();
             }
 
         });
         unitMenu.add(item);
         file.add(unitMenu);
 
-        item = new JMenuItem();
+        item = new JMenuItem("Current Unit");
+        item.setMnemonic('C');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuPrintCurrentUnit();
+            }
+        });
+
+        file.add(UnitPrintManager.printMenu(this, item));
+
         JMenu loadMenu = new JMenu("Load");
         loadMenu.setMnemonic('L');
 
+        item = new JMenuItem();
         item.setText("From Cache");
         item.setMnemonic('C');
         item.addActionListener(new ActionListener() {
@@ -152,16 +159,6 @@ public class MainUI extends JFrame implements RefreshListener {
         loadMenu.add(item);
 
         file.add(loadMenu);
-
-        item = new JMenuItem("Current Unit");
-        item.setMnemonic('C');
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuPrintCurrentUnit();
-            }
-        });
-
-        file.add(UnitPrintManager.printMenu(this, item));
 
         item = new JMenuItem();
         item.setText("Save");
@@ -276,8 +273,8 @@ public class MainUI extends JFrame implements RefreshListener {
         });
 
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
-        createNewMech(false);
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
+        createNewTank(false);
+        setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
         setJMenuBar(menuBar);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -303,16 +300,16 @@ public class MainUI extends JFrame implements RefreshListener {
     private void loadUnit() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
         unitLoadingDialog.setVisible(true);
-        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.MEK);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.TANK);
 
         viewer.run();
 
-        if (!(viewer.getSelectedEntity() instanceof Mech)) {
+        if (!(viewer.getSelectedEntity() instanceof Tank)) {
             return;
         }
-        entity = (Mech) viewer.getSelectedEntity();
+        entity = (Tank) viewer.getSelectedEntity();
 
-        UnitUtil.updateLoadedMech(entity);
+        // UnitUtil.updateLoadedTank(entity);
         viewer.setVisible(false);
         viewer.dispose();
 
@@ -324,12 +321,12 @@ public class MainUI extends JFrame implements RefreshListener {
 
     private void loadUnitFromFile() {
 
-        FileDialog fDialog = new FileDialog(this, "Load Mech", FileDialog.LOAD);
+        FileDialog fDialog = new FileDialog(this, "Load Tank", FileDialog.LOAD);
 
         String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
 
         fDialog.setDirectory(filePathName);
-        fDialog.setFile("*.mtf");
+        fDialog.setFile("*.blk");
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
@@ -340,15 +337,15 @@ public class MainUI extends JFrame implements RefreshListener {
 
         try {
             Entity tempEntity = new MechFileParser(new File(fDialog.getDirectory(), fDialog.getFile())).getEntity();
-            if (!(tempEntity instanceof Mech)) {
+            if (!(tempEntity instanceof Tank)) {
                 return;
             }
 
-            entity = (Mech) tempEntity;
-            UnitUtil.updateLoadedMech(entity);
+            entity = (Tank) tempEntity;
+            // UnitUtil.updateLoadedTank(entity);
         } catch (Exception ex) {
             ex.printStackTrace();
-            createNewMech(false);
+            createNewTank(false);
         }
         reloadTabs();
         setVisible(true);
@@ -365,7 +362,7 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
-        createNewMech(false);
+        createNewTank(false);
         reloadTabs();
         setVisible(true);
         this.repaint();
@@ -373,15 +370,15 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuSaveEntity_actionPerformed(ActionEvent event) {
-        UnitUtil.compactCriticals(entity);
-        UnitUtil.reIndexCrits(entity);
+        // UnitUtil.compactCriticals(entity);
+        // UnitUtil.reIndexCrits(entity);
 
         FileDialog fDialog = new FileDialog(this, "Save As", FileDialog.SAVE);
 
-        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+        String filePathName = System.getProperty("user.dir").toString() + "/data/Mechfiles/";
 
         fDialog.setDirectory(filePathName);
-        fDialog.setFile(entity.getChassis() + " " + entity.getModel() + ".mtf");
+        fDialog.setFile(entity.getChassis() + " " + entity.getModel() + ".blk");
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
@@ -393,12 +390,7 @@ public class MainUI extends JFrame implements RefreshListener {
         }
 
         try {
-            FileOutputStream out = new FileOutputStream(filePathName);
-            PrintStream p = new PrintStream(out);
-            p.println(entity.getMtf());
-            p.close();
-            out.close();
-
+            BLKTankFile.encode(filePathName, entity);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -408,7 +400,6 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     // Show BV Calculations
-
     public void jMenuBVCalculations_actionPerformed() {
 
         HTMLEditorKit kit = new HTMLEditorKit();
@@ -458,16 +449,16 @@ public class MainUI extends JFrame implements RefreshListener {
 
         HTMLEditorKit kit = new HTMLEditorKit();
 
-        MechView mechView = null;
+        MechView TankView = null;
         try {
-            mechView = new MechView(entity, true);
+            TankView = new MechView(entity, true);
         } catch (Exception e) {
             // error unit didn't load right. this is bad news.
         }
 
         StringBuffer unitSpecs = new StringBuffer("<html><body>");
-        unitSpecs.append(mechView.getMechReadoutBasic().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
-        unitSpecs.append(mechView.getMechReadoutLoadout().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
+        unitSpecs.append(TankView.getMechReadoutBasic().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
+        unitSpecs.append(TankView.getMechReadoutLoadout().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
         unitSpecs.append("</body></html>");
 
         // System.err.println(unitSpecs.toString());
@@ -513,11 +504,11 @@ public class MainUI extends JFrame implements RefreshListener {
     // Show Validation data.
     public void jMenuValidateUnit_actionPerformed() {
 
-        EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
+        EntityVerifier entityVerifier = new EntityVerifier(new File("data/Tankfiles/UnitVerifierOptions.xml"));
         StringBuffer sb = new StringBuffer();
         TestEntity testEntity = null;
 
-        testEntity = new TestMech(entity, entityVerifier.mechOption, null);
+        testEntity = new TestTank(entity, entityVerifier.tankOption, null);
 
         testEntity.correctEntity(sb, true);
 
@@ -596,7 +587,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
         recordSheetImageHelp.setEditable(false);
 
-        recordSheetImageHelp.setText("To add a fluff image to a record sheet the following steps need to be taken\nPlease Note that currently only \'Mechs use fluff Images\nPlace the image you want to use in the data/images/fluff folder\nMegaMekLab will attempt to match the name of the \'Mech your are printing\nwith the images in the fluff folder.\nThe following is an example of how MegaMekLab look for the image\nExample\nYour \'Mech is called Archer ARC-7Q\nMegaMekLab would look for the following\n\nArcher ARC-7Q.jpg/png/gif\nARC-7Q.jpg/png/gif\nArcher.jpg/png/gif\nhud.png\n");
+        recordSheetImageHelp.setText("To add a fluff image to a record sheet the following steps need to be taken\nPlease Note that currently only \'Tanks use fluff Images\nPlace the image you want to use in the data/images/fluff folder\nMegaMekLab will attempt to match the name of the \'Tank your are printing\nwith the images in the fluff folder.\nThe following is an example of how MegaMekLab look for the image\nExample\nYour \'Tank is called Archer ARC-7Q\nMegaMekLab would look for the following\n\nArcher ARC-7Q.jpg/png/gif\nARC-7Q.jpg/png/gif\nArcher.jpg/png/gif\nhud.png\n");
         // center everything
         recordSheetImageHelp.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -663,25 +654,17 @@ public class MainUI extends JFrame implements RefreshListener {
         System.exit(0);
     }
 
-    public void createNewMech(boolean isQuad) {
+    public void createNewTank(boolean hasTurret) {
 
-        if (isQuad) {
-            entity = new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
-        } else {
-            entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
-        }
+        entity = new Tank();
 
+        entity.setHasNoTurret(!hasTurret);
         entity.setYear(2750);
         entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
         entity.setWeight(25);
         entity.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
-
-        entity.addGyro();
-        entity.addEngineCrits();
-        entity.addCockpit();
-        UnitUtil.updateHeatSinks(entity, 10, 0);
 
         entity.autoSetInternal();
         for (int loc = 0; loc < entity.locations(); loc++) {
@@ -690,14 +673,14 @@ public class MainUI extends JFrame implements RefreshListener {
         }
 
         entity.setChassis("New");
-        entity.setModel("Mek");
+        entity.setModel("Tank");
 
     }
 
     public void refreshAll() {
 
-        if ((structureTab.isQuad() && !(entity instanceof QuadMech)) || (!structureTab.isQuad() && (entity instanceof QuadMech))) {
-            createNewMech(structureTab.isQuad());
+        if ((structureTab.hasTurret() && entity.hasNoTurret()) || (!structureTab.hasTurret() && !entity.hasNoTurret())) {
+            createNewTank(structureTab.hasTurret());
             setVisible(false);
             reloadTabs();
             setVisible(true);
@@ -726,7 +709,7 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void refreshHeader() {
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
+        setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
     }
 
     public void refreshStatus() {
@@ -741,18 +724,19 @@ public class MainUI extends JFrame implements RefreshListener {
         weaponTab.refresh();
     }
 
-    private void jMenuLoadVehicle() {
+    private void jMenuLoadMech() {
         try {
             Runtime runtime = Runtime.getRuntime();
-            String[] call = { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
+            String[] call = { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
             runtime.exec(call);
             System.exit(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-
+    
     private void jMenuPrintCurrentUnit() {
         UnitPrintManager.printEntity(entity);
     }
+
 }
