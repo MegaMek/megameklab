@@ -1086,7 +1086,7 @@ public class ImageHelper {
         int medPoint = 169;
         int longPoint = 192;
         int erPoint = 211;
-        float linePoint = 202f;
+        float linePoint = 204f;
 
         float lineFeed = 6.7f;
 
