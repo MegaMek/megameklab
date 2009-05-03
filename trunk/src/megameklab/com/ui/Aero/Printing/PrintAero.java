@@ -232,7 +232,7 @@ public class PrintAero implements Printable {
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = { 302, 165 };
+        float[] topColumn = { 302, 167 };
         float[] pipShift = { 7, 7 };
         float maxColumns = 25;
 
@@ -352,7 +352,7 @@ public class PrintAero implements Printable {
     }
 
     private void printRightArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[] { 429, 325 };
+        float[] topColumn = new float[] { 430.5f, 325 };
         float[] pipShift = new float[] { 7, 7 };
 
         int numberPerRow = 3;
