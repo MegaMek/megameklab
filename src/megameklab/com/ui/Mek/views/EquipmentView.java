@@ -251,7 +251,7 @@ public class EquipmentView extends IView implements ActionListener {
                     }
                 }
                 if (!hasTalons) {
-                    createSpreadMounts(UnitUtil.TRACKS);
+                    createSpreadMounts(UnitUtil.TALONS);
                 }
             }else if (equipmentCombo.getSelectedItem().toString().startsWith(UnitUtil.TARGETINGCOMPUTER)) {
                 if (!UnitUtil.hasTargComp(unit)) {
