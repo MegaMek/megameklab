@@ -243,7 +243,17 @@ public class EquipmentView extends IView implements ActionListener {
                 if (!getMech().hasTracks()) {
                     createSpreadMounts(UnitUtil.TRACKS);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().startsWith(UnitUtil.TARGETINGCOMPUTER)) {
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TALONS)) {
+                boolean  hasTalons = false;
+                for (Mounted mounted : getMech().getMisc()) {
+                    if (mounted.getType().hasFlag(MiscType.F_TALON)) {
+                        hasTalons = true;
+                    }
+                }
+                if (!hasTalons) {
+                    createSpreadMounts(UnitUtil.TRACKS);
+                }
+            }else if (equipmentCombo.getSelectedItem().toString().startsWith(UnitUtil.TARGETINGCOMPUTER)) {
                 if (!UnitUtil.hasTargComp(unit)) {
 
                     boolean isClan = false;
