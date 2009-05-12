@@ -138,7 +138,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         // weapons and ammo
         Vector<EquipmentType> weaponsNAmmoList = new Vector<EquipmentType>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (masterEquipmentList.get(pos) instanceof Weapon || masterEquipmentList.get(pos) instanceof AmmoType) {
+            if ((masterEquipmentList.get(pos) instanceof Weapon) || (masterEquipmentList.get(pos) instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -151,7 +151,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (masterEquipmentList.get(pos) instanceof MiscType && UnitUtil.isArmor(masterEquipmentList.get(pos)) && UnitUtil.isTSM(masterEquipmentList.get(pos))) {
+            if ((masterEquipmentList.get(pos) instanceof MiscType) && UnitUtil.isArmor(masterEquipmentList.get(pos)) && UnitUtil.isTSM(masterEquipmentList.get(pos))) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -160,7 +160,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // structure
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (masterEquipmentList.get(pos) instanceof MiscType && masterEquipmentList.get(pos).hasFlag(MiscType.F_ENDO_STEEL)) {
+            if ((masterEquipmentList.get(pos) instanceof MiscType) && masterEquipmentList.get(pos).hasFlag(MiscType.F_ENDO_STEEL)) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -224,25 +224,21 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         return equipmentTable;
     }
 
-    @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public void mouseEntered(MouseEvent e) {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public void mouseExited(MouseEvent e) {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
@@ -251,7 +247,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
             String[] locations;
 
-            locations = Tank.LOCATION_NAMES;
+            locations = unit.getLocationNames();
 
             for (int location = 0; location < getTank().locations(); location++) {
 
@@ -270,7 +266,6 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
     }
 
-    @Override
     public void mouseReleased(MouseEvent e) {
         // TODO Auto-generated method stub
 

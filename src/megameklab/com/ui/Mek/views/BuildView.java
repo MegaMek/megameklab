@@ -34,13 +34,11 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import megamek.common.AmmoType;
-import megamek.common.BipedMech;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.QuadMech;
 import megamek.common.weapons.Weapon;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
@@ -262,16 +260,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             Mounted eq = UnitUtil.getMounted(unit, ((EquipmentType) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT)).getInternalName());
 
             final int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
-            String[] locations;
-            String[] abbrLocations;
-
-            if (unit instanceof BipedMech) {
-                locations = BipedMech.LOCATION_NAMES;
-                abbrLocations = BipedMech.LOCATION_NAMES;
-            } else {
-                locations = QuadMech.LOCATION_NAMES;
-                abbrLocations = QuadMech.LOCATION_NAMES;
-            }
+            String[] locations = unit.getLocationNames();
+            String[] abbrLocations = unit.getLocationAbbrs();
 
             if (eq.getType().isSpreadable() || eq.isSplitable()) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMech());
