@@ -36,6 +36,10 @@ import megamek.common.weapons.ISHGaussRifle;
 import megamek.common.weapons.ISPlasmaRifle;
 import megamek.common.weapons.ISSilverBulletGauss;
 import megamek.common.weapons.ISSnubNosePPC;
+import megamek.common.weapons.ISThunderBolt10;
+import megamek.common.weapons.ISThunderBolt15;
+import megamek.common.weapons.ISThunderBolt20;
+import megamek.common.weapons.ISThunderBolt5;
 import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MGWeapon;
@@ -79,9 +83,9 @@ public class StringUtils {
             } else if (weapon.getDamage() < 0) {
                 if (weapon instanceof SRMWeapon) {
                     info = "2/Msl [M,C]";
-                } else if (weapon instanceof LRMWeapon || weapon instanceof RLWeapon) {
+                } else if ((weapon instanceof LRMWeapon)) {
                     info = "1/Msl [M,C,S]";
-                } else if (weapon instanceof MRMWeapon) {
+                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
@@ -98,7 +102,15 @@ public class StringUtils {
                     info = Integer.toString(weapon.getRackSize());
                     info += "[AE,S,F]";
                 } else if (weapon instanceof ThunderBoltWeapon) {
-                    info = Integer.toString(weapon.getRackSize());
+                    if (weapon instanceof ISThunderBolt5) {
+                        info = "5";
+                    } else if (weapon instanceof ISThunderBolt10) {
+                        info = "10";
+                    } else if (weapon instanceof ISThunderBolt15) {
+                        info = "15";
+                    } else if (weapon instanceof ISThunderBolt20) {
+                        info = "20";
+                    }
                     info += "[M]";
                 } else if (weapon instanceof NarcWeapon) {
                     info = "[M]";
@@ -116,7 +128,7 @@ public class StringUtils {
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
                     info += "DB,";
                 }
-                if (UnitUtil.isAMS(weapon) || weapon instanceof BPodWeapon) {
+                if (UnitUtil.isAMS(weapon) || (weapon instanceof BPodWeapon)) {
                     info += "PD,";
                 } else if (weapon instanceof PulseLaserWeapon) {
                     info += "P,";
@@ -138,7 +150,7 @@ public class StringUtils {
                     info += "R,";
                 }
 
-                if (weapon instanceof MGWeapon || weapon instanceof BPodWeapon) {
+                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon)) {
                     info += "AI,";
                 }
 
@@ -157,13 +169,13 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
-        } else if (mount.getType() instanceof MiscType && (mount.getType().hasFlag(MiscType.F_CLUB) || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
+        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_CLUB) || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
             if (mount.getType().hasSubType(MiscType.S_CLAW) || mount.getType().hasSubType(MiscType.S_CLAW_THB)) {
                 info = Integer.toString((int) Math.ceil(unit.getWeight() / 7.0));
             } else {
                 info = Integer.toString(ClubAttackAction.getDamageFor(unit, mount, false));
             }
-        } else if (mount.getType() instanceof MiscType && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
+        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
             info = "[PD,OS,AI]";
         } else {
             info = "  [E]";

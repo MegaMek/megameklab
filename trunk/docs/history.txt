@@ -17,6 +17,9 @@ V 0.0.0.15-Dev
 + Added new diamond image for Shield.
 + Updated code to use new MegaMek Equipment Flags
 + New MegaMek.jar
++ Bug: Thunderbolt damage not displaying correctly
++ Bug: Rocket Launchers showing switchable ammo
++ New MegaMek.jar
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.
