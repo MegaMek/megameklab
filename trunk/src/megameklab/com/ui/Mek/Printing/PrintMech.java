@@ -92,7 +92,7 @@ public class PrintMech implements Printable {
         printMekImage(g2d, hud);
         if (mech.hasShield()) {
 
-            if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0 && UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0) {
+            if ((UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) && (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0)) {
                 g2d.drawImage(ImageHelper.getShieldImage(), 382, 18, 193, 351, null, null);
             } else if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) {
                 g2d.drawImage(ImageHelper.getRightShieldImage(), 382, 18, 193, 351, null, null);
@@ -290,7 +290,7 @@ public class PrintMech implements Printable {
             g2d.drawString(armorName, 461, 249);
         }
 
-        if (mech.getSource() != null && mech.getSource().trim().length() > 0) {
+        if ((mech.getSource() != null) && (mech.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
@@ -1356,7 +1356,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     * 
+     *
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
@@ -1449,7 +1449,7 @@ public class PrintMech implements Printable {
 
                 if (m.isRearMounted()) {
                     critName.append("(R)");
-                } else if (m.getType() instanceof MiscType && (m.getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
+                } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                     critName.append("[OOOOOOOOOO]");
                 } else if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                     AmmoType ammo = (AmmoType) m.getType();
@@ -1623,7 +1623,7 @@ public class PrintMech implements Printable {
 
     private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {
         pipPoints.trimToSize();
-        float pipSpace = (float) pipPoints.size() / totalArmor;
+        float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
             ImageHelper.drawArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
@@ -1635,7 +1635,7 @@ public class PrintMech implements Printable {
 
     private void printISPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {
         pipPoints.trimToSize();
-        float pipSpace = (float) pipPoints.size() / totalArmor;
+        float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
             ImageHelper.drawISPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);

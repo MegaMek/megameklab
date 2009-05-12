@@ -335,11 +335,11 @@ public class ImageHelper {
 
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
-                if (eqi.c3Level == eqi.C3I) {
+                if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3S) {
+                } else if (eqi.c3Level == EquipmentInfo.C3S) {
                     ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3M) {
+                } else if (eqi.c3Level == EquipmentInfo.C3M) {
                     ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
@@ -615,11 +615,11 @@ public class ImageHelper {
 
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
-                if (eqi.c3Level == eqi.C3I) {
+                if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3S) {
+                } else if (eqi.c3Level == EquipmentInfo.C3S) {
                     ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3M) {
+                } else if (eqi.c3Level == EquipmentInfo.C3M) {
                     ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
@@ -829,11 +829,11 @@ public class ImageHelper {
 
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
-                if (eqi.c3Level == eqi.C3I) {
+                if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3S) {
+                } else if (eqi.c3Level == EquipmentInfo.C3S) {
                     ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3M) {
+                } else if (eqi.c3Level == EquipmentInfo.C3M) {
                     ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
@@ -1178,11 +1178,11 @@ public class ImageHelper {
 
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
-                if (eqi.c3Level == eqi.C3I) {
+                if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3S) {
+                } else if (eqi.c3Level == EquipmentInfo.C3S) {
                     ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3M) {
+                } else if (eqi.c3Level == EquipmentInfo.C3M) {
                     ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
@@ -1346,11 +1346,11 @@ public class ImageHelper {
 
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
-                if (eqi.c3Level == eqi.C3I) {
+                if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3S) {
+                } else if (eqi.c3Level == EquipmentInfo.C3S) {
                     ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == eqi.C3M) {
+                } else if (eqi.c3Level == EquipmentInfo.C3M) {
                     ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
