@@ -350,13 +350,13 @@ public class EquipmentView extends IView implements ActionListener {
             tonnageAmount = EquipmentType.get(equip).getTonnage(unit);
             tonnageAmount /= 8;
         }
-        if (equip.equals(UnitUtil.TRACKS) && (crits > 1)) {
+        if ((equip.equals(UnitUtil.TRACKS) || equip.equals(UnitUtil.TALONS)) && (crits > 1)) {
             tonnageAmount = EquipmentType.get(equip).getTonnage(unit) / EquipmentType.get(equip).getCriticals(unit);
         }
 
         for (; crits > 0; crits--) {
             try {
-                if ((equip.equals(UnitUtil.ENVIROSEAL) || equip.equals(UnitUtil.TRACKS)) && (crits > 1)) {
+                if ((equip.equals(UnitUtil.ENVIROSEAL) || equip.equals(UnitUtil.TRACKS) || equip.equals(UnitUtil.TALONS)) && (crits > 1)) {
                     Mounted mount = new Mounted(unit, EquipmentType.get(equip));
                     mount.getType().setTonnage(tonnageAmount);
                     getMech().addEquipment(mount, Entity.LOC_NONE, false);

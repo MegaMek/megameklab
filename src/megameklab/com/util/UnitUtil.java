@@ -159,6 +159,7 @@ public class UnitUtil {
             UnitUtil.removeCrits(mech, UnitUtil.TRACKS);
             UnitUtil.removeMounts(mech, UnitUtil.TRACKS);
         } else if (mount.getName().equals(UnitUtil.TALONS)) {
+            EquipmentType.get(UnitUtil.TALONS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
             UnitUtil.removeCrits(mech, UnitUtil.TALONS);
             UnitUtil.removeMounts(mech, UnitUtil.TALONS);
         } else {
@@ -238,6 +239,10 @@ public class UnitUtil {
             EquipmentType.get(UnitUtil.TRACKS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
             UnitUtil.removeCrits(mech, UnitUtil.TRACKS);
             UnitUtil.removeMounts(mech, UnitUtil.TRACKS);
+        } else if (equipment.getName().equals(UnitUtil.TALONS)) {
+            EquipmentType.get(UnitUtil.TALONS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+            UnitUtil.removeCrits(mech, UnitUtil.TALONS);
+            UnitUtil.removeMounts(mech, UnitUtil.TALONS);
         } else {
             UnitUtil.removeCriticals(mech, equipment);
             mech.getEquipment().remove(equipment);
