@@ -45,9 +45,9 @@ public class EquipmentInfo {
 
     public int c3Level = 0;
 
-    public int C3S = 1;
-    public int C3M = 2;
-    public int C3I = 3;
+    public static int C3S = 1;
+    public static int C3M = 2;
+    public static int C3I = 3;
 
     /**
      * base class.
@@ -97,17 +97,17 @@ public class EquipmentInfo {
             heat = weapon.getHeat();
             secondaryLocation = mount.getSecondLocation();
 
-        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I)) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
-        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S)) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3S)) {
             c3Level = C3S;
-        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_ECM)) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ECM)) {
             if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
                 longRange = 4;
             } else {
                 longRange = 6;
             }
-        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_BAP)) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BAP)) {
             if (mount.getType().getInternalName().equals(Sensor.BAP)) {
                 longRange = 4;
             } else if (mount.getType().getInternalName().equals(Sensor.BLOODHOUND)) {
@@ -152,17 +152,17 @@ public class EquipmentInfo {
             longRange = weapon.longRange;
             heat = weapon.getHeat();
             secondaryLocation = mount.getSecondLocation();
-        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3I)) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
-        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_C3S)) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3S)) {
             c3Level = C3S;
-        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_ECM)) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ECM)) {
             if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
                 longRange = 4;
             } else {
                 longRange = 6;
             }
-        } else if (mount.getType() instanceof MiscType && mount.getType().hasFlag(MiscType.F_BAP)) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BAP)) {
             if (mount.getType().getInternalName().equals(Sensor.BAP)) {
                 longRange = 4;
             } else if (mount.getType().getInternalName().equals(Sensor.BLOODHOUND)) {
