@@ -31,9 +31,7 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.QuadMech;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -68,6 +66,9 @@ public class CriticalTransferHandler extends TransferHandler {
 
                 Mounted eq = UnitUtil.getMounted(unit, mountName);
 
+                /*
+                 * commented out for now, because quads can mount stuff like spot welders
+                 * TODO: find a better way to do this
                 if (eq.getType() instanceof MiscType && (eq.getType().hasFlag(MiscType.F_CLUB) || eq.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
                     if (unit instanceof QuadMech) {
                         JOptionPane.showMessageDialog(null, "Quads Cannot use Physcial Weapons!", "Not Physicals For Quads", JOptionPane.INFORMATION_MESSAGE);
@@ -79,9 +80,10 @@ public class CriticalTransferHandler extends TransferHandler {
                         return false;
                     }
                 }
+                */
 
                 int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
-                if ((eq.getType().isSpreadable() || eq.isSplitable()) && totalCrits > 1) {
+                if ((eq.getType().isSpreadable() || eq.isSplitable()) && (totalCrits > 1)) {
                     int critsUsed = 0;
                     int primaryLocation = location;
                     int nextLocation = unit.getTransferLocation(location);
@@ -159,7 +161,7 @@ public class CriticalTransferHandler extends TransferHandler {
                         }
                     }
                     // No big splitables in the head!
-                    if (emptyCrits < totalCrits && (nextLocation == Entity.LOC_DESTROYED || (unit.getEmptyCriticals(location) + unit.getEmptyCriticals(nextLocation) < totalCrits))) {
+                    if ((emptyCrits < totalCrits) && ((nextLocation == Entity.LOC_DESTROYED) || (unit.getEmptyCriticals(location) + unit.getEmptyCriticals(nextLocation) < totalCrits))) {
                         throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());
                     }
                     for (; critsUsed < totalCrits; critsUsed++) {
