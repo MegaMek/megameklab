@@ -255,7 +255,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         tab.add(laserAmmoScroll);
         tab.add(laserAmmoAddButton);
         SpringLayoutHelper.setupSpringGrid(tab, 1);
-        leftPanel.addTab("Laser", tab);
+        leftPanel.addTab("Energy", tab);
 
         tab = new JPanel();
         tab.setLayout(new SpringLayout());
@@ -332,7 +332,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     continue;
                 }
                 masterPhysicalWeaponList.add(eq);
-            } else if ((eq instanceof MiscType && eq.hasFlag(MiscType.F_AP_POD))) {
+            } else if (((eq instanceof MiscType) && eq.hasFlag(MiscType.F_AP_POD))) {
                 masterBallisticWeaponList.add(eq);
             }
         }
