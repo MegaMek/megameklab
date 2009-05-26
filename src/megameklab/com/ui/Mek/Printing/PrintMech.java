@@ -957,63 +957,65 @@ public class PrintMech implements Printable {
 
         Dimension fillCircle = new Dimension(4, 4);
 
-        if (mech.getArmor(Mech.LOC_HEAD) >= 1) {
+        int totalArmor = mech.getArmor(Mech.LOC_HEAD);
+
+        if (totalArmor >= 9) {
             g2d.setColor(Color.white);
             g2d.fillOval(476, 68, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 475, 73);
         }
 
-        if (mech.getArmor(Mech.LOC_HEAD) >= 2) {
+        if (totalArmor >= 8) {
             g2d.setColor(Color.white);
             g2d.fillOval(473, 74, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 472, 79);
         }
 
-        if (mech.getArmor(Mech.LOC_HEAD) >= 3) {
+        if (totalArmor >= 7) {
             g2d.setColor(Color.white);
             g2d.fillOval(479, 74, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 478, 79);
         }
 
-        if (mech.getArmor(Mech.LOC_HEAD) >= 4) {
+        if (totalArmor >= 6) {
             g2d.setColor(Color.white);
             g2d.fillOval(470, 79, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 469, 84);
         }
 
-        if (mech.getArmor(Mech.LOC_HEAD) >= 5) {
+        if (totalArmor >= 5) {
             g2d.setColor(Color.white);
             g2d.fillOval(476, 79, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 475, 84);
         }
 
-        if (mech.getArmor(Mech.LOC_HEAD) >= 6) {
+        if (totalArmor >= 4) {
             g2d.setColor(Color.white);
             g2d.fillOval(482, 79, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 481, 84);
         }
 
-        if (mech.getArmor(Mech.LOC_HEAD) >= 7) {
+        if (totalArmor >= 3) {
             g2d.setColor(Color.white);
             g2d.fillOval(470, 85, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 469, 90);
         }
 
-        if (mech.getArmor(Mech.LOC_HEAD) >= 8) {
+        if (totalArmor >= 2) {
             g2d.setColor(Color.white);
             g2d.fillOval(476, 85, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 475, 90);
         }
 
-        if (mech.getArmor(Mech.LOC_HEAD) >= 9) {
+        if (totalArmor >= 1) {
             g2d.setColor(Color.white);
             g2d.fillOval(482, 85, fillCircle.width, fillCircle.height);
             g2d.setColor(Color.black);
@@ -1356,7 +1358,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     *
+     * 
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location

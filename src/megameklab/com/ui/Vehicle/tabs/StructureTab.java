@@ -388,10 +388,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         engineType.removeAllItems();
                         techLevel.removeAllItems();
 
-                        for (String item : isEngineTypes) {
-                            engineType.addItem(item);
-                        }
-
+                        updateEngineTypes();
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
@@ -404,9 +401,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         engineType.removeAllItems();
                         techLevel.removeAllItems();
 
-                        for (String item : isEngineTypes) {
-                            engineType.addItem(item);
-                        }
+                        updateEngineTypes();
 
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);

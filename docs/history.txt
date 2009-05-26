@@ -25,6 +25,8 @@ V 0.0.0.15-Dev
 + disable no-physical-weapons-on quad check for now, because quads can mount
     some construction equipment that also acts as a physical weapon.
     need to figure out a better way to do this
++ Bug: Proto MG Ammo showing up in Ammo Display
++ New MegaMek.jar
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.
