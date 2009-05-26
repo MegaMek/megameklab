@@ -125,7 +125,7 @@ public class ArmorView extends IView implements ChangeListener {
         armorFieldList.add(rearArmorField);
         armorFieldList.add(turretArmorField);
 
-        Dimension size = new Dimension(35, 20);
+        Dimension size = new Dimension(45, 20);
         for (JSpinner spinner : armorFieldList) {
             spinner.setToolTipText("Front Armor");
             spinner.setSize(size);
@@ -140,7 +140,7 @@ public class ArmorView extends IView implements ChangeListener {
         armorMaxLabelList.add(rearArmorMaxLabel);
         armorMaxLabelList.add(turretArmorMaxLabel);
 
-        Dimension labelSize = new Dimension(15, 20);
+        Dimension labelSize = new Dimension(25, 20);
         for (JLabel label : armorMaxLabelList) {
             label.setSize(labelSize);
             label.setMaximumSize(labelSize);
@@ -243,9 +243,9 @@ public class ArmorView extends IView implements ChangeListener {
 
     public void refresh() {
         removeAllListeners();
+        int maxArmor = UnitUtil.getArmorPoints(unit, UnitUtil.getMaximumArmorTonnage(unit));
         for (int location = 0; location < unit.locations(); location++) {
 
-            int maxArmor = unit.getOInternal(location) * 2;
             switch (location) {
             case Tank.LOC_FRONT:
                 frontArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
@@ -286,9 +286,9 @@ public class ArmorView extends IView implements ChangeListener {
         }
 
         currentArmorLabel.setText(Integer.toString(unit.getTotalOArmor()));
-        // Total Possible armor is Internal*2 +3 for the extra 3 armor the head
+        // Total Possible armor is unit weight * 3.5 + 40
         // can support.
-        maxArmorLabel.setText(Integer.toString((unit.getTotalOInternal() * 2) + 3));
+        maxArmorLabel.setText(Integer.toString(maxArmor));
         // unallocated armorpoints
         unallocatedPointsField.setText(Integer.toString(UnitUtil.getArmorPoints(unit, unit.getArmorWeight()) - unit.getTotalOArmor()));
         addAllListeners();
@@ -300,100 +300,42 @@ public class ArmorView extends IView implements ChangeListener {
 
     public void allocateArmor(double tons) {
         double pointsToAllocate = UnitUtil.getArmorPoints(unit, tons);
-        double totalArmor = (unit.getTotalOInternal() * 2) + 3;
-        if (pointsToAllocate > totalArmor) {
-            pointsToAllocate = totalArmor;
-        }
-        double percent = pointsToAllocate / totalArmor;
-        // put 5 times the percentage of total possible armor into the head
-        for (int location = 0; location < unit.locations(); location++) {
-            double IS = (unit.getInternal(location) * 2);
-            double allocate = Math.min(IS * percent, pointsToAllocate);
-            unit.initializeArmor((int) allocate, location);
-            pointsToAllocate -= (int) allocate;
-            break;
-        }
-        allocateLeftoverPoints(pointsToAllocate);
 
+        for (int location = 0; location < unit.locations(); location++) {
+            unit.initializeArmor(0, location);
+        }
+
+        while (pointsToAllocate > 0) {
+            for (int location = 1; location < unit.locations(); location++) {
+
+                int points = unit.getOArmor(location);
+                if (location == Tank.LOC_FRONT && pointsToAllocate >= 2) {
+                    unit.initializeArmor(++points, location);
+                    pointsToAllocate--;
+                }
+                unit.initializeArmor(++points, location);
+                if (--pointsToAllocate < 1) {
+                    break;
+                }
+            }
+
+        }
         refresh();
         if (refresh != null) {
             refresh.refreshStatus();
         }
     }
 
-    /**
-     * allocate any leftover points one-by-one
-     * 
-     * @param points
-     *            the amount of points left over
-     */
-    private void allocateLeftoverPoints(double points) {
-        /*
-         * while (points >= 1) { // if two or more are left, add armor to
-         * symmetrical locations, // to torso, legs, arms, in that order if
-         * (points >= 2) { if ((unit.getOArmor(Tank.LOC_LT) +
-         * unit.getOArmor(Tank.LOC_LT, true) < (unit.getOInternal(Tank.LOC_LT)
-         * 2)) && (unit.getOArmor(Tank.LOC_RT) + unit.getOArmor(Tank.LOC_RT,
-         * true) < (unit.getOInternal(Tank.LOC_RT) 2))) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_LT) + 1, Tank.LOC_LT);
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_RT) + 1, Tank.LOC_RT);
-         * points -= 2; } else if ((unit.getOArmor(Tank.LOC_LLEG) <
-         * (unit.getOInternal(Tank.LOC_LLEG) 2)) &&
-         * (unit.getOArmor(Tank.LOC_RLEG) < (unit.getOInternal(Tank.LOC_RLEG)
-         * 2))) { unit.initializeArmor(unit.getOArmor(Tank.LOC_LLEG) + 1,
-         * Tank.LOC_LLEG); unit.initializeArmor(unit.getOArmor(Tank.LOC_RLEG) +
-         * 1, Tank.LOC_RLEG); points -= 2; } else if
-         * ((unit.getOArmor(Tank.LOC_LARM) < (unit.getOInternal(Tank.LOC_LARM)
-         * 2)) && (unit.getOArmor(Tank.LOC_RARM) <
-         * (unit.getOInternal(Tank.LOC_RARM) 2))) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_LARM) + 1,
-         * Tank.LOC_LARM); unit.initializeArmor(unit.getOArmor(Tank.LOC_RARM) +
-         * 1, Tank.LOC_RARM); points -= 2; } // otherwise, first add to the
-         * head, and then even out uneven // allocation } else if
-         * (unit.getOArmor(Tank.LOC_HEAD) < 9) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_HEAD) + 1,
-         * Tank.LOC_HEAD); points--; } else if (unit.getOArmor(Tank.LOC_LT) <
-         * unit.getOArmor(Tank.LOC_RT)) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_LT) + 1, Tank.LOC_LT);
-         * points--; } else if (unit.getOArmor(Tank.LOC_RT) <
-         * unit.getOArmor(Tank.LOC_LT)) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_RT) + 1, Tank.LOC_RT);
-         * points--; } else if (unit.getOArmor(Tank.LOC_RARM) <
-         * unit.getOArmor(Tank.LOC_LARM)) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_RARM) + 1,
-         * Tank.LOC_RARM); points--; } else if (unit.getOArmor(Tank.LOC_LARM) <
-         * unit.getOArmor(Tank.LOC_RARM)) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_LARM) + 1,
-         * Tank.LOC_LARM); points--; } else if (unit.getOArmor(Tank.LOC_RLEG) <
-         * unit.getArmor(Tank.LOC_LLEG)) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_RLEG) + 1,
-         * Tank.LOC_RLEG); points--; } else if (unit.getOArmor(Tank.LOC_LLEG) <
-         * unit.getOArmor(Tank.LOC_RLEG)) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_LLEG) + 1,
-         * Tank.LOC_LLEG); points--; // if nothing is uneven, add to the CT }
-         * else if ((unit.getOArmor(Tank.LOC_CT) + unit.getOArmor(Tank.LOC_CT,
-         * true) < (unit.getOInternal(Tank.LOC_CT) 2))) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_CT) + 1, Tank.LOC_CT);
-         * points--; } // if only one is left, and head and CT have max, remove
-         * one from CT // so symmetric locations can get extra, unless they are
-         * already at // max if (points == 1) { if
-         * ((unit.getOArmor(Tank.LOC_HEAD) == 9) &&
-         * ((unit.getOArmor(Tank.LOC_CT) + unit.getOArmor(Tank.LOC_CT, true)) ==
-         * unit.getOInternal(Tank.LOC_CT) 2)) {
-         * unit.initializeArmor(unit.getOArmor(Tank.LOC_CT) - 1, Tank.LOC_CT);
-         * points++; } } // if all locations have max, return boolean toReturn =
-         * true; for (int location = 0; location < unit.locations(); location++)
-         * { double is = (unit.getInternal(location) 2); if (is >
-         * unit.getOArmor(location)) { toReturn = false; } } if (toReturn) {
-         * return; } }
-         */
-    }
-
     public void stateChanged(ChangeEvent e) {
         JSpinner field = (JSpinner) e.getSource();
+
         int location = Integer.parseInt(field.getName());
         int value = (Integer) field.getModel().getValue();
-        unit.initializeArmor(value, location);
+        if (unit.getTotalOArmor() == UnitUtil.getArmorPoints(unit, UnitUtil.getMaximumArmorTonnage(unit)) && unit.getOArmor(location) < value) {
+            field.getModel().setValue(unit.getOArmor(location));
+        } else {
+            unit.initializeArmor(value, location);
+        }
         if (refresh != null) {
             refresh.refreshStatus();
         }

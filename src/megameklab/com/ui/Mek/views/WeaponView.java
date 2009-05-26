@@ -704,7 +704,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 Vector<String> equipmentList = new Vector<String>();
                 if (weapon.getAmmoType() != AmmoType.T_NA) {
                     for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                        if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                        if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !ammo.hasFlag(AmmoType.F_PROTOMECH)) {
                             subLaserAmmoList.add(ammo);
                             equipmentList.add(ammo.getInternalName());
                         }
@@ -720,7 +720,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !weapon.hasFlag(WeaponType.F_ONESHOT) && !ammo.hasFlag(AmmoType.F_PROTOMECH)) {
                         subMissileAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }
@@ -734,7 +734,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !ammo.hasFlag(AmmoType.F_PROTOMECH)) {
                         subBallisticAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }
@@ -748,7 +748,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel()) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !ammo.hasFlag(AmmoType.F_PROTOMECH)) {
                         subArtilleryAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }

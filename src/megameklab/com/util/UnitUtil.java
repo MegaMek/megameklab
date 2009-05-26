@@ -768,13 +768,28 @@ public class UnitUtil {
     public static double getMaximumArmorTonnage(Entity unit) {
 
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());
+        double armorWeight = 0;
+
         if (unit.getArmorType() == EquipmentType.T_ARMOR_HARDENED) {
             armorPerTon = 8.0;
         }
-        double points = (unit.getTotalInternal() * 2) + 3;
-        double armorWeight = points / armorPerTon;
-        armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
+        if (unit instanceof Mech) {
+            double points = (unit.getTotalInternal() * 2) + 3;
+            armorWeight = points / armorPerTon;
+            armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
+        } else if (unit instanceof Tank) {
+            armorWeight = Math.floor((unit.getWeight() * 3.5) + 40);
+            armorWeight /= armorPerTon;
+            armorWeight *= 10;
+            armorWeight = Math.ceil(armorWeight);
 
+            if (armorWeight % 5 != 0) {
+                armorWeight += 5 - (armorWeight % 5);
+            }
+
+            armorWeight /= 10;
+
+        }
         return armorWeight;
     }
 
