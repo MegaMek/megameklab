@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -51,7 +51,7 @@ public class PrintAdvancedMech implements Printable {
     private int startMounty = 0;
     private int endMountx = 0;
     private int endMounty = 0;
-    
+
     public PrintAdvancedMech(Image image, ArrayList<Mech>list) {
         awtImage = image;
         mechList = list;
@@ -61,8 +61,9 @@ public class PrintAdvancedMech implements Printable {
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex >= 1)
+        if (pageIndex >= 1) {
             return Printable.NO_SUCH_PAGE;
+        }
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         printImage(g2d, awtImage, pageFormat);
@@ -71,9 +72,10 @@ public class PrintAdvancedMech implements Printable {
 
     public void printImage(Graphics2D g2d, Image image, PageFormat pageFormat) {
         //System.out.println("printImage(Graphics2D g2d, Image image)");
-        if ( g2d == null )
+        if ( g2d == null ) {
             return;
-        
+        }
+
         //g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(), (int)pageFormat.getImageableHeight(), null);
         g2d.drawImage(image, 18, 18, 558, 738, null);
 
@@ -89,7 +91,7 @@ public class PrintAdvancedMech implements Printable {
         printHeadCrits(g2d);
         printLLCrits(g2d);
         printRLCrits(g2d);
-        
+
         // Armor Pips
         printLAArmor(g2d);
         printRAArmor(g2d);
@@ -102,7 +104,7 @@ public class PrintAdvancedMech implements Printable {
         printRTRArmor(g2d);
         printCTRArmor(g2d);
         printHeadArmor(g2d);
-        
+
         //Internal Pips
         printLAStruct(g2d);
         printRAStruct(g2d);
@@ -112,7 +114,7 @@ public class PrintAdvancedMech implements Printable {
         printHeadStruct(g2d);
         printLLStruct(g2d);
         printRLStruct(g2d);
-        
+
         g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
         g2d.scale(pageFormat.getImageableWidth(),pageFormat.getImageableHeight());
 
@@ -221,7 +223,7 @@ public class PrintAdvancedMech implements Printable {
             g2d.fillRoundRect(297, 338, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
             break;
         }
-        
+
         if ( UnitUtil.hasCompactHeatSinks(mech) ) {
             g2d.fillRoundRect(367, 355, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }else if ( mech.hasLaserHeatSinks() ) {
@@ -231,7 +233,7 @@ public class PrintAdvancedMech implements Printable {
         }else {
             g2d.fillRoundRect(297, 352, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }
-        
+
         if (mech.isClan()) {
             g2d.fillRoundRect(209, 146, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         } else {
@@ -241,12 +243,12 @@ public class PrintAdvancedMech implements Printable {
         if (mech.isMixedTech()) {
             g2d.fillRoundRect(209, 166, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         }
-        
+
         // Cost/BV
         g2d.drawString(Integer.toString(mech.calculateBattleValue(true,true)), 159, 359);
 
         DecimalFormat myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(mech.getCost()) + " C-Bills", 52, 359);
+        g2d.drawString(myFormatter.format(mech.getCost(true)) + " C-Bills", 52, 359);
     }
 
     private void printHeatSinks(Graphics2D g2d) {
@@ -295,7 +297,7 @@ public class PrintAdvancedMech implements Printable {
         int lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_LARM, lineStart, linePoint, lineFeed);
-        
+
     }
 
     private void printRACrits(Graphics2D g2d) {
@@ -382,10 +384,10 @@ public class PrintAdvancedMech implements Printable {
 
                 pj.setPrintable(this, pageFormat);
                 for ( Mech currentMech : mechList ) {
-                    
-                    this.mech = currentMech;
+
+                    mech = currentMech;
                     pj.setJobName(mech.getChassis() + " " + mech.getModel());
-    
+
                     pj.print();
                 }
 
@@ -585,7 +587,7 @@ public class PrintAdvancedMech implements Printable {
                 centerColumn.width += pipShift.width;
             }
 
-            if (pos == 7 || pos == 8) {
+            if ((pos == 7) || (pos == 8)) {
                 centerColumn.height++;
             }
         }
@@ -654,7 +656,7 @@ public class PrintAdvancedMech implements Printable {
                 centerColumn.width += pipShift.width;
             }
 
-            if (pos == 7 || pos == 8) {
+            if ((pos == 7) || (pos == 8)) {
                 centerColumn.height++;
             }
         }
@@ -709,13 +711,13 @@ public class PrintAdvancedMech implements Printable {
         Dimension middleColumn = new Dimension(452, 120);
         Dimension bottomColumn = new Dimension(437, 155);
         Dimension pipShift = new Dimension(6, 7);
-    
+
         int totalArmor = mech.getArmor(Mech.LOC_LT);
-    
+
         int pips = Math.min(25, totalArmor);
-    
+
         totalArmor -= pips;
-    
+
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(topColumn.width, topColumn.height, circle.width, circle.width);
             topColumn.width += pipShift.width;
@@ -725,13 +727,13 @@ public class PrintAdvancedMech implements Printable {
                 topColumn.width += pipShift.width;
             }
         }
-    
+
         if (totalArmor < 1) {
             return;
         }
-    
+
         pips = Math.min(10, totalArmor);
-    
+
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(middleColumn.width, middleColumn.height, circle.width, circle.width);
@@ -742,17 +744,17 @@ public class PrintAdvancedMech implements Printable {
                 pipShift.width *= -1;
                 middleColumn.width += pipShift.width;
             }
-    
+
         }
-    
+
         if (totalArmor < 1) {
             return;
         }
-    
+
         pips = Math.min(7, totalArmor);
-    
+
         totalArmor -= pips;
-    
+
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(bottomColumn.width, bottomColumn.height, circle.width, circle.width);
             bottomColumn.width += pipShift.width;
@@ -766,7 +768,7 @@ public class PrintAdvancedMech implements Printable {
                 bottomColumn.width--;
             }
         }
-    
+
     }
 
     private void printLTRArmor(Graphics2D g2d) {
@@ -886,7 +888,7 @@ public class PrintAdvancedMech implements Printable {
                 pipShift.width *= -1;
                 if ( pos >= 30 ) {
                     topColumn.width += pipShift.width;
-                } 
+                }
             }
         }
     }
@@ -1036,32 +1038,32 @@ public class PrintAdvancedMech implements Printable {
             }
         }
     }
-    
+
     private void printLAStruct(Graphics2D g2d) {
         Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension column = new Dimension(419, 409);
         Dimension pipShift = new Dimension(4, 4);
-    
+
         int totalArmor = mech.getInternal(Mech.LOC_LARM);
-    
+
         int pips = Math.min(16, totalArmor);
-    
+
         totalArmor -= pips;
-    
+
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
             column.height += pipShift.height;
             pipShift.width *= -1;
             column.width += pipShift.width;
-    
+
             if ( pos % 4 == 0 ) {
                 column.width -= 2;
             }
-            
+
         }
-        
+
         if ( totalArmor > 0 ) {
             column.height += pipShift.height;
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
@@ -1090,22 +1092,22 @@ public class PrintAdvancedMech implements Printable {
             if ( pos % 4 == 0 ) {
                 column.width -= 3;
             }
-            
+
         }
-        
+
         if ( totalArmor < 1 ) {
             return;
         }
-        
+
         pips = Math.min(2, totalArmor);
 
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
-            column.height += pipShift.height+2;            
+            column.height += pipShift.height+2;
         }
-        
+
         if ( totalArmor < 1 ) {
             return;
         }
@@ -1136,22 +1138,22 @@ public class PrintAdvancedMech implements Printable {
             if ( pos % 4 == 0 ) {
                 column.width += 3;
             }
-            
+
         }
-        
+
         if ( totalArmor < 1 ) {
             return;
         }
-        
+
         pips = Math.min(2, totalArmor);
 
         totalArmor -= pips;
 
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
-            column.height += pipShift.height+2;            
+            column.height += pipShift.height+2;
         }
-        
+
         if ( totalArmor < 1 ) {
             return;
         }
@@ -1182,9 +1184,9 @@ public class PrintAdvancedMech implements Printable {
             if ( pos % 4 == 0 ) {
                 column.width += 2;
             }
-            
+
         }
-        
+
         if ( totalArmor > 0 ) {
             column.height += pipShift.height;
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
@@ -1213,9 +1215,9 @@ public class PrintAdvancedMech implements Printable {
                 pipShift.width *= -1;
                 column.width += pipShift.width;
             }
-            
+
         }
-        
+
         if ( totalArmor < 1 ) {
             return;
         }
@@ -1257,7 +1259,7 @@ public class PrintAdvancedMech implements Printable {
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
             column.height += pipShift.height;
         }
-        
+
         if ( totalArmor < 1 ) {
             return;
         }
@@ -1270,7 +1272,7 @@ public class PrintAdvancedMech implements Printable {
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
             column.width += pipShift.width;
-            
+
             if ( pos % 2 == 0 ) {
                 pipShift.width *= -1;
                 column.height += pipShift.height;
@@ -1278,7 +1280,7 @@ public class PrintAdvancedMech implements Printable {
         }
 
     }
-    
+
     private void printRTStruct(Graphics2D g2d) {
         Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
@@ -1301,9 +1303,9 @@ public class PrintAdvancedMech implements Printable {
                 pipShift.width *= -1;
                 column.width += pipShift.width;
             }
-            
+
         }
-        
+
         if ( totalArmor < 1 ) {
             return;
         }
@@ -1312,7 +1314,7 @@ public class PrintAdvancedMech implements Printable {
 
         totalArmor -= pips;
 
-        
+
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
             column.height += pipShift.height;
@@ -1345,7 +1347,7 @@ public class PrintAdvancedMech implements Printable {
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
             column.height += pipShift.height;
         }
-        
+
         if ( totalArmor < 1 ) {
             return;
         }
@@ -1358,7 +1360,7 @@ public class PrintAdvancedMech implements Printable {
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
             column.width += pipShift.width;
-            
+
             if ( pos % 2 == 0 ) {
                 pipShift.width *= -1;
                 column.height += pipShift.height;
@@ -1389,9 +1391,9 @@ public class PrintAdvancedMech implements Printable {
                 pipShift.width *= -1;
                 column.width += pipShift.width;
             }
-            
+
         }
-        
+
         if ( totalArmor < 1 ) {
             return;
         }
@@ -1402,7 +1404,7 @@ public class PrintAdvancedMech implements Printable {
 
         column.height += pipShift.height;
         column.width += pipShift.width/2;
-        
+
         for (int pos = 1; pos <= pips; pos++) {
             g2d.drawOval(column.width, column.height, circle.width, circle.width);
             column.width += pipShift.width;
@@ -1413,12 +1415,12 @@ public class PrintAdvancedMech implements Printable {
             }
         }
     }
-    
+
     private void printHeadStruct(Graphics2D g2d) {
         Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
-        
+
         g2d.drawOval(462, 398, circle.width, circle.width);
         g2d.drawOval(458, 405, circle.width, circle.width);
         g2d.drawOval(467, 405, circle.width, circle.width);
@@ -1433,7 +1435,7 @@ public class PrintAdvancedMech implements Printable {
             endMountx = endx;
             endMounty = endy;
         }
-        else if ( startingMount == null && UnitUtil.getCritsUsed(mech, m.getType()) > 1) {
+        else if ( (startingMount == null) && (UnitUtil.getCritsUsed(mech, m.getType()) > 1)) {
             startingMount = m;
             startMountx = startx;
             startMounty = starty;
@@ -1455,17 +1457,17 @@ public class PrintAdvancedMech implements Printable {
         }
 
     }
-    
+
     private void printCritConnection(Graphics2D g2d, int startx, int starty, int endx, int endy) {
         if ( starty == endy) {
             return;
         }
-        
+
         g2d.drawLine(startx-1, starty, startx-4, starty);
         g2d.drawLine(startx-4, starty, endx-4, endy);
         g2d.drawLine(endx-1, endy, endx-4, endy);
     }
-    
+
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
         Font font;
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
@@ -1484,7 +1486,7 @@ public class PrintAdvancedMech implements Printable {
                 setCritConnection(m, lineStart, linePoint-lineFeed/2, lineStart, linePoint - lineFeed/2, g2d);
 
                 StringBuffer critName = new StringBuffer(m.getName());
-                
+
                 if ( m.getType() instanceof AmmoType ) {
                     critName.append(" (");
                     critName.append(((AmmoType)m.getType()).getShots());
@@ -1512,18 +1514,18 @@ public class PrintAdvancedMech implements Printable {
                     font = new Font("Eurostile Bold", Font.BOLD, 7);
                     g2d.setFont(font);
                 }
-                
+
                 if (m.isRearMounted()) {
                     critName.append("(R)");
                 }
                 g2d.drawString(critName.toString(), lineStart, linePoint);
             }
             linePoint += lineFeed;
-            
-            if ( slot > 0 && slot % 2 == 0 ) {
+
+            if ( (slot > 0) && (slot % 2 == 0) ) {
                 linePoint++;
             }
-            
+
             if ( slot == 5 ) {
                 linePoint += lineFeed/2;
             }

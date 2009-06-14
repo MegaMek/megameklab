@@ -27,6 +27,8 @@ V 0.0.0.15-Dev
     need to figure out a better way to do this
 + Bug: Proto MG Ammo showing up in Ammo Display
 + New MegaMek.jar
++ Show suit BV in BA printout
++ Ignore Ammo cost for cost printout
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.
