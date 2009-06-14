@@ -29,6 +29,7 @@ V 0.0.0.15-Dev
 + New MegaMek.jar
 + Show suit BV in BA printout
 + Ignore Ammo cost for cost printout
++ Bug: Source Not printing when listed.
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.

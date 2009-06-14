@@ -297,7 +297,7 @@ public class PrintMech implements Printable {
 
             g2d.drawString(sourceFluff, 138, nextDataLine);
 
-            font = UnitUtil.getNewFont(g2d, mech.getSource(), false, 52, 8.0f);
+            font = UnitUtil.getNewFont(g2d, mech.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
             g2d.drawString(mech.getSource(), 177, nextDataLine);
