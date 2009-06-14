@@ -105,7 +105,7 @@ public class PrintAero implements Printable {
         }
         g2d.drawString(techBase, 177, 143.5f);
 
-        if (aero.getSource() != null && aero.getSource().trim().length() > 0) {
+        if ((aero.getSource() != null) && (aero.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
@@ -138,7 +138,7 @@ public class PrintAero implements Printable {
         g2d.drawString(String.format("%1$,d", aero.calculateBattleValue(true, true)), 150, 346.2f);
 
         // myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(String.format("%1$,.0f C-bills", aero.getCost()), 52, 346.2f);
+        g2d.drawString(String.format("%1$,.0f C-bills", aero.getCost(true)), 52, 346.2f);
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);

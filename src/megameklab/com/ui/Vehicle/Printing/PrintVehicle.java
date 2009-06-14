@@ -176,7 +176,7 @@ public class PrintVehicle implements Printable {
         g2d.drawString(myFormatter.format(tank.calculateBattleValue(true, true)), 150, 357);
 
         myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(tank.getCost()) + " C-bills", 52, 357);
+        g2d.drawString(myFormatter.format(tank.getCost(true)) + " C-bills", 52, 357);
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
@@ -248,7 +248,7 @@ public class PrintVehicle implements Printable {
         g2d.drawString(myFormatter.format(tank2.calculateBattleValue(true, true)), 150, 728);
 
         myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(tank2.getCost()) + " C-bills", 52, 728);
+        g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 728);
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);

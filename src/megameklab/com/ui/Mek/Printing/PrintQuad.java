@@ -237,7 +237,7 @@ public class PrintQuad implements Printable {
             }
         }
 
-        if (mech.getSource() != null && mech.getSource().trim().length() > 0) {
+        if ((mech.getSource() != null) && (mech.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 7.0f);
             g2d.setFont(font);
@@ -268,7 +268,7 @@ public class PrintQuad implements Printable {
         g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 150, 350);
 
         myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
+        g2d.drawString(myFormatter.format(mech.getCost(true)) + " C-bills", 52, 350);
 
         String isName = "";
         if (mech.hasCompositeStructure()) {
@@ -1177,7 +1177,7 @@ public class PrintQuad implements Printable {
 
                 if (m.isRearMounted()) {
                     critName.append("(R)");
-                } else if (m.getType() instanceof MiscType && (m.getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
+                } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                     critName.append("[OOOOOOOOOO]");
                 } else if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                     AmmoType ammo = (AmmoType) m.getType();

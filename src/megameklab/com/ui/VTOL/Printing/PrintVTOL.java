@@ -168,7 +168,7 @@ public class PrintVTOL implements Printable {
         g2d.drawString(myFormatter.format(vtol.calculateBattleValue(true, true)), 150, 357);
 
         myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(vtol.getCost()) + " C-bills", 52, 357);
+        g2d.drawString(myFormatter.format(vtol.getCost(true)) + " C-bills", 52, 357);
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
@@ -238,7 +238,7 @@ public class PrintVTOL implements Printable {
         g2d.drawString(myFormatter.format(vtol2.calculateBattleValue(true, true)), 150, 728);
 
         myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(vtol2.getCost()) + " C-bills", 52, 728);
+        g2d.drawString(myFormatter.format(vtol2.getCost(true)) + " C-bills", 52, 728);
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
