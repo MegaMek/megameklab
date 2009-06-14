@@ -30,14 +30,14 @@ import megameklab.com.util.UnitUtil;
 
 public class PrintBattleArmor implements Printable {
 
-    private BattleArmor BattleArmor = null;
-    private ArrayList<BattleArmor> BattleArmorList;
+    private BattleArmor battleArmor = null;
+    private ArrayList<BattleArmor> battleArmorList;
     private int pageMarginBase = 131; // How far down the text should be printed for a second vehicle.
     private int currentPosition = 0;
     private int currentMargin = 0;
 
     public PrintBattleArmor(ArrayList<BattleArmor> list) {
-        BattleArmorList = list;
+        battleArmorList = list;
 
         /*
          * if (awtImage != null) { System.out.println("Width: " +
@@ -66,12 +66,12 @@ public class PrintBattleArmor implements Printable {
         Image baSquad = ImageHelper.getBASquad();
         int x = 18;
         int y = 78;
-        g2d.drawImage(ImageHelper.getRecordSheet(BattleArmor, false), 18, 18, 558, 738, null);
-        g2d.drawImage(ImageHelper.getFluffImage(BattleArmor, "BattleArmor"), 410, 23, 25, 45, null);
+        g2d.drawImage(ImageHelper.getRecordSheet(battleArmor, false), 18, 18, 558, 738, null);
+        g2d.drawImage(ImageHelper.getFluffImage(battleArmor, "BattleArmor"), 410, 23, 25, 45, null);
 
-        int stop = Math.min(5, BattleArmorList.size() - currentPosition);
+        int stop = Math.min(5, battleArmorList.size() - currentPosition);
         for (int pos = 0; pos < stop; pos++) {
-            BattleArmor = BattleArmorList.get(pos + currentPosition);
+            battleArmor = battleArmorList.get(pos + currentPosition);
             g2d.drawImage(baSquad, x, y, 365, 136, null);
             g2d.drawImage(ImageHelper.getBASquadNumber(pos), 197, 84 + currentMargin, 10, 9, null);
             printBattleArmorData(g2d);
@@ -93,25 +93,25 @@ public class PrintBattleArmor implements Printable {
 
         Image checkBox = ImageHelper.getBACheckBox();
 
-        if (UnitUtil.canRide(BattleArmor)) {
+        if (UnitUtil.canRide(battleArmor)) {
             g2d.drawImage(checkBox, 72, 189 + currentMargin, 11, 11, null);
         }
 
-        if (UnitUtil.canSwarm(BattleArmor)) {
+        if (UnitUtil.canSwarm(battleArmor)) {
             g2d.drawImage(checkBox, 119, 189 + currentMargin, 11, 11, null);
         }
 
-        if (UnitUtil.canLegAttack(BattleArmor)) {
+        if (UnitUtil.canLegAttack(battleArmor)) {
             g2d.drawImage(checkBox, 159, 189 + currentMargin, 11, 11, null);
         }
 
-        if (UnitUtil.hasInfantryWeapons(BattleArmor)) {
+        if (UnitUtil.hasInfantryWeapons(battleArmor)) {
             g2d.drawImage(checkBox, 195, 189 + currentMargin, 11, 11, null);
         }
     }
 
     private void printBattleArmorData(Graphics2D g2d) {
-        String BattleArmorName = BattleArmor.getChassis().toUpperCase() + " " + BattleArmor.getModel().toUpperCase();
+        String BattleArmorName = battleArmor.getChassis().toUpperCase() + " " + battleArmor.getModel().toUpperCase();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, BattleArmorName, true, 180, 10.0f));
         g2d.drawString(BattleArmorName, 49, 108 + currentMargin);
@@ -119,47 +119,47 @@ public class PrintBattleArmor implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        g2d.drawString(Integer.toString(BattleArmor.getRunMP()), 79, 130 + currentMargin);
+        g2d.drawString(Integer.toString(battleArmor.getRunMP()), 79, 130 + currentMargin);
 
-        if (BattleArmor.getJumpMP() > 0) {
+        if (battleArmor.getJumpMP() > 0) {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
-            String movment = String.format("%1$s: ", BattleArmor.getMovementModeAsString());
+            String movment = String.format("%1$s: ", battleArmor.getMovementModeAsString());
             g2d.drawString(movment, 133, 130 + currentMargin);
 
             float positionY = 133 + ImageHelper.getStringWidth(g2d, movment, font);
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
-            g2d.drawString(Integer.toString(BattleArmor.getJumpMP()), positionY, 130 + currentMargin);
+            g2d.drawString(Integer.toString(battleArmor.getJumpMP()), positionY, 130 + currentMargin);
         }
         printBattleArmorAbilities(g2d);
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
-        g2d.drawString(myFormatter.format(BattleArmor.calculateBattleValue(true, true)), 330, 206 + currentMargin);
+        g2d.drawString(myFormatter.format(battleArmor.calculateBattleValue(true, true))+"/"+myFormatter.format(battleArmor.calculateBattleValue(true, true, true)), 330, 206 + currentMargin);
 
         myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(BattleArmor.getCost()) + " C-bills", 235, 206 + currentMargin);
+        g2d.drawString(myFormatter.format(battleArmor.getCost(true)) + " C-bills", 235, 206 + currentMargin);
 
     }
 
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
-        ImageHelper.printBattleArmorWeaponsNEquipment(BattleArmor, g2d, currentMargin);
+        ImageHelper.printBattleArmorWeaponsNEquipment(battleArmor, g2d, currentMargin);
     }
 
     private void printSquadTroopers(Graphics2D g2d) {
-        int lineFeed = (18 * 6) / BattleArmor.getNumberActiverTroopers();
+        int lineFeed = (18 * 6) / battleArmor.getNumberActiverTroopers();
         int x = 215;
         int y = 90 + currentMargin;
-        for (int pos = 1; pos <= BattleArmor.getNumberActiverTroopers(); pos++) {
+        for (int pos = 1; pos <= battleArmor.getNumberActiverTroopers(); pos++) {
             Image trooper = ImageHelper.getBATrooper(pos);
             g2d.drawImage(trooper, x, y, 158, 18, null);
-            g2d.drawImage(ImageHelper.getFluffImage(BattleArmor, "BattleArmor"), x + 10, y + 2, 10, 14, null);
+            g2d.drawImage(ImageHelper.getFluffImage(battleArmor, "BattleArmor"), x + 10, y + 2, 10, 14, null);
             ImageHelper.drawBAISPip(g2d, x + 23, y + 6);
             float pipX = x + 31;
             float pipY = y + 12.5f;
-            for (int armor = 0; armor < BattleArmor.getOArmor(pos); armor++) {
+            for (int armor = 0; armor < battleArmor.getOArmor(pos); armor++) {
                 ImageHelper.drawBAArmorPip(g2d, pipX, pipY);
                 pipX += 7;
             }
@@ -183,10 +183,10 @@ public class PrintBattleArmor implements Printable {
 
                 pj.setPrintable(this, pageFormat);
 
-                for (; currentPosition < BattleArmorList.size(); currentPosition += 5) {
+                for (; currentPosition < battleArmorList.size(); currentPosition += 5) {
 
-                    BattleArmor = BattleArmorList.get(currentPosition);
-                    pj.setJobName(BattleArmor.getChassis() + " " + BattleArmor.getModel());
+                    battleArmor = battleArmorList.get(currentPosition);
+                    pj.setJobName(battleArmor.getChassis() + " " + battleArmor.getModel());
 
                     try {
                         pj.print();

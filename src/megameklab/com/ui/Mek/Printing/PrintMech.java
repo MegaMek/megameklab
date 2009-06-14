@@ -264,7 +264,7 @@ public class PrintMech implements Printable {
         g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 150, 350);
 
         myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(mech.getCost()) + " C-bills", 52, 350);
+        g2d.drawString(myFormatter.format(mech.getCost(true)) + " C-bills", 52, 350);
 
         String isName = "";
 
@@ -1358,7 +1358,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     * 
+     *
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
