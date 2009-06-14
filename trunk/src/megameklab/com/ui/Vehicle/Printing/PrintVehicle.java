@@ -1,5 +1,5 @@
 /*
-* MegaMekLab - Copyright (C) 2009
+ * MegaMekLab - Copyright (C) 2009
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
@@ -34,7 +34,9 @@ public class PrintVehicle implements Printable {
     private Tank tank = null;
     private Tank tank2 = null;
     private ArrayList<Tank> tankList;
-    private int secondPageMargin = 373; // How far down the text should be printed for a second vehicle.
+    private int secondPageMargin = 373; // How far down the text should be
+
+    // printed for a second vehicle.
 
     public PrintVehicle(ArrayList<Tank> list) {
         tankList = list;
@@ -169,7 +171,33 @@ public class PrintVehicle implements Printable {
         }
         g2d.drawString(techBase, 177, 145);
 
-        g2d.drawString(Integer.toString(tank.getYear()), 188, 155);
+        if ((tank.getSource() != null) && (tank.getSource().trim().length() > 0)) {
+            String sourceFluff = "Era: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(sourceFluff, 138, 155);
+
+            font = UnitUtil.getNewFont(g2d, tank.getSource(), false, 51, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(tank.getSource(), 177, 155);
+
+        } else {
+            String yearFluff = "Year: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(yearFluff, 138, 155);
+
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(String.format("%1$s", tank.getYear()), 177, 155);
+
+        }
+
+        // g2d.drawString(Integer.toString(tank.getYear()), 188, 155);
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
@@ -182,7 +210,7 @@ public class PrintVehicle implements Printable {
         g2d.setFont(font);
         g2d.drawString("2009", 105f, 374.5f);
 
-        if ( tank2 != null ){
+        if (tank2 != null) {
             printTank2Data(g2d);
         } else {
             g2d.drawString("2009", 105f, 745.5f);
@@ -241,7 +269,33 @@ public class PrintVehicle implements Printable {
         }
         g2d.drawString(techBase, 177, 516);
 
-        g2d.drawString(Integer.toString(tank2.getYear()), 188, 526);
+        if ((tank.getSource() != null) && (tank.getSource().trim().length() > 0)) {
+            String sourceFluff = "Era: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(sourceFluff, 138, 526);
+
+            font = UnitUtil.getNewFont(g2d, tank.getSource(), false, 51, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(tank.getSource(), 177, 526);
+
+        } else {
+            String yearFluff = "Year: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(yearFluff, 138, 526);
+
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(String.format("%1$s", tank.getYear()), 177, 526);
+
+        }
+
+        // g2d.drawString(Integer.toString(tank2.getYear()), 188, 526);
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
@@ -537,7 +591,6 @@ public class PrintVehicle implements Printable {
         if (secondImage) {
             topColumn[1] += secondPageMargin;
         }
-
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 90; pos++) {

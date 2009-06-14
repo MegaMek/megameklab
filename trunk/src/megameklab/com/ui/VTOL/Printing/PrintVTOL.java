@@ -35,7 +35,8 @@ public class PrintVTOL implements Printable {
     private VTOL vtol2 = null;
     private ArrayList<VTOL> vtolList;
     private int secondPageMargin = 373; // How far down the text should be
-                                        // printed for a second vehicle.
+
+    // printed for a second vehicle.
 
     public PrintVTOL(ArrayList<VTOL> list) {
         vtolList = list;
@@ -161,7 +162,31 @@ public class PrintVTOL implements Printable {
         }
         g2d.drawString(techBase, 177, 145);
 
-        g2d.drawString(Integer.toString(vtol.getYear()), 188, 155);
+        if ((vtol.getSource() != null) && (vtol.getSource().trim().length() > 0)) {
+            String sourceFluff = "Era: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(sourceFluff, 138, 155);
+
+            font = UnitUtil.getNewFont(g2d, vtol.getSource(), false, 51, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(vtol.getSource(), 177, 155);
+
+        } else {
+            String yearFluff = "Year: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(yearFluff, 138, 155);
+
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(String.format("%1$s", vtol.getYear()), 177, 155);
+
+        }
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
@@ -231,7 +256,31 @@ public class PrintVTOL implements Printable {
         }
         g2d.drawString(techBase, 177, 516);
 
-        g2d.drawString(Integer.toString(vtol2.getYear()), 188, 526);
+        if ((vtol.getSource() != null) && (vtol.getSource().trim().length() > 0)) {
+            String sourceFluff = "Era: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(sourceFluff, 138, 526);
+
+            font = UnitUtil.getNewFont(g2d, vtol.getSource(), false, 51, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(vtol.getSource(), 177, 526);
+
+        } else {
+            String yearFluff = "Year: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(yearFluff, 138, 526);
+
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(String.format("%1$s", vtol.getYear()), 177, 526);
+
+        }
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
