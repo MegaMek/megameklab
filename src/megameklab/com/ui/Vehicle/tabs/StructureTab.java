@@ -43,6 +43,7 @@ import megamek.common.Engine;
 import megamek.common.IEntityMovementMode;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
+import megamek.common.TroopSpace;
 import megameklab.com.ui.Vehicle.views.CriticalView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -75,6 +76,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     Dimension maxSize = new Dimension();
     JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:", SwingConstants.TRAILING);
     JPanel masterPanel;
+    JComboBox troopStorage = null;
     int maxTonnage = 50;
 
     private CriticalView critView = null;
@@ -115,6 +117,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         weightClass = new JComboBox(weightClasses.toArray());
+        troopStorage = new JComboBox(weightClasses.toArray());
+
+        troopStorage.setSelectedIndex(0);
 
         maxSize.setSize(110, 20);
 
@@ -140,8 +145,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         masterPanel.add(createLabel("Movment Type:", maxSize));
         masterPanel.add(tankMotiveType);
+
         masterPanel.add(createLabel("Weight:", maxSize));
         masterPanel.add(weightClass);
+
+        masterPanel.add(createLabel("Troop Space:", maxSize));
+        masterPanel.add(troopStorage);
 
         setFieldSize(cruiseMP, maxSize);
         setFieldSize(era, maxSize);
@@ -151,6 +160,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         setFieldSize(engineType, maxSize);
         setFieldSize(weightClass, maxSize);
         setFieldSize(tankMotiveType, maxSize);
+        setFieldSize(troopStorage, maxSize);
 
         SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
 
@@ -172,6 +182,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.setVisible(true);
 
         updateEngineTypes();
+        updateTroopSpaceAllowed();
 
         engineType.setSelectedIndex(unit.getEngine().getEngineType());
 
@@ -280,6 +291,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         } else {
                             getTank().setEngine(new Engine(rating, type, 0));
                         }
+                    }
+                } else if (combo.equals(troopStorage)) {
+                    unit.removeAllTransporters();
+                    if (troopStorage.getSelectedIndex() > 0) {
+                        unit.addTransporter(new TroopSpace(troopStorage.getSelectedIndex()));
                     }
                 } else if (combo.equals(weightClass)) {
                     int rating = (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
@@ -498,6 +514,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         omniCB.removeActionListener(this);
         turretCB.removeActionListener(this);
         tankMotiveType.removeActionListener(this);
+        troopStorage.removeActionListener(this);
     }
 
     public void addAllActionListeners() {
@@ -511,6 +528,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         omniCB.addActionListener(this);
         turretCB.addActionListener(this);
         tankMotiveType.addActionListener(this);
+        troopStorage.addActionListener(this);
     }
 
     public void keyPressed(KeyEvent e) {
@@ -571,5 +589,25 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         for (int pos = 0; pos < maxEngineType; pos++) {
             engineType.addItem(engineTypes[pos]);
         }
+
+    }
+
+    private void updateTroopSpaceAllowed() {
+        int troops = unit.getTroopCarryingSpace();
+
+        troopStorage.removeAll();
+        troopStorage.removeAllItems();
+
+        for (int space = 0; space <= unit.getWeight(); space++) {
+            troopStorage.addItem(space);
+        }
+
+        if (troops > (int) unit.getWeight()) {
+            unit.removeAllTransporters();
+            troopStorage.setSelectedIndex(0);
+        } else {
+            troopStorage.setSelectedIndex(troops);
+        }
+
     }
 }
