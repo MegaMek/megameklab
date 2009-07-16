@@ -113,7 +113,7 @@ public class PrintVTOL implements Printable {
     }
 
     private void printVTOLData(Graphics2D g2d) {
-        String VTOLName = vtol.getChassis().toUpperCase() + " " + vtol.getModel().toUpperCase();
+        String VTOLName = vtol.getChassis() + " " + vtol.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, VTOLName, true, 180, 10.0f));
         g2d.drawString(VTOLName, 49, 121);
@@ -207,7 +207,7 @@ public class PrintVTOL implements Printable {
     }
 
     private void printVTOL2Data(Graphics2D g2d) {
-        String VTOLName = vtol2.getChassis().toUpperCase() + " " + vtol2.getModel().toUpperCase();
+        String VTOLName = vtol2.getChassis() + " " + vtol2.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, VTOLName, true, 180, 10.0f));
         g2d.drawString(VTOLName, 49, 494);

@@ -139,7 +139,7 @@ public class PrintQuad implements Printable {
     }
 
     private void printMechData(Graphics2D g2d) {
-        String mekName = mech.getChassis().toUpperCase() + " " + mech.getModel().toUpperCase();
+        String mekName = mech.getChassis() + " " + mech.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, mekName, true, 180, 10.0f));
         g2d.drawString(mekName, 49, 121);
