@@ -120,7 +120,7 @@ public class PrintVehicle implements Printable {
     }
 
     private void printTankData(Graphics2D g2d) {
-        String tankName = tank.getChassis().toUpperCase() + " " + tank.getModel().toUpperCase();
+        String tankName = tank.getChassis() + " " + tank.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, tankName, true, 180, 10.0f));
         g2d.drawString(tankName, 49, 121);
