@@ -80,7 +80,7 @@ public class PrintAero implements Printable {
     }
 
     private void printAeroData(Graphics2D g2d) {
-        String aeroName = aero.getChassis().toUpperCase() + " " + aero.getModel().toUpperCase();
+        String aeroName = aero.getChassis() + " " + aero.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, aeroName, true, 180, 10.0f));
         g2d.drawString(aeroName, 49, 118);
