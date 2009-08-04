@@ -473,13 +473,36 @@ public class ImageHelper {
         HashMap<String, Integer> ammoHash = new HashMap<String, Integer>();
 
         for (Mounted ammo : vehicle.getAmmo()) {
+            // don't print one shot ammo
+            if (ammo.getLocation() == Entity.LOC_NONE) {
+                continue;
+            }
             AmmoType aType = (AmmoType) ammo.getType();
             String shortName = aType.getShortName().replace("Ammo", "");
             shortName = shortName.replace('(', '.').replace(')', '.').replace(".Clan.", "");
             shortName = shortName.replace("-capable", "");
             shortName = shortName.replaceAll("[0-9]", "");
             shortName = shortName.trim();
-            if (aType.getRackSize() > 0) {
+            if ((aType.getAmmoType() == AmmoType.T_AC) ||
+                    (aType.getAmmoType() == AmmoType.T_MML) ||
+                    (aType.getAmmoType() == AmmoType.T_SRM) ||
+                    (aType.getAmmoType() == AmmoType.T_SRM_STREAK) ||
+                    (aType.getAmmoType() == AmmoType.T_SRM_TORPEDO) ||
+                    (aType.getAmmoType() == AmmoType.T_LRM) ||
+                    (aType.getAmmoType() == AmmoType.T_LRM_STREAK) ||
+                    (aType.getAmmoType() == AmmoType.T_LRM_TORPEDO) ||
+                    (aType.getAmmoType() == AmmoType.T_MML) ||
+                    (aType.getAmmoType() == AmmoType.T_AC) ||
+                    (aType.getAmmoType() == AmmoType.T_AC_LBX) ||
+                    (aType.getAmmoType() == AmmoType.T_AC_LBX_THB) ||
+                    (aType.getAmmoType() == AmmoType.T_AC_ROTARY) ||
+                    (aType.getAmmoType() == AmmoType.T_AC_ULTRA) ||
+                    (aType.getAmmoType() == AmmoType.T_AC_ULTRA_THB) ||
+                    (aType.getAmmoType() == AmmoType.T_MRM) ||
+                    (aType.getAmmoType() == AmmoType.T_MRM_STREAK) ||
+                    (aType.getAmmoType() == AmmoType.T_ATM) ||
+                    (aType.getAmmoType() == AmmoType.T_HAG) ||
+                    (aType.getAmmoType() == AmmoType.T_EXLRM)) {
                 shortName += " " + aType.getRackSize();
             }
 
@@ -492,11 +515,15 @@ public class ImageHelper {
                 ammoHash.put(shortName, currentAmmo);
             }
         }
+        if (ammoHash.keySet().size() == 0) {
+            return;
+        }
         StringBuffer sb = new StringBuffer("Ammo: ");
         g2d.setFont(UnitUtil.getNewFont(g2d, sb.toString(), true, 20, 7.0f));
         g2d.drawString(sb.toString(), pointX, pointY);
         pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
 
+        sb = new StringBuffer();
         for (String ammo : ammoHash.keySet()) {
             sb.append("(");
             sb.append(ammo);
@@ -561,7 +588,15 @@ public class ImageHelper {
                 EquipmentInfo eqi = new EquipmentInfo(tank, eq);
                 eqHash.put(equipmentName, eqi);
             }
+        }
 
+        int troopspace = tank.getTroopCarryingSpace();
+        if (troopspace > 0) {
+            EquipmentInfo eqi = new EquipmentInfo();
+            eqi.name = "Infantry Bay ("+troopspace+" tons)";
+            eqi.damage = "  [E]";
+            eqi.count = 1;
+            equipmentLocations.get(Tank.LOC_BODY).put("Infantry cargo bay: "+troopspace, eqi);
         }
 
         Font font = UnitUtil.deriveFont(true, 10.0f);
@@ -583,7 +618,6 @@ public class ImageHelper {
 
             if (eqHash.containsKey("Artemis IV FCS")) {
                 artemisEQ = eqHash.get("Artemis IV FCS");
-                artemisEQ.count = 1;
                 eqHash.remove("Artemis IV FCS");
             }
 
@@ -777,11 +811,19 @@ public class ImageHelper {
             }
 
         }
+        int troopspace = tank.getTroopCarryingSpace();
+        if (troopspace > 0) {
+            EquipmentInfo eqi = new EquipmentInfo();
+            eqi.name = "Infantry Bay ("+troopspace+" tons)";
+            eqi.damage = "  [E]";
+            eqi.count = 1;
+            equipmentLocations.get(Tank.LOC_BODY).put("Infantry cargo bay: "+troopspace, eqi);
+        }
 
         Font font = UnitUtil.deriveFont(true, 10.0f);
         g2d.setFont(font);
 
-        for (int pos = Tank.LOC_BODY; pos <= Tank.LOC_TURRET; pos++) {
+        for (int pos = Tank.LOC_BODY; pos <= VTOL.LOC_ROTOR; pos++) {
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
 
