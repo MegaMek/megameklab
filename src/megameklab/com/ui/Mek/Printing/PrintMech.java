@@ -192,8 +192,6 @@ public class PrintMech implements Printable {
             g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
         }
 
-        // g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
-
         int tonnage = (int) Math.ceil(mech.getWeight());
 
         if (tonnage % 5 != 0) {
@@ -201,6 +199,16 @@ public class PrintMech implements Printable {
         }
 
         g2d.drawString(Integer.toString(tonnage), 177, 134);
+
+        if (mech.isIndustrial()) {
+            if (mech.isPrimitive()) {
+                g2d.drawString("(Primitive Industrial)", 155, 97);
+            } else {
+                g2d.drawString("(Industrial)", 155, 97);
+            }
+        } else if (mech.isPrimitive()) {
+            g2d.drawString("(Primitive)", 155, 97);
+        }
 
         String techBase = "Inner Sphere";
 
@@ -218,45 +226,31 @@ public class PrintMech implements Printable {
         int startLine = 188;
         int lineFeed = 8;
 
-        if (mech.isIndustrial()) {
-            if (mech.isPrimitive()) {
-                ImageHelper.printCenterString(g2d, "(Primitive Industrial)", font, startLine, nextDataLine);
-            } else {
-                ImageHelper.printCenterString(g2d, "(Industrial)", font, startLine, nextDataLine);
-            }
+        switch (mech.getTechLevel()) {
 
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
             nextDataLine += lineFeed;
-        } else if (mech.isPrimitive()) {
-            ImageHelper.printCenterString(g2d, "(Primitive)", font, startLine, nextDataLine);
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
             nextDataLine += lineFeed;
-        } else {
-
-            switch (mech.getTechLevel()) {
-
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            }
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
         }
 
         // Cost/BV

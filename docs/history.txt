@@ -31,6 +31,12 @@ V 0.0.0.15-Dev
 + Ignore Ammo cost for cost printout
 + Bug: Source Not printing when listed.
 + Don't always print chassis and model in uppercase
++ Show troop carrying space in vehicle printout
++ fix artemis display for tanks with multiple artemis weapons in one location
++ moved primitive/industrial/primitive industrial string in printout
++ don't print RL ammo on vehicles
++ fix ammo name printing for vehicles
++ updated MegaMek.jar
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.
