@@ -37,6 +37,7 @@ V 0.0.0.15-Dev
 + don't print RL ammo on vehicles
 + fix ammo name printing for vehicles
 + updated MegaMek.jar
++ Bug: LT/RT CASE printing for quads overlapping location name
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.

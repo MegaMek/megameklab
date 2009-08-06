@@ -1282,7 +1282,7 @@ public class PrintQuad implements Printable {
             return;
         }
 
-        int lineStart = 94;
+        int lineStart = 105;
         int linePoint = 512;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
@@ -1308,8 +1308,8 @@ public class PrintQuad implements Printable {
             return;
         }
 
-        int lineStart = 337;
-        int linePoint = 511;
+        int lineStart = 349;
+        int linePoint = 512;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         g2d.drawString("(CASE)", lineStart, linePoint);
