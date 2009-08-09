@@ -78,7 +78,9 @@ public class StringUtils {
 
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
-            if (weapon instanceof ISC3M) {
+            if (weapon.hasFlag(WeaponType.F_MGA)) {
+                info = "  [T]";
+            } else if (weapon instanceof ISC3M) {
                 info = "  [E]";
             } else if (weapon.getDamage() < 0) {
                 if (weapon instanceof SRMWeapon) {
