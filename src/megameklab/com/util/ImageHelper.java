@@ -462,7 +462,6 @@ public class ImageHelper {
     }
 
     public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int offset) {
-
         if (vehicle.getAmmo().size() < 1) {
             return;
         }
@@ -519,22 +518,41 @@ public class ImageHelper {
             return;
         }
         StringBuffer sb = new StringBuffer("Ammo: ");
-        g2d.setFont(UnitUtil.getNewFont(g2d, sb.toString(), true, 20, 7.0f));
-        g2d.drawString(sb.toString(), pointX, pointY);
-        pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
+        g2d.setFont(UnitUtil.getNewFont(g2d, sb.toString(), false, 20, 7.0f));
 
         sb = new StringBuffer();
+        int linecount = 0;
         for (String ammo : ammoHash.keySet()) {
             sb.append("(");
             sb.append(ammo);
             sb.append(") ");
             sb.append(ammoHash.get(ammo));
             sb.append(", ");
+            if (ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont()) > 160) {
+                linecount++;
+                sb = new StringBuffer();
+            }
         }
-
-        sb.setLength(sb.length() - 2);
-        g2d.setFont(UnitUtil.getNewFont(g2d, sb.toString(), false, 200, 7.0f));
-        g2d.drawString(sb.toString(), pointX, pointY);
+        sb = new StringBuffer("Ammo: ");
+        g2d.drawString(sb.toString(), pointX, pointY-(linecount)*ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont()));
+        pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
+        sb = new StringBuffer();
+        int linesprinted = 0;
+        for (String ammo : ammoHash.keySet()) {
+            sb.append("(");
+            sb.append(ammo);
+            sb.append(") ");
+            sb.append(ammoHash.get(ammo));
+            sb.append(", ");
+            if ((ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont()) > 160) && (linesprinted < linecount)) {
+                g2d.drawString(sb.toString(), pointX, pointY-((linecount-linesprinted)*ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
+                linesprinted++;
+                sb = new StringBuffer();
+            }
+        }
+        sb.setLength(sb.length()-2);
+        g2d.drawString(sb.toString(), pointX, pointY-((linecount-linesprinted)*ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
+        pointY += ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont());
     }
 
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d) {
