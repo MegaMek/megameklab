@@ -73,7 +73,7 @@ public class EquipmentInfo {
 
         damage = StringUtils.getEquipmentInfo(aero, mount);
 
-        if (mount.getType() instanceof WeaponType) {
+        if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                 c3Level = C3M;
             }
@@ -136,7 +136,7 @@ public class EquipmentInfo {
 
         damage = StringUtils.getEquipmentInfo(unit, mount);
 
-        if (mount.getType() instanceof WeaponType) {
+        if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                 c3Level = C3M;
             }
