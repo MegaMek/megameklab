@@ -39,6 +39,7 @@ V 0.0.0.15-Dev
 + updated MegaMek.jar
 + Bug: LT/RT CASE printing for quads overlapping location name
 + MG Arrays shouldn't print damage and range, and have [T] for damage type
++ linebreaks for Vehicle ammo printing
 
 V 0.0.0.14 (03/26/2009 2:29 UTC-8)
 + Bug: Clan case getting loaded as 0 crit 0 ton equipment.
