@@ -50,6 +50,12 @@ public class ImageHelper {
     public static String fluffPath = "./data/images/fluff/";
     public static String imagePath = "./data/images/";
 
+    public static String imageMech = "mech";
+    public static String imageAero = "aero";
+    public static String imageBA = "BattleArmor";
+    public static String imageTank = "tank";
+    public static String imageVTOL = "vtol";
+
     public static Image getRecordSheet(Entity unit) {
         return ImageHelper.getRecordSheet(unit, false);
     }

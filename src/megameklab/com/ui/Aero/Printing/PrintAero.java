@@ -59,7 +59,7 @@ public class PrintAero implements Printable {
         System.gc();
 
         g2d.drawImage(ImageHelper.getRecordSheet(aero), 18, 18, 558, 738, Color.BLACK, null);
-        printAeroImage(g2d, ImageHelper.getFluffImage(aero, "aero"));
+        printAeroImage(g2d, ImageHelper.getFluffImage(aero, ImageHelper.imageAero));
 
         printAeroData(g2d);
         printArmor(g2d);
