@@ -12,9 +12,11 @@
 
 package megameklab.com.ui.Vehicle.Printing;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -115,6 +117,9 @@ public class PrintVehicle implements Printable {
             printTurretStruct(g2d, tank2.getOInternal(Tank.LOC_TURRET), true);
 
         }
+
+        printTankImage(g2d);
+
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
     }
@@ -843,6 +848,25 @@ public class PrintVehicle implements Printable {
             if (--totalArmor <= 0) {
                 return;
             }
+        }
+    }
+
+    private void printTankImage(Graphics2D g2d) {
+
+        Image img = ImageHelper.getFluffImage(tank, ImageHelper.imageTank);
+        int width = Math.min(148, img.getWidth(null));
+        int height = Math.min(99, img.getHeight(null));
+        int drawingX = 235 + ((148 - width) / 2);
+        int drawingY = 270 + ((99 - height) / 2);
+        g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
+
+        if (tank2 != null) {
+            img = ImageHelper.getFluffImage(tank2, ImageHelper.imageTank);
+            width = Math.min(148, img.getWidth(null));
+            height = Math.min(99, img.getHeight(null));
+            drawingX = 235 + ((148 - width) / 2);
+            drawingY = 268 + ((99 - height) / 2) + secondPageMargin;
+            g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
         }
     }
 
