@@ -474,7 +474,7 @@ public class PrintMech implements Printable {
                 for (Mech currentMech : mechList) {
 
                     mech = currentMech;
-                    awtHud = ImageHelper.getFluffImage(currentMech, "mech");
+                    awtHud = ImageHelper.getFluffImage(currentMech, ImageHelper.imageMech);
                     pj.setJobName(mech.getChassis() + " " + mech.getModel());
 
                     try {
@@ -1352,7 +1352,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     *
+     * 
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location

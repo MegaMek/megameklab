@@ -12,9 +12,11 @@
 
 package megameklab.com.ui.VTOL.Printing;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -108,6 +110,9 @@ public class PrintVTOL implements Printable {
             printRotorStruct(g2d, vtol2.getOInternal(VTOL.LOC_ROTOR), true);
 
         }
+
+        printVTOLImage(g2d);
+
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
     }
@@ -592,6 +597,25 @@ public class PrintVTOL implements Printable {
                 struct[pos][1] += secondPageMargin;
             }
             ImageHelper.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+        }
+    }
+
+    private void printVTOLImage(Graphics2D g2d) {
+
+        Image img = ImageHelper.getFluffImage(vtol, ImageHelper.imageTank);
+        int width = Math.min(148, img.getWidth(null));
+        int height = Math.min(120, img.getHeight(null));
+        int drawingX = 235 + ((148 - width) / 2);
+        int drawingY = 250 + ((120 - height) / 2);
+        g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
+
+        if (vtol2 != null) {
+            img = ImageHelper.getFluffImage(vtol2, ImageHelper.imageTank);
+            width = Math.min(148, img.getWidth(null));
+            height = Math.min(119, img.getHeight(null));
+            drawingX = 235 + ((148 - width) / 2);
+            drawingY = 248 + ((119 - height) / 2) + secondPageMargin;
+            g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
         }
     }
 }

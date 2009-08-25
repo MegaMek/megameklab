@@ -32,7 +32,8 @@ public class PrintBattleArmor implements Printable {
 
     private BattleArmor battleArmor = null;
     private ArrayList<BattleArmor> battleArmorList;
-    private int pageMarginBase = 131; // How far down the text should be printed for a second vehicle.
+    private int pageMarginBase = 131; // How far down the text should be printed
+                                      // for a second vehicle.
     private int currentPosition = 0;
     private int currentMargin = 0;
 
@@ -67,7 +68,7 @@ public class PrintBattleArmor implements Printable {
         int x = 18;
         int y = 78;
         g2d.drawImage(ImageHelper.getRecordSheet(battleArmor, false), 18, 18, 558, 738, null);
-        g2d.drawImage(ImageHelper.getFluffImage(battleArmor, "BattleArmor"), 410, 23, 25, 45, null);
+        g2d.drawImage(ImageHelper.getFluffImage(battleArmor, ImageHelper.imageBA), 410, 23, 25, 45, null);
 
         int stop = Math.min(5, battleArmorList.size() - currentPosition);
         for (int pos = 0; pos < stop; pos++) {
@@ -80,7 +81,7 @@ public class PrintBattleArmor implements Printable {
 
             y += pageMarginBase;
             currentMargin += pageMarginBase;
-       }
+        }
         System.gc();
         Font font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
@@ -136,13 +137,12 @@ public class PrintBattleArmor implements Printable {
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
-        g2d.drawString(myFormatter.format(battleArmor.calculateBattleValue(true, true))+"/"+myFormatter.format(battleArmor.calculateBattleValue(true, true, true)), 330, 206 + currentMargin);
+        g2d.drawString(myFormatter.format(battleArmor.calculateBattleValue(true, true)) + "/" + myFormatter.format(battleArmor.calculateBattleValue(true, true, true)), 330, 206 + currentMargin);
 
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(battleArmor.getCost(true)) + " C-bills", 235, 206 + currentMargin);
 
     }
-
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
         ImageHelper.printBattleArmorWeaponsNEquipment(battleArmor, g2d, currentMargin);
@@ -155,7 +155,7 @@ public class PrintBattleArmor implements Printable {
         for (int pos = 1; pos <= battleArmor.getNumberActiverTroopers(); pos++) {
             Image trooper = ImageHelper.getBATrooper(pos);
             g2d.drawImage(trooper, x, y, 158, 18, null);
-            g2d.drawImage(ImageHelper.getFluffImage(battleArmor, "BattleArmor"), x + 10, y + 2, 10, 14, null);
+            g2d.drawImage(ImageHelper.getFluffImage(battleArmor, ImageHelper.imageBA), x + 10, y + 2, 10, 14, null);
             ImageHelper.drawBAISPip(g2d, x + 23, y + 6);
             float pipX = x + 31;
             float pipY = y + 12.5f;
