@@ -602,7 +602,7 @@ public class PrintVTOL implements Printable {
 
     private void printVTOLImage(Graphics2D g2d) {
 
-        Image img = ImageHelper.getFluffImage(vtol, ImageHelper.imageTank);
+        Image img = ImageHelper.getFluffImage(vtol, ImageHelper.imageVehicle);
         int width = Math.min(148, img.getWidth(null));
         int height = Math.min(120, img.getHeight(null));
         int drawingX = 235 + ((148 - width) / 2);
@@ -610,7 +610,7 @@ public class PrintVTOL implements Printable {
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
         if (vtol2 != null) {
-            img = ImageHelper.getFluffImage(vtol2, ImageHelper.imageTank);
+            img = ImageHelper.getFluffImage(vtol2, ImageHelper.imageVehicle);
             width = Math.min(148, img.getWidth(null));
             height = Math.min(119, img.getHeight(null));
             drawingX = 235 + ((148 - width) / 2);

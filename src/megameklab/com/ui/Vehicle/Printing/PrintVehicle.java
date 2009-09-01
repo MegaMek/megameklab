@@ -853,7 +853,7 @@ public class PrintVehicle implements Printable {
 
     private void printTankImage(Graphics2D g2d) {
 
-        Image img = ImageHelper.getFluffImage(tank, ImageHelper.imageTank);
+        Image img = ImageHelper.getFluffImage(tank, ImageHelper.imageVehicle);
         int width = Math.min(148, img.getWidth(null));
         int height = Math.min(99, img.getHeight(null));
         int drawingX = 235 + ((148 - width) / 2);
@@ -861,7 +861,7 @@ public class PrintVehicle implements Printable {
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
         if (tank2 != null) {
-            img = ImageHelper.getFluffImage(tank2, ImageHelper.imageTank);
+            img = ImageHelper.getFluffImage(tank2, ImageHelper.imageVehicle);
             width = Math.min(148, img.getWidth(null));
             height = Math.min(99, img.getHeight(null));
             drawingX = 235 + ((148 - width) / 2);
