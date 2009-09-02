@@ -524,10 +524,8 @@ public class ImageHelper {
         pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
         sb = new StringBuffer();
         int linesprinted = 0;
-        String tempAmmo = "";
 
         for (String ammo : ammoHash.keySet()) {
-            tempAmmo = ammo;
             sb.append("(");
             sb.append(ammo);
             sb.append(") ");
