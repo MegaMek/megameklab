@@ -386,12 +386,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     return;
                 } else if (combo.equals(techType)) {
                     if ((techType.getSelectedIndex() == 1) && (!unit.isClan() || unit.isMixedTech())) {
-                        engineType.removeAllItems();
                         techLevel.removeAllItems();
-
-                        for (String item : clanEngineTypes) {
-                            engineType.addItem(item);
-                        }
 
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
@@ -401,10 +396,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
                         unit.setMixedTech(false);
                     } else if ((techType.getSelectedIndex() == 0) && (unit.isClan() || unit.isMixedTech())) {
-                        engineType.removeAllItems();
                         techLevel.removeAllItems();
 
-                        updateEngineTypes();
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
@@ -414,10 +407,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         unit.setMixedTech(false);
 
                     } else if ((techType.getSelectedIndex() == 2) && (!unit.isMixedTech() || unit.isClan())) {
-                        engineType.removeAllItems();
                         techLevel.removeAllItems();
-
-                        updateEngineTypes();
 
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
@@ -428,13 +418,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         unit.setMixedTech(true);
 
                     } else if ((techType.getSelectedIndex() == 3) && (!unit.isMixedTech() || !unit.isClan())) {
-                        engineType.removeAllItems();
                         techLevel.removeAllItems();
-
-                        for (String item : clanEngineTypes) {
-                            engineType.addItem(item);
-                        }
-
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
                         }
@@ -446,8 +430,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         addAllActionListeners();
                         return;
                     }
+                    updateEngineTypes();
                     addAllActionListeners();
                     engineType.setSelectedIndex(1);
+                    engineType.repaint();
                     removeAllActionListeners();
                 } else if (combo.equals(tankMotiveType)) {
                     int currentTonnage = weightClass.getSelectedIndex() + 1;
@@ -560,7 +546,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     }
 
     private void updateEngineTypes() {
-        int maxEngineType = 0;
+        int maxEngineType = clanEngineTypes.length;
         String[] engineTypes;
         if (unit.isClan()) {
             engineTypes = clanEngineTypes;
@@ -583,7 +569,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             }
         }
 
-        engineType.removeAll();
+        // engineType.removeAll();
         engineType.removeAllItems();
 
         for (int pos = 0; pos < maxEngineType; pos++) {
