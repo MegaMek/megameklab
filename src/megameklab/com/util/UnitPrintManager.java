@@ -71,14 +71,14 @@ public class UnitPrintManager {
                 ArrayList<VTOL> vtolList = new ArrayList<VTOL>();
                 vtolList.add((VTOL) entity);
 
-                PrintVTOL sp = new PrintVTOL(vtolList);
+                PrintVTOL sp = new PrintVTOL(vtolList, false);
 
                 sp.print();
             } else {
                 ArrayList<Tank> tankList = new ArrayList<Tank>();
                 tankList.add((Tank) entity);
 
-                PrintVehicle sp = new PrintVehicle(tankList);
+                PrintVehicle sp = new PrintVehicle(tankList, false);
 
                 sp.print();
 
@@ -122,7 +122,7 @@ public class UnitPrintManager {
         UnitPrintManager.printEntity(entity);
     }
 
-    public static void printMuls(Frame parent) {
+    public static void printMuls(Frame parent, boolean singlePrint) {
         ArrayList<Mech> quadList = new ArrayList<Mech>();
         ArrayList<Mech> bipedList = new ArrayList<Mech>();
         ArrayList<Tank> tankList = new ArrayList<Tank>();
@@ -186,7 +186,7 @@ public class UnitPrintManager {
             }
 
             if (tankList.size() > 0) {
-                PrintVehicle printTank = new PrintVehicle(tankList);
+                PrintVehicle printTank = new PrintVehicle(tankList, singlePrint);
 
                 printTank.print();
             }
@@ -198,7 +198,7 @@ public class UnitPrintManager {
             }
 
             if (VTOLList.size() > 0) {
-                PrintVTOL printVTOL = new PrintVTOL(VTOLList);
+                PrintVTOL printVTOL = new PrintVTOL(VTOLList, singlePrint);
 
                 printVTOL.print();
             }
@@ -240,7 +240,16 @@ public class UnitPrintManager {
         item.setMnemonic('M');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                UnitPrintManager.printMuls(parent);
+                UnitPrintManager.printMuls(parent, false);
+            }
+        });
+        printMenu.add(item);
+
+        item = new JMenuItem("From MUL(Single Unit Per RS)");
+        item.setMnemonic('R');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                UnitPrintManager.printMuls(parent, true);
             }
         });
         printMenu.add(item);

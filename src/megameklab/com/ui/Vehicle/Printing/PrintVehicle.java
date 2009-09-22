@@ -37,11 +37,13 @@ public class PrintVehicle implements Printable {
     private Tank tank2 = null;
     private ArrayList<Tank> tankList;
     private int secondPageMargin = 373; // How far down the text should be
+    private boolean singlePrint = false;
 
     // printed for a second vehicle.
 
-    public PrintVehicle(ArrayList<Tank> list) {
+    public PrintVehicle(ArrayList<Tank> list, boolean singlePrint) {
         tankList = list;
+        this.singlePrint = singlePrint;
 
         /*
          * if (awtImage != null) { System.out.println("Width: " +
@@ -378,8 +380,8 @@ public class PrintVehicle implements Printable {
                     tank = tankList.get(pos);
                     pj.setJobName(tank.getChassis() + " " + tank.getModel());
 
-                    if (++pos < tankList.size()) {
-                        tank2 = tankList.get(pos);
+                    if (!singlePrint && pos + 1 < tankList.size()) {
+                        tank2 = tankList.get(++pos);
                     } else {
                         tank2 = null;
                     }
@@ -388,8 +390,9 @@ public class PrintVehicle implements Printable {
                         pj.print();
                     } catch (Exception ex) {
                         ex.printStackTrace();
+                    } finally {
+                        System.gc();
                     }
-                    System.gc();
                 }
 
             }
