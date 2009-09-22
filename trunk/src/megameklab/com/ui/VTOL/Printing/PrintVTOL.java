@@ -25,6 +25,10 @@ import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.PrintQuality;
+
 import megamek.common.Engine;
 import megamek.common.Tank;
 import megamek.common.VTOL;
@@ -345,7 +349,10 @@ public class PrintVTOL implements Printable {
             PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
-                // Paper paper = new Paper();
+                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+
+                aset.add(PrintQuality.HIGH);
+
                 PageFormat pageFormat = new PageFormat();
                 pageFormat = pj.getPageFormat(null);
 
@@ -367,7 +374,7 @@ public class PrintVTOL implements Printable {
                     }
 
                     try {
-                        pj.print();
+                        pj.print(aset);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     } finally {

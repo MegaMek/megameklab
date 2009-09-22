@@ -26,6 +26,10 @@ import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.PrintQuality;
+
 import megamek.common.Aero;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
@@ -202,7 +206,10 @@ public class PrintAero implements Printable {
             PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
-                // Paper paper = new Paper();
+                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+
+                aset.add(PrintQuality.HIGH);
+
                 PageFormat pageFormat = new PageFormat();
                 pageFormat = pj.getPageFormat(null);
 
@@ -218,7 +225,7 @@ public class PrintAero implements Printable {
                     pj.setJobName(aero.getChassis() + " " + aero.getModel());
 
                     try {
-                        pj.print();
+                        pj.print(aset);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

@@ -30,6 +30,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.PrintQuality;
+
 import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
@@ -209,8 +213,7 @@ public class PrintQuad implements Printable {
         switch (mech.getTechLevel()) {
 
         case TechConstants.T_INTRO_BOXSET:
-            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine,
-                    nextDataLine);
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
             nextDataLine += lineFeed;
             break;
         case TechConstants.T_IS_TW_NON_BOX:
@@ -219,24 +222,20 @@ public class PrintQuad implements Printable {
             break;
         case TechConstants.T_IS_ADVANCED:
         case TechConstants.T_CLAN_ADVANCED:
-            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine,
-                    nextDataLine);
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
             nextDataLine += lineFeed;
             break;
         case TechConstants.T_IS_EXPERIMENTAL:
         case TechConstants.T_CLAN_EXPERIMENTAL:
-            ImageHelper.printCenterString(g2d, "(Experimental)", font,
-                    startLine, nextDataLine);
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
             nextDataLine += lineFeed;
             break;
         case TechConstants.T_IS_UNOFFICIAL:
         case TechConstants.T_CLAN_UNOFFICIAL:
-            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine,
-                    nextDataLine);
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
             nextDataLine += lineFeed;
             break;
         }
-
 
         if ((mech.getSource() != null) && (mech.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
@@ -446,13 +445,16 @@ public class PrintQuad implements Printable {
             PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
-                Paper paper = new Paper();
+                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+
+                aset.add(PrintQuality.HIGH);
+
                 PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.defaultPage();
-                paper.setImageableArea(0, 0, 612, 792);
-                paper.setSize(612, 792);
-                pageFormat.setPaper(paper);
-                pageFormat.setOrientation(PageFormat.PORTRAIT);
+                pageFormat = pj.getPageFormat(null);
+
+                Paper p = pageFormat.getPaper();
+                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                pageFormat.setPaper(p);
 
                 pj.setPrintable(this, pageFormat);
                 for (Mech currentMech : mechList) {
@@ -462,7 +464,7 @@ public class PrintQuad implements Printable {
                     pj.setJobName(mech.getChassis() + " " + mech.getModel());
 
                     try {
-                        pj.print();
+                        pj.print(aset);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
