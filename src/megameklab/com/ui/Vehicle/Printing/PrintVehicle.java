@@ -26,6 +26,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.PrintQuality;
+
 import megamek.common.Engine;
 import megamek.common.Tank;
 import megameklab.com.util.ImageHelper;
@@ -73,8 +77,9 @@ public class PrintVehicle implements Printable {
         g2d.drawImage(ImageHelper.getRecordSheet(tank, false), 18, 18, 558, 368, null);
 
         if (tank.getOInternal(Tank.LOC_TURRET) > 0) {
-            g2d.drawImage(ImageHelper.getTurretImage(), 18, 18, 558, 368, null);
+            g2d.drawImage(ImageHelper.getTurretImage(), 296, 172, 220, 100, null);
         }
+
         if (tank2 == null) {
             g2d.drawImage(ImageHelper.getTableImage(tank), 18, 18 + secondPageMargin, 558, 366, null);
         } else {
@@ -365,7 +370,10 @@ public class PrintVehicle implements Printable {
             PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
-                // Paper paper = new Paper();
+                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+
+                aset.add(PrintQuality.HIGH);
+
                 PageFormat pageFormat = new PageFormat();
                 pageFormat = pj.getPageFormat(null);
 
@@ -387,7 +395,7 @@ public class PrintVehicle implements Printable {
                     }
 
                     try {
-                        pj.print();
+                        pj.print(aset);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     } finally {
