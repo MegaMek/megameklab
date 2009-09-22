@@ -37,12 +37,13 @@ public class PrintVTOL implements Printable {
     private VTOL vtol2 = null;
     private ArrayList<VTOL> vtolList;
     private int secondPageMargin = 373; // How far down the text should be
+    private boolean singlePrint = false;
 
     // printed for a second vehicle.
 
-    public PrintVTOL(ArrayList<VTOL> list) {
+    public PrintVTOL(ArrayList<VTOL> list, boolean singlePrint) {
         vtolList = list;
-
+        this.singlePrint = singlePrint;
         /*
          * if (awtImage != null) { System.out.println("Width: " +
          * awtImage.getWidth(null)); System.out.println("Height: " +
@@ -359,8 +360,8 @@ public class PrintVTOL implements Printable {
                     vtol = vtolList.get(pos);
                     pj.setJobName(vtol.getChassis() + " " + vtol.getModel());
 
-                    if (++pos < vtolList.size()) {
-                        vtol2 = vtolList.get(pos);
+                    if (pos + 1 < vtolList.size() && !singlePrint) {
+                        vtol2 = vtolList.get(++pos);
                     } else {
                         vtol2 = null;
                     }
@@ -369,8 +370,9 @@ public class PrintVTOL implements Printable {
                         pj.print();
                     } catch (Exception ex) {
                         ex.printStackTrace();
+                    } finally {
+                        System.gc();
                     }
-                    System.gc();
                 }
 
             }
