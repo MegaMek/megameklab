@@ -3,6 +3,8 @@ VERSION HISTORY:
 V 0.0.0.16 Dev 
 + Bug: ammo not print out correctly for vehicles
 + RFE: Allow single units to be printed when printing from MULs
++ Bug: Vehicles with turrets printing in poor quality
+
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads
 + added shield image for Biped Mechs

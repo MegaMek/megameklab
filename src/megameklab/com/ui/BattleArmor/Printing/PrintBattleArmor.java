@@ -24,6 +24,10 @@ import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.PrintQuality;
+
 import megamek.common.BattleArmor;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
@@ -33,7 +37,7 @@ public class PrintBattleArmor implements Printable {
     private BattleArmor battleArmor = null;
     private ArrayList<BattleArmor> battleArmorList;
     private int pageMarginBase = 131; // How far down the text should be printed
-                                      // for a second vehicle.
+    // for a second vehicle.
     private int currentPosition = 0;
     private int currentMargin = 0;
 
@@ -173,7 +177,10 @@ public class PrintBattleArmor implements Printable {
             PrinterJob pj = PrinterJob.getPrinterJob();
 
             if (pj.printDialog()) {
-                // Paper paper = new Paper();
+                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+
+                aset.add(PrintQuality.HIGH);
+
                 PageFormat pageFormat = new PageFormat();
                 pageFormat = pj.getPageFormat(null);
 
@@ -189,7 +196,7 @@ public class PrintBattleArmor implements Printable {
                     pj.setJobName(battleArmor.getChassis() + " " + battleArmor.getModel());
 
                     try {
-                        pj.print();
+                        pj.print(aset);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
