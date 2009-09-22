@@ -506,7 +506,7 @@ public class ImageHelper {
         StringBuffer sb = new StringBuffer("Ammo: ");
         g2d.setFont(UnitUtil.getNewFont(g2d, sb.toString(), false, 20, 7.0f));
 
-        sb = new StringBuffer();
+        sb = new StringBuffer("Ammo: ");
         int linecount = 0;
         for (String ammo : ammoHash.keySet()) {
             sb.append("(");
@@ -514,28 +514,37 @@ public class ImageHelper {
             sb.append(") ");
             sb.append(ammoHash.get(ammo));
             sb.append(", ");
-            if (ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont()) > 160) {
-                linecount++;
-                sb = new StringBuffer();
-            }
         }
-        sb = new StringBuffer("Ammo: ");
+
+        double stringLength = ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
+        linecount = (int) Math.floor(stringLength / 160);
+
+        sb.setLength(0);
+        sb.append("Ammo: ");
+
         g2d.drawString(sb.toString(), pointX, pointY - (linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont()));
         pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
         sb = new StringBuffer();
         int linesprinted = 0;
+        int currentStringLength = 0;
 
         for (String ammo : ammoHash.keySet()) {
+            currentStringLength = sb.length();
             sb.append("(");
             sb.append(ammo);
             sb.append(") ");
             sb.append(ammoHash.get(ammo));
             sb.append(", ");
             if ((ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont()) > 160) && (linesprinted < linecount)) {
-                sb.setLength(sb.length() - 2);
+                sb.setLength(sb.length() - ((sb.length() - currentStringLength) + 2));
                 g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
                 linesprinted++;
-                sb = new StringBuffer();
+                sb.setLength(0);
+                sb.append("(");
+                sb.append(ammo);
+                sb.append(") ");
+                sb.append(ammoHash.get(ammo));
+                sb.append(", ");
             }
         }
         if (sb.length() > 0) {
