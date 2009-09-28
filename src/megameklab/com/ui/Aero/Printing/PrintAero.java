@@ -31,6 +31,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
+import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
@@ -103,6 +104,37 @@ public class PrintAero implements Printable {
 
         g2d.drawString(Integer.toString(tonnage), 177, 132.5f);
 
+        int nextDataLine = 153;
+        int startLine = 188;
+        int lineFeed = 8;
+
+        switch (aero.getTechLevel()) {
+
+        case TechConstants.T_INTRO_BOXSET:
+            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        }
+
         String techBase = "Inner Sphere";
         if (aero.isClan()) {
             techBase = "Clan";
@@ -120,19 +152,19 @@ public class PrintAero implements Printable {
 
             g2d.setFont(font);
 
-            g2d.drawString(aero.getSource(), 177, 155);
+            g2d.drawString(aero.getSource(), 177, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(yearFluff, 138, 155);
+            g2d.drawString(yearFluff, 138, nextDataLine);
 
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", aero.getYear()), 177, 155);
+            g2d.drawString(String.format("%1$s", aero.getYear()), 177, nextDataLine);
 
         }
 
@@ -415,7 +447,7 @@ public class PrintAero implements Printable {
             }
         }
 
-        int pipSpace = 148 / totalArmor;
+        int pipSpace = 1;
         for (int pos = 0; pos < 148; pos += pipSpace) {
             ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
