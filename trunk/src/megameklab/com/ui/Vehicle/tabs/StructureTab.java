@@ -175,7 +175,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         turretCB.setSelected(getTank().getInternal(Tank.LOC_TURRET) > 0);
         era.setText(Integer.toString(unit.getYear()));
         source.setText(unit.getSource());
-        weightClass.setSelectedIndex((int) unit.getWeight() - 1);
 
         SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
         masterPanel.setVisible(false);
@@ -237,13 +236,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         }
 
-        cruiseMP.setSelectedIndex(unit.getWalkMP() - 1);
-
-        critView.updateUnit(unit);
-        critView.refresh();
-
-        addAllActionListeners();
-
         switch (unit.getMovementMode()) {
         case IEntityMovementMode.HOVER:
             tankMotiveType.setSelectedIndex(0);
@@ -256,6 +248,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             break;
         }
 
+        populateWeight((int) unit.getWeight());
+
+        cruiseMP.setSelectedIndex(unit.getWalkMP() - 1);
+
+        critView.updateUnit(unit);
+        critView.refresh();
+
+        addAllActionListeners();
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -273,6 +273,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+
+        if (refresh == null) {
+            return;
+        }
 
         if (e.getSource() instanceof JComboBox) {
             JComboBox combo = (JComboBox) e.getSource();
@@ -298,15 +302,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         unit.addTransporter(new TroopSpace(troopStorage.getSelectedIndex()));
                     }
                 } else if (combo.equals(weightClass)) {
-                    int rating = (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
-                    if (rating > 500) {
-                        JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
-                        unit.autoSetInternal();
-                        addAllActionListeners();
-                        engineType.setSelectedIndex(engineType.getSelectedIndex());
-                        removeAllActionListeners();
+                    if (weightClass.getSelectedItem() != null) {
+                        int rating = (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                        if (rating > 500) {
+                            JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
+                            unit.autoSetInternal();
+                            addAllActionListeners();
+                            engineType.setSelectedIndex(engineType.getSelectedIndex());
+                            removeAllActionListeners();
+                        }
                     }
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
@@ -438,31 +444,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 } else if (combo.equals(tankMotiveType)) {
                     int currentTonnage = weightClass.getSelectedIndex() + 1;
 
-                    weightClass.removeAll();
-                    weightClass.removeAllItems();
-
-                    switch (tankMotiveType.getSelectedIndex()) {
-                    case 0:
-                        maxTonnage = 50;
-                        unit.setMovementMode(IEntityMovementMode.HOVER);
-                        break;
-                    case 1:
-                        maxTonnage = 80;
-                        unit.setMovementMode(IEntityMovementMode.WHEELED);
-                        break;
-                    case 2:
-                        maxTonnage = 100;
-                        unit.setMovementMode(IEntityMovementMode.TRACKED);
-                        break;
-                    }
-
-                    currentTonnage = Math.min(currentTonnage, maxTonnage);
-                    unit.setWeight(currentTonnage);
-
-                    for (int pos = 1; pos <= maxTonnage; pos++) {
-                        weightClass.addItem(pos);
-                    }
-
+                    populateWeight(currentTonnage);
                 }
                 addAllActionListeners();
                 refresh.refreshAll();
@@ -595,5 +577,34 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             troopStorage.setSelectedIndex(troops);
         }
 
+    }
+
+    private void populateWeight(int currentTonnage) {
+        // weightClass.removeAll();
+        weightClass.removeAllItems();
+
+        switch (tankMotiveType.getSelectedIndex()) {
+        case 0:
+            maxTonnage = 50;
+            unit.setMovementMode(IEntityMovementMode.HOVER);
+            break;
+        case 1:
+            maxTonnage = 80;
+            unit.setMovementMode(IEntityMovementMode.WHEELED);
+            break;
+        case 2:
+            maxTonnage = 100;
+            unit.setMovementMode(IEntityMovementMode.TRACKED);
+            break;
+        }
+
+        currentTonnage = Math.min(currentTonnage, maxTonnage);
+        unit.setWeight(currentTonnage);
+
+        for (int pos = 1; pos <= maxTonnage; pos++) {
+            weightClass.addItem(pos);
+        }
+
+        weightClass.setSelectedIndex((int) unit.getWeight() - 1);
     }
 }
