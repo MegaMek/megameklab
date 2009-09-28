@@ -734,7 +734,7 @@ public class MainUI extends JFrame implements RefreshListener {
             ex.printStackTrace();
         }
     }
-    
+
     private void jMenuPrintCurrentUnit() {
         UnitPrintManager.printEntity(entity);
     }

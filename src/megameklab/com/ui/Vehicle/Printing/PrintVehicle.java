@@ -32,6 +32,7 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
 import megamek.common.Tank;
+import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
@@ -177,6 +178,34 @@ public class PrintVehicle implements Printable {
 
         g2d.drawString(Integer.toString(tonnage), 177, 134);
 
+        int nextDataLine = 153;
+        int startLine = 188;
+        int lineFeed = 8;
+
+        switch (tank.getTechLevel()) {
+
+        case TechConstants.T_INTRO_BOXSET:
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        }
+
         String techBase = "Inner Sphere";
         if (tank.isClan()) {
             techBase = "Clan";
@@ -188,24 +217,24 @@ public class PrintVehicle implements Printable {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sourceFluff, 138, 155);
+            g2d.drawString(sourceFluff, 138, nextDataLine);
 
             font = UnitUtil.getNewFont(g2d, tank.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(tank.getSource(), 177, 155);
+            g2d.drawString(tank.getSource(), 177, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(yearFluff, 138, 155);
+            g2d.drawString(yearFluff, 138, nextDataLine);
 
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", tank.getYear()), 177, 155);
+            g2d.drawString(String.format("%1$s", tank.getYear()), 177, nextDataLine);
 
         }
 
@@ -275,39 +304,65 @@ public class PrintVehicle implements Printable {
 
         g2d.drawString(Integer.toString(tonnage), 177, 505);
 
+        int nextDataLine = 155;
+        int startLine = 188;
+        int lineFeed = 8;
+
+        switch (tank.getTechLevel()) {
+
+        case TechConstants.T_INTRO_BOXSET:
+        case TechConstants.T_IS_TW_NON_BOX:
+        case TechConstants.T_IS_TW_ALL:
+        case TechConstants.T_CLAN_TW:
+            break;
+        case TechConstants.T_IS_ADVANCED:
+        case TechConstants.T_CLAN_ADVANCED:
+            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_EXPERIMENTAL:
+        case TechConstants.T_CLAN_EXPERIMENTAL:
+            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        case TechConstants.T_IS_UNOFFICIAL:
+        case TechConstants.T_CLAN_UNOFFICIAL:
+            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+            break;
+        }
+
         String techBase = "Inner Sphere";
-        if (tank2.isClan()) {
+        if (tank.isClan()) {
             techBase = "Clan";
         }
-        g2d.drawString(techBase, 177, 516);
+        g2d.drawString(techBase, 177, 145);
 
         if ((tank.getSource() != null) && (tank.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sourceFluff, 138, 526);
+            g2d.drawString(sourceFluff, 138, nextDataLine);
 
             font = UnitUtil.getNewFont(g2d, tank.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(tank.getSource(), 177, 526);
+            g2d.drawString(tank.getSource(), 177, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(yearFluff, 138, 526);
+            g2d.drawString(yearFluff, 138, nextDataLine);
 
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", tank.getYear()), 177, 526);
+            g2d.drawString(String.format("%1$s", tank.getYear()), 177, nextDataLine);
 
         }
-
-        // g2d.drawString(Integer.toString(tank2.getYear()), 188, 526);
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
