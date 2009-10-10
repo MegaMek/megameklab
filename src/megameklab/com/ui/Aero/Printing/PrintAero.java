@@ -328,7 +328,7 @@ public class PrintAero implements Printable {
     }
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[] { 336.5f, 325 };
+        float[] topColumn = new float[] { 336.4f, 325 };
         float[] pipShift = new float[] { 7, 7 };
 
         int numberPerRow = 3;
@@ -392,7 +392,7 @@ public class PrintAero implements Printable {
 
     private void printRightArmor(Graphics2D g2d, int totalArmor) {
         float[] topColumn = new float[] { 430.5f, 325 };
-        float[] pipShift = new float[] { 7, 7 };
+        float[] pipShift = new float[] { 6.8f, 7 };
 
         int numberPerRow = 3;
         int curretNumber = 0;
@@ -447,7 +447,7 @@ public class PrintAero implements Printable {
             }
         }
 
-        int pipSpace = 1;
+        int pipSpace = 148 / totalArmor;
         for (int pos = 0; pos < 148; pos += pipSpace) {
             ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
