@@ -146,9 +146,9 @@ public class PrintAero implements Printable {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sourceFluff, 138, 155);
+            g2d.drawString(sourceFluff, 138, nextDataLine);
 
-            font = UnitUtil.getNewFont(g2d, aero.getSource(), false, 52, 8.0f);
+            font = UnitUtil.getNewFont(g2d, aero.getSource(), false, 51, 8.0f);
 
             g2d.setFont(font);
 
@@ -328,8 +328,8 @@ public class PrintAero implements Printable {
     }
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[] { 336.4f, 325 };
-        float[] pipShift = new float[] { 7, 7 };
+        float[] topColumn = new float[] { 336f, 325 };
+        float[] pipShift = new float[] { 6.3f, 7 };
 
         int numberPerRow = 3;
         int curretNumber = 0;
@@ -359,7 +359,7 @@ public class PrintAero implements Printable {
                     topColumn[0] -= Math.abs(pipShift[0]) * 1.5;
                 } else if (pos == 141) {
                     numberPerRow = 8;
-                    topColumn[0] += Math.abs(pipShift[0]) * 3.5;
+                    topColumn[0] += Math.abs(pipShift[0]) * 3;
                 } else if (numberPerRow < 13) {
                     if (numberPerRow == 7) {
                         numberPerRow = 9;
@@ -391,8 +391,8 @@ public class PrintAero implements Printable {
     }
 
     private void printRightArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[] { 430.5f, 325 };
-        float[] pipShift = new float[] { 6.8f, 7 };
+        float[] topColumn = new float[] { 430f, 325 };
+        float[] pipShift = new float[] { 6.3f, 7 };
 
         int numberPerRow = 3;
         int curretNumber = 0;
