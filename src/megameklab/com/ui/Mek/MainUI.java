@@ -253,6 +253,16 @@ public class MainUI extends JFrame implements RefreshListener {
         });
         validate.add(item);
 
+        item = new JMenuItem();
+        item.setText("Unit Cost Breakdown");
+        item.setMnemonic('C');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuUnitCostBreakdown_actionPerformed();
+            }
+        });
+        validate.add(item);
+
         menuBar.add(file);
         menuBar.add(validate);
         menuBar.add(help);
@@ -452,6 +462,50 @@ public class MainUI extends JFrame implements RefreshListener {
 
         // JOptionPane.showMessageDialog(this, bvText, "BV Calculations",
         // JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void jMenuUnitCostBreakdown_actionPerformed() {
+
+        HTMLEditorKit kit = new HTMLEditorKit();
+        entity.calculateBattleValue(true, true);
+        StringBuffer costText = new StringBuffer();
+
+        entity.getCost(costText, true);
+
+        JEditorPane textPane = new JEditorPane("text/html", "");
+        JScrollPane scroll = new JScrollPane();
+
+        textPane.setEditable(false);
+        textPane.setCaret(new DefaultCaret());
+        textPane.setEditorKit(kit);
+
+        scroll.setViewportView(textPane);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        textPane.setText(costText.toString());
+
+        scroll.setVisible(true);
+
+        JDialog jdialog = new JDialog();
+
+        jdialog.add(scroll);
+        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2, CConfig.getIntParam("WINDOWHEIGHT"));
+
+        jdialog.setPreferredSize(size);
+        jdialog.setMinimumSize(size);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+
+        jdialog.setLocationRelativeTo(this);
+        jdialog.setVisible(true);
+
+        try {
+            textPane.setSelectionStart(0);
+            textPane.setSelectionEnd(0);
+        } catch (Exception ex) {
+        }
+
     }
 
     public void jMenuUnitSpecs_actionPerformed() {
