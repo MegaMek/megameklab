@@ -7,6 +7,8 @@ V 0.0.0.16 Dev
 + Bug: blk files not loading correctly.
 + Bug: Vehicles not printing tech status i.e. advanced/experimental
 + Bug: Aeros not printing tech status i.e. advanced/experimental
++ Bug: Ammo printing incorrectly for Tanks
++ RFE: Print pilot name and stats on Record Sheet when printing from a MUL
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads

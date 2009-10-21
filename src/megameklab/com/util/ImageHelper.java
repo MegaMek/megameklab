@@ -486,10 +486,12 @@ public class ImageHelper {
             shortName = shortName.replace('(', '.').replace(')', '.').replace(".Clan.", "");
             shortName = shortName.replace("-capable", "");
             shortName = shortName.replaceAll("[0-9]", "");
-            shortName = shortName.trim();
+            shortName += " ";
             if ((aType.getAmmoType() == AmmoType.T_AC) || (aType.getAmmoType() == AmmoType.T_MML) || (aType.getAmmoType() == AmmoType.T_SRM) || (aType.getAmmoType() == AmmoType.T_SRM_STREAK) || (aType.getAmmoType() == AmmoType.T_SRM_TORPEDO) || (aType.getAmmoType() == AmmoType.T_LRM) || (aType.getAmmoType() == AmmoType.T_LRM_STREAK) || (aType.getAmmoType() == AmmoType.T_LRM_TORPEDO) || (aType.getAmmoType() == AmmoType.T_MML) || (aType.getAmmoType() == AmmoType.T_AC) || (aType.getAmmoType() == AmmoType.T_AC_LBX) || (aType.getAmmoType() == AmmoType.T_AC_LBX_THB) || (aType.getAmmoType() == AmmoType.T_AC_ROTARY) || (aType.getAmmoType() == AmmoType.T_AC_ULTRA) || (aType.getAmmoType() == AmmoType.T_AC_ULTRA_THB) || (aType.getAmmoType() == AmmoType.T_MRM) || (aType.getAmmoType() == AmmoType.T_MRM_STREAK) || (aType.getAmmoType() == AmmoType.T_ATM) || (aType.getAmmoType() == AmmoType.T_HAG) || (aType.getAmmoType() == AmmoType.T_EXLRM)) {
-                shortName += " " + aType.getRackSize();
+                shortName = shortName.replaceFirst(" ", " " + aType.getRackSize() + " ");
+                shortName = shortName.replaceFirst("  Artemis", " Artemis");
             }
+            shortName = shortName.trim();
 
             if (ammoHash.containsKey(shortName)) {
                 int currentAmmo = ammoHash.get(shortName);
@@ -1159,7 +1161,7 @@ public class ImageHelper {
 
         for (Mounted eq : aero.getEquipment()) {
 
-            if ((eq.isWeaponGroup() || eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType())) {
+            if ((eq.isWeaponGroup() || (eq.getType() instanceof AmmoType)) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType())) {
                 continue;
             }
 
