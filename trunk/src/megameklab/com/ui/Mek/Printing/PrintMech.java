@@ -43,6 +43,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Pilot;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megameklab.com.util.ImageHelper;
@@ -171,6 +172,13 @@ public class PrintMech implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
+        if ((mech.getCrew() != null) && !mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Pilot pilot = mech.getCrew();
+            g2d.drawString(pilot.getName(), 270, 120);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+        }
+
         if (mech.hasTSM()) {
             int walkTSM = mech.getWalkMP() + 1;
             int runTSM = (int) Math.ceil(walkTSM * 1.5) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
@@ -232,29 +240,29 @@ public class PrintMech implements Printable {
 
         switch (mech.getTechLevel()) {
 
-        case TechConstants.T_INTRO_BOXSET:
-            ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
-        case TechConstants.T_IS_TW_NON_BOX:
-        case TechConstants.T_IS_TW_ALL:
-        case TechConstants.T_CLAN_TW:
-            break;
-        case TechConstants.T_IS_ADVANCED:
-        case TechConstants.T_CLAN_ADVANCED:
-            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
-        case TechConstants.T_IS_EXPERIMENTAL:
-        case TechConstants.T_CLAN_EXPERIMENTAL:
-            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
-        case TechConstants.T_IS_UNOFFICIAL:
-        case TechConstants.T_CLAN_UNOFFICIAL:
-            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
+            case TechConstants.T_INTRO_BOXSET:
+                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_TW_NON_BOX:
+            case TechConstants.T_IS_TW_ALL:
+            case TechConstants.T_CLAN_TW:
+                break;
+            case TechConstants.T_IS_ADVANCED:
+            case TechConstants.T_CLAN_ADVANCED:
+                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_EXPERIMENTAL:
+            case TechConstants.T_CLAN_EXPERIMENTAL:
+                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_UNOFFICIAL:
+            case TechConstants.T_CLAN_UNOFFICIAL:
+                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
         }
 
         // Cost/BV
@@ -1391,26 +1399,26 @@ public class PrintMech implements Printable {
                         engineName = "Primitive Fusion Engine";
                     }
                     switch (mech.getEngine().getEngineType()) {
-                    case Engine.COMBUSTION_ENGINE:
-                        engineName = "I.C.E.";
-                        if (mech.isPrimitive()) {
-                            engineName = "Primitive I.C.E";
-                        }
-                        break;
-                    case Engine.LIGHT_ENGINE:
-                        engineName = "Light Fusion Engine";
-                        break;
-                    case Engine.XL_ENGINE:
-                        engineName = "XL Fusion Engine";
-                        break;
-                    case Engine.XXL_ENGINE:
-                        engineName = "XXL Fusion Engine";
-                        break;
-                    case Engine.COMPACT_ENGINE:
-                        engineName = "Compact Fusion Engine";
-                        break;
-                    default:
-                        break;
+                        case Engine.COMBUSTION_ENGINE:
+                            engineName = "I.C.E.";
+                            if (mech.isPrimitive()) {
+                                engineName = "Primitive I.C.E";
+                            }
+                            break;
+                        case Engine.LIGHT_ENGINE:
+                            engineName = "Light Fusion Engine";
+                            break;
+                        case Engine.XL_ENGINE:
+                            engineName = "XL Fusion Engine";
+                            break;
+                        case Engine.XXL_ENGINE:
+                            engineName = "XXL Fusion Engine";
+                            break;
+                        case Engine.COMPACT_ENGINE:
+                            engineName = "Compact Fusion Engine";
+                            break;
+                        default:
+                            break;
                     }
 
                     if (cs.isArmored()) {
