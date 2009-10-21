@@ -30,6 +30,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
+import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.util.ImageHelper;
@@ -131,29 +132,36 @@ public class PrintVTOL implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
+        if ((vtol.getCrew() != null) && !vtol.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Pilot pilot = vtol.getCrew();
+            g2d.drawString(pilot.getName(), 270, 120);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+        }
+
         g2d.drawString(Integer.toString(vtol.getWalkMP()), 79, 144);
         g2d.drawString(Integer.toString(vtol.getRunMP()), 79, 155);
 
         String engineName = "Fusion Engine";
 
         switch (vtol.getEngine().getEngineType()) {
-        case Engine.COMBUSTION_ENGINE:
-            engineName = "I.C.E.";
-            break;
-        case Engine.LIGHT_ENGINE:
-            engineName = "Light Fusion Engine";
-            break;
-        case Engine.XL_ENGINE:
-            engineName = "XL Fusion Engine";
-            break;
-        case Engine.XXL_ENGINE:
-            engineName = "XXL Fusion Engine";
-            break;
-        case Engine.COMPACT_ENGINE:
-            engineName = "Compact Fusion Engine";
-            break;
-        default:
-            break;
+            case Engine.COMBUSTION_ENGINE:
+                engineName = "I.C.E.";
+                break;
+            case Engine.LIGHT_ENGINE:
+                engineName = "Light Fusion Engine";
+                break;
+            case Engine.XL_ENGINE:
+                engineName = "XL Fusion Engine";
+                break;
+            case Engine.XXL_ENGINE:
+                engineName = "XXL Fusion Engine";
+                break;
+            case Engine.COMPACT_ENGINE:
+                engineName = "Compact Fusion Engine";
+                break;
+            default:
+                break;
         }
 
         g2d.drawString(engineName, 79, 166);
@@ -225,29 +233,36 @@ public class PrintVTOL implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
+        if ((vtol2.getCrew() != null) && !vtol2.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Pilot pilot = vtol2.getCrew();
+            g2d.drawString(pilot.getName(), 270, 120 + secondPageMargin);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132 + secondPageMargin);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);
+        }
+
         g2d.drawString(Integer.toString(vtol2.getWalkMP()), 79, 515);
         g2d.drawString(Integer.toString(vtol2.getRunMP()), 79, 526);
 
         String engineName = "Fusion Engine";
 
         switch (vtol2.getEngine().getEngineType()) {
-        case Engine.COMBUSTION_ENGINE:
-            engineName = "I.C.E.";
-            break;
-        case Engine.LIGHT_ENGINE:
-            engineName = "Light Fusion Engine";
-            break;
-        case Engine.XL_ENGINE:
-            engineName = "XL Fusion Engine";
-            break;
-        case Engine.XXL_ENGINE:
-            engineName = "XXL Fusion Engine";
-            break;
-        case Engine.COMPACT_ENGINE:
-            engineName = "Compact Fusion Engine";
-            break;
-        default:
-            break;
+            case Engine.COMBUSTION_ENGINE:
+                engineName = "I.C.E.";
+                break;
+            case Engine.LIGHT_ENGINE:
+                engineName = "Light Fusion Engine";
+                break;
+            case Engine.XL_ENGINE:
+                engineName = "XL Fusion Engine";
+                break;
+            case Engine.XXL_ENGINE:
+                engineName = "XXL Fusion Engine";
+                break;
+            case Engine.COMPACT_ENGINE:
+                engineName = "Compact Fusion Engine";
+                break;
+            default:
+                break;
         }
 
         g2d.drawString(engineName, 79, 537);
@@ -367,7 +382,7 @@ public class PrintVTOL implements Printable {
                     vtol = vtolList.get(pos);
                     pj.setJobName(vtol.getChassis() + " " + vtol.getModel());
 
-                    if (pos + 1 < vtolList.size() && !singlePrint) {
+                    if ((pos + 1 < vtolList.size()) && !singlePrint) {
                         vtol2 = vtolList.get(++pos);
                     } else {
                         vtol2 = null;
@@ -467,35 +482,35 @@ public class PrintVTOL implements Printable {
             ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
 
             switch (pos) {
-            case 0:
-            case 22:
-            case 23:
-            case 24:
-            case 25:
-            case 26:
-            case 27:
-                topColumn[1] += pipShift[1];
-                break;
-            case 2:
-            case 4:
-            case 6:
-            case 8:
-            case 10:
-            case 14:
-            case 16:
-            case 18:
-            case 20:
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                break;
-            case 12:
-                topColumn[1] += pipShift[1] * 3.75;
-                topColumn[0] += pipShift[0] * -2.25;
-                break;
+                case 0:
+                case 22:
+                case 23:
+                case 24:
+                case 25:
+                case 26:
+                case 27:
+                    topColumn[1] += pipShift[1];
+                    break;
+                case 2:
+                case 4:
+                case 6:
+                case 8:
+                case 10:
+                case 14:
+                case 16:
+                case 18:
+                case 20:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] *= -1;
+                    break;
+                case 12:
+                    topColumn[1] += pipShift[1] * 3.75;
+                    topColumn[0] += pipShift[0] * -2.25;
+                    break;
 
-            default:
-                topColumn[0] += pipShift[0];
-                break;
+                default:
+                    topColumn[0] += pipShift[0];
+                    break;
             }
         }
     }
@@ -518,34 +533,34 @@ public class PrintVTOL implements Printable {
             ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
 
             switch (pos) {
-            case 0:
-            case 22:
-            case 23:
-            case 24:
-            case 25:
-            case 26:
-            case 27:
-                topColumn[1] += pipShift[1];
-                break;
-            case 2:
-            case 4:
-            case 6:
-            case 8:
-            case 10:
-            case 14:
-            case 16:
-            case 18:
-            case 20:
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                break;
-            case 12:
-                topColumn[1] += pipShift[1] * 3.75;
-                topColumn[0] -= pipShift[0] * -2.10;
-                break;
-            default:
-                topColumn[0] -= pipShift[0];
-                break;
+                case 0:
+                case 22:
+                case 23:
+                case 24:
+                case 25:
+                case 26:
+                case 27:
+                    topColumn[1] += pipShift[1];
+                    break;
+                case 2:
+                case 4:
+                case 6:
+                case 8:
+                case 10:
+                case 14:
+                case 16:
+                case 18:
+                case 20:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] *= -1;
+                    break;
+                case 12:
+                    topColumn[1] += pipShift[1] * 3.75;
+                    topColumn[0] -= pipShift[0] * -2.10;
+                    break;
+                default:
+                    topColumn[0] -= pipShift[0];
+                    break;
             }
         }
     }

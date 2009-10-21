@@ -31,6 +31,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
+import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -141,6 +142,13 @@ public class PrintVehicle implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
+        if ((tank.getCrew() != null) && !tank.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Pilot pilot = tank.getCrew();
+            g2d.drawString(pilot.getName(), 270, 120);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+        }
+
         g2d.drawString(Integer.toString(tank.getWalkMP()), 79, 144);
         g2d.drawString(Integer.toString(tank.getRunMP()), 79, 155);
 
@@ -149,23 +157,23 @@ public class PrintVehicle implements Printable {
         String engineName = "Fusion Engine";
 
         switch (tank.getEngine().getEngineType()) {
-        case Engine.COMBUSTION_ENGINE:
-            engineName = "I.C.E.";
-            break;
-        case Engine.LIGHT_ENGINE:
-            engineName = "Light Fusion Engine";
-            break;
-        case Engine.XL_ENGINE:
-            engineName = "XL Fusion Engine";
-            break;
-        case Engine.XXL_ENGINE:
-            engineName = "XXL Fusion Engine";
-            break;
-        case Engine.COMPACT_ENGINE:
-            engineName = "Compact Fusion Engine";
-            break;
-        default:
-            break;
+            case Engine.COMBUSTION_ENGINE:
+                engineName = "I.C.E.";
+                break;
+            case Engine.LIGHT_ENGINE:
+                engineName = "Light Fusion Engine";
+                break;
+            case Engine.XL_ENGINE:
+                engineName = "XL Fusion Engine";
+                break;
+            case Engine.XXL_ENGINE:
+                engineName = "XXL Fusion Engine";
+                break;
+            case Engine.COMPACT_ENGINE:
+                engineName = "Compact Fusion Engine";
+                break;
+            default:
+                break;
         }
 
         g2d.drawString(engineName, 79, 177);
@@ -184,26 +192,26 @@ public class PrintVehicle implements Printable {
 
         switch (tank.getTechLevel()) {
 
-        case TechConstants.T_INTRO_BOXSET:
-        case TechConstants.T_IS_TW_NON_BOX:
-        case TechConstants.T_IS_TW_ALL:
-        case TechConstants.T_CLAN_TW:
-            break;
-        case TechConstants.T_IS_ADVANCED:
-        case TechConstants.T_CLAN_ADVANCED:
-            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
-        case TechConstants.T_IS_EXPERIMENTAL:
-        case TechConstants.T_CLAN_EXPERIMENTAL:
-            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
-        case TechConstants.T_IS_UNOFFICIAL:
-        case TechConstants.T_CLAN_UNOFFICIAL:
-            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
+            case TechConstants.T_INTRO_BOXSET:
+            case TechConstants.T_IS_TW_NON_BOX:
+            case TechConstants.T_IS_TW_ALL:
+            case TechConstants.T_CLAN_TW:
+                break;
+            case TechConstants.T_IS_ADVANCED:
+            case TechConstants.T_CLAN_ADVANCED:
+                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_EXPERIMENTAL:
+            case TechConstants.T_CLAN_EXPERIMENTAL:
+                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_UNOFFICIAL:
+            case TechConstants.T_CLAN_UNOFFICIAL:
+                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
         }
 
         String techBase = "Inner Sphere";
@@ -267,6 +275,13 @@ public class PrintVehicle implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
+        if ((tank2.getCrew() != null) && !tank2.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Pilot pilot = tank2.getCrew();
+            g2d.drawString(pilot.getName(), 270, 120 + secondPageMargin);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132 + secondPageMargin);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);
+        }
+
         g2d.drawString(Integer.toString(tank2.getWalkMP()), 79, 515);
         g2d.drawString(Integer.toString(tank2.getRunMP()), 79, 526);
 
@@ -275,23 +290,23 @@ public class PrintVehicle implements Printable {
         String engineName = "Fusion Engine";
 
         switch (tank2.getEngine().getEngineType()) {
-        case Engine.COMBUSTION_ENGINE:
-            engineName = "I.C.E.";
-            break;
-        case Engine.LIGHT_ENGINE:
-            engineName = "Light Fusion Engine";
-            break;
-        case Engine.XL_ENGINE:
-            engineName = "XL Fusion Engine";
-            break;
-        case Engine.XXL_ENGINE:
-            engineName = "XXL Fusion Engine";
-            break;
-        case Engine.COMPACT_ENGINE:
-            engineName = "Compact Fusion Engine";
-            break;
-        default:
-            break;
+            case Engine.COMBUSTION_ENGINE:
+                engineName = "I.C.E.";
+                break;
+            case Engine.LIGHT_ENGINE:
+                engineName = "Light Fusion Engine";
+                break;
+            case Engine.XL_ENGINE:
+                engineName = "XL Fusion Engine";
+                break;
+            case Engine.XXL_ENGINE:
+                engineName = "XXL Fusion Engine";
+                break;
+            case Engine.COMPACT_ENGINE:
+                engineName = "Compact Fusion Engine";
+                break;
+            default:
+                break;
         }
 
         g2d.drawString(engineName, 79, 548);
@@ -310,26 +325,26 @@ public class PrintVehicle implements Printable {
 
         switch (tank.getTechLevel()) {
 
-        case TechConstants.T_INTRO_BOXSET:
-        case TechConstants.T_IS_TW_NON_BOX:
-        case TechConstants.T_IS_TW_ALL:
-        case TechConstants.T_CLAN_TW:
-            break;
-        case TechConstants.T_IS_ADVANCED:
-        case TechConstants.T_CLAN_ADVANCED:
-            ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
-        case TechConstants.T_IS_EXPERIMENTAL:
-        case TechConstants.T_CLAN_EXPERIMENTAL:
-            ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
-        case TechConstants.T_IS_UNOFFICIAL:
-        case TechConstants.T_CLAN_UNOFFICIAL:
-            ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-            nextDataLine += lineFeed;
-            break;
+            case TechConstants.T_INTRO_BOXSET:
+            case TechConstants.T_IS_TW_NON_BOX:
+            case TechConstants.T_IS_TW_ALL:
+            case TechConstants.T_CLAN_TW:
+                break;
+            case TechConstants.T_IS_ADVANCED:
+            case TechConstants.T_CLAN_ADVANCED:
+                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_EXPERIMENTAL:
+            case TechConstants.T_CLAN_EXPERIMENTAL:
+                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
+            case TechConstants.T_IS_UNOFFICIAL:
+            case TechConstants.T_CLAN_UNOFFICIAL:
+                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                nextDataLine += lineFeed;
+                break;
         }
 
         String techBase = "Inner Sphere";
@@ -443,7 +458,7 @@ public class PrintVehicle implements Printable {
                     tank = tankList.get(pos);
                     pj.setJobName(tank.getChassis() + " " + tank.getModel());
 
-                    if (!singlePrint && pos + 1 < tankList.size()) {
+                    if (!singlePrint && (pos + 1 < tankList.size())) {
                         tank2 = tankList.get(++pos);
                     } else {
                         tank2 = null;
@@ -668,62 +683,62 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
 
             switch (pos) {
-            case 1:
-            case 2:
-                topColumn[1] += pipShift[1];
-                break;
-            case 4:
-            case 6:
-            case 9:
-            case 12:
-            case 21:
-            case 27:
-            case 46:
-            case 49:
-            case 52:
-            case 70:
-            case 74:
-            case 78:
-            case 82:
-            case 85:
-            case 88:
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                break;
-            case 43:
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                topColumn[0] += pipShift[0];
-                break;
-            case 39:
-                topColumn[1] += pipShift[1];
-                pipShift[0] = Math.abs(pipShift[0]);
-                topColumn[0] -= pipShift[0] * 5.2;
-                break;
-            case 55:
-                topColumn[1] += pipShift[1];
-                topColumn[0] -= pipShift[0] * 2.2;
-                break;
-            case 58:
-            case 60:
-            case 62:
-            case 64:
-                topColumn[1] += pipShift[1];
-                topColumn[0] -= pipShift[0] * 1.25;
-                break;
-            case 66:
-                topColumn[1] += pipShift[1] * 1.3;
-                topColumn[0] -= pipShift[0];
-                break;
-            case 16:
-            case 33:
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                topColumn[0] -= pipShift[0] * .5;
-                break;
-            default:
-                topColumn[0] += pipShift[0];
-                break;
+                case 1:
+                case 2:
+                    topColumn[1] += pipShift[1];
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 12:
+                case 21:
+                case 27:
+                case 46:
+                case 49:
+                case 52:
+                case 70:
+                case 74:
+                case 78:
+                case 82:
+                case 85:
+                case 88:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] *= -1;
+                    break;
+                case 43:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] *= -1;
+                    topColumn[0] += pipShift[0];
+                    break;
+                case 39:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] = Math.abs(pipShift[0]);
+                    topColumn[0] -= pipShift[0] * 5.2;
+                    break;
+                case 55:
+                    topColumn[1] += pipShift[1];
+                    topColumn[0] -= pipShift[0] * 2.2;
+                    break;
+                case 58:
+                case 60:
+                case 62:
+                case 64:
+                    topColumn[1] += pipShift[1];
+                    topColumn[0] -= pipShift[0] * 1.25;
+                    break;
+                case 66:
+                    topColumn[1] += pipShift[1] * 1.3;
+                    topColumn[0] -= pipShift[0];
+                    break;
+                case 16:
+                case 33:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] *= -1;
+                    topColumn[0] -= pipShift[0] * .5;
+                    break;
+                default:
+                    topColumn[0] += pipShift[0];
+                    break;
             }
 
         }
@@ -743,58 +758,58 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
 
             switch (pos) {
-            case 1:
-            case 2:
-                topColumn[1] += pipShift[1];
-                break;
-            case 4:
-            case 6:
-            case 9:
-            case 12:
-            case 16:
-            case 21:
-            case 27:
-            case 33:
-            case 46:
-            case 49:
-            case 52:
-            case 70:
-            case 74:
-            case 78:
-            case 82:
-            case 85:
-            case 88:
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                break;
-            case 43:
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                topColumn[0] -= pipShift[0];
-                break;
-            case 39:
-                topColumn[1] += pipShift[1];
-                pipShift[0] = Math.abs(pipShift[0]);
-                topColumn[0] += pipShift[0] * 5.5;
-                break;
-            case 55:
-                topColumn[1] += pipShift[1];
-                topColumn[0] += pipShift[0] * 2.2;
-                break;
-            case 58:
-            case 60:
-            case 62:
-            case 64:
-                topColumn[1] += pipShift[1];
-                topColumn[0] += pipShift[0] * 1.25;
-                break;
-            case 66:
-                topColumn[1] += pipShift[1] * 1.25;
-                topColumn[0] += pipShift[0];
-                break;
-            default:
-                topColumn[0] -= pipShift[0];
-                break;
+                case 1:
+                case 2:
+                    topColumn[1] += pipShift[1];
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 12:
+                case 16:
+                case 21:
+                case 27:
+                case 33:
+                case 46:
+                case 49:
+                case 52:
+                case 70:
+                case 74:
+                case 78:
+                case 82:
+                case 85:
+                case 88:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] *= -1;
+                    break;
+                case 43:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] *= -1;
+                    topColumn[0] -= pipShift[0];
+                    break;
+                case 39:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] = Math.abs(pipShift[0]);
+                    topColumn[0] += pipShift[0] * 5.5;
+                    break;
+                case 55:
+                    topColumn[1] += pipShift[1];
+                    topColumn[0] += pipShift[0] * 2.2;
+                    break;
+                case 58:
+                case 60:
+                case 62:
+                case 64:
+                    topColumn[1] += pipShift[1];
+                    topColumn[0] += pipShift[0] * 1.25;
+                    break;
+                case 66:
+                    topColumn[1] += pipShift[1] * 1.25;
+                    topColumn[0] += pipShift[0];
+                    break;
+                default:
+                    topColumn[0] -= pipShift[0];
+                    break;
             }
         }
         printArmorPoints(g2d, pipPlotter, totalArmor);
