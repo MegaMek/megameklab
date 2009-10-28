@@ -1140,6 +1140,9 @@ public class PrintQuad implements Printable {
                     case Engine.COMPACT_ENGINE:
                         engineName = "Compact Fusion Engine";
                         break;
+                    case Engine.FUEL_CELL:
+                        engineName = "Fuel Cell Engine";
+                        break;
                     default:
                         break;
                     }

@@ -1368,7 +1368,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     * 
+     *
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
@@ -1416,6 +1416,9 @@ public class PrintMech implements Printable {
                             break;
                         case Engine.COMPACT_ENGINE:
                             engineName = "Compact Fusion Engine";
+                            break;
+                        case Engine.FUEL_CELL:
+                            engineName = "Fuel Cell Engine";
                             break;
                         default:
                             break;
