@@ -9,6 +9,7 @@ V 0.0.0.16 Dev
 + Bug: Aeros not printing tech status i.e. advanced/experimental
 + Bug: Ammo printing incorrectly for Tanks
 + RFE: Print pilot name and stats on Record Sheet when printing from a MUL
++ Bug: Fuel Cell engine printing as Fusion Engine
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads
