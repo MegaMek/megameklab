@@ -24,7 +24,7 @@ import java.io.PrintStream;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.0.0.16-dev-108";
+    public static final String VERSION = "0.0.0.16-dev-109";
 
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
@@ -46,7 +46,8 @@ public class MegaMekLab {
             // Need at least 256m to run MegaMekLab
             if (runtime.maxMemory() < 256000000) {
                 try {
-                    String[] call = { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
+                    String[] call =
+                        { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
@@ -73,7 +74,8 @@ public class MegaMekLab {
             // Need at least 256m to run MegaMekLab
             if (runtime.maxMemory() < 256000000) {
                 try {
-                    String[] call = { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
+                    String[] call =
+                        { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
