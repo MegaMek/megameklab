@@ -118,12 +118,40 @@ public class PrintBattleArmor implements Printable {
     private void printBattleArmorData(Graphics2D g2d) {
         String BattleArmorName = battleArmor.getChassis() + " " + battleArmor.getModel();
 
-        g2d.setFont(UnitUtil.getNewFont(g2d, BattleArmorName, true, 180, 10.0f));
-        g2d.drawString(BattleArmorName, 49, 108 + currentMargin);
+        g2d.setFont(UnitUtil.getNewFont(g2d, BattleArmorName, true, 88, 10.0f));
+        g2d.drawString(BattleArmorName, 47, 108 + currentMargin);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
+        if ((battleArmor.getSource() != null) && (battleArmor.getSource().trim().length() > 0)) {
+            String sourceFluff = "Era: ";
+            font = UnitUtil.deriveFont(true, 7.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(sourceFluff, 133, 108 + currentMargin);
+
+            font = UnitUtil.getNewFont(g2d, battleArmor.getSource(), false, 51, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(battleArmor.getSource(), 147, 108 + currentMargin);
+
+        } else {
+            String yearFluff = "Year: ";
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(yearFluff, 133, 108 + currentMargin);
+
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+
+            g2d.drawString(String.format("%1$s", battleArmor.getYear()), 151, 108 + currentMargin);
+
+        }
+
+        font = UnitUtil.deriveFont(8.0f);
+        g2d.setFont(font);
         g2d.drawString(Integer.toString(battleArmor.getRunMP()), 79, 130 + currentMargin);
 
         if (battleArmor.getJumpMP() > 0) {
