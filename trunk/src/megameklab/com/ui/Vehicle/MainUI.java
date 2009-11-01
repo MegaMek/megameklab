@@ -48,7 +48,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
 import megamek.MegaMek;
-import megamek.client.ui.MechView;
+import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -449,16 +449,16 @@ public class MainUI extends JFrame implements RefreshListener {
 
         HTMLEditorKit kit = new HTMLEditorKit();
 
-        MechView TankView = null;
+        MechView tankView = null;
         try {
-            TankView = new MechView(entity, true);
+            tankView = new MechView(entity, true);
         } catch (Exception e) {
             // error unit didn't load right. this is bad news.
         }
 
         StringBuffer unitSpecs = new StringBuffer("<html><body>");
-        unitSpecs.append(TankView.getMechReadoutBasic().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
-        unitSpecs.append(TankView.getMechReadoutLoadout().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
+        unitSpecs.append(tankView.getMechReadoutBasic());
+        unitSpecs.append(tankView.getMechReadoutLoadout());
         unitSpecs.append("</body></html>");
 
         // System.err.println(unitSpecs.toString());
