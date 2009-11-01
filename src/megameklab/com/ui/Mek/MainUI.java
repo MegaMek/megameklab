@@ -50,7 +50,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
 import megamek.MegaMek;
-import megamek.client.ui.MechView;
+import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
@@ -520,8 +520,8 @@ public class MainUI extends JFrame implements RefreshListener {
         }
 
         StringBuffer unitSpecs = new StringBuffer("<html><body>");
-        unitSpecs.append(mechView.getMechReadoutBasic().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
-        unitSpecs.append(mechView.getMechReadoutLoadout().replaceAll("<", "").replaceAll(">", "").replaceAll("\r", "").replaceAll("\n", "<br>"));
+        unitSpecs.append(mechView.getMechReadoutBasic());
+        unitSpecs.append(mechView.getMechReadoutLoadout());
         unitSpecs.append("</body></html>");
 
         // System.err.println(unitSpecs.toString());
