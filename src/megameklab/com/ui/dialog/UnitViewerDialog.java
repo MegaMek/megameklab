@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -47,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
@@ -54,7 +55,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import megamek.client.ui.MechView;
+import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.UnitFailureDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Entity;
@@ -79,7 +80,7 @@ import megameklab.com.util.SpringLayoutHelper;
 public class UnitViewerDialog extends JDialog implements ActionListener, KeyListener, ListSelectionListener, WindowListener, ItemListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -5073769715388980404L;
     // how long after a key is typed does a new search begin
@@ -119,8 +120,8 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
     private JButton bCancel = new JButton("Close");
     private JButton bSelect = new JButton("Select");
 
-    private JTextArea mechViewLeft = null;
-    private JTextArea mechViewRight = null;
+    private JTextPane mechViewLeft = null;
+    private JTextPane mechViewRight = null;
     private JTextArea unitFluff = null;
 
     private JPanel pUpper = new JPanel();
@@ -171,8 +172,18 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         viewFluff = false;
 
         // construct 2 text boxes
-        mechViewLeft = new JTextArea(17, 25);
-        mechViewRight = new JTextArea(17, 34);
+        mechViewLeft = new JTextPane();
+        mechViewLeft.setContentType("text/html");
+        mechViewLeft.setBorder(null);
+        mechViewLeft.setEditable(false);
+        mechViewLeft.setMinimumSize(new java.awt.Dimension(300, 500));
+        mechViewLeft.setPreferredSize(new java.awt.Dimension(300, 500));
+        mechViewRight = new JTextPane();
+        mechViewRight.setContentType("text/html");
+        mechViewRight.setBorder(null);
+        mechViewRight.setEditable(false);
+        mechViewRight.setMinimumSize(new java.awt.Dimension(300, 500));
+        mechViewRight.setPreferredSize(new java.awt.Dimension(300, 500));
         unitFluff = new JTextArea(10, 40);
 
         // construct a model and list
@@ -204,8 +215,6 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         mechList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // set fonts
-        mechViewLeft.setFont(new Font("Monospaced", Font.PLAIN, 11));
-        mechViewRight.setFont(new Font("Monospaced", Font.PLAIN, 11));
         mechList.setFont(new Font("Monospaced", Font.PLAIN, 11));
 
         for (String saSort : saSorts) {
@@ -273,7 +282,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         unitLoadingDialog.setVisible(false);
 
         final Map<String, String> hFailedFiles = MechSummaryCache.getInstance().getFailedFiles();
-        if (hFailedFiles != null && hFailedFiles.size() > 0) {
+        if ((hFailedFiles != null) && (hFailedFiles.size() > 0)) {
             new UnitFailureDialog(clientgui, hFailedFiles); // self-showing
             // dialog
         }
@@ -408,11 +417,11 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
                 }
 
                 if (/* Weight */
-                (nClass == chWeightClass.getItemCount() - 1 || mech.getWeightClass() == nClass) &&
+                ((nClass == chWeightClass.getItemCount() - 1) || (mech.getWeightClass() == nClass)) &&
                 /*
                  * Technology Level
                  */
-                ((nType == TechConstants.T_ALL) || (nType == mech.getType()) || ((nType == TechConstants.T_IS_TW_ALL) && (mech.getType() <= TechConstants.T_IS_TW_NON_BOX || mech.getType() == TechConstants.T_INTRO_BOXSET)) || (nType == TechConstants.T_TW_ALL && (mech.getType() <= TechConstants.T_IS_TW_NON_BOX || mech.getType() <= TechConstants.T_INTRO_BOXSET || mech.getType() <= TechConstants.T_CLAN_TW))) && (nUnit == UnitType.SIZE || mech.getUnitType().equals(UnitType.getTypeName(nUnit)))) {
+                ((nType == TechConstants.T_ALL) || (nType == mech.getType()) || ((nType == TechConstants.T_IS_TW_ALL) && ((mech.getType() <= TechConstants.T_IS_TW_NON_BOX) || (mech.getType() == TechConstants.T_INTRO_BOXSET))) || ((nType == TechConstants.T_TW_ALL) && ((mech.getType() <= TechConstants.T_IS_TW_NON_BOX) || (mech.getType() <= TechConstants.T_INTRO_BOXSET) || (mech.getType() <= TechConstants.T_CLAN_TW)))) && ((nUnit == UnitType.SIZE) || mech.getUnitType().equals(UnitType.getTypeName(nUnit)))) {
                     vMechs.add(mech);
                 }
             }
@@ -423,7 +432,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         mechsCurrent = new MechSummary[vMechs.size()];
         m_count = vMechs.size();
 
-        if (!calledByAdvancedSearch && (m_old_nType != nType || m_old_nUnitType != nUnit)) {
+        if (!calledByAdvancedSearch && ((m_old_nType != nType) || (m_old_nUnitType != nUnit))) {
             populateWeaponsAndEquipmentChoices();
         }
         m_old_nType = nType;
@@ -482,14 +491,14 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
         for (Enumeration<EquipmentType> e = EquipmentType.getAllTypes(); e.hasMoreElements();) {
             EquipmentType et = e.nextElement();
-            if (et instanceof WeaponType && (et.getTechLevel() == nType || ((nType == TechConstants.T_ALL) || ((nType == TechConstants.T_IS_TW_ALL) && (et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() == TechConstants.T_INTRO_BOXSET)) || (nType == TechConstants.T_TW_ALL && (et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() <= TechConstants.T_INTRO_BOXSET || et.getTechLevel() <= TechConstants.T_CLAN_TW))))) {
+            if ((et instanceof WeaponType) && ((et.getTechLevel() == nType) || ((nType == TechConstants.T_ALL) || ((nType == TechConstants.T_IS_TW_ALL) && ((et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX) || (et.getTechLevel() == TechConstants.T_INTRO_BOXSET))) || ((nType == TechConstants.T_TW_ALL) && ((et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX) || (et.getTechLevel() <= TechConstants.T_INTRO_BOXSET) || (et.getTechLevel() <= TechConstants.T_CLAN_TW)))))) {
                 if (!(nUnitType == UnitType.SIZE) && ((UnitType.getTypeName(uType).equals("Mek") || UnitType.getTypeName(uType).equals("Tank")) && (et.hasFlag(WeaponType.F_INFANTRY) || et.hasFlag(WeaponType.F_INFANTRY_ONLY)))) {
                     continue;
                 }
                 m_cWeapons1.addItem(et.getName());
                 m_cWeapons2.addItem(et.getName());
             }
-            if (et instanceof MiscType && (et.getTechLevel() == nType || ((nType == TechConstants.T_ALL) || ((nType == TechConstants.T_IS_TW_ALL) && (et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() == TechConstants.T_INTRO_BOXSET)) || (nType == TechConstants.T_TW_ALL && (et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX || et.getTechLevel() <= TechConstants.T_INTRO_BOXSET || et.getTechLevel() <= TechConstants.T_CLAN_TW))))) {
+            if ((et instanceof MiscType) && ((et.getTechLevel() == nType) || ((nType == TechConstants.T_ALL) || ((nType == TechConstants.T_IS_TW_ALL) && ((et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX) || (et.getTechLevel() == TechConstants.T_INTRO_BOXSET))) || ((nType == TechConstants.T_TW_ALL) && ((et.getTechLevel() <= TechConstants.T_IS_TW_NON_BOX) || (et.getTechLevel() <= TechConstants.T_INTRO_BOXSET) || (et.getTechLevel() <= TechConstants.T_CLAN_TW)))))) {
                 m_cEquipment.addItem(et.getName());
             }
         }
@@ -789,7 +798,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
         if (ie.getSource() == chSort) {
             sortMechs();
-        } else if (ie.getSource() == chWeightClass || ie.getSource() == chType || ie.getSource() == chUnit) {
+        } else if ((ie.getSource() == chWeightClass) || (ie.getSource() == chType) || (ie.getSource() == chUnit)) {
             filterMechs();
         }
 
@@ -817,7 +826,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         selectedUnit = entity;
         boolean populateTextFields = true;
 
-        paintScreen(entity != null && selectedUnit.getFluff() != null && viewFluff);
+        paintScreen((entity != null) && (selectedUnit.getFluff() != null) && viewFluff);
 
         // null entity, so load a default unit.
         if (entity == null) {
@@ -839,13 +848,10 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
-
-        mechViewLeft.setEditable(false);
-        mechViewRight.setEditable(false);
-        if (populateTextFields && mechView != null) {
+        if (populateTextFields && (mechView != null)) {
             mechViewLeft.setText(mechView.getMechReadoutBasic());
             mechViewRight.setText(mechView.getMechReadoutLoadout());
-            if (selectedUnit.getFluff() != null && viewFluff) {
+            if ((selectedUnit.getFluff() != null) && viewFluff) {
                 unitFluff.setEditable(false);
                 unitFluff.setLineWrap(true);
                 // unitFluff.setText(parseFluff(currEntity.getFluff()));
