@@ -176,7 +176,7 @@ public class EquipmentView extends IView implements ActionListener {
         for (; location < equipmentList.getRowCount();) {
 
             EquipmentType eq = (EquipmentType) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
-            if ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK))) {
+            if ( (eq instanceof MiscType) && ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK)))) {
                 try {
                     equipmentList.removeCrit(location);
                 } catch (ArrayIndexOutOfBoundsException aioobe) {

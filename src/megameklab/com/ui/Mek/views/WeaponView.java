@@ -135,17 +135,17 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 
-    private String LASERWEAPONADD_COMMAND = "ADDLASERWEAPON";
-    private String LASERAMMOADD_COMMAND = "ADDLASERAMMO";
-    private String MISSILEWEAPONADD_COMMAND = "ADDMISSILEWEAPON";
-    private String MISSILEAMMOADD_COMMAND = "ADDMISSILEAMMO";
-    private String BALLISTICWEAPONADD_COMMAND = "ADDBALLISTICWEAPON";
-    private String BALLISTICAMMOADD_COMMAND = "ADDBALLISTICAMMO";
-    private String ARTILLERYWEAPONADD_COMMAND = "ADDARTILLERYWEAPON";
-    private String ARTILLERYAMMOADD_COMMAND = "ADDARTILLERYAMMO";
-    private String PHYSICALWEAPONADD_COMMAND = "ADDPHYSICALWEAPON";
-    private String REMOVE_COMMAND = "REMOVE";
-    private String REMOVEALL_COMMAND = "REMOVEALL";
+    private static final String LASERWEAPONADD_COMMAND = "ADDLASERWEAPON";
+    private static final String LASERAMMOADD_COMMAND = "ADDLASERAMMO";
+    private static final String MISSILEWEAPONADD_COMMAND = "ADDMISSILEWEAPON";
+    private static final String MISSILEAMMOADD_COMMAND = "ADDMISSILEAMMO";
+    private static final String BALLISTICWEAPONADD_COMMAND = "ADDBALLISTICWEAPON";
+    private static final String BALLISTICAMMOADD_COMMAND = "ADDBALLISTICAMMO";
+    private static final String ARTILLERYWEAPONADD_COMMAND = "ADDARTILLERYWEAPON";
+    private static final String ARTILLERYAMMOADD_COMMAND = "ADDARTILLERYAMMO";
+    private static final String PHYSICALWEAPONADD_COMMAND = "ADDPHYSICALWEAPON";
+    private static final String REMOVE_COMMAND = "REMOVE";
+    private static final String REMOVEALL_COMMAND = "REMOVEALL";
 
     public WeaponView(Mech unit) {
         super(unit);
@@ -327,8 +327,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 } else if (weapon instanceof ArtilleryWeapon) {
                     masterArtilleryWeaponList.add(eq);
                 }
-            } else if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))) {
-                if (eq.hasFlag(MiscType.F_CLUB) && (eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB))) {
+            } else if ((eq instanceof MiscType) && ((eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON)))) {
+                if (eq.hasFlag(MiscType.F_CLUB) && ((eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB)))) {
                     continue;
                 }
                 masterPhysicalWeaponList.add(eq);

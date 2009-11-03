@@ -11,6 +11,7 @@ V 0.0.0.16 Dev
 + RFE: Print pilot name and stats on Record Sheet when printing from a MUL
 + Bug: Fuel Cell engine printing as Fusion Engine
 + Updated MegaMek.jar, use new HTML MechView
++ Updated battlearmor printing
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads
