@@ -29,6 +29,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.BattleArmor;
+import megamek.common.MiscType;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
@@ -98,7 +99,7 @@ public class PrintBattleArmor implements Printable {
 
         Image checkBox = ImageHelper.getBACheckBox();
 
-        if (UnitUtil.canRide(battleArmor)) {
+        if (battleArmor.canDoMechanizedBA()) {
             g2d.drawImage(checkBox, 72, 189 + currentMargin, 11, 11, null);
         }
 
@@ -110,7 +111,7 @@ public class PrintBattleArmor implements Printable {
             g2d.drawImage(checkBox, 159, 189 + currentMargin, 11, 11, null);
         }
 
-        if (UnitUtil.hasInfantryWeapons(battleArmor)) {
+        if (battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) > 0) {
             g2d.drawImage(checkBox, 195, 189 + currentMargin, 11, 11, null);
         }
     }

@@ -1388,7 +1388,7 @@ public class UnitUtil {
 
             WeaponType weapon = (WeaponType) eq;
 
-            if (!weapon.hasFlag(WeaponType.F_MECH_WEAPON, EquipmentType.FLAG_FIELD_1)) {
+            if (!weapon.hasFlag(WeaponType.F_MECH_WEAPON)) {
                 return false;
             }
 
@@ -1434,7 +1434,7 @@ public class UnitUtil {
             return true;
         }
 
-        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_MECH_EQUIPMENT, EquipmentType.FLAG_FIELD_1) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_HAND_WEAPON)) {
+        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_MECH_EQUIPMENT) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_HAND_WEAPON)) {
             return true;
 
         }
@@ -1451,7 +1451,7 @@ public class UnitUtil {
 
             WeaponType weapon = (WeaponType) eq;
 
-            if (!weapon.hasFlag(WeaponType.F_TANK_WEAPON, EquipmentType.FLAG_FIELD_1)) {
+            if (!weapon.hasFlag(WeaponType.F_TANK_WEAPON)) {
                 return false;
             }
 
@@ -1497,7 +1497,7 @@ public class UnitUtil {
             return true;
         }
 
-        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_TANK_EQUIPMENT, EquipmentType.FLAG_FIELD_1)) {
+        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_TANK_EQUIPMENT)) {
             return true;
 
         }
@@ -1519,16 +1519,6 @@ public class UnitUtil {
 
         for (Mounted eq : ba.getEquipment()) {
             if (eq.getType() instanceof LegAttack) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean canRide(BattleArmor ba) {
-
-        for (Mounted eq : ba.getEquipment()) {
-            if ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_BOARDING_CLAW)) {
                 return true;
             }
         }

@@ -141,12 +141,12 @@ public class BuildTab extends ITab implements ActionListener {
             int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(getMech());
             for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
 
-                if (eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))) {
+                if ((eq instanceof MiscType) && ((eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON)))) {
                     if (unit instanceof QuadMech) {
                         continue;
                     }
 
-                    if (location != Mech.LOC_RARM && location != Mech.LOC_LARM) {
+                    if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM)) {
                         continue;
                     }
                 }
@@ -159,8 +159,8 @@ public class BuildTab extends ITab implements ActionListener {
 
                 Mounted foundMount = null;
                 for (Mounted mount : unit.getEquipment()) {
-                    if (mount.getLocation() == Entity.LOC_NONE && mount.getType().getInternalName().equals(eq.getInternalName())) {
-                        if (UnitUtil.isHeatSink(mount) && externalEngineHS-- > 0) {
+                    if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().getInternalName().equals(eq.getInternalName())) {
+                        if (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0)) {
                             continue;
                         }
                         foundMount = mount;
@@ -171,7 +171,7 @@ public class BuildTab extends ITab implements ActionListener {
                 if (foundMount != null) {
                     try {
 
-                        if (foundMount.getType().isSpreadable() || foundMount.isSplitable() && critsUsed > 1) {
+                        if (foundMount.getType().isSpreadable() || (foundMount.isSplitable() && (critsUsed > 1))) {
                             for (int count = 0; count < critsUsed; count++) {
                                 getMech().addEquipment(foundMount, location, false);
                             }
