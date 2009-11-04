@@ -556,7 +556,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
     private String formatMech(MechSummary ms) {
 
         String result = "";
-        result = makeLength(ms.getModel(), 12) + " " + makeLength(ms.getChassis(), 10) + " " + makeLength(Integer.toString(ms.getYear()), 4) + " " + makeLength(Integer.toString(ms.getTons()), 3) + " " + makeLength(Integer.toString(ms.getBV()), 5);
+        result = makeLength(ms.getModel(), 12) + " " + makeLength(ms.getChassis(), 10) + " " + makeLength(Integer.toString(ms.getYear()), 4) + " " + makeLength(Float.toString(ms.getTons()), 3) + " " + makeLength(Integer.toString(ms.getBV()), 5);
 
         return result;
     }
