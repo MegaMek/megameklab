@@ -12,6 +12,7 @@ V 0.0.0.16 Dev
 + Bug: Fuel Cell engine printing as Fusion Engine
 + Updated MegaMek.jar, use new HTML MechView
 + Updated battlearmor printing
++ Updated MegaMek.jar
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads
