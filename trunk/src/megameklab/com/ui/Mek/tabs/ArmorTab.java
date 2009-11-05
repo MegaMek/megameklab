@@ -33,7 +33,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
-import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
@@ -101,8 +100,8 @@ public class ArmorTab extends ITab implements ActionListener {
     public void actionPerformed(ActionEvent arg0) {
         removeAllListeners();
         if (arg0.getSource() instanceof JComboBox) {
+            UnitUtil.removeISorArmorMounts(unit, false);
             unit.setArmorType(armorCombo.getSelectedIndex());
-            removeArmorMounts();
             createArmorMounts();
             if (refresh != null) {
                 refresh.refreshAll();
@@ -115,6 +114,7 @@ public class ArmorTab extends ITab implements ActionListener {
             maximizeArmor();
         }
         if (arg0.getSource().equals(clanArmor)) {
+            UnitUtil.removeISorArmorMounts(unit, false);
             if (clanArmor.isSelected()) {
                 if (unit.isClan()) {
                     unit.setArmorTechLevel(unit.getTechLevel());
@@ -126,7 +126,6 @@ public class ArmorTab extends ITab implements ActionListener {
             } else {
                 unit.setArmorTechLevel(unit.getTechLevel());
             }
-            removeArmorMounts();
             createArmorMounts();
             if (refresh != null) {
                 refresh.refreshAll();
@@ -198,47 +197,6 @@ public class ArmorTab extends ITab implements ActionListener {
             try {
                 getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), Entity.LOC_NONE, false);
             } catch (Exception ex) {
-            }
-        }
-    }
-
-    private void removeArmorMounts() {
-
-        removeArmorCrits();
-
-        for (int pos = 0; pos < unit.getEquipment().size();) {
-            Mounted mount = unit.getEquipment().get(pos);
-            if (UnitUtil.isArmor(mount.getType())) {
-                unit.getEquipment().remove(pos);
-            } else {
-                pos++;
-            }
-        }
-
-        for (int pos = 0; pos < unit.getMisc().size();) {
-            Mounted mount = unit.getMisc().get(pos);
-            if (UnitUtil.isArmor(mount.getType())) {
-                unit.getMisc().remove(pos);
-            } else {
-                pos++;
-            }
-        }
-
-    }
-
-    private void removeArmorCrits() {
-
-        for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                CriticalSlot crit = unit.getCritical(location, slot);
-                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    Mounted mount = unit.getEquipment(crit.getIndex());
-
-                    if ((mount != null) && UnitUtil.isArmor(mount.getType())) {
-                        crit = null;
-                        unit.setCritical(location, slot, crit);
-                    }
-                }
             }
         }
     }
