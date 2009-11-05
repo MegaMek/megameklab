@@ -44,7 +44,6 @@ import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
@@ -423,7 +422,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
                     }
                 } else if (combo.equals(structureCombo)) {
-                    removeISMounts();
+                    UnitUtil.removeISorArmorMounts(getMech(), true);
                     getMech().setStructureType(structureCombo.getSelectedIndex());
                     createISMounts();
                 } else if (combo.equals(gyroType)) {
@@ -756,39 +755,4 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
     }
 
-    private void removeISCrits() {
-        for (int location = Mech.LOC_HEAD; location < getMech().locations(); location++) {
-            for (int slot = 0; slot < getMech().getNumberOfCriticals(location); slot++) {
-                CriticalSlot crit = getMech().getCritical(location, slot);
-                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    Mounted mount = getMech().getEquipment(crit.getIndex());
-
-                    if ((mount != null) && (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ENDO_STEEL)) {
-                        crit = null;
-                        getMech().setCritical(location, slot, crit);
-                    }
-                }
-            }
-        }
-    }
-
-    private void removeISMounts() {
-        removeISCrits();
-        for (int pos = 0; pos < getMech().getEquipment().size();) {
-            Mounted mount = getMech().getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ENDO_STEEL)) {
-                getMech().getEquipment().remove(pos);
-            } else {
-                pos++;
-            }
-        }
-        for (int pos = 0; pos < getMech().getMisc().size();) {
-            Mounted mount = getMech().getMisc().get(pos);
-            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ENDO_STEEL)) {
-                getMech().getMisc().remove(pos);
-            } else {
-                pos++;
-            }
-        }
-    }
 }

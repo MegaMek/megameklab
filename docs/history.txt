@@ -13,6 +13,7 @@ V 0.0.0.16 Dev
 + Updated MegaMek.jar, use new HTML MechView
 + Updated battlearmor printing
 + Updated MegaMek.jar
++ Bug: removing endo steel and armor on the build tab not working
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads
