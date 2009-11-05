@@ -40,7 +40,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 import megamek.common.Engine;
-import megamek.common.IEntityMovementMode;
+import megamek.common.EntityMovementMode;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.TroopSpace;
@@ -237,13 +237,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         switch (unit.getMovementMode()) {
-        case IEntityMovementMode.HOVER:
+        case HOVER:
             tankMotiveType.setSelectedIndex(0);
             break;
-        case IEntityMovementMode.WHEELED:
+        case WHEELED:
             tankMotiveType.setSelectedIndex(1);
             break;
-        case IEntityMovementMode.TRACKED:
+        case TRACKED:
             tankMotiveType.setSelectedIndex(2);
             break;
         }
@@ -586,15 +586,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         switch (tankMotiveType.getSelectedIndex()) {
         case 0:
             maxTonnage = 50;
-            unit.setMovementMode(IEntityMovementMode.HOVER);
+            unit.setMovementMode(EntityMovementMode.HOVER);
             break;
         case 1:
             maxTonnage = 80;
-            unit.setMovementMode(IEntityMovementMode.WHEELED);
+            unit.setMovementMode(EntityMovementMode.WHEELED);
             break;
         case 2:
             maxTonnage = 100;
-            unit.setMovementMode(IEntityMovementMode.TRACKED);
+            unit.setMovementMode(EntityMovementMode.TRACKED);
             break;
         }
 
