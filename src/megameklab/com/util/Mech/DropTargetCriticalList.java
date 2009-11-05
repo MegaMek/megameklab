@@ -34,6 +34,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.Mech;
 import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -138,7 +139,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     });
                     popup.add(info);
 
-                    if (mount.getLocation() != Mech.LOC_LARM && mount.getLocation() != Mech.LOC_RARM) {
+                    if ((mount.getLocation() != Mech.LOC_LARM) && (mount.getLocation() != Mech.LOC_RARM) && (mount.getType() instanceof WeaponType)) {
 
                         if (!mount.isRearMounted()) {
                             info = new JMenuItem("Make " + mount.getName() + " Rear Facing");
@@ -160,10 +161,10 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     }
                 }
 
-                if (unit instanceof BipedMech && (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
+                if ((unit instanceof BipedMech) && ((location == Mech.LOC_LARM) || (location == Mech.LOC_RARM))) {
                     popup.addSeparator();
                     popup.setAutoscrolls(true);
-                    if (unit.getCritical(location, 3) == null || unit.getCritical(location, 3).getType() != CriticalSlot.TYPE_SYSTEM) {
+                    if ((unit.getCritical(location, 3) == null) || (unit.getCritical(location, 3).getType() != CriticalSlot.TYPE_SYSTEM)) {
                         JMenuItem info = new JMenuItem("Add Hand");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
@@ -172,7 +173,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                             }
                         });
                         popup.add(info);
-                    } else if (unit.getCritical(location, 3) != null && unit.getCritical(location, 3).getType() == CriticalSlot.TYPE_SYSTEM) {
+                    } else if ((unit.getCritical(location, 3) != null) && (unit.getCritical(location, 3).getType() == CriticalSlot.TYPE_SYSTEM)) {
                         JMenuItem info = new JMenuItem("Remove Hand");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
@@ -183,7 +184,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                         popup.add(info);
                     }
 
-                    if (unit.getCritical(location, 2) == null || unit.getCritical(location, 2).getType() != CriticalSlot.TYPE_SYSTEM) {
+                    if ((unit.getCritical(location, 2) == null) || (unit.getCritical(location, 2).getType() != CriticalSlot.TYPE_SYSTEM)) {
                         JMenuItem info = new JMenuItem("Add Lower Arm");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
@@ -192,7 +193,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                             }
                         });
                         popup.add(info);
-                    } else if (unit.getCritical(location, 2) != null && unit.getCritical(location, 2).getType() == CriticalSlot.TYPE_SYSTEM) {
+                    } else if ((unit.getCritical(location, 2) != null) && (unit.getCritical(location, 2).getType() == CriticalSlot.TYPE_SYSTEM)) {
                         JMenuItem info = new JMenuItem("Remove Lower Arm");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
@@ -204,7 +205,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     }
                 }
 
-                if (UnitUtil.isArmorable(cs) && (UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL || UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_UNOFFICAL)) {
+                if (UnitUtil.isArmorable(cs) && ((UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL) || (UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_UNOFFICAL))) {
                     popup.addSeparator();
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");
@@ -243,7 +244,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         CriticalSlot crit = getCrit();
         Mounted mount = null;
         try {
-            if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+            if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                 if (crit.getMount() != null) {
                     return crit.getMount();
                 }
@@ -260,7 +261,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         int slot = getSelectedIndex();
         int location = getCritLocation();
         CriticalSlot crit = null;
-        if (slot >= 0 && slot < unit.getNumberOfCriticals(location)) {
+        if ((slot >= 0) && (slot < unit.getNumberOfCriticals(location))) {
             crit = unit.getCritical(location, slot);
         }
 
@@ -274,9 +275,14 @@ public class DropTargetCriticalList extends JList implements MouseListener {
             return;
         }
 
-        UnitUtil.removeCriticals(unit, mounted);
-        UnitUtil.removeMounted(unit, mounted);
-
+        if (UnitUtil.isStructure(mounted.getType())) {
+            UnitUtil.removeISorArmorMounts(unit, true);
+        }if (UnitUtil.isArmor(mounted.getType())) {
+            UnitUtil.removeISorArmorMounts(unit, false);
+        } else {
+            UnitUtil.removeCriticals(unit, mounted);
+            UnitUtil.removeMounted(unit, mounted);
+        }
         if (refresh != null) {
             refresh.refreshAll();
         }
@@ -293,7 +299,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
 
         UnitUtil.removeCriticals(unit, mounted);
 
-        if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+        if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
             changeMountStatus(mounted, Entity.LOC_NONE, false);
         }
 
