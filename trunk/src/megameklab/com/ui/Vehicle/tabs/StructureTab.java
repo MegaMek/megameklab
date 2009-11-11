@@ -56,17 +56,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
-    String[] isEngineTypes = { "I.C.E.", "Fusion", "XL", "XXL", "Fuel Cell", "Light", "Compact", "Fission" };
-    String[] clanEngineTypes = { "I.C.E.", "Fusion", "XL", "XXL", "Fuel Cell" };
+    String[] isEngineTypes =
+        { "I.C.E.", "Fusion", "XL", "XXL", "Fuel Cell", "Light", "Compact", "Fission" };
+    String[] clanEngineTypes =
+        { "I.C.E.", "Fusion", "XL", "XXL", "Fuel Cell" };
     JComboBox engineType = new JComboBox();
     JComboBox cruiseMP;
     JComboBox weightClass;
-    String[] techTypes = { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
+    String[] techTypes =
+        { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
     JComboBox techType = new JComboBox(techTypes);
-    String[] isTechLevels = { "Intro", "Standard", "Advanced", "Experimental", "Unoffical" };
-    String[] clanTechLevels = { "Standard", "Advanced", "Experimental", "Unoffical" };
+    String[] isTechLevels =
+        { "Intro", "Standard", "Advanced", "Experimental", "Unoffical" };
+    String[] clanTechLevels =
+        { "Standard", "Advanced", "Experimental", "Unoffical" };
     JComboBox techLevel = new JComboBox(isTechLevels);
-    String[] tankMotiveTypes = { "Hover", "Wheeled", "Tracked" };
+    String[] tankMotiveTypes =
+        { "Hover", "Wheeled", "Tracked" };
     JComboBox tankMotiveType = new JComboBox(tankMotiveTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
@@ -140,11 +146,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(createLabel("Engine Type:", maxSize));
         masterPanel.add(engineType);
 
-        masterPanel.add(createLabel("Cruise MP:", maxSize));
-        masterPanel.add(cruiseMP);
-
         masterPanel.add(createLabel("Movment Type:", maxSize));
         masterPanel.add(tankMotiveType);
+
+        masterPanel.add(createLabel("Cruise MP:", maxSize));
+        masterPanel.add(cruiseMP);
 
         masterPanel.add(createLabel("Weight:", maxSize));
         masterPanel.add(weightClass);
@@ -237,15 +243,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         switch (unit.getMovementMode()) {
-        case HOVER:
-            tankMotiveType.setSelectedIndex(0);
-            break;
-        case WHEELED:
-            tankMotiveType.setSelectedIndex(1);
-            break;
-        case TRACKED:
-            tankMotiveType.setSelectedIndex(2);
-            break;
+            case HOVER:
+                tankMotiveType.setSelectedIndex(0);
+                break;
+            case WHEELED:
+                tankMotiveType.setSelectedIndex(1);
+                break;
+            case TRACKED:
+                tankMotiveType.setSelectedIndex(2);
+                break;
         }
 
         populateWeight((int) unit.getWeight());
@@ -319,59 +325,59 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
                     if (unit.isClan()) {
                         switch (unitTechLevel) {
-                        case 0:
-                            unit.setTechLevel(TechConstants.T_CLAN_TW);
-                            unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
-                            addAllActionListeners();
-                            techType.setSelectedIndex(1);
-                            removeAllActionListeners();
-                            break;
-                        case 1:
-                            unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                            unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
-                            break;
-                        case 2:
-                            unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                            unit.setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                            break;
-                        case 3:
-                            unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
-                            unit.setArmorTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
-                            break;
-                        default:
-                            unit.setTechLevel(TechConstants.T_CLAN_TW);
-                            unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
-                            break;
+                            case 0:
+                                unit.setTechLevel(TechConstants.T_CLAN_TW);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
+                                addAllActionListeners();
+                                techType.setSelectedIndex(1);
+                                removeAllActionListeners();
+                                break;
+                            case 1:
+                                unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                                break;
+                            case 2:
+                                unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                                break;
+                            case 3:
+                                unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                                break;
+                            default:
+                                unit.setTechLevel(TechConstants.T_CLAN_TW);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
+                                break;
                         }
 
                     } else {
                         switch (unitTechLevel) {
-                        case 0:
-                            unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
-                            unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
-                            addAllActionListeners();
-                            techType.setSelectedIndex(0);
-                            removeAllActionListeners();
-                            break;
-                        case 1:
-                            unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                            unit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                            addAllActionListeners();
-                            techType.setSelectedIndex(0);
-                            removeAllActionListeners();
-                            break;
-                        case 2:
-                            unit.setTechLevel(TechConstants.T_IS_ADVANCED);
-                            unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
-                            break;
-                        case 3:
-                            unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                            unit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                            break;
-                        default:
-                            unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                            unit.setArmorTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                            break;
+                            case 0:
+                                unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                                unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                                addAllActionListeners();
+                                techType.setSelectedIndex(0);
+                                removeAllActionListeners();
+                                break;
+                            case 1:
+                                unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                                unit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                                addAllActionListeners();
+                                techType.setSelectedIndex(0);
+                                removeAllActionListeners();
+                                break;
+                            case 2:
+                                unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                                unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                                break;
+                            case 3:
+                                unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                                unit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                                break;
+                            default:
+                                unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                                unit.setArmorTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                                break;
                         }
 
                     }
@@ -535,19 +541,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         } else {
             engineTypes = isEngineTypes;
             switch (techLevel.getSelectedIndex()) {
-            case 0:
-                maxEngineType = 2;
-                break;
-            case 1:
-                maxEngineType = 5;
-                break;
-            case 2:
-                maxEngineType = 7;
-                break;
-            case 3:
-            case 4:
-                maxEngineType = 8;
-                break;
+                case 0:
+                    maxEngineType = 2;
+                    break;
+                case 1:
+                    maxEngineType = 5;
+                    break;
+                case 2:
+                    maxEngineType = 7;
+                    break;
+                case 3:
+                case 4:
+                    maxEngineType = 8;
+                    break;
             }
         }
 
@@ -584,18 +590,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         weightClass.removeAllItems();
 
         switch (tankMotiveType.getSelectedIndex()) {
-        case 0:
-            maxTonnage = 50;
-            unit.setMovementMode(EntityMovementMode.HOVER);
-            break;
-        case 1:
-            maxTonnage = 80;
-            unit.setMovementMode(EntityMovementMode.WHEELED);
-            break;
-        case 2:
-            maxTonnage = 100;
-            unit.setMovementMode(EntityMovementMode.TRACKED);
-            break;
+            case 0:
+                maxTonnage = 50;
+                unit.setMovementMode(EntityMovementMode.HOVER);
+                break;
+            case 1:
+                maxTonnage = 80;
+                unit.setMovementMode(EntityMovementMode.WHEELED);
+                break;
+            case 2:
+                maxTonnage = 100;
+                unit.setMovementMode(EntityMovementMode.TRACKED);
+                break;
         }
 
         currentTonnage = Math.min(currentTonnage, maxTonnage);
