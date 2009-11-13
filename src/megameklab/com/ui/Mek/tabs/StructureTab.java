@@ -219,7 +219,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         quadCB.setSelected(unit instanceof QuadMech);
         era.setText(Integer.toString(getMech().getYear()));
         source.setText(getMech().getSource());
-        gyroType.setSelectedIndex(getMech().getGyroType());
         weightClass.setSelectedIndex((int) (getMech().getWeight() / 5) - 2);
         heatSinkNumber.removeAllItems();
         baseChassisHeatSinks.removeAllItems();
@@ -257,21 +256,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         if (getMech().isClan()) {
             techLevel.removeAllItems();
-            heatSinkType.removeAllItems();
-            for (String item : clanHeatSinkTypes) {
-                heatSinkType.addItem(item);
-            }
             for (String item : clanTechLevels) {
                 techLevel.addItem(item);
             }
             createEngineList(true);
         } else {
             techLevel.removeAllItems();
-            heatSinkType.removeAllItems();
-
-            for (String item : isHeatSinkTypes) {
-                heatSinkType.addItem(item);
-            }
             for (String item : isTechLevels) {
                 techLevel.addItem(item);
             }
@@ -281,44 +271,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         engineType.setSelectedIndex(convertEngineType(getMech().getEngine().getEngineType()));
 
-        structureCombo.removeAllItems();
-        cockpitType.removeAllItems();
-        int structCount = EquipmentType.structureNames.length;
-        int cockpitCount = Mech.COCKPIT_SHORT_STRING.length;
-        switch (getMech().getTechLevel()) {
-            case TechConstants.T_INTRO_BOXSET:
-                structCount = 1;
-                cockpitCount = 1;
-                break;
-            case TechConstants.T_CLAN_TW:
-            case TechConstants.T_IS_TW_NON_BOX:
-                structCount = 4;
-                cockpitCount = 5;
-                break;
-            case TechConstants.T_CLAN_ADVANCED:
-            case TechConstants.T_IS_ADVANCED:
-                cockpitCount = 6;
-                break;
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-            case TechConstants.T_IS_EXPERIMENTAL:
-                cockpitCount = 7;
-                break;
-            case TechConstants.T_CLAN_UNOFFICIAL:
-            case TechConstants.T_IS_UNOFFICIAL:
-                cockpitCount = 8;
-                break;
-        }
-
-        for (int index = 0; index < structCount; index++) {
-            structureCombo.addItem(EquipmentType.structureNames[index]);
-        }
-
-        for (int index = 0; index < cockpitCount; index++) {
-            cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[index]);
-        }
+        createSystemList();
+        createHeatSinkList();
 
         cockpitType.setSelectedIndex(getMech().getCockpitType());
         structureCombo.setSelectedIndex(getMech().getStructureType());
+        gyroType.setSelectedIndex(getMech().getGyroType());
 
         if (getMech().isMixedTech()) {
             if (getMech().isClan()) {
@@ -588,43 +546,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
                     }
 
-                    structureCombo.removeAllItems();
-                    cockpitType.removeAllItems();
-                    int structCount = EquipmentType.structureNames.length;
-                    int cockpitCount = Mech.COCKPIT_SHORT_STRING.length;
-                    switch (getMech().getTechLevel()) {
-                        case TechConstants.T_INTRO_BOXSET:
-                            structCount = 1;
-                            cockpitCount = 1;
-                            break;
-                        case TechConstants.T_CLAN_TW:
-                        case TechConstants.T_IS_TW_NON_BOX:
-                            structCount = 4;
-                            cockpitCount = 5;
-                            break;
-                        case TechConstants.T_CLAN_ADVANCED:
-                        case TechConstants.T_IS_ADVANCED:
-                            cockpitCount = 6;
-                            break;
-                        case TechConstants.T_CLAN_EXPERIMENTAL:
-                        case TechConstants.T_IS_EXPERIMENTAL:
-                            cockpitCount = 7;
-                            break;
-                        case TechConstants.T_CLAN_UNOFFICIAL:
-                        case TechConstants.T_IS_UNOFFICIAL:
-                            cockpitCount = 8;
-                            break;
-                    }
-
-                    for (int index = 0; index < structCount; index++) {
-                        structureCombo.addItem(EquipmentType.structureNames[index]);
-                    }
-
-                    for (int index = 0; index < cockpitCount; index++) {
-                        cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[index]);
-                    }
-
+                    createSystemList();
                     createEngineList(getMech().isClan());
+                    createHeatSinkList();
                     refresh.refreshArmor();
                     refresh.refreshEquipment();
                     refresh.refreshWeapons();
@@ -633,11 +557,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 } else if (combo.equals(techType)) {
                     if ((techType.getSelectedIndex() == 1) && (!getMech().isClan() || getMech().isMixedTech())) {
                         techLevel.removeAllItems();
-                        heatSinkType.removeAllItems();
-
-                        for (String item : clanHeatSinkTypes) {
-                            heatSinkType.addItem(item);
-                        }
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
                         }
@@ -646,13 +565,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getMech().setArmorTechLevel(TechConstants.T_CLAN_TW);
                         getMech().setMixedTech(false);
                         createEngineList(true);
+                        createHeatSinkList();
                     } else if ((techType.getSelectedIndex() == 0) && (getMech().isClan() || getMech().isMixedTech())) {
                         techLevel.removeAllItems();
-                        heatSinkType.removeAllItems();
 
-                        for (String item : isHeatSinkTypes) {
-                            heatSinkType.addItem(item);
-                        }
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
@@ -661,14 +577,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
                         getMech().setMixedTech(false);
                         createEngineList(false);
+                        createHeatSinkList();
 
                     } else if ((techType.getSelectedIndex() == 2) && (!getMech().isMixedTech() || getMech().isClan())) {
                         techLevel.removeAllItems();
-                        heatSinkType.removeAllItems();
-
-                        for (String item : isHeatSinkTypes) {
-                            heatSinkType.addItem(item);
-                        }
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
@@ -677,14 +589,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getMech().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
                         getMech().setMixedTech(true);
                         createEngineList(false);
+                        createHeatSinkList();
 
                     } else if ((techType.getSelectedIndex() == 3) && (!getMech().isMixedTech() || !getMech().isClan())) {
                         techLevel.removeAllItems();
-                        heatSinkType.removeAllItems();
-
-                        for (String item : clanHeatSinkTypes) {
-                            heatSinkType.addItem(item);
-                        }
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
                         }
@@ -693,8 +601,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getMech().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
                         getMech().setMixedTech(true);
                         createEngineList(true);
+                        createHeatSinkList();
                     } else {
                         createEngineList(getMech().isClan());
+                        createHeatSinkList();
                         addAllActionListeners();
                         return;
                     }
@@ -922,6 +832,108 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         return Engine.NORMAL_ENGINE;
+    }
+
+    private void createSystemList() {
+        structureCombo.removeAllItems();
+        cockpitType.removeAllItems();
+        gyroType.removeAllItems();
+        int structCount = EquipmentType.structureNames.length;
+        int cockpitCount = Mech.COCKPIT_SHORT_STRING.length;
+        int gyroCount = Mech.GYRO_SHORT_STRING.length;
+        switch (getMech().getTechLevel()) {
+            case TechConstants.T_INTRO_BOXSET:
+                structCount = 1;
+                cockpitCount = 1;
+                gyroCount = 1;
+                break;
+            case TechConstants.T_CLAN_TW:
+                gyroCount = 2;
+                structCount = 4;
+                cockpitCount = 5;
+                break;
+            case TechConstants.T_IS_TW_NON_BOX:
+                structCount = 4;
+                cockpitCount = 5;
+                break;
+            case TechConstants.T_CLAN_ADVANCED:
+                gyroCount = 2;
+                cockpitCount = 6;
+                break;
+            case TechConstants.T_IS_ADVANCED:
+                cockpitCount = 6;
+                break;
+            case TechConstants.T_CLAN_EXPERIMENTAL:
+                cockpitCount = 7;
+                gyroCount = 2;
+                break;
+            case TechConstants.T_IS_EXPERIMENTAL:
+                cockpitCount = 7;
+                break;
+            case TechConstants.T_CLAN_UNOFFICIAL:
+                gyroCount = 2;
+                cockpitCount = 8;
+                break;
+            case TechConstants.T_IS_UNOFFICIAL:
+                cockpitCount = 8;
+                break;
+        }
+
+        for (int index = 0; index < structCount; index++) {
+            structureCombo.addItem(EquipmentType.structureNames[index]);
+        }
+
+        for (int index = 0; index < cockpitCount; index++) {
+            cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[index]);
+        }
+
+        for (int index = 0; index < gyroCount; index++) {
+            gyroType.addItem(Mech.GYRO_SHORT_STRING[index]);
+        }
+
+    }
+
+    private void createHeatSinkList() {
+
+        int heatSinkCount = 0;
+        String[] heatSinkList;
+        heatSinkType.removeAllItems();
+
+        if (getMech().isClan()) {
+
+            heatSinkCount = clanHeatSinkTypes.length;
+            heatSinkList = clanHeatSinkTypes;
+
+            switch (getMech().getTechLevel()) {
+                case TechConstants.T_CLAN_TW:
+                    heatSinkCount = 2;
+                    break;
+                case TechConstants.T_CLAN_ADVANCED:
+                case TechConstants.T_CLAN_EXPERIMENTAL:
+                case TechConstants.T_CLAN_UNOFFICIAL:
+                    heatSinkCount = 3;
+                    break;
+            }
+        } else {
+            heatSinkList = isHeatSinkTypes;
+            switch (getMech().getTechLevel()) {
+                case TechConstants.T_INTRO_BOXSET:
+                    heatSinkCount = 1;
+                    break;
+                case TechConstants.T_IS_TW_NON_BOX:
+                case TechConstants.T_IS_ADVANCED:
+                    heatSinkCount = 2;
+                    break;
+                case TechConstants.T_IS_EXPERIMENTAL:
+                case TechConstants.T_IS_UNOFFICIAL:
+                    heatSinkCount = 3;
+                    break;
+            }
+        }
+
+        for (int index = 0; index < heatSinkCount; index++) {
+            heatSinkType.addItem(heatSinkList[index]);
+        }
     }
 
     private void createEngineList(boolean isClan) {
