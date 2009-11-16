@@ -1,5 +1,5 @@
 /*
-* MegaMekLab - Copyright (C) 2009
+ * MegaMekLab - Copyright (C) 2009
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
