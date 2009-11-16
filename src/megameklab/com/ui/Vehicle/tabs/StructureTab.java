@@ -56,11 +56,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
+    private static final String ENGINESTANDARD = "Standard";
+    private static final String ENGINEXL = "XL";
+    private static final String ENGINELIGHT = "Light";
+    private static final String ENGINECOMPACT = "Compact";
+    private static final String ENGINEFISSION = "Fission";
+    private static final String ENGINEFUELCELL = "Fuel Cell";
+    private static final String ENGINEXXL = "XXL";
+    private static final String ENGINEICE = "I.C.E";
+
     String[] isEngineTypes =
-        { "I.C.E.", "Fusion", "XL", "XXL", "Fuel Cell", "Light", "Compact", "Fission" };
+        { ENGINESTANDARD, ENGINEICE, ENGINEXL, ENGINELIGHT, ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL };
     String[] clanEngineTypes =
-        { "I.C.E.", "Fusion", "XL", "XXL", "Fuel Cell" };
-    JComboBox engineType = new JComboBox();
+        { ENGINESTANDARD, ENGINEICE, ENGINEXL, ENGINEFUELCELL, ENGINEXXL };
+
+    JComboBox engineType = new JComboBox(isEngineTypes);
     JComboBox cruiseMP;
     JComboBox weightClass;
     String[] techTypes =
@@ -186,11 +196,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.setVisible(false);
         masterPanel.setVisible(true);
 
-        updateEngineTypes();
-        updateTroopSpaceAllowed();
-
-        engineType.setSelectedIndex(unit.getEngine().getEngineType());
-
         if (unit.isMixedTech()) {
             if (unit.isClan()) {
 
@@ -258,6 +263,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         cruiseMP.setSelectedIndex(unit.getWalkMP() - 1);
 
+        updateEngineTypes(getTank().isClan());
+        updateTroopSpaceAllowed();
+
+        engineType.setSelectedIndex(convertEngineType(getTank().getEngine().getEngineType()));
+
         critView.updateUnit(unit);
         critView.refresh();
 
@@ -295,11 +305,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        int type = engineType.getSelectedIndex();
+                        int type = convertEngineType(engineType.getSelectedItem().toString());
                         if (getTank().isClan()) {
-                            getTank().setEngine(new Engine(rating, type, Engine.CLAN_ENGINE));
+                            getTank().setEngine(new Engine(rating, type, Engine.CLAN_ENGINE | Engine.TANK_ENGINE));
                         } else {
-                            getTank().setEngine(new Engine(rating, type, 0));
+                            getTank().setEngine(new Engine(rating, type, Engine.TANK_ENGINE));
                         }
                     }
                 } else if (combo.equals(troopStorage)) {
@@ -383,7 +393,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
 
                     int engineNumber = engineType.getSelectedIndex();
-                    updateEngineTypes();
+                    updateEngineTypes(getTank().isClan());
 
                     refresh.refreshArmor();
                     refresh.refreshEquipment();
@@ -391,7 +401,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     addAllActionListeners();
                     // Reset the engine
                     if (engineNumber >= engineType.getItemCount()) {
-                        engineType.setSelectedIndex(1);
+                        engineType.setSelectedIndex(0);
                     } else {
                         engineType.setSelectedIndex(engineNumber);
                     }
@@ -442,9 +452,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         addAllActionListeners();
                         return;
                     }
-                    updateEngineTypes();
+                    updateEngineTypes(getTank().isClan());
                     addAllActionListeners();
-                    engineType.setSelectedIndex(1);
+                    engineType.setSelectedIndex(0);
                     engineType.repaint();
                     removeAllActionListeners();
                 } else if (combo.equals(tankMotiveType)) {
@@ -533,39 +543,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         return turretCB.isSelected();
     }
 
-    private void updateEngineTypes() {
-        int maxEngineType = clanEngineTypes.length;
-        String[] engineTypes;
-        if (unit.isClan()) {
-            engineTypes = clanEngineTypes;
-        } else {
-            engineTypes = isEngineTypes;
-            switch (techLevel.getSelectedIndex()) {
-                case 0:
-                    maxEngineType = 2;
-                    break;
-                case 1:
-                    maxEngineType = 5;
-                    break;
-                case 2:
-                    maxEngineType = 7;
-                    break;
-                case 3:
-                case 4:
-                    maxEngineType = 8;
-                    break;
-            }
-        }
-
-        // engineType.removeAll();
-        engineType.removeAllItems();
-
-        for (int pos = 0; pos < maxEngineType; pos++) {
-            engineType.addItem(engineTypes[pos]);
-        }
-
-    }
-
     private void updateTroopSpaceAllowed() {
         int troops = unit.getTroopCarryingSpace();
 
@@ -612,5 +589,120 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         weightClass.setSelectedIndex((int) unit.getWeight() - 1);
+    }
+
+    private int convertEngineType(String engineType) {
+        if (engineType.equals(ENGINESTANDARD)) {
+            return Engine.NORMAL_ENGINE;
+        }
+        if (engineType.equals(ENGINEXL)) {
+            return Engine.XL_ENGINE;
+        }
+        if (engineType.equals(ENGINEXXL)) {
+            return Engine.XXL_ENGINE;
+        }
+        if (engineType.equals(ENGINEICE)) {
+            return Engine.COMBUSTION_ENGINE;
+        }
+        if (engineType.equals(ENGINECOMPACT)) {
+            return Engine.COMPACT_ENGINE;
+        }
+        if (engineType.equals(ENGINEFISSION)) {
+            return Engine.FISSION;
+        }
+        if (engineType.equals(ENGINEFUELCELL)) {
+            return Engine.FUEL_CELL;
+        }
+        if (engineType.equals(ENGINELIGHT)) {
+            return Engine.LIGHT_ENGINE;
+        }
+
+        return Engine.NORMAL_ENGINE;
+    }
+
+    private void updateEngineTypes(boolean isClan) {
+
+        int engineCount = 1;
+        String[] engineList;
+
+        engineType.removeAllItems();
+
+        if (isClan) {
+            engineList = clanEngineTypes;
+            switch (getTank().getTechLevel()) {
+                case TechConstants.T_CLAN_TW:
+                    engineCount = 3;
+                    break;
+                case TechConstants.T_CLAN_ADVANCED:
+                    engineCount = 4;
+                    break;
+                case TechConstants.T_CLAN_EXPERIMENTAL:
+                case TechConstants.T_CLAN_UNOFFICIAL:
+                    engineCount = 5;
+                    break;
+            }
+        } else {
+
+            engineList = isEngineTypes;
+            switch (getTank().getTechLevel()) {
+                case TechConstants.T_INTRO_BOXSET:
+                    engineCount = 2;
+                    break;
+                case TechConstants.T_IS_TW_NON_BOX:
+                    engineCount = 5;
+                    break;
+                case TechConstants.T_IS_ADVANCED:
+                    engineCount = 7;
+                    break;
+                case TechConstants.T_IS_EXPERIMENTAL:
+                case TechConstants.T_IS_UNOFFICIAL:
+                    engineCount = 8;
+                    break;
+            }
+        }
+
+        for (int index = 0; index < engineCount; index++) {
+            engineType.addItem(engineList[index]);
+        }
+
+    }
+
+    private int convertEngineType(int engineType) {
+
+        if (getTank().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
+            switch (engineType) {
+                case Engine.NORMAL_ENGINE:
+                    return 0;
+                case Engine.COMBUSTION_ENGINE:
+                    return 1;
+                case Engine.XL_ENGINE:
+                    return 2;
+                case Engine.FUEL_CELL:
+                    return 3;
+                case Engine.XXL_ENGINE:
+                    return 4;
+            }
+        } else {
+            switch (engineType) {
+                case Engine.NORMAL_ENGINE:
+                    return 0;
+                case Engine.COMBUSTION_ENGINE:
+                    return 1;
+                case Engine.XL_ENGINE:
+                    return 2;
+                case Engine.LIGHT_ENGINE:
+                    return 3;
+                case Engine.COMPACT_ENGINE:
+                    return 4;
+                case Engine.FISSION:
+                    return 5;
+                case Engine.FUEL_CELL:
+                    return 6;
+                case Engine.XXL_ENGINE:
+                    return 7;
+            }
+        }
+
+        return 0;
     }
 }
