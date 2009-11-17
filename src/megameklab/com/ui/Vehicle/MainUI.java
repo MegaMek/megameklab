@@ -52,6 +52,7 @@ import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Engine;
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.MechFileParser;
 import megamek.common.Tank;
@@ -662,7 +663,9 @@ public class MainUI extends JFrame implements RefreshListener {
         entity.setYear(2750);
         entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
         entity.setWeight(25);
-        entity.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
+        entity.setMovementMode(EntityMovementMode.HOVER);
+        entity.setEngine(new Engine(Math.max(10, 25 - entity.getSuspensionFactor()), Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
+        entity.setOriginalWalkMP(1);
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
