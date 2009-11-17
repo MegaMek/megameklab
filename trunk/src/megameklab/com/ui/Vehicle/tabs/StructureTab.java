@@ -301,7 +301,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             try {
                 // if a Tank is primitive and thus needs a larger engine
                 if (combo.equals(engineType) || combo.equals(cruiseMP)) {
-                    int rating = (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                    int rating = Math.max(10, (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()) - ((Tank)unit).getSuspensionFactor());
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
@@ -311,6 +311,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         } else {
                             getTank().setEngine(new Engine(rating, type, Engine.TANK_ENGINE));
                         }
+                        getTank().setOriginalWalkMP(cruiseMP.getSelectedIndex()+1);
                     }
                 } else if (combo.equals(troopStorage)) {
                     unit.removeAllTransporters();
@@ -319,7 +320,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
                 } else if (combo.equals(weightClass)) {
                     if (weightClass.getSelectedItem() != null) {
-                        int rating = (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
+                        int rating = Math.max(10,(cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()));
                         if (rating > 500) {
                             JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                         } else {
