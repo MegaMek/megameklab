@@ -547,7 +547,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private void updateTroopSpaceAllowed() {
         int troops = unit.getTroopCarryingSpace();
 
-        troopStorage.removeAll();
         troopStorage.removeAllItems();
 
         for (int space = 0; space <= unit.getWeight(); space++) {
@@ -564,7 +563,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     }
 
     private void populateWeight(int currentTonnage) {
-        // weightClass.removeAll();
         weightClass.removeAllItems();
 
         switch (tankMotiveType.getSelectedIndex()) {
