@@ -20,6 +20,7 @@ V 0.0.0.16 Dev
 + Added more Tank armor printing pips for tanks with massive amounts of armor in Rear and Turret.
 + Started ProtoMech Printing.
 + Bug: VSP not printing damage correctly.
++ Protomech record sheet printing
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads
