@@ -136,24 +136,24 @@ public class CriticalView extends IView {
                 criticalSlotList.setName(Integer.toString(location));
                 criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
                 switch (location) {
-                case Tank.LOC_FRONT:
-                    frontPanel.add(criticalSlotList);
-                    break;
-                case Tank.LOC_LEFT:
-                    leftPanel.add(criticalSlotList);
-                    break;
-                case Tank.LOC_RIGHT:
-                    rightPanel.add(criticalSlotList);
-                    break;
-                case Tank.LOC_BODY:
-                    bodyPanel.add(criticalSlotList);
-                    break;
-                case Tank.LOC_REAR:
-                    rearPanel.add(criticalSlotList);
-                    break;
-                case Tank.LOC_TURRET:
-                    turretPanel.add(criticalSlotList);
-                    break;
+                    case Tank.LOC_FRONT:
+                        frontPanel.add(criticalSlotList);
+                        break;
+                    case Tank.LOC_LEFT:
+                        leftPanel.add(criticalSlotList);
+                        break;
+                    case Tank.LOC_RIGHT:
+                        rightPanel.add(criticalSlotList);
+                        break;
+                    case Tank.LOC_BODY:
+                        bodyPanel.add(criticalSlotList);
+                        break;
+                    case Tank.LOC_REAR:
+                        rearPanel.add(criticalSlotList);
+                        break;
+                    case Tank.LOC_TURRET:
+                        turretPanel.add(criticalSlotList);
+                        break;
                 }
             }
             frontPanel.repaint();

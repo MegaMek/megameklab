@@ -102,6 +102,7 @@ public class StatusBar extends ITab {
         testEntity = new TestTank((Tank) unit, entityVerifier.mechOption, null);
 
         currentTonnage = testEntity.calculateWeight();
+
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);

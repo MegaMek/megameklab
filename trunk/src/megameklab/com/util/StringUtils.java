@@ -33,8 +33,11 @@ import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.ISC3M;
 import megamek.common.weapons.ISHGaussRifle;
+import megamek.common.weapons.ISLargeVariableSpeedPulseLaser;
+import megamek.common.weapons.ISMediumVariableSpeedPulseLaser;
 import megamek.common.weapons.ISPlasmaRifle;
 import megamek.common.weapons.ISSilverBulletGauss;
+import megamek.common.weapons.ISSmallVariableSpeedPulseLaser;
 import megamek.common.weapons.ISSnubNosePPC;
 import megamek.common.weapons.ISThunderBolt10;
 import megamek.common.weapons.ISThunderBolt15;
@@ -91,6 +94,12 @@ public class StringUtils {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
+                } else if (weapon instanceof ISSmallVariableSpeedPulseLaser) {
+                    info = "5/4/3 [P,V]";
+                } else if (weapon instanceof ISMediumVariableSpeedPulseLaser) {
+                    info = "9/7/5 [P,V]";
+                } else if (weapon instanceof ISLargeVariableSpeedPulseLaser) {
+                    info = "11/9/7 [P,V]";
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "25/20/10 [DB,X]";
                 } else if (weapon instanceof ISPlasmaRifle) {
