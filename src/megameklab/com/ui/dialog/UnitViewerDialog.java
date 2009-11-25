@@ -52,6 +52,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -84,11 +85,12 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
      */
     private static final long serialVersionUID = -5073769715388980404L;
     // how long after a key is typed does a new search begin
-    private final static int KEY_TIMEOUT = 1000;
+    private final static int KEY_TIMEOUT = 500;
 
     // these indices should match up with the static values in the
     // MechSummaryComparator
-    private String[] saSorts = { "Name", "Ref", "Weight", "BV", "Year" };
+    private String[] saSorts =
+        { "Name", "Ref", "Weight", "BV", "Year" };
 
     private MechSummary[] mechsCurrent;
     private UnitLoadingDialog unitLoadingDialog;
@@ -256,12 +258,17 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         clearMechPreview();
         setSize(785, 560);
         setResizable(false);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         // add all the listeners
         chWeightClass.addItemListener(this);
         chType.addItemListener(this);
         chSort.addItemListener(this);
         chUnit.addItemListener(this);
+        chWeightClass.addKeyListener(this);
+        chType.addKeyListener(this);
+        chSort.addKeyListener(this);
+        chUnit.addKeyListener(this);
         mechList.addListSelectionListener(this);
         mechList.addKeyListener(this);
         bCancel.addActionListener(this);
@@ -270,6 +277,9 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         m_bReset.addActionListener(this);
         m_bToggleAdvanced.addActionListener(this);
         addWindowListener(this);
+        bCancel.setMnemonic('c');
+        bSelect.setMnemonic('s');
+
     }
 
     public void run() {
@@ -896,16 +906,23 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
     public void keyPressed(java.awt.event.KeyEvent ke) {
         if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
+            ActionEvent event = new ActionEvent(bSelect, ActionEvent.ACTION_PERFORMED, "");
+            actionPerformed(event);
+        }
+        if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
             ActionEvent event = new ActionEvent(bCancel, ActionEvent.ACTION_PERFORMED, "");
             actionPerformed(event);
         }
-        long curTime = System.currentTimeMillis();
-        if (curTime - m_nLastSearch > KEY_TIMEOUT) {
-            m_sbSearch = new StringBuilder();
+
+        if (ke.getComponent() instanceof JList) {
+            long curTime = System.currentTimeMillis();
+            if (curTime - m_nLastSearch > KEY_TIMEOUT) {
+                m_sbSearch = new StringBuilder();
+            }
+            m_nLastSearch = curTime;
+            m_sbSearch.append(ke.getKeyChar());
+            searchFor(m_sbSearch.toString().toLowerCase());
         }
-        m_nLastSearch = curTime;
-        m_sbSearch.append(ke.getKeyChar());
-        searchFor(m_sbSearch.toString().toLowerCase());
     }
 
     private void paintScreen(boolean fluff) {
