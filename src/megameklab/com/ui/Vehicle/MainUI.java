@@ -31,6 +31,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -44,6 +45,7 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
@@ -322,22 +324,26 @@ public class MainUI extends JFrame implements RefreshListener {
 
     private void loadUnitFromFile() {
 
-        FileDialog fDialog = new FileDialog(this, "Load Tank", FileDialog.LOAD);
-
         String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
 
-        fDialog.setDirectory(filePathName);
-        fDialog.setFile("*.blk");
-        fDialog.setLocationRelativeTo(this);
+        JFileChooser f = new JFileChooser(filePathName);
+        f.setLocation(this.getLocation().x + 150, this.getLocation().y + 100);
+        f.setDialogTitle("Load Vehicle");
+        f.setDialogType(JFileChooser.OPEN_DIALOG);
+        f.setMultiSelectionEnabled(false);
 
-        fDialog.setVisible(true);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "hmv");
 
-        if (fDialog.getFile() == null) {
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        int returnVal = f.showSaveDialog(this);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
             return;
         }
-
         try {
-            Entity tempEntity = new MechFileParser(new File(fDialog.getDirectory(), fDialog.getFile())).getEntity();
+            Entity tempEntity = new MechFileParser(f.getSelectedFile()).getEntity();
             if (!(tempEntity instanceof Tank)) {
                 return;
             }
@@ -730,7 +736,8 @@ public class MainUI extends JFrame implements RefreshListener {
     private void jMenuLoadMech() {
         try {
             Runtime runtime = Runtime.getRuntime();
-            String[] call = { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
+            String[] call =
+                { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
             runtime.exec(call);
             System.exit(0);
         } catch (Exception ex) {
