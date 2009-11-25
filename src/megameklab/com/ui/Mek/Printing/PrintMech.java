@@ -340,7 +340,10 @@ public class PrintMech implements Printable {
         g2d.setFont(font);
 
         // Heat Sinks
-        if (mech.hasDoubleHeatSinks()) {
+        if (mech.hasLaserHeatSinks()) {
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks() * 2) + ")", 502, 595);
+            g2d.drawString("Laser", 502, 603);
+        } else if (mech.hasDoubleHeatSinks()) {
             g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks() * 2) + ")", 502, 595);
             g2d.drawString("Double", 502, 603);
         } else {
@@ -508,11 +511,16 @@ public class PrintMech implements Printable {
     }
 
     private void printRLArmor(Graphics2D g2d) {
-        float[] topColumn = { 499, 181 };
-        float[] middleColumn = { 509, 253 };
-        float[] bottomColumn = { 531, 270 };
-        float[] footColumn = { 519, 296 };
-        float[] pipShift = { 8, -2 };
+        float[] topColumn =
+            { 499, 181 };
+        float[] middleColumn =
+            { 509, 253 };
+        float[] bottomColumn =
+            { 531, 270 };
+        float[] footColumn =
+            { 519, 296 };
+        float[] pipShift =
+            { 8, -2 };
 
         int totalArmor = mech.getArmor(Mech.LOC_RLEG);
 
@@ -523,7 +531,8 @@ public class PrintMech implements Printable {
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
 
         for (int pos = 1; pos <= 20; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             // ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
             topColumn[0] += pipShift[0];
             topColumn[1] += pipShift[1];
@@ -540,7 +549,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 12; pos++) {
-            pipPlotter.add(new float[] { middleColumn[0], middleColumn[1] });
+            pipPlotter.add(new float[]
+                { middleColumn[0], middleColumn[1] });
             middleColumn[0] += pipShift[0];
             middleColumn[1] += pipShift[1];
             if (pos % 4 == 0) {
@@ -557,7 +567,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 6; pos++) {
-            pipPlotter.add(new float[] { bottomColumn[0], bottomColumn[1] });
+            pipPlotter.add(new float[]
+                { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
             bottomColumn[1] += pipShift[1];
             if (pos % 2 == 0) {
@@ -569,18 +580,24 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 4; pos++) {
-            pipPlotter.add(new float[] { footColumn[0], footColumn[1] });
+            pipPlotter.add(new float[]
+                { footColumn[0], footColumn[1] });
             footColumn[0] += pipShift[0];
         }
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLLArmor(Graphics2D g2d) {
-        float[] topColumn = { 443, 179 };
-        float[] middleColumn = { 417, 247 };
-        float[] bottomColumn = { 427.6f, 272 };
-        float[] footColumn = { 406, 296 };
-        float[] pipShift = { 8, 2 };
+        float[] topColumn =
+            { 443, 179 };
+        float[] middleColumn =
+            { 417, 247 };
+        float[] bottomColumn =
+            { 427.6f, 272 };
+        float[] footColumn =
+            { 406, 296 };
+        float[] pipShift =
+            { 8, 2 };
 
         int totalArmor = mech.getArmor(Mech.LOC_LLEG);
 
@@ -590,7 +607,8 @@ public class PrintMech implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 20; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             topColumn[1] += pipShift[1];
             if (pos % 2 == 0) {
@@ -603,7 +621,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 12; pos++) {
-            pipPlotter.add(new float[] { middleColumn[0], middleColumn[1] });
+            pipPlotter.add(new float[]
+                { middleColumn[0], middleColumn[1] });
             middleColumn[0] += pipShift[0];
             middleColumn[1] += pipShift[1];
             if (pos % 4 == 0) {
@@ -615,7 +634,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 6; pos++) {
-            pipPlotter.add(new float[] { bottomColumn[0], bottomColumn[1] });
+            pipPlotter.add(new float[]
+                { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
             bottomColumn[1] += pipShift[1];
             if (pos % 2 == 0) {
@@ -627,7 +647,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 4; pos++) {
-            pipPlotter.add(new float[] { footColumn[0], footColumn[1] });
+            pipPlotter.add(new float[]
+                { footColumn[0], footColumn[1] });
             footColumn[0] += pipShift[0];
         }
 
@@ -635,10 +656,14 @@ public class PrintMech implements Printable {
     }
 
     private void printLAArmor(Graphics2D g2d) {
-        float[] rightColumn = { 417, 77 };
-        float[] centerColumn = { 409, 84 };
-        float[] leftColumn = { 402, 90 };
-        float[] pipShift = { -1, 7 };
+        float[] rightColumn =
+            { 417, 77 };
+        float[] centerColumn =
+            { 409, 84 };
+        float[] leftColumn =
+            { 402, 90 };
+        float[] pipShift =
+            { -1, 7 };
 
         int totalArmor = mech.getArmor(Mech.LOC_LARM);
 
@@ -650,7 +675,8 @@ public class PrintMech implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { centerColumn[0], centerColumn[1] });
+            pipPlotter.add(new float[]
+                { centerColumn[0], centerColumn[1] });
             centerColumn[1] += pipShift[1];
             if (pos % 3 != 0) {
                 centerColumn[0] += pipShift[0];
@@ -662,7 +688,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { rightColumn[0], rightColumn[1] });
+            pipPlotter.add(new float[]
+                { rightColumn[0], rightColumn[1] });
             rightColumn[1] += pipShift[1];
             if (pos % 3 != 0) {
                 rightColumn[0] += pipShift[0];
@@ -677,7 +704,8 @@ public class PrintMech implements Printable {
         pips = 10;
 
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { leftColumn[0], leftColumn[1] });
+            pipPlotter.add(new float[]
+                { leftColumn[0], leftColumn[1] });
             leftColumn[1] += pipShift[1];
             if (pos % 3 != 0) {
                 leftColumn[0] += pipShift[0];
@@ -693,10 +721,14 @@ public class PrintMech implements Printable {
     }
 
     private void printRAArmor(Graphics2D g2d) {
-        float[] rightColumn = { 548, 90 };
-        float[] centerColumn = { 540, 84 };
-        float[] leftColumn = { 533, 77 };
-        float[] pipShift = { 1, 7 };
+        float[] rightColumn =
+            { 548, 90 };
+        float[] centerColumn =
+            { 540, 84 };
+        float[] leftColumn =
+            { 533, 77 };
+        float[] pipShift =
+            { 1, 7 };
 
         int totalArmor = mech.getArmor(Mech.LOC_RARM);
 
@@ -706,7 +738,8 @@ public class PrintMech implements Printable {
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
 
         for (int pos = 1; pos <= 12; pos++) {
-            pipPlotter.add(new float[] { centerColumn[0], centerColumn[1] });
+            pipPlotter.add(new float[]
+                { centerColumn[0], centerColumn[1] });
             centerColumn[1] += pipShift[1];
             if (pos % 3 != 0) {
                 centerColumn[0] += pipShift[0];
@@ -718,7 +751,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 12; pos++) {
-            pipPlotter.add(new float[] { leftColumn[0], leftColumn[1] });
+            pipPlotter.add(new float[]
+                { leftColumn[0], leftColumn[1] });
             leftColumn[1] += pipShift[1];
             if (pos % 3 != 0) {
                 leftColumn[0] += pipShift[0];
@@ -731,7 +765,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 10; pos++) {
-            pipPlotter.add(new float[] { rightColumn[0], rightColumn[1] });
+            pipPlotter.add(new float[]
+                { rightColumn[0], rightColumn[1] });
             rightColumn[1] += pipShift[1];
             if (pos % 3 != 0) {
                 rightColumn[0] += pipShift[0];
@@ -745,12 +780,18 @@ public class PrintMech implements Printable {
     }
 
     private void printLTArmor(Graphics2D g2d) {
-        float[] topColumn = { 430, 88 };
-        float[] middleColumn = { 445, 126 };
-        float[] bottomColumn = { 437, 161 };
-        float[] topPipShift = { 6, 7 };
-        float[] middlePipShift = { 6, 7 };
-        float[] bottomPipShift = { 6, 7 };
+        float[] topColumn =
+            { 430, 88 };
+        float[] middleColumn =
+            { 445, 126 };
+        float[] bottomColumn =
+            { 437, 161 };
+        float[] topPipShift =
+            { 6, 7 };
+        float[] middlePipShift =
+            { 6, 7 };
+        float[] bottomPipShift =
+            { 6, 7 };
 
         int totalArmor = mech.getOArmor(Mech.LOC_LT);
         if (totalArmor < 1) {
@@ -766,7 +807,8 @@ public class PrintMech implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= maxTopPips; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] += topPipShift[0];
             if (pos % topPipsPerLine == 0) {
                 topColumn[1] += topPipShift[1];
@@ -776,7 +818,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= maxMiddlePips; pos++) {
-            pipPlotter.add(new float[] { middleColumn[0], middleColumn[1] });
+            pipPlotter.add(new float[]
+                { middleColumn[0], middleColumn[1] });
             middleColumn[0] += middlePipShift[0];
             if (pos % middlePipsPerLine == 0) {
                 middleColumn[1] += middlePipShift[1];
@@ -789,7 +832,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= maxBottemPips; pos++) {
-            pipPlotter.add(new float[] { bottomColumn[0], bottomColumn[1] });
+            pipPlotter.add(new float[]
+                { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += bottomPipShift[0];
             if (pos % 4 == 0) {
                 bottomColumn[1] += bottomPipShift[1];
@@ -802,8 +846,10 @@ public class PrintMech implements Printable {
     }
 
     private void printLTRArmor(Graphics2D g2d) {
-        float[] topColumn = { 437, 312 };
-        float[] pipShift = { 5, 5 };
+        float[] topColumn =
+            { 437, 312 };
+        float[] pipShift =
+            { 5, 5 };
         int pipsPerLine = 5;
 
         int totalArmor = mech.getOArmor(Mech.LOC_LT, true);
@@ -815,7 +861,8 @@ public class PrintMech implements Printable {
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
 
         for (int pos = 1; pos <= 35; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if (pos % pipsPerLine == 0) {
                 topColumn[1] += pipShift[1];
@@ -832,12 +879,18 @@ public class PrintMech implements Printable {
     }
 
     private void printRTArmor(Graphics2D g2d) {
-        float[] topColumn = { 520, 88 };
-        float[] middleColumn = { 504, 126 };
-        float[] bottomColumn = { 512, 161 };
-        float[] topPipShift = { 6, 7 };
-        float[] middlePipShift = { 6, 7 };
-        float[] bottomPipShift = { 6, 7 };
+        float[] topColumn =
+            { 520, 88 };
+        float[] middleColumn =
+            { 504, 126 };
+        float[] bottomColumn =
+            { 512, 161 };
+        float[] topPipShift =
+            { 6, 7 };
+        float[] middlePipShift =
+            { 6, 7 };
+        float[] bottomPipShift =
+            { 6, 7 };
 
         int totalArmor = mech.getOArmor(Mech.LOC_RT);
 
@@ -855,7 +908,8 @@ public class PrintMech implements Printable {
         int middlePipsPerLine = 2;
 
         for (int pos = 1; pos <= maxTopPips; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] -= topPipShift[0];
             if (pos % topPipsPerLine == 0) {
                 topColumn[1] += topPipShift[1];
@@ -865,7 +919,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= maxMiddlePips; pos++) {
-            pipPlotter.add(new float[] { middleColumn[0], middleColumn[1] });
+            pipPlotter.add(new float[]
+                { middleColumn[0], middleColumn[1] });
             middleColumn[0] -= middlePipShift[0];
             if (pos % middlePipsPerLine == 0) {
                 middleColumn[1] += middlePipShift[1];
@@ -878,7 +933,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= maxBottemPips; pos++) {
-            pipPlotter.add(new float[] { bottomColumn[0], bottomColumn[1] });
+            pipPlotter.add(new float[]
+                { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] -= bottomPipShift[0];
             if (pos % 4 == 0) {
                 bottomColumn[1] += bottomPipShift[1];
@@ -892,8 +948,10 @@ public class PrintMech implements Printable {
     }
 
     private void printRTRArmor(Graphics2D g2d) {
-        float[] topColumn = { 514, 312 };
-        float[] pipShift = { 5, 5 };
+        float[] topColumn =
+            { 514, 312 };
+        float[] pipShift =
+            { 5, 5 };
 
         int totalArmor = mech.getOArmor(Mech.LOC_RT, true);
 
@@ -903,7 +961,8 @@ public class PrintMech implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 35; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] -= pipShift[0];
             if (pos % 5 == 0) {
                 topColumn[1] += pipShift[1];
@@ -920,10 +979,14 @@ public class PrintMech implements Printable {
     }
 
     private void printCTArmor(Graphics2D g2d) {
-        float[] topColumn = { 464, 105 };
-        float[] middleColumn = { 481, 172 };
-        float[] bottomColumn = { 475, 185 };
-        float[] pipShift = { 6, 6 };
+        float[] topColumn =
+            { 464, 105 };
+        float[] middleColumn =
+            { 481, 172 };
+        float[] bottomColumn =
+            { 475, 185 };
+        float[] pipShift =
+            { 6, 6 };
 
         int totalArmor = mech.getOArmor(Mech.LOC_CT);
 
@@ -933,7 +996,8 @@ public class PrintMech implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 55; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if (pos % 5 == 0) {
                 topColumn[1] += pipShift[1];
@@ -946,7 +1010,8 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 6; pos++) {
-            pipPlotter.add(new float[] { middleColumn[0], middleColumn[1] });
+            pipPlotter.add(new float[]
+                { middleColumn[0], middleColumn[1] });
             middleColumn[0] += pipShift[0];
             if (pos % 3 == 0) {
                 middleColumn[1] += pipShift[1];
@@ -956,7 +1021,8 @@ public class PrintMech implements Printable {
 
         }
 
-        pipPlotter.add(new float[] { bottomColumn[0], bottomColumn[1] });
+        pipPlotter.add(new float[]
+            { bottomColumn[0], bottomColumn[1] });
 
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
@@ -1035,8 +1101,10 @@ public class PrintMech implements Printable {
     }
 
     private void printCTRArmor(Graphics2D g2d) {
-        float[] topColumn = new float[] { 470, 300 };
-        float[] pipShift = new float[] { 5f, 5f };
+        float[] topColumn = new float[]
+            { 470, 300 };
+        float[] pipShift = new float[]
+            { 5f, 5f };
 
         int totalArmor = mech.getOArmor(Mech.LOC_CT, true);
         if (totalArmor < 1) {
@@ -1045,7 +1113,8 @@ public class PrintMech implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 56; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if (pos % 4 == 0) {
                 topColumn[1] += pipShift[1];
@@ -1058,14 +1127,17 @@ public class PrintMech implements Printable {
     }
 
     private void printLAStruct(Graphics2D g2d) {
-        float[] column = { 419, 413 };
-        float[] pipShift = { 4, 4 };
+        float[] column =
+            { 419, 413 };
+        float[] pipShift =
+            { 4, 4 };
 
         int totalArmor = mech.getInternal(Mech.LOC_LARM);
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 16; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1];
             pipShift[0] *= -1;
             column[0] += pipShift[0];
@@ -1077,20 +1149,24 @@ public class PrintMech implements Printable {
         }
 
         column[1] += pipShift[1];
-        pipPlotter.add(new float[] { column[0], column[1] });
+        pipPlotter.add(new float[]
+            { column[0], column[1] });
 
         printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLLStruct(Graphics2D g2d) {
-        float[] column = { 441, 475 };
-        float[] pipShift = { 4, 4 };
+        float[] column =
+            { 441, 475 };
+        float[] pipShift =
+            { 4, 4 };
 
         int totalArmor = mech.getInternal(Mech.LOC_LLEG);
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 18; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1];
             column[0] += pipShift[0];
             pipShift[0] *= -1;
@@ -1102,26 +1178,31 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 2; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1] + 2;
         }
 
         column[1] -= 3;
         column[0] -= pipShift[0] + 1;
-        pipPlotter.add(new float[] { column[0], column[1] });
+        pipPlotter.add(new float[]
+            { column[0], column[1] });
 
         printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRLStruct(Graphics2D g2d) {
-        float[] column = { 484, 475 };
-        float[] pipShift = { 4, 4 };
+        float[] column =
+            { 484, 475 };
+        float[] pipShift =
+            { 4, 4 };
 
         int totalArmor = mech.getInternal(Mech.LOC_RLEG);
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 18; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1];
             column[0] -= pipShift[0];
             pipShift[0] *= -1;
@@ -1133,25 +1214,30 @@ public class PrintMech implements Printable {
         }
 
         for (int pos = 1; pos <= 2; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1] + 2;
         }
 
         column[1] -= 3;
         column[0] += pipShift[0] + 1;
-        pipPlotter.add(new float[] { column[0], column[1] });
+        pipPlotter.add(new float[]
+            { column[0], column[1] });
         printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRAStruct(Graphics2D g2d) {
-        float[] column = { 506, 413 };
-        float[] pipShift = { 4, 4 };
+        float[] column =
+            { 506, 413 };
+        float[] pipShift =
+            { 4, 4 };
 
         int totalArmor = mech.getInternal(Mech.LOC_RARM);
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 16; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1];
             pipShift[0] *= -1;
             column[0] -= pipShift[0];
@@ -1163,20 +1249,24 @@ public class PrintMech implements Printable {
         }
 
         column[1] += pipShift[1];
-        pipPlotter.add(new float[] { column[0], column[1] });
+        pipPlotter.add(new float[]
+            { column[0], column[1] });
 
         printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLTStruct(Graphics2D g2d) {
-        float[] column = { 435, 415 };
-        float[] pipShift = { 5, 5 };
+        float[] column =
+            { 435, 415 };
+        float[] pipShift =
+            { 5, 5 };
 
         int totalArmor = mech.getInternal(Mech.LOC_LT);
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= 12; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[0] += pipShift[0];
 
             if (pos % 3 == 0) {
@@ -1189,24 +1279,28 @@ public class PrintMech implements Printable {
 
         column[0] += pipShift[0] * 2;
         for (int pos = 1; pos <= 2; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1];
         }
 
         column[0] += pipShift[0] / 2;
         for (int pos = 1; pos <= 2; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1];
         }
 
         column[0] += pipShift[0] / 2;
-        pipPlotter.add(new float[] { column[0], column[1] });
+        pipPlotter.add(new float[]
+            { column[0], column[1] });
         column[1] += pipShift[1];
 
         pipShift[0] *= -1;
         column[1] += pipShift[1] / 2;
         for (int pos = 1; pos <= 4; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[0] += pipShift[0];
 
             if (pos % 2 == 0) {
@@ -1220,15 +1314,18 @@ public class PrintMech implements Printable {
     }
 
     private void printRTStruct(Graphics2D g2d) {
-        float[] column = { 480f, 415 };
-        float[] pipShift = { 5, 5 };
+        float[] column =
+            { 480f, 415 };
+        float[] pipShift =
+            { 5, 5 };
 
         int totalArmor = mech.getInternal(Mech.LOC_LT);
 
         int pips = 12;
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[0] += pipShift[0];
 
             if (pos % 3 == 0) {
@@ -1242,7 +1339,8 @@ public class PrintMech implements Printable {
         pips = 2;
 
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1];
         }
 
@@ -1250,7 +1348,8 @@ public class PrintMech implements Printable {
 
         column[0] -= pipShift[0] / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1];
         }
 
@@ -1258,7 +1357,8 @@ public class PrintMech implements Printable {
 
         column[0] -= pipShift[0] / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[1] += pipShift[1];
         }
 
@@ -1266,7 +1366,8 @@ public class PrintMech implements Printable {
 
         column[1] += pipShift[1] / 2;
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[0] += pipShift[0];
 
             if (pos % 2 == 0) {
@@ -1280,8 +1381,10 @@ public class PrintMech implements Printable {
     }
 
     private void printCTStruct(Graphics2D g2d) {
-        float[] column = { 457, 423 };
-        float[] pipShift = { 5, 5 };
+        float[] column =
+            { 457, 423 };
+        float[] pipShift =
+            { 5, 5 };
 
         int totalArmor = mech.getInternal(Mech.LOC_CT);
 
@@ -1289,7 +1392,8 @@ public class PrintMech implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(20);
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[0] += pipShift[0];
 
             if (pos % 3 == 0) {
@@ -1306,7 +1410,8 @@ public class PrintMech implements Printable {
         column[0] += pipShift[0] / 2;
 
         for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[] { column[0], column[1] });
+            pipPlotter.add(new float[]
+                { column[0], column[1] });
             column[0] += pipShift[0];
             if (pos % 2 == 0) {
                 column[1] += pipShift[1];
@@ -1368,7 +1473,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     *
+     * 
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
@@ -1665,8 +1770,10 @@ public class PrintMech implements Printable {
         if (!mech.hasShield()) {
             return;
         }
-        int[] DCColumn = { 390, 32 };
-        int[] lineFeed = { 5, 6 };
+        int[] DCColumn =
+            { 390, 32 };
+        int[] lineFeed =
+            { 5, 6 };
         int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM);
         int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_LARM);
 
@@ -1681,8 +1788,10 @@ public class PrintMech implements Printable {
             }
         }
 
-        int[] DAColumn = { 387, 82 };
-        lineFeed = new int[] { 4, 6 };
+        int[] DAColumn =
+            { 387, 82 };
+        lineFeed = new int[]
+            { 4, 6 };
 
         for (int pos = 1; pos <= DA; pos++) {
             ImageHelper.drawDiamond(g2d, DAColumn[0], DAColumn[1]);
@@ -1704,8 +1813,10 @@ public class PrintMech implements Printable {
             return;
         }
         // g2d.setStroke(new BasicStroke(.5f));
-        int[] DCColumn = { 562, 32 };
-        int[] lineFeed = { -5, 6 };
+        int[] DCColumn =
+            { 562, 32 };
+        int[] lineFeed =
+            { -5, 6 };
         int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM);
         int DC = UnitUtil.getShieldDamageCapacity(mech, Mech.LOC_RARM);
 
@@ -1721,8 +1832,10 @@ public class PrintMech implements Printable {
             }
         }
 
-        int[] DAColumn = { 565, 82 };
-        lineFeed = new int[] { -4, 6 };
+        int[] DAColumn =
+            { 565, 82 };
+        lineFeed = new int[]
+            { -4, 6 };
 
         for (int pos = 1; pos <= DA; pos++) {
             ImageHelper.drawDiamond(g2d, DAColumn[0], DAColumn[1]);
