@@ -12,18 +12,18 @@
 
 package megameklab.com.util;
 
-import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Aero;
@@ -34,6 +34,7 @@ import megamek.common.EntityListFile;
 import megamek.common.Infantry;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
+import megamek.common.Protomech;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.VTOL;
@@ -41,6 +42,7 @@ import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Mek.Printing.PrintMech;
 import megameklab.com.ui.Mek.Printing.PrintQuad;
+import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.VTOL.Printing.PrintVTOL;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.dialog.UnitViewerDialog;
@@ -99,6 +101,13 @@ public class UnitPrintManager {
             PrintAero sp = new PrintAero(aeroList);
 
             sp.print();
+        } else if (entity instanceof Protomech) {
+            ArrayList<Protomech> protoList = new ArrayList<Protomech>();
+            protoList.add((Protomech) entity);
+
+            PrintProtomech sp = new PrintProtomech(protoList);
+
+            sp.print();
         } else {
             System.err.println("Unknown Entity type: " + entity.toString());
             return false;
@@ -129,86 +138,99 @@ public class UnitPrintManager {
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
         ArrayList<Aero> aeroList = new ArrayList<Aero>();
         ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
+        ArrayList<Protomech> protoList = new ArrayList<Protomech>();
 
-        FileDialog f = new FileDialog(parent, "Load Mul");
-        f.setDirectory(System.getProperty("user.dir"));
-        f.setFile("*.mul");
-        /*
-         * f.setFilenameFilter(new FilenameFilter() { public boolean
-         * accept(final File dir, final String name) { return (null != name &&
-         * name.endsWith(".mul")); } });
-         */
+        JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
+        f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        f.setDialogTitle("Print From MUL");
+        f.setMultiSelectionEnabled(false);
 
-        f.setVisible(true);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Mul Files", "mul");
 
-        if (f.getFile() != null) {
-            Vector<Entity> loadedUnits = new Vector<Entity>();
-            try {
-                loadedUnits = EntityListFile.loadFrom(new File(f.getDirectory() + f.getFile()));
-                loadedUnits.trimToSize();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                return;
-            }
+        // Add a filter for mul files
+        f.setFileFilter(filter);
 
-            for (Entity unit : loadedUnits) {
-                if (unit instanceof QuadMech) {
-                    UnitUtil.removeOneShotAmmo(unit);
-                    UnitUtil.expandUnitMounts(unit);
+        int returnVal = f.showSaveDialog(parent);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
+            return;
+        }
 
-                    quadList.add((Mech) unit);
-                } else if (unit instanceof BipedMech) {
-                    UnitUtil.removeOneShotAmmo(unit);
-                    UnitUtil.expandUnitMounts(unit);
+        Vector<Entity> loadedUnits = new Vector<Entity>();
+        try {
+            loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
+            loadedUnits.trimToSize();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return;
+        }
 
-                    bipedList.add((Mech) unit);
-                } else if (unit instanceof VTOL) {
-                    VTOLList.add((VTOL) unit);
-                } else if (unit instanceof Tank) {
-                    tankList.add((Tank) unit);
-                } else if (unit instanceof Aero) {
-                    aeroList.add((Aero) unit);
-                } else if (unit instanceof BattleArmor) {
-                    baList.add((BattleArmor) unit);
-                }
-            }
+        for (Entity unit : loadedUnits) {
+            if (unit instanceof QuadMech) {
+                UnitUtil.removeOneShotAmmo(unit);
+                UnitUtil.expandUnitMounts(unit);
 
-            if (bipedList.size() > 0) {
-                PrintMech printMech = new PrintMech(bipedList);
+                quadList.add((Mech) unit);
+            } else if (unit instanceof BipedMech) {
+                UnitUtil.removeOneShotAmmo(unit);
+                UnitUtil.expandUnitMounts(unit);
 
-                printMech.print();
-            }
-
-            if (quadList.size() > 0) {
-                PrintQuad printQuad = new PrintQuad(quadList);
-
-                printQuad.print();
-            }
-
-            if (tankList.size() > 0) {
-                PrintVehicle printTank = new PrintVehicle(tankList, singlePrint);
-
-                printTank.print();
-            }
-
-            if (aeroList.size() > 0) {
-                PrintAero printAero = new PrintAero(aeroList);
-
-                printAero.print();
-            }
-
-            if (VTOLList.size() > 0) {
-                PrintVTOL printVTOL = new PrintVTOL(VTOLList, singlePrint);
-
-                printVTOL.print();
-            }
-
-            if (baList.size() > 0) {
-                PrintBattleArmor printBA = new PrintBattleArmor(baList);
-
-                printBA.print();
+                bipedList.add((Mech) unit);
+            } else if (unit instanceof VTOL) {
+                VTOLList.add((VTOL) unit);
+            } else if (unit instanceof Tank) {
+                tankList.add((Tank) unit);
+            } else if (unit instanceof Aero) {
+                aeroList.add((Aero) unit);
+            } else if (unit instanceof BattleArmor) {
+                baList.add((BattleArmor) unit);
+            } else if (unit instanceof Protomech) {
+                protoList.add((Protomech) unit);
             }
         }
+
+        if (bipedList.size() > 0) {
+            PrintMech printMech = new PrintMech(bipedList);
+
+            printMech.print();
+        }
+
+        if (quadList.size() > 0) {
+            PrintQuad printQuad = new PrintQuad(quadList);
+
+            printQuad.print();
+        }
+
+        if (tankList.size() > 0) {
+            PrintVehicle printTank = new PrintVehicle(tankList, singlePrint);
+
+            printTank.print();
+        }
+
+        if (aeroList.size() > 0) {
+            PrintAero printAero = new PrintAero(aeroList);
+
+            printAero.print();
+        }
+
+        if (VTOLList.size() > 0) {
+            PrintVTOL printVTOL = new PrintVTOL(VTOLList, singlePrint);
+
+            printVTOL.print();
+        }
+
+        if (baList.size() > 0) {
+            PrintBattleArmor printBA = new PrintBattleArmor(baList);
+
+            printBA.print();
+        }
+
+        if (protoList.size() > 0) {
+            PrintProtomech printProto = new PrintProtomech(protoList);
+
+            printProto.print();
+        }
+
     }
 
     public static JMenu printMenu(final JFrame parent, JMenuItem item) {
@@ -278,22 +300,25 @@ public class UnitPrintManager {
     }
 
     public static void printUnitFile(JFrame parent) {
-        FileDialog fDialog = new FileDialog(parent, "Load Unit", FileDialog.LOAD);
-
         String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
 
-        fDialog.setDirectory(filePathName);
-        fDialog.setFile("*.blk;*.mtf");
-        fDialog.setLocationRelativeTo(parent);
+        JFileChooser f = new JFileChooser(filePathName);
+        f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        f.setDialogTitle("Print Unit File");
 
-        fDialog.setVisible(true);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf");
 
-        if (fDialog.getFile() == null) {
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        int returnVal = f.showSaveDialog(parent);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
             return;
         }
 
         try {
-            Entity tempEntity = new MechFileParser(new File(fDialog.getDirectory(), fDialog.getFile())).getEntity();
+            Entity tempEntity = new MechFileParser(f.getSelectedFile()).getEntity();
 
             UnitPrintManager.printEntity(tempEntity);
             // UnitUtil.updateLoadedTank(entity);
