@@ -70,6 +70,7 @@ public class UnitUtil {
     public static String VOIDSIG = "Void Signature System";
     public static String TRACKS = "Tracks";
     public static String TALONS = "Talons";
+    public static String CHAMELEON = "Chameleon Light Polarization Field";
 
     public static int TECH_INTRO = 0;
     public static int TECH_STANDARD = 1;
@@ -83,7 +84,7 @@ public class UnitUtil {
     /**
      * tells is EquipementType is an equipment that uses crits/mounted and is
      * spread across multiple locations
-     *
+     * 
      * @param eq
      * @return
      */
@@ -93,7 +94,7 @@ public class UnitUtil {
 
     /**
      * tells if the EquipmentType is a type of armor
-     *
+     * 
      * @param eq
      * @return
      */
@@ -109,7 +110,7 @@ public class UnitUtil {
 
     /**
      * tells if the EquipmentType is a type of armor
-     *
+     * 
      * @param eq
      * @return
      */
@@ -125,7 +126,7 @@ public class UnitUtil {
 
     /**
      * tells if EquipmentType is TSM or TargetComp
-     *
+     * 
      * @param eq
      * @return
      */
@@ -136,7 +137,7 @@ public class UnitUtil {
     /**
      * Returns the number of crits used by EquipmentType eq, 1 if armor or
      * structure EquipmentType
-     *
+     * 
      * @param unit
      * @param eq
      * @return
@@ -213,7 +214,7 @@ public class UnitUtil {
 
     /**
      * Removes a Mounted object from the units various equipment lists
-     *
+     * 
      * @param unit
      * @param eq
      */
@@ -275,7 +276,7 @@ public class UnitUtil {
 
     /**
      * Removes mounts of a certain type from the Mek.
-     *
+     * 
      * @param Unit
      */
     public static void removeMounts(Entity unit, String mountName) {
@@ -292,7 +293,7 @@ public class UnitUtil {
 
     /**
      * Removes all crits of a certain type from
-     *
+     * 
      * @param unit
      */
     public static void removeCrits(Mech unit, String critType) {
@@ -314,7 +315,7 @@ public class UnitUtil {
 
     /**
      * Sets the corresponding critical slots to null for the Mounted object.
-     *
+     * 
      * @param unit
      * @param eq
      */
@@ -347,7 +348,7 @@ public class UnitUtil {
 
     /**
      * Tells if param EQ is a targetting computer.
-     *
+     * 
      * @param eq
      *            Mounted that might be a targetting computer
      * @return True if is a targetting computer false if not.
@@ -362,7 +363,7 @@ public class UnitUtil {
 
     /**
      * Removes crits for weapons that have split locations
-     *
+     * 
      * @param unit
      * @param eq
      */
@@ -398,7 +399,7 @@ public class UnitUtil {
 
     /**
      * Reset all the Crits and Mounts on the Unit.
-     *
+     * 
      * @param unit
      */
     public static void resetCriticalsAndMounts(Mech unit) {
@@ -421,7 +422,7 @@ public class UnitUtil {
 
     /**
      * Check to see if the unit is using Clan TC
-     *
+     * 
      * @param unit
      * @return
      */
@@ -438,7 +439,7 @@ public class UnitUtil {
     /**
      * Updates TC Crits and Mounts based on weapons on a unit or if the TC has
      * been removed.
-     *
+     * 
      * @param unit
      */
     public static void updateTC(Mech unit, boolean isClan) {
@@ -450,7 +451,7 @@ public class UnitUtil {
 
     /**
      * Creates TC Mounts and Criticals for a Unit.
-     *
+     * 
      * @param unit
      */
     public static void createTCMounts(Mech unit, boolean isClan) {
@@ -486,7 +487,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if unit can use the techlevel
-     *
+     * 
      * @param unit
      * @param techLevel
      * @return Boolean if the tech level is legal for the passed unit
@@ -520,7 +521,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if the unit uses compact heat sinks
-     *
+     * 
      * @param unit
      * @return
      */
@@ -546,7 +547,7 @@ public class UnitUtil {
 
     /**
      * Checks if the unit has laser heatsinks.
-     *
+     * 
      * @param unit
      * @return
      */
@@ -567,7 +568,7 @@ public class UnitUtil {
 
     /**
      * checks if Mounted is a heat sink
-     *
+     * 
      * @param eq
      * @return
      */
@@ -581,7 +582,7 @@ public class UnitUtil {
 
     /**
      * Checks if EquipmentType is a heat sink
-     *
+     * 
      * @param eq
      * @return
      */
@@ -595,7 +596,7 @@ public class UnitUtil {
 
     /**
      * Removes all heat sinks from the mek
-     *
+     * 
      * @param unit
      */
     public static void removeHeatSinks(Mech unit) {
@@ -616,7 +617,7 @@ public class UnitUtil {
 
     /**
      * adds all heat sinks to the mech
-     *
+     * 
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -674,7 +675,7 @@ public class UnitUtil {
 
     /**
      * updates the heat sinks.
-     *
+     * 
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -691,7 +692,7 @@ public class UnitUtil {
     /**
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
-     *
+     * 
      * @param eq
      * @return
      */
@@ -914,7 +915,7 @@ public class UnitUtil {
     /**
      * Expands crits that are a single mount by have multiple spreadable crits
      * Such as TSM, Endo Steel, Reactive armor.
-     *
+     * 
      * @param unit
      */
     public static void expandUnitMounts(Entity unit) {
@@ -1075,7 +1076,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if something is a Jump Jet
-     *
+     * 
      * @param eq
      * @return
      */
@@ -1331,7 +1332,7 @@ public class UnitUtil {
 
     /**
      * Removes any and all types of TC Crits
-     *
+     * 
      * @param unit
      */
     public static void removeTCCrits(Mech unit) {
@@ -1342,7 +1343,7 @@ public class UnitUtil {
 
     /**
      * Removes any and all types of TC Mounts
-     *
+     * 
      * @param unit
      */
     public static void removeTCMounts(Mech unit) {
@@ -1353,7 +1354,7 @@ public class UnitUtil {
 
     /**
      * Returns the units tech type.
-     *
+     * 
      * @param unit
      * @return
      */
@@ -1640,9 +1641,13 @@ public class UnitUtil {
     }
 
     /**
-     * remove all CriticalSlots on the passed unit that are internal structur or armor
-     * @param unit the Entity
-     * @param internalStructure true to remove IS, false to remove armor
+     * remove all CriticalSlots on the passed unit that are internal structur or
+     * armor
+     * 
+     * @param unit
+     *            the Entity
+     * @param internalStructure
+     *            true to remove IS, false to remove armor
      */
     public static void removeISorArmorCrits(Entity unit, boolean internalStructure) {
         for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
@@ -1651,7 +1656,7 @@ public class UnitUtil {
                 if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted mount = unit.getEquipment(crit.getIndex());
 
-                    if ((mount != null) && (mount.getType() instanceof MiscType) && Arrays.asList(internalStructure?EquipmentType.structureNames:EquipmentType.armorNames).contains(mount.getType().getInternalName())) {
+                    if ((mount != null) && (mount.getType() instanceof MiscType) && Arrays.asList(internalStructure ? EquipmentType.structureNames : EquipmentType.armorNames).contains(mount.getType().getInternalName())) {
                         crit = null;
                         unit.setCritical(location, slot, crit);
                     }
@@ -1661,15 +1666,19 @@ public class UnitUtil {
     }
 
     /**
-     * remove all Mounteds on the passed unit that are internal structur or armor
-     * @param unit the Entity
-     * @param internalStructure true to remove IS, false to remove armor
+     * remove all Mounteds on the passed unit that are internal structur or
+     * armor
+     * 
+     * @param unit
+     *            the Entity
+     * @param internalStructure
+     *            true to remove IS, false to remove armor
      */
     public static void removeISorArmorMounts(Entity unit, boolean internalStructure) {
         removeISorArmorCrits(unit, internalStructure);
         for (int pos = 0; pos < unit.getEquipment().size();) {
             Mounted mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType) && Arrays.asList(internalStructure?EquipmentType.structureNames:EquipmentType.armorNames).contains(mount.getType().getInternalName())) {
+            if ((mount.getType() instanceof MiscType) && Arrays.asList(internalStructure ? EquipmentType.structureNames : EquipmentType.armorNames).contains(mount.getType().getInternalName())) {
                 unit.getEquipment().remove(pos);
             } else {
                 pos++;
@@ -1677,7 +1686,7 @@ public class UnitUtil {
         }
         for (int pos = 0; pos < unit.getMisc().size();) {
             Mounted mount = unit.getMisc().get(pos);
-            if ((mount.getType() instanceof MiscType) && Arrays.asList(internalStructure?EquipmentType.structureNames:EquipmentType.armorNames).contains(mount.getType().getInternalName())) {
+            if ((mount.getType() instanceof MiscType) && Arrays.asList(internalStructure ? EquipmentType.structureNames : EquipmentType.armorNames).contains(mount.getType().getInternalName())) {
                 unit.getMisc().remove(pos);
             } else {
                 pos++;
