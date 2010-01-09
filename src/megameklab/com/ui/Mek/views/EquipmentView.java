@@ -176,7 +176,7 @@ public class EquipmentView extends IView implements ActionListener {
         for (; location < equipmentList.getRowCount();) {
 
             EquipmentType eq = (EquipmentType) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
-            if ( (eq instanceof MiscType) && ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK)))) {
+            if ((eq instanceof MiscType) && ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK)))) {
                 try {
                     equipmentList.removeCrit(location);
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
@@ -244,7 +244,7 @@ public class EquipmentView extends IView implements ActionListener {
                     createSpreadMounts(UnitUtil.TRACKS);
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TALONS)) {
-                boolean  hasTalons = false;
+                boolean hasTalons = false;
                 for (Mounted mounted : getMech().getMisc()) {
                     if (mounted.getType().hasFlag(MiscType.F_TALON)) {
                         hasTalons = true;
@@ -253,7 +253,7 @@ public class EquipmentView extends IView implements ActionListener {
                 if (!hasTalons) {
                     createSpreadMounts(UnitUtil.TALONS);
                 }
-            }else if (equipmentCombo.getSelectedItem().toString().startsWith(UnitUtil.TARGETINGCOMPUTER)) {
+            } else if (equipmentCombo.getSelectedItem().toString().startsWith(UnitUtil.TARGETINGCOMPUTER)) {
                 if (!UnitUtil.hasTargComp(unit)) {
 
                     boolean isClan = false;
@@ -264,6 +264,10 @@ public class EquipmentView extends IView implements ActionListener {
                         }
                     }
                     UnitUtil.updateTC(getMech(), isClan);
+                }
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.CHAMELEON)) {
+                if (!getMech().hasChameleonShield()) {
+                    createSpreadMounts(UnitUtil.CHAMELEON);
                 }
             } else {
                 try {
