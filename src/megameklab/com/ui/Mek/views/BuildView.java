@@ -154,7 +154,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos) instanceof MiscType) && UnitUtil.isArmor(masterEquipmentList.get(pos)) && UnitUtil.isTSM(masterEquipmentList.get(pos))) {
+            if ((masterEquipmentList.get(pos) instanceof MiscType) && !UnitUtil.isArmor(masterEquipmentList.get(pos)) && !UnitUtil.isTSM(masterEquipmentList.get(pos))) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -163,7 +163,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // structure
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos) instanceof MiscType) && masterEquipmentList.get(pos).hasFlag(MiscType.F_ENDO_STEEL)) {
+            if (UnitUtil.isStructure(masterEquipmentList.get(pos))) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -278,7 +278,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                         rtMenu.add(item);
                     }
 
-                    int[] splitLocations = new int[] { Mech.LOC_CT, Mech.LOC_RARM, Mech.LOC_RLEG };
+                    int[] splitLocations = new int[]
+                        { Mech.LOC_CT, Mech.LOC_RARM, Mech.LOC_RLEG };
 
                     for (int location = 0; location < 3; location++) {
                         JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mech.LOC_RT], abbrLocations[splitLocations[location]]));
@@ -323,7 +324,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                         ltMenu.add(item);
                     }
 
-                    int[] splitLocations = new int[] { Mech.LOC_CT, Mech.LOC_LARM, Mech.LOC_LLEG };
+                    int[] splitLocations = new int[]
+                        { Mech.LOC_CT, Mech.LOC_LARM, Mech.LOC_LLEG };
 
                     for (int location = 0; location < 3; location++) {
                         JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mech.LOC_LT], abbrLocations[splitLocations[location]]));
