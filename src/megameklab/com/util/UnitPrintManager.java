@@ -150,7 +150,7 @@ public class UnitPrintManager {
         // Add a filter for mul files
         f.setFileFilter(filter);
 
-        int returnVal = f.showSaveDialog(parent);
+        int returnVal = f.showOpenDialog(parent);
         if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
             // I want a file, y'know!
             return;
@@ -311,7 +311,7 @@ public class UnitPrintManager {
         // Add a filter for mul files
         f.setFileFilter(filter);
 
-        int returnVal = f.showSaveDialog(parent);
+        int returnVal = f.showOpenDialog(parent);
         if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
             // I want a file, y'know!
             return;

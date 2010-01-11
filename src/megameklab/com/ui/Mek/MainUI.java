@@ -349,7 +349,7 @@ public class MainUI extends JFrame implements RefreshListener {
         // Add a filter for mul files
         f.setFileFilter(filter);
 
-        int returnVal = f.showSaveDialog(this);
+        int returnVal = f.showOpenDialog(this);
         if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
             // I want a file, y'know!
             return;
