@@ -1559,6 +1559,7 @@ public class ImageHelper {
         Dimension fillCircle = new Dimension(3, 3);
         g2d.setColor(Color.GRAY);
         g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
+        g2d.setColor(Color.BLACK);
     }
 
     public static void drawBAArmorPip(Graphics2D g2d, float width, float height) {

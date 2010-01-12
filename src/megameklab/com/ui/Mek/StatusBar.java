@@ -168,6 +168,14 @@ public class StatusBar extends ITab {
             heat += 2;
         }
 
+        if (getMech().hasNullSig()) {
+            heat += 10;
+        }
+
+        if (getMech().hasChameleonShield()) {
+            heat += 6;
+        }
+
         for (Mounted mounted : getMech().getWeaponList()) {
             WeaponType wtype = (WeaponType) mounted.getType();
             double weaponHeat = wtype.getHeat();

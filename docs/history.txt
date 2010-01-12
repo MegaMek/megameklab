@@ -23,6 +23,7 @@ V 0.0.0.16 Dev
 + Protomech record sheet printing
 + Bug: Chameleon Equipment not being treated as spreadable
 + Bug: print dialogs had "Save" button, not "Open" button
++ Bug: Protos not printing correctly.
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads
