@@ -29,6 +29,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Protomech;
+import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
@@ -68,16 +69,22 @@ public class PrintProtomech implements Printable {
         }
 
         currentMargin = 0;
-        Image singleProtoMech = ImageHelper.getProtoMech();
+        Image singleProtoMech = ImageHelper.getProtoMech(1);
         int x = 18;
         int y = 78;
         g2d.drawImage(ImageHelper.getRecordSheet(protoMech, false), 18, 18, 558, 738, null);
         g2d.drawImage(ImageHelper.getFluffImage(protoMech, ImageHelper.imageProto), 410, 23, 35, 45, null);
 
         int stop = Math.min(5, protoMechList.size() - currentPosition);
+
         for (int pos = 0; pos < stop; pos++) {
 
             protoMech = protoMechList.get(pos + currentPosition);
+
+            if (pos == 1) {
+                singleProtoMech = ImageHelper.getProtoMech(2);
+            }
+
             g2d.drawImage(singleProtoMech, x, y, 558, 136, null);
             g2d.drawImage(ImageHelper.getBASquadNumber(pos), 100, 86 + currentMargin, 10, 9, null);
             printProtomechData(g2d);
@@ -86,11 +93,15 @@ public class PrintProtomech implements Printable {
 
             y += pageMarginBase;
             currentMargin += pageMarginBase;
+
+            if (pos == 4) {
+                g2d.drawImage(ImageHelper.getProtoLogo(), 32, 735, 40, 20, null);
+            }
         }
         System.gc();
         Font font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2009", 118f, 746.5f);
+        g2d.drawString("2010", 118f, 746.5f);
 
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
@@ -345,7 +356,17 @@ public class PrintProtomech implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        g2d.drawString(Integer.toString((int) protoMech.getWeight()), 47, 119 + currentMargin);
+        String weight = Integer.toString((int) protoMech.getWeight());
+
+        if (protoMech.getTechLevel() == TechConstants.T_CLAN_ADVANCED) {
+            weight += "     (Advanced)";
+        } else if (protoMech.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL) {
+            weight += "     (Experimental)";
+        } else if (protoMech.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL) {
+            weight += "     (Unofficial)";
+        }
+
+        g2d.drawString(weight, 47, 119 + currentMargin);
 
         if ((protoMech.getSource() != null) && (protoMech.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
