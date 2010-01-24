@@ -225,6 +225,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 90 / 100));
+        equipmentScroll.setBounds(0, 0, getWidth(), getHeight());
         equipmentScroll.repaint();
     }
 

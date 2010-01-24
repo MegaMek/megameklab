@@ -186,7 +186,7 @@ public class PrintAero implements Printable {
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2009", 105f, 745f);
+        g2d.drawString("2010", 105f, 745f);
     }
 
     private void printArmor(Graphics2D g2d) {

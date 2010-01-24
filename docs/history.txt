@@ -25,6 +25,9 @@ V 0.0.0.16 Dev
 + Bug: print dialogs had "Save" button, not "Open" button
 + Bug: Protos not printing correctly.
 + Bug: split HAGs should cause CASE to appear in split location in clan mechs
++ RFE: Add Non-Standard Tech fields to Proto, Tank, and VTOL RS
++ Bug: Fuel Cell Engine not printing.
++ Added new Proto Images for smaller printing.
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads
