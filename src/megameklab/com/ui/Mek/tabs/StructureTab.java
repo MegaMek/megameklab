@@ -849,18 +849,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 break;
             case TechConstants.T_CLAN_TW:
                 gyroCount = 2;
-                structCount = 4;
+                structCount = 3;
                 cockpitCount = 5;
                 break;
             case TechConstants.T_IS_TW_NON_BOX:
-                structCount = 4;
+                structCount = 3;
                 cockpitCount = 5;
                 break;
             case TechConstants.T_CLAN_ADVANCED:
+                structCount = 3;
                 gyroCount = 2;
                 cockpitCount = 6;
                 break;
             case TechConstants.T_IS_ADVANCED:
+                structCount = 3;
                 cockpitCount = 6;
                 break;
             case TechConstants.T_CLAN_EXPERIMENTAL:

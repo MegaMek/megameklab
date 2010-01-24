@@ -465,6 +465,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         weaponList.updateUnit(unit);
         weaponList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension(getWidth() * 65 / 100, getHeight() * 80 / 100));
+        equipmentScroll.setBounds(0, 0, getWidth() * 65 / 100, getHeight() * 80 / 100);
         equipmentScroll.repaint();
         if (refresh != null) {
             refresh.refreshStatus();

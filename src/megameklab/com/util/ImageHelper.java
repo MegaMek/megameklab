@@ -146,6 +146,18 @@ public class ImageHelper {
         return image;
     }
 
+    public static Image getFluffImage(String image) {
+        Image fluff = null;
+
+        String path = new File(fluffPath).getAbsolutePath() + File.separatorChar + image;
+
+        if (!(new File(path).exists())) {
+            return null;
+        }
+        fluff = new ImageIcon(path).getImage();
+        return fluff;
+    }
+
     public static Image getFluffImage(Entity unit, String dir) {
         Image fluff = null;
 
@@ -1531,9 +1543,22 @@ public class ImageHelper {
         return new ImageIcon(path + "twba-squad-" + position + ".png").getImage();
     }
 
-    public static Image getProtoMech() {
+    public static Image getProtoMech(int number) {
         String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
-        return new ImageIcon(path + "twproto-single.png").getImage();
+
+        if (number == 2) {
+            return new ImageIcon(path + "twproto-singlemiddle.png").getImage();
+        }
+
+        return new ImageIcon(path + "twproto-singletop.png").getImage();
+    }
+
+    public static Image getProtoLogo() {
+
+        String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
+
+        return new ImageIcon(path + "twproto-logo.png").getImage();
+
     }
 
     public static Image getBATrooper(int position) {
