@@ -23,6 +23,7 @@ import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -44,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -121,6 +123,7 @@ public class MainUI extends JFrame implements RefreshListener {
         unitMenu.setMnemonic('N');
         item.setText("Tank");
         item.setMnemonic('T');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadVehicle();
@@ -136,6 +139,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
         item.setText("From Cache");
         item.setMnemonic('C');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadEntity_actionPerformed(e);
@@ -146,6 +150,7 @@ public class MainUI extends JFrame implements RefreshListener {
         item = new JMenuItem();
         item.setText("From File");
         item.setMnemonic('F');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadEntityFromFile_actionPerformed(e);
@@ -155,7 +160,8 @@ public class MainUI extends JFrame implements RefreshListener {
 
         file.add(loadMenu);
 
-        item = new JMenuItem("Current Unit");
+        item = new JMenuItem(String.format("Current Unit"));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
         item.setMnemonic('C');
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -168,6 +174,7 @@ public class MainUI extends JFrame implements RefreshListener {
         item = new JMenuItem();
         item.setText("Save");
         item.setMnemonic('S');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuSaveEntity_actionPerformed(e);
@@ -177,6 +184,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
         item = new JMenuItem("Reset");
         item.setMnemonic('R');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuResetEntity_actionPerformed(e);
@@ -198,6 +206,7 @@ public class MainUI extends JFrame implements RefreshListener {
         item = new JMenuItem();
         item.setText("Exit");
         item.setMnemonic('x');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuExit_actionPerformed(e);
@@ -816,4 +825,5 @@ public class MainUI extends JFrame implements RefreshListener {
     private void jMenuPrintCurrentUnit() {
         UnitPrintManager.printEntity(entity);
     }
+
 }

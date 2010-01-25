@@ -15,6 +15,7 @@ package megameklab.com.util;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -23,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
@@ -241,6 +243,7 @@ public class UnitPrintManager {
 
         item = new JMenuItem("Other Unit");
         item.setMnemonic('O');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UnitPrintManager.printSelectedUnit(parent);
@@ -250,6 +253,7 @@ public class UnitPrintManager {
 
         item = new JMenuItem("From File");
         item.setMnemonic('i');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UnitPrintManager.printUnitFile(parent);
@@ -260,6 +264,7 @@ public class UnitPrintManager {
         printMenu.addSeparator();
         item = new JMenuItem("From MUL");
         item.setMnemonic('M');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UnitPrintManager.printMuls(parent, false);
