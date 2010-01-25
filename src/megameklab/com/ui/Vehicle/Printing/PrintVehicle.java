@@ -79,7 +79,7 @@ public class PrintVehicle implements Printable {
         g2d.drawImage(ImageHelper.getRecordSheet(tank, false), 18, 18, 558, 368, null);
 
         if (tank.getOInternal(Tank.LOC_TURRET) > 0) {
-            g2d.drawImage(ImageHelper.getTurretImage(), 296, 172, 220, 100, null);
+            g2d.drawImage(ImageHelper.getTurretImage(), 18, 18, 558, 368, null);
         }
 
         if (tank2 == null) {

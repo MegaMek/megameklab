@@ -24,12 +24,25 @@ import java.io.PrintStream;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.0.0.16-dev-119";
+    public static final String VERSION = "0.0.0.16-dev-120";
 
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
 
-        if (args.length < 1) {
+        boolean logs = true;
+        boolean vehicle = false;
+
+        for (int pos = 0; pos < args.length; pos++) {
+            if (args[pos].equalsIgnoreCase("-vehicle")) {
+                vehicle = true;
+            }
+
+            if (args[pos].equalsIgnoreCase("-nolog")) {
+                logs = false;
+            }
+        }
+
+        if (logs) {
             try {
                 if (!new File("./logs/").exists()) {
                     new File("./logs/").mkdir();
@@ -40,34 +53,9 @@ public class MegaMekLab {
             } catch (Exception ex) {
                 System.err.println("Unable to redirect output");
             }
-            Runtime runtime = Runtime.getRuntime();
+        }
 
-            System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
-            // Need at least 256m to run MegaMekLab
-            if (runtime.maxMemory() < 256000000) {
-                try {
-                    String[] call =
-                        { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
-                    runtime.exec(call);
-                    System.exit(0);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-            new MainUI();
-        } else if (args[0].equalsIgnoreCase("-vehicle")) {
-            if (args.length == 1) {
-                try {
-                    if (!new File("./logs/").exists()) {
-                        new File("./logs/").mkdir();
-                    }
-                    PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(logFileName), 64));
-                    System.setOut(ps);
-                    System.setErr(ps);
-                } catch (Exception ex) {
-                    System.err.println("Unable to redirect output");
-                }
-            }
+        if (vehicle) {
             Runtime runtime = Runtime.getRuntime();
 
             System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
@@ -76,6 +64,11 @@ public class MegaMekLab {
                 try {
                     String[] call =
                         { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
+
+                    if (!logs) {
+                        call = new String[]
+                            { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle", "-nolog" };
+                    }
                     runtime.exec(call);
                     System.exit(0);
                 } catch (Exception ex) {
@@ -85,6 +78,27 @@ public class MegaMekLab {
 
             new megameklab.com.ui.Vehicle.MainUI();
         } else {
+
+            Runtime runtime = Runtime.getRuntime();
+
+            System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
+            // Need at least 256m to run MegaMekLab
+            if (runtime.maxMemory() < 256000000) {
+                try {
+
+                    String[] call =
+                        { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
+
+                    if (!logs) {
+                        call = new String[]
+                            { "java", "-Xmx256m", "-jar", "MegaMekLab.jar", "-nolog" };
+                    }
+                    runtime.exec(call);
+                    System.exit(0);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
             new MainUI();
         }
     }
