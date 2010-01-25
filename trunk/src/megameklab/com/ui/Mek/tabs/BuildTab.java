@@ -221,6 +221,7 @@ public class BuildTab extends ITab implements ActionListener {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
         critView.updateRefresh(refresh);
+
     }
 
     public void addCrit(EquipmentType eq) {
