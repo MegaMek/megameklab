@@ -1473,7 +1473,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     * 
+     *
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
@@ -1576,7 +1576,7 @@ public class PrintMech implements Printable {
 
                     critName = new StringBuffer("Ammo (");
                     // Remove Text (Clan) from the name
-                    critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").replaceAll("[0-9]", "").trim());
+                    critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
                     // Remove any additional Ammo text.
                     if (critName.toString().endsWith("Ammo")) {
                         critName.setLength(critName.length() - 5);
