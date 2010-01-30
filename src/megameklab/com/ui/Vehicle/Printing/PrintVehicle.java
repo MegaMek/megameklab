@@ -79,7 +79,8 @@ public class PrintVehicle implements Printable {
         g2d.drawImage(ImageHelper.getRecordSheet(tank, false), 18, 18, 558, 368, null);
 
         if (tank.getOInternal(Tank.LOC_TURRET) > 0) {
-            g2d.drawImage(ImageHelper.getTurretImage(), 18, 18, 558, 368, null);
+            g2d.drawImage(ImageHelper.getTurretImage(), 441, 173, 77, 96, null);
+            g2d.drawImage(ImageHelper.getTurretLabelImage(), 297, 248, 34, 11, null);
         }
 
         if (tank2 == null) {
@@ -87,7 +88,7 @@ public class PrintVehicle implements Printable {
         } else {
             g2d.drawImage(ImageHelper.getRecordSheet(tank2, false), 18, 18 + secondPageMargin, 558, 368, null);
             if (tank2.getOInternal(Tank.LOC_TURRET) > 0) {
-                g2d.drawImage(ImageHelper.getTurretImage(), 18, 18 + secondPageMargin, 558, 368, null);
+                g2d.drawImage(ImageHelper.getTurretImage(), 441, 173 + secondPageMargin, 77, 96, null);
             }
         }
 
