@@ -107,9 +107,6 @@ public class ArmorTab extends ITab implements ActionListener {
             UnitUtil.removeISorArmorMounts(unit, false);
             unit.setArmorType(getArmorType());
             createArmorMounts();
-            if (refresh != null) {
-                refresh.refreshAll();
-            }
         }
         if (arg0.getSource().equals(allocateArmorButton)) {
             armor.allocateArmor((Double) armorTonnage.getValue());
@@ -131,11 +128,11 @@ public class ArmorTab extends ITab implements ActionListener {
                 unit.setArmorTechLevel(unit.getTechLevel());
             }
             createArmorMounts();
-            if (refresh != null) {
-                refresh.refreshAll();
-            }
         }
         addAllListeners();
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
     }
 
     public JPanel ButtonPanel() {
@@ -224,6 +221,7 @@ public class ArmorTab extends ITab implements ActionListener {
     }
 
     private void createSystemList() {
+        int selectedIndex = armorCombo.getSelectedIndex();
         armorCombo.removeAllItems();
         int armorCount = armorNames.length;
 
@@ -248,6 +246,11 @@ public class ArmorTab extends ITab implements ActionListener {
             armorCombo.addItem(armorNames[index]);
         }
 
+        if (armorCount <= selectedIndex) {
+            armorCombo.setSelectedIndex(0);
+        } else {
+            armorCombo.setSelectedIndex(selectedIndex);
+        }
     }
 
     private int getArmorType() {

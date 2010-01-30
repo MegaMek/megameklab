@@ -122,8 +122,6 @@ public class UnitPrintManager {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         UnitViewerDialog viewer = new UnitViewerDialog(parent, unitLoadingDialog, unitType);
 
-        viewer.run();
-
         Entity entity = null;
 
         entity = viewer.getSelectedEntity();
@@ -288,8 +286,6 @@ public class UnitPrintManager {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
         UnitViewerDialog viewer = new UnitViewerDialog(parent, unitLoadingDialog, -1);
-
-        viewer.run();
 
         viewer.setVisible(false);
         Entity entity = viewer.getSelectedEntity();

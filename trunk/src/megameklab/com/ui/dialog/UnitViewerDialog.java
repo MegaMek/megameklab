@@ -280,10 +280,6 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         bCancel.setMnemonic('c');
         bSelect.setMnemonic('s');
 
-    }
-
-    public void run() {
-
         // Loading mechs can take a while, so it will have its own thread.
         // This prevents the UI from freezing, and allows the
         // "Please wait..." dialog to behave properly on various Java VMs.
@@ -305,8 +301,12 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         }
 
         // pPreview.setVisible(true);
+        setLocationRelativeTo(null);
+        setModal(true);
         setVisible(true);
+        pack();
         mechList.requestFocus();
+
     }
 
     private void buildSouthParams(boolean showAdvanced) {
@@ -554,13 +554,6 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
                 break;
             }
         }
-    }
-
-    @Override
-    public void setVisible(boolean show) {
-        setLocationRelativeTo(null);
-        super.setVisible(show);
-        pack();
     }
 
     private String formatMech(MechSummary ms) {

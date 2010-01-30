@@ -18,8 +18,6 @@ package megameklab.com.ui.Mek.views;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -33,7 +31,6 @@ import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.loaders.MtfFile;
 import megameklab.com.util.IView;
-import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.Mech.DropTargetCriticalList;
 
@@ -58,14 +55,11 @@ public class CriticalView extends IView {
 
     private boolean showEmpty = false;
 
-    private Image background;
-
     public CriticalView(Mech unit, boolean showEmpty, RefreshListener refresh) {
         super(unit);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
 
-        background = ImageHelper.getFluffImage("diamondplate.png");
         JPanel mainPanel = new JPanel();
 
         mainPanel.setOpaque(false);
@@ -235,20 +229,4 @@ public class CriticalView extends IView {
         }
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        if (background != null) {
-            int imageWidth = background.getWidth(this);
-            int imageHeight = background.getHeight(this);
-
-            for (int height = 0; height <= getHeight(); height += imageHeight) {
-                for (int width = 0; width <= getWidth(); width += imageWidth) {
-                    g.drawImage(background, width, height, imageWidth, imageHeight, this);
-                }
-            }
-        }
-
-    }
 }

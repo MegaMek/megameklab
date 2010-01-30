@@ -24,10 +24,12 @@ import java.io.PrintStream;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.0.0.16-dev-120";
+    public static final String VERSION = "0.0.0.16-dev-121";
 
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
+
+        new File("./data/mechfiles/units.cache").delete();
 
         boolean logs = true;
         boolean vehicle = false;
