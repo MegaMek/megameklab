@@ -33,6 +33,7 @@ V 0.0.0.16 Dev
 + Added ImagePain to Structure tab.
 + Bug: Armor combo box not selecting correct armor.
 + Bug: Refresh Listner getting added twice in armor tab.
++ New Image files added for turrets.
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads
