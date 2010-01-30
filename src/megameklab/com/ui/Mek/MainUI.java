@@ -326,8 +326,6 @@ public class MainUI extends JFrame implements RefreshListener {
         unitLoadingDialog.setVisible(true);
         UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.MEK);
 
-        viewer.run();
-
         if (!(viewer.getSelectedEntity() instanceof Mech)) {
             return;
         }

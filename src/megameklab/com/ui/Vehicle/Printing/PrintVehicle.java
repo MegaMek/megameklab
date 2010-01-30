@@ -83,11 +83,11 @@ public class PrintVehicle implements Printable {
         }
 
         if (tank2 == null) {
-            g2d.drawImage(ImageHelper.getTableImage(tank), 18, 18 + secondPageMargin, 558, 366, null);
+            g2d.drawImage(ImageHelper.getTableImage(tank), 18, 18 + secondPageMargin, 558, 368, null);
         } else {
-            g2d.drawImage(ImageHelper.getRecordSheet(tank2, false), 18, 18 + secondPageMargin, 558, 366, null);
+            g2d.drawImage(ImageHelper.getRecordSheet(tank2, false), 18, 18 + secondPageMargin, 558, 368, null);
             if (tank2.getOInternal(Tank.LOC_TURRET) > 0) {
-                g2d.drawImage(ImageHelper.getTurretImage(), 18, 18 + secondPageMargin, 558, 366, null);
+                g2d.drawImage(ImageHelper.getTurretImage(), 18, 18 + secondPageMargin, 558, 368, null);
             }
         }
 
@@ -752,7 +752,7 @@ public class PrintVehicle implements Printable {
             { 451.5f, 241 };
         float[] pipShift = new float[]
             { 6f, 6f };
-        float fontSize = 8.0f;
+        // float fontSize = 8.0f;
 
         if (secondImage) {
             topColumn[1] += secondPageMargin;
@@ -778,7 +778,7 @@ public class PrintVehicle implements Printable {
                 bottomColumn[0] += pipShift[0];
             }
         }
-        printArmorPoints(g2d, pipPlotter, totalArmor, fontSize);
+        printArmorPoints(g2d, pipPlotter, totalArmor);// , fontSize);
     }
 
     private void printExtraTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {

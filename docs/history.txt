@@ -30,6 +30,9 @@ V 0.0.0.16 Dev
 + Added new Proto Images for smaller printing.
 + Added Accelerator to menu items.
 + Show launcher size in ammo crits
++ Added ImagePain to Structure tab.
++ Bug: Armor combo box not selecting correct armor.
++ Bug: Refresh Listner getting added twice in armor tab.
 
 V 0.0.0.15 (09/12/2009 20:06 UTC-8)
 + Updated CASE text for Clan Quads

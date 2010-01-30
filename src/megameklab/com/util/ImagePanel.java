@@ -30,16 +30,33 @@ public class ImagePanel extends JPanel {
      */
     private static final long serialVersionUID = 1885941921775619243L;
     private Image background;
+    Entity unit;
+    String path;
 
     public ImagePanel(Entity unit, String path) {
+        this.path = path;
+        this.unit = unit;
         background = ImageHelper.getFluffImage(unit, path);
+    }
+
+    public void updateUnit(Entity unit) {
+        this.unit = unit;
+    }
+
+    public void refresh() {
+        background = ImageHelper.getFluffImage(unit, path);
+        this.setBounds(0, 0, background.getWidth(this), background.getHeight(this));
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         if (background != null) {
-            // g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+            int imageWidth = Math.min(getWidth(), background.getWidth(this));
+            int imageHeight = Math.min(getHeight(), background.getHeight(this));
+
+            g.drawImage(background, 0, 0, imageWidth, imageHeight, this);
         }
 
     }

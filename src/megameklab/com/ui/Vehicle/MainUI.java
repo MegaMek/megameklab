@@ -314,8 +314,6 @@ public class MainUI extends JFrame implements RefreshListener {
         unitLoadingDialog.setVisible(true);
         UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.TANK);
 
-        viewer.run();
-
         if (!(viewer.getSelectedEntity() instanceof Tank)) {
             return;
         }
