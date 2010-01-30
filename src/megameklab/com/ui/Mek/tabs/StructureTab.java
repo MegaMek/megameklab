@@ -49,6 +49,8 @@ import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megameklab.com.ui.Mek.views.CriticalView;
 import megameklab.com.util.ITab;
+import megameklab.com.util.ImageHelper;
+import megameklab.com.util.ImagePanel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
@@ -110,6 +112,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     JPanel masterPanel;
 
     private CriticalView critView = null;
+    private ImagePanel unitImage = null;
 
     public StructureTab(Mech unit) {
         JScrollPane scroll = new JScrollPane();
@@ -122,8 +125,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         // this.add(enginePanel());
+        JPanel scrollPanel = new JPanel();
+        scrollPanel.setLayout(new BoxLayout(scrollPanel, BoxLayout.X_AXIS));
         critView = new CriticalView(getMech(), false, refresh);
-        scroll.setViewportView(critView);
+        unitImage = new ImagePanel(getMech(), ImageHelper.imageMech);
+        scrollPanel.add(critView);
+        scrollPanel.add(unitImage);
+
+        scroll.setViewportView(scrollPanel);
 
         this.add(splitter);
         refresh();
@@ -345,6 +354,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         critView.updateUnit(getMech());
         critView.refresh();
+
+        unitImage.updateUnit(getMech());
+        unitImage.refresh();
 
         addAllActionListeners();
 
