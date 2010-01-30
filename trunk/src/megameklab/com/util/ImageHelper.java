@@ -116,6 +116,15 @@ public class ImageHelper {
         return table;
     }
 
+    public static Image getTurretLabelImage() {
+        Image table = null;
+        String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
+
+        table = new ImageIcon(path + "twvee-turretlabel.png").getImage();
+
+        return table;
+    }
+
     public static Image getGyroPipImage() {
         String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
         Image image = new ImageIcon(path + "gyropip.png").getImage();
