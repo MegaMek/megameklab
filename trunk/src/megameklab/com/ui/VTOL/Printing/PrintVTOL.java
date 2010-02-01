@@ -30,6 +30,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
+import megamek.common.EquipmentType;
 import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -385,6 +386,14 @@ public class PrintVTOL implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
+        if ((vtol.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
+            font = UnitUtil.deriveFont(true, 11.0f);
+            g2d.setFont(font);
+            g2d.drawString(EquipmentType.getArmorTypeName(vtol2.getArmorType()), 463, 48);
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.setFont(font);
+        }
+
         g2d.drawString("(" + Integer.toString(vtol.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
 
         g2d.drawString("(" + Integer.toString(vtol.getArmor(Tank.LOC_RIGHT)) + ")", 535, 253);
@@ -396,6 +405,14 @@ public class PrintVTOL implements Printable {
         g2d.drawString("(" + Integer.toString(vtol.getArmor(VTOL.LOC_ROTOR)) + ")", 535, 140);
 
         if (vtol2 != null) {
+            if ((vtol.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
+                font = UnitUtil.deriveFont(true, 11.0f);
+                g2d.setFont(font);
+                g2d.drawString(EquipmentType.getArmorTypeName(vtol2.getArmorType()), 463, 48 + secondPageMargin);
+                font = UnitUtil.deriveFont(true, 9.0f);
+                g2d.setFont(font);
+            }
+
             g2d.drawString("(" + Integer.toString(vtol2.getArmor(Tank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
 
             g2d.drawString("(" + Integer.toString(vtol2.getArmor(Tank.LOC_RIGHT)) + ")", 535, 253 + secondPageMargin);
