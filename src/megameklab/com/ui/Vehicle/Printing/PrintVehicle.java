@@ -31,6 +31,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
+import megamek.common.EquipmentType;
 import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -401,6 +402,14 @@ public class PrintVehicle implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
+
+        if ((tank.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (tank.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (tank.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (tank.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
+            font = UnitUtil.deriveFont(true, 11.0f);
+            g2d.setFont(font);
+            g2d.drawString(EquipmentType.getArmorTypeName(tank.getArmorType()), 463, 48);
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.setFont(font);
+        }
         g2d.drawString("(" + Integer.toString(tank.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
 
         g2d.drawString("(" + Integer.toString(tank.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230);
@@ -414,6 +423,13 @@ public class PrintVehicle implements Printable {
         }
 
         if (tank2 != null) {
+            if ((tank2.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (tank2.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (tank2.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (tank2.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
+                font = UnitUtil.deriveFont(true, 11.0f);
+                g2d.setFont(font);
+                g2d.drawString(EquipmentType.getArmorTypeName(tank2.getArmorType()), 463, 48 + secondPageMargin);
+                font = UnitUtil.deriveFont(true, 9.0f);
+                g2d.setFont(font);
+            }
             g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
 
             g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230 + secondPageMargin);
