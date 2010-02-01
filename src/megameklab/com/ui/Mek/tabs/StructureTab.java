@@ -79,6 +79,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         { ENGINESTANDARD, ENGINEXL, ENGINEFUELCELL, ENGINEXXL };
     String[] clanIndustrialEngineTypes =
         { ENGINESTANDARD, ENGINEICE, ENGINEFUELCELL, ENGINEFISSION };
+    private int clanEngineFlag = 0;
 
     JComboBox engineType = new JComboBox(isEngineTypes);
     JComboBox walkMP;
@@ -434,11 +435,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
                         getMech().clearEngineCrits();
-                        if (getMech().isClan()) {
-                            getMech().setEngine(new Engine(rating, convertEngineType(engineType.getSelectedItem().toString()), Engine.CLAN_ENGINE));
-                        } else {
-                            getMech().setEngine(new Engine(rating, convertEngineType(engineType.getSelectedItem().toString()), 0));
-                        }
+                        getMech().setEngine(new Engine(rating, convertEngineType(engineType.getSelectedItem().toString()), clanEngineFlag));
                         getMech().addEngineCrits();
                         int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
                         UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
@@ -758,7 +755,70 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private int convertEngineType(int engineType) {
 
-        if (getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
+        if (getMech().isMixedTech()) {
+            // Clan Chassis with Clan Engine
+            if (getMech().isClan() && getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
+                switch (engineType) {
+                    case Engine.NORMAL_ENGINE:
+                        return 0;
+                    case Engine.XL_ENGINE:
+                        return 2;
+                    case Engine.FUEL_CELL:
+                        return 7;
+                    case Engine.XXL_ENGINE:
+                        return 9;
+                }
+            }// Clan Chassis with IS Engine
+            else if (getMech().isClan() && !getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
+                switch (engineType) {
+                    case Engine.NORMAL_ENGINE:
+                        return 1;
+                    case Engine.XL_ENGINE:
+                        return 3;
+                    case Engine.LIGHT_ENGINE:
+                        return 4;
+                    case Engine.COMPACT_ENGINE:
+                        return 5;
+                    case Engine.FISSION:
+                        return 6;
+                    case Engine.FUEL_CELL:
+                        return 8;
+                    case Engine.XXL_ENGINE:
+                        return 10;
+                }
+            }// IS Chassis with Clan Engine
+            else if (!getMech().isClan() && getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
+                switch (engineType) {
+                    case Engine.NORMAL_ENGINE:
+                        return 1;
+                    case Engine.XL_ENGINE:
+                        return 3;
+                    case Engine.FUEL_CELL:
+                        return 8;
+                    case Engine.XXL_ENGINE:
+                        return 10;
+                }
+            }// IS Chassis with IS Engine
+            else {
+                switch (engineType) {
+                    case Engine.NORMAL_ENGINE:
+                        return 0;
+                    case Engine.XL_ENGINE:
+                        return 2;
+                    case Engine.LIGHT_ENGINE:
+                        return 4;
+                    case Engine.COMPACT_ENGINE:
+                        return 5;
+                    case Engine.FISSION:
+                        return 6;
+                    case Engine.FUEL_CELL:
+                        return 7;
+                    case Engine.XXL_ENGINE:
+                        return 9;
+                }
+
+            }
+        } else if (getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
             if (getMech().isIndustrial() || getMech().isPrimitive()) {
                 switch (engineType) {
                     case Engine.NORMAL_ENGINE:
@@ -818,6 +878,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     }
 
     private int convertEngineType(String engineType) {
+        if (engineType.startsWith("(")) {
+            if (engineType.startsWith("(Clan")) {
+                clanEngineFlag = Engine.CLAN_ENGINE;
+            } else {
+                clanEngineFlag = 0;
+            }
+
+            engineType = engineType.substring(engineType.lastIndexOf(")") + 1).trim();
+        }
+
         if (engineType.equals(ENGINESTANDARD)) {
             return Engine.NORMAL_ENGINE;
         }
@@ -953,69 +1023,100 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private void createEngineList(boolean isClan) {
 
         int engineCount = 1;
-        String[] engineList;
+        String[] engineList = new String[0];
 
         engineType.removeAllItems();
 
-        if (isClan) {
-            if (getMech().isIndustrial() || getMech().isPrimitive()) {
-                engineList = clanIndustrialEngineTypes;
-                engineCount = clanIndustrialEngineTypes.length;
+        if (getMech().isMixedTech()) {
+            if (isClan) {
+                engineCount = clanEngineTypes.length + isEngineTypes.length;
+                engineList = new String[engineCount];
+                int clanPos = 0;
+                int enginePos = 0;
+                for (String isEngine : isEngineTypes) {
+                    if (clanEngineTypes[clanPos].equals(isEngine)) {
+                        engineList[enginePos] = clanEngineTypes[clanPos];
+                        clanPos++;
+                        enginePos++;
+                    }
+                    engineList[enginePos] = String.format("(IS) %1$s", isEngine);
+                    enginePos++;
+                }
             } else {
-                engineList = clanEngineTypes;
-                switch (getMech().getTechLevel()) {
-                    case TechConstants.T_INTRO_BOXSET:
-                        engineCount = 1;
-                        break;
-                    case TechConstants.T_CLAN_TW:
-                    case TechConstants.T_IS_TW_NON_BOX:
-                        engineCount = 2;
-                        break;
-                    case TechConstants.T_CLAN_ADVANCED:
-                    case TechConstants.T_IS_ADVANCED:
-                        engineCount = 3;
-                        break;
-                    case TechConstants.T_CLAN_EXPERIMENTAL:
-                    case TechConstants.T_IS_EXPERIMENTAL:
-                        engineCount = 4;
-                        break;
-                    case TechConstants.T_CLAN_UNOFFICIAL:
-                    case TechConstants.T_IS_UNOFFICIAL:
-                        engineCount = 4;
-                        break;
+                engineCount = clanEngineTypes.length + isEngineTypes.length;
+                engineList = new String[engineCount];
+                int clanPos = 0;
+                int enginePos = 0;
+                for (String isEngine : isEngineTypes) {
+                    engineList[enginePos] = isEngine;
+                    enginePos++;
+                    if (clanEngineTypes[clanPos].equals(isEngine)) {
+                        engineList[enginePos] = String.format("(Clan) %1$s", clanEngineTypes[clanPos]);
+                        clanPos++;
+                        enginePos++;
+                    }
                 }
             }
         } else {
-
-            if (getMech().isIndustrial() || getMech().isPrimitive()) {
-                engineList = isIndustrialEngineTypes;
-                engineCount = isIndustrialEngineTypes.length;
+            if (isClan) {
+                if (getMech().isIndustrial() || getMech().isPrimitive()) {
+                    engineList = clanIndustrialEngineTypes;
+                    engineCount = clanIndustrialEngineTypes.length;
+                } else {
+                    engineList = clanEngineTypes;
+                    switch (getMech().getTechLevel()) {
+                        case TechConstants.T_INTRO_BOXSET:
+                            engineCount = 1;
+                            break;
+                        case TechConstants.T_CLAN_TW:
+                        case TechConstants.T_IS_TW_NON_BOX:
+                            engineCount = 2;
+                            break;
+                        case TechConstants.T_CLAN_ADVANCED:
+                        case TechConstants.T_IS_ADVANCED:
+                            engineCount = 3;
+                            break;
+                        case TechConstants.T_CLAN_EXPERIMENTAL:
+                        case TechConstants.T_IS_EXPERIMENTAL:
+                            engineCount = 4;
+                            break;
+                        case TechConstants.T_CLAN_UNOFFICIAL:
+                        case TechConstants.T_IS_UNOFFICIAL:
+                            engineCount = 4;
+                            break;
+                    }
+                }
             } else {
-                engineList = isEngineTypes;
-                switch (getMech().getTechLevel()) {
-                    case TechConstants.T_INTRO_BOXSET:
-                        engineCount = 1;
-                        break;
-                    case TechConstants.T_CLAN_TW:
-                    case TechConstants.T_IS_TW_NON_BOX:
-                        engineCount = 4;
-                        break;
-                    case TechConstants.T_CLAN_ADVANCED:
-                    case TechConstants.T_IS_ADVANCED:
-                        engineCount = 6;
-                        break;
-                    case TechConstants.T_CLAN_EXPERIMENTAL:
-                    case TechConstants.T_IS_EXPERIMENTAL:
-                        engineCount = 7;
-                        break;
-                    case TechConstants.T_CLAN_UNOFFICIAL:
-                    case TechConstants.T_IS_UNOFFICIAL:
-                        engineCount = 7;
-                        break;
+
+                if (getMech().isIndustrial() || getMech().isPrimitive()) {
+                    engineList = isIndustrialEngineTypes;
+                    engineCount = isIndustrialEngineTypes.length;
+                } else {
+                    engineList = isEngineTypes;
+                    switch (getMech().getTechLevel()) {
+                        case TechConstants.T_INTRO_BOXSET:
+                            engineCount = 1;
+                            break;
+                        case TechConstants.T_CLAN_TW:
+                        case TechConstants.T_IS_TW_NON_BOX:
+                            engineCount = 4;
+                            break;
+                        case TechConstants.T_CLAN_ADVANCED:
+                        case TechConstants.T_IS_ADVANCED:
+                            engineCount = 6;
+                            break;
+                        case TechConstants.T_CLAN_EXPERIMENTAL:
+                        case TechConstants.T_IS_EXPERIMENTAL:
+                            engineCount = 7;
+                            break;
+                        case TechConstants.T_CLAN_UNOFFICIAL:
+                        case TechConstants.T_IS_UNOFFICIAL:
+                            engineCount = 7;
+                            break;
+                    }
                 }
             }
         }
-
         for (int index = 0; index < engineCount; index++) {
             engineType.addItem(engineList[index]);
         }

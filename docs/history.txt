@@ -1,6 +1,10 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.16 Dev 
+V 0.0.0.17 Dev
++ Added Special Armor Type for Tanks and VTOL to RS
++ Added the ability to select off engine types for Mixed Tech Units.
+
+V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles
 + RFE: Allow single units to be printed when printing from MULs
 + Bug: Vehicles with turrets printing in poor quality
