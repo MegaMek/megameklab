@@ -3,6 +3,7 @@ VERSION HISTORY:
 V 0.0.0.17 Dev
 + Added Special Armor Type for Tanks and VTOL to RS
 + Added the ability to select off engine types for Mixed Tech Units.
++ Added code to check linking when equipment is added or removed.
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles

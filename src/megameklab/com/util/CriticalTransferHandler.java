@@ -28,7 +28,9 @@ import javax.swing.TransferHandler;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
+import megamek.common.MechFileParser;
 import megamek.common.Mounted;
+import megamek.common.loaders.EntityLoadingException;
 
 public class CriticalTransferHandler extends TransferHandler {
 
@@ -106,6 +108,16 @@ public class CriticalTransferHandler extends TransferHandler {
     private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
 
         UnitUtil.changeMountStatus(unit, eq, location, secondaryLocation, rear);
+
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(unit);
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
 
         if (refresh != null) {
             refresh.refreshAll();

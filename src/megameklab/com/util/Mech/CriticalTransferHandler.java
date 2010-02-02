@@ -31,7 +31,9 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
+import megamek.common.MechFileParser;
 import megamek.common.Mounted;
+import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -67,20 +69,21 @@ public class CriticalTransferHandler extends TransferHandler {
                 Mounted eq = UnitUtil.getMounted(unit, mountName);
 
                 /*
-                 * commented out for now, because quads can mount stuff like spot welders
-                 * TODO: find a better way to do this
-                if (eq.getType() instanceof MiscType && (eq.getType().hasFlag(MiscType.F_CLUB) || eq.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
-                    if (unit instanceof QuadMech) {
-                        JOptionPane.showMessageDialog(null, "Quads Cannot use Physcial Weapons!", "Not Physicals For Quads", JOptionPane.INFORMATION_MESSAGE);
-                        return false;
-                    }
-
-                    if (location != Mech.LOC_RARM && location != Mech.LOC_LARM) {
-                        JOptionPane.showMessageDialog(null, "Physical Weapons can only go in the arms!", "Bad Location", JOptionPane.INFORMATION_MESSAGE);
-                        return false;
-                    }
-                }
-                */
+                 * commented out for now, because quads can mount stuff like
+                 * spot welders TODO: find a better way to do this if
+                 * (eq.getType() instanceof MiscType &&
+                 * (eq.getType().hasFlag(MiscType.F_CLUB) ||
+                 * eq.getType().hasFlag(MiscType.F_HAND_WEAPON))) { if (unit
+                 * instanceof QuadMech) { JOptionPane.showMessageDialog(null,
+                 * "Quads Cannot use Physcial Weapons!",
+                 * "Not Physicals For Quads", JOptionPane.INFORMATION_MESSAGE);
+                 * return false; }
+                 * 
+                 * if (location != Mech.LOC_RARM && location != Mech.LOC_LARM) {
+                 * JOptionPane.showMessageDialog(null,
+                 * "Physical Weapons can only go in the arms!", "Bad Location",
+                 * JOptionPane.INFORMATION_MESSAGE); return false; } }
+                 */
 
                 int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
                 if ((eq.getType().isSpreadable() || eq.isSplitable()) && (totalCrits > 1)) {
@@ -91,7 +94,8 @@ public class CriticalTransferHandler extends TransferHandler {
 
                     if (eq.getType().getCriticals(unit) > unit.getEmptyCriticals(location)) {
                         if (location == Mech.LOC_RT) {
-                            String[] locations = { "Center Torso", "Right Leg", "Right Arm" };
+                            String[] locations =
+                                { "Center Torso", "Right Leg", "Right Arm" };
                             JComboBox combo = new JComboBox(locations);
                             JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 
@@ -114,7 +118,8 @@ public class CriticalTransferHandler extends TransferHandler {
                             }
 
                         } else if (location == Mech.LOC_LT) {
-                            String[] locations = { "Center Torso", "Left Leg", "Leg Arm" };
+                            String[] locations =
+                                { "Center Torso", "Left Leg", "Leg Arm" };
                             JComboBox combo = new JComboBox(locations);
                             JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 
@@ -137,7 +142,8 @@ public class CriticalTransferHandler extends TransferHandler {
                             }
 
                         } else if (location == Mech.LOC_CT) {
-                            String[] locations = { "Left Torso", "Right Torso" };
+                            String[] locations =
+                                { "Left Torso", "Right Torso" };
                             JComboBox combo = new JComboBox(locations);
                             JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 
@@ -218,6 +224,16 @@ public class CriticalTransferHandler extends TransferHandler {
     private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
 
         UnitUtil.changeMountStatus(unit, eq, location, secondaryLocation, rear);
+
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(unit);
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
 
         if (refresh != null) {
             refresh.refreshAll();

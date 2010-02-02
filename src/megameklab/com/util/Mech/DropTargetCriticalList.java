@@ -33,8 +33,10 @@ import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.Mech;
+import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
+import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -277,12 +279,24 @@ public class DropTargetCriticalList extends JList implements MouseListener {
 
         if (UnitUtil.isStructure(mounted.getType())) {
             UnitUtil.removeISorArmorMounts(unit, true);
-        }if (UnitUtil.isArmor(mounted.getType())) {
+        }
+        if (UnitUtil.isArmor(mounted.getType())) {
             UnitUtil.removeISorArmorMounts(unit, false);
         } else {
             UnitUtil.removeCriticals(unit, mounted);
             UnitUtil.removeMounted(unit, mounted);
         }
+
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(unit);
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
         if (refresh != null) {
             refresh.refreshAll();
         }
@@ -298,6 +312,16 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         }
 
         UnitUtil.removeCriticals(unit, mounted);
+
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(unit);
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
             changeMountStatus(mounted, Entity.LOC_NONE, false);
@@ -367,6 +391,17 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                 UnitUtil.updateCritsArmoredStatus(unit, cs, getCritLocation());
             }
         }
+
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(unit);
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
         if (refresh != null) {
             refresh.refreshAll();
         }

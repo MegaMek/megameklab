@@ -31,7 +31,9 @@ import javax.swing.JPopupMenu;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
+import megamek.common.MechFileParser;
 import megamek.common.Mounted;
+import megamek.common.loaders.EntityLoadingException;
 
 public class DropTargetCriticalList extends JList implements MouseListener {
 
@@ -134,7 +136,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     popup.add(info);
                 }
 
-                if (UnitUtil.isArmorable(cs) && (UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL || UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_UNOFFICAL)) {
+                if (UnitUtil.isArmorable(cs) && ((UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL) || (UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_UNOFFICAL))) {
                     popup.addSeparator();
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");
@@ -173,7 +175,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         CriticalSlot crit = getCrit();
         Mounted mount = null;
         try {
-            if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+            if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                 if (crit.getMount() != null) {
                     return crit.getMount();
                 }
@@ -190,7 +192,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         int slot = getSelectedIndex();
         int location = getCritLocation();
         CriticalSlot crit = null;
-        if (slot >= 0 && slot < unit.getNumberOfCriticals(location)) {
+        if ((slot >= 0) && (slot < unit.getNumberOfCriticals(location))) {
             crit = unit.getCritical(location, slot);
         }
 
@@ -205,7 +207,17 @@ public class DropTargetCriticalList extends JList implements MouseListener {
             return;
         }
 
-        if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(unit);
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
+        if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
             changeMountStatus(mounted, Entity.LOC_NONE, false);
         }
 
@@ -234,6 +246,17 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                 UnitUtil.updateCritsArmoredStatus(unit, cs, getCritLocation());
             }
         }
+
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(unit);
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
         if (refresh != null) {
             refresh.refreshAll();
         }
@@ -248,6 +271,15 @@ public class DropTargetCriticalList extends JList implements MouseListener {
 
         UnitUtil.removeMounted(unit, mounted);
 
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(unit);
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
         if (refresh != null) {
             refresh.refreshAll();
         }
