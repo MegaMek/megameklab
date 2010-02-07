@@ -878,14 +878,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     }
 
     private int convertEngineType(String engineType) {
-        if (engineType.startsWith("(")) {
-            if (engineType.startsWith("(Clan")) {
-                clanEngineFlag = Engine.CLAN_ENGINE;
-            } else {
-                clanEngineFlag = 0;
-            }
 
-            engineType = engineType.substring(engineType.lastIndexOf(")") + 1).trim();
+        if (getMech().isMixedTech()) {
+            if (engineType.startsWith("(")) {
+                if (engineType.startsWith("(Clan")) {
+                    clanEngineFlag = Engine.CLAN_ENGINE;
+                } else {
+                    clanEngineFlag = 0;
+                }
+
+                engineType = engineType.substring(engineType.lastIndexOf(")") + 1).trim();
+            } else {
+                if (getMech().isClan()) {
+                    clanEngineFlag = Engine.CLAN_ENGINE;
+                } else {
+                    clanEngineFlag = 0;
+                }
+            }
         }
 
         if (engineType.equals(ENGINESTANDARD)) {
@@ -1059,6 +1068,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             }
         } else {
             if (isClan) {
+                clanEngineFlag = Engine.CLAN_ENGINE;
                 if (getMech().isIndustrial() || getMech().isPrimitive()) {
                     engineList = clanIndustrialEngineTypes;
                     engineCount = clanIndustrialEngineTypes.length;
@@ -1087,7 +1097,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
                 }
             } else {
-
+                clanEngineFlag = 0;
                 if (getMech().isIndustrial() || getMech().isPrimitive()) {
                     engineList = isIndustrialEngineTypes;
                     engineCount = isIndustrialEngineTypes.length;
