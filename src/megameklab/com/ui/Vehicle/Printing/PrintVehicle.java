@@ -764,9 +764,9 @@ public class PrintVehicle implements Printable {
         }
 
         float[] topColumn = new float[]
-            { 458f, 234 };
+            { 458f, 233f };
         float[] bottomColumn = new float[]
-            { 451.5f, 241 };
+            { 451.5f, 240f };
         float[] pipShift = new float[]
             { 6f, 6f };
         // float fontSize = 8.0f;
@@ -805,9 +805,9 @@ public class PrintVehicle implements Printable {
         }
 
         float[] topColumn = new float[]
-            { 456.5f, 233 };
+            { 456.5f, 232f };
         float[] bottomColumn = new float[]
-            { 453.5f, 239 };
+            { 453.5f, 238f };
         float[] pipShift = new float[]
             { 4.5f, 4.5f };
         float fontSize = 5.5f;
@@ -841,7 +841,7 @@ public class PrintVehicle implements Printable {
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         float[] topColumn = new float[]
-            { 418, 93 };
+            { 418.5f, 92.5f };
         float[] pipShift = new float[]
             { 7, 7 };
 
@@ -914,12 +914,13 @@ public class PrintVehicle implements Printable {
             }
 
         }
+        totalArmor = 90;
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         float[] topColumn = new float[]
-            { 530.5f, 93 };
+            { 530f, 92 };
         float[] pipShift = new float[]
             { 7, 7 };
 
@@ -950,12 +951,17 @@ public class PrintVehicle implements Printable {
                 case 52:
                 case 70:
                 case 74:
-                case 78:
-                case 82:
+                    // case 78:
                 case 85:
+                case 82:
                 case 88:
                     topColumn[1] += pipShift[1];
                     pipShift[0] *= -1;
+                    break;
+                case 78:
+                    topColumn[1] += pipShift[1];
+                    topColumn[0] += 1.5f;
+                    pipShift[0] *= -.9f;
                     break;
                 case 43:
                     topColumn[1] += pipShift[1];
@@ -987,6 +993,7 @@ public class PrintVehicle implements Printable {
                     break;
             }
         }
+        totalArmor = 90;
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
@@ -1104,12 +1111,12 @@ public class PrintVehicle implements Printable {
     }
 
     private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {
-        printArmorPoints(g2d, pipPoints, totalArmor, 9.0f);
+        printArmorPoints(g2d, pipPoints, totalArmor, 8.0f);
     }
 
     private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, float fontSize) {
         pipPoints.trimToSize();
-        float pipSpace = pipPoints.size() / totalArmor;
+        float pipSpace = 1;// pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
             ImageHelper.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
