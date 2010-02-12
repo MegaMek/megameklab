@@ -1841,7 +1841,10 @@ public class ImageHelper {
             }
         }
 
-        g2d.drawString("Myomer Booster", 115, 155 +(int)offset);
+        if (proto.hasMyomerBooster()) {
+            g2d.drawString("Protomech Myomer Booster", 115, 155 + (int) offset);
+        }
+
         ImageHelper.printProtoAmmo(proto, g2d, (int) offset);
     }
 
