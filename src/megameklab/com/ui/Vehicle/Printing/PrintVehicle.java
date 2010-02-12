@@ -870,12 +870,20 @@ public class PrintVehicle implements Printable {
                 case 52:
                 case 70:
                 case 74:
-                case 78:
-                case 82:
                 case 85:
                 case 88:
                     topColumn[1] += pipShift[1];
                     pipShift[0] *= -1;
+                    break;
+                case 78:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] *= -1;
+                    topColumn[0] -= 1.3;
+                    break;
+                case 82:
+                    topColumn[1] += pipShift[1];
+                    pipShift[0] *= -1;
+                    topColumn[0] += 1.3;
                     break;
                 case 43:
                     topColumn[1] += pipShift[1];
@@ -907,6 +915,11 @@ public class PrintVehicle implements Printable {
                     topColumn[1] += pipShift[1];
                     pipShift[0] *= -1;
                     topColumn[0] -= pipShift[0] * .5;
+                    break;
+                case 79:
+                case 81:
+                case 87:
+                    topColumn[0] += pipShift[0] * .85;
                     break;
                 default:
                     topColumn[0] += pipShift[0];
@@ -986,6 +999,9 @@ public class PrintVehicle implements Printable {
                 case 66:
                     topColumn[1] += pipShift[1] * 1.25;
                     topColumn[0] += pipShift[0];
+                    break;
+                case 89:
+                    topColumn[0] -= pipShift[0] * .9;
                     break;
                 default:
                     topColumn[0] -= pipShift[0];

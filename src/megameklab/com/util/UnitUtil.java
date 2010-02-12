@@ -71,6 +71,8 @@ public class UnitUtil {
     public static String TRACKS = "Tracks";
     public static String TALONS = "Talons";
     public static String CHAMELEON = "Chameleon Light Polarization Field";
+    public static String PARTIALWING = "Partial Wing";
+    public static String JUMPBOOSTER = "Jump Booster";
 
     public static int TECH_INTRO = 0;
     public static int TECH_STANDARD = 1;
@@ -89,7 +91,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isSpreadEquipment(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_TRACKS) || eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_JUMP_BOOSTER) || eq.hasFlag(MiscType.F_PARTIAL_WING) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_TRACKS) || eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD));
     }
 
     /**
@@ -148,6 +150,14 @@ public class UnitUtil {
             return 0;
         }
 
+        if (eq.getName().equals(UnitUtil.PARTIALWING)) {
+            return 3;
+        }
+
+        if (eq.getName().equals(UnitUtil.JUMPBOOSTER)) {
+            return 2;
+        }
+
         if (UnitUtil.isSpreadEquipment(eq) || UnitUtil.isTSM(eq) || UnitUtil.isArmorOrStructure(eq)) {
             return 1;
         }
@@ -180,6 +190,14 @@ public class UnitUtil {
             EquipmentType.get(UnitUtil.TALONS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
             UnitUtil.removeCrits(mech, UnitUtil.TALONS);
             UnitUtil.removeMounts(mech, UnitUtil.TALONS);
+        } else if (mount.getName().equals(UnitUtil.PARTIALWING)) {
+            EquipmentType.get(UnitUtil.PARTIALWING).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+            UnitUtil.removeCrits(mech, UnitUtil.PARTIALWING);
+            UnitUtil.removeMounts(mech, UnitUtil.PARTIALWING);
+        } else if (mount.getName().equals(UnitUtil.JUMPBOOSTER)) {
+            EquipmentType.get(UnitUtil.JUMPBOOSTER).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+            UnitUtil.removeCrits(mech, UnitUtil.JUMPBOOSTER);
+            UnitUtil.removeMounts(mech, UnitUtil.JUMPBOOSTER);
         } else {
             UnitUtil.removeCriticals(mech, mount);
             mech.getEquipment().remove(mount);
@@ -261,6 +279,14 @@ public class UnitUtil {
             EquipmentType.get(UnitUtil.TALONS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
             UnitUtil.removeCrits(mech, UnitUtil.TALONS);
             UnitUtil.removeMounts(mech, UnitUtil.TALONS);
+        } else if (equipment.getName().equals(UnitUtil.PARTIALWING)) {
+            EquipmentType.get(UnitUtil.PARTIALWING).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+            UnitUtil.removeCrits(mech, UnitUtil.PARTIALWING);
+            UnitUtil.removeMounts(mech, UnitUtil.PARTIALWING);
+        } else if (equipment.getName().equals(UnitUtil.JUMPBOOSTER)) {
+            EquipmentType.get(UnitUtil.JUMPBOOSTER).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+            UnitUtil.removeCrits(mech, UnitUtil.JUMPBOOSTER);
+            UnitUtil.removeMounts(mech, UnitUtil.JUMPBOOSTER);
         } else {
             UnitUtil.removeCriticals(mech, equipment);
             mech.getEquipment().remove(equipment);
