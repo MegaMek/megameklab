@@ -28,6 +28,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -72,6 +73,8 @@ public class EquipmentView extends IView implements ActionListener {
     private String ADD_COMMAND = "ADD";
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
+
+    private int jumpBoosterMP = 0;
 
     public EquipmentView(Mech unit) {
         super(unit);
@@ -190,6 +193,10 @@ public class EquipmentView extends IView implements ActionListener {
         }
     }
 
+    public void setJumpBoosterMP(int mp) {
+        jumpBoosterMP = mp;
+    }
+
     public void refresh() {
         removeAllListeners();
         loadEquipmentCombo();
@@ -248,6 +255,8 @@ public class EquipmentView extends IView implements ActionListener {
                     createSpreadMounts(UnitUtil.PARTIALWING);
                 }
             } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.JUMPBOOSTER)) {
+                setJumpBoosterMP(Integer.parseInt(JOptionPane.showInputDialog(this, "How many Jump MP?")));
+                updateJumpMP();
                 if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
                     createSpreadMounts(UnitUtil.JUMPBOOSTER);
                 }
@@ -282,11 +291,15 @@ public class EquipmentView extends IView implements ActionListener {
             equipmentList.addCrit(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()));
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
 
+
             int startRow = equipmentTable.getSelectedRow();
             int count = equipmentTable.getSelectedRowCount();
 
             for (; count > 0; count--) {
                 if (startRow > -1) {
+                    if (((EquipmentType)equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).getName().equals(UnitUtil.JUMPBOOSTER)) {
+                        setJumpBoosterMP(0);
+                    }
                     equipmentList.removeMounted(startRow);
                     equipmentList.removeCrit(startRow);
                 }
@@ -329,10 +342,14 @@ public class EquipmentView extends IView implements ActionListener {
 
     private void updateJumpMP() {
         int mp = 0;
-        for (Mounted mount : unit.getEquipment()) {
-            if (mount.getType() instanceof MiscType) {
-                if (mount.getType().hasFlag(MiscType.F_JUMP_JET) || mount.getType().hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                    mp++;
+        if (jumpBoosterMP > 0) {
+            mp = jumpBoosterMP;
+        } else {
+            for (Mounted mount : unit.getEquipment()) {
+                if (mount.getType() instanceof MiscType) {
+                    if (mount.getType().hasFlag(MiscType.F_JUMP_JET)) {
+                        mp++;
+                    }
                 }
             }
         }
