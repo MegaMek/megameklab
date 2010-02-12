@@ -243,13 +243,16 @@ public class EquipmentView extends IView implements ActionListener {
                 if (!getMech().hasTracks()) {
                     createSpreadMounts(UnitUtil.TRACKS);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TALONS)) {
-                boolean hasTalons = false;
-                for (Mounted mounted : getMech().getMisc()) {
-                    if (mounted.getType().hasFlag(MiscType.F_TALON)) {
-                        hasTalons = true;
-                    }
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.PARTIALWING)) {
+                if (!getMech().hasWorkingMisc(UnitUtil.PARTIALWING)) {
+                    createSpreadMounts(UnitUtil.PARTIALWING);
                 }
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.JUMPBOOSTER)) {
+                if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
+                    createSpreadMounts(UnitUtil.JUMPBOOSTER);
+                }
+            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TALONS)) {
+                boolean hasTalons = getMech().hasWorkingMisc(MiscType.F_TALON);
                 if (!hasTalons) {
                     createSpreadMounts(UnitUtil.TALONS);
                 }
@@ -342,6 +345,7 @@ public class EquipmentView extends IView implements ActionListener {
 
     private void createSpreadMounts(String equip) {
         int crits = 0;
+        boolean isVariableTonange = false;
 
         crits = EquipmentType.get(equip).getCriticals(unit);
 
@@ -353,14 +357,22 @@ public class EquipmentView extends IView implements ActionListener {
         if (equip.equals(UnitUtil.ENVIROSEAL) && (crits > 1)) {
             tonnageAmount = EquipmentType.get(equip).getTonnage(unit);
             tonnageAmount /= 8;
+            isVariableTonange = true;
         }
         if ((equip.equals(UnitUtil.TRACKS) || equip.equals(UnitUtil.TALONS)) && (crits > 1)) {
             tonnageAmount = EquipmentType.get(equip).getTonnage(unit) / EquipmentType.get(equip).getCriticals(unit);
+            isVariableTonange = true;
+        }
+
+        if (equip.equals(UnitUtil.PARTIALWING) || equip.equals(UnitUtil.JUMPBOOSTER)) {
+            crits = 2;
+            tonnageAmount = EquipmentType.get(equip).getTonnage(unit) / 2;
+            isVariableTonange = true;
         }
 
         for (; crits > 0; crits--) {
             try {
-                if ((equip.equals(UnitUtil.ENVIROSEAL) || equip.equals(UnitUtil.TRACKS) || equip.equals(UnitUtil.TALONS)) && (crits > 1)) {
+                if (isVariableTonange && (crits > 1)) {
                     Mounted mount = new Mounted(unit, EquipmentType.get(equip));
                     mount.getType().setTonnage(tonnageAmount);
                     getMech().addEquipment(mount, Entity.LOC_NONE, false);
