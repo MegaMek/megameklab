@@ -914,7 +914,6 @@ public class PrintVehicle implements Printable {
             }
 
         }
-        totalArmor = 90;
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
@@ -993,7 +992,6 @@ public class PrintVehicle implements Printable {
                     break;
             }
         }
-        totalArmor = 90;
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
