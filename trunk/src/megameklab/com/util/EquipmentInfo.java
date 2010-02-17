@@ -15,6 +15,8 @@
  */
 package megameklab.com.util;
 
+import java.math.BigInteger;
+
 import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.MiscType;
@@ -42,6 +44,9 @@ public class EquipmentInfo {
     public boolean isWeapon = false;
     public boolean isMML = false;
     public boolean isATM = false;
+    public boolean hasArtemis = false;
+    public boolean hasApollo = false;
+    public boolean hasArtemisV = false;
 
     public int c3Level = 0;
 
@@ -58,7 +63,7 @@ public class EquipmentInfo {
 
     /**
      * Info for Aeros
-     *
+     * 
      * @param aero
      * @param mount
      */
@@ -120,7 +125,7 @@ public class EquipmentInfo {
 
     /**
      * Info for non Aero Entities.
-     *
+     * 
      * @param unit
      * @param mount
      */
@@ -171,10 +176,15 @@ public class EquipmentInfo {
                 longRange = 5;
             }
         }
+
+        hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
+        hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
+        hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
+
     }
 
     @Override
-    public EquipmentInfo clone(){
+    public EquipmentInfo clone() {
         EquipmentInfo clone = new EquipmentInfo();
 
         clone.count = count;
@@ -197,5 +207,14 @@ public class EquipmentInfo {
         clone.c3Level = c3Level;
 
         return clone;
+    }
+
+    private boolean hasLinkedEquipment(Mounted eq, BigInteger flag) {
+
+        if ((eq.getLinkedBy() != null) && (eq.getLinkedBy().getType() instanceof MiscType) && eq.getLinkedBy().getType().hasFlag(flag)) {
+            return true;
+        }
+
+        return false;
     }
 }
