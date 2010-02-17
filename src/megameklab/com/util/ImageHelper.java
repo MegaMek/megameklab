@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
@@ -663,27 +664,12 @@ public class ImageHelper {
 
             ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
 
-            EquipmentInfo artemisEQ = null;
-
-            if (eqHash.containsKey("Artemis IV FCS")) {
-                artemisEQ = eqHash.get("Artemis IV FCS");
-                artemisEQ.count = 1;
-                eqHash.remove("Artemis IV FCS");
-            }
-
             for (EquipmentInfo eqi : eqHash.values()) {
                 equipmentList.add(eqi);
 
             }
 
             Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
-
-            for (int eqPos = 0; eqPos < equipmentList.size(); eqPos++) {
-                EquipmentInfo eqi = equipmentList.get(eqPos);
-                if ((eqi.isMML || (eqi.name.indexOf("LRM") > -1) || (eqi.name.indexOf("SRM") > -1)) && (artemisEQ != null)) {
-                    equipmentList.add(++eqPos, artemisEQ);
-                }
-            }
 
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
@@ -795,6 +781,17 @@ public class ImageHelper {
                     } else {
                         g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
+                }
+
+                if (eqi.hasArtemis) {
+                    g2d.drawString("w/Artemis IV FCS", typePoint, linePoint + lineFeed);
+                    newLineNeeded = true;
+                } else if (eqi.hasArtemisV) {
+                    g2d.drawString("w/Artemis V FCS", typePoint, linePoint + lineFeed);
+                    newLineNeeded = true;
+                } else if (eqi.hasApollo) {
+                    g2d.drawString("w/Apollo V FCS", typePoint, linePoint + lineFeed);
+                    newLineNeeded = true;
                 }
 
                 linePoint += lineFeed;
@@ -1646,10 +1643,10 @@ public class ImageHelper {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Protomech.LOC_MAINGUN + 1);
+        ArrayList<Vector<EquipmentInfo>> equipmentLocations = new ArrayList<Vector<EquipmentInfo>>(Protomech.LOC_MAINGUN + 1);
 
         for (int pos = 0; pos <= Protomech.LOC_MAINGUN; pos++) {
-            equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
+            equipmentLocations.add(pos, new Vector<EquipmentInfo>());
         }
 
         for (Mounted eq : proto.getEquipment()) {
@@ -1658,26 +1655,16 @@ public class ImageHelper {
                 continue;
             }
 
-            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
+            Vector<EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
 
             String equipmentName = eq.getName();
             if (eq.isRearMounted()) {
                 equipmentName += "(R)";
             }
 
-            if (eqHash.containsKey(equipmentName)) {
-                EquipmentInfo eqi = eqHash.get(equipmentName);
-
-                if (eq.getType().getTechLevel() != eqi.techLevel) {
-                    eqi = new EquipmentInfo(proto, eq);
-                } else {
-                    eqi.count++;
-                }
-                eqHash.put(equipmentName, eqi);
-            } else {
-                EquipmentInfo eqi = new EquipmentInfo(proto, eq);
-                eqHash.put(equipmentName, eqi);
-            }
+            EquipmentInfo eqi = new EquipmentInfo(proto, eq);
+            eqi.name = equipmentName;
+            eqHash.add(eqi);
 
         }
 
@@ -1686,9 +1673,9 @@ public class ImageHelper {
 
         for (int pos = Protomech.LOC_HEAD; pos <= Protomech.LOC_MAINGUN; pos++) {
 
-            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
+            Vector<EquipmentInfo> eqVector = equipmentLocations.get(pos);
 
-            if (eqHash.size() < 1) {
+            if (eqVector.size() < 1) {
                 continue;
             }
 
@@ -1696,27 +1683,11 @@ public class ImageHelper {
 
             ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
 
-            EquipmentInfo artemisEQ = null;
-
-            if (eqHash.containsKey("Artemis IV FCS")) {
-                artemisEQ = eqHash.get("Artemis IV FCS");
-                artemisEQ.count = 1;
-                eqHash.remove("Artemis IV FCS");
-            }
-
-            for (EquipmentInfo eqi : eqHash.values()) {
+            for (EquipmentInfo eqi : eqVector) {
                 equipmentList.add(eqi);
-
             }
 
             Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
-
-            for (int eqPos = 0; eqPos < equipmentList.size(); eqPos++) {
-                EquipmentInfo eqi = equipmentList.get(eqPos);
-                if ((eqi.isMML || (eqi.name.indexOf("LRM") > -1) || (eqi.name.indexOf("SRM") > -1)) && (artemisEQ != null)) {
-                    equipmentList.add(++eqPos, artemisEQ);
-                }
-            }
 
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
