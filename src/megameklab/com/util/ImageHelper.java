@@ -329,29 +329,12 @@ public class ImageHelper {
 
             ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
 
-            EquipmentInfo artemisEQ = null;
-
-            if (eqHash.containsKey("Artemis IV FCS")) {
-                artemisEQ = eqHash.get("Artemis IV FCS");
-                artemisEQ.count = 1;
-                eqHash.remove("Artemis IV FCS");
-            }
-
             for (EquipmentInfo eqi : eqHash.values()) {
                 equipmentList.add(eqi);
 
             }
 
             Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
-
-            for (int eqPos = 0; eqPos < equipmentList.size(); eqPos++) {
-                EquipmentInfo eqi = equipmentList.get(eqPos);
-                if ((eqi.isMML || (eqi.name.indexOf("LRM") > -1) || (eqi.name.indexOf("SRM") > -1)) && (artemisEQ != null)) {
-                    EquipmentInfo clone = artemisEQ.clone();
-                    clone.count = eqi.count;
-                    equipmentList.add(++eqPos, clone);
-                }
-            }
 
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
@@ -467,6 +450,17 @@ public class ImageHelper {
                     } else {
                         g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
+                }
+
+                if (eqi.hasArtemis) {
+                    g2d.drawString("w/Artemis IV FCS", typePoint, linePoint + lineFeed);
+                    newLineNeeded = true;
+                } else if (eqi.hasArtemisV) {
+                    g2d.drawString("w/Artemis V FCS", typePoint, linePoint + lineFeed);
+                    newLineNeeded = true;
+                } else if (eqi.hasApollo) {
+                    g2d.drawString("w/Apollo FCS", typePoint, linePoint + lineFeed);
+                    newLineNeeded = true;
                 }
 
                 linePoint += lineFeed;
@@ -790,7 +784,7 @@ public class ImageHelper {
                     g2d.drawString("w/Artemis V FCS", typePoint, linePoint + lineFeed);
                     newLineNeeded = true;
                 } else if (eqi.hasApollo) {
-                    g2d.drawString("w/Apollo V FCS", typePoint, linePoint + lineFeed);
+                    g2d.drawString("w/Apollo FCS", typePoint, linePoint + lineFeed);
                     newLineNeeded = true;
                 }
 
