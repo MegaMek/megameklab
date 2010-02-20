@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.ListIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.swing.JOptionPane;
+
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
@@ -1413,6 +1415,7 @@ public class UnitUtil {
         UnitUtil.removeOneShotAmmo(unit);
         UnitUtil.removeClanCase(unit);
         UnitUtil.expandUnitMounts(unit);
+        UnitUtil.checkArmor(unit);
     }
 
     public static boolean isMechWeapon(EquipmentType eq, Mech unit) {
@@ -1727,6 +1730,66 @@ public class UnitUtil {
         } else {
             unit.setArmorType(EquipmentType.T_ARMOR_STANDARD);
             unit.setArmorTechLevel(unit.getTechLevel());
+        }
+    }
+
+    public static void checkArmor(Entity unit) {
+
+        if (!(unit instanceof Mech)) {
+            return;
+        }
+
+        boolean foundError = false;
+
+        Mech mech = (Mech) unit;
+
+        // Check all the mechs locations to see if any armor is greater then can
+        // be in there.
+        for (int location = 0; location < mech.locations(); location++) {
+            // Head armor has a max of 9
+            if (location == Mech.LOC_HEAD) {
+                int armor = mech.getArmor(location);
+
+                if (armor > 9) {
+                    foundError = true;
+                    mech.setArmor(9, location);
+                }
+            } else {
+
+                foundError = true;
+                int armor = mech.getArmor(location);
+                if (mech.hasRearArmor(location)) {
+                    armor += mech.getArmor(location, true);
+                }
+                int totalArmor = mech.getInternal(location) * 2;
+                // Armor on the location is greater then what can be there.
+                if (armor > totalArmor) {
+                    int armorOverage = armor - totalArmor;
+
+                    // check for locations with rear armor first and remove the
+                    // extra armor from the rear first.
+                    if (mech.hasRearArmor(location)) {
+                        int rearArmor = mech.getArmor(location, true);
+                        if (rearArmor >= armorOverage) {
+                            mech.initializeRearArmor(rearArmor - armorOverage, location);
+                            armorOverage = 0;
+                        } else {
+                            armorOverage -= rearArmor;
+                            mech.initializeRearArmor(0, location);
+                        }
+                    }
+
+                    // Any armor overage left remove it from the front. Min 0
+                    // armor in the location.
+                    armor = mech.getArmor(location);
+                    armor = Math.max(0, armor - armorOverage);
+                    mech.initializeArmor(armor, location);
+                }
+            }
+        }
+
+        if (foundError) {
+            JOptionPane.showMessageDialog(null, "Armor Overage found on this unit.\n\rMegaMekLab has automatically correct the problem.\n\rIt is suggested you view the armor tab to see the correction.", "Armor Overage", JOptionPane.WARNING_MESSAGE);
         }
     }
 }
