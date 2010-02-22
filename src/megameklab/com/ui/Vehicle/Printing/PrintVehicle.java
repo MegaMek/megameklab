@@ -836,7 +836,7 @@ public class PrintVehicle implements Printable {
                 bottomColumn[0] += pipShift[0];
             }
         }
-        printArmorPoints(g2d, pipPlotter, 79, fontSize);
+        printArmorPoints(g2d, pipPlotter, totalArmor, fontSize);
     }
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
