@@ -14,6 +14,7 @@ V 0.0.0.17 Dev
 + added new Atremis/Apollo text to Mechs and Tanks weapons loadout
 + Bug: MML allowing armor overage.
 + Bug: Extra turret armor hard coded to 79
++ Bug: Mixed tech armor not working correctly
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles

@@ -105,8 +105,7 @@ public class ArmorTab extends ITab implements ActionListener {
         removeAllListeners();
         if (arg0.getSource() instanceof JComboBox) {
             UnitUtil.removeISorArmorMounts(unit, false);
-            unit.setArmorType(getArmorType());
-            createArmorMounts();
+            createArmorMountsAndSetArmorType();
         }
         if (arg0.getSource().equals(allocateArmorButton)) {
             armor.allocateArmor((Double) armorTonnage.getValue());
@@ -127,7 +126,7 @@ public class ArmorTab extends ITab implements ActionListener {
             } else {
                 unit.setArmorTechLevel(unit.getTechLevel());
             }
-            createArmorMounts();
+            createArmorMountsAndSetArmorType();
         }
         addAllListeners();
         if (refresh != null) {
@@ -185,7 +184,8 @@ public class ArmorTab extends ITab implements ActionListener {
         armorTonnage.setValue(maxArmor);
     }
 
-    private void createArmorMounts() {
+    private void createArmorMountsAndSetArmorType() {
+        unit.setArmorType(getArmorType());
         int armorCount = 0;
 
         armorCount = EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType())).getCriticals(unit);
