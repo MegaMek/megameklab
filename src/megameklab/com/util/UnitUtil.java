@@ -75,6 +75,7 @@ public class UnitUtil {
     public static String CHAMELEON = "Chameleon Light Polarization Field";
     public static String PARTIALWING = "Partial Wing";
     public static String JUMPBOOSTER = "Jump Booster";
+    public static String BLUESHIELD = "Blue Shield Particle Field Damper";
 
     public static int TECH_INTRO = 0;
     public static int TECH_STANDARD = 1;
@@ -93,7 +94,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isSpreadEquipment(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_JUMP_BOOSTER) || eq.hasFlag(MiscType.F_PARTIAL_WING) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_TRACKS) || eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_JUMP_BOOSTER) || eq.hasFlag(MiscType.F_PARTIAL_WING) || eq.hasFlag(MiscType.F_NULLSIG) || eq.hasFlag(MiscType.F_VOIDSIG) || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.hasFlag(MiscType.F_TRACKS) || eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq.hasFlag(MiscType.F_BLUE_SHIELD));
     }
 
     /**
@@ -200,6 +201,9 @@ public class UnitUtil {
             EquipmentType.get(UnitUtil.JUMPBOOSTER).setTonnage(EquipmentType.TONNAGE_VARIABLE);
             UnitUtil.removeCrits(mech, UnitUtil.JUMPBOOSTER);
             UnitUtil.removeMounts(mech, UnitUtil.JUMPBOOSTER);
+        } else if (mount.getName().equals(UnitUtil.BLUESHIELD)) {
+            UnitUtil.removeCrits(mech, UnitUtil.BLUESHIELD);
+            UnitUtil.removeMounts(mech, UnitUtil.BLUESHIELD);
         } else {
             UnitUtil.removeCriticals(mech, mount);
             mech.getEquipment().remove(mount);
@@ -289,7 +293,11 @@ public class UnitUtil {
             EquipmentType.get(UnitUtil.JUMPBOOSTER).setTonnage(EquipmentType.TONNAGE_VARIABLE);
             UnitUtil.removeCrits(mech, UnitUtil.JUMPBOOSTER);
             UnitUtil.removeMounts(mech, UnitUtil.JUMPBOOSTER);
-        } else {
+        } else if (equipment.getName().equals(UnitUtil.BLUESHIELD)) {
+            UnitUtil.removeCrits(mech, UnitUtil.BLUESHIELD);
+            UnitUtil.removeMounts(mech, UnitUtil.BLUESHIELD);
+            EquipmentType.get(UnitUtil.BLUESHIELD).setTonnage(3);
+        }  else {
             UnitUtil.removeCriticals(mech, equipment);
             mech.getEquipment().remove(equipment);
             if (equipment.getType() instanceof MiscType) {
@@ -352,10 +360,6 @@ public class UnitUtil {
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
-        /*
-         * if (eq.getType().getName().equals(UnitUtil.TSM)) {
-         * UnitUtil.removeTSMCrits(unit); } else
-         */
         if (UnitUtil.isTargettingComputer(eq)) {
             UnitUtil.removeTCCrits(unit);
         } else if ((eq.getType() instanceof WeaponType) && (eq.isSplitable() || eq.getType().isSpreadable())) {
@@ -504,13 +508,11 @@ public class UnitUtil {
             return;
         }
 
-        // for (; TCCount > 0; TCCount--) {
         try {
             unit.addEquipment(new Mounted(unit, EquipmentType.get(TargetingComputerType)), Entity.LOC_NONE, false);
         } catch (Exception ex) {
 
         }
-        // }
     }
 
     /**
@@ -841,7 +843,6 @@ public class UnitUtil {
     }
 
     public static int getArmorPoints(Entity unit, double armorTons) {
-        double multi = EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());
         if (unit.getArmorType() == EquipmentType.T_ARMOR_HARDENED) {
             armorPerTon = 8.0;
@@ -968,9 +969,7 @@ public class UnitUtil {
                     newMount.setLocation(location, mount.isRearMounted());
                     cs.setMount(newMount);
                     unit.getEquipment().add(newMount);
-                    // if (!UnitUtil.isSpreadEquipment(mount.getType())) {
                     unit.getMisc().add(newMount);
-                    // }
                     cs.setIndex(unit.getEquipmentNum(newMount));
                 } else {
                     cs.setMount(mount);

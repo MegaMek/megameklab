@@ -226,60 +226,70 @@ public class EquipmentView extends IView implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
-            if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TSM)) {
+            String equip = equipmentCombo.getSelectedItem().toString();
+            if (unit.isClan() && !UnitUtil.isClanEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()))) {
+                equip = equip.substring(0, equip.length()-5);
+            } else if (!unit.isClan() && UnitUtil.isClanEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()))) {
+                equip = equip.substring(0, equip.length()-7);
+            }
+            if (equip.equals(UnitUtil.TSM)) {
                 if (!getMech().hasTSM()) {
                     createSpreadMounts(UnitUtil.TSM);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.INDUSTRIALTSM)) {
+            } else if (equip.equals(UnitUtil.INDUSTRIALTSM)) {
                 if (!getMech().hasIndustrialTSM()) {
                     createSpreadMounts(UnitUtil.INDUSTRIALTSM);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.ENVIROSEAL)) {
+            } else if (equip.equals(UnitUtil.ENVIROSEAL)) {
                 if (!unit.hasEnvironmentalSealing()) {
                     createSpreadMounts(UnitUtil.ENVIROSEAL);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.NULLSIG)) {
+            } else if (equip.equals(UnitUtil.NULLSIG)) {
                 if (!getMech().hasNullSig()) {
                     createSpreadMounts(UnitUtil.NULLSIG);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.VOIDSIG)) {
+            } else if (equip.equals(UnitUtil.VOIDSIG)) {
                 if (!getMech().hasVoidSig()) {
                     createSpreadMounts(UnitUtil.VOIDSIG);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TRACKS)) {
+            } else if (equip.equals(UnitUtil.TRACKS)) {
                 if (!getMech().hasTracks()) {
                     createSpreadMounts(UnitUtil.TRACKS);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.PARTIALWING)) {
+            } else if (equip.equals(UnitUtil.PARTIALWING)) {
                 if (!getMech().hasWorkingMisc(UnitUtil.PARTIALWING)) {
                     createSpreadMounts(UnitUtil.PARTIALWING);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.JUMPBOOSTER)) {
+            } else if (equip.equals(UnitUtil.JUMPBOOSTER)) {
                 setJumpBoosterMP(Integer.parseInt(JOptionPane.showInputDialog(this, "How many Jump MP?")));
                 updateJumpMP();
                 if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
                     createSpreadMounts(UnitUtil.JUMPBOOSTER);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.TALONS)) {
+            } else if (equip.equals(UnitUtil.TALONS)) {
                 boolean hasTalons = getMech().hasWorkingMisc(MiscType.F_TALON);
                 if (!hasTalons) {
                     createSpreadMounts(UnitUtil.TALONS);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().startsWith(UnitUtil.TARGETINGCOMPUTER)) {
+            } else if (equip.startsWith(UnitUtil.TARGETINGCOMPUTER)) {
                 if (!UnitUtil.hasTargComp(unit)) {
 
                     boolean isClan = false;
                     if (unit.isMixedTech()) {
-                        String tcType = equipmentCombo.getSelectedItem().toString().trim();
+                        String tcType = equip.trim();
                         if ((tcType.endsWith("(Clan)") && !unit.isClan()) || (unit.isClan() && !tcType.endsWith("(IS)"))) {
                             isClan = true;
                         }
                     }
                     UnitUtil.updateTC(getMech(), isClan);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.CHAMELEON)) {
+            } else if (equip.equals(UnitUtil.CHAMELEON)) {
                 if (!getMech().hasChameleonShield()) {
                     createSpreadMounts(UnitUtil.CHAMELEON);
+                }
+            } else if (equip.equals(UnitUtil.BLUESHIELD)) {
+                if (!unit.hasWorkingMisc(MiscType.F_BLUE_SHIELD)) {
+                    createSpreadMounts(UnitUtil.BLUESHIELD);
                 }
             } else {
                 try {
@@ -362,7 +372,7 @@ public class EquipmentView extends IView implements ActionListener {
 
     private void createSpreadMounts(String equip) {
         int crits = 0;
-        boolean isVariableTonange = false;
+        boolean isVariableTonnage = false;
 
         crits = EquipmentType.get(equip).getCriticals(unit);
 
@@ -374,22 +384,26 @@ public class EquipmentView extends IView implements ActionListener {
         if (equip.equals(UnitUtil.ENVIROSEAL) && (crits > 1)) {
             tonnageAmount = EquipmentType.get(equip).getTonnage(unit);
             tonnageAmount /= 8;
-            isVariableTonange = true;
+            isVariableTonnage = true;
         }
         if ((equip.equals(UnitUtil.TRACKS) || equip.equals(UnitUtil.TALONS)) && (crits > 1)) {
             tonnageAmount = EquipmentType.get(equip).getTonnage(unit) / EquipmentType.get(equip).getCriticals(unit);
-            isVariableTonange = true;
+            isVariableTonnage = true;
         }
 
         if (equip.equals(UnitUtil.PARTIALWING) || equip.equals(UnitUtil.JUMPBOOSTER)) {
             crits = 2;
             tonnageAmount = EquipmentType.get(equip).getTonnage(unit) / 2;
-            isVariableTonange = true;
+            isVariableTonnage = true;
+        }
+        if (equip.equals(UnitUtil.BLUESHIELD) && (crits > 1)) {
+            tonnageAmount = EquipmentType.get(equip).getTonnage(unit) / 7;
+            isVariableTonnage = true;
         }
 
         for (; crits > 0; crits--) {
             try {
-                if (isVariableTonange && (crits > 1)) {
+                if (isVariableTonnage && (crits > 1)) {
                     Mounted mount = new Mounted(unit, EquipmentType.get(equip));
                     mount.getType().setTonnage(tonnageAmount);
                     getMech().addEquipment(mount, Entity.LOC_NONE, false);
