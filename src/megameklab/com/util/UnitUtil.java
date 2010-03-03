@@ -1755,8 +1755,6 @@ public class UnitUtil {
                     mech.setArmor(9, location);
                 }
             } else {
-
-                foundError = true;
                 int armor = mech.getArmor(location);
                 if (mech.hasRearArmor(location)) {
                     armor += mech.getArmor(location, true);
@@ -1764,6 +1762,7 @@ public class UnitUtil {
                 int totalArmor = mech.getInternal(location) * 2;
                 // Armor on the location is greater then what can be there.
                 if (armor > totalArmor) {
+                    foundError = true;
                     int armorOverage = armor - totalArmor;
 
                     // check for locations with rear armor first and remove the
