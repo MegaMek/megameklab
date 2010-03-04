@@ -27,6 +27,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -35,6 +36,7 @@ import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
@@ -193,11 +195,25 @@ public class ArmorTab extends ITab implements ActionListener {
         if (armorCount < 1) {
             return;
         }
-
-        for (; armorCount > 0; armorCount--) {
-            try {
-                getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), Entity.LOC_NONE, false);
-            } catch (Exception ex) {
+        // auto-place stealth crits
+        if (getArmorType() == EquipmentType.T_ARMOR_STEALTH) {
+            for (int loc = 0; loc < getMech().locations(); loc++) {
+                if (loc != Mech.LOC_HEAD) {
+                    try {
+                        getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), loc, false);
+                        getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), loc, false);
+                    } catch (LocationFullException lfe) {
+                        JOptionPane.showMessageDialog(null, lfe.getMessage(), "Stealth Armor does not fit in location. Resetting to Standard Armor", JOptionPane.INFORMATION_MESSAGE);
+                        setArmorType(EquipmentType.T_ARMOR_STANDARD);
+                    }
+                }
+            }
+        } else {
+            for (; armorCount > 0; armorCount--) {
+                try {
+                    getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), Entity.LOC_NONE, false);
+                } catch (Exception ex) {
+                }
             }
         }
     }
