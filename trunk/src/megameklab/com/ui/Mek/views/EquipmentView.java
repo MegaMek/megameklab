@@ -20,8 +20,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -151,13 +153,19 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentTable() {
+        List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
         for (Mounted mount : unit.getMisc()) {
 
             if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || UnitUtil.isArmorOrStructure(mount.getType()))) {
                 continue;
             }
             if (UnitUtil.isMechEquipment(mount.getType())) {
-                equipmentList.addCrit(mount.getType());
+                if (UnitUtil.isSpreadEquipment(mount.getType()) && !spreadAlreadyAdded.contains(mount.getType())) {
+                    equipmentList.addCrit(mount.getType());
+                    // keep track of spreadable equipment here, so it doesn't
+                    // show up multiple times in the table
+                    spreadAlreadyAdded.add(mount.getType());
+                }
             }
         }
     }
