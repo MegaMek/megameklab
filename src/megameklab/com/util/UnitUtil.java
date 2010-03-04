@@ -957,6 +957,7 @@ public class UnitUtil {
         boolean partialWingDone = false;
         boolean jumpBoosterDone = false;
         boolean blueShieldDone = false;
+        boolean tracksDone = false;
         for (int location = 0; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
@@ -1028,6 +1029,24 @@ public class UnitUtil {
                             UnitUtil.createSpreadMounts(unit, UnitUtil.BLUESHIELD);
                             blueShieldDone = true;
                         }
+                    } else if (mount.getType().hasFlag(MiscType.F_TRACKS)) {
+                        if (!tracksDone) {
+                            unit.getEquipment().remove(mount);
+                            unit.getMisc().remove(mount);
+                            for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
+                                for (int sl = 0; sl < unit.getNumberOfCriticals(loc); sl++) {
+                                    CriticalSlot cs2 = unit.getCritical(loc, sl);
+                                    if ((cs2 == null) || (cs2.getType() == CriticalSlot.TYPE_SYSTEM)) {
+                                        continue;
+                                    }
+                                    if (cs2.getMount().equals(mount)) {
+                                        unit.setCritical(loc, sl, null);
+                                    }
+                                }
+                            }
+                            UnitUtil.createSpreadMounts(unit, UnitUtil.TRACKS);
+                            tracksDone = true;
+                        }
                     } else {
                         Mounted newMount = new Mounted(unit, mount.getType());
                         newMount.setLocation(location, mount.isRearMounted());
@@ -1043,6 +1062,7 @@ public class UnitUtil {
                 }
             }
         }
+        System.out.println();
     }
 
     public static boolean createSpreadMounts(Mech unit, String equip) {
