@@ -956,6 +956,7 @@ public class UnitUtil {
     public static void expandUnitMounts(Mech unit) {
         boolean partialWingDone = false;
         boolean jumpBoosterDone = false;
+        boolean blueShieldDone = false;
         for (int location = 0; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
@@ -970,8 +971,9 @@ public class UnitUtil {
                 }
 
                 if (UnitUtil.isSpreadEquipment(mount.getType()) || UnitUtil.isTSM(mount.getType()) || UnitUtil.isArmorOrStructure(mount.getType())) {
-                    // to match how we setup mounts for spreadable stuff that has more than one crit per block,
-                    // we just remove all mounts and crits and add them back as if the user added it himself
+                    // to match how we setup mounts for spreadable stuff that
+                    // actually weigh something, we just remove all mounts and
+                    // crits and add them back as if the user added it himself
                     if (mount.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
                         if (!partialWingDone) {
                             unit.getEquipment().remove(mount);
@@ -1007,6 +1009,24 @@ public class UnitUtil {
                             }
                             UnitUtil.createSpreadMounts(unit, UnitUtil.JUMPBOOSTER);
                             jumpBoosterDone = true;
+                        }
+                    } else if (mount.getType().hasFlag(MiscType.F_BLUE_SHIELD)) {
+                        if (!blueShieldDone) {
+                            unit.getEquipment().remove(mount);
+                            unit.getMisc().remove(mount);
+                            for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
+                                for (int sl = 0; sl < unit.getNumberOfCriticals(loc); sl++) {
+                                    CriticalSlot cs2 = unit.getCritical(loc, sl);
+                                    if ((cs2 == null) || (cs2.getType() == CriticalSlot.TYPE_SYSTEM)) {
+                                        continue;
+                                    }
+                                    if (cs2.getMount().equals(mount)) {
+                                        unit.setCritical(loc, sl, null);
+                                    }
+                                }
+                            }
+                            UnitUtil.createSpreadMounts(unit, UnitUtil.BLUESHIELD);
+                            blueShieldDone = true;
                         }
                     } else {
                         Mounted newMount = new Mounted(unit, mount.getType());
