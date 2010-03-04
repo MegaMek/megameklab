@@ -32,6 +32,7 @@ import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -79,6 +80,7 @@ public class UnitUtil {
     public static String PARTIALWING = "Partial Wing";
     public static String JUMPBOOSTER = "Jump Booster";
     public static String BLUESHIELD = "Blue Shield Particle Field Damper";
+    public static String STEALTH = "Stealth Armor";
 
     public static int TECH_INTRO = 0;
     public static int TECH_STANDARD = 1;
@@ -490,29 +492,29 @@ public class UnitUtil {
      * @param unit
      */
     public static void createTCMounts(Mech unit, boolean isClan) {
-        int TCCount = 0;
-        String TargetingComputerType = "";
+        int tcCount = 0;
+        String targetingComputerType = "";
 
         if (unit.isMixedTech()) {
             if (isClan) {
-                TargetingComputerType = UnitUtil.CLTARGETINGCOMPUTER;
+                targetingComputerType = UnitUtil.CLTARGETINGCOMPUTER;
             } else {
-                TargetingComputerType = UnitUtil.ISTARGETINGCOMPUTER;
+                targetingComputerType = UnitUtil.ISTARGETINGCOMPUTER;
             }
         } else if (unit.isClan()) {
-            TargetingComputerType = UnitUtil.CLTARGETINGCOMPUTER;
+            targetingComputerType = UnitUtil.CLTARGETINGCOMPUTER;
         } else {
-            TargetingComputerType = UnitUtil.ISTARGETINGCOMPUTER;
+            targetingComputerType = UnitUtil.ISTARGETINGCOMPUTER;
         }
 
-        TCCount = EquipmentType.get(TargetingComputerType).getCriticals(unit);
+        tcCount = EquipmentType.get(targetingComputerType).getCriticals(unit);
 
-        if (TCCount < 1) {
+        if (tcCount < 1) {
             return;
         }
 
         try {
-            unit.addEquipment(new Mounted(unit, EquipmentType.get(TargetingComputerType)), Entity.LOC_NONE, false);
+            unit.addEquipment(new Mounted(unit, EquipmentType.get(targetingComputerType)), Entity.LOC_NONE, false);
         } catch (Exception ex) {
 
         }
@@ -1023,7 +1025,7 @@ public class UnitUtil {
         }
     }
 
-    public static void createSpreadMounts(Mech unit, String equip) {
+    public static boolean createSpreadMounts(Mech unit, String equip) {
         // how many non-spreadable contigous blocks of crits?
         int blocks = 0;
         boolean isVariableTonnage = false;
@@ -1031,7 +1033,7 @@ public class UnitUtil {
         blocks = EquipmentType.get(equip).getCriticals(unit);
 
         if (blocks < 1) {
-            return;
+            return true;
         }
 
         List<Integer> locations = new ArrayList<Integer>();
@@ -1045,7 +1047,7 @@ public class UnitUtil {
             }
         }
         if (equip.equals(UnitUtil.ENVIROSEAL)) {
-         // 1 crit in each location
+            // 1 crit in each location
             for (int i = 0; i < unit.locations(); i++) {
                 locations.add(i);
             }
@@ -1108,20 +1110,25 @@ public class UnitUtil {
         }
 
         for (; blocks > 0; blocks--) {
-            try {
-                Mounted mount = new Mounted(unit, EquipmentType.get(equip));
-                // how many crits per block?
-                int crits = UnitUtil.getCritsUsed(unit, EquipmentType.get(equip));
-                if (isVariableTonnage && (blocks > 1)) {
-                    mount.getType().setTonnage(tonnageAmount);
-                }
-                for (int i = 0; i < crits; i++) {
-                    unit.addEquipment(mount, locations.get(0), false);
-                }
-                locations.remove(0);
-            } catch (Exception ex) {
+            Mounted mount = new Mounted(unit, EquipmentType.get(equip));
+            // how many crits per block?
+            int crits = UnitUtil.getCritsUsed(unit, EquipmentType.get(equip));
+            if (isVariableTonnage && (blocks > 1)) {
+                mount.getType().setTonnage(tonnageAmount);
             }
+            for (int i = 0; i < crits; i++) {
+                try {
+                    unit.addEquipment(mount, locations.get(0), false);
+                } catch (LocationFullException lfe) {
+                    JOptionPane.showMessageDialog(null, lfe.getMessage(), mount.getName()+" does not fit into "+unit.getLocationName(locations.get(0)), JOptionPane.INFORMATION_MESSAGE);
+                    unit.getMisc().remove(mount);
+                    unit.getEquipment().remove(mount);
+                    return false;
+                }
+            }
+            locations.remove(0);
         }
+        return true;
     }
 
     public static void loadFonts() {

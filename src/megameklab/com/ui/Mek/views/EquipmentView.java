@@ -36,6 +36,7 @@ import javax.swing.ListSelectionModel;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -227,8 +228,10 @@ public class EquipmentView extends IView implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
+            boolean success = false;
             String equip = equipmentCombo.getSelectedItem().toString();
-            if (equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()).getTechLevel() != TechConstants.T_ALLOWED_ALL) {
+            if ((equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()).getTechLevel() != TechConstants.T_ALLOWED_ALL)
+                    && (equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()).getTechLevel() != TechConstants.T_TECH_UNKNOWN)) {
                 if (unit.isClan() && !UnitUtil.isClanEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()))) {
                     equip = equip.substring(0, equip.length()-5);
                 } else if (!unit.isClan() && UnitUtil.isClanEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()))) {
@@ -237,42 +240,42 @@ public class EquipmentView extends IView implements ActionListener {
             }
             if (equip.equals(UnitUtil.TSM)) {
                 if (!getMech().hasTSM()) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.TSM);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.TSM);
                 }
             } else if (equip.equals(UnitUtil.INDUSTRIALTSM)) {
                 if (!getMech().hasIndustrialTSM()) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.INDUSTRIALTSM);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.INDUSTRIALTSM);
                 }
             } else if (equip.equals(UnitUtil.ENVIROSEAL)) {
                 if (!unit.hasEnvironmentalSealing()) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.ENVIROSEAL);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.ENVIROSEAL);
                 }
             } else if (equip.equals(UnitUtil.NULLSIG)) {
                 if (!getMech().hasNullSig()) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.NULLSIG);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.NULLSIG);
                 }
             } else if (equip.equals(UnitUtil.VOIDSIG)) {
                 if (!getMech().hasVoidSig()) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.VOIDSIG);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.VOIDSIG);
                 }
             } else if (equip.equals(UnitUtil.TRACKS)) {
                 if (!getMech().hasTracks()) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.TRACKS);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.TRACKS);
                 }
             } else if (equip.equals(UnitUtil.PARTIALWING)) {
                 if (!getMech().hasWorkingMisc(UnitUtil.PARTIALWING)) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.PARTIALWING);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.PARTIALWING);
                 }
             } else if (equip.equals(UnitUtil.JUMPBOOSTER)) {
                 setJumpBoosterMP(Integer.parseInt(JOptionPane.showInputDialog(this, "How many Jump MP?")));
                 updateJumpMP();
                 if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.JUMPBOOSTER);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.JUMPBOOSTER);
                 }
             } else if (equip.equals(UnitUtil.TALONS)) {
                 boolean hasTalons = getMech().hasWorkingMisc(MiscType.F_TALON);
                 if (!hasTalons) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.TALONS);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.TALONS);
                 }
             } else if (equip.startsWith(UnitUtil.TARGETINGCOMPUTER)) {
                 if (!UnitUtil.hasTargComp(unit)) {
@@ -285,26 +288,28 @@ public class EquipmentView extends IView implements ActionListener {
                         }
                     }
                     UnitUtil.updateTC(getMech(), isClan);
+                    success = true;
                 }
             } else if (equip.equals(UnitUtil.CHAMELEON)) {
                 if (!getMech().hasChameleonShield()) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.CHAMELEON);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.CHAMELEON);
                 }
             } else if (equip.equals(UnitUtil.BLUESHIELD)) {
                 if (!unit.hasWorkingMisc(MiscType.F_BLUE_SHIELD)) {
-                    UnitUtil.createSpreadMounts(getMech(), UnitUtil.BLUESHIELD);
+                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.BLUESHIELD);
                 }
             } else {
                 try {
                     getMech().addEquipment(new Mounted(unit, equipmentTypes.elementAt(equipmentCombo.getSelectedIndex())), Entity.LOC_NONE, false);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                    success = true;
+                } catch (LocationFullException lfe) {
+                    // this can't happen, we add to Entity.LOC_NONE
                 }
             }
-            equipmentList.addCrit(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()));
+            if (success) {
+                equipmentList.addCrit(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()));
+            }
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
-
-
             int startRow = equipmentTable.getSelectedRow();
             int count = equipmentTable.getSelectedRowCount();
 
