@@ -18,6 +18,9 @@ V 0.0.0.17 Dev
 + Added Blue Shield Particle Field Damper
 + Bug: Spreadable equipment from different techbase on mixed tech chassis not
  working
++ Bug: loading a unit with spreadable equipment like partial wing or jump
+ boosters doesn't work correctly
++ Auto-place crits for equipment that has specified criticals, like void-sig etc
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles

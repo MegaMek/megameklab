@@ -593,9 +593,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
-
-                        getMech().setTechLevel(TechConstants.T_IS_ADVANCED);
-                        getMech().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                        // only set techlevel and armor techlevel to advanced if we're not already experimental or unofficial
+                        if ((getMech().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                            getMech().setTechLevel(TechConstants.T_IS_ADVANCED);
+                            getMech().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                        }
                         getMech().setMixedTech(true);
                         createEngineList(false);
                         createHeatSinkList();
@@ -605,9 +607,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
                         }
-
-                        getMech().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                        getMech().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        // only set techlevel and armor techlevel to advanced if we're not already experimental or unofficial
+                        if ((getMech().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
+                            getMech().setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                            getMech().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        }
                         getMech().setMixedTech(true);
                         createEngineList(true);
                         createHeatSinkList();
