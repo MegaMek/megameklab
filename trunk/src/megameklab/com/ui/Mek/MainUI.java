@@ -388,6 +388,14 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
+        // this is kind of hackish to do it this way
+        // all the equipmenttypes that get set back to TONNAGE_VARIABLE in
+        // UnitUtil#removeMount need to be reset here, as well
+        EquipmentType.get(UnitUtil.ENVIROSEAL).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+        EquipmentType.get(UnitUtil.TRACKS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+        EquipmentType.get(UnitUtil.TALONS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+        EquipmentType.get(UnitUtil.PARTIALWING).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+        EquipmentType.get(UnitUtil.JUMPBOOSTER).setTonnage(EquipmentType.TONNAGE_VARIABLE);
         createNewMech(false);
         reloadTabs();
         setVisible(true);
