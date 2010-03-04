@@ -168,12 +168,12 @@ public class UnitPrintManager {
         for (Entity unit : loadedUnits) {
             if (unit instanceof QuadMech) {
                 UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts(unit);
+                UnitUtil.expandUnitMounts((Mech)unit);
 
                 quadList.add((Mech) unit);
             } else if (unit instanceof BipedMech) {
                 UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts(unit);
+                UnitUtil.expandUnitMounts((Mech)unit);
 
                 bipedList.add((Mech) unit);
             } else if (unit instanceof VTOL) {
