@@ -49,7 +49,6 @@ import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.HVACWeapon;
 import megamek.common.weapons.ISAMS;
 import megamek.common.weapons.ISLaserAMS;
-import megamek.common.weapons.InfantryWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.LegAttack;
@@ -63,6 +62,7 @@ import megamek.common.weapons.StopSwarmAttack;
 import megamek.common.weapons.SwarmAttack;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
+import megamek.common.weapons.infantry.InfantryWeapon;
 
 public class UnitUtil {
 
