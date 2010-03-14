@@ -24,6 +24,7 @@ V 0.0.0.17 Dev
 + Bug: reseting broke tonnage for tonnage-variable equipment that was used on
  the unit before the reset
 + New MegaMek.jar
++ Added BAR information for Industrial Mechs and Support Vehicles
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles

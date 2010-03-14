@@ -259,6 +259,11 @@ public class PrintVehicle implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(tank.getCost(true)) + " C-bills", 52, 357);
 
+        if (tank.hasBARArmor()) {
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.drawString("BAR: " + tank.getBARRating(), 400, 64);
+        }
+
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
         g2d.drawString("2010", 105f, 374.5f);
@@ -391,6 +396,11 @@ public class PrintVehicle implements Printable {
 
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 728);
+
+        if (tank.hasBARArmor()) {
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.drawString("BAR: " + tank.getBARRating(), 400, 64 + secondPageMargin);
+        }
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);

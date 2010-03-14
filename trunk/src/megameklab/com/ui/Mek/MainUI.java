@@ -62,6 +62,7 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
+import megamek.common.MechSummaryCache;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
@@ -110,6 +111,7 @@ public class MainUI extends JFrame implements RefreshListener {
         UnitUtil.loadFonts();
         new CConfig();
         System.out.println("Staring MegaMekLab version: " + MegaMekLab.VERSION);
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -298,6 +300,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewMech(false);
+        MechSummaryCache.getInstance();
         setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
         setJMenuBar(menuBar);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -319,6 +322,7 @@ public class MainUI extends JFrame implements RefreshListener {
         setVisible(true);
         repaint();
         refreshAll();
+
     }
 
     private void loadUnit() {

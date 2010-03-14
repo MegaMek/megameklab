@@ -293,6 +293,11 @@ public class PrintQuad implements Printable {
             g2d.drawString(armorName, 461, 279);
         }
 
+        if (mech.hasBARArmor()) {
+            g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
+            g2d.drawString("BAR " + mech.getBARRating(), 461, 279);
+        }
+
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
         g2d.drawString(techBase, 177, 145);
 
