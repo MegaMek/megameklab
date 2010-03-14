@@ -59,6 +59,7 @@ import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.MechFileParser;
+import megamek.common.MechSummaryCache;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
@@ -108,6 +109,7 @@ public class MainUI extends JFrame implements RefreshListener {
         UnitUtil.loadFonts();
         new CConfig();
         System.out.println("Staring MegaMekLab version: " + MegaMekLab.VERSION);
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -307,6 +309,7 @@ public class MainUI extends JFrame implements RefreshListener {
         setVisible(true);
         repaint();
         refreshAll();
+        MechSummaryCache.getInstance();
     }
 
     private void loadUnit() {

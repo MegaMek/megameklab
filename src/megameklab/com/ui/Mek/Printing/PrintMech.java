@@ -296,6 +296,11 @@ public class PrintMech implements Printable {
             g2d.drawString(armorName, 461, 249);
         }
 
+        if (mech.hasBARArmor()) {
+            g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
+            g2d.drawString("BAR " + mech.getBARRating(), 461, 249);
+        }
+
         if ((mech.getSource() != null) && (mech.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
@@ -1473,7 +1478,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     *
+     * 
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
