@@ -1530,6 +1530,11 @@ public class ImageHelper {
                 }
                 count++;
             }
+            if (ba.isBurdened()) {
+                String burdenInfo = "must detach missiles before jumping or swarm/leg attacks";
+                g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
+                g2d.drawString(burdenInfo, typePoint, linePoint);
+            }
         }
 
         ImageHelper.printBAArmor(ba, g2d, offset);
