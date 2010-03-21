@@ -25,6 +25,7 @@ V 0.0.0.17 Dev
  the unit before the reset
 + New MegaMek.jar
 + Added BAR information for Industrial Mechs and Support Vehicles
++ Show when equipment is body mounted on biped BA
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles

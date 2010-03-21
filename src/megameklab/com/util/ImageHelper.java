@@ -1362,6 +1362,9 @@ public class ImageHelper {
             if (eq.isRearMounted()) {
                 equipmentName += "(R)";
             }
+            if (eq.isBodyMounted() && (ba.getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED)) {
+                equipmentName += " (Body)";
+            }
 
             if (eqHash.containsKey(equipmentName)) {
                 EquipmentInfo eqi = eqHash.get(equipmentName);
