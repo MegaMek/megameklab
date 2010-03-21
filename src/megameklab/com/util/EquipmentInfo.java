@@ -18,6 +18,7 @@ package megameklab.com.util;
 import java.math.BigInteger;
 
 import megamek.common.Aero;
+import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -63,7 +64,7 @@ public class EquipmentInfo {
 
     /**
      * Info for Aeros
-     * 
+     *
      * @param aero
      * @param mount
      */
@@ -125,7 +126,7 @@ public class EquipmentInfo {
 
     /**
      * Info for non Aero Entities.
-     * 
+     *
      * @param unit
      * @param mount
      */
@@ -134,6 +135,9 @@ public class EquipmentInfo {
         name = UnitUtil.getCritName(unit, mount.getType());
         if (mount.isRearMounted()) {
             name += "(R)";
+        }
+        if (mount.isBodyMounted() && (unit instanceof BattleArmor) && ((((BattleArmor)unit).getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED))) {
+            name += " (Body)";
         }
 
         count = 1;
