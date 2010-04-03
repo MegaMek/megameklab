@@ -34,6 +34,7 @@ import megamek.common.BipedMech;
 import megamek.common.Entity;
 import megamek.common.EntityListFile;
 import megamek.common.Infantry;
+import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Protomech;
@@ -46,6 +47,7 @@ import megameklab.com.ui.Mek.Printing.PrintMech;
 import megameklab.com.ui.Mek.Printing.PrintQuad;
 import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.VTOL.Printing.PrintVTOL;
+import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 
@@ -76,6 +78,13 @@ public class UnitPrintManager {
                 vtolList.add((VTOL) entity);
 
                 PrintVTOL sp = new PrintVTOL(vtolList, false);
+
+                sp.print();
+            } else if (entity instanceof LargeSupportTank) {
+                ArrayList<LargeSupportTank> largeSupportTankList = new ArrayList<LargeSupportTank>();
+                largeSupportTankList.add((LargeSupportTank) entity);
+
+                PrintLargeSupportVehicle sp = new PrintLargeSupportVehicle(largeSupportTankList, false);
 
                 sp.print();
             } else {
@@ -168,12 +177,12 @@ public class UnitPrintManager {
         for (Entity unit : loadedUnits) {
             if (unit instanceof QuadMech) {
                 UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech)unit);
+                UnitUtil.expandUnitMounts((Mech) unit);
 
                 quadList.add((Mech) unit);
             } else if (unit instanceof BipedMech) {
                 UnitUtil.removeOneShotAmmo(unit);
-                UnitUtil.expandUnitMounts((Mech)unit);
+                UnitUtil.expandUnitMounts((Mech) unit);
 
                 bipedList.add((Mech) unit);
             } else if (unit instanceof VTOL) {
