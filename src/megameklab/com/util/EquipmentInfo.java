@@ -122,6 +122,11 @@ public class EquipmentInfo {
                 longRange = 5;
             }
         }
+
+        hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
+        hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
+        hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
+
     }
 
     /**
