@@ -1557,6 +1557,18 @@ public class ImageHelper {
             g2d.setFont(font);
             g2d.drawString(String.format("%1$s (+%2$s/+%3$s/+%4$s)", ba.getStealthName(), ba.getShortStealthMod(), ba.getMediumStealthMod(), ba.getLongStealthMod()), positionX, positionY);
         }
+
+        if (ba.isFireResistant()) {
+            Font font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.setFont(font);
+            g2d.drawString(armorString, positionX, positionY);
+            positionX += ImageHelper.getStringWidth(g2d, armorString, font);
+
+            font = UnitUtil.deriveFont(9.0f);
+            g2d.setFont(font);
+            g2d.drawString("Fire Resistant", positionX, positionY);
+
+        }
     }
 
     public static void printBattleArmorWeaponsNEquipment(BattleArmor ba, Graphics2D g2d) {
@@ -1629,27 +1641,12 @@ public class ImageHelper {
 
             ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
 
-            EquipmentInfo artemisEQ = null;
-
-            if (eqHash.containsKey("Artemis IV FCS")) {
-                artemisEQ = eqHash.get("Artemis IV FCS");
-                artemisEQ.count = 1;
-                eqHash.remove("Artemis IV FCS");
-            }
-
             for (EquipmentInfo eqi : eqHash.values()) {
                 equipmentList.add(eqi);
 
             }
 
             Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
-
-            for (int eqPos = 0; eqPos < equipmentList.size(); eqPos++) {
-                EquipmentInfo eqi = equipmentList.get(eqPos);
-                if ((eqi.isMML || (eqi.name.indexOf("LRM") > -1) || (eqi.name.indexOf("SRM") > -1)) && (artemisEQ != null)) {
-                    equipmentList.add(++eqPos, artemisEQ);
-                }
-            }
 
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
@@ -1754,6 +1751,20 @@ public class ImageHelper {
                     } else {
                         g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
+                }
+
+                if (eqi.hasAmmo) {
+
+                    if (!newLineNeeded) {
+                        linePoint += lineFeed;
+                        newLineNeeded = true;
+                    }
+                    StringBuilder ammoString = new StringBuilder("Ammo ");
+
+                    for (int ammoCount = 0; ammoCount < eqi.ammoCount; ammoCount++) {
+                        ammoString.append("O ");
+                    }
+                    g2d.drawString(ammoString.toString(), typePoint, (int) (linePoint + lineFeed));
                 }
 
                 linePoint += lineFeed;

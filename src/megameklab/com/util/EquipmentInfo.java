@@ -18,6 +18,7 @@ package megameklab.com.util;
 import java.math.BigInteger;
 
 import megamek.common.Aero;
+import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.MiscType;
@@ -38,6 +39,7 @@ public class EquipmentInfo {
     public int heat = 0;
     public int techLevel = TechConstants.T_INTRO_BOXSET;
     public int secondaryLocation = Entity.LOC_NONE;
+    public int ammoCount = 0;
 
     public String name = "";
     public String damage = "[E]";
@@ -48,6 +50,7 @@ public class EquipmentInfo {
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
     public boolean hasArtemisV = false;
+    public boolean hasAmmo = false;
 
     public int c3Level = 0;
 
@@ -64,7 +67,7 @@ public class EquipmentInfo {
 
     /**
      * Info for Aeros
-     *
+     * 
      * @param aero
      * @param mount
      */
@@ -131,7 +134,7 @@ public class EquipmentInfo {
 
     /**
      * Info for non Aero Entities.
-     *
+     * 
      * @param unit
      * @param mount
      */
@@ -141,7 +144,7 @@ public class EquipmentInfo {
         if (mount.isRearMounted()) {
             name += "(R)";
         }
-        if (mount.isBodyMounted() && (unit instanceof BattleArmor) && ((((BattleArmor)unit).getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED))) {
+        if (mount.isBodyMounted() && (unit instanceof BattleArmor) && ((((BattleArmor) unit).getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED))) {
             name += " (Body)";
         }
 
@@ -154,7 +157,14 @@ public class EquipmentInfo {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                 c3Level = C3M;
             }
+
             WeaponType weapon = (WeaponType) mount.getType();
+
+            if ((unit instanceof BattleArmor) && (weapon.getAmmoType() != AmmoType.T_NA)) {
+                hasAmmo = true;
+                ammoCount = UnitUtil.getBAAmmoCount(unit, weapon);
+            }
+
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
 
