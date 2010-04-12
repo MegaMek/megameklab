@@ -1327,6 +1327,20 @@ public class UnitUtil {
         }
     }
 
+    public static int getBAAmmoCount(Entity ba, WeaponType weapon) {
+        int ammoCount = 0;
+
+        for (Mounted mount : ba.getAmmo()) {
+            AmmoType ammo = (AmmoType) mount.getType();
+
+            if ((ammo.getRackSize() == weapon.getRackSize()) && (ammo.getAmmoType() == weapon.getAmmoType())) {
+                ammoCount++;
+            }
+        }
+
+        return ammoCount;
+    }
+
     public static String getCritName(Entity unit, EquipmentType eq) {
         if (unit.isMixedTech() && (eq.getTechLevel() != TechConstants.T_ALLOWED_ALL)) {
 
