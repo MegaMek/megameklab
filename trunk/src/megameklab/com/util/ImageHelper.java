@@ -1764,7 +1764,7 @@ public class ImageHelper {
                     for (int ammoCount = 0; ammoCount < eqi.ammoCount; ammoCount++) {
                         ammoString.append("O ");
                     }
-                    g2d.drawString(ammoString.toString(), typePoint, (int) (linePoint + lineFeed));
+                    g2d.drawString(ammoString.toString(), typePoint + 5, (int) (linePoint + lineFeed));
                 }
 
                 linePoint += lineFeed;
