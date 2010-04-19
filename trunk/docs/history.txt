@@ -29,6 +29,7 @@ V 0.0.0.17 Dev
 + Print note for burdened BA
 + Fix for Talon crits
 + New MM.jar
++ Bug: Clan Light TAG not showing up
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles
