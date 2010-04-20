@@ -198,7 +198,7 @@ public class ArmorTab extends ITab implements ActionListener {
         // auto-place stealth crits
         if (getArmorType() == EquipmentType.T_ARMOR_STEALTH) {
             for (int loc = 0; loc < getMech().locations(); loc++) {
-                if (loc != Mech.LOC_HEAD) {
+                if ((loc != Mech.LOC_HEAD) && (loc != Mech.LOC_CT)) {
                     try {
                         getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), loc, false);
                         getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), loc, false);
