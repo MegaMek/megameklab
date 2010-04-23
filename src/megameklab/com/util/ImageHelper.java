@@ -1636,6 +1636,11 @@ public class ImageHelper {
             if (eqHash.size() < 1) {
                 continue;
             }
+            String loc = ba.getLocationName(pos);
+            g2d.setFont(UnitUtil.getNewFont(g2d, loc, false, 68, 7.0f));
+            g2d.drawString(loc, typePoint, linePoint);
+            linePoint += lineFeed;
+            typePoint += 5;
 
             int count = 0;
 
@@ -1756,7 +1761,6 @@ public class ImageHelper {
                 if (eqi.hasAmmo) {
 
                     if (!newLineNeeded) {
-                        linePoint += lineFeed;
                         newLineNeeded = true;
                     }
                     StringBuilder ammoString = new StringBuilder("Ammo ");
@@ -1772,6 +1776,7 @@ public class ImageHelper {
                     linePoint += lineFeed;
                 }
                 count++;
+                typePoint -= 5;
             }
             if (ba.isBurdened()) {
                 String burdenInfo = "must detach missiles before jumping or swarm/leg attacks";
