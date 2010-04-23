@@ -996,7 +996,7 @@ public class UnitUtil {
                             partialWingDone = true;
                         }
                     } else if (mount.getType().hasFlag(MiscType.F_TALON)) {
-                        if (!partialWingDone) {
+                        if (!talonsDone) {
                             unit.getEquipment().remove(mount);
                             unit.getMisc().remove(mount);
                             for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
@@ -1347,10 +1347,13 @@ public class UnitUtil {
         }
     }
 
-    public static int getBAAmmoCount(Entity ba, WeaponType weapon) {
+    public static int getBAAmmoCount(Entity ba, WeaponType weapon, int location) {
         int ammoCount = 0;
 
         for (Mounted mount : ba.getAmmo()) {
+            if (mount.getLocation() != location) {
+                continue;
+            }
             AmmoType ammo = (AmmoType) mount.getType();
 
             if ((ammo.getRackSize() == weapon.getRackSize()) && (ammo.getAmmoType() == weapon.getAmmoType())) {

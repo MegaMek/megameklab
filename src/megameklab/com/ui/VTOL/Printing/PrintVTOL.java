@@ -499,7 +499,7 @@ public class PrintVTOL implements Printable {
 
         int pips = Math.min(5, totalArmor);
         totalArmor -= pips;
-        for (int pos = 1; pos <= 5; pos++) {
+        for (int pos = 1; pos <= pips; pos++) {
             ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], 8.0f);
             topColumn[0] += pipShift[0];
         }

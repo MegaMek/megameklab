@@ -39,7 +39,9 @@ public class EquipmentInfo {
     public int heat = 0;
     public int techLevel = TechConstants.T_INTRO_BOXSET;
     public int secondaryLocation = Entity.LOC_NONE;
+    // the following two are for BA ammo counting
     public int ammoCount = 0;
+    public int location = 0;
 
     public String name = "";
     public String damage = "[E]";
@@ -67,7 +69,7 @@ public class EquipmentInfo {
 
     /**
      * Info for Aeros
-     * 
+     *
      * @param aero
      * @param mount
      */
@@ -134,7 +136,7 @@ public class EquipmentInfo {
 
     /**
      * Info for non Aero Entities.
-     * 
+     *
      * @param unit
      * @param mount
      */
@@ -162,7 +164,8 @@ public class EquipmentInfo {
 
             if ((unit instanceof BattleArmor) && (weapon.getAmmoType() != AmmoType.T_NA)) {
                 hasAmmo = true;
-                ammoCount = UnitUtil.getBAAmmoCount(unit, weapon);
+                ammoCount = UnitUtil.getBAAmmoCount(unit, weapon, mount.getLocation());
+                location = mount.getLocation();
             }
 
             minRange = Math.max(0, weapon.minimumRange);
