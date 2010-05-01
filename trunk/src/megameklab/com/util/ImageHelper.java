@@ -1636,11 +1636,15 @@ public class ImageHelper {
             if (eqHash.size() < 1) {
                 continue;
             }
-            String loc = ba.getLocationName(pos);
-            g2d.setFont(UnitUtil.getNewFont(g2d, loc, false, 68, 7.0f));
-            g2d.drawString(loc, typePoint, linePoint);
-            linePoint += lineFeed;
-            typePoint += 5;
+            boolean indented = false;
+            if (pos != BattleArmor.LOC_SQUAD) {
+                String loc = ba.getLocationName(pos);
+                g2d.setFont(UnitUtil.getNewFont(g2d, loc, false, 68, 7.0f));
+                g2d.drawString(loc, typePoint, linePoint);
+                linePoint += lineFeed;
+                typePoint += 5;
+                indented = true;
+            }
 
             int count = 0;
 
@@ -1776,7 +1780,9 @@ public class ImageHelper {
                     linePoint += lineFeed;
                 }
                 count++;
-                typePoint -= 5;
+                if (indented) {
+                    typePoint -= 5;
+                }
             }
             if (ba.isBurdened()) {
                 String burdenInfo = "must detach missiles before jumping or swarm/leg attacks";
