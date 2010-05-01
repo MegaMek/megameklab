@@ -674,6 +674,7 @@ public class UnitUtil {
                 ex.printStackTrace();
             }
         }
+        unit.resetSinks();
     }
 
     public static String getHeatSinkType(int type, boolean clan) {
