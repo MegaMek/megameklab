@@ -90,7 +90,7 @@ public class PrintBattleArmor implements Printable {
         System.gc();
         Font font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2010", 105f, 744.5f);
+        g2d.drawString("2010", 62.5f, 745f);
 
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
     }
