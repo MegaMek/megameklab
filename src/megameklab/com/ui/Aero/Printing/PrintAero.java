@@ -186,7 +186,7 @@ public class PrintAero implements Printable {
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2010", 105f, 745f);
+        g2d.drawString("2010", 62.5f, 745f);
     }
 
     private void printArmor(Graphics2D g2d) {
@@ -279,14 +279,17 @@ public class PrintAero implements Printable {
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = { 302, 167 };
-        float[] pipShift = { 7, 7 };
+        float[] topColumn =
+            { 302, 167 };
+        float[] pipShift =
+            { 7, 7 };
         float maxColumns = 25;
 
         Vector<float[]> pipPlotter = new Vector<float[]>(200);
         for (int pos = 1; pos <= 200; pos++) {
             // ImageHelper.drawAeroArmorPip(g2d, topColumn[0], topColumn[1]);
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if (pos % maxColumns == 0) {
                 topColumn[1] += pipShift[1];
@@ -310,13 +313,16 @@ public class PrintAero implements Printable {
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[] { 374, 303 };
-        float[] pipShift = new float[] { 7, 7 };
+        float[] topColumn = new float[]
+            { 374, 303 };
+        float[] pipShift = new float[]
+            { 7, 7 };
         float maxColumns = 6;
 
         Vector<float[]> pipPlotter = new Vector<float[]>(132);
         for (int pos = 1; pos <= 132; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if (pos % maxColumns == 0) {
                 topColumn[1] += pipShift[1];
@@ -336,15 +342,18 @@ public class PrintAero implements Printable {
     }
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[] { 336f, 325 };
-        float[] pipShift = new float[] { 6.3f, 7 };
+        float[] topColumn = new float[]
+            { 336f, 325 };
+        float[] pipShift = new float[]
+            { 6.3f, 7 };
 
         int numberPerRow = 3;
         int curretNumber = 0;
         Vector<float[]> pipPlotter = new Vector<float[]>(132);
 
         for (int pos = 1; pos < 148; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
 
             if (++curretNumber == numberPerRow) {
@@ -399,15 +408,18 @@ public class PrintAero implements Printable {
     }
 
     private void printRightArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[] { 430f, 325 };
-        float[] pipShift = new float[] { 6.3f, 7 };
+        float[] topColumn = new float[]
+            { 430f, 325 };
+        float[] pipShift = new float[]
+            { 6.3f, 7 };
 
         int numberPerRow = 3;
         int curretNumber = 0;
         Vector<float[]> pipPlotter = new Vector<float[]>(132);
 
         for (int pos = 1; pos < 148; pos++) {
-            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[]
+                { topColumn[0], topColumn[1] });
 
             topColumn[0] += pipShift[0];
 
@@ -466,12 +478,15 @@ public class PrintAero implements Printable {
     }
 
     private void printStruct(Graphics2D g2d, int totalArmor) {
-        int[] topColumn = new int[] { 366, 265 };
-        int[] pipShift = new int[] { 7, 7 };
+        int[] topColumn = new int[]
+            { 366, 265 };
+        int[] pipShift = new int[]
+            { 7, 7 };
 
         Vector<int[]> pipPlotter = new Vector<int[]>(132);
         for (int pos = 1; pos <= 32; pos++) {
-            pipPlotter.add(new int[] { topColumn[0], topColumn[1] });
+            pipPlotter.add(new int[]
+                { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if (pos % 8 == 0) {
                 topColumn[1] += pipShift[1];
