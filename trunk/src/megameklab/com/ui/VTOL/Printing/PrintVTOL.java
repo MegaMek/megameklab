@@ -247,12 +247,12 @@ public class PrintVTOL implements Printable {
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2010", 105f, 374.5f);
+        g2d.drawString("2010", 62.5f, 374.5f);
 
         if (vtol2 != null) {
             printVTOL2Data(g2d);
         } else {
-            g2d.drawString("2010", 105f, 745.5f);
+            g2d.drawString("2010", 62.5f, 745f);
         }
     }
 
