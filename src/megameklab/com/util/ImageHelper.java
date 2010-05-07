@@ -1576,6 +1576,8 @@ public class ImageHelper {
     }
 
     public static void printBattleArmorWeaponsNEquipment(BattleArmor ba, Graphics2D g2d, float offset) {
+
+        int qtyPoint = 20;
         int typePoint = 26;
         int damagePoint = 130;
         int minPoint = 150;
@@ -1669,6 +1671,8 @@ public class ImageHelper {
                 String name = eqi.name.trim();
 
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
+
+                g2d.drawString(Integer.toString(eqi.count * ba.getNumberActiverTroopers()), qtyPoint, linePoint);
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
