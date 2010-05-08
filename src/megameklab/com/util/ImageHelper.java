@@ -165,12 +165,21 @@ public class ImageHelper {
     }
 
     public static Image getFluffImage(String image) {
+
+        if ((image == null) || (image.trim().length() < 1)) {
+            return null;
+        }
+
         Image fluff = null;
 
         String path = new File(fluffPath).getAbsolutePath() + File.separatorChar + image;
 
         if (!(new File(path).exists())) {
-            return null;
+
+            path = new File(image).getAbsolutePath();
+            if (!(new File(path).exists())) {
+                return null;
+            }
         }
         fluff = new ImageIcon(path).getImage();
         return fluff;
@@ -180,7 +189,12 @@ public class ImageHelper {
         Image fluff = null;
 
         String path = new File(fluffPath).getAbsolutePath() + File.separatorChar + dir + File.separatorChar;
-        fluff = ImageHelper.getFluffPNG(unit, path);
+
+        fluff = getFluffImage(unit.getFluff().getMMLImagePath());
+
+        if (fluff == null) {
+            fluff = ImageHelper.getFluffPNG(unit, path);
+        }
 
         if (fluff == null) {
             fluff = ImageHelper.getFluffJPG(unit, path);
