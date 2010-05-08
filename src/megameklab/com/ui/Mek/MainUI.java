@@ -413,7 +413,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
         FileDialog fDialog = new FileDialog(this, "Save As", FileDialog.SAVE);
 
-        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+        String filePathName = new File(System.getProperty("user.dir").toString() + "/data/mechfiles/").getAbsolutePath();
 
         fDialog.setDirectory(filePathName);
         fDialog.setFile(entity.getChassis() + " " + entity.getModel() + ".mtf");
