@@ -858,7 +858,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
                 unitFluff.setEditable(false);
                 unitFluff.setLineWrap(true);
                 // unitFluff.setText(parseFluff(currEntity.getFluff()));
-                unitFluff.setText(selectedUnit.getFluff());
+                unitFluff.setText(selectedUnit.getFluff().getHistory());
                 unitFluff.setCaretPosition(0);
 
             } else {
