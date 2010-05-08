@@ -18,17 +18,21 @@ package megameklab.com.ui.Mek.tabs;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -114,6 +118,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private CriticalView critView = null;
     private ImagePanel unitImage = null;
+    private JButton browseButton = null;
 
     public StructureTab(Mech unit) {
         JScrollPane scroll = new JScrollPane();
@@ -129,10 +134,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         JPanel scrollPanel = new JPanel();
         scrollPanel.setLayout(new BoxLayout(scrollPanel, BoxLayout.X_AXIS));
         critView = new CriticalView(getMech(), false, refresh);
-        unitImage = new ImagePanel(getMech(), ImageHelper.imageMech);
-        scrollPanel.add(critView);
-        scrollPanel.add(unitImage);
 
+        JPanel imagePanel = new JPanel();
+
+        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
+
+        unitImage = new ImagePanel(getMech(), ImageHelper.imageMech);
+        browseButton = new JButton("Browse");
+        browseButton.addActionListener(this);
+
+        imagePanel.add(unitImage);
+        imagePanel.add(browseButton);
+
+        scrollPanel.add(critView);
+        scrollPanel.add(imagePanel);
         scroll.setViewportView(scrollPanel);
 
         this.add(splitter);
@@ -379,6 +394,33 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     public void actionPerformed(ActionEvent e) {
 
+        if ((e.getSource() instanceof JButton) && e.getSource().equals(browseButton)) {
+            FileDialog fDialog = new FileDialog(new JFrame(), "Image Path", FileDialog.LOAD);
+
+            if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
+                String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
+                String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
+                fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
+                fDialog.setDirectory(fullPath);
+                fDialog.setFile(imageName);
+            } else {
+                fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + "mech" + File.separatorChar);
+                fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
+            }
+
+            fDialog.setLocationRelativeTo(this);
+
+            fDialog.setVisible(true);
+
+            if (fDialog.getFile() != null) {
+                String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+                relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+                getMech().getFluff().setMMLImagePath(relativeFilePath);
+                refresh();
+            }
+            return;
+        }
+
         if (e.getSource() instanceof JComboBox) {
             JComboBox combo = (JComboBox) e.getSource();
             removeAllActionListeners();
@@ -593,7 +635,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
-                        // only set techlevel and armor techlevel to advanced if we're not already experimental or unofficial
+                        // only set techlevel and armor techlevel to advanced if
+                        // we're not already experimental or unofficial
                         if ((getMech().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
                             getMech().setTechLevel(TechConstants.T_IS_ADVANCED);
                             getMech().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
@@ -607,7 +650,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
                         }
-                        // only set techlevel and armor techlevel to advanced if we're not already experimental or unofficial
+                        // only set techlevel and armor techlevel to advanced if
+                        // we're not already experimental or unofficial
                         if ((getMech().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
                             getMech().setTechLevel(TechConstants.T_CLAN_ADVANCED);
                             getMech().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
