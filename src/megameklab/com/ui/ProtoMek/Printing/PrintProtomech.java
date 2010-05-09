@@ -436,31 +436,28 @@ public class PrintProtomech implements Printable {
                 for (; currentPosition < protoMechList.size(); currentPosition += 5) {
                     PrinterJob pj = PrinterJob.getPrinterJob();
                     pj.setPrintService(masterPrintJob.getPrintService());
-                    if (pj.printDialog()) {
-                        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+                    PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-                        aset.add(PrintQuality.HIGH);
+                    aset.add(PrintQuality.HIGH);
 
-                        PageFormat pageFormat = new PageFormat();
-                        pageFormat = pj.getPageFormat(null);
+                    PageFormat pageFormat = new PageFormat();
+                    pageFormat = pj.getPageFormat(null);
 
-                        Paper p = pageFormat.getPaper();
-                        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                        pageFormat.setPaper(p);
+                    Paper p = pageFormat.getPaper();
+                    p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                    pageFormat.setPaper(p);
 
-                        pj.setPrintable(this, pageFormat);
+                    pj.setPrintable(this, pageFormat);
 
-                        protoMech = protoMechList.get(currentPosition);
-                        pj.setJobName(protoMech.getChassis() + " " + protoMech.getModel());
+                    protoMech = protoMechList.get(currentPosition);
+                    pj.setJobName(protoMech.getChassis() + " " + protoMech.getModel());
 
-                        try {
-                            pj.print(aset);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        System.gc();
+                    try {
+                        pj.print(aset);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-
+                    System.gc();
                 }
             }
         } catch (Exception ex) {

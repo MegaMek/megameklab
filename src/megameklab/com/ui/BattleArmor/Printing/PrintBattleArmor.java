@@ -29,6 +29,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.BattleArmor;
+import megamek.common.EntityMovementMode;
 import megamek.common.MiscType;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
@@ -159,6 +160,11 @@ public class PrintBattleArmor implements Printable {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
             String movment = String.format("%1$s: ", battleArmor.getMovementModeAsString());
+
+            if (battleArmor.getMovementMode() == EntityMovementMode.INF_LEG) {
+                movment = "Jump:";
+            }
+
             g2d.drawString(movment, 133, 130 + currentMargin);
 
             float positionY = 133 + ImageHelper.getStringWidth(g2d, movment, font);
@@ -210,30 +216,28 @@ public class PrintBattleArmor implements Printable {
                 for (; currentPosition < battleArmorList.size(); currentPosition += 5) {
                     PrinterJob pj = PrinterJob.getPrinterJob();
                     pj.setPrintService(masterPrintJob.getPrintService());
-                    if (pj.printDialog()) {
-                        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+                    PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-                        aset.add(PrintQuality.HIGH);
+                    aset.add(PrintQuality.HIGH);
 
-                        PageFormat pageFormat = new PageFormat();
-                        pageFormat = pj.getPageFormat(null);
+                    PageFormat pageFormat = new PageFormat();
+                    pageFormat = pj.getPageFormat(null);
 
-                        Paper p = pageFormat.getPaper();
-                        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                        pageFormat.setPaper(p);
+                    Paper p = pageFormat.getPaper();
+                    p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                    pageFormat.setPaper(p);
 
-                        pj.setPrintable(this, pageFormat);
+                    pj.setPrintable(this, pageFormat);
 
-                        battleArmor = battleArmorList.get(currentPosition);
-                        pj.setJobName(battleArmor.getChassis() + " " + battleArmor.getModel());
+                    battleArmor = battleArmorList.get(currentPosition);
+                    pj.setJobName(battleArmor.getChassis() + " " + battleArmor.getModel());
 
-                        try {
-                            pj.print(aset);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        System.gc();
+                    try {
+                        pj.print(aset);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
+                    System.gc();
 
                 }
 
