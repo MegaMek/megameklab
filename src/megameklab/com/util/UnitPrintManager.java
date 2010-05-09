@@ -49,6 +49,7 @@ import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.VTOL.Printing.PrintVTOL;
 import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
+import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 
 public class UnitPrintManager {
@@ -103,7 +104,7 @@ public class UnitPrintManager {
         printAllUnits(loadedUnits, singlePrint);
     }
 
-    private static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
+    public static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
         ArrayList<Mech> quadList = new ArrayList<Mech>();
         ArrayList<Mech> bipedList = new ArrayList<Mech>();
         ArrayList<Tank> tankList = new ArrayList<Tank>();
@@ -197,6 +198,19 @@ public class UnitPrintManager {
 
         printMenu.add(item);
 
+        printMenu.addSeparator();
+
+        item = new JMenuItem("Queue Units to Print");
+        item.setMnemonic('Q');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new UnitPrintQueueDialog(parent);
+            }
+        });
+
+        printMenu.add(item);
+        printMenu.addSeparator();
+
         item = new JMenuItem("Other Unit");
         item.setMnemonic('O');
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
@@ -213,6 +227,15 @@ public class UnitPrintManager {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UnitPrintManager.printUnitFile(parent);
+            }
+        });
+        printMenu.add(item);
+
+        item = new JMenuItem("From File(Single Unit Per RS)");
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                UnitPrintManager.printUnitFile(parent, true);
             }
         });
         printMenu.add(item);
@@ -259,6 +282,10 @@ public class UnitPrintManager {
     }
 
     public static void printUnitFile(JFrame parent) {
+        printUnitFile(parent, false);
+    }
+
+    public static void printUnitFile(JFrame parent, boolean singleUnit) {
         String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
 
         JFileChooser f = new JFileChooser(filePathName);
@@ -285,8 +312,7 @@ public class UnitPrintManager {
                 Entity tempEntity = new MechFileParser(entityFile).getEntity();
                 unitList.add(tempEntity);
             }
-            printAllUnits(unitList, false);
-            // UnitUtil.updateLoadedTank(entity);
+            printAllUnits(unitList, singleUnit);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

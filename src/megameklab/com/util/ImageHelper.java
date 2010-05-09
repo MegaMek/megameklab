@@ -88,7 +88,7 @@ public class ImageHelper {
             recordSheet = new ImageIcon(path + "twvee-vtol.png").getImage();
         } else if (unit instanceof Tank) {
             if (unit instanceof LargeSupportTank) {
-                recordSheet = new ImageIcon(path + "largesupportvee.png").getImage();
+                recordSheet = new ImageIcon(path + "twvee-lgsupground.png").getImage();
             } else {
                 String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + ".png";
                 recordSheet = new ImageIcon(path + imageName).getImage();
