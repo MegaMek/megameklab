@@ -69,7 +69,7 @@ public class EquipmentInfo {
 
     /**
      * Info for Aeros
-     *
+     * 
      * @param aero
      * @param mount
      */
@@ -136,7 +136,7 @@ public class EquipmentInfo {
 
     /**
      * Info for non Aero Entities.
-     *
+     * 
      * @param unit
      * @param mount
      */
@@ -162,7 +162,7 @@ public class EquipmentInfo {
 
             WeaponType weapon = (WeaponType) mount.getType();
 
-            if ((unit instanceof BattleArmor) && (weapon.getAmmoType() != AmmoType.T_NA)) {
+            if ((unit instanceof BattleArmor) && (weapon.getAmmoType() != AmmoType.T_NA) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                 hasAmmo = true;
                 ammoCount = UnitUtil.getBAAmmoCount(unit, weapon, mount.getLocation());
                 location = mount.getLocation();

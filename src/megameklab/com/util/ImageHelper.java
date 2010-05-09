@@ -1591,7 +1591,6 @@ public class ImageHelper {
 
     public static void printBattleArmorWeaponsNEquipment(BattleArmor ba, Graphics2D g2d, float offset) {
 
-        int qtyPoint = 20;
         int typePoint = 26;
         int damagePoint = 130;
         int minPoint = 150;
@@ -1604,10 +1603,10 @@ public class ImageHelper {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(BattleArmor.LOC_TROOPER_6 + 1);
+        ArrayList<ArrayList<EquipmentInfo>> equipmentLocations = new ArrayList<ArrayList<EquipmentInfo>>(BattleArmor.LOC_TROOPER_6 + 1);
 
         for (int pos = 0; pos <= BattleArmor.LOC_TROOPER_6; pos++) {
-            equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
+            equipmentLocations.add(pos, new ArrayList<EquipmentInfo>());
         }
 
         for (Mounted eq : ba.getEquipment()) {
@@ -1616,29 +1615,7 @@ public class ImageHelper {
                 continue;
             }
 
-            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
-
-            String equipmentName = eq.getName();
-            if (eq.isRearMounted()) {
-                equipmentName += "(R)";
-            }
-            if (eq.isBodyMounted() && (ba.getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED)) {
-                equipmentName += " (Body)";
-            }
-
-            if (eqHash.containsKey(equipmentName)) {
-                EquipmentInfo eqi = eqHash.get(equipmentName);
-
-                if (eq.getType().getTechLevel() != eqi.techLevel) {
-                    eqi = new EquipmentInfo(ba, eq);
-                } else {
-                    eqi.count++;
-                }
-                eqHash.put(equipmentName, eqi);
-            } else {
-                EquipmentInfo eqi = new EquipmentInfo(ba, eq);
-                eqHash.put(equipmentName, eqi);
-            }
+            equipmentLocations.get(eq.getLocation()).add(new EquipmentInfo(ba, eq));
 
         }
 
@@ -1647,9 +1624,9 @@ public class ImageHelper {
 
         for (int pos = BattleArmor.LOC_SQUAD; pos <= BattleArmor.LOC_TROOPER_6; pos++) {
 
-            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
+            ArrayList<EquipmentInfo> equipmentList = equipmentLocations.get(pos);
 
-            if (eqHash.size() < 1) {
+            if (equipmentList.size() < 1) {
                 continue;
             }
             boolean indented = false;
@@ -1663,13 +1640,6 @@ public class ImageHelper {
             }
 
             int count = 0;
-
-            ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
-
-            for (EquipmentInfo eqi : eqHash.values()) {
-                equipmentList.add(eqi);
-
-            }
 
             Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
 
@@ -1685,8 +1655,6 @@ public class ImageHelper {
                 String name = eqi.name.trim();
 
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
-
-                g2d.drawString(Integer.toString(eqi.count * ba.getNumberActiverTroopers()), qtyPoint, linePoint);
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
