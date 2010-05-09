@@ -249,29 +249,27 @@ public class PrintAero implements Printable {
                 for (int pos = 0; pos < aeroList.size(); pos++) {
                     PrinterJob pj = PrinterJob.getPrinterJob();
                     pj.setPrintService(masterPrintJob.getPrintService());
-                    if (pj.printDialog()) {
-                        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+                    PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-                        aset.add(PrintQuality.HIGH);
+                    aset.add(PrintQuality.HIGH);
 
-                        PageFormat pageFormat = new PageFormat();
-                        pageFormat = pj.getPageFormat(null);
+                    PageFormat pageFormat = new PageFormat();
+                    pageFormat = pj.getPageFormat(null);
 
-                        Paper p = pageFormat.getPaper();
-                        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                        pageFormat.setPaper(p);
+                    Paper p = pageFormat.getPaper();
+                    p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                    pageFormat.setPaper(p);
 
-                        pj.setPrintable(this, pageFormat);
-                        aero = aeroList.get(pos);
-                        pj.setJobName(aero.getChassis() + " " + aero.getModel());
+                    pj.setPrintable(this, pageFormat);
+                    aero = aeroList.get(pos);
+                    pj.setJobName(aero.getChassis() + " " + aero.getModel());
 
-                        try {
-                            pj.print(aset);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        System.gc();
+                    try {
+                        pj.print(aset);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
+                    System.gc();
                 }
             }
         } catch (Exception ex) {

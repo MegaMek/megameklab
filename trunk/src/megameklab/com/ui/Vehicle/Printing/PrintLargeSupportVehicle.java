@@ -470,23 +470,24 @@ public class PrintLargeSupportVehicle implements Printable {
     public void print() {
 
         try {
-            PrinterJob pj = PrinterJob.getPrinterJob();
+            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
 
-            if (pj.printDialog()) {
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
+            if (masterPrintJob.printDialog()) {
                 for (int pos = 0; pos < largesupportankList.size(); pos++) {
+                    PrinterJob pj = PrinterJob.getPrinterJob();
+
+                    PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+
+                    aset.add(PrintQuality.HIGH);
+
+                    PageFormat pageFormat = new PageFormat();
+                    pageFormat = pj.getPageFormat(null);
+
+                    Paper p = pageFormat.getPaper();
+                    p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                    pageFormat.setPaper(p);
+
+                    pj.setPrintable(this, pageFormat);
 
                     largesupportank = largesupportankList.get(pos);
                     pj.setJobName(largesupportank.getChassis() + " " + largesupportank.getModel());
