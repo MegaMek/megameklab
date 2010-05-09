@@ -439,43 +439,47 @@ public class PrintVTOL implements Printable {
     public void print() {
 
         try {
-            PrinterJob pj = PrinterJob.getPrinterJob();
+            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
 
-            if (pj.printDialog()) {
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
+            if (masterPrintJob.printDialog()) {
                 for (int pos = 0; pos < vtolList.size(); pos++) {
+                    PrinterJob pj = PrinterJob.getPrinterJob();
+                    pj.setPrintService(masterPrintJob.getPrintService());
+                    if (pj.printDialog()) {
+                        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-                    vtol = vtolList.get(pos);
-                    pj.setJobName(vtol.getChassis() + " " + vtol.getModel());
+                        aset.add(PrintQuality.HIGH);
 
-                    if ((pos + 1 < vtolList.size()) && !singlePrint) {
-                        vtol2 = vtolList.get(++pos);
-                    } else {
-                        vtol2 = null;
+                        PageFormat pageFormat = new PageFormat();
+                        pageFormat = pj.getPageFormat(null);
+
+                        Paper p = pageFormat.getPaper();
+                        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                        pageFormat.setPaper(p);
+
+                        pj.setPrintable(this, pageFormat);
+
+                        vtol = vtolList.get(pos);
+                        pj.setJobName(vtol.getChassis() + " " + vtol.getModel());
+
+                        if ((pos + 1 < vtolList.size()) && !singlePrint) {
+                            vtol2 = vtolList.get(++pos);
+                        } else {
+                            vtol2 = null;
+                        }
+
+                        try {
+                            pj.print(aset);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        } finally {
+                            System.gc();
+                        }
                     }
 
-                    try {
-                        pj.print(aset);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    } finally {
-                        System.gc();
-                    }
                 }
-
             }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -328,7 +328,7 @@ public class PrintVehicle implements Printable {
 
         g2d.drawString(Integer.toString(tonnage), 177, 505);
 
-        int nextDataLine = 155;
+        int nextDataLine = 155 + secondPageMargin;
         int startLine = 188;
         int lineFeed = 8;
 
@@ -469,23 +469,25 @@ public class PrintVehicle implements Printable {
     public void print() {
 
         try {
-            PrinterJob pj = PrinterJob.getPrinterJob();
+            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
 
-            if (pj.printDialog()) {
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
+            if (masterPrintJob.printDialog()) {
                 for (int pos = 0; pos < tankList.size(); pos++) {
+                    PrinterJob pj = PrinterJob.getPrinterJob();
+
+                    pj.setPrintService(masterPrintJob.getPrintService());
+                    PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+
+                    aset.add(PrintQuality.HIGH);
+
+                    PageFormat pageFormat = new PageFormat();
+                    pageFormat = pj.getPageFormat(null);
+
+                    Paper p = pageFormat.getPaper();
+                    p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                    pageFormat.setPaper(p);
+
+                    pj.setPrintable(this, pageFormat);
 
                     tank = tankList.get(pos);
                     pj.setJobName(tank.getChassis() + " " + tank.getModel());
@@ -504,7 +506,6 @@ public class PrintVehicle implements Printable {
                         System.gc();
                     }
                 }
-
             }
         } catch (Exception ex) {
             ex.printStackTrace();

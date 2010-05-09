@@ -430,35 +430,38 @@ public class PrintProtomech implements Printable {
     public void print() {
 
         try {
-            PrinterJob pj = PrinterJob.getPrinterJob();
+            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
 
-            if (pj.printDialog()) {
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
+            if (masterPrintJob.printDialog()) {
                 for (; currentPosition < protoMechList.size(); currentPosition += 5) {
+                    PrinterJob pj = PrinterJob.getPrinterJob();
+                    pj.setPrintService(masterPrintJob.getPrintService());
+                    if (pj.printDialog()) {
+                        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-                    protoMech = protoMechList.get(currentPosition);
-                    pj.setJobName(protoMech.getChassis() + " " + protoMech.getModel());
+                        aset.add(PrintQuality.HIGH);
 
-                    try {
-                        pj.print(aset);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                        PageFormat pageFormat = new PageFormat();
+                        pageFormat = pj.getPageFormat(null);
+
+                        Paper p = pageFormat.getPaper();
+                        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                        pageFormat.setPaper(p);
+
+                        pj.setPrintable(this, pageFormat);
+
+                        protoMech = protoMechList.get(currentPosition);
+                        pj.setJobName(protoMech.getChassis() + " " + protoMech.getModel());
+
+                        try {
+                            pj.print(aset);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        System.gc();
                     }
-                    System.gc();
-                }
 
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();

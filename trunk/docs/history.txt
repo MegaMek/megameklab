@@ -34,6 +34,9 @@ V 0.0.0.17 Dev
 + Bug: BA Ammo printing not quite right
 + Bug: BA weapons not printing correctly
 + Bug: Long BA names overprinting Year
++ Bug: Tank 2 print stats in Tank 1's Area
++ Bug: Multiple units not printing correctly
++ Can not Select multiple Files to print at once.
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles

@@ -243,35 +243,36 @@ public class PrintAero implements Printable {
     public void print() {
 
         try {
-            PrinterJob pj = PrinterJob.getPrinterJob();
+            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
 
-            if (pj.printDialog()) {
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
+            if (masterPrintJob.printDialog()) {
                 for (int pos = 0; pos < aeroList.size(); pos++) {
+                    PrinterJob pj = PrinterJob.getPrinterJob();
+                    pj.setPrintService(masterPrintJob.getPrintService());
+                    if (pj.printDialog()) {
+                        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-                    aero = aeroList.get(pos);
-                    pj.setJobName(aero.getChassis() + " " + aero.getModel());
+                        aset.add(PrintQuality.HIGH);
 
-                    try {
-                        pj.print(aset);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                        PageFormat pageFormat = new PageFormat();
+                        pageFormat = pj.getPageFormat(null);
+
+                        Paper p = pageFormat.getPaper();
+                        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                        pageFormat.setPaper(p);
+
+                        pj.setPrintable(this, pageFormat);
+                        aero = aeroList.get(pos);
+                        pj.setJobName(aero.getChassis() + " " + aero.getModel());
+
+                        try {
+                            pj.print(aset);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        System.gc();
                     }
-                    System.gc();
                 }
-
             }
         } catch (Exception ex) {
             ex.printStackTrace();
