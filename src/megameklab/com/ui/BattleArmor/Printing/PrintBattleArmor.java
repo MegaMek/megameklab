@@ -172,8 +172,9 @@ public class PrintBattleArmor implements Printable {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
         g2d.drawString(myFormatter.format(battleArmor.calculateBattleValue(true, true)) + "/" + myFormatter.format(battleArmor.calculateBattleValue(true, true, true)), 330, 206 + currentMargin);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(battleArmor.getCost(true)) + " C-bills", 235, 206 + currentMargin);
+        // myFormatter = new DecimalFormat("#,###.##");
+        // g2d.drawString(myFormatter.format(battleArmor.getCost(true)) +
+        // " C-bills", 235, 206 + currentMargin);
 
     }
 
@@ -203,33 +204,37 @@ public class PrintBattleArmor implements Printable {
     public void print() {
 
         try {
-            PrinterJob pj = PrinterJob.getPrinterJob();
+            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
 
-            if (pj.printDialog()) {
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
+            if (masterPrintJob.printDialog()) {
                 for (; currentPosition < battleArmorList.size(); currentPosition += 5) {
+                    PrinterJob pj = PrinterJob.getPrinterJob();
+                    pj.setPrintService(masterPrintJob.getPrintService());
+                    if (pj.printDialog()) {
+                        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-                    battleArmor = battleArmorList.get(currentPosition);
-                    pj.setJobName(battleArmor.getChassis() + " " + battleArmor.getModel());
+                        aset.add(PrintQuality.HIGH);
 
-                    try {
-                        pj.print(aset);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                        PageFormat pageFormat = new PageFormat();
+                        pageFormat = pj.getPageFormat(null);
+
+                        Paper p = pageFormat.getPaper();
+                        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                        pageFormat.setPaper(p);
+
+                        pj.setPrintable(this, pageFormat);
+
+                        battleArmor = battleArmorList.get(currentPosition);
+                        pj.setJobName(battleArmor.getChassis() + " " + battleArmor.getModel());
+
+                        try {
+                            pj.print(aset);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        System.gc();
                     }
-                    System.gc();
+
                 }
 
             }

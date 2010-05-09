@@ -16,6 +16,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -33,7 +34,6 @@ import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.Entity;
 import megamek.common.EntityListFile;
-import megamek.common.Infantry;
 import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
@@ -55,76 +55,11 @@ public class UnitPrintManager {
 
     public static boolean printEntity(Entity entity) {
 
-        if (entity instanceof Mech) {
-            if (entity instanceof QuadMech) {
-                ArrayList<Mech> mechList = new ArrayList<Mech>();
-                mechList.add((Mech) entity);
+        Vector<Entity> unitList = new Vector<Entity>();
 
-                PrintQuad sp = new PrintQuad(mechList);
+        unitList.add(entity);
 
-                sp.print();
-            } else {
-                ArrayList<Mech> mechList = new ArrayList<Mech>();
-                mechList.add((Mech) entity);
-
-                PrintMech sp = new PrintMech(mechList);
-
-                sp.print();
-            }
-        } else if (entity instanceof Tank) {
-
-            if (entity instanceof VTOL) {
-                ArrayList<VTOL> vtolList = new ArrayList<VTOL>();
-                vtolList.add((VTOL) entity);
-
-                PrintVTOL sp = new PrintVTOL(vtolList, false);
-
-                sp.print();
-            } else if (entity instanceof LargeSupportTank) {
-                ArrayList<LargeSupportTank> largeSupportTankList = new ArrayList<LargeSupportTank>();
-                largeSupportTankList.add((LargeSupportTank) entity);
-
-                PrintLargeSupportVehicle sp = new PrintLargeSupportVehicle(largeSupportTankList, false);
-
-                sp.print();
-            } else {
-                ArrayList<Tank> tankList = new ArrayList<Tank>();
-                tankList.add((Tank) entity);
-
-                PrintVehicle sp = new PrintVehicle(tankList, false);
-
-                sp.print();
-
-            }
-        } else if (entity instanceof Infantry) {
-            if (entity instanceof BattleArmor) {
-                ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
-                baList.add((BattleArmor) entity);
-
-                PrintBattleArmor sp = new PrintBattleArmor(baList);
-
-                sp.print();
-            }
-        } else if (entity instanceof Aero) {
-            ArrayList<Aero> aeroList = new ArrayList<Aero>();
-            aeroList.add((Aero) entity);
-
-            PrintAero sp = new PrintAero(aeroList);
-
-            sp.print();
-        } else if (entity instanceof Protomech) {
-            ArrayList<Protomech> protoList = new ArrayList<Protomech>();
-            protoList.add((Protomech) entity);
-
-            PrintProtomech sp = new PrintProtomech(protoList);
-
-            sp.print();
-        } else {
-            System.err.println("Unknown Entity type: " + entity.toString());
-            return false;
-        }
-
-        return true;
+        return printAllUnits(unitList, false);
     }
 
     public static void selectUnitToPrint(int unitType, JFrame parent) {
@@ -141,14 +76,6 @@ public class UnitPrintManager {
     }
 
     public static void printMuls(Frame parent, boolean singlePrint) {
-        ArrayList<Mech> quadList = new ArrayList<Mech>();
-        ArrayList<Mech> bipedList = new ArrayList<Mech>();
-        ArrayList<Tank> tankList = new ArrayList<Tank>();
-        ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
-        ArrayList<Aero> aeroList = new ArrayList<Aero>();
-        ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
-        ArrayList<Protomech> protoList = new ArrayList<Protomech>();
-
         JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
         f.setDialogTitle("Print From MUL");
@@ -164,7 +91,6 @@ public class UnitPrintManager {
             // I want a file, y'know!
             return;
         }
-
         Vector<Entity> loadedUnits = new Vector<Entity>();
         try {
             loadedUnits = EntityListFile.loadFrom(f.getSelectedFile());
@@ -173,6 +99,19 @@ public class UnitPrintManager {
             ex.printStackTrace();
             return;
         }
+
+        printAllUnits(loadedUnits, singlePrint);
+    }
+
+    private static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
+        ArrayList<Mech> quadList = new ArrayList<Mech>();
+        ArrayList<Mech> bipedList = new ArrayList<Mech>();
+        ArrayList<Tank> tankList = new ArrayList<Tank>();
+        ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
+        ArrayList<Aero> aeroList = new ArrayList<Aero>();
+        ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
+        ArrayList<Protomech> protoList = new ArrayList<Protomech>();
+        ArrayList<LargeSupportTank> largeSupportTankList = new ArrayList<LargeSupportTank>();
 
         for (Entity unit : loadedUnits) {
             if (unit instanceof QuadMech) {
@@ -195,6 +134,10 @@ public class UnitPrintManager {
                 baList.add((BattleArmor) unit);
             } else if (unit instanceof Protomech) {
                 protoList.add((Protomech) unit);
+            } else if (unit instanceof LargeSupportTank) {
+                largeSupportTankList.add((LargeSupportTank) unit);
+            } else {
+                return false;
             }
         }
 
@@ -240,6 +183,12 @@ public class UnitPrintManager {
             printProto.print();
         }
 
+        if (largeSupportTankList.size() > 0) {
+            PrintLargeSupportVehicle sp = new PrintLargeSupportVehicle(largeSupportTankList, singlePrint);
+            sp.print();
+        }
+
+        return true;
     }
 
     public static JMenu printMenu(final JFrame parent, JMenuItem item) {
@@ -315,6 +264,7 @@ public class UnitPrintManager {
         JFileChooser f = new JFileChooser(filePathName);
         f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
         f.setDialogTitle("Print Unit File");
+        f.setMultiSelectionEnabled(true);
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf");
 
@@ -328,9 +278,14 @@ public class UnitPrintManager {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(f.getSelectedFile()).getEntity();
 
-            UnitPrintManager.printEntity(tempEntity);
+            Vector<Entity> unitList = new Vector<Entity>();
+
+            for (File entityFile : f.getSelectedFiles()) {
+                Entity tempEntity = new MechFileParser(entityFile).getEntity();
+                unitList.add(tempEntity);
+            }
+            printAllUnits(unitList, false);
             // UnitUtil.updateLoadedTank(entity);
         } catch (Exception ex) {
             ex.printStackTrace();

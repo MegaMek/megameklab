@@ -478,37 +478,39 @@ public class PrintMech implements Printable {
     public void print() {
 
         try {
-            PrinterJob pj = PrinterJob.getPrinterJob();
+            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
 
-            if (pj.printDialog()) {
-                // Paper paper = new Paper();
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-
-                aset.add(PrintQuality.HIGH);
-
-                PageFormat pageFormat = new PageFormat();
-                pageFormat = pj.getPageFormat(null);
-
-                Paper p = pageFormat.getPaper();
-                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                pageFormat.setPaper(p);
-
-                pj.setPrintable(this, pageFormat);
-
+            if (masterPrintJob.printDialog()) {
                 for (Mech currentMech : mechList) {
+                    PrinterJob pj = PrinterJob.getPrinterJob();
+                    pj.setPrintService(masterPrintJob.getPrintService());
+                    if (pj.printDialog()) {
+                        // Paper paper = new Paper();
+                        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-                    mech = currentMech;
-                    awtHud = ImageHelper.getFluffImage(currentMech, ImageHelper.imageMech);
-                    pj.setJobName(mech.getChassis() + " " + mech.getModel());
+                        aset.add(PrintQuality.HIGH);
 
-                    try {
-                        pj.print(aset);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                        PageFormat pageFormat = new PageFormat();
+                        pageFormat = pj.getPageFormat(null);
+
+                        Paper p = pageFormat.getPaper();
+                        p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                        pageFormat.setPaper(p);
+
+                        pj.setPrintable(this, pageFormat);
+
+                        mech = currentMech;
+                        awtHud = ImageHelper.getFluffImage(currentMech, ImageHelper.imageMech);
+                        pj.setJobName(mech.getChassis() + " " + mech.getModel());
+
+                        try {
+                            pj.print(aset);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        System.gc();
                     }
-                    System.gc();
                 }
-
             }
         } catch (Exception ex) {
             ex.printStackTrace();
