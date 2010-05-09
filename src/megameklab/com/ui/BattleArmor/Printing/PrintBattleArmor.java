@@ -119,7 +119,7 @@ public class PrintBattleArmor implements Printable {
     private void printBattleArmorData(Graphics2D g2d) {
         String BattleArmorName = battleArmor.getChassis() + " " + battleArmor.getModel();
 
-        g2d.setFont(UnitUtil.getNewFont(g2d, BattleArmorName, true, 88, 10.0f));
+        g2d.setFont(UnitUtil.getNewFont(g2d, BattleArmorName, true, 85, 10.0f));
         g2d.drawString(BattleArmorName, 47, 108 + currentMargin);
 
         Font font = UnitUtil.deriveFont(8.0f);
