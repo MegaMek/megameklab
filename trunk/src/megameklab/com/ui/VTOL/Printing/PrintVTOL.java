@@ -45,12 +45,15 @@ public class PrintVTOL implements Printable {
     private ArrayList<VTOL> vtolList;
     private int secondPageMargin = 373; // How far down the text should be
     private boolean singlePrint = false;
+    PrinterJob masterPrintJob;
 
     // printed for a second vehicle.
 
-    public PrintVTOL(ArrayList<VTOL> list, boolean singlePrint) {
+    public PrintVTOL(ArrayList<VTOL> list, boolean singlePrint, PrinterJob masterPrintJob) {
         vtolList = list;
         this.singlePrint = singlePrint;
+        this.masterPrintJob = masterPrintJob;
+
         /*
          * if (awtImage != null) { System.out.println("Width: " +
          * awtImage.getWidth(null)); System.out.println("Height: " +
@@ -439,43 +442,38 @@ public class PrintVTOL implements Printable {
     public void print() {
 
         try {
-            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
+            for (int pos = 0; pos < vtolList.size(); pos++) {
+                PrinterJob pj = PrinterJob.getPrinterJob();
+                pj.setPrintService(masterPrintJob.getPrintService());
+                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-            if (masterPrintJob.printDialog()) {
-                for (int pos = 0; pos < vtolList.size(); pos++) {
-                    PrinterJob pj = PrinterJob.getPrinterJob();
-                    pj.setPrintService(masterPrintJob.getPrintService());
-                    PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+                aset.add(PrintQuality.HIGH);
 
-                    aset.add(PrintQuality.HIGH);
+                PageFormat pageFormat = new PageFormat();
+                pageFormat = pj.getPageFormat(null);
 
-                    PageFormat pageFormat = new PageFormat();
-                    pageFormat = pj.getPageFormat(null);
+                Paper p = pageFormat.getPaper();
+                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                pageFormat.setPaper(p);
 
-                    Paper p = pageFormat.getPaper();
-                    p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                    pageFormat.setPaper(p);
+                pj.setPrintable(this, pageFormat);
 
-                    pj.setPrintable(this, pageFormat);
+                vtol = vtolList.get(pos);
+                pj.setJobName(vtol.getChassis() + " " + vtol.getModel());
 
-                    vtol = vtolList.get(pos);
-                    pj.setJobName(vtol.getChassis() + " " + vtol.getModel());
-
-                    if ((pos + 1 < vtolList.size()) && !singlePrint) {
-                        vtol2 = vtolList.get(++pos);
-                    } else {
-                        vtol2 = null;
-                    }
-
-                    try {
-                        pj.print(aset);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    } finally {
-                        System.gc();
-                    }
+                if ((pos + 1 < vtolList.size()) && !singlePrint) {
+                    vtol2 = vtolList.get(++pos);
+                } else {
+                    vtol2 = null;
                 }
 
+                try {
+                    pj.print(aset);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    System.gc();
+                }
             }
 
         } catch (Exception ex) {

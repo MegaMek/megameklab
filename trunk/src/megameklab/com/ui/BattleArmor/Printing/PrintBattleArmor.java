@@ -42,9 +42,11 @@ public class PrintBattleArmor implements Printable {
     // for a second vehicle.
     private int currentPosition = 0;
     private int currentMargin = 0;
+    PrinterJob masterPrintJob;
 
-    public PrintBattleArmor(ArrayList<BattleArmor> list) {
+    public PrintBattleArmor(ArrayList<BattleArmor> list, PrinterJob masterPrintJob) {
         battleArmorList = list;
+        this.masterPrintJob = masterPrintJob;
 
         /*
          * if (awtImage != null) { System.out.println("Width: " +
@@ -210,37 +212,31 @@ public class PrintBattleArmor implements Printable {
     public void print() {
 
         try {
-            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
+            for (; currentPosition < battleArmorList.size(); currentPosition += 5) {
+                PrinterJob pj = PrinterJob.getPrinterJob();
+                pj.setPrintService(masterPrintJob.getPrintService());
+                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-            if (masterPrintJob.printDialog()) {
-                for (; currentPosition < battleArmorList.size(); currentPosition += 5) {
-                    PrinterJob pj = PrinterJob.getPrinterJob();
-                    pj.setPrintService(masterPrintJob.getPrintService());
-                    PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+                aset.add(PrintQuality.HIGH);
 
-                    aset.add(PrintQuality.HIGH);
+                PageFormat pageFormat = new PageFormat();
+                pageFormat = pj.getPageFormat(null);
 
-                    PageFormat pageFormat = new PageFormat();
-                    pageFormat = pj.getPageFormat(null);
+                Paper p = pageFormat.getPaper();
+                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                pageFormat.setPaper(p);
 
-                    Paper p = pageFormat.getPaper();
-                    p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                    pageFormat.setPaper(p);
+                pj.setPrintable(this, pageFormat);
 
-                    pj.setPrintable(this, pageFormat);
+                battleArmor = battleArmorList.get(currentPosition);
+                pj.setJobName(battleArmor.getChassis() + " " + battleArmor.getModel());
 
-                    battleArmor = battleArmorList.get(currentPosition);
-                    pj.setJobName(battleArmor.getChassis() + " " + battleArmor.getModel());
-
-                    try {
-                        pj.print(aset);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    System.gc();
-
+                try {
+                    pj.print(aset);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-
+                System.gc();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
