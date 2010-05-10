@@ -16,6 +16,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -142,50 +143,55 @@ public class UnitPrintManager {
             }
         }
 
+        PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
+        if (!masterPrintJob.printDialog()) {
+            return true;
+        }
+
         if (bipedList.size() > 0) {
-            PrintMech printMech = new PrintMech(bipedList);
+            PrintMech printMech = new PrintMech(bipedList, masterPrintJob);
 
             printMech.print();
         }
 
         if (quadList.size() > 0) {
-            PrintQuad printQuad = new PrintQuad(quadList);
+            PrintQuad printQuad = new PrintQuad(quadList, masterPrintJob);
 
             printQuad.print();
         }
 
         if (tankList.size() > 0) {
-            PrintVehicle printTank = new PrintVehicle(tankList, singlePrint);
+            PrintVehicle printTank = new PrintVehicle(tankList, singlePrint, masterPrintJob);
 
             printTank.print();
         }
 
         if (aeroList.size() > 0) {
-            PrintAero printAero = new PrintAero(aeroList);
+            PrintAero printAero = new PrintAero(aeroList, masterPrintJob);
 
             printAero.print();
         }
 
         if (VTOLList.size() > 0) {
-            PrintVTOL printVTOL = new PrintVTOL(VTOLList, singlePrint);
+            PrintVTOL printVTOL = new PrintVTOL(VTOLList, singlePrint, masterPrintJob);
 
             printVTOL.print();
         }
 
         if (baList.size() > 0) {
-            PrintBattleArmor printBA = new PrintBattleArmor(baList);
+            PrintBattleArmor printBA = new PrintBattleArmor(baList, masterPrintJob);
 
             printBA.print();
         }
 
         if (protoList.size() > 0) {
-            PrintProtomech printProto = new PrintProtomech(protoList);
+            PrintProtomech printProto = new PrintProtomech(protoList, masterPrintJob);
 
             printProto.print();
         }
 
         if (largeSupportTankList.size() > 0) {
-            PrintLargeSupportVehicle sp = new PrintLargeSupportVehicle(largeSupportTankList, singlePrint);
+            PrintLargeSupportVehicle sp = new PrintLargeSupportVehicle(largeSupportTankList, singlePrint, masterPrintJob);
             sp.print();
         }
 
