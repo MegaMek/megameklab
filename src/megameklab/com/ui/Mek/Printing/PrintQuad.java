@@ -58,11 +58,12 @@ public class PrintQuad implements Printable {
     private int startMounty = 0;
     private int endMountx = 0;
     private int endMounty = 0;
+    PrinterJob masterPrintJob;
 
-    public PrintQuad(ArrayList<Mech> list) {
+    public PrintQuad(ArrayList<Mech> list, PrinterJob masterPrintJob) {
         awtImage = ImageHelper.getRecordSheet(list.get(0), false);
         mechList = list;
-
+        this.masterPrintJob = masterPrintJob;
         // System.out.println("Width: " + awtImage.getWidth(null));
         // System.out.println("Height: " + awtImage.getHeight(null));
 
@@ -450,37 +451,33 @@ public class PrintQuad implements Printable {
 
         try {
 
-            PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
+            for (Mech currentMech : mechList) {
+                PrinterJob pj = PrinterJob.getPrinterJob();
+                pj.setPrintService(masterPrintJob.getPrintService());
+                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
-            if (masterPrintJob.printDialog()) {
-                for (Mech currentMech : mechList) {
-                    PrinterJob pj = PrinterJob.getPrinterJob();
-                    pj.setPrintService(masterPrintJob.getPrintService());
-                    PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+                aset.add(PrintQuality.HIGH);
 
-                    aset.add(PrintQuality.HIGH);
+                PageFormat pageFormat = new PageFormat();
+                pageFormat = pj.getPageFormat(null);
 
-                    PageFormat pageFormat = new PageFormat();
-                    pageFormat = pj.getPageFormat(null);
+                Paper p = pageFormat.getPaper();
+                p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+                pageFormat.setPaper(p);
 
-                    Paper p = pageFormat.getPaper();
-                    p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
-                    pageFormat.setPaper(p);
+                pj.setPrintable(this, pageFormat);
 
-                    pj.setPrintable(this, pageFormat);
+                mech = currentMech;
+                awtHud = ImageHelper.getFluffImage(currentMech, ImageHelper.imageMech);
+                pj.setJobName(mech.getChassis() + " " + mech.getModel());
 
-                    mech = currentMech;
-                    awtHud = ImageHelper.getFluffImage(currentMech, ImageHelper.imageMech);
-                    pj.setJobName(mech.getChassis() + " " + mech.getModel());
-
-                    try {
-                        pj.print(aset);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    System.gc();
-
+                try {
+                    pj.print(aset);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+                System.gc();
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();
