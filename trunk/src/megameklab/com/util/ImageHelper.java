@@ -25,6 +25,7 @@ import java.awt.Image;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
+import megamek.client.ui.swing.util.RotateFilter;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -62,6 +64,8 @@ public class ImageHelper {
     public static String imageProto = "protomech";
 
     public static Image armorPip = null;
+
+    public static RotateFilter rotater;
 
     public static Image getRecordSheet(Entity unit) {
         return ImageHelper.getRecordSheet(unit, false);
@@ -1597,7 +1601,7 @@ public class ImageHelper {
         int shtPoint = 166;
         int medPoint = 180;
         int longPoint = 198;
-        float linePoint = 148.5f + offset;
+        float linePoint = 144.5f + offset;
 
         float lineFeed = 6.7f;
 
@@ -1619,8 +1623,9 @@ public class ImageHelper {
 
         }
 
-        Font font = UnitUtil.deriveFont(true, 10.0f);
+        Font font = ImageHelper.getBattleArmorWeaponsNEquipmentFont(g2d, false, 41f, equipmentLocations, 7.0f);
         g2d.setFont(font);
+        lineFeed = getStringHeight(g2d, "H", font);
 
         for (int pos = BattleArmor.LOC_SQUAD; pos <= BattleArmor.LOC_TROOPER_6; pos++) {
 
@@ -1632,8 +1637,9 @@ public class ImageHelper {
             boolean indented = false;
             if (pos != BattleArmor.LOC_SQUAD) {
                 String loc = ba.getLocationName(pos);
-                g2d.setFont(UnitUtil.getNewFont(g2d, loc, false, 68, 7.0f));
+                g2d.setFont(UnitUtil.getNewFont(g2d, loc, false, 68, font.getSize()));
                 g2d.drawString(loc, typePoint, linePoint);
+                g2d.setFont(font);
                 linePoint += lineFeed;
                 typePoint += 5;
                 indented = true;
@@ -1646,15 +1652,9 @@ public class ImageHelper {
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
 
-                if (count >= 12) {
-                    break;
-                }
-                font = UnitUtil.deriveFont(7.0f);
-                g2d.setFont(font);
-
                 String name = eqi.name.trim();
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, font.getSize()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -1665,7 +1665,7 @@ public class ImageHelper {
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
-                font = UnitUtil.deriveFont(7.0f);
+                // font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 if (eqi.isWeapon) {
@@ -2150,5 +2150,79 @@ public class ImageHelper {
             g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
             pointY += ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont());
         }
+    }
+
+    public static void printRotatedText(Graphics2D g2d, String text, double angle, int xLoc, int yLoc) {
+
+        Font font = g2d.getFont();
+
+        FontMetrics fm = g2d.getFontMetrics(font);
+
+        int width = fm.stringWidth(text);
+        int height = fm.getHeight();
+
+        AffineTransform at = new AffineTransform();
+
+        // scale image
+        at.scale(2.5, 2.5);
+
+        // rotate 45 degrees around image center
+        at.rotate(angle * Math.PI / 180.0, width / 2.0, height / 2.0);
+
+        /*
+         * AffineTransform translationTransform; translationTransform =
+         * findTranslation(at, sourceBI);
+         * at.preConcatenate(translationTransform);
+         */
+
+        AffineTransform oldTran = g2d.getTransform();
+        g2d.setTransform(at);
+        // instantiate and apply affine transformation filter
+        g2d.drawString(text, xLoc, yLoc);
+
+        g2d.setTransform(oldTran);
+    }
+
+    public static Font getBattleArmorWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<ArrayList<EquipmentInfo>> equipmentLocations, float pointSize) {
+
+        Font font = g2d.getFont();
+
+        int weaponCount = 0;
+        for (int pos = BattleArmor.LOC_SQUAD; pos <= BattleArmor.LOC_TROOPER_6; pos++) {
+
+            ArrayList<EquipmentInfo> equipmentList = equipmentLocations.get(pos);
+
+            if (equipmentList.size() < 1) {
+                continue;
+            }
+            if (pos != BattleArmor.LOC_SQUAD) {
+                weaponCount++;
+            }
+
+            for (EquipmentInfo eqi : equipmentList) {
+                weaponCount++;
+                if (eqi.isWeapon) {
+                    if (eqi.isMML) {
+                        weaponCount++;
+                    } else if (eqi.isATM) {
+                        weaponCount++;
+                    } else {
+                        if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
+                            weaponCount++;
+                        }
+                    }
+
+                    if (eqi.hasAmmo) {
+                        weaponCount++;
+                    }
+                }
+            }
+        }
+
+        while (((ImageHelper.getStringHeight(g2d, "H", font) * weaponCount) > stringHeight) && (pointSize > 0)) {
+            pointSize -= .1;
+            font = UnitUtil.deriveFont(bold, pointSize);
+        }
+        return font;
     }
 }
