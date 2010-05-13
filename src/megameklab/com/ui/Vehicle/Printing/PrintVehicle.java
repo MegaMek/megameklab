@@ -53,11 +53,7 @@ public class PrintVehicle implements Printable {
         tankList = list;
         this.singlePrint = singlePrint;
         this.masterPrintJob = masterPrintJob;
-        /*
-         * if (awtImage != null) { System.out.println("Width: " +
-         * awtImage.getWidth(null)); System.out.println("Height: " +
-         * awtImage.getHeight(null)); }
-         */
+
     }
 
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -91,6 +87,7 @@ public class PrintVehicle implements Printable {
             g2d.drawImage(ImageHelper.getRecordSheet(tank2, false), 18, 18 + secondPageMargin, 558, 368, null);
             if (tank2.getOInternal(Tank.LOC_TURRET) > 0) {
                 g2d.drawImage(ImageHelper.getTurretImage(), 441, 173 + secondPageMargin, 77, 96, null);
+                g2d.drawImage(ImageHelper.getTurretLabelImage(), 297, 248 + secondPageMargin, 34, 11, null);
             }
         }
 
@@ -273,7 +270,7 @@ public class PrintVehicle implements Printable {
         if (tank2 != null) {
             printTank2Data(g2d);
         } else {
-            g2d.drawString("2010", 62.5f, 745f);
+            g2d.drawString("2010", 62.5f, 374f + secondPageMargin);
         }
     }
 
@@ -424,7 +421,7 @@ public class PrintVehicle implements Printable {
         }
         g2d.drawString("(" + Integer.toString(tank.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
 
-        g2d.drawString("(" + Integer.toString(tank.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230);
+        g2d.drawString("(" + tank.getArmor(Tank.LOC_RIGHT) + ")", 559, 230);
 
         g2d.drawString("(" + tank.getArmor(Tank.LOC_LEFT) + ")", 384, 175);
 
