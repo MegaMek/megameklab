@@ -28,7 +28,6 @@ import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.ISCompactNarc;
-import megamek.common.weapons.ISMineLauncher;
 import megamek.common.weapons.MMLWeapon;
 
 public class EquipmentInfo {
@@ -178,7 +177,6 @@ public class EquipmentInfo {
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
             isCompactNarc = weapon instanceof ISCompactNarc;
-            isBAMineLayer = weapon instanceof ISMineLauncher;
 
             shtRange = weapon.shortRange;
             medRange = weapon.mediumRange;
@@ -210,6 +208,7 @@ public class EquipmentInfo {
             }
         }
 
+        isBAMineLayer = mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);

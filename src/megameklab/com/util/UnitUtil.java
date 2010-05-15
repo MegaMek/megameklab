@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JOptionPane;
@@ -2020,5 +2021,38 @@ public class UnitUtil {
         if (foundError) {
             JOptionPane.showMessageDialog(null, "Armor Overage found on this unit.\n\rMegaMekLab has automatically correct the problem.\n\rIt is suggested you view the armor tab to see the correction.", "Armor Overage", JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    public static boolean hasManipulator(BattleArmor ba) {
+
+        for (Mounted mount : ba.getMisc()) {
+            MiscType eq = (MiscType) mount.getType();
+
+            if (eq.hasFlag(MiscType.F_BA_EQUIPMENT) && (eq.hasFlag(MiscType.F_ARMORED_GLOVE) || eq.hasFlag(MiscType.F_BASIC_MANIPULATOR) || eq.hasFlag(MiscType.F_BATTLE_CLAW))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static String getManipulatorString(BattleArmor ba) {
+        StringBuffer manipulatorString = new StringBuffer(" ");
+        TreeSet<String> equipmentList = new TreeSet<String>();
+
+        for (Mounted mount : ba.getMisc()) {
+            MiscType eq = (MiscType) mount.getType();
+
+            if (eq.hasFlag(MiscType.F_BA_EQUIPMENT) && (eq.hasFlag(MiscType.F_ARMORED_GLOVE) || eq.hasFlag(MiscType.F_BASIC_MANIPULATOR) || eq.hasFlag(MiscType.F_BATTLE_CLAW))) {
+                equipmentList.add(eq.getName());
+            }
+        }
+
+        for (String equipment : equipmentList.toArray(new String[equipmentList.size()])) {
+            manipulatorString.append(equipment);
+            manipulatorString.append(", ");
+        }
+
+        return manipulatorString.toString();
     }
 }
