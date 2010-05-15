@@ -27,6 +27,8 @@ import megamek.common.Sensor;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
+import megamek.common.weapons.ISCompactNarc;
+import megamek.common.weapons.ISMineLauncher;
 import megamek.common.weapons.MMLWeapon;
 
 public class EquipmentInfo {
@@ -49,6 +51,8 @@ public class EquipmentInfo {
     public boolean isWeapon = false;
     public boolean isMML = false;
     public boolean isATM = false;
+    public boolean isBAMineLayer = false;
+    public boolean isCompactNarc = false;
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
     public boolean hasArtemisV = false;
@@ -173,10 +177,17 @@ public class EquipmentInfo {
 
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
+            isCompactNarc = weapon instanceof ISCompactNarc;
+            isBAMineLayer = weapon instanceof ISMineLauncher;
 
             shtRange = weapon.shortRange;
             medRange = weapon.mediumRange;
             longRange = weapon.longRange;
+
+            if (medRange == longRange) {
+                longRange = -1;
+            }
+
             heat = weapon.getHeat();
             secondaryLocation = mount.getSecondLocation();
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
@@ -225,6 +236,15 @@ public class EquipmentInfo {
         clone.isWeapon = isWeapon;
         clone.isMML = isMML;
         clone.isATM = isATM;
+        clone.isCompactNarc = isCompactNarc;
+        clone.isBAMineLayer = isBAMineLayer;
+
+        clone.hasAmmo = hasAmmo;
+        clone.hasApollo = hasApollo;
+        clone.hasArtemis = hasArtemis;
+        clone.hasArtemisV = hasArtemisV;
+
+        clone.ammoCount = ammoCount;
 
         clone.c3Level = c3Level;
 
@@ -239,4 +259,5 @@ public class EquipmentInfo {
 
         return false;
     }
+
 }
