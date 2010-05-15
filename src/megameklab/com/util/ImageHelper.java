@@ -51,7 +51,6 @@ import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.weapons.ISCompactNarc;
-import megamek.common.weapons.ISMineLauncher;
 
 public class ImageHelper {
     public static String recordSheetPath = "./data/images/recordsheets/";
@@ -1592,17 +1591,18 @@ public class ImageHelper {
         positionX += ImageHelper.getStringWidth(g2d, armorString, font);
 
         if (ba.isStealthActive()) {
-            buffer.append(String.format("  %1$s (+%2$s/+%3$s/+%4$s)", ba.getStealthName(), ba.getShortStealthMod(), ba.getMediumStealthMod(), ba.getLongStealthMod()));
+            buffer.append(String.format("  %1$s (+%2$s/+%3$s/+%4$s), ", ba.getStealthName(), ba.getShortStealthMod(), ba.getMediumStealthMod(), ba.getLongStealthMod()));
         }
 
         if (ba.isFireResistant()) {
-            buffer.append(" Fire Resistant");
+            buffer.append(" Fire Resistant, ");
         }
 
-        if (UnitUtil.canSwarm(ba)) {
-            buffer.append(" Manipulator");
+        if (UnitUtil.hasManipulator(ba)) {
+            buffer.append(UnitUtil.getManipulatorString(ba));
         }
 
+        buffer.setLength(buffer.length() - 2);
         g2d.setFont(UnitUtil.getNewFont(g2d, buffer.toString(), false, 178, 7.0f));
         g2d.drawString(buffer.toString(), positionX, positionY);
     }
@@ -1645,10 +1645,9 @@ public class ImageHelper {
             } else if (hasNarcCompact && (eq.getType() instanceof ISCompactNarc)) {
                 continue;
             }
-
-            if (!hasMineLayer && (eq.getType() instanceof ISMineLauncher)) {
+            if (!hasMineLayer && eq.getType().hasFlag(MiscType.F_MINE) && eq.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
                 hasMineLayer = true;
-            } else if (hasMineLayer && (eq.getType() instanceof ISMineLauncher)) {
+            } else if (hasMineLayer && eq.getType().hasFlag(MiscType.F_MINE) && eq.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
                 continue;
             }
 
@@ -1792,7 +1791,7 @@ public class ImageHelper {
                     }
                     StringBuilder ammoString = new StringBuilder("Ammo ");
 
-                    if (eqi.isCompactNarc || eqi.isBAMineLayer) {
+                    if (eqi.isCompactNarc) {
                         for (int baPos = 0; baPos < ba.getNumberActiverTroopers(); baPos++) {
                             for (int ammoCount = 0; ammoCount < eqi.ammoCount; ammoCount++) {
                                 ammoString.append("O ");
@@ -1806,6 +1805,16 @@ public class ImageHelper {
                         }
                     }
 
+                    g2d.setFont(UnitUtil.getNewFont(g2d, ammoString.toString(), false, 138, font.getSize()));
+                    g2d.drawString(ammoString.toString(), typePoint + 5, (int) (linePoint + lineFeed));
+                }
+
+                if (eqi.isBAMineLayer) {
+                    StringBuilder ammoString = new StringBuilder("Ammo ");
+                    for (int baPos = 0; baPos < ba.getNumberActiverTroopers(); baPos++) {
+                        ammoString.append("O O / ");
+                    }
+                    ammoString.setLength(ammoString.length() - 2);
                     g2d.setFont(UnitUtil.getNewFont(g2d, ammoString.toString(), false, 138, font.getSize()));
                     g2d.drawString(ammoString.toString(), typePoint + 5, (int) (linePoint + lineFeed));
                 }
