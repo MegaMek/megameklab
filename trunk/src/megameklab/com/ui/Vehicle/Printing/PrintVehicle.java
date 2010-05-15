@@ -254,8 +254,9 @@ public class PrintVehicle implements Printable {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
         g2d.drawString(myFormatter.format(tank.calculateBattleValue(true, true)), 150, 357);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(tank.getCost(true)) + " C-bills", 52, 357);
+        // myFormatter = new DecimalFormat("#,###.##");
+        // g2d.drawString(myFormatter.format(tank.getCost(true)) + " C-bills",
+        // 52, 357);
 
         if (tank.hasBARArmor()) {
             font = UnitUtil.deriveFont(true, 9.0f);

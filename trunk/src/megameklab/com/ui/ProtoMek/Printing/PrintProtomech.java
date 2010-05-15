@@ -420,8 +420,9 @@ public class PrintProtomech implements Printable {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
         g2d.drawString(myFormatter.format(protoMech.calculateBattleValue(true, true)), 268, 203 + currentMargin);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(protoMech.getCost(true)) + " C-bills", 147, 203 + currentMargin);
+        // myFormatter = new DecimalFormat("#,###.##");
+        // g2d.drawString(myFormatter.format(protoMech.getCost(true)) +
+        // " C-bills", 147, 203 + currentMargin);
 
     }
 

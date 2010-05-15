@@ -184,7 +184,8 @@ public class PrintAero implements Printable {
         g2d.drawString(String.format("%1$,d", aero.calculateBattleValue(true, true)), 150, 346.2f);
 
         // myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(String.format("%1$,.0f C-bills", aero.getCost(true)), 52, 346.2f);
+        // g2d.drawString(String.format("%1$,.0f C-bills", aero.getCost(true)),
+        // 52, 346.2f);
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);

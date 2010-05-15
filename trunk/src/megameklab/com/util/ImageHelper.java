@@ -50,6 +50,8 @@ import megamek.common.Protomech;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.VTOL;
+import megamek.common.weapons.ISCompactNarc;
+import megamek.common.weapons.ISMineLauncher;
 
 public class ImageHelper {
     public static String recordSheetPath = "./data/images/recordsheets/";
@@ -463,7 +465,11 @@ public class ImageHelper {
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
-                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                        if (eqi.longRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                        } else {
+                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        }
                     }
                 } else {
                     g2d.drawLine(heatPoint, (int) linePoint - 2, heatPoint + 6, (int) linePoint - 2);
@@ -472,7 +478,7 @@ public class ImageHelper {
                     g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
                     g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     if (eqi.longRange > 0) {
-                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
+                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
                     } else {
                         g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
@@ -789,7 +795,11 @@ public class ImageHelper {
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
-                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                        if (eqi.longRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
+                        } else {
+                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        }
                     }
                 } else {
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
@@ -1007,7 +1017,11 @@ public class ImageHelper {
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
-                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                        if (eqi.longRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
+                        } else {
+                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        }
                     }
                 } else {
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
@@ -1240,7 +1254,11 @@ public class ImageHelper {
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
-                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                        if (eqi.longRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
+                        } else {
+                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        }
                     }
                 } else {
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
@@ -1564,29 +1582,29 @@ public class ImageHelper {
     public static void printBAArmor(BattleArmor ba, Graphics2D g2d, float offset) {
         float positionX = 27;
         float positionY = 187 + offset;
-        String armorString = "Armor: ";
-        if (ba.isStealthActive()) {
-            Font font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.setFont(font);
-            g2d.drawString(armorString, positionX, positionY);
-            positionX += ImageHelper.getStringWidth(g2d, armorString, font);
+        String armorString = "Armor:";
+        StringBuffer buffer = new StringBuffer();
 
-            font = UnitUtil.deriveFont(9.0f);
-            g2d.setFont(font);
-            g2d.drawString(String.format("%1$s (+%2$s/+%3$s/+%4$s)", ba.getStealthName(), ba.getShortStealthMod(), ba.getMediumStealthMod(), ba.getLongStealthMod()), positionX, positionY);
+        Font font = UnitUtil.deriveFont(true, 9.0f);
+        g2d.setFont(font);
+        g2d.drawString(armorString, positionX, positionY);
+
+        positionX += ImageHelper.getStringWidth(g2d, armorString, font);
+
+        if (ba.isStealthActive()) {
+            buffer.append(String.format("  %1$s (+%2$s/+%3$s/+%4$s)", ba.getStealthName(), ba.getShortStealthMod(), ba.getMediumStealthMod(), ba.getLongStealthMod()));
         }
 
         if (ba.isFireResistant()) {
-            Font font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.setFont(font);
-            g2d.drawString(armorString, positionX, positionY);
-            positionX += ImageHelper.getStringWidth(g2d, armorString, font);
-
-            font = UnitUtil.deriveFont(9.0f);
-            g2d.setFont(font);
-            g2d.drawString("Fire Resistant", positionX, positionY);
-
+            buffer.append(" Fire Resistant");
         }
+
+        if (UnitUtil.canSwarm(ba)) {
+            buffer.append(" Manipulator");
+        }
+
+        g2d.setFont(UnitUtil.getNewFont(g2d, buffer.toString(), false, 178, 7.0f));
+        g2d.drawString(buffer.toString(), positionX, positionY);
     }
 
     public static void printBattleArmorWeaponsNEquipment(BattleArmor ba, Graphics2D g2d) {
@@ -1601,7 +1619,7 @@ public class ImageHelper {
         int shtPoint = 166;
         int medPoint = 180;
         int longPoint = 198;
-        float linePoint = 144.5f + offset;
+        float linePoint = 149.5f + offset;
 
         float lineFeed = 6.7f;
 
@@ -1613,9 +1631,24 @@ public class ImageHelper {
             equipmentLocations.add(pos, new ArrayList<EquipmentInfo>());
         }
 
+        boolean hasNarcCompact = false;
+        boolean hasMineLayer = false;
+
         for (Mounted eq : ba.getEquipment()) {
 
             if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType())) {
+                continue;
+            }
+
+            if (!hasNarcCompact && (eq.getType() instanceof ISCompactNarc)) {
+                hasNarcCompact = true;
+            } else if (hasNarcCompact && (eq.getType() instanceof ISCompactNarc)) {
+                continue;
+            }
+
+            if (!hasMineLayer && (eq.getType() instanceof ISMineLauncher)) {
+                hasMineLayer = true;
+            } else if (hasMineLayer && (eq.getType() instanceof ISMineLauncher)) {
                 continue;
             }
 
@@ -1623,7 +1656,7 @@ public class ImageHelper {
 
         }
 
-        Font font = ImageHelper.getBattleArmorWeaponsNEquipmentFont(g2d, false, 41f, equipmentLocations, 7.0f);
+        Font font = ImageHelper.getBattleArmorWeaponsNEquipmentFont(g2d, false, 39f, equipmentLocations, 7.0f);
         g2d.setFont(font);
         lineFeed = getStringHeight(g2d, "H", font);
 
@@ -1635,7 +1668,7 @@ public class ImageHelper {
                 continue;
             }
             boolean indented = false;
-            if (pos != BattleArmor.LOC_SQUAD) {
+            if ((pos != BattleArmor.LOC_SQUAD) && !hasNarcCompact && !hasMineLayer) {
                 String loc = ba.getLocationName(pos);
                 g2d.setFont(UnitUtil.getNewFont(g2d, loc, false, 68, font.getSize()));
                 g2d.drawString(loc, typePoint, linePoint);
@@ -1734,7 +1767,11 @@ public class ImageHelper {
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
-                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                        if (eqi.longRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
+                        } else {
+                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        }
                     }
                 } else {
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
@@ -1755,9 +1792,21 @@ public class ImageHelper {
                     }
                     StringBuilder ammoString = new StringBuilder("Ammo ");
 
-                    for (int ammoCount = 0; ammoCount < eqi.ammoCount; ammoCount++) {
-                        ammoString.append("O ");
+                    if (eqi.isCompactNarc || eqi.isBAMineLayer) {
+                        for (int baPos = 0; baPos < ba.getNumberActiverTroopers(); baPos++) {
+                            for (int ammoCount = 0; ammoCount < eqi.ammoCount; ammoCount++) {
+                                ammoString.append("O ");
+                            }
+                            ammoString.append("/ ");
+                        }
+                        ammoString.setLength(ammoString.length() - 2);
+                    } else {
+                        for (int ammoCount = 0; ammoCount < eqi.ammoCount; ammoCount++) {
+                            ammoString.append("O ");
+                        }
                     }
+
+                    g2d.setFont(UnitUtil.getNewFont(g2d, ammoString.toString(), false, 138, font.getSize()));
                     g2d.drawString(ammoString.toString(), typePoint + 5, (int) (linePoint + lineFeed));
                 }
 
@@ -2032,7 +2081,11 @@ public class ImageHelper {
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
-                        g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
+                        if (eqi.longRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
+                        } else {
+                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        }
                     }
                 } else {
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
