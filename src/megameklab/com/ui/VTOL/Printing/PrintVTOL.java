@@ -245,8 +245,9 @@ public class PrintVTOL implements Printable {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
         g2d.drawString(myFormatter.format(vtol.calculateBattleValue(true, true)), 150, 357);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(vtol.getCost(true)) + " C-bills", 52, 357);
+        // myFormatter = new DecimalFormat("#,###.##");
+        // g2d.drawString(myFormatter.format(vtol.getCost(true)) + " C-bills",
+        // 52, 357);
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);

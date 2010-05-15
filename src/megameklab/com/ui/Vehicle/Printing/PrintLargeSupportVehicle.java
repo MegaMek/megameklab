@@ -259,8 +259,9 @@ public class PrintLargeSupportVehicle implements Printable {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
         g2d.drawString(myFormatter.format(largesupportank.calculateBattleValue(true, true)), 150, 357);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(largesupportank.getCost(true)) + " C-bills", 52, 357);
+        // myFormatter = new DecimalFormat("#,###.##");
+        // g2d.drawString(myFormatter.format(largesupportank.getCost(true)) +
+        // " C-bills", 52, 357);
 
         if (largesupportank.hasBARArmor()) {
             font = UnitUtil.deriveFont(true, 9.0f);
