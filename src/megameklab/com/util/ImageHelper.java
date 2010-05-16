@@ -1602,9 +1602,11 @@ public class ImageHelper {
             buffer.append(UnitUtil.getManipulatorString(ba));
         }
 
-        buffer.setLength(buffer.length() - 2);
-        g2d.setFont(UnitUtil.getNewFont(g2d, buffer.toString(), false, 178, 7.0f));
-        g2d.drawString(buffer.toString(), positionX, positionY);
+        if (buffer.length() > 2) {
+            buffer.setLength(buffer.length() - 2);
+            g2d.setFont(UnitUtil.getNewFont(g2d, buffer.toString(), false, 178, 7.0f));
+            g2d.drawString(buffer.toString(), positionX, positionY);
+        }
     }
 
     public static void printBattleArmorWeaponsNEquipment(BattleArmor ba, Graphics2D g2d) {
@@ -1655,7 +1657,7 @@ public class ImageHelper {
 
         }
 
-        Font font = ImageHelper.getBattleArmorWeaponsNEquipmentFont(g2d, false, 39f, equipmentLocations, 7.0f);
+        Font font = ImageHelper.getBattleArmorWeaponsNEquipmentFont(g2d, false, 40.0f, equipmentLocations, 7.0f);
         g2d.setFont(font);
         lineFeed = getStringHeight(g2d, "H", font);
 
@@ -1800,8 +1802,16 @@ public class ImageHelper {
                         }
                         ammoString.setLength(ammoString.length() - 2);
                     } else {
-                        for (int ammoCount = 0; ammoCount < eqi.ammoCount; ammoCount++) {
+                        for (int ammoCount = 1; ammoCount <= eqi.ammoCount; ammoCount++) {
                             ammoString.append("O ");
+
+                            if (ammoCount % 2 == 0) {
+                                ammoString.append("/ ");
+                            }
+                        }
+
+                        if (ammoString.lastIndexOf("/ ") == ammoString.length() - 2) {
+                            ammoString.setLength(ammoString.length() - 2);
                         }
                     }
 
