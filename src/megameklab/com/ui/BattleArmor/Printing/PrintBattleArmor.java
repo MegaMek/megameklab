@@ -103,19 +103,19 @@ public class PrintBattleArmor implements Printable {
         Image checkBox = ImageHelper.getBACheckBox();
 
         if (battleArmor.canDoMechanizedBA()) {
-            g2d.drawImage(checkBox, 72, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 71, 189 + currentMargin, 11, 11, null);
         }
 
         if (UnitUtil.canSwarm(battleArmor)) {
-            g2d.drawImage(checkBox, 119, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 118, 189 + currentMargin, 11, 11, null);
         }
 
         if (UnitUtil.canLegAttack(battleArmor)) {
-            g2d.drawImage(checkBox, 159, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 158, 189 + currentMargin, 11, 11, null);
         }
 
         if (battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) > 0) {
-            g2d.drawImage(checkBox, 195, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 194, 189 + currentMargin, 11, 11, null);
         }
     }
 
