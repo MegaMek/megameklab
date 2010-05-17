@@ -156,9 +156,13 @@ public class PrintBattleArmor implements Printable {
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(battleArmor.getRunMP()), 79, 130 + currentMargin);
+        g2d.drawString(Integer.toString(battleArmor.getWalkMP()), 79, 130 + currentMargin);
+        int secondaryMP = battleArmor.getJumpMP();
+        if (battleArmor.getMovementMode() == EntityMovementMode.INF_UMU) {
+            secondaryMP = battleArmor.getRunMP();
 
-        if (battleArmor.getJumpMP() > 0) {
+        }
+        if (secondaryMP > 0) {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
             String movment = String.format("%1$s: ", battleArmor.getMovementModeAsString());
@@ -172,7 +176,7 @@ public class PrintBattleArmor implements Printable {
             float positionY = 133 + ImageHelper.getStringWidth(g2d, movment, font);
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
-            g2d.drawString(Integer.toString(battleArmor.getJumpMP()), positionY, 130 + currentMargin);
+            g2d.drawString(Integer.toString(secondaryMP), positionY, 130 + currentMargin);
         }
         printBattleArmorAbilities(g2d);
 
