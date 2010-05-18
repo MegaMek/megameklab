@@ -39,6 +39,7 @@ V 0.0.0.17 Dev
 + Can not Select multiple Files to print at once.
 + Fixed Battle Armor Armor tag.
 + Bug: BA UMU not printing right
++ Fixes for BA record sheets
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles

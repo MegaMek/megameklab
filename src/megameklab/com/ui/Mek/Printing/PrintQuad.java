@@ -1326,7 +1326,12 @@ public class PrintQuad implements Printable {
         int linePoint = 428;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        g2d.drawString("(CASE)", lineStart, linePoint);
+        if (mech.hasCASEII(Mech.LOC_LARM)) {
+            g2d.drawString("(CASE II)", lineStart, linePoint);
+
+        } else {
+            g2d.drawString("(CASE)", lineStart, linePoint);
+        }
     }
 
     private void printRACase(Graphics2D g2d) {
@@ -1339,7 +1344,12 @@ public class PrintQuad implements Printable {
         int linePoint = 428;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        g2d.drawString("(CASE)", lineStart, linePoint);
+        if (mech.hasCASEII(Mech.LOC_RARM)) {
+            g2d.drawString("(CASE II)", lineStart, linePoint);
+
+        } else {
+            g2d.drawString("(CASE)", lineStart, linePoint);
+        }
     }
 
     private void printLLCase(Graphics2D g2d) {
@@ -1352,7 +1362,12 @@ public class PrintQuad implements Printable {
         int linePoint = 650;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        g2d.drawString("(CASE)", lineStart, linePoint);
+        if (mech.hasCASEII(Mech.LOC_LLEG)) {
+            g2d.drawString("(CASE II)", lineStart, linePoint);
+
+        } else {
+            g2d.drawString("(CASE)", lineStart, linePoint);
+        }
     }
 
     private void printLTCase(Graphics2D g2d) {
@@ -1365,7 +1380,12 @@ public class PrintQuad implements Printable {
         int linePoint = 512;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        g2d.drawString("(CASE)", lineStart, linePoint);
+        if (mech.hasCASEII(Mech.LOC_LT)) {
+            g2d.drawString("(CASE II)", lineStart, linePoint);
+
+        } else {
+            g2d.drawString("(CASE)", lineStart, linePoint);
+        }
     }
 
     private void printHeadCase(Graphics2D g2d) {
@@ -1378,7 +1398,12 @@ public class PrintQuad implements Printable {
         int linePoint = 389;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        g2d.drawString("(CASE)", lineStart, linePoint);
+        if (mech.hasCASEII(Mech.LOC_HEAD)) {
+            g2d.drawString("(CASE II)", lineStart, linePoint);
+
+        } else {
+            g2d.drawString("(CASE)", lineStart, linePoint);
+        }
     }
 
     private void printRTCase(Graphics2D g2d) {
@@ -1391,7 +1416,12 @@ public class PrintQuad implements Printable {
         int linePoint = 512;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        g2d.drawString("(CASE)", lineStart, linePoint);
+        if (mech.hasCASEII(Mech.LOC_RT)) {
+            g2d.drawString("(CASE II)", lineStart, linePoint);
+
+        } else {
+            g2d.drawString("(CASE)", lineStart, linePoint);
+        }
     }
 
     private void printRLCase(Graphics2D g2d) {
@@ -1404,7 +1434,12 @@ public class PrintQuad implements Printable {
         int linePoint = 650;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        g2d.drawString("(CASE)", lineStart, linePoint);
+        if (mech.hasCASEII(Mech.LOC_RLEG)) {
+            g2d.drawString("(CASE II)", lineStart, linePoint);
+
+        } else {
+            g2d.drawString("(CASE)", lineStart, linePoint);
+        }
     }
 
     private void printCTCase(Graphics2D g2d) {
@@ -1417,7 +1452,12 @@ public class PrintQuad implements Printable {
         int linePoint = 459;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        g2d.drawString("(CASE)", lineStart, linePoint);
+        if (mech.hasCASEII(Mech.LOC_CT)) {
+            g2d.drawString("(CASE II)", lineStart, linePoint);
+
+        } else {
+            g2d.drawString("(CASE)", lineStart, linePoint);
+        }
     }
 
     private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {

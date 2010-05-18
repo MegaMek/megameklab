@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JOptionPane;
@@ -759,9 +758,43 @@ public class UnitUtil {
             return false;
         }
 
+        return true;
+
+    }
+
+    /**
+     * simple method to let us know if eq should be printed on the weapons and
+     * equipment section of the Record sheet.
+     * 
+     * @param eq
+     * @return
+     */
+    public static boolean isPrintableBAEquipment(EquipmentType eq) {
+
+        if (UnitUtil.isArmorOrStructure(eq)) {
+            return false;
+        }
+
+        if (UnitUtil.isSpreadEquipment(eq)) {
+            return false;
+        }
+
+        if (UnitUtil.isJumpJet(eq)) {
+            return false;
+        }
+
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_AP_MOUNT) || eq.hasFlag(MiscType.F_FIRE_RESISTANT) || eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || eq.hasFlag(MiscType.F_MASC) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS))) {
+            return false;
+        }
+
+        if (UnitUtil.isHeatSink(eq)) {
+            return false;
+        }
+
         if ((eq instanceof LegAttack) || (eq instanceof SwarmAttack) || (eq instanceof StopSwarmAttack) || (eq instanceof InfantryRifleAutoRifleWeapon)) {
             return false;
         }
+
         return true;
 
     }
@@ -2036,23 +2069,18 @@ public class UnitUtil {
         return false;
     }
 
-    public static String getManipulatorString(BattleArmor ba) {
-        StringBuffer manipulatorString = new StringBuffer(" ");
-        TreeSet<String> equipmentList = new TreeSet<String>();
+    public static boolean isManipulator(Mounted mount) {
 
-        for (Mounted mount : ba.getMisc()) {
-            MiscType eq = (MiscType) mount.getType();
-
-            if (eq.hasFlag(MiscType.F_BA_EQUIPMENT) && (eq.hasFlag(MiscType.F_ARMORED_GLOVE) || eq.hasFlag(MiscType.F_BASIC_MANIPULATOR) || eq.hasFlag(MiscType.F_BATTLE_CLAW))) {
-                equipmentList.add(eq.getName());
-            }
+        if (!(mount.getType() instanceof MiscType)) {
+            return false;
         }
 
-        for (String equipment : equipmentList.toArray(new String[equipmentList.size()])) {
-            manipulatorString.append(equipment);
-            manipulatorString.append(", ");
+        MiscType eq = (MiscType) mount.getType();
+
+        if (eq.hasFlag(MiscType.F_BA_EQUIPMENT) && (eq.hasFlag(MiscType.F_ARMORED_GLOVE) || eq.hasFlag(MiscType.F_BASIC_MANIPULATOR) || eq.hasFlag(MiscType.F_BATTLE_CLAW))) {
+            return true;
         }
 
-        return manipulatorString.toString();
+        return false;
     }
 }
