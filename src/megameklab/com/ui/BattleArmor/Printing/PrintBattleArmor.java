@@ -107,7 +107,7 @@ public class PrintBattleArmor implements Printable {
         }
 
         if (UnitUtil.canSwarm(battleArmor)) {
-            g2d.drawImage(checkBox, 118, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 119, 189 + currentMargin, 11, 11, null);
         }
 
         if (UnitUtil.canLegAttack(battleArmor)) {
@@ -115,7 +115,7 @@ public class PrintBattleArmor implements Printable {
         }
 
         if (battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) > 0) {
-            g2d.drawImage(checkBox, 194, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 195, 189 + currentMargin, 11, 11, null);
         }
     }
 
