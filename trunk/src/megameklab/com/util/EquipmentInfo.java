@@ -28,6 +28,7 @@ import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.ISCompactNarc;
+import megamek.common.weapons.ISMineLauncher;
 import megamek.common.weapons.MMLWeapon;
 
 public class EquipmentInfo {
@@ -165,12 +166,6 @@ public class EquipmentInfo {
 
             WeaponType weapon = (WeaponType) mount.getType();
 
-            if ((unit instanceof BattleArmor) && (weapon.getAmmoType() != AmmoType.T_NA) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
-                hasAmmo = true;
-                ammoCount = UnitUtil.getBAAmmoCount(unit, weapon, mount.getLocation());
-                location = mount.getLocation();
-            }
-
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
 
@@ -209,6 +204,94 @@ public class EquipmentInfo {
         }
 
         isBAMineLayer = mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
+        hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
+        hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
+        hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
+
+    }
+
+    public EquipmentInfo(BattleArmor unit, Mounted mount) {
+
+        name = UnitUtil.getCritName(unit, mount.getType());
+
+        if (mount.getType() instanceof ISMineLauncher) {
+            name = "Pop-Up Mine";
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
+            name = "ECM Suite";
+        }
+
+        if (mount.isBodyMounted() && (unit.getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED)) {
+            name += " (Body)";
+        }
+
+        count = 1;
+        techLevel = mount.getType().getTechLevel();
+
+        damage = StringUtils.getEquipmentInfo(unit, mount);
+
+        if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
+            if (mount.getType().hasFlag(WeaponType.F_C3M)) {
+                c3Level = C3M;
+            }
+
+            WeaponType weapon = (WeaponType) mount.getType();
+
+            if ((weapon.getAmmoType() != AmmoType.T_NA) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                hasAmmo = true;
+                ammoCount = UnitUtil.getBAAmmoCount(unit, weapon, mount.getLocation());
+                location = mount.getLocation();
+            }
+
+            minRange = Math.max(0, weapon.minimumRange);
+            isWeapon = true;
+
+            isMML = weapon instanceof MMLWeapon;
+            isATM = weapon instanceof ATMWeapon;
+            isCompactNarc = weapon instanceof ISCompactNarc;
+
+            shtRange = weapon.shortRange;
+            medRange = weapon.mediumRange;
+            longRange = weapon.longRange;
+
+            if (medRange == longRange) {
+                longRange = -1;
+            }
+
+            heat = weapon.getHeat();
+            secondaryLocation = mount.getSecondLocation();
+        } else if (mount.getType() instanceof MiscType) {
+            MiscType equipment = (MiscType) mount.getType();
+
+            if (equipment.hasFlag(MiscType.F_C3I)) {
+                c3Level = C3I;
+            } else if (equipment.hasFlag(MiscType.F_C3S)) {
+                c3Level = C3S;
+            } else if (equipment.hasFlag(MiscType.F_ECM)) {
+                if (equipment.getInternalName().equals(Sensor.WATCHDOG)) {
+                    longRange = 4;
+                } else if (equipment.hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
+                    longRange = 1;
+                } else {
+                    longRange = 6;
+                }
+            } else if (equipment.hasFlag(MiscType.F_BAP)) {
+                if (equipment.getInternalName().equals(Sensor.BAP)) {
+                    longRange = 4;
+                } else if (equipment.getInternalName().equals(Sensor.BLOODHOUND)) {
+                    longRange = 6;
+                } else if (equipment.getInternalName().equals(Sensor.CLAN_AP)) {
+                    longRange = 5;
+                } else if (equipment.getInternalName().equals(Sensor.ISIMPROVED)) {
+                    longRange = 2;
+                } else if (equipment.getInternalName().equals(Sensor.CLIMPROVED)) {
+                    longRange = 3;
+                }
+            } else if (equipment.hasFlag(MiscType.F_SEARCHLIGHT)) {
+                longRange = 9;
+            }
+            isBAMineLayer = equipment.hasFlag(MiscType.F_MINE) && equipment.hasFlag(MiscType.F_BA_EQUIPMENT);
+        }
+
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
