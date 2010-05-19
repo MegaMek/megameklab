@@ -1639,11 +1639,6 @@ public class ImageHelper {
             if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableBAEquipment(eq.getType())) {
                 continue;
             }
-            if ((eq.getType() instanceof MiscType)) {
-                if (eq.getType().hasFlag(MiscType.F_STEALTH) || eq.getType().hasFlag(MiscType.F_FIRE_RESISTANT)) {
-                    continue;
-                }
-            }
 
             if (!hasNarcCompact && (eq.getType() instanceof ISCompactNarc)) {
                 hasNarcCompact = true;
