@@ -53,6 +53,8 @@ public class EquipmentInfo {
     public boolean isATM = false;
     public boolean isBAMineLayer = false;
     public boolean isCompactNarc = false;
+    public boolean isManipulator = false;
+
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
     public boolean hasArtemisV = false;
@@ -238,7 +240,7 @@ public class EquipmentInfo {
 
             if ((weapon.getAmmoType() != AmmoType.T_NA) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                 hasAmmo = true;
-                ammoCount = UnitUtil.getBAAmmoCount(unit, weapon, mount.getLocation());
+                ammoCount = UnitUtil.getBAAmmoCount(unit, weapon, mount.getLocation()) / UnitUtil.getNumberOfEquipmentLikeThis(unit, weapon);
                 location = mount.getLocation();
             }
 
@@ -295,7 +297,7 @@ public class EquipmentInfo {
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
-
+        isManipulator = UnitUtil.isManipulator(mount);
     }
 
     @Override
