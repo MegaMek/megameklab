@@ -1599,7 +1599,6 @@ public class ImageHelper {
             g2d.drawString(armorString, positionX, positionY);
 
             positionX += ImageHelper.getStringWidth(g2d, armorString, font);
-            buffer.setLength(buffer.length() - 2);
             g2d.setFont(UnitUtil.getNewFont(g2d, buffer.toString(), false, 178, 7.0f));
             g2d.drawString(buffer.toString(), positionX, positionY);
         }
@@ -1617,7 +1616,7 @@ public class ImageHelper {
         int shtPoint = 166;
         int medPoint = 180;
         int longPoint = 198;
-        float linePoint = 150.1f + offset;
+        float linePoint = 148.1f + offset;
         float maxHeight = 40.0f;
         float lineFeed = 6.7f;
         float stringHeight = 0f;
@@ -1632,7 +1631,8 @@ public class ImageHelper {
 
         boolean hasNarcCompact = false;
         boolean hasMineLayer = false;
-        boolean hasGlove = false;
+        Mounted glove = null;
+        int numberOfGloves = 0;
 
         for (Mounted eq : ba.getEquipment()) {
 
@@ -1651,11 +1651,18 @@ public class ImageHelper {
                 continue;
             }
 
-            if (!hasGlove && UnitUtil.isManipulator(eq)) {
-                hasGlove = true;
-            } else if (hasGlove && UnitUtil.isManipulator(eq)) {
-                continue;
+            if (UnitUtil.isManipulator(eq)) {
+
+                if ((glove != null) && (glove.getName().equals(eq.getName()))) {
+                    numberOfGloves++;
+                    continue;
+                } else {
+                    glove = eq;
+                    numberOfGloves = 1;
+                }
+
             }
+
             equipmentLocations.get(eq.getLocation()).add(new EquipmentInfo(ba, eq));
 
         }
@@ -1667,7 +1674,8 @@ public class ImageHelper {
         Font font = ImageHelper.getBattleArmorWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, 7.0f);
         g2d.setFont(font);
         stringHeight = getStringHeight(g2d, "H", font);
-        linePoint -= stringHeight / 2;
+
+        // linePoint -= stringHeight / 2;
 
         lineFeed = stringHeight;
 
@@ -1698,7 +1706,11 @@ public class ImageHelper {
 
                 String name = eqi.name.trim();
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, font.getSize()));
+                if (eqi.isManipulator && (numberOfGloves > 1)) {
+                    name += " (2)";
+                }
+
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 88, font.getSize()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -1760,17 +1772,9 @@ public class ImageHelper {
                         g2d.drawString("9", longPoint, linePoint);
 
                     } else {
-                        if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
-                            // font = UnitUtil.deriveFont(6.0f);
-                            // g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            // font = UnitUtil.deriveFont(7.0f);
-                            // g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
-                            newLineNeeded = true;
-                        } else {
-                            ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint, linePoint);
-                        }
+                        g2d.setFont(UnitUtil.getNewFont(g2d, eqi.damage, false, 30, font.getSize()));
+                        ImageHelper.printCenterString(g2d, eqi.damage, g2d.getFont(), damagePoint, linePoint);
+                        g2d.setFont(font);
                         if (eqi.minRange > 0) {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, (int) linePoint);
                         } else {
@@ -1793,7 +1797,9 @@ public class ImageHelper {
                         }
                     }
                 } else {
-                    ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
+                    g2d.setFont(UnitUtil.getNewFont(g2d, eqi.damage, false, 30, font.getSize()));
+                    ImageHelper.printCenterString(g2d, eqi.damage, g2d.getFont(), damagePoint, linePoint);
+                    g2d.setFont(font);
                     if (eqi.minRange > 0) {
                         g2d.drawString(Integer.toString(eqi.minRange), minPoint, (int) linePoint);
                     } else {
@@ -1831,17 +1837,8 @@ public class ImageHelper {
                         }
                         ammoString.setLength(ammoString.length() - 2);
                     } else {
-                        int missilePerTrooper = eqi.ammoCount / ba.getNumberActiverTroopers();
                         for (int ammoCount = 1; ammoCount <= eqi.ammoCount; ammoCount++) {
                             ammoString.append("O ");
-
-                            if (ammoCount % missilePerTrooper == 0) {
-                                ammoString.append("/ ");
-                            }
-                        }
-
-                        if (ammoString.lastIndexOf("/ ") == ammoString.length() - 2) {
-                            ammoString.setLength(ammoString.length() - 2);
                         }
                     }
 
