@@ -1616,7 +1616,7 @@ public class ImageHelper {
         int shtPoint = 166;
         int medPoint = 180;
         int longPoint = 198;
-        float linePoint = 148.1f + offset;
+        float linePoint = 149.1f + offset;
         float maxHeight = 40.0f;
         float lineFeed = 6.7f;
         float stringHeight = 0f;
