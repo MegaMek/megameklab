@@ -36,7 +36,6 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
-import megamek.client.ui.swing.util.RotateFilter;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -65,8 +64,6 @@ public class ImageHelper {
     public static String imageProto = "protomech";
 
     public static Image armorPip = null;
-
-    public static RotateFilter rotater;
 
     public static Image getRecordSheet(Entity unit) {
         return ImageHelper.getRecordSheet(unit, false);
