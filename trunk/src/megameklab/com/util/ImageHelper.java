@@ -90,7 +90,11 @@ public class ImageHelper {
             recordSheet = new ImageIcon(path + "twvee-vtol.png").getImage();
         } else if (unit instanceof Tank) {
             if (unit instanceof LargeSupportTank) {
-                recordSheet = new ImageIcon(path + "twvee-lgsupground.png").getImage();
+                if (unit.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
+                    recordSheet = new ImageIcon(path + "twvee-lgsupground-turret.png").getImage();
+                } else {
+                    recordSheet = new ImageIcon(path + "twvee-lgsupground.png").getImage();
+                }
             } else {
                 String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + ".png";
                 recordSheet = new ImageIcon(path + imageName).getImage();
@@ -1361,8 +1365,9 @@ public class ImageHelper {
             String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
             armorPip = new ImageIcon(path + "armordot.png").getImage();
         }
-
+        // armorPip.setAccelerationPriority(1);
         g2d.drawImage(armorPip, (int) width, (int) height, 6, 6, null);
+
     }
 
     public static void drawArmorPip(Graphics2D g2d, float width, float height) {

@@ -126,6 +126,8 @@ public class UnitPrintManager {
                 UnitUtil.expandUnitMounts((Mech) unit);
 
                 bipedList.add((Mech) unit);
+            } else if (unit instanceof LargeSupportTank) {
+                largeSupportTankList.add((LargeSupportTank) unit);
             } else if (unit instanceof VTOL) {
                 VTOLList.add((VTOL) unit);
             } else if (unit instanceof Tank) {
@@ -136,8 +138,6 @@ public class UnitPrintManager {
                 baList.add((BattleArmor) unit);
             } else if (unit instanceof Protomech) {
                 protoList.add((Protomech) unit);
-            } else if (unit instanceof LargeSupportTank) {
-                largeSupportTankList.add((LargeSupportTank) unit);
             } else {
                 return false;
             }
