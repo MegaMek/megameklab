@@ -39,6 +39,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.EquipmentListCellRenderer;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
@@ -133,14 +134,14 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentCombo() {
-
+        equipmentCombo.setRenderer(new EquipmentListCellRenderer(unit));
         equipmentCombo.removeAllItems();
         equipmentTypes = new Vector<EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 equipmentTypes.add(eq);
-                equipmentCombo.addItem(UnitUtil.getCritName(unit, eq));
+                equipmentCombo.addItem(eq);
             }
         }
     }
@@ -227,30 +228,24 @@ public class EquipmentView extends IView implements ActionListener {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
 
-            if (equipmentCombo.getSelectedItem().toString().equals(UnitUtil.ENVIROSEAL)) {
+            EquipmentType equip = (EquipmentType)equipmentCombo.getSelectedItem();
+            boolean isMisc = equip instanceof MiscType;
+            if (isMisc && equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)) {
                 if (!unit.hasEnvironmentalSealing()) {
-                    createSpreadMounts(UnitUtil.ENVIROSEAL);
+                    createSpreadMounts(equip);
                 }
-            } else if (equipmentCombo.getSelectedItem().toString().startsWith(UnitUtil.TARGETINGCOMPUTER)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(unit)) {
-
-                    // boolean isClan = false;
-                    if (unit.isMixedTech()) {
-                        String tcType = equipmentCombo.getSelectedItem().toString().trim();
-                        if ((tcType.endsWith("(Clan)") && !unit.isClan()) || (unit.isClan() && !tcType.endsWith("(IS)"))) {
-                            // isClan = true;
-                        }
-                    }
-                    // UnitUtil.updateTC(unit, isClan);
+                    UnitUtil.updateTC(unit, equip);
                 }
             } else {
                 try {
-                    unit.addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
+                    unit.addEquipment(equip, Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
-            equipmentList.addCrit(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()));
+            equipmentList.addCrit(equip);
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
 
             int startRow = equipmentTable.getSelectedRow();
@@ -307,35 +302,35 @@ public class EquipmentView extends IView implements ActionListener {
         return equipmentList;
     }
 
-    private void createSpreadMounts(String equip) {
+    private void createSpreadMounts(EquipmentType equip) {
         int crits = 0;
 
-        crits = EquipmentType.get(equip).getCriticals(unit);
+        crits = equip.getCriticals(unit);
 
         if (crits < 1) {
             return;
         }
 
+        boolean isMisc = equip instanceof MiscType;
         float tonnageAmount = 0;
-        if (equip.equals(UnitUtil.ENVIROSEAL) && (crits > 1)) {
-            tonnageAmount = EquipmentType.get(equip).getTonnage(unit);
+        if (isMisc && equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) && (crits > 1)) {
+            tonnageAmount = equip.getTonnage(unit);
             tonnageAmount /= 8;
         }
-        if (equip.equals(UnitUtil.TRACKS) && (crits > 1)) {
-            tonnageAmount = EquipmentType.get(equip).getTonnage(unit) / EquipmentType.get(equip).getCriticals(unit);
+        if (isMisc && equip.hasFlag(MiscType.F_TRACKS) && (crits > 1)) {
+            tonnageAmount = equip.getTonnage(unit) / equip.getCriticals(unit);
         }
 
         for (; crits > 0; crits--) {
             try {
-                if ((equip.equals(UnitUtil.ENVIROSEAL) || equip.equals(UnitUtil.TRACKS)) && (crits > 1)) {
-                    Mounted mount = new Mounted(unit, EquipmentType.get(equip));
+                if (isMisc && (equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || equip.hasFlag(MiscType.F_TRACKS)) && (crits > 1)) {
+                    Mounted mount = new Mounted(unit, equip);
                     mount.getType().setTonnage(tonnageAmount);
                     unit.addEquipment(mount.getType(), Entity.LOC_NONE, false);
                 } else {
-                    unit.addEquipment(EquipmentType.get(equip), Entity.LOC_NONE, false);
+                    unit.addEquipment(equip, Entity.LOC_NONE, false);
                 }
             } catch (Exception ex) {
-
             }
         }
     }

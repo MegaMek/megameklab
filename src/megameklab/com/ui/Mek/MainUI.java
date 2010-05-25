@@ -63,6 +63,8 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MechSummaryCache;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
@@ -392,14 +394,15 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
-        // this is kind of hackish to do it this way
-        // all the equipmenttypes that get set back to TONNAGE_VARIABLE in
-        // UnitUtil#removeMount need to be reset here, as well
-        EquipmentType.get(UnitUtil.ENVIROSEAL).setTonnage(EquipmentType.TONNAGE_VARIABLE);
-        EquipmentType.get(UnitUtil.TRACKS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
-        EquipmentType.get(UnitUtil.TALONS).setTonnage(EquipmentType.TONNAGE_VARIABLE);
-        EquipmentType.get(UnitUtil.PARTIALWING).setTonnage(EquipmentType.TONNAGE_VARIABLE);
-        EquipmentType.get(UnitUtil.JUMPBOOSTER).setTonnage(EquipmentType.TONNAGE_VARIABLE);
+        for (Mounted misc:entity.getMisc()) {
+            if (misc.getType().hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
+                    || misc.getType().hasFlag(MiscType.F_TRACKS)
+                    || misc.getType().hasFlag(MiscType.F_TALON)
+                    || misc.getType().hasFlag(MiscType.F_PARTIAL_WING)
+                    || misc.getType().hasFlag(MiscType.F_JUMP_BOOSTER)) {
+                misc.getType().setTonnage(EquipmentType.TONNAGE_VARIABLE);
+            }
+        }
         createNewMech(false);
         reloadTabs();
         setVisible(true);
@@ -824,7 +827,7 @@ public class MainUI extends JFrame implements RefreshListener {
         try {
             Runtime runtime = Runtime.getRuntime();
             String[] call =
-                { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
+                { "java", "-Xmx512m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
             runtime.exec(call);
             System.exit(0);
         } catch (Exception ex) {
