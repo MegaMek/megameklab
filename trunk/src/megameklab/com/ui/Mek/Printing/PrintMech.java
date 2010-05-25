@@ -1790,9 +1790,8 @@ public class PrintMech implements Printable {
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            // ImageHelper.drawArmorPip(g2d, pipPoints.get(currentPip)[0],
-            // pipPoints.get(currentPip)[1]);
-            ImageHelper.printArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
+            ImageHelper.drawArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
+            //ImageHelper.printArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
