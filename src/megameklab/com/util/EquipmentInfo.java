@@ -75,7 +75,7 @@ public class EquipmentInfo {
 
     /**
      * Info for Aeros
-     * 
+     *
      * @param aero
      * @param mount
      */
@@ -142,7 +142,7 @@ public class EquipmentInfo {
 
     /**
      * Info for non Aero Entities.
-     * 
+     *
      * @param unit
      * @param mount
      */
@@ -272,7 +272,7 @@ public class EquipmentInfo {
                 if (equipment.getInternalName().equals(Sensor.WATCHDOG)) {
                     longRange = 4;
                 } else if (equipment.hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
-                    longRange = 1;
+                    longRange = 0;
                 } else {
                     longRange = 6;
                 }
