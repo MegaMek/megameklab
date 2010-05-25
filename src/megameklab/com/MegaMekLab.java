@@ -65,11 +65,11 @@ public class MegaMekLab {
             if (runtime.maxMemory() < 256000000) {
                 try {
                     String[] call =
-                        { "java", "-Xmx512m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
+                        { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
 
                     if (!logs) {
                         call = new String[]
-                            { "java", "-Xmx512m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle", "-nolog" };
+                            { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle", "-nolog" };
                     }
                     runtime.exec(call);
                     System.exit(0);
