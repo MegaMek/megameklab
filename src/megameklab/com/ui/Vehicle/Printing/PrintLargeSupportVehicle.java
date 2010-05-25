@@ -81,18 +81,10 @@ public class PrintLargeSupportVehicle implements Printable {
 
         g2d.drawImage(ImageHelper.getRecordSheet(largesupportank, false), 18, 18, 558, 368, null);
 
-        if (largesupportank.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
-            g2d.drawImage(ImageHelper.getTurretImage(), 441, 173, 77, 96, null);
-            g2d.drawImage(ImageHelper.getTurretLabelImage(), 297, 248, 34, 11, null);
-        }
-
         if (largesupportank2 == null) {
             g2d.drawImage(ImageHelper.getTableImage(largesupportank), 18, 18 + secondPageMargin, 558, 368, null);
         } else {
             g2d.drawImage(ImageHelper.getRecordSheet(largesupportank2, false), 18, 18 + secondPageMargin, 558, 368, null);
-            if (largesupportank2.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
-                g2d.drawImage(ImageHelper.getTurretImage(), 441, 173 + secondPageMargin, 77, 96, null);
-            }
         }
 
         printLargeSupportTankData(g2d);
@@ -100,25 +92,37 @@ public class PrintLargeSupportVehicle implements Printable {
         printWeaponsNEquipment(g2d);
 
         // Armor Pips
-        printFrontArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONT), false);
-        printLeftArmor(g2d, largesupportank.getOArmor(Tank.LOC_LEFT), false);
-        printRightArmor(g2d, largesupportank.getOArmor(Tank.LOC_RIGHT), false);
-        printRearArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REAR), false);
-        printTurretArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_TURRET), false);
+        // printFrontArmor(g2d,
+        // largesupportank.getOArmor(LargeSupportTank.LOC_FRONT), false);
+        printFrontLeftArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONTLEFT), false);
+        printFrontRightArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), false);
+        printRearLeftArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REARLEFT), false);
+        printRearRightArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REARRIGHT), false);
+        // printRearArmor(g2d,
+        // largesupportank.getOArmor(LargeSupportTank.LOC_REAR), false);
+        // printTurretArmor(g2d,
+        // largesupportank.getOArmor(LargeSupportTank.LOC_TURRET), false);
 
         // Internal Pips
-        printFrontStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_FRONT), false);
-        printLeftStruct(g2d, largesupportank.getOInternal(Tank.LOC_LEFT), false);
-        printRightStruct(g2d, largesupportank.getOInternal(Tank.LOC_RIGHT), false);
-        printRearStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REAR), false);
-
-        printTurretStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_TURRET), false);
-
+        /*
+         * printFrontStruct(g2d,
+         * largesupportank.getOInternal(LargeSupportTank.LOC_FRONT), false);
+         * printLeftStruct(g2d, largesupportank.getOInternal(Tank.LOC_LEFT),
+         * false); printRightStruct(g2d,
+         * largesupportank.getOInternal(Tank.LOC_RIGHT), false);
+         * printRearStruct(g2d,
+         * largesupportank.getOInternal(LargeSupportTank.LOC_REAR), false);
+         * 
+         * printTurretStruct(g2d,
+         * largesupportank.getOInternal(LargeSupportTank.LOC_TURRET), false);
+         */
         if (largesupportank2 != null) {
             // Armor Pips
             printFrontArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_FRONT), true);
-            printLeftArmor(g2d, largesupportank2.getOArmor(Tank.LOC_LEFT), true);
-            printRightArmor(g2d, largesupportank2.getOArmor(Tank.LOC_RIGHT), true);
+            printFrontLeftArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_FRONTLEFT), true);
+            printFrontRightArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), true);
+            printRearLeftArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_REARLEFT), true);
+            printRearRightArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_REARRIGHT), true);
             printRearArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_REAR), true);
             printTurretArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_TURRET), true);
 
@@ -265,7 +269,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
         if (largesupportank.hasBARArmor()) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + largesupportank.getBARRating(), 400, 64);
+            g2d.drawString(Integer.toString(largesupportank.getBARRating()), 413, 53);
         }
 
         font = new Font("Arial", Font.BOLD, 7);
@@ -275,7 +279,7 @@ public class PrintLargeSupportVehicle implements Printable {
         if (largesupportank2 != null) {
             printLargeSupportTank2Data(g2d);
         } else {
-            g2d.drawString("2010", 62.5f, 745f);
+            g2d.drawString("2010", 62.5f, 374f + secondPageMargin);
         }
     }
 
@@ -426,14 +430,18 @@ public class PrintLargeSupportVehicle implements Printable {
         }
         g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONT)) + ")", 467, 64);
 
-        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230);
+        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONTRIGHT)) + ")", 555, 302);
 
-        g2d.drawString("(" + largesupportank.getArmor(Tank.LOC_LEFT) + ")", 384, 175);
+        g2d.drawString("(" + largesupportank.getArmor(LargeSupportTank.LOC_FRONTLEFT) + ")", 386, 110);
+
+        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_REARRIGHT)) + ")", 555, 185);
+
+        g2d.drawString("(" + largesupportank.getArmor(LargeSupportTank.LOC_REARLEFT) + ")", 386, 228);
 
         g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_REAR)) + ")", 467, 342);
 
         if (largesupportank.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
-            g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 455, 186);
+            g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 405, 360);
         }
 
         if (largesupportank2 != null) {
@@ -849,175 +857,149 @@ public class PrintLargeSupportVehicle implements Printable {
         printArmorPoints(g2d, pipPlotter, totalArmor, fontSize);
     }
 
-    private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topColumn = new float[]
-            { 418.5f, 92.5f };
-        float[] pipShift = new float[]
-            { 7, 7 };
+    private void printFrontLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+
+        float baseX = 417.5f;
+        float baseY = 112f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 6f;
+        float shiftY = 7f;
+        int pipsPerLine = 1;
 
         if (secondImage) {
-            topColumn[1] += secondPageMargin;
+            baseY += secondPageMargin;
         }
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= 90; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+        Vector<float[]> pipPlotter = new Vector<float[]>(55, 1);
 
-            switch (pos) {
-                case 1:
-                case 2:
-                    topColumn[1] += pipShift[1];
-                    break;
-                case 4:
-                case 6:
-                case 9:
-                case 12:
-                case 21:
-                case 27:
-                case 46:
-                case 49:
-                case 52:
-                case 70:
-                case 74:
-                case 85:
-                case 88:
-                    topColumn[1] += pipShift[1];
-                    pipShift[0] *= -1;
-                    break;
-                case 78:
-                    topColumn[1] += pipShift[1];
-                    pipShift[0] *= -1;
-                    topColumn[0] -= 1.3;
-                    break;
-                case 82:
-                    topColumn[1] += pipShift[1];
-                    pipShift[0] *= -1;
-                    topColumn[0] += 1.3;
-                    break;
-                case 43:
-                    topColumn[1] += pipShift[1];
-                    pipShift[0] *= -1;
-                    topColumn[0] += pipShift[0];
-                    break;
-                case 39:
-                    topColumn[1] += pipShift[1];
-                    pipShift[0] = Math.abs(pipShift[0]);
-                    topColumn[0] -= pipShift[0] * 5.2;
-                    break;
-                case 55:
-                    topColumn[1] += pipShift[1];
-                    topColumn[0] -= pipShift[0] * 2.2;
-                    break;
-                case 58:
-                case 60:
-                case 62:
-                case 64:
-                    topColumn[1] += pipShift[1];
-                    topColumn[0] -= pipShift[0] * 1.25;
-                    break;
-                case 66:
-                    topColumn[1] += pipShift[1] * 1.3;
-                    topColumn[0] -= pipShift[0];
-                    break;
-                case 16:
-                case 33:
-                    topColumn[1] += pipShift[1];
-                    pipShift[0] *= -1;
-                    topColumn[0] -= pipShift[0] * .5;
-                    break;
-                case 79:
-                case 81:
-                case 87:
-                    topColumn[0] += pipShift[0] * .85;
-                    break;
-                default:
-                    topColumn[0] += pipShift[0];
-                    break;
+        for (int lineCount = 0; lineCount < 14; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointX += shiftX;
+            }
+            if (lineCount < 3) {
+                pipsPerLine++;
             }
 
+            if (lineCount == 9) {
+                pipsPerLine++;
+                baseX -= shiftX;
+            }
+            pointX = baseX;
+            pointY += shiftY;
         }
+
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
-    private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topColumn = new float[]
-            { 530f, 92 };
-        float[] pipShift = new float[]
-            { 7, 7 };
+    private void printRearLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+        float baseX = 410.5f;
+        float baseY = 210f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 6f;
+        float shiftY = 7f;
+        int pipsPerLine = 5;
 
         if (secondImage) {
-            topColumn[1] += secondPageMargin;
+            baseY += secondPageMargin;
         }
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= 90; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+        Vector<float[]> pipPlotter = new Vector<float[]>(57, 1);
 
-            switch (pos) {
-                case 1:
-                case 2:
-                    topColumn[1] += pipShift[1];
-                    break;
-                case 4:
-                case 6:
-                case 9:
-                case 12:
-                case 16:
-                case 21:
-                case 27:
-                case 33:
-                case 46:
-                case 49:
-                case 52:
-                case 70:
-                case 74:
-                    // case 78:
-                case 85:
-                case 82:
-                case 88:
-                    topColumn[1] += pipShift[1];
-                    pipShift[0] *= -1;
-                    break;
-                case 78:
-                    topColumn[1] += pipShift[1];
-                    topColumn[0] += 1.5f;
-                    pipShift[0] *= -.9f;
-                    break;
-                case 43:
-                    topColumn[1] += pipShift[1];
-                    pipShift[0] *= -1;
-                    topColumn[0] -= pipShift[0];
-                    break;
-                case 39:
-                    topColumn[1] += pipShift[1];
-                    pipShift[0] = Math.abs(pipShift[0]);
-                    topColumn[0] += pipShift[0] * 5.5;
-                    break;
-                case 55:
-                    topColumn[1] += pipShift[1];
-                    topColumn[0] += pipShift[0] * 2.2;
-                    break;
-                case 58:
-                case 60:
-                case 62:
-                case 64:
-                    topColumn[1] += pipShift[1];
-                    topColumn[0] += pipShift[0] * 1.25;
-                    break;
-                case 66:
-                    topColumn[1] += pipShift[1] * 1.25;
-                    topColumn[0] += pipShift[0];
-                    break;
-                case 89:
-                    topColumn[0] -= pipShift[0] * .9;
-                    break;
-                default:
-                    topColumn[0] -= pipShift[0];
-                    break;
+        for (int lineCount = 0; lineCount < 13; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointX += shiftX;
             }
+            if ((lineCount == 9) || (lineCount > 10)) {
+                pipsPerLine--;
+            } else if (lineCount == 10) {
+                pipsPerLine -= 2;
+            }
+
+            pointX = baseX;
+            pointY += shiftY;
         }
+
+        printArmorPoints(g2d, pipPlotter, totalArmor);
+    }
+
+    private void printFrontRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+
+        float baseX = 531.5f;
+        float baseY = 112f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 6f;
+        float shiftY = 7f;
+        int pipsPerLine = 1;
+
+        if (secondImage) {
+            baseY += secondPageMargin;
+        }
+
+        Vector<float[]> pipPlotter = new Vector<float[]>(55, 1);
+
+        for (int lineCount = 0; lineCount < 14; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointX -= shiftX;
+            }
+            if (lineCount < 3) {
+                pipsPerLine++;
+            }
+
+            if (lineCount == 9) {
+                pipsPerLine++;
+                baseX += shiftX;
+            }
+            pointX = baseX;
+            pointY += shiftY;
+        }
+
+        printArmorPoints(g2d, pipPlotter, totalArmor);
+    }
+
+    private void printRearRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+        float baseX = 538.5f;
+        float baseY = 210f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 6f;
+        float shiftY = 7f;
+        int pipsPerLine = 5;
+
+        if (secondImage) {
+            baseY += secondPageMargin;
+        }
+
+        Vector<float[]> pipPlotter = new Vector<float[]>(57, 1);
+
+        for (int lineCount = 0; lineCount < 13; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointX -= shiftX;
+            }
+            if ((lineCount == 9) || (lineCount > 10)) {
+                pipsPerLine--;
+            } else if (lineCount == 10) {
+                pipsPerLine -= 2;
+            }
+
+            pointX = baseX;
+            pointY += shiftY;
+        }
+
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
