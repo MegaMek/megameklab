@@ -33,11 +33,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import megamek.common.Engine;
 import megamek.common.EntityMovementMode;
@@ -49,7 +53,7 @@ import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 
-public class StructureTab extends ITab implements ActionListener, KeyListener {
+public class StructureTab extends ITab implements ActionListener, KeyListener, ChangeListener {
 
     /**
      *
@@ -92,7 +96,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     Dimension maxSize = new Dimension();
     JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:", SwingConstants.TRAILING);
     JPanel masterPanel;
-    JComboBox troopStorage = null;
+    JSpinner troopStorage = null;
     int maxTonnage = 50;
 
     private CriticalView critView = null;
@@ -133,9 +137,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         weightClass = new JComboBox(weightClasses.toArray());
-        troopStorage = new JComboBox(weightClasses.toArray());
-
-        troopStorage.setSelectedIndex(0);
+        troopStorage = new JSpinner(new SpinnerNumberModel(0, 0, 0, 0.5));
 
         maxSize.setSize(110, 20);
 
@@ -313,11 +315,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         }
                         getTank().setOriginalWalkMP(cruiseMP.getSelectedIndex()+1);
                     }
-                } else if (combo.equals(troopStorage)) {
-                    unit.removeAllTransporters();
-                    if (troopStorage.getSelectedIndex() > 0) {
-                        unit.addTransporter(new TroopSpace(troopStorage.getSelectedIndex()));
-                    }
                 } else if (combo.equals(weightClass)) {
                     if (weightClass.getSelectedItem() != null) {
                         int rating = Math.max(10,(cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()));
@@ -325,6 +322,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                             JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                         } else {
                             unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
+                            ((SpinnerNumberModel)troopStorage.getModel()).setMaximum(Double.parseDouble(weightClass.getSelectedItem().toString()));
                             unit.autoSetInternal();
                             addAllActionListeners();
                             engineType.setSelectedIndex(engineType.getSelectedIndex());
@@ -483,7 +481,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 masterPanel.setVisible(true);
             }
             refresh.refreshAll();
-
         }
 
     }
@@ -499,7 +496,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         omniCB.removeActionListener(this);
         turretCB.removeActionListener(this);
         tankMotiveType.removeActionListener(this);
-        troopStorage.removeActionListener(this);
+        troopStorage.removeChangeListener(this);
     }
 
     public void addAllActionListeners() {
@@ -513,7 +510,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         omniCB.addActionListener(this);
         turretCB.addActionListener(this);
         tankMotiveType.addActionListener(this);
-        troopStorage.addActionListener(this);
+        troopStorage.addChangeListener(this);
     }
 
     public void keyPressed(KeyEvent e) {
@@ -545,19 +542,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     }
 
     private void updateTroopSpaceAllowed() {
-        int troops = unit.getTroopCarryingSpace();
-
-        troopStorage.removeAllItems();
-
-        for (int space = 0; space <= unit.getWeight(); space++) {
-            troopStorage.addItem(space);
-        }
+        float troops = unit.getTroopCarryingSpace();
 
         if (troops > (int) unit.getWeight()) {
             unit.removeAllTransporters();
-            troopStorage.setSelectedIndex(0);
+            ((SpinnerNumberModel)troopStorage.getModel()).setValue(0);
         } else {
-            troopStorage.setSelectedIndex(troops);
+            ((SpinnerNumberModel)troopStorage.getModel()).setValue((double)troops);
         }
 
     }
@@ -582,6 +573,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         currentTonnage = Math.min(currentTonnage, maxTonnage);
         unit.setWeight(currentTonnage);
+        ((SpinnerNumberModel)troopStorage.getModel()).setMaximum((double)currentTonnage);
 
         for (int pos = 1; pos <= maxTonnage; pos++) {
             weightClass.addItem(pos);
@@ -703,5 +695,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         return 0;
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource().equals(troopStorage)) {
+            removeAllActionListeners();
+            unit.removeAllTransporters();
+            if (((SpinnerNumberModel)troopStorage.getModel()).getNumber().doubleValue() > 0) {
+                unit.addTransporter(new TroopSpace(((SpinnerNumberModel)troopStorage.getModel()).getNumber().doubleValue()));
+            }
+            refresh.refreshAll();
+            addAllActionListeners();
+        }
+
     }
 }

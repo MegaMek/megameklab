@@ -42,8 +42,8 @@ import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.TechConstants;
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.EquipmentListCellRenderer;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
@@ -140,14 +140,14 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentCombo() {
-
+        equipmentCombo.setRenderer(new EquipmentListCellRenderer(unit));
         equipmentCombo.removeAllItems();
         equipmentTypes = new Vector<EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 equipmentTypes.add(eq);
-                equipmentCombo.addItem(UnitUtil.getCritName(unit, eq));
+                equipmentCombo.addItem(eq);
             }
         }
     }
@@ -237,74 +237,59 @@ public class EquipmentView extends IView implements ActionListener {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
             boolean success = false;
-            String equip = equipmentCombo.getSelectedItem().toString();
-            if ((equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()).getTechLevel() != TechConstants.T_ALLOWED_ALL)
-                    && (equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()).getTechLevel() != TechConstants.T_TECH_UNKNOWN)) {
-                if (unit.isClan() && !UnitUtil.isClanEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()))) {
-                    equip = equip.substring(0, equip.length()-5);
-                } else if (!unit.isClan() && UnitUtil.isClanEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()))) {
-                    equip = equip.substring(0, equip.length()-7);
-                }
-            }
-            if (equip.equals(UnitUtil.TSM)) {
+            EquipmentType equip = (EquipmentType)equipmentCombo.getSelectedItem();
+            boolean isMisc = equip instanceof MiscType;
+            if (isMisc && equip.hasFlag(MiscType.F_TSM)) {
                 if (!getMech().hasTSM()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.TSM);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.equals(UnitUtil.INDUSTRIALTSM)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_INDUSTRIAL_TSM)) {
                 if (!getMech().hasIndustrialTSM()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.INDUSTRIALTSM);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.equals(UnitUtil.ENVIROSEAL)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)) {
                 if (!unit.hasEnvironmentalSealing()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.ENVIROSEAL);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.equals(UnitUtil.NULLSIG)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_NULLSIG)) {
                 if (!getMech().hasNullSig()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.NULLSIG);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.equals(UnitUtil.VOIDSIG)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_VOIDSIG)) {
                 if (!getMech().hasVoidSig()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.VOIDSIG);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.equals(UnitUtil.TRACKS)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_TRACKS)) {
                 if (!getMech().hasTracks()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.TRACKS);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.equals(UnitUtil.PARTIALWING)) {
-                if (!getMech().hasWorkingMisc(UnitUtil.PARTIALWING)) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.PARTIALWING);
+            } else if (isMisc && equip.hasFlag(MiscType.F_PARTIAL_WING)) {
+                if (!getMech().hasWorkingMisc(MiscType.F_PARTIAL_WING)) {
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.equals(UnitUtil.JUMPBOOSTER)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                 setJumpBoosterMP(Integer.parseInt(JOptionPane.showInputDialog(this, "How many Jump MP?")));
                 updateJumpMP();
                 if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.JUMPBOOSTER);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.equals(UnitUtil.TALONS)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_TALON)) {
                 boolean hasTalons = getMech().hasWorkingMisc(MiscType.F_TALON);
                 if (!hasTalons) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.TALONS);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.startsWith(UnitUtil.TARGETINGCOMPUTER)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(unit)) {
-
-                    boolean isClan = false;
-                    if (unit.isMixedTech()) {
-                        String tcType = equip.trim();
-                        if ((tcType.endsWith("(Clan)") && !unit.isClan()) || (unit.isClan() && !tcType.endsWith("(IS)"))) {
-                            isClan = true;
-                        }
-                    }
-                    UnitUtil.updateTC(getMech(), isClan);
+                    UnitUtil.updateTC(getMech(), equip);
                     success = true;
                 }
-            } else if (equip.equals(UnitUtil.CHAMELEON)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_CHAMELEON_SHIELD)) {
                 if (!getMech().hasChameleonShield()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.CHAMELEON);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (equip.equals(UnitUtil.BLUESHIELD)) {
+            } else if (isMisc && equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
                 if (!unit.hasWorkingMisc(MiscType.F_BLUE_SHIELD)) {
-                    success = UnitUtil.createSpreadMounts(getMech(), UnitUtil.BLUESHIELD);
+                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
             } else {
                 try {
@@ -323,7 +308,7 @@ public class EquipmentView extends IView implements ActionListener {
 
             for (; count > 0; count--) {
                 if (startRow > -1) {
-                    if (((EquipmentType)equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).getName().equals(UnitUtil.JUMPBOOSTER)) {
+                    if ((equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT) instanceof MiscType) && ((EquipmentType)equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).hasFlag(MiscType.F_JUMP_BOOSTER)) {
                         setJumpBoosterMP(0);
                     }
                     equipmentList.removeMounted(startRow);

@@ -747,7 +747,7 @@ public class MainUI extends JFrame implements RefreshListener {
         try {
             Runtime runtime = Runtime.getRuntime();
             String[] call =
-                { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
+                { "java", "-Xmx512m", "-jar", "MegaMekLab.jar" };
             runtime.exec(call);
             System.exit(0);
         } catch (Exception ex) {

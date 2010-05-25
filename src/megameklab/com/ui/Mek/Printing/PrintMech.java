@@ -349,13 +349,13 @@ public class PrintMech implements Printable {
 
         // Heat Sinks
         if (mech.hasLaserHeatSinks()) {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks() * 2) + ")", 502, 595);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502, 595);
             g2d.drawString("Laser", 502, 603);
         } else if (mech.hasDoubleHeatSinks()) {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks() * 2) + ")", 502, 595);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502, 595);
             g2d.drawString("Double", 502, 603);
         } else {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks()) + ")", 502, 595);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502, 595);
             g2d.drawString("Single", 502, 603);
         }
 
@@ -1477,7 +1477,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     * 
+     *
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location

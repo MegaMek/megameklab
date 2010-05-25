@@ -666,7 +666,7 @@ public class ImageHelper {
             }
         }
 
-        int troopspace = tank.getTroopCarryingSpace();
+        double troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             EquipmentInfo eqi = new EquipmentInfo();
             eqi.name = "Infantry Bay (" + troopspace + " tons)";
@@ -888,7 +888,7 @@ public class ImageHelper {
             }
         }
 
-        int troopspace = tank.getTroopCarryingSpace();
+        float troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             EquipmentInfo eqi = new EquipmentInfo();
             eqi.name = "Infantry Bay (" + troopspace + " tons)";
@@ -1110,7 +1110,7 @@ public class ImageHelper {
             }
 
         }
-        int troopspace = tank.getTroopCarryingSpace();
+        float troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             EquipmentInfo eqi = new EquipmentInfo();
             eqi.name = "Infantry Bay (" + troopspace + " tons)";
