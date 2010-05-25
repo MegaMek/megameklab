@@ -41,6 +41,9 @@ V 0.0.0.17 Dev
 + Bug: BA UMU not printing right
 + Fixes for BA record sheets
 + Bug: BA armor printing twice
++ reworked some internal handling
++ added IS partial wings
++ fixed partial wing heat dissipation printout
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles
