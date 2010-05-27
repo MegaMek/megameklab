@@ -82,6 +82,9 @@ public class EquipmentView extends IView implements ActionListener {
 
     public EquipmentView(Mech unit) {
         super(unit);
+        if (unit.hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
+            jumpBoosterMP = unit.getOriginalJumpMP();
+        }
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
