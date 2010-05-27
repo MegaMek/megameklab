@@ -92,16 +92,13 @@ public class PrintLargeSupportVehicle implements Printable {
         printWeaponsNEquipment(g2d);
 
         // Armor Pips
-        // printFrontArmor(g2d,
-        // largesupportank.getOArmor(LargeSupportTank.LOC_FRONT), false);
+        printFrontArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONT), false);
         printFrontLeftArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONTLEFT), false);
         printFrontRightArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), false);
         printRearLeftArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REARLEFT), false);
         printRearRightArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REARRIGHT), false);
-        // printRearArmor(g2d,
-        // largesupportank.getOArmor(LargeSupportTank.LOC_REAR), false);
-        // printTurretArmor(g2d,
-        // largesupportank.getOArmor(LargeSupportTank.LOC_TURRET), false);
+        printRearArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REAR), false);
+        printTurretArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_TURRET), false);
 
         // Internal Pips
         /*
@@ -518,159 +515,46 @@ public class PrintLargeSupportVehicle implements Printable {
         }
     }
 
-    private void printExtraFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topColumn =
-            { 442, 90 };
-        float[] middleColumn =
-            { 498, 125 };
-        float[] bottomColumn =
-            { 493, 136.2f };
-        float[] pipShift =
-            { 6, 6 };
-
-        float[][] extraArmor =
-            {
-                { 429, 90 },
-                { 429, 97 },
-                { 518, 90 },
-                { 518, 97 },
-                { 436f, 93.5f },
-                { 436f, 100.5f },
-                { 513f, 93.5f },
-                { 513f, 100.5f },
-                { 513f, 107.5f },
-                { 436f, 107.5f } };
-
-        if (secondImage) {
-            topColumn[1] += secondPageMargin;
-            middleColumn[1] += secondPageMargin;
-            bottomColumn[1] += secondPageMargin;
-
-            for (int pos = 0; pos < extraArmor.length; pos++) {
-                extraArmor[pos][1] += secondPageMargin;
-            }
-        }
-
-        if (totalArmor < 1) {
-            return;
-        }
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= 72; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
-            if (pos % 12 == 0) {
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                topColumn[0] += pipShift[0];
-            }
-        }
-
-        pipShift[0] *= -1;
-        for (int pos = 1; pos <= 16; pos++) {
-            pipPlotter.add(new float[]
-                { middleColumn[0], middleColumn[1] });
-            middleColumn[0] += pipShift[0];
-            if (pos % 8 == 0) {
-                middleColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                middleColumn[0] += pipShift[0];
-            }
-        }
-
-        for (int pos = 1; pos <= 18; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
-            bottomColumn[0] += pipShift[0];
-            if (pos % 6 == 0) {
-                bottomColumn[1] += pipShift[1] - 0.5f;
-                pipShift[0] *= -1;
-                bottomColumn[0] += pipShift[0];
-            }
-        }
-
-        for (int pos = 0; pos < 10; pos++) {
-            pipPlotter.add(new float[]
-                { extraArmor[pos][0], extraArmor[pos][1] });
-        }
-        printArmorPoints(g2d, pipPlotter, totalArmor);
-    }
-
     private void printFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topColumn =
-            { 444, 90 };
-        float[] middleColumn =
-            { 500, 125 };
-        float[] bottomColumn =
-            { 493, 132 };
-        float[] pipShift =
-            { 7, 7 };
 
-        float[][] extraArmor =
-            {
-                { 430, 90 },
-                { 430, 97 },
-                { 519, 90 },
-                { 519, 97 },
-                { 437f, 93.5f },
-                { 437f, 100.5f },
-                { 513f, 93.5f },
-                { 513f, 100.5f },
-                { 513f, 107.5f },
-                { 437f, 107.5f } };
+        float baseX = 425.5f;
+        float baseY = 77f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 5.8f;
+        float shiftY = 5.8f;
+        int pipsPerLine = 18;
 
         if (secondImage) {
-            topColumn[1] += secondPageMargin;
-            middleColumn[1] += secondPageMargin;
-            bottomColumn[1] += secondPageMargin;
+            baseY += secondPageMargin;
+        }
 
-            for (int pos = 0; pos < extraArmor.length; pos++) {
-                extraArmor[pos][1] += secondPageMargin;
+        Vector<float[]> pipPlotter = new Vector<float[]>(130, 1);
+
+        for (int lineCount = 0; lineCount < 9; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointX += shiftX;
+                if ((lineCount == 7) && (point == 1)) {
+                    pointX += shiftX * 11;
+                }
+                if ((lineCount == 8) && (point == 0)) {
+                    pointX += shiftX * 11;
+                }
             }
-        }
 
-        if (totalArmor < 1) {
-            return;
-        }
-
-        if (totalArmor > 86) {
-            printExtraFrontArmor(g2d, totalArmor, secondImage);
-            return;
-        }
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= 50; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
-            if (pos % 10 == 0) {
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                topColumn[0] += pipShift[0];
+            if ((lineCount == 5) || (lineCount == 7)) {
+                pipsPerLine -= 2;
+                baseX += shiftX;
+            } else if (lineCount == 6) {
+                pipsPerLine = 4;
+                baseX += shiftX / 2;
             }
-        }
 
-        for (int pos = 1; pos <= 8; pos++) {
-            pipPlotter.add(new float[]
-                { middleColumn[0], middleColumn[1] });
-            middleColumn[0] += pipShift[0];
-        }
-
-        for (int pos = 1; pos <= 18; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
-            bottomColumn[0] += pipShift[0];
-            if (pos % 6 == 0) {
-                bottomColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                bottomColumn[0] += pipShift[0];
-            }
-        }
-
-        for (int pos = 1; pos <= 10; pos++) {
-            pipPlotter.add(new float[]
-                { extraArmor[pos - 1][0], extraArmor[pos - 1][1] });
+            pointY += shiftY;
+            pointX = baseX;
         }
 
         printArmorPoints(g2d, pipPlotter, totalArmor);
@@ -678,96 +562,50 @@ public class PrintLargeSupportVehicle implements Printable {
 
     private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
-        if (totalArmor > 51) {
-            printExtraRearArmor(g2d, totalArmor, secondImage);
-            return;
-        }
-
-        int[] topColumn = new int[]
-            { 422, 291 };
-        int[] middleColumn = new int[]
-            { 422, 298 };
-        int[] bottomColumn = new int[]
-            { 422, 305 };
-        int[] pipShift = new int[]
-            { 7, 7 };
+        float baseX = 437f;
+        float baseY = 283f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 5.8f;
+        float shiftY = 5.8f;
+        int pipsPerLine = 4;
 
         if (secondImage) {
-            topColumn[1] += secondPageMargin;
-            middleColumn[1] += secondPageMargin;
-            bottomColumn[1] += secondPageMargin;
+            baseY += secondPageMargin;
         }
 
-        int pips = 17;
+        Vector<float[]> pipPlotter = new Vector<float[]>(118, 1);
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
+        for (int lineCount = 0; lineCount < 7; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointX += shiftX;
+                if ((lineCount == 0) && (point == 1)) {
+                    pointX += shiftX * 10;
+                }
+                if ((lineCount == 1) && (point == 3)) {
+                    pointX += shiftX * 8;
+                }
+            }
+
+            if ((lineCount == 0)) {
+                pipsPerLine = 8;
+                baseX -= shiftX;
+            } else if (lineCount == 1) {
+                pipsPerLine = 18;
+                baseX -= shiftX;
+            } else if (lineCount == 2) {
+                pipsPerLine = 22;
+                baseX -= shiftX * 2;
+            }
+
+            pointY += shiftY;
+            pointX = baseX;
         }
 
-        pips = 17;
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { middleColumn[0], middleColumn[1] });
-            middleColumn[0] += pipShift[0];
-        }
-
-        pips = 17;
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
-            bottomColumn[0] += pipShift[0];
-        }
         printArmorPoints(g2d, pipPlotter, totalArmor);
-
-    }
-
-    private void printExtraRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] topColumn = new int[]
-            { 420, 291 };
-        int[] middleColumn = new int[]
-            { 420, 298 };
-        int[] bottomColumn = new int[]
-            { 420, 305 };
-        int[] pipShift = new int[]
-            { 5, 5 };
-
-        if (secondImage) {
-            topColumn[1] += secondPageMargin;
-            middleColumn[1] += secondPageMargin;
-            bottomColumn[1] += secondPageMargin;
-        }
-
-        int pips = 24;
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
-        }
-
-        pips = 24;
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { middleColumn[0], middleColumn[1] });
-            middleColumn[0] += pipShift[0];
-        }
-
-        pips = 24;
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
-            bottomColumn[0] += pipShift[0];
-        }
-
-        pipPlotter.add(new float[]
-            { 482, 312 });
-
-        printArmorPoints(g2d, pipPlotter, totalArmor, 7.0f);
-
     }
 
     private void printTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
@@ -776,85 +614,38 @@ public class PrintLargeSupportVehicle implements Printable {
             return;
         }
 
-        if (totalArmor > 52) {
-            printExtraTurretArmor(g2d, totalArmor, secondImage);
-            return;
-        }
-
-        float[] topColumn = new float[]
-            { 458f, 233f };
-        float[] bottomColumn = new float[]
-            { 451.5f, 240f };
-        float[] pipShift = new float[]
-            { 6f, 6f };
-        // float fontSize = 8.0f;
+        float baseX = 454.5f;
+        float baseY = 203f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 5.8f;
+        float shiftY = 5.8f;
+        int pipsPerLine = 8;
 
         if (secondImage) {
-            topColumn[1] += secondPageMargin;
-            bottomColumn[1] += secondPageMargin;
+            baseY += secondPageMargin;
         }
 
-        int pips = 7;
+        Vector<float[]> pipPlotter = new Vector<float[]>(66, 1);
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
-        }
+        for (int lineCount = 0; lineCount < 7; lineCount++) {
 
-        for (int pos = 1; pos <= 45; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
-            bottomColumn[0] += pipShift[0];
-            if (pos % 9 == 0) {
-                bottomColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                bottomColumn[0] += pipShift[0];
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointX += shiftX;
             }
-        }
-        printArmorPoints(g2d, pipPlotter, totalArmor);// , fontSize);
-    }
 
-    private void printExtraTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-
-        if (totalArmor < 1) {
-            return;
-        }
-
-        float[] topColumn = new float[]
-            { 456.5f, 232f };
-        float[] bottomColumn = new float[]
-            { 453.5f, 238f };
-        float[] pipShift = new float[]
-            { 4.5f, 4.5f };
-        float fontSize = 5.5f;
-
-        if (secondImage) {
-            topColumn[1] += secondPageMargin;
-            bottomColumn[1] += secondPageMargin;
-        }
-
-        int pips = 9;
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
-        }
-
-        for (int pos = 1; pos <= 70; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
-            bottomColumn[0] += pipShift[0];
-            if (pos % 11 == 0) {
-                bottomColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                bottomColumn[0] += pipShift[0];
+            if ((lineCount == 2) || (lineCount == 5)) {
+                pipsPerLine += 2;
+                baseX -= shiftX;
             }
+
+            pointY += shiftY;
+            pointX = baseX;
         }
-        printArmorPoints(g2d, pipPlotter, totalArmor, fontSize);
+
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printFrontLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
