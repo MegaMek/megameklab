@@ -101,18 +101,14 @@ public class PrintLargeSupportVehicle implements Printable {
         printTurretArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_TURRET), false);
 
         // Internal Pips
-        /*
-         * printFrontStruct(g2d,
-         * largesupportank.getOInternal(LargeSupportTank.LOC_FRONT), false);
-         * printLeftStruct(g2d, largesupportank.getOInternal(Tank.LOC_LEFT),
-         * false); printRightStruct(g2d,
-         * largesupportank.getOInternal(Tank.LOC_RIGHT), false);
-         * printRearStruct(g2d,
-         * largesupportank.getOInternal(LargeSupportTank.LOC_REAR), false);
-         * 
-         * printTurretStruct(g2d,
-         * largesupportank.getOInternal(LargeSupportTank.LOC_TURRET), false);
-         */
+        printFrontStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_FRONT), false);
+        printLeftFrontStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_FRONTLEFT), false);
+        printRightFrontStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REARRIGHT), false);
+        printLeftRearStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REARLEFT), false);
+        printRightRearStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REARRIGHT), false);
+        printRearStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REAR), false);
+        printTurretStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_TURRET), false);
+
         if (largesupportank2 != null) {
             // Armor Pips
             printFrontArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_FRONT), true);
@@ -125,8 +121,10 @@ public class PrintLargeSupportVehicle implements Printable {
 
             // Internal Pips
             printFrontStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_FRONT), true);
-            printLeftStruct(g2d, largesupportank2.getOInternal(Tank.LOC_LEFT), true);
-            printRightStruct(g2d, largesupportank2.getOInternal(Tank.LOC_RIGHT), true);
+            printLeftFrontStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_FRONTLEFT), true);
+            printRightFrontStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REARRIGHT), true);
+            printLeftRearStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REARLEFT), true);
+            printRightRearStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REARRIGHT), true);
             printRearStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REAR), true);
             printTurretStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_TURRET), true);
 
@@ -427,11 +425,11 @@ public class PrintLargeSupportVehicle implements Printable {
         }
         g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONT)) + ")", 467, 64);
 
-        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONTRIGHT)) + ")", 555, 302);
+        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONTRIGHT)) + ")", 555, 185);
 
         g2d.drawString("(" + largesupportank.getArmor(LargeSupportTank.LOC_FRONTLEFT) + ")", 386, 110);
 
-        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_REARRIGHT)) + ")", 555, 185);
+        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_REARRIGHT)) + ")", 555, 302);
 
         g2d.drawString("(" + largesupportank.getArmor(LargeSupportTank.LOC_REARLEFT) + ")", 386, 228);
 
@@ -480,6 +478,7 @@ public class PrintLargeSupportVehicle implements Printable {
             for (int pos = 0; pos < largesupportankList.size(); pos++) {
                 PrinterJob pj = PrinterJob.getPrinterJob();
 
+                pj.setPrintService(masterPrintJob.getPrintService());
                 PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
                 aset.add(PrintQuality.HIGH);
@@ -795,116 +794,243 @@ public class PrintLargeSupportVehicle implements Printable {
     }
 
     private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] topColumn = new int[]
-            { 462, 148 };
-        int[] bottomColumn = new int[]
-            { 462, 156 };
-        int[] pipShift = new int[]
-            { 7, 7 };
+        int baseX = 450;
+        int baseY = 113;
+        int pointX = baseX;
+        int pointY = baseY;
+        int shiftX = 7;
+        int shiftY = 7;
+        int pipsPerLine = 8;
 
         if (secondImage) {
-            topColumn[1] += secondPageMargin;
-            bottomColumn[1] += secondPageMargin;
+            baseY += secondPageMargin;
         }
 
-        int pips = Math.min(5, totalArmor);
+        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
 
-        totalArmor -= pips;
-        topColumn[0] += pipShift[0] * ((5 - pips) / 2);
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawTankISPip(g2d, topColumn[0], topColumn[1]);
-            topColumn[0] += pipShift[0];
+        for (int lineCount = 0; lineCount < 3; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new int[]
+                    { pointX, pointY });
+                pointX += shiftX;
+            }
+            pointY += shiftY;
+            pointX = baseX;
         }
 
-        bottomColumn[0] += pipShift[0] * ((5 - totalArmor) / 2);
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, bottomColumn[0], bottomColumn[1]);
-            bottomColumn[0] += pipShift[0];
-        }
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printTurretStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] topColumn = new int[]
-            { 462, 210 };
-        int[] bottomColumn = new int[]
-            { 462, 218 };
-        int[] pipShift = new int[]
-            { 7, 7 };
 
         if (totalArmor < 1) {
             return;
         }
 
+        int baseX = 461;
+        int baseY = 176;
+        int pointX = baseX;
+        int pointY = baseY;
+        int shiftX = 6;
+        int shiftY = 5;
+        int pipsPerLine = 6;
+
         if (secondImage) {
-            topColumn[1] += secondPageMargin;
-            bottomColumn[1] += secondPageMargin;
+            baseY += secondPageMargin;
         }
 
-        int pips = Math.min(5, totalArmor);
+        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
 
-        totalArmor -= pips;
-        topColumn[0] += pipShift[0] * ((5 - pips) / 2);
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawTankISPip(g2d, topColumn[0], topColumn[1]);
-            topColumn[0] += pipShift[0];
+        for (int lineCount = 0; lineCount < 4; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new int[]
+                    { pointX, pointY });
+                pointX += shiftX;
+            }
+            pointY += shiftY;
+            pointX = baseX;
         }
 
-        bottomColumn[0] += pipShift[0] * ((5 - totalArmor) / 2);
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, bottomColumn[0], bottomColumn[1]);
-            bottomColumn[0] += pipShift[0];
-        }
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
-    private void printLeftStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] column = new int[]
-            { 444, 164 };
-        int[] pipShift = new int[]
-            { 2, 7 };
+    private void printLeftFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
+
+        int baseX = 448;
+        int baseY = 135;
+        int pointX = baseX;
+        int pointY = baseY;
+        int shiftX = 6;
+        int shiftY = 6;
+        int pipsPerLine = 5;
 
         if (secondImage) {
-            column[1] += secondPageMargin;
+            baseY += secondPageMargin;
         }
 
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, column[0], column[1]);
-            column[0] -= pipShift[0];
-            column[1] += pipShift[1];
+        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
+
+        for (int lineCount = 0; lineCount < 10; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new int[]
+                    { pointX, pointY });
+                pointX += shiftX;
+            }
+
+            if (lineCount == 1) {
+                pipsPerLine -= 2;
+            } else if ((lineCount == 3) || (lineCount == 5)) {
+                pipsPerLine--;
+            }
+
+            pointY += shiftY;
+            pointX = baseX;
         }
+
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
-    private void printRightStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] column = new int[]
-            { 505, 164 };
-        int[] pipShift = new int[]
-            { 2, 7 };
+    private void printLeftRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
+        int baseX = 448;
+        int baseY = 240;
+        int pointX = baseX;
+        int pointY = baseY;
+        int shiftX = 6;
+        int shiftY = 6;
+        int pipsPerLine = 5;
 
         if (secondImage) {
-            column[1] += secondPageMargin;
+            baseY += secondPageMargin;
         }
 
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, column[0], column[1]);
-            column[0] += pipShift[0];
-            column[1] += pipShift[1];
+        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
+
+        for (int lineCount = 0; lineCount < 5; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new int[]
+                    { pointX, pointY });
+                pointX += shiftX;
+            }
+
+            if (lineCount == 3) {
+                pipsPerLine--;
+                baseX += shiftX;
+            }
+
+            pointY += shiftY;
+            pointX = baseX;
         }
+
+        printISPoints(g2d, pipPlotter, totalArmor);
+    }
+
+    private void printRightFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
+        int baseX = 480;
+        int baseY = 135;
+        int pointX = baseX;
+        int pointY = baseY;
+        int shiftX = 6;
+        int shiftY = 6;
+        int pipsPerLine = 5;
+
+        if (secondImage) {
+            baseY += secondPageMargin;
+        }
+
+        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
+
+        for (int lineCount = 0; lineCount < 10; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new int[]
+                    { pointX, pointY });
+                pointX += shiftX;
+            }
+
+            if (lineCount == 1) {
+                pipsPerLine -= 2;
+                baseX += shiftX * 2;
+            } else if ((lineCount == 3) || (lineCount == 5)) {
+                pipsPerLine--;
+                baseX += shiftX;
+            }
+
+            pointY += shiftY;
+            pointX = baseX;
+        }
+
+        printISPoints(g2d, pipPlotter, totalArmor);
+    }
+
+    private void printRightRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
+        int baseX = 480;
+        int baseY = 240;
+        int pointX = baseX;
+        int pointY = baseY;
+        int shiftX = 6;
+        int shiftY = 6;
+        int pipsPerLine = 5;
+
+        if (secondImage) {
+            baseY += secondPageMargin;
+        }
+
+        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
+
+        for (int lineCount = 0; lineCount < 5; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new int[]
+                    { pointX, pointY });
+                pointX += shiftX;
+            }
+
+            if (lineCount == 3) {
+                pipsPerLine--;
+            }
+
+            pointY += shiftY;
+            pointX = baseX;
+        }
+
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] column = new int[]
-            { 445, 275 };
-        int[] pipShift = new int[]
-            { 7, 7 };
+        int baseX = 449;
+        int baseY = 269;
+        int pointX = baseX;
+        int pointY = baseY;
+        int shiftX = 6;
+        int shiftY = 6;
+        int pipsPerLine = 10;
 
         if (secondImage) {
-            column[1] += secondPageMargin;
+            baseY += secondPageMargin;
         }
 
-        column[0] += pipShift[0] * ((10 - totalArmor) / 2);
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, column[0], column[1]);
-            column[0] += pipShift[0];
+        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
+
+        for (int lineCount = 0; lineCount < 3; lineCount++) {
+
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new int[]
+                    { pointX, pointY });
+                pointX += shiftX;
+            }
+
+            pipsPerLine -= 2;
+            baseX += shiftX;
+
+            pointY += shiftY;
+            pointX = baseX;
         }
+
+        printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {
@@ -917,6 +1043,18 @@ public class PrintLargeSupportVehicle implements Printable {
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
             ImageHelper.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
+            if (--totalArmor <= 0) {
+                return;
+            }
+        }
+    }
+
+    private void printISPoints(Graphics2D g2d, Vector<int[]> pipPoints, float totalArmor) {
+        pipPoints.trimToSize();
+        float pipSpace = pipPoints.size() / totalArmor;
+        for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
+            int currentPip = (int) pos;
+            ImageHelper.drawLSVISPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }

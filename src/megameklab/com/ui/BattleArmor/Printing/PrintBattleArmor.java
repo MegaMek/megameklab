@@ -156,8 +156,8 @@ public class PrintBattleArmor implements Printable {
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(battleArmor.getWalkMP()), 79, 130 + currentMargin);
-        int secondaryMP = battleArmor.getJumpMP();
+        g2d.drawString(Integer.toString(battleArmor.getOriginalWalkMP()), 79, 130 + currentMargin);
+        int secondaryMP = battleArmor.getOriginalJumpMP();
         if (battleArmor.getMovementMode() == EntityMovementMode.INF_UMU) {
             secondaryMP = battleArmor.getRunMP();
 

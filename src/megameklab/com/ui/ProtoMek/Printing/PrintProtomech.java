@@ -97,13 +97,13 @@ public class PrintProtomech implements Printable {
             currentMargin += pageMarginBase;
 
             if (pos == 4) {
-                g2d.drawImage(ImageHelper.getProtoLogo(), 32, 735, 40, 20, null);
+                g2d.drawImage(ImageHelper.getProtoLogo(), 22, 728, 60, 26, null);
             }
         }
         System.gc();
         Font font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2010", 86.5f, 746f);
+        g2d.drawString("2010", 100.5f, 745f);
 
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 

@@ -88,17 +88,15 @@ public class ImageHelper {
             }
         } else if (unit instanceof VTOL) {
             recordSheet = new ImageIcon(path + "twvee-vtol.png").getImage();
-        } else if (unit instanceof Tank) {
-            if (unit instanceof LargeSupportTank) {
-                if (unit.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
-                    recordSheet = new ImageIcon(path + "twvee-lgsupground-turret.png").getImage();
-                } else {
-                    recordSheet = new ImageIcon(path + "twvee-lgsupground.png").getImage();
-                }
+        } else if (unit instanceof LargeSupportTank) {
+            if (unit.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
+                recordSheet = new ImageIcon(path + "twvee-lgsupground-turret.png").getImage();
             } else {
-                String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + ".png";
-                recordSheet = new ImageIcon(path + imageName).getImage();
+                recordSheet = new ImageIcon(path + "twvee-lgsupground.png").getImage();
             }
+        } else if (unit instanceof Tank) {
+            String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + ".png";
+            recordSheet = new ImageIcon(path + imageName).getImage();
         } else if (unit instanceof Aero) {
             recordSheet = new ImageIcon(path + "twaero.png").getImage();
         } else if (unit instanceof BattleArmor) {
@@ -1392,6 +1390,15 @@ public class ImageHelper {
     public static void drawTankISPip(Graphics2D g2d, int width, int height) {
         Dimension circle = new Dimension(7, 7);
         Dimension fillCircle = new Dimension(5, 5);
+        g2d.setColor(Color.black);
+        g2d.fillOval(width, height, circle.width, circle.height);
+        g2d.setColor(Color.white);
+        g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
+    }
+
+    public static void drawLSVISPip(Graphics2D g2d, int width, int height) {
+        Dimension circle = new Dimension(5, 5);
+        Dimension fillCircle = new Dimension(3, 3);
         g2d.setColor(Color.black);
         g2d.fillOval(width, height, circle.width, circle.height);
         g2d.setColor(Color.white);
