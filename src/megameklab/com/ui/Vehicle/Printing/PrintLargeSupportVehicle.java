@@ -152,8 +152,8 @@ public class PrintLargeSupportVehicle implements Printable {
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
         }
 
-        g2d.drawString(Integer.toString(largesupportank.getWalkMP()), 79, 144);
-        g2d.drawString(Integer.toString(largesupportank.getRunMP()), 79, 155);
+        g2d.drawString(Integer.toString(largesupportank.getWalkMP(false, true)), 79, 144);
+        g2d.drawString(Integer.toString(largesupportank.getRunMP(false, true)), 79, 155);
 
         g2d.drawString(largesupportank.getMovementModeAsString(), 88, 166);
 
