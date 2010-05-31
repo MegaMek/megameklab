@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -173,27 +172,18 @@ public class UnitUtil {
             }
             UnitUtil.removeMounts(unit, et);
         }
-        if (isMisc && et.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)) {
-            et.setTonnage(EquipmentType.TONNAGE_VARIABLE);
-        } else if (isMisc && (et.hasFlag(MiscType.F_TRACKS)
-                || et.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
-                || et.hasFlag(MiscType.F_TALON)
-                || et.hasFlag(MiscType.F_PARTIAL_WING)
-                || et.hasFlag(MiscType.F_JUMP_BOOSTER))) {
-            et.setTonnage(EquipmentType.TONNAGE_VARIABLE);
-        } else {
-            if (unit instanceof Mech) {
-                UnitUtil.removeCrits((Mech)unit, et);
-            }
-            unit.getEquipment().remove(mount);
-            if (mount.getType() instanceof MiscType) {
-                unit.getMisc().remove(mount);
-            } else if (mount.getType() instanceof AmmoType) {
-                unit.getAmmo().remove(mount);
-            } else {
-                unit.getWeaponList().remove(mount);
-            }
+        if (unit instanceof Mech) {
+            UnitUtil.removeCrits((Mech)unit, et);
         }
+        unit.getEquipment().remove(mount);
+        if (mount.getType() instanceof MiscType) {
+            unit.getMisc().remove(mount);
+        } else if (mount.getType() instanceof AmmoType) {
+            unit.getAmmo().remove(mount);
+        } else {
+            unit.getWeaponList().remove(mount);
+        }
+
     }
 
     /**
@@ -890,11 +880,6 @@ public class UnitUtil {
      * @param unit
      */
     public static void expandUnitMounts(Mech unit) {
-        boolean partialWingDone = false;
-        boolean jumpBoosterDone = false;
-        boolean blueShieldDone = false;
-        boolean tracksDone = false;
-        boolean talonsDone = false;
         for (int location = 0; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
@@ -908,167 +893,24 @@ public class UnitUtil {
                     mount = cs.getMount();
                 }
 
-                if (UnitUtil.isSpreadEquipment(mount.getType()) || UnitUtil.isTSM(mount.getType()) || UnitUtil.isArmorOrStructure(mount.getType())) {
-                    // to match how we setup mounts for spreadable stuff that
-                    // actually weigh something, we just remove all mounts and
-                    // crits and add them back as if the user added it himself
-                    if (mount.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                        if (!partialWingDone) {
-                            for (Iterator<Mounted> equipIt = unit.getEquipment().iterator(); equipIt.hasNext();) {
-                                if (equipIt.next().getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                                    equipIt.remove();
-                                }
-                            }
-                            for (Iterator<Mounted> miscIt = unit.getMisc().iterator(); miscIt.hasNext();) {
-                                if (miscIt.next().getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                                    miscIt.remove();
-                                }
-                            }
-                            for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
-                                for (int sl = 0; sl < unit.getNumberOfCriticals(loc); sl++) {
-                                    CriticalSlot cs2 = unit.getCritical(loc, sl);
-                                    if ((cs2 == null) || (cs2.getType() == CriticalSlot.TYPE_SYSTEM)) {
-                                        continue;
-                                    }
-                                    if (cs2.getMount().getType() instanceof MiscType && cs2.getMount().getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                                        unit.setCritical(loc, sl, null);
-                                    }
-                                }
-                            }
-                            mount.getType().setTonnage(EquipmentType.TONNAGE_VARIABLE);
-                            UnitUtil.createSpreadMounts(unit, mount.getType());
-                            partialWingDone = true;
-                        }
-                    } else if (mount.getType().hasFlag(MiscType.F_TALON)) {
-                        if (!talonsDone) {
-                            for (Iterator<Mounted> equipIt = unit.getEquipment().iterator(); equipIt.hasNext();) {
-                                if (equipIt.next().getType().hasFlag(MiscType.F_TALON)) {
-                                    equipIt.remove();
-                                }
-                            }
-                            for (Iterator<Mounted> miscIt = unit.getMisc().iterator(); miscIt.hasNext();) {
-                                if (miscIt.next().getType().hasFlag(MiscType.F_TALON)) {
-                                    miscIt.remove();
-                                }
-                            }
-                            for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
-                                for (int sl = 0; sl < unit.getNumberOfCriticals(loc); sl++) {
-                                    CriticalSlot cs2 = unit.getCritical(loc, sl);
-                                    if ((cs2 == null) || (cs2.getType() == CriticalSlot.TYPE_SYSTEM)) {
-                                        continue;
-                                    }
-                                    if (cs2.getMount().getType() instanceof MiscType && cs2.getMount().getType().hasFlag(MiscType.F_TALON)) {
-                                        unit.setCritical(loc, sl, null);
-                                    }
-                                }
-                            }
-                            mount.getType().setTonnage(EquipmentType.TONNAGE_VARIABLE);
-                            UnitUtil.createSpreadMounts(unit, mount.getType());
-                            talonsDone = true;
-                        }
-                    } else if (mount.getType().hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                        if (!jumpBoosterDone) {
-                            for (Iterator<Mounted> equipIt = unit.getEquipment().iterator(); equipIt.hasNext();) {
-                                if (equipIt.next().getType().hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                                    equipIt.remove();
-                                }
-                            }
-                            for (Iterator<Mounted> miscIt = unit.getMisc().iterator(); miscIt.hasNext();) {
-                                if (miscIt.next().getType().hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                                    miscIt.remove();
-                                }
-                            }
-                            for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
-                                for (int sl = 0; sl < unit.getNumberOfCriticals(loc); sl++) {
-                                    CriticalSlot cs2 = unit.getCritical(loc, sl);
-                                    if ((cs2 == null) || (cs2.getType() == CriticalSlot.TYPE_SYSTEM)) {
-                                        continue;
-                                    }
-                                    if (cs2.getMount().getType() instanceof MiscType && cs2.getMount().getType().hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                                        unit.setCritical(loc, sl, null);
-                                    }
-                                }
-                            }
-                            mount.getType().setTonnage(EquipmentType.TONNAGE_VARIABLE);
-                            UnitUtil.createSpreadMounts(unit, mount.getType());
-                            jumpBoosterDone = true;
-                        }
-                    } else if (mount.getType().hasFlag(MiscType.F_BLUE_SHIELD)) {
-                        if (!blueShieldDone) {
-                            for (Iterator<Mounted> equipIt = unit.getEquipment().iterator(); equipIt.hasNext();) {
-                                if (equipIt.next().getType().hasFlag(MiscType.F_BLUE_SHIELD)) {
-                                    equipIt.remove();
-                                }
-                            }
-                            for (Iterator<Mounted> miscIt = unit.getMisc().iterator(); miscIt.hasNext();) {
-                                if (miscIt.next().getType().hasFlag(MiscType.F_BLUE_SHIELD)) {
-                                    miscIt.remove();
-                                }
-                            }
-                            for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
-                                for (int sl = 0; sl < unit.getNumberOfCriticals(loc); sl++) {
-                                    CriticalSlot cs2 = unit.getCritical(loc, sl);
-                                    if ((cs2 == null) || (cs2.getType() == CriticalSlot.TYPE_SYSTEM)) {
-                                        continue;
-                                    }
-                                    if (cs2.getMount().getType() instanceof MiscType && cs2.getMount().getType().hasFlag(MiscType.F_BLUE_SHIELD)) {
-                                        unit.setCritical(loc, sl, null);
-                                    }
-                                }
-                            }
-                            mount.getType().setTonnage(EquipmentType.TONNAGE_VARIABLE);
-                            UnitUtil.createSpreadMounts(unit, mount.getType());
-                            blueShieldDone = true;
-                        }
-                    } else if (mount.getType().hasFlag(MiscType.F_TRACKS)) {
-                        if (!tracksDone) {
-                            for (Iterator<Mounted> equipIt = unit.getEquipment().iterator(); equipIt.hasNext();) {
-                                if (equipIt.next().getType().hasFlag(MiscType.F_TRACKS)) {
-                                    equipIt.remove();
-                                }
-                            }
-                            for (Iterator<Mounted> miscIt = unit.getMisc().iterator(); miscIt.hasNext();) {
-                                if (miscIt.next().getType().hasFlag(MiscType.F_TRACKS)) {
-                                    miscIt.remove();
-                                }
-                            }
-                            for (int loc = 0; loc <= Mech.LOC_LLEG; loc++) {
-                                for (int sl = 0; sl < unit.getNumberOfCriticals(loc); sl++) {
-                                    CriticalSlot cs2 = unit.getCritical(loc, sl);
-                                    if ((cs2 == null) || (cs2.getType() == CriticalSlot.TYPE_SYSTEM)) {
-                                        continue;
-                                    }
-                                    if (cs2.getMount().getType() instanceof MiscType && cs2.getMount().getType().hasFlag(MiscType.F_TRACKS)) {
-                                        unit.setCritical(loc, sl, null);
-                                    }
-                                }
-                            }
-                            mount.getType().setTonnage(EquipmentType.TONNAGE_VARIABLE);
-                            UnitUtil.createSpreadMounts(unit, mount.getType());
-                            tracksDone = true;
-                        }
-                    } else {
-                        Mounted newMount = new Mounted(unit, mount.getType());
-                        newMount.setLocation(location, mount.isRearMounted());
-                        newMount.setArmored(mount.isArmored());
-                        cs.setMount(newMount);
-                        cs.setArmored(mount.isArmored());
-                        unit.getEquipment().add(newMount);
-                        unit.getMisc().add(newMount);
-                        cs.setIndex(unit.getEquipmentNum(newMount));
-                    }
-                } else {
-                    cs.setMount(mount);
+                if (UnitUtil.isTSM(mount.getType()) || UnitUtil.isArmorOrStructure(mount.getType())) {
+                    Mounted newMount = new Mounted(unit, mount.getType());
+                    newMount.setLocation(location, mount.isRearMounted());
+                    newMount.setArmored(mount.isArmored());
+                    cs.setMount(newMount);
+                    cs.setArmored(mount.isArmored());
+                    unit.getEquipment().add(newMount);
+                    unit.getMisc().add(newMount);
+                    cs.setIndex(unit.getEquipmentNum(newMount));
                 }
             }
         }
-        System.out.println();
+
     }
 
     public static boolean createSpreadMounts(Mech unit, EquipmentType equip) {
         // how many non-spreadable contigous blocks of crits?
         int blocks = 0;
-        boolean isVariableTonnage = false;
         boolean isMisc = equip instanceof MiscType;
 
         blocks = equip.getCriticals(unit);
@@ -1078,8 +920,6 @@ public class UnitUtil {
         }
 
         List<Integer> locations = new ArrayList<Integer>();
-
-        float tonnageAmount = 0;
 
         if (isMisc && (equip.hasFlag(MiscType.F_INDUSTRIAL_TSM) || equip.hasFlag(MiscType.F_TSM))) {
             // all crits user placeable
@@ -1092,9 +932,6 @@ public class UnitUtil {
             for (int i = 0; i < unit.locations(); i++) {
                 locations.add(i);
             }
-            tonnageAmount = equip.getTonnage(unit);
-            tonnageAmount /= 8;
-            isVariableTonnage = true;
         }
         if (isMisc && (equip.hasFlag(MiscType.F_TRACKS) || equip.hasFlag(MiscType.F_TALON))) {
             // 1 block in each leg
@@ -1105,8 +942,6 @@ public class UnitUtil {
                 locations.add(Mech.LOC_RARM);
             }
             blocks = (unit instanceof BipedMech ? 2 : 4);
-            tonnageAmount = equip.getTonnage(unit) / equip.getCriticals(unit);
-            isVariableTonnage = true;
         }
 
         if (isMisc && equip.hasFlag(MiscType.F_PARTIAL_WING)) {
@@ -1114,8 +949,6 @@ public class UnitUtil {
             locations.add(Mech.LOC_LT);
             locations.add(Mech.LOC_RT);
             blocks = 2;
-            tonnageAmount = equip.getTonnage(unit) / 2;
-            isVariableTonnage = true;
         }
         if (isMisc && equip.hasFlag(MiscType.F_JUMP_BOOSTER)) {
             // 1 block in each leg
@@ -1126,8 +959,6 @@ public class UnitUtil {
                 locations.add(Mech.LOC_RARM);
             }
             blocks = (unit instanceof BipedMech ? 2 : 4);
-            tonnageAmount = equip.getTonnage(unit) / blocks;
-            isVariableTonnage = true;
         }
         if (isMisc && (equip.hasFlag(MiscType.F_VOIDSIG) || equip.hasFlag(MiscType.F_NULLSIG) || equip.hasFlag(MiscType.F_BLUE_SHIELD))) {
             // 1 crit in each location, except the head
@@ -1135,10 +966,6 @@ public class UnitUtil {
                 if (i != Mech.LOC_HEAD) {
                     locations.add(i);
                 }
-            }
-            if (equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
-                tonnageAmount = equip.getTonnage(unit) / 7;
-                isVariableTonnage = true;
             }
         }
 
@@ -1151,16 +978,21 @@ public class UnitUtil {
             }
         }
 
+        boolean firstBlock = true;
         for (; blocks > 0; blocks--) {
             Mounted mount = new Mounted(unit, equip);
             // how many crits per block?
             int crits = UnitUtil.getCritsUsed(unit, equip);
-            if (isVariableTonnage && (blocks > 1)) {
-                mount.getType().setTonnage(tonnageAmount);
-            }
             for (int i = 0; i < crits; i++) {
                 try {
-                    unit.addEquipment(mount, locations.get(0), false);
+                    if (firstBlock || (locations.get(0) == Entity.LOC_NONE)) {
+                        unit.addEquipment(mount, locations.get(0), false);
+                        if (firstBlock) {
+                            firstBlock = false;
+                        }
+                    } else {
+                        unit.addCritical(locations.get(0), new CriticalSlot(CriticalSlot.TYPE_EQUIPMENT, unit.getEquipmentNum(mount), mount.getType().isHittable(), mount.isArmored(), mount));
+                    }
                 } catch (LocationFullException lfe) {
                     JOptionPane.showMessageDialog(null, lfe.getMessage(), mount.getName() + " does not fit into " + unit.getLocationName(locations.get(0)), JOptionPane.INFORMATION_MESSAGE);
                     unit.getMisc().remove(mount);
@@ -1662,7 +1494,7 @@ public class UnitUtil {
             return true;
         }
 
-        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_MECH_EQUIPMENT) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_HAND_WEAPON) && !eq.hasFlag(MiscType.F_TALON)) {
+        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_MECH_EQUIPMENT) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_HAND_WEAPON)) {
             return true;
         }
 

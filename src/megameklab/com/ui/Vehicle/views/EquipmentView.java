@@ -230,11 +230,7 @@ public class EquipmentView extends IView implements ActionListener {
 
             EquipmentType equip = (EquipmentType)equipmentCombo.getSelectedItem();
             boolean isMisc = equip instanceof MiscType;
-            if (isMisc && equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)) {
-                if (!unit.hasEnvironmentalSealing()) {
-                    createSpreadMounts(equip);
-                }
-            } else if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
+            if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(unit)) {
                     UnitUtil.updateTC(unit, equip);
                 }
@@ -300,39 +296,6 @@ public class EquipmentView extends IView implements ActionListener {
 
     public CriticalTableModel getEquipmentList() {
         return equipmentList;
-    }
-
-    private void createSpreadMounts(EquipmentType equip) {
-        int crits = 0;
-
-        crits = equip.getCriticals(unit);
-
-        if (crits < 1) {
-            return;
-        }
-
-        boolean isMisc = equip instanceof MiscType;
-        float tonnageAmount = 0;
-        if (isMisc && equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) && (crits > 1)) {
-            tonnageAmount = equip.getTonnage(unit);
-            tonnageAmount /= 8;
-        }
-        if (isMisc && equip.hasFlag(MiscType.F_TRACKS) && (crits > 1)) {
-            tonnageAmount = equip.getTonnage(unit) / equip.getCriticals(unit);
-        }
-
-        for (; crits > 0; crits--) {
-            try {
-                if (isMisc && (equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || equip.hasFlag(MiscType.F_TRACKS)) && (crits > 1)) {
-                    Mounted mount = new Mounted(unit, equip);
-                    mount.getType().setTonnage(tonnageAmount);
-                    unit.addEquipment(mount.getType(), Entity.LOC_NONE, false);
-                } else {
-                    unit.addEquipment(equip, Entity.LOC_NONE, false);
-                }
-            } catch (Exception ex) {
-            }
-        }
     }
 
 }

@@ -63,8 +63,6 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MechSummaryCache;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
@@ -394,15 +392,6 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
-        for (Mounted misc:entity.getMisc()) {
-            if (misc.getType().hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
-                    || misc.getType().hasFlag(MiscType.F_TRACKS)
-                    || misc.getType().hasFlag(MiscType.F_TALON)
-                    || misc.getType().hasFlag(MiscType.F_PARTIAL_WING)
-                    || misc.getType().hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                misc.getType().setTonnage(EquipmentType.TONNAGE_VARIABLE);
-            }
-        }
         createNewMech(false);
         reloadTabs();
         setVisible(true);
