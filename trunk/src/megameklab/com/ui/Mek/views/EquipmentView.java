@@ -148,10 +148,15 @@ public class EquipmentView extends IView implements ActionListener {
         equipmentTypes = new Vector<EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
+            if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_TALON)) {
+                continue;
+            }
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
+
                 equipmentTypes.add(eq);
                 equipmentCombo.addItem(eq);
             }
+
         }
     }
 
@@ -240,7 +245,7 @@ public class EquipmentView extends IView implements ActionListener {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
             boolean success = false;
-            EquipmentType equip = (EquipmentType)equipmentCombo.getSelectedItem();
+            EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
             boolean isMisc = equip instanceof MiscType;
             if (isMisc && equip.hasFlag(MiscType.F_TSM)) {
                 if (!getMech().hasTSM()) {
@@ -276,11 +281,6 @@ public class EquipmentView extends IView implements ActionListener {
                 if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
                     success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
-            } else if (isMisc && equip.hasFlag(MiscType.F_TALON)) {
-                boolean hasTalons = getMech().hasWorkingMisc(MiscType.F_TALON);
-                if (!hasTalons) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
             } else if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(unit)) {
                     UnitUtil.updateTC(getMech(), equip);
@@ -311,7 +311,7 @@ public class EquipmentView extends IView implements ActionListener {
 
             for (; count > 0; count--) {
                 if (startRow > -1) {
-                    if ((equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT) instanceof MiscType) && ((EquipmentType)equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).hasFlag(MiscType.F_JUMP_BOOSTER)) {
+                    if ((equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT) instanceof MiscType) && ((EquipmentType) equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).hasFlag(MiscType.F_JUMP_BOOSTER)) {
                         setJumpBoosterMP(0);
                     }
                     equipmentList.removeMounted(startRow);

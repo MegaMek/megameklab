@@ -621,8 +621,18 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (physicalWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : physicalWeaponCombo.getSelectedIndices()) {
-                        getMech().addEquipment(new Mounted(unit, subPhysicalWeaponList.elementAt(index)), Entity.LOC_NONE, false);
-                        weaponList.addCrit(subPhysicalWeaponList.elementAt(index));
+                        EquipmentType equip = subPhysicalWeaponList.elementAt(index);
+                        boolean isMisc = equip instanceof MiscType;
+
+                        if (isMisc && equip.hasFlag(MiscType.F_TALON)) {
+                            boolean hasTalons = getMech().hasWorkingMisc(MiscType.F_TALON);
+                            if (!hasTalons) {
+                                UnitUtil.createSpreadMounts(getMech(), equip);
+                            }
+                        } else {
+                            getMech().addEquipment(new Mounted(unit, equip), Entity.LOC_NONE, false);
+                        }
+                        weaponList.addCrit(equip);
                     }
                 }
             } catch (Exception ex) {
