@@ -125,7 +125,7 @@ public class CriticalTableModel extends AbstractTableModel {
         case NAME:
             return UnitUtil.getCritName(unit, crit);
         case TONNAGE:
-            return crit.getTonnage(unit)+(crit.isSpreadable()?" per block of crits":"");
+            return crit.getTonnage(unit);
         case CRITS:
             if (tableType == BUILDTABLE) {
                 return UnitUtil.getCritsUsed(unit, crit);
