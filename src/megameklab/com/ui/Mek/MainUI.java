@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.Mek;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FileDialog;
@@ -66,9 +67,6 @@ import megamek.common.MechSummaryCache;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
-import megamek.common.verifier.EntityVerifier;
-import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestMech;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.Mek.tabs.ArmorTab;
 import megameklab.com.ui.Mek.tabs.BuildTab;
@@ -400,6 +398,12 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuSaveEntity_actionPerformed(ActionEvent event) {
+
+        if (UnitUtil.validateUnit(entity).length() > 0) {
+            JOptionPane.showMessageDialog(this, "Unable to save unit as it is in valid!");
+            return;
+        }
+
         UnitUtil.compactCriticals(entity);
         UnitUtil.reIndexCrits(entity);
 
@@ -584,16 +588,10 @@ public class MainUI extends JFrame implements RefreshListener {
     // Show Validation data.
     public void jMenuValidateUnit_actionPerformed() {
 
-        EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
-        StringBuffer sb = new StringBuffer();
-        TestEntity testEntity = null;
-
-        testEntity = new TestMech(entity, entityVerifier.mechOption, null);
-
-        testEntity.correctEntity(sb, true);
+        String sb = UnitUtil.validateUnit(entity);
 
         if (sb.length() > 0) {
-            JOptionPane.showMessageDialog(this, sb.toString(), "Unit Validation", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, sb, "Unit Validation", JOptionPane.ERROR_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Validation Passed", "Unit Validation", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -781,6 +779,7 @@ public class MainUI extends JFrame implements RefreshListener {
         equipmentTab.refresh();
         weaponTab.refresh();
         buildTab.refresh();
+
     }
 
     public void refreshArmor() {
@@ -797,7 +796,16 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void refreshHeader() {
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
+
+        String title = entity.getChassis() + " " + entity.getModel() + ".mtf";
+
+        if (UnitUtil.validateUnit(entity).length() > 0) {
+            title += "  (Invalid)";
+            setForeground(Color.red);
+        } else {
+            setForeground(Color.BLACK);
+        }
+        setTitle(title);
     }
 
     public void refreshStatus() {

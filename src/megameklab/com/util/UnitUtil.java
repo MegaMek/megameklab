@@ -40,6 +40,9 @@ import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
+import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestMech;
 import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.CLAMS;
 import megamek.common.weapons.CLLaserAMS;
@@ -1832,4 +1835,19 @@ public class UnitUtil {
         return numberOfEq;
     }
 
+    public static String validateUnit(Entity unit) {
+
+        EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
+        StringBuffer sb = new StringBuffer();
+        TestEntity testEntity = null;
+
+        if (unit instanceof Mech) {
+            testEntity = new TestMech((Mech) unit, entityVerifier.mechOption, null);
+
+            testEntity.correctEntity(sb, true);
+        }
+
+        return sb.toString();
+
+    }
 }
