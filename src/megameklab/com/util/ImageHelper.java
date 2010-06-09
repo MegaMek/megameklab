@@ -500,7 +500,6 @@ public class ImageHelper {
                 count++;
             }
         }
-
     }
 
     public static void printAeroFuel(Aero aero, Graphics2D g2d) {
