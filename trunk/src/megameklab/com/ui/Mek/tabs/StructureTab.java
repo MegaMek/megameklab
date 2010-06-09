@@ -110,6 +110,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox quadCB = new JCheckBox("Quad");
+    JCheckBox fullHeadEjectCB = new JCheckBox("Full Head Ejection");
     JComboBox structureCombo = new JComboBox(EquipmentType.structureNames);
     Dimension maxSize = new Dimension();
     JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:", SwingConstants.TRAILING);
@@ -215,6 +216,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(structureLabel);
         masterPanel.add(structureCombo);
 
+        masterPanel.add(fullHeadEjectCB);
+
         setFieldSize(walkMP, maxSize);
         setFieldSize(era, maxSize);
         setFieldSize(source, maxSize);
@@ -242,6 +245,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         removeAllActionListeners();
         omniCB.setSelected(getMech().isOmni());
         quadCB.setSelected(unit instanceof QuadMech);
+        fullHeadEjectCB.setSelected(getMech().hasFullHeadEject());
         era.setText(Integer.toString(getMech().getYear()));
         source.setText(getMech().getSource());
         weightClass.setSelectedIndex((int) (getMech().getWeight() / 5) - 2);
@@ -699,6 +703,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
                 UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
             }
+            if (check.equals(fullHeadEjectCB)) {
+                getMech().setFullHeadEject(fullHeadEjectCB.isSelected());
+            }
             refresh.refreshAll();
 
         }
@@ -736,6 +743,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         source.removeKeyListener(this);
         omniCB.removeActionListener(this);
         quadCB.removeActionListener(this);
+        fullHeadEjectCB.removeActionListener(this);
         structureCombo.removeActionListener(this);
         baseChassisHeatSinks.removeActionListener(this);
     }
@@ -754,6 +762,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         source.addKeyListener(this);
         omniCB.addActionListener(this);
         quadCB.addActionListener(this);
+        fullHeadEjectCB.addActionListener(this);
         structureCombo.addActionListener(this);
         baseChassisHeatSinks.addActionListener(this);
 

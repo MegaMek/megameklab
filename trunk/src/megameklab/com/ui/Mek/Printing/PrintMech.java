@@ -267,6 +267,15 @@ public class PrintMech implements Printable {
                 break;
         }
 
+        // full head eject
+        if (mech.hasFullHeadEject()) {
+            String ejectString = "Note: If playing under Advanced Rules, treat head";
+            g2d.setFont(UnitUtil.deriveFont(false, 8));
+            g2d.drawString(ejectString, 25, 325);
+            ejectString = "as having a Full-Head Ejection System.";
+            g2d.drawString(ejectString, 45, 335);
+        }
+
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
         g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 150, 350);
