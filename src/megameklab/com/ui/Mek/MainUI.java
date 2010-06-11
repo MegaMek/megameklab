@@ -750,7 +750,7 @@ public class MainUI extends JFrame implements RefreshListener {
         entity.addGyro();
         entity.addEngineCrits();
         entity.addCockpit();
-        UnitUtil.updateHeatSinks(entity, 10, 0);
+        UnitUtil.updateHeatSinks(entity, 10, "Single");
 
         entity.autoSetInternal();
         for (int loc = 0; loc < entity.locations(); loc++) {
