@@ -358,18 +358,54 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         }
 
-        if (UnitUtil.hasLaserHeatSinks(getMech())) {
-            heatSinkType.setSelectedIndex(2);
-        } else if (getMech().hasDoubleHeatSinks()) {
-            if (UnitUtil.hasCompactHeatSinks(getMech())) {
-                heatSinkType.setSelectedIndex(2);
+        if (getMech().isMixedTech()) {
+            if (getMech().isClan()) {
+                if (UnitUtil.hasLaserHeatSinks(getMech())) {
+                    heatSinkType.setSelectedIndex(3);
+                } else if (getMech().hasDoubleHeatSinks()) {
+                    if (UnitUtil.hasCompactHeatSinks(getMech())) {
+                        heatSinkType.setSelectedIndex(4);
+                    } else {
+                        if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
+                            heatSinkType.setSelectedIndex(1);
+                        } else {
+                            heatSinkType.setSelectedIndex(2);
+                        }
+                    }
+                } else {
+
+                    heatSinkType.setSelectedIndex(0);
+                }
             } else {
-                heatSinkType.setSelectedIndex(1);
+                if (UnitUtil.hasLaserHeatSinks(getMech())) {
+                    heatSinkType.setSelectedIndex(3);
+                } else if (getMech().hasDoubleHeatSinks()) {
+                    if (UnitUtil.hasCompactHeatSinks(getMech())) {
+                        heatSinkType.setSelectedIndex(4);
+                    } else {
+                        if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
+                            heatSinkType.setSelectedIndex(1);
+                        } else {
+                            heatSinkType.setSelectedIndex(2);
+                        }
+                    }
+                } else {
+                    heatSinkType.setSelectedIndex(0);
+                }
             }
         } else {
-            heatSinkType.setSelectedIndex(0);
+            if (UnitUtil.hasLaserHeatSinks(getMech())) {
+                heatSinkType.setSelectedIndex(2);
+            } else if (getMech().hasDoubleHeatSinks()) {
+                if (UnitUtil.hasCompactHeatSinks(getMech())) {
+                    heatSinkType.setSelectedIndex(2);
+                } else {
+                    heatSinkType.setSelectedIndex(1);
+                }
+            } else {
+                heatSinkType.setSelectedIndex(0);
+            }
         }
-
         walkMP.setSelectedIndex(getMech().getWalkMP() - 1);
 
         critView.updateUnit(getMech());
@@ -484,7 +520,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getMech().setEngine(new Engine(rating, convertEngineType(engineType.getSelectedItem().toString()), clanEngineFlag));
                         getMech().addEngineCrits();
                         int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-                        UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
+                        UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
                     }
                 } else if (combo.equals(structureCombo)) {
                     UnitUtil.removeISorArmorMounts(getMech(), true);
@@ -534,11 +570,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
                 } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
                     int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-                    UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
+                    UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
                 } else if (combo.equals(baseChassisHeatSinks)) {
                     getMech().getEngine().setBaseChassisHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
                     int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-                    UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
+                    UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
 
@@ -701,7 +737,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 masterPanel.setVisible(false);
                 masterPanel.setVisible(true);
                 int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-                UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedIndex());
+                UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
             }
             if (check.equals(fullHeadEjectCB)) {
                 getMech().setFullHeadEject(fullHeadEjectCB.isSelected());
@@ -1049,35 +1085,65 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         String[] heatSinkList;
         heatSinkType.removeAllItems();
 
-        if (getMech().isClan()) {
-
-            heatSinkCount = clanHeatSinkTypes.length;
-            heatSinkList = clanHeatSinkTypes;
-
-            switch (getMech().getTechLevel()) {
-                case TechConstants.T_CLAN_TW:
-                    heatSinkCount = 2;
-                    break;
-                case TechConstants.T_CLAN_ADVANCED:
-                case TechConstants.T_CLAN_EXPERIMENTAL:
-                case TechConstants.T_CLAN_UNOFFICIAL:
-                    heatSinkCount = 3;
-                    break;
+        if (getMech().isMixedTech()) {
+            heatSinkCount = clanHeatSinkTypes.length + isHeatSinkTypes.length - 1;
+            heatSinkList = new String[heatSinkCount];
+            int clanPos = 1;
+            int heatSinkPos = 0;
+            if (getMech().isClan()) {
+                clanPos = 0;
+                for (String isHeatSink : isHeatSinkTypes) {
+                    heatSinkList[heatSinkPos] = clanHeatSinkTypes[clanPos];
+                    heatSinkPos++;
+                    clanPos++;
+                    if (isHeatSink.equals("Single")) {
+                        continue;
+                    }
+                    heatSinkList[heatSinkPos] = String.format("(IS) %1$s", isHeatSink);
+                    heatSinkPos++;
+                }
+            } else {
+                for (String isHeatSink : isHeatSinkTypes) {
+                    heatSinkList[heatSinkPos] = isHeatSink;
+                    heatSinkPos++;
+                    if (clanPos < clanHeatSinkTypes.length) {
+                        heatSinkList[heatSinkPos] = String.format("(Clan) %1$s", clanHeatSinkTypes[clanPos]);
+                    }
+                    clanPos++;
+                    heatSinkPos++;
+                }
             }
         } else {
-            heatSinkList = isHeatSinkTypes;
-            switch (getMech().getTechLevel()) {
-                case TechConstants.T_INTRO_BOXSET:
-                    heatSinkCount = 1;
-                    break;
-                case TechConstants.T_IS_TW_NON_BOX:
-                case TechConstants.T_IS_ADVANCED:
-                    heatSinkCount = 2;
-                    break;
-                case TechConstants.T_IS_EXPERIMENTAL:
-                case TechConstants.T_IS_UNOFFICIAL:
-                    heatSinkCount = 3;
-                    break;
+            if (getMech().isClan()) {
+
+                heatSinkCount = clanHeatSinkTypes.length;
+                heatSinkList = clanHeatSinkTypes;
+
+                switch (getMech().getTechLevel()) {
+                    case TechConstants.T_CLAN_TW:
+                        heatSinkCount = 2;
+                        break;
+                    case TechConstants.T_CLAN_ADVANCED:
+                    case TechConstants.T_CLAN_EXPERIMENTAL:
+                    case TechConstants.T_CLAN_UNOFFICIAL:
+                        heatSinkCount = 3;
+                        break;
+                }
+            } else {
+                heatSinkList = isHeatSinkTypes;
+                switch (getMech().getTechLevel()) {
+                    case TechConstants.T_INTRO_BOXSET:
+                        heatSinkCount = 1;
+                        break;
+                    case TechConstants.T_IS_TW_NON_BOX:
+                    case TechConstants.T_IS_ADVANCED:
+                        heatSinkCount = 2;
+                        break;
+                    case TechConstants.T_IS_EXPERIMENTAL:
+                    case TechConstants.T_IS_UNOFFICIAL:
+                        heatSinkCount = 3;
+                        break;
+                }
             }
         }
 
