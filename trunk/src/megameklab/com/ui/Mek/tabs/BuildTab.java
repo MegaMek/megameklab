@@ -151,6 +151,12 @@ public class BuildTab extends ITab implements ActionListener {
                     }
                 }
 
+                if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)) {
+                    if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM) && (location != Mech.LOC_LLEG) && (location != Mech.LOC_RLEG)) {
+                        continue;
+                    }
+                }
+
                 int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
                 int critsUsed = UnitUtil.getCritsUsed(unit, eq);
                 if (continuousNumberOfCrits < critsUsed) {
