@@ -173,6 +173,8 @@ public class EquipmentView extends IView implements ActionListener {
                     // keep track of spreadable equipment here, so it doesn't
                     // show up multiple times in the table
                     spreadAlreadyAdded.add(mount.getType());
+                } else {
+                    equipmentList.addCrit(mount.getType());
                 }
             }
         }
