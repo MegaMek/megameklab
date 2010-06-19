@@ -400,8 +400,7 @@ public class MainUI extends JFrame implements RefreshListener {
     public void jMenuSaveEntity_actionPerformed(ActionEvent event) {
 
         if (UnitUtil.validateUnit(entity).length() > 0) {
-            JOptionPane.showMessageDialog(this, "Unable to save unit as it is in valid!");
-            return;
+            JOptionPane.showMessageDialog(this, "Warning: Saving an invalid unit, it might load incorrectly!");
         }
 
         UnitUtil.compactCriticals(entity);
