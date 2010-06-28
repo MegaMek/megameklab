@@ -199,6 +199,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             tScrollPane.setWheelScrollingEnabled(true);
             tScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             tScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            tScrollPane.getVerticalScrollBar().setUnitIncrement(20);
             tScrollPane.setPreferredSize(size);
             tScrollPane.setMaximumSize(size);
             tScrollPane.setBackground(Color.WHITE);
@@ -327,10 +328,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 } else if (weapon instanceof ArtilleryWeapon) {
                     masterArtilleryWeaponList.add(eq);
                 }
-            } else if ((eq instanceof MiscType) && ((eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON) || eq.hasFlag(MiscType.F_TALON)))) {
-                if (eq.hasFlag(MiscType.F_CLUB) && ((eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB)))) {
-                    continue;
-                }
+            } else if (UnitUtil.isPhysicalWeapon(eq)) {
                 masterPhysicalWeaponList.add(eq);
             } else if (((eq instanceof MiscType) && eq.hasFlag(MiscType.F_AP_POD))) {
                 masterBallisticWeaponList.add(eq);
@@ -419,6 +417,12 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             }
         }
 
+        for (Mounted mount : getMech().getMisc()) {
+            if (UnitUtil.isPhysicalWeapon(mount.getType())) {
+                weaponList.addCrit(mount.getType());
+            }
+        }
+
         for (Mounted mount : getMech().getAmmo()) {
             weaponList.addCrit(mount.getType());
         }
@@ -466,6 +470,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         weaponList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension(getWidth() * 65 / 100, getHeight() * 80 / 100));
         equipmentScroll.setBounds(0, 0, getWidth() * 65 / 100, getHeight() * 80 / 100);
+        equipmentScroll.getVerticalScrollBar().setUnitIncrement(20);
         equipmentScroll.repaint();
         if (refresh != null) {
             refresh.refreshStatus();
@@ -628,6 +633,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                             boolean hasTalons = getMech().hasWorkingMisc(MiscType.F_TALON);
                             if (!hasTalons) {
                                 UnitUtil.createSpreadMounts(getMech(), equip);
+                                refresh.refreshStructure();
                             }
                         } else {
                             getMech().addEquipment(new Mounted(unit, equip), Entity.LOC_NONE, false);
