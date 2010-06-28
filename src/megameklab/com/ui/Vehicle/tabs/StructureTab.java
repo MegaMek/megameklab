@@ -107,6 +107,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setAutoscrolls(true);
         scroll.setWheelScrollingEnabled(true);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
         JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, enginePanel(), scroll);
 
         this.unit = unit;
@@ -303,7 +304,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             try {
                 // if a Tank is primitive and thus needs a larger engine
                 if (combo.equals(engineType) || combo.equals(cruiseMP)) {
-                    int rating = Math.max(10, (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()) - ((Tank)unit).getSuspensionFactor());
+                    int rating = Math.max(10, (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()) - ((Tank) unit).getSuspensionFactor());
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
@@ -313,16 +314,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         } else {
                             getTank().setEngine(new Engine(rating, type, Engine.TANK_ENGINE));
                         }
-                        getTank().setOriginalWalkMP(cruiseMP.getSelectedIndex()+1);
+                        getTank().setOriginalWalkMP(cruiseMP.getSelectedIndex() + 1);
                     }
                 } else if (combo.equals(weightClass)) {
                     if (weightClass.getSelectedItem() != null) {
-                        int rating = Math.max(10,(cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()));
+                        int rating = Math.max(10, (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()));
                         if (rating > 500) {
                             JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                         } else {
                             unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
-                            ((SpinnerNumberModel)troopStorage.getModel()).setMaximum(Double.parseDouble(weightClass.getSelectedItem().toString()));
+                            ((SpinnerNumberModel) troopStorage.getModel()).setMaximum(Double.parseDouble(weightClass.getSelectedItem().toString()));
                             unit.autoSetInternal();
                             addAllActionListeners();
                             engineType.setSelectedIndex(engineType.getSelectedIndex());
@@ -546,9 +547,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         if (troops > (int) unit.getWeight()) {
             unit.removeAllTransporters();
-            ((SpinnerNumberModel)troopStorage.getModel()).setValue(0);
+            ((SpinnerNumberModel) troopStorage.getModel()).setValue(0);
         } else {
-            ((SpinnerNumberModel)troopStorage.getModel()).setValue((double)troops);
+            ((SpinnerNumberModel) troopStorage.getModel()).setValue((double) troops);
         }
 
     }
@@ -573,7 +574,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         currentTonnage = Math.min(currentTonnage, maxTonnage);
         unit.setWeight(currentTonnage);
-        ((SpinnerNumberModel)troopStorage.getModel()).setMaximum((double)currentTonnage);
+        ((SpinnerNumberModel) troopStorage.getModel()).setMaximum((double) currentTonnage);
 
         for (int pos = 1; pos <= maxTonnage; pos++) {
             weightClass.addItem(pos);
@@ -702,8 +703,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         if (e.getSource().equals(troopStorage)) {
             removeAllActionListeners();
             unit.removeAllTransporters();
-            if (((SpinnerNumberModel)troopStorage.getModel()).getNumber().doubleValue() > 0) {
-                unit.addTransporter(new TroopSpace(((SpinnerNumberModel)troopStorage.getModel()).getNumber().doubleValue()));
+            if (((SpinnerNumberModel) troopStorage.getModel()).getNumber().doubleValue() > 0) {
+                unit.addTransporter(new TroopSpace(((SpinnerNumberModel) troopStorage.getModel()).getNumber().doubleValue()));
             }
             refresh.refreshAll();
             addAllActionListeners();

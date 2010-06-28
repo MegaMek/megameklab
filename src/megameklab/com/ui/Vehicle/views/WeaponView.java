@@ -191,6 +191,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             tScrollPane.setWheelScrollingEnabled(true);
             tScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             tScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            tScrollPane.getVerticalScrollBar().setUnitIncrement(20);
             tScrollPane.setPreferredSize(size);
             tScrollPane.setMaximumSize(size);
             tScrollPane.setBackground(Color.WHITE);

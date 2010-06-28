@@ -127,6 +127,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setAutoscrolls(true);
         scroll.setWheelScrollingEnabled(true);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
+
         JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, enginePanel(), scroll);
 
         this.unit = unit;
@@ -667,6 +669,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getMech().setTechLevel(TechConstants.T_INTRO_BOXSET);
                         getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
                         getMech().setMixedTech(false);
+                        UnitUtil.removeTalons(getMech());
                         createEngineList(false);
                         createHeatSinkList();
 
