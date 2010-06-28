@@ -213,6 +213,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         fluffScrollPane.setAlignmentX(LEFT_ALIGNMENT);
         fluffScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         fluffScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        fluffScrollPane.getVerticalScrollBar().setUnitIncrement(20);
 
         mechList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -594,7 +595,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         ArrayList<MechSummary> vMatches = new ArrayList<MechSummary>();
         for (MechSummary ms : mechsCurrent) {
             try {
-                Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName()).getEntity();
+                Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName(), true).getEntity();
                 if (isMatch(entity)) {
                     vMatches.add(ms);
                 }
@@ -785,7 +786,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
             // For some unknown reason the base path gets screwed up after you
             // print so this sets the source file to the full path.
             ms.setSourceFile(new File(ms.getSourceFile().getAbsolutePath()));
-            Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName()).getEntity();
+            Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName(), true).getEntity();
             previewMech(entity);
         } catch (EntityLoadingException ex) {
             System.out.println("Unable to load mech: " + ms.getSourceFile() + ": " + ms.getEntryName() + ": " + ex.getMessage());

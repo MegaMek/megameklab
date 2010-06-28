@@ -292,6 +292,7 @@ public class MainUI extends JFrame implements RefreshListener {
         setJMenuBar(menuBar);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
         scroll.setViewportView(masterPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         this.add(scroll);
@@ -433,6 +434,7 @@ public class MainUI extends JFrame implements RefreshListener {
         scroll.setViewportView(textPane);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
 
         textPane.setText(bvText);
 
@@ -489,6 +491,7 @@ public class MainUI extends JFrame implements RefreshListener {
         scroll.setViewportView(textPane);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
 
         textPane.setText(unitSpecs.toString());
 

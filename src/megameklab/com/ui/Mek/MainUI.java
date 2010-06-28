@@ -303,6 +303,7 @@ public class MainUI extends JFrame implements RefreshListener {
         setJMenuBar(menuBar);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
         scroll.setViewportView(masterPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         this.add(scroll);
@@ -364,13 +365,17 @@ public class MainUI extends JFrame implements RefreshListener {
             return;
         }
         try {
-            Entity tempEntity = new MechFileParser(f.getSelectedFile()).getEntity();
+            Entity tempEntity = new MechFileParser(f.getSelectedFile(), true).getEntity();
             if (!(tempEntity instanceof Mech)) {
                 return;
             }
 
             entity = (Mech) tempEntity;
             UnitUtil.updateLoadedMech(entity);
+            if (UnitUtil.validateUnit(entity).trim().length() > 0) {
+                JOptionPane.showMessageDialog(this, "Warning:Invalid unit, it might load incorrectly!");
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
             createNewMech(false);
@@ -455,6 +460,7 @@ public class MainUI extends JFrame implements RefreshListener {
         scroll.setViewportView(textPane);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
 
         textPane.setText(bvText);
 
@@ -502,6 +508,7 @@ public class MainUI extends JFrame implements RefreshListener {
         scroll.setViewportView(textPane);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
 
         textPane.setText(costText.toString());
 
@@ -555,6 +562,7 @@ public class MainUI extends JFrame implements RefreshListener {
         scroll.setViewportView(textPane);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
 
         textPane.setText(unitSpecs.toString());
 
@@ -778,7 +786,7 @@ public class MainUI extends JFrame implements RefreshListener {
         equipmentTab.refresh();
         weaponTab.refresh();
         buildTab.refresh();
-
+        refreshHeader();
     }
 
     public void refreshArmor() {
