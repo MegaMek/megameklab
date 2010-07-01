@@ -54,6 +54,7 @@ V 0.0.0.17 Dev
 + Fixed issue with Physical Weapons
 + Bug: Talons not resetting after changing from Non-IS to IS
 + New Megamek jar
++ TSM fix
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles
