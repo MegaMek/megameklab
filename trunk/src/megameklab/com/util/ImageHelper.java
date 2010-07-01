@@ -40,7 +40,9 @@ import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
+import megamek.common.Dropship;
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
 import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MiscType;
@@ -62,6 +64,7 @@ public class ImageHelper {
     public static String imageVehicle = "vehicle";
     public static String imageLargeSupportVehicle = "largesupportvehicle";
     public static String imageProto = "protomech";
+    public static String imageDropship = "dropship";
 
     public static Image armorPip = null;
 
@@ -98,7 +101,15 @@ public class ImageHelper {
             String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + ".png";
             recordSheet = new ImageIcon(path + imageName).getImage();
         } else if (unit instanceof Aero) {
-            recordSheet = new ImageIcon(path + "twaero.png").getImage();
+            if (unit instanceof Dropship) {
+                if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
+                    recordSheet = new ImageIcon(path + "twaerodyneds.png").getImage();
+                } else {
+                    recordSheet = new ImageIcon(path + "twspheroidds.png").getImage();
+                }
+            } else {
+                recordSheet = new ImageIcon(path + "twaero.png").getImage();
+            }
         } else if (unit instanceof BattleArmor) {
             recordSheet = new ImageIcon(path + "twba.png").getImage();
         } else if (unit instanceof Protomech) {
@@ -514,6 +525,112 @@ public class ImageHelper {
         String fuelAmount = String.format("%1$s Points", aero.getFuel());
         g2d.setFont(UnitUtil.getNewFont(g2d, fuelAmount, false, 200, 7.0f));
         g2d.drawString(fuelAmount, pointX, pointY);
+    }
+
+    public static void printDropShipFuel(Aero aero, Graphics2D g2d, int pointY) {
+        int pointX = 22;
+        String fuel = "Fuel: ";
+
+        // g2d.setFont(UnitUtil.getNewFont(g2d, fuel, true, 200, 7.0f));
+        g2d.drawString(fuel, pointX, pointY);
+        pointX += ImageHelper.getStringWidth(g2d, fuel, g2d.getFont());
+
+        String fuelAmount = String.format("%1$s Points", aero.getFuel());
+        // g2d.setFont(UnitUtil.getNewFont(g2d, fuelAmount, false, 200, 7.0f));
+        g2d.drawString(fuelAmount, pointX, pointY);
+    }
+
+    public static void printDropShipAmmo(Entity vehicle, Graphics2D g2d, int pointY) {
+
+        if (vehicle.getAmmo().size() < 1) {
+            return;
+        }
+
+        int pointX = 22;
+
+        HashMap<String, Integer> ammoHash = new HashMap<String, Integer>();
+
+        for (Mounted ammo : vehicle.getAmmo()) {
+            // don't print one shot ammo
+            if (ammo.getLocation() == Entity.LOC_NONE) {
+                continue;
+            }
+            AmmoType aType = (AmmoType) ammo.getType();
+            String shortName = aType.getShortName().replace("Ammo", "");
+            shortName = shortName.replace('(', '.').replace(')', '.').replace(".Clan.", "");
+            shortName = shortName.replace("-capable", "");
+            shortName += " ";
+            if ((aType.getAmmoType() == AmmoType.T_AC) || (aType.getAmmoType() == AmmoType.T_MML) || (aType.getAmmoType() == AmmoType.T_SRM) || (aType.getAmmoType() == AmmoType.T_SRM_STREAK) || (aType.getAmmoType() == AmmoType.T_SRM_TORPEDO) || (aType.getAmmoType() == AmmoType.T_LRM) || (aType.getAmmoType() == AmmoType.T_LRM_STREAK) || (aType.getAmmoType() == AmmoType.T_LRM_TORPEDO) || (aType.getAmmoType() == AmmoType.T_MML) || (aType.getAmmoType() == AmmoType.T_AC) || (aType.getAmmoType() == AmmoType.T_AC_LBX) || (aType.getAmmoType() == AmmoType.T_AC_LBX_THB) || (aType.getAmmoType() == AmmoType.T_AC_ROTARY) || (aType.getAmmoType() == AmmoType.T_AC_ULTRA) || (aType.getAmmoType() == AmmoType.T_AC_ULTRA_THB) || (aType.getAmmoType() == AmmoType.T_MRM)
+                    || (aType.getAmmoType() == AmmoType.T_MRM_STREAK) || (aType.getAmmoType() == AmmoType.T_ATM) || (aType.getAmmoType() == AmmoType.T_HAG) || (aType.getAmmoType() == AmmoType.T_EXLRM)) {
+                // shortName = shortName.replaceFirst(" ", " " +
+                // aType.getRackSize() + " ");
+                shortName = shortName.replaceFirst("  Artemis", " Artemis");
+            }
+            shortName = shortName.trim();
+
+            if (ammoHash.containsKey(shortName)) {
+                int currentAmmo = ammoHash.get(shortName);
+                currentAmmo += aType.getShots();
+                ammoHash.put(shortName, currentAmmo);
+            } else {
+                int currentAmmo = aType.getShots();
+                ammoHash.put(shortName, currentAmmo);
+            }
+        }
+        if (ammoHash.keySet().size() == 0) {
+            return;
+        }
+        StringBuffer sb = new StringBuffer("Ammo: ");
+
+        int linecount = 0;
+        for (String ammo : ammoHash.keySet()) {
+            sb.append("(");
+            sb.append(ammo);
+            sb.append(") ");
+            sb.append(ammoHash.get(ammo));
+            sb.append(", ");
+        }
+
+        double stringLength = ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
+        linecount = (int) Math.floor(stringLength / 160);
+
+        sb.setLength(0);
+        sb.append("Ammo: ");
+
+        if (vehicle.hasWorkingMisc(MiscType.F_CASE, -1)) {
+            sb = new StringBuffer("Ammo (CASE): ");
+        }
+
+        g2d.drawString(sb.toString(), pointX, pointY - (linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont()));
+        pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
+        sb = new StringBuffer();
+        int linesprinted = 0;
+        int currentStringLength = 0;
+
+        for (String ammo : ammoHash.keySet()) {
+            currentStringLength = sb.length();
+            sb.append("(");
+            sb.append(ammo);
+            sb.append(") ");
+            sb.append(ammoHash.get(ammo));
+            sb.append(", ");
+            if ((ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont()) > 160) && (linesprinted < linecount)) {
+                sb.setLength(sb.length() - ((sb.length() - currentStringLength) + 2));
+                g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
+                linesprinted++;
+                sb.setLength(0);
+                sb.append("(");
+                sb.append(ammo);
+                sb.append(") ");
+                sb.append(ammoHash.get(ammo));
+                sb.append(", ");
+            }
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 2);
+            g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
+            pointY += ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont());
+        }
     }
 
     public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int offset) {
@@ -1423,6 +1540,28 @@ public class ImageHelper {
         g2d.drawString("O", width, height);
     }
 
+    public static void drawDropshipArmorPip(Graphics2D g2d, float width, float height) {
+        ImageHelper.drawDropshipArmorPip(g2d, width, height, 9.0f);
+    }
+
+    public static void drawDropshipArmorPip(Graphics2D g2d, float width, float height, float fontsize) {
+        Font font = new Font("Arial", Font.PLAIN, 6);
+        font = font.deriveFont(fontsize);
+        g2d.setFont(font);
+        g2d.setColor(Color.BLACK);
+        g2d.setBackground(Color.WHITE);
+        g2d.drawString("O", width, height);
+    }
+
+    public static void drawDropshipISPip(Graphics2D g2d, int width, int height) {
+        Dimension circle = new Dimension(7, 7);
+        Dimension fillCircle = new Dimension(5, 5);
+        g2d.setColor(Color.black);
+        g2d.fillOval(width, height, circle.width, circle.height);
+        g2d.setColor(Color.white);
+        g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
+    }
+
     public static void drawAeroISPip(Graphics2D g2d, int width, int height) {
         Dimension circle = new Dimension(7, 7);
         Dimension fillCircle = new Dimension(5, 5);
@@ -1437,6 +1576,158 @@ public class ImageHelper {
         g2d.setFont(font);
         g2d.setColor(Color.BLACK);
         g2d.drawString("O", width, height);
+    }
+
+    public static void printDropshipWeaponsNEquipment(Dropship dropship, Graphics2D g2d) {
+        int qtyPoint = 26;
+        int typePoint = 38;
+        int locPoint = 133;
+        int shtPoint = 151;
+        int medPoint = 169;
+        int longPoint = 192;
+        int erPoint = 211;
+        float linePoint = 220f;
+        float lineFeed = 6.7f;
+        float maxHeight = 300.5f;
+        float stringHeight = 0f;
+        float fontSize = 7.0f;
+        boolean newLineNeeded = false;
+
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(dropship.locations());
+
+        for (int pos = 0; pos <= dropship.locations(); pos++) {
+            equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
+        }
+
+        for (Mounted eq : dropship.getEquipment()) {
+
+            if ((eq.isWeaponGroup() || (eq.getType() instanceof AmmoType)) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType())) {
+                continue;
+            }
+
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
+
+            String equipmentName = eq.getName();
+            if (eq.isRearMounted()) {
+                equipmentName += "(R)";
+            }
+
+            if (eqHash.containsKey(equipmentName)) {
+                EquipmentInfo eqi = eqHash.get(equipmentName);
+
+                if (eq.getType().getTechLevel() != eqi.techLevel) {
+                    eqi = new EquipmentInfo(dropship, eq);
+                } else {
+                    eqi.count++;
+                }
+                eqHash.put(equipmentName, eqi);
+            } else {
+                EquipmentInfo eqi = new EquipmentInfo(dropship, eq);
+                eqHash.put(equipmentName, eqi);
+            }
+
+        }
+
+        Font font = ImageHelper.getDropShipWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, fontSize);
+        fontSize = font.getSize2D();
+        g2d.setFont(font);
+        stringHeight = getStringHeight(g2d, "H", font);
+
+        // linePoint -= stringHeight / 2;
+
+        lineFeed = stringHeight;
+
+        for (int pos = Aero.LOC_NOSE; pos <= Aero.LOC_AFT; pos++) {
+
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
+
+            if (eqHash.size() < 1) {
+                continue;
+            }
+
+            int count = 0;
+
+            ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
+
+            for (EquipmentInfo eqi : eqHash.values()) {
+                equipmentList.add(eqi);
+
+            }
+
+            Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
+
+            for (EquipmentInfo eqi : equipmentList) {
+                newLineNeeded = false;
+
+                if (count >= 12) {
+                    break;
+                }
+                g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
+                String name = eqi.name.trim() + " " + eqi.damage.trim();
+
+                font = UnitUtil.getNewFont(g2d, name, false, 68, fontSize);
+                g2d.setFont(font);
+
+                if (eqi.c3Level == EquipmentInfo.C3I) {
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3S) {
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3M) {
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
+                } else {
+                    g2d.drawString(name, typePoint, linePoint);
+                }
+                font = UnitUtil.deriveFont(fontSize);
+                g2d.setFont(font);
+
+                String location = dropship.getLocationAbbr(pos);
+
+                g2d.drawString(location, locPoint, linePoint);
+                if (eqi.shtRange > 0) {
+                    g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, (int) linePoint);
+                } else {
+                    g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                }
+
+                if (eqi.medRange > 0) {
+                    g2d.drawString(Integer.toString(eqi.medRange), medPoint, (int) linePoint);
+                } else {
+                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                }
+                if (eqi.longRange > 0) {
+                    g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
+                } else {
+                    g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                }
+                if (eqi.erRange > 0) {
+                    g2d.drawString(Integer.toString(eqi.erRange), erPoint, (int) linePoint);
+                } else {
+                    g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                }
+
+                if (eqi.hasArtemis) {
+                    g2d.drawString("w/Artemis IV FCS", typePoint, linePoint + lineFeed);
+                    newLineNeeded = true;
+                } else if (eqi.hasArtemisV) {
+                    g2d.drawString("w/Artemis V FCS", typePoint, linePoint + lineFeed);
+                    newLineNeeded = true;
+                } else if (eqi.hasApollo) {
+                    g2d.drawString("w/Apollo FCS", typePoint, linePoint + lineFeed);
+                    newLineNeeded = true;
+                }
+
+                linePoint += lineFeed;
+                if (newLineNeeded) {
+                    linePoint += lineFeed;
+                }
+                count++;
+            }
+        }
+
+        linePoint += lineFeed;
+        ImageHelper.printDropShipAmmo(dropship, g2d, (int) linePoint);
+        // linePoint += lineFeed;
+        ImageHelper.printDropShipFuel(dropship, g2d, (int) linePoint);
     }
 
     public static void printAeroWeaponsNEquipment(Aero aero, Graphics2D g2d) {
@@ -2322,6 +2613,48 @@ public class ImageHelper {
                        * else { if (ImageHelper.getStringWidth(g2d,
                        * eqi.damage.trim(), font) > 22) { weaponCount++; } }
                        */
+
+                    if (eqi.hasAmmo) {
+                        weaponCount++;
+                    }
+                }
+            }
+        }
+
+        while (((ImageHelper.getStringHeight(g2d, "H", font) * weaponCount) > stringHeight) && (pointSize > 0)) {
+            pointSize -= .1;
+            font = UnitUtil.deriveFont(bold, pointSize);
+        }
+        return font;
+    }
+
+    public static Font getDropShipWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations, float pointSize) {
+
+        Font font = g2d.getFont();
+
+        int weaponCount = 0;
+        for (int pos = Aero.LOC_NOSE; pos <= Aero.LOC_WINGS; pos++) {
+
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
+            if (eqHash.size() < 1) {
+                continue;
+            }
+
+            for (EquipmentInfo eqi : eqHash.values()) {
+
+                weaponCount++;
+                if (eqi.isWeapon) {
+                    if (eqi.isMML) {
+                        weaponCount++;
+                    } else if (eqi.isATM) {
+                        weaponCount++;
+                    } else if (eqi.hasArtemis || eqi.hasArtemisV) {
+                        weaponCount++;
+                    }
+                    /*
+                     * else { if (ImageHelper.getStringWidth(g2d,
+                     * eqi.damage.trim(), font) > 22) { weaponCount++; } }
+                     */
 
                     if (eqi.hasAmmo) {
                         weaponCount++;

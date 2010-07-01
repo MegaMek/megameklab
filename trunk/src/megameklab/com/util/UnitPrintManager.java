@@ -33,8 +33,10 @@ import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
+import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EntityListFile;
+import megamek.common.EntityMovementMode;
 import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
@@ -44,6 +46,8 @@ import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
+import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
+import megameklab.com.ui.Dropship.Printing.PrintSphereoid;
 import megameklab.com.ui.Mek.Printing.PrintMech;
 import megameklab.com.ui.Mek.Printing.PrintQuad;
 import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
@@ -111,6 +115,8 @@ public class UnitPrintManager {
         ArrayList<Tank> tankList = new ArrayList<Tank>();
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
         ArrayList<Aero> aeroList = new ArrayList<Aero>();
+        ArrayList<Dropship> aerodyneList = new ArrayList<Dropship>();
+        ArrayList<Dropship> sphereoidList = new ArrayList<Dropship>();
         ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
         ArrayList<Protomech> protoList = new ArrayList<Protomech>();
         ArrayList<LargeSupportTank> largeSupportTankList = new ArrayList<LargeSupportTank>();
@@ -133,7 +139,15 @@ public class UnitPrintManager {
             } else if (unit instanceof Tank) {
                 tankList.add((Tank) unit);
             } else if (unit instanceof Aero) {
-                aeroList.add((Aero) unit);
+                if (unit instanceof Dropship) {
+                    if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
+                        aerodyneList.add((Dropship) unit);
+                    } else {
+                        sphereoidList.add((Dropship) unit);
+                    }
+                } else {
+                    aeroList.add((Aero) unit);
+                }
             } else if (unit instanceof BattleArmor) {
                 baList.add((BattleArmor) unit);
             } else if (unit instanceof Protomech) {
@@ -168,8 +182,17 @@ public class UnitPrintManager {
 
         if (aeroList.size() > 0) {
             PrintAero printAero = new PrintAero(aeroList, masterPrintJob);
-
             printAero.print();
+        }
+
+        if (aerodyneList.size() > 0) {
+            PrintAerodyne printAerodyne = new PrintAerodyne(aerodyneList, masterPrintJob);
+            printAerodyne.print();
+        }
+
+        if (sphereoidList.size() > 0) {
+            PrintSphereoid printSphereoid = new PrintSphereoid(sphereoidList, masterPrintJob);
+            printSphereoid.print();
         }
 
         if (VTOLList.size() > 0) {
