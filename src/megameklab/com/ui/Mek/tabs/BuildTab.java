@@ -165,7 +165,7 @@ public class BuildTab extends ITab implements ActionListener {
 
                 Mounted foundMount = null;
                 for (Mounted mount : unit.getEquipment()) {
-                    if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().getInternalName().equals(eq.getInternalName())) {
+                    if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().equals(eq)) {
                         if (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0)) {
                             continue;
                         }
@@ -176,7 +176,6 @@ public class BuildTab extends ITab implements ActionListener {
 
                 if (foundMount != null) {
                     try {
-
                         if (foundMount.getType().isSpreadable() || (foundMount.isSplitable() && (critsUsed > 1))) {
                             for (int count = 0; count < critsUsed; count++) {
                                 getMech().addEquipment(foundMount, location, false);

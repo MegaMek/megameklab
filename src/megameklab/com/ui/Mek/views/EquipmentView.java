@@ -249,34 +249,16 @@ public class EquipmentView extends IView implements ActionListener {
             boolean success = false;
             EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
             boolean isMisc = equip instanceof MiscType;
-            if (isMisc && equip.hasFlag(MiscType.F_TSM)) {
-                if (!getMech().hasTSM()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
-            } else if (isMisc && equip.hasFlag(MiscType.F_INDUSTRIAL_TSM)) {
-                if (!getMech().hasIndustrialTSM()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
-            } else if (isMisc && equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)) {
-                if (!unit.hasEnvironmentalSealing()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
-            } else if (isMisc && equip.hasFlag(MiscType.F_NULLSIG)) {
-                if (!getMech().hasNullSig()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
-            } else if (isMisc && equip.hasFlag(MiscType.F_VOIDSIG)) {
-                if (!getMech().hasVoidSig()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
-            } else if (isMisc && equip.hasFlag(MiscType.F_TRACKS)) {
-                if (!getMech().hasTracks()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
-            } else if (isMisc && equip.hasFlag(MiscType.F_PARTIAL_WING)) {
-                if (!getMech().hasWorkingMisc(MiscType.F_PARTIAL_WING)) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
+            if (isMisc && ((equip.hasFlag(MiscType.F_TSM) && !getMech().hasTSM())
+                    || (equip.hasFlag(MiscType.F_INDUSTRIAL_TSM) && !getMech().hasIndustrialTSM())
+                    || (equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) && !unit.hasEnvironmentalSealing())
+                    || (equip.hasFlag(MiscType.F_NULLSIG) && !getMech().hasNullSig())
+                    || (equip.hasFlag(MiscType.F_VOIDSIG) && !getMech().hasVoidSig())
+                    || (equip.hasFlag(MiscType.F_TRACKS) && !getMech().hasTracks())
+                    || (equip.hasFlag(MiscType.F_PARTIAL_WING) && !getMech().hasWorkingMisc(MiscType.F_PARTIAL_WING))
+                    || (equip.hasFlag(MiscType.F_CHAMELEON_SHIELD) && !getMech().hasChameleonShield())
+                    || ((equip.hasFlag(MiscType.F_BLUE_SHIELD)) && !unit.hasWorkingMisc(MiscType.F_BLUE_SHIELD)))) {
+                success = UnitUtil.createSpreadMounts(getMech(), equip);
             } else if (isMisc && equip.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                 setJumpBoosterMP(Integer.parseInt(JOptionPane.showInputDialog(this, "How many Jump MP?")));
                 updateJumpMP();
@@ -287,14 +269,6 @@ public class EquipmentView extends IView implements ActionListener {
                 if (!UnitUtil.hasTargComp(unit)) {
                     UnitUtil.updateTC(getMech(), equip);
                     success = true;
-                }
-            } else if (isMisc && equip.hasFlag(MiscType.F_CHAMELEON_SHIELD)) {
-                if (!getMech().hasChameleonShield()) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
-            } else if (isMisc && equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
-                if (!unit.hasWorkingMisc(MiscType.F_BLUE_SHIELD)) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
                 }
             } else {
                 try {
