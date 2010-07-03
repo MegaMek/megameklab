@@ -28,10 +28,13 @@ import javax.swing.JOptionPane;
 
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
+import megamek.common.BattleArmorBay;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
+import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.InfantryBay;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MiscType;
@@ -39,6 +42,7 @@ import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
+import megamek.common.Transporter;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
@@ -1952,5 +1956,29 @@ public class UnitUtil {
                 UnitUtil.removeMounted(unit, mount);
             }
         }
+    }
+
+    public static int getBattleArmorBayCount(Dropship unit) {
+        int battleArmor = 0;
+
+        for (Transporter bay : unit.getTransportBays()) {
+            if (bay instanceof BattleArmorBay) {
+                battleArmor++;
+            }
+        }
+
+        return battleArmor;
+    }
+
+    public static int getInfBayCount(Dropship unit) {
+        int inf = 0;
+
+        for (Transporter bay : unit.getTransportBays()) {
+            if (bay instanceof InfantryBay) {
+                inf++;
+            }
+        }
+
+        return inf;
     }
 }
