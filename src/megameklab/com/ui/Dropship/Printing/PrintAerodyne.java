@@ -107,6 +107,9 @@ public class PrintAerodyne implements Printable {
         g2d.drawString(Integer.toString(dropship.getWalkMP()), 99, 154);
         g2d.drawString(Integer.toString(dropship.getRunMPwithoutMASC()), 99, 165);
 
+        g2d.drawString(String.format("%1$s / %2$s", dropship.getFighterBays().size(), dropship.getSmallCraftBays().size()), 104, 176);
+        g2d.drawString(String.format("%1$s / Turn", dropship.getFighterLaunchRate()), 188, 176);
+
         int tonnage = (int) Math.ceil(dropship.getWeight());
 
         if (tonnage % 5 != 0) {
@@ -181,7 +184,17 @@ public class PrintAerodyne implements Printable {
 
         // Cost/BV
         g2d.drawString(String.format("%1$,d", dropship.calculateBattleValue(true, true)), 152, 469.2f);
-        g2d.drawString(String.format("%1$s/%1$s", dropship.getLifeBoats(), dropship.getEscapePods()), 333, 596.6f);
+
+        // Crew data
+        g2d.drawString(String.format("%1$s/%1$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 592.6f);
+
+        g2d.drawString(String.format("%1$s", dropship.getNCrew()), 283, 562.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNPassenger()), 283, 572.6f);
+        g2d.drawString(String.format("%1$s", 0), 283, 582.6f);
+
+        g2d.drawString(String.format("%1$s", UnitUtil.getInfBayCount(dropship)), 357, 561.6f);
+        g2d.drawString(String.format("%1$s", 0), 357, 571.6f);
+        g2d.drawString(String.format("%1$s", UnitUtil.getBattleArmorBayCount(dropship)), 357, 581.6f);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(String.format("%1$,.0f C-bills",
@@ -190,7 +203,7 @@ public class PrintAerodyne implements Printable {
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2010", 62.5f, 745f);
+        g2d.drawString("2010", 50.5f, 740f);
     }
 
     private void printArmor(Graphics2D g2d) {
@@ -203,7 +216,7 @@ public class PrintAerodyne implements Printable {
         ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", dropship.getThresh(Aero.LOC_RWING), dropship.getArmor(Aero.LOC_RWING)), g2d.getFont(), 545, 305);
         ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", dropship.getThresh(Aero.LOC_LWING), dropship.getArmor(Aero.LOC_LWING)), g2d.getFont(), 280, 305);
         ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", dropship.getThresh(Aero.LOC_AFT), dropship.getArmor(Aero.LOC_AFT)), g2d.getFont(), 410, 487);
-        ImageHelper.printCenterString(g2d, String.format("%1$S", dropship.get0SI()), g2d.getFont(), 443, 236);
+        ImageHelper.printCenterString(g2d, String.format("%1$S", dropship.get0SI()), g2d.getFont(), 446, 234);
 
     }
 
@@ -212,7 +225,7 @@ public class PrintAerodyne implements Printable {
         g2d.setFont(font);
 
         int posX = 395;
-        int posY = 692;
+        int posY = 688;
 
         // Heat Sinks
         if (dropship.getHeatType() == Aero.HEAT_DOUBLE) {
@@ -229,13 +242,13 @@ public class PrintAerodyne implements Printable {
         Font font = UnitUtil.deriveFont(true, 8.0f);
         g2d.setFont(font);
 
-        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_NOSE, false)), 476, 695);
-        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_LWING, false)), 476, 714);
-        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_LWING, true)), 476, 724);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_NOSE, false)), 489, 688);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_LWING, false)), 489, 703);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_LWING, true)), 489, 719);
 
-        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_AFT, false)), 537, 695);
-        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_RWING, false)), 537, 714);
-        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_RWING, true)), 537, 724);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_AFT, false)), 549, 688);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_RWING, false)), 549, 703);
+        g2d.drawString(String.format("%1$s", dropship.getHeatInArc(Aero.LOC_RWING, true)), 549, 719);
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
@@ -449,9 +462,9 @@ public class PrintAerodyne implements Printable {
     private void printDropshipImage(Graphics2D g2d, Image img) {
 
         int width = Math.min(220, img.getWidth(null));
-        int height = Math.min(130, img.getHeight(null));
+        int height = Math.min(112, img.getHeight(null));
         int drawingX = 18 + ((220 - width) / 2);
-        int drawingY = 365 + ((130 - height) / 2);
+        int drawingY = 482 + ((112 - height) / 2);
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
     }
