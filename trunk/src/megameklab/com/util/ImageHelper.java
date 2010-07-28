@@ -39,6 +39,7 @@ import javax.swing.ImageIcon;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
+import megamek.common.Bay;
 import megamek.common.BipedMech;
 import megamek.common.Dropship;
 import megamek.common.Entity;
@@ -611,6 +612,62 @@ public class ImageHelper {
                 sb.append(ammo);
                 sb.append(") ");
                 sb.append(ammoHash.get(ammo));
+                sb.append(", ");
+            }
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 2);
+            g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
+            pointY += ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont());
+        }
+    }
+
+    public static void printDropShipCargo(Dropship dropship, Graphics2D g2d, int pointY) {
+
+        if (dropship.getTransportBays().size() < 1) {
+            return;
+        }
+
+        int pointX = 22;
+
+        StringBuffer sb = new StringBuffer("Cargo: ");
+
+        for (Bay bay : dropship.getTransportBays()) {
+
+            String shortName = ImageHelper.getBayString(bay);
+            shortName = shortName.trim();
+            sb.append(shortName);
+            sb.append(", ");
+        }
+
+        int linecount = 0;
+
+        double stringLength = ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
+        linecount = (int) Math.floor(stringLength / 160);
+
+        sb.setLength(0);
+        sb.append("Cargo: ");
+
+        g2d.drawString(sb.toString(), pointX, pointY - (linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont()));
+        pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
+        sb = new StringBuffer();
+        int linesprinted = 0;
+        int currentStringLength = 0;
+
+        for (Bay bay : dropship.getTransportBays()) {
+            currentStringLength = sb.length();
+            String shortName = ImageHelper.getBayString(bay);
+            shortName = shortName.trim();
+            sb.append(shortName);
+            sb.append(", ");
+            if ((ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont()) > 160) && (linesprinted < linecount)) {
+                sb.setLength(sb.length() - ((sb.length() - currentStringLength) + 2));
+                g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
+                linesprinted++;
+                sb.setLength(0);
+                shortName = ImageHelper.getBayString(bay);
+                shortName = shortName.trim();
+                sb.append(shortName);
                 sb.append(", ");
             }
         }
@@ -1575,7 +1632,7 @@ public class ImageHelper {
         int medPoint = 169;
         int longPoint = 192;
         int erPoint = 211;
-        float linePoint = 197f;
+        float linePoint = 200f;
         float lineFeed = 6.7f;
         float maxHeight = 260.9f;
         float stringHeight = 0f;
@@ -1873,7 +1930,8 @@ public class ImageHelper {
             }
         }
 
-        // linePoint += lineFeed;
+        linePoint += lineFeed;
+        ImageHelper.printDropShipCargo(dropship, g2d, (int) linePoint);
         ImageHelper.printDropShipAmmo(dropship, g2d, (int) linePoint);
 
     }
@@ -2782,7 +2840,7 @@ public class ImageHelper {
         boolean hasCapital = false;
         boolean hasSubCapital = false;
 
-        int weaponCount = 0;
+        int weaponCount = 1;
         for (int pos = Aero.LOC_NOSE; pos <= Aero.LOC_WINGS; pos++) {
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
@@ -2861,5 +2919,23 @@ public class ImageHelper {
         }
 
         return font;
+    }
+
+    public static String getBayString(Bay bay) {
+        StringBuffer returnString = new StringBuffer(bay.getType());
+
+        if (bay.getLoadedUnits().size() > 0) {
+            returnString.append("(");
+            returnString.append(bay.getLoadedUnits().size());
+            returnString.append(")");
+        }
+
+        if (bay.getDoors() > 0) {
+            returnString.append("(");
+            returnString.append(bay.getDoors());
+            returnString.append(" doors)");
+        }
+
+        return returnString.toString();
     }
 }
