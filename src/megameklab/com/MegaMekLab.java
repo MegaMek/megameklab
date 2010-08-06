@@ -61,8 +61,8 @@ public class MegaMekLab {
             Runtime runtime = Runtime.getRuntime();
 
             System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
-            // Need at least 256m to run MegaMekLab
-            if (runtime.maxMemory() < 256000000) {
+            // Need at least 200m to run MegaMekLab
+            if (runtime.maxMemory() < 200000000) {
                 try {
                     String[] call =
                         { "java", "-Xmx256m", "-splash:data/images/splash/megameklabsplashvehicle.jpg", "-jar", "MegaMekLab.jar", "-vehicle" };
@@ -84,8 +84,9 @@ public class MegaMekLab {
             Runtime runtime = Runtime.getRuntime();
 
             System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
-            // Need at least 256m to run MegaMekLab
-            if (runtime.maxMemory() < 256000000) {
+            long memory = runtime.maxMemory();
+            // Need at least 200m to run MegaMekLab
+            if (runtime.maxMemory() < 20000000) {
                 try {
 
                     String[] call =
