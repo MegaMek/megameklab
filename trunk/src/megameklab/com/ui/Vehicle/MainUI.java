@@ -747,15 +747,8 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     private void jMenuLoadMech() {
-        try {
-            Runtime runtime = Runtime.getRuntime();
-            String[] call =
-                { "java", "-Xmx256m", "-jar", "MegaMekLab.jar" };
-            runtime.exec(call);
-            System.exit(0);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        new megameklab.com.ui.Mek.MainUI();
+        dispose();
     }
 
     private void jMenuPrintCurrentUnit() {
