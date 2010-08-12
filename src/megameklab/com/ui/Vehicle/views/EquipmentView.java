@@ -115,7 +115,7 @@ public class EquipmentView extends IView implements ActionListener {
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if (UnitUtil.isMechEquipment(eq)) {
+            if (UnitUtil.isUnitEquipment(eq, unit)) {
                 masterEquipmentList.add(eq);
             }
         }
@@ -152,7 +152,7 @@ public class EquipmentView extends IView implements ActionListener {
             if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || UnitUtil.isArmorOrStructure(mount.getType()))) {
                 continue;
             }
-            if (UnitUtil.isMechEquipment(mount.getType())) {
+            if (UnitUtil.isUnitEquipment(mount.getType(), unit)) {
                 equipmentList.addCrit(mount.getType());
             }
         }
@@ -228,7 +228,7 @@ public class EquipmentView extends IView implements ActionListener {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
 
-            EquipmentType equip = (EquipmentType)equipmentCombo.getSelectedItem();
+            EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
             boolean isMisc = equip instanceof MiscType;
             if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(unit)) {
