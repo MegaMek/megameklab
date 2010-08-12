@@ -16,7 +16,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -36,6 +35,10 @@ import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
+/**
+ * @author Torren
+ * 
+ */
 public class PrintAerodyne implements Printable {
 
     private Dropship dropship = null;
@@ -460,14 +463,14 @@ public class PrintAerodyne implements Printable {
         }
     }
 
-    private void printDropshipImage(Graphics2D g2d, Image img) {
-
-        int width = Math.min(220, img.getWidth(null));
-        int height = Math.min(112, img.getHeight(null));
-        int drawingX = 18 + ((220 - width) / 2);
-        int drawingY = 482 + ((112 - height) / 2);
-        g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
-
-    }
+    // private void printDropshipImage(Graphics2D g2d, Image img) {
+    //
+    // int width = Math.min(220, img.getWidth(null));
+    // int height = Math.min(112, img.getHeight(null));
+    // int drawingX = 18 + ((220 - width) / 2);
+    // int drawingY = 482 + ((112 - height) / 2);
+    // g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
+    //
+    // }
 
 }

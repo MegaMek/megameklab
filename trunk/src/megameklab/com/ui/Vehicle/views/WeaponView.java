@@ -291,7 +291,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         while (weaponTypes.hasMoreElements()) {
             EquipmentType eq = weaponTypes.nextElement();
 
-            if (!UnitUtil.isTankWeapon(eq, unit)) {
+            if (!UnitUtil.isUnitWeapon(eq, unit)) {
                 continue;
             }
 
@@ -385,7 +385,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
 
     private void loadWeaponsTable() {
         for (Mounted mount : unit.getWeaponList()) {
-            if (UnitUtil.isTankWeapon(mount.getType(), getTank())) {
+            if (UnitUtil.isUnitWeapon(mount.getType(), getTank())) {
                 weaponList.addCrit(mount.getType());
             }
         }

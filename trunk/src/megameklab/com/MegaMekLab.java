@@ -24,7 +24,7 @@ import java.io.PrintStream;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.0.0.17-Dev-106";
+    public static final String VERSION = "0.0.0.17-Dev-108";
 
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
@@ -84,7 +84,6 @@ public class MegaMekLab {
             Runtime runtime = Runtime.getRuntime();
 
             System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
-            long memory = runtime.maxMemory();
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 20000000) {
                 try {
