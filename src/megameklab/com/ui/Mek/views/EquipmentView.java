@@ -124,7 +124,7 @@ public class EquipmentView extends IView implements ActionListener {
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if (UnitUtil.isMechEquipment(eq)) {
+            if (UnitUtil.isUnitEquipment(eq, unit)) {
                 masterEquipmentList.add(eq);
             }
         }
@@ -167,7 +167,7 @@ public class EquipmentView extends IView implements ActionListener {
             if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || UnitUtil.isArmorOrStructure(mount.getType()))) {
                 continue;
             }
-            if (UnitUtil.isMechEquipment(mount.getType())) {
+            if (UnitUtil.isUnitEquipment(mount.getType(), unit)) {
                 if (UnitUtil.isSpreadEquipment(mount.getType()) && !spreadAlreadyAdded.contains(mount.getType())) {
                     equipmentList.addCrit(mount.getType());
                     // keep track of spreadable equipment here, so it doesn't
@@ -249,15 +249,7 @@ public class EquipmentView extends IView implements ActionListener {
             boolean success = false;
             EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
             boolean isMisc = equip instanceof MiscType;
-            if (isMisc && ((equip.hasFlag(MiscType.F_TSM) && !getMech().hasTSM())
-                    || (equip.hasFlag(MiscType.F_INDUSTRIAL_TSM) && !getMech().hasIndustrialTSM())
-                    || (equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) && !unit.hasEnvironmentalSealing())
-                    || (equip.hasFlag(MiscType.F_NULLSIG) && !getMech().hasNullSig())
-                    || (equip.hasFlag(MiscType.F_VOIDSIG) && !getMech().hasVoidSig())
-                    || (equip.hasFlag(MiscType.F_TRACKS) && !getMech().hasTracks())
-                    || (equip.hasFlag(MiscType.F_PARTIAL_WING) && !getMech().hasWorkingMisc(MiscType.F_PARTIAL_WING))
-                    || (equip.hasFlag(MiscType.F_CHAMELEON_SHIELD) && !getMech().hasChameleonShield())
-                    || ((equip.hasFlag(MiscType.F_BLUE_SHIELD)) && !unit.hasWorkingMisc(MiscType.F_BLUE_SHIELD)))) {
+            if (isMisc && ((equip.hasFlag(MiscType.F_TSM) && !getMech().hasTSM()) || (equip.hasFlag(MiscType.F_INDUSTRIAL_TSM) && !getMech().hasIndustrialTSM()) || (equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) && !unit.hasEnvironmentalSealing()) || (equip.hasFlag(MiscType.F_NULLSIG) && !getMech().hasNullSig()) || (equip.hasFlag(MiscType.F_VOIDSIG) && !getMech().hasVoidSig()) || (equip.hasFlag(MiscType.F_TRACKS) && !getMech().hasTracks()) || (equip.hasFlag(MiscType.F_PARTIAL_WING) && !getMech().hasWorkingMisc(MiscType.F_PARTIAL_WING)) || (equip.hasFlag(MiscType.F_CHAMELEON_SHIELD) && !getMech().hasChameleonShield()) || ((equip.hasFlag(MiscType.F_BLUE_SHIELD)) && !unit.hasWorkingMisc(MiscType.F_BLUE_SHIELD)))) {
                 success = UnitUtil.createSpreadMounts(getMech(), equip);
             } else if (isMisc && equip.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                 setJumpBoosterMP(Integer.parseInt(JOptionPane.showInputDialog(this, "How many Jump MP?")));

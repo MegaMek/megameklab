@@ -1511,6 +1511,22 @@ public class UnitUtil {
         UnitUtil.checkArmor(unit);
     }
 
+    public static boolean isUnitWeapon(EquipmentType eq, Entity unit) {
+        if (unit instanceof Tank) {
+            return isUnitWeapon(eq, unit);
+        }
+
+        return isUnitWeapon(eq, unit);
+    }
+
+    public static boolean isUnitEquipment(EquipmentType eq, Entity unit) {
+        if (unit instanceof Tank) {
+            return isTankEquipment(eq);
+        }
+
+        return isMechEquipment(eq);
+    }
+
     public static boolean isMechWeapon(EquipmentType eq, Mech unit) {
         if (eq instanceof InfantryWeapon) {
             return false;
