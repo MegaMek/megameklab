@@ -60,6 +60,8 @@ V 0.0.0.17 Dev
 + Added more flexible Method for finding units Equipment and Weapons
 + Tanks now list new combat chassis in UI
 + New MM.Jar
++ Bug: Enviromental sealing not printing on Vehicle RS
++ Bug: .0 printing when Vehicles had full ton of troop space
 	
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles

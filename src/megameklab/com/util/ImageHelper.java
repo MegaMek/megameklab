@@ -799,8 +799,11 @@ public class ImageHelper {
 
         for (Mounted eq : tank.getEquipment()) {
 
-            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType())) {
-                continue;
+            if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || (!UnitUtil.isPrintableEquipment(eq.getType()))) {
+
+                if (!(eq.getType() instanceof MiscType) || ((eq.getType() instanceof MiscType) && !eq.getType().hasFlag(MiscType.F_ENVIRONMENTAL_SEALING))) {
+                    continue;
+                }
             }
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
@@ -828,10 +831,19 @@ public class ImageHelper {
         double troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             EquipmentInfo eqi = new EquipmentInfo();
-            eqi.name = "Infantry Bay (" + troopspace + " tons)";
-            eqi.damage = "  [E]";
-            eqi.count = 1;
-            equipmentLocations.get(Tank.LOC_BODY).put("Infantry cargo bay: " + troopspace, eqi);
+
+            // Do not show the .0 if troop space is a full ton.
+            if (Math.floor(troopspace) - troopspace > 0) {
+                eqi.name = "Infantry Bay (" + troopspace + " tons)";
+                eqi.damage = "  [E]";
+                eqi.count = 1;
+                equipmentLocations.get(Tank.LOC_BODY).put("Infantry cargo bay: " + troopspace, eqi);
+            } else {
+                eqi.name = "Infantry Bay (" + (int) troopspace + " tons)";
+                eqi.damage = "  [E]";
+                eqi.count = 1;
+                equipmentLocations.get(Tank.LOC_BODY).put("Infantry cargo bay: " + (int) troopspace, eqi);
+            }
         }
 
         Font font = UnitUtil.deriveFont(true, 10.0f);
