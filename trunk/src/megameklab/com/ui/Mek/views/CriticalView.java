@@ -150,7 +150,10 @@ public class CriticalView extends IView {
                                 critName.append("...");
                             }
                             if (m.isRearMounted()) {
-                                critName.append("(R)");
+                                critName.append(" (R)");
+                            }
+                            if (m.isTurretMounted()) {
+                                critName.append(" (T)");
                             }
 
                             critNames.add(critName.toString());
