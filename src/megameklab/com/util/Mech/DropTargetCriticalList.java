@@ -34,6 +34,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
@@ -142,6 +143,28 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     popup.add(info);
 
                     if ((mount.getLocation() != Mech.LOC_LARM) && (mount.getLocation() != Mech.LOC_RARM) && (mount.getType() instanceof WeaponType)) {
+
+                        if (unit.hasWorkingMisc(MiscType.F_QUAD_TURRET, -1, mount.getLocation())
+                                || unit.hasWorkingMisc(MiscType.F_SHOULDER_TURRET, -1, mount.getLocation())
+                                || (unit.hasWorkingMisc(MiscType.F_HEAD_TURRET, -1, Mech.LOC_CT) && (mount.getLocation() == Mech.LOC_HEAD))) {
+                            if (!mount.isTurretMounted()) {
+                                info = new JMenuItem("Mount " + mount.getName() + " in Turret");
+                                info.addActionListener(new ActionListener() {
+                                    public void actionPerformed(ActionEvent e) {
+                                        changeTurretMount(true);
+                                    }
+                                });
+                                popup.add(info);
+                            } else {
+                                info = new JMenuItem("Remove " + mount.getName() + " from Turret");
+                                info.addActionListener(new ActionListener() {
+                                    public void actionPerformed(ActionEvent e) {
+                                        changeTurretMount(false);
+                                    }
+                                });
+                                popup.add(info);
+                            }
+                        }
 
                         if (!mount.isRearMounted()) {
                             info = new JMenuItem("Make " + mount.getName() + " Rear Facing");
@@ -333,6 +356,13 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         Mounted mount = getMounted();
         int location = getCritLocation();
         changeMountStatus(mount, location, rear);
+    }
+
+    private void changeTurretMount(boolean turret) {
+        getMounted().setTurretMounted(turret);
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
     }
 
     private int getCritLocation() {

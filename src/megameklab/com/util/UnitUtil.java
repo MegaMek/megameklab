@@ -1271,7 +1271,12 @@ public class UnitUtil {
         sb.append("<br>Crits: ");
         sb.append(eq.getType().getCriticals(unit));
         sb.append("<br>Tonnage: ");
-        sb.append(eq.getType().getTonnage(unit));
+        if (eq.getType() instanceof MiscType) {
+            sb.append(((MiscType)eq.getType()).getTonnage(unit, eq.getLocation()));
+        } else {
+            sb.append(eq.getType().getTonnage(unit));
+        }
+
         if (eq.getType() instanceof WeaponType) {
             sb.append("<br>Heat: ");
             sb.append(((WeaponType) eq.getType()).getHeat());
@@ -1287,7 +1292,9 @@ public class UnitUtil {
 
         if (eq.isRearMounted()) {
             sb.append("<br>Rear Facing");
-
+        }
+        if (eq.isTurretMounted()) {
+            sb.append("<br>Turret mounted");
         }
         if (eq.isArmored()) {
             sb.append("<br>Armored");

@@ -1581,9 +1581,11 @@ public class PrintMech implements Printable {
                 }
 
                 if (m.isRearMounted()) {
-                    critName.append("(R)");
+                    critName.append(" (R)");
+                } else if (m.isTurretMounted()) {
+                    critName.append(" (T)");
                 } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
-                    critName.append("[OOOOOOOOOO]");
+                    critName.append(" [OOOOOOOOOO]");
                 } else if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                     AmmoType ammo = (AmmoType) m.getType();
 
