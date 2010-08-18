@@ -334,7 +334,10 @@ public class ImageHelper {
 
             String equipmentName = eq.getName();
             if (eq.isRearMounted()) {
-                equipmentName += "(R)";
+                equipmentName += " (R)";
+            }
+            if (eq.isTurretMounted()) {
+                equipmentName += " (T)";
             }
 
             if (eqHash.containsKey(equipmentName)) {

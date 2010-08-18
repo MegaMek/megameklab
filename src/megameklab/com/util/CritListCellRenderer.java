@@ -73,10 +73,13 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                     String name = UnitUtil.getCritName(unit, mount.getType());
 
                     if (mount.isRearMounted()) {
-                        name += "(R)";
+                        name += " (R)";
                     }
                     if (mount.isArmored()) {
                         name += " (A)";
+                    }
+                    if (mount.isTurretMounted()) {
+                        name += " (T)";
                     }
                     label.setText(name);
 
@@ -99,7 +102,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
             label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
         }
 
-        if (cs != null && UnitUtil.isLastCrit(unit, cs, index, getCritLocation())) {
+        if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, getCritLocation())) {
             label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0, 0, 0)));
         }
 
@@ -110,7 +113,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         int slot = index;
         int location = getCritLocation();
         CriticalSlot crit = null;
-        if (slot >= 0 && slot < unit.getNumberOfCriticals(location)) {
+        if ((slot >= 0) && (slot < unit.getNumberOfCriticals(location))) {
             crit = unit.getCritical(location, slot);
         }
 
