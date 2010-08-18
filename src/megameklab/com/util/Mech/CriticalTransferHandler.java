@@ -85,6 +85,11 @@ public class CriticalTransferHandler extends TransferHandler {
                  * JOptionPane.INFORMATION_MESSAGE); return false; } }
                  */
 
+                if (!UnitUtil.isValidLocation(unit, eq.getType(), location)) {
+                    JOptionPane.showMessageDialog(null, eq.getName() + " can't be placed in " + unit.getLocationName(location) + "!", "Invalid Location", JOptionPane.INFORMATION_MESSAGE);
+                    return false;
+                }
+
                 int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
                 if ((eq.getType().isSpreadable() || eq.isSplitable()) && (totalCrits > 1)) {
                     int critsUsed = 0;
