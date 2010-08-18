@@ -64,6 +64,11 @@ V 0.0.0.17 Dev
 + Bug: .0 printing when Vehicles had full ton of troop space
 + New MM.jar
 + Added mech turrets
++ AutoCrit checks for correct location for Turrets
++ Drag and Dropping equipment now checks for valid locations
++ Quad Turrets no long show as equipment for Bipeds
++ Shoulder and Head turrets no longer show for Quads
++ Physical Weapons no longer show on the weapons tab for quads
 	
 V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
 + Bug: ammo not print out correctly for vehicles
