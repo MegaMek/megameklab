@@ -30,9 +30,7 @@ import javax.swing.SwingConstants;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.QuadMech;
 import megameklab.com.ui.Mek.views.BuildView;
 import megameklab.com.ui.Mek.views.CriticalView;
 import megameklab.com.util.CriticalTableModel;
@@ -141,20 +139,8 @@ public class BuildTab extends ITab implements ActionListener {
             int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(getMech());
             for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
 
-                if ((eq instanceof MiscType) && ((eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON)))) {
-                    if (unit instanceof QuadMech) {
-                        continue;
-                    }
-
-                    if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM)) {
-                        continue;
-                    }
-                }
-
-                if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)) {
-                    if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM) && (location != Mech.LOC_LLEG) && (location != Mech.LOC_RLEG)) {
-                        continue;
-                    }
+                if (!UnitUtil.isValidLocation(unit, eq, location)) {
+                    continue;
                 }
 
                 int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
