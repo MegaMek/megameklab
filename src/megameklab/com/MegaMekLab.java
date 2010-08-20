@@ -85,7 +85,7 @@ public class MegaMekLab {
 
             System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
             // Need at least 200m to run MegaMekLab
-            if (runtime.maxMemory() < 20000000) {
+            if (runtime.maxMemory() < 200000000) {
                 try {
 
                     String[] call =
