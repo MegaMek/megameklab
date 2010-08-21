@@ -142,46 +142,48 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     });
                     popup.add(info);
 
-                    if ((mount.getLocation() != Mech.LOC_LARM) && (mount.getLocation() != Mech.LOC_RARM) && (mount.getType() instanceof WeaponType)) {
+                    if ((mount.getLocation() != Mech.LOC_LARM) && (mount.getLocation() != Mech.LOC_RARM)) {
 
-                        if (unit.hasWorkingMisc(MiscType.F_QUAD_TURRET, -1, mount.getLocation())
-                                || unit.hasWorkingMisc(MiscType.F_SHOULDER_TURRET, -1, mount.getLocation())
-                                || (unit.hasWorkingMisc(MiscType.F_HEAD_TURRET, -1, Mech.LOC_CT) && (mount.getLocation() == Mech.LOC_HEAD))) {
-                            if (!mount.isTurretMounted()) {
-                                info = new JMenuItem("Mount " + mount.getName() + " in Turret");
+                        if (mount.getType() instanceof WeaponType) {
+                            if (unit.hasWorkingMisc(MiscType.F_QUAD_TURRET, -1, mount.getLocation()) || unit.hasWorkingMisc(MiscType.F_SHOULDER_TURRET, -1, mount.getLocation()) || (unit.hasWorkingMisc(MiscType.F_HEAD_TURRET, -1, Mech.LOC_CT) && (mount.getLocation() == Mech.LOC_HEAD))) {
+                                if (!mount.isTurretMounted()) {
+                                    info = new JMenuItem("Mount " + mount.getName() + " in Turret");
+                                    info.addActionListener(new ActionListener() {
+                                        public void actionPerformed(ActionEvent e) {
+                                            changeTurretMount(true);
+                                        }
+                                    });
+                                    popup.add(info);
+                                } else {
+                                    info = new JMenuItem("Remove " + mount.getName() + " from Turret");
+                                    info.addActionListener(new ActionListener() {
+                                        public void actionPerformed(ActionEvent e) {
+                                            changeTurretMount(false);
+                                        }
+                                    });
+                                    popup.add(info);
+                                }
+                            }
+                        }
+
+                        if ((mount.getType() instanceof WeaponType) || ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_LIFTHOIST))) {
+                            if (!mount.isRearMounted()) {
+                                info = new JMenuItem("Make " + mount.getName() + " Rear Facing");
                                 info.addActionListener(new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
-                                        changeTurretMount(true);
+                                        changeWeaponFacing(true);
                                     }
                                 });
                                 popup.add(info);
                             } else {
-                                info = new JMenuItem("Remove " + mount.getName() + " from Turret");
+                                info = new JMenuItem("Make " + mount.getName() + " Forward Facing");
                                 info.addActionListener(new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
-                                        changeTurretMount(false);
+                                        changeWeaponFacing(false);
                                     }
                                 });
                                 popup.add(info);
                             }
-                        }
-
-                        if (!mount.isRearMounted()) {
-                            info = new JMenuItem("Make " + mount.getName() + " Rear Facing");
-                            info.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    changeWeaponFacing(true);
-                                }
-                            });
-                            popup.add(info);
-                        } else {
-                            info = new JMenuItem("Make " + mount.getName() + " Forward Facing");
-                            info.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    changeWeaponFacing(false);
-                                }
-                            });
-                            popup.add(info);
                         }
                     }
                 }
