@@ -21,6 +21,7 @@ import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
+import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Sensor;
@@ -75,7 +76,7 @@ public class EquipmentInfo {
 
     /**
      * Info for Aeros
-     *
+     * 
      * @param aero
      * @param mount
      */
@@ -132,6 +133,10 @@ public class EquipmentInfo {
             } else if (mount.getType().getInternalName().equals(Sensor.CLAN_AP)) {
                 longRange = 5;
             }
+        } else if (mount.getType().hasFlag(MiscType.F_SEARCHLIGHT)) {
+            shtRange = 0;
+            medRange = 0;
+            longRange = 170;
         }
 
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
@@ -142,7 +147,7 @@ public class EquipmentInfo {
 
     /**
      * Info for non Aero Entities.
-     *
+     * 
      * @param unit
      * @param mount
      */
@@ -179,8 +184,12 @@ public class EquipmentInfo {
             medRange = weapon.mediumRange;
             longRange = weapon.longRange;
 
-            if (medRange == longRange) {
+            if (medRange >= longRange) {
                 longRange = -1;
+            }
+
+            if (shtRange > medRange) {
+                medRange = -1;
             }
 
             heat = weapon.getHeat();
@@ -203,6 +212,14 @@ public class EquipmentInfo {
             } else if (mount.getType().getInternalName().equals(Sensor.CLAN_AP)) {
                 longRange = 5;
             }
+        } else if (mount.getType().hasFlag(MiscType.F_SEARCHLIGHT)) {
+            shtRange = 0;
+            medRange = 0;
+            longRange = 170;
+        } else if (mount.getType().equals(EquipmentType.get("MechSprayer"))) {
+            shtRange = 0;
+            medRange = 0;
+            longRange = 1;
         }
 
         isBAMineLayer = mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
@@ -289,6 +306,8 @@ public class EquipmentInfo {
                     longRange = 3;
                 }
             } else if (equipment.hasFlag(MiscType.F_SEARCHLIGHT)) {
+                shtRange = 0;
+                medRange = 0;
                 longRange = 9;
             }
             isBAMineLayer = equipment.hasFlag(MiscType.F_MINE) && equipment.hasFlag(MiscType.F_BA_EQUIPMENT);
