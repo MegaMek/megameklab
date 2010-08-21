@@ -45,7 +45,6 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 import megamek.common.AmmoType;
-import megamek.common.BipedMech;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
@@ -192,9 +191,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         tScrollPanes.add(ballisticAmmoScroll);
         tScrollPanes.add(artilleryWeaponScroll);
         tScrollPanes.add(artilleryAmmoScroll);
-        if (unit instanceof BipedMech) {
-            tScrollPanes.add(physicalWeaponScroll);
-        }
+        tScrollPanes.add(physicalWeaponScroll);
 
         // match JPanels to JScrollPanes, and set
         // scrollpane properties
@@ -247,12 +244,10 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         artilleryAmmoCombo.setFont(listFont);
         artilleryAmmoCombo.setCellRenderer(new WeaponListCellRenderer(unit));
 
-        if (unit instanceof BipedMech) {
-            physicalWeaponPane.add(physicalWeaponCombo);
-            physicalWeaponCombo.setFixedCellWidth(155);
-            physicalWeaponCombo.setFont(listFont);
-            physicalWeaponCombo.setCellRenderer(new WeaponListCellRenderer(unit));
-        }
+        physicalWeaponPane.add(physicalWeaponCombo);
+        physicalWeaponCombo.setFixedCellWidth(155);
+        physicalWeaponCombo.setFont(listFont);
+        physicalWeaponCombo.setCellRenderer(new WeaponListCellRenderer(unit));
 
         JPanel tab = new JPanel();
         tab.setLayout(new SpringLayout());
@@ -290,14 +285,12 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         SpringLayoutHelper.setupSpringGrid(tab, 1);
         leftPanel.addTab("Artillery", tab);
 
-        if (unit instanceof BipedMech) {
-            tab = new JPanel();
-            tab.setLayout(new SpringLayout());
-            tab.add(physicalWeaponScroll);
-            tab.add(physicalWeaponButton);
-            SpringLayoutHelper.setupSpringGrid(tab, 1);
-            leftPanel.addTab("Physical", tab);
-        }
+        tab = new JPanel();
+        tab.setLayout(new SpringLayout());
+        tab.add(physicalWeaponScroll);
+        tab.add(physicalWeaponButton);
+        SpringLayoutHelper.setupSpringGrid(tab, 1);
+        leftPanel.addTab("Physical", tab);
 
         buttonPanel.add(removeButton);
         buttonPanel.add(removeAllButton);
@@ -335,7 +328,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 } else if (weapon instanceof ArtilleryWeapon) {
                     masterArtilleryWeaponList.add(eq);
                 }
-            } else if (UnitUtil.isPhysicalWeapon(eq) && (unit instanceof BipedMech)) {
+            } else if (UnitUtil.isPhysicalWeapon(eq)) {
                 masterPhysicalWeaponList.add(eq);
             } else if (((eq instanceof MiscType) && eq.hasFlag(MiscType.F_AP_POD))) {
                 masterBallisticWeaponList.add(eq);
