@@ -181,9 +181,14 @@ public class PrintVehicle implements Printable {
 
         g2d.drawString(engineName, 79, 177);
 
-        int tonnage = (int) Math.ceil(tank.getWeight());
+        if (tank.getWeight() >= 5) {
+            int tonnage = (int) Math.ceil(tank.getWeight());
 
-        g2d.drawString(Integer.toString(tonnage), 177, 134);
+            g2d.drawString(Integer.toString(tonnage), 177, 134);
+        } else {
+            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            g2d.drawString(myFormatter.format(tank.getWeight()), 177, 134);
+        }
 
         int nextDataLine = 153;
         int startLine = 188;
@@ -323,9 +328,13 @@ public class PrintVehicle implements Printable {
 
         g2d.drawString(engineName, 79, 548);
 
-        int tonnage = (int) Math.ceil(tank2.getWeight());
-
-        g2d.drawString(Integer.toString(tonnage), 177, 505);
+        if (tank2.getWeight() >= 5) {
+            int tonnage = (int) Math.ceil(tank2.getWeight());
+            g2d.drawString(Integer.toString(tonnage), 177, 505);
+        } else {
+            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            g2d.drawString(myFormatter.format(tank2.getWeight()), 177, 505);
+        }
 
         int nextDataLine = 155 + secondPageMargin;
         int startLine = 188;

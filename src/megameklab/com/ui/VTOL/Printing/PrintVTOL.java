@@ -149,6 +149,8 @@ public class PrintVTOL implements Printable {
 
         String engineName = "Fusion Engine";
 
+        g2d.drawString(engineName, 79, 164);
+
         switch (vtol.getEngine().getEngineType()) {
             case Engine.COMBUSTION_ENGINE:
                 engineName = "I.C.E.";
@@ -172,11 +174,14 @@ public class PrintVTOL implements Printable {
                 break;
         }
 
-        g2d.drawString(engineName, 79, 166);
+        if (vtol.getWeight() >= 5) {
+            int tonnage = (int) Math.ceil(vtol.getWeight());
 
-        int tonnage = (int) vtol.getWeight();
-
-        g2d.drawString(Integer.toString(tonnage), 177, 134);
+            g2d.drawString(Integer.toString(tonnage), 177, 134);
+        } else {
+            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            g2d.drawString(myFormatter.format(vtol.getWeight()), 177, 134);
+        }
 
         int nextDataLine = 153;
         int startLine = 188;
@@ -306,9 +311,14 @@ public class PrintVTOL implements Printable {
 
         g2d.drawString(engineName, 79, 537);
 
-        int tonnage = (int) Math.ceil(vtol2.getWeight());
+        if (vtol2.getWeight() >= 5) {
+            int tonnage = (int) Math.ceil(vtol2.getWeight());
 
-        g2d.drawString(Integer.toString(tonnage), 177, 505);
+            g2d.drawString(Integer.toString(tonnage), 177, 505);
+        } else {
+            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            g2d.drawString(myFormatter.format(vtol2.getWeight()), 177, 505);
+        }
 
         int nextDataLine = 526;
         int startLine = 188;
