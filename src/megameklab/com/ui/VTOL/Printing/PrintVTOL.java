@@ -403,7 +403,7 @@ public class PrintVTOL implements Printable {
         if ((vtol.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
             font = UnitUtil.deriveFont(true, 11.0f);
             g2d.setFont(font);
-            g2d.drawString(EquipmentType.getArmorTypeName(vtol2.getArmorType()), 463, 48);
+            g2d.drawString(EquipmentType.getArmorTypeName(vtol.getArmorType()), 463, 48);
             font = UnitUtil.deriveFont(true, 9.0f);
             g2d.setFont(font);
         }
@@ -419,7 +419,7 @@ public class PrintVTOL implements Printable {
         g2d.drawString("(" + Integer.toString(vtol.getArmor(VTOL.LOC_ROTOR)) + ")", 535, 140);
 
         if (vtol2 != null) {
-            if ((vtol.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
+            if ((vtol2.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (vtol2.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
                 font = UnitUtil.deriveFont(true, 11.0f);
                 g2d.setFont(font);
                 g2d.drawString(EquipmentType.getArmorTypeName(vtol2.getArmorType()), 463, 48 + secondPageMargin);
