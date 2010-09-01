@@ -72,8 +72,9 @@ V 0.0.0.17 Dev
 + Bug: MML only checking for min 20m of memory instead of 200m on startup
 + RFE: Units Below 5 tons show tonnage to 3 decimal points
 + Fixed ranges for Sprayers, Rivet Gun, Nail Gun, and Search Lights
- 	
-V 0.0.0.16 (01/30/2010 17:43 UTC-8) 
++ Bug: VTOL printing not working on stealth VTOL
+
+V 0.0.0.16 (01/30/2010 17:43 UTC-8)
 + Bug: ammo not print out correctly for vehicles
 + RFE: Allow single units to be printed when printing from MULs
 + Bug: Vehicles with turrets printing in poor quality
