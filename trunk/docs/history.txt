@@ -73,6 +73,7 @@ V 0.0.0.17 Dev
 + RFE: Units Below 5 tons show tonnage to 3 decimal points
 + Fixed ranges for Sprayers, Rivet Gun, Nail Gun, and Search Lights
 + Bug: VTOL printing not working on stealth VTOL
++ New MM.Jar
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8)
 + Bug: ammo not print out correctly for vehicles
