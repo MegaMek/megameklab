@@ -24,11 +24,10 @@ import javax.swing.JList;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import sun.swing.DefaultLookup;
-
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
+import sun.swing.DefaultLookup;
 
 public class EquipmentListCellRenderer extends DefaultListCellRenderer {
 
@@ -42,74 +41,62 @@ public class EquipmentListCellRenderer extends DefaultListCellRenderer {
 
     private Entity unit;
 
-
     public EquipmentListCellRenderer(Entity unit) {
         this.unit = unit;
     }
 
     @Override
-    public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-         StringBuffer text = new StringBuffer();
-         EquipmentType etype = (EquipmentType)value;
-         text.append(etype.getName());
-         if (unit.isClan() && ((etype.getTechLevel() == TechConstants.T_INTRO_BOXSET)
-                 || (etype.getTechLevel() == TechConstants.T_IS_TW_NON_BOX)
-                 || (etype.getTechLevel() == TechConstants.T_IS_ADVANCED)
-                 || (etype.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL)
-                 || (etype.getTechLevel() == TechConstants.T_IS_UNOFFICIAL))) {
-             text.append(" (IS)");
-         }
-         if (!unit.isClan() && ((etype.getTechLevel() == TechConstants.T_CLAN_TW)
-                 || (etype.getTechLevel() == TechConstants.T_CLAN_ADVANCED)
-                 || (etype.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL)
-                 || (etype.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL))) {
-             text.append(" (Clan)");
-         }
-         setText(text.toString());
-         setComponentOrientation(list.getComponentOrientation());
+        StringBuffer text = new StringBuffer();
+        EquipmentType etype = (EquipmentType) value;
+        text.append(etype.getName());
+        if (unit.isClan() && ((etype.getTechLevel() == TechConstants.T_INTRO_BOXSET) || (etype.getTechLevel() == TechConstants.T_IS_TW_NON_BOX) || (etype.getTechLevel() == TechConstants.T_IS_ADVANCED) || (etype.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) || (etype.getTechLevel() == TechConstants.T_IS_UNOFFICIAL))) {
+            text.append(" (IS)");
+        }
+        if (!unit.isClan() && ((etype.getTechLevel() == TechConstants.T_CLAN_TW) || (etype.getTechLevel() == TechConstants.T_CLAN_ADVANCED) || (etype.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL) || (etype.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL))) {
+            text.append(" (Clan)");
+        }
+        setText(text.toString());
+        setComponentOrientation(list.getComponentOrientation());
 
-         Color bg = null;
-         Color fg = null;
+        Color bg = null;
+        Color fg = null;
 
-         JList.DropLocation dropLocation = list.getDropLocation();
-         if (dropLocation != null
-                 && !dropLocation.isInsert()
-                 && dropLocation.getIndex() == index) {
+        JList.DropLocation dropLocation = list.getDropLocation();
+        if ((dropLocation != null) && !dropLocation.isInsert() && (dropLocation.getIndex() == index)) {
 
-             bg = DefaultLookup.getColor(this, ui, "List.dropCellBackground");
-             fg = DefaultLookup.getColor(this, ui, "List.dropCellForeground");
+            bg = DefaultLookup.getColor(this, ui, "List.dropCellBackground");
+            fg = DefaultLookup.getColor(this, ui, "List.dropCellForeground");
 
-             isSelected = true;
-         }
-         if (isSelected) {
-             setBackground(bg == null ? list.getSelectionBackground() : bg);
-             setForeground(fg == null ? list.getSelectionForeground() : fg);
+            isSelected = true;
+        }
+        if (isSelected) {
+            setBackground(bg == null ? list.getSelectionBackground() : bg);
+            setForeground(fg == null ? list.getSelectionForeground() : fg);
 
-         } else {
-             setBackground(list.getBackground());
-             setForeground(list.getForeground());
-         }
-         setEnabled(list.isEnabled());
-         setFont(list.getFont());
+        } else {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+        }
+        setEnabled(list.isEnabled());
+        setFont(list.getFont());
 
-             Border border = null;
-             if (cellHasFocus) {
-                 if (isSelected) {
-                     border = DefaultLookup.getBorder(this, ui, "List.focusSelectedCellHighlightBorder");
-                 }
-                 if (border == null) {
-                     border = DefaultLookup.getBorder(this, ui, "List.focusCellHighlightBorder");
-                 }
-             } else {
-                 border = getNoFocusBorder();
-             }
-         setBorder(border);
+        Border border = null;
+        if (cellHasFocus) {
+            if (isSelected) {
+                border = DefaultLookup.getBorder(this, ui, "List.focusSelectedCellHighlightBorder");
+            }
+            if (border == null) {
+                border = DefaultLookup.getBorder(this, ui, "List.focusCellHighlightBorder");
+            }
+        } else {
+            border = getNoFocusBorder();
+        }
+        setBorder(border);
 
-
-         return this;
-      }
+        return this;
+    }
 
     private Border getNoFocusBorder() {
         Border border = DefaultLookup.getBorder(this, ui, "List.cellNoFocusBorder");
@@ -119,9 +106,7 @@ public class EquipmentListCellRenderer extends DefaultListCellRenderer {
             }
             return SAFE_NO_FOCUS_BORDER;
         } else {
-            if (border != null &&
-                    (noFocusBorder == null ||
-                    noFocusBorder == DEFAULT_NO_FOCUS_BORDER)) {
+            if ((border != null) && ((noFocusBorder == null) || (noFocusBorder == DEFAULT_NO_FOCUS_BORDER))) {
                 return border;
             }
             return noFocusBorder;
