@@ -74,6 +74,9 @@ V 0.0.0.17 Dev
 + Fixed ranges for Sprayers, Rivet Gun, Nail Gun, and Search Lights
 + Bug: VTOL printing not working on stealth VTOL
 + New MM.Jar
++ RFE: Changed Save to Quick save
++ RFE: Added Save as Menu Item
++ RFE: MML now remembers the last 4 units load/saved
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8)
 + Bug: ammo not print out correctly for vehicles

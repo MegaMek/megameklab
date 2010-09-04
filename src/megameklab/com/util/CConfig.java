@@ -40,6 +40,11 @@ public class CConfig {
     public static final String CONFIG_SYSTEMS = "Systems";
     public static final String CONFIG_EMPTY = "Empty";
 
+    public static final String CONFIG_SAVE_FILE_1 = "Save_File_One";
+    public static final String CONFIG_SAVE_FILE_2 = "Save_File_Two";
+    public static final String CONFIG_SAVE_FILE_3 = "Save_File_Three";
+    public static final String CONFIG_SAVE_FILE_4 = "Save_File_Four";
+
     public static final String CONFIG_FOREGROUND = "-Foreground";
     public static final String CONFIG_BACKGROUND = "-Background";
 
@@ -240,4 +245,23 @@ public class CConfig {
         return masterColor;
     }
 
+    public static void updateSaveFiles(String newFile) {
+
+        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3))) {
+            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_4, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3));
+        }
+
+        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2))) {
+            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_3, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2));
+        }
+
+        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1))) {
+            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_2, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1));
+        }
+
+        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1).equalsIgnoreCase(newFile)) {
+            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, newFile);
+        }
+        CConfig.saveConfig();
+    }
 }
