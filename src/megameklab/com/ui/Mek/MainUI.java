@@ -116,105 +116,10 @@ public class MainUI extends JFrame implements RefreshListener {
             System.out.println("Setting look and feel failed: ");
             e.printStackTrace();
         }
-        file.setMnemonic('F');
+
+        loadFileMenuOptions();
+
         JMenuItem item = new JMenuItem();
-
-        JMenu unitMenu = new JMenu("New Unit");
-        unitMenu.setMnemonic('N');
-        item.setText("Tank");
-        item.setMnemonic('T');
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuLoadVehicle();
-            }
-
-        });
-        unitMenu.add(item);
-        file.add(unitMenu);
-
-        item = new JMenuItem();
-        JMenu loadMenu = new JMenu("Load");
-        loadMenu.setMnemonic('L');
-
-        item.setText("From Cache");
-        item.setMnemonic('C');
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuLoadEntity_actionPerformed(e);
-            }
-        });
-        loadMenu.add(item);
-
-        item = new JMenuItem();
-        item.setText("From File");
-        item.setMnemonic('F');
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuLoadEntityFromFile_actionPerformed(e);
-            }
-        });
-        loadMenu.add(item);
-
-        file.add(loadMenu);
-
-        item = new JMenuItem(String.format("Current Unit"));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
-        item.setMnemonic('C');
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuPrintCurrentUnit();
-            }
-        });
-
-        file.add(UnitPrintManager.printMenu(this, item));
-
-        item = new JMenuItem();
-        item.setText("Save");
-        item.setMnemonic('S');
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuSaveEntity_actionPerformed(e);
-            }
-        });
-        file.add(item);
-
-        item = new JMenuItem("Reset");
-        item.setMnemonic('R');
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuResetEntity_actionPerformed(e);
-            }
-        });
-        file.add(item);
-
-        item = new JMenuItem("Configuration");
-        item.setMnemonic('C');
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuConfiguration_actionPerformed(e);
-            }
-        });
-        file.add(item);
-
-        file.addSeparator();
-
-        item = new JMenuItem();
-        item.setText("Exit");
-        item.setMnemonic('x');
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuExit_actionPerformed(e);
-            }
-        });
-        file.add(item);
-
-        item = new JMenuItem();
         item.setText("About");
         item.setMnemonic('A');
         item.addActionListener(new ActionListener() {
@@ -334,6 +239,7 @@ public class MainUI extends JFrame implements RefreshListener {
         }
         entity = (Mech) viewer.getSelectedEntity();
 
+        CConfig.updateSaveFiles("");
         UnitUtil.updateLoadedMech(entity);
         viewer.setVisible(false);
         viewer.dispose();
@@ -345,27 +251,53 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     private void loadUnitFromFile() {
+        loadUnitFromFile(-1);
+    }
+
+    private void loadUnitFromFile(int fileNumber) {
 
         String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
 
-        JFileChooser f = new JFileChooser(filePathName);
-        f.setLocation(this.getLocation().x + 150, this.getLocation().y + 100);
-        f.setDialogTitle("Load Mech");
-        f.setDialogType(JFileChooser.OPEN_DIALOG);
-        f.setMultiSelectionEnabled(false);
-
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
-
-        // Add a filter for mul files
-        f.setFileFilter(filter);
-
-        int returnVal = f.showOpenDialog(this);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
-            return;
+        if (fileNumber > 0) {
+            switch (fileNumber) {
+                case 1:
+                    filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
+                    break;
+                case 2:
+                    filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2);
+                    break;
+                case 3:
+                    filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3);
+                    break;
+                case 4:
+                    filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4);
+                    break;
+            }
         }
+
+        File unitFile = new File(filePathName);
+        if (!(unitFile.exists())) {
+            JFileChooser f = new JFileChooser(filePathName);
+            f.setLocation(this.getLocation().x + 150, this.getLocation().y + 100);
+            f.setDialogTitle("Load Mech");
+            f.setDialogType(JFileChooser.OPEN_DIALOG);
+            f.setMultiSelectionEnabled(false);
+
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+
+            // Add a filter for mul files
+            f.setFileFilter(filter);
+
+            int returnVal = f.showOpenDialog(this);
+            if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+                // I want a file, y'know!
+                return;
+            }
+            unitFile = f.getSelectedFile();
+        }
+
         try {
-            Entity tempEntity = new MechFileParser(f.getSelectedFile(), true).getEntity();
+            Entity tempEntity = new MechFileParser(unitFile, true).getEntity();
             if (!(tempEntity instanceof Mech)) {
                 return;
             }
@@ -376,10 +308,12 @@ public class MainUI extends JFrame implements RefreshListener {
                 JOptionPane.showMessageDialog(this, "Warning:Invalid unit, it might load incorrectly!");
             }
 
+            CConfig.updateSaveFiles(unitFile.getAbsolutePath());
         } catch (Exception ex) {
             ex.printStackTrace();
             createNewMech(false);
         }
+
         reloadTabs();
         setVisible(true);
         this.repaint();
@@ -394,6 +328,10 @@ public class MainUI extends JFrame implements RefreshListener {
         loadUnitFromFile();
     }
 
+    public void jMenuLoadEntityFromFile_actionPerformed(int fileNumber) {
+        loadUnitFromFile(fileNumber);
+    }
+
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
         createNewMech(false);
         reloadTabs();
@@ -403,6 +341,49 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuSaveEntity_actionPerformed(ActionEvent event) {
+
+        if (UnitUtil.validateUnit(entity).length() > 0) {
+            JOptionPane.showMessageDialog(this, "Warning: Saving an invalid unit, it might load incorrectly!");
+        }
+
+        UnitUtil.compactCriticals(entity);
+        UnitUtil.reIndexCrits(entity);
+
+        String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
+
+        if (filePathName.trim().length() < 1) {
+            FileDialog fDialog = new FileDialog(this, "Save As", FileDialog.SAVE);
+
+            filePathName = new File(System.getProperty("user.dir").toString() + "/data/mechfiles/").getAbsolutePath();
+
+            fDialog.setDirectory(filePathName);
+            fDialog.setFile(entity.getChassis() + " " + entity.getModel() + ".mtf");
+            fDialog.setLocationRelativeTo(this);
+
+            fDialog.setVisible(true);
+
+            if (fDialog.getFile() != null) {
+                filePathName = fDialog.getDirectory() + fDialog.getFile();
+            } else {
+                return;
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(filePathName);
+            PrintStream p = new PrintStream(out);
+            p.println(entity.getMtf());
+            p.close();
+            out.close();
+            CConfig.updateSaveFiles(filePathName);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        JOptionPane.showMessageDialog(this, entity.getChassis() + " " + entity.getModel() + " saved to " + filePathName);
+
+    }
+
+    public void jMenuSaveAsEntity_actionPerformed(ActionEvent event) {
 
         if (UnitUtil.validateUnit(entity).length() > 0) {
             JOptionPane.showMessageDialog(this, "Warning: Saving an invalid unit, it might load incorrectly!");
@@ -433,7 +414,7 @@ public class MainUI extends JFrame implements RefreshListener {
             p.println(entity.getMtf());
             p.close();
             out.close();
-
+            CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -813,6 +794,8 @@ public class MainUI extends JFrame implements RefreshListener {
             setForeground(Color.BLACK);
         }
         setTitle(title);
+        loadFileMenuOptions();
+
     }
 
     public void refreshStatus() {
@@ -836,4 +819,196 @@ public class MainUI extends JFrame implements RefreshListener {
         UnitPrintManager.printEntity(entity);
     }
 
+    private void loadFileMenuOptions() {
+
+        file.removeAll();
+
+        file.setMnemonic('F');
+        JMenuItem item = new JMenuItem();
+
+        JMenu unitMenu = new JMenu("New Unit");
+        unitMenu.setMnemonic('N');
+        item.setText("Tank");
+        item.setMnemonic('T');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuLoadVehicle();
+            }
+
+        });
+        unitMenu.add(item);
+        file.add(unitMenu);
+
+        item = new JMenuItem();
+        JMenu loadMenu = new JMenu("Load");
+        loadMenu.setMnemonic('L');
+
+        item.setText("From Cache");
+        item.setMnemonic('C');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuLoadEntity_actionPerformed(e);
+            }
+        });
+        loadMenu.add(item);
+
+        item = new JMenuItem();
+        item.setText("From File");
+        item.setMnemonic('F');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuLoadEntityFromFile_actionPerformed(e);
+            }
+        });
+        loadMenu.add(item);
+
+        file.add(loadMenu);
+
+        item = new JMenuItem(String.format("Current Unit"));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+        item.setMnemonic('C');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuPrintCurrentUnit();
+            }
+        });
+
+        file.add(UnitPrintManager.printMenu(this, item));
+
+        item = new JMenuItem();
+        item.setText("Save");
+        item.setMnemonic('S');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuSaveEntity_actionPerformed(e);
+            }
+        });
+        file.add(item);
+
+        item = new JMenuItem();
+        item.setText("Save As");
+        item.setMnemonic('A');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuSaveAsEntity_actionPerformed(e);
+            }
+        });
+        file.add(item);
+
+        item = new JMenuItem("Reset");
+        item.setMnemonic('R');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuResetEntity_actionPerformed(e);
+            }
+        });
+        file.add(item);
+
+        item = new JMenuItem("Configuration");
+        item.setMnemonic('C');
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuConfiguration_actionPerformed(e);
+            }
+        });
+        file.add(item);
+
+        int fileNumber = 1;
+        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1).length() > 1) {
+            file.addSeparator();
+            item = new JMenuItem();
+            String newFile = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
+            if (newFile.length() > 35) {
+                item.setText(fileNumber + ". .." + newFile.substring(newFile.length() - 36));
+            } else {
+                item.setText(fileNumber + ". " + newFile);
+            }
+            item.setMnemonic(fileNumber);
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    jMenuLoadEntityFromFile_actionPerformed(1);
+                }
+            });
+
+            file.add(item);
+            fileNumber++;
+        }
+
+        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2).length() > 1) {
+            item = new JMenuItem();
+            String newFile = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2);
+            if (newFile.length() > 35) {
+                item.setText(fileNumber + ". .." + newFile.substring(newFile.length() - 36));
+            } else {
+                item.setText(fileNumber + ". " + newFile);
+            }
+            item.setMnemonic(fileNumber);
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    jMenuLoadEntityFromFile_actionPerformed(2);
+                }
+            });
+
+            file.add(item);
+            fileNumber++;
+        }
+
+        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3).length() > 1) {
+            item = new JMenuItem();
+            String newFile = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3);
+            if (newFile.length() > 35) {
+                item.setText(fileNumber + ". .." + newFile.substring(newFile.length() - 36));
+            } else {
+                item.setText(fileNumber + ". " + newFile);
+            }
+            item.setMnemonic(fileNumber);
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    jMenuLoadEntityFromFile_actionPerformed(3);
+                }
+            });
+
+            file.add(item);
+            fileNumber++;
+        }
+
+        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4).length() > 1) {
+            item = new JMenuItem();
+            String newFile = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4);
+            if (newFile.length() > 35) {
+                item.setText(fileNumber + ". .." + newFile.substring(newFile.length() - 36));
+            } else {
+                item.setText(fileNumber + ". " + newFile);
+            }
+            item.setMnemonic(fileNumber);
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    jMenuLoadEntityFromFile_actionPerformed(4);
+                }
+            });
+
+            file.add(item);
+            fileNumber++;
+        }
+
+        file.addSeparator();
+
+        item = new JMenuItem();
+        item.setText("Exit");
+        item.setMnemonic('x');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuExit_actionPerformed(e);
+            }
+        });
+        file.add(item);
+
+    }
 }
