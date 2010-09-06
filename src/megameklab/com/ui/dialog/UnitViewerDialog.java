@@ -161,6 +161,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
     private JFrame clientgui;
 
     Entity selectedUnit = null;
+    MechSummary selectedMechSummary;
 
     public UnitViewerDialog(JFrame frame, UnitLoadingDialog uld, int unitType) {
 
@@ -788,6 +789,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
             ms.setSourceFile(new File(ms.getSourceFile().getAbsolutePath()));
             Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName(), true).getEntity();
             previewMech(entity);
+            selectedMechSummary = ms;
         } catch (EntityLoadingException ex) {
             System.out.println("Unable to load mech: " + ms.getSourceFile() + ": " + ms.getEntryName() + ": " + ex.getMessage());
             ex.printStackTrace();
@@ -822,6 +824,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
         // Remove preview image.
         previewMech(null);
+        selectedMechSummary = null;
 
     }
 
@@ -990,6 +993,11 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
 
     public Entity getSelectedEntity() {
         return selectedUnit;
+
+    }
+
+    public MechSummary getSelectedMechSummary() {
+        return selectedMechSummary;
 
     }
 }
