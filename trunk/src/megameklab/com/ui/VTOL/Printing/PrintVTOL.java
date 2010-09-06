@@ -673,6 +673,18 @@ public class PrintVTOL implements Printable {
                 { 472, 128 },
                 { 472, 137 } };
 
+        if (totalArmor > 3) {
+            struct = new int[][]
+                {
+                    { 468, 119 },
+                    { 468, 128 },
+                    { 468, 137 },
+                    { 477, 119 },
+                    { 477, 128 },
+                    { 477, 137 } };
+
+        }
+
         for (int pos = 0; pos < totalArmor; pos++) {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
@@ -689,6 +701,17 @@ public class PrintVTOL implements Printable {
                 { 422, 148 },
                 { 522, 148 } };
 
+        if (totalArmor > 3) {
+            struct = new int[][]
+                {
+                    { 472, 148 },
+                    { 422, 148 },
+                    { 522, 148 },
+                    { 452, 148 },
+                    { 442, 148 },
+                    { 502, 148 } };
+
+        }
         for (int pos = 0; pos < totalArmor; pos++) {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
@@ -705,6 +728,17 @@ public class PrintVTOL implements Printable {
                 { 467, 178 },
                 { 467, 192 } };
 
+        if (totalArmor > 3) {
+            struct = new int[][]
+                {
+                    { 467, 164 },
+                    { 467, 170 },
+                    { 467, 176 },
+                    { 467, 182 },
+                    { 467, 188 },
+                    { 467, 194 } };
+
+        }
         for (int pos = 0; pos < totalArmor; pos++) {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
@@ -721,6 +755,17 @@ public class PrintVTOL implements Printable {
                 { 480, 178 },
                 { 480, 192 } };
 
+        if (totalArmor > 3) {
+            struct = new int[][]
+                {
+                    { 480, 164 },
+                    { 480, 170 },
+                    { 480, 176 },
+                    { 480, 182 },
+                    { 480, 188 },
+                    { 480, 194 } };
+
+        }
         for (int pos = 0; pos < totalArmor; pos++) {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
@@ -737,6 +782,17 @@ public class PrintVTOL implements Printable {
                 { 473, 225 },
                 { 473, 234 } };
 
+        if (totalArmor > 3) {
+            struct = new int[][]
+                {
+                    { 468, 216 },
+                    { 468, 225 },
+                    { 468, 234 },
+                    { 478, 216 },
+                    { 478, 225 },
+                    { 478, 234 } };
+
+        }
         for (int pos = 0; pos < totalArmor; pos++) {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
