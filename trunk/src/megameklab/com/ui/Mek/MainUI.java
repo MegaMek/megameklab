@@ -244,6 +244,14 @@ public class MainUI extends JFrame implements RefreshListener {
         viewer.setVisible(false);
         viewer.dispose();
 
+        if (viewer.getSelectedMechSummary().getSourceFile().getName().endsWith(".zip")) {
+            String fileName = viewer.getSelectedMechSummary().getSourceFile().getAbsolutePath();
+            fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
+            fileName = fileName + viewer.getSelectedMechSummary().getName() + ".mtf";
+            CConfig.updateSaveFiles(fileName);
+        } else {
+            CConfig.updateSaveFiles(viewer.getSelectedMechSummary().getSourceFile().getAbsolutePath());
+        }
         reloadTabs();
         setVisible(true);
         this.repaint();
@@ -276,7 +284,7 @@ public class MainUI extends JFrame implements RefreshListener {
         }
 
         File unitFile = new File(filePathName);
-        if (!(unitFile.exists())) {
+        if (!(unitFile.isFile())) {
             JFileChooser f = new JFileChooser(filePathName);
             f.setLocation(this.getLocation().x + 150, this.getLocation().y + 100);
             f.setDialogTitle("Load Mech");
