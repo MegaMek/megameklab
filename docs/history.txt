@@ -78,6 +78,7 @@ V 0.0.0.17 Dev
 + RFE: Added Save as Menu Item
 + RFE: MML now remembers the last 4 units load/saved
 + Changes to Loading from Cache
++ Bug: Heavy VTOL's not printing
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8)
 + Bug: ammo not print out correctly for vehicles
