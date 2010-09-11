@@ -117,7 +117,7 @@ public class EquipmentInfo {
 
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
-        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3S)) {
+        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S) || mount.getType().hasFlag(MiscType.F_C3SBS)))) {
             c3Level = C3S;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ECM)) {
             if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
@@ -196,7 +196,7 @@ public class EquipmentInfo {
             secondaryLocation = mount.getSecondLocation();
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
-        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3S)) {
+        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S) || mount.getType().hasFlag(MiscType.F_C3SBS))) {
             c3Level = C3S;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ECM)) {
             if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
@@ -283,7 +283,7 @@ public class EquipmentInfo {
 
             if (equipment.hasFlag(MiscType.F_C3I)) {
                 c3Level = C3I;
-            } else if (equipment.hasFlag(MiscType.F_C3S)) {
+            } else if (equipment.hasFlag(MiscType.F_C3S) || equipment.hasFlag(MiscType.F_C3SBS)) {
                 c3Level = C3S;
             } else if (equipment.hasFlag(MiscType.F_ECM)) {
                 if (equipment.getInternalName().equals(Sensor.WATCHDOG)) {

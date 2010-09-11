@@ -1486,7 +1486,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     *
+     * 
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
@@ -1619,7 +1619,7 @@ public class PrintMech implements Printable {
 
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
                     ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
-                } else if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3S)) {
+                } else if ((((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S))) || m.getType().hasFlag(MiscType.F_C3SBS))) {
                     ImageHelper.printC3sName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3M)) {
                     ImageHelper.printC3mName(g2d, lineStart, linePoint, font, m.isArmored());
@@ -1802,7 +1802,8 @@ public class PrintMech implements Printable {
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
             ImageHelper.drawArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
-            //ImageHelper.printArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1]);
+            // ImageHelper.printArmorPip(g2d, pipPoints.get(currentPip)[0],
+            // pipPoints.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
