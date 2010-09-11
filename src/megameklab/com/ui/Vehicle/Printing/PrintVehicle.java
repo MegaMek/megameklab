@@ -31,6 +31,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
+import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.Pilot;
 import megamek.common.Tank;
@@ -77,8 +78,12 @@ public class PrintVehicle implements Printable {
         g2d.drawImage(ImageHelper.getRecordSheet(tank, false), 18, 18, 558, 368, null);
 
         if (tank.getOInternal(Tank.LOC_TURRET) > 0) {
-            g2d.drawImage(ImageHelper.getTurretImage(), 441, 173, 77, 96, null);
-            g2d.drawImage(ImageHelper.getTurretLabelImage(), 297, 248, 34, 11, null);
+            if (tank.getMovementMode() == EntityMovementMode.WIGE) {
+                g2d.drawImage(ImageHelper.getTurretImage(tank), 18, 18, 558, 368, null);
+            } else {
+                g2d.drawImage(ImageHelper.getTurretImage(tank), 441, 173, 77, 96, null);
+                g2d.drawImage(ImageHelper.getTurretLabelImage(), 297, 248, 34, 11, null);
+            }
         }
 
         if (tank2 == null) {
@@ -86,8 +91,12 @@ public class PrintVehicle implements Printable {
         } else {
             g2d.drawImage(ImageHelper.getRecordSheet(tank2, false), 18, 18 + secondPageMargin, 558, 368, null);
             if (tank2.getOInternal(Tank.LOC_TURRET) > 0) {
-                g2d.drawImage(ImageHelper.getTurretImage(), 441, 173 + secondPageMargin, 77, 96, null);
-                g2d.drawImage(ImageHelper.getTurretLabelImage(), 297, 248 + secondPageMargin, 34, 11, null);
+                if (tank.getMovementMode() == EntityMovementMode.WIGE) {
+                    g2d.drawImage(ImageHelper.getTurretImage(tank2), 18, 18 + secondPageMargin, 558, 368, null);
+                } else {
+                    g2d.drawImage(ImageHelper.getTurretImage(tank2), 441, 173 + secondPageMargin, 77, 96, null);
+                    g2d.drawImage(ImageHelper.getTurretLabelImage(), 297, 248 + secondPageMargin, 34, 11, null);
+                }
             }
         }
 

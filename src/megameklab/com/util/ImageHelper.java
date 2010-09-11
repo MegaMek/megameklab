@@ -133,12 +133,15 @@ public class ImageHelper {
         return table;
     }
 
-    public static Image getTurretImage() {
+    public static Image getTurretImage(Entity unit) {
         Image table = null;
         String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
 
-        table = new ImageIcon(path + "twvee-turret.png").getImage();
-
+        if ((unit instanceof Tank) && (unit.getMovementMode() == EntityMovementMode.WIGE)) {
+            table = new ImageIcon(path + "twvee-wige-turret.png").getImage();
+        } else {
+            table = new ImageIcon(path + "twvee-turret.png").getImage();
+        }
         return table;
     }
 
@@ -147,7 +150,6 @@ public class ImageHelper {
         String path = new File(recordSheetPath).getAbsolutePath() + File.separatorChar;
 
         table = new ImageIcon(path + "twvee-turretlabel.png").getImage();
-
         return table;
     }
 
