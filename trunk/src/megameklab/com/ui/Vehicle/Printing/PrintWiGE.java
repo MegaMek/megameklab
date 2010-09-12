@@ -519,8 +519,8 @@ public class PrintWiGE implements Printable {
             return;
         }
 
-        float baseX = 465f;
-        float baseY = 75f;
+        float baseX = 465.0f;
+        float baseY = 75.0f;
         float pointX = baseX;
         float pointY = baseY;
         float shiftX = 7f;
