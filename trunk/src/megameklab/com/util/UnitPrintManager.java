@@ -54,6 +54,7 @@ import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.VTOL.Printing.PrintVTOL;
 import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
+import megameklab.com.ui.Vehicle.Printing.PrintWiGE;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 
@@ -113,6 +114,7 @@ public class UnitPrintManager {
         ArrayList<Mech> quadList = new ArrayList<Mech>();
         ArrayList<Mech> bipedList = new ArrayList<Mech>();
         ArrayList<Tank> tankList = new ArrayList<Tank>();
+        ArrayList<Tank> wigeList = new ArrayList<Tank>();
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
         ArrayList<Aero> aeroList = new ArrayList<Aero>();
         ArrayList<Dropship> aerodyneList = new ArrayList<Dropship>();
@@ -136,6 +138,8 @@ public class UnitPrintManager {
                 largeSupportTankList.add((LargeSupportTank) unit);
             } else if (unit instanceof VTOL) {
                 VTOLList.add((VTOL) unit);
+            } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
+                wigeList.add((Tank) unit);
             } else if (unit instanceof Tank) {
                 tankList.add((Tank) unit);
             } else if (unit instanceof Aero) {
@@ -178,6 +182,12 @@ public class UnitPrintManager {
             PrintVehicle printTank = new PrintVehicle(tankList, singlePrint, masterPrintJob);
 
             printTank.print();
+        }
+
+        if (wigeList.size() > 0) {
+            PrintWiGE printWiGE = new PrintWiGE(wigeList, singlePrint, masterPrintJob);
+
+            printWiGE.print();
         }
 
         if (aeroList.size() > 0) {
@@ -261,7 +271,7 @@ public class UnitPrintManager {
         printMenu.add(item);
 
         item = new JMenuItem("From File(Single Unit Per RS)");
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UnitPrintManager.printUnitFile(parent, true);
