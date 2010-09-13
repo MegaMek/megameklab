@@ -47,7 +47,7 @@ import megamek.common.VTOL;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
-import megameklab.com.ui.Dropship.Printing.PrintSphereoid;
+import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Mek.Printing.PrintMech;
 import megameklab.com.ui.Mek.Printing.PrintQuad;
 import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
@@ -118,7 +118,7 @@ public class UnitPrintManager {
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
         ArrayList<Aero> aeroList = new ArrayList<Aero>();
         ArrayList<Dropship> aerodyneList = new ArrayList<Dropship>();
-        ArrayList<Dropship> sphereoidList = new ArrayList<Dropship>();
+        ArrayList<Dropship> SpheroidList = new ArrayList<Dropship>();
         ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
         ArrayList<Protomech> protoList = new ArrayList<Protomech>();
         ArrayList<LargeSupportTank> largeSupportTankList = new ArrayList<LargeSupportTank>();
@@ -147,7 +147,7 @@ public class UnitPrintManager {
                     if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
                         aerodyneList.add((Dropship) unit);
                     } else {
-                        sphereoidList.add((Dropship) unit);
+                        SpheroidList.add((Dropship) unit);
                     }
                 } else {
                     aeroList.add((Aero) unit);
@@ -200,9 +200,9 @@ public class UnitPrintManager {
             printAerodyne.print();
         }
 
-        if (sphereoidList.size() > 0) {
-            PrintSphereoid printSphereoid = new PrintSphereoid(sphereoidList, masterPrintJob);
-            printSphereoid.print();
+        if (SpheroidList.size() > 0) {
+            PrintSpheroid printSpheroid = new PrintSpheroid(SpheroidList, masterPrintJob);
+            printSpheroid.print();
         }
 
         if (VTOLList.size() > 0) {
@@ -271,7 +271,7 @@ public class UnitPrintManager {
         printMenu.add(item);
 
         item = new JMenuItem("From File(Single Unit Per RS)");
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK + ActionEvent.SHIFT_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UnitPrintManager.printUnitFile(parent, true);
