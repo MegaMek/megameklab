@@ -1733,10 +1733,9 @@ public class ImageHelper {
                 hasCapital = true;
 
                 g2d.drawString("Capital Scale", typePoint, linePoint);
-                g2d.drawString("(1-12)", shtPoint, linePoint);
-                g2d.drawString("(13-24)", medPoint - 2, linePoint);
-                g2d.drawString("(25-40)", longPoint - 4, linePoint);
-                g2d.drawString("(41-50)", erPoint - 4, linePoint);
+                font = UnitUtil.getNewFont(g2d, "(1-12) (13-24) (25-40) (41-50)", true, 75, fontSize);
+                g2d.setFont(font);
+                g2d.drawString("(1-12) (13-24) (25-40) (41-50)", shtPoint, linePoint);
                 linePoint += lineFeed;
 
                 font = UnitUtil.getNewFont(g2d, "Bay", true, 68, fontSize);
@@ -1846,10 +1845,9 @@ public class ImageHelper {
                 hasSubCapital = true;
 
                 g2d.drawString("Standard Scale", typePoint, linePoint);
-                g2d.drawString("(1-6)", shtPoint, linePoint);
-                g2d.drawString("(7-12)", medPoint - 2, linePoint);
-                g2d.drawString("(13-20)", longPoint - 4, linePoint);
-                g2d.drawString("(21-25)", erPoint - 4, linePoint);
+                font = UnitUtil.getNewFont(g2d, "(1-6) (7-12) (13-20) (21-25)", true, 75, fontSize);
+                g2d.setFont(font);
+                g2d.drawString("(1-6) (7-12) (13-20) (21-25)", shtPoint, linePoint);
                 linePoint += lineFeed;
 
                 font = UnitUtil.getNewFont(g2d, "Bay", true, 68, fontSize);
