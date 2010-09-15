@@ -33,6 +33,7 @@ import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
+import megamek.common.ConvFighter;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EntityListFile;
@@ -45,6 +46,7 @@ import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.ui.Aero.Printing.PrintAero;
+import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
@@ -117,6 +119,7 @@ public class UnitPrintManager {
         ArrayList<Tank> wigeList = new ArrayList<Tank>();
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
         ArrayList<Aero> aeroList = new ArrayList<Aero>();
+        ArrayList<ConvFighter> convFighterList = new ArrayList<ConvFighter>();
         ArrayList<Dropship> aerodyneList = new ArrayList<Dropship>();
         ArrayList<Dropship> SpheroidList = new ArrayList<Dropship>();
         ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
@@ -149,6 +152,8 @@ public class UnitPrintManager {
                     } else {
                         SpheroidList.add((Dropship) unit);
                     }
+                } else if (unit instanceof ConvFighter) {
+                    convFighterList.add((ConvFighter) unit);
                 } else {
                     aeroList.add((Aero) unit);
                 }
@@ -193,6 +198,11 @@ public class UnitPrintManager {
         if (aeroList.size() > 0) {
             PrintAero printAero = new PrintAero(aeroList, masterPrintJob);
             printAero.print();
+        }
+
+        if (convFighterList.size() > 0) {
+            PrintConventionalFighter printConventionalFighter = new PrintConventionalFighter(convFighterList, masterPrintJob);
+            printConventionalFighter.print();
         }
 
         if (aerodyneList.size() > 0) {
