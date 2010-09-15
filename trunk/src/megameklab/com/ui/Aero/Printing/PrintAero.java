@@ -206,6 +206,7 @@ public class PrintAero implements Printable {
 
         ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_AFT), aero.getArmor(Aero.LOC_AFT)), g2d.getFont(), 398, 487);
 
+        g2d.drawString(String.format("%1$S", aero.get0SI()), 390, 268);
     }
 
     private void printHeatSinks(Graphics2D g2d) {
@@ -477,7 +478,7 @@ public class PrintAero implements Printable {
 
     private void printStruct(Graphics2D g2d, int totalArmor) {
         int[] topColumn = new int[]
-            { 366, 265 };
+            { 366, 270 };
         int[] pipShift = new int[]
             { 7, 7 };
 

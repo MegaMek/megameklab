@@ -82,6 +82,9 @@ V 0.0.0.17 Dev
 + Added code for new C3Booster
 + RFE: WiGE printing now available
 + RFE: Can Not Print Spheroid Drop Ships
++ RFE: Conventional Fighter Record Sheets
++ Bug: C3M Boosted Showing as Weapon
++ Bug: C3m and C3m Boosted showing in Weapons after being selected
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8)
 + Bug: ammo not print out correctly for vehicles

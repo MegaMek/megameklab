@@ -41,6 +41,7 @@ import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Bay;
 import megamek.common.BipedMech;
+import megamek.common.ConvFighter;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
@@ -109,6 +110,8 @@ public class ImageHelper {
                 } else {
                     recordSheet = new ImageIcon(path + "twspheroidds.png").getImage();
                 }
+            } else if (unit instanceof ConvFighter) {
+                recordSheet = new ImageIcon(path + "twconventionalfighter.png").getImage();
             } else {
                 recordSheet = new ImageIcon(path + "twaero.png").getImage();
             }
