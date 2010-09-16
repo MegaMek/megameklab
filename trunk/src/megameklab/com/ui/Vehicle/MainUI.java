@@ -561,10 +561,18 @@ public class MainUI extends JFrame implements RefreshListener {
     public void refreshAll() {
 
         if ((structureTab.hasTurret() && entity.hasNoTurret()) || (!structureTab.hasTurret() && !entity.hasNoTurret())) {
+
+            String chassis = entity.getChassis();
+            String model = entity.getModel();
+
             createNewTank(structureTab.hasTurret());
-            setVisible(false);
+
+            entity.setChassis(chassis);
+            entity.setModel(model);
+
+            // setVisible(false);
             reloadTabs();
-            setVisible(true);
+            // setVisible(true);
             repaint();
             refreshAll();
         }

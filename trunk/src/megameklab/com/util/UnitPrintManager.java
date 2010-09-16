@@ -243,14 +243,14 @@ public class UnitPrintManager {
 
     public static JMenu printMenu(final JFrame parent, JMenuItem item) {
         JMenu printMenu = new JMenu("Print");
-        printMenu.setMnemonic('P');
+        printMenu.setMnemonic(KeyEvent.VK_P);
 
         printMenu.add(item);
 
         printMenu.addSeparator();
 
         item = new JMenuItem("Queue Units to Print");
-        item.setMnemonic('Q');
+        item.setMnemonic(KeyEvent.VK_Q);
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 new UnitPrintQueueDialog(parent);
@@ -261,7 +261,7 @@ public class UnitPrintManager {
         printMenu.addSeparator();
 
         item = new JMenuItem("Other Unit");
-        item.setMnemonic('O');
+        item.setMnemonic(KeyEvent.VK_O);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -271,7 +271,7 @@ public class UnitPrintManager {
         printMenu.add(item);
 
         item = new JMenuItem("From File");
-        item.setMnemonic('i');
+        item.setMnemonic(KeyEvent.VK_I);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -291,7 +291,7 @@ public class UnitPrintManager {
 
         printMenu.addSeparator();
         item = new JMenuItem("From MUL");
-        item.setMnemonic('M');
+        item.setMnemonic(KeyEvent.VK_M);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -301,7 +301,7 @@ public class UnitPrintManager {
         printMenu.add(item);
 
         item = new JMenuItem("From MUL(Single Unit Per RS)");
-        item.setMnemonic('R');
+        item.setMnemonic(KeyEvent.VK_R);
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UnitPrintManager.printMuls(parent, true);

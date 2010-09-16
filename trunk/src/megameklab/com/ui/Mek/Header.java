@@ -30,7 +30,7 @@ import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 
-public class Header extends ITab implements KeyListener{
+public class Header extends ITab implements KeyListener {
 
     private RefreshListener refresh;
     private JTextField chassis = new JTextField(5);
@@ -41,15 +41,14 @@ public class Header extends ITab implements KeyListener{
      */
     private static final long serialVersionUID = -5806920722514383555L;
 
-
-    public Header(Mech unit){
+    public Header(Mech unit) {
         this.unit = unit;
-        setMinimumSize(new Dimension(300,300));
+        setMinimumSize(new Dimension(300, 300));
         chassis.setText(unit.getChassis());
         model.setText(unit.getModel());
 
-        chassis.setMaximumSize(new Dimension(100,10));
-        model.setMaximumSize(new Dimension(100,10));
+        chassis.setMaximumSize(new Dimension(100, 10));
+        model.setMaximumSize(new Dimension(100, 10));
         setLayout(new SpringLayout());
 
         setOpaque(false);
