@@ -195,9 +195,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         era.setText(Integer.toString(unit.getYear()));
         source.setText(unit.getSource());
 
-        SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
-        masterPanel.setVisible(false);
-        masterPanel.setVisible(true);
+        // SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
+        // masterPanel.setVisible(false);
+        // masterPanel.setVisible(true);
 
         if (unit.isMixedTech()) {
             if (unit.isClan()) {
