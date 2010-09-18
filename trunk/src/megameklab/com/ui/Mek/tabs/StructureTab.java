@@ -479,9 +479,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                             case Mech.COCKPIT_COMMAND_CONSOLE:
                                 getMech().addCommandConsole();
                                 break;
-                            case Mech.COCKPIT_DUAL:
-                                getMech().addDualCockpit();
-                                break;
                             case Mech.COCKPIT_SMALL:
                                 getMech().addSmallCockpit();
                                 break;
