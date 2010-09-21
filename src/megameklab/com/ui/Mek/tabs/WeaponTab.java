@@ -8,18 +8,18 @@
  * Software Foundation; either version 2 of the License, or (at your option)
  * any later version.
  *
- * This program is distributed in the hope that it will be useful, but
+ * This program is  distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
 
-package megameklab.com.ui.BattleArmor.tabs;
+package megameklab.com.ui.Mek.tabs;
 
 import javax.swing.SpringLayout;
 
-import megamek.common.BattleArmor;
-import megameklab.com.ui.BattleArmor.views.WeaponView;
+import megamek.common.Mech;
+import megameklab.com.ui.Mek.views.WeaponView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
@@ -33,7 +33,7 @@ public class WeaponTab extends ITab {
     private WeaponView weapon;
     private RefreshListener refresh;
 
-    public WeaponTab(BattleArmor unit) {
+    public WeaponTab(Mech unit) {
         this.unit = unit;
         weapon = new WeaponView(unit);
         setLayout(new SpringLayout());
