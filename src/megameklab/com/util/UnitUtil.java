@@ -86,7 +86,7 @@ public class UnitUtil {
     /**
      * tells is EquipementType is an equipment that uses crits/mounted and is
      * spread across multiple locations
-     *
+     * 
      * @param eq
      * @return
      */
@@ -96,7 +96,7 @@ public class UnitUtil {
 
     /**
      * tells if the EquipmentType is a type of armor
-     *
+     * 
      * @param eq
      * @return
      */
@@ -112,7 +112,7 @@ public class UnitUtil {
 
     /**
      * tells if the EquipmentType is a type of armor
-     *
+     * 
      * @param eq
      * @return
      */
@@ -128,7 +128,7 @@ public class UnitUtil {
 
     /**
      * tells if EquipmentType is TSM or TargetComp
-     *
+     * 
      * @param eq
      * @return
      */
@@ -139,7 +139,7 @@ public class UnitUtil {
     /**
      * Returns the number of crits used by EquipmentType eq, 1 if armor or
      * structure EquipmentType
-     *
+     * 
      * @param unit
      * @param eq
      * @return
@@ -175,12 +175,12 @@ public class UnitUtil {
 
         if (isMisc && et.isSpreadable()) {
             if (unit instanceof Mech) {
-                UnitUtil.removeCrits((Mech) unit, et);
+                UnitUtil.removeCrits(unit, et);
             }
             UnitUtil.removeMounts(unit, et);
         }
         if (unit instanceof Mech) {
-            UnitUtil.removeCrits((Mech) unit, et);
+            UnitUtil.removeCrits(unit, et);
         }
         unit.getEquipment().remove(mount);
         if (mount.getType() instanceof MiscType) {
@@ -195,7 +195,7 @@ public class UnitUtil {
 
     /**
      * Removes a Mounted object from the units various equipment lists
-     *
+     * 
      * @param unit
      * @param eq
      */
@@ -221,7 +221,7 @@ public class UnitUtil {
 
     /**
      * Removes mounts of a certain type from the Mek.
-     *
+     * 
      * @param Unit
      */
     public static void removeMounts(Entity unit, EquipmentType et) {
@@ -238,10 +238,14 @@ public class UnitUtil {
 
     /**
      * Removes all crits of a certain type from
-     *
+     * 
      * @param unit
      */
-    public static void removeCrits(Mech unit, EquipmentType critType) {
+    public static void removeCrits(Entity unit, EquipmentType critType) {
+
+        if (!(unit instanceof Mech)) {
+            return;
+        }
 
         for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
@@ -260,15 +264,19 @@ public class UnitUtil {
 
     /**
      * Sets the corresponding critical slots to null for the Mounted object.
-     *
+     * 
      * @param unit
      * @param eq
      */
-    public static void removeCriticals(Mech unit, Mounted eq) {
+    public static void removeCriticals(Entity unit, Mounted eq) {
 
+        if (!(unit instanceof Mech)) {
+            return;
+        }
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
+
         if (UnitUtil.isTargettingComputer(eq)) {
             UnitUtil.removeCrits(unit, eq.getType());
         } else if ((eq.getType() instanceof WeaponType) && (eq.isSplitable() || eq.getType().isSpreadable())) {
@@ -289,7 +297,7 @@ public class UnitUtil {
 
     /**
      * Tells if param EQ is a targetting computer.
-     *
+     * 
      * @param eq
      *            Mounted that might be a targetting computer
      * @return True if is a targetting computer false if not.
@@ -304,11 +312,11 @@ public class UnitUtil {
 
     /**
      * Removes crits for weapons that have split locations
-     *
+     * 
      * @param unit
      * @param eq
      */
-    public static void removeSplitCriticals(Mech unit, Mounted eq) {
+    public static void removeSplitCriticals(Entity unit, Mounted eq) {
 
         int location = eq.getLocation();
         if (location != Entity.LOC_NONE) {
@@ -340,7 +348,7 @@ public class UnitUtil {
 
     /**
      * Reset all the Crits and Mounts on the Unit.
-     *
+     * 
      * @param unit
      */
     public static void resetCriticalsAndMounts(Mech unit) {
@@ -363,7 +371,7 @@ public class UnitUtil {
 
     /**
      * Check to see if the unit is using Clan TC
-     *
+     * 
      * @param unit
      * @return
      */
@@ -380,12 +388,12 @@ public class UnitUtil {
     /**
      * Updates TC Crits and Mounts based on weapons on a unit or if the TC has
      * been removed.
-     *
+     * 
      * @param unit
      */
     public static void updateTC(Entity unit, EquipmentType tc) {
         if (unit instanceof Mech) {
-            UnitUtil.removeCrits((Mech) unit, tc);
+            UnitUtil.removeCrits(unit, tc);
         }
         UnitUtil.removeMounts(unit, tc);
         UnitUtil.createTCMounts(unit, tc);
@@ -393,7 +401,7 @@ public class UnitUtil {
 
     /**
      * Creates TC Mounts and Criticals for a Unit.
-     *
+     * 
      * @param unit
      */
     public static void createTCMounts(Entity unit, EquipmentType tc) {
@@ -410,7 +418,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if unit can use the techlevel
-     *
+     * 
      * @param unit
      * @param techLevel
      * @return Boolean if the tech level is legal for the passed unit
@@ -444,7 +452,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if the unit uses compact heat sinks
-     *
+     * 
      * @param unit
      * @return
      */
@@ -470,7 +478,7 @@ public class UnitUtil {
 
     /**
      * Checks if the unit has laser heatsinks.
-     *
+     * 
      * @param unit
      * @return
      */
@@ -491,7 +499,7 @@ public class UnitUtil {
 
     /***
      * Checks for Clan DHS
-     *
+     * 
      * @param unit
      * @return
      */
@@ -519,7 +527,7 @@ public class UnitUtil {
 
     /**
      * Checks for IS Double Heat Sinks
-     *
+     * 
      * @param unit
      * @return
      */
@@ -546,7 +554,7 @@ public class UnitUtil {
 
     /**
      * checks if Mounted is a heat sink
-     *
+     * 
      * @param eq
      * @return
      */
@@ -560,7 +568,7 @@ public class UnitUtil {
 
     /**
      * Checks if EquipmentType is a heat sink
-     *
+     * 
      * @param eq
      * @return
      */
@@ -574,7 +582,7 @@ public class UnitUtil {
 
     /**
      * Checks if EquipmentType is a Mech Physical weapon
-     *
+     * 
      * @param eq
      * @return
      */
@@ -591,7 +599,7 @@ public class UnitUtil {
 
     /**
      * Removes all heat sinks from the mek
-     *
+     * 
      * @param unit
      */
     public static void removeHeatSinks(Mech unit) {
@@ -612,7 +620,7 @@ public class UnitUtil {
 
     /**
      * adds all heat sinks to the mech
-     *
+     * 
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -670,7 +678,7 @@ public class UnitUtil {
 
     /**
      * updates the heat sinks.
-     *
+     * 
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -687,7 +695,7 @@ public class UnitUtil {
     /**
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
-     *
+     * 
      * @param eq
      * @return
      */
@@ -723,7 +731,7 @@ public class UnitUtil {
     /**
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
-     *
+     * 
      * @param eq
      * @return
      */
@@ -953,7 +961,7 @@ public class UnitUtil {
     /**
      * Expands crits that are a single mount by have multiple spreadable crits
      * Such as TSM, Endo Steel, Reactive armor.
-     *
+     * 
      * @param unit
      */
     public static void expandUnitMounts(Mech unit) {
@@ -1206,7 +1214,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if something is a Jump Jet
-     *
+     * 
      * @param eq
      * @return
      */
@@ -1486,7 +1494,7 @@ public class UnitUtil {
 
     /**
      * Returns the units tech type.
-     *
+     * 
      * @param unit
      * @return
      */
@@ -1523,12 +1531,20 @@ public class UnitUtil {
             return isTankWeapon(eq, unit);
         }
 
+        if (unit instanceof BattleArmor) {
+            return isBattleArmorWeapon(eq, unit);
+        }
+
         return isMechWeapon(eq, unit);
     }
 
     public static boolean isUnitEquipment(EquipmentType eq, Entity unit) {
         if (unit instanceof Tank) {
             return isTankEquipment(eq);
+        }
+
+        if (unit instanceof BattleArmor) {
+            return isBattleArmorEquipment(eq);
         }
 
         return isMechEquipment(eq, (Mech) unit);
@@ -1659,6 +1675,34 @@ public class UnitUtil {
         return true;
     }
 
+    public static boolean isBattleArmorWeapon(EquipmentType eq, Entity unit) {
+
+        if (eq instanceof WeaponType) {
+
+            WeaponType weapon = (WeaponType) eq;
+
+            if (!weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
+                return false;
+            }
+
+            if (weapon.getTonnage(unit) <= 0) {
+                return false;
+            }
+
+            if (weapon.isCapital() || weapon.isSubCapital()) {
+                return false;
+            }
+
+            if (weapon.hasFlag(WeaponType.F_ENERGY) || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
+
+                if (weapon.hasFlag(WeaponType.F_ENERGY) && weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_NA)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public static boolean isTankEquipment(EquipmentType eq) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {
@@ -1670,6 +1714,24 @@ public class UnitUtil {
         }
 
         if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_TANK_EQUIPMENT)) {
+            return true;
+
+        }
+
+        return false;
+    }
+
+    public static boolean isBattleArmorEquipment(EquipmentType eq) {
+
+        if (UnitUtil.isArmorOrStructure(eq)) {
+            return false;
+        }
+
+        if (eq.equals(EquipmentType.get("CLTAG")) || eq.equals(EquipmentType.get("ISC3MasterUnit")) || eq.equals(EquipmentType.get("ISTAG")) || eq.equals(EquipmentType.get("IS Coolant Pod")) || eq.equals(EquipmentType.get("Clan Coolant Pod")) || eq.equals(EquipmentType.get("CLLightTAG"))) {
+            return true;
+        }
+
+        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_BA_EQUIPMENT)) {
             return true;
 
         }
@@ -1809,7 +1871,7 @@ public class UnitUtil {
     /**
      * remove all CriticalSlots on the passed unit that are internal structur or
      * armor
-     *
+     * 
      * @param unit
      *            the Entity
      * @param internalStructure
@@ -1834,7 +1896,7 @@ public class UnitUtil {
     /**
      * remove all Mounteds on the passed unit that are internal structur or
      * armor
-     *
+     * 
      * @param unit
      *            the Entity
      * @param internalStructure
@@ -1967,7 +2029,7 @@ public class UnitUtil {
 
     /**
      * check that the unit is vaild
-     *
+     * 
      * @param unit
      * @return
      */

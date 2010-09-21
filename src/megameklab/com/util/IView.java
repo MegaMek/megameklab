@@ -41,6 +41,10 @@ public class IView extends JPanel {
         this.unit = unit;
     }
 
+    public IView(BattleArmor unit) {
+        this.unit = unit;
+    }
+
     public void updateUnit(Entity unit) {
         this.unit = unit;
     }
@@ -61,7 +65,7 @@ public class IView extends JPanel {
         return (Aero) unit;
     }
 
-    public BattleArmor getBA() {
+    public BattleArmor getBattleArmor() {
         return (BattleArmor) unit;
     }
 }

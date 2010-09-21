@@ -18,6 +18,7 @@ package megameklab.com.util;
 
 import java.util.Comparator;
 
+import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
@@ -51,6 +52,7 @@ import megamek.common.weapons.NarcWeapon;
 import megamek.common.weapons.PulseLaserWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
+import megamek.common.weapons.ScreenLauncherWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 
@@ -74,6 +76,24 @@ public class StringUtils {
                 return s1.compareTo(s2);
             }
         };
+    }
+
+    public static String getEquipmentInfo(Dropship unit, Mounted mount) {
+        String info = "";
+
+        if (mount.getType() instanceof WeaponType) {
+            WeaponType weapon = (WeaponType) mount.getType();
+
+            if (weapon instanceof ScreenLauncherWeapon) {
+                info = String.format("[%1$s Screens]", unit.getTotalAmmoOfType(mount.getLinked().getType()));
+            } else if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
+                info = String.format("[%1$s rnds]", unit.getTotalAmmoOfType(mount.getLinked().getType()));
+            } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
+                info = String.format("[%1$s misl]", unit.getTotalAmmoOfType(mount.getLinked().getType()));
+            }
+        }
+        return info;
+
     }
 
     public static String getEquipmentInfo(Entity unit, Mounted mount) {

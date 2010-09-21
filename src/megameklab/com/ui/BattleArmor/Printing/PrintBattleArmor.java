@@ -76,7 +76,7 @@ public class PrintBattleArmor implements Printable {
         int x = 18;
         int y = 78;
         g2d.drawImage(ImageHelper.getRecordSheet(battleArmor, false), 18, 18, 558, 738, null);
-        g2d.drawImage(ImageHelper.getFluffImage(battleArmor, ImageHelper.imageBA), 410, 23, 25, 45, null);
+        g2d.drawImage(ImageHelper.getFluffImage(battleArmor, ImageHelper.imageBattleArmor), 410, 23, 25, 45, null);
 
         int stop = Math.min(5, battleArmorList.size() - currentPosition);
         for (int pos = 0; pos < stop; pos++) {
@@ -201,7 +201,7 @@ public class PrintBattleArmor implements Printable {
         for (int pos = 1; pos <= battleArmor.getNumberActiverTroopers(); pos++) {
             Image trooper = ImageHelper.getBATrooper(pos);
             g2d.drawImage(trooper, x, y, 158, 18, null);
-            g2d.drawImage(ImageHelper.getFluffImage(battleArmor, ImageHelper.imageBA), x + 10, y + 2, 10, 14, null);
+            g2d.drawImage(ImageHelper.getFluffImage(battleArmor, ImageHelper.imageBattleArmor), x + 10, y + 2, 10, 14, null);
             ImageHelper.drawBAISPip(g2d, x + 23, y + 6);
             float pipX = x + 31;
             float pipY = y + 12.5f;
