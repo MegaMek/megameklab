@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
+import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
@@ -55,6 +56,7 @@ public class EquipmentInfo {
     public boolean isBAMineLayer = false;
     public boolean isCompactNarc = false;
     public boolean isManipulator = false;
+    public boolean isAMS = false;
 
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
@@ -103,6 +105,76 @@ public class EquipmentInfo {
             isATM = weapon instanceof ATMWeapon;
 
             shtRange = (int) weapon.shortAV;
+            if (weapon.maxRange >= WeaponType.RANGE_MED) {
+                medRange = (int) weapon.medAV;
+            }
+            if (weapon.maxRange >= WeaponType.RANGE_LONG) {
+                longRange = (int) weapon.longAV;
+            }
+            if (weapon.maxRange >= WeaponType.RANGE_EXT) {
+                erRange = (int) weapon.extAV;
+            }
+            heat = weapon.getHeat();
+            secondaryLocation = mount.getSecondLocation();
+
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
+            c3Level = C3I;
+        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S) || mount.getType().hasFlag(MiscType.F_C3SBS)))) {
+            c3Level = C3S;
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ECM)) {
+            if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
+                longRange = 4;
+            } else {
+                longRange = 6;
+            }
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BAP)) {
+            if (mount.getType().getInternalName().equals(Sensor.BAP)) {
+                longRange = 4;
+            } else if (mount.getType().getInternalName().equals(Sensor.BLOODHOUND)) {
+                longRange = 6;
+            } else if (mount.getType().getInternalName().equals(Sensor.CLAN_AP)) {
+                longRange = 5;
+            }
+        } else if (mount.getType().hasFlag(MiscType.F_SEARCHLIGHT)) {
+            shtRange = 0;
+            medRange = 0;
+            longRange = 170;
+        }
+
+        hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
+        hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
+        hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
+
+    }
+
+    /**
+     * 
+     * @param dropship
+     * @param mount
+     */
+    public EquipmentInfo(Dropship dropship, Mounted mount) {
+        name = UnitUtil.getCritName(dropship, mount.getType());
+        damage = StringUtils.getEquipmentInfo(dropship, mount);
+
+        count = 1;
+        techLevel = mount.getType().getTechLevel();
+
+        if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
+            if (mount.getType().hasFlag(WeaponType.F_C3M)) {
+                c3Level = C3M;
+            }
+            WeaponType weapon = (WeaponType) mount.getType();
+            minRange = Math.max(0, weapon.minimumRange);
+            isWeapon = true;
+
+            isMML = weapon instanceof MMLWeapon;
+            isATM = weapon instanceof ATMWeapon;
+
+            shtRange = (int) weapon.shortAV;
+            if (weapon.hasFlag(WeaponType.F_AMS)) {
+                isAMS = weapon.hasFlag(WeaponType.F_AMS);
+                shtRange = 3;
+            }
             if (weapon.maxRange >= WeaponType.RANGE_MED) {
                 medRange = (int) weapon.medAV;
             }
@@ -363,4 +435,16 @@ public class EquipmentInfo {
         return false;
     }
 
+    public void setTroopSpaceInfo(float troopspace) {
+        if (Math.floor(troopspace) - troopspace > 0) {
+            name = "Infantry Bay (" + troopspace + " tons)";
+            damage = "  [E]";
+            count = 1;
+        } else {
+            name = "Infantry Bay (" + (int) troopspace + " tons)";
+            damage = "  [E]";
+            count = 1;
+        }
+
+    }
 }

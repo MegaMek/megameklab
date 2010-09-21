@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -70,8 +71,7 @@ public class PrintAerodyne implements Printable {
         System.gc();
 
         g2d.drawImage(ImageHelper.getRecordSheet(dropship), 18, 18, 558, 738, Color.BLACK, null);
-        // printDropshipImage(g2d, ImageHelper.getFluffImage(dropship,
-        // ImageHelper.imageDropship));
+        printDropshipImage(g2d, ImageHelper.getFluffImage(dropship, ImageHelper.imageDropship));
 
         printDropshipData(g2d);
         printArmor(g2d);
@@ -463,14 +463,14 @@ public class PrintAerodyne implements Printable {
         }
     }
 
-    // private void printDropshipImage(Graphics2D g2d, Image img) {
-    //
-    // int width = Math.min(220, img.getWidth(null));
-    // int height = Math.min(112, img.getHeight(null));
-    // int drawingX = 18 + ((220 - width) / 2);
-    // int drawingY = 482 + ((112 - height) / 2);
-    // g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
-    //
-    // }
+    private void printDropshipImage(Graphics2D g2d, Image img) {
+
+        int width = Math.min(220, img.getWidth(null));
+        int height = Math.min(112, img.getHeight(null));
+        int drawingX = 18 + ((220 - width) / 2);
+        int drawingY = 488 + ((112 - height) / 2);
+        g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
+
+    }
 
 }

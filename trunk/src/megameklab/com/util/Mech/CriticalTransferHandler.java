@@ -44,21 +44,22 @@ public class CriticalTransferHandler extends TransferHandler {
      *
      */
     private static final long serialVersionUID = -5215375829853683877L;
-    private Mech unit;
+    private Entity unit;
     private int location;
     private RefreshListener refresh;
 
-    public CriticalTransferHandler(Mech unit, RefreshListener refresh) {
+    public CriticalTransferHandler(Entity unit, RefreshListener refresh) {
         this.unit = unit;
         this.refresh = refresh;
     }
 
     @Override
     public boolean importData(TransferSupport info) {
-        if (!info.isDrop()) {
+        if (!info.isDrop() || !(unit instanceof Mech)) {
             return false;
         }
 
+        Mech mech = (Mech) unit;
         if (info.getComponent() instanceof DropTargetCriticalList) {
             DropTargetCriticalList list = (DropTargetCriticalList) info.getComponent();
             location = Integer.parseInt(list.getName());
@@ -175,8 +176,9 @@ public class CriticalTransferHandler extends TransferHandler {
                     if ((emptyCrits < totalCrits) && ((nextLocation == Entity.LOC_DESTROYED) || (unit.getEmptyCriticals(location) + unit.getEmptyCriticals(nextLocation) < totalCrits))) {
                         throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());
                     }
+
                     for (; critsUsed < totalCrits; critsUsed++) {
-                        unit.addEquipment(eq, location, false);
+                        mech.addEquipment(eq, location, false);
                         if (unit.getEmptyCriticals(location) == 0) {
                             location = nextLocation;
                             totalCrits -= critsUsed;
@@ -185,7 +187,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     }
                     changeMountStatus(eq, primaryLocation, nextLocation, false);
                 } else if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
-                    unit.addEquipment(eq, location, false);
+                    mech.addEquipment(eq, location, false);
                     changeMountStatus(eq, location, false);
                 } else {
                     throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());

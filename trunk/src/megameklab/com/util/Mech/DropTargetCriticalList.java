@@ -48,11 +48,11 @@ public class DropTargetCriticalList extends JList implements MouseListener {
      *
      */
     private static final long serialVersionUID = 6847511182922982125L;
-    private Mech unit;
+    private Entity unit;
     private RefreshListener refresh;
     private boolean buildView = false;
 
-    public DropTargetCriticalList(Vector<String> vector, Mech unit, RefreshListener refresh, boolean buildView) {
+    public DropTargetCriticalList(Vector<String> vector, Entity unit, RefreshListener refresh, boolean buildView) {
         super(vector);
         // new DropTarget(this, this);
         this.unit = unit;

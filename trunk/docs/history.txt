@@ -88,6 +88,8 @@ V 0.0.0.17 Dev
 + RFE: Save Unit Name when change to Quad or Adding Turret to Tank
 + Bug: Quick Save Overwritting old last loaded file if reset is used.
 + Bug: Main Window Flashing when switching to Quad or Turret Body.
++ New BattleArmor UI
++ Fixed issues with DS Recordship
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8)
 + Bug: ammo not print out correctly for vehicles
