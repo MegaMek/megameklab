@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * any later  version.
  *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package megameklab.com.ui.BattleArmor.views;
+package megameklab.com.ui.Mek.views;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,9 +25,10 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
-import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
+import megamek.common.Mech;
 import megamek.common.Mounted;
+import megamek.common.QuadMech;
 import megamek.common.loaders.MtfFile;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -54,7 +55,7 @@ public class CriticalView extends IView {
 
     private boolean showEmpty = false;
 
-    public CriticalView(BattleArmor unit, boolean showEmpty, RefreshListener refresh) {
+    public CriticalView(Mech unit, boolean showEmpty, RefreshListener refresh) {
         super(unit);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
@@ -124,6 +125,8 @@ public class CriticalView extends IView {
                         if (showEmpty) {
                             critNames.add(MtfFile.EMPTY);
                         }
+                    } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+                        critNames.add(getMech().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         try {
                             Mounted m = cs.getMount();
@@ -163,35 +166,57 @@ public class CriticalView extends IView {
                 if (critNames.size() == 0) {
                     critNames.add(MtfFile.EMPTY);
                 }
-                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(critNames, getBattleArmor(), refresh, showEmpty);
+                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(critNames, getMech(), refresh, showEmpty);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
                 criticalSlotList.setName(Integer.toString(location));
                 criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
                 switch (location) {
-                    case BattleArmor.LOC_SQUAD:
+                    case Mech.LOC_HEAD:
                         headPanel.add(criticalSlotList);
                         break;
-                    case BattleArmor.LOC_TROOPER_1:
-                        raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Right Arm"));
+                    case Mech.LOC_LARM:
+                        if (unit instanceof QuadMech) {
+                            laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Front Left Leg"));
+                        } else {
+                            laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Left Arm"));
+                            // ((TitledBorder)
+                            // laPanel.getBorder()).setTitleColor(Color.BLUE);
+                        }
+                        laPanel.add(criticalSlotList);
+                        break;
+                    case Mech.LOC_RARM:
+                        if (unit instanceof QuadMech) {
+                            raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Front Right Leg"));
+                        } else {
+                            raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Right Arm"));
+                        }
                         raPanel.add(criticalSlotList);
                         break;
-                    case BattleArmor.LOC_TROOPER_2:
+                    case Mech.LOC_CT:
                         ctPanel.add(criticalSlotList);
                         break;
-                    case BattleArmor.LOC_TROOPER_3:
+                    case Mech.LOC_LT:
                         ltPanel.add(criticalSlotList);
                         break;
-                    case BattleArmor.LOC_TROOPER_4:
+                    case Mech.LOC_RT:
                         rtPanel.add(criticalSlotList);
                         break;
-                    case BattleArmor.LOC_TROOPER_5:
-                        llPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Leg"));
+                    case Mech.LOC_LLEG:
+                        if (unit instanceof QuadMech) {
+                            llPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Left Leg"));
+                        } else {
+                            llPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Leg"));
+                        }
                         llPanel.add(criticalSlotList);
                         break;
-                    case BattleArmor.LOC_TROOPER_6:
-                        rlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Leg"));
+                    case Mech.LOC_RLEG:
+                        if (unit instanceof QuadMech) {
+                            rlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Right Leg"));
+                        } else {
+                            rlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Leg"));
+                        }
                         rlPanel.add(criticalSlotList);
                         break;
                 }
