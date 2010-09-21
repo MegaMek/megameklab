@@ -14,16 +14,14 @@
  * for more details.
  */
 
-package megameklab.com.ui.Mek.views;
+package megameklab.com.ui.BattleArmor.views;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -36,10 +34,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
+import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
-import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megameklab.com.util.CriticalTableModel;
@@ -80,7 +78,7 @@ public class EquipmentView extends IView implements ActionListener {
 
     private int jumpBoosterMP = 0;
 
-    public EquipmentView(Mech unit) {
+    public EquipmentView(BattleArmor unit) {
         super(unit);
         if (unit.hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
             jumpBoosterMP = unit.getOriginalJumpMP();
@@ -152,7 +150,6 @@ public class EquipmentView extends IView implements ActionListener {
                 continue;
             }
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
-
                 equipmentTypes.add(eq);
                 equipmentCombo.addItem(eq);
             }
@@ -161,54 +158,13 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentTable() {
-        List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
         for (Mounted mount : unit.getMisc()) {
 
             if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || UnitUtil.isArmorOrStructure(mount.getType()))) {
                 continue;
             }
             if (UnitUtil.isUnitEquipment(mount.getType(), unit)) {
-                if (UnitUtil.isSpreadEquipment(mount.getType()) && !spreadAlreadyAdded.contains(mount.getType())) {
-                    equipmentList.addCrit(mount.getType());
-                    // keep track of spreadable equipment here, so it doesn't
-                    // show up multiple times in the table
-                    spreadAlreadyAdded.add(mount.getType());
-                } else {
-                    equipmentList.addCrit(mount.getType());
-                }
-            }
-        }
-    }
-
-    private void loadHeatSinks() {
-        int engineHeatSinks = UnitUtil.getBaseChassisHeatSinks(getMech());
-        for (Mounted mount : unit.getMisc()) {
-
-            if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK))) {
-                if (engineHeatSinks-- > 0) {
-                    continue;
-                }
                 equipmentList.addCrit(mount.getType());
-            }
-        }
-
-    }
-
-    private void removeHeatSinks() {
-        int location = 0;
-        for (; location < equipmentList.getRowCount();) {
-
-            EquipmentType eq = (EquipmentType) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
-            if ((eq instanceof MiscType) && ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK)))) {
-                try {
-                    equipmentList.removeCrit(location);
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
-                    return;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            } else {
-                location++;
             }
         }
     }
@@ -249,22 +205,17 @@ public class EquipmentView extends IView implements ActionListener {
             boolean success = false;
             EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
             boolean isMisc = equip instanceof MiscType;
-            if (isMisc && ((equip.hasFlag(MiscType.F_TSM) && !getMech().hasTSM()) || (equip.hasFlag(MiscType.F_INDUSTRIAL_TSM) && !getMech().hasIndustrialTSM()) || (equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) && !unit.hasEnvironmentalSealing()) || (equip.hasFlag(MiscType.F_NULLSIG) && !getMech().hasNullSig()) || (equip.hasFlag(MiscType.F_VOIDSIG) && !getMech().hasVoidSig()) || (equip.hasFlag(MiscType.F_TRACKS) && !getMech().hasTracks()) || (equip.hasFlag(MiscType.F_PARTIAL_WING) && !getMech().hasWorkingMisc(MiscType.F_PARTIAL_WING)) || (equip.hasFlag(MiscType.F_CHAMELEON_SHIELD) && !getMech().hasChameleonShield()) || ((equip.hasFlag(MiscType.F_BLUE_SHIELD)) && !unit.hasWorkingMisc(MiscType.F_BLUE_SHIELD)))) {
-                success = UnitUtil.createSpreadMounts(getMech(), equip);
-            } else if (isMisc && equip.hasFlag(MiscType.F_JUMP_BOOSTER)) {
+            if (isMisc && equip.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                 setJumpBoosterMP(Integer.parseInt(JOptionPane.showInputDialog(this, "How many Jump MP?")));
                 updateJumpMP();
-                if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-                    success = UnitUtil.createSpreadMounts(getMech(), equip);
-                }
             } else if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(unit)) {
-                    UnitUtil.updateTC(getMech(), equip);
+                    UnitUtil.updateTC(getBattleArmor(), equip);
                     success = true;
                 }
             } else {
                 try {
-                    getMech().addEquipment(new Mounted(unit, equipmentTypes.elementAt(equipmentCombo.getSelectedIndex())), Entity.LOC_NONE, false);
+                    getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
                     success = true;
                 } catch (LocationFullException lfe) {
                     // this can't happen, we add to Entity.LOC_NONE
@@ -295,19 +246,15 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     public void updateEquipment() {
-        removeHeatSinks();
         equipmentList.removeAllCrits();
-        loadHeatSinks();
         loadEquipmentTable();
     }
 
     public void removeAllEquipment() {
-        removeHeatSinks();
         for (int count = 0; count < equipmentList.getRowCount(); count++) {
             equipmentList.removeMounted(count);
         }
         equipmentList.removeAllCrits();
-        loadHeatSinks();
     }
 
     private void fireTableRefresh() {

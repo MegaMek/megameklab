@@ -14,12 +14,12 @@
  * for more details.
  */
 
-package megameklab.com.ui.Mek.tabs;
+package megameklab.com.ui.BattleArmor.tabs;
 
 import javax.swing.SpringLayout;
 
-import megamek.common.Mech;
-import megameklab.com.ui.Mek.views.EquipmentView;
+import megamek.common.BattleArmor;
+import megameklab.com.ui.BattleArmor.views.EquipmentView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
@@ -33,7 +33,7 @@ public class EquipmentTab extends ITab {
 
     private EquipmentView equipment;
 
-    public EquipmentTab(Mech unit) {
+    public EquipmentTab(BattleArmor unit) {
         this.unit = unit;
         equipment = new EquipmentView(unit);
         setLayout(new SpringLayout());
