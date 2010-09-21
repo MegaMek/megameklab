@@ -102,6 +102,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
     public MainUI() {
 
+        EquipmentType.initializeTypes();
         UnitUtil.loadFonts();
         new CConfig();
         System.out.println("Staring MegaMekLab version: " + MegaMekLab.VERSION);
