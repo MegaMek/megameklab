@@ -8,13 +8,13 @@
  * Software Foundation; either version 2 of the License, or (at your option)
  * any later version.
  *
- * This program is distributed in the hope that it will be useful, but
+ * This program is distributed in the hope that it will be useful,  but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
 
-package megameklab.com.ui.BattleArmor.tabs;
+package megameklab.com.ui.Mek.tabs;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -27,16 +27,20 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
-import megamek.common.BattleArmor;
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.LocationFullException;
+import megamek.common.Mech;
+import megamek.common.Mounted;
 import megamek.common.TechConstants;
-import megameklab.com.ui.BattleArmor.views.ArmorView;
+import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
@@ -63,10 +67,10 @@ public class ArmorTab extends ITab implements ActionListener {
 
     private JPanel buttonPanel = new JPanel();
 
-    public ArmorTab(BattleArmor unit) {
+    public ArmorTab(Mech unit) {
 
         this.unit = unit;
-        armor = new ArmorView(getBattleArmor());
+        armor = new ArmorView(getMech());
 
         Dimension comboSize = new Dimension(150, 20);
 
@@ -101,6 +105,10 @@ public class ArmorTab extends ITab implements ActionListener {
 
     public void actionPerformed(ActionEvent arg0) {
         removeAllListeners();
+        if (arg0.getSource() instanceof JComboBox) {
+            UnitUtil.removeISorArmorMounts(unit, false);
+            createArmorMountsAndSetArmorType();
+        }
         if (arg0.getSource().equals(allocateArmorButton)) {
             armor.allocateArmor((Double) armorTonnage.getValue());
         }
@@ -120,6 +128,7 @@ public class ArmorTab extends ITab implements ActionListener {
             } else {
                 unit.setArmorTechLevel(unit.getTechLevel());
             }
+            createArmorMountsAndSetArmorType();
         }
         addAllListeners();
         if (refresh != null) {
@@ -177,6 +186,38 @@ public class ArmorTab extends ITab implements ActionListener {
         armorTonnage.setValue(maxArmor);
     }
 
+    private void createArmorMountsAndSetArmorType() {
+        unit.setArmorType(getArmorType());
+        int armorCount = 0;
+
+        armorCount = EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType())).getCriticals(unit);
+
+        if (armorCount < 1) {
+            return;
+        }
+        // auto-place stealth crits
+        if (getArmorType() == EquipmentType.T_ARMOR_STEALTH) {
+            for (int loc = 0; loc < getMech().locations(); loc++) {
+                if ((loc != Mech.LOC_HEAD) && (loc != Mech.LOC_CT)) {
+                    try {
+                        getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), loc, false);
+                        getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), loc, false);
+                    } catch (LocationFullException lfe) {
+                        JOptionPane.showMessageDialog(null, lfe.getMessage(), "Stealth Armor does not fit in location. Resetting to Standard Armor", JOptionPane.INFORMATION_MESSAGE);
+                        setArmorType(EquipmentType.T_ARMOR_STANDARD);
+                    }
+                }
+            }
+        } else {
+            for (; armorCount > 0; armorCount--) {
+                try {
+                    getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), Entity.LOC_NONE, false);
+                } catch (Exception ex) {
+                }
+            }
+        }
+    }
+
     private void setTotalTonnage() {
         double currentTonnage = unit.getArmorWeight();
         armorTonnage.setValue(currentTonnage);
@@ -200,7 +241,7 @@ public class ArmorTab extends ITab implements ActionListener {
         armorCombo.removeAllItems();
         int armorCount = armorNames.length;
 
-        switch (getBattleArmor().getTechLevel()) {
+        switch (getMech().getTechLevel()) {
             case TechConstants.T_INTRO_BOXSET:
                 armorCount = 1;
                 break;
@@ -228,4 +269,15 @@ public class ArmorTab extends ITab implements ActionListener {
         }
     }
 
+    private int getArmorType() {
+        String armorType = armorCombo.getSelectedItem().toString();
+
+        for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
+            if (armorType.equals(EquipmentType.armorNames[pos])) {
+                return pos;
+            }
+        }
+
+        return EquipmentType.T_ARMOR_STANDARD;
+    }
 }

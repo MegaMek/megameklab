@@ -3,7 +3,7 @@
  *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
- * This program is free software; you can redistribute it and/or modify it
+ * This program is free  software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
  * any later version.
@@ -14,7 +14,7 @@
  * for more details.
  */
 
-package megameklab.com.ui.BattleArmor.tabs;
+package megameklab.com.ui.Mek.tabs;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -27,12 +27,12 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
-import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.Mech;
 import megamek.common.Mounted;
-import megameklab.com.ui.BattleArmor.views.BuildView;
-import megameklab.com.ui.BattleArmor.views.CriticalView;
+import megameklab.com.ui.Mek.views.BuildView;
+import megameklab.com.ui.Mek.views.CriticalView;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -55,18 +55,20 @@ public class BuildTab extends ITab implements ActionListener {
 
     private JButton autoFillButton = new JButton("Auto Fill");
     private JButton resetButton = new JButton("Reset");
+    private JButton compactButton = new JButton("Compact");
 
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
+    private String COMPACTCOMMAND = "compactbuttoncommand";
 
-    public BuildTab(BattleArmor unit, EquipmentTab equipment, WeaponTab weapons) {
+    public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons) {
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new CriticalView(getBattleArmor(), true, refresh);
-        buildView = new BuildView(getBattleArmor());
+        critView = new CriticalView(getMech(), true, refresh);
+        buildView = new BuildView(getMech());
 
         mainPanel.add(buildView);
 
@@ -74,8 +76,11 @@ public class BuildTab extends ITab implements ActionListener {
         autoFillButton.setActionCommand(AUTOFILLCOMMAND);
         resetButton.setMnemonic('R');
         resetButton.setActionCommand(RESETCOMMAND);
+        compactButton.setMnemonic('C');
+        compactButton.setActionCommand(COMPACTCOMMAND);
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
+        buttonPanel.add(compactButton);
 
         mainPanel.add(buttonPanel);
 
@@ -123,13 +128,16 @@ public class BuildTab extends ITab implements ActionListener {
             autoFillCrits();
         } else if (e.getActionCommand().equals(RESETCOMMAND)) {
             resetCrits();
+        } else if (e.getActionCommand().equals(COMPACTCOMMAND)) {
+            compactCrits();
         }
     }
 
     private void autoFillCrits() {
 
         for (EquipmentType eq : buildView.getTableModel().getCrits()) {
-            for (int location = BattleArmor.LOC_SQUAD; location < unit.locations(); location++) {
+            int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(getMech());
+            for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
 
                 if (!UnitUtil.isValidLocation(unit, eq, location)) {
                     continue;
@@ -144,6 +152,9 @@ public class BuildTab extends ITab implements ActionListener {
                 Mounted foundMount = null;
                 for (Mounted mount : unit.getEquipment()) {
                     if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().equals(eq)) {
+                        if (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0)) {
+                            continue;
+                        }
                         foundMount = mount;
                         break;
                     }
@@ -153,10 +164,10 @@ public class BuildTab extends ITab implements ActionListener {
                     try {
                         if (foundMount.getType().isSpreadable() || (foundMount.isSplitable() && (critsUsed > 1))) {
                             for (int count = 0; count < critsUsed; count++) {
-                                getBattleArmor().addEquipment(foundMount.getType(), location);
+                                getMech().addEquipment(foundMount, location, false);
                             }
                         } else {
-                            getBattleArmor().addEquipment(foundMount.getType(), location, false);
+                            getMech().addEquipment(foundMount, location, false);
                         }
                         UnitUtil.changeMountStatus(unit, foundMount, location, Entity.LOC_NONE, false);
                         break;
@@ -172,7 +183,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void resetCrits() {
         for (Mounted mount : unit.getEquipment()) {
-            UnitUtil.removeCriticals(getBattleArmor(), mount);
+            UnitUtil.removeCriticals(getMech(), mount);
         }
         for (Mounted mount : unit.getEquipment()) {
             UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
@@ -180,14 +191,22 @@ public class BuildTab extends ITab implements ActionListener {
         refresh.refreshAll();
     }
 
+    private void compactCrits() {
+        UnitUtil.compactCriticals(getMech());
+        UnitUtil.reIndexCrits(getMech());
+        refresh.refreshAll();
+    }
+
     public void removeAllActionListeners() {
         autoFillButton.removeActionListener(this);
         resetButton.removeActionListener(this);
+        compactButton.removeActionListener(this);
     }
 
     public void addAllActionListeners() {
         autoFillButton.addActionListener(this);
         resetButton.addActionListener(this);
+        compactButton.addActionListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
