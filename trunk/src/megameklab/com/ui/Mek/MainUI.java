@@ -832,6 +832,11 @@ public class MainUI extends JFrame implements RefreshListener {
         dispose();
     }
 
+    private void jMenuLoadBattleArmor() {
+        new megameklab.com.ui.BattleArmor.MainUI();
+        dispose();
+    }
+
     private void jMenuPrintCurrentUnit() {
         UnitPrintManager.printEntity(entity);
     }
@@ -851,6 +856,16 @@ public class MainUI extends JFrame implements RefreshListener {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadVehicle();
+            }
+
+        });
+        unitMenu.add(item);
+        item.setText("BattleArmor");
+        item.setMnemonic(KeyEvent.VK_A);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuLoadBattleArmor();
             }
 
         });

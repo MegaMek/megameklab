@@ -722,6 +722,7 @@ public class MainUI extends JFrame implements RefreshListener {
         entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
         entity.setWeightClass(0);
         entity.setWeight(EntityWeightClass.getClassLimit(0));
+        entity.setTroopers(4);
 
         entity.autoSetInternal();
         for (int loc = 0; loc < entity.locations(); loc++) {
@@ -730,7 +731,7 @@ public class MainUI extends JFrame implements RefreshListener {
         }
 
         entity.setChassis("New");
-        entity.setModel("Mek");
+        entity.setModel("BattleArmor");
     }
 
     public void refreshAll() {
