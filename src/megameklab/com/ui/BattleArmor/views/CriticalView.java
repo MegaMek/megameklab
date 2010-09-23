@@ -40,16 +40,13 @@ public class CriticalView extends IView {
      */
     private static final long serialVersionUID = -6960975031034494605L;
 
-    private JPanel laPanel = new JPanel();
-    private JPanel raPanel = new JPanel();
-    private JPanel llPanel = new JPanel();
-    private JPanel rlPanel = new JPanel();
-    private JPanel ltPanel = new JPanel();
-    private JPanel rtPanel = new JPanel();
-    private JPanel ctPanel = new JPanel();
-    private JPanel headPanel = new JPanel();
-    private JPanel torsoPanel = new JPanel();
-    private JPanel legPanel = new JPanel();
+    private JPanel squadPanel = new JPanel();
+    private JPanel troop1Panel = new JPanel();
+    private JPanel troop2Panel = new JPanel();
+    private JPanel troop3Panel = new JPanel();
+    private JPanel troop4Panel = new JPanel();
+    private JPanel troop5Panel = new JPanel();
+    private JPanel troop6Panel = new JPanel();
     private RefreshListener refresh;
 
     private boolean showEmpty = false;
@@ -62,40 +59,31 @@ public class CriticalView extends IView {
         JPanel mainPanel = new JPanel();
 
         mainPanel.setOpaque(false);
-        headPanel.setOpaque(false);
-        torsoPanel.setOpaque(false);
-        legPanel.setOpaque(false);
-        ltPanel.setOpaque(false);
-        rtPanel.setOpaque(false);
-        ctPanel.setOpaque(false);
-        raPanel.setOpaque(false);
-        laPanel.setOpaque(false);
-        rlPanel.setOpaque(false);
-        llPanel.setOpaque(false);
+        squadPanel.setOpaque(false);
+        troop1Panel.setOpaque(false);
+        troop2Panel.setOpaque(false);
+        troop3Panel.setOpaque(false);
+        troop4Panel.setOpaque(false);
+        troop5Panel.setOpaque(false);
+        troop6Panel.setOpaque(false);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        headPanel.setLayout(new BoxLayout(headPanel, BoxLayout.X_AXIS));
-        torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
-        legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
+        squadPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Squad"));
+        mainPanel.add(squadPanel);
 
-        headPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Head"));
-        mainPanel.add(headPanel);
-
-        torsoPanel.add(laPanel);
-        ltPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Torso"));
-        torsoPanel.add(ltPanel);
-        ctPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Center Torso"));
-        torsoPanel.add(ctPanel);
-        rtPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Torso"));
-        torsoPanel.add(rtPanel);
-        torsoPanel.add(raPanel);
-        mainPanel.add(torsoPanel);
-
-        legPanel.add(llPanel);
-        legPanel.add(rlPanel);
-        mainPanel.add(legPanel);
-
+        troop1Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Trooper 1"));
+        mainPanel.add(troop1Panel);
+        troop2Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Trooper 2"));
+        mainPanel.add(troop2Panel);
+        troop3Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Trooper 3"));
+        mainPanel.add(troop3Panel);
+        troop4Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Trooper 4"));
+        mainPanel.add(troop4Panel);
+        troop5Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Trooper 5"));
+        mainPanel.add(troop5Panel);
+        troop6Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Trooper 6"));
+        mainPanel.add(troop6Panel);
         this.add(mainPanel);
     }
 
@@ -104,22 +92,21 @@ public class CriticalView extends IView {
     }
 
     public void refresh() {
-        laPanel.removeAll();
-        raPanel.removeAll();
-        llPanel.removeAll();
-        rlPanel.removeAll();
-        ltPanel.removeAll();
-        rtPanel.removeAll();
-        ctPanel.removeAll();
-        headPanel.removeAll();
+        squadPanel.removeAll();
+        troop1Panel.removeAll();
+        troop2Panel.removeAll();
+        troop3Panel.removeAll();
+        troop4Panel.removeAll();
+        troop5Panel.removeAll();
+        troop6Panel.removeAll();
 
         synchronized (unit) {
             for (int location = 0; location < unit.locations(); location++) {
                 // JPanel locationPanel = new JPanel();
                 Vector<String> critNames = new Vector<String>(1, 1);
 
-                for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                    CriticalSlot cs = unit.getCritical(location, slot);
+                for (int slot = 0; slot < getBattleArmor().getNumberOfCriticals(location); slot++) {
+                    CriticalSlot cs = getBattleArmor().getCritical(location, slot);
                     if (cs == null) {
                         if (showEmpty) {
                             critNames.add(MtfFile.EMPTY);
@@ -130,10 +117,10 @@ public class CriticalView extends IView {
                             // Critical didn't get removed. Remove it now.
                             if (m == null) {
 
-                                m = unit.getEquipment(cs.getIndex());
+                                m = getBattleArmor().getEquipment(cs.getIndex());
 
                                 if (m == null) {
-                                    unit.setCritical(location, slot, null);
+                                    getBattleArmor().setCritical(location, slot, null);
                                     if (showEmpty) {
                                         critNames.add(MtfFile.EMPTY);
                                     }
@@ -171,39 +158,42 @@ public class CriticalView extends IView {
                 criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
                 switch (location) {
                     case BattleArmor.LOC_SQUAD:
-                        headPanel.add(criticalSlotList);
+                        squadPanel.add(criticalSlotList);
                         break;
                     case BattleArmor.LOC_TROOPER_1:
-                        raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Right Arm"));
-                        raPanel.add(criticalSlotList);
+                        troop1Panel.add(criticalSlotList);
                         break;
                     case BattleArmor.LOC_TROOPER_2:
-                        ctPanel.add(criticalSlotList);
+                        troop2Panel.add(criticalSlotList);
                         break;
                     case BattleArmor.LOC_TROOPER_3:
-                        ltPanel.add(criticalSlotList);
+                        troop3Panel.add(criticalSlotList);
                         break;
                     case BattleArmor.LOC_TROOPER_4:
-                        rtPanel.add(criticalSlotList);
+                        troop4Panel.add(criticalSlotList);
                         break;
                     case BattleArmor.LOC_TROOPER_5:
-                        llPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Leg"));
-                        llPanel.add(criticalSlotList);
+                        // troop5Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),
+                        // "Trooper 5"));
+                        troop5Panel.add(criticalSlotList);
                         break;
                     case BattleArmor.LOC_TROOPER_6:
-                        rlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Leg"));
-                        rlPanel.add(criticalSlotList);
+                        // troop6Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),
+                        // "Trooper 6"));
+                        troop6Panel.add(criticalSlotList);
                         break;
                 }
             }
-            ctPanel.repaint();
-            raPanel.repaint();
-            headPanel.repaint();
-            laPanel.repaint();
-            ltPanel.repaint();
-            rtPanel.repaint();
-            llPanel.repaint();
-            rlPanel.repaint();
+            squadPanel.repaint();
+            troop1Panel.repaint();
+            troop2Panel.repaint();
+            troop3Panel.repaint();
+            troop4Panel.repaint();
+            troop5Panel.repaint();
+            troop6Panel.repaint();
+
+            troop5Panel.setVisible(getBattleArmor().getTroopers() >= 5);
+            troop6Panel.setVisible(getBattleArmor().getTroopers() >= 6);
         }
     }
 
