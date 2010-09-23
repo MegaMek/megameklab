@@ -44,6 +44,7 @@ import javax.swing.SwingConstants;
 
 import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
+import megamek.common.EntityMovementMode;
 import megamek.common.EntityWeightClass;
 import megamek.common.TechConstants;
 import megameklab.com.ui.BattleArmor.views.CriticalView;
@@ -60,21 +61,42 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
-    JComboBox walkMP;
-    JComboBox weightClass;
-    String[] techTypes =
+    private JComboBox weightClass;
+    private JComboBox groundMovement;
+    private JComboBox jumpMovement;
+    private JComboBox umuMovement;
+    private JComboBox vtolMovement;
+
+    private String[] techTypes =
         { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
-    JComboBox techType = new JComboBox(techTypes);
-    String[] isTechLevels =
+    private JComboBox techType = new JComboBox(techTypes);
+    private String[] isTechLevels =
         { "Intro", "Standard", "Advanced", "Experimental", "Unoffical" };
-    String[] clanTechLevels =
+    private String[] clanTechLevels =
         { "Standard", "Advanced", "Experimental", "Unoffical" };
-    JComboBox techLevel = new JComboBox(isTechLevels);
-    JTextField era = new JTextField(3);
-    JTextField source = new JTextField(3);
-    RefreshListener refresh = null;
-    Dimension maxSize = new Dimension();
-    JPanel masterPanel;
+    private JComboBox techLevel = new JComboBox(isTechLevels);
+    private String[] formationSizeArray =
+        { "4", "5", "6" };
+    private JComboBox formationSize = new JComboBox(formationSizeArray);
+    private String[] bodyTypeArray =
+        { "Humanoid", "Quad" };
+    private JComboBox bodyType = new JComboBox(bodyTypeArray);
+    private String[] manipulatorArray =
+        { "None", "Armored Glove", "Basic Manipulator", "Basic Manipulator with Mine Clearance", "Battle Claw", "Magnetic Battle Claw", "Vibro Battle Claw", "Heavy Magnetic Battle Claw", "Heavy Vibro Battle Claw", ".5 ton Cargo Lifter", "1 ton Cargo Lifter", "1.5 ton Cargo Lifter", "2 ton Cargo Lifter", "2.5 ton Cargo Lifter", "3 ton Cargo Lifter", "Heavy Battle Claw", "Industrial Drill", "Salvage Arm" };
+    private JComboBox rightManipulator = new JComboBox(manipulatorArray);
+    private JComboBox leftManipulator = new JComboBox(manipulatorArray);
+
+    private JLabel rightManipulatorLabel = new JLabel("Right Manipulator:", SwingConstants.TRAILING);
+    private JLabel leftManipulatorLabel = new JLabel("Left Manipulator:", SwingConstants.TRAILING);
+    private JLabel umuLabel = new JLabel("UMU Movement:", SwingConstants.TRAILING);
+    private JLabel vtolLabel = new JLabel("VTOL Movement:", SwingConstants.TRAILING);
+
+    private JTextField era = new JTextField(3);
+    private JTextField source = new JTextField(3);
+
+    private RefreshListener refresh = null;
+    private Dimension maxSize = new Dimension();
+    private JPanel masterPanel;
 
     private CriticalView critView = null;
     private ImagePanel unitImage = null;
@@ -119,21 +141,26 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     public JPanel enginePanel() {
         masterPanel = new JPanel(new SpringLayout());
 
-        Vector<String> walkMPs = new Vector<String>(26, 1);
-
-        for (int pos = 1; pos <= 25; pos++) {
-            walkMPs.add(Integer.toString(pos));
-        }
-
-        walkMP = new JComboBox(walkMPs.toArray());
-
         Vector<String> weightClasses = new Vector<String>(1, 1);
+        Vector<String> groundMovements = new Vector<String>(1, 1);
+        Vector<String> jumpMovements = new Vector<String>(1, 1);
 
         for (int weight = 0; weight < 5; weight++) {
             weightClasses.add(EntityWeightClass.getClassName(weight));
+            groundMovements.add(String.format("%1$d", weight + 1));
+            jumpMovements.add(String.format("%1$d", weight));
         }
 
         weightClass = new JComboBox(weightClasses.toArray());
+        groundMovement = new JComboBox(groundMovements.toArray());
+        umuMovement = new JComboBox(jumpMovements.toArray());
+
+        jumpMovements.add("5");
+        jumpMovements.add("6");
+        jumpMovements.add("7");
+
+        jumpMovement = new JComboBox(jumpMovements.toArray());
+        vtolMovement = new JComboBox(jumpMovements.toArray());
 
         maxSize.setSize(110, 20);
 
@@ -148,12 +175,40 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(createLabel("Tech Level:", maxSize));
         masterPanel.add(techLevel);
 
-        masterPanel.add(createLabel("Walk MP:", maxSize));
-        masterPanel.add(walkMP);
+        masterPanel.add(createLabel("Formation Size:", maxSize));
+        masterPanel.add(formationSize);
+        masterPanel.add(createLabel("Body Type:", maxSize));
+        masterPanel.add(bodyType);
+
         masterPanel.add(createLabel("Weight:", maxSize));
         masterPanel.add(weightClass);
 
-        setFieldSize(walkMP, maxSize);
+        masterPanel.add(createLabel("Ground Movement:", maxSize));
+        masterPanel.add(groundMovement);
+        masterPanel.add(createLabel("Jump Movement:", maxSize));
+        masterPanel.add(jumpMovement);
+        masterPanel.add(umuLabel);
+        masterPanel.add(umuMovement);
+        masterPanel.add(vtolLabel);
+        masterPanel.add(vtolMovement);
+
+        masterPanel.add(rightManipulatorLabel);
+        masterPanel.add(rightManipulator);
+        masterPanel.add(leftManipulatorLabel);
+        masterPanel.add(leftManipulator);
+
+        setFieldSize(rightManipulator, maxSize);
+        setFieldSize(leftManipulator, maxSize);
+        setFieldSize(rightManipulatorLabel, maxSize);
+        setFieldSize(leftManipulatorLabel, maxSize);
+        setFieldSize(groundMovement, maxSize);
+        setFieldSize(jumpMovement, maxSize);
+        setFieldSize(umuMovement, maxSize);
+        setFieldSize(vtolMovement, maxSize);
+        setFieldSize(umuLabel, maxSize);
+        setFieldSize(vtolLabel, maxSize);
+        setFieldSize(formationSize, maxSize);
+        setFieldSize(bodyType, maxSize);
         setFieldSize(era, maxSize);
         setFieldSize(source, maxSize);
         setFieldSize(techType, maxSize);
@@ -171,6 +226,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         removeAllActionListeners();
         era.setText(Integer.toString(getBattleArmor().getYear()));
         source.setText(getBattleArmor().getSource());
+        vtolMovement.setVisible(getBA().isClan());
+        vtolLabel.setVisible(getBA().isClan());
+        umuMovement.setVisible(getBA().isClan());
+        umuLabel.setVisible(getBA().isClan());
 
         if (getBattleArmor().isOmni()) {
             SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
@@ -245,7 +304,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         }
 
-        walkMP.setSelectedIndex(getBattleArmor().getWalkMP() - 1);
+        groundMovement.setSelectedIndex(getBattleArmor().getWalkMP() - 1);
 
         critView.updateUnit(getBattleArmor());
         critView.refresh();
@@ -309,7 +368,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 // determines
                 // if a BattleArmor is primitive and thus needs a larger engine
                 if (combo.equals(weightClass)) {
-
+                    getBA().setWeightClass(weightClass.getSelectedIndex());
+                    getBA().setWeight(getBA().getTroopers());
+                    getBA().setTrooperWeight(EntityWeightClass.getClassLimit(getBA().getWeightClass()));
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
 
@@ -429,6 +490,57 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
                     addAllActionListeners();
                     removeAllActionListeners();
+                } else if (combo.equals(bodyType)) {
+                    if (combo.getSelectedItem().equals("Quad")) {
+                        getBA().setChassisType(BattleArmor.CHASSIS_TYPE_QUAD);
+                        rightManipulator.setVisible(false);
+                        leftManipulator.setVisible(false);
+                        rightManipulatorLabel.setVisible(false);
+                        leftManipulatorLabel.setVisible(false);
+                    } else {
+                        getBA().setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
+                        rightManipulator.setVisible(true);
+                        leftManipulator.setVisible(true);
+                        rightManipulatorLabel.setVisible(true);
+                        leftManipulatorLabel.setVisible(true);
+                    }
+
+                } else if (combo.equals(groundMovement)) {
+                    getBA().setOriginalWalkMP(groundMovement.getSelectedIndex() - 1);
+                    getBA().setMovementMode(EntityMovementMode.INF_LEG);
+                } else if (combo.equals(jumpMovement)) {
+                    getBA().setOriginalJumpMP(jumpMovement.getSelectedIndex());
+                    getBA().setMovementMode(EntityMovementMode.INF_JUMP);
+                } else if (combo.equals(umuMovement)) {
+                    getBA().setOriginalJumpMP(umuMovement.getSelectedIndex());
+                    getBA().setMovementMode(EntityMovementMode.INF_UMU);
+                } else if (combo.equals(vtolMovement)) {
+                    getBA().setOriginalJumpMP(vtolMovement.getSelectedIndex());
+                    getBA().setMovementMode(EntityMovementMode.VTOL);
+                } else if (combo.equals(rightManipulator)) {
+                    int index = combo.getSelectedIndex();
+
+                    if ((index == 3) || (index == 5) || (index == 7) || ((index >= 9) && (index <= 14))) {
+                        leftManipulator.setSelectedIndex(index);
+                    }
+
+                } else if (combo.equals(leftManipulator)) {
+                    int index = combo.getSelectedIndex();
+
+                    if ((index == 3) || (index == 5) || (index == 7) || ((index >= 9) && (index <= 14))) {
+                        rightManipulator.setSelectedIndex(index);
+                    }
+
+                } else if (combo.equals(formationSize)) {
+                    getBA().setTroopers(formationSize.getSelectedIndex() + 4);
+                    getBA().refreshLocations();
+                    getBA().autoSetInternal();
+                    for (int loc = 0; loc < getBA().locations(); loc++) {
+                        getBA().setArmor(0, loc);
+                        getBA().setArmor(0, loc, true);
+                    }
+                    getBA().setWeight(getBA().getTroopers());
+                    getBA().setTrooperWeight(EntityWeightClass.getClassLimit(getBA().getWeightClass()));
                 }
                 addAllActionListeners();
                 refresh.refreshAll();
@@ -437,7 +549,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 addAllActionListeners();
             }
         } else if (e.getSource() instanceof JCheckBox) {
-            JCheckBox check = (JCheckBox) e.getSource();
+            // JCheckBox check = (JCheckBox) e.getSource();
 
             SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
             masterPanel.setVisible(false);
@@ -466,20 +578,35 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     public void removeAllActionListeners() {
         weightClass.removeActionListener(this);
-        walkMP.removeActionListener(this);
+        groundMovement.removeActionListener(this);
         techLevel.removeActionListener(this);
         techType.removeActionListener(this);
         era.removeKeyListener(this);
         source.removeKeyListener(this);
+        rightManipulator.removeActionListener(this);
+        leftManipulator.removeActionListener(this);
+        jumpMovement.removeActionListener(this);
+        umuMovement.removeActionListener(this);
+        vtolMovement.removeActionListener(this);
+        formationSize.removeActionListener(this);
+        bodyType.removeActionListener(this);
+
     }
 
     public void addAllActionListeners() {
         weightClass.addActionListener(this);
-        walkMP.addActionListener(this);
+        groundMovement.addActionListener(this);
         techLevel.addActionListener(this);
         techType.addActionListener(this);
         era.addKeyListener(this);
         source.addKeyListener(this);
+        rightManipulator.addActionListener(this);
+        leftManipulator.addActionListener(this);
+        jumpMovement.addActionListener(this);
+        umuMovement.addActionListener(this);
+        vtolMovement.addActionListener(this);
+        formationSize.addActionListener(this);
+        bodyType.addActionListener(this);
     }
 
     public void keyPressed(KeyEvent e) {
