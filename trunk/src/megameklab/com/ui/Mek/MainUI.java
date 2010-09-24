@@ -860,6 +860,8 @@ public class MainUI extends JFrame implements RefreshListener {
 
         });
         unitMenu.add(item);
+
+        item = new JMenuItem();
         item.setText("BattleArmor");
         item.setMnemonic(KeyEvent.VK_A);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));

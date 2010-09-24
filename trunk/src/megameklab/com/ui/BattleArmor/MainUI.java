@@ -63,6 +63,7 @@ import megamek.common.MechFileParser;
 import megamek.common.MechSummaryCache;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
+import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.BattleArmor.tabs.ArmorTab;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
@@ -372,7 +373,7 @@ public class MainUI extends JFrame implements RefreshListener {
             }
         }
         try {
-            // BLKBattleArmorFile.encode(filePathName, entity);
+            BLKFile.encode(filePathName, entity);
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -405,7 +406,7 @@ public class MainUI extends JFrame implements RefreshListener {
         }
 
         try {
-            // BLKBattleArmorFile.encode(filePathName, entity);
+            BLKFile.encode(filePathName, entity);
             CConfig.updateSaveFiles(filePathName);
         } catch (Exception ex) {
             ex.printStackTrace();
