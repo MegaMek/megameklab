@@ -91,6 +91,10 @@ V 0.0.0.17 Dev
 + New BattleArmor UI
 + Fixed issues with DS Recordship
 + Fixes to BA UI
++ Fixed issued with BA UI not being accessible from Mek/Vehicle UI
++ Boosted C3 now printing on RS correctly
++ Fixed issue with not all firing arcs showing for Dropships
++ EscapePods now print for Drop ships.
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8)
 + Bug: ammo not print out correctly for vehicles
