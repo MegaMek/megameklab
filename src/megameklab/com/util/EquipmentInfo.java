@@ -68,6 +68,8 @@ public class EquipmentInfo {
     public static int C3S = 1;
     public static int C3M = 2;
     public static int C3I = 3;
+    public static int C3SB = 4;
+    public static int C3MB = 5;
 
     /**
      * base class.
@@ -97,6 +99,9 @@ public class EquipmentInfo {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                 c3Level = C3M;
             }
+            if (mount.getType().hasFlag(WeaponType.F_C3MBS)) {
+                c3Level = C3MB;
+            }
             WeaponType weapon = (WeaponType) mount.getType();
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
@@ -119,8 +124,10 @@ public class EquipmentInfo {
 
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
-        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S) || mount.getType().hasFlag(MiscType.F_C3SBS)))) {
+        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
             c3Level = C3S;
+        } else if (((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3SBS))) {
+            c3Level = C3SB;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ECM)) {
             if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
                 longRange = 4;
@@ -163,6 +170,9 @@ public class EquipmentInfo {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                 c3Level = C3M;
             }
+            if (mount.getType().hasFlag(WeaponType.F_C3MBS)) {
+                c3Level = C3MB;
+            }
             WeaponType weapon = (WeaponType) mount.getType();
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
@@ -189,8 +199,10 @@ public class EquipmentInfo {
 
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
-        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S) || mount.getType().hasFlag(MiscType.F_C3SBS)))) {
+        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
             c3Level = C3S;
+        } else if (((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3SBS))) {
+            c3Level = C3SB;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ECM)) {
             if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
                 longRange = 4;
@@ -242,7 +254,9 @@ public class EquipmentInfo {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                 c3Level = C3M;
             }
-
+            if (mount.getType().hasFlag(WeaponType.F_C3MBS)) {
+                c3Level = C3MB;
+            }
             WeaponType weapon = (WeaponType) mount.getType();
 
             minRange = Math.max(0, weapon.minimumRange);
@@ -268,8 +282,10 @@ public class EquipmentInfo {
             secondaryLocation = mount.getSecondLocation();
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
-        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S) || mount.getType().hasFlag(MiscType.F_C3SBS))) {
+        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
             c3Level = C3S;
+        } else if (((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3SBS))) {
+            c3Level = C3SB;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_ECM)) {
             if (mount.getType().getInternalName().equals(Sensor.WATCHDOG)) {
                 longRange = 4;
@@ -324,6 +340,9 @@ public class EquipmentInfo {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                 c3Level = C3M;
             }
+            if (mount.getType().hasFlag(WeaponType.F_C3MBS)) {
+                c3Level = C3MB;
+            }
 
             WeaponType weapon = (WeaponType) mount.getType();
 
@@ -355,8 +374,10 @@ public class EquipmentInfo {
 
             if (equipment.hasFlag(MiscType.F_C3I)) {
                 c3Level = C3I;
-            } else if (equipment.hasFlag(MiscType.F_C3S) || equipment.hasFlag(MiscType.F_C3SBS)) {
+            } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
                 c3Level = C3S;
+            } else if (((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3SBS))) {
+                c3Level = C3SB;
             } else if (equipment.hasFlag(MiscType.F_ECM)) {
                 if (equipment.getInternalName().equals(Sensor.WATCHDOG)) {
                     longRange = 4;

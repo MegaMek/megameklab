@@ -646,7 +646,8 @@ public class MainUI extends JFrame implements RefreshListener {
 
         });
         unitMenu.add(item);
-        unitMenu.add(item);
+
+        item = new JMenuItem();
         item.setText("BattleArmor");
         item.setMnemonic(KeyEvent.VK_A);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
@@ -657,6 +658,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
         });
         unitMenu.add(item);
+
         file.add(unitMenu);
 
         item = new JMenuItem();

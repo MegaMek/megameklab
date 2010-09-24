@@ -190,7 +190,7 @@ public class PrintSpheroid implements Printable {
         g2d.drawString(String.format("%1$,d", dropship.calculateBattleValue(true, true)), 152, 492.2f);
 
         // Crew data
-        g2d.drawString(String.format("%1$s/%1$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 624.6f);
+        g2d.drawString(String.format("%1$s/%2$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 624.6f);
 
         g2d.drawString(String.format("%1$s", dropship.getNCrew()), 283, 594.6f);
         g2d.drawString(String.format("%1$s", dropship.getNPassenger()), 283, 604.6f);
@@ -276,6 +276,7 @@ public class PrintSpheroid implements Printable {
 
                 Paper p = pageFormat.getPaper();
                 p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+
                 pageFormat.setPaper(p);
 
                 pj.setPrintable(this, pageFormat);
