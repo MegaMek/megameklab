@@ -1404,13 +1404,13 @@ public class ImageHelper {
         int stringWidth;
         if (isArmored) {
             g2d.drawString("O C  Slave", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O C  Slave", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C", font);
         } else {
             g2d.drawString("C  Slave", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "C  Slave", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
         }
 
-        stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+        // stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
 
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
@@ -1423,14 +1423,14 @@ public class ImageHelper {
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O C  Slave Boosted", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O C  Slave Boosted", font);
+            g2d.drawString("O C  Boosted Slave", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C", font);
         } else {
-            g2d.drawString("C  Slave Boosted", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "C  Slave Boosted", font);
+            g2d.drawString("C  Boosted Slave", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
         }
 
-        stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+        // stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
 
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
@@ -1444,13 +1444,13 @@ public class ImageHelper {
         int stringWidth;
         if (isArmored) {
             g2d.drawString("O C  Master", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O C  Master", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C", font);
         } else {
             g2d.drawString("C  Master", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "C  Master", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
         }
 
-        stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+        // stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
 
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
@@ -1462,14 +1462,14 @@ public class ImageHelper {
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O C  Master Boosted", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O C  Master Boosted", font);
+            g2d.drawString("O C  Boosted Master", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C", font);
         } else {
-            g2d.drawString("C  Master Boosted", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "C  Master Boosted", font);
+            g2d.drawString("C  Boosted Master", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
         }
 
-        stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+        // stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
 
         font = font.deriveFont(attrMap);
         g2d.setFont(font);
