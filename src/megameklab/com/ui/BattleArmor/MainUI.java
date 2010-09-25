@@ -724,6 +724,7 @@ public class MainUI extends JFrame implements RefreshListener {
         entity.setWeightClass(0);
         entity.setWeight(EntityWeightClass.getClassLimit(0));
         entity.setTroopers(4);
+        entity.setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
 
         entity.autoSetInternal();
         for (int loc = 0; loc < entity.locations(); loc++) {

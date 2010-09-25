@@ -95,6 +95,7 @@ V 0.0.0.17 Dev
 + Boosted C3 now printing on RS correctly
 + Fixed issue with not all firing arcs showing for Dropships
 + EscapePods now print for Drop ships.
++ Issues with how C3 Boosted Prints on RS
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8)
 + Bug: ammo not print out correctly for vehicles

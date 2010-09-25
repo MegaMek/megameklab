@@ -1269,6 +1269,9 @@ public class UnitUtil {
             }
         }
 
+        if ((eq instanceof WeaponType) && (eq.hasFlag(WeaponType.F_C3M) || eq.hasFlag(WeaponType.F_C3MBS))) {
+            return eq.getName().substring(0, eq.getName().indexOf("with TAG") - 1);
+        }
         return eq.getName();
     }
 

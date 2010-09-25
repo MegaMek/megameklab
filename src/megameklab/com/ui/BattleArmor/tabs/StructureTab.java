@@ -187,11 +187,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(groundMovement);
         masterPanel.add(createLabel("Jump Movement:", maxSize));
         masterPanel.add(jumpMovement);
-        masterPanel.add(umuLabel);
-        masterPanel.add(umuMovement);
-        masterPanel.add(vtolLabel);
-        masterPanel.add(vtolMovement);
-
         masterPanel.add(rightManipulatorLabel);
         masterPanel.add(rightManipulator);
         masterPanel.add(leftManipulatorLabel);
@@ -226,31 +221,41 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         removeAllActionListeners();
         era.setText(Integer.toString(getBattleArmor().getYear()));
         source.setText(getBattleArmor().getSource());
-        vtolMovement.setVisible(getBA().isClan());
-        vtolLabel.setVisible(getBA().isClan());
-        umuMovement.setVisible(getBA().isClan());
-        umuLabel.setVisible(getBA().isClan());
-
-        if (getBattleArmor().isOmni()) {
-            SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
-            masterPanel.setVisible(false);
-            masterPanel.setVisible(true);
-        } else {
-            SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
-            masterPanel.setVisible(false);
-            masterPanel.setVisible(true);
-        }
 
         if (getBattleArmor().isClan()) {
             techLevel.removeAllItems();
             for (String item : clanTechLevels) {
                 techLevel.addItem(item);
             }
+            masterPanel.add(umuLabel);
+            masterPanel.add(umuMovement);
+            masterPanel.add(vtolLabel);
+            masterPanel.add(vtolMovement);
         } else {
             techLevel.removeAllItems();
             for (String item : isTechLevels) {
                 techLevel.addItem(item);
             }
+            masterPanel.remove(vtolLabel);
+            masterPanel.remove(vtolMovement);
+            masterPanel.remove(umuLabel);
+            masterPanel.remove(umuMovement);
+        }
+
+        if (getBA().getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED) {
+            masterPanel.remove(rightManipulator);
+            masterPanel.remove(leftManipulator);
+            masterPanel.remove(rightManipulatorLabel);
+            masterPanel.remove(leftManipulatorLabel);
+            masterPanel.add(rightManipulatorLabel);
+            masterPanel.add(rightManipulator);
+            masterPanel.add(leftManipulatorLabel);
+            masterPanel.add(leftManipulator);
+        } else {
+            masterPanel.remove(rightManipulator);
+            masterPanel.remove(leftManipulator);
+            masterPanel.remove(rightManipulatorLabel);
+            masterPanel.remove(leftManipulatorLabel);
         }
 
         if (getBattleArmor().isMixedTech()) {
@@ -312,6 +317,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         unitImage.updateUnit(getBattleArmor());
         unitImage.refresh();
 
+        SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
         addAllActionListeners();
 
     }
@@ -448,6 +454,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getBattleArmor().setTechLevel(TechConstants.T_CLAN_TW);
                         getBattleArmor().setArmorTechLevel(TechConstants.T_CLAN_TW);
                         getBattleArmor().setMixedTech(false);
+                        masterPanel.add(umuLabel);
+                        masterPanel.add(umuMovement);
+                        masterPanel.add(vtolLabel);
+                        masterPanel.add(vtolMovement);
+
                     } else if ((techType.getSelectedIndex() == 0) && (getBattleArmor().isClan() || getBattleArmor().isMixedTech())) {
                         techLevel.removeAllItems();
 
@@ -458,6 +469,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getBattleArmor().setTechLevel(TechConstants.T_INTRO_BOXSET);
                         getBattleArmor().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
                         getBattleArmor().setMixedTech(false);
+                        masterPanel.remove(umuLabel);
+                        masterPanel.remove(umuMovement);
+                        masterPanel.remove(vtolLabel);
+                        masterPanel.remove(vtolMovement);
 
                     } else if ((techType.getSelectedIndex() == 2) && (!getBattleArmor().isMixedTech() || getBattleArmor().isClan())) {
                         techLevel.removeAllItems();
@@ -471,6 +486,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                             getBattleArmor().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
                         }
                         getBattleArmor().setMixedTech(true);
+                        masterPanel.remove(umuLabel);
+                        masterPanel.remove(umuMovement);
+                        masterPanel.remove(vtolLabel);
+                        masterPanel.remove(vtolMovement);
 
                     } else if ((techType.getSelectedIndex() == 3) && (!getBattleArmor().isMixedTech() || !getBattleArmor().isClan())) {
                         techLevel.removeAllItems();
@@ -484,6 +503,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                             getBattleArmor().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
                         }
                         getBattleArmor().setMixedTech(true);
+                        masterPanel.add(umuLabel);
+                        masterPanel.add(umuMovement);
+                        masterPanel.add(vtolLabel);
+                        masterPanel.add(vtolMovement);
                     } else {
                         addAllActionListeners();
                         return;
@@ -493,30 +516,39 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 } else if (combo.equals(bodyType)) {
                     if (combo.getSelectedItem().equals("Quad")) {
                         getBA().setChassisType(BattleArmor.CHASSIS_TYPE_QUAD);
-                        rightManipulator.setVisible(false);
-                        leftManipulator.setVisible(false);
-                        rightManipulatorLabel.setVisible(false);
-                        leftManipulatorLabel.setVisible(false);
+                        masterPanel.remove(rightManipulator);
+                        masterPanel.remove(leftManipulator);
+                        masterPanel.remove(rightManipulatorLabel);
+                        masterPanel.remove(leftManipulatorLabel);
                     } else {
                         getBA().setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
-                        rightManipulator.setVisible(true);
-                        leftManipulator.setVisible(true);
-                        rightManipulatorLabel.setVisible(true);
-                        leftManipulatorLabel.setVisible(true);
+                        masterPanel.remove(rightManipulator);
+                        masterPanel.remove(leftManipulator);
+                        masterPanel.remove(rightManipulatorLabel);
+                        masterPanel.remove(leftManipulatorLabel);
+                        masterPanel.add(rightManipulatorLabel);
+                        masterPanel.add(rightManipulator);
+                        masterPanel.add(leftManipulatorLabel);
+                        masterPanel.add(leftManipulator);
                     }
-
                 } else if (combo.equals(groundMovement)) {
-                    getBA().setOriginalWalkMP(groundMovement.getSelectedIndex() - 1);
                     getBA().setMovementMode(EntityMovementMode.INF_LEG);
+                    getBA().setOriginalWalkMP(groundMovement.getSelectedIndex() + 1);
                 } else if (combo.equals(jumpMovement)) {
-                    getBA().setOriginalJumpMP(jumpMovement.getSelectedIndex());
                     getBA().setMovementMode(EntityMovementMode.INF_JUMP);
+                    getBA().setOriginalJumpMP(jumpMovement.getSelectedIndex());
+                    umuMovement.setSelectedIndex(0);
+                    vtolMovement.setSelectedIndex(0);
                 } else if (combo.equals(umuMovement)) {
-                    getBA().setOriginalJumpMP(umuMovement.getSelectedIndex());
                     getBA().setMovementMode(EntityMovementMode.INF_UMU);
+                    getBA().setOriginalJumpMP(umuMovement.getSelectedIndex());
+                    vtolMovement.setSelectedIndex(0);
+                    jumpMovement.setSelectedIndex(0);
                 } else if (combo.equals(vtolMovement)) {
-                    getBA().setOriginalJumpMP(vtolMovement.getSelectedIndex());
                     getBA().setMovementMode(EntityMovementMode.VTOL);
+                    getBA().setOriginalJumpMP(vtolMovement.getSelectedIndex());
+                    umuMovement.setSelectedIndex(0);
+                    jumpMovement.setSelectedIndex(0);
                 } else if (combo.equals(rightManipulator)) {
                     int index = combo.getSelectedIndex();
 
