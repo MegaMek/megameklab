@@ -1286,10 +1286,14 @@ public class PrintQuad implements Printable {
 
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
                     ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
-                } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S) || m.getType().hasFlag(MiscType.F_C3SBS))) {
+                } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S))) {
                     ImageHelper.printC3sName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3M)) {
                     ImageHelper.printC3mName(g2d, lineStart, linePoint, font, m.isArmored());
+                } else if ((((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3SBS))))) {
+                    ImageHelper.printC3sbName(g2d, lineStart, linePoint, font, m.isArmored());
+                } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3MBS)) {
+                    ImageHelper.printC3mbName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else {
                     g2d.drawString(critName.toString(), lineStart, linePoint);
                 }

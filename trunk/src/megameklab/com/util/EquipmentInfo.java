@@ -241,10 +241,6 @@ public class EquipmentInfo {
         if (mount.isRearMounted()) {
             name += "(R)";
         }
-        if (mount.isBodyMounted() && (unit instanceof BattleArmor) && ((((BattleArmor) unit).getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED))) {
-            name += " (Body)";
-        }
-
         count = 1;
         techLevel = mount.getType().getTechLevel();
 
