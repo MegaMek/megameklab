@@ -243,7 +243,7 @@ public class ArmorView extends IView implements ChangeListener {
 
     public void refresh() {
         removeAllListeners();
-        int maxArmor = UnitUtil.getArmorPoints(unit, UnitUtil.getMaximumArmorTonnage(unit));
+        int maxArmor = UnitUtil.getMaximumArmorPoints(unit);
         for (int location = 0; location < unit.locations(); location++) {
 
             switch (location) {
