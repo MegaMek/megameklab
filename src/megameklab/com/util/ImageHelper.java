@@ -559,53 +559,23 @@ public class ImageHelper {
         }
 
         int pointX = 22;
+        double lineFeed = ImageHelper.getStringHeight(g2d, "H", g2d.getFont());
 
-        StringBuffer sb = new StringBuffer("Cargo: ");
+        Font font = UnitUtil.deriveFont(true, g2d.getFont().getSize2D());
 
+        g2d.setFont(font);
+        g2d.drawString("Cargo: ", pointX, pointY);
+
+        pointY += lineFeed;
+
+        font = UnitUtil.deriveFont(g2d.getFont().getSize2D());
+
+        g2d.setFont(font);
         for (Bay bay : dropship.getTransportBays()) {
-
-            String shortName = ImageHelper.getBayString(bay);
-            shortName = shortName.trim();
-            sb.append(shortName);
-            sb.append(", ");
+            g2d.drawString(ImageHelper.getBayString(bay), pointX, pointY);
+            pointY += lineFeed;
         }
 
-        int linecount = 0;
-
-        double stringLength = ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
-        linecount = (int) Math.floor(stringLength / 160);
-
-        sb.setLength(0);
-        sb.append("Cargo: ");
-
-        g2d.drawString(sb.toString(), pointX, pointY - (linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont()));
-        pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
-        sb = new StringBuffer();
-        int linesprinted = 0;
-        int currentStringLength = 0;
-
-        for (Bay bay : dropship.getTransportBays()) {
-            currentStringLength = sb.length();
-            String shortName = ImageHelper.getBayString(bay);
-            shortName = shortName.trim();
-            sb.append(shortName);
-            sb.append(", ");
-            if ((ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont()) > 160) && (linesprinted < linecount)) {
-                sb.setLength(sb.length() - ((sb.length() - currentStringLength) + 2));
-                g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
-                linesprinted++;
-                sb.setLength(0);
-                shortName = ImageHelper.getBayString(bay);
-                shortName = shortName.trim();
-                sb.append(shortName);
-                sb.append(", ");
-            }
-        }
-        if (sb.length() > 0) {
-            sb.setLength(sb.length() - 2);
-            g2d.drawString(sb.toString(), pointX, pointY - ((linecount - linesprinted) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
-            pointY += ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont());
-        }
     }
 
     public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int offset) {
@@ -3014,13 +2984,7 @@ public class ImageHelper {
     }
 
     public static String getBayString(Bay bay) {
-        StringBuffer returnString = new StringBuffer(bay.getType());
-
-        if (bay.getLoadedUnits().size() > 0) {
-            returnString.append("(");
-            returnString.append(bay.getLoadedUnits().size());
-            returnString.append(")");
-        }
+        StringBuffer returnString = new StringBuffer(bay.getUnusedString());
 
         if (bay.getDoors() > 0) {
             returnString.append("(");
