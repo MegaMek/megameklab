@@ -40,9 +40,11 @@ public class StatusBar extends ITab {
     private JPanel tonnagePanel = new JPanel();
     private JPanel movementPanel = new JPanel();
     private JPanel bvPanel = new JPanel();
+    private JPanel slotsPanel = new JPanel();
     private JLabel move = new JLabel();
     private JLabel bvLabel = new JLabel();
     private JLabel tons = new JLabel();
+    private JLabel slots = new JLabel();
     private EntityVerifier entityVerifier = new EntityVerifier(new File("data/Tankfiles/UnitVerifierOptions.xml"));
     private TestTank testEntity = null;
 
@@ -54,6 +56,7 @@ public class StatusBar extends ITab {
         this.add(movementPanel());
         this.add(bvPanel());
         this.add(tonnagePanel());
+        this.add(slotsPanel());
 
         SpringLayoutHelper.setupSpringGrid(this, 4);
         refresh();
@@ -86,8 +89,15 @@ public class StatusBar extends ITab {
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tonnagePanel.add(tons);
-
         return tonnagePanel;
+    }
+
+    public JPanel slotsPanel() {
+        Tank tank = (Tank)unit;
+        int currentSlots = tank.getTotalSlots() - tank.getFreeSlots();
+        slots.setText("Slots: "+currentSlots+"/"+tank.getTotalSlots());
+        slotsPanel.add(slots);
+        return slotsPanel;
     }
 
     public void refresh() {
@@ -111,6 +121,14 @@ public class StatusBar extends ITab {
             tons.setForeground(Color.red);
         } else {
             tons.setForeground(Color.black);
+        }
+        Tank tank = (Tank)unit;
+        int currentSlots = tank.getTotalSlots() - tank.getFreeSlots();
+        slots.setText("Slots: "+currentSlots+"/"+tank.getTotalSlots());
+        if (currentSlots > tank.getTotalSlots()) {
+            slots.setForeground(Color.red);
+        } else {
+            slots.setForeground(Color.black);
         }
 
         bvLabel.setText("BV: " + bv);
