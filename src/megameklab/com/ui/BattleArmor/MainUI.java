@@ -792,6 +792,11 @@ public class MainUI extends JFrame implements RefreshListener {
         dispose();
     }
 
+    private void jMenuLoadMech() {
+        new megameklab.com.ui.Mek.MainUI();
+        dispose();
+    }
+
     private void jMenuPrintCurrentUnit() {
         UnitPrintManager.printEntity(entity);
     }
@@ -805,6 +810,18 @@ public class MainUI extends JFrame implements RefreshListener {
 
         JMenu unitMenu = new JMenu("New Unit");
         unitMenu.setMnemonic(KeyEvent.VK_N);
+        item.setText("Mech");
+        item.setMnemonic('M');
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuLoadMech();
+            }
+
+        });
+        unitMenu.add(item);
+
+        item = new JMenuItem();
         item.setText("Tank");
         item.setMnemonic(KeyEvent.VK_T);
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
