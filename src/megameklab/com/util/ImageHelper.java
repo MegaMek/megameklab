@@ -74,13 +74,15 @@ public class ImageHelper {
     public static Image armorPip = null;
 
     public static final String[] LOCATION_ABBRS =
-        { "N", "LF", "RF", "A", "FL", "FR", "AL", "AR", "FL/FR", "LA/RA" };
+        { "N", "LF", "RF", "A", "FL", "FR", "AL", "AR", "FL/FR", "AL/AR" };
+    public static final int[] LOCATION_PRINT =
+        { 0, 1, 2, 4, 5, 8, 9, 6, 7, 3 };
     public static final int LOC_FL = 4;
     public static final int LOC_FR = 5;
     public static final int LOC_AL = 6;
     public static final int LOC_AR = 7;
     public static final int LOC_FL_FR = 8;
-    public static final int LOC_AF_AR = 9;
+    public static final int LOC_AL_AR = 9;
 
     public static Image getRecordSheet(Entity unit) {
         return ImageHelper.getRecordSheet(unit, false);
@@ -1620,7 +1622,7 @@ public class ImageHelper {
                         break;
                     case Aero.LOC_RWING:
                         eqHash = equipmentLocations.get(ImageHelper.LOC_AR);
-                        capitalEqHash = capitalEquipmentLocations.get(ImageHelper.LOC_AL);
+                        capitalEqHash = capitalEquipmentLocations.get(ImageHelper.LOC_AR);
                         break;
                 }
             }
@@ -1671,7 +1673,7 @@ public class ImageHelper {
                     break;
                 case ImageHelper.LOC_AL:
                     oppositePos = ImageHelper.LOC_AR;
-                    newPosition = ImageHelper.LOC_AF_AR;
+                    newPosition = ImageHelper.LOC_AL_AR;
                     break;
                 default:
                     continue;
@@ -1735,9 +1737,9 @@ public class ImageHelper {
 
         lineFeed = stringHeight;
 
-        for (int pos = Aero.LOC_NOSE; pos <= ImageHelper.LOC_AF_AR; pos++) {
+        for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
 
-            Hashtable<String, EquipmentInfo> eqHash = capitalEquipmentLocations.get(pos);
+            Hashtable<String, EquipmentInfo> eqHash = capitalEquipmentLocations.get(LOCATION_PRINT[pos]);
 
             if (eqHash.isEmpty()) {
                 continue;
@@ -1801,7 +1803,7 @@ public class ImageHelper {
                 font = UnitUtil.deriveFont(fontSize);
                 g2d.setFont(font);
 
-                String location = ImageHelper.LOCATION_ABBRS[pos];
+                String location = ImageHelper.LOCATION_ABBRS[LOCATION_PRINT[pos]];
 
                 ImageHelper.printCenterString(g2d, location, font, locPoint + 5, linePoint);
                 ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat * eqi.count), font, heatPoint + 4, linePoint);
@@ -1848,9 +1850,9 @@ public class ImageHelper {
             }
         }
 
-        for (int pos = Aero.LOC_NOSE; pos <= ImageHelper.LOC_AF_AR; pos++) {
+        for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
 
-            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(LOCATION_PRINT[pos]);
 
             if (eqHash.isEmpty()) {
                 continue;
@@ -1914,7 +1916,7 @@ public class ImageHelper {
                 font = UnitUtil.deriveFont(fontSize);
                 g2d.setFont(font);
 
-                String location = ImageHelper.LOCATION_ABBRS[pos];
+                String location = ImageHelper.LOCATION_ABBRS[LOCATION_PRINT[pos]];
 
                 ImageHelper.printCenterString(g2d, location, font, locPoint + 5, linePoint);
                 ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat * eqi.count), font, heatPoint + 4, linePoint);
@@ -2903,7 +2905,7 @@ public class ImageHelper {
         boolean hasSubCapital = false;
 
         int weaponCount = 1;
-        for (int pos = Aero.LOC_NOSE; pos <= ImageHelper.LOC_AF_AR; pos++) {
+        for (int pos = Aero.LOC_NOSE; pos <= ImageHelper.LOC_AL_AR; pos++) {
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
             if (eqHash.size() < 1) {
