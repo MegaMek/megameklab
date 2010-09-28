@@ -51,7 +51,9 @@ public class ArmorTab extends ITab implements ActionListener {
 
     private ArmorView armor;
     private RefreshListener refresh = null;
-    private JComboBox armorCombo = new JComboBox(EquipmentType.armorNames);
+    private String[] armorNames = new String[] { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS], EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED], EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE], EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE]};
+    private JComboBox armorCombo = new JComboBox(armorNames);
 
     private JButton allocateArmorButton = new JButton("Allocate");
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
@@ -83,6 +85,7 @@ public class ArmorTab extends ITab implements ActionListener {
         removeAllListeners();
         clanArmor.setVisible(unit.isMixedTech());
         clanArmor.setSelected(unit.isClanArmor());
+        createSystemList();
         setTotalTonnage();
         addAllListeners();
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil.getMaximumArmorTonnage(unit));
@@ -98,7 +101,7 @@ public class ArmorTab extends ITab implements ActionListener {
     public void actionPerformed(ActionEvent arg0) {
         removeAllListeners();
         if (arg0.getSource() instanceof JComboBox) {
-            unit.setArmorType(armorCombo.getSelectedIndex());
+            unit.setArmorType(getArmorType());
             if (refresh != null) {
                 refresh.refreshAll();
             }
@@ -186,7 +189,58 @@ public class ArmorTab extends ITab implements ActionListener {
 
     public void setArmorType(int type) {
         removeAllListeners();
-        armorCombo.setSelectedIndex(type);
+
+        for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
+            if (EquipmentType.armorNames[type].equals(armorNames[pos])) {
+                armorCombo.setSelectedIndex(pos);
+                break;
+            }
+        }
         addAllListeners();
+    }
+
+    private void createSystemList() {
+        int selectedIndex = armorCombo.getSelectedIndex();
+        armorCombo.removeAllItems();
+        int armorCount = armorNames.length;
+
+        switch (getTank().getTechLevel()) {
+            case TechConstants.T_INTRO_BOXSET:
+                armorCount = 1;
+                break;
+            case TechConstants.T_CLAN_TW:
+            case TechConstants.T_IS_TW_NON_BOX:
+            case TechConstants.T_CLAN_ADVANCED:
+            case TechConstants.T_IS_ADVANCED:
+                armorCount = 4;
+                break;
+            case TechConstants.T_CLAN_EXPERIMENTAL:
+            case TechConstants.T_IS_EXPERIMENTAL:
+            case TechConstants.T_CLAN_UNOFFICIAL:
+            case TechConstants.T_IS_UNOFFICIAL:
+                break;
+        }
+
+        for (int index = 0; index < armorCount; index++) {
+            armorCombo.addItem(armorNames[index]);
+        }
+
+        if (armorCount <= selectedIndex) {
+            armorCombo.setSelectedIndex(0);
+        } else {
+            armorCombo.setSelectedIndex(selectedIndex);
+        }
+    }
+
+    private int getArmorType() {
+        String armorType = armorCombo.getSelectedItem().toString();
+
+        for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
+            if (armorType.equals(EquipmentType.armorNames[pos])) {
+                return pos;
+            }
+        }
+
+        return EquipmentType.T_ARMOR_STANDARD;
     }
 }

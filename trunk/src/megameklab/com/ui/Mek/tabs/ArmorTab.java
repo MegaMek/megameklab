@@ -56,8 +56,8 @@ public class ArmorTab extends ITab implements ActionListener {
     private ArmorView armor;
     private RefreshListener refresh = null;
     private String[] armorNames = new String[]
-        { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS], EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH], EquipmentType.armorNames[EquipmentType.T_ARMOR_COMMERCIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_CARBIDE], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_IMP], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR],
-                EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED], EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE], EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE], EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK] };
+        { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS], EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH], EquipmentType.armorNames[EquipmentType.T_ARMOR_COMMERCIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO],  EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR],
+                EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED], EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE], EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE]};
     private JComboBox armorCombo = new JComboBox(armorNames);
 
     private JButton allocateArmorButton = new JButton("Allocate");
