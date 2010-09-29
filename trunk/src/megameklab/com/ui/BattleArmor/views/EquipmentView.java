@@ -28,7 +28,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -76,13 +75,8 @@ public class EquipmentView extends IView implements ActionListener {
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
-    private int jumpBoosterMP = 0;
-
     public EquipmentView(BattleArmor unit) {
         super(unit);
-        if (unit.hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-            jumpBoosterMP = unit.getOriginalJumpMP();
-        }
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
@@ -169,10 +163,6 @@ public class EquipmentView extends IView implements ActionListener {
         }
     }
 
-    public void setJumpBoosterMP(int mp) {
-        jumpBoosterMP = mp;
-    }
-
     public void refresh() {
         removeAllListeners();
         loadEquipmentCombo();
@@ -203,23 +193,11 @@ public class EquipmentView extends IView implements ActionListener {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
             boolean success = false;
-            EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
-            boolean isMisc = equip instanceof MiscType;
-            if (isMisc && equip.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                setJumpBoosterMP(Integer.parseInt(JOptionPane.showInputDialog(this, "How many Jump MP?")));
-                updateJumpMP();
-            } else if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-                if (!UnitUtil.hasTargComp(unit)) {
-                    UnitUtil.updateTC(getBattleArmor(), equip);
-                    success = true;
-                }
-            } else {
-                try {
-                    getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
-                    success = true;
-                } catch (LocationFullException lfe) {
-                    // this can't happen, we add to Entity.LOC_NONE
-                }
+            try {
+                getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
+                success = true;
+            } catch (LocationFullException lfe) {
+                // this can't happen, we add to Entity.LOC_NONE
             }
             if (success) {
                 equipmentList.addCrit(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()));
@@ -230,9 +208,6 @@ public class EquipmentView extends IView implements ActionListener {
 
             for (; count > 0; count--) {
                 if (startRow > -1) {
-                    if ((equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT) instanceof MiscType) && ((EquipmentType) equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                        setJumpBoosterMP(0);
-                    }
                     equipmentList.removeMounted(startRow);
                     equipmentList.removeCrit(startRow);
                 }
@@ -262,27 +237,6 @@ public class EquipmentView extends IView implements ActionListener {
         equipmentList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
         equipmentScroll.repaint();
-        updateJumpMP();
-        if (refresh != null) {
-            refresh.refreshStatus();
-            refresh.refreshBuild();
-        }
-    }
-
-    private void updateJumpMP() {
-        int mp = 0;
-        if (jumpBoosterMP > 0) {
-            mp = jumpBoosterMP;
-        } else {
-            for (Mounted mount : unit.getEquipment()) {
-                if (mount.getType() instanceof MiscType) {
-                    if (mount.getType().hasFlag(MiscType.F_JUMP_JET)) {
-                        mp++;
-                    }
-                }
-            }
-        }
-        unit.setOriginalJumpMP(mp);
     }
 
     public CriticalTableModel getEquipmentList() {
