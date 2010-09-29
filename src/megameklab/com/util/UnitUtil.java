@@ -2124,4 +2124,24 @@ public class UnitUtil {
 
         return true;
     }
+
+    static public Integer getMaxWeight(BattleArmor ba) {
+        Integer weight = 400;
+
+        switch (ba.getWeightClass()) {
+            case 0:
+                weight = 400;
+                break;
+            case 1:
+                weight = 750;
+                break;
+            case 2:
+            case 3:
+            case 4:
+                weight = ba.getWeightClass() * 500;
+                break;
+
+        }
+        return weight;
+    }
 }

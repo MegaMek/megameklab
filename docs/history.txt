@@ -102,7 +102,7 @@ V 0.0.0.17 Dev
 + BA Armor Tab fixed
 + Fixes to BA structure tab
 + Added the ability to move to back Mech UI from BA UI
-
++ Added code to calculate max weight for BA
 
 V 0.0.0.16 (01/30/2010 17:43 UTC-8)
 + Bug: ammo not print out correctly for vehicles
