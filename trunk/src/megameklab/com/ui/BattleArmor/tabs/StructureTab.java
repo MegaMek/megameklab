@@ -257,7 +257,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         // Chassis is checked again this time for manipulator placement
-        if (getBA().getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED) {
+        if (getBattleArmor().getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED) {
             masterPanel.remove(rightManipulator);
             masterPanel.remove(leftManipulator);
             masterPanel.remove(rightManipulatorLabel);
@@ -407,14 +407,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 // determines
                 // if a BattleArmor is primitive and thus needs a larger engine
                 if (combo.equals(weightClass)) {
-                    if (getBA().getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
-                        getBA().setWeightClass(weightClass.getSelectedIndex() + 1);
+                    if (getBattleArmor().getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
+                        getBattleArmor().setWeightClass(weightClass.getSelectedIndex() + 1);
                     } else {
-                        getBA().setWeightClass(weightClass.getSelectedIndex());
+                        getBattleArmor().setWeightClass(weightClass.getSelectedIndex());
                     }
 
-                    getBA().setWeight(getBA().getTroopers());
-                    getBA().setTrooperWeight(EntityWeightClass.getClassLimit(getBA().getWeightClass()));
+                    getBattleArmor().setWeight(getBattleArmor().getTroopers());
+                    getBattleArmor().setTrooperWeight(EntityWeightClass.getClassLimit(getBattleArmor().getWeightClass()));
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
 
@@ -553,13 +553,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     removeAllActionListeners();
                 } else if (combo.equals(bodyType)) {
                     if (combo.getSelectedItem().equals("Quad")) {
-                        getBA().setChassisType(BattleArmor.CHASSIS_TYPE_QUAD);
+                        getBattleArmor().setChassisType(BattleArmor.CHASSIS_TYPE_QUAD);
                         masterPanel.remove(rightManipulator);
                         masterPanel.remove(leftManipulator);
                         masterPanel.remove(rightManipulatorLabel);
                         masterPanel.remove(leftManipulatorLabel);
                     } else {
-                        getBA().setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
+                        getBattleArmor().setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
                         masterPanel.remove(rightManipulator);
                         masterPanel.remove(leftManipulator);
                         masterPanel.remove(rightManipulatorLabel);
@@ -570,21 +570,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         masterPanel.add(leftManipulator);
                     }
                 } else if (combo.equals(groundMovement)) {
-                    getBA().setMovementMode(EntityMovementMode.INF_LEG);
-                    getBA().setOriginalWalkMP(groundMovement.getSelectedIndex() + 1);
+                    getBattleArmor().setMovementMode(EntityMovementMode.INF_LEG);
+                    getBattleArmor().setOriginalWalkMP(groundMovement.getSelectedIndex() + 1);
                 } else if (combo.equals(jumpMovement)) {
-                    getBA().setMovementMode(EntityMovementMode.INF_JUMP);
-                    getBA().setOriginalJumpMP(jumpMovement.getSelectedIndex());
+                    getBattleArmor().setMovementMode(EntityMovementMode.INF_JUMP);
+                    getBattleArmor().setOriginalJumpMP(jumpMovement.getSelectedIndex());
                     umuMovement.setSelectedIndex(0);
                     vtolMovement.setSelectedIndex(0);
                 } else if (combo.equals(umuMovement)) {
-                    getBA().setMovementMode(EntityMovementMode.INF_UMU);
-                    getBA().setOriginalJumpMP(umuMovement.getSelectedIndex());
+                    getBattleArmor().setMovementMode(EntityMovementMode.INF_UMU);
+                    getBattleArmor().setOriginalJumpMP(umuMovement.getSelectedIndex());
                     vtolMovement.setSelectedIndex(0);
                     jumpMovement.setSelectedIndex(0);
                 } else if (combo.equals(vtolMovement)) {
-                    getBA().setMovementMode(EntityMovementMode.VTOL);
-                    getBA().setOriginalJumpMP(vtolMovement.getSelectedIndex());
+                    getBattleArmor().setMovementMode(EntityMovementMode.VTOL);
+                    getBattleArmor().setOriginalJumpMP(vtolMovement.getSelectedIndex());
                     umuMovement.setSelectedIndex(0);
                     jumpMovement.setSelectedIndex(0);
                 } else if (combo.equals(rightManipulator)) {
@@ -602,15 +602,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
 
                 } else if (combo.equals(formationSize)) {
-                    getBA().setTroopers(formationSize.getSelectedIndex() + 4);
-                    getBA().refreshLocations();
-                    getBA().autoSetInternal();
-                    for (int loc = 0; loc < getBA().locations(); loc++) {
-                        getBA().setArmor(0, loc);
-                        getBA().setArmor(0, loc, true);
+                    getBattleArmor().setTroopers(formationSize.getSelectedIndex() + 4);
+                    getBattleArmor().refreshLocations();
+                    getBattleArmor().autoSetInternal();
+                    for (int loc = 0; loc < getBattleArmor().locations(); loc++) {
+                        getBattleArmor().setArmor(0, loc);
+                        getBattleArmor().setArmor(0, loc, true);
                     }
-                    getBA().setWeight(getBA().getTroopers());
-                    getBA().setTrooperWeight(EntityWeightClass.getClassLimit(getBA().getWeightClass()));
+                    getBattleArmor().setWeight(getBattleArmor().getTroopers());
+                    getBattleArmor().setTrooperWeight(EntityWeightClass.getClassLimit(getBattleArmor().getWeightClass()));
                 }
                 addAllActionListeners();
                 refresh.refreshAll();
@@ -787,7 +787,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             weightClass.addItem(weightClasses.elementAt(pos));
         }
 
-        String currentWeight = getBA().getWeightClassName();
+        String currentWeight = getBattleArmor().getWeightClassName();
 
         for (int pos = 0; pos < weightClass.getItemCount(); pos++) {
             if (weightClass.getItemAt(pos).equals(currentWeight)) {
