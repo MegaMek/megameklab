@@ -163,12 +163,11 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
     }
 
     private void maximizeArmor() {
-        double maxArmor = UnitUtil.getMaximumArmorPoints(unit);
-        armorPoints.setValue(maxArmor);
+        armorPoints.setValue(UnitUtil.getMaximumArmorPoints(unit));
     }
 
     private void setTotalPoints() {
-        armorPoints.setValue(UnitUtil.getMaximumArmorPoints(unit));
+        armorPoints.setValue(unit.getOArmor(BattleArmor.LOC_TROOPER_1));
         armorPoints.setToolTipText("Max Points: " + UnitUtil.getMaximumArmorPoints(unit));
     }
 
