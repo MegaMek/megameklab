@@ -60,8 +60,4 @@ public class ITab extends JPanel {
         return (BattleArmor) unit;
     }
 
-    public BattleArmor getBA() {
-        return (BattleArmor) unit;
-    }
-
 }
