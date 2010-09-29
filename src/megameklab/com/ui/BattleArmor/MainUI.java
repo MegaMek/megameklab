@@ -729,7 +729,6 @@ public class MainUI extends JFrame implements RefreshListener {
         entity.autoSetInternal();
         for (int loc = 0; loc < entity.locations(); loc++) {
             entity.setArmor(0, loc);
-            entity.setArmor(0, loc, true);
         }
 
         entity.setChassis("New");

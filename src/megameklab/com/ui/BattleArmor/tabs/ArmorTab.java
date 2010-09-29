@@ -32,41 +32,39 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import megamek.common.BattleArmor;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
-import megameklab.com.ui.BattleArmor.views.ArmorView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
-public class ArmorTab extends ITab implements ActionListener {
+public class ArmorTab extends ITab implements ActionListener, ChangeListener {
 
     /**
      *
      */
     private static final long serialVersionUID = -7235362583437251408L;
 
-    private ArmorView armor;
     private RefreshListener refresh = null;
     private String[] armorNames = new String[]
-        { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS], EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH], EquipmentType.armorNames[EquipmentType.T_ARMOR_COMMERCIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_CARBIDE], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_IMP], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR],
-                EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED], EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE], EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE], EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK] };
+        { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD] };
     private JComboBox armorCombo = new JComboBox(armorNames);
 
-    private JButton allocateArmorButton = new JButton("Allocate");
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
-    private JSpinner armorTonnage = new JSpinner(new SpinnerNumberModel(0, 0, 0, 0.5));
+    private JSpinner armorPoints = new JSpinner(new SpinnerNumberModel(0, 0, 0, 1));
     private JCheckBox clanArmor = new JCheckBox("Clan Armor");
+    private JLabel maxArmorLabel = new JLabel("", SwingConstants.TRAILING);
 
     private JPanel buttonPanel = new JPanel();
 
     public ArmorTab(BattleArmor unit) {
 
         this.unit = unit;
-        armor = new ArmorView(getBattleArmor());
 
         Dimension comboSize = new Dimension(150, 20);
 
@@ -76,9 +74,8 @@ public class ArmorTab extends ITab implements ActionListener {
 
         setLayout(new SpringLayout());
         this.add(ButtonPanel());
-        this.add(armor);
         SpringLayoutHelper.setupSpringGrid(this, 1);
-        setTotalTonnage();
+        setTotalPoints();
         addAllListeners();
     }
 
@@ -86,28 +83,22 @@ public class ArmorTab extends ITab implements ActionListener {
         removeAllListeners();
         clanArmor.setVisible(unit.isMixedTech());
         clanArmor.setSelected(unit.isClanArmor());
+        maxArmorLabel.setText(String.format("/ %1$d", UnitUtil.getMaximumArmorPoints(unit)));
         createSystemList();
-        setTotalTonnage();
+        setTotalPoints();
         addAllListeners();
-        ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil.getMaximumArmorTonnage(unit));
-        armor.updateUnit(unit);
-        armor.refresh();
+        ((SpinnerNumberModel) armorPoints.getModel()).setMaximum(UnitUtil.getMaximumArmorPoints(unit));
     }
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        armor.addRefreshedListener(l);
     }
 
     public void actionPerformed(ActionEvent arg0) {
         removeAllListeners();
-        if (arg0.getSource().equals(allocateArmorButton)) {
-            armor.allocateArmor((Double) armorTonnage.getValue());
-        }
         if (arg0.getSource().equals(maximizeArmorButton)) {
             maximizeArmor();
-        }
-        if (arg0.getSource().equals(clanArmor)) {
+        } else if (arg0.getSource().equals(clanArmor)) {
             UnitUtil.removeISorArmorMounts(unit, false);
             if (clanArmor.isSelected()) {
                 if (unit.isClan()) {
@@ -141,20 +132,18 @@ public class ArmorTab extends ITab implements ActionListener {
         buttonPanel.add(masterPanel);
         buttonPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        allocateArmorButton.addActionListener(this);
-
         maximizeArmorButton.addActionListener(this);
         clanArmor.addActionListener(this);
 
-        armorTonnage.setToolTipText("Total Tonnage of Armor");
+        armorPoints.setToolTipText("Total Points of Armor");
         Dimension size = new Dimension(45, 10);
-        armorTonnage.setMaximumSize(size);
-        armorTonnage.setPreferredSize(size);
+        armorPoints.setMaximumSize(size);
+        armorPoints.setPreferredSize(size);
 
         JPanel sliderPanel = new JPanel(new SpringLayout());
-        sliderPanel.add(new JLabel("Armor Tonnage:", SwingConstants.TRAILING));
-        sliderPanel.add(armorTonnage);
-        sliderPanel.add(allocateArmorButton);
+        sliderPanel.add(new JLabel("Armor Points:", SwingConstants.TRAILING));
+        sliderPanel.add(armorPoints);
+        sliderPanel.add(maxArmorLabel);
         sliderPanel.add(maximizeArmorButton);
         SpringLayoutHelper.setupSpringGrid(sliderPanel, 4);
 
@@ -165,22 +154,22 @@ public class ArmorTab extends ITab implements ActionListener {
 
     private void addAllListeners() {
         armorCombo.addActionListener(this);
+        armorPoints.addChangeListener(this);
     }
 
     private void removeAllListeners() {
         armorCombo.removeActionListener(this);
+        armorPoints.addChangeListener(this);
     }
 
     private void maximizeArmor() {
-        double maxArmor = UnitUtil.getMaximumArmorTonnage(unit);
-        armor.allocateArmor(maxArmor);
-        armorTonnage.setValue(maxArmor);
+        double maxArmor = UnitUtil.getMaximumArmorPoints(unit);
+        armorPoints.setValue(maxArmor);
     }
 
-    private void setTotalTonnage() {
-        double currentTonnage = unit.getArmorWeight();
-        armorTonnage.setValue(currentTonnage);
-        armorTonnage.setToolTipText("Max Tonnage: " + UnitUtil.getMaximumArmorTonnage(unit));
+    private void setTotalPoints() {
+        armorPoints.setValue(UnitUtil.getMaximumArmorPoints(unit));
+        armorPoints.setToolTipText("Max Points: " + UnitUtil.getMaximumArmorPoints(unit));
     }
 
     public void setArmorType(int type) {
@@ -204,17 +193,6 @@ public class ArmorTab extends ITab implements ActionListener {
             case TechConstants.T_INTRO_BOXSET:
                 armorCount = 1;
                 break;
-            case TechConstants.T_CLAN_TW:
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_CLAN_ADVANCED:
-            case TechConstants.T_IS_ADVANCED:
-                armorCount = 8;
-                break;
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-            case TechConstants.T_IS_UNOFFICIAL:
-                break;
         }
 
         for (int index = 0; index < armorCount; index++) {
@@ -228,4 +206,16 @@ public class ArmorTab extends ITab implements ActionListener {
         }
     }
 
+    public void stateChanged(ChangeEvent e) {
+        JSpinner field = (JSpinner) e.getSource();
+
+        int value = (Integer) field.getModel().getValue();
+        for (int pos = 0; pos < unit.locations(); pos++) {
+            unit.initializeArmor(value, pos);
+        }
+        if (refresh != null) {
+            refresh.refreshStatus();
+        }
+        refresh();
+    }
 }

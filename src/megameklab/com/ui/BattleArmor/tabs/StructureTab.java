@@ -62,6 +62,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private static final long serialVersionUID = -6756011847500605874L;
 
     private JComboBox weightClass;
+    Vector<String> weightClasses = new Vector<String>(5, 1);
     private JComboBox groundMovement;
     private JComboBox jumpMovement;
     private JComboBox umuMovement;
@@ -88,6 +89,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private JLabel rightManipulatorLabel = new JLabel("Right Manipulator:", SwingConstants.TRAILING);
     private JLabel leftManipulatorLabel = new JLabel("Left Manipulator:", SwingConstants.TRAILING);
+    private JLabel jumpLabel = new JLabel("Jump Movement:", SwingConstants.TRAILING);
     private JLabel umuLabel = new JLabel("UMU Movement:", SwingConstants.TRAILING);
     private JLabel vtolLabel = new JLabel("VTOL Movement:", SwingConstants.TRAILING);
 
@@ -141,26 +143,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     public JPanel enginePanel() {
         masterPanel = new JPanel(new SpringLayout());
 
-        Vector<String> weightClasses = new Vector<String>(1, 1);
         Vector<String> groundMovements = new Vector<String>(1, 1);
-        Vector<String> jumpMovements = new Vector<String>(1, 1);
 
         for (int weight = 0; weight < 5; weight++) {
             weightClasses.add(EntityWeightClass.getClassName(weight));
             groundMovements.add(String.format("%1$d", weight + 1));
-            jumpMovements.add(String.format("%1$d", weight));
         }
 
         weightClass = new JComboBox(weightClasses.toArray());
         groundMovement = new JComboBox(groundMovements.toArray());
-        umuMovement = new JComboBox(jumpMovements.toArray());
-
-        jumpMovements.add("5");
-        jumpMovements.add("6");
-        jumpMovements.add("7");
-
-        jumpMovement = new JComboBox(jumpMovements.toArray());
-        vtolMovement = new JComboBox(jumpMovements.toArray());
+        umuMovement = new JComboBox(groundMovements.toArray());
+        jumpMovement = new JComboBox(groundMovements.toArray());
+        vtolMovement = new JComboBox(groundMovements.toArray());
 
         maxSize.setSize(110, 20);
 
@@ -185,7 +179,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         masterPanel.add(createLabel("Ground Movement:", maxSize));
         masterPanel.add(groundMovement);
-        masterPanel.add(createLabel("Jump Movement:", maxSize));
+        masterPanel.add(jumpLabel);
         masterPanel.add(jumpMovement);
         masterPanel.add(rightManipulatorLabel);
         masterPanel.add(rightManipulator);
@@ -197,6 +191,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         setFieldSize(rightManipulatorLabel, maxSize);
         setFieldSize(leftManipulatorLabel, maxSize);
         setFieldSize(groundMovement, maxSize);
+        setFieldSize(jumpLabel, maxSize);
         setFieldSize(jumpMovement, maxSize);
         setFieldSize(umuMovement, maxSize);
         setFieldSize(vtolMovement, maxSize);
@@ -222,6 +217,25 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         era.setText(Integer.toString(getBattleArmor().getYear()));
         source.setText(getBattleArmor().getSource());
 
+        int minGround = 1;
+        int maxGround = 3;
+        int maxJump = 3;
+        int maxVTOL = 7;
+        int maxUMU = 5;
+        int minWeight = 0;
+
+        // check for Quads so you can place Jump correctly
+        if (getBattleArmor().getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED) {
+            masterPanel.remove(jumpLabel);
+            masterPanel.remove(jumpMovement);
+            masterPanel.add(jumpLabel);
+            masterPanel.add(jumpMovement);
+        } else {
+            masterPanel.remove(jumpLabel);
+            masterPanel.remove(jumpMovement);
+            minWeight++;
+        }
+
         if (getBattleArmor().isClan()) {
             techLevel.removeAllItems();
             for (String item : clanTechLevels) {
@@ -242,6 +256,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             masterPanel.remove(umuMovement);
         }
 
+        // Chassis is checked again this time for manipulator placement
         if (getBA().getChassisType() == BattleArmor.CHASSIS_TYPE_BIPED) {
             masterPanel.remove(rightManipulator);
             masterPanel.remove(leftManipulator);
@@ -256,6 +271,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             masterPanel.remove(leftManipulator);
             masterPanel.remove(rightManipulatorLabel);
             masterPanel.remove(leftManipulatorLabel);
+            minGround = 2;
+            maxGround = 5;
         }
 
         if (getBattleArmor().isMixedTech()) {
@@ -309,7 +326,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         }
 
-        groundMovement.setSelectedIndex(getBattleArmor().getWalkMP() - 1);
+        if (weightClass.getSelectedIndex() >= 3) {
+            maxGround--;
+            maxJump--;
+            maxVTOL = 0;
+            maxUMU -= weightClass.getSelectedIndex() - 1;
+        } else if (weightClass.getSelectedIndex() == 1) {
+            maxVTOL -= weightClass.getSelectedIndex();
+        } else if (weightClass.getSelectedIndex() >= 2) {
+            maxUMU -= weightClass.getSelectedIndex() - 1;
+            maxVTOL -= weightClass.getSelectedIndex();
+        }
+
+        updateGroundMovements(minGround, maxGround);
+        updateJumpMovements(maxJump);
+        updateVTOLMovements(maxVTOL);
+        updateUMUMovements(maxUMU);
+        updateWeightClasses(minWeight);
 
         critView.updateUnit(getBattleArmor());
         critView.refresh();
@@ -374,7 +407,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 // determines
                 // if a BattleArmor is primitive and thus needs a larger engine
                 if (combo.equals(weightClass)) {
-                    getBA().setWeightClass(weightClass.getSelectedIndex());
+                    if (getBA().getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
+                        getBA().setWeightClass(weightClass.getSelectedIndex() + 1);
+                    } else {
+                        getBA().setWeightClass(weightClass.getSelectedIndex());
+                    }
+
                     getBA().setWeight(getBA().getTroopers());
                     getBA().setTrooperWeight(EntityWeightClass.getClassLimit(getBA().getWeightClass()));
                 } else if (combo.equals(techLevel)) {
@@ -665,4 +703,99 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         refresh = l;
     }
 
+    private void updateGroundMovements(int min, int max) {
+        groundMovement.removeAllItems();
+        for (Integer movement = min; movement <= max; movement++) {
+            groundMovement.addItem(movement.toString());
+        }
+
+        String currentMovement = Integer.toString(getBattleArmor().getWalkMP());
+
+        for (int pos = 0; pos < groundMovement.getItemCount(); pos++) {
+            if (groundMovement.getItemAt(pos).equals(currentMovement)) {
+                groundMovement.setSelectedIndex(pos);
+                return;
+            }
+        }
+        groundMovement.setSelectedIndex(0);
+
+    }
+
+    private void updateJumpMovements(int max) {
+        jumpMovement.removeAllItems();
+        for (Integer movement = 0; movement <= max; movement++) {
+            jumpMovement.addItem(movement.toString());
+        }
+
+        String currentMovement = Integer.toString(getBattleArmor().getOriginalJumpMP());
+
+        if (getBattleArmor().getMovementMode() == EntityMovementMode.INF_JUMP) {
+            for (int pos = 0; pos < jumpMovement.getItemCount(); pos++) {
+                if (jumpMovement.getItemAt(pos).equals(currentMovement)) {
+                    jumpMovement.setSelectedIndex(pos);
+                    return;
+                }
+            }
+        }
+        jumpMovement.setSelectedIndex(0);
+
+    }
+
+    private void updateVTOLMovements(int max) {
+        vtolMovement.removeAllItems();
+        for (Integer movement = 0; movement <= max; movement++) {
+            vtolMovement.addItem(movement.toString());
+        }
+
+        String currentMovement = Integer.toString(getBattleArmor().getOriginalJumpMP());
+
+        if (getBattleArmor().getMovementMode() == EntityMovementMode.VTOL) {
+            for (int pos = 0; pos < vtolMovement.getItemCount(); pos++) {
+                if (vtolMovement.getItemAt(pos).equals(currentMovement)) {
+                    vtolMovement.setSelectedIndex(pos);
+                    return;
+                }
+            }
+        }
+        vtolMovement.setSelectedIndex(0);
+
+    }
+
+    private void updateUMUMovements(int max) {
+        umuMovement.removeAllItems();
+        for (Integer movement = 0; movement <= max; movement++) {
+            umuMovement.addItem(movement.toString());
+        }
+
+        String currentMovement = Integer.toString(getBattleArmor().getOriginalJumpMP());
+
+        if (getBattleArmor().getMovementMode() == EntityMovementMode.INF_UMU) {
+            for (int pos = 0; pos < umuMovement.getItemCount(); pos++) {
+                if (umuMovement.getItemAt(pos).equals(currentMovement)) {
+                    umuMovement.setSelectedIndex(pos);
+                    return;
+                }
+            }
+        }
+        umuMovement.setSelectedIndex(0);
+
+    }
+
+    private void updateWeightClasses(int min) {
+        weightClass.removeAllItems();
+        for (int pos = min; pos < weightClasses.size(); pos++) {
+            weightClass.addItem(weightClasses.elementAt(pos));
+        }
+
+        String currentWeight = getBA().getWeightClassName();
+
+        for (int pos = 0; pos < weightClass.getItemCount(); pos++) {
+            if (weightClass.getItemAt(pos).equals(currentWeight)) {
+                weightClass.setSelectedIndex(pos);
+                return;
+            }
+        }
+        weightClass.setSelectedIndex(0);
+
+    }
 }
