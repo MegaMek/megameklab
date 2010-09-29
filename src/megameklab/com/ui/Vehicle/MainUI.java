@@ -638,7 +638,7 @@ public class MainUI extends JFrame implements RefreshListener {
         unitMenu.setMnemonic('N');
         item.setText("Mech");
         item.setMnemonic('M');
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadMech();
