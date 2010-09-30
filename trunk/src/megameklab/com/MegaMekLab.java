@@ -24,7 +24,7 @@ import java.io.PrintStream;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.0.0.17-Dev-108";
+    public static final String VERSION = "0.0.0.18-Dev-100";
 
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
