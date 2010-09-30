@@ -304,6 +304,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         createSystemList();
         createHeatSinkList();
+        createGyroList();
 
         cockpitType.setSelectedIndex(getMech().getCockpitType());
         structureCombo.setSelectedIndex(getMech().getStructureType());
@@ -640,6 +641,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
 
                     createSystemList();
+                    createGyroList();
                     createEngineList(getMech().isClan());
                     createHeatSinkList();
                     refresh.refreshArmor();
@@ -1024,18 +1026,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private void createSystemList() {
         structureCombo.removeAllItems();
         cockpitType.removeAllItems();
-        gyroType.removeAllItems();
         int structCount = EquipmentType.structureNames.length;
         int cockpitCount = Mech.COCKPIT_SHORT_STRING.length;
-        int gyroCount = Mech.GYRO_SHORT_STRING.length;
         switch (getMech().getTechLevel()) {
             case TechConstants.T_INTRO_BOXSET:
                 structCount = 1;
                 cockpitCount = 1;
-                gyroCount = 1;
                 break;
             case TechConstants.T_CLAN_TW:
-                gyroCount = 2;
                 structCount = 3;
                 cockpitCount = 5;
                 break;
@@ -1045,7 +1043,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 break;
             case TechConstants.T_CLAN_ADVANCED:
                 structCount = 3;
-                gyroCount = 2;
                 cockpitCount = 6;
                 break;
             case TechConstants.T_IS_ADVANCED:
@@ -1054,13 +1051,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 break;
             case TechConstants.T_CLAN_EXPERIMENTAL:
                 cockpitCount = 7;
-                gyroCount = 2;
                 break;
             case TechConstants.T_IS_EXPERIMENTAL:
                 cockpitCount = 7;
                 break;
             case TechConstants.T_CLAN_UNOFFICIAL:
-                gyroCount = 2;
                 cockpitCount = 8;
                 break;
             case TechConstants.T_IS_UNOFFICIAL:
@@ -1074,10 +1069,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         for (int index = 0; index < cockpitCount; index++) {
             cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[index]);
-        }
-
-        for (int index = 0; index < gyroCount; index++) {
-            gyroType.addItem(Mech.GYRO_SHORT_STRING[index]);
         }
 
     }
@@ -1255,6 +1246,41 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
         for (int index = 0; index < engineCount; index++) {
             engineType.addItem(engineList[index]);
+        }
+
+    }
+
+    private void createGyroList() {
+
+        String[] gyroList = new String[0];
+
+        gyroType.removeAllItems();
+
+        if (getMech().isMixedTech()) {
+            if (getMech().isClan()) {
+                int gyroPos = 0;
+                gyroList = new String[Mech.GYRO_SHORT_STRING.length];
+                for (String gyro : Mech.GYRO_SHORT_STRING) {
+                    if (gyroPos == 0) {
+                        gyroList[gyroPos] = gyro;
+                    } else {
+                        gyroList[gyroPos] = String.format("(IS) %1$s", gyro);
+                    }
+                    gyroPos++;
+                }
+            } else {
+                gyroList = Mech.GYRO_SHORT_STRING.clone();
+            }
+        } else {
+            if (getMech().isClan()) {
+                gyroList = new String[1];
+                gyroList[0] = Mech.GYRO_SHORT_STRING[0];
+            } else {
+                gyroList = Mech.GYRO_SHORT_STRING.clone();
+            }
+        }
+        for (String gyro : gyroList) {
+            gyroType.addItem(gyro);
         }
 
     }

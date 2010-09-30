@@ -1,6 +1,9 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.17 Dev
+V 0.0.0.18 Dev
++ Added Mixed Tech Gyro's
+
+V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS
 + Added the ability to select off engine types for Mixed Tech Units.
 + Added code to check linking when equipment is added or removed.

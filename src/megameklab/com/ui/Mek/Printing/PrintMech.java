@@ -1554,6 +1554,9 @@ public class PrintMech implements Printable {
                         critName = critName.replace("Standard ", "");
                     }
 
+                    if (mech.isClan() && (cs.getIndex() == Mech.SYSTEM_GYRO) && (mech.getGyroType() > 0)) {
+                        critName = String.format("%1$s (IS)", critName);
+                    }
                     if (cs.isArmored()) {
                         critName = "O " + critName;
                     }
