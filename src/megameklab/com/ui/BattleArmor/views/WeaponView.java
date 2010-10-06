@@ -625,7 +625,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 if (physicalWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : physicalWeaponCombo.getSelectedIndices()) {
                         EquipmentType equip = subPhysicalWeaponList.elementAt(index);
-                        boolean isMisc = equip instanceof MiscType;
+                        // boolean isMisc = equip instanceof MiscType;
 
                         getBattleArmor().addEquipment(equip, Entity.LOC_NONE, false);
                         weaponList.addCrit(equip);
