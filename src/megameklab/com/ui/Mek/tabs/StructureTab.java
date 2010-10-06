@@ -307,7 +307,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         createGyroList();
 
         cockpitType.setSelectedIndex(getMech().getCockpitType());
-        structureCombo.setSelectedIndex(getMech().getStructureType());
+        setStructureCombo();
         gyroType.setSelectedIndex(getMech().getGyroType());
 
         if (getMech().isMixedTech()) {
@@ -527,7 +527,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
                 } else if (combo.equals(structureCombo)) {
                     UnitUtil.removeISorArmorMounts(getMech(), true);
-                    getMech().setStructureType(structureCombo.getSelectedIndex());
                     createISMounts();
                 } else if (combo.equals(gyroType)) {
                     if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE) && (combo.getSelectedIndex() == Mech.GYRO_XL)) {
@@ -839,14 +838,36 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private void createISMounts() {
         int isCount = 0;
-        isCount = EquipmentType.get(EquipmentType.getStructureTypeName(getMech().getStructureType())).getCriticals(getMech());
+        int structType = structureCombo.getSelectedIndex();
+        String structName = EquipmentType.getStructureTypeName(structType);
+
+        if (getMech().isMixedTech()) {
+            structName = structureCombo.getSelectedItem().toString();
+            boolean clanStruct = getMech().isClan() ? structName.indexOf(" (IS)") == -1 : structName.indexOf(" (Clan)") > -1;
+
+            structName = structureCombo.getSelectedItem().toString().replace(" (IS)", "").replace(" (Clan)", "");
+
+            for (structType = 0; structType < EquipmentType.structureNames.length; structType++) {
+                if (EquipmentType.getStructureTypeName(structType).equals(structName)) {
+                    break;
+                }
+            }
+
+            if (clanStruct) {
+                structName = String.format("Clan %1$s", structName);
+            }
+        }
+
+        getMech().setStructureType(structType);
+        isCount = EquipmentType.get(structName).getCriticals(getMech());
         if (isCount < 1) {
             return;
         }
         for (; isCount > 0; isCount--) {
             try {
-                getMech().addEquipment(new Mounted(getMech(), EquipmentType.get(EquipmentType.getStructureTypeName(getMech().getStructureType()))), Entity.LOC_NONE, false);
+                getMech().addEquipment(new Mounted(getMech(), EquipmentType.get(structName)), Entity.LOC_NONE, false);
             } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }
@@ -1028,6 +1049,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         cockpitType.removeAllItems();
         int structCount = EquipmentType.structureNames.length;
         int cockpitCount = Mech.COCKPIT_SHORT_STRING.length;
+
+        boolean isClan = getMech().isClan();
+        boolean isMixed = getMech().isMixedTech();
+
         switch (getMech().getTechLevel()) {
             case TechConstants.T_INTRO_BOXSET:
                 structCount = 1;
@@ -1064,7 +1089,25 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
 
         for (int index = 0; index < structCount; index++) {
-            structureCombo.addItem(EquipmentType.structureNames[index]);
+            if (isMixed && !EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_STANDARD]) && !EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_INDUSTRIAL])) {
+                if (isClan) {
+                    structureCombo.addItem(String.format("%1$s (IS)", EquipmentType.structureNames[index]));
+                    if (EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
+                        structureCombo.addItem(EquipmentType.structureNames[index]);
+                    } else if (EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
+                        structureCombo.addItem(EquipmentType.structureNames[index]);
+                    }
+                } else {
+                    if (EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
+                        structureCombo.addItem(String.format("%1$s (Clan)", EquipmentType.structureNames[index]));
+                    } else if (EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
+                        structureCombo.addItem(String.format("%1$s (Clan)", EquipmentType.structureNames[index]));
+                    }
+                    structureCombo.addItem(EquipmentType.structureNames[index]);
+                }
+            } else {
+                structureCombo.addItem(EquipmentType.structureNames[index]);
+            }
         }
 
         for (int index = 0; index < cockpitCount; index++) {
@@ -1283,5 +1326,36 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             gyroType.addItem(gyro);
         }
 
+    }
+
+    private void setStructureCombo() {
+
+        if (getMech().isMixedTech()) {
+            String structName;
+            if (getMech().isClan()) {
+                structName = EquipmentType.structureNames[getMech().getStructureType()] + " (IS)";
+                if (getMech().hasWorkingMisc("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
+                    structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL];
+                } else if (getMech().hasWorkingMisc("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
+                    structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE];
+                }
+            } else {
+                structName = EquipmentType.structureNames[getMech().getStructureType()];
+                if (getMech().hasWorkingMisc("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
+                    structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL] + " (Clan)";
+                } else if (getMech().hasWorkingMisc("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
+                    structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE] + " (Clan)";
+                }
+            }
+            structureCombo.setSelectedIndex(0);
+            for (int pos = 0; pos < structureCombo.getItemCount(); pos++) {
+                if (structureCombo.getItemAt(pos).equals(structName)) {
+                    structureCombo.setSelectedIndex(pos);
+                    break;
+                }
+            }
+        } else {
+            structureCombo.setSelectedIndex(getMech().getStructureType());
+        }
     }
 }
