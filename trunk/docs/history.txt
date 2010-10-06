@@ -2,6 +2,8 @@ VERSION HISTORY:
 ----------------
 V 0.0.0.18 Dev
 + Added Mixed Tech Gyro's
++ Added Mixed Tech Structures
++ New MegaMek Jar
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS

@@ -1887,13 +1887,22 @@ public class UnitUtil {
      *            true to remove IS, false to remove armor
      */
     public static void removeISorArmorCrits(Entity unit, boolean internalStructure) {
+        ArrayList<String> mountList = new ArrayList<String>();
+        if (internalStructure) {
+            mountList.addAll(Arrays.asList(EquipmentType.structureNames));
+            mountList.add("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL]);
+            mountList.add("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE]);
+        } else {
+            mountList.addAll(Arrays.asList(EquipmentType.armorNames));
+        }
+
         for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot crit = unit.getCritical(location, slot);
                 if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted mount = unit.getEquipment(crit.getIndex());
 
-                    if ((mount != null) && (mount.getType() instanceof MiscType) && Arrays.asList(internalStructure ? EquipmentType.structureNames : EquipmentType.armorNames).contains(mount.getType().getInternalName())) {
+                    if ((mount != null) && (mount.getType() instanceof MiscType) && mountList.contains(mount.getType().getInternalName())) {
                         crit = null;
                         unit.setCritical(location, slot, crit);
                     }
@@ -1913,17 +1922,28 @@ public class UnitUtil {
      */
     public static void removeISorArmorMounts(Entity unit, boolean internalStructure) {
         UnitUtil.removeISorArmorCrits(unit, internalStructure);
+        ArrayList<String> mountList = new ArrayList<String>();
+
+        if (internalStructure) {
+            mountList.addAll(Arrays.asList(EquipmentType.structureNames));
+            mountList.add("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL]);
+            mountList.add("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE]);
+        } else {
+            mountList.addAll(Arrays.asList(EquipmentType.armorNames));
+        }
+
         for (int pos = 0; pos < unit.getEquipment().size();) {
             Mounted mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType) && Arrays.asList(internalStructure ? EquipmentType.structureNames : EquipmentType.armorNames).contains(mount.getType().getInternalName())) {
+            if ((mount.getType() instanceof MiscType) && mountList.contains(mount.getType().getInternalName())) {
                 unit.getEquipment().remove(pos);
             } else {
                 pos++;
             }
         }
+
         for (int pos = 0; pos < unit.getMisc().size();) {
             Mounted mount = unit.getMisc().get(pos);
-            if ((mount.getType() instanceof MiscType) && Arrays.asList(internalStructure ? EquipmentType.structureNames : EquipmentType.armorNames).contains(mount.getType().getInternalName())) {
+            if ((mount.getType() instanceof MiscType) && mountList.contains(mount.getType().getInternalName())) {
                 unit.getMisc().remove(pos);
             } else {
                 pos++;
