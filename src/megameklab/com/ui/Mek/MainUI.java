@@ -305,7 +305,7 @@ public class MainUI extends JFrame implements RefreshListener {
         }
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile, true).getEntity();
+            Entity tempEntity = new MechFileParser(unitFile).getEntity();
             if (!(tempEntity instanceof Mech)) {
                 return;
             }
@@ -318,8 +318,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
             CConfig.updateSaveFiles(unitFile.getAbsolutePath());
         } catch (Exception ex) {
-            ex.printStackTrace();
-            createNewMech(false);
+            JOptionPane.showMessageDialog(this, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
         }
 
         reloadTabs();
