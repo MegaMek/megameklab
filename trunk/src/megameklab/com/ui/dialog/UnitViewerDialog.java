@@ -43,6 +43,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -787,14 +788,14 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
             // For some unknown reason the base path gets screwed up after you
             // print so this sets the source file to the full path.
             ms.setSourceFile(new File(ms.getSourceFile().getAbsolutePath()));
-            Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName(), true).getEntity();
+            Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName()).getEntity();
             previewMech(entity);
             selectedMechSummary = ms;
         } catch (EntityLoadingException ex) {
+            JOptionPane.showMessageDialog(this, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
             System.out.println("Unable to load mech: " + ms.getSourceFile() + ": " + ms.getEntryName() + ": " + ex.getMessage());
             ex.printStackTrace();
             clearMechPreview();
-            return;
         }
     }
 
