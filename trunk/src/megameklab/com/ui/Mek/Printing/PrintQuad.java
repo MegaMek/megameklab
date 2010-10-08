@@ -332,12 +332,14 @@ public class PrintQuad implements Printable {
         Dimension column = new Dimension(504, 612);
         Dimension pipShift = new Dimension(9, 9);
 
+        int pipsPerColumn = Math.max(10, mech.heatSinks() / 4);
+
         for (int pos = 1; pos <= mech.heatSinks(); pos++) {
             ImageHelper.drawHeatSinkPip(g2d, column.width, column.height);
             column.height += pipShift.height;
 
-            if (pos % 10 == 0) {
-                column.height -= pipShift.height * 10;
+            if (pos % pipsPerColumn == 0) {
+                column.height -= pipShift.height * pipsPerColumn;
                 column.width += pipShift.width;
             }
 
