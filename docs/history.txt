@@ -6,6 +6,8 @@ V 0.0.0.18 Dev
 + New MegaMek Jar
 + Bug: Mechs not being fully loaded
 + New MegaMek Jar
++ Bug: Heatsinks not print out correctly if more then 40 are used.
++ New MegaMek Jar
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS
