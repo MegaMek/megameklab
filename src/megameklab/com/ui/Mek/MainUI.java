@@ -34,7 +34,6 @@ import java.io.PrintStream;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
-import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -51,11 +50,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.DefaultCaret;
-import javax.swing.text.html.HTMLEditorKit;
 
 import megamek.MegaMek;
-import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
@@ -92,6 +88,7 @@ public class MainUI extends JFrame implements RefreshListener {
     JMenu file = new JMenu("File");
     JMenu help = new JMenu("Help");
     JMenu validate = new JMenu("Validate");
+
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
@@ -139,45 +136,13 @@ public class MainUI extends JFrame implements RefreshListener {
         });
         help.add(item);
 
-        item = new JMenuItem();
-        item.setText("Validate Current Unit");
-        item.setMnemonic(KeyEvent.VK_V);
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuValidateUnit_actionPerformed();
-            }
-        });
-        validate.add(item);
+        validate.add(loadBVMenuOptions());
 
-        item = new JMenuItem();
-        item.setText("BV Calculations");
-        item.setMnemonic(KeyEvent.VK_B);
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuBVCalculations_actionPerformed();
-            }
-        });
-        validate.add(item);
+        validate.add(loadValidateMenuOptions());
 
-        item = new JMenuItem();
-        item.setText("Unit Specs");
-        item.setMnemonic(KeyEvent.VK_S);
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuUnitSpecs_actionPerformed();
-            }
-        });
-        validate.add(item);
+        validate.add(loadSpecsMenuOptions());
 
-        item = new JMenuItem();
-        item.setText("Unit Cost Breakdown");
-        item.setMnemonic(KeyEvent.VK_C);
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuUnitCostBreakdown_actionPerformed();
-            }
-        });
-        validate.add(item);
+        validate.add(loadUnitCostBreakdownMenuOptions());
 
         menuBar.add(file);
         menuBar.add(validate);
@@ -435,164 +400,21 @@ public class MainUI extends JFrame implements RefreshListener {
     // Show BV Calculations
 
     public void jMenuBVCalculations_actionPerformed() {
-
-        HTMLEditorKit kit = new HTMLEditorKit();
         entity.calculateBattleValue(true, true);
-        String bvText = entity.getBVText();
-
-        JEditorPane textPane = new JEditorPane("text/html", "");
-        JScrollPane scroll = new JScrollPane();
-
-        textPane.setEditable(false);
-        textPane.setCaret(new DefaultCaret());
-        textPane.setEditorKit(kit);
-
-        scroll.setViewportView(textPane);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-
-        textPane.setText(bvText);
-
-        scroll.setVisible(true);
-
-        JDialog jdialog = new JDialog();
-
-        jdialog.add(scroll);
-        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2, CConfig.getIntParam("WINDOWHEIGHT"));
-
-        jdialog.setPreferredSize(size);
-        jdialog.setMinimumSize(size);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
-        // text.setPreferredSize(size);
-
-        jdialog.setLocationRelativeTo(this);
-        jdialog.setVisible(true);
-
-        try {
-            textPane.setSelectionStart(0);
-            textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
-        }
-
-        // JOptionPane.showMessageDialog(this, bvText, "BV Calculations",
-        // JOptionPane.INFORMATION_MESSAGE);
+        UnitUtil.showBVCalculations(entity.getBVText(), this);
     }
 
     public void jMenuUnitCostBreakdown_actionPerformed() {
-
-        HTMLEditorKit kit = new HTMLEditorKit();
-        entity.calculateBattleValue(true, true);
-        StringBuffer costText = new StringBuffer();
-
-        entity.getCost(costText, true);
-
-        JEditorPane textPane = new JEditorPane("text/html", "");
-        JScrollPane scroll = new JScrollPane();
-
-        textPane.setEditable(false);
-        textPane.setCaret(new DefaultCaret());
-        textPane.setEditorKit(kit);
-
-        scroll.setViewportView(textPane);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-
-        textPane.setText(costText.toString());
-
-        scroll.setVisible(true);
-
-        JDialog jdialog = new JDialog();
-
-        jdialog.add(scroll);
-        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2, CConfig.getIntParam("WINDOWHEIGHT"));
-
-        jdialog.setPreferredSize(size);
-        jdialog.setMinimumSize(size);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
-
-        jdialog.setLocationRelativeTo(this);
-        jdialog.setVisible(true);
-
-        try {
-            textPane.setSelectionStart(0);
-            textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
-        }
-
+        UnitUtil.showUnitCostBreakDown(entity, this);
     }
 
     public void jMenuUnitSpecs_actionPerformed() {
-
-        HTMLEditorKit kit = new HTMLEditorKit();
-
-        MechView mechView = null;
-        try {
-            mechView = new MechView(entity, true);
-        } catch (Exception e) {
-            // error unit didn't load right. this is bad news.
-        }
-
-        StringBuffer unitSpecs = new StringBuffer("<html><body>");
-        unitSpecs.append(mechView.getMechReadoutBasic());
-        unitSpecs.append(mechView.getMechReadoutLoadout());
-        unitSpecs.append("</body></html>");
-
-        // System.err.println(unitSpecs.toString());
-        JEditorPane textPane = new JEditorPane("text/html", "");
-        JScrollPane scroll = new JScrollPane();
-
-        textPane.setEditable(false);
-        textPane.setCaret(new DefaultCaret());
-        textPane.setEditorKit(kit);
-
-        scroll.setViewportView(textPane);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-
-        textPane.setText(unitSpecs.toString());
-
-        scroll.setVisible(true);
-
-        JDialog jdialog = new JDialog();
-
-        jdialog.add(scroll);
-        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2, CConfig.getIntParam("WINDOWHEIGHT"));
-
-        jdialog.setPreferredSize(size);
-        jdialog.setMinimumSize(size);
-        scroll.setPreferredSize(size);
-        scroll.setMinimumSize(size);
-        // text.setPreferredSize(size);
-
-        jdialog.setLocationRelativeTo(this);
-        jdialog.setVisible(true);
-
-        try {
-            textPane.setSelectionStart(0);
-            textPane.setSelectionEnd(0);
-        } catch (Exception ex) {
-        }
-
-        // JOptionPane.showMessageDialog(this, bvText, "BV Calculations",
-        // JOptionPane.INFORMATION_MESSAGE);
+        UnitUtil.showUnitSpecs(entity, this);
     }
 
     // Show Validation data.
     public void jMenuValidateUnit_actionPerformed() {
-
-        String sb = UnitUtil.validateUnit(entity);
-
-        if (sb.length() > 0) {
-            JOptionPane.showMessageDialog(this, sb, "Unit Validation", JOptionPane.ERROR_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Validation Passed", "Unit Validation", JOptionPane.INFORMATION_MESSAGE);
-        }
-
+        UnitUtil.showValidation(entity, this);
     }
 
     // Show data about MegaMekLab
@@ -840,6 +662,142 @@ public class MainUI extends JFrame implements RefreshListener {
         UnitPrintManager.printEntity(entity);
     }
 
+    private JMenu loadBVMenuOptions() {
+        JMenu bv = new JMenu("BV Calculations");
+        JMenuItem item = new JMenuItem();
+        item.setText("Current Units BV Calculations");
+        item.setMnemonic(KeyEvent.VK_B);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuBVCalculations_actionPerformed();
+            }
+        });
+        bv.add(item);
+
+        item = new JMenuItem();
+        item.setText("BV Calculations From File");
+        item.setMnemonic(KeyEvent.VK_F);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitBVFromFile_actionPerformed();
+            }
+        });
+        bv.add(item);
+
+        item = new JMenuItem();
+        item.setText("BV Calculations From Cache");
+        item.setMnemonic(KeyEvent.VK_C);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitBVFromCache_actionPerformed();
+            }
+        });
+        bv.add(item);
+        return bv;
+    }
+
+    private JMenu loadValidateMenuOptions() {
+        JMenu entityValidation = new JMenu("Unit Validation");
+        JMenuItem item = new JMenuItem();
+        item.setText("Validate Current Unit");
+        item.setMnemonic(KeyEvent.VK_V);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuValidateUnit_actionPerformed();
+            }
+        });
+        entityValidation.add(item);
+
+        item = new JMenuItem();
+        item.setText("Validate Unit From File");
+        item.setMnemonic(KeyEvent.VK_F);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitValidationFromFile_actionPerformed();
+            }
+        });
+        entityValidation.add(item);
+
+        item = new JMenuItem();
+        item.setText("Validate Unit From Cache");
+        item.setMnemonic(KeyEvent.VK_C);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitValidationFromCache_actionPerformed();
+            }
+        });
+        entityValidation.add(item);
+        return entityValidation;
+    }
+
+    private JMenu loadUnitCostBreakdownMenuOptions() {
+        JMenu entityBreakdown = new JMenu("Unit Cost Breakdown");
+        JMenuItem item = new JMenuItem();
+        item.setText("Breakdown Current Unit");
+        item.setMnemonic(KeyEvent.VK_V);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuUnitCostBreakdown_actionPerformed();
+            }
+        });
+        entityBreakdown.add(item);
+
+        item = new JMenuItem();
+        item.setText("Unit Breakdown From File");
+        item.setMnemonic(KeyEvent.VK_F);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitBreakdownFromFile_actionPerformed();
+            }
+        });
+        entityBreakdown.add(item);
+
+        item = new JMenuItem();
+        item.setText("Unit Breakdown From Cache");
+        item.setMnemonic(KeyEvent.VK_C);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitBreakdownFromCache_actionPerformed();
+            }
+        });
+        entityBreakdown.add(item);
+        return entityBreakdown;
+    }
+
+    private JMenu loadSpecsMenuOptions() {
+        JMenu unitSpecs = new JMenu("Unit Specs");
+        JMenuItem item = new JMenuItem();
+        item.setText("Current Unit Specs");
+        item.setMnemonic(KeyEvent.VK_V);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuUnitSpecs_actionPerformed();
+            }
+        });
+        unitSpecs.add(item);
+
+        item = new JMenuItem();
+        item.setText("Unit Specs From File");
+        item.setMnemonic(KeyEvent.VK_F);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitSpecsFromFile_actionPerformed();
+            }
+        });
+        unitSpecs.add(item);
+
+        item = new JMenuItem();
+        item.setText("Unit Specs From Cache");
+        item.setMnemonic(KeyEvent.VK_C);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitSpecsFromCache_actionPerformed();
+            }
+        });
+        unitSpecs.add(item);
+        return unitSpecs;
+    }
+
     private void loadFileMenuOptions() {
 
         file.removeAll();
@@ -1044,4 +1002,176 @@ public class MainUI extends JFrame implements RefreshListener {
         file.add(item);
 
     }
+
+    private void jMenuGetUnitBVFromCache_actionPerformed() {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+        unitLoadingDialog.setVisible(true);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.MEK);
+
+        Entity tempEntity = viewer.getSelectedEntity();
+        tempEntity.calculateBattleValue(true, true);
+        UnitUtil.showBVCalculations(tempEntity.getBVText(), this);
+
+    }
+
+    private void jMenuGetUnitValidationFromCache_actionPerformed() {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+        unitLoadingDialog.setVisible(true);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.MEK);
+
+        Entity tempEntity = viewer.getSelectedEntity();
+        UnitUtil.showValidation(tempEntity, this);
+
+    }
+
+    private void jMenuGetUnitSpecsFromCache_actionPerformed() {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+        unitLoadingDialog.setVisible(true);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.MEK);
+
+        Entity tempEntity = viewer.getSelectedEntity();
+        UnitUtil.showUnitSpecs(tempEntity, this);
+
+    }
+
+    private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(this);
+        unitLoadingDialog.setVisible(true);
+        UnitViewerDialog viewer = new UnitViewerDialog(this, unitLoadingDialog, UnitType.MEK);
+
+        Entity tempEntity = viewer.getSelectedEntity();
+        UnitUtil.showUnitCostBreakDown(tempEntity, this);
+
+    }
+
+    private void jMenuGetUnitBVFromFile_actionPerformed() {
+
+        Entity tempEntity = null;
+        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+        File unitFile = new File(filePathName);
+        JFileChooser f = new JFileChooser(filePathName);
+        f.setLocation(this.getLocation().x + 150, this.getLocation().y + 100);
+        f.setDialogTitle("Choose Unit");
+        f.setDialogType(JFileChooser.OPEN_DIALOG);
+        f.setMultiSelectionEnabled(false);
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        int returnVal = f.showOpenDialog(this);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
+            return;
+        }
+        unitFile = f.getSelectedFile();
+
+        try {
+            tempEntity = new MechFileParser(unitFile).getEntity();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+        } finally {
+            tempEntity.calculateBattleValue(true, true);
+            UnitUtil.showBVCalculations(tempEntity.getBVText(), this);
+        }
+
+    }
+
+    private void jMenuGetUnitValidationFromFile_actionPerformed() {
+
+        Entity tempEntity = null;
+        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+        File unitFile = new File(filePathName);
+        JFileChooser f = new JFileChooser(filePathName);
+        f.setLocation(this.getLocation().x + 150, this.getLocation().y + 100);
+        f.setDialogTitle("Choose Unit");
+        f.setDialogType(JFileChooser.OPEN_DIALOG);
+        f.setMultiSelectionEnabled(false);
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        int returnVal = f.showOpenDialog(this);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
+            return;
+        }
+        unitFile = f.getSelectedFile();
+
+        try {
+            tempEntity = new MechFileParser(unitFile).getEntity();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+        } finally {
+            UnitUtil.showValidation(tempEntity, this);
+        }
+    }
+
+    private void jMenuGetUnitBreakdownFromFile_actionPerformed() {
+
+        Entity tempEntity = null;
+        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+        File unitFile = new File(filePathName);
+        JFileChooser f = new JFileChooser(filePathName);
+        f.setLocation(this.getLocation().x + 150, this.getLocation().y + 100);
+        f.setDialogTitle("Choose Unit");
+        f.setDialogType(JFileChooser.OPEN_DIALOG);
+        f.setMultiSelectionEnabled(false);
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        int returnVal = f.showOpenDialog(this);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
+            return;
+        }
+        unitFile = f.getSelectedFile();
+
+        try {
+            tempEntity = new MechFileParser(unitFile).getEntity();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+        } finally {
+            UnitUtil.showUnitCostBreakDown(tempEntity, this);
+        }
+    }
+
+    private void jMenuGetUnitSpecsFromFile_actionPerformed() {
+
+        Entity tempEntity = null;
+        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+        File unitFile = new File(filePathName);
+        JFileChooser f = new JFileChooser(filePathName);
+        f.setLocation(this.getLocation().x + 150, this.getLocation().y + 100);
+        f.setDialogTitle("Choose Unit");
+        f.setDialogType(JFileChooser.OPEN_DIALOG);
+        f.setMultiSelectionEnabled(false);
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        int returnVal = f.showOpenDialog(this);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
+            return;
+        }
+        unitFile = f.getSelectedFile();
+
+        try {
+            tempEntity = new MechFileParser(unitFile).getEntity();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+        } finally {
+            UnitUtil.showUnitSpecs(tempEntity, this);
+        }
+    }
+
 }

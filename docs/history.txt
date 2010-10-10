@@ -8,6 +8,11 @@ V 0.0.0.18 Dev
 + New MegaMek Jar
 + Bug: Heatsinks not print out correctly if more then 40 are used.
 + New MegaMek Jar
++ BV check for Current/File/Cache units
++ Spec check for current/file/cache units
++ Cost breakdown for current/file/cache units
++ validation check for current/file/cache units
++ New MegaMek.jar
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS

@@ -12,6 +12,7 @@
 
 package megameklab.com.util;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.io.File;
@@ -24,8 +25,16 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.html.HTMLEditorKit;
 
+import megamek.client.ui.swing.MechView;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.BattleArmorBay;
@@ -2164,4 +2173,153 @@ public class UnitUtil {
         }
         return weight;
     }
+
+    public static void showValidation(Entity entity, JFrame frame) {
+        String sb = UnitUtil.validateUnit(entity);
+
+        if (sb.length() > 0) {
+            JOptionPane.showMessageDialog(frame, sb, "Unit Validation", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(frame, "Validation Passed", "Unit Validation", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+    }
+
+    public static void showUnitSpecs(Entity unit, JFrame frame) {
+        HTMLEditorKit kit = new HTMLEditorKit();
+
+        MechView mechView = null;
+        try {
+            mechView = new MechView(unit, true);
+        } catch (Exception e) {
+            // error unit didn't load right. this is bad news.
+        }
+
+        StringBuffer unitSpecs = new StringBuffer("<html><body>");
+        unitSpecs.append(mechView.getMechReadoutBasic());
+        unitSpecs.append(mechView.getMechReadoutLoadout());
+        unitSpecs.append("</body></html>");
+
+        // System.err.println(unitSpecs.toString());
+        JEditorPane textPane = new JEditorPane("text/html", "");
+        JScrollPane scroll = new JScrollPane();
+
+        textPane.setEditable(false);
+        textPane.setCaret(new DefaultCaret());
+        textPane.setEditorKit(kit);
+
+        scroll.setViewportView(textPane);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
+
+        textPane.setText(unitSpecs.toString());
+
+        scroll.setVisible(true);
+
+        JDialog jdialog = new JDialog();
+
+        jdialog.add(scroll);
+        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2, CConfig.getIntParam("WINDOWHEIGHT"));
+
+        jdialog.setPreferredSize(size);
+        jdialog.setMinimumSize(size);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+        // text.setPreferredSize(size);
+
+        jdialog.setLocationRelativeTo(frame);
+        jdialog.setVisible(true);
+
+        try {
+            textPane.setSelectionStart(0);
+            textPane.setSelectionEnd(0);
+        } catch (Exception ex) {
+        }
+
+    }
+
+    public static void showUnitCostBreakDown(Entity unit, JFrame frame) {
+        HTMLEditorKit kit = new HTMLEditorKit();
+        unit.calculateBattleValue(true, true);
+
+        unit.getCost(true);
+
+        JEditorPane textPane = new JEditorPane("text/html", "");
+        JScrollPane scroll = new JScrollPane();
+
+        textPane.setEditable(false);
+        textPane.setCaret(new DefaultCaret());
+        textPane.setEditorKit(kit);
+
+        scroll.setViewportView(textPane);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
+
+        textPane.setText(unit.getBVText());
+
+        scroll.setVisible(true);
+
+        JDialog jdialog = new JDialog();
+
+        jdialog.add(scroll);
+        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2, CConfig.getIntParam("WINDOWHEIGHT"));
+
+        jdialog.setPreferredSize(size);
+        jdialog.setMinimumSize(size);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+
+        jdialog.setLocationRelativeTo(frame);
+        jdialog.setVisible(true);
+
+        try {
+            textPane.setSelectionStart(0);
+            textPane.setSelectionEnd(0);
+        } catch (Exception ex) {
+        }
+    }
+
+    public static void showBVCalculations(String bvText, JFrame frame) {
+        HTMLEditorKit kit = new HTMLEditorKit();
+
+        JEditorPane textPane = new JEditorPane("text/html", "");
+        JScrollPane scroll = new JScrollPane();
+
+        textPane.setEditable(false);
+        textPane.setCaret(new DefaultCaret());
+        textPane.setEditorKit(kit);
+
+        scroll.setViewportView(textPane);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
+
+        textPane.setText(bvText);
+
+        scroll.setVisible(true);
+
+        JDialog jdialog = new JDialog();
+
+        jdialog.add(scroll);
+        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2, CConfig.getIntParam("WINDOWHEIGHT"));
+
+        jdialog.setPreferredSize(size);
+        jdialog.setMinimumSize(size);
+        scroll.setPreferredSize(size);
+        scroll.setMinimumSize(size);
+        // text.setPreferredSize(size);
+
+        jdialog.setLocationRelativeTo(frame);
+        jdialog.setVisible(true);
+
+        try {
+            textPane.setSelectionStart(0);
+            textPane.setSelectionEnd(0);
+        } catch (Exception ex) {
+        }
+
+    }
+
 }
