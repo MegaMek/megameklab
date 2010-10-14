@@ -92,7 +92,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     JTextField source = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
-    JCheckBox turretCB = new JCheckBox("Turret");
+    String[] turretTypes =
+        { "None", "Single", "Dual" };
+    JComboBox turretCombo = new JComboBox(turretTypes);
     Dimension maxSize = new Dimension();
     JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:", SwingConstants.TRAILING);
     JPanel masterPanel;
@@ -143,7 +145,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         maxSize.setSize(110, 20);
 
         masterPanel.add(omniCB);
-        masterPanel.add(turretCB);
+        masterPanel.add(new JLabel(""));
+
+        masterPanel.add(createLabel("Turret:", maxSize));
+        masterPanel.add(turretCombo);
 
         masterPanel.add(createLabel("Year:", maxSize));
         masterPanel.add(era);
@@ -180,6 +185,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         setFieldSize(weightClass, maxSize);
         setFieldSize(tankMotiveType, maxSize);
         setFieldSize(troopStorage, maxSize);
+        setFieldSize(turretCombo, maxSize);
 
         SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
 
@@ -191,13 +197,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     public void refresh() {
         removeAllActionListeners();
         omniCB.setSelected(unit.isOmni());
-        turretCB.setSelected(getTank().getInternal(Tank.LOC_TURRET) > 0);
+
+        if (!getTank().hasNoDualTurret()) {
+            turretCombo.setSelectedIndex(2);
+        } else if (!getTank().hasNoTurret()) {
+            turretCombo.setSelectedIndex(1);
+        } else {
+            turretCombo.setSelectedIndex(0);
+        }
+
         era.setText(Integer.toString(unit.getYear()));
         source.setText(unit.getSource());
-
-        // SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
-        // masterPanel.setVisible(false);
-        // masterPanel.setVisible(true);
 
         if (unit.isMixedTech()) {
             if (unit.isClan()) {
@@ -461,7 +471,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     int currentTonnage = weightClass.getSelectedIndex() + 1;
 
                     populateWeight(currentTonnage);
+                } else if (combo.equals(turretCombo)) {
+
+                    getTank().setHasNoTurret(combo.getSelectedIndex() == 0);
+                    getTank().setHasNoDualTurret(combo.getSelectedIndex() <= 1);
+
+                    getTank().autoSetInternal();
+                    for (int loc = 0; loc < getTank().locations(); loc++) {
+                        getTank().setArmor(0, loc);
+                        getTank().setArmor(0, loc, true);
+                    }
                 }
+
                 addAllActionListeners();
                 refresh.refreshAll();
             } catch (Exception ex) {
@@ -495,7 +516,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         era.removeKeyListener(this);
         source.removeKeyListener(this);
         omniCB.removeActionListener(this);
-        turretCB.removeActionListener(this);
+        turretCombo.removeActionListener(this);
         tankMotiveType.removeActionListener(this);
         troopStorage.removeChangeListener(this);
     }
@@ -509,7 +530,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         era.addKeyListener(this);
         source.addKeyListener(this);
         omniCB.addActionListener(this);
-        turretCB.addActionListener(this);
+        turretCombo.addActionListener(this);
         tankMotiveType.addActionListener(this);
         troopStorage.addChangeListener(this);
     }
@@ -539,7 +560,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     }
 
     public boolean hasTurret() {
-        return turretCB.isSelected();
+        return turretCombo.getSelectedIndex() > 0;
+    }
+
+    public boolean hasDualTurret() {
+        return turretCombo.getSelectedIndex() > 1;
     }
 
     private void updateTroopSpaceAllowed() {
