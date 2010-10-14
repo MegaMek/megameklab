@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.util;
@@ -114,8 +114,13 @@ public class ImageHelper {
                 recordSheet = new ImageIcon(path + "twvee-lgsupground.png").getImage();
             }
         } else if (unit instanceof Tank) {
-            String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + ".png";
-            recordSheet = new ImageIcon(path + imageName).getImage();
+            if (advanced) {
+                String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + "-dualturret.png";
+                recordSheet = new ImageIcon(path + imageName).getImage();
+            } else {
+                String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + ".png";
+                recordSheet = new ImageIcon(path + imageName).getImage();
+            }
         } else if (unit instanceof Aero) {
             if (unit instanceof Dropship) {
                 if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
@@ -693,9 +698,9 @@ public class ImageHelper {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Tank.LOC_TURRET + 1);
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(tank.locations());
 
-        for (int pos = 0; pos <= Tank.LOC_TURRET; pos++) {
+        for (int pos = 0; pos <= tank.locations(); pos++) {
             equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
         }
 
@@ -740,7 +745,7 @@ public class ImageHelper {
         Font font = UnitUtil.deriveFont(true, 10.0f);
         g2d.setFont(font);
 
-        for (int pos = Tank.LOC_BODY; pos <= Tank.LOC_TURRET; pos++) {
+        for (int pos = Tank.LOC_BODY; pos <= tank.locations(); pos++) {
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
 
@@ -792,7 +797,13 @@ public class ImageHelper {
                 String location = tank.getLocationAbbr(pos);
 
                 if (location.equalsIgnoreCase("TU")) {
-                    location = "T";
+                    if (!tank.hasNoDualTurret()) {
+                        location = "RT";
+                    } else {
+                        location = "T";
+                    }
+                } else if (location.equalsIgnoreCase("TU2")) {
+                    location = "FT";
                 }
                 g2d.drawString(location, locPoint, linePoint);
                 if (eqi.isWeapon) {

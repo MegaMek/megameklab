@@ -142,7 +142,7 @@ public class MainUI extends JFrame implements RefreshListener {
         });
 
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
-        createNewTank(false);
+        createNewTank(false, false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
         setJMenuBar(menuBar);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -222,7 +222,7 @@ public class MainUI extends JFrame implements RefreshListener {
             // UnitUtil.updateLoadedTank(entity);
         } catch (Exception ex) {
             ex.printStackTrace();
-            createNewTank(false);
+            createNewTank(false, false);
         }
         reloadTabs();
         setVisible(true);
@@ -239,7 +239,7 @@ public class MainUI extends JFrame implements RefreshListener {
     }
 
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
-        createNewTank(false);
+        createNewTank(false, false);
         reloadTabs();
         setVisible(true);
         this.repaint();
@@ -533,11 +533,12 @@ public class MainUI extends JFrame implements RefreshListener {
         System.exit(0);
     }
 
-    public void createNewTank(boolean hasTurret) {
+    public void createNewTank(boolean hasTurret, boolean hasDualTurret) {
 
         entity = new Tank();
 
         entity.setHasNoTurret(!hasTurret);
+        entity.setHasNoDualTurret(!hasDualTurret);
         entity.setYear(2750);
         entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
         entity.setWeight(25);
@@ -560,21 +561,19 @@ public class MainUI extends JFrame implements RefreshListener {
 
     public void refreshAll() {
 
-        if ((structureTab.hasTurret() && entity.hasNoTurret()) || (!structureTab.hasTurret() && !entity.hasNoTurret())) {
+        if ((structureTab.hasTurret() && entity.hasNoTurret()) || (!structureTab.hasTurret() && !entity.hasNoTurret()) || (!structureTab.hasDualTurret() && !entity.hasNoDualTurret()) || (!structureTab.hasDualTurret() && !entity.hasNoDualTurret())) {
 
-            String chassis = entity.getChassis();
-            String model = entity.getModel();
-
-            createNewTank(structureTab.hasTurret());
-
-            entity.setChassis(chassis);
-            entity.setModel(model);
-
-            // setVisible(false);
-            reloadTabs();
-            // setVisible(true);
-            repaint();
-            refreshAll();
+            /*
+             * String chassis = entity.getChassis(); String model =
+             * entity.getModel();
+             * 
+             * createNewTank(structureTab.hasTurret(),
+             * structureTab.hasDualTurret());
+             * 
+             * entity.setChassis(chassis); entity.setModel(model); //
+             * setVisible(false); reloadTabs(); // setVisible(true); repaint();
+             * refreshAll();
+             */
         }
         statusbar.refresh();
         structureTab.refresh();
@@ -582,6 +581,8 @@ public class MainUI extends JFrame implements RefreshListener {
         equipmentTab.refresh();
         weaponTab.refresh();
         buildTab.refresh();
+        repaint();
+
     }
 
     public void refreshArmor() {
