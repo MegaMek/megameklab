@@ -54,6 +54,7 @@ import megameklab.com.ui.Mek.Printing.PrintMech;
 import megameklab.com.ui.Mek.Printing.PrintQuad;
 import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.VTOL.Printing.PrintVTOL;
+import megameklab.com.ui.Vehicle.Printing.PrintDualTurretVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintWiGE;
@@ -117,6 +118,7 @@ public class UnitPrintManager {
         ArrayList<Mech> bipedList = new ArrayList<Mech>();
         ArrayList<Tank> tankList = new ArrayList<Tank>();
         ArrayList<Tank> wigeList = new ArrayList<Tank>();
+        ArrayList<Tank> dualTurretList = new ArrayList<Tank>();
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
         ArrayList<Aero> aeroList = new ArrayList<Aero>();
         ArrayList<ConvFighter> convFighterList = new ArrayList<ConvFighter>();
@@ -144,7 +146,11 @@ public class UnitPrintManager {
             } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
                 wigeList.add((Tank) unit);
             } else if (unit instanceof Tank) {
-                tankList.add((Tank) unit);
+                if (!((Tank) unit).hasNoDualTurret()) {
+                    dualTurretList.add((Tank) unit);
+                } else {
+                    tankList.add((Tank) unit);
+                }
             } else if (unit instanceof Aero) {
                 if (unit instanceof Dropship) {
                     if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
@@ -193,6 +199,12 @@ public class UnitPrintManager {
             PrintWiGE printWiGE = new PrintWiGE(wigeList, singlePrint, masterPrintJob);
 
             printWiGE.print();
+        }
+
+        if (dualTurretList.size() > 0) {
+            PrintDualTurretVehicle printDualTurret = new PrintDualTurretVehicle(dualTurretList, singlePrint, masterPrintJob);
+
+            printDualTurret.print();
         }
 
         if (aeroList.size() > 0) {

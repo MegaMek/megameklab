@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Vehicle.views;
@@ -45,10 +45,12 @@ public class CriticalView extends IView {
     private JPanel rearPanel = new JPanel();
     private JPanel bodyPanel = new JPanel();
     private JPanel turretPanel = new JPanel();
+    private JPanel dualTurretPanel = new JPanel();
 
     private JPanel topPanel = new JPanel();
     private JPanel middlePanel = new JPanel();
     private JPanel bottomPanel = new JPanel();
+    private JPanel fullTurretPanel = new JPanel();
     private RefreshListener refresh;
 
     private boolean showEmpty = false;
@@ -65,6 +67,7 @@ public class CriticalView extends IView {
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+        fullTurretPanel.setLayout(new BoxLayout(fullTurretPanel, BoxLayout.Y_AXIS));
 
         topPanel.add(frontPanel);
         topPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front"));
@@ -84,10 +87,6 @@ public class CriticalView extends IView {
 
         this.add(mainPanel);
 
-        if (unit.getInternal(Tank.LOC_TURRET) > 0) {
-            turretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Turret"));
-            this.add(turretPanel);
-        }
     }
 
     public void updateRefresh(RefreshListener refresh) {
@@ -101,6 +100,21 @@ public class CriticalView extends IView {
         frontPanel.removeAll();
         rearPanel.removeAll();
         turretPanel.removeAll();
+        dualTurretPanel.removeAll();
+        fullTurretPanel.removeAll();
+        this.remove(fullTurretPanel);
+
+        if (!getTank().hasNoDualTurret()) {
+            dualTurretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front Turret"));
+            fullTurretPanel.add(dualTurretPanel);
+            turretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Reat Turret"));
+            fullTurretPanel.add(turretPanel);
+            this.add(fullTurretPanel);
+        } else if (!getTank().hasNoTurret()) {
+            turretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Turret"));
+            fullTurretPanel.add(turretPanel);
+            this.add(fullTurretPanel);
+        }
 
         synchronized (unit) {
             for (int location = 0; location < unit.locations(); location++) {
@@ -154,6 +168,9 @@ public class CriticalView extends IView {
                     case Tank.LOC_TURRET:
                         turretPanel.add(criticalSlotList);
                         break;
+                    case Tank.LOC_TURRET_2:
+                        dualTurretPanel.add(criticalSlotList);
+                        break;
                 }
             }
             frontPanel.repaint();
@@ -162,6 +179,7 @@ public class CriticalView extends IView {
             rightPanel.repaint();
             rearPanel.repaint();
             turretPanel.repaint();
+            dualTurretPanel.repaint();
 
         }
     }
