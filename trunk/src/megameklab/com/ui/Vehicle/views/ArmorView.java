@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Vehicle.views;
@@ -60,12 +60,14 @@ public class ArmorView extends IView implements ChangeListener {
     private SpinnerNumberModel rightArmorModel = new SpinnerNumberModel();
     private SpinnerNumberModel rearArmorModel = new SpinnerNumberModel();
     private SpinnerNumberModel turretArmorModel = new SpinnerNumberModel();
+    private SpinnerNumberModel frontTurretArmorModel = new SpinnerNumberModel();
 
     private JSpinner frontArmorField = new JSpinner(frontArmorModel);
     private JSpinner leftArmorField = new JSpinner(leftArmorModel);
     private JSpinner rightArmorField = new JSpinner(rightArmorModel);
     private JSpinner rearArmorField = new JSpinner(rearArmorModel);
     private JSpinner turretArmorField = new JSpinner(turretArmorModel);
+    private JSpinner frontTurretArmorField = new JSpinner(frontTurretArmorModel);
 
     private List<JSpinner> armorFieldList = new ArrayList<JSpinner>();
 
@@ -74,6 +76,7 @@ public class ArmorView extends IView implements ChangeListener {
     private JLabel rightArmorMaxLabel = new JLabel();
     private JLabel rearArmorMaxLabel = new JLabel();
     private JLabel turretArmorMaxLabel = new JLabel();
+    private JLabel frontTurretArmorMaxLabel = new JLabel();
     private List<JLabel> armorMaxLabelList = new ArrayList<JLabel>();
 
     private JLabel currentArmorLabel = new JLabel();
@@ -98,6 +101,7 @@ public class ArmorView extends IView implements ChangeListener {
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rearPanel.setLayout(new BoxLayout(rearPanel, BoxLayout.Y_AXIS));
 
+        mainPanel.add(turretPanel);
         mainPanel.add(topPanel);
 
         frontPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
@@ -118,11 +122,13 @@ public class ArmorView extends IView implements ChangeListener {
         rightArmorField.setName(Integer.toString(Tank.LOC_RIGHT));
         rearArmorField.setName(Integer.toString(Tank.LOC_REAR));
         turretArmorField.setName(Integer.toString(Tank.LOC_TURRET));
+        frontTurretArmorField.setName(Integer.toString(Tank.LOC_TURRET_2));
 
         armorFieldList.add(frontArmorField);
         armorFieldList.add(leftArmorField);
         armorFieldList.add(rightArmorField);
         armorFieldList.add(rearArmorField);
+        armorFieldList.add(frontTurretArmorField);
         armorFieldList.add(turretArmorField);
 
         Dimension size = new Dimension(45, 20);
@@ -138,6 +144,7 @@ public class ArmorView extends IView implements ChangeListener {
         armorMaxLabelList.add(leftArmorMaxLabel);
         armorMaxLabelList.add(rightArmorMaxLabel);
         armorMaxLabelList.add(rearArmorMaxLabel);
+        armorMaxLabelList.add(frontTurretArmorMaxLabel);
         armorMaxLabelList.add(turretArmorMaxLabel);
 
         Dimension labelSize = new Dimension(25, 20);
@@ -152,59 +159,54 @@ public class ArmorView extends IView implements ChangeListener {
 
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+        turretPanel.setLayout(new BoxLayout(turretPanel, BoxLayout.Y_AXIS));
 
         JPanel masterPanel;
 
         synchronized (unit) {
-            for (int location = 0; location < unit.locations(); location++) {
+            for (int location = 0; location < unit.getLocationAbbrs().length; location++) {
 
                 switch (location) {
-                case Tank.LOC_FRONT:
-                    masterPanel = new JPanel();
-                    masterPanel.add(frontArmorField);
-                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                    masterPanel.add(frontArmorMaxLabel);
-                    frontPanel.add(new JLabel(unit.getLocationName(location)));
-                    frontPanel.add(masterPanel);
-                    break;
-                case Tank.LOC_REAR:
-                    masterPanel = new JPanel();
-                    masterPanel.add(rearArmorField);
-                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                    masterPanel.add(rearArmorMaxLabel);
-                    rearPanel.add(new JLabel(unit.getLocationName(location)));
-                    rearPanel.add(masterPanel);
-                    break;
-                case Tank.LOC_TURRET:
-                    masterPanel = new JPanel();
-                    masterPanel.add(turretArmorField);
-                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                    masterPanel.add(turretArmorMaxLabel);
-                    turretPanel.add(new JLabel(unit.getLocationName(location)));
-                    turretPanel.add(masterPanel);
-                    break;
-                case Tank.LOC_LEFT:
-                    masterPanel = new JPanel();
-                    masterPanel.add(leftArmorField);
-                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                    masterPanel.add(leftArmorMaxLabel);
-                    leftPanel.add(new JLabel(unit.getLocationName(location)));
-                    leftPanel.add(masterPanel);
-                    break;
-                case Tank.LOC_RIGHT:
-                    masterPanel = new JPanel();
-                    masterPanel.add(rightArmorField);
-                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                    masterPanel.add(rightArmorMaxLabel);
-                    rightPanel.add(new JLabel(unit.getLocationName(location)));
-                    rightPanel.add(masterPanel);
-                    break;
+                    case Tank.LOC_FRONT:
+                        masterPanel = new JPanel();
+                        masterPanel.add(frontArmorField);
+                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        masterPanel.add(frontArmorMaxLabel);
+                        frontPanel.add(new JLabel(unit.getLocationName(location)));
+                        frontPanel.add(masterPanel);
+                        break;
+                    case Tank.LOC_REAR:
+                        masterPanel = new JPanel();
+                        masterPanel.add(rearArmorField);
+                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        masterPanel.add(rearArmorMaxLabel);
+                        rearPanel.add(new JLabel(unit.getLocationName(location)));
+                        rearPanel.add(masterPanel);
+                        break;
+                    case Tank.LOC_TURRET:
+                    case Tank.LOC_TURRET_2:
+                        break;
+                    case Tank.LOC_LEFT:
+                        masterPanel = new JPanel();
+                        masterPanel.add(leftArmorField);
+                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        masterPanel.add(leftArmorMaxLabel);
+                        leftPanel.add(new JLabel(unit.getLocationName(location)));
+                        leftPanel.add(masterPanel);
+                        break;
+                    case Tank.LOC_RIGHT:
+                        masterPanel = new JPanel();
+                        masterPanel.add(rightArmorField);
+                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        masterPanel.add(rightArmorMaxLabel);
+                        rightPanel.add(new JLabel(unit.getLocationName(location)));
+                        rightPanel.add(masterPanel);
+                        break;
                 }
             }
         }
 
         this.add(mainPanel);
-        this.add(turretPanel);
 
         JPanel totalArmorPanel = new JPanel();
         JPanel headerPanel = new JPanel();
@@ -242,46 +244,78 @@ public class ArmorView extends IView implements ChangeListener {
     }
 
     public void refresh() {
+        JPanel masterPanel;
         removeAllListeners();
         int maxArmor = UnitUtil.getMaximumArmorPoints(unit);
+        turretPanel.removeAll();
+        turretPanel.setBorder(null);
+
         for (int location = 0; location < unit.locations(); location++) {
 
             switch (location) {
-            case Tank.LOC_FRONT:
-                frontArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                frontArmorModel.setMaximum(maxArmor);
-                frontArmorModel.setStepSize(1);
-                frontArmorModel.setMinimum(0);
-                frontArmorMaxLabel.setText(Integer.toString(maxArmor));
-                break;
-            case Tank.LOC_REAR:
-                rearArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                rearArmorModel.setMaximum(maxArmor);
-                rearArmorModel.setStepSize(1);
-                rearArmorModel.setMinimum(0);
-                rearArmorMaxLabel.setText(Integer.toString(maxArmor));
-                break;
-            case Tank.LOC_TURRET:
-                turretArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                turretArmorModel.setMaximum(maxArmor);
-                turretArmorModel.setStepSize(1);
-                turretArmorModel.setMinimum(0);
-                turretArmorMaxLabel.setText(Integer.toString(maxArmor));
-                break;
-            case Tank.LOC_LEFT:
-                leftArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                leftArmorModel.setMaximum(maxArmor);
-                leftArmorModel.setStepSize(1);
-                leftArmorModel.setMinimum(0);
-                leftArmorMaxLabel.setText(Integer.toString(maxArmor));
-                break;
-            case Tank.LOC_RIGHT:
-                rightArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                rightArmorModel.setMaximum(maxArmor);
-                rightArmorModel.setStepSize(1);
-                rightArmorModel.setMinimum(0);
-                rightArmorMaxLabel.setText(Integer.toString(maxArmor));
-                break;
+                case Tank.LOC_FRONT:
+                    frontArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                    frontArmorModel.setMaximum(maxArmor);
+                    frontArmorModel.setStepSize(1);
+                    frontArmorModel.setMinimum(0);
+                    frontArmorMaxLabel.setText(Integer.toString(maxArmor));
+                    break;
+                case Tank.LOC_REAR:
+                    rearArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                    rearArmorModel.setMaximum(maxArmor);
+                    rearArmorModel.setStepSize(1);
+                    rearArmorModel.setMinimum(0);
+                    rearArmorMaxLabel.setText(Integer.toString(maxArmor));
+                    break;
+                case Tank.LOC_TURRET:
+                    turretArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                    turretArmorModel.setMaximum(maxArmor);
+                    turretArmorModel.setStepSize(1);
+                    turretArmorModel.setMinimum(0);
+                    turretArmorMaxLabel.setText(Integer.toString(maxArmor));
+                    masterPanel = new JPanel();
+                    masterPanel.add(turretArmorField);
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                    masterPanel.add(turretArmorMaxLabel);
+                    turretPanel.add(new JLabel("Turret"));
+                    turretPanel.add(masterPanel);
+                    turretPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+                    break;
+                case Tank.LOC_TURRET_2:
+                    turretPanel.removeAll();
+                    masterPanel = new JPanel();
+                    masterPanel.add(frontTurretArmorField);
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                    masterPanel.add(frontTurretArmorMaxLabel);
+                    turretPanel.add(new JLabel("Front Turret"));
+                    turretPanel.add(masterPanel);
+
+                    masterPanel = new JPanel();
+                    masterPanel.add(turretArmorField);
+                    masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                    masterPanel.add(turretArmorMaxLabel);
+                    turretPanel.add(new JLabel("Rear Turret"));
+                    turretPanel.add(masterPanel);
+                    frontTurretArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                    frontTurretArmorModel.setMaximum(maxArmor);
+                    frontTurretArmorModel.setStepSize(1);
+                    frontTurretArmorModel.setMinimum(0);
+                    frontTurretArmorMaxLabel.setText(Integer.toString(maxArmor));
+                    break;
+                case Tank.LOC_LEFT:
+                    leftArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                    leftArmorModel.setMaximum(maxArmor);
+                    leftArmorModel.setStepSize(1);
+                    leftArmorModel.setMinimum(0);
+                    leftArmorMaxLabel.setText(Integer.toString(maxArmor));
+                    break;
+                case Tank.LOC_RIGHT:
+                    rightArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                    rightArmorModel.setMaximum(maxArmor);
+                    rightArmorModel.setStepSize(1);
+                    rightArmorModel.setMinimum(0);
+                    rightArmorMaxLabel.setText(Integer.toString(maxArmor));
+                    break;
             }
         }
 
@@ -309,7 +343,7 @@ public class ArmorView extends IView implements ChangeListener {
             for (int location = 1; location < unit.locations(); location++) {
 
                 int points = unit.getOArmor(location);
-                if (location == Tank.LOC_FRONT && pointsToAllocate >= 2) {
+                if ((location == Tank.LOC_FRONT) && (pointsToAllocate >= 2)) {
                     unit.initializeArmor(++points, location);
                     pointsToAllocate--;
                 }
@@ -331,7 +365,7 @@ public class ArmorView extends IView implements ChangeListener {
 
         int location = Integer.parseInt(field.getName());
         int value = (Integer) field.getModel().getValue();
-        if (unit.getTotalOArmor() == UnitUtil.getArmorPoints(unit, UnitUtil.getMaximumArmorTonnage(unit)) && unit.getOArmor(location) < value) {
+        if ((unit.getTotalOArmor() == UnitUtil.getArmorPoints(unit, UnitUtil.getMaximumArmorTonnage(unit))) && (unit.getOArmor(location) < value)) {
             field.getModel().setValue(unit.getOArmor(location));
         } else {
             unit.initializeArmor(value, location);

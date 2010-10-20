@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.util;
@@ -250,6 +250,22 @@ public class CConfig {
         if (newFile.trim().length() < 1) {
             return;
         }
+        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4).equalsIgnoreCase(newFile)) {
+            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_4, "");
+        }
+
+        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3).equalsIgnoreCase(newFile)) {
+            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_3, "");
+        }
+
+        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_2).equalsIgnoreCase(newFile)) {
+            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_2, "");
+        }
+
+        if (CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1).equalsIgnoreCase(newFile)) {
+            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
+        }
+
         if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_4).equalsIgnoreCase(CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3))) {
             CConfig.setParam(CConfig.CONFIG_SAVE_FILE_4, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_3));
         }
@@ -262,9 +278,7 @@ public class CConfig {
             CConfig.setParam(CConfig.CONFIG_SAVE_FILE_2, CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1));
         }
 
-        if (!CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1).equalsIgnoreCase(newFile)) {
-            CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, newFile);
-        }
+        CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, newFile);
         CConfig.saveConfig();
     }
 }
