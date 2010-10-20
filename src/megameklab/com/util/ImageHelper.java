@@ -1519,6 +1519,15 @@ public class ImageHelper {
         g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
     }
 
+    public static void drawTankISTurretPip(Graphics2D g2d, int width, int height) {
+        Dimension circle = new Dimension(6, 6);
+        Dimension fillCircle = new Dimension(4, 4);
+        g2d.setColor(Color.black);
+        g2d.fillOval(width, height, circle.width, circle.height);
+        g2d.setColor(Color.white);
+        g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
+    }
+
     public static void drawLSVISPip(Graphics2D g2d, int width, int height) {
         Dimension circle = new Dimension(5, 5);
         Dimension fillCircle = new Dimension(3, 3);
