@@ -1034,12 +1034,12 @@ public class PrintDualTurretVehicle implements Printable {
             return;
         }
 
-        float baseX = 462f;
-        float baseY = 145f;
+        float baseX = 464f;
+        float baseY = 147f;
         float pointX = baseX;
         float pointY = baseY;
-        float shiftX = 7f;
-        float shiftY = 7f;
+        float shiftX = 6f;
+        float shiftY = 6f;
         int pipsPerLine = 5;
 
         if (secondImage) {
@@ -1059,7 +1059,7 @@ public class PrintDualTurretVehicle implements Printable {
             pointX = baseX;
         }
 
-        printStructPoints(g2d, pipPlotter, totalArmor);
+        printTurretISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLeftStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
@@ -1123,6 +1123,18 @@ public class PrintDualTurretVehicle implements Printable {
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
             ImageHelper.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
+            if (--totalArmor <= 0) {
+                return;
+            }
+        }
+    }
+
+    private void printTurretISPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {
+        pipPoints.trimToSize();
+        float pipSpace = pipPoints.size() / totalArmor;
+        for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
+            int currentPip = (int) pos;
+            ImageHelper.drawTankISTurretPip(g2d, (int) pipPoints.get(currentPip)[0], (int) pipPoints.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }

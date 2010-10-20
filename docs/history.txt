@@ -16,6 +16,7 @@ V 0.0.0.18 Dev
 + Fixes to DS Record Sheet
 + Dual Turret Tanks Now Print
 + New MegaMek.jar
++ Bug: Save no working correctly
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS

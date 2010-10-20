@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Mek;
@@ -320,18 +320,19 @@ public class MainUI extends JFrame implements RefreshListener {
             JOptionPane.showMessageDialog(this, "Warning: Saving an invalid unit, it might load incorrectly!");
         }
 
+        String unitName = entity.getChassis() + " " + entity.getModel();
         UnitUtil.compactCriticals(entity);
         UnitUtil.reIndexCrits(entity);
 
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
 
-        if (filePathName.trim().length() < 1) {
+        if ((filePathName.trim().length() < 1) || !filePathName.contains(unitName)) {
             FileDialog fDialog = new FileDialog(this, "Save As", FileDialog.SAVE);
 
             filePathName = new File(System.getProperty("user.dir").toString() + "/data/mechfiles/").getAbsolutePath();
 
             fDialog.setDirectory(filePathName);
-            fDialog.setFile(entity.getChassis() + " " + entity.getModel() + ".mtf");
+            fDialog.setFile(unitName + ".mtf");
             fDialog.setLocationRelativeTo(this);
 
             fDialog.setVisible(true);
