@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 package megameklab.com.util;
 
@@ -62,6 +62,8 @@ public class EquipmentInfo {
     public boolean hasApollo = false;
     public boolean hasArtemisV = false;
     public boolean hasAmmo = false;
+
+    public boolean shouldIndent = false;
 
     public int c3Level = 0;
 
@@ -159,9 +161,9 @@ public class EquipmentInfo {
      * @param dropship
      * @param mount
      */
-    public EquipmentInfo(Dropship dropship, Mounted mount) {
+    public EquipmentInfo(Dropship dropship, Mounted mount, Mounted bay) {
         name = UnitUtil.getCritName(dropship, mount.getType());
-        damage = StringUtils.getEquipmentInfo(dropship, mount);
+        damage = StringUtils.getEquipmentInfo(dropship, mount, bay);
 
         count = 1;
         techLevel = mount.getType().getTechLevel();
