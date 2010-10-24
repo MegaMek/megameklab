@@ -30,7 +30,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -54,7 +53,6 @@ import megamek.common.Protomech;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.VTOL;
-import megamek.common.WeaponType;
 import megamek.common.weapons.BayWeapon;
 import megamek.common.weapons.ISCompactNarc;
 
@@ -1603,37 +1601,38 @@ public class ImageHelper {
         int medPoint = 169;
         int longPoint = 192;
         int erPoint = 211;
+        int nameSize = 68;
         float linePoint = 209f;
         float lineFeed = 6.7f;
-        float maxHeight = 260.9f;
+        // float maxHeight = 260.9f;
         float stringHeight = 0f;
         float fontSize = 7.0f;
         boolean newLineNeeded = false;
         boolean hasCapital = false;
         boolean hasSubCapital = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(ImageHelper.LOCATION_ABBRS.length);
-        ArrayList<Hashtable<String, EquipmentInfo>> capitalEquipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(ImageHelper.LOCATION_ABBRS.length);
+        ArrayList<Vector<EquipmentInfo>> equipmentLocations = new ArrayList<Vector<EquipmentInfo>>(ImageHelper.LOCATION_ABBRS.length);
+        ArrayList<Vector<EquipmentInfo>> capitalEquipmentLocations = new ArrayList<Vector<EquipmentInfo>>(ImageHelper.LOCATION_ABBRS.length);
 
         if (dropship.getMovementMode() == EntityMovementMode.AERODYNE) {
             linePoint = 201;
         }
 
         for (int pos = 0; pos < ImageHelper.LOCATION_ABBRS.length; pos++) {
-            equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
-            capitalEquipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
+            equipmentLocations.add(pos, new Vector<EquipmentInfo>());
+            capitalEquipmentLocations.add(pos, new Vector<EquipmentInfo>());
         }
 
-        for (Mounted eq : dropship.getEquipment()) {
+        for (Mounted eq : dropship.getWeaponBayList()) {
 
             if ((eq.isWeaponGroup() || (eq.getType() instanceof AmmoType)) || (eq.getLocation() == Entity.LOC_NONE) || !UnitUtil.isPrintableEquipment(eq.getType())) {
                 continue;
             }
 
-            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
-            Hashtable<String, EquipmentInfo> capitalEqHash = capitalEquipmentLocations.get(eq.getLocation());
+            Vector<EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
+            Vector<EquipmentInfo> capitalEqHash = capitalEquipmentLocations.get(eq.getLocation());
 
-            String equipmentName = eq.getName();
+            String equipmentName = "";
             if (eq.isRearMounted()) {
                 switch (eq.getLocation()) {
                     case Aero.LOC_LWING:
@@ -1647,108 +1646,70 @@ public class ImageHelper {
                 }
             }
 
-            if ((eq.getType() instanceof BayWeapon)) {
-                continue;
-            }
+            if ((eq.getType() instanceof BayWeapon) && ((BayWeapon) eq.getType()).isCapital()) {
 
-            if ((eq.getType() instanceof WeaponType) && ((WeaponType) eq.getType()).isCapital()) {
-                if (capitalEqHash.containsKey(equipmentName)) {
-                    EquipmentInfo eqi = capitalEqHash.get(equipmentName);
+                EquipmentInfo eqi = null;
+                for (int weaponIndex : eq.getBayWeapons()) {
+                    Mounted weapon = dropship.getEquipment(weaponIndex);
 
-                    if (eq.getType().getTechLevel() != eqi.techLevel) {
-                        eqi = new EquipmentInfo(dropship, eq);
+                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase(weapon.getName()) || (weapon.getType().getTechLevel() != eqi.techLevel)) {
+                        if (eqi != null) {
+                            eqi = new EquipmentInfo(dropship, weapon, eq);
+                            equipmentName = eqi.name;
+                            eqi.shouldIndent = true;
+                            capitalEqHash.add(eqi);
+                        } else {
+                            eqi = new EquipmentInfo(dropship, weapon, eq);
+                            capitalEqHash.add(eqi);
+                            equipmentName = eqi.name;
+                        }
                     } else {
                         eqi.count++;
                     }
-                    capitalEqHash.put(equipmentName, eqi);
-                } else {
-                    EquipmentInfo eqi = new EquipmentInfo(dropship, eq);
-                    capitalEqHash.put(equipmentName, eqi);
                 }
             } else {
-                if (eqHash.containsKey(equipmentName)) {
-                    EquipmentInfo eqi = eqHash.get(equipmentName);
+                EquipmentInfo eqi = null;
+                for (int weaponIndex : eq.getBayWeapons()) {
+                    Mounted weapon = dropship.getEquipment(weaponIndex);
 
-                    if (eq.getType().getTechLevel() != eqi.techLevel) {
-                        eqi = new EquipmentInfo(dropship, eq);
+                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase(weapon.getName()) || (weapon.getType().getTechLevel() != eqi.techLevel)) {
+                        if (eqi != null) {
+                            eqi = new EquipmentInfo(dropship, weapon, eq);
+                            eqi.shouldIndent = true;
+                            eqHash.add(eqi);
+                            equipmentName = eqi.name;
+                        } else {
+                            eqi = new EquipmentInfo(dropship, weapon, eq);
+                            eqHash.add(eqi);
+                            equipmentName = eqi.name;
+                        }
                     } else {
                         eqi.count++;
                     }
-                    eqHash.put(equipmentName, eqi);
-                } else {
-                    EquipmentInfo eqi = new EquipmentInfo(dropship, eq);
-                    eqHash.put(equipmentName, eqi);
                 }
             }
 
         }
 
-        int oppositePos = 0;
-        int newPosition = 0;
-        for (int pos = Aero.LOC_LWING; pos <= ImageHelper.LOC_AR; pos++) {
-            switch (pos) {
-                case Aero.LOC_LWING:
-                    oppositePos = Aero.LOC_RWING;
-                    newPosition = ImageHelper.LOC_FL_FR;
-                    break;
-                case ImageHelper.LOC_AL:
-                    oppositePos = ImageHelper.LOC_AR;
-                    newPosition = ImageHelper.LOC_AL_AR;
-                    break;
-                default:
-                    continue;
-            }
+        equipmentLocations.get(ImageHelper.LOC_FL_FR).addAll(equipmentLocations.get(Aero.LOC_LWING));
+        equipmentLocations.get(Aero.LOC_LWING).clear();
+        equipmentLocations.get(Aero.LOC_RWING).clear();
+        equipmentLocations.get(ImageHelper.LOC_AL_AR).addAll(equipmentLocations.get(ImageHelper.LOC_AL));
+        equipmentLocations.get(ImageHelper.LOC_AL).clear();
+        equipmentLocations.get(ImageHelper.LOC_AR).clear();
 
-            Enumeration<String> keyList = equipmentLocations.get(pos).keys();
-            while (keyList.hasMoreElements()) {
-                String key = keyList.nextElement();
-                EquipmentInfo currentInfo = equipmentLocations.get(pos).get(key);
-                EquipmentInfo OppositeInfo = equipmentLocations.get(oppositePos).get(key);
-
-                if (currentInfo.count == OppositeInfo.count) {
-                    equipmentLocations.get(newPosition).put(key, currentInfo);
-                    equipmentLocations.get(pos).remove(key);
-                    equipmentLocations.get(oppositePos).remove(key);
-                } else if (currentInfo.count > OppositeInfo.count) {
-                    equipmentLocations.get(newPosition).put(key, OppositeInfo);
-                    equipmentLocations.get(oppositePos).remove(key);
-                    currentInfo.count -= OppositeInfo.count;
-                } else {
-                    equipmentLocations.get(newPosition).put(key, currentInfo);
-                    equipmentLocations.get(pos).remove(key);
-                    OppositeInfo.count -= currentInfo.count;
-                }
-            }
-
-            keyList = capitalEquipmentLocations.get(pos).keys();
-            while (keyList.hasMoreElements()) {
-                String key = keyList.nextElement();
-                if (!capitalEquipmentLocations.get(oppositePos).containsKey(key)) {
-                    continue;
-                }
-                EquipmentInfo currentInfo = capitalEquipmentLocations.get(pos).get(key);
-                EquipmentInfo OppositeInfo = capitalEquipmentLocations.get(oppositePos).get(key);
-
-                if (currentInfo.count == OppositeInfo.count) {
-                    capitalEquipmentLocations.get(newPosition).put(key, currentInfo);
-                    capitalEquipmentLocations.get(pos).remove(key);
-                    capitalEquipmentLocations.get(oppositePos).remove(key);
-                } else if (currentInfo.count > OppositeInfo.count) {
-                    capitalEquipmentLocations.get(newPosition).put(key, OppositeInfo);
-                    capitalEquipmentLocations.get(oppositePos).remove(key);
-                    currentInfo.count -= OppositeInfo.count;
-                } else {
-                    capitalEquipmentLocations.get(newPosition).put(key, currentInfo);
-                    capitalEquipmentLocations.get(pos).remove(key);
-                    OppositeInfo.count -= currentInfo.count;
-                }
-            }
-        }
+        capitalEquipmentLocations.get(ImageHelper.LOC_FL_FR).addAll(equipmentLocations.get(Aero.LOC_LWING));
+        capitalEquipmentLocations.get(Aero.LOC_LWING).clear();
+        capitalEquipmentLocations.get(Aero.LOC_RWING).clear();
+        capitalEquipmentLocations.get(ImageHelper.LOC_AL_AR).addAll(equipmentLocations.get(ImageHelper.LOC_AL));
+        capitalEquipmentLocations.get(ImageHelper.LOC_AL).clear();
+        capitalEquipmentLocations.get(ImageHelper.LOC_AR).clear();
 
         Font font = UnitUtil.deriveFont(fontSize);
         g2d.setFont(font);
 
-        font = ImageHelper.getDropShipWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, capitalEquipmentLocations, fontSize);
+        // font = ImageHelper.getDropShipWeaponsNEquipmentFont(g2d, false,
+        // maxHeight, equipmentLocations, capitalEquipmentLocations, fontSize);
         fontSize = font.getSize2D();
         g2d.setFont(font);
         stringHeight = getStringHeight(g2d, "H", font);
@@ -1759,7 +1720,7 @@ public class ImageHelper {
 
         for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
 
-            Hashtable<String, EquipmentInfo> eqHash = capitalEquipmentLocations.get(LOCATION_PRINT[pos]);
+            Vector<EquipmentInfo> eqHash = capitalEquipmentLocations.get(LOCATION_PRINT[pos]);
 
             if (eqHash.isEmpty()) {
                 continue;
@@ -1790,21 +1751,18 @@ public class ImageHelper {
                 g2d.setFont(font);
             }
 
-            ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
-
-            for (EquipmentInfo eqi : eqHash.values()) {
-                equipmentList.add(eqi);
-            }
-
-            Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
-
-            for (EquipmentInfo eqi : equipmentList) {
+            for (EquipmentInfo eqi : eqHash) {
                 newLineNeeded = false;
 
+                if (eqi.shouldIndent) {
+                    qtyPoint += 5;
+                    typePoint += 5;
+                    nameSize -= 10;
+                }
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
-                String name = String.format("%1$s %2$s", eqi.name.trim(), eqi.damage.trim());
+                String name = eqi.name.trim();
 
-                font = UnitUtil.getNewFont(g2d, name, false, 68, fontSize);
+                font = UnitUtil.getNewFont(g2d, name, false, nameSize, fontSize);
                 g2d.setFont(font);
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
@@ -1819,6 +1777,15 @@ public class ImageHelper {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
+                    if (eqi.damage.trim().length() > 0) {
+                        g2d.drawString(eqi.damage, typePoint, linePoint + lineFeed);
+                        newLineNeeded = true;
+                    }
+                }
+                if (eqi.shouldIndent) {
+                    qtyPoint -= 5;
+                    typePoint -= 5;
+                    nameSize += 10;
                 }
                 font = UnitUtil.deriveFont(fontSize);
                 g2d.setFont(font);
@@ -1852,14 +1819,18 @@ public class ImageHelper {
                         g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     }
 
+                    float drawLine = linePoint + lineFeed;
+                    if (newLineNeeded) {
+                        drawLine += lineFeed;
+                    }
                     if (eqi.hasArtemis) {
-                        g2d.drawString("w/Artemis IV FCS", typePoint, linePoint + lineFeed);
+                        g2d.drawString("w/Artemis IV FCS", typePoint, drawLine);
                         newLineNeeded = true;
                     } else if (eqi.hasArtemisV) {
-                        g2d.drawString("w/Artemis V FCS", typePoint, linePoint + lineFeed);
+                        g2d.drawString("w/Artemis V FCS", typePoint, drawLine);
                         newLineNeeded = true;
                     } else if (eqi.hasApollo) {
-                        g2d.drawString("w/Apollo FCS", typePoint, linePoint + lineFeed);
+                        g2d.drawString("w/Apollo FCS", typePoint, drawLine);
                         newLineNeeded = true;
                     }
                 }
@@ -1872,7 +1843,7 @@ public class ImageHelper {
 
         for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
 
-            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(LOCATION_PRINT[pos]);
+            Vector<EquipmentInfo> eqHash = equipmentLocations.get(LOCATION_PRINT[pos]);
 
             if (eqHash.isEmpty()) {
                 continue;
@@ -1903,19 +1874,16 @@ public class ImageHelper {
                 g2d.setFont(font);
             }
 
-            ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
-
-            for (EquipmentInfo eqi : eqHash.values()) {
-                equipmentList.add(eqi);
-            }
-
-            Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
-
-            for (EquipmentInfo eqi : equipmentList) {
+            for (EquipmentInfo eqi : eqHash) {
                 newLineNeeded = false;
 
+                if (eqi.shouldIndent) {
+                    qtyPoint += 5;
+                    typePoint += 5;
+                    nameSize -= 10;
+                }
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
-                String name = eqi.name.trim() + " " + eqi.damage.trim();
+                String name = eqi.name.trim();
 
                 font = UnitUtil.getNewFont(g2d, name, false, 68, fontSize);
                 g2d.setFont(font);
@@ -1932,6 +1900,15 @@ public class ImageHelper {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
+                    if (eqi.damage.trim().length() > 0) {
+                        g2d.drawString(eqi.damage, typePoint, linePoint + lineFeed);
+                        newLineNeeded = true;
+                    }
+                }
+                if (eqi.shouldIndent) {
+                    qtyPoint -= 5;
+                    typePoint -= 5;
+                    nameSize += 10;
                 }
                 font = UnitUtil.deriveFont(fontSize);
                 g2d.setFont(font);

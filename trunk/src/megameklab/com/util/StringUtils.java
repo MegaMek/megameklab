@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.util;
@@ -78,18 +78,24 @@ public class StringUtils {
         };
     }
 
-    public static String getEquipmentInfo(Dropship unit, Mounted mount) {
+    public static String getEquipmentInfo(Dropship unit, Mounted mount, Mounted bay) {
         String info = "";
 
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
-
+            int totalAmmo = 0;
+            for (int ammoIndex : bay.getBayAmmo()) {
+                Mounted ammoMount = unit.getEquipment(ammoIndex);
+                if (ammoMount.getType() == mount.getLinked().getType()) {
+                    totalAmmo += ammoMount.getShotsLeft();
+                }
+            }
             if (weapon instanceof ScreenLauncherWeapon) {
-                info = String.format("[%1$s Screens]", unit.getTotalAmmoOfType(mount.getLinked().getType()));
+                info = String.format("[%1$s Screens]", totalAmmo);
             } else if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
-                info = String.format("[%1$s rnds]", unit.getTotalAmmoOfType(mount.getLinked().getType()));
+                info = String.format("[%1$s rnds]", totalAmmo);
             } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
-                info = String.format("[%1$s misl]", unit.getTotalAmmoOfType(mount.getLinked().getType()));
+                info = String.format("[%1$s misl]", totalAmmo);
             }
         }
         return info;
