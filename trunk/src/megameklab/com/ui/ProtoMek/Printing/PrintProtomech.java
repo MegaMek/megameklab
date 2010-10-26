@@ -1,13 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.ProtoMek.Printing;
@@ -31,6 +35,8 @@ import javax.print.attribute.standard.PrintQuality;
 import megamek.common.Protomech;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
+import megameklab.com.util.ImageHelperBattleArmor;
+import megameklab.com.util.ImageHelperProto;
 import megameklab.com.util.UnitUtil;
 
 public class PrintProtomech implements Printable {
@@ -71,7 +77,7 @@ public class PrintProtomech implements Printable {
         }
 
         currentMargin = 0;
-        Image singleProtoMech = ImageHelper.getProtoMech(1);
+        Image singleProtoMech = ImageHelperProto.getProtoMech(1);
         int x = 18;
         int y = 78;
         g2d.drawImage(ImageHelper.getRecordSheet(protoMech, false), 18, 18, 558, 738, null);
@@ -84,11 +90,11 @@ public class PrintProtomech implements Printable {
             protoMech = protoMechList.get(pos + currentPosition);
 
             if (pos == 1) {
-                singleProtoMech = ImageHelper.getProtoMech(2);
+                singleProtoMech = ImageHelperProto.getProtoMech(2);
             }
 
             g2d.drawImage(singleProtoMech, x, y, 558, 136, null);
-            g2d.drawImage(ImageHelper.getBASquadNumber(pos), 100, 86 + currentMargin, 10, 9, null);
+            g2d.drawImage(ImageHelperBattleArmor.getBASquadNumber(pos), 100, 86 + currentMargin, 10, 9, null);
             printProtomechData(g2d);
             printWeaponsNEquipment(g2d);
             drawArmor(g2d);
@@ -97,7 +103,7 @@ public class PrintProtomech implements Printable {
             currentMargin += pageMarginBase;
 
             if (pos == 4) {
-                g2d.drawImage(ImageHelper.getProtoLogo(), 22, 728, 60, 26, null);
+                g2d.drawImage(ImageHelperProto.getProtoLogo(), 22, 728, 60, 26, null);
             }
         }
         System.gc();
@@ -131,21 +137,21 @@ public class PrintProtomech implements Printable {
         int armorTotal = protoMech.getArmor(Protomech.LOC_MAINGUN);
 
         if (armorTotal >= 1) {
-            ImageHelper.drawBAArmorPip(g2d, 511, 103 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 511, 103 + currentMargin, 4);
         }
 
         if (armorTotal >= 2) {
-            ImageHelper.drawBAArmorPip(g2d, 508, 106 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 508, 106 + currentMargin, 4);
         }
 
         if (armorTotal >= 3) {
-            ImageHelper.drawBAArmorPip(g2d, 513.5f, 106 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 513.5f, 106 + currentMargin, 4);
         }
     }
 
     private void drawMainGunIS(Graphics2D g2d) {
         if (protoMech.getInternal(Protomech.LOC_MAINGUN) >= 1) {
-            ImageHelper.drawProtoISPip(g2d, 510, 105 + currentMargin);
+            ImageHelperProto.drawProtoISPip(g2d, 510, 105 + currentMargin);
         }
     }
 
@@ -153,78 +159,78 @@ public class PrintProtomech implements Printable {
         int armorTotal = protoMech.getArmor(Protomech.LOC_HEAD);
 
         if (armorTotal >= 1) {
-            ImageHelper.drawBAArmorPip(g2d, 523, 114 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 523, 114 + currentMargin, 4);
         }
         if (armorTotal >= 2) {
-            ImageHelper.drawBAArmorPip(g2d, 520, 115 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 520, 115 + currentMargin, 4);
         }
         if (armorTotal >= 3) {
-            ImageHelper.drawBAArmorPip(g2d, 526, 115 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 526, 115 + currentMargin, 4);
         }
         if (armorTotal >= 4) {
-            ImageHelper.drawBAArmorPip(g2d, 523, 124 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 523, 124 + currentMargin, 4);
         }
         if (armorTotal >= 5) {
-            ImageHelper.drawBAArmorPip(g2d, 521, 122 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 521, 122 + currentMargin, 4);
         }
         if (armorTotal >= 6) {
-            ImageHelper.drawBAArmorPip(g2d, 525, 122 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 525, 122 + currentMargin, 4);
         }
     }
 
     private void drawHeadIS(Graphics2D g2d) {
-        ImageHelper.drawProtoISPip(g2d, 520, 114 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 524, 114 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 520, 114 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 524, 114 + currentMargin);
     }
 
     private void drawLAArmor(Graphics2D g2d) {
         int armorTotal = protoMech.getArmor(Protomech.LOC_LARM);
 
         if (armorTotal >= 1) {
-            ImageHelper.drawBAArmorPip(g2d, 497, 123 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 497, 123 + currentMargin, 4);
         }
 
         if (armorTotal >= 2) {
-            ImageHelper.drawBAArmorPip(g2d, 492, 128 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 492, 128 + currentMargin, 4);
         }
 
         if (armorTotal >= 3) {
-            ImageHelper.drawBAArmorPip(g2d, 502, 128 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 502, 128 + currentMargin, 4);
         }
 
         if (armorTotal >= 4) {
-            ImageHelper.drawBAArmorPip(g2d, 497, 133 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 497, 133 + currentMargin, 4);
         }
     }
 
     private void drawLAIS(Graphics2D g2d) {
-        ImageHelper.drawProtoISPip(g2d, 487, 130 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 490, 133 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 487, 130 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 490, 133 + currentMargin);
     }
 
     private void drawRAArmor(Graphics2D g2d) {
         int armorTotal = protoMech.getArmor(Protomech.LOC_LARM);
 
         if (armorTotal >= 1) {
-            ImageHelper.drawBAArmorPip(g2d, 547, 123 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 547, 123 + currentMargin, 4);
         }
 
         if (armorTotal >= 2) {
-            ImageHelper.drawBAArmorPip(g2d, 542, 128 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 542, 128 + currentMargin, 4);
         }
 
         if (armorTotal >= 3) {
-            ImageHelper.drawBAArmorPip(g2d, 552, 128 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 552, 128 + currentMargin, 4);
         }
 
         if (armorTotal >= 4) {
-            ImageHelper.drawBAArmorPip(g2d, 547, 133 + currentMargin, 4);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 547, 133 + currentMargin, 4);
         }
     }
 
     private void drawRAIS(Graphics2D g2d) {
-        ImageHelper.drawProtoISPip(g2d, 557, 130 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 552, 133 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 557, 130 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 552, 133 + currentMargin);
     }
 
     private void drawLegsArmor(Graphics2D g2d) {
@@ -232,120 +238,120 @@ public class PrintProtomech implements Printable {
         int armorTotal = protoMech.getArmor(Protomech.LOC_LEG);
 
         if (armorTotal >= 1) {
-            ImageHelper.drawBAArmorPip(g2d, 509, 180 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 509, 180 + currentMargin, 4.0f);
         }
         if (armorTotal >= 2) {
-            ImageHelper.drawBAArmorPip(g2d, 538, 180 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 538, 180 + currentMargin, 4.0f);
         }
         if (armorTotal >= 3) {
-            ImageHelper.drawBAArmorPip(g2d, 503, 180 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 503, 180 + currentMargin, 4.0f);
         }
         if (armorTotal >= 4) {
-            ImageHelper.drawBAArmorPip(g2d, 545, 180 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 545, 180 + currentMargin, 4.0f);
         }
         if (armorTotal >= 5) {
-            ImageHelper.drawBAArmorPip(g2d, 509, 190 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 509, 190 + currentMargin, 4.0f);
         }
         if (armorTotal >= 6) {
-            ImageHelper.drawBAArmorPip(g2d, 538, 190 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 538, 190 + currentMargin, 4.0f);
         }
         if (armorTotal >= 7) {
-            ImageHelper.drawBAArmorPip(g2d, 503, 190 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 503, 190 + currentMargin, 4.0f);
         }
         if (armorTotal >= 8) {
-            ImageHelper.drawBAArmorPip(g2d, 545, 190 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 545, 190 + currentMargin, 4.0f);
         }
         if (armorTotal >= 9) {
-            ImageHelper.drawBAArmorPip(g2d, 506, 196 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 506, 196 + currentMargin, 4.0f);
         }
         if (armorTotal >= 10) {
-            ImageHelper.drawBAArmorPip(g2d, 541, 196 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 541, 196 + currentMargin, 4.0f);
         }
     }
 
     private void drawLegsIS(Graphics2D g2d) {
-        ImageHelper.drawProtoISPip(g2d, 522, 157 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 532, 157 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 512, 157 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 507, 167 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 537, 167 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 522, 157 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 532, 157 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 512, 157 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 507, 167 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 537, 167 + currentMargin);
     }
 
     private void drawBodyArmor(Graphics2D g2d) {
         int armorTotal = protoMech.getArmor(Protomech.LOC_TORSO);
 
         if (armorTotal >= 1) {
-            ImageHelper.drawBAArmorPip(g2d, 521, 134 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 521, 134 + currentMargin, 4.0f);
         }
         if (armorTotal >= 2) {
-            ImageHelper.drawBAArmorPip(g2d, 526, 134 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 526, 134 + currentMargin, 4.0f);
         }
         if (armorTotal >= 3) {
-            ImageHelper.drawBAArmorPip(g2d, 521, 138 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 521, 138 + currentMargin, 4.0f);
         }
         if (armorTotal >= 4) {
-            ImageHelper.drawBAArmorPip(g2d, 526, 138 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 526, 138 + currentMargin, 4.0f);
 
         }
         if (armorTotal >= 5) {
-            ImageHelper.drawBAArmorPip(g2d, 533, 128 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 533, 128 + currentMargin, 4.0f);
         }
         if (armorTotal >= 6) {
-            ImageHelper.drawBAArmorPip(g2d, 513, 128 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 513, 128 + currentMargin, 4.0f);
 
         }
         if (armorTotal >= 7) {
-            ImageHelper.drawBAArmorPip(g2d, 531, 132 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 531, 132 + currentMargin, 4.0f);
         }
         if (armorTotal >= 8) {
-            ImageHelper.drawBAArmorPip(g2d, 515, 132 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 515, 132 + currentMargin, 4.0f);
         }
         if (armorTotal >= 9) {
-            ImageHelper.drawBAArmorPip(g2d, 535, 132 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 535, 132 + currentMargin, 4.0f);
         }
         if (armorTotal >= 10) {
-            ImageHelper.drawBAArmorPip(g2d, 511, 132 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 511, 132 + currentMargin, 4.0f);
 
         }
         if (armorTotal >= 11) {
-            ImageHelper.drawBAArmorPip(g2d, 531, 136 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 531, 136 + currentMargin, 4.0f);
         }
         if (armorTotal >= 12) {
-            ImageHelper.drawBAArmorPip(g2d, 515, 136 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 515, 136 + currentMargin, 4.0f);
         }
         if (armorTotal >= 13) {
-            ImageHelper.drawBAArmorPip(g2d, 535, 136 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 535, 136 + currentMargin, 4.0f);
         }
         if (armorTotal >= 14) {
-            ImageHelper.drawBAArmorPip(g2d, 511, 136 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 511, 136 + currentMargin, 4.0f);
 
         }
         if (armorTotal >= 15) {
-            ImageHelper.drawBAArmorPip(g2d, 531, 140 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 531, 140 + currentMargin, 4.0f);
         }
         if (armorTotal >= 16) {
-            ImageHelper.drawBAArmorPip(g2d, 515, 140 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 515, 140 + currentMargin, 4.0f);
         }
         if (armorTotal >= 17) {
-            ImageHelper.drawBAArmorPip(g2d, 535, 140 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 535, 140 + currentMargin, 4.0f);
         }
         if (armorTotal >= 18) {
-            ImageHelper.drawBAArmorPip(g2d, 511, 140 + currentMargin, 4.0f);
+            ImageHelperBattleArmor.drawBAArmorPip(g2d, 511, 140 + currentMargin, 4.0f);
         }
     }
 
     private void drawBodyIS(Graphics2D g2d) {
-        ImageHelper.drawProtoISPip(g2d, 522, 139 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 526, 139 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 530, 139 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 534, 139 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 522, 139 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 526, 139 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 530, 139 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 534, 139 + currentMargin);
 
-        ImageHelper.drawProtoISPip(g2d, 518, 139 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 514, 139 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 510, 139 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 518, 139 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 514, 139 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 510, 139 + currentMargin);
 
-        ImageHelper.drawProtoISPip(g2d, 524, 142 + currentMargin);
-        ImageHelper.drawProtoISPip(g2d, 520, 142 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 524, 142 + currentMargin);
+        ImageHelperProto.drawProtoISPip(g2d, 520, 142 + currentMargin);
 
     }
 
@@ -427,7 +433,7 @@ public class PrintProtomech implements Printable {
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
-        ImageHelper.printProtomechWeaponsNEquipment(protoMech, g2d, currentMargin);
+        ImageHelperProto.printProtomechWeaponsNEquipment(protoMech, g2d, currentMargin);
     }
 
     public void print() {

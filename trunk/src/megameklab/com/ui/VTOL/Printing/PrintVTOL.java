@@ -1,13 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.VTOL.Printing;
@@ -36,6 +40,7 @@ import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.VTOL;
 import megameklab.com.util.ImageHelper;
+import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
 
 public class PrintVTOL implements Printable {
@@ -82,7 +87,7 @@ public class PrintVTOL implements Printable {
         g2d.drawImage(ImageHelper.getRecordSheet(vtol, false), 18, 18, 558, 368, null);
 
         if (vtol2 == null) {
-            g2d.drawImage(ImageHelper.getTableImage(vtol), 18, 18 + secondPageMargin, 558, 366, null);
+            g2d.drawImage(ImageHelperVehicle.getTableImage(vtol), 18, 18 + secondPageMargin, 558, 366, null);
         } else {
             g2d.drawImage(ImageHelper.getRecordSheet(vtol2, false), 18, 18 + secondPageMargin, 558, 366, null);
         }
@@ -442,10 +447,10 @@ public class PrintVTOL implements Printable {
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelper.printVTOLWeaponsNEquipment(vtol, g2d);
+        ImageHelperVehicle.printVTOLWeaponsNEquipment(vtol, g2d);
 
         if (vtol2 != null) {
-            ImageHelper.printVTOLWeaponsNEquipment(vtol2, g2d, secondPageMargin);
+            ImageHelperVehicle.printVTOLWeaponsNEquipment(vtol2, g2d, secondPageMargin);
         }
 
     }
@@ -511,12 +516,12 @@ public class PrintVTOL implements Printable {
         int pips = Math.min(5, totalArmor);
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], 8.0f);
+            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0], topColumn[1], 8.0f);
             topColumn[0] += pipShift[0];
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, middleColumn[0], middleColumn[1], 8.0f);
+            ImageHelperVehicle.drawTankArmorPip(g2d, middleColumn[0], middleColumn[1], 8.0f);
             middleColumn[0] += pipShift[0];
             if (pos % 7 == 0) {
                 middleColumn[1] += pipShift[1];
@@ -548,7 +553,7 @@ public class PrintVTOL implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
             topColumn[1] += pipShift[1];
         }
 
@@ -561,7 +566,7 @@ public class PrintVTOL implements Printable {
                 { 392, 154.5f },
                 { 552, 154.5f } };
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, armor[pos][0], armor[pos][1]);
+            ImageHelperVehicle.drawTankArmorPip(g2d, armor[pos][0], armor[pos][1]);
         }
 
     }
@@ -578,7 +583,7 @@ public class PrintVTOL implements Printable {
         }
 
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
 
             switch (pos) {
                 case 0:
@@ -631,7 +636,7 @@ public class PrintVTOL implements Printable {
         }
 
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelper.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
 
             switch (pos) {
                 case 0:
@@ -689,7 +694,7 @@ public class PrintVTOL implements Printable {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
             }
-            ImageHelper.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
         }
 
     }
@@ -716,7 +721,7 @@ public class PrintVTOL implements Printable {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
             }
-            ImageHelper.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
         }
 
     }
@@ -743,7 +748,7 @@ public class PrintVTOL implements Printable {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
             }
-            ImageHelper.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
         }
 
     }
@@ -770,7 +775,7 @@ public class PrintVTOL implements Printable {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
             }
-            ImageHelper.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
         }
 
     }
@@ -797,7 +802,7 @@ public class PrintVTOL implements Printable {
             if (secondImage) {
                 struct[pos][1] += secondPageMargin;
             }
-            ImageHelper.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
         }
     }
 

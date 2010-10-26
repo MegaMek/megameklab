@@ -1,15 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the 
- * GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- *  without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Vehicle.Printing;
@@ -38,6 +40,7 @@ import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
+import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
 
 public class PrintWiGE implements Printable {
@@ -79,15 +82,15 @@ public class PrintWiGE implements Printable {
         g2d.drawImage(ImageHelper.getRecordSheet(tank, false), 18, 18, 558, 368, null);
 
         if (tank.getOInternal(Tank.LOC_TURRET) > 0) {
-            g2d.drawImage(ImageHelper.getTurretImage(tank), 18, 18, 558, 368, null);
+            g2d.drawImage(ImageHelperVehicle.getTurretImage(tank), 18, 18, 558, 368, null);
         }
 
         if (tank2 == null) {
-            g2d.drawImage(ImageHelper.getTableImage(tank), 18, 18 + secondPageMargin, 558, 368, null);
+            g2d.drawImage(ImageHelperVehicle.getTableImage(tank), 18, 18 + secondPageMargin, 558, 368, null);
         } else {
             g2d.drawImage(ImageHelper.getRecordSheet(tank2, false), 18, 18 + secondPageMargin, 558, 368, null);
             if (tank2.getOInternal(Tank.LOC_TURRET) > 0) {
-                g2d.drawImage(ImageHelper.getTurretImage(tank2), 18, 18 + secondPageMargin, 558, 368, null);
+                g2d.drawImage(ImageHelperVehicle.getTurretImage(tank2), 18, 18 + secondPageMargin, 558, 368, null);
             }
         }
 
@@ -757,13 +760,13 @@ public class PrintWiGE implements Printable {
         totalArmor -= pips;
         topColumn[0] += pipShift[0] * ((5 - pips) / 2);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawTankISPip(g2d, topColumn[0], topColumn[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, topColumn[0], topColumn[1]);
             topColumn[0] += pipShift[0];
         }
 
         bottomColumn[0] += pipShift[0] * ((5 - totalArmor) / 2);
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, bottomColumn[0], bottomColumn[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, bottomColumn[0], bottomColumn[1]);
             bottomColumn[0] += pipShift[0];
         }
     }
@@ -790,13 +793,13 @@ public class PrintWiGE implements Printable {
         totalArmor -= pips;
         topColumn[0] += pipShift[0] * ((5 - pips) / 2);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelper.drawTankISPip(g2d, topColumn[0], topColumn[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, topColumn[0], topColumn[1]);
             topColumn[0] += pipShift[0];
         }
 
         bottomColumn[0] += pipShift[0] * ((5 - totalArmor) / 2);
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, bottomColumn[0], bottomColumn[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, bottomColumn[0], bottomColumn[1]);
             bottomColumn[0] += pipShift[0];
         }
     }
@@ -812,7 +815,7 @@ public class PrintWiGE implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] -= pipShift[0];
             column[1] += pipShift[1];
         }
@@ -829,7 +832,7 @@ public class PrintWiGE implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] += pipShift[0];
             column[1] += pipShift[1];
         }
@@ -847,7 +850,7 @@ public class PrintWiGE implements Printable {
 
         column[0] += pipShift[0] * ((10 - totalArmor) / 2);
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] += pipShift[0];
         }
     }
@@ -861,7 +864,7 @@ public class PrintWiGE implements Printable {
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelper.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
             if (--totalArmor <= 0) {
                 return;
             }
