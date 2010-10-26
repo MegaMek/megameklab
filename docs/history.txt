@@ -20,6 +20,8 @@ V 0.0.0.18 Dev
 + Fixed issues with how equipment prints for DS's
 + New MegaMek.jar
 + Divided ImageHelper.java into sub classes
++ Added Notes to DropShips
++ New MegaMek.jar
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS

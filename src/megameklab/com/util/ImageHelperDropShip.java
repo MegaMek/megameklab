@@ -44,6 +44,32 @@ public class ImageHelperDropShip {
     public static final int LOC_FL_FR = 8;
     public static final int LOC_AL_AR = 9;
 
+    public static void printDropShipNotes(Dropship dropship, Graphics2D g2d, int pointY) {
+
+        int pointX = 22;
+        boolean notesPrinted = false;
+        double lineFeed = ImageHelper.getStringHeight(g2d, "H", g2d.getFont());
+
+        Font font = UnitUtil.deriveFont(true, g2d.getFont().getSize2D());
+
+        for (Mounted mount : dropship.getEquipment()) {
+            if (mount.getLocation() == Entity.LOC_NONE) {
+                if (!notesPrinted) {
+                    g2d.setFont(font);
+                    g2d.drawString("Notes: ", pointX, pointY);
+
+                    pointY += lineFeed;
+
+                    font = UnitUtil.deriveFont(g2d.getFont().getSize2D());
+                    notesPrinted = true;
+                    g2d.setFont(font);
+                }
+                g2d.drawString(mount.getName(), pointX, pointY);
+                pointY += lineFeed;
+            }
+        }
+    }
+
     public static void printDropShipCargo(Dropship dropship, Graphics2D g2d, int pointY) {
 
         if (dropship.getTransportBays().size() < 1) {
@@ -573,6 +599,8 @@ public class ImageHelperDropShip {
             }
         }
 
+        linePoint += lineFeed;
+        ImageHelperDropShip.printDropShipNotes(dropship, g2d, (int) linePoint);
         linePoint += lineFeed;
         ImageHelperDropShip.printDropShipCargo(dropship, g2d, (int) linePoint);
 
