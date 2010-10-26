@@ -1,13 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Aero.Printing;
@@ -34,6 +38,7 @@ import megamek.common.Aero;
 import megamek.common.Pilot;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
+import megameklab.com.util.ImageHelperAero;
 import megameklab.com.util.UnitUtil;
 
 public class PrintAero implements Printable {
@@ -240,7 +245,7 @@ public class PrintAero implements Printable {
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelper.printAeroWeaponsNEquipment(aero, g2d);
+        ImageHelperAero.printAeroWeaponsNEquipment(aero, g2d);
 
     }
 
@@ -286,7 +291,8 @@ public class PrintAero implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>(200);
         for (int pos = 1; pos <= 200; pos++) {
-            // ImageHelper.drawAeroArmorPip(g2d, topColumn[0], topColumn[1]);
+            // ImageHelperAero.drawAeroArmorPip(g2d, topColumn[0],
+            // topColumn[1]);
             pipPlotter.add(new float[]
                 { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
@@ -304,7 +310,7 @@ public class PrintAero implements Printable {
 
         int pipSpace = 200 / totalArmor;
         for (int pos = 0; pos < 200; pos += pipSpace) {
-            ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -332,7 +338,7 @@ public class PrintAero implements Printable {
 
         int pipSpace = 132 / totalArmor;
         for (int pos = 0; pos < 132; pos += pipSpace) {
-            ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -399,7 +405,7 @@ public class PrintAero implements Printable {
 
         int pipSpace = 148 / totalArmor;
         for (int pos = 0; pos < 148; pos += pipSpace) {
-            ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -468,7 +474,7 @@ public class PrintAero implements Printable {
 
         int pipSpace = 148 / totalArmor;
         for (int pos = 0; pos < 148; pos += pipSpace) {
-            ImageHelper.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -496,7 +502,7 @@ public class PrintAero implements Printable {
 
         int pipSpace = 32 / totalArmor;
         for (int pos = 0; pos < 32; pos += pipSpace) {
-            ImageHelper.drawAeroISPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroISPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }

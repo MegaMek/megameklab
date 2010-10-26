@@ -40,6 +40,7 @@ import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
+import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
 
 public class PrintDualTurretVehicle implements Printable {
@@ -81,7 +82,7 @@ public class PrintDualTurretVehicle implements Printable {
         g2d.drawImage(ImageHelper.getRecordSheet(tank, true), 18, 18, 558, 368, null);
 
         if (tank2 == null) {
-            g2d.drawImage(ImageHelper.getTableImage(tank), 18, 18 + secondPageMargin, 558, 368, null);
+            g2d.drawImage(ImageHelperVehicle.getTableImage(tank), 18, 18 + secondPageMargin, 558, 368, null);
         } else {
             g2d.drawImage(ImageHelper.getRecordSheet(tank2, true), 18, 18, 558, 368, null);
         }
@@ -1073,7 +1074,7 @@ public class PrintDualTurretVehicle implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] -= pipShift[0];
             column[1] += pipShift[1];
         }
@@ -1090,7 +1091,7 @@ public class PrintDualTurretVehicle implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] += pipShift[0];
             column[1] += pipShift[1];
         }
@@ -1108,7 +1109,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         column[0] += pipShift[0] * ((10 - totalArmor) / 2);
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelper.drawTankISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] += pipShift[0];
         }
     }
@@ -1122,7 +1123,7 @@ public class PrintDualTurretVehicle implements Printable {
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelper.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -1134,7 +1135,7 @@ public class PrintDualTurretVehicle implements Printable {
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelper.drawTankISTurretPip(g2d, (int) pipPoints.get(currentPip)[0], (int) pipPoints.get(currentPip)[1]);
+            ImageHelperVehicle.drawTankISTurretPip(g2d, (int) pipPoints.get(currentPip)[0], (int) pipPoints.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -1146,7 +1147,7 @@ public class PrintDualTurretVehicle implements Printable {
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelper.drawTankISPip(g2d, (int) pipPoints.get(currentPip)[0], (int) pipPoints.get(currentPip)[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, (int) pipPoints.get(currentPip)[0], (int) pipPoints.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }

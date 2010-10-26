@@ -1,13 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.BattleArmor.Printing;
@@ -32,6 +36,7 @@ import megamek.common.BattleArmor;
 import megamek.common.EntityMovementMode;
 import megamek.common.MiscType;
 import megameklab.com.util.ImageHelper;
+import megameklab.com.util.ImageHelperBattleArmor;
 import megameklab.com.util.UnitUtil;
 
 public class PrintBattleArmor implements Printable {
@@ -72,7 +77,7 @@ public class PrintBattleArmor implements Printable {
         }
 
         currentMargin = 0;
-        Image baSquad = ImageHelper.getBASquad();
+        Image baSquad = ImageHelperBattleArmor.getBASquad();
         int x = 18;
         int y = 78;
         g2d.drawImage(ImageHelper.getRecordSheet(battleArmor, false), 18, 18, 558, 738, null);
@@ -82,7 +87,7 @@ public class PrintBattleArmor implements Printable {
         for (int pos = 0; pos < stop; pos++) {
             battleArmor = battleArmorList.get(pos + currentPosition);
             g2d.drawImage(baSquad, x, y, 365, 136, null);
-            g2d.drawImage(ImageHelper.getBASquadNumber(pos), 197, 84 + currentMargin, 10, 9, null);
+            g2d.drawImage(ImageHelperBattleArmor.getBASquadNumber(pos), 197, 84 + currentMargin, 10, 9, null);
             printBattleArmorData(g2d);
             printSquadTroopers(g2d);
             printWeaponsNEquipment(g2d);
@@ -100,7 +105,7 @@ public class PrintBattleArmor implements Printable {
 
     private void printBattleArmorAbilities(Graphics2D g2d) {
 
-        Image checkBox = ImageHelper.getBACheckBox();
+        Image checkBox = ImageHelperBattleArmor.getBACheckBox();
 
         if (battleArmor.canDoMechanizedBA()) {
             g2d.drawImage(checkBox, 71, 189 + currentMargin, 11, 11, null);
@@ -191,7 +196,7 @@ public class PrintBattleArmor implements Printable {
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
-        ImageHelper.printBattleArmorWeaponsNEquipment(battleArmor, g2d, currentMargin);
+        ImageHelperBattleArmor.printBattleArmorWeaponsNEquipment(battleArmor, g2d, currentMargin);
     }
 
     private void printSquadTroopers(Graphics2D g2d) {
@@ -199,14 +204,14 @@ public class PrintBattleArmor implements Printable {
         int x = 215;
         int y = 90 + currentMargin;
         for (int pos = 1; pos <= battleArmor.getNumberActiverTroopers(); pos++) {
-            Image trooper = ImageHelper.getBATrooper(pos);
+            Image trooper = ImageHelperBattleArmor.getBATrooper(pos);
             g2d.drawImage(trooper, x, y, 158, 18, null);
             g2d.drawImage(ImageHelper.getFluffImage(battleArmor, ImageHelper.imageBattleArmor), x + 10, y + 2, 10, 14, null);
-            ImageHelper.drawBAISPip(g2d, x + 23, y + 6);
+            ImageHelperBattleArmor.drawBAISPip(g2d, x + 23, y + 6);
             float pipX = x + 31;
             float pipY = y + 12.5f;
             for (int armor = 0; armor < battleArmor.getOArmor(pos); armor++) {
-                ImageHelper.drawBAArmorPip(g2d, pipX, pipY);
+                ImageHelperBattleArmor.drawBAArmorPip(g2d, pipX, pipY);
                 pipX += 7;
             }
             y += lineFeed;
