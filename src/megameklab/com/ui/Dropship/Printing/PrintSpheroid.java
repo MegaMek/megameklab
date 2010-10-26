@@ -38,6 +38,7 @@ import megamek.common.Dropship;
 import megamek.common.Pilot;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
+import megameklab.com.util.ImageHelperDropShip;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -261,7 +262,7 @@ public class PrintSpheroid implements Printable {
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelper.printDropshipWeaponsNEquipment(dropship, g2d);
+        ImageHelperDropShip.printDropshipWeaponsNEquipment(dropship, g2d);
 
     }
 
@@ -450,7 +451,7 @@ public class PrintSpheroid implements Printable {
         float pipSpace = 1;
         for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelper.drawDropshipISPip(g2d, (int) pipPlotter.get(currentPip)[0], (int) pipPlotter.get(currentPip)[1]);
+            ImageHelperDropShip.drawDropshipISPip(g2d, (int) pipPlotter.get(currentPip)[0], (int) pipPlotter.get(currentPip)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -463,7 +464,7 @@ public class PrintSpheroid implements Printable {
         float pipSpace = 1;
         for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
             int currentPip = (int) pos;
-            ImageHelper.drawDropshipArmorPip(g2d, pipPlotter.get(currentPip)[0], pipPlotter.get(currentPip)[1], 5.0f);
+            ImageHelperDropShip.drawDropshipArmorPip(g2d, pipPlotter.get(currentPip)[0], pipPlotter.get(currentPip)[1], 5.0f);
             if (--totalArmor <= 0) {
                 return;
             }
