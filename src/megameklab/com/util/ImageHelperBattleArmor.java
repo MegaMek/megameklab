@@ -202,15 +202,9 @@ public class ImageHelperBattleArmor {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 88, font.getSize()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printBC3iName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
-                } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printBC3Name(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }

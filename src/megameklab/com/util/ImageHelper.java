@@ -859,6 +859,41 @@ public class ImageHelper {
 
     }
 
+    public static void printBC3iName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+        HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
+        attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+        int stringWidth;
+        if (isArmored) {
+            g2d.drawString("O Improved BC", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O Improved BC", font);
+        } else {
+            g2d.drawString("Improved BC", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "Improved BC", font);
+        }
+        font = font.deriveFont(attrMap);
+        g2d.setFont(font);
+
+        g2d.drawString("3", lineStart + stringWidth, linePoint);
+    }
+
+    public static void printBC3Name(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+        HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
+        attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+        int stringWidth;
+        if (isArmored) {
+            g2d.drawString("O BC", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O BC", font);
+        } else {
+            g2d.drawString("BC", lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "BC", font);
+        }
+
+        font = font.deriveFont(attrMap);
+        g2d.setFont(font);
+        g2d.drawString("3", lineStart + stringWidth, linePoint);
+
+    }
+
     public static void printC3sbName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);

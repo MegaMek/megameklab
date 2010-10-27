@@ -199,11 +199,10 @@ public class PrintSpheroid implements Printable {
 
         g2d.drawString(String.format("%1$s", dropship.getNCrew()), 283, 594.6f);
         g2d.drawString(String.format("%1$s", dropship.getNPassenger()), 283, 604.6f);
-        g2d.drawString(String.format("%1$s", 0), 283, 614.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNOtherPassenger()), 283, 614.6f);
 
-        g2d.drawString(String.format("%1$s", UnitUtil.getInfBayCount(dropship)), 357, 593.6f);
-        g2d.drawString(String.format("%1$s", 0), 357, 603.6f);
-        g2d.drawString(String.format("%1$s", UnitUtil.getBattleArmorBayCount(dropship)), 357, 613.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNMarines()), 357, 593.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNBattleArmor()), 357, 613.6f);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(String.format("%1$,.0f C-bills",
