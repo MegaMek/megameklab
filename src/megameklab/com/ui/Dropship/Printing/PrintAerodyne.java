@@ -199,11 +199,10 @@ public class PrintAerodyne implements Printable {
 
         g2d.drawString(String.format("%1$s", dropship.getNCrew()), 283, 566.6f);
         g2d.drawString(String.format("%1$s", dropship.getNPassenger()), 283, 576.6f);
-        g2d.drawString(String.format("%1$s", 0), 283, 586.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNOtherPassenger()), 283, 586.6f);
 
-        g2d.drawString(String.format("%1$s", UnitUtil.getInfBayCount(dropship)), 357, 565.6f);
-        g2d.drawString(String.format("%1$s", 0), 357, 575.6f);
-        g2d.drawString(String.format("%1$s", UnitUtil.getBattleArmorBayCount(dropship)), 357, 585.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNMarines()), 357, 565.6f);
+        g2d.drawString(String.format("%1$s", dropship.getNBattleArmor()), 357, 585.6f);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(String.format("%1$,.0f C-bills",

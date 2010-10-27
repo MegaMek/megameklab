@@ -1,13 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.util;
@@ -37,13 +41,10 @@ import javax.swing.text.html.HTMLEditorKit;
 import megamek.client.ui.swing.MechView;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
-import megamek.common.BattleArmorBay;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
-import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.InfantryBay;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MiscType;
@@ -51,7 +52,6 @@ import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
-import megamek.common.Transporter;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
@@ -2094,30 +2094,6 @@ public class UnitUtil {
                 UnitUtil.removeMounted(unit, mount);
             }
         }
-    }
-
-    public static int getBattleArmorBayCount(Dropship unit) {
-        int battleArmor = 0;
-
-        for (Transporter bay : unit.getTransportBays()) {
-            if (bay instanceof BattleArmorBay) {
-                battleArmor++;
-            }
-        }
-
-        return battleArmor;
-    }
-
-    public static int getInfBayCount(Dropship unit) {
-        int inf = 0;
-
-        for (Transporter bay : unit.getTransportBays()) {
-            if (bay instanceof InfantryBay) {
-                inf++;
-            }
-        }
-
-        return inf;
     }
 
     public static boolean isValidLocation(Entity unit, EquipmentType eq, int location) {
