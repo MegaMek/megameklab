@@ -22,6 +22,8 @@ V 0.0.0.18 Dev
 + Divided ImageHelper.java into sub classes
 + Added Notes to DropShips
 + New MegaMek.jar
++ Updated Drop ship record sheets for Marines/BattleArmor/OtherPassenger
++ New MegaMek.jar
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS
