@@ -326,7 +326,7 @@ public class PrintSpheroid implements Printable {
             pointX = baseX;
         }
 
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperDropShip.printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor) {
@@ -351,7 +351,7 @@ public class PrintSpheroid implements Printable {
             pointX = baseX;
         }
 
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperDropShip.printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor) {
@@ -385,7 +385,7 @@ public class PrintSpheroid implements Printable {
             pointY = baseY;
         }
 
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperDropShip.printArmorPoints(g2d, pipPlotter, totalArmor);
 
     }
 
@@ -418,7 +418,7 @@ public class PrintSpheroid implements Printable {
             pointX += shiftX;
             pointY = baseY;
         }
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperDropShip.printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printStruct(Graphics2D g2d, int totalArmor) {
@@ -442,32 +442,7 @@ public class PrintSpheroid implements Printable {
             pointX = baseX;
         }
 
-        printISPoints(g2d, pipPlotter, totalArmor);
-    }
-
-    private void printISPoints(Graphics2D g2d, Vector<float[]> pipPlotter, float totalArmor) {
-        pipPlotter.trimToSize();
-        float pipSpace = 1;
-        for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
-            int currentPip = (int) pos;
-            ImageHelperDropShip.drawDropshipISPip(g2d, (int) pipPlotter.get(currentPip)[0], (int) pipPlotter.get(currentPip)[1]);
-            if (--totalArmor <= 0) {
-                return;
-            }
-        }
-
-    }
-
-    private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPlotter, float totalArmor) {
-        pipPlotter.trimToSize();
-        float pipSpace = 1;
-        for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
-            int currentPip = (int) pos;
-            ImageHelperDropShip.drawDropshipArmorPip(g2d, pipPlotter.get(currentPip)[0], pipPlotter.get(currentPip)[1], 5.0f);
-            if (--totalArmor <= 0) {
-                return;
-            }
-        }
+        ImageHelperDropShip.printISPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printDropshipImage(Graphics2D g2d, Image img) {
