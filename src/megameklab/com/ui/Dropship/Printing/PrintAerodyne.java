@@ -299,149 +299,163 @@ public class PrintAerodyne implements Printable {
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn =
-            { 340, 97 };
-        float[] pipShift =
-            { 7, 7 };
-        float maxColumns = 20;
+        float baseX = 349f;
+        float baseY = 225f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 4f;
+        float shiftY = 4f;
+        int pipsPerLine = 30;
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(200);
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            // ImageHelper.drawDropshipArmorPip(g2d, topColumn[0],
-            // topColumn[1]);
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
-            if (pos % maxColumns == 0) {
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                topColumn[0] += pipShift[0];
-                /*
-                 * if (pos > totalArmor - maxColumns) { topColumn[0] +=
-                 * pipShift[0] ((maxColumns - (totalArmor - pos)) / 2); } else {
-                 * topColumn[0] += pipShift[0] / 2; }
-                 */
+        Vector<float[]> pipPlotter = new Vector<float[]>(1000, 1);
+
+        for (int lineCount = 1; lineCount <= 41; lineCount++) {
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointX += shiftX;
             }
+
+            if ((lineCount < 12) && (lineCount % 2 == 0)) {
+                pipsPerLine += 2;
+                baseX -= shiftX;
+            }
+            if ((lineCount > 21) && (lineCount % 2 == 0)) {
+                pipsPerLine -= 2;
+                baseX += shiftX;
+            }
+            pointY -= shiftY;
+            pointX = baseX;
         }
 
-        for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelperDropShip.drawDropshipArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
-            if (--totalArmor <= 0) {
-                return;
-            }
-        }
+        ImageHelperDropShip.printArmorPoints(g2d, pipPlotter, totalArmor);
+
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[]
-            { 363.5f, 300f };
-        float[] pipShift = new float[]
-            { 6.2f, 6.2f };
-        float maxColumns = 15;
+        float baseX = 364f;
+        float baseY = 292f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 4f;
+        float shiftY = 4f;
+        int pipsPerLine = 23;
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(132);
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
-            if (pos % maxColumns == 0) {
-                topColumn[1] += pipShift[1];
-                pipShift[0] *= -1;
-                topColumn[0] += pipShift[0];
+        Vector<float[]> pipPlotter = new Vector<float[]>(944, 1);
+
+        for (int lineCount = 1; lineCount <= 41; lineCount++) {
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointX += shiftX;
             }
+
+            pointY += shiftY;
+            pointX = baseX;
         }
 
-        for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelperDropShip.drawDropshipArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
-        }
-
+        ImageHelperDropShip.printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor) {
 
-        float startX = 317.5f;
-        float startY = 240f;
+        float baseX = 358f;
+        float baseY = 292f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 4f;
+        float shiftY = 4f;
+        int pipsPerLine = 42;
 
-        float[] topColumn = new float[]
-            { startX, startY };
-        float[] pipShift = new float[]
-            { 6.2f, 7 };
+        Vector<float[]> pipPlotter = new Vector<float[]>(1000, 1);
 
-        int numberPerRow = 5;
-        int curretNumber = 0;
-        int rowNumber = 1;
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(totalArmor);
-
-        for (int pos = 1; pos < totalArmor; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] += pipShift[0];
-
-            if (++curretNumber == numberPerRow) {
-                rowNumber++;
-                if (rowNumber == 9) {
-                    numberPerRow += 2;
-                } else if ((rowNumber == 13) || (rowNumber == 14) || (rowNumber == 15) || (rowNumber == 17) || (rowNumber == 18) || (rowNumber == 20) || (rowNumber == 26) || (rowNumber == 30)) {
-                    numberPerRow++;
-                    startX -= 6.3f;
-                }
-
-                topColumn[1] += pipShift[1];
-                topColumn[0] = startX;
-                curretNumber = 0;
+        for (int lineCount = 1; lineCount <= 22; lineCount++) {
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointY += shiftY;
             }
+
+            if (lineCount == 3) {
+                pipsPerLine += 14;
+                baseY -= shiftY * 14;
+            }
+
+            if (lineCount == 12) {
+                pipsPerLine -= 21;
+                baseY += shiftY * 21;
+            }
+
+            if (lineCount > 12) {
+                pipsPerLine -= 2;
+                baseY += shiftY * 2;
+            }
+
+            if (lineCount == 21) {
+                pipsPerLine -= 4;
+                baseY += shiftY * 4;
+            }
+
+            if (lineCount == 22) {
+                pipsPerLine -= 4;
+                baseY += shiftY * 4;
+            }
+
+            pointY = baseY;
+            pointX -= shiftX;
         }
 
-        for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelperDropShip.drawDropshipArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
-            if (--totalArmor <= 0) {
-                return;
-            }
-        }
+        ImageHelperDropShip.printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRightArmor(Graphics2D g2d, int totalArmor) {
-        float startX = 497f;
-        float startY = 240f;
+        float baseX = 459f;
+        float baseY = 292f;
+        float pointX = baseX;
+        float pointY = baseY;
+        float shiftX = 4f;
+        float shiftY = 4f;
+        int pipsPerLine = 42;
 
-        float[] topColumn = new float[]
-            { startX, startY };
-        float[] pipShift = new float[]
-            { 6.2f, 7 };
+        Vector<float[]> pipPlotter = new Vector<float[]>(1000, 1);
 
-        int numberPerRow = 5;
-        int curretNumber = 0;
-        int rowNumber = 1;
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(totalArmor);
-
-        for (int pos = 1; pos < totalArmor; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            topColumn[0] -= pipShift[0];
-
-            if (++curretNumber == numberPerRow) {
-                rowNumber++;
-                if (rowNumber == 9) {
-                    numberPerRow += 2;
-                } else if ((rowNumber == 13) || (rowNumber == 14) || (rowNumber == 15) || (rowNumber == 17) || (rowNumber == 18) || (rowNumber == 20) || (rowNumber == 26) || (rowNumber == 30)) {
-                    numberPerRow++;
-                    startX += 6.2f;
-                }
-
-                topColumn[1] += pipShift[1];
-                topColumn[0] = startX;
-                curretNumber = 0;
+        for (int lineCount = 1; lineCount <= 22; lineCount++) {
+            for (int point = 0; point < pipsPerLine; point++) {
+                pipPlotter.add(new float[]
+                    { pointX, pointY });
+                pointY += shiftY;
             }
+
+            if (lineCount == 3) {
+                pipsPerLine += 14;
+                baseY -= shiftY * 14;
+            }
+
+            if (lineCount == 12) {
+                pipsPerLine -= 21;
+                baseY += shiftY * 21;
+            }
+
+            if (lineCount > 12) {
+                pipsPerLine -= 2;
+                baseY += shiftY * 2;
+            }
+
+            if (lineCount == 21) {
+                pipsPerLine -= 4;
+                baseY += shiftY * 4;
+            }
+
+            if (lineCount == 22) {
+                pipsPerLine -= 4;
+                baseY += shiftY * 4;
+            }
+
+            pointY = baseY;
+            pointX += shiftX;
         }
 
-        for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelperDropShip.drawDropshipArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
-            if (--totalArmor <= 0) {
-                return;
-            }
-        }
+        ImageHelperDropShip.printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printStruct(Graphics2D g2d, int totalArmor) {

@@ -617,4 +617,30 @@ public class ImageHelperDropShip {
 
         return returnString.toString();
     }
+
+    static public void printISPoints(Graphics2D g2d, Vector<float[]> pipPlotter, float totalArmor) {
+        pipPlotter.trimToSize();
+        float pipSpace = 1;
+        for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
+            int currentPip = (int) pos;
+            ImageHelperDropShip.drawDropshipISPip(g2d, (int) pipPlotter.get(currentPip)[0], (int) pipPlotter.get(currentPip)[1]);
+            if (--totalArmor <= 0) {
+                return;
+            }
+        }
+
+    }
+
+    static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPlotter, float totalArmor) {
+        pipPlotter.trimToSize();
+        float pipSpace = 1;
+        for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
+            int currentPip = (int) pos;
+            ImageHelperDropShip.drawDropshipArmorPip(g2d, pipPlotter.get(currentPip)[0], pipPlotter.get(currentPip)[1], 5.0f);
+            if (--totalArmor <= 0) {
+                return;
+            }
+        }
+    }
+
 }
