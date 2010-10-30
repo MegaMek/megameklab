@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -25,6 +25,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
+import megamek.common.CriticalSlot;
 import megamek.common.Mounted;
 import megamek.common.Tank;
 import megamek.common.loaders.MtfFile;
@@ -121,34 +122,57 @@ public class CriticalView extends IView {
                 // JPanel locationPanel = new JPanel();
                 Vector<String> critNames = new Vector<String>(1, 1);
 
-                for (Mounted m : unit.getEquipment()) {
-                    try {
-                        if (m.getLocation() == location) {
+                for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+                    CriticalSlot cs = unit.getCritical(location, slot);
+                    if (cs == null) {
+                        continue;
+                    } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
+                        critNames.add(getMech().getSystemName(cs.getIndex()));
+                    } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                        try {
+                            Mounted m = cs.getMount();
+                            // Critical didn't get removed. Remove it now.
+                            if (m == null) {
+
+                                m = unit.getEquipment(cs.getIndex());
+
+                                if (m == null) {
+                                    unit.setCritical(location, slot, null);
+                                    continue;
+                                }
+                                cs.setMount(m);
+                            }
                             StringBuffer critName = new StringBuffer(m.getName());
                             if (critName.length() > 25) {
                                 critName.setLength(25);
                                 critName.append("...");
                             }
                             if (m.isRearMounted()) {
-                                critName.append("(R)");
+                                critName.append(" (R)");
                             }
-
+                            if (m.isTurretMounted()) {
+                                critName.append(" (T)");
+                            }
                             critNames.add(critName.toString());
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
                 }
 
                 if (critNames.size() == 0) {
                     critNames.add(MtfFile.EMPTY);
                 }
-                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(critNames, unit, refresh, showEmpty);
+                DropTargetCriticalList criticalSlotList = null;
+
+                criticalSlotList = new DropTargetCriticalList(critNames, getTank(), refresh, showEmpty);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
                 criticalSlotList.setName(Integer.toString(location));
                 criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
+
                 switch (location) {
                     case Tank.LOC_FRONT:
                         frontPanel.add(criticalSlotList);

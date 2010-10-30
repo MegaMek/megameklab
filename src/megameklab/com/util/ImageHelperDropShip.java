@@ -68,6 +68,8 @@ public class ImageHelperDropShip {
                 pointY += lineFeed;
             }
         }
+        pointY -= lineFeed;
+        printDropShipCargo(dropship, g2d, pointY);
     }
 
     public static void printDropShipCargo(Dropship dropship, Graphics2D g2d, int pointY) {
@@ -82,6 +84,7 @@ public class ImageHelperDropShip {
         Font font = UnitUtil.deriveFont(true, g2d.getFont().getSize2D());
 
         g2d.setFont(font);
+        pointY += lineFeed;
         g2d.drawString("Cargo: ", pointX, pointY);
 
         pointY += lineFeed;
@@ -435,17 +438,19 @@ public class ImageHelperDropShip {
                     float drawLine = linePoint + lineFeed;
                     if (newLineNeeded) {
                         drawLine += lineFeed;
-                        linePoint += lineFeed;
                     }
                     if (eqi.hasArtemis) {
                         g2d.drawString("w/Artemis IV FCS", typePoint, drawLine);
                         newLineNeeded = true;
+                        linePoint += lineFeed;
                     } else if (eqi.hasArtemisV) {
                         g2d.drawString("w/Artemis V FCS", typePoint, drawLine);
                         newLineNeeded = true;
+                        linePoint += lineFeed;
                     } else if (eqi.hasApollo) {
                         g2d.drawString("w/Apollo FCS", typePoint, drawLine);
                         newLineNeeded = true;
+                        linePoint += lineFeed;
                     }
                 }
                 linePoint += lineFeed;
@@ -579,17 +584,19 @@ public class ImageHelperDropShip {
                     float drawLine = linePoint + lineFeed;
                     if (newLineNeeded) {
                         drawLine += lineFeed;
-                        linePoint += lineFeed;
                     }
                     if (eqi.hasArtemis) {
                         g2d.drawString("w/Artemis IV FCS", typePoint, drawLine);
                         newLineNeeded = true;
+                        linePoint += lineFeed;
                     } else if (eqi.hasArtemisV) {
                         g2d.drawString("w/Artemis V FCS", typePoint, drawLine);
                         newLineNeeded = true;
+                        linePoint += lineFeed;
                     } else if (eqi.hasApollo) {
                         g2d.drawString("w/Apollo FCS", typePoint, drawLine);
                         newLineNeeded = true;
+                        linePoint += lineFeed;
                     }
                 }
                 linePoint += lineFeed;
@@ -599,10 +606,7 @@ public class ImageHelperDropShip {
             }
         }
 
-        linePoint += lineFeed;
         ImageHelperDropShip.printDropShipNotes(dropship, g2d, (int) linePoint);
-        linePoint += lineFeed;
-        ImageHelperDropShip.printDropShipCargo(dropship, g2d, (int) linePoint);
 
     }
 
@@ -643,4 +647,14 @@ public class ImageHelperDropShip {
         }
     }
 
+    static public int printTotalDoors(Aero aero, Bay bay) {
+
+        int result = 0;
+        for (Bay next : aero.getTransportBays()) {
+            if (next.getType().equals(bay.getType())) {
+                result += next.getDoors();
+            }
+        }
+        return result;
+    }
 }
