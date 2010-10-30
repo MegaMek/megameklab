@@ -101,11 +101,11 @@ public class PrintVehicle implements Printable {
         printWeaponsNEquipment(g2d);
 
         // Armor Pips
-        printFrontArmor(g2d, tank.getOArmor(Tank.LOC_FRONT), false);
-        printLeftArmor(g2d, tank.getOArmor(Tank.LOC_LEFT), false);
-        printRightArmor(g2d, tank.getOArmor(Tank.LOC_RIGHT), false);
-        printRearArmor(g2d, tank.getOArmor(Tank.LOC_REAR), false);
-        printTurretArmor(g2d, tank.getOArmor(Tank.LOC_TURRET), false);
+        printFrontArmor(g2d, tank.getOArmor(Tank.LOC_FRONT), false, tank.hasModularArmor(Tank.LOC_FRONT));
+        printLeftArmor(g2d, tank.getOArmor(Tank.LOC_LEFT), false, tank.hasModularArmor(Tank.LOC_LEFT));
+        printRightArmor(g2d, tank.getOArmor(Tank.LOC_RIGHT), false, tank.hasModularArmor(Tank.LOC_RIGHT));
+        printRearArmor(g2d, tank.getOArmor(Tank.LOC_REAR), false, tank.hasModularArmor(Tank.LOC_REAR));
+        printTurretArmor(g2d, tank.getOArmor(Tank.LOC_TURRET), false, tank.hasModularArmor(Tank.LOC_TURRET));
 
         // Internal Pips
         printFrontStruct(g2d, tank.getOInternal(Tank.LOC_FRONT), false);
@@ -117,11 +117,11 @@ public class PrintVehicle implements Printable {
 
         if (tank2 != null) {
             // Armor Pips
-            printFrontArmor(g2d, tank2.getOArmor(Tank.LOC_FRONT), true);
-            printLeftArmor(g2d, tank2.getOArmor(Tank.LOC_LEFT), true);
-            printRightArmor(g2d, tank2.getOArmor(Tank.LOC_RIGHT), true);
-            printRearArmor(g2d, tank2.getOArmor(Tank.LOC_REAR), true);
-            printTurretArmor(g2d, tank2.getOArmor(Tank.LOC_TURRET), true);
+            printFrontArmor(g2d, tank2.getOArmor(Tank.LOC_FRONT), true, tank2.hasModularArmor(Tank.LOC_FRONT));
+            printLeftArmor(g2d, tank2.getOArmor(Tank.LOC_LEFT), true, tank2.hasModularArmor(Tank.LOC_LEFT));
+            printRightArmor(g2d, tank2.getOArmor(Tank.LOC_RIGHT), true, tank2.hasModularArmor(Tank.LOC_RIGHT));
+            printRearArmor(g2d, tank2.getOArmor(Tank.LOC_REAR), true, tank2.hasModularArmor(Tank.LOC_REAR));
+            printTurretArmor(g2d, tank2.getOArmor(Tank.LOC_TURRET), true, tank2.hasModularArmor(Tank.LOC_TURRET));
 
             // Internal Pips
             printFrontStruct(g2d, tank2.getOInternal(Tank.LOC_FRONT), true);
@@ -301,8 +301,8 @@ public class PrintVehicle implements Printable {
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);
         }
 
-        g2d.drawString(Integer.toString(tank2.getWalkMP()), 79, 515);
-        g2d.drawString(Integer.toString(tank2.getRunMP()), 79, 526);
+        g2d.drawString(Integer.toString(tank2.getWalkMP()), 79, 144 + secondPageMargin);
+        g2d.drawString(Integer.toString(tank2.getRunMP()), 79, 155 + secondPageMargin);
 
         g2d.drawString(tank2.getMovementModeAsString(), 88, 537);
 
@@ -521,7 +521,7 @@ public class PrintVehicle implements Printable {
         }
     }
 
-    private void printExtraFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+    private void printExtraFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
         float[] topColumn =
             { 442, 90 };
         float[] middleColumn =
@@ -597,10 +597,10 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[]
                 { extraArmor[pos][0], extraArmor[pos][1] });
         }
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
-    private void printFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+    private void printFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
         float[] topColumn =
             { 444, 90 };
         float[] middleColumn =
@@ -638,7 +638,7 @@ public class PrintVehicle implements Printable {
         }
 
         if (totalArmor > 86) {
-            printExtraFrontArmor(g2d, totalArmor, secondImage);
+            printExtraFrontArmor(g2d, totalArmor, secondImage, hasModularArmor);
             return;
         }
 
@@ -676,13 +676,13 @@ public class PrintVehicle implements Printable {
                 { extraArmor[pos - 1][0], extraArmor[pos - 1][1] });
         }
 
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
-    private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+    private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
 
         if (totalArmor > 51) {
-            printExtraRearArmor(g2d, totalArmor, secondImage);
+            printExtraRearArmor(g2d, totalArmor, secondImage, hasModularArmor);
             return;
         }
 
@@ -723,11 +723,11 @@ public class PrintVehicle implements Printable {
                 { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
         }
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
 
     }
 
-    private void printExtraRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+    private void printExtraRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
         int[] topColumn = new int[]
             { 420, 291 };
         int[] middleColumn = new int[]
@@ -769,18 +769,18 @@ public class PrintVehicle implements Printable {
         pipPlotter.add(new float[]
             { 482, 312 });
 
-        printArmorPoints(g2d, pipPlotter, totalArmor, 7.0f);
+        ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, 7.0f, hasModularArmor);
 
     }
 
-    private void printTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+    private void printTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
 
         if (totalArmor < 1) {
             return;
         }
 
         if (totalArmor > 52) {
-            printExtraTurretArmor(g2d, totalArmor, secondImage);
+            printExtraTurretArmor(g2d, totalArmor, secondImage, hasModularArmor);
             return;
         }
 
@@ -816,10 +816,10 @@ public class PrintVehicle implements Printable {
                 bottomColumn[0] += pipShift[0];
             }
         }
-        printArmorPoints(g2d, pipPlotter, totalArmor);// , fontSize);
+        ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
-    private void printExtraTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+    private void printExtraTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
 
         if (totalArmor < 1) {
             return;
@@ -857,10 +857,10 @@ public class PrintVehicle implements Printable {
                 bottomColumn[0] += pipShift[0];
             }
         }
-        printArmorPoints(g2d, pipPlotter, totalArmor, fontSize);
+        ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, fontSize, hasModularArmor);
     }
 
-    private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+    private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
         float[] topColumn = new float[]
             { 418.5f, 92.5f };
         float[] pipShift = new float[]
@@ -948,10 +948,10 @@ public class PrintVehicle implements Printable {
             }
 
         }
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
-    private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
+    private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
         float[] topColumn = new float[]
             { 530f, 92 };
         float[] pipShift = new float[]
@@ -1029,7 +1029,7 @@ public class PrintVehicle implements Printable {
                     break;
             }
         }
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
     private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
@@ -1142,22 +1142,6 @@ public class PrintVehicle implements Printable {
         for (int pos = 1; pos <= totalArmor; pos++) {
             ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] += pipShift[0];
-        }
-    }
-
-    private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor) {
-        printArmorPoints(g2d, pipPoints, totalArmor, 8.0f);
-    }
-
-    private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, float fontSize) {
-        pipPoints.trimToSize();
-        float pipSpace = pipPoints.size() / totalArmor;
-        for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
-            int currentPip = (int) pos;
-            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
-            if (--totalArmor <= 0) {
-                return;
-            }
         }
     }
 

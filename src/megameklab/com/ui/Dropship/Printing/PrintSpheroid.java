@@ -33,9 +33,11 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import megamek.common.ASFBay;
 import megamek.common.Aero;
 import megamek.common.Dropship;
 import megamek.common.Pilot;
+import megamek.common.SmallCraftBay;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperDropShip;
@@ -116,7 +118,7 @@ public class PrintSpheroid implements Printable {
         g2d.drawString(Integer.toString(dropship.getWalkMP()), 99, 163);
         g2d.drawString(Integer.toString(dropship.getRunMPwithoutMASC()), 99, 174);
 
-        g2d.drawString(String.format("%1$s / %2$s", dropship.getFighterBays().size(), dropship.getSmallCraftBays().size()), 104, 185);
+        g2d.drawString(String.format("%1$s / %2$s", ImageHelperDropShip.printTotalDoors(dropship, new ASFBay(1, 1)), ImageHelperDropShip.printTotalDoors(dropship, new SmallCraftBay(1, 1))), 104, 185);
         g2d.drawString(String.format("%1$s / %2$s", dropship.getFighterLaunchRate(), dropship.getSmallCraftLaunchRate()), 186, 185);
 
         int tonnage = (int) Math.ceil(dropship.getWeight());

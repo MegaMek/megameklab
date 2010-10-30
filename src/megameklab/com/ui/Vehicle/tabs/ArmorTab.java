@@ -1,17 +1,17 @@
 /*
-* MegaMekLab - Copyright (C) 2009
- *
+ * MegaMekLab - Copyright (C) 2009
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Vehicle.tabs;
@@ -51,8 +51,8 @@ public class ArmorTab extends ITab implements ActionListener {
 
     private ArmorView armor;
     private RefreshListener refresh = null;
-    private String[] armorNames = new String[] { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS], EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR],
-            EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED], EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE], EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE]};
+    private String[] armorNames = new String[]
+        { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS], EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR], EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED], EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE], EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE] };
     private JComboBox armorCombo = new JComboBox(armorNames);
 
     private JButton allocateArmorButton = new JButton("Allocate");
@@ -189,6 +189,8 @@ public class ArmorTab extends ITab implements ActionListener {
 
     public void setArmorType(int type) {
         removeAllListeners();
+
+        type = Math.max(0, type);
 
         for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
             if (EquipmentType.armorNames[type].equals(armorNames[pos])) {

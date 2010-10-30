@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Vehicle.tabs;
@@ -29,9 +29,11 @@ import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.MechFileParser;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
+import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.ui.Vehicle.views.BuildView;
 import megameklab.com.ui.Vehicle.views.CriticalView;
 import megameklab.com.util.CriticalTableModel;
@@ -66,8 +68,8 @@ public class BuildTab extends ITab implements ActionListener {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new CriticalView(getTank(), true, refresh);
-        buildView = new BuildView(getTank());
+        critView = new CriticalView(unit, true, refresh);
+        buildView = new BuildView(unit);
 
         mainPanel.add(buildView);
 
@@ -132,12 +134,12 @@ public class BuildTab extends ITab implements ActionListener {
         for (EquipmentType eq : buildView.getTableModel().getCrits()) {
             for (int location = 0; location < getTank().locations(); location++) {
 
-                if (eq instanceof MiscType && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))) {
+                if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))) {
                     continue;
                 }
                 Mounted foundMount = null;
                 for (Mounted mount : unit.getEquipment()) {
-                    if (mount.getLocation() == Entity.LOC_NONE && mount.getType().getInternalName().equals(eq.getInternalName())) {
+                    if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().getInternalName().equals(eq.getInternalName())) {
                         foundMount = mount;
                         break;
                     }
@@ -161,8 +163,19 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void resetCrits() {
         for (Mounted mount : unit.getEquipment()) {
+            UnitUtil.removeCriticals(unit, mount);
             UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(unit);
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
         refresh.refreshAll();
     }
 

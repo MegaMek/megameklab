@@ -299,8 +299,8 @@ public class PrintWiGE implements Printable {
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);
         }
 
-        g2d.drawString(Integer.toString(tank2.getWalkMP()), 79, 515);
-        g2d.drawString(Integer.toString(tank2.getRunMP()), 79, 526);
+        g2d.drawString(Integer.toString(tank2.getWalkMP()), 79, 144 + secondPageMargin);
+        g2d.drawString(Integer.toString(tank2.getRunMP()), 79, 155 + secondPageMargin);
 
         g2d.drawString(tank2.getMovementModeAsString(), 88, 537);
 

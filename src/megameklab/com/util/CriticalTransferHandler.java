@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.util;
@@ -25,9 +25,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
+import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.LocationFullException;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
@@ -62,15 +62,11 @@ public class CriticalTransferHandler extends TransferHandler {
 
                 Mounted eq = UnitUtil.getMounted(unit, mountName);
 
-                int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
-                if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
-                    // unit.addEquipment(eq.getType(), location, false);
-                    changeMountStatus(eq, location, false);
-                } else {
-                    throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());
+                // unit.addEquipment(eq.getType(), location, false);
+                if (!unit.addCritical(location, new CriticalSlot(CriticalSlot.TYPE_EQUIPMENT, unit.getEquipmentNum(eq), true, eq))) {
+                    JOptionPane.showMessageDialog(null, "Location Full", "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 }
-            } catch (LocationFullException lfe) {
-                JOptionPane.showMessageDialog(null, lfe.getMessage(), "Location Full", JOptionPane.INFORMATION_MESSAGE);
+                changeMountStatus(eq, location, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

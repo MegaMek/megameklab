@@ -26,6 +26,11 @@ V 0.0.0.18 Dev
 + New MegaMek.jar
 + Bug: Armor pips printing incorrectly for Aerodyne.
 + New MegaMek.jar
++ Bug: Clan Endo Steel on IS Mixed not printing correctly
++ Bug: Vehicles not Printing correct Speed when Modular Armor is placed.
++ Bug: ASF/Small Craft door not showing correctly
++ RFE: Modular Armor now prints as diamonds
++ New MM jar
  
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS

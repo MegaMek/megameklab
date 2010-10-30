@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
@@ -792,6 +793,33 @@ public class ImageHelperVehicle {
             }
         }
         ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
+    }
+
+    static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, boolean hasModularArmor) {
+        printArmorPoints(g2d, pipPoints, totalArmor, 8.0f, hasModularArmor);
+    }
+
+    static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, float fontSize, boolean hasModularArmor) {
+        pipPoints.trimToSize();
+        float pipSpace = pipPoints.size() / totalArmor;
+        if (hasModularArmor) {
+            pipSpace = pipPoints.size() / (totalArmor + 15);
+        }
+        int currentPip = 0;
+        for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
+            currentPip = (int) pos;
+            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
+            if (--totalArmor <= 0) {
+                break;
+            }
+        }
+
+        if (hasModularArmor) {
+            for (float pos = 0; pos < 10; pos++) {
+                currentPip += pipSpace;
+                ImageHelper.drawDiamond(g2d, (int) pipPoints.get(currentPip)[0], (int) pipPoints.get(currentPip)[1]);
+            }
+        }
     }
 
 }

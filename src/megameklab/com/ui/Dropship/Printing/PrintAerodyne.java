@@ -33,9 +33,11 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import megamek.common.ASFBay;
 import megamek.common.Aero;
 import megamek.common.Dropship;
 import megamek.common.Pilot;
+import megamek.common.SmallCraftBay;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperDropShip;
@@ -116,7 +118,7 @@ public class PrintAerodyne implements Printable {
         g2d.drawString(Integer.toString(dropship.getWalkMP()), 99, 156);
         g2d.drawString(Integer.toString(dropship.getRunMPwithoutMASC()), 99, 167);
 
-        g2d.drawString(String.format("%1$s / %2$s", dropship.getFighterBays().size(), dropship.getSmallCraftBays().size()), 104, 177);
+        g2d.drawString(String.format("%1$s / %2$s", ImageHelperDropShip.printTotalDoors(dropship, new ASFBay(1, 1)), ImageHelperDropShip.printTotalDoors(dropship, new SmallCraftBay(1, 1))), 104, 177);
         g2d.drawString(String.format("%1$s / Turn", dropship.getFighterLaunchRate()), 186, 177);
 
         int tonnage = (int) Math.ceil(dropship.getWeight());
