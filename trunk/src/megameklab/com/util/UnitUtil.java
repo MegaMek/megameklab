@@ -156,9 +156,6 @@ public class UnitUtil {
     public static int getCritsUsed(Entity unit, EquipmentType eq) {
 
         boolean isMisc = eq instanceof MiscType;
-        if (!(unit instanceof Mech)) {
-            return 0;
-        }
 
         if (isMisc && eq.hasFlag(MiscType.F_PARTIAL_WING) && (eq.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL)) {
             return 3;
@@ -183,14 +180,10 @@ public class UnitUtil {
         EquipmentType et = mount.getType();
 
         if (isMisc && et.isSpreadable()) {
-            if (unit instanceof Mech) {
-                UnitUtil.removeCrits(unit, et);
-            }
+            UnitUtil.removeCrits(unit, et);
             UnitUtil.removeMounts(unit, et);
         }
-        if (unit instanceof Mech) {
-            UnitUtil.removeCrits(unit, et);
-        }
+        UnitUtil.removeCrits(unit, et);
         unit.getEquipment().remove(mount);
         if (mount.getType() instanceof MiscType) {
             unit.getMisc().remove(mount);
@@ -210,13 +203,8 @@ public class UnitUtil {
      */
     public static void removeMounted(Entity unit, EquipmentType et) {
 
-        if (!(unit instanceof Mech)) {
-            return;
-        }
-
-        Mech mech = (Mech) unit;
         Mounted equipment = null;
-        for (Mounted mount : mech.getEquipment()) {
+        for (Mounted mount : unit.getEquipment()) {
             if (mount.getType().equals(et)) {
                 equipment = mount;
                 break;
@@ -252,11 +240,7 @@ public class UnitUtil {
      */
     public static void removeCrits(Entity unit, EquipmentType critType) {
 
-        if (!(unit instanceof Mech)) {
-            return;
-        }
-
-        for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
+        for (int location = 0; location < unit.locations(); location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot crit = unit.getCritical(location, slot);
                 if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
@@ -279,9 +263,6 @@ public class UnitUtil {
      */
     public static void removeCriticals(Entity unit, Mounted eq) {
 
-        if (!(unit instanceof Mech)) {
-            return;
-        }
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
@@ -881,6 +862,19 @@ public class UnitUtil {
         return Math.min((int) Math.floor(armorPerTon * armorTons), UnitUtil.getMaximumArmorPoints(unit));
     }
 
+    public static void reIndexCrits(Entity unit) {
+
+        for (int location = 0; location < unit.locations(); location++) {
+            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+                CriticalSlot cs = unit.getCritical(location, slot);
+
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    cs.setIndex(unit.getEquipmentNum(cs.getMount()));
+                }
+            }
+        }
+    }
+
     public static void reIndexCrits(Mech unit) {
 
         for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
@@ -894,9 +888,35 @@ public class UnitUtil {
         }
     }
 
-    public static void compactCriticals(Mech mech) {
-        for (int loc = 0; loc < mech.locations(); loc++) {
-            UnitUtil.compactCriticals(mech, loc);
+    public static void compactCriticals(Entity unit) {
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            UnitUtil.compactCriticals(unit, loc);
+        }
+    }
+
+    private static void compactCriticals(Entity unit, int loc) {
+        int firstEmpty = -1;
+        for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+            CriticalSlot cs = unit.getCritical(loc, slot);
+
+            if ((cs == null) && (firstEmpty == -1)) {
+                firstEmpty = slot;
+            }
+            if ((firstEmpty != -1) && (cs != null)) {
+                // move this to the first empty slot
+                unit.setCritical(loc, firstEmpty, cs);
+                // mark the old slot empty
+                unit.setCritical(loc, slot, null);
+                // restart just after the moved slot's new location
+                slot = firstEmpty;
+                firstEmpty = -1;
+            }
+        }
+    }
+
+    public static void compactCriticals(Mech unit) {
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            UnitUtil.compactCriticals(unit, loc);
         }
     }
 
