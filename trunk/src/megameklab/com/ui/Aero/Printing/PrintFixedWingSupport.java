@@ -34,21 +34,21 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
-import megamek.common.ConvFighter;
+import megamek.common.FixedWingSupport;
 import megamek.common.Pilot;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperAero;
 import megameklab.com.util.UnitUtil;
 
-public class PrintConventionalFighter implements Printable {
+public class PrintFixedWingSupport implements Printable {
 
-    private ConvFighter convFighter = null;
-    private ArrayList<ConvFighter> convFighterList;
+    private FixedWingSupport fixedWingSupport = null;
+    private ArrayList<FixedWingSupport> fixedWingSupportList;
     PrinterJob masterPrintJob;
 
-    public PrintConventionalFighter(ArrayList<ConvFighter> list, PrinterJob masterPrintJob) {
-        convFighterList = list;
+    public PrintFixedWingSupport(ArrayList<FixedWingSupport> list, PrinterJob masterPrintJob) {
+        fixedWingSupportList = list;
         this.masterPrintJob = masterPrintJob;
 
     }
@@ -71,59 +71,50 @@ public class PrintConventionalFighter implements Printable {
 
         System.gc();
 
-        g2d.drawImage(ImageHelper.getRecordSheet(convFighter), 18, 18, 558, 738, Color.BLACK, null);
-        printConvFighterImage(g2d, ImageHelper.getFluffImage(convFighter, ImageHelper.imageAero));
+        g2d.drawImage(ImageHelper.getRecordSheet(fixedWingSupport), 18, 18, 558, 738, Color.BLACK, null);
+        printFixedWingSupportImage(g2d, ImageHelper.getFluffImage(fixedWingSupport, ImageHelper.imageAero));
 
-        printConvFighterData(g2d);
+        printFixedWingSupportData(g2d);
         printArmor(g2d);
         printWeaponsNEquipment(g2d);
 
         // Armor Pips
-        printFrontArmor(g2d, convFighter.getOArmor(Aero.LOC_NOSE));
-        printLeftArmor(g2d, convFighter.getOArmor(Aero.LOC_LWING));
-        printRightArmor(g2d, convFighter.getOArmor(Aero.LOC_RWING));
-        printRearArmor(g2d, convFighter.getOArmor(Aero.LOC_AFT));
+        printFrontArmor(g2d, fixedWingSupport.getOArmor(Aero.LOC_NOSE));
+        printLeftArmor(g2d, fixedWingSupport.getOArmor(Aero.LOC_LWING));
+        printRightArmor(g2d, fixedWingSupport.getOArmor(Aero.LOC_RWING));
+        printRearArmor(g2d, fixedWingSupport.getOArmor(Aero.LOC_AFT));
 
         // Internal Pips
-        printStruct(g2d, convFighter.get0SI());
+        printStruct(g2d, fixedWingSupport.get0SI());
 
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
     }
 
-    private void printConvFighterData(Graphics2D g2d) {
-        String ConvFighterName = convFighter.getChassis() + " " + convFighter.getModel();
+    private void printFixedWingSupportData(Graphics2D g2d) {
+        String FixedWingSupportName = fixedWingSupport.getChassis() + " " + fixedWingSupport.getModel();
 
-        g2d.setFont(UnitUtil.getNewFont(g2d, ConvFighterName, true, 180, 10.0f));
-        g2d.drawString(ConvFighterName, 49, 118);
+        g2d.setFont(UnitUtil.getNewFont(g2d, FixedWingSupportName, true, 180, 10.0f));
+        g2d.drawString(FixedWingSupportName, 49, 118);
 
         Font font = UnitUtil.deriveFont(true, 18.0f);
         g2d.setFont(font);
 
-        g2d.drawString("Conventional Fighter Record Sheet", 60, 90);
+        g2d.drawString("Fixed Wing Support Vehicle Record Sheet", 60, 90);
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
-
-        if ((convFighter.getCrew() != null) && !convFighter.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = convFighter.getCrew();
+        if ((fixedWingSupport.getCrew() != null) && !fixedWingSupport.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Pilot pilot = fixedWingSupport.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
         }
 
-        g2d.drawString(Integer.toString(convFighter.getWalkMP()), 99, 143);
-        g2d.drawString(Integer.toString(convFighter.getRunMP()), 99, 154);
+        g2d.drawString(Integer.toString(fixedWingSupport.getWalkMP()), 99, 143);
+        g2d.drawString(Integer.toString(fixedWingSupport.getRunMP()), 99, 154);
 
-        if (convFighter.isVSTOL()) {
-            g2d.drawString("VSTOL", 99, 165);
-
-        } else {
-
-            g2d.drawString("STOL", 99, 165);
-        }
-
-        int tonnage = (int) Math.ceil(convFighter.getWeight());
+        int tonnage = (int) Math.ceil(fixedWingSupport.getWeight());
 
         if (tonnage % 5 != 0) {
             tonnage += 5 - (tonnage % 5);
@@ -135,7 +126,7 @@ public class PrintConventionalFighter implements Printable {
         int startLine = 188;
         int lineFeed = 8;
 
-        switch (convFighter.getTechLevel()) {
+        switch (fixedWingSupport.getTechLevel()) {
 
             case TechConstants.T_INTRO_BOXSET:
                 ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
@@ -163,23 +154,23 @@ public class PrintConventionalFighter implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (convFighter.isClan()) {
+        if (fixedWingSupport.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 143.5f);
 
-        if ((convFighter.getSource() != null) && (convFighter.getSource().trim().length() > 0)) {
+        if ((fixedWingSupport.getSource() != null) && (fixedWingSupport.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
             g2d.drawString(sourceFluff, 138, nextDataLine);
 
-            font = UnitUtil.getNewFont(g2d, convFighter.getSource(), false, 51, 8.0f);
+            font = UnitUtil.getNewFont(g2d, fixedWingSupport.getSource(), false, 51, 8.0f);
 
             g2d.setFont(font);
 
-            g2d.drawString(convFighter.getSource(), 177, nextDataLine);
+            g2d.drawString(fixedWingSupport.getSource(), 177, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
@@ -191,23 +182,24 @@ public class PrintConventionalFighter implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", convFighter.getYear()), 177, nextDataLine);
+            g2d.drawString(String.format("%1$s", fixedWingSupport.getYear()), 177, nextDataLine);
 
         }
 
-        // g2d.drawString(Integer.toString(convFighter.getYear()), 188, 155);
+        // g2d.drawString(Integer.toString(fixedWingSupport.getYear()), 188,
+        // 155);
 
         // Cost/BV
-        g2d.drawString(String.format("%1$,d", convFighter.calculateBattleValue(true, true)), 150, 346.2f);
+        g2d.drawString(String.format("%1$,d", fixedWingSupport.calculateBattleValue(true, true)), 150, 346.2f);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(String.format("%1$,.0f C-bills",
-        // convFighter.getCost(true)),
+        // fixedWingSupport.getCost(true)),
         // 52, 346.2f);
 
-        if (convFighter.hasBARArmor()) {
+        if (fixedWingSupport.hasBARArmor()) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + convFighter.getBARRating(), 245, 120);
+            g2d.drawString("BAR: " + fixedWingSupport.getBARRating(), 245, 120);
         }
 
         font = new Font("Arial", Font.BOLD, 7);
@@ -221,28 +213,28 @@ public class PrintConventionalFighter implements Printable {
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_NOSE), convFighter.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 315, 162);
+        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", fixedWingSupport.getThresh(Aero.LOC_NOSE), fixedWingSupport.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 315, 162);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_RWING), convFighter.getArmor(Aero.LOC_RWING)), g2d.getFont(), 495, 333);
+        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", fixedWingSupport.getThresh(Aero.LOC_RWING), fixedWingSupport.getArmor(Aero.LOC_RWING)), g2d.getFont(), 495, 333);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_LWING), convFighter.getArmor(Aero.LOC_LWING)), g2d.getFont(), 290, 333);
+        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", fixedWingSupport.getThresh(Aero.LOC_LWING), fixedWingSupport.getArmor(Aero.LOC_LWING)), g2d.getFont(), 290, 333);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_AFT), convFighter.getArmor(Aero.LOC_AFT)), g2d.getFont(), 398, 487);
+        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", fixedWingSupport.getThresh(Aero.LOC_AFT), fixedWingSupport.getArmor(Aero.LOC_AFT)), g2d.getFont(), 398, 487);
 
-        g2d.drawString(String.format("%1$S", convFighter.get0SI()), 390, 268);
+        g2d.drawString(String.format("%1$S", fixedWingSupport.get0SI()), 390, 268);
 
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelperAero.printAeroWeaponsNEquipment(convFighter, g2d);
+        ImageHelperAero.printAeroWeaponsNEquipment(fixedWingSupport, g2d);
 
     }
 
     public void print() {
 
         try {
-            for (int pos = 0; pos < convFighterList.size(); pos++) {
+            for (int pos = 0; pos < fixedWingSupportList.size(); pos++) {
                 PrinterJob pj = PrinterJob.getPrinterJob();
                 pj.setPrintService(masterPrintJob.getPrintService());
                 PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
@@ -257,8 +249,8 @@ public class PrintConventionalFighter implements Printable {
                 pageFormat.setPaper(p);
 
                 pj.setPrintable(this, pageFormat);
-                convFighter = convFighterList.get(pos);
-                pj.setJobName(convFighter.getChassis() + " " + convFighter.getModel());
+                fixedWingSupport = fixedWingSupportList.get(pos);
+                pj.setJobName(fixedWingSupport.getChassis() + " " + fixedWingSupport.getModel());
 
                 try {
                     pj.print(aset);
@@ -439,7 +431,7 @@ public class PrintConventionalFighter implements Printable {
         printISPoints(g2d, pipPlotter, totalArmor);
     }
 
-    private void printConvFighterImage(Graphics2D g2d, Image img) {
+    private void printFixedWingSupportImage(Graphics2D g2d, Image img) {
 
         int width = Math.min(220, img.getWidth(null));
         int height = Math.min(130, img.getHeight(null));

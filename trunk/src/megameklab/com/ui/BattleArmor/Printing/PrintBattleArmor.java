@@ -35,6 +35,7 @@ import javax.print.attribute.standard.PrintQuality;
 import megamek.common.BattleArmor;
 import megamek.common.EntityMovementMode;
 import megamek.common.MiscType;
+import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperBattleArmor;
 import megameklab.com.util.UnitUtil;
@@ -157,6 +158,15 @@ public class PrintBattleArmor implements Printable {
 
             g2d.drawString(String.format("%1$s", battleArmor.getYear()), 151, 108 + currentMargin);
 
+        }
+
+        font = UnitUtil.deriveFont(true, 12.0f);
+        g2d.setFont(font);
+
+        if ((battleArmor.getTechLevel() == TechConstants.T_IS_ADVANCED) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_ADVANCED)) {
+            g2d.drawString("(Advanced)", 470, 66);
+        } else if ((battleArmor.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL)) {
+            g2d.drawString("(Experimental)", 466, 66);
         }
 
         font = UnitUtil.deriveFont(8.0f);

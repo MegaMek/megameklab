@@ -31,7 +31,10 @@ V 0.0.0.18 Dev
 + Bug: ASF/Small Craft door not showing correctly
 + RFE: Modular Armor now prints as diamonds
 + New MM jar
- 
++ Added Support for Fixed Wing aircraft
++ Added Advanced/Experimental Text to BA RS
++ New MM Jar
+
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS
 + Added the ability to select off engine types for Mixed Tech Units.
