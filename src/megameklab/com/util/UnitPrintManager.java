@@ -1,13 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.util;
@@ -38,6 +42,7 @@ import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EntityListFile;
 import megamek.common.EntityMovementMode;
+import megamek.common.FixedWingSupport;
 import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
@@ -47,6 +52,7 @@ import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
+import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
@@ -122,6 +128,7 @@ public class UnitPrintManager {
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
         ArrayList<Aero> aeroList = new ArrayList<Aero>();
         ArrayList<ConvFighter> convFighterList = new ArrayList<ConvFighter>();
+        ArrayList<FixedWingSupport> fixedWingSupportList = new ArrayList<FixedWingSupport>();
         ArrayList<Dropship> aerodyneList = new ArrayList<Dropship>();
         ArrayList<Dropship> SpheroidList = new ArrayList<Dropship>();
         ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
@@ -158,6 +165,8 @@ public class UnitPrintManager {
                     } else {
                         SpheroidList.add((Dropship) unit);
                     }
+                } else if (unit instanceof FixedWingSupport) {
+                    fixedWingSupportList.add((FixedWingSupport) unit);
                 } else if (unit instanceof ConvFighter) {
                     convFighterList.add((ConvFighter) unit);
                 } else {
@@ -210,6 +219,11 @@ public class UnitPrintManager {
         if (aeroList.size() > 0) {
             PrintAero printAero = new PrintAero(aeroList, masterPrintJob);
             printAero.print();
+        }
+
+        if (fixedWingSupportList.size() > 0) {
+            PrintFixedWingSupport printFixedWingSupport = new PrintFixedWingSupport(fixedWingSupportList, masterPrintJob);
+            printFixedWingSupport.print();
         }
 
         if (convFighterList.size() > 0) {
