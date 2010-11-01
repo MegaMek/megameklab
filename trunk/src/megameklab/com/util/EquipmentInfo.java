@@ -263,6 +263,7 @@ public class EquipmentInfo {
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
             isCompactNarc = weapon instanceof ISCompactNarc;
+            isAMS = weapon.hasFlag(WeaponType.F_AMS);
 
             shtRange = weapon.shortRange;
             medRange = weapon.mediumRange;
