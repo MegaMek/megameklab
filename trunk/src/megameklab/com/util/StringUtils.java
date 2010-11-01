@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -26,6 +26,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.weapons.ACWeapon;
+import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.CLPlasmaCannon;
@@ -134,10 +135,13 @@ public class StringUtils {
                     info = "[DE,H,AI]";
                 } else if (weapon instanceof HAGWeapon) {
                     info = Integer.toString(weapon.getRackSize());
-                    info += " [C/F]";
+                    info += " [C,F]";
                 } else if (weapon instanceof ArtilleryWeapon) {
                     info = Integer.toString(weapon.getRackSize());
                     info += "[AE,S,F]";
+                } else if (weapon instanceof ArtilleryCannonWeapon) {
+                    info = Integer.toString(weapon.getRackSize());
+                    info += "[DB,AE]";
                 } else if (weapon instanceof ThunderBoltWeapon) {
                     if (weapon instanceof ISThunderBolt5) {
                         info = "5";
@@ -173,10 +177,8 @@ public class StringUtils {
                     info += "DE,";
                 }
 
-                if (weapon instanceof LBXACWeapon) {
-                    info += "C/F/";
-                } else if (weapon instanceof ISSilverBulletGauss) {
-                    info += "C/F,";
+                if ((weapon instanceof LBXACWeapon) || (weapon instanceof ISSilverBulletGauss)) {
+                    info += "C,F,";
                 }
 
                 if (UnitUtil.hasSwitchableAmmo(weapon)) {
@@ -207,6 +209,10 @@ public class StringUtils {
 
             }
         } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_CLUB) || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
+            if (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE) || mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM) || mount.getType().hasSubType(MiscType.S_VIBRO_SMALL)) {
+                // manually set vibros to active to get correct damage
+                mount.setMode(1);
+            }
             if (mount.getType().hasSubType(MiscType.S_CLAW) || mount.getType().hasSubType(MiscType.S_CLAW_THB)) {
                 info = Integer.toString((int) Math.ceil(unit.getWeight() / 7.0));
             } else {

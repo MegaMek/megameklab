@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -436,7 +436,11 @@ public class ImageHelper {
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
-
+                    } else if (eqi.isAMS) {
+                            g2d.drawLine(damagePoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                            g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
                             font = UnitUtil.deriveFont(6.0f);
@@ -463,7 +467,11 @@ public class ImageHelper {
                         }
                     }
                 } else {
-                    g2d.drawLine(heatPoint, (int) linePoint - 2, heatPoint + 6, (int) linePoint - 2);
+                    if (eqi.heat > 0) {
+                        g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
+                    } else {
+                        g2d.drawLine(heatPoint, (int) linePoint - 2, heatPoint + 6, (int) linePoint - 2);
+                    }
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
                     g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                     g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
@@ -717,7 +725,12 @@ public class ImageHelper {
                 }
                 g2d.drawString(location, locPoint, linePoint);
                 if (eqi.isWeapon) {
-                    if (eqi.isMML) {
+                    if (eqi.isAMS) {
+                        g2d.drawLine(damagePoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                        g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    } else if (eqi.isMML) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
                         linePoint += lineFeed - 1.0f;
 

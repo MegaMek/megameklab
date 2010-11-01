@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -82,7 +82,7 @@ public class EquipmentInfo {
 
     /**
      * Info for Aeros
-     * 
+     *
      * @param aero
      * @param mount
      */
@@ -157,7 +157,7 @@ public class EquipmentInfo {
     }
 
     /**
-     * 
+     *
      * @param dropship
      * @param mount
      */
@@ -233,7 +233,7 @@ public class EquipmentInfo {
 
     /**
      * Info for non Aero Entities.
-     * 
+     *
      * @param unit
      * @param mount
      */
@@ -306,6 +306,11 @@ public class EquipmentInfo {
             shtRange = 0;
             medRange = 0;
             longRange = 1;
+        } else if (mount.getType().hasFlag(MiscType.F_CLUB) &&
+                (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE) ||
+                        mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM) ||
+                        mount.getType().hasSubType(MiscType.S_VIBRO_SMALL))) {
+            heat = unit.getActiveVibrobladeHeat(mount.getLocation());
         }
 
         isBAMineLayer = mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);

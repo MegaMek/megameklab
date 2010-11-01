@@ -34,6 +34,9 @@ V 0.0.0.18 Dev
 + Added Support for Fixed Wing aircraft
 + Added Advanced/Experimental Text to BA RS
 + New MM Jar
++ AMS printout fix
++ Vibroblade heat/damage fix
++ New MM jar
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS
