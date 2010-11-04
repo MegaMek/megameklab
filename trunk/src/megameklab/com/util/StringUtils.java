@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -18,6 +18,7 @@ package megameklab.com.util;
 
 import java.util.Comparator;
 
+import megamek.common.Aero;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -222,6 +223,102 @@ public class StringUtils {
             info = "[PD,OS,AI]";
         } else {
             info = "  [E]";
+        }
+        return info;
+    }
+
+    public static String getEquipmentInfo(Aero unit, Mounted mount) {
+        String info = "";
+
+        if (mount.getType() instanceof WeaponType) {
+            WeaponType weapon = (WeaponType) mount.getType();
+            if (weapon.hasFlag(WeaponType.F_MGA)) {
+                info = "[T]";
+            } else if (weapon instanceof ISC3M) {
+                info = "[E]";
+            } else if (weapon.getDamage() < 0) {
+                if (weapon instanceof SRMWeapon) {
+                    info = "[M,C]";
+                } else if ((weapon instanceof LRMWeapon)) {
+                    info = "[M,C,S]";
+                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
+                    info = "[M,C]";
+                } else if (weapon instanceof ISSnubNosePPC) {
+                    info = "[DE,V]";
+                } else if (weapon instanceof ISSmallVariableSpeedPulseLaser) {
+                    info = "[P,V]";
+                } else if (weapon instanceof ISMediumVariableSpeedPulseLaser) {
+                    info = "[P,V]";
+                } else if (weapon instanceof ISLargeVariableSpeedPulseLaser) {
+                    info = "[P,V]";
+                } else if (weapon instanceof ISHGaussRifle) {
+                    info = "[DB,X]";
+                } else if (weapon instanceof ISPlasmaRifle) {
+                    info = "[DE,H,AI]";
+                } else if (weapon instanceof CLPlasmaCannon) {
+                    info = "[DE,H,AI]";
+                } else if (weapon instanceof HAGWeapon) {
+                    info = "[C,F]";
+                } else if (weapon instanceof ArtilleryWeapon) {
+                    info = "[AE,S,F]";
+                } else if (weapon instanceof ArtilleryCannonWeapon) {
+                    info = "[DB,AE]";
+                } else if (weapon instanceof ThunderBoltWeapon) {
+                    info = "[M]";
+                } else if (weapon instanceof NarcWeapon) {
+                    info = "[M]";
+                } else {
+                    info = "";
+                }
+            } else if (weapon instanceof UACWeapon) {
+                info = "[DB,R,C]";
+            } else {
+                info = " [";
+
+                if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
+                    info += "DB,";
+                }
+                if (UnitUtil.isAMS(weapon) || (weapon instanceof BPodWeapon)) {
+                    info += "PD,";
+                } else if (weapon instanceof PulseLaserWeapon) {
+                    info += "P,";
+                } else if (weapon instanceof EnergyWeapon) {
+                    info += "DE,";
+                }
+
+                if ((weapon instanceof LBXACWeapon) || (weapon instanceof ISSilverBulletGauss)) {
+                    info += "C,F,";
+                }
+
+                if (UnitUtil.hasSwitchableAmmo(weapon)) {
+                    info += "S,";
+                }
+
+                if (weapon instanceof UACWeapon) {
+                    info += "R,";
+                }
+
+                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon)) {
+                    info += "AI,";
+                }
+
+                if (weapon instanceof FlamerWeapon) {
+                    info += "H,AI,";
+                }
+
+                if (weapon.isExplosive() && !(weapon instanceof ACWeapon)) {
+                    info += "X,";
+                }
+
+                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                    info += "OS,";
+                }
+
+                info = info.substring(0, info.length() - 1) + "]";
+
+            }
+        } else {
+            info = "[E]";
         }
         return info;
     }

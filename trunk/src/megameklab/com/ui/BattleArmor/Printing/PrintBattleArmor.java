@@ -48,6 +48,7 @@ public class PrintBattleArmor implements Printable {
     // for a second vehicle.
     private int currentPosition = 0;
     private int currentMargin = 0;
+    private boolean isAdvanced = false;
     PrinterJob masterPrintJob;
 
     public PrintBattleArmor(ArrayList<BattleArmor> list, PrinterJob masterPrintJob) {
@@ -77,6 +78,7 @@ public class PrintBattleArmor implements Printable {
             return;
         }
 
+        isAdvanced = false;
         currentMargin = 0;
         Image baSquad = ImageHelperBattleArmor.getBASquad();
         int x = 18;
@@ -163,10 +165,12 @@ public class PrintBattleArmor implements Printable {
         font = UnitUtil.deriveFont(true, 12.0f);
         g2d.setFont(font);
 
-        if ((battleArmor.getTechLevel() == TechConstants.T_IS_ADVANCED) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_ADVANCED)) {
+        if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_ADVANCED) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_ADVANCED))) {
             g2d.drawString("(Advanced)", 470, 66);
-        } else if ((battleArmor.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL)) {
+            isAdvanced = true;
+        } else if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL))) {
             g2d.drawString("(Experimental)", 466, 66);
+            isAdvanced = true;
         }
 
         font = UnitUtil.deriveFont(8.0f);

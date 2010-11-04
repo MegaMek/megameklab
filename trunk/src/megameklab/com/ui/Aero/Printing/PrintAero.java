@@ -484,9 +484,9 @@ public class PrintAero implements Printable {
 
     private void printStruct(Graphics2D g2d, int totalArmor) {
         int[] topColumn = new int[]
-            { 366, 270 };
+            { 369, 269 };
         int[] pipShift = new int[]
-            { 7, 7 };
+            { 6, 6 };
 
         Vector<int[]> pipPlotter = new Vector<int[]>(132);
         for (int pos = 1; pos <= 32; pos++) {
