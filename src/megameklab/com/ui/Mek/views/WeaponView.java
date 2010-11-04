@@ -207,7 +207,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             tScrollPane.setViewportView(tPanels.get(tScrollPanes.indexOf(tScrollPane)));
         }
 
-        Font listFont = new Font("Arial", Font.PLAIN, 10);
+        Font listFont = new Font("Arial", Font.BOLD, 10);
         laserPane.add(laserWeaponCombo);
         laserWeaponCombo.setFixedCellWidth(155);
         laserWeaponCombo.setFont(listFont);

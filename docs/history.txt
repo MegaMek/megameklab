@@ -37,6 +37,10 @@ V 0.0.0.18 Dev
 + AMS printout fix
 + Vibroblade heat/damage fix
 + New MM jar
++ Fix for Aero IS
++ Fix for BA 
++ Fix to Aero RS now no longer displays damage
++ New MM jar
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS
