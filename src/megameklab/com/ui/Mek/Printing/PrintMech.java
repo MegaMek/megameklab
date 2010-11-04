@@ -1043,7 +1043,7 @@ public class PrintMech implements Printable {
     }
 
     private void printHeadArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 7);
+        Font font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
 
         Dimension fillCircle = new Dimension(4, 4);

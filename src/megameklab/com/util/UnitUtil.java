@@ -739,7 +739,7 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_AP_MOUNT) || eq.hasFlag(MiscType.F_FIRE_RESISTANT) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || eq.hasFlag(MiscType.F_MASC) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_AP_MOUNT) || eq.hasFlag(MiscType.F_FIRE_RESISTANT) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS))) {
             return false;
         }
 
@@ -1135,7 +1135,7 @@ public class UnitUtil {
         } catch (Exception ex) {
             ex.printStackTrace();
             System.err.println(fName + " not loaded.  Using Arial font.");
-            euroFont = new Font("Arial", Font.PLAIN, 8);
+            euroFont = new Font("Arial", Font.BOLD, 8);
         }
 
         fName = "./data/fonts/Eurostib.TTF";
@@ -1147,7 +1147,7 @@ public class UnitUtil {
         } catch (Exception ex) {
             ex.printStackTrace();
             System.err.println(fName + " not loaded.  Using Arial font.");
-            euroBoldFont = new Font("Arial", Font.PLAIN, 8);
+            euroBoldFont = new Font("Arial", Font.BOLD, 8);
         }
 
     }

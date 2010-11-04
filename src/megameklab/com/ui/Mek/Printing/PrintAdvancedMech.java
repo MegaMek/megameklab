@@ -398,7 +398,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printRLArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(6, 6);
         Dimension topColumn = new Dimension(499, 177);
@@ -479,7 +479,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printLLArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(6, 6);
         Dimension topColumn = new Dimension(443, 175);
@@ -566,7 +566,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printLAArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(6, 6);
         Dimension rightColumn = new Dimension(417, 73);
@@ -635,7 +635,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printRAArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(6, 6);
         Dimension rightColumn = new Dimension(548, 86);
@@ -704,7 +704,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printLTArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(5, 5);
         Dimension topColumn = new Dimension(430, 84);
@@ -772,7 +772,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printLTRArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension topColumn = new Dimension(437, 308);
@@ -800,7 +800,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printRTArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(5, 5);
         Dimension topColumn = new Dimension(497, 84);
@@ -894,7 +894,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printCTArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(5, 5);
         Dimension topColumn = new Dimension(464, 100);
@@ -945,7 +945,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printHeadArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(5, 5);
         Dimension fillCircle = new Dimension(3, 3);
@@ -1016,7 +1016,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printCTRArmor(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension topColumn = new Dimension(470, 295);
@@ -1040,7 +1040,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printLAStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension column = new Dimension(419, 409);
@@ -1071,7 +1071,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printLLStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension column = new Dimension(441, 471);
@@ -1117,7 +1117,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printRLStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension column = new Dimension(484, 471);
@@ -1163,7 +1163,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printRAStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension column = new Dimension(506, 409);
@@ -1194,7 +1194,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printLTStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension column = new Dimension(435, 411);
@@ -1282,7 +1282,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printRTStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension column = new Dimension(481, 411);
@@ -1370,7 +1370,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printCTStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
         Dimension column = new Dimension(457, 419);
@@ -1417,7 +1417,7 @@ public class PrintAdvancedMech implements Printable {
     }
 
     private void printHeadStruct(Graphics2D g2d) {
-        Font font = new Font("Arial", Font.PLAIN, 8);
+        Font font = new Font("Arial", Font.BOLD, 8);
         g2d.setFont(font);
         Dimension circle = new Dimension(4, 4);
 

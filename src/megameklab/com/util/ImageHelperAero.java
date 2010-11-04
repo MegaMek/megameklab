@@ -29,12 +29,19 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 
 public class ImageHelperAero {
+    private static final String[] LOCATION_ABBRS =
+        { "N", "LW", "RW", "A" };
+
+    public static String getLocationAbbrs(int pos) {
+        return LOCATION_ABBRS[pos];
+    }
+
     public static void drawAeroArmorPip(Graphics2D g2d, float width, float height) {
         ImageHelperAero.drawAeroArmorPip(g2d, width, height, 9.0f);
     }
 
     public static void drawAeroArmorPip(Graphics2D g2d, float width, float height, float fontsize) {
-        Font font = new Font("Arial", Font.PLAIN, 9);
+        Font font = new Font("Arial", Font.BOLD, 9);
         font = font.deriveFont(fontsize);
         g2d.setFont(font);
         g2d.setColor(Color.BLACK);
@@ -43,8 +50,8 @@ public class ImageHelperAero {
     }
 
     public static void drawAeroISPip(Graphics2D g2d, int width, int height) {
-        Dimension circle = new Dimension(7, 7);
-        Dimension fillCircle = new Dimension(5, 5);
+        Dimension circle = new Dimension(6, 6);
+        Dimension fillCircle = new Dimension(4, 4);
         g2d.setColor(Color.black);
         g2d.fillOval(width, height, circle.width, circle.height);
         g2d.setColor(Color.white);
@@ -126,8 +133,6 @@ public class ImageHelperAero {
                 continue;
             }
 
-            int count = 0;
-
             ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
 
             for (EquipmentInfo eqi : eqHash.values()) {
@@ -140,16 +145,11 @@ public class ImageHelperAero {
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
 
-                if (count >= 12) {
-                    break;
-                }
                 font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim() + " " + eqi.damage.trim();
-
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -162,12 +162,20 @@ public class ImageHelperAero {
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
                 } else {
-                    g2d.drawString(name, typePoint, linePoint);
+                    if (ImageHelper.getStringWidth(g2d, name, font) > 68) {
+                        g2d.setFont(UnitUtil.getNewFont(g2d, eqi.name.trim(), false, 68, 7.0f));
+                        g2d.drawString(eqi.name.trim(), typePoint, linePoint);
+                        linePoint += lineFeed;
+                        g2d.drawString(eqi.damage.trim(), typePoint, linePoint);
+                    } else {
+                        g2d.drawString(name, typePoint, linePoint);
+                    }
+
                 }
                 font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
-                String location = aero.getLocationAbbr(pos);
+                String location = ImageHelperAero.getLocationAbbrs(pos);
 
                 g2d.drawString(location, locPoint, linePoint);
                 ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat), font, heatPoint, linePoint);
@@ -208,7 +216,6 @@ public class ImageHelperAero {
                 if (newLineNeeded) {
                     linePoint += lineFeed;
                 }
-                count++;
             }
         }
 
