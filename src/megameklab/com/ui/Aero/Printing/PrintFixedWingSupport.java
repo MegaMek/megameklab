@@ -202,7 +202,7 @@ public class PrintFixedWingSupport implements Printable {
             g2d.drawString("BAR: " + fixedWingSupport.getBARRating(), 245, 120);
         }
 
-        font = new Font("Arial", Font.BOLD, 7);
+        font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2010", 62.5f, 745f);
     }

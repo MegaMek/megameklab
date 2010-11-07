@@ -41,7 +41,7 @@ public class ImageHelperAero {
     }
 
     public static void drawAeroArmorPip(Graphics2D g2d, float width, float height, float fontsize) {
-        Font font = new Font("Arial", Font.BOLD, 9);
+        Font font = new Font("Arial", Font.PLAIN, 9);
         font = font.deriveFont(fontsize);
         g2d.setFont(font);
         g2d.setColor(Color.BLACK);

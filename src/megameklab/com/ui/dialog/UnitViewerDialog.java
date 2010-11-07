@@ -220,7 +220,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         mechList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // set fonts
-        mechList.setFont(new Font("Monospaced", Font.BOLD, 11));
+        mechList.setFont(new Font("Monospaced", Font.PLAIN, 11));
 
         for (String saSort : saSorts) {
             chSort.addItem(saSort);

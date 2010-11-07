@@ -192,7 +192,7 @@ public class PrintAero implements Printable {
         // g2d.drawString(String.format("%1$,.0f C-bills", aero.getCost(true)),
         // 52, 346.2f);
 
-        font = new Font("Arial", Font.BOLD, 7);
+        font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2010", 62.5f, 745f);
     }
@@ -483,8 +483,10 @@ public class PrintAero implements Printable {
     }
 
     private void printStruct(Graphics2D g2d, int totalArmor) {
+        int posY = 369;
+        int posX = 269;
         int[] topColumn = new int[]
-            { 369, 269 };
+            { posY, posX };
         int[] pipShift = new int[]
             { 6, 6 };
 
@@ -500,7 +502,7 @@ public class PrintAero implements Printable {
             }
         }
 
-        int pipSpace = 32 / totalArmor;
+        int pipSpace = (int) Math.floor(32 / totalArmor);
         for (int pos = 0; pos < 32; pos += pipSpace) {
             ImageHelperAero.drawAeroISPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
