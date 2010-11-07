@@ -303,7 +303,7 @@ public class PrintQuad implements Printable {
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
         g2d.drawString(techBase, 177, 145);
 
-        font = new Font("Arial", Font.BOLD, 7);
+        font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2010", 62.5f, 745f);
 

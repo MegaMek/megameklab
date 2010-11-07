@@ -99,7 +99,7 @@ public class PrintBattleArmor implements Printable {
             currentMargin += pageMarginBase;
         }
         System.gc();
-        Font font = new Font("Arial", Font.BOLD, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2010", 62.5f, 745f);
 

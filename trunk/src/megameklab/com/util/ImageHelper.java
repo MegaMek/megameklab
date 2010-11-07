@@ -1000,19 +1000,19 @@ public class ImageHelper {
     }
 
     public static void drawArmorPip(Graphics2D g2d, float width, float height) {
-        Font font = new Font("Arial", Font.BOLD, 7);
+        Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("O", width, height);
     }
 
     public static void drawISPip(Graphics2D g2d, float width, float height) {
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         g2d.setFont(font);
         g2d.drawString("O", width, height);
     }
 
     public static void drawHeatSinkPip(Graphics2D g2d, float width, float height) {
-        Font font = new Font("Arial", Font.BOLD, 8);
+        Font font = new Font("Arial", Font.PLAIN, 8);
         g2d.setFont(font);
         g2d.setColor(Color.BLACK);
         g2d.drawString("O", width, height);
@@ -1020,7 +1020,7 @@ public class ImageHelper {
 
     public static float getDiamondSize(Graphics2D g2d) {
         double size = 0;
-        Font font = new Font("Arial", Font.BOLD, 8);
+        Font font = new Font("Arial", Font.PLAIN, 8);
         GlyphVector gv = font.createGlyphVector(new FontRenderContext(g2d.getTransform(), true, true), "\u02C4");
         size = gv.getOutline().getBounds2D().getHeight();
         gv = font.createGlyphVector(new FontRenderContext(g2d.getTransform(), true, true), "\u02C5");

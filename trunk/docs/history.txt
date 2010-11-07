@@ -41,6 +41,7 @@ V 0.0.0.18 Dev
 + Fix for BA 
 + Fix to Aero RS now no longer displays damage
 + New MM jar
++ Removed code for BOLD pips
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS

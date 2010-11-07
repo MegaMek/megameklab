@@ -211,7 +211,7 @@ public class PrintSpheroid implements Printable {
         // dropship.getCost(true)),
         // 52, 346.2f);
 
-        font = new Font("Arial", Font.BOLD, 7);
+        font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2010", 65.5f, 779.5f);
     }

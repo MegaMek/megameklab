@@ -271,7 +271,7 @@ public class PrintWiGE implements Printable {
             g2d.drawString("BAR: " + tank.getBARRating(), 400, 64);
         }
 
-        font = new Font("Arial", Font.BOLD, 7);
+        font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
 
         g2d.drawString("2010", 62.5f, 374f);
@@ -414,7 +414,7 @@ public class PrintWiGE implements Printable {
             g2d.drawString("BAR: " + tank.getBARRating(), 400, 64 + secondPageMargin);
         }
 
-        font = new Font("Arial", Font.BOLD, 7);
+        font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2010", 105f, 745.5f);
     }
