@@ -104,7 +104,7 @@ public class ImageHelperDropShip {
     }
 
     public static void drawDropshipArmorPip(Graphics2D g2d, float width, float height, float fontsize) {
-        Font font = new Font("Arial", Font.BOLD, 6);
+        Font font = new Font("Arial", Font.PLAIN, 6);
         font = font.deriveFont(fontsize);
         g2d.setFont(font);
         g2d.setColor(Color.BLACK);
