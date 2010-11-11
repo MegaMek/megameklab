@@ -153,7 +153,7 @@ public class EquipmentView extends IView implements ActionListener {
                 continue;
             }
             if (UnitUtil.isUnitEquipment(mount.getType(), unit)) {
-                equipmentList.addCrit(mount.getType());
+                equipmentList.addCrit(mount);
             }
         }
     }
@@ -166,7 +166,7 @@ public class EquipmentView extends IView implements ActionListener {
                 if (engineHeatSinks-- > 0) {
                     continue;
                 }
-                equipmentList.addCrit(mount.getType());
+                equipmentList.addCrit(mount);
             }
         }
 
@@ -176,7 +176,8 @@ public class EquipmentView extends IView implements ActionListener {
         int location = 0;
         for (; location < equipmentList.getRowCount();) {
 
-            EquipmentType eq = (EquipmentType) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
+            Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
+            EquipmentType eq = mount.getType();
             if ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK))) {
                 try {
                     equipmentList.removeCrit(location);
@@ -229,19 +230,20 @@ public class EquipmentView extends IView implements ActionListener {
         if (e.getActionCommand().equals(ADD_COMMAND)) {
 
             EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
+            Mounted mount = null;
             boolean isMisc = equip instanceof MiscType;
             if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(unit)) {
-                    UnitUtil.updateTC(unit, equip);
+                    mount = UnitUtil.updateTC(unit, equip);
                 }
             } else {
                 try {
-                    unit.addEquipment(equip, Entity.LOC_NONE, false);
+                    mount = unit.addEquipment(equip, Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
-            equipmentList.addCrit(equip);
+            equipmentList.addCrit(mount);
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
 
             int startRow = equipmentTable.getSelectedRow();

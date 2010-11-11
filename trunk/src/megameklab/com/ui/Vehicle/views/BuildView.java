@@ -57,7 +57,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private JPanel mainPanel = new JPanel();
 
     private CriticalTableModel equipmentList;
-    private Vector<EquipmentType> masterEquipmentList = new Vector<EquipmentType>(10, 1);
+    private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 
@@ -100,21 +100,21 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         masterEquipmentList.clear();
         for (Mounted mount : unit.getMisc()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
-                masterEquipmentList.add(mount.getType());
+                masterEquipmentList.add(mount);
             }
         }
         for (Mounted mount : unit.getWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
-                masterEquipmentList.add(mount.getType());
+                masterEquipmentList.add(mount);
             }
         }
         for (Mounted mount : unit.getAmmo()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
-                masterEquipmentList.add(mount.getType());
+                masterEquipmentList.add(mount);
             }
         }
 
-        Collections.sort(masterEquipmentList, StringUtils.equipmentTypeComparator());
+        Collections.sort(masterEquipmentList, StringUtils.mountedComparator());
 
         // Time to Sort
         // HeatSinks first
@@ -128,7 +128,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // Jump Jets
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (UnitUtil.isJumpJet(masterEquipmentList.get(pos))) {
+            if (UnitUtil.isJumpJet(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -136,22 +136,22 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
 
         // weapons and ammo
-        Vector<EquipmentType> weaponsNAmmoList = new Vector<EquipmentType>(10, 1);
+        Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos) instanceof Weapon) || (masterEquipmentList.get(pos) instanceof AmmoType)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
             }
         }
-        Collections.sort(weaponsNAmmoList, StringUtils.equipmentTypeComparator());
-        for (EquipmentType eq : weaponsNAmmoList) {
-            equipmentList.addCrit(eq);
+        Collections.sort(weaponsNAmmoList, StringUtils.mountedComparator());
+        for (Mounted mount : weaponsNAmmoList) {
+            equipmentList.addCrit(mount);
         }
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos) instanceof MiscType) && UnitUtil.isArmor(masterEquipmentList.get(pos)) && UnitUtil.isTSM(masterEquipmentList.get(pos))) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -160,7 +160,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // structure
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos) instanceof MiscType) && masterEquipmentList.get(pos).hasFlag(MiscType.F_ENDO_STEEL)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && masterEquipmentList.get(pos).getType().hasFlag(MiscType.F_ENDO_STEEL)) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -169,23 +169,14 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // armor
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (UnitUtil.isArmor(masterEquipmentList.get(pos))) {
+            if (UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
             }
         }
 
-        // everything else that is not TSM
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if (!UnitUtil.isTSM(masterEquipmentList.get(pos))) {
-                equipmentList.addCrit(masterEquipmentList.get(pos));
-                masterEquipmentList.remove(pos);
-                pos--;
-            }
-        }
-
-        // TSM
+        // everything else
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             equipmentList.addCrit(masterEquipmentList.get(pos));
         }

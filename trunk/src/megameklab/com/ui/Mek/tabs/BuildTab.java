@@ -28,7 +28,6 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megameklab.com.ui.Mek.views.BuildView;
@@ -135,46 +134,39 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void autoFillCrits() {
 
-        for (EquipmentType eq : buildView.getTableModel().getCrits()) {
+        for (Mounted mount : buildView.getTableModel().getCrits()) {
             int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(getMech());
             for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
 
-                if (!UnitUtil.isValidLocation(unit, eq, location)) {
+                if (!UnitUtil.isValidLocation(unit, mount.getType(), location)) {
                     continue;
                 }
 
                 int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
-                int critsUsed = UnitUtil.getCritsUsed(unit, eq);
+                int critsUsed = UnitUtil.getCritsUsed(unit, mount.getType());
                 if (continuousNumberOfCrits < critsUsed) {
                     continue;
                 }
-
-                Mounted foundMount = null;
-                for (Mounted mount : unit.getEquipment()) {
-                    if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().equals(eq)) {
-                        if (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0)) {
-                            continue;
-                        }
-                        foundMount = mount;
-                        break;
+                if ((mount.getLocation() == Entity.LOC_NONE)) {
+                    if (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0)) {
+                        continue;
                     }
                 }
 
-                if (foundMount != null) {
-                    try {
-                        if (foundMount.getType().isSpreadable() || (foundMount.isSplitable() && (critsUsed > 1))) {
-                            for (int count = 0; count < critsUsed; count++) {
-                                getMech().addEquipment(foundMount, location, false);
-                            }
-                        } else {
-                            getMech().addEquipment(foundMount, location, false);
+                try {
+                    if (mount.getType().isSpreadable() || (mount.isSplitable() && (critsUsed > 1))) {
+                        for (int count = 0; count < critsUsed; count++) {
+                            getMech().addEquipment(mount, location, false);
                         }
-                        UnitUtil.changeMountStatus(unit, foundMount, location, Entity.LOC_NONE, false);
-                        break;
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                    } else {
+                        getMech().addEquipment(mount, location, false);
                     }
+                    UnitUtil.changeMountStatus(unit, mount, location, Entity.LOC_NONE, false);
+                    break;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+
             }
         }
         refresh.refreshAll();
@@ -215,8 +207,8 @@ public class BuildTab extends ITab implements ActionListener {
 
     }
 
-    public void addCrit(EquipmentType eq) {
-        critList.addCrit(eq);
+    public void addCrit(Mounted mount) {
+        critList.addCrit(mount);
     }
 
     public void refreshAll() {
