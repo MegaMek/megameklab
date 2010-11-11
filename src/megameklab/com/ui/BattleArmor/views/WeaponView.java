@@ -413,18 +413,18 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     private void loadWeaponsTable() {
         for (Mounted mount : getBattleArmor().getWeaponList()) {
             if (UnitUtil.isUnitWeapon(mount.getType(), getBattleArmor())) {
-                weaponList.addCrit(mount.getType());
+                weaponList.addCrit(mount);
             }
         }
 
         for (Mounted mount : getBattleArmor().getMisc()) {
             if (UnitUtil.isPhysicalWeapon(mount.getType())) {
-                weaponList.addCrit(mount.getType());
+                weaponList.addCrit(mount);
             }
         }
 
         for (Mounted mount : getBattleArmor().getAmmo()) {
-            weaponList.addCrit(mount.getType());
+            weaponList.addCrit(mount);
         }
     }
 
@@ -523,8 +523,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserWeaponCombo.getSelectedIndices()) {
-                        getBattleArmor().addEquipment(subLaserWeaponList.elementAt(index), Entity.LOC_NONE, false);
-                        weaponList.addCrit(subLaserWeaponList.elementAt(index));
+                        Mounted mount = getBattleArmor().addEquipment(subLaserWeaponList.elementAt(index), Entity.LOC_NONE, false);
+                        weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
@@ -534,8 +534,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserAmmoCombo.getSelectedIndices()) {
-                        getBattleArmor().addEquipment(subLaserAmmoList.elementAt(index), Entity.LOC_NONE, false);
-                        weaponList.addCrit(subLaserAmmoList.elementAt(index));
+                        Mounted mount = getBattleArmor().addEquipment(subLaserAmmoList.elementAt(index), Entity.LOC_NONE, false);
+                        weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
@@ -545,8 +545,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (missileWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : missileWeaponCombo.getSelectedIndices()) {
-                        getBattleArmor().addEquipment(subMissileWeaponList.elementAt(index), Entity.LOC_NONE, false);
-                        weaponList.addCrit(subMissileWeaponList.elementAt(index));
+                        Mounted mount = getBattleArmor().addEquipment(subMissileWeaponList.elementAt(index), Entity.LOC_NONE, false);
+                        weaponList.addCrit(mount);
 
                         // MegaMek automatically adds a ton of ammo for onshots
                         // for tracking. We do not need this in MLab
@@ -563,8 +563,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (missileAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : missileAmmoCombo.getSelectedIndices()) {
-                        getBattleArmor().addEquipment(subMissileAmmoList.elementAt(index), Entity.LOC_NONE, false);
-                        weaponList.addCrit(subMissileAmmoList.elementAt(index));
+                        Mounted mount = getBattleArmor().addEquipment(subMissileAmmoList.elementAt(index), Entity.LOC_NONE, false);
+                        weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
@@ -574,9 +574,9 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (ballisticWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticWeaponCombo.getSelectedIndices()) {
-                        getBattleArmor().addEquipment(subBallisticWeaponList.elementAt(index), Entity.LOC_NONE, false);
-                        weaponList.addCrit(subBallisticWeaponList.elementAt(index));
-                        // MegaMek automatically adds a ton of ammo for onshots
+                        Mounted mount = getBattleArmor().addEquipment(subBallisticWeaponList.elementAt(index), Entity.LOC_NONE, false);
+                        weaponList.addCrit(mount);
+                        // MegaMek automatically adds a ton of ammo for oneshots
                         // for tracking. We do not need this in MLab
                         if (subBallisticWeaponList.elementAt(index).hasFlag(WeaponType.F_ONESHOT)) {
                             getBattleArmor().getEquipment().remove(getBattleArmor().getEquipment().size() - 1);
@@ -591,8 +591,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (ballisticAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticAmmoCombo.getSelectedIndices()) {
-                        getBattleArmor().addEquipment(subBallisticAmmoList.elementAt(index), Entity.LOC_NONE, false);
-                        weaponList.addCrit(subBallisticAmmoList.elementAt(index));
+                        Mounted mount = getBattleArmor().addEquipment(subBallisticAmmoList.elementAt(index), Entity.LOC_NONE, false);
+                        weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
@@ -602,8 +602,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (artilleryWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryWeaponCombo.getSelectedIndices()) {
-                        getBattleArmor().addEquipment(subArtilleryWeaponList.elementAt(index), Entity.LOC_NONE, false);
-                        weaponList.addCrit(subArtilleryWeaponList.elementAt(index));
+                        Mounted mount = getBattleArmor().addEquipment(subArtilleryWeaponList.elementAt(index), Entity.LOC_NONE, false);
+                        weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
@@ -613,8 +613,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (artilleryAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryAmmoCombo.getSelectedIndices()) {
-                        getBattleArmor().addEquipment(subArtilleryAmmoList.elementAt(index), Entity.LOC_NONE, false);
-                        weaponList.addCrit(subArtilleryAmmoList.elementAt(index));
+                        Mounted mount = getBattleArmor().addEquipment(subArtilleryAmmoList.elementAt(index), Entity.LOC_NONE, false);
+                        weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
@@ -624,11 +624,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             try {
                 if (physicalWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : physicalWeaponCombo.getSelectedIndices()) {
-                        EquipmentType equip = subPhysicalWeaponList.elementAt(index);
-                        // boolean isMisc = equip instanceof MiscType;
-
-                        getBattleArmor().addEquipment(equip, Entity.LOC_NONE, false);
-                        weaponList.addCrit(equip);
+                        Mounted mount = getBattleArmor().addEquipment(subPhysicalWeaponList.elementAt(index), Entity.LOC_NONE, false);
+                        weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
@@ -649,10 +646,6 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             removeAllWeapons();
         } else {
             return;
-        }
-
-        if (UnitUtil.hasTargComp(unit)) {
-            UnitUtil.updateTC(getBattleArmor(), UnitUtil.getTargComp(getBattleArmor()));
         }
         fireTableRefresh();
 

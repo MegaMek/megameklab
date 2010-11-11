@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -26,7 +26,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JDialog;
@@ -95,7 +94,7 @@ public class UnitUtil {
     /**
      * tells is EquipementType is an equipment that uses crits/mounted and is
      * spread across multiple locations
-     * 
+     *
      * @param eq
      * @return
      */
@@ -105,7 +104,7 @@ public class UnitUtil {
 
     /**
      * tells if the EquipmentType is a type of armor
-     * 
+     *
      * @param eq
      * @return
      */
@@ -121,7 +120,7 @@ public class UnitUtil {
 
     /**
      * tells if the EquipmentType is a type of armor
-     * 
+     *
      * @param eq
      * @return
      */
@@ -137,7 +136,7 @@ public class UnitUtil {
 
     /**
      * tells if EquipmentType is TSM or TargetComp
-     * 
+     *
      * @param eq
      * @return
      */
@@ -148,7 +147,7 @@ public class UnitUtil {
     /**
      * Returns the number of crits used by EquipmentType eq, 1 if armor or
      * structure EquipmentType
-     * 
+     *
      * @param unit
      * @param eq
      * @return
@@ -176,14 +175,7 @@ public class UnitUtil {
     }
 
     public static void removeMounted(Entity unit, Mounted mount) {
-        boolean isMisc = mount.getType() instanceof MiscType;
-        EquipmentType et = mount.getType();
-
-        if (isMisc && et.isSpreadable()) {
-            UnitUtil.removeCrits(unit, et);
-            UnitUtil.removeMounts(unit, et);
-        }
-        UnitUtil.removeCrits(unit, et);
+        UnitUtil.removeCriticals(unit, mount);
         unit.getEquipment().remove(mount);
         if (mount.getType() instanceof MiscType) {
             unit.getMisc().remove(mount);
@@ -196,68 +188,8 @@ public class UnitUtil {
     }
 
     /**
-     * Removes a Mounted object from the units various equipment lists
-     * 
-     * @param unit
-     * @param eq
-     */
-    public static void removeMounted(Entity unit, EquipmentType et) {
-
-        Mounted equipment = null;
-        for (Mounted mount : unit.getEquipment()) {
-            if (mount.getType().equals(et)) {
-                equipment = mount;
-                break;
-            }
-        }
-        if (equipment == null) {
-            return;
-        }
-        UnitUtil.removeMounted(unit, equipment);
-    }
-
-    /**
-     * Removes mounts of a certain type from the Mek.
-     * 
-     * @param Unit
-     */
-    public static void removeMounts(Entity unit, EquipmentType et) {
-
-        ListIterator<Mounted> iterator = unit.getEquipment().listIterator();
-        while (iterator.hasNext()) {
-            Mounted mount = iterator.next();
-            if (mount.getType().equals(et)) {
-                iterator.remove();
-                unit.getMisc().remove(mount);
-            }
-        }
-    }
-
-    /**
-     * Removes all crits of a certain type from
-     * 
-     * @param unit
-     */
-    public static void removeCrits(Entity unit, EquipmentType critType) {
-
-        for (int location = 0; location < unit.locations(); location++) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                CriticalSlot crit = unit.getCritical(location, slot);
-                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    Mounted mount = crit.getMount();
-
-                    if ((mount != null) && (mount.getType().equals(critType))) {
-                        crit = null;
-                        unit.setCritical(location, slot, crit);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * Sets the corresponding critical slots to null for the Mounted object.
-     * 
+     *
      * @param unit
      * @param eq
      */
@@ -266,20 +198,12 @@ public class UnitUtil {
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
-
-        if (UnitUtil.isTargettingComputer(eq)) {
-            UnitUtil.removeCrits(unit, eq.getType());
-        } else if ((eq.getType() instanceof WeaponType) && (eq.isSplitable() || eq.getType().isSpreadable())) {
-            UnitUtil.removeSplitCriticals(unit, eq);
-        } else {
-            int critsUsed = UnitUtil.getCritsUsed(unit, eq.getType());
-            int location = eq.getLocation();
-            for (int slot = 0; (slot < unit.getNumberOfCriticals(location)) && (critsUsed > 0); slot++) {
-                CriticalSlot cs = unit.getCritical(location, slot);
-                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount() == eq)) {
+        for (int loc = 0; loc <= unit.locations(); loc++) {
+            for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+                CriticalSlot cs = unit.getCritical(loc, slot);
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount().equals(eq))) {
                     cs = null;
-                    unit.setCritical(location, slot, cs);
-                    --critsUsed;
+                    unit.setCritical(loc, slot, cs);
                 }
             }
         }
@@ -287,7 +211,7 @@ public class UnitUtil {
 
     /**
      * Tells if param EQ is a targetting computer.
-     * 
+     *
      * @param eq
      *            Mounted that might be a targetting computer
      * @return True if is a targetting computer false if not.
@@ -301,44 +225,8 @@ public class UnitUtil {
     }
 
     /**
-     * Removes crits for weapons that have split locations
-     * 
-     * @param unit
-     * @param eq
-     */
-    public static void removeSplitCriticals(Entity unit, Mounted eq) {
-
-        int location = eq.getLocation();
-        if (location != Entity.LOC_NONE) {
-            int critsUsed = UnitUtil.getCritsUsed(unit, eq.getType());
-            for (int slot = 0; (slot < unit.getNumberOfCriticals(location)) && (critsUsed > 0); slot++) {
-                CriticalSlot cs = unit.getCritical(location, slot);
-                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount().equals(eq))) {
-                    cs = null;
-                    unit.setCritical(location, slot, cs);
-                    --critsUsed;
-                }
-            }
-        }
-
-        location = eq.getSecondLocation();
-        if (location != Entity.LOC_NONE) {
-            int critsUsed = UnitUtil.getCritsUsed(unit, eq.getType());
-            for (int slot = 0; (slot < unit.getNumberOfCriticals(location)) && (critsUsed > 0); slot++) {
-                CriticalSlot cs = unit.getCritical(location, slot);
-                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount().equals(eq))) {
-                    cs = null;
-                    unit.setCritical(location, slot, cs);
-                    --critsUsed;
-                }
-            }
-        }
-
-    }
-
-    /**
      * Reset all the Crits and Mounts on the Unit.
-     * 
+     *
      * @param unit
      */
     public static void resetCriticalsAndMounts(Mech unit) {
@@ -361,7 +249,7 @@ public class UnitUtil {
 
     /**
      * Check to see if the unit is using Clan TC
-     * 
+     *
      * @param unit
      * @return
      */
@@ -378,37 +266,31 @@ public class UnitUtil {
     /**
      * Updates TC Crits and Mounts based on weapons on a unit or if the TC has
      * been removed.
-     * 
+     *
      * @param unit
      */
-    public static void updateTC(Entity unit, EquipmentType tc) {
-        if (unit instanceof Mech) {
-            UnitUtil.removeCrits(unit, tc);
-        }
-        UnitUtil.removeMounts(unit, tc);
-        UnitUtil.createTCMounts(unit, tc);
+    public static Mounted updateTC(Entity unit, EquipmentType tc) {
+        UnitUtil.removeTC(unit);
+        return UnitUtil.createTCMounts(unit, tc);
     }
 
     /**
-     * Creates TC Mounts and Criticals for a Unit.
-     * 
+     * Creates TC Mount.
+     *
      * @param unit
      */
-    public static void createTCMounts(Entity unit, EquipmentType tc) {
+    public static Mounted createTCMounts(Entity unit, EquipmentType tc) {
+        Mounted mount = null;
         try {
-            if (unit instanceof Mech) {
-                ((Mech) unit).addEquipment(new Mounted(unit, tc), Entity.LOC_NONE, false);
-            } else {
-                unit.addEquipment(tc, Entity.LOC_NONE);
-            }
+            mount = unit.addEquipment(tc, Entity.LOC_NONE);
         } catch (Exception ex) {
-
         }
+        return mount;
     }
 
     /**
      * Checks to see if unit can use the techlevel
-     * 
+     *
      * @param unit
      * @param techLevel
      * @return Boolean if the tech level is legal for the passed unit
@@ -442,7 +324,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if the unit uses compact heat sinks
-     * 
+     *
      * @param unit
      * @return
      */
@@ -468,7 +350,7 @@ public class UnitUtil {
 
     /**
      * Checks if the unit has laser heatsinks.
-     * 
+     *
      * @param unit
      * @return
      */
@@ -489,7 +371,7 @@ public class UnitUtil {
 
     /***
      * Checks for Clan DHS
-     * 
+     *
      * @param unit
      * @return
      */
@@ -517,7 +399,7 @@ public class UnitUtil {
 
     /**
      * Checks for IS Double Heat Sinks
-     * 
+     *
      * @param unit
      * @return
      */
@@ -544,7 +426,7 @@ public class UnitUtil {
 
     /**
      * checks if Mounted is a heat sink
-     * 
+     *
      * @param eq
      * @return
      */
@@ -558,7 +440,7 @@ public class UnitUtil {
 
     /**
      * Checks if EquipmentType is a heat sink
-     * 
+     *
      * @param eq
      * @return
      */
@@ -572,7 +454,7 @@ public class UnitUtil {
 
     /**
      * Checks if EquipmentType is a Mech Physical weapon
-     * 
+     *
      * @param eq
      * @return
      */
@@ -589,7 +471,7 @@ public class UnitUtil {
 
     /**
      * Removes all heat sinks from the mek
-     * 
+     *
      * @param unit
      */
     public static void removeHeatSinks(Mech unit) {
@@ -610,7 +492,7 @@ public class UnitUtil {
 
     /**
      * adds all heat sinks to the mech
-     * 
+     *
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -668,7 +550,7 @@ public class UnitUtil {
 
     /**
      * updates the heat sinks.
-     * 
+     *
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -685,7 +567,7 @@ public class UnitUtil {
     /**
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
-     * 
+     *
      * @param eq
      * @return
      */
@@ -721,7 +603,7 @@ public class UnitUtil {
     /**
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
-     * 
+     *
      * @param eq
      * @return
      */
@@ -772,10 +654,10 @@ public class UnitUtil {
         return false;
     }
 
-    public static EquipmentType getTargComp(Entity unit) {
+    public static Mounted getTargComp(Entity unit) {
         for (Mounted misc : unit.getMisc()) {
             if (misc.getType().hasFlag(MiscType.F_TARGCOMP)) {
-                return misc.getType();
+                return misc;
             }
         }
         return null;
@@ -865,19 +747,6 @@ public class UnitUtil {
     public static void reIndexCrits(Entity unit) {
 
         for (int location = 0; location < unit.locations(); location++) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                CriticalSlot cs = unit.getCritical(location, slot);
-
-                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    cs.setIndex(unit.getEquipmentNum(cs.getMount()));
-                }
-            }
-        }
-    }
-
-    public static void reIndexCrits(Mech unit) {
-
-        for (int location = Mech.LOC_HEAD; location <= Mech.LOC_LLEG; location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
 
@@ -996,7 +865,7 @@ public class UnitUtil {
     /**
      * Expands crits that are a single mount by have multiple spreadable crits
      * Such as TSM, Endo Steel, Reactive armor.
-     * 
+     *
      * @param unit
      */
     public static void expandUnitMounts(Mech unit) {
@@ -1028,16 +897,19 @@ public class UnitUtil {
 
     }
 
-    public static boolean createSpreadMounts(Mech unit, EquipmentType equip) {
-        // how many non-spreadable contigous blocks of crits?
+    /**
+     * create a Mounted and corresponding CriticalSlots for the passed in
+     * <code>EquipmentType</code> on the passed in <code>Mech</code>
+     * @param unit
+     * @param equip
+     * @return
+     */
+    public static Mounted createSpreadMounts(Mech unit, EquipmentType equip) {
+        // how many non-spreadable contiguous blocks of crits?
         int blocks = 0;
         boolean isMisc = equip instanceof MiscType;
 
         blocks = equip.getCriticals(unit);
-
-        if (blocks < 1) {
-            return true;
-        }
 
         List<Integer> locations = new ArrayList<Integer>();
 
@@ -1112,12 +984,12 @@ public class UnitUtil {
                     JOptionPane.showMessageDialog(null, lfe.getMessage(), mount.getName() + " does not fit into " + unit.getLocationName(locations.get(0)), JOptionPane.INFORMATION_MESSAGE);
                     unit.getMisc().remove(mount);
                     unit.getEquipment().remove(mount);
-                    return false;
+                    return null;
                 }
             }
             locations.remove(0);
         }
-        return true;
+        return mount;
     }
 
     public static void loadFonts() {
@@ -1249,7 +1121,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if something is a Jump Jet
-     * 
+     *
      * @param eq
      * @return
      */
@@ -1532,7 +1404,7 @@ public class UnitUtil {
 
     /**
      * Returns the units tech type.
-     * 
+     *
      * @param unit
      * @return
      */
@@ -1909,7 +1781,7 @@ public class UnitUtil {
     /**
      * remove all CriticalSlots on the passed unit that are internal structur or
      * armor
-     * 
+     *
      * @param unit
      *            the Entity
      * @param internalStructure
@@ -1943,7 +1815,7 @@ public class UnitUtil {
     /**
      * remove all Mounteds on the passed unit that are internal structur or
      * armor
-     * 
+     *
      * @param unit
      *            the Entity
      * @param internalStructure
@@ -2087,7 +1959,7 @@ public class UnitUtil {
 
     /**
      * check that the unit is vaild
-     * 
+     *
      * @param unit
      * @return
      */
@@ -2111,6 +1983,15 @@ public class UnitUtil {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted mount = unit.getEquipment().get(pos);
             if ((mount.getType() instanceof MiscType) && ((MiscType) mount.getType()).hasFlag(MiscType.F_TALON)) {
+                UnitUtil.removeMounted(unit, mount);
+            }
+        }
+    }
+
+    public static void removeTC(Entity unit) {
+        for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
+            Mounted mount = unit.getEquipment().get(pos);
+            if ((mount.getType() instanceof MiscType) && ((MiscType) mount.getType()).hasFlag(MiscType.F_TARGCOMP)) {
                 UnitUtil.removeMounted(unit, mount);
             }
         }

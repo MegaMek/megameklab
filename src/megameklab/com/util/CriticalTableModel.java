@@ -27,7 +27,6 @@ import javax.swing.table.TableColumn;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 
@@ -38,8 +37,8 @@ public class CriticalTableModel extends AbstractTableModel {
      */
     private static final long serialVersionUID = 7615555055651822051L;
 
-    public EquipmentType[] sortedEquipment = {};
-    public Vector<EquipmentType> crits = new Vector<EquipmentType>();
+    public Mounted[] sortedEquipment = {};
+    public Vector<Mounted> crits = new Vector<Mounted>();
     public Entity unit;
 
     public final static int NAME = 0;
@@ -78,7 +77,7 @@ public class CriticalTableModel extends AbstractTableModel {
 
     public void refreshModel() {
         // do a resort
-        sortedEquipment = new EquipmentType[] {};
+        sortedEquipment = new Mounted[] {};
         if (crits.size() > 0) {
             sortedEquipment = crits.toArray(sortedEquipment);
         }
@@ -120,22 +119,22 @@ public class CriticalTableModel extends AbstractTableModel {
         if (row >= sortedEquipment.length) {
             return "";
         }
-        EquipmentType crit = sortedEquipment[row];
+        Mounted crit = sortedEquipment[row];
         switch (col) {
         case NAME:
-            return UnitUtil.getCritName(unit, crit);
+            return UnitUtil.getCritName(unit, crit.getType());
         case TONNAGE:
-            return crit.getTonnage(unit);
+            return crit.getType().getTonnage(unit);
         case CRITS:
             if (tableType == BUILDTABLE) {
-                return UnitUtil.getCritsUsed(unit, crit);
+                return UnitUtil.getCritsUsed(unit, crit.getType());
             }
-            return crit.getCriticals(unit);
+            return crit.getType().getCriticals(unit);
         case EQUIPMENT:
             return crit;
         case HEAT:
-            if (crit instanceof WeaponType) {
-                return new Integer(((WeaponType) crit).getHeat());
+            if (crit.getType() instanceof WeaponType) {
+                return new Integer(((WeaponType) crit.getType()).getHeat());
             }
             return new Integer(0);
         }
@@ -169,8 +168,8 @@ public class CriticalTableModel extends AbstractTableModel {
                 c.setText(table.getModel().getValueAt(row, column).toString());
             }
 
-            EquipmentType eq = sortedEquipment[row];
-            c.setToolTipText(UnitUtil.getToolTipInfo(unit, new Mounted(unit, eq)));
+            Mounted mount = sortedEquipment[row];
+            c.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
 
             if (isSelected) {
                 c.setForeground(d.getForeground());
@@ -180,9 +179,9 @@ public class CriticalTableModel extends AbstractTableModel {
 
             String equipmentType = CConfig.CONFIG_EQUIPMENT;
 
-            if (eq instanceof WeaponType) {
+            if (mount.getType() instanceof WeaponType) {
                 equipmentType = CConfig.CONFIG_WEAPONS;
-            } else if (eq instanceof AmmoType) {
+            } else if (mount.getType() instanceof AmmoType) {
                 equipmentType = CConfig.CONFIG_AMMO;
             }
             c.setBackground(CConfig.getBackgroundColor(equipmentType));
@@ -191,8 +190,8 @@ public class CriticalTableModel extends AbstractTableModel {
         }
     }
 
-    public void addCrit(EquipmentType eq) {
-        crits.add(eq);
+    public void addCrit(Mounted mount) {
+        crits.add(mount);
     }
 
     public void removeCrit(int location) {
@@ -204,10 +203,10 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public void removeMounted(int row) {
-        UnitUtil.removeMounted(unit, (EquipmentType) getValueAt(row, CriticalTableModel.EQUIPMENT));
+        UnitUtil.removeMounted(unit, (Mounted) getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
 
-    public Vector<EquipmentType> getCrits() {
+    public Vector<Mounted> getCrits() {
         return crits;
     }
 }

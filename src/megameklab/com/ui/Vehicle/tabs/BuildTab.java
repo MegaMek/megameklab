@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -28,9 +28,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.MechFileParser;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
 import megamek.common.loaders.EntityLoadingException;
@@ -131,29 +129,14 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void autoFillCrits() {
 
-        for (EquipmentType eq : buildView.getTableModel().getCrits()) {
+        for (Mounted mount : buildView.getTableModel().getCrits()) {
             for (int location = 0; location < getTank().locations(); location++) {
-
-                if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))) {
-                    continue;
-                }
-                Mounted foundMount = null;
-                for (Mounted mount : unit.getEquipment()) {
-                    if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().getInternalName().equals(eq.getInternalName())) {
-                        foundMount = mount;
-                        break;
-                    }
-                }
-
-                if (foundMount != null) {
-                    try {
-
-                        unit.addEquipment(foundMount.getType(), location, false);
-                        UnitUtil.changeMountStatus(unit, foundMount, location, Entity.LOC_NONE, false);
-                        break;
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                try {
+                    unit.addEquipment(mount, location, false);
+                    UnitUtil.changeMountStatus(unit, mount, location, Entity.LOC_NONE, false);
+                    break;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
         }
@@ -194,8 +177,8 @@ public class BuildTab extends ITab implements ActionListener {
         critView.updateRefresh(refresh);
     }
 
-    public void addCrit(EquipmentType eq) {
-        critList.addCrit(eq);
+    public void addCrit(Mounted mount) {
+        critList.addCrit(mount);
     }
 
     public void refreshAll() {

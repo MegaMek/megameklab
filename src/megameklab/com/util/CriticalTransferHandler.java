@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -27,7 +27,6 @@ import javax.swing.TransferHandler;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
@@ -60,13 +59,12 @@ public class CriticalTransferHandler extends TransferHandler {
             try {
                 String mountName = (String) t.getTransferData(DataFlavor.stringFlavor);
 
-                Mounted eq = UnitUtil.getMounted(unit, mountName);
+                Mounted mount = UnitUtil.getMounted(unit, mountName);
 
-                // unit.addEquipment(eq.getType(), location, false);
-                if (!unit.addCritical(location, new CriticalSlot(CriticalSlot.TYPE_EQUIPMENT, unit.getEquipmentNum(eq), true, eq))) {
+                if (!unit.addCritical(location, new CriticalSlot(CriticalSlot.TYPE_EQUIPMENT, unit.getEquipmentNum(mount), true, mount))) {
                     JOptionPane.showMessageDialog(null, "Location Full", "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 }
-                changeMountStatus(eq, location, false);
+                changeMountStatus(mount, location, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -88,8 +86,8 @@ public class CriticalTransferHandler extends TransferHandler {
     @Override
     protected Transferable createTransferable(JComponent c) {
         JTable table = (JTable) c;
-        EquipmentType eq = (EquipmentType) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-        return new StringSelection(eq.getInternalName());
+        Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+        return new StringSelection(mount.getType().getInternalName());
     }
 
     @Override

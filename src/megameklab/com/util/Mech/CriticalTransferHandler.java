@@ -28,7 +28,6 @@ import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
@@ -79,7 +78,7 @@ public class CriticalTransferHandler extends TransferHandler {
                  * "Quads Cannot use Physcial Weapons!",
                  * "Not Physicals For Quads", JOptionPane.INFORMATION_MESSAGE);
                  * return false; }
-                 * 
+                 *
                  * if (location != Mech.LOC_RARM && location != Mech.LOC_LARM) {
                  * JOptionPane.showMessageDialog(null,
                  * "Physical Weapons can only go in the arms!", "Bad Location",
@@ -215,8 +214,8 @@ public class CriticalTransferHandler extends TransferHandler {
     @Override
     protected Transferable createTransferable(JComponent c) {
         JTable table = (JTable) c;
-        EquipmentType eq = (EquipmentType) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-        return new StringSelection(eq.getInternalName());
+        Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+        return new StringSelection(mount.getType().getInternalName());
     }
 
     @Override
