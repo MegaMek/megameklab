@@ -29,7 +29,6 @@ import javax.swing.SwingConstants;
 
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.Mounted;
 import megameklab.com.ui.BattleArmor.views.BuildView;
 import megameklab.com.ui.BattleArmor.views.CriticalView;
@@ -128,41 +127,19 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void autoFillCrits() {
 
-        for (EquipmentType eq : buildView.getTableModel().getCrits()) {
+        for (Mounted mount : buildView.getTableModel().getCrits()) {
             for (int location = BattleArmor.LOC_SQUAD; location < unit.locations(); location++) {
 
-                if (!UnitUtil.isValidLocation(unit, eq, location)) {
+                if (!UnitUtil.isValidLocation(unit, mount.getType(), location)) {
                     continue;
                 }
 
-                int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
-                int critsUsed = UnitUtil.getCritsUsed(unit, eq);
-                if (continuousNumberOfCrits < critsUsed) {
-                    continue;
-                }
-
-                Mounted foundMount = null;
-                for (Mounted mount : unit.getEquipment()) {
-                    if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().equals(eq)) {
-                        foundMount = mount;
-                        break;
-                    }
-                }
-
-                if (foundMount != null) {
-                    try {
-                        if (foundMount.getType().isSpreadable() || (foundMount.isSplitable() && (critsUsed > 1))) {
-                            for (int count = 0; count < critsUsed; count++) {
-                                getBattleArmor().addEquipment(foundMount.getType(), location);
-                            }
-                        } else {
-                            getBattleArmor().addEquipment(foundMount.getType(), location, false);
-                        }
-                        UnitUtil.changeMountStatus(unit, foundMount, location, Entity.LOC_NONE, false);
-                        break;
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                try {
+                    getBattleArmor().addEquipment(mount.getType(), location, false);
+                    UnitUtil.changeMountStatus(unit, mount, location, Entity.LOC_NONE, false);
+                    break;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
         }
@@ -196,8 +173,8 @@ public class BuildTab extends ITab implements ActionListener {
 
     }
 
-    public void addCrit(EquipmentType eq) {
-        critList.addCrit(eq);
+    public void addCrit(Mounted mount) {
+        critList.addCrit(mount);
     }
 
     public void refreshAll() {

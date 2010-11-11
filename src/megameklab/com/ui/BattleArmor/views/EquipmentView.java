@@ -154,11 +154,11 @@ public class EquipmentView extends IView implements ActionListener {
     private void loadEquipmentTable() {
         for (Mounted mount : unit.getMisc()) {
 
-            if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || UnitUtil.isArmorOrStructure(mount.getType()))) {
+            if (UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
             if (UnitUtil.isUnitEquipment(mount.getType(), unit)) {
-                equipmentList.addCrit(mount.getType());
+                equipmentList.addCrit(mount);
             }
         }
     }
@@ -193,14 +193,15 @@ public class EquipmentView extends IView implements ActionListener {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
             boolean success = false;
+            Mounted mount = null;
             try {
-                getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
-                success = true;
+                mount = getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
+                success = mount != null;
             } catch (LocationFullException lfe) {
                 // this can't happen, we add to Entity.LOC_NONE
             }
             if (success) {
-                equipmentList.addCrit(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()));
+                equipmentList.addCrit(mount);
             }
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
             int startRow = equipmentTable.getSelectedRow();
