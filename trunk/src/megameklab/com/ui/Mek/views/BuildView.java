@@ -35,7 +35,6 @@ import javax.swing.ListSelectionModel;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -258,7 +257,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             JMenuItem item;
 
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-            Mounted eq = UnitUtil.getMounted(unit, ((EquipmentType) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT)).getInternalName());
+            Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             final int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
             String[] locations = unit.getLocationNames();
@@ -385,7 +384,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void jMenuLoadSplitComponent_actionPerformed(int location, int secondaryLocation, int primarySlots, int selectedRow) {
-        Mounted eq = UnitUtil.getMounted(unit, ((EquipmentType) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT)).getInternalName());
+        Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         int crits = UnitUtil.getCritsUsed(unit, eq.getType());
         int openSlots = Math.min(primarySlots, UnitUtil.getHighestContinuousNumberOfCrits(unit, location));
         eq.setSecondLocation(secondaryLocation);
@@ -415,7 +414,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
-        Mounted eq = UnitUtil.getMounted(unit, ((EquipmentType) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT)).getInternalName());
+        Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         try {
             getMech().addEquipment(eq, location, false);
         } catch (Exception ex) {

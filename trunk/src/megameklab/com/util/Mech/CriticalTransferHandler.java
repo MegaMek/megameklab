@@ -64,9 +64,7 @@ public class CriticalTransferHandler extends TransferHandler {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
-                String mountName = (String) t.getTransferData(DataFlavor.stringFlavor);
-
-                Mounted eq = UnitUtil.getMounted(unit, mountName);
+                Mounted eq = unit.getEquipment(Integer.parseInt((String) t.getTransferData(DataFlavor.stringFlavor)));
 
                 /*
                  * commented out for now, because quads can mount stuff like
@@ -215,7 +213,7 @@ public class CriticalTransferHandler extends TransferHandler {
     protected Transferable createTransferable(JComponent c) {
         JTable table = (JTable) c;
         Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-        return new StringSelection(mount.getType().getInternalName());
+        return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));
     }
 
     @Override

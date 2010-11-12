@@ -307,6 +307,8 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         }
         if (UnitUtil.isArmor(mounted.getType())) {
             UnitUtil.removeISorArmorMounts(unit, false);
+        } else if (mounted.getType().isSpreadable()) {
+            UnitUtil.removeAllMounteds(unit, mounted.getType());
         } else {
             UnitUtil.removeCriticals(unit, mounted);
             UnitUtil.removeMounted(unit, mounted);

@@ -48,6 +48,7 @@ import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
@@ -670,7 +671,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getMech().setTechLevel(TechConstants.T_INTRO_BOXSET);
                         getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
                         getMech().setMixedTech(false);
-                        UnitUtil.removeTalons(getMech());
+                        UnitUtil.removeAllMounteds(getMech(), MiscType.F_TALON);
                         createEngineList(false);
                         createHeatSinkList();
 
