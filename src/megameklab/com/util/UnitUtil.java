@@ -22,6 +22,7 @@ import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1735,48 +1736,6 @@ public class UnitUtil {
         return 0;
     }
 
-    public static Mounted getMounted(Entity unit, String mountName) {
-
-        if (unit instanceof Tank) {
-            return UnitUtil.getMounted((Tank) unit, mountName);
-        }
-
-        if (unit instanceof Mech) {
-            return UnitUtil.getMounted((Mech) unit, mountName);
-        }
-
-        return null;
-    }
-
-    public static Mounted getMounted(Tank unit, String mountName) {
-
-        for (Mounted mount : unit.getEquipment()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().getInternalName().equals(mountName)) {
-                return mount;
-            }
-        }
-
-        return null;
-    }
-
-    public static Mounted getMounted(Mech unit, String mountName) {
-
-        Mech mech = unit;
-        int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(mech);
-
-        Mounted eq = null;
-        for (Mounted mount : mech.getEquipment()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && mount.getType().getInternalName().equals(mountName)) {
-                if (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0)) {
-                    continue;
-                }
-                eq = mount;
-                break;
-            }
-        }
-
-        return eq;
-    }
 
     /**
      * remove all CriticalSlots on the passed unit that are internal structur or
@@ -1979,14 +1938,24 @@ public class UnitUtil {
 
     }
 
-    public static void removeTalons(Mech unit) {
+    public static void removeAllMounteds(Entity unit, BigInteger flag) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType) && ((MiscType) mount.getType()).hasFlag(MiscType.F_TALON)) {
+            if ((mount.getType() instanceof MiscType) && ((MiscType) mount.getType()).hasFlag(flag)) {
                 UnitUtil.removeMounted(unit, mount);
             }
         }
     }
+
+    public static void removeAllMounteds(Entity unit, EquipmentType et) {
+        for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
+            Mounted mount = unit.getEquipment().get(pos);
+            if (mount.getType().equals(et)) {
+                UnitUtil.removeMounted(unit, mount);
+            }
+        }
+    }
+
 
     public static void removeTC(Entity unit) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {

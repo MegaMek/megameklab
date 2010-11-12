@@ -284,7 +284,8 @@ public class EquipmentView extends IView implements ActionListener {
 
             for (; count > 0; count--) {
                 if (startRow > -1) {
-                    if ((equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT) instanceof MiscType) && ((EquipmentType) equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).hasFlag(MiscType.F_JUMP_BOOSTER)) {
+                    EquipmentType et = ((Mounted)equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).getType();
+                    if ((et instanceof MiscType) && et.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                         setJumpBoosterMP(0);
                     }
                     equipmentList.removeMounted(startRow);

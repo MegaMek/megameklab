@@ -57,10 +57,7 @@ public class CriticalTransferHandler extends TransferHandler {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
-                String mountName = (String) t.getTransferData(DataFlavor.stringFlavor);
-
-                Mounted mount = UnitUtil.getMounted(unit, mountName);
-
+                Mounted mount = unit.getEquipment(Integer.parseInt((String) t.getTransferData(DataFlavor.stringFlavor)));
                 if (!unit.addCritical(location, new CriticalSlot(CriticalSlot.TYPE_EQUIPMENT, unit.getEquipmentNum(mount), true, mount))) {
                     JOptionPane.showMessageDialog(null, "Location Full", "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -87,7 +84,7 @@ public class CriticalTransferHandler extends TransferHandler {
     protected Transferable createTransferable(JComponent c) {
         JTable table = (JTable) c;
         Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-        return new StringSelection(mount.getType().getInternalName());
+        return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));
     }
 
     @Override

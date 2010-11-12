@@ -34,7 +34,6 @@ import javax.swing.ListSelectionModel;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
@@ -263,12 +262,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
-        Mounted eq = UnitUtil.getMounted(unit, ((EquipmentType) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT)).getInternalName());
-        try {
-            unit.addEquipment(eq.getType(), location, false);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         UnitUtil.changeMountStatus(unit, eq, location, -1, false);
 
         // go back up to grandparent build tab and fire a full refresh.
