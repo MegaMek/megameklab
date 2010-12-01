@@ -48,11 +48,14 @@ import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.QuadMech;
+import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
+import megameklab.com.ui.Aero.Printing.PrintSmallCraftAerodyne;
+import megameklab.com.ui.Aero.Printing.PrintSmallCraftSpheroid;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
@@ -134,6 +137,8 @@ public class UnitPrintManager {
         ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
         ArrayList<Protomech> protoList = new ArrayList<Protomech>();
         ArrayList<LargeSupportTank> largeSupportTankList = new ArrayList<LargeSupportTank>();
+        ArrayList<SmallCraft> smallCraftAerodyneList = new ArrayList<SmallCraft>();
+        ArrayList<SmallCraft> smallCraftSpheroidList = new ArrayList<SmallCraft>();
 
         for (Entity unit : loadedUnits) {
             if (unit instanceof QuadMech) {
@@ -169,6 +174,12 @@ public class UnitPrintManager {
                     fixedWingSupportList.add((FixedWingSupport) unit);
                 } else if (unit instanceof ConvFighter) {
                     convFighterList.add((ConvFighter) unit);
+                } else if (unit instanceof SmallCraft) {
+                    if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
+                        smallCraftAerodyneList.add((SmallCraft) unit);
+                    } else {
+                        smallCraftSpheroidList.add((SmallCraft) unit);
+                    }
                 } else {
                     aeroList.add((Aero) unit);
                 }
@@ -261,6 +272,16 @@ public class UnitPrintManager {
 
         if (largeSupportTankList.size() > 0) {
             PrintLargeSupportVehicle sp = new PrintLargeSupportVehicle(largeSupportTankList, singlePrint, masterPrintJob);
+            sp.print();
+        }
+
+        if (smallCraftAerodyneList.size() > 0) {
+            PrintSmallCraftAerodyne sp = new PrintSmallCraftAerodyne(smallCraftAerodyneList, masterPrintJob);
+            sp.print();
+        }
+
+        if (smallCraftSpheroidList.size() > 0) {
+            PrintSmallCraftSpheroid sp = new PrintSmallCraftSpheroid(smallCraftSpheroidList, masterPrintJob);
             sp.print();
         }
 
