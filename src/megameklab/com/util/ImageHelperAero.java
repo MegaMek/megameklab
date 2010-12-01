@@ -22,6 +22,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import megamek.common.Aero;
 import megamek.common.AmmoType;
@@ -221,6 +222,18 @@ public class ImageHelperAero {
 
         ImageHelper.printVehicleAmmo(aero, g2d, -18);
         ImageHelperAero.printAeroFuel(aero, g2d);
+    }
+
+    static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPlotter, float totalArmor, float maxArmor) {
+        pipPlotter.trimToSize();
+        float pipSpace = maxArmor / totalArmor;
+        for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
+            int currentPip = (int) pos;
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(currentPip)[0], pipPlotter.get(currentPip)[1]);
+            if (--totalArmor <= 0) {
+                return;
+            }
+        }
     }
 
 }

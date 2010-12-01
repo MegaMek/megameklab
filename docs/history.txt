@@ -43,6 +43,8 @@ V 0.0.0.18 Dev
 + New MM jar
 + Removed code for BOLD pips
 + Slight internal rework
++ Added Aerodyne and Spheroid Small Craft
++ new MM jar
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS
