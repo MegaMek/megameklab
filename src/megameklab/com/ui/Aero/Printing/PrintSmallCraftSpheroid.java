@@ -75,7 +75,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         g2d.drawImage(ImageHelper.getRecordSheet(smallCraft), 18, 18, 558, 738, Color.BLACK, null);
         PrintSmallCraftSpheroidImage(g2d, ImageHelper.getFluffImage(smallCraft, ImageHelper.imageAero));
 
-        PrintSmallCraftSpheroidData(g2d);
+        printSmallCraftSpheroidData(g2d);
         printArmor(g2d);
         printWeaponsNEquipment(g2d);
         printHeatSinks(g2d);
@@ -93,7 +93,7 @@ public class PrintSmallCraftSpheroid implements Printable {
 
     }
 
-    private void PrintSmallCraftSpheroidData(Graphics2D g2d) {
+    private void printSmallCraftSpheroidData(Graphics2D g2d) {
         String smallCraftName = smallCraft.getChassis() + " " + smallCraft.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, smallCraftName, true, 180, 10.0f));
