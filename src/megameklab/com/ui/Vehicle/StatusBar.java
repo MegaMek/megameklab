@@ -64,7 +64,7 @@ public class StatusBar extends ITab {
 
     public JPanel movementPanel() {
         int walk = unit.getOriginalWalkMP();
-        int run = unit.getRunMP(false, true);
+        int run = unit.getRunMP(false, true, false);
         int jump = unit.getOriginalJumpMP();
 
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
@@ -103,7 +103,7 @@ public class StatusBar extends ITab {
     public void refresh() {
 
         int walk = unit.getOriginalWalkMP();
-        int run = unit.getRunMP(true, true);
+        int run = unit.getRunMP(true, true, false);
         int jump = unit.getOriginalJumpMP();
         float tonnage = unit.getWeight();
         float currentTonnage;
