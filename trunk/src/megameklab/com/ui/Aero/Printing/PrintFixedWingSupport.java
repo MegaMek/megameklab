@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -113,6 +113,12 @@ public class PrintFixedWingSupport implements Printable {
 
         g2d.drawString(Integer.toString(fixedWingSupport.getWalkMP()), 99, 143);
         g2d.drawString(Integer.toString(fixedWingSupport.getRunMP()), 99, 154);
+
+        if (fixedWingSupport.isVSTOL()) {
+            g2d.drawString("VSTOL", 99, 165);
+        } else if (fixedWingSupport.isSTOL()) {
+            g2d.drawString("STOL", 99, 165);
+        }
 
         int tonnage = (int) Math.ceil(fixedWingSupport.getWeight());
 
