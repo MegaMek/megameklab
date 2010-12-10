@@ -26,8 +26,10 @@ import java.util.Vector;
 
 import megamek.common.Aero;
 import megamek.common.AmmoType;
+import megamek.common.Bay;
 import megamek.common.Entity;
 import megamek.common.Mounted;
+import megamek.common.SmallCraft;
 
 public class ImageHelperAero {
     private static final String[] LOCATION_ABBRS =
@@ -220,6 +222,9 @@ public class ImageHelperAero {
             }
         }
 
+        if (aero instanceof SmallCraft) {
+            ImageHelperAero.printSmallCraftCargo((SmallCraft) aero, g2d, (int) linePoint);
+        }
         ImageHelper.printVehicleAmmo(aero, g2d, -18);
         ImageHelperAero.printAeroFuel(aero, g2d);
     }
@@ -234,6 +239,33 @@ public class ImageHelperAero {
                 return;
             }
         }
+    }
+
+    public static void printSmallCraftCargo(SmallCraft smallCraft, Graphics2D g2d, int pointY) {
+
+        if (smallCraft.getTransportBays().size() < 1) {
+            return;
+        }
+
+        int pointX = 22;
+        double lineFeed = ImageHelper.getStringHeight(g2d, "H", g2d.getFont());
+
+        Font font = UnitUtil.deriveFont(true, g2d.getFont().getSize2D());
+
+        g2d.setFont(font);
+        pointY += lineFeed;
+        g2d.drawString("Cargo: ", pointX, pointY);
+
+        pointY += lineFeed;
+
+        font = UnitUtil.deriveFont(g2d.getFont().getSize2D());
+
+        g2d.setFont(font);
+        for (Bay bay : smallCraft.getTransportBays()) {
+            g2d.drawString(ImageHelperDropShip.getBayString(bay), pointX, pointY);
+            pointY += lineFeed;
+        }
+
     }
 
 }
