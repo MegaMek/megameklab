@@ -46,6 +46,7 @@ V 0.0.0.18 Dev
 + Added Aerodyne and Spheroid Small Craft
 + new MM jar
 + Print (V)STOL capability on Fixed Wing Support Craft
++ Added Cargo to Aerodyne Small craft
 
 V 0.0.0.17 Dev (Closed 9-29-2010)
 + Added Special Armor Type for Tanks and VTOL to RS
