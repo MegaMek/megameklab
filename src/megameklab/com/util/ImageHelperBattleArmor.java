@@ -160,6 +160,10 @@ public class ImageHelperBattleArmor {
             maxHeight += lineFeed;
         }
 
+        if (ba.isBurdened()) {
+            maxHeight -= lineFeed;
+        }
+
         Font font = ImageHelperBattleArmor.getBattleArmorWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, 7.0f);
         g2d.setFont(font);
         stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
