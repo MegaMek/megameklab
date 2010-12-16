@@ -36,6 +36,7 @@ import javax.print.attribute.standard.PrintQuality;
 import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.Pilot;
+import megamek.common.SupportVTOL;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.VTOL;
@@ -139,7 +140,14 @@ public class PrintVTOL implements Printable {
         g2d.setFont(UnitUtil.getNewFont(g2d, VTOLName, true, 180, 10.0f));
         g2d.drawString(VTOLName, 49, 121);
 
-        Font font = UnitUtil.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(true, 15.0f);
+        g2d.setFont(font);
+
+        if (vtol instanceof SupportVTOL) {
+            g2d.drawString("Support", 70, 89);
+        }
+
+        font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         if ((vtol.getCrew() != null) && !vtol.getCrew().getName().equalsIgnoreCase("unnamed")) {
@@ -259,6 +267,11 @@ public class PrintVTOL implements Printable {
         // g2d.drawString(myFormatter.format(vtol.getCost(true)) + " C-bills",
         // 52, 357);
 
+        if (vtol.hasBARArmor()) {
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.drawString("BAR: " + vtol.getBARRating(), 400, 55);
+        }
+
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2010", 62.5f, 374.5f);
@@ -276,7 +289,14 @@ public class PrintVTOL implements Printable {
         g2d.setFont(UnitUtil.getNewFont(g2d, VTOLName, true, 180, 10.0f));
         g2d.drawString(VTOLName, 49, 494);
 
-        Font font = UnitUtil.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(true, 15.0f);
+        g2d.setFont(font);
+
+        if (vtol2 instanceof SupportVTOL) {
+            g2d.drawString("Support", 70, 89 + secondPageMargin);
+        }
+
+        font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         if ((vtol2.getCrew() != null) && !vtol2.getCrew().getName().equalsIgnoreCase("unnamed")) {
@@ -394,6 +414,11 @@ public class PrintVTOL implements Printable {
 
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(vtol2.getCost(true)) + " C-bills", 52, 728);
+
+        if (vtol2.hasBARArmor()) {
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.drawString("BAR: " + vtol2.getBARRating(), 400, 55 + secondPageMargin);
+        }
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);

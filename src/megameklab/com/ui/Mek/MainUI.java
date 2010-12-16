@@ -63,6 +63,7 @@ import megamek.common.MechSummaryCache;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
+import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.Mek.tabs.ArmorTab;
 import megameklab.com.ui.Mek.tabs.BuildTab;
@@ -72,6 +73,7 @@ import megameklab.com.ui.Mek.tabs.WeaponTab;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.ConfigurationDialog;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitPrintManager;
 import megameklab.com.util.UnitUtil;
@@ -132,6 +134,16 @@ public class MainUI extends JFrame implements RefreshListener {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuHelpFluff_actionPerformed();
+            }
+        });
+        help.add(item);
+
+        item = new JMenuItem();
+        item.setText("Insert Image To File");
+        item.setMnemonic(KeyEvent.VK_I);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuInsertImageFile_actionPerformed();
             }
         });
         help.add(item);
@@ -1175,4 +1187,62 @@ public class MainUI extends JFrame implements RefreshListener {
         }
     }
 
+    private void jMenuInsertImageFile_actionPerformed() {
+
+        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+
+        File unitFile = new File(filePathName);
+        JFileChooser f = new JFileChooser(filePathName);
+        f.setLocation(this.getLocation().x + 150, this.getLocation().y + 100);
+        f.setDialogTitle("Load Mech");
+        f.setDialogType(JFileChooser.OPEN_DIALOG);
+        f.setMultiSelectionEnabled(false);
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        int returnVal = f.showOpenDialog(this);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
+            return;
+        }
+        unitFile = f.getSelectedFile();
+
+        try {
+            Entity tempEntity = new MechFileParser(unitFile, true).getEntity();
+
+            if (UnitUtil.validateUnit(entity).trim().length() > 0) {
+                JOptionPane.showMessageDialog(this, "Warning:Invalid unit, it might load incorrectly!");
+            }
+
+            FileDialog fDialog = new FileDialog(new JFrame(), "Image Path", FileDialog.LOAD);
+
+            if (entity.getFluff().getMMLImagePath().trim().length() > 0) {
+                String fullPath = new File(entity.getFluff().getMMLImagePath()).getAbsolutePath();
+                String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
+                fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
+                fDialog.setDirectory(fullPath);
+                fDialog.setFile(imageName);
+            } else {
+                fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + "mech" + File.separatorChar);
+                fDialog.setFile(entity.getChassis() + " " + entity.getModel() + ".png");
+            }
+
+            fDialog.setLocationRelativeTo(this);
+
+            fDialog.setVisible(true);
+
+            if (fDialog.getFile() != null) {
+                String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+                relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+                entity.getFluff().setMMLImagePath(relativeFilePath);
+                BLKFile.encode(unitFile.getAbsolutePath(), tempEntity);
+            }
+        } catch (Exception ex) {
+
+        }
+        return;
+    }
 }
