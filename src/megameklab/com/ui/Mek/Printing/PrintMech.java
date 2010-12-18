@@ -181,7 +181,7 @@ public class PrintMech implements Printable {
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
         }
 
-        if (mech.hasTSM()) {
+        if (mech.hasTSM() && (mech.getSuperCharger() == null)) {
             int walkTSM = mech.getWalkMP() + 1;
             int runTSM = (int) Math.ceil(walkTSM * 1.5) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79, 144);
@@ -190,6 +190,11 @@ public class PrintMech implements Printable {
             int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+        } else if (mech.hasTSM() && (mech.getSuperCharger() != null)) {
+            int walkTSM = mech.getWalkMP() + 1;
+            int runTSMandSuperCharge = (walkTSM * 2) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79, 144);
+            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + runTSMandSuperCharge + "]", 79, 155);
         } else if ((mech.getMASC() != null) || (mech.getSuperCharger() != null)) {
             int mascMP = (mech.getWalkMP() * 2) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
@@ -1488,7 +1493,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     * 
+     *
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
