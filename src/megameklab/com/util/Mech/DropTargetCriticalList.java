@@ -146,7 +146,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
 
                         if (mount.getType() instanceof WeaponType) {
                             if (unit.hasWorkingMisc(MiscType.F_QUAD_TURRET, -1, mount.getLocation()) || unit.hasWorkingMisc(MiscType.F_SHOULDER_TURRET, -1, mount.getLocation()) || (unit.hasWorkingMisc(MiscType.F_HEAD_TURRET, -1, Mech.LOC_CT) && (mount.getLocation() == Mech.LOC_HEAD))) {
-                                if (!mount.isTurretMounted()) {
+                                if (!mount.isMechTurretMounted()) {
                                     info = new JMenuItem("Mount " + mount.getName() + " in Turret");
                                     info.addActionListener(new ActionListener() {
                                         public void actionPerformed(ActionEvent e) {
@@ -363,7 +363,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
     }
 
     private void changeTurretMount(boolean turret) {
-        getMounted().setTurretMounted(turret);
+        getMounted().setMechTurretMounted(turret);
         if (refresh != null) {
             refresh.refreshAll();
         }

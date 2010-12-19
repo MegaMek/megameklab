@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -32,7 +32,10 @@ import javax.swing.JPopupMenu;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Tank;
+import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 
 public class DropTargetCriticalList extends JList implements MouseListener {
@@ -134,6 +137,26 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                         }
                     });
                     popup.add(info);
+                    if ((mount.getType() instanceof WeaponType) && unit.hasWorkingMisc(MiscType.F_SPONSON_TURRET) && ((mount.getLocation() == Tank.LOC_LEFT) || (mount.getLocation() == Tank.LOC_RIGHT))) {
+                        if (!mount.isSponsonTurretMounted()) {
+                            info = new JMenuItem("Mount " + mount.getName() + " in Sponson Turret");
+                            info.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    changeSponsonTurretMount(true);
+                                }
+                            });
+                            popup.add(info);
+                        } else {
+                            info = new JMenuItem("Remove " + mount.getName() + " from Sponson Turret");
+                            info.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    changeSponsonTurretMount(false);
+                                }
+                            });
+                            popup.add(info);
+                        }
+
+                    }
                 }
 
                 if (UnitUtil.isArmorable(cs) && ((UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL) || (UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_UNOFFICAL))) {
@@ -232,6 +255,13 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         Mounted mount = getMounted();
         int location = getCritLocation();
         changeMountStatus(mount, location, rear);
+    }
+
+    private void changeSponsonTurretMount(boolean turret) {
+        getMounted().setSponsonTurretMounted(turret);
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
     }
 
     private int getCritLocation() {

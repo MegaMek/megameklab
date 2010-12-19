@@ -57,6 +57,7 @@ public class EquipmentInfo {
     public boolean isCompactNarc = false;
     public boolean isManipulator = false;
     public boolean isAMS = false;
+    public boolean isSponsonMounted = false;
 
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
@@ -243,6 +244,7 @@ public class EquipmentInfo {
         if (mount.isRearMounted()) {
             name += "(R)";
         }
+        isSponsonMounted = mount.isSponsonTurretMounted();
         count = 1;
         techLevel = mount.getType().getTechLevel();
 
