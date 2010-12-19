@@ -1259,7 +1259,7 @@ public class PrintQuad implements Printable {
 
                 if (m.isRearMounted()) {
                     critName.append(" (R)");
-                } else if (m.isTurretMounted()) {
+                } else if (m.isMechTurretMounted()) {
                     critName.append(" (T)");
                 } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                     critName.append(" [OOOOOOOOOO]");

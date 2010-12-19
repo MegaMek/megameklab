@@ -1212,7 +1212,7 @@ public class UnitUtil {
         if (eq.isRearMounted()) {
             sb.append("<br>Rear Facing");
         }
-        if (eq.isTurretMounted()) {
+        if (eq.isMechTurretMounted()) {
             sb.append("<br>Turret mounted");
         }
         if (eq.isArmored()) {

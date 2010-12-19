@@ -136,7 +136,7 @@ public class CriticalView extends IView {
                             if (m.isRearMounted()) {
                                 critName.append(" (R)");
                             }
-                            if (m.isTurretMounted()) {
+                            if (m.isMechTurretMounted()) {
                                 critName.append(" (T)");
                             }
 
