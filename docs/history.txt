@@ -5,6 +5,7 @@ Added Fix for Battle Armor Record sheets. Burdened message was overlapping other
 + Added Record Sheet supprot for Support VTOL
 + New MegaMek.jar
 + Tank Sponson turrets
++ Bug: Image bad for Dual Turret Tanks
 
 V 0.0.0.18 Dev
 + Added Mixed Tech Gyro's
