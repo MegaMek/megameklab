@@ -592,6 +592,9 @@ public class UnitUtil {
         if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || eq.hasFlag(MiscType.F_MASC) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS))) {
             return false;
         }
+        if (((eq instanceof MiscType) && eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION))) {
+            return false;
+        }
 
         if (UnitUtil.isHeatSink(eq)) {
             return false;
