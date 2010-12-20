@@ -461,17 +461,4 @@ public class EquipmentInfo {
 
         return false;
     }
-
-    public void setTroopSpaceInfo(float troopspace) {
-        if (Math.floor(troopspace) - troopspace > 0) {
-            name = "Infantry Bay (" + troopspace + " tons)";
-            damage = "  [E]";
-            count = 1;
-        } else {
-            name = "Infantry Bay (" + (int) troopspace + " tons)";
-            damage = "  [E]";
-            count = 1;
-        }
-
-    }
 }

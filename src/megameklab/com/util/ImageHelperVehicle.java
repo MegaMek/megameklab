@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -111,7 +111,11 @@ public class ImageHelperVehicle {
     }
 
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d) {
-        ImageHelper.printTankWeaponsNEquipment(tank, g2d, 0);
+        ImageHelperVehicle.printTankWeaponsNEquipment(tank, g2d, 0);
+    }
+
+    public static void printLargeSupportTankWeaponsNEquipment(LargeSupportTank tank, Graphics2D g2d) {
+        ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(tank, g2d, 0);
     }
 
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float offset) {
@@ -138,7 +142,6 @@ public class ImageHelperVehicle {
         for (Mounted eq : tank.getEquipment()) {
 
             if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || (!UnitUtil.isPrintableEquipment(eq.getType()))) {
-
                 if (!(eq.getType() instanceof MiscType) || ((eq.getType() instanceof MiscType) && !eq.getType().hasFlag(MiscType.F_ENVIRONMENTAL_SEALING))) {
                     continue;
                 }
@@ -165,14 +168,6 @@ public class ImageHelperVehicle {
                 eqHash.put(equipmentName, eqi);
             }
         }
-
-        float troopspace = tank.getTroopCarryingSpace();
-        if (troopspace > 0) {
-            EquipmentInfo eqi = new EquipmentInfo();
-            eqi.setTroopSpaceInfo(troopspace);
-            equipmentLocations.get(Tank.LOC_BODY).put("Infantry cargo bay: " + (int) troopspace, eqi);
-        }
-
         Font font = UnitUtil.deriveFont(true, 10.0f);
         g2d.setFont(font);
 
@@ -207,8 +202,6 @@ public class ImageHelperVehicle {
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
-
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
@@ -236,9 +229,20 @@ public class ImageHelperVehicle {
                 } else if (location.equalsIgnoreCase("TU2")) {
                     location = "FT";
                 }
+                // this is hacky, but works, left side and right side abbrevs are
+                // LS and RS, which results in "LSpon" and "RSpon"
+                if (eqi.isSponsonMounted) {
+                    location += "po";
+                }
                 g2d.drawString(location, locPoint, linePoint);
                 if (eqi.isWeapon) {
-                    if (eqi.isMML) {
+                    if (eqi.isAMS) {
+                        g2d.drawLine(damagePoint, (int) linePoint - 2, damagePoint + 6, (int) linePoint - 2);
+                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                        g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                        g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                    } else if (eqi.isMML) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
                         linePoint += lineFeed - 1.0f;
 
@@ -339,12 +343,35 @@ public class ImageHelperVehicle {
                 count++;
             }
         }
+        float troopspace = tank.getTroopCarryingSpace();
+        if (troopspace > 0) {
+            linePoint += lineFeed;
+            String troopString = "Infantry Bay (";
+            if (Math.floor(troopspace) - troopspace > 0) {
+                troopString += String.valueOf(troopspace);
+            } else {
+                troopString += String.valueOf((int)troopspace);
+            }
+            if (troopspace == 1) {
+                troopString += "1 Ton)";
+            } else {
+                troopString += String.valueOf(troopspace)+" Tons)";
+            }
+            g2d.drawString(troopString, qtyPoint, linePoint);
+        }
+        if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            linePoint += lineFeed;
+            String chassisMods = "Chassis Modifications: ";
+            for (Mounted misc : tank.getMisc()) {
+                if (misc.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
+                    chassisMods += misc.getName()+", ";
+                }
+            }
+            chassisMods = chassisMods.substring(0, chassisMods.length()-2);
+            g2d.drawString(chassisMods, qtyPoint, linePoint);
+        }
 
         ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
-    }
-
-    public static void printLargeSupportTankWeaponsNEquipment(LargeSupportTank tank, Graphics2D g2d) {
-        ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(tank, g2d, 0);
     }
 
     public static void printLargeSupportTankWeaponsNEquipment(LargeSupportTank tank, Graphics2D g2d, float offset) {
@@ -394,13 +421,6 @@ public class ImageHelperVehicle {
                 EquipmentInfo eqi = new EquipmentInfo(tank, eq);
                 eqHash.put(equipmentName, eqi);
             }
-        }
-
-        float troopspace = tank.getTroopCarryingSpace();
-        if (troopspace > 0) {
-            EquipmentInfo eqi = new EquipmentInfo();
-            eqi.setTroopSpaceInfo(troopspace);
-            equipmentLocations.get(Tank.LOC_BODY).put("Infantry cargo bay: " + troopspace, eqi);
         }
 
         Font font = UnitUtil.deriveFont(true, 10.0f);
@@ -564,6 +584,34 @@ public class ImageHelperVehicle {
             }
         }
 
+        float troopspace = tank.getTroopCarryingSpace();
+        if (troopspace > 0) {
+            linePoint += lineFeed;
+            String troopString = "Infantry Bay (";
+            if (Math.floor(troopspace) - troopspace > 0) {
+                troopString += String.valueOf(troopspace);
+            } else {
+                troopString += String.valueOf((int)troopspace);
+            }
+            if (troopspace == 1) {
+                troopString += "1 Ton)";
+            } else {
+                troopString += String.valueOf(troopspace)+" Tons)";
+            }
+            g2d.drawString(troopString, qtyPoint, linePoint);
+        }
+        if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            linePoint += lineFeed;
+            String chassisMods = "Chassis Modifications: ";
+            for (Mounted misc : tank.getMisc()) {
+                if (misc.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
+                    chassisMods += misc.getName()+", ";
+                }
+            }
+            chassisMods = chassisMods.substring(0, chassisMods.length()-2);
+            g2d.drawString(chassisMods, qtyPoint, linePoint);
+        }
+
         ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
     }
 
@@ -619,13 +667,6 @@ public class ImageHelperVehicle {
                 eqHash.put(equipmentName, eqi);
             }
 
-        }
-        float troopspace = tank.getTroopCarryingSpace();
-        if (troopspace > 0) {
-            EquipmentInfo eqi = new EquipmentInfo();
-
-            eqi.setTroopSpaceInfo(troopspace);
-            equipmentLocations.get(Tank.LOC_BODY).put("Infantry cargo bay: " + troopspace, eqi);
         }
 
         Font font = UnitUtil.deriveFont(true, 10.0f);
@@ -792,6 +833,34 @@ public class ImageHelperVehicle {
                 count++;
             }
         }
+        float troopspace = tank.getTroopCarryingSpace();
+        if (troopspace > 0) {
+            linePoint += lineFeed;
+            String troopString = "Infantry Bay (";
+            if (Math.floor(troopspace) - troopspace > 0) {
+                troopString += String.valueOf(troopspace);
+            } else {
+                troopString += String.valueOf((int)troopspace);
+            }
+            if (troopspace == 1) {
+                troopString += "1 Ton)";
+            } else {
+                troopString += String.valueOf(troopspace)+" Tons)";
+            }
+            g2d.drawString(troopString, qtyPoint, linePoint);
+        }
+        if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            linePoint += lineFeed;
+            String chassisMods = "Chassis Modifications: ";
+            for (Mounted misc : tank.getMisc()) {
+                if (misc.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
+                    chassisMods += misc.getName()+", ";
+                }
+            }
+            chassisMods = chassisMods.substring(0, chassisMods.length()-2);
+            g2d.drawString(chassisMods, qtyPoint, linePoint);
+        }
+
         ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
     }
 
@@ -807,11 +876,12 @@ public class ImageHelperVehicle {
         }
         int currentPip = 0;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
-            currentPip = (int) pos;
-            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
-            if (--totalArmor <= 0) {
+            if (totalArmor == 0) {
                 break;
             }
+            currentPip = (int) pos;
+            ImageHelperVehicle.drawTankArmorPip(g2d, pipPoints.get(currentPip)[0], pipPoints.get(currentPip)[1], fontSize);
+            totalArmor--;
         }
 
         if (hasModularArmor) {
@@ -821,5 +891,7 @@ public class ImageHelperVehicle {
             }
         }
     }
+
+
 
 }
