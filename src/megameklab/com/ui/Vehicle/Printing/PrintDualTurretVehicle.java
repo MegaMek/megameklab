@@ -1158,19 +1158,18 @@ public class PrintDualTurretVehicle implements Printable {
 
         Image img = ImageHelper.getFluffImage(tank, ImageHelper.imageVehicle);
         int width = Math.min(148, img.getWidth(null));
-        int height = Math.min(99, img.getHeight(null));
+        int height = Math.min(93, img.getHeight(null));
         int drawingX = 235 + ((148 - width) / 2);
-        int drawingY = 270 + ((99 - height) / 2);
+        int drawingY = 276 + ((93 - height) / 2);
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
         if (tank2 != null) {
             img = ImageHelper.getFluffImage(tank2, ImageHelper.imageVehicle);
             width = Math.min(148, img.getWidth(null));
-            height = Math.min(99, img.getHeight(null));
+            height = Math.min(93, img.getHeight(null));
             drawingX = 235 + ((148 - width) / 2);
-            drawingY = 268 + ((99 - height) / 2) + secondPageMargin;
+            drawingY = 276 + ((93 - height) / 2) + secondPageMargin;
             g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
         }
     }
-
 }
