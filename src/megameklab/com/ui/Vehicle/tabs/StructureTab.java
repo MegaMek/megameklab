@@ -734,7 +734,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource().equals(troopStorage.getModel())) {
-            System.out.println(troopStorage.getValue());
             removeAllActionListeners();
             unit.removeAllTransporters();
             if (((SpinnerNumberModel) troopStorage.getModel()).getNumber().doubleValue() > 0) {
