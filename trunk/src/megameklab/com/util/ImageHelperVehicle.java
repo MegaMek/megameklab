@@ -353,9 +353,9 @@ public class ImageHelperVehicle {
                 troopString += String.valueOf((int)troopspace);
             }
             if (troopspace == 1) {
-                troopString += "1 Ton)";
+                troopString += " Ton)";
             } else {
-                troopString += String.valueOf(troopspace)+" Tons)";
+                troopString += " Tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
         }
@@ -594,9 +594,9 @@ public class ImageHelperVehicle {
                 troopString += String.valueOf((int)troopspace);
             }
             if (troopspace == 1) {
-                troopString += "1 Ton)";
+                troopString += " Ton)";
             } else {
-                troopString += String.valueOf(troopspace)+" Tons)";
+                troopString += " Tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
         }
@@ -843,9 +843,9 @@ public class ImageHelperVehicle {
                 troopString += String.valueOf((int)troopspace);
             }
             if (troopspace == 1) {
-                troopString += "1 Ton)";
+                troopString += " Ton)";
             } else {
-                troopString += String.valueOf(troopspace)+" Tons)";
+                troopString += " Tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
         }
