@@ -335,9 +335,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                             unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
                             ((SpinnerNumberModel) troopStorage.getModel()).setMaximum(Double.parseDouble(weightClass.getSelectedItem().toString()));
                             unit.autoSetInternal();
-                            addAllActionListeners();
+                            //addAllActionListeners();
                             engineType.setSelectedIndex(engineType.getSelectedIndex());
-                            removeAllActionListeners();
+                            //removeAllActionListeners();
                         }
                     }
                 } else if (combo.equals(techLevel)) {
@@ -462,10 +462,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         addAllActionListeners();
                         return;
                     }
+                    int engineNumber = engineType.getSelectedIndex();
                     updateEngineTypes(getTank().isClan());
+
+                    refresh.refreshArmor();
+                    refresh.refreshEquipment();
+                    refresh.refreshWeapons();
                     addAllActionListeners();
-                    engineType.setSelectedIndex(0);
-                    engineType.repaint();
+                    // Reset the engine
+                    if (engineNumber >= engineType.getItemCount()) {
+                        engineType.setSelectedIndex(0);
+                    } else {
+                        engineType.setSelectedIndex(engineNumber);
+                    }
                     removeAllActionListeners();
                 } else if (combo.equals(tankMotiveType)) {
                     int currentTonnage = weightClass.getSelectedIndex() + 1;
@@ -482,7 +491,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         getTank().setArmor(0, loc, true);
                     }
                 }
-
                 addAllActionListeners();
                 refresh.refreshAll();
             } catch (Exception ex) {
@@ -518,7 +526,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         omniCB.removeActionListener(this);
         turretCombo.removeActionListener(this);
         tankMotiveType.removeActionListener(this);
-        troopStorage.removeChangeListener(this);
+        troopStorage.getModel().removeChangeListener(this);
     }
 
     public void addAllActionListeners() {
@@ -532,7 +540,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         omniCB.addActionListener(this);
         turretCombo.addActionListener(this);
         tankMotiveType.addActionListener(this);
-        troopStorage.addChangeListener(this);
+        troopStorage.getModel().addChangeListener(this);
     }
 
     public void keyPressed(KeyEvent e) {
@@ -725,14 +733,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (e.getSource().equals(troopStorage)) {
+        if (e.getSource().equals(troopStorage.getModel())) {
+            System.out.println(troopStorage.getValue());
             removeAllActionListeners();
             unit.removeAllTransporters();
             if (((SpinnerNumberModel) troopStorage.getModel()).getNumber().doubleValue() > 0) {
                 unit.addTransporter(new TroopSpace(((SpinnerNumberModel) troopStorage.getModel()).getNumber().doubleValue()));
             }
-            refresh.refreshAll();
             addAllActionListeners();
+            refresh.refreshAll();
         }
 
     }

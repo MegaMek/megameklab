@@ -533,7 +533,7 @@ public class ArmorView extends IView implements ChangeListener {
 
     /**
      * allocate any leftover points one-by-one
-     * 
+     *
      * @param points
      *            the amount of points left over
      */
@@ -653,6 +653,7 @@ public class ArmorView extends IView implements ChangeListener {
                 break;
         }
         if (refresh != null) {
+            refresh.refreshArmor();
             refresh.refreshStatus();
         }
         refresh();
