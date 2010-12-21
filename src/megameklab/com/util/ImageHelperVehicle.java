@@ -143,9 +143,7 @@ public class ImageHelperVehicle {
         for (Mounted eq : tank.getEquipment()) {
 
             if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || (!UnitUtil.isPrintableEquipment(eq.getType()))) {
-                if (!(eq.getType() instanceof MiscType) || ((eq.getType() instanceof MiscType))) {
-                    continue;
-                }
+                continue;
             }
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(eq.getLocation());
