@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -127,6 +127,7 @@ public class ImageHelperVehicle {
         int shtPoint = 177;
         int medPoint = 195;
         int longPoint = 211;
+        float maxHeight = 137.0f;
         float linePoint = 212f + offset;
 
         float lineFeed = 6.7f;
@@ -142,7 +143,7 @@ public class ImageHelperVehicle {
         for (Mounted eq : tank.getEquipment()) {
 
             if ((eq.getType() instanceof AmmoType) || (eq.getLocation() == Entity.LOC_NONE) || (!UnitUtil.isPrintableEquipment(eq.getType()))) {
-                if (!(eq.getType() instanceof MiscType) || ((eq.getType() instanceof MiscType) && !eq.getType().hasFlag(MiscType.F_ENVIRONMENTAL_SEALING))) {
+                if (!(eq.getType() instanceof MiscType) || ((eq.getType() instanceof MiscType))) {
                     continue;
                 }
             }
@@ -168,8 +169,24 @@ public class ImageHelperVehicle {
                 eqHash.put(equipmentName, eqi);
             }
         }
-        Font font = UnitUtil.deriveFont(true, 10.0f);
+
+        if (tank.getTroopCarryingSpace() > 0) {
+            maxHeight -= lineFeed;
+        }
+
+        if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            maxHeight -= lineFeed;
+        }
+
+        if (tank.getAmmo().size() > 0) {
+            maxHeight -= lineFeed;
+        }
+
+        Font font = ImageHelperVehicle.getVehicleWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, 7.0f);
         g2d.setFont(font);
+        float stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
+
+        lineFeed = stringHeight;
 
         for (int pos = Tank.LOC_BODY; pos <= tank.locations(); pos++) {
 
@@ -196,11 +213,12 @@ public class ImageHelperVehicle {
                 if (count >= 12) {
                     break;
                 }
-                font = UnitUtil.deriveFont(7.0f);
-                g2d.setFont(font);
+                // font = UnitUtil.deriveFont(7.0f);
+                // g2d.setFont(font);
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, font.getSize2D()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -215,7 +233,7 @@ public class ImageHelperVehicle {
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
-                font = UnitUtil.deriveFont(7.0f);
+                // font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 String location = tank.getLocationAbbr(pos);
@@ -229,7 +247,8 @@ public class ImageHelperVehicle {
                 } else if (location.equalsIgnoreCase("TU2")) {
                     location = "FT";
                 }
-                // this is hacky, but works, left side and right side abbrevs are
+                // this is hacky, but works, left side and right side abbrevs
+                // are
                 // LS and RS, which results in "LSpon" and "RSpon"
                 if (eqi.isSponsonMounted) {
                     location += "po";
@@ -290,11 +309,7 @@ public class ImageHelperVehicle {
 
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
-                            font = UnitUtil.deriveFont(6.0f);
-                            g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            font = UnitUtil.deriveFont(7.0f);
-                            g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
                             newLineNeeded = true;
                         } else {
@@ -345,12 +360,11 @@ public class ImageHelperVehicle {
         }
         float troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
-            linePoint += lineFeed;
             String troopString = "Infantry Bay (";
             if (Math.floor(troopspace) - troopspace > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
-                troopString += String.valueOf((int)troopspace);
+                troopString += String.valueOf((int) troopspace);
             }
             if (troopspace == 1) {
                 troopString += " Ton)";
@@ -358,20 +372,23 @@ public class ImageHelperVehicle {
                 troopString += " Tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
+            linePoint += lineFeed;
         }
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
-            linePoint += lineFeed;
             String chassisMods = "Chassis Modifications: ";
             for (Mounted misc : tank.getMisc()) {
                 if (misc.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
-                    chassisMods += misc.getName()+", ";
+                    chassisMods += misc.getName() + ", ";
                 }
             }
-            chassisMods = chassisMods.substring(0, chassisMods.length()-2);
+            chassisMods = chassisMods.substring(0, chassisMods.length() - 2);
+            g2d.setFont(UnitUtil.getNewFont(g2d, chassisMods, false, 205, 7.0f));
             g2d.drawString(chassisMods, qtyPoint, linePoint);
+            g2d.setFont(font);
+            linePoint += lineFeed;
         }
 
-        ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
+        ImageHelper.printVehicleAmmo(tank, g2d, (int) linePoint);
     }
 
     public static void printLargeSupportTankWeaponsNEquipment(LargeSupportTank tank, Graphics2D g2d, float offset) {
@@ -383,6 +400,7 @@ public class ImageHelperVehicle {
         int shtPoint = 177;
         int medPoint = 195;
         int longPoint = 211;
+        float maxHeight = 137.0f;
         float linePoint = 212f + offset;
 
         float lineFeed = 6.7f;
@@ -423,8 +441,23 @@ public class ImageHelperVehicle {
             }
         }
 
-        Font font = UnitUtil.deriveFont(true, 10.0f);
+        if (tank.getTroopCarryingSpace() > 0) {
+            maxHeight -= lineFeed;
+        }
+
+        if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            maxHeight -= lineFeed;
+        }
+
+        if (tank.getAmmo().size() > 0) {
+            maxHeight -= lineFeed;
+        }
+
+        Font font = ImageHelperVehicle.getVehicleWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, 7.0f);
         g2d.setFont(font);
+        float stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
+
+        lineFeed = stringHeight;
 
         for (int pos = 0; pos <= tank.locations(); pos++) {
 
@@ -451,8 +484,6 @@ public class ImageHelperVehicle {
                 if (count >= 12) {
                     break;
                 }
-                font = UnitUtil.deriveFont(7.0f);
-                g2d.setFont(font);
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
@@ -472,7 +503,6 @@ public class ImageHelperVehicle {
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
-                font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 String location = tank.getLocationAbbr(pos);
@@ -530,11 +560,7 @@ public class ImageHelperVehicle {
 
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
-                            font = UnitUtil.deriveFont(6.0f);
-                            g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            font = UnitUtil.deriveFont(7.0f);
-                            g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
                             newLineNeeded = true;
                         } else {
@@ -586,12 +612,11 @@ public class ImageHelperVehicle {
 
         float troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
-            linePoint += lineFeed;
             String troopString = "Infantry Bay (";
             if (Math.floor(troopspace) - troopspace > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
-                troopString += String.valueOf((int)troopspace);
+                troopString += String.valueOf((int) troopspace);
             }
             if (troopspace == 1) {
                 troopString += " Ton)";
@@ -599,20 +624,23 @@ public class ImageHelperVehicle {
                 troopString += " Tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
+            linePoint += lineFeed;
         }
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
-            linePoint += lineFeed;
             String chassisMods = "Chassis Modifications: ";
             for (Mounted misc : tank.getMisc()) {
                 if (misc.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
-                    chassisMods += misc.getName()+", ";
+                    chassisMods += misc.getName() + ", ";
                 }
             }
-            chassisMods = chassisMods.substring(0, chassisMods.length()-2);
+            chassisMods = chassisMods.substring(0, chassisMods.length() - 2);
+            g2d.setFont(UnitUtil.getNewFont(g2d, chassisMods, false, 68, 7.0f));
             g2d.drawString(chassisMods, qtyPoint, linePoint);
+            g2d.setFont(font);
+            linePoint += lineFeed;
         }
 
-        ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
+        ImageHelper.printVehicleAmmo(tank, g2d, (int) linePoint);
     }
 
     public static void printVTOLWeaponsNEquipment(Tank tank, Graphics2D g2d) {
@@ -628,6 +656,7 @@ public class ImageHelperVehicle {
         int shtPoint = 177;
         int medPoint = 195;
         int longPoint = 211;
+        float maxHeight = 137.0f;
         float linePoint = 202f + offset;
 
         float lineFeed = 6.7f;
@@ -669,8 +698,23 @@ public class ImageHelperVehicle {
 
         }
 
-        Font font = UnitUtil.deriveFont(true, 10.0f);
+        if (tank.getTroopCarryingSpace() > 0) {
+            maxHeight -= lineFeed;
+        }
+
+        if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            maxHeight -= lineFeed;
+        }
+
+        if (tank.getAmmo().size() > 0) {
+            maxHeight -= lineFeed;
+        }
+
+        Font font = ImageHelperVehicle.getVehicleWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, 7.0f);
         g2d.setFont(font);
+        float stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
+
+        lineFeed = stringHeight;
 
         for (int pos = Tank.LOC_BODY; pos <= VTOL.LOC_ROTOR; pos++) {
 
@@ -712,9 +756,6 @@ public class ImageHelperVehicle {
                 if (count >= 12) {
                     break;
                 }
-                font = UnitUtil.deriveFont(7.0f);
-                g2d.setFont(font);
-
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
@@ -733,7 +774,6 @@ public class ImageHelperVehicle {
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
-                font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 String location = tank.getLocationAbbr(pos);
@@ -791,11 +831,7 @@ public class ImageHelperVehicle {
 
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
-                            font = UnitUtil.deriveFont(6.0f);
-                            g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            font = UnitUtil.deriveFont(7.0f);
-                            g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
                             newLineNeeded = true;
                         } else {
@@ -835,12 +871,11 @@ public class ImageHelperVehicle {
         }
         float troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
-            linePoint += lineFeed;
             String troopString = "Infantry Bay (";
             if (Math.floor(troopspace) - troopspace > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
-                troopString += String.valueOf((int)troopspace);
+                troopString += String.valueOf((int) troopspace);
             }
             if (troopspace == 1) {
                 troopString += " Ton)";
@@ -848,20 +883,21 @@ public class ImageHelperVehicle {
                 troopString += " Tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
+            linePoint += lineFeed;
         }
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
-            linePoint += lineFeed;
             String chassisMods = "Chassis Modifications: ";
             for (Mounted misc : tank.getMisc()) {
                 if (misc.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
-                    chassisMods += misc.getName()+", ";
+                    chassisMods += misc.getName() + ", ";
                 }
             }
-            chassisMods = chassisMods.substring(0, chassisMods.length()-2);
+            chassisMods = chassisMods.substring(0, chassisMods.length() - 2);
             g2d.drawString(chassisMods, qtyPoint, linePoint);
+            linePoint += lineFeed;
         }
 
-        ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
+        ImageHelper.printVehicleAmmo(tank, g2d, (int) linePoint);
     }
 
     static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, boolean hasModularArmor) {
@@ -892,6 +928,39 @@ public class ImageHelperVehicle {
         }
     }
 
+    public static Font getVehicleWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations, float pointSize) {
 
+        Font font = g2d.getFont();
+
+        int weaponCount = 1;
+        for (int pos = 0; pos < equipmentLocations.size(); pos++) {
+
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
+            if (eqHash.size() < 1) {
+                continue;
+            }
+
+            for (EquipmentInfo eqi : eqHash.values()) {
+
+                weaponCount++;
+                if (eqi.isWeapon) {
+                    if (eqi.isMML) {
+                        weaponCount++;
+                    } else if (eqi.isATM) {
+                        weaponCount++;
+                    } else if (eqi.hasArtemis || eqi.hasArtemisV) {
+                        weaponCount++;
+                    }
+                }
+            }
+        }
+
+        while (((ImageHelper.getStringHeight(g2d, "H", font) * weaponCount) > stringHeight) && (pointSize > 0)) {
+            pointSize -= .1;
+            font = UnitUtil.deriveFont(bold, pointSize);
+        }
+
+        return font;
+    }
 
 }
