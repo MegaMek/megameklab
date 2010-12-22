@@ -518,10 +518,12 @@ public class ImageHelper {
             return;
         }
 
-        int pointY = offset;
+        int pointY = 340 + offset;
         int pointX = 22;
 
         HashMap<String, Integer> ammoHash = new HashMap<String, Integer>();
+
+        g2d.setFont(UnitUtil.deriveFont(7.0f));
 
         for (Mounted ammo : vehicle.getAmmo()) {
             // don't print one shot ammo
