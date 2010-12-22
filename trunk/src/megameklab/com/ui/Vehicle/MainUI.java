@@ -118,6 +118,11 @@ public class MainUI extends JFrame implements RefreshListener {
         }
 
         loadFileMenuOptions();
+        validate.add(loadBVMenuOptions());
+
+        validate.add(loadValidateMenuOptions());
+
+        validate.add(loadSpecsMenuOptions());
 
         menuBar.add(file);
         menuBar.add(validate);
@@ -566,10 +571,10 @@ public class MainUI extends JFrame implements RefreshListener {
             /*
              * String chassis = entity.getChassis(); String model =
              * entity.getModel();
-             * 
+             *
              * createNewTank(structureTab.hasTurret(),
              * structureTab.hasDualTurret());
-             * 
+             *
              * entity.setChassis(chassis); entity.setModel(model); //
              * setVisible(false); reloadTabs(); // setVisible(true); repaint();
              * refreshAll();
@@ -870,4 +875,50 @@ public class MainUI extends JFrame implements RefreshListener {
     public void jMenuLoadEntityFromFile_actionPerformed(int fileNumber) {
         loadUnitFromFile(fileNumber);
     }
+
+    private JMenu loadBVMenuOptions() {
+        JMenu bv = new JMenu("BV Calculations");
+        JMenuItem item = new JMenuItem();
+        item.setText("Current Units BV Calculations");
+        item.setMnemonic(KeyEvent.VK_B);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuBVCalculations_actionPerformed();
+            }
+        });
+        bv.add(item);
+
+        return bv;
+    }
+
+    private JMenu loadSpecsMenuOptions() {
+        JMenu unitSpecs = new JMenu("Unit Specs");
+        JMenuItem item = new JMenuItem();
+        item.setText("Current Unit Specs");
+        item.setMnemonic(KeyEvent.VK_V);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuUnitSpecs_actionPerformed();
+            }
+        });
+        unitSpecs.add(item);
+
+        return unitSpecs;
+    }
+
+    private JMenu loadValidateMenuOptions() {
+        JMenu entityValidation = new JMenu("Unit Validation");
+        JMenuItem item = new JMenuItem();
+        item.setText("Validate Current Unit");
+        item.setMnemonic(KeyEvent.VK_V);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuValidateUnit_actionPerformed();
+            }
+        });
+        entityValidation.add(item);
+
+        return entityValidation;
+    }
+
 }
