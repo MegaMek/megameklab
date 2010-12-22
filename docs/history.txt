@@ -9,6 +9,8 @@ Added Fix for Battle Armor Record sheets. Burdened message was overlapping other
 + Added code for Chassis for Vehicles
 + Added code to change height of Vehicles Equipment List
 + New Megamek Jar
++ Fixed issues with Tank record sheet and equipment list
++ new Megamek jar
 
 V 0.0.0.18 Dev
 + Added Mixed Tech Gyro's
