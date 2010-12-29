@@ -11,6 +11,7 @@ Added Fix for Battle Armor Record sheets. Burdened message was overlapping other
 + New Megamek Jar
 + Fixed issues with Tank record sheet and equipment list
 + new Megamek jar
++ print stealth for aero units
 
 V 0.0.0.18 Dev
 + Added Mixed Tech Gyro's
