@@ -34,6 +34,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
+import megamek.common.EquipmentType;
 import megamek.common.FixedWingSupport;
 import megamek.common.Pilot;
 import megamek.common.TechConstants;
@@ -218,6 +219,14 @@ public class PrintFixedWingSupport implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
+
+        if ((fixedWingSupport.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (fixedWingSupport.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (fixedWingSupport.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (fixedWingSupport.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
+            font = UnitUtil.deriveFont(true, 11.0f);
+            g2d.setFont(font);
+            g2d.drawString(EquipmentType.getArmorTypeName(fixedWingSupport.getArmorType()), 337, 108);
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.setFont(font);
+        }
 
         ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", fixedWingSupport.getThresh(Aero.LOC_NOSE), fixedWingSupport.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 315, 162);
 

@@ -35,6 +35,7 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
 import megamek.common.ConvFighter;
+import megamek.common.EquipmentType;
 import megamek.common.Pilot;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -216,6 +217,14 @@ public class PrintConventionalFighter implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
+
+        if ((convFighter.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (convFighter.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (convFighter.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (convFighter.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
+            font = UnitUtil.deriveFont(true, 11.0f);
+            g2d.setFont(font);
+            g2d.drawString(EquipmentType.getArmorTypeName(convFighter.getArmorType()), 337, 108);
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.setFont(font);
+        }
 
         ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", convFighter.getThresh(Aero.LOC_NOSE), convFighter.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 315, 162);
 
