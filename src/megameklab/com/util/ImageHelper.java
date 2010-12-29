@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -188,7 +188,7 @@ public class ImageHelper {
 
         String path = new File(fluffPath).getAbsolutePath() + File.separatorChar + dir + File.separatorChar;
 
-        fluff = getFluffImage(unit.getFluff().getMMLImagePath());
+        fluff = ImageHelper.getFluffImage(unit.getFluff().getMMLImagePath());
 
         if (fluff == null) {
             fluff = ImageHelper.getFluffPNG(unit, path);
@@ -371,7 +371,7 @@ public class ImageHelper {
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, 7.0f));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
