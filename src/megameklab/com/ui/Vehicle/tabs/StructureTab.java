@@ -313,11 +313,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
             try {
                 // if a Tank is primitive and thus needs a larger engine
-                if (combo.equals(engineType) || combo.equals(cruiseMP)) {
+                if (combo.equals(engineType) || combo.equals(cruiseMP) || combo.equals(weightClass)) {
                     int rating = Math.max(10, (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()) - ((Tank) unit).getSuspensionFactor());
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
+                        unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
+                        ((SpinnerNumberModel) troopStorage.getModel()).setMaximum(Double.parseDouble(weightClass.getSelectedItem().toString()));
+                        unit.autoSetInternal();
                         int type = convertEngineType(engineType.getSelectedItem().toString());
                         if (getTank().isClan()) {
                             getTank().setEngine(new Engine(rating, type, Engine.CLAN_ENGINE | Engine.TANK_ENGINE));
@@ -325,20 +328,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                             getTank().setEngine(new Engine(rating, type, Engine.TANK_ENGINE));
                         }
                         getTank().setOriginalWalkMP(cruiseMP.getSelectedIndex() + 1);
-                    }
-                } else if (combo.equals(weightClass)) {
-                    if (weightClass.getSelectedItem() != null) {
-                        int rating = Math.max(10, (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()));
-                        if (rating > 500) {
-                            JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
-                        } else {
-                            unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
-                            ((SpinnerNumberModel) troopStorage.getModel()).setMaximum(Double.parseDouble(weightClass.getSelectedItem().toString()));
-                            unit.autoSetInternal();
-                            //addAllActionListeners();
-                            engineType.setSelectedIndex(engineType.getSelectedIndex());
-                            //removeAllActionListeners();
-                        }
                     }
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
