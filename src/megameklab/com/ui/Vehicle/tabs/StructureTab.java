@@ -1,34 +1,38 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Vehicle.tabs;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -50,6 +54,8 @@ import megamek.common.TechConstants;
 import megamek.common.TroopSpace;
 import megameklab.com.ui.Vehicle.views.CriticalView;
 import megameklab.com.util.ITab;
+import megameklab.com.util.ImageHelper;
+import megameklab.com.util.ImagePanel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 
@@ -102,6 +108,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     int maxTonnage = 50;
 
     private CriticalView critView = null;
+    private ImagePanel unitImage = null;
+    private JButton browseButton = null;
 
     public StructureTab(Tank unit) {
         JScrollPane scroll = new JScrollPane();
@@ -114,9 +122,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        // this.add(enginePanel());
+        JPanel scrollPanel = new JPanel();
+        scrollPanel.setLayout(new BoxLayout(scrollPanel, BoxLayout.X_AXIS));
         critView = new CriticalView(unit, false, refresh);
-        scroll.setViewportView(critView);
+
+        JPanel imagePanel = new JPanel();
+
+        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
+
+        unitImage = new ImagePanel(getTank(), ImageHelper.imageVehicle);
+        browseButton = new JButton("Browse");
+        browseButton.addActionListener(this);
+
+        imagePanel.add(unitImage);
+        imagePanel.add(browseButton);
+
+        scrollPanel.add(critView);
+        scrollPanel.add(imagePanel);
+        scroll.setViewportView(scrollPanel);
 
         this.add(splitter);
         refresh();
@@ -186,6 +209,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         setFieldSize(tankMotiveType, maxSize);
         setFieldSize(troopStorage, maxSize);
         setFieldSize(turretCombo, maxSize);
+
+        JPanel scrollPanel = new JPanel();
+        scrollPanel.setLayout(new BoxLayout(scrollPanel, BoxLayout.X_AXIS));
 
         SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
 
@@ -284,6 +310,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         critView.updateUnit(unit);
         critView.refresh();
 
+        unitImage.updateUnit(getTank());
+        unitImage.refresh();
+
         addAllActionListeners();
     }
 
@@ -304,6 +333,33 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     public void actionPerformed(ActionEvent e) {
 
         if (refresh == null) {
+            return;
+        }
+
+        if ((e.getSource() instanceof JButton) && e.getSource().equals(browseButton)) {
+            FileDialog fDialog = new FileDialog(new JFrame(), "Image Path", FileDialog.LOAD);
+
+            if (getTank().getFluff().getMMLImagePath().trim().length() > 0) {
+                String fullPath = new File(getTank().getFluff().getMMLImagePath()).getAbsolutePath();
+                String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
+                fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
+                fDialog.setDirectory(fullPath);
+                fDialog.setFile(imageName);
+            } else {
+                fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageVehicle + File.separatorChar);
+                fDialog.setFile(getTank().getChassis() + " " + getTank().getModel() + ".png");
+            }
+
+            fDialog.setLocationRelativeTo(this);
+
+            fDialog.setVisible(true);
+
+            if (fDialog.getFile() != null) {
+                String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+                relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+                getTank().getFluff().setMMLImagePath(relativeFilePath);
+                refresh();
+            }
             return;
         }
 
