@@ -13,6 +13,7 @@ Added Fix for Battle Armor Record sheets. Burdened message was overlapping other
 + new Megamek jar
 + print stealth for aero units
 + tank engine rating fix
++ RFE: Add Image and Browse to Tank UI
 
 V 0.0.0.18 Dev
 + Added Mixed Tech Gyro's
