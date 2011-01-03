@@ -1,6 +1,8 @@
 VERSION HISTORY:
 ----------------
-V 0.0.0.19 Dev
+V 0.0.0.20 Dev
+
+V 0.0.0.19 Released 01/03/2011
 Added Fix for Battle Armor Record sheets. Burdened message was overlapping other text.
 + Added Record Sheet supprot for Support VTOL
 + New MegaMek.jar
