@@ -52,6 +52,7 @@ import megamek.common.UnitType;
 import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.Mek.MainUI;
+import megameklab.com.ui.dialog.EquipmentViewerDialog;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 
 public class MenuBarCreator extends JMenuBar {
@@ -90,6 +91,16 @@ public class MenuBarCreator extends JMenuBar {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuHelpFluff_actionPerformed();
+            }
+        });
+        help.add(item);
+
+        item = new JMenuItem();
+        item.setText("Equipment Database");
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuCreateEquipmentFile_actionPerformed();
             }
         });
         help.add(item);
@@ -1115,4 +1126,11 @@ public class MenuBarCreator extends JMenuBar {
             ((megameklab.com.ui.BattleArmor.MainUI) parentFrame).reloadTabs();
         }
     }
+
+    private void jMenuCreateEquipmentFile_actionPerformed() {
+
+        new EquipmentViewerDialog(parentFrame);
+
+    }
+
 }
