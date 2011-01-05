@@ -3,6 +3,11 @@ VERSION HISTORY:
 V 0.0.0.20 Dev
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
 + Added new Equipment List code and dialog box to help menu
++ New Abstract Class MegaMekMainUI
++ Converted all MainUI classes to extend MegaMekMainUI
++ Changed all CreateNew methods to conform with MegaMekMainUI CreateNewUnit Methods
++ Updated MenuBarCreator to use new MegaMekMainUI class
++ added code fix to ImageHelperVehicle#printTankWeaponsNEquipment for extra long damage
 
 V 0.0.0.19 Released (01/03/2011 12:58 UTC-8)
 Added Fix for Battle Armor Record sheets. Burdened message was overlapping other text.
