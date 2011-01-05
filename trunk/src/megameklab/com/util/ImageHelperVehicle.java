@@ -308,7 +308,9 @@ public class ImageHelperVehicle {
 
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
+                            g2d.setFont(UnitUtil.deriveFont(g2d.getFont().getSize2D() - 1));
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
+                            g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
                             newLineNeeded = true;
                         } else {

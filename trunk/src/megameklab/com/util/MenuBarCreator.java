@@ -30,7 +30,6 @@ import java.io.PrintStream;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -51,7 +50,7 @@ import megamek.common.Tank;
 import megamek.common.UnitType;
 import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
-import megameklab.com.ui.Mek.MainUI;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.EquipmentViewerDialog;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 
@@ -65,9 +64,9 @@ public class MenuBarCreator extends JMenuBar {
     private JMenu help = new JMenu("Help");
     private JMenu validate = new JMenu("Validate");
     private Entity unit = null;
-    private JFrame parentFrame = null;
+    private MegaMekLabMainUI parentFrame = null;
 
-    public MenuBarCreator(Entity entity, JFrame parent) {
+    public MenuBarCreator(Entity entity, MegaMekLabMainUI parent) {
 
         unit = entity;
 
@@ -871,16 +870,8 @@ public class MenuBarCreator extends JMenuBar {
         CConfig.updateSaveFiles("Reset Unit");
         CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
 
-        if (unit instanceof Mech) {
-            ((MainUI) parentFrame).createNewMech(false);
-            setVisible(true);
-        } else if (unit instanceof Tank) {
-            ((megameklab.com.ui.Vehicle.MainUI) parentFrame).createNewTank(false, false);
-            setVisible(true);
-        } else if (unit instanceof Mech) {
-            ((megameklab.com.ui.BattleArmor.MainUI) parentFrame).createNewBattleArmor(false);
-            setVisible(true);
-        }
+        parentFrame.createNewUnit(false);
+        setVisible(true);
         reload();
         refresh();
         parentFrame.setVisible(true);
@@ -1021,7 +1012,7 @@ public class MenuBarCreator extends JMenuBar {
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.BATTLE_ARMOR);
 
-            if (!(viewer.getSelectedEntity() instanceof Tank)) {
+            if (!(viewer.getSelectedEntity() instanceof BattleArmor)) {
                 return;
             }
             unit = viewer.getSelectedEntity();
@@ -1107,30 +1098,15 @@ public class MenuBarCreator extends JMenuBar {
     }
 
     private void refresh() {
-        if (unit instanceof Mech) {
-            ((MainUI) parentFrame).refreshAll();
-        } else if (unit instanceof Tank) {
-            ((megameklab.com.ui.Vehicle.MainUI) parentFrame).refreshAll();
-        } else if (unit instanceof BattleArmor) {
-            ((megameklab.com.ui.BattleArmor.MainUI) parentFrame).refreshAll();
-        }
-
+        parentFrame.refreshAll();
     }
 
     private void reload() {
-        if (unit instanceof Mech) {
-            ((MainUI) parentFrame).reloadTabs();
-        } else if (unit instanceof Tank) {
-            ((megameklab.com.ui.Vehicle.MainUI) parentFrame).reloadTabs();
-        } else if (unit instanceof BattleArmor) {
-            ((megameklab.com.ui.BattleArmor.MainUI) parentFrame).reloadTabs();
-        }
+        parentFrame.reloadTabs();
     }
 
     private void jMenuCreateEquipmentFile_actionPerformed() {
-
         new EquipmentViewerDialog(parentFrame);
-
     }
 
 }
