@@ -20,15 +20,16 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+
 import megamek.common.Engine;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
@@ -36,6 +37,7 @@ import megamek.common.MechSummaryCache;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.MegaMekLab;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Vehicle.tabs.ArmorTab;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
 import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
@@ -43,10 +45,9 @@ import megameklab.com.ui.Vehicle.tabs.StructureTab;
 import megameklab.com.ui.Vehicle.tabs.WeaponTab;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.MenuBarCreator;
-import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class MainUI extends JFrame implements RefreshListener {
+public class MainUI extends MegaMekLabMainUI {
 
     /**
      *
@@ -98,7 +99,7 @@ public class MainUI extends JFrame implements RefreshListener {
         });
 
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
-        createNewTank(false, false);
+        createNewUnit(false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
         setJMenuBar(new MenuBarCreator(entity, this));
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -124,6 +125,7 @@ public class MainUI extends JFrame implements RefreshListener {
         MechSummaryCache.getInstance();
     }
 
+    @Override
     public void reloadTabs() {
         masterPanel.removeAll();
         ConfigPane.removeAll();
@@ -162,7 +164,13 @@ public class MainUI extends JFrame implements RefreshListener {
         this.repaint();
     }
 
-    public void createNewTank(boolean hasTurret, boolean hasDualTurret) {
+    @Override
+    public void createNewUnit(boolean hasTurret) {
+        createNewUnit(hasTurret, false);
+    }
+
+    @Override
+    public void createNewUnit(boolean hasTurret, boolean hasDualTurret) {
 
         entity = new Tank();
 
@@ -188,6 +196,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
     }
 
+    @Override
     public void refreshAll() {
 
         if ((structureTab.hasTurret() && entity.hasNoTurret()) || (!structureTab.hasTurret() && !entity.hasNoTurret()) || (!structureTab.hasDualTurret() && !entity.hasNoDualTurret()) || (!structureTab.hasDualTurret() && !entity.hasNoDualTurret())) {
@@ -214,31 +223,38 @@ public class MainUI extends JFrame implements RefreshListener {
 
     }
 
+    @Override
     public void refreshArmor() {
         armorTab.refresh();
     }
 
+    @Override
     public void refreshBuild() {
         buildTab.refresh();
     }
 
+    @Override
     public void refreshEquipment() {
         equipmentTab.refresh();
 
     }
 
+    @Override
     public void refreshHeader() {
         setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
     }
 
+    @Override
     public void refreshStatus() {
         statusbar.refresh();
     }
 
+    @Override
     public void refreshStructure() {
         structureTab.refresh();
     }
 
+    @Override
     public void refreshWeapons() {
         weaponTab.refresh();
     }

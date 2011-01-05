@@ -24,7 +24,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -40,6 +39,7 @@ import megamek.common.MechSummaryCache;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megameklab.com.MegaMekLab;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Mek.tabs.ArmorTab;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
@@ -47,10 +47,9 @@ import megameklab.com.ui.Mek.tabs.StructureTab;
 import megameklab.com.ui.Mek.tabs.WeaponTab;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.MenuBarCreator;
-import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class MainUI extends JFrame implements RefreshListener {
+public class MainUI extends MegaMekLabMainUI {
 
     /**
      *
@@ -103,7 +102,7 @@ public class MainUI extends JFrame implements RefreshListener {
         });
 
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
-        createNewMech(false);
+        createNewUnit(false);
         MechSummaryCache.getInstance();
         setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
         setJMenuBar(new MenuBarCreator(entity, this));
@@ -130,6 +129,7 @@ public class MainUI extends JFrame implements RefreshListener {
 
     }
 
+    @Override
     public void reloadTabs() {
         masterPanel.removeAll();
         ConfigPane.removeAll();
@@ -168,7 +168,13 @@ public class MainUI extends JFrame implements RefreshListener {
         this.repaint();
     }
 
-    public void createNewMech(boolean isQuad) {
+    @Override
+    public void createNewUnit(boolean isQuad) {
+        createNewUnit(isQuad, false);
+    }
+
+    @Override
+    public void createNewUnit(boolean isQuad, boolean isBiped) {
 
         if (isQuad) {
             entity = new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
@@ -199,13 +205,14 @@ public class MainUI extends JFrame implements RefreshListener {
 
     }
 
+    @Override
     public void refreshAll() {
 
         if ((structureTab.isQuad() && !(entity instanceof QuadMech)) || (!structureTab.isQuad() && (entity instanceof QuadMech))) {
             String model = entity.getModel();
             String chassis = entity.getChassis();
 
-            createNewMech(structureTab.isQuad());
+            createNewUnit(structureTab.isQuad());
 
             entity.setChassis(chassis);
             entity.setModel(model);
@@ -225,19 +232,23 @@ public class MainUI extends JFrame implements RefreshListener {
         refreshHeader();
     }
 
+    @Override
     public void refreshArmor() {
         armorTab.refresh();
     }
 
+    @Override
     public void refreshBuild() {
         buildTab.refresh();
     }
 
+    @Override
     public void refreshEquipment() {
         equipmentTab.refresh();
 
     }
 
+    @Override
     public void refreshHeader() {
 
         String title = entity.getChassis() + " " + entity.getModel() + ".mtf";
@@ -253,14 +264,17 @@ public class MainUI extends JFrame implements RefreshListener {
 
     }
 
+    @Override
     public void refreshStatus() {
         statusbar.refresh();
     }
 
+    @Override
     public void refreshStructure() {
         structureTab.refresh();
     }
 
+    @Override
     public void refreshWeapons() {
         weaponTab.refresh();
     }
