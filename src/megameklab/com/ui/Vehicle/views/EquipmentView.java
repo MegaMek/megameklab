@@ -16,8 +16,8 @@
 
 package megameklab.com.ui.Vehicle.views;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
@@ -25,7 +25,6 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -76,11 +75,7 @@ public class EquipmentView extends IView implements ActionListener {
 
     public EquipmentView(Tank unit) {
         super(unit);
-
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        setLayout(new BorderLayout());
 
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
@@ -95,21 +90,20 @@ public class EquipmentView extends IView implements ActionListener {
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         // equipmentScroll.setToolTipText("");
-        equipmentScroll.setPreferredSize(new Dimension(getWidth() / 2, getHeight() * 3 / 4));
+        //equipmentScroll.setPreferredSize(new Dimension(getWidth() / 2, getHeight() * 3 / 4));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
 
-        topPanel.add(equipmentCombo);
-        topPanel.add(addButton);
+        topPanel.setLayout(new BorderLayout());
+        topPanel.add(equipmentCombo, BorderLayout.CENTER);
+        topPanel.add(addButton, BorderLayout.EAST);
 
         buttonPanel.add(removeButton);
         buttonPanel.add(removeAllButton);
 
-        rightPanel.add(topPanel);
-        rightPanel.add(equipmentScroll);
-        rightPanel.add(buttonPanel);
-
-        mainPanel.add(rightPanel);
+        add(topPanel, BorderLayout.NORTH);
+        add(equipmentScroll, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         while (miscTypes.hasMoreElements()) {
@@ -275,8 +269,8 @@ public class EquipmentView extends IView implements ActionListener {
     private void fireTableRefresh() {
         equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
-        equipmentScroll.repaint();
+        //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
+        //equipmentScroll.repaint();
         updateJumpMP();
         if (refresh != null) {
             refresh.refreshStatus();
