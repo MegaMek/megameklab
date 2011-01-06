@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
@@ -837,5 +838,34 @@ public class ImageHelper {
 
         g2d.setTransform(oldTran);
     }
+
+    public static Vector<float[]> getPointsAlongLine(float[] start, float[] end, int points) {
+
+        float xDifference = end[0] - start[0];
+        float yDifference = end[1] - start[1];
+
+        float xStep = xDifference / (points - 1);
+        float yStep = yDifference / (points - 1);
+
+        Vector<float[]> result = new Vector<float[]>();
+        if (points == 1) {
+            xStep = xDifference / 2;
+            yStep = yDifference / 2;
+            float x = start[0] + (xStep);
+            float y = start[1] + (yStep);
+            result.add(new float[]{x,y});
+            return result;
+        } else if (points == 0) {
+            return result;
+        }
+
+        for (int i = 0; i < points; i++) {
+           float x = start[0] + (xStep * i);
+           float y = start[1] + (yStep * i);
+
+           result.add(new float[]{x,y});
+        }
+        return result;
+     }
 
 }
