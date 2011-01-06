@@ -314,7 +314,7 @@ public class ImageHelperVehicle {
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
                             newLineNeeded = true;
                         } else {
-                            ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint, linePoint);
+                            ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
                         }
                         if (eqi.minRange > 0) {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
@@ -950,10 +950,11 @@ public class ImageHelperVehicle {
                 weaponCount++;
                 if (eqi.isWeapon) {
                     if (eqi.isMML) {
-                        weaponCount++;
+                        weaponCount += 2;
                     } else if (eqi.isATM) {
-                        weaponCount++;
-                    } else if (eqi.hasArtemis || eqi.hasArtemisV) {
+                        weaponCount += 3;
+                    }
+                    if (eqi.hasArtemis || eqi.hasArtemisV) {
                         weaponCount++;
                     }
                 }
@@ -967,5 +968,4 @@ public class ImageHelperVehicle {
 
         return font;
     }
-
 }
