@@ -17,10 +17,6 @@
 package megameklab.com.ui.BattleArmor;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -29,21 +25,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 
 import megamek.common.BattleArmor;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
-import megamek.common.MechSummaryCache;
 import megamek.common.TechConstants;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.BattleArmor.tabs.ArmorTab;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.ui.BattleArmor.tabs.EquipmentTab;
 import megameklab.com.ui.BattleArmor.tabs.StructureTab;
 import megameklab.com.ui.BattleArmor.tabs.WeaponTab;
-import megameklab.com.util.CConfig;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
@@ -69,39 +61,9 @@ public class MainUI extends MegaMekLabMainUI {
 
     public MainUI() {
 
-        EquipmentType.initializeTypes();
-        UnitUtil.loadFonts();
-        new CConfig();
-        System.out.println("Staring MegaMekLab version: " + MegaMekLab.VERSION);
-
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            System.out.println("Setting look and feel failed: ");
-            e.printStackTrace();
-        }
-
-        setLocation(getLocation().x + 10, getLocation().y);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent evt) {
-                CConfig.setParam("WINDOWSTATE", Integer.toString(getExtendedState()));
-                // Only save position and size if not maximized or minimized.
-                if (getExtendedState() == Frame.NORMAL) {
-                    CConfig.setParam("WINDOWHEIGHT", Integer.toString(getHeight()));
-                    CConfig.setParam("WINDOWWIDTH", Integer.toString(getWidth()));
-                    CConfig.setParam("WINDOWLEFT", Integer.toString(getX()));
-                    CConfig.setParam("WINDOWTOP", Integer.toString(getY()));
-                }
-                CConfig.saveConfig();
-
-                System.exit(0);
-            }
-        });
-
+        super();
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewUnit(false);
-        MechSummaryCache.getInstance();
         setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
         setJMenuBar(new MenuBarCreator(entity, this));
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -110,15 +72,6 @@ public class MainUI extends MegaMekLabMainUI {
         scroll.setViewportView(masterPanel);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         this.add(scroll);
-        Dimension maxSize = new Dimension(CConfig.getIntParam("WINDOWWIDTH"), CConfig.getIntParam("WINDOWHEIGHT"));
-        // masterPanel.setPreferredSize(new Dimension(600,400));
-        // scroll.setPreferredSize(maxSize);
-        setResizable(true);
-        setSize(maxSize);
-        setMaximumSize(maxSize);
-        setPreferredSize(maxSize);
-        setExtendedState(CConfig.getIntParam("WINDOWSTATE"));
-        setLocation(CConfig.getIntParam("WINDOWLEFT"), CConfig.getIntParam("WINDOWTOP"));
 
         reloadTabs();
         setVisible(true);
