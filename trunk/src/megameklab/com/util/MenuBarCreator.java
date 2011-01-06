@@ -1075,9 +1075,6 @@ public class MenuBarCreator extends JMenuBar {
 
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
-            if (!(tempEntity instanceof Mech)) {
-                return;
-            }
 
             unit = tempEntity;
             UnitUtil.updateLoadedMech(unit);
