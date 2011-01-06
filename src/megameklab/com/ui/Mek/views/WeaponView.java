@@ -167,7 +167,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         // equipmentScroll.setToolTipText("");
-        equipmentScroll.setPreferredSize(new Dimension(getWidth() * 3 / 4, getHeight() * 3 / 4));
+        //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 3 / 4, getHeight() * 3 / 4));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
 
@@ -468,10 +468,6 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     private void fireTableRefresh() {
         weaponList.updateUnit(unit);
         weaponList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(getWidth() * 65 / 100, getHeight() * 80 / 100));
-        equipmentScroll.setBounds(0, 0, getWidth() * 65 / 100, getHeight() * 80 / 100);
-        equipmentScroll.getVerticalScrollBar().setUnitIncrement(20);
-        equipmentScroll.repaint();
         if (refresh != null) {
             refresh.refreshStatus();
             refresh.refreshBuild();
