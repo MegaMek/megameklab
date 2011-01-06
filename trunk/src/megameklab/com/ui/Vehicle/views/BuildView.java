@@ -16,7 +16,6 @@
 
 package megameklab.com.ui.Vehicle.views;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -79,7 +78,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         // equipmentScroll.setToolTipText("");
-        equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
+        //equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
 
@@ -202,8 +201,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void fireTableRefresh() {
         equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 90 / 100));
-        equipmentScroll.repaint();
+        //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 90 / 100));
+        //equipmentScroll.repaint();
     }
 
     public CriticalTableModel getTableModel() {
