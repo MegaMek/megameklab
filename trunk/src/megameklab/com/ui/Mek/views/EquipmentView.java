@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.Mek.views;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -59,9 +59,7 @@ public class EquipmentView extends IView implements ActionListener {
 
     private RefreshListener refresh;
 
-    private JPanel mainPanel = new JPanel();
     private JPanel topPanel = new JPanel();
-    private JPanel rightPanel = new JPanel();
     private JPanel buttonPanel = new JPanel();
 
     private JButton addButton = new JButton("Add");
@@ -86,14 +84,10 @@ public class EquipmentView extends IView implements ActionListener {
         if (unit.hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
             jumpBoosterMP = unit.getOriginalJumpMP();
         }
+        setLayout(new BorderLayout());
 
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-        rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
         equipmentList = new CriticalTableModel(unit, CriticalTableModel.EQUIPMENT);
 
@@ -104,22 +98,20 @@ public class EquipmentView extends IView implements ActionListener {
         }
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        // equipmentScroll.setToolTipText("");
-        equipmentScroll.setPreferredSize(new Dimension(getWidth() / 2, getHeight() * 3 / 4));
         equipmentTable.setDoubleBuffered(true);
+        equipmentTable.setMaximumSize(new Dimension(800,500));
         equipmentScroll.setViewportView(equipmentTable);
 
-        topPanel.add(equipmentCombo);
-        topPanel.add(addButton);
+        topPanel.setLayout(new BorderLayout());
+        topPanel.add(equipmentCombo, BorderLayout.CENTER);
+        topPanel.add(addButton, BorderLayout.EAST);
 
         buttonPanel.add(removeButton);
         buttonPanel.add(removeAllButton);
 
-        rightPanel.add(topPanel);
-        rightPanel.add(equipmentScroll);
-        rightPanel.add(buttonPanel);
-
-        mainPanel.add(rightPanel);
+        add(topPanel, BorderLayout.NORTH);
+        add(equipmentScroll, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         while (miscTypes.hasMoreElements()) {
@@ -131,7 +123,7 @@ public class EquipmentView extends IView implements ActionListener {
         }
 
         Collections.sort(masterEquipmentList, StringUtils.equipmentTypeComparator());
-        this.add(mainPanel);
+
         loadEquipmentTable();
 
         addButton.setMnemonic('A');
@@ -322,8 +314,8 @@ public class EquipmentView extends IView implements ActionListener {
     private void fireTableRefresh() {
         equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
-        equipmentScroll.repaint();
+        //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
+        //equipmentScroll.repaint();
         updateJumpMP();
         if (refresh != null) {
             refresh.refreshStatus();

@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -48,8 +48,6 @@ public class MainUI extends MegaMekLabMainUI {
      */
     private static final long serialVersionUID = -5836932822468918198L;
 
-    Mech entity = null;
-
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
@@ -89,17 +87,19 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
 
-        structureTab = new StructureTab(entity);
+        Mech mech = (Mech)entity;
 
-        armorTab = new ArmorTab(entity);
+        structureTab = new StructureTab(mech);
+
+        armorTab = new ArmorTab(mech);
         armorTab.setArmorType(entity.getArmorType());
         armorTab.refresh();
 
-        header = new Header(entity);
-        statusbar = new StatusBar(entity);
-        equipmentTab = new EquipmentTab(entity);
-        weaponTab = new WeaponTab(entity);
-        buildTab = new BuildTab(entity, equipmentTab, weaponTab);
+        header = new Header(mech);
+        statusbar = new StatusBar(mech);
+        equipmentTab = new EquipmentTab(mech);
+        weaponTab = new WeaponTab(mech);
+        buildTab = new BuildTab(mech, equipmentTab, weaponTab);
         header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
         armorTab.addRefreshedListener(this);
@@ -134,18 +134,19 @@ public class MainUI extends MegaMekLabMainUI {
         } else {
             entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
         }
+        Mech mech = (Mech)entity;
 
         entity.setYear(2750);
         entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
         entity.setWeight(25);
-        entity.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
+        mech.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
-        entity.addGyro();
-        entity.addEngineCrits();
-        entity.addCockpit();
-        UnitUtil.updateHeatSinks(entity, 10, "Single");
+        mech.addGyro();
+        mech.addEngineCrits();
+        mech.addCockpit();
+        UnitUtil.updateHeatSinks(mech, 10, "Single");
 
         entity.autoSetInternal();
         for (int loc = 0; loc < entity.locations(); loc++) {

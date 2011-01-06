@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -45,7 +45,6 @@ public class MainUI extends MegaMekLabMainUI {
      */
     private static final long serialVersionUID = -5836932822468918198L;
 
-    Tank entity = null;
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
@@ -85,17 +84,19 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
 
-        structureTab = new StructureTab(entity);
+        Tank tank = (Tank)entity;
 
-        armorTab = new ArmorTab(entity);
+        structureTab = new StructureTab(tank);
+
+        armorTab = new ArmorTab(tank);
         armorTab.setArmorType(entity.getArmorType());
         armorTab.refresh();
 
-        header = new Header(entity);
-        statusbar = new StatusBar(entity);
-        equipmentTab = new EquipmentTab(entity);
-        weaponTab = new WeaponTab(entity);
-        buildTab = new BuildTab(entity, equipmentTab, weaponTab);
+        header = new Header(tank);
+        statusbar = new StatusBar(tank);
+        equipmentTab = new EquipmentTab(tank);
+        weaponTab = new WeaponTab(tank);
+        buildTab = new BuildTab(tank, equipmentTab, weaponTab);
         header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
         armorTab.addRefreshedListener(this);
@@ -126,14 +127,15 @@ public class MainUI extends MegaMekLabMainUI {
     public void createNewUnit(boolean hasTurret, boolean hasDualTurret) {
 
         entity = new Tank();
+        Tank tank = (Tank)entity;
 
-        entity.setHasNoTurret(!hasTurret);
-        entity.setHasNoDualTurret(!hasDualTurret);
+        tank.setHasNoTurret(!hasTurret);
+        tank.setHasNoDualTurret(!hasDualTurret);
         entity.setYear(2750);
         entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
         entity.setWeight(25);
         entity.setMovementMode(EntityMovementMode.HOVER);
-        entity.setEngine(new Engine(Math.max(10, 25 - entity.getSuspensionFactor()), Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
+        tank.setEngine(new Engine(Math.max(10, 25 - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
         entity.setOriginalWalkMP(1);
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
@@ -152,7 +154,8 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshAll() {
 
-        if ((structureTab.hasTurret() && entity.hasNoTurret()) || (!structureTab.hasTurret() && !entity.hasNoTurret()) || (!structureTab.hasDualTurret() && !entity.hasNoDualTurret()) || (!structureTab.hasDualTurret() && !entity.hasNoDualTurret())) {
+        Tank tank = (Tank)entity;
+        if ((structureTab.hasTurret() && tank.hasNoTurret()) || (!structureTab.hasTurret() && !tank.hasNoTurret()) || (!structureTab.hasDualTurret() && !tank.hasNoDualTurret()) || (!structureTab.hasDualTurret() && !tank.hasNoDualTurret())) {
 
             /*
              * String chassis = entity.getChassis(); String model =

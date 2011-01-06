@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2011
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -24,6 +24,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
 import megameklab.com.MegaMekLab;
@@ -34,9 +35,12 @@ import megameklab.com.util.UnitUtil;
 public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 3971760390511127766L;
+
+    protected Entity entity = null;
+
 
     public MegaMekLabMainUI() {
 
@@ -44,7 +48,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         MechSummaryCache.getInstance();
         UnitUtil.loadFonts();
         new CConfig();
-        System.out.println("Staring MegaMekLab version: " + MegaMekLab.VERSION);
+        System.out.println("Starting MegaMekLab version: " + MegaMekLab.VERSION);
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -103,5 +107,9 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     public abstract void refreshStructure();
 
     public abstract void refreshWeapons();
+
+    public void setEntity(Entity en) {
+        entity = en;
+    }
 
 }

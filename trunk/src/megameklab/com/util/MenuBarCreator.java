@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2011
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -57,7 +57,7 @@ import megameklab.com.ui.dialog.UnitViewerDialog;
 public class MenuBarCreator extends JMenuBar {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -3998342610654551481L;
     private JMenu file = new JMenu("File");
@@ -1021,11 +1021,10 @@ public class MenuBarCreator extends JMenuBar {
             viewer.setVisible(false);
             viewer.dispose();
         }
-
+        parentFrame.setEntity(unit);
         reload();
         refresh();
         parentFrame.setVisible(true);
-        parentFrame.repaint();
     }
 
     private void loadUnitFromFile() {
@@ -1090,11 +1089,10 @@ public class MenuBarCreator extends JMenuBar {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
         }
-
+        parentFrame.setEntity(unit);
         reload();
         refresh();
         parentFrame.setVisible(true);
-        parentFrame.repaint();
     }
 
     private void refresh() {
