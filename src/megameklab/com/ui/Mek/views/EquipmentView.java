@@ -86,7 +86,6 @@ public class EquipmentView extends IView implements ActionListener {
         }
         setLayout(new BorderLayout());
 
-
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
         equipmentList = new CriticalTableModel(unit, CriticalTableModel.EQUIPMENT);
