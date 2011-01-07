@@ -12,6 +12,8 @@ V 0.0.0.20 Dev
 + PPC capacitors and the like should count for mech/sponson turret weight
 + Bug with modular armor and walk MP
 + Improved Biped Mech armor printing
++ Bug: Body and wings locations not printing for Fixed wing air craft
++ Bug: Tank weapons and equipment printing into ammo.
 
 V 0.0.0.19 Released (01/03/2011 12:58 UTC-8)
 Added Fix for Battle Armor Record sheets. Burdened message was overlapping other text.
