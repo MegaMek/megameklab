@@ -33,7 +33,7 @@ import megamek.common.SmallCraft;
 
 public class ImageHelperAero {
     private static final String[] LOCATION_ABBRS =
-        { "N", "LW", "RW", "A" };
+        { "N", "LW", "RW", "A", "WG", "BD" };
 
     public static String getLocationAbbrs(int pos) {
         return LOCATION_ABBRS[pos];
@@ -128,7 +128,7 @@ public class ImageHelperAero {
         Font font = UnitUtil.deriveFont(true, 10.0f);
         g2d.setFont(font);
 
-        for (int pos = Aero.LOC_NOSE; pos <= Aero.LOC_AFT; pos++) {
+        for (int pos = Aero.LOC_NOSE; pos <= aero.locations(); pos++) {
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
 

@@ -127,7 +127,7 @@ public class ImageHelperVehicle {
         int shtPoint = 177;
         int medPoint = 195;
         int longPoint = 211;
-        float maxHeight = 137.0f;
+        float maxHeight = 130.3f;
         float linePoint = 212f + offset;
 
         float lineFeed = 6.7f;
@@ -954,7 +954,10 @@ public class ImageHelperVehicle {
                     } else if (eqi.isATM) {
                         weaponCount += 3;
                     }
-                    if (eqi.hasArtemis || eqi.hasArtemisV) {
+                    if (eqi.hasArtemis || eqi.hasArtemisV || eqi.hasApollo) {
+                        weaponCount++;
+                    }
+                    if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
                         weaponCount++;
                     }
                 }
