@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -28,6 +28,8 @@ import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Bay;
 import megamek.common.Entity;
+import megamek.common.FixedWingSupport;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.SmallCraft;
 
@@ -221,9 +223,12 @@ public class ImageHelperAero {
                 }
             }
         }
+        if (aero instanceof FixedWingSupport) {
+            ImageHelperAero.printFixedWingSupportCargoChassisMod((FixedWingSupport) aero, g2d, (int) linePoint);
+        }
 
         if (aero instanceof SmallCraft) {
-            ImageHelperAero.printSmallCraftCargo((SmallCraft) aero, g2d, (int) linePoint);
+            ImageHelperAero.printCargo(aero, g2d, (int) linePoint);
         }
         ImageHelper.printVehicleAmmo(aero, g2d, -18);
         ImageHelperAero.printAeroFuel(aero, g2d);
@@ -241,9 +246,29 @@ public class ImageHelperAero {
         }
     }
 
-    public static void printSmallCraftCargo(SmallCraft smallCraft, Graphics2D g2d, int pointY) {
+    public static void printFixedWingSupportCargoChassisMod(FixedWingSupport aero, Graphics2D g2d, int pointY) {
+        int pointX = 22;
+        double lineFeed = ImageHelper.getStringHeight(g2d, "H", g2d.getFont());
 
-        if (smallCraft.getTransportBays().size() < 1) {
+        if (aero.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            pointY += lineFeed;
+            String chassisMods = "Chassis Modifications: ";
+            for (Mounted misc : aero.getMisc()) {
+                if (misc.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
+                    chassisMods += misc.getName() + ", ";
+                }
+            }
+            chassisMods = chassisMods.substring(0, chassisMods.length() - 2);
+            g2d.setFont(UnitUtil.getNewFont(g2d, chassisMods, false, 205, 7.0f));
+            g2d.drawString(chassisMods, pointX, pointY);
+        }
+        printCargo(aero, g2d, pointY);
+    }
+
+
+    public static void printCargo(Aero aero, Graphics2D g2d, int pointY) {
+
+        if ((aero.getTransportBays().size() < 1) && (aero.getTroopCarryingSpace() == 0)) {
             return;
         }
 
@@ -256,12 +281,29 @@ public class ImageHelperAero {
         pointY += lineFeed;
         g2d.drawString("Cargo: ", pointX, pointY);
 
+        font = UnitUtil.deriveFont(g2d.getFont().getSize2D());
+        g2d.setFont(font);
+
+        float troopspace = aero.getTroopCarryingSpace();
+        if (troopspace > 0) {
+            pointY += lineFeed;
+            String troopString = "Infantry Bay (";
+            if (troopspace - Math.floor(troopspace) > 0) {
+                troopString += String.valueOf(troopspace);
+            } else {
+                troopString += String.valueOf((int) troopspace);
+            }
+            if (troopspace == 1) {
+                troopString += " Ton)";
+            } else {
+                troopString += " Tons)";
+            }
+            g2d.drawString(troopString, pointX, pointY);
+        }
+
         pointY += lineFeed;
 
-        font = UnitUtil.deriveFont(g2d.getFont().getSize2D());
-
-        g2d.setFont(font);
-        for (Bay bay : smallCraft.getTransportBays()) {
+        for (Bay bay : aero.getTransportBays()) {
             g2d.drawString(ImageHelperDropShip.getBayString(bay), pointX, pointY);
             pointY += lineFeed;
         }
