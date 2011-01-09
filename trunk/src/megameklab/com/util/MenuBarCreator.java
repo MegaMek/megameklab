@@ -871,6 +871,7 @@ public class MenuBarCreator extends JMenuBar {
         CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
 
         parentFrame.createNewUnit(false);
+        unit = parentFrame.getEntity();
         setVisible(true);
         reload();
         refresh();

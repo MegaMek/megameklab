@@ -112,4 +112,8 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         entity = en;
     }
 
+    public Entity getEntity() {
+        return entity;
+    }
+
 }
