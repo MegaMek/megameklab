@@ -58,6 +58,8 @@ public class EquipmentInfo {
     public boolean isManipulator = false;
     public boolean isAMS = false;
     public boolean isSponsonMounted = false;
+    public boolean isMashCore = false;
+    public boolean isDroneControl = false;
 
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
@@ -229,7 +231,8 @@ public class EquipmentInfo {
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
-
+        isMashCore = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MASH);
+        isDroneControl = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL);
     }
 
     /**
@@ -320,6 +323,8 @@ public class EquipmentInfo {
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
+        isMashCore = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MASH);
+        isDroneControl = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL);
 
     }
 

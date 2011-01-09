@@ -40,6 +40,7 @@ import megamek.common.LocationFullException;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.EquipmentListCellKeySelectionManager;
 import megameklab.com.util.EquipmentListCellRenderer;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -136,6 +137,7 @@ public class EquipmentView extends IView implements ActionListener {
 
     private void loadEquipmentCombo() {
         equipmentCombo.setRenderer(new EquipmentListCellRenderer(unit));
+        equipmentCombo.setKeySelectionManager(new EquipmentListCellKeySelectionManager());
         equipmentCombo.removeAllItems();
         equipmentTypes = new Vector<EquipmentType>();
 
