@@ -212,12 +212,9 @@ public class ImageHelperVehicle {
                 if (count >= 12) {
                     break;
                 }
-                // font = UnitUtil.deriveFont(7.0f);
-                // g2d.setFont(font);
-
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, font.getSize2D()));
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, font.getSize2D()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -229,11 +226,13 @@ public class ImageHelperVehicle {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                }  else if (eqi.isMashCore) {
+                    ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
+                } else if (eqi.isDroneControl) {
+                    ImageHelper.printDroneControl(g2d, typePoint, linePoint, font, false, tank);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
-                // font = UnitUtil.deriveFont(7.0f);
-                g2d.setFont(font);
 
                 String location = tank.getLocationAbbr(pos);
 
@@ -362,16 +361,16 @@ public class ImageHelperVehicle {
         float troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             linePoint += lineFeed;
-            String troopString = "Infantry Bay (";
+            String troopString = "Cargo, Infantry (";
             if (troopspace - Math.floor(troopspace) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
                 troopString += String.valueOf((int) troopspace);
             }
             if (troopspace == 1) {
-                troopString += " Ton)";
+                troopString += " ton)";
             } else {
-                troopString += " Tons)";
+                troopString += " tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
         }
@@ -490,7 +489,7 @@ public class ImageHelperVehicle {
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, 7.0f));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -502,6 +501,10 @@ public class ImageHelperVehicle {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.isMashCore) {
+                    ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
+                } else if (eqi.isDroneControl) {
+                    ImageHelper.printDroneControl(g2d, typePoint, linePoint, font, false, tank);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
@@ -752,13 +755,10 @@ public class ImageHelperVehicle {
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
 
-                // if (count >= 12) {
-                // break;
-                // }
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, font.getSize2D()));
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, font.getSize2D()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -770,6 +770,10 @@ public class ImageHelperVehicle {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.isMashCore) {
+                    ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
+                } else if (eqi.isDroneControl) {
+                    ImageHelper.printDroneControl(g2d, typePoint, linePoint, font, false, tank);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
@@ -875,16 +879,16 @@ public class ImageHelperVehicle {
         float troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             linePoint += lineFeed;
-            String troopString = "Infantry Bay (";
+            String troopString = "Cargo, Infantry (";
             if (troopspace - Math.floor(troopspace) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
                 troopString += String.valueOf((int) troopspace);
             }
             if (troopspace == 1) {
-                troopString += " Ton)";
+                troopString += " ton)";
             } else {
-                troopString += " Tons)";
+                troopString += " tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
         }

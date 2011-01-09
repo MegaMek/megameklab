@@ -18,6 +18,7 @@ package megameklab.com.ui.Vehicle.views;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
@@ -38,6 +39,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.EquipmentListCellKeySelectionManager;
 import megameklab.com.util.EquipmentListCellRenderer;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -53,7 +55,6 @@ public class EquipmentView extends IView implements ActionListener {
 
     private RefreshListener refresh;
 
-    private JPanel mainPanel = new JPanel();
     private JPanel topPanel = new JPanel();
     private JPanel rightPanel = new JPanel();
     private JPanel buttonPanel = new JPanel();
@@ -89,9 +90,8 @@ public class EquipmentView extends IView implements ActionListener {
         }
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        // equipmentScroll.setToolTipText("");
-        //equipmentScroll.setPreferredSize(new Dimension(getWidth() / 2, getHeight() * 3 / 4));
         equipmentTable.setDoubleBuffered(true);
+        equipmentTable.setMaximumSize(new Dimension(800,500));
         equipmentScroll.setViewportView(equipmentTable);
 
         topPanel.setLayout(new BorderLayout());
@@ -115,7 +115,6 @@ public class EquipmentView extends IView implements ActionListener {
         }
 
         Collections.sort(masterEquipmentList, StringUtils.equipmentTypeComparator());
-        this.add(mainPanel);
         loadEquipmentTable();
 
         addButton.setMnemonic('A');
@@ -129,6 +128,7 @@ public class EquipmentView extends IView implements ActionListener {
 
     private void loadEquipmentCombo() {
         equipmentCombo.setRenderer(new EquipmentListCellRenderer(unit));
+        equipmentCombo.setKeySelectionManager(new EquipmentListCellKeySelectionManager());
         equipmentCombo.removeAllItems();
         equipmentTypes = new Vector<EquipmentType>();
 

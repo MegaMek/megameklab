@@ -155,6 +155,9 @@ public class ImageHelperAero {
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim() + " " + eqi.damage.trim();
+                if (ImageHelper.getStringWidth(g2d, name, font) > 65) {
+                    g2d.setFont(UnitUtil.getNewFont(g2d, eqi.name.trim(), false, 65, 7.0f));
+                }
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -166,9 +169,13 @@ public class ImageHelperAero {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.isMashCore) {
+                    ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, aero);
+                } else if (eqi.isDroneControl) {
+                    ImageHelper.printDroneControl(g2d, typePoint, linePoint, font, false, aero);
                 } else {
-                    if (ImageHelper.getStringWidth(g2d, name, font) > 68) {
-                        g2d.setFont(UnitUtil.getNewFont(g2d, eqi.name.trim(), false, 68, 7.0f));
+                    if (ImageHelper.getStringWidth(g2d, name, font) > 65) {
+                        g2d.setFont(UnitUtil.getNewFont(g2d, eqi.name.trim(), false, 65, 7.0f));
                         g2d.drawString(eqi.name.trim(), typePoint, linePoint);
                         linePoint += lineFeed;
                         g2d.drawString(eqi.damage.trim(), typePoint, linePoint);
@@ -287,16 +294,16 @@ public class ImageHelperAero {
         float troopspace = aero.getTroopCarryingSpace();
         if (troopspace > 0) {
             pointY += lineFeed;
-            String troopString = "Infantry Bay (";
+            String troopString = "Infantry (";
             if (troopspace - Math.floor(troopspace) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
                 troopString += String.valueOf((int) troopspace);
             }
             if (troopspace == 1) {
-                troopString += " Ton)";
+                troopString += " ton)";
             } else {
-                troopString += " Tons)";
+                troopString += " tons)";
             }
             g2d.drawString(troopString, pointX, pointY);
         }
