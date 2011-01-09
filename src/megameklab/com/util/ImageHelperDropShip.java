@@ -217,7 +217,7 @@ public class ImageHelperDropShip {
         int medPoint = 169;
         int longPoint = 192;
         int erPoint = 211;
-        int nameSize = 68;
+        int nameSize = 65;
         float linePoint = 209f;
         float lineFeed = 6.7f;
         // float maxHeight = 260.9f;
@@ -324,13 +324,9 @@ public class ImageHelperDropShip {
         Font font = UnitUtil.deriveFont(fontSize);
         g2d.setFont(font);
 
-        // font = ImageHelper.getDropShipWeaponsNEquipmentFont(g2d, false,
-        // maxHeight, equipmentLocations, capitalEquipmentLocations, fontSize);
         fontSize = font.getSize2D();
         g2d.setFont(font);
         stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
-
-        // linePoint -= stringHeight / 2;
 
         lineFeed = stringHeight;
 
@@ -391,6 +387,10 @@ public class ImageHelperDropShip {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.isMashCore) {
+                    ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, dropship);
+                } else if (eqi.isDroneControl) {
+                    ImageHelper.printDroneControl(g2d, typePoint, linePoint, font, false, dropship);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                     if (eqi.damage.trim().length() > 0) {

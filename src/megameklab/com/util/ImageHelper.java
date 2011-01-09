@@ -739,6 +739,34 @@ public class ImageHelper {
         g2d.drawString("3", lineStart + stringWidth, linePoint);
     }
 
+    public static void printMashCore(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored, Entity entity) {
+        int theaters = entity.countWorkingMisc(MiscType.F_MASH_EXTRA) + 1;
+        String theaterString = theaters>1?" theaters)":" theater)";
+        String printString;
+        if (isArmored) {
+            printString = "O MASH Equipment ("+theaters+theaterString;
+        } else {
+            printString = "MASH Equipment ("+theaters+theaterString;
+        }
+        g2d.setFont(UnitUtil.getNewFont(g2d, printString, false, 85, font.getSize2D()));
+        g2d.drawString(printString, lineStart, linePoint);
+        g2d.setFont(UnitUtil.deriveFont(7));
+    }
+
+    public static void printDroneControl(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored, Entity entity) {
+        int drones = entity.countWorkingMisc(MiscType.F_DRONE_EXTRA);
+        String droneString = drones>1?" drones)":" drone)";
+        String printString;
+        if (isArmored) {
+            printString = "O Drone Carrier Control System ("+drones+droneString;
+        } else {
+            printString = "Drone Carrier Control System ("+drones+droneString;
+        }
+        g2d.setFont(UnitUtil.getNewFont(g2d, printString, false, 85, font.getSize2D()));
+        g2d.drawString(printString, lineStart, linePoint);
+        g2d.setFont(UnitUtil.deriveFont(7));
+    }
+
     public static void printCenterString(Graphics2D g2d, String info, Font font, int printWidth, float printHeight) {
         int textWidth = ImageHelper.getStringWidth(g2d, info, font);
 

@@ -897,7 +897,7 @@ public class MenuBarCreator extends JMenuBar {
             filePathName = new File(System.getProperty("user.dir").toString() + "/data/mechfiles/").getAbsolutePath();
 
             fDialog.setDirectory(filePathName);
-            fDialog.setFile(unitName + ".mtf");
+            fDialog.setFile(unitName + (unit instanceof Mech?".mtf":".blk"));
             fDialog.setLocationRelativeTo(parentFrame);
 
             fDialog.setVisible(true);
@@ -942,7 +942,7 @@ public class MenuBarCreator extends JMenuBar {
         String filePathName = new File(System.getProperty("user.dir").toString() + "/data/mechfiles/").getAbsolutePath();
 
         fDialog.setDirectory(filePathName);
-        fDialog.setFile(unit.getChassis() + " " + unit.getModel() + ".mtf");
+        fDialog.setFile(unit.getChassis() + " " + unit.getModel() + (unit instanceof Mech?".mtf":".blk"));
         fDialog.setLocationRelativeTo(parentFrame);
 
         fDialog.setVisible(true);
