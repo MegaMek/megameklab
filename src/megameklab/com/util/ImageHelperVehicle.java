@@ -652,7 +652,7 @@ public class ImageHelperVehicle {
     public static void printVTOLWeaponsNEquipment(Tank tank, Graphics2D g2d, float offset) {
         int qtyPoint = 26;
         int typePoint = 38;
-        int locPoint = 124;
+        int locPoint = 127;
         int damagePoint = 150;
         int minPoint = 166;
         int shtPoint = 177;
@@ -780,10 +780,8 @@ public class ImageHelperVehicle {
                 if (location.equalsIgnoreCase("TU")) {
                     location = "T";
                 }
-
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 4, font.getSize2D()));
                 g2d.drawString(location, locPoint, linePoint);
-                g2d.setFont(font);
+
                 if (eqi.isWeapon) {
                     if (eqi.isMML) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
