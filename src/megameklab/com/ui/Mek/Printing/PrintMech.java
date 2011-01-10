@@ -1501,8 +1501,6 @@ public class PrintMech implements Printable {
         int col1pips = totalArmor;
         int col2pips = 0;
         if (totalArmor > 11) {
-            //col1Start[0] -= 3;
-            //col1End[0] -= 3;
             col1pips = totalArmor/2;
             col2pips = totalArmor/2;
             int rest = totalArmor%2;
@@ -1597,8 +1595,6 @@ public class PrintMech implements Printable {
         int col1pips = totalArmor;
         int col2pips = 0;
         if (totalArmor > 11) {
-            //col1Start[0] -= 3;
-            //col1End[0] -= 3;
             col1pips = totalArmor/2;
             col2pips = totalArmor/2;
             int rest = totalArmor%2;
