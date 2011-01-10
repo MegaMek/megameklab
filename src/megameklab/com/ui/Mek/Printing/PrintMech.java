@@ -1488,31 +1488,37 @@ public class PrintMech implements Printable {
     }
 
     private void printLAStruct(Graphics2D g2d) {
-        float[] column =
-            { 419, 413 };
-        float[] pipShift =
-            { 4, 4 };
-
+        float[] col1Start =
+        { 414, 417 };
+        float[] col1End =
+        { 409, 473 };
+        float[] col2Start =
+        { 418, 413 };
+        float[] col2End =
+        { 413, 469 };
+        Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_LARM);
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= 16; pos++) {
-            pipPlotter.add(new float[]
-                { column[0], column[1] });
-            column[1] += pipShift[1];
-            pipShift[0] *= -1;
-            column[0] += pipShift[0];
-
-            if (pos % 4 == 0) {
-                column[0] -= 2;
+        int col1pips = totalArmor;
+        int col2pips = 0;
+        if (totalArmor > 11) {
+            //col1Start[0] -= 3;
+            //col1End[0] -= 3;
+            col1pips = totalArmor/2;
+            col2pips = totalArmor/2;
+            int rest = totalArmor%2;
+            if (rest == 1) {
+                col2pips++;
+                col2End[1] += 56 / (float)(totalArmor/2-1);
+                col2End[0] -= 5 / (float)(totalArmor/2-1);
             }
-
+        } else {
+            col1Start[0] += 1;
+            col1End[0] += 1;
+            col1End[1] += 5;
         }
 
-        column[1] += pipShift[1];
-        pipPlotter.add(new float[]
-            { column[0], column[1] });
-
+        pipPlotter.addAll(ImageHelper.getPointsAlongLine(col1Start, col1End, col1pips));
+        pipPlotter.addAll(ImageHelper.getPointsAlongLine(col2Start, col2End, col2pips));
         printISPoints(g2d, pipPlotter, totalArmor);
     }
 
@@ -1578,31 +1584,37 @@ public class PrintMech implements Printable {
     }
 
     private void printRAStruct(Graphics2D g2d) {
-        float[] column =
-            { 506, 413 };
-        float[] pipShift =
-            { 4, 4 };
-
+        float[] col1Start =
+        { 510, 417 };
+        float[] col1End =
+        { 515, 473 };
+        float[] col2Start =
+        { 506, 413 };
+        float[] col2End =
+        { 511, 469 };
+        Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_RARM);
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= 16; pos++) {
-            pipPlotter.add(new float[]
-                { column[0], column[1] });
-            column[1] += pipShift[1];
-            pipShift[0] *= -1;
-            column[0] -= pipShift[0];
-
-            if (pos % 4 == 0) {
-                column[0] += 2;
+        int col1pips = totalArmor;
+        int col2pips = 0;
+        if (totalArmor > 11) {
+            //col1Start[0] -= 3;
+            //col1End[0] -= 3;
+            col1pips = totalArmor/2;
+            col2pips = totalArmor/2;
+            int rest = totalArmor%2;
+            if (rest == 1) {
+                col2pips++;
+                col2End[1] += 56 / (float)(totalArmor/2-1);
+                col2End[0] += 5 / (float)(totalArmor/2-1);
             }
-
+        } else {
+            col1Start[0] -= 1;
+            col1End[0] -= 1;
+            col1End[1] += 5;
         }
 
-        column[1] += pipShift[1];
-        pipPlotter.add(new float[]
-            { column[0], column[1] });
-
+        pipPlotter.addAll(ImageHelper.getPointsAlongLine(col1Start, col1End, col1pips));
+        pipPlotter.addAll(ImageHelper.getPointsAlongLine(col2Start, col2End, col2pips));
         printISPoints(g2d, pipPlotter, totalArmor);
     }
 
