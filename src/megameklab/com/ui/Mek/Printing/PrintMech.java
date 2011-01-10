@@ -1732,53 +1732,49 @@ public class PrintMech implements Printable {
     }
 
     private void printCTStruct(Graphics2D g2d) {
-        float[] column =
-            { 457, 423 };
-        float[] pipShift =
-            { 5, 5 };
 
+        float[] col1Start =
+        { 457.5f, 423 };
+        float[] col1End =
+        { 457.5f, 471 };
+        float[] col2Start =
+        { 462.5f, 423 };
+        float[] col2End =
+        { 462.5f, 471 };
+        float[] col3Start =
+        { 467.5f, 423 };
+        float[] col3End =
+        { 467.5f, 471 };
+        Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_CT);
-
-        int pips = 27;
-
-        Vector<float[]> pipPlotter = new Vector<float[]>(20);
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { column[0], column[1] });
-            column[0] += pipShift[0];
-
-            if (pos % 3 == 0) {
-                column[1] += pipShift[1];
-                pipShift[0] *= -1;
-                column[0] += pipShift[0];
-            }
-
+        int col1pips = totalArmor/3;
+        int col2pips = totalArmor/3;
+        int col3pips = totalArmor/3;
+        int rest = totalArmor%3;
+        switch (rest) {
+            case 1:
+                col2pips++;
+                if (totalArmor == 31) {
+                    col2End[1] += 49 / (float)(totalArmor/3-1);
+                }
+                break;
+            case 2:
+                col1pips++;
+                col3pips++;
+                break;
         }
 
-        pips = 4;
-
-        column[1] += pipShift[1];
-        column[0] += pipShift[0] / 2;
-
-        for (int pos = 1; pos <= pips; pos++) {
-            pipPlotter.add(new float[]
-                { column[0], column[1] });
-            column[0] += pipShift[0];
-            if (pos % 2 == 0) {
-                column[1] += pipShift[1];
-                pipShift[0] *= -1;
-                column[0] += pipShift[0];
-            }
-        }
-
+        pipPlotter.addAll(ImageHelper.getPointsAlongLine(col1Start, col1End, col1pips));
+        pipPlotter.addAll(ImageHelper.getPointsAlongLine(col2Start, col2End, col2pips));
+        pipPlotter.addAll(ImageHelper.getPointsAlongLine(col3Start, col3End, col3pips));
         printISPoints(g2d, pipPlotter, totalArmor);
 
     }
 
     private void printHeadStruct(Graphics2D g2d) {
-        ImageHelper.drawISPip(g2d, 463, 403);
-        ImageHelper.drawISPip(g2d, 460, 410);
-        ImageHelper.drawISPip(g2d, 466, 410);
+        ImageHelper.drawISPip(g2d, 462.5f, 403);
+        ImageHelper.drawISPip(g2d, 459.5f, 410);
+        ImageHelper.drawISPip(g2d, 465.5f, 410);
     }
 
     private void setCritConnection(Mounted m, int startx, int starty, int endx, int endy, Graphics2D g2d) {
