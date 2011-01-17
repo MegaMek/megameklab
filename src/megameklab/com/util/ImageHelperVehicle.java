@@ -29,6 +29,7 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 
 import megamek.common.AmmoType;
+import megamek.common.Bay;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.LargeSupportTank;
@@ -173,6 +174,9 @@ public class ImageHelperVehicle {
         }
 
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            maxHeight -= lineFeed;
+        }
+        for (@SuppressWarnings("unused") Bay bay : tank.getTransportBays()) {
             maxHeight -= lineFeed;
         }
 
@@ -373,6 +377,10 @@ public class ImageHelperVehicle {
                 troopString += " tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
+        }
+        for (Bay bay : tank.getTransportBays()) {
+            linePoint += lineFeed;
+            g2d.drawString(bay.getUnusedString(), qtyPoint, linePoint);
         }
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             linePoint += lineFeed;
@@ -710,6 +718,9 @@ public class ImageHelperVehicle {
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             maxHeight -= lineFeed;
         }
+        for (@SuppressWarnings("unused") Bay bay : tank.getTransportBays()) {
+            maxHeight -= lineFeed;
+        }
 
         g2d.setFont(UnitUtil.deriveFont(false, 7.0f));
         Font font = ImageHelperVehicle.getVehicleWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, 7.0f);
@@ -891,6 +902,10 @@ public class ImageHelperVehicle {
                 troopString += " tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
+        }
+        for (Bay bay : tank.getTransportBays()) {
+            linePoint += lineFeed;
+            g2d.drawString(bay.getUnusedString(), qtyPoint, linePoint);
         }
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             linePoint += lineFeed;
