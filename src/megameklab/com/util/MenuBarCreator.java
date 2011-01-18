@@ -684,7 +684,7 @@ public class MenuBarCreator extends JMenuBar {
         unitFile = f.getSelectedFile();
 
         try {
-            Entity tempEntity = new MechFileParser(unitFile, true).getEntity();
+            Entity tempEntity = new MechFileParser(unitFile).getEntity();
 
             if (UnitUtil.validateUnit(unit).trim().length() > 0) {
                 JOptionPane.showMessageDialog(parentFrame, "Warning:Invalid unit, it might load incorrectly!");
