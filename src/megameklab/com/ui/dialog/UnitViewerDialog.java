@@ -597,7 +597,7 @@ public class UnitViewerDialog extends JDialog implements ActionListener, KeyList
         ArrayList<MechSummary> vMatches = new ArrayList<MechSummary>();
         for (MechSummary ms : mechsCurrent) {
             try {
-                Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName(), true).getEntity();
+                Entity entity = new MechFileParser(ms.getSourceFile(), ms.getEntryName()).getEntity();
                 if (isMatch(entity)) {
                     vMatches.add(ms);
                 }
