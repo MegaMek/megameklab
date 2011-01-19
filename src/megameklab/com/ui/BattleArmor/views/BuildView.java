@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.BattleArmor.views;
@@ -75,7 +75,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         // equipmentScroll.setToolTipText("");
-        //equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
+        // equipmentScroll.setPreferredSize(new Dimension(getWidth(),
+        // getHeight()));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
 
@@ -99,7 +100,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
         }
         for (Mounted mount : unit.getWeaponList()) {
-            if (mount.getLocation() == Entity.LOC_NONE) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && UnitUtil.isBattleArmorWeapon(mount.getType(), unit)) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -179,9 +180,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void fireTableRefresh() {
         equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
-        //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 90 / 100));
-        //equipmentScroll.setBounds(0, 0, getWidth(), getHeight());
-        //equipmentScroll.repaint();
+        // equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100,
+        // getHeight() * 90 / 100));
+        // equipmentScroll.setBounds(0, 0, getWidth(), getHeight());
+        // equipmentScroll.repaint();
     }
 
     public CriticalTableModel getTableModel() {
