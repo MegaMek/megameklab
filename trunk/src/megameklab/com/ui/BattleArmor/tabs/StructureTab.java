@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.BattleArmor.tabs;
@@ -46,6 +46,7 @@ import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.EntityMovementMode;
 import megamek.common.EntityWeightClass;
+import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megameklab.com.ui.BattleArmor.views.CriticalView;
 import megameklab.com.util.ITab;
@@ -343,6 +344,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         updateVTOLMovements(maxVTOL);
         updateUMUMovements(maxUMU);
         updateWeightClasses(minWeight);
+        updateManipulators();
 
         critView.updateUnit(getBattleArmor());
         critView.refresh();
@@ -779,6 +781,25 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
         umuMovement.setSelectedIndex(0);
 
+    }
+
+    private void updateManipulators() {
+
+        boolean rightHand = true;
+
+        for (Mounted mount : unit.getMisc()) {
+
+            for (int pos = 1; pos < manipulatorArray.length; pos++) {
+                if (mount.getName().equalsIgnoreCase(manipulatorArray[pos])) {
+                    if (rightHand) {
+                        rightHand = false;
+                        rightManipulator.setSelectedIndex(pos);
+                    } else {
+                        leftManipulator.setSelectedIndex(pos);
+                    }
+                }
+            }
+        }
     }
 
     private void updateWeightClasses(int min) {

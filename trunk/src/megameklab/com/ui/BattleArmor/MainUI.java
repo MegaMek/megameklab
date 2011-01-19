@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -63,7 +63,7 @@ public class MainUI extends MegaMekLabMainUI {
         super();
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewUnit(false);
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
+        setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
         setJMenuBar(new MenuBarCreator(entity, this));
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -85,7 +85,7 @@ public class MainUI extends MegaMekLabMainUI {
         ConfigPane.removeAll();
 
         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
-        BattleArmor ba = (BattleArmor)entity;
+        BattleArmor ba = (BattleArmor) entity;
         structureTab = new StructureTab(ba);
 
         armorTab = new ArmorTab(ba);
@@ -127,7 +127,7 @@ public class MainUI extends MegaMekLabMainUI {
     public void createNewUnit(boolean isQuad, boolean isBiped) {
 
         entity = new BattleArmor();
-        BattleArmor ba = (BattleArmor)entity;
+        BattleArmor ba = (BattleArmor) entity;
 
         ba.setYear(2750);
         ba.setTechLevel(TechConstants.T_INTRO_BOXSET);
