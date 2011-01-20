@@ -189,7 +189,7 @@ public class ArmorTab extends ITab implements ActionListener {
 
     public void setArmorType(int type) {
         removeAllListeners();
-
+        UnitUtil.removeISorArmorMounts(unit, false);
         type = Math.max(0, type);
 
         for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
