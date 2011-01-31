@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -32,6 +32,7 @@ import megamek.common.AmmoType;
 import megamek.common.Bay;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
+import megamek.common.EquipmentType;
 import megamek.common.LargeSupportTank;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -111,6 +112,15 @@ public class ImageHelperVehicle {
         g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
     }
 
+    public static void drawWiGEISPip(Graphics2D g2d, int width, int height) {
+        Dimension circle = new Dimension(6, 6);
+        Dimension fillCircle = new Dimension(4, 4);
+        g2d.setColor(Color.black);
+        g2d.fillOval(width, height, circle.width, circle.height);
+        g2d.setColor(Color.white);
+        g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
+    }
+
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d) {
         ImageHelperVehicle.printTankWeaponsNEquipment(tank, g2d, 0);
     }
@@ -176,7 +186,8 @@ public class ImageHelperVehicle {
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             maxHeight -= lineFeed;
         }
-        for (@SuppressWarnings("unused") Bay bay : tank.getTransportBays()) {
+        for (@SuppressWarnings("unused")
+        Bay bay : tank.getTransportBays()) {
             maxHeight -= lineFeed;
         }
 
@@ -213,9 +224,6 @@ public class ImageHelperVehicle {
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
 
-                if (count >= 12) {
-                    break;
-                }
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, font.getSize2D()));
@@ -230,7 +238,7 @@ public class ImageHelperVehicle {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
-                }  else if (eqi.isMashCore) {
+                } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {
                     ImageHelper.printDroneControl(g2d, typePoint, linePoint, font, false, tank);
@@ -718,7 +726,8 @@ public class ImageHelperVehicle {
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             maxHeight -= lineFeed;
         }
-        for (@SuppressWarnings("unused") Bay bay : tank.getTransportBays()) {
+        for (@SuppressWarnings("unused")
+        Bay bay : tank.getTransportBays()) {
             maxHeight -= lineFeed;
         }
 
@@ -987,5 +996,51 @@ public class ImageHelperVehicle {
         }
 
         return font;
+    }
+
+    public static String getVehicleArmorTypeString(Entity tank) {
+
+        StringBuffer armorTypes = new StringBuffer();
+        boolean hasStealth = false;
+        boolean hasReactive = false;
+        boolean hasReflective = false;
+        boolean hasHardened = false;
+
+        for (int loc = 0; loc < tank.locations(); loc++) {
+            if (tank.getArmorType(loc) == EquipmentType.T_ARMOR_STEALTH) {
+                hasStealth = true;
+            } else if ((tank.getArmorType(loc) == EquipmentType.T_ARMOR_REACTIVE)) {
+                hasReactive = true;
+            } else if ((tank.getArmorType(loc) == EquipmentType.T_ARMOR_REFLECTIVE)) {
+                hasReflective = true;
+            } else if ((tank.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED)) {
+                hasHardened = true;
+            }
+        }
+
+        if (hasStealth) {
+            armorTypes.append(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_STEALTH));
+            armorTypes.append(", ");
+        }
+
+        if (hasReactive) {
+            armorTypes.append(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_REACTIVE));
+            armorTypes.append(", ");
+        }
+
+        if (hasReflective) {
+            armorTypes.append(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_REFLECTIVE));
+            armorTypes.append(", ");
+        }
+
+        if (hasHardened) {
+            armorTypes.append(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED));
+            armorTypes.append(", ");
+        }
+
+        if (armorTypes.length() > 0) {
+            armorTypes.delete(armorTypes.length() - 3, armorTypes.length() - 1);
+        }
+        return armorTypes.toString().trim();
     }
 }

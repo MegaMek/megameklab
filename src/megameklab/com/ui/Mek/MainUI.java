@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -87,12 +87,12 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
 
-        Mech mech = (Mech)entity;
+        Mech mech = (Mech) entity;
 
         structureTab = new StructureTab(mech);
 
         armorTab = new ArmorTab(mech);
-        armorTab.setArmorType(entity.getArmorType());
+        armorTab.setArmorType(entity.getArmorType(0));
         armorTab.refresh();
 
         header = new Header(mech);
@@ -134,7 +134,7 @@ public class MainUI extends MegaMekLabMainUI {
         } else {
             entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
         }
-        Mech mech = (Mech)entity;
+        Mech mech = (Mech) entity;
 
         entity.setYear(2750);
         entity.setTechLevel(TechConstants.T_INTRO_BOXSET);

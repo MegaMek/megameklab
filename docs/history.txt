@@ -23,6 +23,9 @@ V 0.0.0.20 Dev
 + Print all types of cargo bays for tanks
 + Bug: armor type error when loading BA
 + Added code to set manipulators when loading BA from cache/file
++ Updated code to work be able to compile with new patchwork armor
+  This is only a temp fix
++ Fixed issue with printing turreted WiGE
 
 V 0.0.0.19 Released (01/03/2011 12:58 UTC-8)
 Added Fix for Battle Armor Record sheets. Burdened message was overlapping other text.

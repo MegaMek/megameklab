@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -84,12 +84,12 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
 
-        Tank tank = (Tank)entity;
+        Tank tank = (Tank) entity;
 
         structureTab = new StructureTab(tank);
 
         armorTab = new ArmorTab(tank);
-        armorTab.setArmorType(entity.getArmorType());
+        armorTab.setArmorType(entity.getArmorType(0));
         armorTab.refresh();
 
         header = new Header(tank);
@@ -127,7 +127,7 @@ public class MainUI extends MegaMekLabMainUI {
     public void createNewUnit(boolean hasTurret, boolean hasDualTurret) {
 
         entity = new Tank();
-        Tank tank = (Tank)entity;
+        Tank tank = (Tank) entity;
 
         tank.setHasNoTurret(!hasTurret);
         tank.setHasNoDualTurret(!hasDualTurret);
@@ -154,7 +154,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshAll() {
 
-        Tank tank = (Tank)entity;
+        Tank tank = (Tank) entity;
         if ((structureTab.hasTurret() && tank.hasNoTurret()) || (!structureTab.hasTurret() && !tank.hasNoTurret()) || (!structureTab.hasDualTurret() && !tank.hasNoDualTurret()) || (!structureTab.hasDualTurret() && !tank.hasNoDualTurret())) {
 
             /*

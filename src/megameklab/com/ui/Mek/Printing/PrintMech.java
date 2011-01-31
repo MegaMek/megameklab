@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Mek.Printing;
@@ -184,20 +184,20 @@ public class PrintMech implements Printable {
 
         if (mech.hasTSM() && (mech.getSuperCharger() == null)) {
             int walkTSM = mech.getWalkMP() + 1;
-            int runTSM = (int) Math.ceil(walkTSM * 1.5) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            int runTSM = (int) Math.ceil(walkTSM * 1.5) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMP()) + " [" + runTSM + "]", 79, 155);
         } else if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {
-            int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
         } else if (mech.hasTSM() && (mech.getSuperCharger() != null)) {
             int walkTSM = mech.getWalkMP() + 1;
-            int runTSMandSuperCharge = (walkTSM * 2) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            int runTSMandSuperCharge = (walkTSM * 2) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + runTSMandSuperCharge + "]", 79, 155);
         } else if ((mech.getMASC() != null) || (mech.getSuperCharger() != null)) {
-            int mascMP = (mech.getWalkMP() * 2) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            int mascMP = (mech.getWalkMP() * 2) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
         } else {
@@ -305,7 +305,7 @@ public class PrintMech implements Printable {
 
         String armorName = "";
 
-        if (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED) {
+        if (UnitUtil.hasBAR(mech)) {
             armorName = EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED);
         }
 
@@ -314,9 +314,9 @@ public class PrintMech implements Printable {
             g2d.drawString(armorName, 461, 249);
         }
 
-        if (mech.hasBARArmor()) {
+        if (UnitUtil.hasBAR(mech)) {
             g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
-            g2d.drawString("BAR " + mech.getBARRating(), 461, 249);
+            g2d.drawString("BAR " + UnitUtil.getLowestBARRating(mech), 461, 249);
         }
 
         if ((mech.getSource() != null) && (mech.getSource().trim().length() > 0)) {
@@ -554,19 +554,19 @@ public class PrintMech implements Printable {
         if (totalArmor < 10) {
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(midColumnStart, midColumnEnd, totalArmor));
         } else if (totalArmor < 29) {
-            int pipsLeft = totalArmor/2;
-            int pipsRight = totalArmor/2;
-            int rest = totalArmor%2;
+            int pipsLeft = totalArmor / 2;
+            int pipsRight = totalArmor / 2;
+            int rest = totalArmor % 2;
             if (rest > 0) {
                 pipsLeft++;
             }
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(leftColumnStart, leftColumnEnd, pipsLeft));
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(rightColumnStart, rightColumnEnd, pipsRight));
         } else {
-            int pipsLeft = totalArmor/3;
-            int pipsCenter = totalArmor/3;
-            int pipsRight = totalArmor/3;
-            int rest = totalArmor%3;
+            int pipsLeft = totalArmor / 3;
+            int pipsCenter = totalArmor / 3;
+            int pipsRight = totalArmor / 3;
+            int rest = totalArmor % 3;
             if (rest == 2) {
                 pipsLeft++;
                 pipsRight++;
@@ -639,17 +639,17 @@ public class PrintMech implements Printable {
 
     private void printLLArmor(Graphics2D g2d) {
         float[] leftColumnStart =
-        { 443, 179 };
+            { 443, 179 };
         float[] leftColumnEnd =
-        { 412, 297 };
+            { 412, 297 };
         float[] midColumnStart =
-        { 449, 179 };
+            { 449, 179 };
         float[] midColumnEnd =
-        { 418, 297 };
+            { 418, 297 };
         float[] rightColumnStart =
-        { 455, 179 };
+            { 455, 179 };
         float[] rightColumnEnd =
-        { 424, 297 };
+            { 424, 297 };
 
         int totalArmor = mech.getArmor(Mech.LOC_LLEG);
 
@@ -660,19 +660,19 @@ public class PrintMech implements Printable {
         if (totalArmor < 10) {
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(midColumnStart, midColumnEnd, totalArmor));
         } else if (totalArmor < 29) {
-            int pipsLeft = totalArmor/2;
-            int pipsRight = totalArmor/2;
-            int rest = totalArmor%2;
+            int pipsLeft = totalArmor / 2;
+            int pipsRight = totalArmor / 2;
+            int rest = totalArmor % 2;
             if (rest > 0) {
                 pipsLeft++;
             }
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(leftColumnStart, leftColumnEnd, pipsLeft));
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(rightColumnStart, rightColumnEnd, pipsRight));
         } else {
-            int pipsLeft = totalArmor/3;
-            int pipsCenter = totalArmor/3;
-            int pipsRight = totalArmor/3;
-            int rest = totalArmor%3;
+            int pipsLeft = totalArmor / 3;
+            int pipsCenter = totalArmor / 3;
+            int pipsRight = totalArmor / 3;
+            int rest = totalArmor % 3;
             if (rest == 2) {
                 pipsLeft++;
                 pipsRight++;
@@ -686,7 +686,8 @@ public class PrintMech implements Printable {
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
-    private void printLAArmor(Graphics2D g2d) {;
+    private void printLAArmor(Graphics2D g2d) {
+        ;
         float[] leftColumnStart =
             { 404, 80 };
         float[] leftColumnEnd =
@@ -709,19 +710,19 @@ public class PrintMech implements Printable {
         if (totalArmor < 10) {
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(midColumnStart, midColumnEnd, totalArmor));
         } else if (totalArmor < 25) {
-            int pipsLeft = totalArmor/2;
-            int pipsRight = totalArmor/2;
-            int rest = totalArmor%2;
+            int pipsLeft = totalArmor / 2;
+            int pipsRight = totalArmor / 2;
+            int rest = totalArmor % 2;
             if (rest > 0) {
                 pipsLeft++;
             }
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(leftColumnStart, leftColumnEnd, pipsLeft));
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(rightColumnStart, rightColumnEnd, pipsRight));
         } else {
-            int pipsLeft = totalArmor/3;
-            int pipsCenter = totalArmor/3;
-            int pipsRight = totalArmor/3;
-            int rest = totalArmor%3;
+            int pipsLeft = totalArmor / 3;
+            int pipsCenter = totalArmor / 3;
+            int pipsRight = totalArmor / 3;
+            int rest = totalArmor % 3;
             if (rest == 2) {
                 pipsLeft++;
                 pipsRight++;
@@ -758,19 +759,19 @@ public class PrintMech implements Printable {
         if (totalArmor < 10) {
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(midColumnStart, midColumnEnd, totalArmor));
         } else if (totalArmor < 25) {
-            int pipsLeft = totalArmor/2;
-            int pipsRight = totalArmor/2;
-            int rest = totalArmor%2;
+            int pipsLeft = totalArmor / 2;
+            int pipsRight = totalArmor / 2;
+            int rest = totalArmor % 2;
             if (rest > 0) {
                 pipsLeft++;
             }
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(leftColumnStart, leftColumnEnd, pipsLeft));
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(rightColumnStart, rightColumnEnd, pipsRight));
         } else {
-            int pipsLeft = totalArmor/3;
-            int pipsCenter = totalArmor/3;
-            int pipsRight = totalArmor/3;
-            int rest = totalArmor%3;
+            int pipsLeft = totalArmor / 3;
+            int pipsCenter = totalArmor / 3;
+            int pipsRight = totalArmor / 3;
+            int rest = totalArmor % 3;
             if (rest == 2) {
                 pipsLeft++;
                 pipsRight++;
@@ -840,22 +841,22 @@ public class PrintMech implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>();
         if (totalArmor <= 10) {
-            pips2 = totalArmor/2;
-            pips4 = totalArmor/2;
-            rest = totalArmor%2;
+            pips2 = totalArmor / 2;
+            pips4 = totalArmor / 2;
+            rest = totalArmor % 2;
             if (rest == 1) {
                 pips2++;
             }
         } else if (totalArmor <= 20) {
-            pips2 = totalArmor/4;
-            pips4 = totalArmor/4;
-            pips8 = totalArmor/4;
-            pips9 = totalArmor/4;
-            rest = totalArmor%4;
+            pips2 = totalArmor / 4;
+            pips4 = totalArmor / 4;
+            pips8 = totalArmor / 4;
+            pips9 = totalArmor / 4;
+            rest = totalArmor % 4;
             switch (rest) {
                 case 3:
                     pips9++;
-                case 2 :
+                case 2:
                     pips4++;
                 case 1:
                     pips2++;
@@ -863,20 +864,20 @@ public class PrintMech implements Printable {
                     break;
             }
         } else {
-            pips1 = totalArmor/9;
-            pips2 = totalArmor/9;
-            pips3 = totalArmor/9;
-            pips4 = totalArmor/9;
-            pips5 = totalArmor/9;
-            pips6 = totalArmor/9;
-            pips7 = totalArmor/9;
-            pips8 = totalArmor/9;
-            pips9 = totalArmor/9;
-            rest = totalArmor%9;
+            pips1 = totalArmor / 9;
+            pips2 = totalArmor / 9;
+            pips3 = totalArmor / 9;
+            pips4 = totalArmor / 9;
+            pips5 = totalArmor / 9;
+            pips6 = totalArmor / 9;
+            pips7 = totalArmor / 9;
+            pips8 = totalArmor / 9;
+            pips9 = totalArmor / 9;
+            rest = totalArmor % 9;
             switch (rest) {
                 case 8:
                     pips1++;
-                case 7 :
+                case 7:
                     pips2++;
                 case 6:
                     pips3++;
@@ -945,12 +946,12 @@ public class PrintMech implements Printable {
         int pips6 = 0;
         int rest = 0;
         if (totalArmor < 20) {
-            pips6 = totalArmor>3?2:0;
+            pips6 = totalArmor > 3 ? 2 : 0;
             int restArmor = Math.max(0, totalArmor - pips6);
-            pips2 = restArmor/3;
-            pips3 = restArmor/3;
-            pips4 = restArmor/3;
-            rest = restArmor%3;
+            pips2 = restArmor / 3;
+            pips3 = restArmor / 3;
+            pips4 = restArmor / 3;
+            rest = restArmor % 3;
             if (rest == 2) {
                 pips2++;
                 pips3++;
@@ -958,14 +959,14 @@ public class PrintMech implements Printable {
                 pips2++;
             }
         } else {
-            pips6 = totalArmor>3?2:0;
+            pips6 = totalArmor > 3 ? 2 : 0;
             int restArmor = Math.max(0, totalArmor - pips6);
-            pips1 = restArmor/5;
-            pips2 = restArmor/5;
-            pips3 = restArmor/5;
-            pips4 = restArmor/5;
-            pips5 = restArmor/5;
-            rest = restArmor%5;
+            pips1 = restArmor / 5;
+            pips2 = restArmor / 5;
+            pips3 = restArmor / 5;
+            pips4 = restArmor / 5;
+            pips5 = restArmor / 5;
+            rest = restArmor % 5;
             switch (rest) {
                 case 1:
                     pips1++;
@@ -974,7 +975,7 @@ public class PrintMech implements Printable {
                     pips1++;
                     pips2++;
                     break;
-                case 3 :
+                case 3:
                     pips1++;
                     pips2++;
                     pips3++;
@@ -1038,7 +1039,6 @@ public class PrintMech implements Printable {
         float[] col9End =
             { 494, 166 };
 
-
         int totalArmor = mech.getArmor(Mech.LOC_RT);
 
         if (totalArmor < 1) {
@@ -1057,22 +1057,22 @@ public class PrintMech implements Printable {
 
         Vector<float[]> pipPlotter = new Vector<float[]>();
         if (totalArmor <= 10) {
-            pips2 = totalArmor/2;
-            pips4 = totalArmor/2;
-            rest = totalArmor%2;
+            pips2 = totalArmor / 2;
+            pips4 = totalArmor / 2;
+            rest = totalArmor % 2;
             if (rest == 1) {
                 pips2++;
             }
         } else if (totalArmor <= 20) {
-            pips2 = totalArmor/4;
-            pips4 = totalArmor/4;
-            pips8 = totalArmor/4;
-            pips9 = totalArmor/4;
-            rest = totalArmor%4;
+            pips2 = totalArmor / 4;
+            pips4 = totalArmor / 4;
+            pips8 = totalArmor / 4;
+            pips9 = totalArmor / 4;
+            rest = totalArmor % 4;
             switch (rest) {
                 case 3:
                     pips9++;
-                case 2 :
+                case 2:
                     pips4++;
                 case 1:
                     pips2++;
@@ -1080,20 +1080,20 @@ public class PrintMech implements Printable {
                     break;
             }
         } else {
-            pips1 = totalArmor/9;
-            pips2 = totalArmor/9;
-            pips3 = totalArmor/9;
-            pips4 = totalArmor/9;
-            pips5 = totalArmor/9;
-            pips6 = totalArmor/9;
-            pips7 = totalArmor/9;
-            pips8 = totalArmor/9;
-            pips9 = totalArmor/9;
-            rest = totalArmor%9;
+            pips1 = totalArmor / 9;
+            pips2 = totalArmor / 9;
+            pips3 = totalArmor / 9;
+            pips4 = totalArmor / 9;
+            pips5 = totalArmor / 9;
+            pips6 = totalArmor / 9;
+            pips7 = totalArmor / 9;
+            pips8 = totalArmor / 9;
+            pips9 = totalArmor / 9;
+            rest = totalArmor % 9;
             switch (rest) {
                 case 8:
                     pips1++;
-                case 7 :
+                case 7:
                     pips2++;
                 case 6:
                     pips3++;
@@ -1126,29 +1126,29 @@ public class PrintMech implements Printable {
 
     private void printRTRArmor(Graphics2D g2d) {
         float[] col1Start =
-        { 519.5f, 311.5f };
+            { 519.5f, 311.5f };
         float[] col1End =
-        { 519.5f, 345.5f };
+            { 519.5f, 345.5f };
         float[] col2Start =
-        { 514.5f, 311.5f };
+            { 514.5f, 311.5f };
         float[] col2End =
-        { 514.5f, 345.5f };
+            { 514.5f, 345.5f };
         float[] col3Start =
-        { 509.5f, 311.5f };
+            { 509.5f, 311.5f };
         float[] col3End =
-        { 509.5f, 345.5f };
+            { 509.5f, 345.5f };
         float[] col4Start =
-        { 504.5f, 311.5f };
+            { 504.5f, 311.5f };
         float[] col4End =
-        { 504.5f, 345.5f };
+            { 504.5f, 345.5f };
         float[] col5Start =
-        { 499.5f, 311.5f };
+            { 499.5f, 311.5f };
         float[] col5End =
-        { 499.5f, 345.5f };
+            { 499.5f, 345.5f };
         float[] col6Start =
-        { 494.5f, 311.5f };
+            { 494.5f, 311.5f };
         float[] col6End =
-        { 494.5f, 332.5f };
+            { 494.5f, 332.5f };
 
         int totalArmor = mech.getOArmor(Mech.LOC_RT, true);
 
@@ -1163,12 +1163,12 @@ public class PrintMech implements Printable {
         int pips6 = 0;
         int rest = 0;
         if (totalArmor < 20) {
-            pips6 = totalArmor>3?2:0;
+            pips6 = totalArmor > 3 ? 2 : 0;
             int restArmor = Math.max(0, totalArmor - pips6);
-            pips2 = restArmor/3;
-            pips3 = restArmor/3;
-            pips4 = restArmor/3;
-            rest = restArmor%3;
+            pips2 = restArmor / 3;
+            pips3 = restArmor / 3;
+            pips4 = restArmor / 3;
+            rest = restArmor % 3;
             if (rest == 2) {
                 pips2++;
                 pips3++;
@@ -1176,14 +1176,14 @@ public class PrintMech implements Printable {
                 pips2++;
             }
         } else {
-            pips6 = totalArmor>3?2:0;
+            pips6 = totalArmor > 3 ? 2 : 0;
             int restArmor = Math.max(0, totalArmor - pips6);
-            pips1 = restArmor/5;
-            pips2 = restArmor/5;
-            pips3 = restArmor/5;
-            pips4 = restArmor/5;
-            pips5 = restArmor/5;
-            rest = restArmor%5;
+            pips1 = restArmor / 5;
+            pips2 = restArmor / 5;
+            pips3 = restArmor / 5;
+            pips4 = restArmor / 5;
+            pips5 = restArmor / 5;
+            rest = restArmor % 5;
             switch (rest) {
                 case 1:
                     pips1++;
@@ -1192,7 +1192,7 @@ public class PrintMech implements Printable {
                     pips1++;
                     pips2++;
                     break;
-                case 3 :
+                case 3:
                     pips1++;
                     pips2++;
                     pips3++;
@@ -1246,35 +1246,35 @@ public class PrintMech implements Printable {
         if (totalArmor < 1) {
             return;
         }
-        int pips1 = totalArmor/5;
-        int pips2 = totalArmor/5;
-        int pips3 = totalArmor/5;
-        int pips4 = totalArmor/5;
-        int pips5 = totalArmor/5;
-        int rest = totalArmor%5;
+        int pips1 = totalArmor / 5;
+        int pips2 = totalArmor / 5;
+        int pips3 = totalArmor / 5;
+        int pips4 = totalArmor / 5;
+        int pips5 = totalArmor / 5;
+        int rest = totalArmor % 5;
         switch (rest) {
             case 1:
                 pips3++;
                 if (totalArmor > 40) {
-                    col3End[1] += 71 / (float)(totalArmor/5-1);
+                    col3End[1] += 71 / (float) (totalArmor / 5 - 1);
                 }
                 break;
             case 2:
                 pips1++;
                 pips5++;
                 if (totalArmor > 40) {
-                    col1End[1] += 71 / (float)(totalArmor/5-1);
-                    col5End[1] += 71 / (float)(totalArmor/5-1);
+                    col1End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col5End[1] += 71 / (float) (totalArmor / 5 - 1);
                 }
                 break;
-            case 3 :
+            case 3:
                 pips1++;
                 pips3++;
                 pips5++;
                 if (totalArmor > 40) {
-                    col1End[1] += 71 / (float)(totalArmor/5-1);
-                    col3End[1] += 71 / (float)(totalArmor/5-1);
-                    col5End[1] += 71 / (float)(totalArmor/5-1);
+                    col1End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col3End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col5End[1] += 71 / (float) (totalArmor / 5 - 1);
                 }
                 break;
             case 4:
@@ -1283,10 +1283,10 @@ public class PrintMech implements Printable {
                 pips4++;
                 pips5++;
                 if (totalArmor > 40) {
-                    col1End[1] += 71 / (float)(totalArmor/5-1);
-                    col2End[1] += 71 / (float)(totalArmor/5-1);
-                    col4End[1] += 71 / (float)(totalArmor/5-1);
-                    col5End[1] += 71 / (float)(totalArmor/5-1);
+                    col1End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col2End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col4End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col5End[1] += 71 / (float) (totalArmor / 5 - 1);
                 }
                 break;
             default:
@@ -1311,9 +1311,7 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 9) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(475.75, 68,
-                    fillCircle.width,
-                    fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(475.75, 68, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 475, 72.5f);
@@ -1321,9 +1319,7 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 8) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(472.75, 74,
-                    fillCircle.width,
-                    fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(472.75, 74, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 472, 78.5f);
@@ -1331,9 +1327,7 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 7) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(478.75, 74,
-                    fillCircle.width,
-                    fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(478.75, 74, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 478, 78.5f);
@@ -1341,9 +1335,7 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 6) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(469.75, 79,
-                    fillCircle.width,
-                    fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(469.75, 79, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 469, 83.5f);
@@ -1351,9 +1343,7 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 5) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(475.75, 79,
-                    fillCircle.width,
-                    fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(475.75, 79, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 475, 83.5f);
@@ -1361,9 +1351,7 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 4) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(481.75, 79,
-                    fillCircle.width,
-                    fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(481.75, 79, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 481, 83.5f);
@@ -1371,9 +1359,7 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 3) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(469.75, 85,
-                    fillCircle.width,
-                    fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(469.75, 85, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 469, 89.5f);
@@ -1381,9 +1367,7 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 2) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(475.75, 85,
-                    fillCircle.width,
-                    fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(475.75, 85, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 475, 89.5f);
@@ -1391,9 +1375,7 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 1) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(481.75, 85,
-                    fillCircle.width,
-                    fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(481.75, 85, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
             ImageHelper.drawArmorPip(g2d, 481, 89.5f);
@@ -1404,25 +1386,25 @@ public class PrintMech implements Printable {
     private void printCTRArmor(Graphics2D g2d) {
 
         float[] col1Start =
-        { 465, 301 };
+            { 465, 301 };
         float[] col1End =
-        { 465, 360 };
+            { 465, 360 };
         float[] col2Start =
-        { 470, 301 };
+            { 470, 301 };
         float[] col2End =
-        { 470, 360 };
+            { 470, 360 };
         float[] col3Start =
-        { 475, 301 };
+            { 475, 301 };
         float[] col3End =
-        { 475, 360 };
+            { 475, 360 };
         float[] col4Start =
-        { 480, 301 };
+            { 480, 301 };
         float[] col4End =
-        { 480, 360 };
+            { 480, 360 };
         float[] col5Start =
-        { 485, 301 };
+            { 485, 301 };
         float[] col5End =
-        { 485, 360 };
+            { 485, 360 };
 
         int totalArmor = mech.getOArmor(Mech.LOC_CT, true);
 
@@ -1436,10 +1418,10 @@ public class PrintMech implements Printable {
         int pips5 = 0;
         int rest = 0;
         if (totalArmor <= 30) {
-            pips2 = totalArmor/3;
-            pips3 = totalArmor/3;
-            pips4 = totalArmor/3;
-            rest = totalArmor%3;
+            pips2 = totalArmor / 3;
+            pips3 = totalArmor / 3;
+            pips4 = totalArmor / 3;
+            rest = totalArmor % 3;
             if (rest == 2) {
                 pips2++;
                 pips4++;
@@ -1447,12 +1429,12 @@ public class PrintMech implements Printable {
                 pips3++;
             }
         } else {
-            pips1 = totalArmor/5;
-            pips2 = totalArmor/5;
-            pips3 = totalArmor/5;
-            pips4 = totalArmor/5;
-            pips5 = totalArmor/5;
-            rest = totalArmor%5;
+            pips1 = totalArmor / 5;
+            pips2 = totalArmor / 5;
+            pips3 = totalArmor / 5;
+            pips4 = totalArmor / 5;
+            pips5 = totalArmor / 5;
+            rest = totalArmor % 5;
             switch (rest) {
                 case 1:
                     pips3++;
@@ -1461,7 +1443,7 @@ public class PrintMech implements Printable {
                     pips1++;
                     pips5++;
                     break;
-                case 3 :
+                case 3:
                     pips1++;
                     pips3++;
                     pips5++;
@@ -1489,25 +1471,25 @@ public class PrintMech implements Printable {
 
     private void printLAStruct(Graphics2D g2d) {
         float[] col1Start =
-        { 414, 417 };
+            { 414, 417 };
         float[] col1End =
-        { 409, 473 };
+            { 409, 473 };
         float[] col2Start =
-        { 418, 413 };
+            { 418, 413 };
         float[] col2End =
-        { 413, 469 };
+            { 413, 469 };
         Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_LARM);
         int col1pips = totalArmor;
         int col2pips = 0;
         if (totalArmor > 11) {
-            col1pips = totalArmor/2;
-            col2pips = totalArmor/2;
-            int rest = totalArmor%2;
+            col1pips = totalArmor / 2;
+            col2pips = totalArmor / 2;
+            int rest = totalArmor % 2;
             if (rest == 1) {
                 col2pips++;
-                col2End[1] += 56 / (float)(totalArmor/2-1);
-                col2End[0] -= 5 / (float)(totalArmor/2-1);
+                col2End[1] += 56 / (float) (totalArmor / 2 - 1);
+                col2End[0] -= 5 / (float) (totalArmor / 2 - 1);
             }
         } else {
             col1Start[0] += 1;
@@ -1536,13 +1518,13 @@ public class PrintMech implements Printable {
         if (totalArmor > 14) {
             col1Start[0] -= 3;
             col1End[0] -= 3;
-            col1pips = totalArmor/2;
-            col2pips = totalArmor/2;
-            int rest = totalArmor%2;
+            col1pips = totalArmor / 2;
+            col2pips = totalArmor / 2;
+            int rest = totalArmor % 2;
             if (rest == 1) {
                 col2pips++;
-                col2End[1] += 70 / (float)(totalArmor/2-1);
-                col2End[0] -= 14 / (float)(totalArmor/2-1);
+                col2End[1] += 70 / (float) (totalArmor / 2 - 1);
+                col2End[0] -= 14 / (float) (totalArmor / 2 - 1);
             }
         }
 
@@ -1567,13 +1549,13 @@ public class PrintMech implements Printable {
         if (totalArmor > 14) {
             col2Start[0] += 3;
             col2End[0] += 3;
-            col1pips = totalArmor/2;
-            col2pips = totalArmor/2;
-            int rest = totalArmor%2;
+            col1pips = totalArmor / 2;
+            col2pips = totalArmor / 2;
+            int rest = totalArmor % 2;
             if (rest == 1) {
                 col1pips++;
-                col1End[1] += 70 / (float)(totalArmor/2-1);
-                col1End[0] += 14 / (float)(totalArmor/2-1);
+                col1End[1] += 70 / (float) (totalArmor / 2 - 1);
+                col1End[0] += 14 / (float) (totalArmor / 2 - 1);
             }
         }
         pipPlotter.addAll(ImageHelper.getPointsAlongLine(col1Start, col1End, col1pips));
@@ -1583,25 +1565,25 @@ public class PrintMech implements Printable {
 
     private void printRAStruct(Graphics2D g2d) {
         float[] col1Start =
-        { 510, 417 };
+            { 510, 417 };
         float[] col1End =
-        { 515, 473 };
+            { 515, 473 };
         float[] col2Start =
-        { 506, 413 };
+            { 506, 413 };
         float[] col2End =
-        { 511, 469 };
+            { 511, 469 };
         Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_RARM);
         int col1pips = totalArmor;
         int col2pips = 0;
         if (totalArmor > 11) {
-            col1pips = totalArmor/2;
-            col2pips = totalArmor/2;
-            int rest = totalArmor%2;
+            col1pips = totalArmor / 2;
+            col2pips = totalArmor / 2;
+            int rest = totalArmor % 2;
             if (rest == 1) {
                 col2pips++;
-                col2End[1] += 56 / (float)(totalArmor/2-1);
-                col2End[0] += 5 / (float)(totalArmor/2-1);
+                col2End[1] += 56 / (float) (totalArmor / 2 - 1);
+                col2End[0] += 5 / (float) (totalArmor / 2 - 1);
             }
         } else {
             col1Start[0] -= 1;
@@ -1742,28 +1724,28 @@ public class PrintMech implements Printable {
     private void printCTStruct(Graphics2D g2d) {
 
         float[] col1Start =
-        { 457.5f, 423 };
+            { 457.5f, 423 };
         float[] col1End =
-        { 457.5f, 471 };
+            { 457.5f, 471 };
         float[] col2Start =
-        { 462.5f, 423 };
+            { 462.5f, 423 };
         float[] col2End =
-        { 462.5f, 471 };
+            { 462.5f, 471 };
         float[] col3Start =
-        { 467.5f, 423 };
+            { 467.5f, 423 };
         float[] col3End =
-        { 467.5f, 471 };
+            { 467.5f, 471 };
         Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_CT);
-        int col1pips = totalArmor/3;
-        int col2pips = totalArmor/3;
-        int col3pips = totalArmor/3;
-        int rest = totalArmor%3;
+        int col1pips = totalArmor / 3;
+        int col2pips = totalArmor / 3;
+        int col3pips = totalArmor / 3;
+        int rest = totalArmor % 3;
         switch (rest) {
             case 1:
                 col2pips++;
                 if (totalArmor == 31) {
-                    col2End[1] += 49 / (float)(totalArmor/3-1);
+                    col2End[1] += 49 / (float) (totalArmor / 3 - 1);
                 }
                 break;
             case 2:
@@ -1828,7 +1810,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     *
+     * 
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location

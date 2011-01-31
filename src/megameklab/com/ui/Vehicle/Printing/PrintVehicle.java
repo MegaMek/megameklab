@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -35,7 +35,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
-import megamek.common.EquipmentType;
 import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -268,9 +267,9 @@ public class PrintVehicle implements Printable {
         // g2d.drawString(myFormatter.format(tank.getCost(true)) + " C-bills",
         // 52, 357);
 
-        if (tank.hasBARArmor()) {
+        if (UnitUtil.hasBAR(tank)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + tank.getBARRating(), 400, 64);
+            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(tank), 400, 64);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -411,9 +410,9 @@ public class PrintVehicle implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 728);
 
-        if (tank.hasBARArmor()) {
+        if (UnitUtil.hasBAR(tank2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + tank.getBARRating(), 400, 64 + secondPageMargin);
+            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(tank2), 400, 64 + secondPageMargin);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -427,13 +426,12 @@ public class PrintVehicle implements Printable {
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        if ((tank.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (tank.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (tank.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (tank.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
-            font = UnitUtil.deriveFont(true, 11.0f);
-            g2d.setFont(font);
-            g2d.drawString(EquipmentType.getArmorTypeName(tank.getArmorType()), 463, 48);
-            font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.setFont(font);
-        }
+        font = UnitUtil.deriveFont(true, 11.0f);
+        g2d.setFont(font);
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank), 463, 48);
+        font = UnitUtil.deriveFont(true, 9.0f);
+        g2d.setFont(font);
+
         g2d.drawString("(" + Integer.toString(tank.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
 
         g2d.drawString("(" + tank.getArmor(Tank.LOC_RIGHT) + ")", 559, 230);
@@ -447,13 +445,12 @@ public class PrintVehicle implements Printable {
         }
 
         if (tank2 != null) {
-            if ((tank2.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (tank2.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (tank2.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (tank2.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
-                font = UnitUtil.deriveFont(true, 11.0f);
-                g2d.setFont(font);
-                g2d.drawString(EquipmentType.getArmorTypeName(tank2.getArmorType()), 463, 48 + secondPageMargin);
-                font = UnitUtil.deriveFont(true, 9.0f);
-                g2d.setFont(font);
-            }
+            font = UnitUtil.deriveFont(true, 11.0f);
+            g2d.setFont(font);
+            g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank2), 463, 48 + secondPageMargin);
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.setFont(font);
+
             g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
 
             g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230 + secondPageMargin);

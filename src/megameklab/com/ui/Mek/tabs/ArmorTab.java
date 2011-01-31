@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,  but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Mek.tabs;
@@ -56,8 +56,8 @@ public class ArmorTab extends ITab implements ActionListener {
     private ArmorView armor;
     private RefreshListener refresh = null;
     private String[] armorNames = new String[]
-        { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS], EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH], EquipmentType.armorNames[EquipmentType.T_ARMOR_COMMERCIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO],  EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR],
-                EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED], EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE], EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE]};
+        { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS], EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO], EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH], EquipmentType.armorNames[EquipmentType.T_ARMOR_COMMERCIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO], EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR], EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED], EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE],
+                EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE] };
     private JComboBox armorCombo = new JComboBox(armorNames);
 
     private JButton allocateArmorButton = new JButton("Allocate");
@@ -89,7 +89,7 @@ public class ArmorTab extends ITab implements ActionListener {
     public void refresh() {
         removeAllListeners();
         clanArmor.setVisible(unit.isMixedTech());
-        clanArmor.setSelected(unit.isClanArmor());
+        clanArmor.setSelected(unit.isClanArmor(0));
         createSystemList();
         setTotalTonnage();
         addAllListeners();
@@ -190,7 +190,7 @@ public class ArmorTab extends ITab implements ActionListener {
         unit.setArmorType(getArmorType());
         int armorCount = 0;
 
-        armorCount = EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType())).getCriticals(unit);
+        armorCount = EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(0))).getCriticals(unit);
 
         if (armorCount < 1) {
             return;
@@ -200,8 +200,8 @@ public class ArmorTab extends ITab implements ActionListener {
             for (int loc = 0; loc < getMech().locations(); loc++) {
                 if ((loc != Mech.LOC_HEAD) && (loc != Mech.LOC_CT)) {
                     try {
-                        getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), loc, false);
-                        getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), loc, false);
+                        getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(loc)))), loc, false);
+                        getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(loc)))), loc, false);
                     } catch (LocationFullException lfe) {
                         JOptionPane.showMessageDialog(null, lfe.getMessage(), "Stealth Armor does not fit in location. Resetting to Standard Armor", JOptionPane.INFORMATION_MESSAGE);
                         setArmorType(EquipmentType.T_ARMOR_STANDARD);
@@ -211,7 +211,7 @@ public class ArmorTab extends ITab implements ActionListener {
         } else {
             for (; armorCount > 0; armorCount--) {
                 try {
-                    getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType()))), Entity.LOC_NONE, false);
+                    getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(0)))), Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                 }
             }
