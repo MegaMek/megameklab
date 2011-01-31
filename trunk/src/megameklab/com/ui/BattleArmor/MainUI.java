@@ -89,7 +89,7 @@ public class MainUI extends MegaMekLabMainUI {
         structureTab = new StructureTab(ba);
 
         armorTab = new ArmorTab(ba);
-        armorTab.setArmorType(ba.getArmorType());
+        armorTab.setArmorType(ba.getArmorType(0));
         armorTab.refresh();
 
         header = new Header(ba);

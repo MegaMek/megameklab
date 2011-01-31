@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -87,6 +87,7 @@ public class ImageHelperAero {
         int longPoint = 192;
         int erPoint = 211;
         float linePoint = 204f;
+        float maxHeight = 97.0f;
 
         float lineFeed = 6.7f;
 
@@ -127,8 +128,30 @@ public class ImageHelperAero {
 
         }
 
-        Font font = UnitUtil.deriveFont(true, 10.0f);
+        if (aero.getTroopCarryingSpace() > 0) {
+            maxHeight -= lineFeed;
+        }
+
+        if (aero.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            maxHeight -= lineFeed;
+        }
+
+        for (@SuppressWarnings("unused")
+        Bay bay : aero.getTransportBays()) {
+            maxHeight -= lineFeed;
+        }
+
+        if (aero.getAmmo().size() > 0) {
+            maxHeight -= lineFeed;
+        }
+
+        g2d.setFont(UnitUtil.deriveFont(false, 7.0f));
+        Font font = ImageHelperAero.getAeroWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, 7.0f);
         g2d.setFont(font);
+
+        float stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
+
+        lineFeed = stringHeight;
 
         for (int pos = Aero.LOC_NOSE; pos <= aero.locations(); pos++) {
 
@@ -150,14 +173,13 @@ public class ImageHelperAero {
             for (EquipmentInfo eqi : equipmentList) {
                 newLineNeeded = false;
 
-                font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim() + " " + eqi.damage.trim();
-                if (ImageHelper.getStringWidth(g2d, name, font) > 65) {
-                    g2d.setFont(UnitUtil.getNewFont(g2d, eqi.name.trim(), false, 65, 7.0f));
-                }
+                /*if (ImageHelper.getStringWidth(g2d, name, font) > 65) {
+                    g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, font.getSize2D()));
+                }*/
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -175,7 +197,8 @@ public class ImageHelperAero {
                     ImageHelper.printDroneControl(g2d, typePoint, linePoint, font, false, aero);
                 } else {
                     if (ImageHelper.getStringWidth(g2d, name, font) > 65) {
-                        g2d.setFont(UnitUtil.getNewFont(g2d, eqi.name.trim(), false, 65, 7.0f));
+                        // g2d.setFont(UnitUtil.getNewFont(g2d, eqi.name.trim(),
+                        // false, 65, font.getSize2D()));
                         g2d.drawString(eqi.name.trim(), typePoint, linePoint);
                         linePoint += lineFeed;
                         g2d.drawString(eqi.damage.trim(), typePoint, linePoint);
@@ -184,7 +207,6 @@ public class ImageHelperAero {
                     }
 
                 }
-                font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
                 String location = ImageHelperAero.getLocationAbbrs(pos);
@@ -257,6 +279,8 @@ public class ImageHelperAero {
         int pointX = 22;
         double lineFeed = ImageHelper.getStringHeight(g2d, "H", g2d.getFont());
 
+        Font font = g2d.getFont();
+
         if (aero.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             pointY += lineFeed;
             String chassisMods = "Chassis Modifications: ";
@@ -266,12 +290,13 @@ public class ImageHelperAero {
                 }
             }
             chassisMods = chassisMods.substring(0, chassisMods.length() - 2);
-            g2d.setFont(UnitUtil.getNewFont(g2d, chassisMods, false, 205, 7.0f));
+            g2d.setFont(UnitUtil.getNewFont(g2d, chassisMods, false, 205, font.getSize2D()));
             g2d.drawString(chassisMods, pointX, pointY);
         }
+
+        g2d.setFont(font);
         printCargo(aero, g2d, pointY);
     }
-
 
     public static void printCargo(Aero aero, Graphics2D g2d, int pointY) {
 
@@ -315,6 +340,46 @@ public class ImageHelperAero {
             pointY += lineFeed;
         }
 
+    }
+
+    public static Font getAeroWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations, float pointSize) {
+
+        Font font = g2d.getFont();
+
+        int weaponCount = 1;
+        for (int pos = 0; pos < equipmentLocations.size(); pos++) {
+
+            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
+            if (eqHash.size() < 1) {
+                continue;
+            }
+
+            for (EquipmentInfo eqi : eqHash.values()) {
+
+                String name = String.format("%1$s %2$s", eqi.name.trim(), eqi.damage.trim());
+                weaponCount++;
+                if (eqi.isWeapon) {
+                    /*         if (eqi.isMML) {
+                                 weaponCount += 2;
+                             } else if (eqi.isATM) {
+                                 weaponCount += 3;
+                             }*/
+                    if (eqi.hasArtemis || eqi.hasArtemisV || eqi.hasApollo) {
+                        weaponCount++;
+                    }
+                    if (ImageHelper.getStringWidth(g2d, name, font) > 65) {
+                        weaponCount++;
+                    }
+                }
+            }
+        }
+
+        while (((ImageHelper.getStringHeight(g2d, "H", font) * weaponCount) > stringHeight) && (pointSize > 0)) {
+            pointSize -= .1;
+            font = UnitUtil.deriveFont(bold, pointSize);
+        }
+
+        return font;
     }
 
 }

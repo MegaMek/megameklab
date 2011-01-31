@@ -34,7 +34,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
-import megamek.common.EquipmentType;
 import megamek.common.Pilot;
 import megamek.common.SupportVTOL;
 import megamek.common.Tank;
@@ -267,9 +266,9 @@ public class PrintVTOL implements Printable {
         // g2d.drawString(myFormatter.format(vtol.getCost(true)) + " C-bills",
         // 52, 357);
 
-        if (vtol.hasBARArmor()) {
+        if (UnitUtil.hasBAR(vtol)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + vtol.getBARRating(), 400, 55);
+            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(vtol), 400, 55);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -415,9 +414,9 @@ public class PrintVTOL implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(vtol2.getCost(true)) + " C-bills", 52, 728);
 
-        if (vtol2.hasBARArmor()) {
+        if (UnitUtil.hasBAR(vtol2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + vtol2.getBARRating(), 400, 55 + secondPageMargin);
+            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(vtol2), 400, 55 + secondPageMargin);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -430,13 +429,11 @@ public class PrintVTOL implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
-        if ((vtol.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
-            font = UnitUtil.deriveFont(true, 11.0f);
-            g2d.setFont(font);
-            g2d.drawString(EquipmentType.getArmorTypeName(vtol.getArmorType()), 463, 48);
-            font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.setFont(font);
-        }
+        font = UnitUtil.deriveFont(true, 11.0f);
+        g2d.setFont(font);
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(vtol), 463, 48);
+        font = UnitUtil.deriveFont(true, 9.0f);
+        g2d.setFont(font);
 
         g2d.drawString("(" + Integer.toString(vtol.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
 
@@ -449,13 +446,11 @@ public class PrintVTOL implements Printable {
         g2d.drawString("(" + Integer.toString(vtol.getArmor(VTOL.LOC_ROTOR)) + ")", 535, 140);
 
         if (vtol2 != null) {
-            if ((vtol2.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (vtol2.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (vtol.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
-                font = UnitUtil.deriveFont(true, 11.0f);
-                g2d.setFont(font);
-                g2d.drawString(EquipmentType.getArmorTypeName(vtol2.getArmorType()), 463, 48 + secondPageMargin);
-                font = UnitUtil.deriveFont(true, 9.0f);
-                g2d.setFont(font);
-            }
+            font = UnitUtil.deriveFont(true, 11.0f);
+            g2d.setFont(font);
+            g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(vtol2), 463, 48 + secondPageMargin);
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.setFont(font);
 
             g2d.drawString("(" + Integer.toString(vtol2.getArmor(Tank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
 

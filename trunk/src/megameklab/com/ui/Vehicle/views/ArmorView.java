@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -246,11 +246,12 @@ public class ArmorView extends IView implements ChangeListener {
     public void refresh() {
         JPanel masterPanel;
         removeAllListeners();
-        int maxArmor = UnitUtil.getMaximumArmorPoints(unit);
+        int maxArmor = 0;
         turretPanel.removeAll();
         turretPanel.setBorder(null);
 
         for (int location = 0; location < unit.locations(); location++) {
+            maxArmor = UnitUtil.getMaximumArmorPoints(unit, location);
 
             switch (location) {
                 case Tank.LOC_FRONT:

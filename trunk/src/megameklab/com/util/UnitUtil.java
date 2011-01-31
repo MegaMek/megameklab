@@ -703,10 +703,14 @@ public class UnitUtil {
         return tonnage;
     }
 
-    public static int getMaximumArmorPoints(Entity unit) {
+    public static int getMaximumArmorPoints(Entity unit, int location) {
         int points = 0;
         if (unit instanceof Mech) {
-            points = (unit.getTotalInternal() * 2) + 3;
+            points = (unit.getInternal(location) * 2);
+
+            if (location == Mech.LOC_HEAD) {
+                points = 9;
+            }
         } else if (unit instanceof Tank) {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit instanceof BattleArmor) {
@@ -717,32 +721,52 @@ public class UnitUtil {
 
     public static double getMaximumArmorTonnage(Entity unit) {
 
-        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());
+        double armorPerTon = 0;
         double armorWeight = 0;
+        double totalArmorWeight = 0;
 
-        if (unit.getArmorType() == EquipmentType.T_ARMOR_HARDENED) {
-            armorPerTon = 8.0;
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(loc), unit.getArmorTechLevel(loc));
+            armorWeight = 0;
+
+            if (unit.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED) {
+                armorPerTon = 8.0;
+            }
+            if (unit instanceof Mech) {
+                double points = (unit.getInternal(loc) * 2);
+
+                if (loc == Mech.LOC_HEAD) {
+                    points = 9;
+                }
+
+                armorWeight = points / armorPerTon;
+                armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
+            } else if (unit instanceof Tank) {
+                double points = Math.floor((unit.getWeight() * 3.5) + 40);
+                armorWeight = points / armorPerTon;
+                armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
+            } else if (unit instanceof BattleArmor) {
+                armorWeight = (unit.getWeightClass() * 4) + 2;
+            }
+            totalArmorWeight += armorWeight;
         }
-        if (unit instanceof Mech) {
-            double points = (unit.getTotalInternal() * 2) + 3;
-            armorWeight = points / armorPerTon;
-            armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
-        } else if (unit instanceof Tank) {
-            double points = Math.floor((unit.getWeight() * 3.5) + 40);
-            armorWeight = points / armorPerTon;
-            armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
-        } else if (unit instanceof BattleArmor) {
-            armorWeight = (unit.getWeightClass() * 4) + 2;
-        }
-        return armorWeight;
+        return totalArmorWeight;
     }
 
     public static int getArmorPoints(Entity unit, double armorTons) {
-        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(), unit.getArmorTechLevel());
-        if (unit.getArmorType() == EquipmentType.T_ARMOR_HARDENED) {
-            armorPerTon = 8.0;
+        double armorPerTon = 0;
+        double totalArmorPoints = 0;
+
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(loc), unit.getArmorTechLevel(loc));
+
+            if (unit.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED) {
+                armorPerTon = 8.0;
+            }
+
+            totalArmorPoints += Math.min(Math.floor(armorPerTon * armorTons), UnitUtil.getMaximumArmorPoints(unit, loc));
         }
-        return Math.min((int) Math.floor(armorPerTon * armorTons), UnitUtil.getMaximumArmorPoints(unit));
+        return (int) totalArmorPoints;
     }
 
     public static void reIndexCrits(Entity unit) {
@@ -2178,4 +2202,53 @@ public class UnitUtil {
 
     }
 
+    public static boolean hasBAR(Entity unit) {
+
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            if (unit.hasBARArmor(loc)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static int getLowestBARRating(Entity unit) {
+        int BAR = 10;
+
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            if (unit.getBARRating(loc) < BAR) {
+                BAR = unit.getBARRating(loc);
+            }
+        }
+
+        return BAR;
+    }
+
+    public static boolean hasHardenedArmor(Entity unit) {
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            if ((unit.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasHardenedArmorOnLegs(Mech mech) {
+
+        int locations = 2;
+
+        if (mech instanceof QuadMech) {
+            locations = 4;
+        }
+
+        for (int loc = Mech.LOC_LLEG; locations > 0; locations--) {
+
+            if (mech.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED) {
+                return true;
+            }
+            loc--;
+        }
+        return false;
+    }
 }
