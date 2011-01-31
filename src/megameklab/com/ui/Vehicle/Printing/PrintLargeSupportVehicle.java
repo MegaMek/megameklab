@@ -35,7 +35,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
-import megamek.common.EquipmentType;
 import megamek.common.LargeSupportTank;
 import megamek.common.Pilot;
 import megamek.common.Tank;
@@ -267,9 +266,9 @@ public class PrintLargeSupportVehicle implements Printable {
         // g2d.drawString(myFormatter.format(largesupportank.getCost(true)) +
         // " C-bills", 52, 357);
 
-        if (largesupportank.hasBARArmor()) {
+        if (UnitUtil.hasBAR(largesupportank)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString(Integer.toString(largesupportank.getBARRating()), 413, 53);
+            g2d.drawString(Integer.toString(UnitUtil.getLowestBARRating(largesupportank)), 413, 53);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -405,9 +404,9 @@ public class PrintLargeSupportVehicle implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(largesupportank2.getCost(true)) + " C-bills", 52, 728);
 
-        if (largesupportank.hasBARArmor()) {
+        if (UnitUtil.hasBAR(largesupportank2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + largesupportank.getBARRating(), 400, 64 + secondPageMargin);
+            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(largesupportank2), 400, 64 + secondPageMargin);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -421,13 +420,12 @@ public class PrintLargeSupportVehicle implements Printable {
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        if ((largesupportank.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (largesupportank.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (largesupportank.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (largesupportank.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
-            font = UnitUtil.deriveFont(true, 11.0f);
-            g2d.setFont(font);
-            g2d.drawString(EquipmentType.getArmorTypeName(largesupportank.getArmorType()), 463, 48);
-            font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.setFont(font);
-        }
+        font = UnitUtil.deriveFont(true, 11.0f);
+        g2d.setFont(font);
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(largesupportank), 463, 48);
+        font = UnitUtil.deriveFont(true, 9.0f);
+        g2d.setFont(font);
+
         g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONT)) + ")", 467, 64);
 
         g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONTRIGHT)) + ")", 555, 185);
@@ -445,26 +443,24 @@ public class PrintLargeSupportVehicle implements Printable {
         }
 
         if (largesupportank2 != null) {
-            if ((largesupportank2.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (largesupportank2.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (largesupportank2.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (largesupportank2.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
-                font = UnitUtil.deriveFont(true, 11.0f);
-                g2d.setFont(font);
-                g2d.drawString(EquipmentType.getArmorTypeName(largesupportank2.getArmorType()), 463, 48 + secondPageMargin);
-                font = UnitUtil.deriveFont(true, 9.0f);
-                g2d.setFont(font);
-            }
-            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
-
-            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230 + secondPageMargin);
-
-            g2d.drawString("(" + largesupportank2.getArmor(Tank.LOC_LEFT) + ")", 384, 175 + secondPageMargin);
-
-            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_REAR)) + ")", 467, 342 + secondPageMargin);
-
-            if (largesupportank2.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
-                g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 455, 186 + secondPageMargin);
-            }
-
+            font = UnitUtil.deriveFont(true, 11.0f);
+            g2d.setFont(font);
+            g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(largesupportank2), 463, 48 + secondPageMargin);
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.setFont(font);
         }
+        g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
+
+        g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230 + secondPageMargin);
+
+        g2d.drawString("(" + largesupportank2.getArmor(Tank.LOC_LEFT) + ")", 384, 175 + secondPageMargin);
+
+        g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_REAR)) + ")", 467, 342 + secondPageMargin);
+
+        if (largesupportank2.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
+            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 455, 186 + secondPageMargin);
+        }
+
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {

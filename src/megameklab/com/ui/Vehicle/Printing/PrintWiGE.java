@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -35,7 +35,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
-import megamek.common.EquipmentType;
 import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -80,9 +79,11 @@ public class PrintWiGE implements Printable {
         System.gc();
 
         g2d.drawImage(ImageHelper.getRecordSheet(tank, false), 18, 18, 558, 368, null);
-
         if (tank.getOInternal(Tank.LOC_TURRET) > 0) {
-            g2d.drawImage(ImageHelperVehicle.getTurretImage(tank), 18, 18, 558, 368, null);
+            g2d.drawImage(ImageHelperVehicle.getTurretImage(tank), 436, 173, 77, 96, null);
+            g2d.drawImage(ImageHelperVehicle.getTurretLabelImage(), 297, 248, 34, 11, null);
+            g2d.setFont(UnitUtil.deriveFont(true, 8.0f));
+            g2d.drawString("Turret Armor", 517, 51);
         }
 
         if (tank2 == null) {
@@ -90,13 +91,19 @@ public class PrintWiGE implements Printable {
         } else {
             g2d.drawImage(ImageHelper.getRecordSheet(tank2, false), 18, 18 + secondPageMargin, 558, 368, null);
             if (tank2.getOInternal(Tank.LOC_TURRET) > 0) {
-                g2d.drawImage(ImageHelperVehicle.getTurretImage(tank2), 18, 18 + secondPageMargin, 558, 368, null);
+                g2d.drawImage(ImageHelperVehicle.getTurretImage(tank2), 436, 173 + secondPageMargin, 77, 96, null);
+                g2d.drawImage(ImageHelperVehicle.getTurretLabelImage(), 297, 248 + secondPageMargin, 34, 11, null);
+                g2d.setFont(UnitUtil.deriveFont(true, 8.0f));
+                g2d.drawString("Turret Armor", 517, 51 + secondPageMargin);
             }
         }
 
         printTankData(g2d);
         printArmor(g2d);
         printWeaponsNEquipment(g2d);
+
+        Font font = UnitUtil.deriveFont(true, 9.0f);
+        g2d.setFont(font);
 
         // Armor Pips
         printFrontArmor(g2d, tank.getOArmor(Tank.LOC_FRONT), false);
@@ -127,7 +134,6 @@ public class PrintWiGE implements Printable {
             printRightStruct(g2d, tank2.getOInternal(Tank.LOC_RIGHT), true);
             printRearStruct(g2d, tank2.getOInternal(Tank.LOC_REAR), true);
             printTurretStruct(g2d, tank2.getOInternal(Tank.LOC_TURRET), true);
-
         }
 
         printTankImage(g2d);
@@ -266,9 +272,9 @@ public class PrintWiGE implements Printable {
         // g2d.drawString(myFormatter.format(tank.getCost(true)) + " C-bills",
         // 52, 357);
 
-        if (tank.hasBARArmor()) {
+        if (UnitUtil.hasBAR(tank)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + tank.getBARRating(), 400, 64);
+            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(tank), 400, 64);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -409,9 +415,9 @@ public class PrintWiGE implements Printable {
         myFormatter = new DecimalFormat("#,###.##");
         g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 728);
 
-        if (tank.hasBARArmor()) {
+        if (UnitUtil.hasBAR(tank2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + tank.getBARRating(), 400, 64 + secondPageMargin);
+            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(tank2), 400, 64 + secondPageMargin);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -425,13 +431,12 @@ public class PrintWiGE implements Printable {
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        if ((tank.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (tank.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (tank.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (tank.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
-            font = UnitUtil.deriveFont(true, 11.0f);
-            g2d.setFont(font);
-            g2d.drawString(EquipmentType.getArmorTypeName(tank.getArmorType()), 463, 48);
-            font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.setFont(font);
-        }
+        font = UnitUtil.deriveFont(true, 11.0f);
+        g2d.setFont(font);
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank), 463, 48);
+        font = UnitUtil.deriveFont(true, 9.0f);
+        g2d.setFont(font);
+
         g2d.drawString("(" + Integer.toString(tank.getArmor(Tank.LOC_FRONT)) + ")", 467, 60);
 
         g2d.drawString("(" + tank.getArmor(Tank.LOC_RIGHT) + ")", 554, 210);
@@ -445,13 +450,11 @@ public class PrintWiGE implements Printable {
         }
 
         if (tank2 != null) {
-            if ((tank2.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (tank2.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (tank2.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (tank2.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
-                font = UnitUtil.deriveFont(true, 11.0f);
-                g2d.setFont(font);
-                g2d.drawString(EquipmentType.getArmorTypeName(tank2.getArmorType()), 463, 48 + secondPageMargin);
-                font = UnitUtil.deriveFont(true, 9.0f);
-                g2d.setFont(font);
-            }
+            font = UnitUtil.deriveFont(true, 11.0f);
+            g2d.setFont(font);
+            g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank2), 463, 48 + secondPageMargin);
+            font = UnitUtil.deriveFont(true, 9.0f);
+            g2d.setFont(font);
             g2d.drawString("(" + Integer.toString(tank2.getArmor(Tank.LOC_FRONT)) + ")", 467, 60 + secondPageMargin);
 
             g2d.drawString("(" + tank2.getArmor(Tank.LOC_RIGHT) + ")", 554, 210 + secondPageMargin);
@@ -760,13 +763,13 @@ public class PrintWiGE implements Printable {
         totalArmor -= pips;
         topColumn[0] += pipShift[0] * ((5 - pips) / 2);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelperVehicle.drawTankISPip(g2d, topColumn[0], topColumn[1]);
+            ImageHelperVehicle.drawWiGEISPip(g2d, topColumn[0], topColumn[1]);
             topColumn[0] += pipShift[0];
         }
 
         bottomColumn[0] += pipShift[0] * ((5 - totalArmor) / 2);
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawTankISPip(g2d, bottomColumn[0], bottomColumn[1]);
+            ImageHelperVehicle.drawWiGEISPip(g2d, bottomColumn[0], bottomColumn[1]);
             bottomColumn[0] += pipShift[0];
         }
     }
@@ -793,13 +796,13 @@ public class PrintWiGE implements Printable {
         totalArmor -= pips;
         topColumn[0] += pipShift[0] * ((5 - pips) / 2);
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelperVehicle.drawTankISPip(g2d, topColumn[0], topColumn[1]);
+            ImageHelperVehicle.drawWiGEISPip(g2d, topColumn[0], topColumn[1]);
             topColumn[0] += pipShift[0];
         }
 
         bottomColumn[0] += pipShift[0] * ((5 - totalArmor) / 2);
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawTankISPip(g2d, bottomColumn[0], bottomColumn[1]);
+            ImageHelperVehicle.drawWiGEISPip(g2d, bottomColumn[0], bottomColumn[1]);
             bottomColumn[0] += pipShift[0];
         }
     }
@@ -815,7 +818,7 @@ public class PrintWiGE implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawWiGEISPip(g2d, column[0], column[1]);
             column[0] -= pipShift[0];
             column[1] += pipShift[1];
         }
@@ -832,7 +835,7 @@ public class PrintWiGE implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawWiGEISPip(g2d, column[0], column[1]);
             column[0] += pipShift[0];
             column[1] += pipShift[1];
         }
@@ -850,7 +853,7 @@ public class PrintWiGE implements Printable {
 
         column[0] += pipShift[0] * ((10 - totalArmor) / 2);
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawWiGEISPip(g2d, column[0], column[1]);
             column[0] += pipShift[0];
         }
     }
@@ -860,7 +863,8 @@ public class PrintWiGE implements Printable {
     }
 
     private void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, float fontSize) {
-        pipPoints.trimToSize();
+        ImageHelperVehicle.printArmorPoints(g2d, pipPoints, totalArmor, false);
+        /*pipPoints.trimToSize();
         float pipSpace = pipPoints.size() / totalArmor;
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             int currentPip = (int) pos;
@@ -868,7 +872,7 @@ public class PrintWiGE implements Printable {
             if (--totalArmor <= 0) {
                 return;
             }
-        }
+        }*/
     }
 
     private void printTankImage(Graphics2D g2d) {

@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -35,11 +35,11 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
-import megamek.common.EquipmentType;
 import megamek.common.Pilot;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperAero;
+import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
 
 public class PrintAero implements Printable {
@@ -204,13 +204,11 @@ public class PrintAero implements Printable {
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        if ((aero.getArmorType() == EquipmentType.T_ARMOR_STEALTH) || (aero.getArmorType() == EquipmentType.T_ARMOR_REACTIVE) || (aero.getArmorType() == EquipmentType.T_ARMOR_REFLECTIVE) || (aero.getArmorType() == EquipmentType.T_ARMOR_HARDENED)) {
-            font = UnitUtil.deriveFont(true, 11.0f);
-            g2d.setFont(font);
-            g2d.drawString(EquipmentType.getArmorTypeName(aero.getArmorType()), 337, 108);
-            font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.setFont(font);
-        }
+        font = UnitUtil.deriveFont(true, 11.0f);
+        g2d.setFont(font);
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(aero), 337, 108);
+        font = UnitUtil.deriveFont(true, 9.0f);
+        g2d.setFont(font);
 
         ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", aero.getThresh(Aero.LOC_NOSE), aero.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 300, 139);
 

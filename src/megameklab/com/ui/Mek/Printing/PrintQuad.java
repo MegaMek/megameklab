@@ -1,17 +1,17 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  */
 
 package megameklab.com.ui.Mek.Printing;
@@ -154,15 +154,15 @@ public class PrintQuad implements Printable {
 
         if (mech.hasTSM()) {
             int walkTSM = mech.getWalkMP() + 1;
-            int runTSM = (int) Math.ceil(walkTSM * 1.5) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            int runTSM = (int) Math.ceil(walkTSM * 1.5) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMP()) + " [" + runTSM + "]", 79, 155);
         } else if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {
-            int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
         } else if ((mech.getMASC() != null) || (mech.getSuperCharger() != null)) {
-            int mascMP = (mech.getWalkMP() * 2) - (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED ? 1 : 0);
+            int mascMP = (mech.getWalkMP() * 2) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
         } else {
@@ -286,7 +286,7 @@ public class PrintQuad implements Printable {
 
         String armorName = "";
 
-        if (mech.getArmorType() == EquipmentType.T_ARMOR_HARDENED) {
+        if (UnitUtil.hasHardenedArmor(mech)) {
             armorName = EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED);
         }
 
@@ -295,9 +295,9 @@ public class PrintQuad implements Printable {
             g2d.drawString(armorName, 461, 279);
         }
 
-        if (mech.hasBARArmor()) {
+        if (UnitUtil.hasBAR(mech)) {
             g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
-            g2d.drawString("BAR " + mech.getBARRating(), 461, 279);
+            g2d.drawString("BAR " + UnitUtil.getLowestBARRating(mech), 461, 279);
         }
 
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
