@@ -610,20 +610,21 @@ public class ImageHelper {
     }
 
     public static void printC3iName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+        Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
             g2d.drawString("O Improved C  CPU", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O Improved C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O Improved C", c3Font);
         } else {
             g2d.drawString("Improved C  CPU", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "Improved C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "Improved C", c3Font);
         }
-        font = font.deriveFont(attrMap);
-        g2d.setFont(font);
-
+        c3Font = font.deriveFont(attrMap);
+        g2d.setFont(c3Font);
         g2d.drawString("3", lineStart + stringWidth, linePoint);
+        g2d.setFont(font);
     }
 
     public static void printC3sName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
@@ -650,96 +651,98 @@ public class ImageHelper {
     }
 
     public static void printBC3iName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+        Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
             g2d.drawString("O Improved BC", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O Improved BC", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O Improved BC", c3Font);
         } else {
             g2d.drawString("Improved BC", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "Improved BC", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "Improved BC", c3Font);
         }
-        font = font.deriveFont(attrMap);
-        g2d.setFont(font);
-
+        c3Font = font.deriveFont(attrMap);
+        g2d.setFont(c3Font);
         g2d.drawString("3", lineStart + stringWidth, linePoint);
+        g2d.setFont(font);
     }
 
     public static void printBC3Name(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+        Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
             g2d.drawString("O BC", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O BC", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O BC", c3Font);
         } else {
             g2d.drawString("BC", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "BC", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "BC", c3Font);
         }
 
-        font = font.deriveFont(attrMap);
-        g2d.setFont(font);
+        c3Font = font.deriveFont(attrMap);
+        g2d.setFont(c3Font);
         g2d.drawString("3", lineStart + stringWidth, linePoint);
+        g2d.setFont(font);
 
     }
 
     public static void printC3sbName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+        Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
             g2d.drawString("O C  Boosted Slave", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
             g2d.drawString("C  Boosted Slave", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 
-        // stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
-
-        font = font.deriveFont(attrMap);
-        g2d.setFont(font);
+        c3Font = font.deriveFont(attrMap);
+        g2d.setFont(c3Font);
         g2d.drawString("3", lineStart + stringWidth, linePoint);
-
+        g2d.setFont(font);
     }
 
     public static void printC3mName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+        Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
             g2d.drawString("O C  Master", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
             g2d.drawString("C  Master", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 
-        // stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
-
-        font = font.deriveFont(attrMap);
-        g2d.setFont(font);
+        c3Font = font.deriveFont(attrMap);
+        g2d.setFont(c3Font);
         g2d.drawString("3", lineStart + stringWidth, linePoint);
+        g2d.setFont(font);
     }
 
     public static void printC3mbName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+        Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
             g2d.drawString("O C  Boosted Master", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
             g2d.drawString("C  Boosted Master", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 
-        // stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
-
-        font = font.deriveFont(attrMap);
-        g2d.setFont(font);
+        c3Font = font.deriveFont(attrMap);
+        g2d.setFont(c3Font);
         g2d.drawString("3", lineStart + stringWidth, linePoint);
+        g2d.setFont(font);
     }
 
     public static void printMashCore(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored, Entity entity) {
