@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -154,15 +154,15 @@ public class PrintQuad implements Printable {
 
         if (mech.hasTSM()) {
             int walkTSM = mech.getWalkMP() + 1;
-            int runTSM = (int) Math.ceil(walkTSM * 1.5) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
+            int runTSM = (int) Math.ceil(walkTSM * 1.5) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMP()) + " [" + runTSM + "]", 79, 155);
         } else if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {
-            int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
+            int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
         } else if ((mech.getMASC() != null) || (mech.getSuperCharger() != null)) {
-            int mascMP = (mech.getWalkMP() * 2) - (UnitUtil.hasHardenedArmorOnLegs(mech) ? 1 : 0);
+            int mascMP = (mech.getWalkMP() * 2) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
             g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
         } else {
@@ -286,7 +286,7 @@ public class PrintQuad implements Printable {
 
         String armorName = "";
 
-        if (UnitUtil.hasHardenedArmor(mech)) {
+        if (mech.hasHardenedArmor() && !mech.hasPatchworkArmor()) {
             armorName = EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED);
         }
 
@@ -295,7 +295,7 @@ public class PrintQuad implements Printable {
             g2d.drawString(armorName, 461, 279);
         }
 
-        if (UnitUtil.hasBAR(mech)) {
+        if (UnitUtil.hasBAR(mech) && !mech.hasPatchworkArmor()) {
             g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
             g2d.drawString("BAR " + UnitUtil.getLowestBARRating(mech), 461, 279);
         }
@@ -305,7 +305,7 @@ public class PrintQuad implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2010", 62.5f, 745f);
+        g2d.drawString("2011", 62.5f, 745f);
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
             g2d.drawImage(ImageHelper.getGyroPipImage(), 235, 588, 9, 8, null);
@@ -363,6 +363,25 @@ public class PrintQuad implements Printable {
         g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_LT, true)), 406, 357);
         g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_CT, true)), 506, 366);
         g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_RT, true)), 542, 357);
+        // patchwork armor info
+        if (mech.hasPatchworkArmor()) {
+            font = UnitUtil.deriveFont(5.5f);
+            g2d.setFont(font);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_HEAD), 494, 45);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 393, 146);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 553, 146);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_CT), 475, 217);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LARM), 401, 317);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RARM), 549, 318);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LLEG), 461, 297);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RLEG), 514, 300);
+            // Rear
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 419, 357);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_CT), 519, 366);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 555, 357);
+            font = UnitUtil.deriveFont(7.0f);
+            g2d.setFont(font);
+        }
         // Internal
         g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_LT)), 400, 418);
         g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_RT)), 521, 418);

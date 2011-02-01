@@ -83,11 +83,11 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
         removeAllListeners();
         clanArmor.setVisible(unit.isMixedTech());
         clanArmor.setSelected(unit.isClanArmor(0));
-        maxArmorLabel.setText(String.format("/ %1$d", UnitUtil.getMaximumArmorPoints(unit, 0)));
+        maxArmorLabel.setText(String.format("/ %1$d", UnitUtil.getMaximumArmorPoints(unit)));
         createSystemList();
         setTotalPoints();
         addAllListeners();
-        ((SpinnerNumberModel) armorPoints.getModel()).setMaximum(UnitUtil.getMaximumArmorPoints(unit, 0));
+        ((SpinnerNumberModel) armorPoints.getModel()).setMaximum(UnitUtil.getMaximumArmorPoints(unit));
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -163,12 +163,12 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
     }
 
     private void maximizeArmor() {
-        armorPoints.setValue(UnitUtil.getMaximumArmorPoints(unit, 0));
+        armorPoints.setValue(UnitUtil.getMaximumArmorPoints(unit));
     }
 
     private void setTotalPoints() {
         armorPoints.setValue(unit.getOArmor(BattleArmor.LOC_TROOPER_1));
-        armorPoints.setToolTipText("Max Points: " + UnitUtil.getMaximumArmorPoints(unit, 0));
+        armorPoints.setToolTipText("Max Points: " + UnitUtil.getMaximumArmorPoints(unit));
     }
 
     public void setArmorType(int type) {

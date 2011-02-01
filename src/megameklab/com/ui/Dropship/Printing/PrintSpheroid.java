@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -45,7 +45,7 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * @author Torren
- * 
+ *
  */
 public class PrintSpheroid implements Printable {
 
@@ -213,7 +213,7 @@ public class PrintSpheroid implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2010", 65.5f, 779.5f);
+        g2d.drawString("2011", 65.5f, 779.5f);
     }
 
     private void printArmor(Graphics2D g2d) {
