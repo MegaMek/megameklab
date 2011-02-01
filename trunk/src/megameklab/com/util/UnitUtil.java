@@ -565,6 +565,10 @@ public class UnitUtil {
         UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
     }
 
+    public static boolean isPrintableEquipment(EquipmentType eq) {
+        return UnitUtil.isPrintableEquipment(eq, false);
+    }
+
     /**
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
@@ -572,7 +576,7 @@ public class UnitUtil {
      * @param eq
      * @return
      */
-    public static boolean isPrintableEquipment(EquipmentType eq) {
+    public static boolean isPrintableEquipment(EquipmentType eq, boolean isMech) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
@@ -582,7 +586,7 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isJumpJet(eq)) {
+        if (UnitUtil.isJumpJet(eq) && isMech) {
             return false;
         }
         if (!eq.isHittable()) {

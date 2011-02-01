@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -627,22 +627,25 @@ public class ImageHelper {
     }
 
     public static void printC3sName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+
+        Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
             g2d.drawString("O C  Slave", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "O C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
             g2d.drawString("C  Slave", lineStart, linePoint);
-            stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
+            stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 
         // stringWidth = ImageHelper.getStringWidth(g2d, "C", font);
 
-        font = font.deriveFont(attrMap);
-        g2d.setFont(font);
+        c3Font = font.deriveFont(attrMap);
+        g2d.setFont(c3Font);
         g2d.drawString("3", lineStart + stringWidth, linePoint);
+        g2d.setFont(font);
 
     }
 
@@ -741,12 +744,12 @@ public class ImageHelper {
 
     public static void printMashCore(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored, Entity entity) {
         int theaters = entity.countWorkingMisc(MiscType.F_MASH_EXTRA) + 1;
-        String theaterString = theaters>1?" theaters)":" theater)";
+        String theaterString = theaters > 1 ? " theaters)" : " theater)";
         String printString;
         if (isArmored) {
-            printString = "O MASH Equipment ("+theaters+theaterString;
+            printString = "O MASH Equipment (" + theaters + theaterString;
         } else {
-            printString = "MASH Equipment ("+theaters+theaterString;
+            printString = "MASH Equipment (" + theaters + theaterString;
         }
         g2d.setFont(UnitUtil.getNewFont(g2d, printString, false, 85, font.getSize2D()));
         g2d.drawString(printString, lineStart, linePoint);
@@ -755,12 +758,12 @@ public class ImageHelper {
 
     public static void printDroneControl(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored, Entity entity) {
         int drones = entity.countWorkingMisc(MiscType.F_DRONE_EXTRA);
-        String droneString = drones>1?" drones)":" drone)";
+        String droneString = drones > 1 ? " drones)" : " drone)";
         String printString;
         if (isArmored) {
-            printString = "O Drone Carrier Control System ("+drones+droneString;
+            printString = "O Drone Carrier Control System (" + drones + droneString;
         } else {
-            printString = "Drone Carrier Control System ("+drones+droneString;
+            printString = "Drone Carrier Control System (" + drones + droneString;
         }
         g2d.setFont(UnitUtil.getNewFont(g2d, printString, false, 85, font.getSize2D()));
         g2d.drawString(printString, lineStart, linePoint);
@@ -881,19 +884,21 @@ public class ImageHelper {
             yStep = yDifference / 2;
             float x = start[0] + (xStep);
             float y = start[1] + (yStep);
-            result.add(new float[]{x,y});
+            result.add(new float[]
+                { x, y });
             return result;
         } else if (points == 0) {
             return result;
         }
 
         for (int i = 0; i < points; i++) {
-           float x = start[0] + (xStep * i);
-           float y = start[1] + (yStep * i);
+            float x = start[0] + (xStep * i);
+            float y = start[1] + (yStep * i);
 
-           result.add(new float[]{x,y});
+            result.add(new float[]
+                { x, y });
         }
         return result;
-     }
+    }
 
 }
