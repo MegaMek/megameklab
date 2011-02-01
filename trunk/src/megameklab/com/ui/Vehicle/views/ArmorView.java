@@ -246,12 +246,11 @@ public class ArmorView extends IView implements ChangeListener {
     public void refresh() {
         JPanel masterPanel;
         removeAllListeners();
-        int maxArmor = 0;
+        int maxArmor = UnitUtil.getMaximumArmorPoints(unit);;
         turretPanel.removeAll();
         turretPanel.setBorder(null);
 
         for (int location = 0; location < unit.locations(); location++) {
-            maxArmor = UnitUtil.getMaximumArmorPoints(unit, location);
 
             switch (location) {
                 case Tank.LOC_FRONT:

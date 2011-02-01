@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -280,12 +280,12 @@ public class PrintWiGE implements Printable {
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
 
-        g2d.drawString("2010", 62.5f, 374f);
+        g2d.drawString("2011", 62.5f, 374f);
 
         if (tank2 != null) {
             printTank2Data(g2d);
         } else {
-            g2d.drawString("2010", 62.5f, 374f + secondPageMargin);
+            g2d.drawString("2011", 62.5f, 374f + secondPageMargin);
         }
     }
 
@@ -422,7 +422,7 @@ public class PrintWiGE implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2010", 105f, 745.5f);
+        g2d.drawString("2011", 105f, 745.5f);
     }
 
     private void printArmor(Graphics2D g2d) {
