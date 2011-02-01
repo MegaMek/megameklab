@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -95,7 +95,7 @@ public class UnitUtil {
     /**
      * tells is EquipementType is an equipment that uses crits/mounted and is
      * spread across multiple locations
-     * 
+     *
      * @param eq
      * @return
      */
@@ -105,7 +105,7 @@ public class UnitUtil {
 
     /**
      * tells if the EquipmentType is a type of armor
-     * 
+     *
      * @param eq
      * @return
      */
@@ -121,7 +121,7 @@ public class UnitUtil {
 
     /**
      * tells if the EquipmentType is a type of armor
-     * 
+     *
      * @param eq
      * @return
      */
@@ -137,7 +137,7 @@ public class UnitUtil {
 
     /**
      * tells if EquipmentType is TSM or TargetComp
-     * 
+     *
      * @param eq
      * @return
      */
@@ -148,7 +148,7 @@ public class UnitUtil {
     /**
      * Returns the number of crits used by EquipmentType eq, 1 if armor or
      * structure EquipmentType
-     * 
+     *
      * @param unit
      * @param eq
      * @return
@@ -190,7 +190,7 @@ public class UnitUtil {
 
     /**
      * Sets the corresponding critical slots to null for the Mounted object.
-     * 
+     *
      * @param unit
      * @param eq
      */
@@ -212,7 +212,7 @@ public class UnitUtil {
 
     /**
      * Tells if param EQ is a targetting computer.
-     * 
+     *
      * @param eq
      *            Mounted that might be a targetting computer
      * @return True if is a targetting computer false if not.
@@ -227,7 +227,7 @@ public class UnitUtil {
 
     /**
      * Reset all the Crits and Mounts on the Unit.
-     * 
+     *
      * @param unit
      */
     public static void resetCriticalsAndMounts(Mech unit) {
@@ -250,7 +250,7 @@ public class UnitUtil {
 
     /**
      * Check to see if the unit is using Clan TC
-     * 
+     *
      * @param unit
      * @return
      */
@@ -267,7 +267,7 @@ public class UnitUtil {
     /**
      * Updates TC Crits and Mounts based on weapons on a unit or if the TC has
      * been removed.
-     * 
+     *
      * @param unit
      */
     public static Mounted updateTC(Entity unit, EquipmentType tc) {
@@ -277,7 +277,7 @@ public class UnitUtil {
 
     /**
      * Creates TC Mount.
-     * 
+     *
      * @param unit
      */
     public static Mounted createTCMounts(Entity unit, EquipmentType tc) {
@@ -291,7 +291,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if unit can use the techlevel
-     * 
+     *
      * @param unit
      * @param techLevel
      * @return Boolean if the tech level is legal for the passed unit
@@ -325,7 +325,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if the unit uses compact heat sinks
-     * 
+     *
      * @param unit
      * @return
      */
@@ -351,7 +351,7 @@ public class UnitUtil {
 
     /**
      * Checks if the unit has laser heatsinks.
-     * 
+     *
      * @param unit
      * @return
      */
@@ -372,7 +372,7 @@ public class UnitUtil {
 
     /***
      * Checks for Clan DHS
-     * 
+     *
      * @param unit
      * @return
      */
@@ -400,7 +400,7 @@ public class UnitUtil {
 
     /**
      * Checks for IS Double Heat Sinks
-     * 
+     *
      * @param unit
      * @return
      */
@@ -427,7 +427,7 @@ public class UnitUtil {
 
     /**
      * checks if Mounted is a heat sink
-     * 
+     *
      * @param eq
      * @return
      */
@@ -441,7 +441,7 @@ public class UnitUtil {
 
     /**
      * Checks if EquipmentType is a heat sink
-     * 
+     *
      * @param eq
      * @return
      */
@@ -455,7 +455,7 @@ public class UnitUtil {
 
     /**
      * Checks if EquipmentType is a Mech Physical weapon
-     * 
+     *
      * @param eq
      * @return
      */
@@ -472,7 +472,7 @@ public class UnitUtil {
 
     /**
      * Removes all heat sinks from the mek
-     * 
+     *
      * @param unit
      */
     public static void removeHeatSinks(Mech unit) {
@@ -493,7 +493,7 @@ public class UnitUtil {
 
     /**
      * adds all heat sinks to the mech
-     * 
+     *
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -551,7 +551,7 @@ public class UnitUtil {
 
     /**
      * updates the heat sinks.
-     * 
+     *
      * @param unit
      * @param hsAmount
      * @param hsType
@@ -572,7 +572,7 @@ public class UnitUtil {
     /**
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
-     * 
+     *
      * @param eq
      * @return
      */
@@ -608,7 +608,7 @@ public class UnitUtil {
     /**
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
-     * 
+     *
      * @param eq
      * @return
      */
@@ -707,14 +707,10 @@ public class UnitUtil {
         return tonnage;
     }
 
-    public static int getMaximumArmorPoints(Entity unit, int location) {
+    public static int getMaximumArmorPoints(Entity unit) {
         int points = 0;
         if (unit instanceof Mech) {
-            points = (unit.getInternal(location) * 2);
-
-            if (location == Mech.LOC_HEAD) {
-                points = 9;
-            }
+            points = (unit.getTotalInternal() * 2) + 3;
         } else if (unit instanceof Tank) {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit instanceof BattleArmor) {
@@ -725,52 +721,38 @@ public class UnitUtil {
 
     public static double getMaximumArmorTonnage(Entity unit) {
 
-        double armorPerTon = 0;
+        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(1), unit.getArmorTechLevel(1));
         double armorWeight = 0;
-        double totalArmorWeight = 0;
 
-        for (int loc = 0; loc < unit.locations(); loc++) {
-            armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(loc), unit.getArmorTechLevel(loc));
-            armorWeight = 0;
-
-            if (unit.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED) {
-                armorPerTon = 8.0;
-            }
-            if (unit instanceof Mech) {
-                double points = (unit.getInternal(loc) * 2);
-
-                if (loc == Mech.LOC_HEAD) {
-                    points = 9;
-                }
-
-                armorWeight = points / armorPerTon;
-                armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
-            } else if (unit instanceof Tank) {
-                double points = Math.floor((unit.getWeight() * 3.5) + 40);
-                armorWeight = points / armorPerTon;
-                armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
-            } else if (unit instanceof BattleArmor) {
-                armorWeight = (unit.getWeightClass() * 4) + 2;
-            }
-            totalArmorWeight += armorWeight;
+        if (unit.getArmorType(1) == EquipmentType.T_ARMOR_HARDENED) {
+            armorPerTon = 8.0;
         }
-        return totalArmorWeight;
+        if (unit instanceof Mech) {
+            double points = (unit.getTotalInternal() * 2) + 3;
+            armorWeight = points / armorPerTon;
+            armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
+        } else if (unit instanceof Tank) {
+            double points = Math.floor((unit.getWeight() * 3.5) + 40);
+            armorWeight = points / armorPerTon;
+            armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
+        } else if (unit instanceof BattleArmor) {
+            armorWeight = (unit.getWeightClass() * 4) + 2;
+        }
+        return armorWeight;
     }
 
+    /**
+     * NOTE: only use for non-patchwork armor
+     * @param unit
+     * @param armorTons
+     * @return
+     */
     public static int getArmorPoints(Entity unit, double armorTons) {
-        double armorPerTon = 0;
-        double totalArmorPoints = 0;
-
-        for (int loc = 0; loc < unit.locations(); loc++) {
-            armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(loc), unit.getArmorTechLevel(loc));
-
-            if (unit.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED) {
-                armorPerTon = 8.0;
-            }
-
-            totalArmorPoints += Math.min(Math.floor(armorPerTon * armorTons), UnitUtil.getMaximumArmorPoints(unit, loc));
+        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(1), unit.getArmorTechLevel(1));
+        if (unit.getArmorType(1) == EquipmentType.T_ARMOR_HARDENED) {
+            armorPerTon = 8.0;
         }
-        return (int) totalArmorPoints;
+        return Math.min((int) Math.floor(armorPerTon * armorTons), UnitUtil.getMaximumArmorPoints(unit));
     }
 
     public static void reIndexCrits(Entity unit) {
@@ -894,7 +876,7 @@ public class UnitUtil {
     /**
      * Expands crits that are a single mount by have multiple spreadable crits
      * Such as TSM, Endo Steel, Reactive armor.
-     * 
+     *
      * @param unit
      */
     public static void expandUnitMounts(Mech unit) {
@@ -929,7 +911,7 @@ public class UnitUtil {
     /**
      * create a Mounted and corresponding CriticalSlots for the passed in
      * <code>EquipmentType</code> on the passed in <code>Mech</code>
-     * 
+     *
      * @param unit
      * @param equip
      * @return
@@ -1151,7 +1133,7 @@ public class UnitUtil {
 
     /**
      * Checks to see if something is a Jump Jet
-     * 
+     *
      * @param eq
      * @return
      */
@@ -1434,7 +1416,7 @@ public class UnitUtil {
 
     /**
      * Returns the units tech type.
-     * 
+     *
      * @param unit
      * @return
      */
@@ -1779,7 +1761,7 @@ public class UnitUtil {
     /**
      * remove all CriticalSlots on the passed unit that are internal structur or
      * armor
-     * 
+     *
      * @param unit
      *            the Entity
      * @param internalStructure
@@ -1813,7 +1795,7 @@ public class UnitUtil {
     /**
      * remove all Mounteds on the passed unit that are internal structur or
      * armor
-     * 
+     *
      * @param unit
      *            the Entity
      * @param internalStructure
@@ -1957,7 +1939,7 @@ public class UnitUtil {
 
     /**
      * check that the unit is vaild
-     * 
+     *
      * @param unit
      * @return
      */
@@ -2218,41 +2200,59 @@ public class UnitUtil {
     }
 
     public static int getLowestBARRating(Entity unit) {
-        int BAR = 10;
+        int bar = 10;
 
         for (int loc = 0; loc < unit.locations(); loc++) {
-            if (unit.getBARRating(loc) < BAR) {
-                BAR = unit.getBARRating(loc);
+            if (unit.getBARRating(loc) < bar) {
+                bar = unit.getBARRating(loc);
             }
         }
-
-        return BAR;
+        return bar;
     }
 
-    public static boolean hasHardenedArmor(Entity unit) {
-        for (int loc = 0; loc < unit.locations(); loc++) {
-            if ((unit.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED)) {
-                return true;
-            }
+    public static String getArmorString(Mech mech, int loc) {
+        if (!mech.hasPatchworkArmor()) {
+            return "";
         }
-        return false;
-    }
-
-    public static boolean hasHardenedArmorOnLegs(Mech mech) {
-
-        int locations = 2;
-
-        if (mech instanceof QuadMech) {
-            locations = 4;
+        StringBuilder sb = new StringBuilder("");
+        switch (mech.getArmorType(loc)) {
+            case EquipmentType.T_ARMOR_REFLECTIVE:
+                sb.append("LR");
+                break;
+            case EquipmentType.T_ARMOR_HARDENED:
+                sb.append("HD");
+                break;
+            case EquipmentType.T_ARMOR_LIGHT_FERRO:
+                sb.append("LF");
+                break;
+            case EquipmentType.T_ARMOR_HEAVY_FERRO:
+                sb.append("HF");
+                break;
+            case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+            case EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO:
+                sb.append("FF");
+                break;
+            case EquipmentType.T_ARMOR_STEALTH:
+                sb.append("SA");
+                break;
+            case EquipmentType.T_ARMOR_INDUSTRIAL:
+                sb.append("IN");
+                break;
+            case EquipmentType.T_ARMOR_COMMERCIAL:
+                sb.append("CO");
+                break;
+            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+                sb.append("FL");
+                break;
+            case EquipmentType.T_ARMOR_REACTIVE:
+                sb.append("RE");
+                break;
+            default:
+                return "";
         }
-
-        for (int loc = Mech.LOC_LLEG; locations > 0; locations--) {
-
-            if (mech.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED) {
-                return true;
-            }
-            loc--;
+        if (mech.hasBARArmor(loc)) {
+            sb.append(" B"+mech.getBARRating(loc));
         }
-        return false;
+        return sb.toString();
     }
 }
