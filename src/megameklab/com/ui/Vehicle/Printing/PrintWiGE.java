@@ -747,9 +747,9 @@ public class PrintWiGE implements Printable {
 
     private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         int[] topColumn = new int[]
-            { 454, 154 };
+            { 454, 155 };
         int[] bottomColumn = new int[]
-            { 454, 162 };
+            { 454, 163 };
         int[] pipShift = new int[]
             { 7, 7 };
 
