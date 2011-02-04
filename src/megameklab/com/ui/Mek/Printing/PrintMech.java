@@ -209,6 +209,7 @@ public class PrintMech implements Printable {
             g2d.drawImage(ImageHelper.getUMImage(), 31, 156, 40, 15, null);
             g2d.drawString(Integer.toString(mech.getAllUMUCount()), 79, 166);
         } else {
+            int jump = mech.getJumpMP();
             g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
         }
 
@@ -1961,7 +1962,7 @@ public class PrintMech implements Printable {
 
                 }
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 86, 7.0f));
+                g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 85, 7.0f));
 
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
                     ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
