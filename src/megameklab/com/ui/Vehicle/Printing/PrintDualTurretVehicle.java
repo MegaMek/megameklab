@@ -136,7 +136,7 @@ public class PrintDualTurretVehicle implements Printable {
         String tankName = tank.getChassis() + " " + tank.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, tankName, true, 180, 10.0f));
-        g2d.drawString(tankName, 49, 121);
+        g2d.drawString(tankName, 49, 120);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
@@ -283,7 +283,7 @@ public class PrintDualTurretVehicle implements Printable {
         String tankName = tank2.getChassis().toUpperCase() + " " + tank2.getModel().toUpperCase();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, tankName, true, 180, 10.0f));
-        g2d.drawString(tankName, 49, 494);
+        g2d.drawString(tankName, 49, 493);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
