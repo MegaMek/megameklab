@@ -144,7 +144,7 @@ public class PrintLargeSupportVehicle implements Printable {
         String largesupportankName = largesupportank.getChassis() + " " + largesupportank.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, largesupportankName, true, 180, 10.0f));
-        g2d.drawString(largesupportankName, 49, 121);
+        g2d.drawString(largesupportankName, 49, 120);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
@@ -286,7 +286,7 @@ public class PrintLargeSupportVehicle implements Printable {
         String largesupportankName = largesupportank2.getChassis().toUpperCase() + " " + largesupportank2.getModel().toUpperCase();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, largesupportankName, true, 180, 10.0f));
-        g2d.drawString(largesupportankName, 49, 494);
+        g2d.drawString(largesupportankName, 49, 493);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
