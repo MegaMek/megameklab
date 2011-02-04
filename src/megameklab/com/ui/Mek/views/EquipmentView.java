@@ -247,12 +247,18 @@ public class EquipmentView extends IView implements ActionListener {
                 mount = UnitUtil.createSpreadMounts(getMech(), equip);
                 success = mount != null;
             } else if (isMisc && equip.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                setJumpBoosterMP(Integer.parseInt(JOptionPane.showInputDialog(this, "How many Jump MP?")));
-                updateJumpMP();
-                if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-                    mount = UnitUtil.createSpreadMounts(getMech(), equip);
-                    success = mount != null;
+                String jumpMp = JOptionPane.showInputDialog(this, "How many Jump MP?");
+                try {
+                    setJumpBoosterMP(Integer.parseInt(jumpMp));
+                    updateJumpMP();
+                    if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
+                        mount = UnitUtil.createSpreadMounts(getMech(), equip);
+                        success = mount != null;
+                    }
+                } catch (NumberFormatException ex) {
+                    // user didn't enter a number, don't add the jump booster
                 }
+
             } else if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(unit)) {
                     mount = UnitUtil.updateTC(getMech(), equip);
