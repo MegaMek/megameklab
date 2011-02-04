@@ -246,6 +246,8 @@ public class ImageHelperVehicle {
                     g2d.drawString(name, typePoint, linePoint);
                 }
 
+                g2d.setFont(font);
+
                 String location = tank.getLocationAbbr(pos);
 
                 if (location.equalsIgnoreCase("TU")) {
