@@ -31,7 +31,6 @@ import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.CLPlasmaCannon;
-import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.ISC3M;
@@ -51,7 +50,6 @@ import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MGWeapon;
 import megamek.common.weapons.MRMWeapon;
 import megamek.common.weapons.NarcWeapon;
-import megamek.common.weapons.PulseLaserWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.ScreenLauncherWeapon;
@@ -180,11 +178,11 @@ public class StringUtils {
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
                     info += "DB,";
                 }
-                if (UnitUtil.isAMS(weapon) || (weapon instanceof BPodWeapon)) {
+                if (UnitUtil.isAMS(weapon) || (weapon.hasFlag(WeaponType.F_B_POD))) {
                     info += "PD,";
-                } else if (weapon instanceof PulseLaserWeapon) {
+                } else if (weapon.hasFlag(WeaponType.F_PULSE)) {
                     info += "P,";
-                } else if (weapon instanceof EnergyWeapon) {
+                } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
                     info += "DE,";
                 }
 
@@ -290,9 +288,9 @@ public class StringUtils {
                 }
                 if (UnitUtil.isAMS(weapon) || (weapon instanceof BPodWeapon)) {
                     info += "PD,";
-                } else if (weapon instanceof PulseLaserWeapon) {
+                } else if (weapon.hasFlag(WeaponType.F_PULSE)) {
                     info += "P,";
-                } else if (weapon instanceof EnergyWeapon) {
+                } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
                     info += "DE,";
                 }
 
