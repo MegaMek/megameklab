@@ -57,14 +57,10 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megamek.common.weapons.BPodWeapon;
-import megamek.common.weapons.CLAMS;
-import megamek.common.weapons.CLLaserAMS;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.HVACWeapon;
-import megamek.common.weapons.ISAMS;
-import megamek.common.weapons.ISLaserAMS;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.LegAttack;
@@ -826,7 +822,7 @@ public class UnitUtil {
     }
 
     public static boolean isAMS(WeaponType weapon) {
-        return (weapon instanceof ISAMS) || (weapon instanceof CLAMS) || (weapon instanceof CLLaserAMS) || (weapon instanceof ISLaserAMS);
+        return weapon.hasFlag(WeaponType.F_AMS);
     }
 
     public static boolean hasSwitchableAmmo(WeaponType weapon) {
