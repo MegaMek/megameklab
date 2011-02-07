@@ -316,7 +316,7 @@ public class EquipmentInfo {
                 (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE) ||
                         mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM) ||
                         mount.getType().hasSubType(MiscType.S_VIBRO_SMALL))) {
-            heat = unit.getActiveVibrobladeHeat(mount.getLocation());
+            heat = unit.getActiveVibrobladeHeat(mount.getLocation(), true);
         }
 
         isBAMineLayer = mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
