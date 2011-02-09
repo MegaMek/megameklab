@@ -1042,7 +1042,7 @@ public class ImageHelperVehicle {
         }
 
         if (armorTypes.length() > 0) {
-            armorTypes.delete(armorTypes.length() - 3, armorTypes.length() - 1);
+            armorTypes.delete(armorTypes.length() - 2, armorTypes.length() - 1);
         }
         return armorTypes.toString().trim();
     }
