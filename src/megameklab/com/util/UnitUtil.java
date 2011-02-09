@@ -2165,7 +2165,7 @@ public class UnitUtil {
         JDialog jdialog = new JDialog();
 
         jdialog.add(scroll);
-        Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2, CConfig.getIntParam("WINDOWHEIGHT"));
+        Dimension size = new Dimension((int)(CConfig.getIntParam("WINDOWWIDTH") / 1.5), CConfig.getIntParam("WINDOWHEIGHT"));
 
         jdialog.setPreferredSize(size);
         jdialog.setMinimumSize(size);
