@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -57,6 +57,7 @@ public class MainUI extends MegaMekLabMainUI {
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
+    private MenuBarCreator menubarcreator;
 
     public MainUI() {
 
@@ -64,7 +65,8 @@ public class MainUI extends MegaMekLabMainUI {
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewUnit(false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
-        setJMenuBar(new MenuBarCreator(entity, this));
+        menubarcreator = new MenuBarCreator(entity, this);
+        setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.getVerticalScrollBar().setUnitIncrement(20);
@@ -145,6 +147,9 @@ public class MainUI extends MegaMekLabMainUI {
 
         ba.setChassis("New");
         ba.setModel("BattleArmor");
+        if (menubarcreator != null) {
+            menubarcreator.setUnit(ba);
+        }
     }
 
     @Override

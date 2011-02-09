@@ -1105,4 +1105,8 @@ public class MenuBarCreator extends JMenuBar {
         new EquipmentViewerDialog(parentFrame);
     }
 
+    public void setUnit(Entity unit) {
+        this.unit = unit;
+    }
+
 }
