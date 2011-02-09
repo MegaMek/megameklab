@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -268,7 +268,7 @@ public class ImageHelperDropShip {
                 for (int weaponIndex : eq.getBayWeapons()) {
                     Mounted weapon = dropship.getEquipment(weaponIndex);
 
-                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase(weapon.getName()) || (weapon.getType().getTechLevel() != eqi.techLevel)) {
+                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase(UnitUtil.getCritName(dropship, weapon.getType())) || (weapon.getType().getTechLevel() != eqi.techLevel)) {
                         if (eqi != null) {
                             eqi = new EquipmentInfo(dropship, weapon, eq);
                             equipmentName = eqi.name;
@@ -288,7 +288,7 @@ public class ImageHelperDropShip {
                 for (int weaponIndex : eq.getBayWeapons()) {
                     Mounted weapon = dropship.getEquipment(weaponIndex);
 
-                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase(weapon.getName()) || (weapon.getType().getTechLevel() != eqi.techLevel)) {
+                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase((UnitUtil.getCritName(dropship, weapon.getType()))) || (weapon.getType().getTechLevel() != eqi.techLevel)) {
                         if (eqi != null) {
                             eqi = new EquipmentInfo(dropship, weapon, eq);
                             eqi.shouldIndent = true;
@@ -616,7 +616,7 @@ public class ImageHelperDropShip {
         if (bay.getDoors() > 0) {
             returnString.append(" (");
             returnString.append(bay.getDoors());
-            returnString.append(bay.getDoors()>1?" doors)":" door)");
+            returnString.append(bay.getDoors() > 1 ? " doors)" : " door)");
         }
 
         return returnString.toString();
