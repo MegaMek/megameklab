@@ -160,7 +160,14 @@ public class PrintConventionalFighter implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (convFighter.isClan()) {
+
+        if (convFighter.isMixedTech()) {
+            if (convFighter.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (convFighter.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 143.5f);

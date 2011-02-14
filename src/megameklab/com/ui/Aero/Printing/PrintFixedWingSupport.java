@@ -161,7 +161,14 @@ public class PrintFixedWingSupport implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (fixedWingSupport.isClan()) {
+
+        if (fixedWingSupport.isMixedTech()) {
+            if (fixedWingSupport.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (fixedWingSupport.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 143.5f);

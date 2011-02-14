@@ -224,7 +224,13 @@ public class PrintLargeSupportVehicle implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (largesupportank.isClan()) {
+        if (largesupportank.isMixedTech()) {
+            if (largesupportank.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (largesupportank.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 145);
@@ -366,7 +372,13 @@ public class PrintLargeSupportVehicle implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (largesupportank2.isClan()) {
+        if (largesupportank2.isMixedTech()) {
+            if (largesupportank2.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (largesupportank2.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 145);

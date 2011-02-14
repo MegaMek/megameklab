@@ -152,7 +152,14 @@ public class PrintAero implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (aero.isClan()) {
+
+        if (aero.isMixedTech()) {
+            if (aero.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (aero.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 143.5f);

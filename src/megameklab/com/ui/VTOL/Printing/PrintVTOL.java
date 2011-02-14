@@ -227,7 +227,14 @@ public class PrintVTOL implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (vtol.isClan()) {
+
+        if (vtol.isMixedTech()) {
+            if (vtol.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (vtol.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 145);
@@ -376,7 +383,14 @@ public class PrintVTOL implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (vtol2.isClan()) {
+
+        if (vtol2.isMixedTech()) {
+            if (vtol2.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (vtol2.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 145);
