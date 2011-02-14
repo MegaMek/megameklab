@@ -161,7 +161,14 @@ public class PrintSpheroid implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (dropship.isClan()) {
+
+        if (dropship.isMixedTech()) {
+            if (dropship.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (dropship.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 150.5f);

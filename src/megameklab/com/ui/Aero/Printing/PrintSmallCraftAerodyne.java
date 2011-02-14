@@ -152,7 +152,14 @@ public class PrintSmallCraftAerodyne implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (smallCraft.isClan()) {
+
+        if (smallCraft.isMixedTech()) {
+            if (smallCraft.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (smallCraft.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 143.5f);
