@@ -307,7 +307,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         createHeatSinkList();
         createGyroList();
 
-        cockpitType.setSelectedIndex(getMech().getCockpitType());
+        cockpitType.setSelectedItem(Mech.COCKPIT_SHORT_STRING[getMech().getCockpitType()]);
         setStructureCombo();
         gyroType.setSelectedIndex(getMech().getGyroType());
 
@@ -475,7 +475,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 // if a mech is primitive and thus needs a larger engine
                 if (combo.equals(engineType) || combo.equals(walkMP) || combo.equals(cockpitType)) {
                     if (combo.equals(cockpitType)) {
-                        getMech().setCockpitType(combo.getSelectedIndex());
+                        getMech().setCockpitType(Mech.getCockpitTypeForString(combo.getSelectedItem().toString()));
                         getMech().clearCockpitCrits();
                         switch (getMech().getCockpitType()) {
                             case Mech.COCKPIT_COMMAND_CONSOLE:
@@ -1049,7 +1049,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         structureCombo.removeAllItems();
         cockpitType.removeAllItems();
         int structCount = EquipmentType.structureNames.length;
-        int cockpitCount = Mech.COCKPIT_SHORT_STRING.length;
 
         boolean isClan = getMech().isClan();
         boolean isMixed = getMech().isMixedTech();
@@ -1057,35 +1056,72 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         switch (getMech().getTechLevel()) {
             case TechConstants.T_INTRO_BOXSET:
                 structCount = 1;
-                cockpitCount = 1;
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
                 break;
             case TechConstants.T_CLAN_TW:
                 structCount = 3;
-                cockpitCount = 5;
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
                 break;
             case TechConstants.T_IS_TW_NON_BOX:
                 structCount = 3;
-                cockpitCount = 5;
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
                 break;
             case TechConstants.T_CLAN_ADVANCED:
                 structCount = 3;
-                cockpitCount = 6;
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
                 break;
             case TechConstants.T_IS_ADVANCED:
                 structCount = 3;
-                cockpitCount = 6;
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
                 break;
             case TechConstants.T_CLAN_EXPERIMENTAL:
-                cockpitCount = 7;
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
                 break;
             case TechConstants.T_IS_EXPERIMENTAL:
-                cockpitCount = 7;
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
                 break;
             case TechConstants.T_CLAN_UNOFFICIAL:
-                cockpitCount = 8;
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
+
                 break;
             case TechConstants.T_IS_UNOFFICIAL:
-                cockpitCount = 8;
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
                 break;
         }
 
@@ -1111,9 +1147,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             }
         }
 
-        for (int index = 0; index < cockpitCount; index++) {
-            cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[index]);
-        }
 
     }
 
