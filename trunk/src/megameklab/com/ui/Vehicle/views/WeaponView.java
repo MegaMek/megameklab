@@ -391,7 +391,9 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         }
 
         for (Mounted mount : unit.getAmmo()) {
-            weaponList.addCrit(mount);
+            if (mount.getShotsLeft() > 1) {
+                weaponList.addCrit(mount);
+            }
         }
     }
 
