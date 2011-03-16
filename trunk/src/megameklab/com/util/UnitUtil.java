@@ -767,7 +767,11 @@ public class UnitUtil {
 
     public static void compactCriticals(Entity unit) {
         for (int loc = 0; loc < unit.locations(); loc++) {
-            UnitUtil.compactCriticals(unit, loc);
+            if (unit instanceof Mech) {
+                UnitUtil.compactCriticals((Mech)unit, loc);
+            } else {
+                UnitUtil.compactCriticals(unit, loc);
+            }
         }
     }
 
