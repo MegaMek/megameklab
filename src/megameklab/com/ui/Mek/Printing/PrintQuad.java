@@ -440,7 +440,7 @@ public class PrintQuad implements Printable {
     private void printHeadCrits(Graphics2D g2d) {
 
         int lineStart = 174;
-        int linePoint = 401;
+        int linePoint = 399;
         int lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_HEAD, lineStart, linePoint, lineFeed);
