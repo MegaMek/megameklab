@@ -26,6 +26,7 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -37,6 +38,7 @@ import megamek.common.Entity;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.weapons.Weapon;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
@@ -412,7 +414,48 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
         Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         try {
-            getMech().addEquipment(eq, location, false);
+            if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
+                String[] facings;
+                if (location == Mech.LOC_LT) {
+                    facings = new String[4];
+                    facings[0] = "Front";
+                    facings[1] = "Front-Left";
+                    facings[2] = "Rear-Left";
+                    facings[3] = "Rear";
+                } else if (location == Mech.LOC_RT) {
+                    facings = new String[4];
+                    facings[0] = "Front";
+                    facings[1] = "Front-Right";
+                    facings[2] = "Rear-Right";
+                    facings[3] = "Rear";
+                } else if (location == Mech.LOC_CT) {
+                    facings = new String[2];
+                    facings[0] = "Front";
+                    facings[1] = "Rear";
+                } else {
+                    JOptionPane.showMessageDialog(this, "VGL must be placed in torso location!", "Invalid location", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                String facing = (String)JOptionPane.showInputDialog(this, "Please choose the facing of the VGL", "Choose Facing", JOptionPane.QUESTION_MESSAGE, null, facings, facings[0]);
+                if (facing == null) {
+                    return;
+                }
+                getMech().addEquipment(eq, location, false);
+                if (facing.equals("Front-Left")) {
+                    eq.setFacing(5);
+                } else if (facing.equals("Front-Right")) {
+                    eq.setFacing(1);
+                } else if (facing.equals("Rear-Right")) {
+                    eq.setFacing(2);
+                } else if (facing.equals("Rear-Left")) {
+                    eq.setFacing(4);
+                } else if (facing.equals("Rear")) {
+                    eq.setFacing(3);
+                    UnitUtil.changeMountStatus(unit, eq, location, -1, true);
+                }
+            } else {
+                getMech().addEquipment(eq, location, false);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
