@@ -107,6 +107,30 @@ public class ArmorView extends IView implements ChangeListener {
     private JLabel unallocatedPointsLabel = new JLabel("Unallocated:", SwingConstants.TRAILING);
     private JLabel unallocatedPointsField = new JLabel();
 
+    private JLabel unallocatedPointsLabelPatchworkHead = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkLa = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkLt = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkCt = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkRt = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkRa = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkLl = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkRl = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkCtr = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkLtr = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkRtr = new JLabel("Unallocated:", SwingConstants.TRAILING);
+
+    private JLabel unallocatedPointsFieldHead = new JLabel();
+    private JLabel unallocatedPointsFieldLa = new JLabel();
+    private JLabel unallocatedPointsFieldLt = new JLabel();
+    private JLabel unallocatedPointsFieldCt = new JLabel();
+    private JLabel unallocatedPointsFieldRt = new JLabel();
+    private JLabel unallocatedPointsFieldRa = new JLabel();
+    private JLabel unallocatedPointsFieldLl = new JLabel();
+    private JLabel unallocatedPointsFieldRl = new JLabel();
+    private JLabel unallocatedPointsFieldCtr = new JLabel();
+    private JLabel unallocatedPointsFieldLtr = new JLabel();
+    private JLabel unallocatedPointsFieldRtr = new JLabel();
+
     private RefreshListener refresh;
 
     public ArmorView(Mech unit) {
@@ -233,6 +257,8 @@ public class ArmorView extends IView implements ChangeListener {
                         masterPanel.add(new JLabel(unit.getLocationName(location)));
                         masterPanel.add(topPanel);
                         bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkHead);
+                        bottomPanel.add(unallocatedPointsFieldHead);
                         masterPanel.add(bottomPanel);
                         masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
                         headPanel.add(new JPanel());
@@ -254,65 +280,94 @@ public class ArmorView extends IView implements ChangeListener {
                         masterPanel.add(laArmorField);
                         masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                         masterPanel.add(laArmorMaxLabel);
+                        bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkLa);
+                        bottomPanel.add(unallocatedPointsFieldLa);
                         laPanel.add(new JLabel(unit.getLocationAbbr(location)));
                         laPanel.add(masterPanel);
+                        laPanel.add(bottomPanel);
                         break;
                     case Mech.LOC_RARM:
                         masterPanel = new JPanel();
                         masterPanel.add(raArmorField);
                         masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                         masterPanel.add(raArmorMaxLabel);
+                        bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkRa);
+                        bottomPanel.add(unallocatedPointsFieldRa);
                         raPanel.add(new JLabel(unit.getLocationAbbr(location)));
                         raPanel.add(masterPanel);
+                        raPanel.add(bottomPanel);
                         break;
                     case Mech.LOC_CT:
                         masterPanel = new JPanel();
                         masterPanel.add(ctArmorField);
                         masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                         masterPanel.add(ctArmorMaxLabel);
+                        bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkCt);
+                        bottomPanel.add(unallocatedPointsFieldCt);
                         ctPanel.add(new JLabel(unit.getLocationAbbr(location)));
                         ctPanel.add(masterPanel);
+                        ctPanel.add(bottomPanel);
                         masterPanel = new JPanel();
                         masterPanel.add(ctrArmorField);
                         masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                         masterPanel.add(ctrArmorMaxLabel);
+                        bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkCtr);
+                        bottomPanel.add(unallocatedPointsFieldCtr);
                         ctrPanel.add(new JPanel());
                         ctrPanel.add(new JPanel());
                         ctrPanel.add(new JLabel(unit.getLocationAbbr(location) + "r"));
                         ctrPanel.add(masterPanel);
-                        ctrPanel.add(new JPanel());
+                        ctrPanel.add(bottomPanel);
                         break;
                     case Mech.LOC_LT:
                         masterPanel = new JPanel();
                         masterPanel.add(ltArmorField);
                         masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                         masterPanel.add(ltArmorMaxLabel);
+                        bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkLt);
+                        bottomPanel.add(unallocatedPointsFieldLt);
                         ltPanel.add(new JLabel(unit.getLocationAbbr(location)));
                         ltPanel.add(masterPanel);
+                        ltPanel.add(bottomPanel);
                         masterPanel = new JPanel();
                         masterPanel.add(ltrArmorField);
                         masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                         masterPanel.add(ltrArmorMaxLabel);
+                        bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkLtr);
+                        bottomPanel.add(unallocatedPointsFieldLtr);
                         ltrPanel.add(new JPanel());
                         ltrPanel.add(new JLabel(unit.getLocationAbbr(location) + "r"));
                         ltrPanel.add(masterPanel);
-                        ltrPanel.add(new JPanel());
+                        ltrPanel.add(bottomPanel);
                         break;
                     case Mech.LOC_RT:
                         masterPanel = new JPanel();
                         masterPanel.add(rtArmorField);
                         masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                         masterPanel.add(rtArmorMaxLabel);
+                        bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkRt);
+                        bottomPanel.add(unallocatedPointsFieldRt);
                         rtPanel.add(new JLabel(unit.getLocationAbbr(location)));
                         rtPanel.add(masterPanel);
+                        rtPanel.add(bottomPanel);
                         masterPanel = new JPanel();
                         masterPanel.add(rtrArmorField);
                         masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
                         masterPanel.add(rtrArmorMaxLabel);
+                        bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkRtr);
+                        bottomPanel.add(unallocatedPointsFieldRtr);
                         rtrPanel.add(new JPanel());
                         rtrPanel.add(new JLabel(unit.getLocationAbbr(location) + "r"));
                         rtrPanel.add(masterPanel);
-                        rtrPanel.add(new JPanel());
+                        rtrPanel.add(bottomPanel);
                         break;
                     case Mech.LOC_LLEG:
                         masterPanel = new JPanel();
@@ -325,6 +380,8 @@ public class ArmorView extends IView implements ChangeListener {
                         masterPanel.add(new JLabel(unit.getLocationAbbr(location)));
                         masterPanel.add(topPanel);
                         bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkLl);
+                        bottomPanel.add(unallocatedPointsFieldLl);
                         masterPanel.add(bottomPanel);
                         masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
                         llPanel.add(new JPanel());
@@ -344,6 +401,8 @@ public class ArmorView extends IView implements ChangeListener {
                         masterPanel.add(new JLabel(unit.getLocationAbbr(location)));
                         masterPanel.add(topPanel);
                         bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkRl);
+                        bottomPanel.add(unallocatedPointsFieldRl);
                         masterPanel.add(bottomPanel);
                         masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
                         rlPanel.add(new JPanel());
@@ -482,6 +541,60 @@ public class ArmorView extends IView implements ChangeListener {
         // can support.
         maxArmorLabel.setText(Integer.toString((unit.getTotalOInternal() * 2) + 3));
         // unallocated armorpoints
+        if (unit.hasPatchworkArmor()) {
+            unallocatedPointsLabel.setVisible(false);
+            unallocatedPointsField.setVisible(false);
+            unallocatedPointsLabelPatchworkHead.setVisible(true);
+            unallocatedPointsLabelPatchworkLa.setVisible(true);
+            unallocatedPointsLabelPatchworkLt.setVisible(true);
+            unallocatedPointsLabelPatchworkCt.setVisible(true);
+            unallocatedPointsLabelPatchworkRt.setVisible(true);
+            unallocatedPointsLabelPatchworkRa.setVisible(true);
+            unallocatedPointsLabelPatchworkLl.setVisible(true);
+            unallocatedPointsLabelPatchworkRl.setVisible(true);
+            unallocatedPointsLabelPatchworkCtr.setVisible(true);
+            unallocatedPointsLabelPatchworkLtr.setVisible(true);
+            unallocatedPointsLabelPatchworkRtr.setVisible(true);
+            unallocatedPointsFieldHead.setVisible(true);
+            unallocatedPointsFieldLa.setVisible(true);
+            unallocatedPointsFieldLt.setVisible(true);
+            unallocatedPointsFieldCt.setVisible(true);
+            unallocatedPointsFieldRt.setVisible(true);
+            unallocatedPointsFieldRa.setVisible(true);
+            unallocatedPointsFieldLl.setVisible(true);
+            unallocatedPointsFieldRl.setVisible(true);
+            unallocatedPointsFieldHead.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_HEAD, unit.getArmorWeight()) - unit.getTotalOArmor()));
+            unallocatedPointsFieldLa.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LARM, unit.getArmorWeight()) - unit.getTotalOArmor()));
+            unallocatedPointsFieldLt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LT, unit.getArmorWeight()) - unit.getTotalOArmor()));
+            unallocatedPointsFieldCt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_CT, unit.getArmorWeight()) - unit.getTotalOArmor()));
+            unallocatedPointsFieldRt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RT, unit.getArmorWeight()) - unit.getTotalOArmor()));
+            unallocatedPointsFieldRa.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RARM, unit.getArmorWeight()) - unit.getTotalOArmor()));
+            unallocatedPointsFieldLl.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LLEG, unit.getArmorWeight()) - unit.getTotalOArmor()));
+            unallocatedPointsFieldRl.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RLEG, unit.getArmorWeight()) - unit.getTotalOArmor()));
+        } else {
+            unallocatedPointsLabelPatchworkHead.setVisible(false);
+            unallocatedPointsLabelPatchworkLa.setVisible(false);
+            unallocatedPointsLabelPatchworkLt.setVisible(false);
+            unallocatedPointsLabelPatchworkCt.setVisible(false);
+            unallocatedPointsLabelPatchworkRt.setVisible(false);
+            unallocatedPointsLabelPatchworkRa.setVisible(false);
+            unallocatedPointsLabelPatchworkLl.setVisible(false);
+            unallocatedPointsLabelPatchworkRl.setVisible(false);
+            unallocatedPointsLabelPatchworkLtr.setVisible(false);
+            unallocatedPointsLabelPatchworkRtr.setVisible(false);
+            unallocatedPointsLabelPatchworkCtr.setVisible(false);
+            unallocatedPointsFieldHead.setVisible(false);
+            unallocatedPointsFieldLa.setVisible(false);
+            unallocatedPointsFieldLt.setVisible(false);
+            unallocatedPointsFieldCt.setVisible(false);
+            unallocatedPointsFieldRt.setVisible(false);
+            unallocatedPointsFieldRa.setVisible(false);
+            unallocatedPointsFieldLl.setVisible(false);
+            unallocatedPointsFieldRl.setVisible(false);
+            unallocatedPointsLabel.setVisible(true);
+            unallocatedPointsField.setVisible(true);
+            unallocatedPointsField.setText(Integer.toString(UnitUtil.getArmorPoints(unit, unit.getArmorWeight()) - unit.getTotalOArmor()));
+        }
         unallocatedPointsField.setText(Integer.toString(UnitUtil.getArmorPoints(unit, unit.getArmorWeight()) - unit.getTotalOArmor()));
         addAllListeners();
     }
