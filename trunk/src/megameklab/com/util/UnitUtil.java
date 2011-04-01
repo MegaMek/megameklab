@@ -1485,9 +1485,7 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isHeatSink(eq) || UnitUtil.isArmorOrStructure(eq) || UnitUtil.isJumpJet(eq) || UnitUtil.isMechEquipment(eq, (Mech) unit))
-
-        {
+        if (UnitUtil.isHeatSink(eq) || UnitUtil.isArmorOrStructure(eq) || UnitUtil.isJumpJet(eq) || UnitUtil.isMechEquipment(eq, (Mech) unit)) {
             return false;
         }
 
@@ -2015,6 +2013,13 @@ public class UnitUtil {
 
             if (eq.hasFlag(MiscType.F_SHOULDER_TURRET) && (!(unit instanceof BipedMech) || ((location != Mech.LOC_RT) && (location != Mech.LOC_LT)))) {
                 return false;
+            }
+
+        } else if (eq instanceof WeaponType) {
+            if (eq.hasFlag(WeaponType.F_VGL)) {
+                if ((unit instanceof Mech) && ((location != Mech.LOC_CT) && (location != Mech.LOC_RT) && (location != Mech.LOC_LT))) {
+                    return false;
+                }
             }
         }
 

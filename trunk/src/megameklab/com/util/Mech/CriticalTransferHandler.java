@@ -32,6 +32,7 @@ import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.RefreshListener;
@@ -184,7 +185,50 @@ public class CriticalTransferHandler extends TransferHandler {
                     }
                     changeMountStatus(eq, primaryLocation, nextLocation, false);
                 } else if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
-                    mech.addEquipment(eq, location, false);
+                    if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
+                        if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
+                            String[] facings;
+                            if (location == Mech.LOC_LT) {
+                                facings = new String[4];
+                                facings[0] = "Front";
+                                facings[1] = "Front-Left";
+                                facings[2] = "Rear-Left";
+                                facings[3] = "Rear";
+                            } else if (location == Mech.LOC_RT) {
+                                facings = new String[4];
+                                facings[0] = "Front";
+                                facings[1] = "Front-Right";
+                                facings[2] = "Rear-Right";
+                                facings[3] = "Rear";
+                            } else if (location == Mech.LOC_CT) {
+                                facings = new String[2];
+                                facings[0] = "Front";
+                                facings[1] = "Rear";
+                            }  else {
+                                JOptionPane.showMessageDialog(null, "VGL must be placed in torso location!", "Invalid location", JOptionPane.WARNING_MESSAGE);
+                                return false;
+                            }
+                            String facing = (String)JOptionPane.showInputDialog(null, "Please choose the facing of the VGL", "Choose Facing", JOptionPane.QUESTION_MESSAGE, null, facings, facings[0]);
+                            if (facing == null) {
+                                return false;
+                            }
+                            mech.addEquipment(eq, location, false);
+                            if (facing.equals("Front-Left")) {
+                                eq.setFacing(5);
+                            } else if (facing.equals("Front-Right")) {
+                                eq.setFacing(1);
+                            } else if (facing.equals("Rear-Right")) {
+                                eq.setFacing(2);
+                            } else if (facing.equals("Rear-Left")) {
+                                eq.setFacing(4);
+                            } else if (facing.equals("Rear")) {
+                                eq.setFacing(3);
+                                UnitUtil.changeMountStatus(unit, eq, location, -1, true);
+                            }
+                        }
+                    } else {
+                        mech.addEquipment(eq, location, false);
+                    }
                     changeMountStatus(eq, location, false);
                 } else {
                     throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());
@@ -194,7 +238,6 @@ public class CriticalTransferHandler extends TransferHandler {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-
             return true;
         }
         return false;
