@@ -716,6 +716,18 @@ public class UnitUtil {
         return points;
     }
 
+    public static int getMaximumArmorPoints(Entity unit, int loc) {
+        if ((unit instanceof Mech) && (loc == Mech.LOC_HEAD)) {
+            return 9;
+        } else if (unit instanceof Mech) {
+            return unit.getInternal(loc) * 2;
+        } else if (unit instanceof Tank) {
+            return (int) Math.floor((unit.getWeight() * 3.5) + 40);
+        } else {
+            return 0;
+        }
+    }
+
     public static double getMaximumArmorTonnage(Entity unit) {
 
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(1), unit.getArmorTechLevel(1));
@@ -750,6 +762,20 @@ public class UnitUtil {
             armorPerTon = 8.0;
         }
         return Math.min((int) Math.floor(armorPerTon * armorTons), UnitUtil.getMaximumArmorPoints(unit));
+    }
+
+    /**
+     * NOTE: only use for non-patchwork armor
+     * @param unit
+     * @param armorTons
+     * @return
+     */
+    public static int getArmorPoints(Entity unit, int loc, double armorTons) {
+        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(loc), unit.getArmorTechLevel(loc));
+        if (unit.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED) {
+            armorPerTon = 8.0;
+        }
+        return Math.min((int) Math.floor(armorPerTon * armorTons), UnitUtil.getMaximumArmorPoints(unit, loc));
     }
 
     public static void reIndexCrits(Entity unit) {
