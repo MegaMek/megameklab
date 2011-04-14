@@ -563,14 +563,14 @@ public class ArmorView extends IView implements ChangeListener {
             unallocatedPointsFieldRa.setVisible(true);
             unallocatedPointsFieldLl.setVisible(true);
             unallocatedPointsFieldRl.setVisible(true);
-            unallocatedPointsFieldHead.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_HEAD, unit.getArmorWeight()) - unit.getTotalOArmor()));
-            unallocatedPointsFieldLa.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LARM, unit.getArmorWeight()) - unit.getTotalOArmor()));
-            unallocatedPointsFieldLt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LT, unit.getArmorWeight()) - unit.getTotalOArmor()));
-            unallocatedPointsFieldCt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_CT, unit.getArmorWeight()) - unit.getTotalOArmor()));
-            unallocatedPointsFieldRt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RT, unit.getArmorWeight()) - unit.getTotalOArmor()));
-            unallocatedPointsFieldRa.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RARM, unit.getArmorWeight()) - unit.getTotalOArmor()));
-            unallocatedPointsFieldLl.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LLEG, unit.getArmorWeight()) - unit.getTotalOArmor()));
-            unallocatedPointsFieldRl.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RLEG, unit.getArmorWeight()) - unit.getTotalOArmor()));
+            unallocatedPointsFieldHead.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_HEAD, unit.getArmorWeight(Mech.LOC_HEAD)) - unit.getOArmor(Mech.LOC_HEAD)));
+            unallocatedPointsFieldLa.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LARM, unit.getArmorWeight(Mech.LOC_LARM)) - unit.getOArmor(Mech.LOC_LARM)));
+            unallocatedPointsFieldLt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LT, unit.getArmorWeight(Mech.LOC_LT)) - unit.getOArmor(Mech.LOC_LT)));
+            unallocatedPointsFieldCt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_CT, unit.getArmorWeight(Mech.LOC_CT)) - unit.getOArmor(Mech.LOC_CT)));
+            unallocatedPointsFieldRt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RT, unit.getArmorWeight(Mech.LOC_RT)) - unit.getOArmor(Mech.LOC_RT)));
+            unallocatedPointsFieldRa.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RARM, unit.getArmorWeight(Mech.LOC_RARM)) - unit.getOArmor(Mech.LOC_RARM)));
+            unallocatedPointsFieldLl.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LLEG, unit.getArmorWeight(Mech.LOC_LLEG)) - unit.getOArmor(Mech.LOC_LLEG)));
+            unallocatedPointsFieldRl.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RLEG, unit.getArmorWeight(Mech.LOC_RLEG)) - unit.getOArmor(Mech.LOC_RLEG)));
         } else {
             unallocatedPointsLabelPatchworkHead.setVisible(false);
             unallocatedPointsLabelPatchworkLa.setVisible(false);
