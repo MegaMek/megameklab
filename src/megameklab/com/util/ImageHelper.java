@@ -553,6 +553,15 @@ public class ImageHelper {
                 ammoHash.put(shortName, currentAmmo);
             }
         }
+        for (Mounted misc: vehicle.getMisc()) {
+            if (misc.getType().hasFlag(MiscType.F_SENSOR_DISPENSER)) {
+                if (ammoHash.get("Remote Sensors") == null) {
+                    ammoHash.put("Remote Sensors", misc.getShotsLeft());
+                } else {
+                    ammoHash.put("Remote Sensors", misc.getShotsLeft()+ammoHash.get("Remote Sensors"));
+                }
+            }
+        }
         if (ammoHash.keySet().size() == 0) {
             return;
         }
