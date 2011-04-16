@@ -515,9 +515,6 @@ public class ImageHelper {
 
     public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int offset) {
 
-        if (vehicle.getAmmo().size() < 1) {
-            return;
-        }
 
         int pointY = 340 + offset;
         int pointX = 22;
