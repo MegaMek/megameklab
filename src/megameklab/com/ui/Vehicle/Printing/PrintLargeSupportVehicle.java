@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -460,17 +460,17 @@ public class PrintLargeSupportVehicle implements Printable {
             g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(largesupportank2), 463, 48 + secondPageMargin);
             font = UnitUtil.deriveFont(true, 9.0f);
             g2d.setFont(font);
-        }
-        g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
+            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
 
-        g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230 + secondPageMargin);
+            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230 + secondPageMargin);
 
-        g2d.drawString("(" + largesupportank2.getArmor(Tank.LOC_LEFT) + ")", 384, 175 + secondPageMargin);
+            g2d.drawString("(" + largesupportank2.getArmor(Tank.LOC_LEFT) + ")", 384, 175 + secondPageMargin);
 
-        g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_REAR)) + ")", 467, 342 + secondPageMargin);
+            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_REAR)) + ")", 467, 342 + secondPageMargin);
 
-        if (largesupportank2.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
-            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 455, 186 + secondPageMargin);
+            if (largesupportank2.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
+                g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 455, 186 + secondPageMargin);
+            }
         }
 
     }
