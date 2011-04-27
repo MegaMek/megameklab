@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -664,7 +664,9 @@ public class ImageHelperVehicle {
             g2d.setFont(font);
         }
 
+        ImageHelperVehicle.printLargeVehicleCargo(tank, g2d, (int) linePoint);
         ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
+
     }
 
     public static void printVTOLWeaponsNEquipment(Tank tank, Graphics2D g2d) {
@@ -1046,4 +1048,44 @@ public class ImageHelperVehicle {
         }
         return armorTypes.toString().trim();
     }
+
+    public static String getBayString(Bay bay) {
+        StringBuffer returnString = new StringBuffer(bay.getUnusedString());
+
+        if (bay.getDoors() > 0) {
+            returnString.append(" (");
+            returnString.append(bay.getDoors());
+            returnString.append(bay.getDoors() > 1 ? " doors)" : " door)");
+        }
+
+        return returnString.toString();
+    }
+
+    public static void printLargeVehicleCargo(LargeSupportTank tank, Graphics2D g2d, int pointY) {
+
+        if (tank.getTransportBays().size() < 1) {
+            return;
+        }
+
+        int pointX = 22;
+        double lineFeed = ImageHelper.getStringHeight(g2d, "H", g2d.getFont());
+
+        Font font = UnitUtil.deriveFont(true, g2d.getFont().getSize2D());
+
+        g2d.setFont(font);
+        pointY += lineFeed;
+        g2d.drawString("Cargo: ", pointX, pointY);
+
+        pointY += lineFeed;
+
+        font = UnitUtil.deriveFont(g2d.getFont().getSize2D());
+
+        g2d.setFont(font);
+        for (Bay bay : tank.getTransportBays()) {
+            g2d.drawString(ImageHelperVehicle.getBayString(bay), pointX, pointY);
+            pointY += lineFeed;
+        }
+
+    }
+
 }
