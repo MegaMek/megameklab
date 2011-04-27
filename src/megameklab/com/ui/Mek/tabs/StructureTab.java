@@ -661,6 +661,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getMech().setMixedTech(false);
                         createEngineList(true);
                         createHeatSinkList();
+                        heatSinkType.setSelectedItem("Double");
                     } else if ((techType.getSelectedIndex() == 0) && (getMech().isClan() || getMech().isMixedTech())) {
                         techLevel.removeAllItems();
 
@@ -680,12 +681,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
-                        // only set techlevel and armor techlevel to advanced if
-                        // we're not already experimental or unofficial
-                        if ((getMech().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                            getMech().setTechLevel(TechConstants.T_IS_ADVANCED);
-                            getMech().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                        // only set techlevel and armor techlevel to experimental if
+                        // we're not already unofficial
+                        if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                            getMech().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            getMech().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                         }
+                        techLevel.setSelectedIndex(techLevel.getModel().getSize()-2);
                         getMech().setMixedTech(true);
                         createEngineList(false);
                         createHeatSinkList();
@@ -697,16 +699,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         }
                         // only set techlevel and armor techlevel to advanced if
                         // we're not already experimental or unofficial
-                        if ((getMech().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
-                            getMech().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                            getMech().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        if (getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) {
+                            getMech().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            getMech().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                         }
+                        techLevel.setSelectedIndex(techLevel.getModel().getSize()-2);
                         getMech().setMixedTech(true);
                         createEngineList(true);
                         createHeatSinkList();
+                        heatSinkType.setSelectedItem("Double");
                     } else {
                         createEngineList(getMech().isClan());
                         createHeatSinkList();
+                        heatSinkType.setSelectedItem(getMech().isClan()?"Double":"Single");
                         addAllActionListeners();
                         return;
                     }
