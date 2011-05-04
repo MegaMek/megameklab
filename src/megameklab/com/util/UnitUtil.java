@@ -293,30 +293,7 @@ public class UnitUtil {
      * @return Boolean if the tech level is legal for the passed unit
      */
     public static boolean isLegal(Entity unit, int techLevel) {
-
-        boolean legalTech = TechConstants.isLegal(unit.getTechLevel(), techLevel, true);
-
-        if (!legalTech) {
-            return legalTech;
-        }
-
-        if (unit.isMixedTech()) {
-            return true;
-        }
-
-        if (unit.getTechLevel() >= TechConstants.T_IS_ADVANCED) {
-            if (unit.isClan()) {
-                if ((techLevel == TechConstants.T_INTRO_BOXSET) || (techLevel == TechConstants.T_IS_TW_NON_BOX) || (techLevel == TechConstants.T_IS_ADVANCED) || (techLevel == TechConstants.T_IS_EXPERIMENTAL) || (techLevel == TechConstants.T_IS_UNOFFICIAL)) {
-                    return false;
-                }
-            } else {
-                if ((techLevel == TechConstants.T_CLAN_TW) || (techLevel == TechConstants.T_CLAN_ADVANCED) || (techLevel == TechConstants.T_CLAN_EXPERIMENTAL) || (techLevel == TechConstants.T_CLAN_UNOFFICIAL)) {
-                    return false;
-                }
-            }
-        }
-
-        return legalTech;
+        return TechConstants.isLegal(unit.getTechLevel(), techLevel, true, unit.isMixedTech());
     }
 
     /**
