@@ -72,6 +72,7 @@ public class ArmorTab extends ITab implements ActionListener {
           EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED],
           EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE],
           EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE],
+          EquipmentType.armorNames[EquipmentType.T_ARMOR_PRIMITIVE],
           EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK]};
     private JComboBox armorCombo = new JComboBox(armorNames);
 
