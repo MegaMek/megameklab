@@ -97,16 +97,17 @@ public class PrintAero implements Printable {
         String aeroName = aero.getChassis() + " " + aero.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, aeroName, true, 180, 10.0f));
-        g2d.drawString(aeroName, 49, 118);
+        g2d.drawString(aeroName, 49, 119);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         if ((aero.getCrew() != null) && !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Pilot pilot = aero.getCrew();
-            g2d.drawString(pilot.getName(), 270, 120);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+            // TODO: Fixme, these are not the correct coordinates
+            //g2d.drawString(pilot.getName(), 270, 120);
+            //g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
+            //g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
         }
 
         g2d.drawString(Integer.toString(aero.getWalkMP()), 99, 143);
@@ -123,32 +124,36 @@ public class PrintAero implements Printable {
         int nextDataLine = 153;
         int startLine = 188;
         int lineFeed = 8;
+        if (!aero.isPrimitive()) {
+            switch (aero.getTechLevel()) {
 
-        switch (aero.getTechLevel()) {
-
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+                case TechConstants.T_INTRO_BOXSET:
+                    ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+                    nextDataLine += lineFeed;
+                    break;
+                case TechConstants.T_IS_TW_NON_BOX:
+                case TechConstants.T_IS_TW_ALL:
+                case TechConstants.T_CLAN_TW:
+                    break;
+                case TechConstants.T_IS_ADVANCED:
+                case TechConstants.T_CLAN_ADVANCED:
+                    ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                    nextDataLine += lineFeed;
+                    break;
+                case TechConstants.T_IS_EXPERIMENTAL:
+                case TechConstants.T_CLAN_EXPERIMENTAL:
+                    ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                    nextDataLine += lineFeed;
+                    break;
+                case TechConstants.T_IS_UNOFFICIAL:
+                case TechConstants.T_CLAN_UNOFFICIAL:
+                    ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                    nextDataLine += lineFeed;
+                    break;
+            }
+        } else {
+            ImageHelper.printCenterString(g2d, "(Primitive)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
         }
 
         String techBase = "Inner Sphere";
