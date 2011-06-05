@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -87,7 +87,7 @@ public class EquipmentInfo {
 
     /**
      * Info for Aeros
-     * 
+     *
      * @param aero
      * @param mount
      */
@@ -162,7 +162,7 @@ public class EquipmentInfo {
     }
 
     /**
-     * 
+     *
      * @param dropship
      * @param mount
      */
@@ -239,7 +239,7 @@ public class EquipmentInfo {
 
     /**
      * Info for non Aero Entities.
-     * 
+     *
      * @param unit
      * @param mount
      */
@@ -283,6 +283,12 @@ public class EquipmentInfo {
             if (shtRange > medRange) {
                 medRange = -1;
             }
+            if ((mount.getType() instanceof ISVehicularGrenadeLauncher) || (mount.getType() instanceof CLVehicularGrenadeLauncher)) {
+                minRange = -1;
+                shtRange = -1;
+                medRange = -1;
+                longRange = 1;
+            }
 
             heat = weapon.getHeat();
             secondaryLocation = mount.getSecondLocation();
@@ -306,13 +312,6 @@ public class EquipmentInfo {
             } else if (mount.getType().getInternalName().equals(Sensor.CLAN_AP)) {
                 longRange = 5;
             }
-        } else if ((mount.getType() instanceof ISVehicularGrenadeLauncher) || (mount.getType() instanceof CLVehicularGrenadeLauncher)) {
-
-            minRange = 0;
-            shtRange = 0;
-            medRange = 0;
-            longRange = 1;
-
         } else if (mount.getType().hasFlag(MiscType.F_SEARCHLIGHT)) {
             shtRange = 0;
             medRange = 0;
