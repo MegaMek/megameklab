@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -472,8 +472,16 @@ public class ImageHelper {
                         } else {
                             g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         }
-                        g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
-                        g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
+                        if (eqi.shtRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
+                        } else {
+                            g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                        }
+                        if (eqi.medRange > 0) {
+                            g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
+                        }  else {
+                            g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                        }
                         if (eqi.longRange > 0) {
                             g2d.drawString(Integer.toString(eqi.longRange), longPoint, linePoint);
                         } else {
