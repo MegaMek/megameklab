@@ -284,9 +284,9 @@ public class EquipmentInfo {
                 medRange = -1;
             }
             if ((mount.getType() instanceof ISVehicularGrenadeLauncher) || (mount.getType() instanceof CLVehicularGrenadeLauncher)) {
-                minRange = -1;
-                shtRange = -1;
-                medRange = -1;
+                minRange = 0;
+                shtRange = 0;
+                medRange = 0;
                 longRange = 1;
             }
 
