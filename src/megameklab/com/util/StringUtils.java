@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -31,6 +31,7 @@ import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.CLPlasmaCannon;
+import megamek.common.weapons.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.ISC3M;
@@ -45,6 +46,7 @@ import megamek.common.weapons.ISThunderBolt10;
 import megamek.common.weapons.ISThunderBolt15;
 import megamek.common.weapons.ISThunderBolt20;
 import megamek.common.weapons.ISThunderBolt5;
+import megamek.common.weapons.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MGWeapon;
@@ -96,8 +98,12 @@ public class StringUtils {
             int totalAmmo = 0;
             for (int ammoIndex : bay.getBayAmmo()) {
                 Mounted ammoMount = unit.getEquipment(ammoIndex);
-                if (ammoMount.getType() == mount.getLinked().getType()) {
-                    totalAmmo += ammoMount.getShotsLeft();
+                try {
+                    if ((mount.getLinked() != null) && (ammoMount.getType() == mount.getLinked().getType())) {
+                        totalAmmo += ammoMount.getShotsLeft();
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
             if (weapon instanceof ScreenLauncherWeapon) {
@@ -164,6 +170,8 @@ public class StringUtils {
                     info += "[M]";
                 } else if (weapon instanceof NarcWeapon) {
                     info = "[M]";
+                } else if ((weapon instanceof ISVehicularGrenadeLauncher) || (weapon instanceof CLVehicularGrenadeLauncher)) {
+                    info = "[AE,OS]";
                 } else {
                     info = Integer.toString(weapon.getRackSize());
                 }

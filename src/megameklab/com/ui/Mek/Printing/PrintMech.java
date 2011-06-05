@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -221,13 +221,7 @@ public class PrintMech implements Printable {
         g2d.drawString(Integer.toString(tonnage), 177, 134);
 
         if (mech.isIndustrial()) {
-            if (mech.isPrimitive()) {
-                g2d.drawString("(Primitive Industrial)", 155, 97);
-            } else {
-                g2d.drawString("(Industrial)", 155, 97);
-            }
-        } else if (mech.isPrimitive()) {
-            g2d.drawString("(Primitive)", 155, 97);
+            g2d.drawString("(Primitive Industrial)", 155, 97);
         }
 
         String techBase = "Inner Sphere";
@@ -246,31 +240,36 @@ public class PrintMech implements Printable {
         int startLine = 188;
         int lineFeed = 8;
 
-        switch (mech.getTechLevel()) {
+        if (mech.isPrimitive()) {
+            ImageHelper.printCenterString(g2d, "(Primitive)", font, startLine, nextDataLine);
+            nextDataLine += lineFeed;
+        } else {
+            switch (mech.getTechLevel()) {
 
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
+                case TechConstants.T_INTRO_BOXSET:
+                    ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+                    nextDataLine += lineFeed;
+                    break;
+                case TechConstants.T_IS_TW_NON_BOX:
+                case TechConstants.T_IS_TW_ALL:
+                case TechConstants.T_CLAN_TW:
+                    break;
+                case TechConstants.T_IS_ADVANCED:
+                case TechConstants.T_CLAN_ADVANCED:
+                    ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                    nextDataLine += lineFeed;
+                    break;
+                case TechConstants.T_IS_EXPERIMENTAL:
+                case TechConstants.T_CLAN_EXPERIMENTAL:
+                    ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                    nextDataLine += lineFeed;
+                    break;
+                case TechConstants.T_IS_UNOFFICIAL:
+                case TechConstants.T_CLAN_UNOFFICIAL:
+                    ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                    nextDataLine += lineFeed;
+                    break;
+            }
         }
 
         // full head eject
@@ -1829,7 +1828,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     *
+     * 
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
