@@ -65,6 +65,7 @@ import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.VTOL.Printing.PrintVTOL;
 import megameklab.com.ui.Vehicle.Printing.PrintDualTurretVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
+import megameklab.com.ui.Vehicle.Printing.PrintNavalVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintWiGE;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
@@ -128,6 +129,7 @@ public class UnitPrintManager {
         ArrayList<Tank> tankList = new ArrayList<Tank>();
         ArrayList<Tank> wigeList = new ArrayList<Tank>();
         ArrayList<Tank> dualTurretList = new ArrayList<Tank>();
+        ArrayList<Tank> navalList = new ArrayList<Tank>();
         ArrayList<VTOL> VTOLList = new ArrayList<VTOL>();
         ArrayList<Aero> aeroList = new ArrayList<Aero>();
         ArrayList<ConvFighter> convFighterList = new ArrayList<ConvFighter>();
@@ -157,6 +159,8 @@ public class UnitPrintManager {
                 VTOLList.add((VTOL) unit);
             } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
                 wigeList.add((Tank) unit);
+            } else if (unit.getMovementMode() == EntityMovementMode.NAVAL) {
+                navalList.add((Tank) unit);
             } else if (unit instanceof Tank) {
                 if (!((Tank) unit).hasNoDualTurret()) {
                     dualTurretList.add((Tank) unit);
@@ -219,6 +223,12 @@ public class UnitPrintManager {
             PrintWiGE printWiGE = new PrintWiGE(wigeList, singlePrint, masterPrintJob);
 
             printWiGE.print();
+        }
+
+        if (navalList.size() > 0) {
+            PrintNavalVehicle printNaval = new PrintNavalVehicle(navalList, masterPrintJob);
+
+            printNaval.print();
         }
 
         if (dualTurretList.size() > 0) {

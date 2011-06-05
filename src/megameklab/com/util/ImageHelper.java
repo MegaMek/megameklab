@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -62,6 +62,7 @@ public class ImageHelper {
     public static String imageAero = "aero";
     public static String imageBattleArmor = "BattleArmor";
     public static String imageVehicle = "vehicle";
+    public static String imageNaval = "naval";
     public static String imageLargeSupportVehicle = "largesupportvehicle";
     public static String imageProto = "protomech";
     public static String imageDropship = "dropship";
@@ -98,7 +99,10 @@ public class ImageHelper {
                 recordSheet = new ImageIcon(path + "twvee-lgsupground.png").getImage();
             }
         } else if (unit instanceof Tank) {
-            if (advanced) {
+            if (unit.getMovementMode() == EntityMovementMode.NAVAL) {
+                String imageName = "twnaval.png";
+                recordSheet = new ImageIcon(path + imageName).getImage();
+            } else if (advanced) {
                 String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + "-dualturret.png";
                 recordSheet = new ImageIcon(path + imageName).getImage();
             } else {
@@ -515,7 +519,6 @@ public class ImageHelper {
 
     public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int offset) {
 
-
         int pointY = 340 + offset;
         int pointX = 22;
 
@@ -550,12 +553,12 @@ public class ImageHelper {
                 ammoHash.put(shortName, currentAmmo);
             }
         }
-        for (Mounted misc: vehicle.getMisc()) {
+        for (Mounted misc : vehicle.getMisc()) {
             if (misc.getType().hasFlag(MiscType.F_SENSOR_DISPENSER)) {
                 if (ammoHash.get("Remote Sensors") == null) {
                     ammoHash.put("Remote Sensors", misc.getShotsLeft());
                 } else {
-                    ammoHash.put("Remote Sensors", misc.getShotsLeft()+ammoHash.get("Remote Sensors"));
+                    ammoHash.put("Remote Sensors", misc.getShotsLeft() + ammoHash.get("Remote Sensors"));
                 }
             }
         }
