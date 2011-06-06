@@ -50,6 +50,7 @@ V 0.0.0.20 Dev
 + Bug Vehicle Grenade Launcher print out the wrong damage range and type
 + Primitive is now printed as tech level for Mechs
 + Started Navel Unit Record Sheets
++ Bug: Tanks with supercharger print wrong flank movement
 
 V 0.0.0.19 Released (01/03/2011 12:58 UTC-8)
 Added Fix for Battle Armor Record sheets. Burdened message was overlapping other text.
