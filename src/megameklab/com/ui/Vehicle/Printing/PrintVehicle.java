@@ -35,6 +35,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
+import megamek.common.MiscType;
 import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -154,7 +155,12 @@ public class PrintVehicle implements Printable {
         }
 
         g2d.drawString(Integer.toString(tank.getWalkMP()), 79, 144);
-        g2d.drawString(Integer.toString(tank.getRunMP()), 79, 155);
+        if (!tank.hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) {
+            g2d.drawString(Integer.toString(tank.getRunMP()), 79, 155);
+        } else {
+            int mascMP = tank.getRunMP();
+            g2d.drawString(Integer.toString(tank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+        }
 
         g2d.drawString(tank.getMovementModeAsString(), 88, 166);
 
@@ -308,8 +314,12 @@ public class PrintVehicle implements Printable {
         }
 
         g2d.drawString(Integer.toString(tank2.getWalkMP()), 79, 144 + secondPageMargin);
-        g2d.drawString(Integer.toString(tank2.getRunMP()), 79, 155 + secondPageMargin);
-
+        if (!tank.hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) {
+            g2d.drawString(Integer.toString(tank.getRunMP()), 79, 155 + secondPageMargin);
+        } else {
+            int mascMP = tank.getRunMP();
+            g2d.drawString(Integer.toString(tank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155 + secondPageMargin);
+        }
         g2d.drawString(tank2.getMovementModeAsString(), 88, 537);
 
         String engineName = "Fusion Engine";
