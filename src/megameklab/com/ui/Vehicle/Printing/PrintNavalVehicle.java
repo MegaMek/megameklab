@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2011
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -35,6 +35,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
+import megamek.common.MiscType;
 import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -123,7 +124,12 @@ public class PrintNavalVehicle implements Printable {
         }
 
         g2d.drawString(Integer.toString(sub.getWalkMP()), 79, 144);
-        g2d.drawString(Integer.toString(sub.getRunMP()), 79, 155);
+        if (!sub.hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) {
+            g2d.drawString(Integer.toString(sub.getRunMP()), 79, 155);
+        } else {
+            int mascMP = sub.getRunMP();
+            g2d.drawString(Integer.toString(sub.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+        }
 
         g2d.drawString(sub.getMovementModeAsString(), 88, 166);
 
