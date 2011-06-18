@@ -260,7 +260,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
     private void changeSponsonTurretMount(boolean turret) {
         getMounted().setSponsonTurretMounted(turret);
         if (getMounted().getLinkedBy() != null) {
-            getMounted().getLinkedBy().setMechTurretMounted(turret);
+            getMounted().getLinkedBy().setSponsonTurretMounted(turret);
         }
         if (refresh != null) {
             refresh.refreshAll();
