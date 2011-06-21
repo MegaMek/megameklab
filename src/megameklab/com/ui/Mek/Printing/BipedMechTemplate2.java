@@ -17078,7 +17078,6 @@ public class BipedMechTemplate2 {
         float origAlpha;
         Color paint;
         Shape shape;
-        Stroke stroke;
         paint = new Color(0, 0, 0, 255);
         shape = new GeneralPath();
         ((GeneralPath)shape).moveTo(53.336, 640.036);
@@ -24981,7 +24980,6 @@ public class BipedMechTemplate2 {
         float origAlpha;
         Color paint;
         Shape shape;
-        Stroke stroke;
         paint = new Color(0, 0, 0, 255);
         shape = new GeneralPath();
         ((GeneralPath)shape).moveTo(494.402, 269.226);
