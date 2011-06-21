@@ -96,7 +96,8 @@ public class PrintMech implements Printable {
         System.gc();
         // g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(),
         // (int)pageFormat.getImageableHeight(), null);
-        g2d.drawImage(image, 18, 18, 558, 738, Color.BLACK, null);
+        //g2d.drawImage(image, 18, 18, 558, 738, Color.BLACK, null);
+        BipedMechTemplate.paint(g2d);
         printMekImage(g2d, hud);
         if (mech.hasShield()) {
 
