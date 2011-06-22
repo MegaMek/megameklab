@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -63,6 +63,8 @@ public class PrintMech implements Printable {
     private int endMountx = 0;
     private int endMounty = 0;
     private PrinterJob masterPrintJob;
+    private int topMargin = 3;
+    private int leftMargin = 11;
 
     public PrintMech(ArrayList<Mech> list, PrinterJob masterPrintJob) {
         awtImage = ImageHelper.getRecordSheet(list.get(0), false);
@@ -96,17 +98,17 @@ public class PrintMech implements Printable {
         System.gc();
         // g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(),
         // (int)pageFormat.getImageableHeight(), null);
-        //g2d.drawImage(image, 18, 18, 558, 738, Color.BLACK, null);
+        // g2d.drawImage(image, 18, 18, 558, 738, Color.BLACK, null);
         BipedMechTemplate.paint(g2d);
         printMekImage(g2d, hud);
         if (mech.hasShield()) {
 
             if ((UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) && (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0)) {
-                g2d.drawImage(ImageHelper.getShieldImage(), 382, 18, 193, 351, null, null);
+                g2d.drawImage(ImageHelper.getShieldImage(), 382 + leftMargin, topMargin + 18, 193, 351, null, null);
             } else if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) {
-                g2d.drawImage(ImageHelper.getRightShieldImage(), 382, 18, 193, 351, null, null);
+                g2d.drawImage(ImageHelper.getRightShieldImage(), 382 + leftMargin, topMargin + 18, 193, 351, null, null);
             } else {
-                g2d.drawImage(ImageHelper.getLeftShieldImage(), 382, 18, 193, 351, null, null);
+                g2d.drawImage(ImageHelper.getLeftShieldImage(), 382 + leftMargin, topMargin + 18, 193, 351, null, null);
             }
 
             printLeftShield(g2d);
@@ -171,46 +173,46 @@ public class PrintMech implements Printable {
         String mekName = mech.getChassis() + " " + mech.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, mekName, true, 180, 10.0f));
-        g2d.drawString(mekName, 49, 121);
+        g2d.drawString(mekName, 49 + leftMargin, topMargin + 121);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         if ((mech.getCrew() != null) && !mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Pilot pilot = mech.getCrew();
-            g2d.drawString(pilot.getName(), 270, 120);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+            g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 120);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
         }
 
         if (mech.hasTSM() && (mech.getSuperCharger() == null)) {
             int walkTSM = mech.getWalkMP() + 1;
             int runTSM = (int) Math.ceil(walkTSM * 1.5) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
-            g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79, 144);
-            g2d.drawString(Integer.toString(mech.getRunMP()) + " [" + runTSM + "]", 79, 155);
+            g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79 + leftMargin, topMargin + 144);
+            g2d.drawString(Integer.toString(mech.getRunMP()) + " [" + runTSM + "]", 79 + leftMargin, topMargin + 155);
         } else if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {
             int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
-            g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
-            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+            g2d.drawString(Integer.toString(mech.getWalkMP()), 79 + leftMargin, topMargin + 144);
+            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79 + leftMargin, topMargin + 155);
         } else if (mech.hasTSM() && (mech.getSuperCharger() != null)) {
             int walkTSM = mech.getWalkMP() + 1;
             int runTSMandSuperCharge = (walkTSM * 2) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
-            g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79, 144);
-            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + runTSMandSuperCharge + "]", 79, 155);
+            g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79 + leftMargin, topMargin + 144);
+            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + runTSMandSuperCharge + "]", 79 + leftMargin, topMargin + 155);
         } else if ((mech.getMASC() != null) || (mech.getSuperCharger() != null)) {
             int mascMP = (mech.getWalkMP() * 2) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
-            g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
-            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+            g2d.drawString(Integer.toString(mech.getWalkMP()), 79 + leftMargin, topMargin + 144);
+            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79 + leftMargin, topMargin + 155);
         } else {
-            g2d.drawString(Integer.toString(mech.getWalkMP()), 79, 144);
-            g2d.drawString(Integer.toString(mech.getRunMP()), 79, 155);
+            g2d.drawString(Integer.toString(mech.getWalkMP()), 79 + leftMargin, topMargin + 144);
+            g2d.drawString(Integer.toString(mech.getRunMP()), 79 + leftMargin, topMargin + 155);
         }
 
         if (mech.hasUMU()) {
-            g2d.drawImage(ImageHelper.getUMImage(), 31, 156, 40, 15, null);
-            g2d.drawString(Integer.toString(mech.getAllUMUCount()), 79, 166);
+            g2d.drawImage(ImageHelper.getUMImage(), 31 + leftMargin, topMargin + 156, 40, 15, null);
+            g2d.drawString(Integer.toString(mech.getAllUMUCount()), 79 + leftMargin, topMargin + 166);
         } else {
-            g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 166);
+            g2d.drawString(Integer.toString(mech.getJumpMP()), 79 + leftMargin, topMargin + 166);
         }
 
         int tonnage = (int) Math.ceil(mech.getWeight());
@@ -219,10 +221,10 @@ public class PrintMech implements Printable {
             tonnage += 5 - (tonnage % 5);
         }
 
-        g2d.drawString(Integer.toString(tonnage), 177, 134);
+        g2d.drawString(Integer.toString(tonnage), 177 + leftMargin, topMargin + 134);
 
         if (mech.isIndustrial()) {
-            g2d.drawString("(Industrial)", 155, 97);
+            g2d.drawString("(Industrial)", 155 + leftMargin, topMargin + 97);
         }
 
         String techBase = "Inner Sphere";
@@ -242,13 +244,13 @@ public class PrintMech implements Printable {
         int lineFeed = 8;
 
         if (mech.isPrimitive()) {
-            ImageHelper.printCenterString(g2d, "(Primitive)", font, startLine, nextDataLine);
+            ImageHelper.printCenterString(g2d, "(Primitive)", font, startLine + leftMargin, topMargin + nextDataLine);
             nextDataLine += lineFeed;
         } else {
             switch (mech.getTechLevel()) {
 
                 case TechConstants.T_INTRO_BOXSET:
-                    ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+                    ImageHelper.printCenterString(g2d, "(Intro)", font, startLine + leftMargin, topMargin + nextDataLine);
                     nextDataLine += lineFeed;
                     break;
                 case TechConstants.T_IS_TW_NON_BOX:
@@ -257,17 +259,17 @@ public class PrintMech implements Printable {
                     break;
                 case TechConstants.T_IS_ADVANCED:
                 case TechConstants.T_CLAN_ADVANCED:
-                    ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                    ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine + leftMargin, topMargin + nextDataLine);
                     nextDataLine += lineFeed;
                     break;
                 case TechConstants.T_IS_EXPERIMENTAL:
                 case TechConstants.T_CLAN_EXPERIMENTAL:
-                    ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                    ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine + leftMargin, topMargin + nextDataLine);
                     nextDataLine += lineFeed;
                     break;
                 case TechConstants.T_IS_UNOFFICIAL:
                 case TechConstants.T_CLAN_UNOFFICIAL:
-                    ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                    ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine + leftMargin, topMargin + nextDataLine);
                     nextDataLine += lineFeed;
                     break;
             }
@@ -277,14 +279,14 @@ public class PrintMech implements Printable {
         if (mech.hasFullHeadEject()) {
             String ejectString = "Note: If playing under Advanced Rules, treat head";
             g2d.setFont(UnitUtil.deriveFont(false, 8));
-            g2d.drawString(ejectString, 25, 325);
+            g2d.drawString(ejectString, 25 + leftMargin, topMargin + 325);
             ejectString = "as having a Full-Head Ejection System.";
-            g2d.drawString(ejectString, 45, 335);
+            g2d.drawString(ejectString, 45 + leftMargin, topMargin + 335);
         }
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
-        g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 150, 350);
+        g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 150 + leftMargin, topMargin + 350);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(myFormatter.format(mech.getCost(true)) + " C-bills",
@@ -300,7 +302,7 @@ public class PrintMech implements Printable {
 
         if (isName.trim().length() > 0) {
             g2d.setFont(UnitUtil.getNewFont(g2d, isName, true, 44, 10.0f));
-            g2d.drawString(isName, 442, 553);
+            g2d.drawString(isName, 442 + leftMargin, topMargin + 553);
         }
 
         String armorName = "";
@@ -311,12 +313,12 @@ public class PrintMech implements Printable {
 
         if (armorName.trim().length() > 0) {
             g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
-            g2d.drawString(armorName, 461, 249);
+            g2d.drawString(armorName, 461 + leftMargin, topMargin + 249);
         }
 
         if (UnitUtil.hasBAR(mech) && !mech.hasPatchworkArmor()) {
             g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
-            g2d.drawString("BAR " + UnitUtil.getLowestBARRating(mech), 461, 249);
+            g2d.drawString("BAR " + UnitUtil.getLowestBARRating(mech), 461 + leftMargin, topMargin + 249);
         }
 
         if ((mech.getSource() != null) && (mech.getSource().trim().length() > 0)) {
@@ -324,19 +326,19 @@ public class PrintMech implements Printable {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sourceFluff, 138, nextDataLine);
+            g2d.drawString(sourceFluff, 138 + leftMargin, topMargin + nextDataLine);
 
             font = UnitUtil.getNewFont(g2d, mech.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(mech.getSource(), 177, nextDataLine);
+            g2d.drawString(mech.getSource(), 177 + leftMargin, topMargin + nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(yearFluff, 138, nextDataLine);
+            g2d.drawString(yearFluff, 138 + leftMargin, topMargin + nextDataLine);
 
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
@@ -346,14 +348,14 @@ public class PrintMech implements Printable {
         }
 
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
-        g2d.drawString(techBase, 177, 145);
+        g2d.drawString(techBase, 177 + leftMargin, topMargin + 145);
 
-        font = new Font("Arial", Font.PLAIN, 8);
+        font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 62.5f, 745f);
+        g2d.drawString("2011", 55f, topMargin + 745f);
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
-            g2d.drawImage(ImageHelper.getGyroPipImage(), 235, 588, 9, 8, null);
+            g2d.drawImage(ImageHelper.getGyroPipImage(), 235 + leftMargin, topMargin + 588, 9, 8, null);
         }
 
     }
@@ -364,17 +366,17 @@ public class PrintMech implements Printable {
 
         // Heat Sinks
         if (mech.hasLaserHeatSinks()) {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502, 595);
-            g2d.drawString("Laser", 502, 603);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502 + leftMargin, topMargin + 595);
+            g2d.drawString("Laser", 502 + leftMargin, topMargin + 603);
         } else if (mech.hasDoubleHeatSinks()) {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502, 595);
-            g2d.drawString("Double", 502, 603);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502 + leftMargin, topMargin + 595);
+            g2d.drawString("Double", 502 + leftMargin, topMargin + 603);
         } else {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502, 595);
-            g2d.drawString("Single", 502, 603);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502 + leftMargin, topMargin + 595);
+            g2d.drawString("Single", 502 + leftMargin, topMargin + 603);
         }
 
-        Dimension column = new Dimension(504, 612);
+        Dimension column = new Dimension(504 + leftMargin, topMargin + 612);
         Dimension pipShift = new Dimension(9, 9);
 
         int pipsPerColumn = (int) Math.max(10, Math.ceil(mech.heatSinks() / 4.0));
@@ -396,45 +398,45 @@ public class PrintMech implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(7.0f);
         g2d.setFont(font);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485, 45);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 434, 60);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT)) + ")", 506, 60);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT)) + ")", 472, 222);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LARM)) + ")", 394, 215);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RARM)) + ")", 546, 215);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LLEG)) + ")", 384, 273);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RLEG)) + ")", 554, 273);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485 + leftMargin, topMargin + 45);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 434 + leftMargin, topMargin + 60);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT)) + ")", 506 + leftMargin, topMargin + 60);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT)) + ")", 472 + leftMargin, topMargin + 222);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LARM)) + ")", 394 + leftMargin, topMargin + 215);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RARM)) + ")", 546 + leftMargin, topMargin + 215);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LLEG)) + ")", 384 + leftMargin, topMargin + 273);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RLEG)) + ")", 554 + leftMargin, topMargin + 273);
         // Rear
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT, true)) + ")", 403, 362);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT, true)) + ")", 480, 277);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT, true)) + ")", 546, 362);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT, true)) + ")", 403 + leftMargin, topMargin + 362);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT, true)) + ")", 480 + leftMargin, topMargin + 277);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT, true)) + ")", 546 + leftMargin, topMargin + 362);
         // patchwork armor info
         if (mech.hasPatchworkArmor()) {
             font = UnitUtil.deriveFont(5.5f);
             g2d.setFont(font);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_HEAD), 494, 45);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 434, 68);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 506, 68);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_CT), 472, 230);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LARM), 394, 223);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RARM), 546, 223);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LLEG), 384, 280);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RLEG), 554, 280);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_HEAD), 494 + leftMargin, topMargin + 45);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 434 + leftMargin, topMargin + 68);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 506 + leftMargin, topMargin + 68);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_CT), 472 + leftMargin, topMargin + 230);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LARM), 394 + leftMargin, topMargin + 223);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RARM), 546 + leftMargin, topMargin + 223);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LLEG), 384 + leftMargin, topMargin + 280);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RLEG), 554 + leftMargin, topMargin + 280);
             // Rear
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 416, 362);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_CT), 493, 277);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 559, 362);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 416 + leftMargin, topMargin + 362);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_CT), 493 + leftMargin, topMargin + 277);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 559 + leftMargin, topMargin + 362);
             font = UnitUtil.deriveFont(7.0f);
             g2d.setFont(font);
         }
         // Internal
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LT)) + ")", 432, 403);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RT)) + ")", 525, 403);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LARM)) + ")", 390, 480);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RARM)) + ")", 530, 480);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_CT)) + ")", 459, 509);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LLEG)) + ")", 403, 538);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RLEG)) + ")", 518, 539);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LT)) + ")", 432 + leftMargin, topMargin + 403);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RT)) + ")", 525 + leftMargin, topMargin + 403);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LARM)) + ")", 390 + leftMargin, topMargin + 480);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RARM)) + ")", 530 + leftMargin, topMargin + 480);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_CT)) + ")", 459 + leftMargin, topMargin + 509);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LLEG)) + ")", 403 + leftMargin, topMargin + 538);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RLEG)) + ")", 518 + leftMargin, topMargin + 539);
     }
 
     private void printLACrits(Graphics2D g2d) {
@@ -443,7 +445,7 @@ public class PrintMech implements Printable {
         int linePoint = 408;
         int lineFeed = 8;
 
-        printLocationCriticals(g2d, Mech.LOC_LARM, lineStart, linePoint, lineFeed);
+        printLocationCriticals(g2d, Mech.LOC_LARM, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printRACrits(Graphics2D g2d) {
@@ -452,7 +454,7 @@ public class PrintMech implements Printable {
         int linePoint = 408;
         int lineFeed = 8;
 
-        printLocationCriticals(g2d, Mech.LOC_RARM, lineStart, linePoint, lineFeed);
+        printLocationCriticals(g2d, Mech.LOC_RARM, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printCTCrits(Graphics2D g2d) {
@@ -461,7 +463,7 @@ public class PrintMech implements Printable {
         int linePoint = 469;
         int lineFeed = 8;
 
-        printLocationCriticals(g2d, Mech.LOC_CT, lineStart, linePoint, lineFeed);
+        printLocationCriticals(g2d, Mech.LOC_CT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printLTCrits(Graphics2D g2d) {
@@ -470,7 +472,7 @@ public class PrintMech implements Printable {
         int linePoint = 545;
         int lineFeed = 8;
 
-        printLocationCriticals(g2d, Mech.LOC_LT, lineStart, linePoint, lineFeed);
+        printLocationCriticals(g2d, Mech.LOC_LT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printRTCrits(Graphics2D g2d) {
@@ -479,7 +481,7 @@ public class PrintMech implements Printable {
         int linePoint = 545;
         int lineFeed = 8;
 
-        printLocationCriticals(g2d, Mech.LOC_RT, lineStart, linePoint, lineFeed);
+        printLocationCriticals(g2d, Mech.LOC_RT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printHeadCrits(Graphics2D g2d) {
@@ -488,7 +490,7 @@ public class PrintMech implements Printable {
         int linePoint = 399;
         int lineFeed = 8;
 
-        printLocationCriticals(g2d, Mech.LOC_HEAD, lineStart, linePoint, lineFeed);
+        printLocationCriticals(g2d, Mech.LOC_HEAD, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printLLCrits(Graphics2D g2d) {
@@ -497,7 +499,7 @@ public class PrintMech implements Printable {
         int linePoint = 682;
         int lineFeed = 8;
 
-        printLocationCriticals(g2d, Mech.LOC_LLEG, lineStart, linePoint, lineFeed);
+        printLocationCriticals(g2d, Mech.LOC_LLEG, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printRLCrits(Graphics2D g2d) {
@@ -506,12 +508,12 @@ public class PrintMech implements Printable {
         int linePoint = 682;
         int lineFeed = 8;
 
-        printLocationCriticals(g2d, Mech.LOC_RLEG, lineStart, linePoint, lineFeed);
+        printLocationCriticals(g2d, Mech.LOC_RLEG, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelper.printMechWeaponsNEquipment(mech, g2d);
+        ImageHelper.printMechWeaponsNEquipment(mech, g2d, leftMargin, topMargin);
     }
 
     public void print() {
@@ -530,6 +532,7 @@ public class PrintMech implements Printable {
 
                 Paper p = pageFormat.getPaper();
                 p.setImageableArea(0, 0, p.getWidth(), p.getHeight());
+
                 pageFormat.setPaper(p);
 
                 pj.setPrintable(this, pageFormat);
@@ -552,17 +555,17 @@ public class PrintMech implements Printable {
 
     private void printRLArmor(Graphics2D g2d) {
         float[] rightColumnStart =
-            { 494, 179 };
+            { 494 + leftMargin, topMargin + 179 };
         float[] rightColumnEnd =
-            { 525, 297 };
+            { 525 + leftMargin, topMargin + 297 };
         float[] midColumnStart =
-            { 500, 179 };
+            { 500 + leftMargin, topMargin + 179 };
         float[] midColumnEnd =
-            { 532, 297 };
+            { 532 + leftMargin, topMargin + 297 };
         float[] leftColumnStart =
-            { 506, 179 };
+            { 506 + leftMargin, topMargin + 179 };
         float[] leftColumnEnd =
-            { 538, 297 };
+            { 538 + leftMargin, topMargin + 297 };
 
         int totalArmor = mech.getArmor(Mech.LOC_RLEG);
 
@@ -597,78 +600,22 @@ public class PrintMech implements Printable {
             pipPlotter.addAll(ImageHelper.getPointsAlongLine(rightColumnStart, rightColumnEnd, pipsRight));
         }
 
-        /*
-        for (int pos = 1; pos <= 20; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-            // ImageHelper.drawArmorPip(g2d, topColumn[0], topColumn[1]);
-            topColumn[0] += pipShift[0];
-            topColumn[1] += pipShift[1];
-            if (pos % 2 == 0) {
-                pipShift[0] *= -1;
-                topColumn[0] += pipShift[0] + 1.8f;
-                pipShift[1] *= -1;
-                topColumn[1] += pipShift[1] + 7;
-            }
-        }
-
-        if (totalArmor < 1) {
-            return;
-        }
-
-        for (int pos = 1; pos <= 12; pos++) {
-            pipPlotter.add(new float[]
-                { middleColumn[0], middleColumn[1] });
-            middleColumn[0] += pipShift[0];
-            middleColumn[1] += pipShift[1];
-            if (pos % 4 == 0) {
-                pipShift[0] *= -1;
-                middleColumn[0] += pipShift[0] + 1.8f;
-                pipShift[1] *= -1;
-                middleColumn[1] += pipShift[1] + 7;
-            }
-
-        }
-
-        if (totalArmor < 1) {
-            return;
-        }
-
-        for (int pos = 1; pos <= 6; pos++) {
-            pipPlotter.add(new float[]
-                { bottomColumn[0], bottomColumn[1] });
-            bottomColumn[0] += pipShift[0];
-            bottomColumn[1] += pipShift[1];
-            if (pos % 2 == 0) {
-                pipShift[0] *= -1;
-                bottomColumn[0] += pipShift[0] + 1.8f;
-                pipShift[1] *= -1;
-                bottomColumn[1] += pipShift[1] + 7;
-            }
-        }
-
-        for (int pos = 1; pos <= 4; pos++) {
-            pipPlotter.add(new float[]
-                { footColumn[0], footColumn[1] });
-            footColumn[0] += pipShift[0];
-        }
-        */
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printLLArmor(Graphics2D g2d) {
         float[] leftColumnStart =
-            { 443, 179 };
+            { 443 + leftMargin, topMargin + 179 };
         float[] leftColumnEnd =
-            { 412, 297 };
+            { 412 + leftMargin, topMargin + 297 };
         float[] midColumnStart =
-            { 449, 179 };
+            { 449 + leftMargin, topMargin + 179 };
         float[] midColumnEnd =
-            { 418, 297 };
+            { 418 + leftMargin, topMargin + 297 };
         float[] rightColumnStart =
-            { 455, 179 };
+            { 455 + leftMargin, topMargin + 179 };
         float[] rightColumnEnd =
-            { 424, 297 };
+            { 424 + leftMargin, topMargin + 297 };
 
         int totalArmor = mech.getArmor(Mech.LOC_LLEG);
 
@@ -708,17 +655,17 @@ public class PrintMech implements Printable {
     private void printLAArmor(Graphics2D g2d) {
         ;
         float[] leftColumnStart =
-            { 404, 80 };
+            { 404 + leftMargin, topMargin + 80 };
         float[] leftColumnEnd =
-            { 395, 165 };
+            { 395 + leftMargin, topMargin + 165 };
         float[] midColumnStart =
-            { 410, 80 };
+            { 410 + leftMargin, topMargin + 80 };
         float[] midColumnEnd =
-            { 401, 165 };
+            { 401 + leftMargin, topMargin + 165 };
         float[] rightColumnStart =
-            { 416, 80 };
+            { 416 + leftMargin, topMargin + 80 };
         float[] rightColumnEnd =
-            { 407, 165 };
+            { 407 + leftMargin, topMargin + 165 };
 
         int totalArmor = mech.getArmor(Mech.LOC_LARM);
 
@@ -757,17 +704,17 @@ public class PrintMech implements Printable {
 
     private void printRAArmor(Graphics2D g2d) {
         float[] leftColumnStart =
-            { 533, 80 };
+            { 533 + leftMargin, topMargin + 80 };
         float[] leftColumnEnd =
-            { 542, 165 };
+            { 542 + leftMargin, topMargin + 165 };
         float[] midColumnStart =
-            { 539, 80 };
+            { 539 + leftMargin, topMargin + 80 };
         float[] midColumnEnd =
-            { 548, 165 };
+            { 548 + leftMargin, topMargin + 165 };
         float[] rightColumnStart =
-            { 546, 80 };
+            { 546 + leftMargin, topMargin + 80 };
         float[] rightColumnEnd =
-            { 555, 165 };
+            { 555 + leftMargin, topMargin + 165 };
 
         int totalArmor = mech.getArmor(Mech.LOC_RARM);
 
@@ -806,41 +753,41 @@ public class PrintMech implements Printable {
 
     private void printLTArmor(Graphics2D g2d) {
         float[] col1Start =
-            { 429, 88 };
+            { 429 + leftMargin, topMargin + 88 };
         float[] col1End =
-            { 429, 118 };
+            { 429 + leftMargin, topMargin + 118 };
         float[] col2Start =
-            { 435, 88 };
+            { 435 + leftMargin, topMargin + 88 };
         float[] col2End =
-            { 435, 118 };
+            { 435 + leftMargin, topMargin + 118 };
         float[] col3Start =
-            { 441, 88 };
+            { 441 + leftMargin, topMargin + 88 };
         float[] col3End =
-            { 441, 118 };
+            { 441 + leftMargin, topMargin + 118 };
         float[] col4Start =
-            { 447, 88 };
+            { 447 + leftMargin, topMargin + 88 };
         float[] col4End =
-            { 447, 118 };
+            { 447 + leftMargin, topMargin + 118 };
         float[] col5Start =
-            { 453, 88 };
+            { 453 + leftMargin, topMargin + 88 };
         float[] col5End =
-            { 453, 118 };
+            { 453 + leftMargin, topMargin + 118 };
         float[] col6Start =
-            { 447, 124 };
+            { 447 + leftMargin, topMargin + 124 };
         float[] col6End =
-            { 450, 154 };
+            { 450 + leftMargin, topMargin + 154 };
         float[] col7Start =
-            { 453, 124 };
+            { 453 + leftMargin, topMargin + 124 };
         float[] col7End =
-            { 456, 154 };
+            { 456 + leftMargin, topMargin + 154 };
         float[] col8Start =
-            { 436, 160 };
+            { 436 + leftMargin, topMargin + 160 };
         float[] col8End =
-            { 456, 160 };
+            { 456 + leftMargin, topMargin + 160 };
         float[] col9Start =
-            { 436, 166 };
+            { 436 + leftMargin, topMargin + 166 };
         float[] col9End =
-            { 456, 166 };
+            { 456 + leftMargin, topMargin + 166 };
 
         int totalArmor = mech.getArmor(Mech.LOC_LT);
 
@@ -928,29 +875,29 @@ public class PrintMech implements Printable {
 
     private void printLTRArmor(Graphics2D g2d) {
         float[] col1Start =
-            { 430, 311.5f };
+            { 430 + leftMargin, topMargin + 311.5f };
         float[] col1End =
-            { 431, 345.5f };
+            { 431 + leftMargin, topMargin + 345.5f };
         float[] col2Start =
-            { 436, 311.5f };
+            { 436 + leftMargin, topMargin + 311.5f };
         float[] col2End =
-            { 436, 345.5f };
+            { 436 + leftMargin, topMargin + 345.5f };
         float[] col3Start =
-            { 441, 311.5f };
+            { 441 + leftMargin, topMargin + 311.5f };
         float[] col3End =
-            { 441, 345.5f };
+            { 441 + leftMargin, topMargin + 345.5f };
         float[] col4Start =
-            { 446, 311.5f };
+            { 446 + leftMargin, topMargin + 311.5f };
         float[] col4End =
-            { 446, 345.5f };
+            { 446 + leftMargin, topMargin + 345.5f };
         float[] col5Start =
-            { 451, 311.5f };
+            { 451 + leftMargin, topMargin + 311.5f };
         float[] col5End =
-            { 451, 345.5f };
+            { 451 + leftMargin, topMargin + 345.5f };
         float[] col6Start =
-            { 456, 311.5f };
+            { 456 + leftMargin, topMargin + 311.5f };
         float[] col6End =
-            { 456, 332.5f };
+            { 456 + leftMargin, topMargin + 332.5f };
 
         int totalArmor = mech.getOArmor(Mech.LOC_LT, true);
 
@@ -1022,41 +969,41 @@ public class PrintMech implements Printable {
 
     private void printRTArmor(Graphics2D g2d) {
         float[] col1Start =
-            { 521, 88 };
+            { 521 + leftMargin, topMargin + 88 };
         float[] col1End =
-            { 521, 118 };
+            { 521 + leftMargin, topMargin + 118 };
         float[] col2Start =
-            { 515, 88 };
+            { 515 + leftMargin, topMargin + 88 };
         float[] col2End =
-            { 515, 118 };
+            { 515 + leftMargin, topMargin + 118 };
         float[] col3Start =
-            { 509, 88 };
+            { 509 + leftMargin, topMargin + 88 };
         float[] col3End =
-            { 509, 118 };
+            { 509 + leftMargin, topMargin + 118 };
         float[] col4Start =
-            { 503, 88 };
+            { 503 + leftMargin, topMargin + 88 };
         float[] col4End =
-            { 503, 118 };
+            { 503 + leftMargin, topMargin + 118 };
         float[] col5Start =
-            { 497, 88 };
+            { 497 + leftMargin, topMargin + 88 };
         float[] col5End =
-            { 497, 118 };
+            { 497 + leftMargin, topMargin + 118 };
         float[] col6Start =
-            { 503, 124 };
+            { 503 + leftMargin, topMargin + 124 };
         float[] col6End =
-            { 500, 154 };
+            { 500 + leftMargin, topMargin + 154 };
         float[] col7Start =
-            { 497, 124 };
+            { 497 + leftMargin, topMargin + 124 };
         float[] col7End =
-            { 494, 154 };
+            { 494 + leftMargin, topMargin + 154 };
         float[] col8Start =
-            { 514, 160 };
+            { 514 + leftMargin, topMargin + 160 };
         float[] col8End =
-            { 494, 160 };
+            { 494 + leftMargin, topMargin + 160 };
         float[] col9Start =
-            { 514, 166 };
+            { 514 + leftMargin, topMargin + 166 };
         float[] col9End =
-            { 494, 166 };
+            { 494 + leftMargin, topMargin + 166 };
 
         int totalArmor = mech.getArmor(Mech.LOC_RT);
 
@@ -1145,29 +1092,29 @@ public class PrintMech implements Printable {
 
     private void printRTRArmor(Graphics2D g2d) {
         float[] col1Start =
-            { 519.5f, 311.5f };
+            { 519.5f + leftMargin, topMargin + 311.5f };
         float[] col1End =
-            { 519.5f, 345.5f };
+            { 519.5f + leftMargin, topMargin + 345.5f };
         float[] col2Start =
-            { 514.5f, 311.5f };
+            { 514.5f + leftMargin, topMargin + 311.5f };
         float[] col2End =
-            { 514.5f, 345.5f };
+            { 514.5f + leftMargin, topMargin + 345.5f };
         float[] col3Start =
-            { 509.5f, 311.5f };
+            { 509.5f + leftMargin, topMargin + 311.5f };
         float[] col3End =
-            { 509.5f, 345.5f };
+            { 509.5f + leftMargin, topMargin + 345.5f };
         float[] col4Start =
-            { 504.5f, 311.5f };
+            { 504.5f + leftMargin, topMargin + 311.5f };
         float[] col4End =
-            { 504.5f, 345.5f };
+            { 504.5f + leftMargin, topMargin + 345.5f };
         float[] col5Start =
-            { 499.5f, 311.5f };
+            { 499.5f + leftMargin, topMargin + 311.5f };
         float[] col5End =
-            { 499.5f, 345.5f };
+            { 499.5f + leftMargin, topMargin + 345.5f };
         float[] col6Start =
-            { 494.5f, 311.5f };
+            { 494.5f + leftMargin, topMargin + 311.5f };
         float[] col6End =
-            { 494.5f, 332.5f };
+            { 494.5f + leftMargin, topMargin + 332.5f };
 
         int totalArmor = mech.getOArmor(Mech.LOC_RT, true);
 
@@ -1240,25 +1187,25 @@ public class PrintMech implements Printable {
 
     private void printCTArmor(Graphics2D g2d) {
         float[] col1Start =
-            { 465, 105 };
+            { 465 + leftMargin, topMargin + 105 };
         float[] col1End =
-            { 465, 176 };
+            { 465 + leftMargin, topMargin + 176 };
         float[] col2Start =
-            { 470, 105 };
+            { 470 + leftMargin, topMargin + 105 };
         float[] col2End =
-            { 470, 176 };
+            { 470 + leftMargin, topMargin + 176 };
         float[] col3Start =
-            { 475, 105 };
+            { 475 + leftMargin, topMargin + 105 };
         float[] col3End =
-            { 475, 176 };
+            { 475 + leftMargin, topMargin + 176 };
         float[] col4Start =
-            { 480, 105 };
+            { 480 + leftMargin, topMargin + 105 };
         float[] col4End =
-            { 480, 176 };
+            { 480 + leftMargin, topMargin + 176 };
         float[] col5Start =
-            { 485, 105 };
+            { 485 + leftMargin, topMargin + 105 };
         float[] col5End =
-            { 485, 176 };
+            { 485 + leftMargin, topMargin + 176 };
 
         int totalArmor = mech.getOArmor(Mech.LOC_CT);
 
@@ -1330,74 +1277,74 @@ public class PrintMech implements Printable {
 
         if (totalArmor >= 9) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(475.75, 68, fillCircle.width, fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(475.75 + leftMargin, topMargin + 68, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 475, 72.5f);
+            ImageHelper.drawArmorPip(g2d, 475 + leftMargin, topMargin + 72.5f);
         }
 
         if (totalArmor >= 8) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(472.75, 74, fillCircle.width, fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(472.75 + leftMargin, topMargin + 74, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 472, 78.5f);
+            ImageHelper.drawArmorPip(g2d, 472 + leftMargin, topMargin + 78.5f);
         }
 
         if (totalArmor >= 7) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(478.75, 74, fillCircle.width, fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(478.75 + leftMargin, topMargin + 74, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 478, 78.5f);
+            ImageHelper.drawArmorPip(g2d, 478 + leftMargin, topMargin + 78.5f);
         }
 
         if (totalArmor >= 6) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(469.75, 79, fillCircle.width, fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(469.75 + leftMargin, topMargin + 79, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 469, 83.5f);
+            ImageHelper.drawArmorPip(g2d, 469 + leftMargin, topMargin + 83.5f);
         }
 
         if (totalArmor >= 5) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(475.75, 79, fillCircle.width, fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(475.75 + leftMargin, topMargin + 79, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 475, 83.5f);
+            ImageHelper.drawArmorPip(g2d, 475 + leftMargin, topMargin + 83.5f);
         }
 
         if (totalArmor >= 4) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(481.75, 79, fillCircle.width, fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(481.75 + leftMargin, topMargin + 79, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 481, 83.5f);
+            ImageHelper.drawArmorPip(g2d, 481 + leftMargin, topMargin + 83.5f);
         }
 
         if (totalArmor >= 3) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(469.75, 85, fillCircle.width, fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(469.75 + leftMargin, topMargin + 85, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 469, 89.5f);
+            ImageHelper.drawArmorPip(g2d, 469 + leftMargin, topMargin + 89.5f);
         }
 
         if (totalArmor >= 2) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(475.75, 85, fillCircle.width, fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(475.75 + leftMargin, topMargin + 85, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 475, 89.5f);
+            ImageHelper.drawArmorPip(g2d, 475 + leftMargin, topMargin + 89.5f);
         }
 
         if (totalArmor >= 1) {
             g2d.setColor(Color.white);
-            Ellipse2D ellipse = new Ellipse2D.Double(481.75, 85, fillCircle.width, fillCircle.height);
+            Ellipse2D ellipse = new Ellipse2D.Double(481.75 + leftMargin, topMargin + 85, fillCircle.width, fillCircle.height);
             g2d.fill(ellipse);
             g2d.setColor(Color.black);
-            ImageHelper.drawArmorPip(g2d, 481, 89.5f);
+            ImageHelper.drawArmorPip(g2d, 481 + leftMargin, topMargin + 89.5f);
         }
         g2d.setColor(Color.black);
     }
@@ -1405,25 +1352,25 @@ public class PrintMech implements Printable {
     private void printCTRArmor(Graphics2D g2d) {
 
         float[] col1Start =
-            { 465, 301 };
+            { 465 + leftMargin, topMargin + 301 };
         float[] col1End =
-            { 465, 360 };
+            { 465 + leftMargin, topMargin + 360 };
         float[] col2Start =
-            { 470, 301 };
+            { 470 + leftMargin, topMargin + 301 };
         float[] col2End =
-            { 470, 360 };
+            { 470 + leftMargin, topMargin + 360 };
         float[] col3Start =
-            { 475, 301 };
+            { 475 + leftMargin, topMargin + 301 };
         float[] col3End =
-            { 475, 360 };
+            { 475 + leftMargin, topMargin + 360 };
         float[] col4Start =
-            { 480, 301 };
+            { 480 + leftMargin, topMargin + 301 };
         float[] col4End =
-            { 480, 360 };
+            { 480 + leftMargin, topMargin + 360 };
         float[] col5Start =
-            { 485, 301 };
+            { 485 + leftMargin, topMargin + 301 };
         float[] col5End =
-            { 485, 360 };
+            { 485 + leftMargin, topMargin + 360 };
 
         int totalArmor = mech.getOArmor(Mech.LOC_CT, true);
 
@@ -1490,13 +1437,13 @@ public class PrintMech implements Printable {
 
     private void printLAStruct(Graphics2D g2d) {
         float[] col1Start =
-            { 414, 417 };
+            { 414 + leftMargin, topMargin + 417 };
         float[] col1End =
-            { 409, 473 };
+            { 409 + leftMargin, topMargin + 473 };
         float[] col2Start =
-            { 418, 413 };
+            { 418 + leftMargin, topMargin + 413 };
         float[] col2End =
-            { 413, 469 };
+            { 413 + leftMargin, topMargin + 469 };
         Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_LARM);
         int col1pips = totalArmor;
@@ -1523,13 +1470,13 @@ public class PrintMech implements Printable {
 
     private void printLLStruct(Graphics2D g2d) {
         float[] col1Start =
-            { 443, 478 };
+            { 443 + leftMargin, topMargin + 478 };
         float[] col1End =
-            { 430, 548 };
+            { 430 + leftMargin, topMargin + 548 };
         float[] col2Start =
-            { 446, 475 };
+            { 446 + leftMargin, topMargin + 475 };
         float[] col2End =
-            { 432, 545 };
+            { 432 + leftMargin, topMargin + 545 };
         Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_LLEG);
         int col1pips = totalArmor;
@@ -1554,13 +1501,13 @@ public class PrintMech implements Printable {
 
     private void printRLStruct(Graphics2D g2d) {
         float[] col2Start =
-            { 481, 478 };
+            { 481 + leftMargin, topMargin + 478 };
         float[] col2End =
-            { 494.5f, 548 };
+            { 494.5f + leftMargin, topMargin + 548 };
         float[] col1Start =
-            { 478, 475 };
+            { 478 + leftMargin, topMargin + 475 };
         float[] col1End =
-            { 491.5f, 545 };
+            { 491.5f + leftMargin, topMargin + 545 };
         Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_RLEG);
         int col1pips = 0;
@@ -1584,13 +1531,13 @@ public class PrintMech implements Printable {
 
     private void printRAStruct(Graphics2D g2d) {
         float[] col1Start =
-            { 510, 417 };
+            { 510 + leftMargin, topMargin + 417 };
         float[] col1End =
-            { 515, 473 };
+            { 515 + leftMargin, topMargin + 473 };
         float[] col2Start =
-            { 506, 413 };
+            { 506 + leftMargin, topMargin + 413 };
         float[] col2End =
-            { 511, 469 };
+            { 511 + leftMargin, topMargin + 469 };
         Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_RARM);
         int col1pips = totalArmor;
@@ -1617,7 +1564,7 @@ public class PrintMech implements Printable {
 
     private void printLTStruct(Graphics2D g2d) {
         float[] column =
-            { 435, 415 };
+            { 435 + leftMargin, topMargin + 415 };
         float[] pipShift =
             { 5, 5 };
 
@@ -1675,7 +1622,7 @@ public class PrintMech implements Printable {
 
     private void printRTStruct(Graphics2D g2d) {
         float[] column =
-            { 480f, 415 };
+            { 480f + leftMargin, topMargin + 415 };
         float[] pipShift =
             { 5, 5 };
 
@@ -1743,17 +1690,17 @@ public class PrintMech implements Printable {
     private void printCTStruct(Graphics2D g2d) {
 
         float[] col1Start =
-            { 457.5f, 423 };
+            { 457.5f + leftMargin, topMargin + 423 };
         float[] col1End =
-            { 457.5f, 471 };
+            { 457.5f + leftMargin, topMargin + 471 };
         float[] col2Start =
-            { 462.5f, 423 };
+            { 462.5f + leftMargin, topMargin + 423 };
         float[] col2End =
-            { 462.5f, 471 };
+            { 462.5f + leftMargin, topMargin + 471 };
         float[] col3Start =
-            { 467.5f, 423 };
+            { 467.5f + leftMargin, topMargin + 423 };
         float[] col3End =
-            { 467.5f, 471 };
+            { 467.5f + leftMargin, topMargin + 471 };
         Vector<float[]> pipPlotter = new Vector<float[]>();
         int totalArmor = mech.getInternal(Mech.LOC_CT);
         int col1pips = totalArmor / 3;
@@ -1781,9 +1728,9 @@ public class PrintMech implements Printable {
     }
 
     private void printHeadStruct(Graphics2D g2d) {
-        ImageHelper.drawISPip(g2d, 462.5f, 403);
-        ImageHelper.drawISPip(g2d, 459.5f, 410);
-        ImageHelper.drawISPip(g2d, 465.5f, 410);
+        ImageHelper.drawISPip(g2d, 462.5f + leftMargin, topMargin + 403);
+        ImageHelper.drawISPip(g2d, 459.5f + leftMargin, topMargin + 410);
+        ImageHelper.drawISPip(g2d, 465.5f + leftMargin, topMargin + 410);
     }
 
     private void setCritConnection(Mounted m, int startx, int starty, int endx, int endy, Graphics2D g2d) {
@@ -1829,7 +1776,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     *
+     * 
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
@@ -1998,7 +1945,7 @@ public class PrintMech implements Printable {
         int height = Math.min(200, img.getHeight(null));
         int drawingX = 235 + ((148 - width) / 2);
         int drawingY = 172 + ((200 - height) / 2);
-        g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
+        g2d.drawImage(img, drawingX + leftMargin, topMargin + drawingY, width, height, Color.BLACK, null);
 
     }
 
@@ -2013,10 +1960,10 @@ public class PrintMech implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_LARM)) {
-            g2d.drawString("(CASE II)", lineStart, linePoint);
+            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
 
         } else {
-            g2d.drawString("(CASE)", lineStart, linePoint);
+            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
 
@@ -2031,10 +1978,10 @@ public class PrintMech implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_RARM)) {
-            g2d.drawString("(CASE II)", lineStart, linePoint);
+            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
 
         } else {
-            g2d.drawString("(CASE)", lineStart, linePoint);
+            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
 
@@ -2049,10 +1996,10 @@ public class PrintMech implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_LLEG)) {
-            g2d.drawString("(CASE II)", lineStart, linePoint);
+            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
 
         } else {
-            g2d.drawString("(CASE)", lineStart, linePoint);
+            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
 
@@ -2067,10 +2014,10 @@ public class PrintMech implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_LT)) {
-            g2d.drawString("(CASE II)", lineStart, linePoint);
+            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
 
         } else {
-            g2d.drawString("(CASE)", lineStart, linePoint);
+            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
 
@@ -2085,10 +2032,10 @@ public class PrintMech implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_HEAD)) {
-            g2d.drawString("(CASE II)", lineStart, linePoint);
+            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
 
         } else {
-            g2d.drawString("(CASE)", lineStart, linePoint);
+            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
 
@@ -2103,10 +2050,10 @@ public class PrintMech implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_RT)) {
-            g2d.drawString("(CASE II)", lineStart, linePoint);
+            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
 
         } else {
-            g2d.drawString("(CASE)", lineStart, linePoint);
+            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
 
@@ -2121,10 +2068,10 @@ public class PrintMech implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_RLEG)) {
-            g2d.drawString("(CASE II)", lineStart, linePoint);
+            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
 
         } else {
-            g2d.drawString("(CASE)", lineStart, linePoint);
+            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
 
@@ -2139,10 +2086,10 @@ public class PrintMech implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_CT)) {
-            g2d.drawString("(CASE II)", lineStart, linePoint);
+            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
 
         } else {
-            g2d.drawString("(CASE)", lineStart, linePoint);
+            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
 
@@ -2178,7 +2125,7 @@ public class PrintMech implements Printable {
             return;
         }
         int[] DCColumn =
-            { 390, 32 };
+            { 390 + leftMargin, topMargin + 32 };
         int[] lineFeed =
             { 5, 6 };
         int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM);
@@ -2196,7 +2143,7 @@ public class PrintMech implements Printable {
         }
 
         int[] DAColumn =
-            { 387, 82 };
+            { 387 + leftMargin, topMargin + 82 };
         lineFeed = new int[]
             { 4, 6 };
 
@@ -2221,7 +2168,7 @@ public class PrintMech implements Printable {
         }
         // g2d.setStroke(new BasicStroke(.5f));
         int[] DCColumn =
-            { 562, 32 };
+            { 562 + leftMargin, topMargin + 32 };
         int[] lineFeed =
             { -5, 6 };
         int DA = UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM);
@@ -2240,7 +2187,7 @@ public class PrintMech implements Printable {
         }
 
         int[] DAColumn =
-            { 565, 82 };
+            { 565 + leftMargin, topMargin + 82 };
         lineFeed = new int[]
             { -4, 6 };
 
