@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -289,16 +289,20 @@ public class ImageHelper {
     }
 
     public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d) {
-        int qtyPoint = 26;
-        int typePoint = 38;
-        int locPoint = 115;
-        int heatPoint = 128;
-        int damagePoint = 150;
-        int minPoint = 167;
-        int shtPoint = 181;
-        int medPoint = 199;
-        int longPoint = 215;
-        float linePoint = 201f;
+        printMechWeaponsNEquipment(mech, g2d, 0, 0);
+    }
+
+    public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d, int leftMargin, int topMargin) {
+        int qtyPoint = 26 + leftMargin;
+        int typePoint = 38 + leftMargin;
+        int locPoint = 115 + leftMargin;
+        int heatPoint = 128 + leftMargin;
+        int damagePoint = 150 + leftMargin;
+        int minPoint = 167 + leftMargin;
+        int shtPoint = 181 + leftMargin;
+        int medPoint = 199 + leftMargin;
+        int longPoint = 215 + leftMargin;
+        float linePoint = 201f + topMargin;
 
         float lineFeed = 6.7f;
 
@@ -479,7 +483,7 @@ public class ImageHelper {
                         }
                         if (eqi.medRange > 0) {
                             g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
-                        }  else {
+                        } else {
                             g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                         }
                         if (eqi.longRange > 0) {
