@@ -34,6 +34,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
+import megamek.common.MiscType;
 import megamek.common.Pilot;
 import megamek.common.SupportVTOL;
 import megamek.common.Tank;
@@ -157,6 +158,12 @@ public class PrintVTOL implements Printable {
         }
 
         g2d.drawString(Integer.toString(vtol.getWalkMP()), 79, 144);
+        if (!vtol.hasWorkingMisc(MiscType.F_MASC, MiscType.S_JETBOOSTER)) {
+            g2d.drawString(Integer.toString(vtol.getRunMP()), 79, 155);
+        } else {
+            int mascMP = vtol.getRunMP();
+            g2d.drawString(Integer.toString(vtol.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+        }
         g2d.drawString(Integer.toString(vtol.getRunMP()), 79, 155);
 
         String engineName = "Fusion Engine";
@@ -313,6 +320,12 @@ public class PrintVTOL implements Printable {
         }
 
         g2d.drawString(Integer.toString(vtol2.getWalkMP()), 79, 515);
+        if (!vtol2.hasWorkingMisc(MiscType.F_MASC, MiscType.S_JETBOOSTER)) {
+            g2d.drawString(Integer.toString(vtol2.getRunMP()), 79, 526);
+        } else {
+            int mascMP = vtol2.getRunMP();
+            g2d.drawString(Integer.toString(vtol2.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 526);
+        }
         g2d.drawString(Integer.toString(vtol2.getRunMP()), 79, 526);
 
         String engineName = "Fusion Engine";
