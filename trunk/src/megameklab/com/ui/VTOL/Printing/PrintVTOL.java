@@ -161,8 +161,6 @@ public class PrintVTOL implements Printable {
 
         String engineName = "Fusion Engine";
 
-        g2d.drawString(engineName, 79, 164);
-
         switch (vtol.getEngine().getEngineType()) {
             case Engine.COMBUSTION_ENGINE:
                 engineName = "I.C.E.";
@@ -185,6 +183,8 @@ public class PrintVTOL implements Printable {
             default:
                 break;
         }
+
+        g2d.drawString(engineName, 79, 164);
 
         if (vtol.getWeight() >= 5) {
             int tonnage = (int) Math.ceil(vtol.getWeight());
