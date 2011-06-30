@@ -566,7 +566,7 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || eq.hasFlag(MiscType.F_MASC) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS) || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION) || eq.hasFlag(MiscType.F_MASH_EXTRA) || eq.hasFlag(MiscType.F_DRONE_EXTRA))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_JETBOOSTER)) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS) || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION) || eq.hasFlag(MiscType.F_MASH_EXTRA) || eq.hasFlag(MiscType.F_DRONE_EXTRA))) {
             return false;
         }
 
@@ -1859,7 +1859,7 @@ public class UnitUtil {
 
                 if (armor > 9) {
                     foundError = true;
-                    mech.setArmor(9, location);
+                    mech.initializeArmor(9, location);
                 }
             } else {
                 int armor = mech.getArmor(location);
