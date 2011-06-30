@@ -102,9 +102,6 @@ public class ArmorTab extends ITab implements ActionListener {
         removeAllListeners();
         if (arg0.getSource().equals(armorCombo)) {
             unit.setArmorType(getArmorType());
-            if (refresh != null) {
-                refresh.refreshAll();
-            }
         }
         if (arg0.getSource().equals(allocateArmorButton)) {
             armor.allocateArmor((Double) armorTonnage.getValue());
@@ -124,11 +121,11 @@ public class ArmorTab extends ITab implements ActionListener {
             } else {
                 unit.setArmorTechLevel(unit.getTechLevel());
             }
-            if (refresh != null) {
-                refresh.refreshAll();
-            }
         }
         addAllListeners();
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
     }
 
     public JPanel ButtonPanel() {
