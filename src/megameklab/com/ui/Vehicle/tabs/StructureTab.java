@@ -532,8 +532,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
                     getTank().autoSetInternal();
                     for (int loc = 0; loc < getTank().locations(); loc++) {
-                        getTank().setArmor(0, loc);
-                        getTank().setArmor(0, loc, true);
+                        getTank().initializeArmor(0, loc);
                     }
                     //TODO: Fix me for patchwork armor
                     getTank().setArmorType(getTank().getArmorType(0));

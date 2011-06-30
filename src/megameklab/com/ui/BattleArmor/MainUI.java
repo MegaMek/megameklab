@@ -142,7 +142,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         ba.autoSetInternal();
         for (int loc = 0; loc < ba.locations(); loc++) {
-            ba.setArmor(0, loc);
+            ba.initializeArmor(0, loc);
         }
 
         ba.setChassis("New");

@@ -152,8 +152,8 @@ public class MainUI extends MegaMekLabMainUI {
 
         entity.autoSetInternal();
         for (int loc = 0; loc < entity.locations(); loc++) {
-            entity.setArmor(0, loc);
-            entity.setArmor(0, loc, true);
+            mech.initializeArmor(0, loc);
+            mech.initializeRearArmor(0, loc);
         }
 
         entity.setChassis("New");
