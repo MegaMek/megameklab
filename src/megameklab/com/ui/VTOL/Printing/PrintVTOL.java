@@ -164,7 +164,6 @@ public class PrintVTOL implements Printable {
             int mascMP = vtol.getRunMP();
             g2d.drawString(Integer.toString(vtol.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
         }
-        g2d.drawString(Integer.toString(vtol.getRunMP()), 79, 155);
 
         String engineName = "Fusion Engine";
 
@@ -326,7 +325,6 @@ public class PrintVTOL implements Printable {
             int mascMP = vtol2.getRunMP();
             g2d.drawString(Integer.toString(vtol2.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 526);
         }
-        g2d.drawString(Integer.toString(vtol2.getRunMP()), 79, 526);
 
         String engineName = "Fusion Engine";
 
