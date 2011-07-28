@@ -23,6 +23,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.font.TextAttribute;
 import java.awt.geom.Ellipse2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
@@ -31,6 +32,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -1207,7 +1209,7 @@ public class PrintMech implements Printable {
         float[] col5End =
             { 485 + leftMargin, topMargin + 176 };
 
-        int totalArmor = mech.getOArmor(Mech.LOC_CT);
+        int totalArmor = mech.getArmor(Mech.LOC_CT);
 
         if (totalArmor < 1) {
             return;
@@ -1372,7 +1374,7 @@ public class PrintMech implements Printable {
         float[] col5End =
             { 485 + leftMargin, topMargin + 360 };
 
-        int totalArmor = mech.getOArmor(Mech.LOC_CT, true);
+        int totalArmor = mech.getArmor(Mech.LOC_CT, true);
 
         if (totalArmor < 1) {
             return;
@@ -1790,11 +1792,12 @@ public class PrintMech implements Printable {
      */
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
         Font font;
+        HashMap<TextAttribute, Object> strikeThroughAttr = new HashMap<TextAttribute, Object>();
+        strikeThroughAttr.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             font = UnitUtil.deriveFont(true, 7.0f);
             g2d.setFont(font);
             CriticalSlot cs = mech.getCritical(location, slot);
-
             if (cs == null) {
                 font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
@@ -1835,7 +1838,11 @@ public class PrintMech implements Printable {
                     if (cs.isArmored()) {
                         engineName = "O " + engineName;
                     }
+                    if(cs.isDestroyed()) {
+                    	font = font.deriveFont(strikeThroughAttr);
+                        g2d.setFont(font);
 
+                    }
                     g2d.drawString(engineName, lineStart, linePoint);
                 } else {
                     String critName = mech.getSystemName(cs.getIndex());
@@ -1853,6 +1860,11 @@ public class PrintMech implements Printable {
 
                     if (((cs.getIndex() >= Mech.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mech.ACTUATOR_HAND)) || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                         critName += " Actuator";
+                    }
+                    if(cs.isDestroyed()) {
+                    	font = font.deriveFont(strikeThroughAttr);
+                        g2d.setFont(font);
+
                     }
                     g2d.drawString(critName, lineStart, linePoint);
                 }
@@ -1904,12 +1916,16 @@ public class PrintMech implements Printable {
                     }
                     critName.trimToSize();
                     critName.append(") ");
-                    critName.append(ammo.getShots());
+                    critName.append(m.getShotsLeft());
 
                 }
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 85, 7.0f));
-
+                font = UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 85, 7.0f);
+                if(cs.isDestroyed()) {
+                	font = font.deriveFont(strikeThroughAttr);            
+                }
+                g2d.setFont(font);
+                
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
                     ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S))))) {
