@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -67,14 +67,19 @@ public class ImageHelperBattleArmor {
         return new ImageIcon(path + "checkbox.png").getImage();
     }
 
-    public static void printBAArmor(BattleArmor ba, Graphics2D g2d, float offset) {
+    public static void printBAArmor(BattleArmor ba, Graphics2D g2d, float lineFeed, float offset) {
         float positionX = 27;
         float positionY = 187 + offset;
         String armorString = "Armor:";
         StringBuffer buffer = new StringBuffer();
 
-        if (ba.isStealthActive()) {
-            buffer.append(String.format("  %1$s (+%2$s/+%3$s/+%4$s)", ba.getStealthName(), ba.getShortStealthMod(), ba.getMediumStealthMod(), ba.getLongStealthMod()));
+        // camo system is not armor and should print separately
+        if (ba.isStealthActive() && (ba.isStealthy() || ba.isMimetic())) {
+            if (ba.isMimetic()) {
+                buffer.append("  "+ba.getStealthName() + " (+3 -hexes moved)");
+            } else {
+                buffer.append(String.format("  %1$s (+%2$s/+%3$s/+%4$s)", ba.getStealthName(), ba.getShortStealthMod(), ba.getMediumStealthMod(), ba.getLongStealthMod()));
+            }
         }
 
         if (ba.isFireResistant()) {
@@ -90,6 +95,12 @@ public class ImageHelperBattleArmor {
             positionX += ImageHelper.getStringWidth(g2d, armorString, font);
             g2d.setFont(UnitUtil.getNewFont(g2d, buffer.toString(), false, 178, 7.0f));
             g2d.drawString(buffer.toString(), positionX, positionY);
+        }
+        if (ba.hasCamoSystem()) {
+            Font font = UnitUtil.getNewFont(g2d, buffer.toString(), false, 178, 7.0f);
+            g2d.setFont(font);
+            String camoString = (ba.getCamoName() + " (+2 -hexes moved)");
+            g2d.drawString(camoString, 27, positionY-lineFeed);
         }
     }
 
@@ -365,8 +376,7 @@ public class ImageHelperBattleArmor {
                 g2d.setFont(font);
             }
         }
-
-        ImageHelperBattleArmor.printBAArmor(ba, g2d, offset);
+        ImageHelperBattleArmor.printBAArmor(ba, g2d, lineFeed, offset);
     }
 
     public static Image getBASquad() {

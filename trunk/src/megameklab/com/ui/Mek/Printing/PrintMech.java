@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -210,7 +210,7 @@ public class PrintMech implements Printable {
 
         if (mech.hasUMU()) {
             g2d.drawImage(ImageHelper.getUMImage(), 31 + leftMargin, topMargin + 156, 40, 15, null);
-            g2d.drawString(Integer.toString(mech.getAllUMUCount()), 79 + leftMargin, topMargin + 166);
+            g2d.drawString(Integer.toString(mech.getActiveUMUCount()), 79 + leftMargin, topMargin + 166);
         } else {
             g2d.drawString(Integer.toString(mech.getJumpMP()), 79 + leftMargin, topMargin + 166);
         }
@@ -1776,7 +1776,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     * 
+     *
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
