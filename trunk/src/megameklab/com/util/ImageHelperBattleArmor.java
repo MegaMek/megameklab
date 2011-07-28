@@ -117,7 +117,7 @@ public class ImageHelperBattleArmor {
         int medPoint = 180;
         int longPoint = 198;
         float linePoint = 149.1f + offset;
-        float maxHeight = 40.0f;
+        float maxHeight = 38.0f;
         float lineFeed = 6.7f;
         float stringHeight = 0f;
 
@@ -170,8 +170,14 @@ public class ImageHelperBattleArmor {
         if (!ba.isFireResistant() && !ba.isStealthActive()) {
             maxHeight += lineFeed;
         }
+        if (ba.hasCamoSystem()) {
+            maxHeight -= lineFeed;
+        }
 
         if (ba.isBurdened()) {
+            maxHeight -= lineFeed;
+        }
+        if (ba.hasDWP()) {
             maxHeight -= lineFeed;
         }
 
@@ -373,6 +379,19 @@ public class ImageHelperBattleArmor {
                 String burdenInfo = "must detach missiles before jumping or swarm/leg attacks";
                 g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
                 g2d.drawString(burdenInfo, typePoint, linePoint);
+                linePoint += lineFeed;
+                g2d.setFont(font);
+            }
+            if (ba.hasDWP()) {
+                String burdenInfo;
+                if (ba.getOriginalJumpMP() > 0) {
+                    burdenInfo = "must detach DWP before jumping or moving full ground speed";
+                } else {
+                    burdenInfo = "must detach DWP before moving full ground speed";
+                }
+                g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
+                g2d.drawString(burdenInfo, typePoint, linePoint);
+                linePoint += lineFeed;
                 g2d.setFont(font);
             }
         }
