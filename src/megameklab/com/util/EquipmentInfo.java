@@ -351,6 +351,10 @@ public class EquipmentInfo {
             name += " (Body)";
         }
 
+        if (mount.isDWPMounted()) {
+            name += " (DWP)";
+        }
+
         count = 1;
         techLevel = mount.getType().getTechLevel();
         isDestroyed = mount.isDestroyed();
