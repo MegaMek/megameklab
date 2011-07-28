@@ -348,7 +348,9 @@ public class ImageHelper {
 
         Font font = UnitUtil.deriveFont(true, 10.0f);
         g2d.setFont(font);
-
+        HashMap<TextAttribute, Object> strikeThroughAttr = new HashMap<TextAttribute, Object>();
+        strikeThroughAttr.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+        
         for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
@@ -380,7 +382,11 @@ public class ImageHelper {
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, 7.0f));
+                Font nameFont = UnitUtil.getNewFont(g2d, name, false, 65, 7.0f);
+                if(eqi.isDestroyed) {
+                	nameFont = nameFont.deriveFont(strikeThroughAttr);
+                }
+                g2d.setFont(nameFont);
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);

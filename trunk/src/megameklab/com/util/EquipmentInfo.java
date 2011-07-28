@@ -62,7 +62,8 @@ public class EquipmentInfo {
     public boolean isSponsonMounted = false;
     public boolean isMashCore = false;
     public boolean isDroneControl = false;
-
+    public boolean isDestroyed = false;
+    
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
     public boolean hasArtemisV = false;
@@ -99,7 +100,8 @@ public class EquipmentInfo {
 
         count = 1;
         techLevel = mount.getType().getTechLevel();
-
+        isDestroyed = mount.isDestroyed();
+        
         damage = StringUtils.getEquipmentInfo(aero, mount);
 
         if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
@@ -172,6 +174,7 @@ public class EquipmentInfo {
 
         count = 1;
         techLevel = mount.getType().getTechLevel();
+        isDestroyed = mount.isDestroyed();
 
         if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
@@ -252,6 +255,7 @@ public class EquipmentInfo {
         isSponsonMounted = mount.isSponsonTurretMounted();
         count = 1;
         techLevel = mount.getType().getTechLevel();
+        isDestroyed = mount.isDestroyed();
 
         damage = StringUtils.getEquipmentInfo(unit, mount);
 
@@ -349,6 +353,7 @@ public class EquipmentInfo {
 
         count = 1;
         techLevel = mount.getType().getTechLevel();
+        isDestroyed = mount.isDestroyed();
 
         damage = StringUtils.getEquipmentInfo(unit, mount);
 
@@ -445,6 +450,8 @@ public class EquipmentInfo {
         clone.name = name;
         clone.damage = damage;
 
+        clone.isDestroyed = isDestroyed;
+        
         clone.isWeapon = isWeapon;
         clone.isMML = isMML;
         clone.isATM = isATM;

@@ -21,6 +21,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -28,6 +29,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -1198,6 +1200,8 @@ public class PrintQuad implements Printable {
 
     private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
         Font font;
+        HashMap<TextAttribute, Object> strikeThroughAttr = new HashMap<TextAttribute, Object>();
+        strikeThroughAttr.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             font = UnitUtil.deriveFont(true, 7.0f);
             g2d.setFont(font);
@@ -1244,7 +1248,11 @@ public class PrintQuad implements Printable {
                     if (cs.isArmored()) {
                         engineName = "O " + engineName;
                     }
+                    if(cs.isDestroyed()) {
+                    	font = font.deriveFont(strikeThroughAttr);
+                        g2d.setFont(font);
 
+                    }
                     g2d.drawString(engineName, lineStart, linePoint);
                 } else {
                     String critName = mech.getSystemName(cs.getIndex());
@@ -1255,6 +1263,11 @@ public class PrintQuad implements Printable {
 
                     if (cs.isArmored()) {
                         critName = "O " + critName;
+                    }
+                    if(cs.isDestroyed()) {
+                    	font = font.deriveFont(strikeThroughAttr);
+                        g2d.setFont(font);
+
                     }
                     g2d.drawString(critName, lineStart, linePoint);
                 }
@@ -1302,8 +1315,12 @@ public class PrintQuad implements Printable {
                     critName.append(ammo.getShots());
                 }
 
-                g2d.setFont(UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 86, 7.0f));
-
+                font = UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 85, 7.0f);
+                if(cs.isDestroyed()) {
+                	font = font.deriveFont(strikeThroughAttr);            
+                }
+                g2d.setFont(font);
+                
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
                     ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S))) {
