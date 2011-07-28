@@ -101,7 +101,7 @@ public class PrintBattleArmor implements Printable {
         System.gc();
         Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 62.5f, 745f);
+        g2d.drawString("2011", 62.5f, 744.5f);
 
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
     }
@@ -158,7 +158,7 @@ public class PrintBattleArmor implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", battleArmor.getYear()), 151, 108 + currentMargin);
+            g2d.drawString(String.format(" %1$s", battleArmor.getYear()), 151, 108 + currentMargin);
 
         }
 
@@ -175,7 +175,11 @@ public class PrintBattleArmor implements Printable {
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(battleArmor.getRunMP(true, true, false)), 79, 130 + currentMargin);
+        String groundMP = Integer.toString(battleArmor.getWalkMP(true, true, false, false, false));
+        if (battleArmor.hasDWP()) {
+            groundMP = groundMP + " ["+Integer.toString(battleArmor.getWalkMP(true, true, false, false, true))+"]";
+        }
+        g2d.drawString(groundMP, 79, 130 + currentMargin);
         int secondaryMP = battleArmor.getOriginalJumpMP();
         if (battleArmor.getMovementMode() == EntityMovementMode.INF_UMU) {
             secondaryMP = battleArmor.getRunMP();

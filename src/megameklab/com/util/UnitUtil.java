@@ -599,7 +599,7 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_AP_MOUNT) || eq.hasFlag(MiscType.F_FIRE_RESISTANT) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_AP_MOUNT) || eq.hasFlag(MiscType.F_FIRE_RESISTANT) || eq.hasFlag(MiscType.F_STEALTH) || eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS) || eq.hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK))) {
             return false;
         }
 
