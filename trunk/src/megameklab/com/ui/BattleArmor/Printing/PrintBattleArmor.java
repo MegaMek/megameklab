@@ -111,19 +111,19 @@ public class PrintBattleArmor implements Printable {
         Image checkBox = ImageHelperBattleArmor.getBACheckBox();
 
         if (battleArmor.canDoMechanizedBA()) {
-            g2d.drawImage(checkBox, 71, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 71, 189 + currentMargin, 12, 11, null);
         }
 
         if (UnitUtil.canSwarm(battleArmor)) {
-            g2d.drawImage(checkBox, 119, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 119, 189 + currentMargin, 12, 11, null);
         }
 
         if (UnitUtil.canLegAttack(battleArmor)) {
-            g2d.drawImage(checkBox, 158, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 158, 189 + currentMargin, 12, 11, null);
         }
 
         if (battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) > 0) {
-            g2d.drawImage(checkBox, 195, 189 + currentMargin, 11, 11, null);
+            g2d.drawImage(checkBox, 195, 189 + currentMargin, 12, 11, null);
         }
     }
 
@@ -177,7 +177,7 @@ public class PrintBattleArmor implements Printable {
         g2d.setFont(font);
         String groundMP = Integer.toString(battleArmor.getWalkMP(true, true, false, false, false));
         if (battleArmor.hasDWP()) {
-            groundMP = groundMP + " ["+Integer.toString(battleArmor.getWalkMP(true, true, false, false, true))+"]";
+            groundMP = groundMP + " ["+Integer.toString(battleArmor.getWalkMP(true, true, false, true, false))+"]";
         }
         g2d.drawString(groundMP, 79, 130 + currentMargin);
         int secondaryMP = battleArmor.getOriginalJumpMP();
