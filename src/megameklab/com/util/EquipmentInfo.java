@@ -22,7 +22,6 @@ import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Dropship;
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Sensor;
@@ -63,7 +62,7 @@ public class EquipmentInfo {
     public boolean isMashCore = false;
     public boolean isDroneControl = false;
     public boolean isDestroyed = false;
-    
+
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
     public boolean hasArtemisV = false;
@@ -101,7 +100,7 @@ public class EquipmentInfo {
         count = 1;
         techLevel = mount.getType().getTechLevel();
         isDestroyed = mount.isDestroyed();
-        
+
         damage = StringUtils.getEquipmentInfo(aero, mount);
 
         if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
@@ -316,11 +315,11 @@ public class EquipmentInfo {
             } else if (mount.getType().getInternalName().equals(Sensor.CLAN_AP)) {
                 longRange = 5;
             }
-        } else if (mount.getType().hasFlag(MiscType.F_SEARCHLIGHT)) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_SEARCHLIGHT)) {
             shtRange = 0;
             medRange = 0;
             longRange = 170;
-        } else if (mount.getType().equals(EquipmentType.get("MechSprayer"))) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_SPRAYER)) {
             shtRange = 0;
             medRange = 0;
             longRange = 1;
@@ -455,7 +454,7 @@ public class EquipmentInfo {
         clone.damage = damage;
 
         clone.isDestroyed = isDestroyed;
-        
+
         clone.isWeapon = isWeapon;
         clone.isMML = isMML;
         clone.isATM = isATM;

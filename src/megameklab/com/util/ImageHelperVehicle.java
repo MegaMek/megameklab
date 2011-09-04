@@ -325,7 +325,7 @@ public class ImageHelperVehicle {
                             g2d.setFont(UnitUtil.deriveFont(g2d.getFont().getSize2D() - 1));
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
                             g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                         } else {
                             ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
@@ -386,7 +386,7 @@ public class ImageHelperVehicle {
         if (troopspace > 0) {
             linePoint += lineFeed;
             String troopString = "Cargo, Infantry (";
-            if (troopspace - Math.floor(troopspace) > 0) {
+            if ((troopspace - Math.floor(troopspace)) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
                 troopString += String.valueOf((int) troopspace);
@@ -594,7 +594,7 @@ public class ImageHelperVehicle {
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                         } else {
                             ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint, linePoint);
@@ -647,7 +647,7 @@ public class ImageHelperVehicle {
         if (troopspace > 0) {
             linePoint += lineFeed;
             String troopString = "Infantry Bay (";
-            if (troopspace - Math.floor(troopspace) > 0) {
+            if ((troopspace - Math.floor(troopspace)) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
                 troopString += String.valueOf((int) troopspace);
@@ -872,7 +872,7 @@ public class ImageHelperVehicle {
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
                             Font smallFont = UnitUtil.deriveFont(font.getSize2D() - 1.0f);
                             g2d.setFont(smallFont);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), smallFont, damagePoint, linePoint + lineFeed - 1.0f);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), smallFont, damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                             g2d.setFont(font);
                         } else {
@@ -914,7 +914,7 @@ public class ImageHelperVehicle {
         if (troopspace > 0) {
             linePoint += lineFeed;
             String troopString = "Cargo, Infantry (";
-            if (troopspace - Math.floor(troopspace) > 0) {
+            if ((troopspace - Math.floor(troopspace)) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
                 troopString += String.valueOf((int) troopspace);
@@ -956,6 +956,7 @@ public class ImageHelperVehicle {
             pipSpace = pipPoints.size() / (totalArmor + 15);
         }
         int currentPip = 0;
+        ArrayList<Integer> used = new ArrayList<Integer>();
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             if (totalArmor == 0) {
                 break;

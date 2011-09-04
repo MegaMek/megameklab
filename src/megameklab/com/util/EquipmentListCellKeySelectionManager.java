@@ -25,7 +25,7 @@ public class EquipmentListCellKeySelectionManager implements KeySelectionManager
      */
     private static final long serialVersionUID = -3544837608256080482L;
 
-    public int selectionForKey(char aKey,ComboBoxModel aModel) {
+    public int selectionForKey(char aKey,@SuppressWarnings("rawtypes") ComboBoxModel aModel) {
         int i,c;
         int currentSelection = -1;
         Object selectedItem = aModel.getSelectedItem();
@@ -48,9 +48,9 @@ public class EquipmentListCellKeySelectionManager implements KeySelectionManager
 
             for ( i = ++currentSelection, c = aModel.getSize() ; i < c ; i++ ) {
                 Object elem = aModel.getElementAt(i);
-                if (elem != null && elem.toString() != null) {
+                if ((elem != null) && (elem.toString() != null)) {
                     v = ((EquipmentType) elem).getName().toLowerCase();
-                    if ( v.length() > 0 && v.charAt(0) == aKey ) {
+                    if ( (v.length() > 0) && (v.charAt(0) == aKey) ) {
                         return i;
                     }
                 }
@@ -58,9 +58,9 @@ public class EquipmentListCellKeySelectionManager implements KeySelectionManager
 
             for ( i = 0 ; i < currentSelection ; i ++ ) {
                 Object elem = aModel.getElementAt(i);
-                if (elem != null && elem.toString() != null) {
+                if ((elem != null) && (elem.toString() != null)) {
                     v = ((EquipmentType) elem).getName().toLowerCase();
-                    if ( v.length() > 0 && v.charAt(0) == aKey ) {
+                    if ( (v.length() > 0) && (v.charAt(0) == aKey) ) {
                         return i;
                     }
                 }
