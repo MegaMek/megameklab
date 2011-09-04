@@ -525,7 +525,7 @@ public class PrintWiGE implements Printable {
                 tank = tankList.get(pos);
                 pj.setJobName(tank.getChassis() + " " + tank.getModel());
 
-                if (!singlePrint && (pos + 1 < tankList.size())) {
+                if (!singlePrint && ((pos + 1) < tankList.size())) {
                     tank2 = tankList.get(++pos);
                 } else {
                     tank2 = null;
@@ -550,11 +550,11 @@ public class PrintWiGE implements Printable {
             return;
         }
 
-        float baseX = 465.0f;
+        float baseX = 466f;
         float baseY = 75.0f;
         float pointX = baseX;
         float pointY = baseY;
-        float shiftX = 7f;
+        float shiftX = 6.4f;
         float shiftY = 7f;
         int pipsPerLine = 3;
 
@@ -583,18 +583,19 @@ public class PrintWiGE implements Printable {
             pointX = baseX;
         }
 
-        printArmorPoints(g2d, pipPlotter, totalArmor);
+        //printArmorPoints(g2d, pipPlotter, totalArmor);
+        printArmorPoints(g2d, pipPlotter, 90);
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
-        float baseX = 426;
-        float baseY = 289f;
+        float baseX = 417.5f;
+        float baseY = 287f;
         float pointX = baseX;
         float pointY = baseY;
-        float shiftX = 6f;
-        float shiftY = 6f;
-        int pipsPerLine = 16;
+        float shiftX = 6.45f;
+        float shiftY = 6.45f;
+        int pipsPerLine = 18;
 
         if (secondImage) {
             baseY += secondPageMargin;
@@ -608,12 +609,23 @@ public class PrintWiGE implements Printable {
                     { pointX, pointY });
                 pointX += shiftX;
             }
+            if (lineCount == 1) {
+                pipsPerLine += 2;
+                baseX -= shiftX;
+            } else if (lineCount == 2) {
+                pipsPerLine -= 2;
+                baseX += shiftX;
+            } else if (lineCount == 3) {
+                pipsPerLine -= 2;
+                baseX += shiftX;
+            } else if (lineCount == 4) {
+                pipsPerLine -= 2;
+                baseX += shiftX;
+            }
             pointY += shiftY;
             pointX = baseX;
         }
-
         printArmorPoints(g2d, pipPlotter, totalArmor);
-
     }
 
     private void printTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
@@ -656,11 +668,11 @@ public class PrintWiGE implements Printable {
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
-        float baseX = 434f;
-        float baseY = 155.5f;
+        float baseX = 435f;
+        float baseY = 156f;
         float pointX = baseX;
         float pointY = baseY;
-        float shiftX = 7f;
+        float shiftX = 6.5f;
         float shiftY = 7f;
         int pipsPerLine = 2;
 
@@ -677,12 +689,9 @@ public class PrintWiGE implements Printable {
                 pointX += shiftX;
             }
 
-            if (lineCount == 1) {
-                pipsPerLine += 1;
-                baseX -= shiftX / 2;
-            } else if ((lineCount == 2)) {
-                pipsPerLine += 1;
-                baseX -= shiftX;
+            if ((lineCount == 2)) {
+                pipsPerLine += 2;
+                baseX -= shiftX * 1.6f;
             } else if (lineCount == 3) {
                 pipsPerLine += 2;
                 baseX -= shiftX;
@@ -697,7 +706,7 @@ public class PrintWiGE implements Printable {
                 baseX -= shiftX / 2;
             } else if (lineCount == 12) {
                 pipsPerLine += 1;
-                baseX -= shiftX * 1.5;
+                baseX -= shiftX * 1.8;
             } else if ((lineCount == 14) || (lineCount == 18)) {
                 pipsPerLine -= 1;
             } else if (lineCount == 19) {
@@ -713,11 +722,11 @@ public class PrintWiGE implements Printable {
     }
 
     private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float baseX = 502f;
-        float baseY = 157.5f;
+        float baseX = 502.5f;
+        float baseY = 156f;
         float pointX = baseX;
         float pointY = baseY;
-        float shiftX = 7f;
+        float shiftX = 6.5f;
         float shiftY = 7f;
         int pipsPerLine = 2;
 
@@ -734,31 +743,30 @@ public class PrintWiGE implements Printable {
                 pointX += shiftX;
             }
 
-            if (lineCount == 1) {
-                pipsPerLine += 1;
-            } else if ((lineCount == 2)) {
-                pipsPerLine += 1;
+            if (lineCount == 2) {
+                pipsPerLine += 2;
+                baseX -= shiftX * 0.3f;
             } else if (lineCount == 3) {
                 pipsPerLine += 2;
-                baseX -= shiftX * 1.25f;
+                baseX -= shiftX;
             } else if (lineCount == 4) {
                 pipsPerLine -= 1;
-                baseX += shiftX;
+                baseX += shiftX * 1.4f;
             } else if (lineCount == 5) {
-                baseX += shiftX * .75f;
+                baseX += shiftX * .7f;
             } else if ((lineCount > 6) && (lineCount < 9)) {
                 baseX += shiftX / 2;
             } else if (lineCount == 10) {
                 baseX += shiftX / 2;
             } else if (lineCount == 12) {
                 pipsPerLine += 1;
-                baseX += shiftX * .5;
+                baseX += shiftX * .6;
             } else if ((lineCount == 14) || (lineCount == 18)) {
                 pipsPerLine -= 1;
                 baseX += shiftX;
             } else if (lineCount == 19) {
                 pipsPerLine = 1;
-                baseX += shiftX * 2f;
+                baseX += shiftX * 3f;
             }
 
             pointY += shiftY;
@@ -770,9 +778,9 @@ public class PrintWiGE implements Printable {
 
     private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         int[] topColumn = new int[]
-            { 454, 155 };
+            { 454, 154 };
         int[] bottomColumn = new int[]
-            { 454, 163 };
+            { 454, 161 };
         int[] pipShift = new int[]
             { 7, 7 };
 
@@ -866,7 +874,7 @@ public class PrintWiGE implements Printable {
 
     private void printRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         int[] column = new int[]
-            { 420, 272 };
+            { 430, 272 };
         int[] pipShift = new int[]
             { 7, 7 };
 
