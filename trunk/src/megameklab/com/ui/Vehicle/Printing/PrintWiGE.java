@@ -583,8 +583,7 @@ public class PrintWiGE implements Printable {
             pointX = baseX;
         }
 
-        //printArmorPoints(g2d, pipPlotter, totalArmor);
-        printArmorPoints(g2d, pipPlotter, 90);
+        printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
