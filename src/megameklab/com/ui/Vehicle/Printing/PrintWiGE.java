@@ -633,12 +633,12 @@ public class PrintWiGE implements Printable {
             return;
         }
 
-        float baseX = 453f;
-        float baseY = 232f;
+        float baseX = 453.2f;
+        float baseY = 230f;
         float pointX = baseX;
         float pointY = baseY;
         float shiftX = 6f;
-        float shiftY = 6f;
+        float shiftY = 6.5f;
         int pipsPerLine = 7;
 
         if (secondImage) {
@@ -662,7 +662,6 @@ public class PrintWiGE implements Printable {
             pointX = baseX;
         }
         printArmorPoints(g2d, pipPlotter, totalArmor);
-
     }
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
@@ -776,40 +775,42 @@ public class PrintWiGE implements Printable {
     }
 
     private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] topColumn = new int[]
-            { 454, 154 };
-        int[] bottomColumn = new int[]
-            { 454, 161 };
-        int[] pipShift = new int[]
+        float[] topCenter = new float[]
+            { 472.4f, 154.4f };
+        float[] bottomCenter = new float[]
+            { 472.4f, 160.7f };
+        float[] pipShift = new float[]
             { 7, 7 };
 
         if (secondImage) {
-            topColumn[1] += secondPageMargin;
-            bottomColumn[1] += secondPageMargin;
+            topCenter[1] += secondPageMargin;
+            bottomCenter[1] += secondPageMargin;
         }
 
         int pips = Math.min(5, totalArmor);
 
         totalArmor -= pips;
-        topColumn[0] += pipShift[0] * ((5 - pips) / 2);
+        boolean shiftleft = true;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelperVehicle.drawWiGEISPip(g2d, topColumn[0], topColumn[1]);
-            topColumn[0] += pipShift[0];
+            ImageHelperVehicle.drawWiGEISPip(g2d, topCenter[0], topCenter[1]);
+            topCenter[0] += (pipShift[0]*pos*(shiftleft?-1:1));
+            shiftleft = !shiftleft;
         }
 
-        bottomColumn[0] += pipShift[0] * ((5 - totalArmor) / 2);
+        shiftleft = true;
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawWiGEISPip(g2d, bottomColumn[0], bottomColumn[1]);
-            bottomColumn[0] += pipShift[0];
+            ImageHelperVehicle.drawWiGEISPip(g2d, bottomCenter[0], bottomCenter[1]);
+            bottomCenter[0] += (pipShift[0]*pos*(shiftleft?-1:1));
+            shiftleft = !shiftleft;
         }
     }
 
     private void printTurretStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] topColumn = new int[]
-            { 462, 210 };
-        int[] bottomColumn = new int[]
-            { 462, 218 };
-        int[] pipShift = new int[]
+        float[] topColumn = new float[]
+            { 472.4f, 207 };
+        float[] bottomColumn = new float[]
+            { 472.4f, 215 };
+        float[] pipShift = new float[]
             { 7, 7 };
 
         if (totalArmor < 1) {
@@ -824,16 +825,18 @@ public class PrintWiGE implements Printable {
         int pips = Math.min(5, totalArmor);
 
         totalArmor -= pips;
-        topColumn[0] += pipShift[0] * ((5 - pips) / 2);
+        boolean shiftleft = true;
         for (int pos = 1; pos <= pips; pos++) {
             ImageHelperVehicle.drawWiGEISPip(g2d, topColumn[0], topColumn[1]);
-            topColumn[0] += pipShift[0];
+            topColumn[0] +=  (pipShift[0]*pos*(shiftleft?-1:1));
+            shiftleft = !shiftleft;
         }
 
-        bottomColumn[0] += pipShift[0] * ((5 - totalArmor) / 2);
+        shiftleft = true;
         for (int pos = 1; pos <= totalArmor; pos++) {
             ImageHelperVehicle.drawWiGEISPip(g2d, bottomColumn[0], bottomColumn[1]);
-            bottomColumn[0] += pipShift[0];
+            bottomColumn[0] +=  (pipShift[0]*pos*(shiftleft?-1:1));
+            shiftleft = !shiftleft;
         }
     }
 
@@ -872,19 +875,20 @@ public class PrintWiGE implements Printable {
     }
 
     private void printRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] column = new int[]
-            { 430, 272 };
-        int[] pipShift = new int[]
+        float[] column = new float[]
+            { 472.4f, 272 };
+        float[] pipShift = new float[]
             { 7, 7 };
 
         if (secondImage) {
             column[1] += secondPageMargin;
         }
 
-        column[0] += pipShift[0] * ((10 - totalArmor) / 2);
+        boolean shiftleft = true;
         for (int pos = 1; pos <= totalArmor; pos++) {
             ImageHelperVehicle.drawWiGEISPip(g2d, column[0], column[1]);
-            column[0] += pipShift[0];
+            column[0] +=  (pipShift[0]*pos*(shiftleft?-1:1));
+            shiftleft = !shiftleft;
         }
     }
 
