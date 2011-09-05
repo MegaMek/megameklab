@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,13 +113,13 @@ public class ImageHelperVehicle {
         g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
     }
 
-    public static void drawWiGEISPip(Graphics2D g2d, int width, int height) {
-        Dimension circle = new Dimension(6, 6);
-        Dimension fillCircle = new Dimension(4, 4);
+    public static void drawWiGEISPip(Graphics2D g2d, float width, float height) {
         g2d.setColor(Color.black);
-        g2d.fillOval(width, height, circle.width, circle.height);
+        Ellipse2D.Float circle = new Ellipse2D.Float(width, height, 6f, 6f);
+        g2d.fill(circle);
         g2d.setColor(Color.white);
-        g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
+        circle = new Ellipse2D.Float(width+1, height+1, 4, 4);
+        g2d.fill(circle);
     }
 
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d) {
