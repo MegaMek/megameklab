@@ -384,7 +384,7 @@ public class ImageHelperBattleArmor {
             }
             if (ba.hasDWP()) {
                 String burdenInfo;
-                if (ba.getOriginalJumpMP() > 0) {
+                if (ba.getJumpMP(true, true, true) > 0) {
                     burdenInfo = "must detach DWP before jumping or moving full ground speed";
                 } else {
                     burdenInfo = "must detach DWP before moving full ground speed";
