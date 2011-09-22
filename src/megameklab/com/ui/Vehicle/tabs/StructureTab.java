@@ -74,11 +74,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private static final String ENGINEFUELCELL = "Fuel Cell";
     private static final String ENGINEXXL = "XXL";
     private static final String ENGINEICE = "I.C.E";
+    private static final String ENGINENONE = "None";
 
     String[] isEngineTypes =
-        { ENGINESTANDARD, ENGINEICE, ENGINEXL, ENGINELIGHT, ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL };
+        { ENGINESTANDARD, ENGINEICE, ENGINENONE, ENGINEXL, ENGINELIGHT, ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL};
     String[] clanEngineTypes =
-        { ENGINESTANDARD, ENGINEICE, ENGINEXL, ENGINEFUELCELL, ENGINEXXL };
+        { ENGINESTANDARD, ENGINEICE, ENGINEXL, ENGINENONE, ENGINEFUELCELL, ENGINEXXL };
 
     JComboBox engineType = new JComboBox(isEngineTypes);
     JComboBox cruiseMP;
@@ -150,7 +151,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         Vector<String> cruiseMPs = new Vector<String>(26, 1);
 
-        for (int pos = 1; pos <= 25; pos++) {
+        for (int pos = 0; pos <= 25; pos++) {
             cruiseMPs.add(Integer.toString(pos));
         }
 
@@ -300,7 +301,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         populateWeight((int) unit.getWeight());
 
-        cruiseMP.setSelectedIndex(unit.getWalkMP() - 1);
+        cruiseMP.setSelectedIndex(unit.getWalkMP());
 
         updateEngineTypes(getTank().isClan());
         updateTroopSpaceAllowed();
@@ -370,7 +371,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             try {
                 // if a Tank is primitive and thus needs a larger engine
                 if (combo.equals(engineType) || combo.equals(cruiseMP) || combo.equals(weightClass)) {
-                    int rating = Math.max(10, (cruiseMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString()) - ((Tank) unit).getSuspensionFactor());
+                    if (combo.equals(engineType)) {
+                        if (combo.getSelectedItem().equals(ENGINENONE)) {
+                            cruiseMP.setSelectedIndex(0);
+                            cruiseMP.setEnabled(false);
+                        } else {
+                            cruiseMP.setEnabled(true);
+                        }
+                    }
+                    int rating = Math.max(10, ((cruiseMP.getSelectedIndex()) * Integer.parseInt(weightClass.getSelectedItem().toString())) - ((Tank) unit).getSuspensionFactor());
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
@@ -383,7 +392,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         } else {
                             getTank().setEngine(new Engine(rating, type, Engine.TANK_ENGINE));
                         }
-                        getTank().setOriginalWalkMP(cruiseMP.getSelectedIndex() + 1);
+                        getTank().setOriginalWalkMP(cruiseMP.getSelectedIndex());
                     }
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
@@ -688,6 +697,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         if (engineType.equals(ENGINELIGHT)) {
             return Engine.LIGHT_ENGINE;
         }
+        if (engineType.equals(ENGINENONE)) {
+            return Engine.NONE;
+        }
 
         return Engine.NORMAL_ENGINE;
     }
@@ -703,14 +715,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             engineList = clanEngineTypes;
             switch (getTank().getTechLevel()) {
                 case TechConstants.T_CLAN_TW:
-                    engineCount = 3;
+                    engineCount = 4;
                     break;
                 case TechConstants.T_CLAN_ADVANCED:
-                    engineCount = 4;
+                    engineCount = 5;
                     break;
                 case TechConstants.T_CLAN_EXPERIMENTAL:
                 case TechConstants.T_CLAN_UNOFFICIAL:
-                    engineCount = 5;
+                    engineCount = 6;
                     break;
             }
         } else {
@@ -718,17 +730,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             engineList = isEngineTypes;
             switch (getTank().getTechLevel()) {
                 case TechConstants.T_INTRO_BOXSET:
-                    engineCount = 2;
+                    engineCount = 3;
                     break;
                 case TechConstants.T_IS_TW_NON_BOX:
-                    engineCount = 5;
+                    engineCount = 6;
                     break;
                 case TechConstants.T_IS_ADVANCED:
-                    engineCount = 7;
+                    engineCount = 8;
                     break;
                 case TechConstants.T_IS_EXPERIMENTAL:
                 case TechConstants.T_IS_UNOFFICIAL:
-                    engineCount = 8;
+                    engineCount = 9;
                     break;
             }
         }
@@ -749,10 +761,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     return 1;
                 case Engine.XL_ENGINE:
                     return 2;
-                case Engine.FUEL_CELL:
+                case Engine.NONE:
                     return 3;
-                case Engine.XXL_ENGINE:
+                case Engine.FUEL_CELL:
                     return 4;
+                case Engine.XXL_ENGINE:
+                    return 5;
             }
         } else {
             switch (engineType) {
@@ -760,18 +774,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     return 0;
                 case Engine.COMBUSTION_ENGINE:
                     return 1;
-                case Engine.XL_ENGINE:
+                case Engine.NONE:
                     return 2;
-                case Engine.LIGHT_ENGINE:
+                case Engine.XL_ENGINE:
                     return 3;
-                case Engine.COMPACT_ENGINE:
+                case Engine.LIGHT_ENGINE:
                     return 4;
-                case Engine.FISSION:
+                case Engine.COMPACT_ENGINE:
                     return 5;
-                case Engine.FUEL_CELL:
+                case Engine.FISSION:
                     return 6;
-                case Engine.XXL_ENGINE:
+                case Engine.FUEL_CELL:
                     return 7;
+                case Engine.XXL_ENGINE:
+                    return 8;
             }
         }
 
