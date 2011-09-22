@@ -185,6 +185,9 @@ public class PrintVehicle implements Printable {
             case Engine.FUEL_CELL:
                 engineName = "Fuel Cell Engine";
                 break;
+            case Engine.NONE:
+                engineName = "None";
+                break;
             default:
                 break;
         }
@@ -342,6 +345,9 @@ public class PrintVehicle implements Printable {
                 break;
             case Engine.FUEL_CELL:
                 engineName = "Fuel Cell";
+                break;
+            case Engine.NONE:
+                engineName = "None";
                 break;
             default:
                 break;
@@ -523,7 +529,7 @@ public class PrintVehicle implements Printable {
                 tank = tankList.get(pos);
                 pj.setJobName(tank.getChassis() + " " + tank.getModel());
 
-                if (!singlePrint && (pos + 1 < tankList.size())) {
+                if (!singlePrint && ((pos + 1) < tankList.size())) {
                     tank2 = tankList.get(++pos);
                 } else {
                     tank2 = null;
@@ -584,7 +590,7 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[]
                 { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
-            if (pos % 12 == 0) {
+            if ((pos % 12) == 0) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 topColumn[0] += pipShift[0];
@@ -596,7 +602,7 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[]
                 { middleColumn[0], middleColumn[1] });
             middleColumn[0] += pipShift[0];
-            if (pos % 8 == 0) {
+            if ((pos % 8) == 0) {
                 middleColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 middleColumn[0] += pipShift[0];
@@ -607,7 +613,7 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[]
                 { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
-            if (pos % 6 == 0) {
+            if ((pos % 6) == 0) {
                 bottomColumn[1] += pipShift[1] - 0.5f;
                 pipShift[0] *= -1;
                 bottomColumn[0] += pipShift[0];
@@ -668,7 +674,7 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[]
                 { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
-            if (pos % 10 == 0) {
+            if ((pos % 10) == 0) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 topColumn[0] += pipShift[0];
@@ -685,7 +691,7 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[]
                 { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
-            if (pos % 6 == 0) {
+            if ((pos % 6) == 0) {
                 bottomColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 bottomColumn[0] += pipShift[0];
@@ -831,7 +837,7 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[]
                 { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
-            if (pos % 9 == 0) {
+            if ((pos % 9) == 0) {
                 bottomColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 bottomColumn[0] += pipShift[0];
@@ -872,7 +878,7 @@ public class PrintVehicle implements Printable {
             pipPlotter.add(new float[]
                 { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
-            if (pos % 11 == 0) {
+            if ((pos % 11) == 0) {
                 bottomColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 bottomColumn[0] += pipShift[0];
