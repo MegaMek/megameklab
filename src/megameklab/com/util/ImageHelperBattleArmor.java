@@ -180,6 +180,9 @@ public class ImageHelperBattleArmor {
         if (ba.hasDWP()) {
             maxHeight -= lineFeed;
         }
+        if (ba.isExoskeleton() && !ba.hasWorkingMisc(MiscType.F_EXTENDED_LIFESUPPORT)) {
+            maxHeight -= lineFeed;
+        }
 
         Font font = ImageHelperBattleArmor.getBattleArmorWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, 7.0f);
         g2d.setFont(font);
@@ -379,6 +382,13 @@ public class ImageHelperBattleArmor {
                 String burdenInfo = "must detach missiles before jumping or swarm/leg attacks";
                 g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
                 g2d.drawString(burdenInfo, typePoint, linePoint);
+                linePoint += lineFeed;
+                g2d.setFont(font);
+            }
+            if (ba.isExoskeleton() && !ba.hasWorkingMisc(MiscType.F_EXTENDED_LIFESUPPORT)) {
+                String exoInfo = "unsealed Exoskeleton";
+                g2d.setFont(UnitUtil.getNewFont(g2d, exoInfo, false, 175, 7.0f));
+                g2d.drawString(exoInfo, typePoint, linePoint);
                 linePoint += lineFeed;
                 g2d.setFont(font);
             }

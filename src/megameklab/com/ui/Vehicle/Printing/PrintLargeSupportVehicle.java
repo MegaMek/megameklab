@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -96,7 +96,7 @@ public class PrintLargeSupportVehicle implements Printable {
         printWeaponsNEquipment(g2d);
 
         // Armor Pips
-        printFrontArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONT), false);
+        printFrontArmor(g2d, largesupportank.getOArmor(Tank.LOC_FRONT), false);
         printFrontLeftArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONTLEFT), false);
         printFrontRightArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), false);
         printRearLeftArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REARLEFT), false);
@@ -105,7 +105,7 @@ public class PrintLargeSupportVehicle implements Printable {
         printTurretArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_TURRET), false);
 
         // Internal Pips
-        printFrontStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_FRONT), false);
+        printFrontStruct(g2d, largesupportank.getOInternal(Tank.LOC_FRONT), false);
         printLeftFrontStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_FRONTLEFT), false);
         printRightFrontStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REARRIGHT), false);
         printLeftRearStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REARLEFT), false);
@@ -115,7 +115,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
         if (largesupportank2 != null) {
             // Armor Pips
-            printFrontArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_FRONT), true);
+            printFrontArmor(g2d, largesupportank2.getOArmor(Tank.LOC_FRONT), true);
             printFrontLeftArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_FRONTLEFT), true);
             printFrontRightArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), true);
             printRearLeftArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_REARLEFT), true);
@@ -124,7 +124,7 @@ public class PrintLargeSupportVehicle implements Printable {
             printTurretArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_TURRET), true);
 
             // Internal Pips
-            printFrontStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_FRONT), true);
+            printFrontStruct(g2d, largesupportank2.getOInternal(Tank.LOC_FRONT), true);
             printLeftFrontStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_FRONTLEFT), true);
             printRightFrontStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REARRIGHT), true);
             printLeftRearStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REARLEFT), true);
@@ -181,6 +181,9 @@ public class PrintLargeSupportVehicle implements Printable {
                 break;
             case Engine.FUEL_CELL:
                 engineName = "Fuel Cell Engine";
+                break;
+            case Engine.NONE:
+                engineName = "None";
                 break;
             default:
                 break;
@@ -330,6 +333,9 @@ public class PrintLargeSupportVehicle implements Printable {
             case Engine.FUEL_CELL:
                 engineName = "Fuel Cell";
                 break;
+            case Engine.NONE:
+                engineName = "None";
+                break;
             default:
                 break;
         }
@@ -438,7 +444,7 @@ public class PrintLargeSupportVehicle implements Printable {
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONT)) + ")", 467, 64);
+        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
 
         g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONTRIGHT)) + ")", 555, 185);
 
@@ -460,7 +466,7 @@ public class PrintLargeSupportVehicle implements Printable {
             g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(largesupportank2), 463, 48 + secondPageMargin);
             font = UnitUtil.deriveFont(true, 9.0f);
             g2d.setFont(font);
-            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
+            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(Tank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
 
             g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230 + secondPageMargin);
 
@@ -508,7 +514,7 @@ public class PrintLargeSupportVehicle implements Printable {
                 largesupportank = largesupportankList.get(pos);
                 pj.setJobName(largesupportank.getChassis() + " " + largesupportank.getModel());
 
-                if (!singlePrint && (pos + 1 < largesupportankList.size())) {
+                if (!singlePrint && ((pos + 1) < largesupportankList.size())) {
                     largesupportank2 = largesupportankList.get(++pos);
                 } else {
                     largesupportank2 = null;
