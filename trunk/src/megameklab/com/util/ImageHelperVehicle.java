@@ -478,6 +478,11 @@ public class ImageHelperVehicle {
             maxHeight -= lineFeed;
         }
 
+        for (@SuppressWarnings("unused")
+        Bay bay : tank.getTransportBays()) {
+            maxHeight -= lineFeed;
+        }
+
         if (tank.getAmmo().size() > 0) {
             maxHeight -= lineFeed;
         }
@@ -659,6 +664,11 @@ public class ImageHelperVehicle {
                 troopString += " Tons)";
             }
             g2d.drawString(troopString, qtyPoint, linePoint);
+        }
+
+        for (Bay bay : tank.getTransportBays()) {
+            linePoint += lineFeed;
+            g2d.drawString(bay.getUnusedString(), qtyPoint, linePoint);
         }
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             linePoint += lineFeed;
