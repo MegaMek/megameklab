@@ -417,7 +417,7 @@ public class ImageHelperVehicle {
             g2d.setFont(font);
         }
 
-        ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
+        ImageHelper.printVehicleAmmo(tank, g2d, (int) offset==0?0:(int)offset-8);
     }
 
     public static void printLargeSupportTankWeaponsNEquipment(LargeSupportTank tank, Graphics2D g2d, float offset) {
