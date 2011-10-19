@@ -478,8 +478,10 @@ public class ImageHelperVehicle {
             maxHeight -= lineFeed;
         }
 
-        for (@SuppressWarnings("unused")
-        Bay bay : tank.getTransportBays()) {
+        if (tank.getTransportBays().size() > 0) {
+            maxHeight -= lineFeed;
+        }
+        for (@SuppressWarnings("unused") Bay bay : tank.getTransportBays()) {
             maxHeight -= lineFeed;
         }
 
@@ -1063,7 +1065,8 @@ public class ImageHelperVehicle {
 
     public static void printLargeVehicleCargo(LargeSupportTank tank, Graphics2D g2d, int pointY) {
 
-        if (tank.getTransportBays().size() < 1) {
+        float troopspace = tank.getTroopCarryingSpace();
+        if ((tank.getTransportBays().size() < 1) && (troopspace == 0)) {
             return;
         }
 
@@ -1081,6 +1084,22 @@ public class ImageHelperVehicle {
         font = UnitUtil.deriveFont(g2d.getFont().getSize2D());
 
         g2d.setFont(font);
+        if (troopspace > 0) {
+            String troopString = "Infantry (";
+            if ((troopspace - Math.floor(troopspace)) > 0) {
+                troopString += String.valueOf(troopspace);
+            } else {
+                troopString += String.valueOf((int) troopspace);
+            }
+            if (troopspace == 1) {
+                troopString += " ton)";
+            } else {
+                troopString += " tons)";
+            }
+            g2d.drawString(troopString, pointX, pointY);
+            pointY += lineFeed;
+        }
+
         for (Bay bay : tank.getTransportBays()) {
             g2d.drawString(ImageHelperVehicle.getBayString(bay), pointX, pointY);
             pointY += lineFeed;
