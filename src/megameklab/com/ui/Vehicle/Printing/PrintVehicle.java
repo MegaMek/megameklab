@@ -48,7 +48,7 @@ public class PrintVehicle implements Printable {
     private Tank tank = null;
     private Tank tank2 = null;
     private ArrayList<Tank> tankList;
-    private int secondPageMargin = 373; // How far down the text should be
+    private int secondPageMargin = 371; // How far down the text should be
     private boolean singlePrint = false;
     PrinterJob masterPrintJob;
 
@@ -292,11 +292,9 @@ public class PrintVehicle implements Printable {
         g2d.setFont(font);
 
         g2d.drawString("2011", 62.5f, 374f);
-
+        g2d.drawString("2011", 62.5f, 374f + secondPageMargin);
         if (tank2 != null) {
             printTank2Data(g2d);
-        } else {
-            g2d.drawString("2011", 62.5f, 374f + secondPageMargin);
         }
     }
 
@@ -304,7 +302,7 @@ public class PrintVehicle implements Printable {
         String tankName = tank2.getChassis().toUpperCase() + " " + tank2.getModel().toUpperCase();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, tankName, true, 180, 10.0f));
-        g2d.drawString(tankName, 49, 493);
+        g2d.drawString(tankName, 49, 120 + secondPageMargin);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
@@ -323,7 +321,7 @@ public class PrintVehicle implements Printable {
             int mascMP = tank.getRunMP();
             g2d.drawString(Integer.toString(tank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155 + secondPageMargin);
         }
-        g2d.drawString(tank2.getMovementModeAsString(), 88, 537);
+        g2d.drawString(tank2.getMovementModeAsString(), 88, 166  + secondPageMargin);
 
         String engineName = "Fusion Engine";
 
@@ -344,7 +342,7 @@ public class PrintVehicle implements Printable {
                 engineName = "Compact Fusion Engine";
                 break;
             case Engine.FUEL_CELL:
-                engineName = "Fuel Cell";
+                engineName = "Fuel Cell Engine";
                 break;
             case Engine.NONE:
                 engineName = "None";
@@ -353,14 +351,14 @@ public class PrintVehicle implements Printable {
                 break;
         }
 
-        g2d.drawString(engineName, 79, 548);
+        g2d.drawString(engineName, 79, 177 + secondPageMargin);
 
         if (tank2.getWeight() >= 5) {
             int tonnage = (int) Math.ceil(tank2.getWeight());
-            g2d.drawString(Integer.toString(tonnage), 177, 505);
+            g2d.drawString(Integer.toString(tonnage), 177, 134 + secondPageMargin);
         } else {
             DecimalFormat myFormatter = new DecimalFormat("#.###");
-            g2d.drawString(myFormatter.format(tank2.getWeight()), 177, 505);
+            g2d.drawString(myFormatter.format(tank2.getWeight()), 177, 134 + secondPageMargin);
         }
 
         int nextDataLine = 155 + secondPageMargin;
@@ -405,7 +403,7 @@ public class PrintVehicle implements Printable {
         } else if (tank2.isClan()) {
             techBase = "Clan";
         }
-        g2d.drawString(techBase, 177, 145);
+        g2d.drawString(techBase, 177, 145 + secondPageMargin);
 
         if ((tank2.getSource() != null) && (tank2.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
@@ -435,10 +433,10 @@ public class PrintVehicle implements Printable {
 
         // Cost/BV
         DecimalFormat myFormatter = new DecimalFormat("#,###");
-        g2d.drawString(myFormatter.format(tank2.calculateBattleValue(true, true)), 150, 728);
+        g2d.drawString(myFormatter.format(tank2.calculateBattleValue(true, true)), 150, 357 + secondPageMargin);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 728);
+        //myFormatter = new DecimalFormat("#,###.##");
+        //g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 357 + secondPagemMargin);
 
         if (UnitUtil.hasBAR(tank2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
@@ -447,7 +445,6 @@ public class PrintVehicle implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 105f, 745.5f);
     }
 
     private void printArmor(Graphics2D g2d) {
