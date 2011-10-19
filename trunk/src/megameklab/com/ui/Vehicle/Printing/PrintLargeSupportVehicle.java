@@ -48,7 +48,7 @@ public class PrintLargeSupportVehicle implements Printable {
     private LargeSupportTank largesupportank = null;
     private LargeSupportTank largesupportank2 = null;
     private ArrayList<LargeSupportTank> largesupportankList;
-    private int secondPageMargin = 373; // How far down the text should be
+    private int secondPageMargin = 375; // How far down the text should be
     private boolean singlePrint = false;
     PrinterJob masterPrintJob;
 
@@ -283,11 +283,9 @@ public class PrintLargeSupportVehicle implements Printable {
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2011", 62.5f, 374f);
-
+        g2d.drawString("2011", 62.5f, 374f + secondPageMargin);
         if (largesupportank2 != null) {
             printLargeSupportTank2Data(g2d);
-        } else {
-            g2d.drawString("2011", 62.5f, 374f + secondPageMargin);
         }
     }
 
@@ -331,7 +329,7 @@ public class PrintLargeSupportVehicle implements Printable {
                 engineName = "Compact Fusion Engine";
                 break;
             case Engine.FUEL_CELL:
-                engineName = "Fuel Cell";
+                engineName = "Fuel Cell Engine";
                 break;
             case Engine.NONE:
                 engineName = "None";
@@ -387,7 +385,7 @@ public class PrintLargeSupportVehicle implements Printable {
         } else if (largesupportank2.isClan()) {
             techBase = "Clan";
         }
-        g2d.drawString(techBase, 177, 145);
+        g2d.drawString(techBase, 177, 145 + secondPageMargin);
 
         if ((largesupportank2.getSource() != null) && (largesupportank2.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
@@ -419,8 +417,8 @@ public class PrintLargeSupportVehicle implements Printable {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
         g2d.drawString(myFormatter.format(largesupportank2.calculateBattleValue(true, true)), 150, 728);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(largesupportank2.getCost(true)) + " C-bills", 52, 728);
+        //myFormatter = new DecimalFormat("#,###.##");
+        //g2d.drawString(myFormatter.format(largesupportank2.getCost(true)) + " C-bills", 52, 728);
 
         if (UnitUtil.hasBAR(largesupportank2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
@@ -429,7 +427,6 @@ public class PrintLargeSupportVehicle implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 105f, 745.5f);
     }
 
     private void printArmor(Graphics2D g2d) {

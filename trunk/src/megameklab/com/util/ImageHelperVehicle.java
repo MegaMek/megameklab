@@ -649,27 +649,6 @@ public class ImageHelperVehicle {
             }
         }
 
-        float troopspace = tank.getTroopCarryingSpace();
-        if (troopspace > 0) {
-            linePoint += lineFeed;
-            String troopString = "Infantry Bay (";
-            if ((troopspace - Math.floor(troopspace)) > 0) {
-                troopString += String.valueOf(troopspace);
-            } else {
-                troopString += String.valueOf((int) troopspace);
-            }
-            if (troopspace == 1) {
-                troopString += " Ton)";
-            } else {
-                troopString += " Tons)";
-            }
-            g2d.drawString(troopString, qtyPoint, linePoint);
-        }
-
-        for (Bay bay : tank.getTransportBays()) {
-            linePoint += lineFeed;
-            g2d.drawString(bay.getUnusedString(), qtyPoint, linePoint);
-        }
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             linePoint += lineFeed;
             String chassisMods = "Chassis Modifications: ";
