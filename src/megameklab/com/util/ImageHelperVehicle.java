@@ -429,7 +429,7 @@ public class ImageHelperVehicle {
         int shtPoint = 177;
         int medPoint = 195;
         int longPoint = 211;
-        float maxHeight = 137.0f;
+        float maxHeight = 130.0f;
         float linePoint = 212f + offset;
 
         float lineFeed = 6.7f;
