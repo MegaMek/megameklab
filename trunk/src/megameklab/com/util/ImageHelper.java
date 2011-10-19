@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -350,7 +350,7 @@ public class ImageHelper {
         g2d.setFont(font);
         HashMap<TextAttribute, Object> strikeThroughAttr = new HashMap<TextAttribute, Object>();
         strikeThroughAttr.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-        
+
         for (int pos = Mech.LOC_HEAD; pos <= Mech.LOC_LLEG; pos++) {
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
@@ -472,7 +472,7 @@ public class ImageHelper {
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
                             font = UnitUtil.deriveFont(7.0f);
                             g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                         } else {
                             ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint, linePoint);
@@ -537,7 +537,7 @@ public class ImageHelper {
 
     public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int offset) {
 
-        int pointY = 340 + offset;
+        int pointY = 343 + offset;
         int pointX = 22;
 
         HashMap<String, Integer> ammoHash = new HashMap<String, Integer>();
@@ -604,7 +604,7 @@ public class ImageHelper {
             sb = new StringBuffer("Ammo (CASE): ");
         }
 
-        g2d.drawString(sb.toString(), pointX, pointY - (linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont()));
+        g2d.drawString(sb.toString(), pointX, pointY - ((linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
         pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
         sb = new StringBuffer();
         int linesprinted = 0;
@@ -884,7 +884,7 @@ public class ImageHelper {
         at.scale(2.5, 2.5);
 
         // rotate 45 degrees around image center
-        at.rotate(angle * Math.PI / 180.0, width / 2.0, height / 2.0);
+        at.rotate((angle * Math.PI) / 180.0, width / 2.0, height / 2.0);
 
         /*
          * AffineTransform translationTransform; translationTransform =
