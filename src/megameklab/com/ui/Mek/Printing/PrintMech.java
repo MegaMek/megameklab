@@ -219,7 +219,7 @@ public class PrintMech implements Printable {
 
         int tonnage = (int) Math.ceil(mech.getWeight());
 
-        if (tonnage % 5 != 0) {
+        if ((tonnage % 5) != 0) {
             tonnage += 5 - (tonnage % 5);
         }
 
@@ -345,7 +345,7 @@ public class PrintMech implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", mech.getYear()), 177, nextDataLine);
+            g2d.drawString(String.format("%1$s", mech.getYear()), 177 + leftMargin, topMargin + nextDataLine);
 
         }
 
@@ -387,7 +387,7 @@ public class PrintMech implements Printable {
             ImageHelper.drawHeatSinkPip(g2d, column.width, column.height);
             column.height += pipShift.height;
 
-            if (pos % pipsPerColumn == 0) {
+            if ((pos % pipsPerColumn) == 0) {
                 column.height -= pipShift.height * pipsPerColumn;
                 column.width += pipShift.width;
             }
@@ -1224,15 +1224,15 @@ public class PrintMech implements Printable {
             case 1:
                 pips3++;
                 if (totalArmor > 40) {
-                    col3End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col3End[1] += 71 / (float) ((totalArmor / 5) - 1);
                 }
                 break;
             case 2:
                 pips1++;
                 pips5++;
                 if (totalArmor > 40) {
-                    col1End[1] += 71 / (float) (totalArmor / 5 - 1);
-                    col5End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col1End[1] += 71 / (float) ((totalArmor / 5) - 1);
+                    col5End[1] += 71 / (float) ((totalArmor / 5) - 1);
                 }
                 break;
             case 3:
@@ -1240,9 +1240,9 @@ public class PrintMech implements Printable {
                 pips3++;
                 pips5++;
                 if (totalArmor > 40) {
-                    col1End[1] += 71 / (float) (totalArmor / 5 - 1);
-                    col3End[1] += 71 / (float) (totalArmor / 5 - 1);
-                    col5End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col1End[1] += 71 / (float) ((totalArmor / 5) - 1);
+                    col3End[1] += 71 / (float) ((totalArmor / 5) - 1);
+                    col5End[1] += 71 / (float) ((totalArmor / 5) - 1);
                 }
                 break;
             case 4:
@@ -1251,10 +1251,10 @@ public class PrintMech implements Printable {
                 pips4++;
                 pips5++;
                 if (totalArmor > 40) {
-                    col1End[1] += 71 / (float) (totalArmor / 5 - 1);
-                    col2End[1] += 71 / (float) (totalArmor / 5 - 1);
-                    col4End[1] += 71 / (float) (totalArmor / 5 - 1);
-                    col5End[1] += 71 / (float) (totalArmor / 5 - 1);
+                    col1End[1] += 71 / (float) ((totalArmor / 5) - 1);
+                    col2End[1] += 71 / (float) ((totalArmor / 5) - 1);
+                    col4End[1] += 71 / (float) ((totalArmor / 5) - 1);
+                    col5End[1] += 71 / (float) ((totalArmor / 5) - 1);
                 }
                 break;
             default:
@@ -1456,8 +1456,8 @@ public class PrintMech implements Printable {
             int rest = totalArmor % 2;
             if (rest == 1) {
                 col2pips++;
-                col2End[1] += 56 / (float) (totalArmor / 2 - 1);
-                col2End[0] -= 5 / (float) (totalArmor / 2 - 1);
+                col2End[1] += 56 / (float) ((totalArmor / 2) - 1);
+                col2End[0] -= 5 / (float) ((totalArmor / 2) - 1);
             }
         } else {
             col1Start[0] += 1;
@@ -1491,8 +1491,8 @@ public class PrintMech implements Printable {
             int rest = totalArmor % 2;
             if (rest == 1) {
                 col2pips++;
-                col2End[1] += 70 / (float) (totalArmor / 2 - 1);
-                col2End[0] -= 14 / (float) (totalArmor / 2 - 1);
+                col2End[1] += 70 / (float) ((totalArmor / 2) - 1);
+                col2End[0] -= 14 / (float) ((totalArmor / 2) - 1);
             }
         }
 
@@ -1522,8 +1522,8 @@ public class PrintMech implements Printable {
             int rest = totalArmor % 2;
             if (rest == 1) {
                 col1pips++;
-                col1End[1] += 70 / (float) (totalArmor / 2 - 1);
-                col1End[0] += 14 / (float) (totalArmor / 2 - 1);
+                col1End[1] += 70 / (float) ((totalArmor / 2) - 1);
+                col1End[0] += 14 / (float) ((totalArmor / 2) - 1);
             }
         }
         pipPlotter.addAll(ImageHelper.getPointsAlongLine(col1Start, col1End, col1pips));
@@ -1550,8 +1550,8 @@ public class PrintMech implements Printable {
             int rest = totalArmor % 2;
             if (rest == 1) {
                 col2pips++;
-                col2End[1] += 56 / (float) (totalArmor / 2 - 1);
-                col2End[0] += 5 / (float) (totalArmor / 2 - 1);
+                col2End[1] += 56 / (float) ((totalArmor / 2) - 1);
+                col2End[0] += 5 / (float) ((totalArmor / 2) - 1);
             }
         } else {
             col1Start[0] -= 1;
@@ -1578,7 +1578,7 @@ public class PrintMech implements Printable {
                 { column[0], column[1] });
             column[0] += pipShift[0];
 
-            if (pos % 3 == 0) {
+            if ((pos % 3) == 0) {
                 column[1] += pipShift[1];
                 pipShift[0] *= -1;
                 column[0] += pipShift[0];
@@ -1612,7 +1612,7 @@ public class PrintMech implements Printable {
                 { column[0], column[1] });
             column[0] += pipShift[0];
 
-            if (pos % 2 == 0) {
+            if ((pos % 2) == 0) {
                 pipShift[0] *= -1;
                 column[1] += pipShift[1];
             }
@@ -1637,7 +1637,7 @@ public class PrintMech implements Printable {
                 { column[0], column[1] });
             column[0] += pipShift[0];
 
-            if (pos % 3 == 0) {
+            if ((pos % 3) == 0) {
                 column[1] += pipShift[1];
                 pipShift[0] *= -1;
                 column[0] += pipShift[0];
@@ -1679,7 +1679,7 @@ public class PrintMech implements Printable {
                 { column[0], column[1] });
             column[0] += pipShift[0];
 
-            if (pos % 2 == 0) {
+            if ((pos % 2) == 0) {
                 pipShift[0] *= -1;
                 column[1] += pipShift[1];
             }
@@ -1713,7 +1713,7 @@ public class PrintMech implements Printable {
             case 1:
                 col2pips++;
                 if (totalArmor == 31) {
-                    col2End[1] += 49 / (float) (totalArmor / 3 - 1);
+                    col2End[1] += 49 / (float) ((totalArmor / 3) - 1);
                 }
                 break;
             case 2:
@@ -1922,10 +1922,10 @@ public class PrintMech implements Printable {
 
                 font = UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 85, 7.0f);
                 if(cs.isDestroyed()) {
-                	font = font.deriveFont(strikeThroughAttr);            
+                	font = font.deriveFont(strikeThroughAttr);
                 }
                 g2d.setFont(font);
-                
+
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
                     ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S))))) {
@@ -1942,7 +1942,7 @@ public class PrintMech implements Printable {
             }
             linePoint += lineFeed;
 
-            if ((slot > 0) && (slot % 2 == 0)) {
+            if ((slot > 0) && ((slot % 2) == 0)) {
                 linePoint++;
             }
 
@@ -2151,7 +2151,7 @@ public class PrintMech implements Printable {
             ImageHelper.drawArmorPip(g2d, DCColumn[0], DCColumn[1]);
             DCColumn[0] += lineFeed[0];
 
-            if (pos % 4 == 0) {
+            if ((pos % 4) == 0) {
                 lineFeed[0] *= -1;
                 DCColumn[0] += lineFeed[0];
                 DCColumn[1] += lineFeed[1];
@@ -2195,7 +2195,7 @@ public class PrintMech implements Printable {
 
             DCColumn[0] += lineFeed[0];
 
-            if (pos % 4 == 0) {
+            if ((pos % 4) == 0) {
                 lineFeed[0] *= -1;
                 DCColumn[0] += lineFeed[0];
                 DCColumn[1] += lineFeed[1];

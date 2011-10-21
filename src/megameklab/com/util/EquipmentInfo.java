@@ -29,6 +29,7 @@ import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.CLVehicularGrenadeLauncher;
+import megamek.common.weapons.ISCenturionWeaponSystem;
 import megamek.common.weapons.ISCompactNarc;
 import megamek.common.weapons.ISMineLauncher;
 import megamek.common.weapons.ISVehicularGrenadeLauncher;
@@ -62,6 +63,7 @@ public class EquipmentInfo {
     public boolean isMashCore = false;
     public boolean isDroneControl = false;
     public boolean isDestroyed = false;
+    public boolean isCenturion = false;
 
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
@@ -116,6 +118,7 @@ public class EquipmentInfo {
 
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
+            isCenturion = weapon instanceof ISCenturionWeaponSystem;
 
             shtRange = (int) weapon.shortAV;
             if (weapon.maxRange >= WeaponType.RANGE_MED) {
@@ -188,6 +191,7 @@ public class EquipmentInfo {
 
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
+            isCenturion = weapon instanceof ISCenturionWeaponSystem;
 
             shtRange = (int) weapon.shortAV;
             if (weapon.hasFlag(WeaponType.F_AMS)) {
@@ -274,6 +278,7 @@ public class EquipmentInfo {
             isATM = weapon instanceof ATMWeapon;
             isCompactNarc = weapon instanceof ISCompactNarc;
             isAMS = weapon.hasFlag(WeaponType.F_AMS);
+            isCenturion = weapon instanceof ISCenturionWeaponSystem;
 
             shtRange = weapon.shortRange;
             medRange = weapon.mediumRange;

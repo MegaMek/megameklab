@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -259,7 +259,7 @@ public class ImageHelperAero {
         if (aero instanceof SmallCraft) {
             ImageHelperAero.printCargo(aero, g2d, (int) linePoint);
         }
-        ImageHelper.printVehicleAmmo(aero, g2d, -18);
+        ImageHelper.printVehicleAmmo(aero, g2d, -20);
         ImageHelperAero.printAeroFuel(aero, g2d);
     }
 
@@ -320,7 +320,7 @@ public class ImageHelperAero {
         if (troopspace > 0) {
             pointY += lineFeed;
             String troopString = "Infantry (";
-            if (troopspace - Math.floor(troopspace) > 0) {
+            if ((troopspace - Math.floor(troopspace)) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
                 troopString += String.valueOf((int) troopspace);
