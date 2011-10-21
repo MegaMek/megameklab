@@ -465,6 +465,12 @@ public class ImageHelper {
                         g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
                         g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                         g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                    } else if (eqi.isCenturion) {
+                        ImageHelper.printCenterString(g2d, "0", font, damagePoint, linePoint);
+                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("6(1)", shtPoint-1, linePoint);
+                        g2d.drawString("12(2)", medPoint-6, linePoint);
+                        g2d.drawString("18(3)", longPoint-4, linePoint);
                     } else {
                         if (ImageHelper.getStringWidth(g2d, eqi.damage.trim(), font) > 22) {
                             font = UnitUtil.deriveFont(6.0f);
