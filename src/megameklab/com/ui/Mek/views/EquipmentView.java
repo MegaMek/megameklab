@@ -66,7 +66,8 @@ public class EquipmentView extends IView implements ActionListener {
     private JButton removeButton = new JButton("Remove");
     private JButton removeAllButton = new JButton("Remove All");
 
-    private JComboBox<EquipmentType> equipmentCombo = new JComboBox<EquipmentType>();
+    @SuppressWarnings("rawtypes")
+    private JComboBox equipmentCombo = new JComboBox();
     private CriticalTableModel equipmentList;
     private Vector<EquipmentType> masterEquipmentList = new Vector<EquipmentType>(10, 1);
     private JTable equipmentTable = new JTable();
@@ -134,6 +135,7 @@ public class EquipmentView extends IView implements ActionListener {
         refresh = l;
     }
 
+    @SuppressWarnings("unchecked")
     private void loadEquipmentCombo() {
         equipmentCombo.setRenderer(new EquipmentListCellRenderer(unit));
         equipmentCombo.setKeySelectionManager(new EquipmentListCellKeySelectionManager());
