@@ -31,7 +31,6 @@ import megamek.common.Entity;
 import megamek.common.FixedWingSupport;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.SmallCraft;
 
 public class ImageHelperAero {
     private static final String[] LOCATION_ABBRS =
@@ -255,10 +254,8 @@ public class ImageHelperAero {
         if (aero instanceof FixedWingSupport) {
             ImageHelperAero.printFixedWingSupportCargoChassisMod((FixedWingSupport) aero, g2d, (int) linePoint);
         }
+        ImageHelperAero.printCargo(aero, g2d, (int) linePoint);
 
-        if (aero instanceof SmallCraft) {
-            ImageHelperAero.printCargo(aero, g2d, (int) linePoint);
-        }
         ImageHelper.printVehicleAmmo(aero, g2d, -20);
         ImageHelperAero.printAeroFuel(aero, g2d);
     }
