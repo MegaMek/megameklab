@@ -68,6 +68,7 @@ V 0.0.0.20 Dev
 + added centurion weapon system
 + print ASF cargo
 + new MM.jar
++ Fixes to dropship printing
 
 V 0.0.0.19 Released (01/03/2011 12:58 UTC-8)
 Added Fix for Battle Armor Record sheets. Burdened message was overlapping other text.
