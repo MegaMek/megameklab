@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -304,7 +304,6 @@ public class ImageHelperDropShip {
                     }
                 }
             }
-
         }
 
         equipmentLocations.get(ImageHelperDropShip.LOC_FL_FR).addAll(equipmentLocations.get(Aero.LOC_LWING));
@@ -314,10 +313,10 @@ public class ImageHelperDropShip {
         equipmentLocations.get(ImageHelperDropShip.LOC_AL).clear();
         equipmentLocations.get(ImageHelperDropShip.LOC_AR).clear();
 
-        capitalEquipmentLocations.get(ImageHelperDropShip.LOC_FL_FR).addAll(equipmentLocations.get(Aero.LOC_LWING));
+        capitalEquipmentLocations.get(ImageHelperDropShip.LOC_FL_FR).addAll(capitalEquipmentLocations.get(Aero.LOC_LWING));
         capitalEquipmentLocations.get(Aero.LOC_LWING).clear();
         capitalEquipmentLocations.get(Aero.LOC_RWING).clear();
-        capitalEquipmentLocations.get(ImageHelperDropShip.LOC_AL_AR).addAll(equipmentLocations.get(ImageHelperDropShip.LOC_AL));
+        capitalEquipmentLocations.get(ImageHelperDropShip.LOC_AL_AR).addAll(capitalEquipmentLocations.get(ImageHelperDropShip.LOC_AL));
         capitalEquipmentLocations.get(ImageHelperDropShip.LOC_AL).clear();
         capitalEquipmentLocations.get(ImageHelperDropShip.LOC_AR).clear();
 
@@ -329,6 +328,88 @@ public class ImageHelperDropShip {
         stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
 
         lineFeed = stringHeight;
+
+        int lines = 0;
+
+        for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
+
+            Vector<EquipmentInfo> eqHash = capitalEquipmentLocations.get(LOCATION_PRINT[pos]);
+
+            if (eqHash.isEmpty()) {
+                continue;
+            }
+
+            if (!hasCapital) {
+                hasCapital = true;
+                lines++;
+                lines++;
+            }
+
+            for (EquipmentInfo eqi : eqHash) {
+                lines++;
+
+                if (!(eqi.c3Level == EquipmentInfo.C3I) &&
+                        !(eqi.c3Level == EquipmentInfo.C3S) &&
+                        !(eqi.c3Level == EquipmentInfo.C3M) &&
+                        !(eqi.c3Level == EquipmentInfo.C3SB) &&
+                        !(eqi.c3Level == EquipmentInfo.C3MB) &&
+                        !(eqi.isMashCore) && !(eqi.isDroneControl) &&
+                        (eqi.damage.trim().length() > 0)) {
+                    lines++;
+                }
+                if (!eqi.isAMS && (eqi.hasArtemis || eqi.hasApollo || eqi.hasArtemisV)) {
+                    lines++;
+                }
+            }
+        }
+
+        for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
+
+            Vector<EquipmentInfo> eqHash = equipmentLocations.get(LOCATION_PRINT[pos]);
+
+            if (eqHash.isEmpty()) {
+                continue;
+            }
+
+            if (!hasSubCapital) {
+                hasSubCapital = true;
+                lines++;
+                lines++;
+            }
+
+            for (EquipmentInfo eqi : eqHash) {
+
+                lines++;
+
+                if (!(eqi.c3Level == EquipmentInfo.C3I) &&
+                        !(eqi.c3Level == EquipmentInfo.C3S) &&
+                        !(eqi.c3Level == EquipmentInfo.C3M) &&
+                        !(eqi.c3Level == EquipmentInfo.C3SB) &&
+                        !(eqi.c3Level == EquipmentInfo.C3MB) &&
+                        !(eqi.isMashCore) && !(eqi.isDroneControl) &&
+                        (eqi.damage.trim().length() > 0)) {
+                    lines++;
+                }
+                if (!eqi.isAMS && (eqi.hasArtemis || eqi.hasApollo || eqi.hasArtemisV)) {
+                    lines++;
+                }
+            }
+        }
+        hasCapital = false;
+        hasSubCapital = false;
+
+        if (lines > 30) {
+            fontSize = 6f;
+            font = UnitUtil.deriveFont(fontSize);
+            g2d.setFont(font);
+
+            fontSize = font.getSize2D();
+            g2d.setFont(font);
+            stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
+
+            lineFeed = stringHeight;
+        }
+
 
         for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
 
@@ -346,7 +427,6 @@ public class ImageHelperDropShip {
                 g2d.setFont(font);
                 g2d.drawString("(1-12) (13-24) (25-40) (41-50)", shtPoint, linePoint);
                 linePoint += lineFeed;
-
                 font = UnitUtil.getNewFont(g2d, "Bay", true, 68, fontSize);
                 g2d.setFont(font);
 
