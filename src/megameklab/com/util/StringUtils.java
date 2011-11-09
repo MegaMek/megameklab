@@ -52,6 +52,7 @@ import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MGWeapon;
 import megamek.common.weapons.MRMWeapon;
 import megamek.common.weapons.NarcWeapon;
+import megamek.common.weapons.PPCWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.ScreenLauncherWeapon;
@@ -322,7 +323,7 @@ public class StringUtils {
                     info += "H,AI,";
                 }
 
-                if (weapon.isExplosive() && !(weapon instanceof ACWeapon)) {
+                if (weapon.isExplosive() && !(weapon instanceof ACWeapon) && (!(weapon instanceof PPCWeapon) || mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR))) {
                     info += "X,";
                 }
 
