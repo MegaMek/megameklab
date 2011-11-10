@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -117,6 +117,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:", SwingConstants.TRAILING);
     JLabel structureLabel = new JLabel("Structure:", SwingConstants.TRAILING);
     JPanel masterPanel;
+    JTextField manualBV = new JTextField(3);
 
     private CriticalView critView = null;
     private ImagePanel unitImage = null;
@@ -219,10 +220,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         masterPanel.add(structureLabel);
         masterPanel.add(structureCombo);
 
+        masterPanel.add(createLabel("Manual BV:", maxSize));
+        masterPanel.add(manualBV);
+
         masterPanel.add(fullHeadEjectCB);
 
         setFieldSize(walkMP, maxSize);
         setFieldSize(era, maxSize);
+        setFieldSize(manualBV, maxSize);
         setFieldSize(source, maxSize);
         setFieldSize(techType, maxSize);
         setFieldSize(techLevel, maxSize);
@@ -251,6 +256,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         fullHeadEjectCB.setSelected(getMech().hasFullHeadEject());
         era.setText(Integer.toString(getMech().getYear()));
         source.setText(getMech().getSource());
+        manualBV.setText(Integer.toString(Math.max(0, getMech().getManualBV())));
         weightClass.setSelectedIndex((int) (getMech().getWeight() / 5) - 2);
         heatSinkNumber.removeAllItems();
         baseChassisHeatSinks.removeAllItems();
@@ -410,7 +416,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 heatSinkType.setSelectedIndex(0);
             }
         }
-        walkMP.setSelectedIndex(getMech().getWalkMP(true, false, true)-1);
+        walkMP.setSelectedIndex(getMech().getWalkMP(true, false, true) - 1);
 
         critView.updateUnit(getMech());
         critView.refresh();
@@ -681,13 +687,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
-                        // only set techlevel and armor techlevel to experimental if
+                        // only set techlevel and armor techlevel to
+                        // experimental if
                         // we're not already unofficial
                         if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
                             getMech().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                             getMech().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                         }
-                        techLevel.setSelectedIndex(techLevel.getModel().getSize()-2);
+                        techLevel.setSelectedIndex(techLevel.getModel().getSize() - 2);
                         getMech().setMixedTech(true);
                         createEngineList(false);
                         createHeatSinkList();
@@ -703,7 +710,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                             getMech().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                             getMech().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                         }
-                        techLevel.setSelectedIndex(techLevel.getModel().getSize()-2);
+                        techLevel.setSelectedIndex(techLevel.getModel().getSize() - 2);
                         getMech().setMixedTech(true);
                         createEngineList(true);
                         createHeatSinkList();
@@ -711,7 +718,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     } else {
                         createEngineList(getMech().isClan());
                         createHeatSinkList();
-                        heatSinkType.setSelectedItem(getMech().isClan()?"Double":"Single");
+                        heatSinkType.setSelectedItem(getMech().isClan() ? "Double" : "Single");
                         addAllActionListeners();
                         return;
                     }
@@ -787,6 +794,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         techType.removeActionListener(this);
         era.removeKeyListener(this);
         source.removeKeyListener(this);
+        manualBV.removeKeyListener(this);
         omniCB.removeActionListener(this);
         quadCB.removeActionListener(this);
         fullHeadEjectCB.removeActionListener(this);
@@ -806,6 +814,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         techType.addActionListener(this);
         era.addKeyListener(this);
         source.addKeyListener(this);
+        manualBV.addKeyListener(this);
         omniCB.addActionListener(this);
         quadCB.addActionListener(this);
         fullHeadEjectCB.addActionListener(this);
@@ -828,6 +837,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             }
         } else if (e.getSource().equals(source)) {
             getMech().setSource(source.getText());
+        } else if (e.getSource().equals(manualBV)) {
+            int bv = Integer.parseInt(manualBV.getText());
+            if (bv <= 0) {
+                getMech().setUseManualBV(false);
+                getMech().setManualBV(0);
+            } else {
+                getMech().setUseManualBV(true);
+                getMech().setManualBV(bv);
+            }
         }
     }
 
@@ -1151,7 +1169,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 structureCombo.addItem(EquipmentType.structureNames[index]);
             }
         }
-
 
     }
 
