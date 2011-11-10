@@ -215,7 +215,7 @@ public class StringUtils {
                     info += "H,AI,";
                 }
 
-                if (weapon.isExplosive() && !(weapon instanceof ACWeapon)) {
+                if (weapon.isExplosive() && !(weapon instanceof ACWeapon) && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null) && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
                     info += "X,";
                 }
 
@@ -323,7 +323,7 @@ public class StringUtils {
                     info += "H,AI,";
                 }
 
-                if (weapon.isExplosive() && !(weapon instanceof ACWeapon) && (!(weapon instanceof PPCWeapon) || mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR))) {
+                if (weapon.isExplosive() && !(weapon instanceof ACWeapon) && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null) && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
                     info += "X,";
                 }
 
