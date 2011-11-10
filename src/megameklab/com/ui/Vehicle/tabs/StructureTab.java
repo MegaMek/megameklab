@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -77,7 +77,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private static final String ENGINENONE = "None";
 
     String[] isEngineTypes =
-        { ENGINESTANDARD, ENGINEICE, ENGINENONE, ENGINEXL, ENGINELIGHT, ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL};
+        { ENGINESTANDARD, ENGINEICE, ENGINENONE, ENGINEXL, ENGINELIGHT, ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL };
     String[] clanEngineTypes =
         { ENGINESTANDARD, ENGINEICE, ENGINEXL, ENGINENONE, ENGINEFUELCELL, ENGINEXXL };
 
@@ -107,6 +107,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     JPanel masterPanel;
     JSpinner troopStorage = null;
     int maxTonnage = 50;
+    JTextField manualBV = new JTextField(3);
 
     private CriticalView critView = null;
     private ImagePanel unitImage = null;
@@ -200,9 +201,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         masterPanel.add(createLabel("Troop Space:", maxSize));
         masterPanel.add(troopStorage);
 
+        masterPanel.add(createLabel("Manual BV:", maxSize));
+        masterPanel.add(manualBV);
+
         setFieldSize(cruiseMP, maxSize);
         setFieldSize(era, maxSize);
         setFieldSize(source, maxSize);
+        setFieldSize(manualBV, maxSize);
         setFieldSize(techType, maxSize);
         setFieldSize(techLevel, maxSize);
         setFieldSize(engineType, maxSize);
@@ -235,6 +240,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         era.setText(Integer.toString(unit.getYear()));
         source.setText(unit.getSource());
+        manualBV.setText(Integer.toString(Math.max(0, getMech().getManualBV())));
 
         if (unit.isMixedTech()) {
             if (unit.isClan()) {
@@ -543,7 +549,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     for (int loc = 0; loc < getTank().locations(); loc++) {
                         getTank().initializeArmor(0, loc);
                     }
-                    //TODO: Fix me for patchwork armor
+                    // TODO: Fix me for patchwork armor
                     getTank().setArmorType(getTank().getArmorType(0));
                     getTank().setArmorTechLevel(getTank().getTechLevel());
                 }
@@ -579,6 +585,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         techType.removeActionListener(this);
         era.removeKeyListener(this);
         source.removeKeyListener(this);
+        manualBV.removeKeyListener(this);
         omniCB.removeActionListener(this);
         turretCombo.removeActionListener(this);
         tankMotiveType.removeActionListener(this);
@@ -593,6 +600,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         techType.addActionListener(this);
         era.addKeyListener(this);
         source.addKeyListener(this);
+        manualBV.addKeyListener(this);
         omniCB.addActionListener(this);
         turretCombo.addActionListener(this);
         tankMotiveType.addActionListener(this);
@@ -613,6 +621,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             }
         } else if (e.getSource().equals(source)) {
             unit.setSource(source.getText());
+        } else if (e.getSource().equals(manualBV)) {
+            int bv = Integer.parseInt(manualBV.getText());
+            if (bv <= 0) {
+                getMech().setUseManualBV(false);
+                getMech().setManualBV(0);
+            } else {
+                getMech().setUseManualBV(true);
+                getMech().setManualBV(bv);
+            }
         }
     }
 
