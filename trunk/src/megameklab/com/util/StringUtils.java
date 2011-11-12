@@ -176,15 +176,18 @@ public class StringUtils {
                 }
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
-                info += "/Sht [DB,R,C]";
+                info += "/Sht [DB,R/C]";
             } else if ((weapon instanceof ISVehicularGrenadeLauncher) || (weapon instanceof CLVehicularGrenadeLauncher)) {
                 info = "[AE,OS]";
             } else {
-
-                info = Integer.toString(weapon.getDamage());
+                if (UnitUtil.isAMS(weapon)) {
+                    info = "-";
+                } else {
+                    info = Integer.toString(weapon.getDamage());
+                }
                 info += " [";
 
-                if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
+                if (weapon.hasFlag(WeaponType.F_BALLISTIC) && !UnitUtil.isAMS(weapon)) {
                     info += "DB,";
                 }
                 if (UnitUtil.isAMS(weapon) || (weapon.hasFlag(WeaponType.F_B_POD))) {
@@ -202,11 +205,6 @@ public class StringUtils {
                 if (UnitUtil.hasSwitchableAmmo(weapon)) {
                     info += "S,";
                 }
-
-                if (weapon instanceof UACWeapon) {
-                    info += "R,";
-                }
-
                 if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon)) {
                     info += "AI,";
                 }
@@ -288,7 +286,7 @@ public class StringUtils {
                     info = "";
                 }
             } else if (weapon instanceof UACWeapon) {
-                info = "[DB,R,C]";
+                info = "[DB,R/C]";
             } else {
                 info = " [";
 
@@ -309,10 +307,6 @@ public class StringUtils {
 
                 if (UnitUtil.hasSwitchableAmmo(weapon)) {
                     info += "S,";
-                }
-
-                if (weapon instanceof UACWeapon) {
-                    info += "R,";
                 }
 
                 if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon)) {

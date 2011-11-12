@@ -195,7 +195,7 @@ public class EquipmentInfo {
 
             shtRange = (int) weapon.shortAV;
             if (weapon.hasFlag(WeaponType.F_AMS)) {
-                isAMS = weapon.hasFlag(WeaponType.F_AMS);
+                isAMS = true;
                 shtRange = 3;
             }
             if (weapon.maxRange >= WeaponType.RANGE_MED) {
