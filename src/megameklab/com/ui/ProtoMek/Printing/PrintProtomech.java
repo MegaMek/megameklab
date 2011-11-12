@@ -26,6 +26,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -423,7 +424,11 @@ public class PrintProtomech implements Printable {
         // printProtomechAbilities(g2d);
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(protoMech.calculateBattleValue(true, true)), 268, 203 + currentMargin);
 
         // myFormatter = new DecimalFormat("#,###.##");

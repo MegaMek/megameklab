@@ -27,6 +27,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -191,7 +192,11 @@ public class PrintDualTurretVehicle implements Printable {
 
             g2d.drawString(Integer.toString(tonnage), 177, 134);
         } else {
-            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            DecimalFormatSymbols unusualSymbols =
+                    new DecimalFormatSymbols();
+                unusualSymbols.setDecimalSeparator('.');
+                unusualSymbols.setGroupingSeparator(',');
+            DecimalFormat myFormatter = new DecimalFormat("#.###", unusualSymbols);
             g2d.drawString(myFormatter.format(tank.getWeight()), 177, 134);
         }
 
@@ -267,10 +272,14 @@ public class PrintDualTurretVehicle implements Printable {
         // g2d.drawString(Integer.toString(tank.getYear()), 188, 155);
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(tank.calculateBattleValue(true, true)), 150, 357);
 
-        // myFormatter = new DecimalFormat("#,###.##");
+        // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
         // g2d.drawString(myFormatter.format(tank.getCost(true)) + " C-bills",
         // 52, 357);
 
@@ -348,7 +357,11 @@ public class PrintDualTurretVehicle implements Printable {
             int tonnage = (int) Math.ceil(tank2.getWeight());
             g2d.drawString(Integer.toString(tonnage), 177, 505);
         } else {
-            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            DecimalFormatSymbols unusualSymbols =
+                    new DecimalFormatSymbols();
+                unusualSymbols.setDecimalSeparator('.');
+                unusualSymbols.setGroupingSeparator(',');
+            DecimalFormat myFormatter = new DecimalFormat("#.###", unusualSymbols);
             g2d.drawString(myFormatter.format(tank2.getWeight()), 177, 505);
         }
 
@@ -422,11 +435,14 @@ public class PrintDualTurretVehicle implements Printable {
         }
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(tank2.calculateBattleValue(true, true)), 150, 728);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 728);
+        //g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 728);
 
         if (UnitUtil.hasBAR(tank2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
@@ -515,7 +531,7 @@ public class PrintDualTurretVehicle implements Printable {
                 tank = tankList.get(pos);
                 pj.setJobName(tank.getChassis() + " " + tank.getModel());
 
-                if (!singlePrint && (pos + 1 < tankList.size())) {
+                if (!singlePrint && ((pos + 1) < tankList.size())) {
                     tank2 = tankList.get(++pos);
                 } else {
                     tank2 = null;
@@ -576,7 +592,7 @@ public class PrintDualTurretVehicle implements Printable {
             pipPlotter.add(new float[]
                 { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
-            if (pos % 12 == 0) {
+            if ((pos % 12) == 0) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 topColumn[0] += pipShift[0];
@@ -588,7 +604,7 @@ public class PrintDualTurretVehicle implements Printable {
             pipPlotter.add(new float[]
                 { middleColumn[0], middleColumn[1] });
             middleColumn[0] += pipShift[0];
-            if (pos % 8 == 0) {
+            if ((pos % 8) == 0) {
                 middleColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 middleColumn[0] += pipShift[0];
@@ -599,7 +615,7 @@ public class PrintDualTurretVehicle implements Printable {
             pipPlotter.add(new float[]
                 { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
-            if (pos % 6 == 0) {
+            if ((pos % 6) == 0) {
                 bottomColumn[1] += pipShift[1] - 0.5f;
                 pipShift[0] *= -1;
                 bottomColumn[0] += pipShift[0];
@@ -852,7 +868,7 @@ public class PrintDualTurretVehicle implements Printable {
             pipPlotter.add(new float[]
                 { bottomColumn[0], bottomColumn[1] });
             bottomColumn[0] += pipShift[0];
-            if (pos % 11 == 0) {
+            if ((pos % 11) == 0) {
                 bottomColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 bottomColumn[0] += pipShift[0];

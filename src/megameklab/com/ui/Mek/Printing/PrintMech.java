@@ -31,6 +31,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
@@ -287,7 +288,11 @@ public class PrintMech implements Printable {
         }
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 150 + leftMargin, topMargin + 350);
 
         // myFormatter = new DecimalFormat("#,###.##");

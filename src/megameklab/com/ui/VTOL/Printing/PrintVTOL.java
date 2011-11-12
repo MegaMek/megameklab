@@ -27,6 +27,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -197,7 +198,11 @@ public class PrintVTOL implements Printable {
 
             g2d.drawString(Integer.toString(tonnage), 177, 134);
         } else {
-            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            DecimalFormatSymbols unusualSymbols =
+                    new DecimalFormatSymbols();
+                unusualSymbols.setDecimalSeparator('.');
+                unusualSymbols.setGroupingSeparator(',');
+            DecimalFormat myFormatter = new DecimalFormat("#.###", unusualSymbols);
             g2d.drawString(myFormatter.format(vtol.getWeight()), 177, 134);
         }
 
@@ -272,10 +277,14 @@ public class PrintVTOL implements Printable {
         }
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(vtol.calculateBattleValue(true, true)), 150, 357);
 
-        // myFormatter = new DecimalFormat("#,###.##");
+        // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
         // g2d.drawString(myFormatter.format(vtol.getCost(true)) + " C-bills",
         // 52, 357);
 
@@ -358,7 +367,11 @@ public class PrintVTOL implements Printable {
 
             g2d.drawString(Integer.toString(tonnage), 177, 505);
         } else {
-            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            DecimalFormatSymbols unusualSymbols =
+                    new DecimalFormatSymbols();
+                unusualSymbols.setDecimalSeparator('.');
+                unusualSymbols.setGroupingSeparator(',');
+            DecimalFormat myFormatter = new DecimalFormat("#.###", unusualSymbols);
             g2d.drawString(myFormatter.format(vtol2.getWeight()), 177, 505);
         }
 
@@ -433,11 +446,15 @@ public class PrintVTOL implements Printable {
         }
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(vtol2.calculateBattleValue(true, true)), 150, 728);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(vtol2.getCost(true)) + " C-bills", 52, 728);
+        //myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
+        //g2d.drawString(myFormatter.format(vtol2.getCost(true)) + " C-bills", 52, 728);
 
         if (UnitUtil.hasBAR(vtol2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
@@ -522,7 +539,7 @@ public class PrintVTOL implements Printable {
                 vtol = vtolList.get(pos);
                 pj.setJobName(vtol.getChassis() + " " + vtol.getModel());
 
-                if ((pos + 1 < vtolList.size()) && !singlePrint) {
+                if (((pos + 1) < vtolList.size()) && !singlePrint) {
                     vtol2 = vtolList.get(++pos);
                 } else {
                     vtol2 = null;
@@ -568,7 +585,7 @@ public class PrintVTOL implements Printable {
         for (int pos = 1; pos <= totalArmor; pos++) {
             ImageHelperVehicle.drawTankArmorPip(g2d, middleColumn[0], middleColumn[1], 8.0f);
             middleColumn[0] += pipShift[0];
-            if (pos % 7 == 0) {
+            if ((pos % 7) == 0) {
                 middleColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 middleColumn[0] += pipShift[0];

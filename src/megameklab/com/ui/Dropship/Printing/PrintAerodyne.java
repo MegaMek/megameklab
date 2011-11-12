@@ -26,6 +26,8 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -123,7 +125,7 @@ public class PrintAerodyne implements Printable {
 
         int tonnage = (int) Math.ceil(dropship.getWeight());
 
-        if (tonnage % 5 != 0) {
+        if ((tonnage % 5) != 0) {
             tonnage += 5 - (tonnage % 5);
         }
 
@@ -201,7 +203,12 @@ public class PrintAerodyne implements Printable {
         }
 
         // Cost/BV
-        g2d.drawString(String.format("%1$,d", dropship.calculateBattleValue(true, true)), 152, 470.2f);
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
+        g2d.drawString(myFormatter.format(dropship.calculateBattleValue(true, true)), 152, 470.2f);
 
         // Crew data
         g2d.drawString(String.format("%1$s/%2$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 596.6f);
@@ -325,11 +332,11 @@ public class PrintAerodyne implements Printable {
                 pointX += shiftX;
             }
 
-            if ((lineCount < 12) && (lineCount % 2 == 0)) {
+            if ((lineCount < 12) && ((lineCount % 2) == 0)) {
                 pipsPerLine += 2;
                 baseX -= shiftX;
             }
-            if ((lineCount > 21) && (lineCount % 2 == 0)) {
+            if ((lineCount > 21) && ((lineCount % 2) == 0)) {
                 pipsPerLine -= 2;
                 baseX += shiftX;
             }
@@ -478,7 +485,7 @@ public class PrintAerodyne implements Printable {
             pipPlotter.add(new int[]
                 { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
-            if (pos % 10 == 0) {
+            if ((pos % 10) == 0) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
                 topColumn[0] += pipShift[0];
