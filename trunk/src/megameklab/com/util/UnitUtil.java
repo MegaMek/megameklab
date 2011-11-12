@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -1199,7 +1200,11 @@ public class UnitUtil {
     }
 
     public static String getToolTipInfo(Entity unit, Mounted eq) {
-        DecimalFormat myFormatter = new DecimalFormat("#,##0");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,##0", unusualSymbols);
         StringBuilder sb = new StringBuilder("<HTML>");
         sb.append(eq.getName());
         sb.append("<br>Crits: ");

@@ -26,6 +26,8 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -122,7 +124,7 @@ public class PrintConventionalFighter implements Printable {
 
         int tonnage = (int) Math.ceil(convFighter.getWeight());
 
-        if (tonnage % 5 != 0) {
+        if ((tonnage % 5) != 0) {
             tonnage += 5 - (tonnage % 5);
         }
 
@@ -202,7 +204,12 @@ public class PrintConventionalFighter implements Printable {
         // g2d.drawString(Integer.toString(convFighter.getYear()), 188, 155);
 
         // Cost/BV
-        g2d.drawString(String.format("%1$,d", convFighter.calculateBattleValue(true, true)), 150, 346.2f);
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
+        g2d.drawString(myFormatter.format(convFighter.calculateBattleValue(true, true)), 150, 346.2f);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(String.format("%1$,.0f C-bills",
