@@ -26,6 +26,8 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -123,7 +125,7 @@ public class PrintSpheroid implements Printable {
 
         int tonnage = (int) Math.ceil(dropship.getWeight());
 
-        if (tonnage % 5 != 0) {
+        if ((tonnage % 5) != 0) {
             tonnage += 5 - (tonnage % 5);
         }
 
@@ -201,7 +203,12 @@ public class PrintSpheroid implements Printable {
         }
 
         // Cost/BV
-        g2d.drawString(String.format("%1$,d", dropship.calculateBattleValue(true, true)), 152, 492.2f);
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
+        g2d.drawString(myFormatter.format(dropship.calculateBattleValue(true, true)), 152, 492.2f);
 
         // Crew data
         g2d.drawString(String.format("%1$s/%2$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 624.6f);

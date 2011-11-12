@@ -27,6 +27,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -268,10 +269,14 @@ public class PrintLargeSupportVehicle implements Printable {
         // 155);
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(largesupportank.calculateBattleValue(true, true)), 150, 357);
 
-        // myFormatter = new DecimalFormat("#,###.##");
+        // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
         // g2d.drawString(myFormatter.format(largesupportank.getCost(true)) +
         // " C-bills", 52, 357);
 
@@ -414,10 +419,14 @@ public class PrintLargeSupportVehicle implements Printable {
         }
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(largesupportank2.calculateBattleValue(true, true)), 150, 728);
 
-        //myFormatter = new DecimalFormat("#,###.##");
+        //myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
         //g2d.drawString(myFormatter.format(largesupportank2.getCost(true)) + " C-bills", 52, 728);
 
         if (UnitUtil.hasBAR(largesupportank2)) {

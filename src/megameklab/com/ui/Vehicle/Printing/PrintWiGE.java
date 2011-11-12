@@ -27,6 +27,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -201,7 +202,11 @@ public class PrintWiGE implements Printable {
 
             g2d.drawString(Integer.toString(tonnage), 177, 134);
         } else {
-            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            DecimalFormatSymbols unusualSymbols =
+                    new DecimalFormatSymbols();
+                unusualSymbols.setDecimalSeparator('.');
+                unusualSymbols.setGroupingSeparator(',');
+            DecimalFormat myFormatter = new DecimalFormat("#.###", unusualSymbols);
             g2d.drawString(myFormatter.format(tank.getWeight()), 177, 134);
         }
 
@@ -277,10 +282,14 @@ public class PrintWiGE implements Printable {
         // g2d.drawString(Integer.toString(tank.getYear()), 188, 155);
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(tank.calculateBattleValue(true, true)), 150, 357);
 
-        // myFormatter = new DecimalFormat("#,###.##");
+        // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
         // g2d.drawString(myFormatter.format(tank.getCost(true)) + " C-bills",
         // 52, 357);
 
@@ -358,7 +367,11 @@ public class PrintWiGE implements Printable {
             int tonnage = (int) Math.ceil(tank2.getWeight());
             g2d.drawString(Integer.toString(tonnage), 177, 505);
         } else {
-            DecimalFormat myFormatter = new DecimalFormat("#.###");
+            DecimalFormatSymbols unusualSymbols =
+                    new DecimalFormatSymbols();
+                unusualSymbols.setDecimalSeparator('.');
+                unusualSymbols.setGroupingSeparator(',');
+            DecimalFormat myFormatter = new DecimalFormat("#.###", unusualSymbols);
             g2d.drawString(myFormatter.format(tank2.getWeight()), 177, 505);
         }
 
@@ -432,11 +445,15 @@ public class PrintWiGE implements Printable {
         }
 
         // Cost/BV
-        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        DecimalFormatSymbols unusualSymbols =
+                new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
         g2d.drawString(myFormatter.format(tank2.calculateBattleValue(true, true)), 150, 728);
 
-        myFormatter = new DecimalFormat("#,###.##");
-        g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 728);
+        //myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
+        //g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills", 52, 728);
 
         if (UnitUtil.hasBAR(tank2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
