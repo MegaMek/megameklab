@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -30,8 +30,6 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
@@ -288,12 +286,7 @@ public class PrintMech implements Printable {
         }
 
         // Cost/BV
-        DecimalFormatSymbols unusualSymbols =
-                new DecimalFormatSymbols();
-            unusualSymbols.setDecimalSeparator('.');
-            unusualSymbols.setGroupingSeparator(',');
-        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
-        g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 150 + leftMargin, topMargin + 350);
+        g2d.drawString(String.format("%1$,d", mech.calculateBattleValue(true, true)), 150 + leftMargin, topMargin + 350);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(myFormatter.format(mech.getCost(true)) + " C-bills",
@@ -1783,7 +1776,7 @@ public class PrintMech implements Printable {
 
     /**
      * Print the critcals for a Mek in the specific location
-     *
+     * 
      * @param g2d
      *            The 2d Graphics object use to print
      * @param location
@@ -1843,8 +1836,8 @@ public class PrintMech implements Printable {
                     if (cs.isArmored()) {
                         engineName = "O " + engineName;
                     }
-                    if(cs.isDestroyed()) {
-                    	font = font.deriveFont(strikeThroughAttr);
+                    if (cs.isDestroyed()) {
+                        font = font.deriveFont(strikeThroughAttr);
                         g2d.setFont(font);
 
                     }
@@ -1866,8 +1859,8 @@ public class PrintMech implements Printable {
                     if (((cs.getIndex() >= Mech.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mech.ACTUATOR_HAND)) || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
                         critName += " Actuator";
                     }
-                    if(cs.isDestroyed()) {
-                    	font = font.deriveFont(strikeThroughAttr);
+                    if (cs.isDestroyed()) {
+                        font = font.deriveFont(strikeThroughAttr);
                         g2d.setFont(font);
 
                     }
@@ -1926,8 +1919,8 @@ public class PrintMech implements Printable {
                 }
 
                 font = UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 85, 7.0f);
-                if(cs.isDestroyed()) {
-                	font = font.deriveFont(strikeThroughAttr);
+                if (cs.isDestroyed()) {
+                    font = font.deriveFont(strikeThroughAttr);
                 }
                 g2d.setFont(font);
 

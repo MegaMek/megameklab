@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -25,8 +25,6 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -178,7 +176,7 @@ public class PrintBattleArmor implements Printable {
         g2d.setFont(font);
         String groundMP = Integer.toString(battleArmor.getWalkMP(true, true, false, false, false));
         if (battleArmor.hasDWP()) {
-            groundMP = groundMP + " ["+Integer.toString(battleArmor.getWalkMP(true, true, false, true, false))+"]";
+            groundMP = groundMP + " [" + Integer.toString(battleArmor.getWalkMP(true, true, false, true, false)) + "]";
         }
         g2d.drawString(groundMP, 79, 130 + currentMargin);
         int secondaryMP = battleArmor.getJumpMP(true, true, true);
@@ -202,19 +200,20 @@ public class PrintBattleArmor implements Printable {
             g2d.setFont(font);
             String printString = Integer.toString(secondaryMP);
             if (battleArmor.hasDWP() || battleArmor.isBurdened()) {
-                printString = "["+printString+"]";
+                printString = "[" + printString + "]";
             }
             g2d.drawString(printString, positionY, 130 + currentMargin);
         }
         printBattleArmorAbilities(g2d);
 
         // Cost/BV
-        DecimalFormatSymbols unusualSymbols =
-                new DecimalFormatSymbols();
-            unusualSymbols.setDecimalSeparator('.');
-            unusualSymbols.setGroupingSeparator(',');
-        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
-        g2d.drawString(myFormatter.format(battleArmor.calculateBattleValue(true, true)) + "/" + myFormatter.format(battleArmor.calculateBattleValue(true, true, true)), 330, 206 + currentMargin);
+        // DecimalFormatSymbols unusualSymbols =
+        // new DecimalFormatSymbols();
+        // unusualSymbols.setDecimalSeparator('.');
+        // unusualSymbols.setGroupingSeparator(',');
+        // DecimalFormat myFormatter = new DecimalFormat("#,###",
+        // unusualSymbols);
+        g2d.drawString(String.format("%1$,d", battleArmor.calculateBattleValue(true, true)) + "/" + String.format("%1$,d", battleArmor.calculateBattleValue(true, true, true)), 330, 206 + currentMargin);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(myFormatter.format(battleArmor.getCost(true)) +
