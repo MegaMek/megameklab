@@ -20,6 +20,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Locale;
 
 import megameklab.com.ui.Mek.MainUI;
 
@@ -28,6 +29,7 @@ public class MegaMekLab {
 
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
+        Locale.setDefault(Locale.US);
 
         new File("./data/mechfiles/units.cache").delete();
 

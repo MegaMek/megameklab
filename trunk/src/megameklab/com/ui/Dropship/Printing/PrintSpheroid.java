@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -26,8 +26,6 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -47,7 +45,7 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * @author Torren
- *
+ * 
  */
 public class PrintSpheroid implements Printable {
 
@@ -203,12 +201,13 @@ public class PrintSpheroid implements Printable {
         }
 
         // Cost/BV
-        DecimalFormatSymbols unusualSymbols =
-                new DecimalFormatSymbols();
-            unusualSymbols.setDecimalSeparator('.');
-            unusualSymbols.setGroupingSeparator(',');
-        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
-        g2d.drawString(myFormatter.format(dropship.calculateBattleValue(true, true)), 152, 492.2f);
+        // DecimalFormatSymbols unusualSymbols =
+        // new DecimalFormatSymbols();
+        // unusualSymbols.setDecimalSeparator('.');
+        // unusualSymbols.setGroupingSeparator(',');
+        // DecimalFormat myFormatter = new DecimalFormat("#,###",
+        // unusualSymbols);
+        g2d.drawString(String.format("%1$,d", dropship.calculateBattleValue(true, true)), 152, 492.2f);
 
         // Crew data
         g2d.drawString(String.format("%1$s/%2$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 624.6f);
