@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- *
+ * 
  * Original author - jtighe (torren@users.sourceforge.net)
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -27,8 +27,6 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -37,7 +35,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
-import megamek.common.Pilot;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperAero;
@@ -104,13 +101,14 @@ public class PrintAero implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        if ((aero.getCrew() != null) && !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = aero.getCrew();
-            // TODO: Fixme, these are not the correct coordinates
-            //g2d.drawString(pilot.getName(), 270, 120);
-            //g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-            //g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
-        }
+        // if ((aero.getCrew() != null) &&
+        // !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
+        // Pilot pilot = aero.getCrew();
+        // TODO: Fixme, these are not the correct coordinates
+        // g2d.drawString(pilot.getName(), 270, 120);
+        // g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
+        // g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+        // }
 
         g2d.drawString(Integer.toString(aero.getWalkMP()), 99, 143);
         g2d.drawString(Integer.toString(aero.getRunMP()), 99, 154);
@@ -201,12 +199,7 @@ public class PrintAero implements Printable {
         // g2d.drawString(Integer.toString(aero.getYear()), 188, 155);
 
         // Cost/BV
-        DecimalFormatSymbols unusualSymbols =
-                new DecimalFormatSymbols();
-            unusualSymbols.setDecimalSeparator('.');
-            unusualSymbols.setGroupingSeparator(',');
-        DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
-        g2d.drawString(myFormatter.format(aero.calculateBattleValue(true, true)), 150, 346.2f);
+        g2d.drawString(String.format("%1$,d", aero.calculateBattleValue(true, true)), 150, 346.2f);
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(String.format("%1$,.0f C-bills", aero.getCost(true)),
