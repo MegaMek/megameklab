@@ -30,7 +30,10 @@ import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.BPodWeapon;
+import megamek.common.weapons.CLERSmallPulseLaser;
+import megamek.common.weapons.CLMicroPulseLaser;
 import megamek.common.weapons.CLPlasmaCannon;
+import megamek.common.weapons.CLSmallPulseLaser;
 import megamek.common.weapons.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
@@ -40,7 +43,9 @@ import megamek.common.weapons.ISLargeVariableSpeedPulseLaser;
 import megamek.common.weapons.ISMediumVariableSpeedPulseLaser;
 import megamek.common.weapons.ISPlasmaRifle;
 import megamek.common.weapons.ISSilverBulletGauss;
+import megamek.common.weapons.ISSmallPulseLaser;
 import megamek.common.weapons.ISSmallVariableSpeedPulseLaser;
+import megamek.common.weapons.ISSmallXPulseLaser;
 import megamek.common.weapons.ISSnubNosePPC;
 import megamek.common.weapons.ISThunderBolt10;
 import megamek.common.weapons.ISThunderBolt15;
@@ -56,6 +61,7 @@ import megamek.common.weapons.PPCWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.ScreenLauncherWeapon;
+import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 
@@ -129,8 +135,10 @@ public class StringUtils {
             } else if (weapon instanceof ISC3M) {
                 info = "  [E]";
             } else if (weapon.getDamage() < 0) {
-                if (weapon instanceof SRMWeapon) {
+                if (weapon instanceof StreakSRMWeapon) {
                     info = "2/Msl [M,C]";
+                } else if (weapon instanceof SRMWeapon) {
+                    info = "2/Msl [M,C,S]";
                 } else if ((weapon instanceof LRMWeapon)) {
                     info = "1/Msl [M,C,S]";
                 } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
@@ -199,13 +207,18 @@ public class StringUtils {
                 }
 
                 if ((weapon instanceof LBXACWeapon) || (weapon instanceof ISSilverBulletGauss)) {
-                    info += "C,F,";
+                    info += "C/F/";
                 }
 
                 if (UnitUtil.hasSwitchableAmmo(weapon)) {
                     info += "S,";
                 }
-                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon)) {
+                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
+                        (weapon instanceof CLERSmallPulseLaser) ||
+                        (weapon instanceof ISSmallXPulseLaser) ||
+                        (weapon instanceof ISSmallPulseLaser) ||
+                        (weapon instanceof CLSmallPulseLaser) ||
+                        (weapon instanceof CLMicroPulseLaser)) {
                     info += "AI,";
                 }
 

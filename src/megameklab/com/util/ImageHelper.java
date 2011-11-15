@@ -415,7 +415,7 @@ public class ImageHelper {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
 
                     if (eqi.isMML) {
-                        ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d, "[M,C,S]", font, damagePoint, linePoint);
                         linePoint += lineFeed - 1.0f;
 
                         g2d.drawString("LRM", typePoint, linePoint);
@@ -434,7 +434,7 @@ public class ImageHelper {
                         g2d.drawString("9", longPoint, linePoint);
 
                     } else if (eqi.isATM) {
-                        ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
+                        ImageHelper.printCenterString(g2d, "[M,C,S]", font, damagePoint, linePoint);
                         linePoint += lineFeed - 1.0f;
 
                         g2d.drawString("Standard", typePoint, linePoint);
