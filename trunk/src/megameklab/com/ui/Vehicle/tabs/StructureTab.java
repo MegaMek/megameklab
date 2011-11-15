@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -240,7 +240,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         era.setText(Integer.toString(unit.getYear()));
         source.setText(unit.getSource());
-        manualBV.setText(Integer.toString(Math.max(0, getMech().getManualBV())));
+        manualBV.setText(Integer.toString(Math.max(0, getTank().getManualBV())));
 
         if (unit.isMixedTech()) {
             if (unit.isClan()) {
@@ -624,11 +624,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         } else if (e.getSource().equals(manualBV)) {
             int bv = Integer.parseInt(manualBV.getText());
             if (bv <= 0) {
-                getMech().setUseManualBV(false);
-                getMech().setManualBV(0);
+                getTank().setUseManualBV(false);
+                getTank().setManualBV(0);
             } else {
-                getMech().setUseManualBV(true);
-                getMech().setManualBV(bv);
+                getTank().setUseManualBV(true);
+                getTank().setManualBV(bv);
             }
         }
     }
