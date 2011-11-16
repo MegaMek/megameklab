@@ -315,14 +315,19 @@ public class StringUtils {
                 }
 
                 if ((weapon instanceof LBXACWeapon) || (weapon instanceof ISSilverBulletGauss)) {
-                    info += "C,F,";
+                    info += "C/F,";
                 }
 
                 if (UnitUtil.hasSwitchableAmmo(weapon)) {
                     info += "S,";
                 }
 
-                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon)) {
+                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
+                        (weapon instanceof CLERSmallPulseLaser) ||
+                        (weapon instanceof ISSmallXPulseLaser) ||
+                        (weapon instanceof ISSmallPulseLaser) ||
+                        (weapon instanceof CLSmallPulseLaser) ||
+                        (weapon instanceof CLMicroPulseLaser)) {
                     info += "AI,";
                 }
 
