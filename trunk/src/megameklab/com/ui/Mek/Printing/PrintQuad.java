@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -1335,6 +1335,10 @@ public class PrintQuad implements Printable {
                     ImageHelper.printC3sbName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3MBS)) {
                     ImageHelper.printC3mbName(g2d, lineStart, linePoint, font, m.isArmored());
+                } else if ((m.getType() instanceof WeaponType) && (((WeaponType)m.getType()).getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)) {
+                    ImageHelper.printC3RemoteSensorName(g2d, lineStart, linePoint, font, m.isArmored());
+                } else if ((m.getType() instanceof AmmoType) && (((AmmoType)m.getType()).getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)) {
+                    ImageHelper.printC3RemoteSensorAmmoName(g2d, lineStart, linePoint, font);
                 } else {
                     g2d.drawString(critName.toString(), lineStart, linePoint);
                 }

@@ -79,6 +79,7 @@ public class EquipmentInfo {
     public static int C3I = 3;
     public static int C3SB = 4;
     public static int C3MB = 5;
+    public static int C3REMOTESENSOR = 6;
 
     /**
      * base class.
@@ -105,6 +106,16 @@ public class EquipmentInfo {
 
         damage = StringUtils.getEquipmentInfo(aero, mount);
 
+
+        hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
+        hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
+        int bonus = 0;
+        if ((hasArtemis || hasArtemisV) && (mount.getType() instanceof WeaponType)) {
+            WeaponType wtype = (WeaponType)mount.getType();
+            bonus = (int)Math.ceil(wtype.getRackSize() / 5.0);
+        }
+        hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
+
         if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                 c3Level = C3M;
@@ -113,6 +124,9 @@ public class EquipmentInfo {
                 c3Level = C3MB;
             }
             WeaponType weapon = (WeaponType) mount.getType();
+            if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
+                c3Level = C3REMOTESENSOR;
+            }
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
 
@@ -120,15 +134,15 @@ public class EquipmentInfo {
             isATM = weapon instanceof ATMWeapon;
             isCenturion = weapon instanceof ISCenturionWeaponSystem;
 
-            shtRange = (int) weapon.shortAV;
+            shtRange = (int) weapon.shortAV + bonus;
             if (weapon.maxRange >= WeaponType.RANGE_MED) {
-                medRange = (int) weapon.medAV;
+                medRange = (int) weapon.medAV + bonus;
             }
             if (weapon.maxRange >= WeaponType.RANGE_LONG) {
-                longRange = (int) weapon.longAV;
+                longRange = (int) weapon.longAV + bonus;
             }
             if (weapon.maxRange >= WeaponType.RANGE_EXT) {
-                erRange = (int) weapon.extAV;
+                erRange = (int) weapon.extAV + bonus;
             }
             heat = weapon.getHeat();
             secondaryLocation = mount.getSecondLocation();
@@ -158,11 +172,6 @@ public class EquipmentInfo {
             medRange = 0;
             longRange = 170;
         }
-
-        hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
-        hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
-        hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
-
     }
 
     /**
@@ -186,6 +195,11 @@ public class EquipmentInfo {
                 c3Level = C3MB;
             }
             WeaponType weapon = (WeaponType) mount.getType();
+
+            if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
+                c3Level = C3REMOTESENSOR;
+            }
+
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
 
@@ -270,6 +284,10 @@ public class EquipmentInfo {
                 c3Level = C3MB;
             }
             WeaponType weapon = (WeaponType) mount.getType();
+
+            if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
+                c3Level = C3REMOTESENSOR;
+            }
 
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
@@ -374,6 +392,10 @@ public class EquipmentInfo {
             }
 
             WeaponType weapon = (WeaponType) mount.getType();
+
+            if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
+                c3Level = C3REMOTESENSOR;
+            }
 
             if ((weapon.getAmmoType() != AmmoType.T_NA) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                 hasAmmo = true;
