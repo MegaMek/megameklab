@@ -38,6 +38,7 @@ import megamek.common.weapons.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.ISC3M;
+import megamek.common.weapons.ISC3RemoteSensorLauncher;
 import megamek.common.weapons.ISHGaussRifle;
 import megamek.common.weapons.ISLargeVariableSpeedPulseLaser;
 import megamek.common.weapons.ISMediumVariableSpeedPulseLaser;
@@ -134,6 +135,8 @@ public class StringUtils {
                 info = "  [T]";
             } else if (weapon instanceof ISC3M) {
                 info = "  [E]";
+            } else if (weapon instanceof ISC3RemoteSensorLauncher) {
+                info = "  [M,E]";
             } else if (weapon.getDamage() < 0) {
                 if (weapon instanceof StreakSRMWeapon) {
                     info = "2/Msl [M,C]";

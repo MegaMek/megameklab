@@ -353,6 +353,7 @@ public class ImageHelperDropShip {
                         !(eqi.c3Level == EquipmentInfo.C3M) &&
                         !(eqi.c3Level == EquipmentInfo.C3SB) &&
                         !(eqi.c3Level == EquipmentInfo.C3MB) &&
+                        !(eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) &&
                         !(eqi.isMashCore) && !(eqi.isDroneControl) &&
                         (eqi.damage.trim().length() > 0)) {
                     lines++;
@@ -386,6 +387,7 @@ public class ImageHelperDropShip {
                         !(eqi.c3Level == EquipmentInfo.C3M) &&
                         !(eqi.c3Level == EquipmentInfo.C3SB) &&
                         !(eqi.c3Level == EquipmentInfo.C3MB) &&
+                        !(eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) &&
                         !(eqi.isMashCore) && !(eqi.isDroneControl) &&
                         (eqi.damage.trim().length() > 0)) {
                     lines++;
@@ -467,6 +469,8 @@ public class ImageHelperDropShip {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, dropship);
                 } else if (eqi.isDroneControl) {
@@ -597,6 +601,8 @@ public class ImageHelperDropShip {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                     if (eqi.damage.trim().length() > 0) {

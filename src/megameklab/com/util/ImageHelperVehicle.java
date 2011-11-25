@@ -211,13 +211,10 @@ public class ImageHelperVehicle {
                 continue;
             }
 
-            int count = 0;
-
             ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
 
             for (EquipmentInfo eqi : eqHash.values()) {
                 equipmentList.add(eqi);
-
             }
 
             Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
@@ -239,6 +236,8 @@ public class ImageHelperVehicle {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {
@@ -380,7 +379,6 @@ public class ImageHelperVehicle {
                 if (newLineNeeded) {
                     linePoint += lineFeed;
                 }
-                count++;
             }
         }
         float troopspace = tank.getTroopCarryingSpace();
@@ -537,6 +535,8 @@ public class ImageHelperVehicle {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {
@@ -752,8 +752,6 @@ public class ImageHelperVehicle {
                 continue;
             }
 
-            int count = 0;
-
             ArrayList<EquipmentInfo> equipmentList = new ArrayList<EquipmentInfo>();
 
             EquipmentInfo artemisEQ = null;
@@ -796,6 +794,8 @@ public class ImageHelperVehicle {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {
@@ -899,7 +899,6 @@ public class ImageHelperVehicle {
                 if (newLineNeeded) {
                     linePoint += lineFeed;
                 }
-                count++;
             }
         }
         float troopspace = tank.getTroopCarryingSpace();
@@ -948,7 +947,6 @@ public class ImageHelperVehicle {
             pipSpace = pipPoints.size() / (totalArmor + 15);
         }
         int currentPip = 0;
-        ArrayList<Integer> used = new ArrayList<Integer>();
         for (float pos = 0; pos < pipPoints.size(); pos += pipSpace) {
             if (totalArmor == 0) {
                 break;

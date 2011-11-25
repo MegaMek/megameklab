@@ -321,9 +321,9 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
 
                 if (weapon.hasFlag(WeaponType.F_ENERGY) || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
                     masterLaserWeaponList.add(eq);
-                } else if ((eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.T_NA))) {
+                } else if (eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.T_NA)) {
                     masterBallisticWeaponList.add(eq);
-                } else if ((eq.hasFlag(WeaponType.F_MISSILE) && (weapon.getAmmoType() != AmmoType.T_NA))) {
+                } else if (((eq.hasFlag(WeaponType.F_MISSILE) && (weapon.getAmmoType() != AmmoType.T_NA)) || (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR))) {
                     masterMissileWeaponList.add(eq);
                 } else if (weapon instanceof ArtilleryWeapon) {
                     masterArtilleryWeaponList.add(eq);
