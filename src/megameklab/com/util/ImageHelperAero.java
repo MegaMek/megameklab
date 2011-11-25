@@ -190,6 +190,8 @@ public class ImageHelperAero {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, aero);
                 } else if (eqi.isDroneControl) {

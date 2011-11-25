@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2010
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -118,7 +118,7 @@ public class ImageHelperProto {
         sb.setLength(0);
         sb.append("Ammo: ");
 
-        g2d.drawString(sb.toString(), pointX, pointY - (linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont()));
+        g2d.drawString(sb.toString(), pointX, pointY - ((linecount) * ImageHelper.getStringHeight(g2d, sb.toString(), g2d.getFont())));
         pointX += ImageHelper.getStringWidth(g2d, sb.toString(), g2d.getFont());
         sb = new StringBuffer();
         int linesprinted = 0;
@@ -248,6 +248,8 @@ public class ImageHelperProto {
                     ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
                     ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
@@ -308,7 +310,7 @@ public class ImageHelperProto {
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
                             font = UnitUtil.deriveFont(7.0f);
                             g2d.setFont(font);
-                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, linePoint + lineFeed - 1.0f);
+                            ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                         } else {
                             ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint, linePoint);
