@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -515,8 +515,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     if (getMech().isPrimitive()) {
                         double dRating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
                         dRating *= 1.2;
-                        if (dRating % 5 != 0) {
-                            dRating = dRating - dRating % 5 + 5;
+                        if ((dRating % 5) != 0) {
+                            dRating = (dRating - (dRating % 5)) + 5;
                         }
                         rating = (int) dRating;
                     }
@@ -563,8 +563,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     if (getMech().isPrimitive()) {
                         double dRating = (walkMP.getSelectedIndex() + 1) * Integer.parseInt(weightClass.getSelectedItem().toString());
                         dRating *= 1.2;
-                        if (dRating % 5 != 0) {
-                            dRating = dRating - dRating % 5 + 5;
+                        if ((dRating % 5) != 0) {
+                            dRating = (dRating - (dRating % 5)) + 5;
                         }
                         rating = (int) dRating;
                     }
@@ -838,14 +838,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         } else if (e.getSource().equals(source)) {
             getMech().setSource(source.getText());
         } else if (e.getSource().equals(manualBV)) {
-            int bv = Integer.parseInt(manualBV.getText());
-            if (bv <= 0) {
-                getMech().setUseManualBV(false);
-                getMech().setManualBV(0);
-            } else {
-                getMech().setUseManualBV(true);
-                getMech().setManualBV(bv);
+            if(!manualBV.getText().equals("-")) {
+                int bv = Integer.parseInt(manualBV.getText());
+                if (bv == 0) {
+                    getMech().setUseManualBV(false);
+                    getMech().setManualBV(0);
+                } else {
+                    getMech().setUseManualBV(true);
+                    getMech().setManualBV(bv);
+                }
             }
+
         }
     }
 
@@ -1179,7 +1182,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         heatSinkType.removeAllItems();
 
         if (getMech().isMixedTech()) {
-            heatSinkCount = clanHeatSinkTypes.length + isHeatSinkTypes.length - 1;
+            heatSinkCount = (clanHeatSinkTypes.length + isHeatSinkTypes.length) - 1;
             heatSinkList = new String[heatSinkCount];
             int clanPos = 1;
             int heatSinkPos = 0;
