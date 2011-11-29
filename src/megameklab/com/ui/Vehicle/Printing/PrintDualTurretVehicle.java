@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2009
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -276,7 +276,15 @@ public class PrintDualTurretVehicle implements Printable {
         // unusualSymbols.setGroupingSeparator(',');
         // DecimalFormat myFormatter = new DecimalFormat("#,###",
         // unusualSymbols);
-        g2d.drawString(String.format("%1$,d", tank.calculateBattleValue(true, true)), 150, 357);
+        double bv = tank.calculateBattleValue(true, true);
+        if (bv != -1) {
+            font = UnitUtil.deriveFont(true, 8);
+            g2d.setFont(font);
+            g2d.drawString("BV: ", 35, 357);
+            font = UnitUtil.deriveFont(false, 8);
+            g2d.setFont(font);
+            g2d.drawString(String.format("%1$,d", tank.calculateBattleValue(true, true)), 50, 357);
+        }
 
         // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
         // g2d.drawString(myFormatter.format(tank.getCost(true)) + " C-bills",
@@ -439,7 +447,15 @@ public class PrintDualTurretVehicle implements Printable {
         // unusualSymbols.setGroupingSeparator(',');
         // DecimalFormat myFormatter = new DecimalFormat("#,###",
         // unusualSymbols);
-        g2d.drawString(String.format("%1$,d", tank2.calculateBattleValue(true, true)), 150, 728);
+        double bv = tank.calculateBattleValue(true, true);
+        if (bv != -1) {
+            font = UnitUtil.deriveFont(true, 8);
+            g2d.setFont(font);
+            g2d.drawString("BV: ", 35, 357 + secondPageMargin);
+            font = UnitUtil.deriveFont(false, 8);
+            g2d.setFont(font);
+            g2d.drawString(String.format("%1$,d", tank.calculateBattleValue(true, true)), 50, 357 + secondPageMargin);
+        }
 
         // g2d.drawString(myFormatter.format(tank2.getCost(true)) + " C-bills",
         // 52, 728);

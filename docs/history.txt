@@ -72,6 +72,7 @@ V 0.0.0.20 Dev
 + PPCs are only explosive when linked to a capacitor
 + Manual BV Added for RS usage.
 + Simplified issue with Locale. Set to US at start of the program.
++ Optional BV printing. Enter "-1" in manual BV to not print BV at all
 
 V 0.0.0.19 Released (01/03/2011 12:58 UTC-8)
 Added Fix for Battle Armor Record sheets. Burdened message was overlapping other text.
