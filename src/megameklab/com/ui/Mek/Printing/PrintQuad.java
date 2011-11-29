@@ -271,7 +271,15 @@ public class PrintQuad implements Printable {
         // unusualSymbols.setGroupingSeparator(',');
         // DecimalFormat myFormatter = new DecimalFormat("#,###",
         // unusualSymbols);
-        g2d.drawString(String.format("%1$,d", mech.calculateBattleValue(true, true)), 150, 350);
+        double bv = mech.calculateBattleValue(true, true);
+        if (bv != -1) {
+            font = UnitUtil.deriveFont(true, 8);
+            g2d.setFont(font);
+            g2d.drawString("BV: ", 35, 350);
+            font = UnitUtil.deriveFont(false, 8);
+            g2d.setFont(font);
+            g2d.drawString(String.format("%1$,d", mech.calculateBattleValue(true, true)), 50, 350);
+        }
 
         // myFormatter = new DecimalFormat("#,###.##");
         // g2d.drawString(myFormatter.format(mech.getCost(true)) + " C-bills",
