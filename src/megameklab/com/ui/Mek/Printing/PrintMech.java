@@ -25,6 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.font.TextAttribute;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -59,10 +60,10 @@ public class PrintMech implements Printable {
     private ArrayList<Mech> mechList;
 
     private Mounted startingMount = null;
-    private int startMountx = 0;
-    private int startMounty = 0;
-    private int endMountx = 0;
-    private int endMounty = 0;
+    private float startMountx = 0;
+    private float startMounty = 0;
+    private float endMountx = 0;
+    private float endMounty = 0;
     private PrinterJob masterPrintJob;
     private int topMargin = 3;
     private int leftMargin = 11;
@@ -242,7 +243,7 @@ public class PrintMech implements Printable {
 
         int nextDataLine = 153;
         int startLine = 188;
-        int lineFeed = 8;
+        float lineFeed = 8;
 
         if (mech.isPrimitive()) {
             ImageHelper.printCenterString(g2d, "(Primitive)", font, startLine + leftMargin, topMargin + nextDataLine);
@@ -361,7 +362,7 @@ public class PrintMech implements Printable {
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 55f, topMargin + 745f);
+        g2d.drawString("2011", 55f, topMargin + 744.5f);
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
             g2d.drawImage(ImageHelper.getGyroPipImage(), 235 + leftMargin, topMargin + 588, 9, 8, null);
@@ -450,72 +451,72 @@ public class PrintMech implements Printable {
 
     private void printLACrits(Graphics2D g2d) {
 
-        int lineStart = 56;
-        int linePoint = 408;
-        int lineFeed = 8;
+        float lineStart = 56;
+        float linePoint = 407;
+        float lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_LARM, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printRACrits(Graphics2D g2d) {
 
-        int lineStart = 292;
-        int linePoint = 408;
-        int lineFeed = 8;
+        float lineStart = 292;
+        float linePoint = 407;
+        float lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_RARM, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printCTCrits(Graphics2D g2d) {
 
-        int lineStart = 174;
-        int linePoint = 469;
-        int lineFeed = 8;
+        float lineStart = 174;
+        float linePoint = 467.5f;
+        float lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_CT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printLTCrits(Graphics2D g2d) {
 
-        int lineStart = 56;
-        int linePoint = 545;
-        int lineFeed = 8;
+        float lineStart = 56;
+        float linePoint = 544;
+        float lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_LT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printRTCrits(Graphics2D g2d) {
 
-        int lineStart = 292;
-        int linePoint = 545;
-        int lineFeed = 8;
+        float lineStart = 292;
+        float linePoint = 544;
+        float lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_RT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printHeadCrits(Graphics2D g2d) {
 
-        int lineStart = 174;
-        int linePoint = 399;
-        int lineFeed = 8;
+        float lineStart = 174;
+        float linePoint = 399;
+        float lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_HEAD, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printLLCrits(Graphics2D g2d) {
 
-        int lineStart = 56;
-        int linePoint = 682;
-        int lineFeed = 8;
+        float lineStart = 56;
+        float linePoint = 681.5f;
+        float lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_LLEG, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printRLCrits(Graphics2D g2d) {
 
-        int lineStart = 292;
-        int linePoint = 682;
-        int lineFeed = 8;
+        float lineStart = 292;
+        float linePoint = 681.5f;
+        float lineFeed = 8;
 
         printLocationCriticals(g2d, Mech.LOC_RLEG, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
@@ -1742,7 +1743,7 @@ public class PrintMech implements Printable {
         ImageHelper.drawISPip(g2d, 465.5f + leftMargin, topMargin + 410);
     }
 
-    private void setCritConnection(Mounted m, int startx, int starty, int endx, int endy, Graphics2D g2d) {
+    private void setCritConnection(Mounted m, float startx, float starty, float endx, float endy, Graphics2D g2d) {
         if (m == null) {
             printCritConnection(g2d, startMountx, startMounty, endMountx, endMounty);
             startingMount = null;
@@ -1773,14 +1774,14 @@ public class PrintMech implements Printable {
 
     }
 
-    private void printCritConnection(Graphics2D g2d, int startx, int starty, int endx, int endy) {
+    private void printCritConnection(Graphics2D g2d, float startx, float starty, float endx, float endy) {
         if (starty == endy) {
             return;
         }
 
-        g2d.drawLine(startx - 1, starty - 6, startx - 4, starty - 6);
-        g2d.drawLine(startx - 4, starty - 6, endx - 4, endy);
-        g2d.drawLine(endx - 1, endy, endx - 4, endy);
+        g2d.draw(new Line2D.Float(startx - 1, starty - 6, startx - 4, starty - 6));
+        g2d.draw(new Line2D.Float(startx - 4, starty - 6, endx - 4, endy));
+        g2d.draw(new Line2D.Float(endx - 1, endy, endx - 4, endy));
     }
 
     /**
@@ -1797,7 +1798,7 @@ public class PrintMech implements Printable {
      * @param lineFeed
      *            How much to move down to the next line.
      */
-    private void printLocationCriticals(Graphics2D g2d, int location, int lineStart, int linePoint, int lineFeed) {
+    private void printLocationCriticals(Graphics2D g2d, int location, float lineStart, float linePoint, float lineFeed) {
         Font font;
         HashMap<TextAttribute, Object> strikeThroughAttr = new HashMap<TextAttribute, Object>();
         strikeThroughAttr.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
@@ -1982,8 +1983,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        int lineStart = 98;
-        int linePoint = 398;
+        float lineStart = 98;
+        float linePoint = 398;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_LARM)) {
@@ -2000,8 +2001,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        int lineStart = 342;
-        int linePoint = 398;
+        float lineStart = 342;
+        float linePoint = 398;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_RARM)) {
@@ -2018,8 +2019,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        int lineStart = 93;
-        int linePoint = 671;
+        float lineStart = 93;
+        float linePoint = 671;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_LLEG)) {
@@ -2036,8 +2037,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        int lineStart = 104;
-        int linePoint = 534;
+        float lineStart = 104;
+        float linePoint = 534;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_LT)) {
@@ -2054,8 +2055,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        int lineStart = 196;
-        int linePoint = 388;
+        float lineStart = 196;
+        float linePoint = 388;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_HEAD)) {
@@ -2072,8 +2073,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        int lineStart = 348;
-        int linePoint = 534;
+        float lineStart = 348;
+        float linePoint = 534;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_RT)) {
@@ -2090,8 +2091,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        int lineStart = 338;
-        int linePoint = 671;
+        float lineStart = 338;
+        float linePoint = 671;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_RLEG)) {
@@ -2108,8 +2109,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        int lineStart = 236;
-        int linePoint = 458;
+        float lineStart = 236.5f;
+        float linePoint = 459;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_CT)) {

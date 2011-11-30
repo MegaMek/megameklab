@@ -645,7 +645,7 @@ public class ImageHelper {
         }
     }
 
-    public static void printC3iName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3iName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
@@ -663,7 +663,7 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printC3sName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3sName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
 
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
@@ -686,7 +686,7 @@ public class ImageHelper {
 
     }
 
-    public static void printBC3iName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printBC3iName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
@@ -704,7 +704,7 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printBC3Name(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printBC3Name(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
@@ -724,7 +724,7 @@ public class ImageHelper {
 
     }
 
-    public static void printC3sbName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3sbName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
@@ -743,7 +743,7 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printC3mName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3mName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
@@ -762,7 +762,7 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printC3mbName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3mbName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
@@ -781,7 +781,7 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printC3RemoteSensorName(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3RemoteSensorName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
@@ -800,7 +800,7 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printC3RemoteSensorAmmoName(Graphics2D g2d, int lineStart, float linePoint, Font font) {
+    public static void printC3RemoteSensorAmmoName(Graphics2D g2d, float lineStart, float linePoint, Font font) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
@@ -815,7 +815,7 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printMashCore(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored, Entity entity) {
+    public static void printMashCore(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, Entity entity) {
         int theaters = entity.countWorkingMisc(MiscType.F_MASH_EXTRA) + 1;
         String theaterString = theaters > 1 ? " theaters)" : " theater)";
         String printString;
@@ -829,7 +829,7 @@ public class ImageHelper {
         g2d.setFont(UnitUtil.deriveFont(7));
     }
 
-    public static void printDroneControl(Graphics2D g2d, int lineStart, float linePoint, Font font, boolean isArmored, Entity entity) {
+    public static void printDroneControl(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, Entity entity) {
         int drones = entity.countWorkingMisc(MiscType.F_DRONE_EXTRA);
         String droneString = drones > 1 ? " drones)" : " drone)";
         String printString;
