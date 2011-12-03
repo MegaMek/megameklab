@@ -19,6 +19,7 @@ package megameklab.com.util;
 import java.util.Comparator;
 
 import megamek.common.Aero;
+import megamek.common.AmmoType;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -103,23 +104,44 @@ public class StringUtils {
 
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
-            int totalAmmo = 0;
-            for (int ammoIndex : bay.getBayAmmo()) {
-                Mounted ammoMount = unit.getEquipment(ammoIndex);
-                try {
-                    if ((mount.getLinked() != null) && (ammoMount.getType() == mount.getLinked().getType())) {
-                        totalAmmo += ammoMount.getShotsLeft();
+            if (weapon.getAmmoType() == AmmoType.T_MML) {
+                int lrmAmmo = 0;
+                int srmAmmo = 0;
+                for (int ammoIndex : bay.getBayAmmo()) {
+                    Mounted ammoMount = unit.getEquipment(ammoIndex);
+                    try {
+                        AmmoType aType = (AmmoType)ammoMount.getType();
+                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
+                            if (aType.hasFlag(AmmoType.F_MML_LRM)) {
+                                lrmAmmo += ammoMount.getShotsLeft();
+                            } else {
+                                srmAmmo += ammoMount.getShotsLeft();
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
-            }
-            if (weapon instanceof ScreenLauncherWeapon) {
-                info = String.format("[%1$s Screens]", totalAmmo);
-            } else if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
-                info = String.format("[%1$s rnds]", totalAmmo);
-            } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
-                info = String.format("[%1$s misl]", totalAmmo);
+                info = String.format("[%1$s LRM rnds][%2$s SRM rnds]", lrmAmmo, srmAmmo);
+            } else {
+                int totalAmmo = 0;
+                for (int ammoIndex : bay.getBayAmmo()) {
+                    Mounted ammoMount = unit.getEquipment(ammoIndex);
+                    try {
+                        if ((mount.getLinked() != null) && (ammoMount.getType() == mount.getLinked().getType())) {
+                            totalAmmo += ammoMount.getShotsLeft();
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (weapon instanceof ScreenLauncherWeapon) {
+                    info = String.format("[%1$s Screens]", totalAmmo);
+                } else if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
+                    info = String.format("[%1$s rnds]", totalAmmo);
+                } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
+                    info = String.format("[%1$s misl]", totalAmmo);
+                }
             }
         }
         return info;

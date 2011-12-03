@@ -660,7 +660,7 @@ public class ImageHelperVehicle {
                 }
             }
             chassisMods = chassisMods.substring(0, chassisMods.length() - 2);
-            g2d.setFont(UnitUtil.getNewFont(g2d, chassisMods, false, 68, 7.0f));
+            g2d.setFont(UnitUtil.getNewFont(g2d, chassisMods, false, 200, 7.0f));
             g2d.drawString(chassisMods, qtyPoint, linePoint);
             g2d.setFont(font);
         }

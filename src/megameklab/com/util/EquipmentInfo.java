@@ -187,6 +187,9 @@ public class EquipmentInfo {
         techLevel = mount.getType().getTechLevel();
         isDestroyed = mount.isDestroyed();
 
+        hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
+        hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
+
         if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
             if (mount.getType().hasFlag(WeaponType.F_C3M)) {
                 c3Level = C3M;
@@ -223,6 +226,19 @@ public class EquipmentInfo {
             }
             heat = weapon.getHeat();
             secondaryLocation = mount.getSecondLocation();
+            if (weapon.getAmmoType() == AmmoType.T_MML) {
+                if (hasArtemis || hasArtemisV) {
+                    if (weapon.getRackSize() >= 7) {
+                        shtRange += 2;
+                        medRange += 2;
+                        longRange += 2;
+                    } else if (weapon.getRackSize() >= 5) {
+                        shtRange += 1;
+                        medRange += 1;
+                        longRange += 1;
+                    }
+                }
+            }
 
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
@@ -250,8 +266,6 @@ public class EquipmentInfo {
             longRange = 170;
         }
 
-        hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
-        hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
         isMashCore = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MASH);
         isDroneControl = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_DRONE_CARRIER_CONTROL);

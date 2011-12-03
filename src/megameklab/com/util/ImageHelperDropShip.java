@@ -20,7 +20,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Vector;
 
 import megamek.common.Aero;
@@ -121,7 +120,7 @@ public class ImageHelperDropShip {
         g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
     }
 
-    public static Font getDropShipWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations, ArrayList<Hashtable<String, EquipmentInfo>> capitalEquipmentLocations, float pointSize) {
+    public static Font getDropShipWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<Vector<EquipmentInfo>> equipmentLocations, ArrayList<Vector<EquipmentInfo>> capitalEquipmentLocations, float pointSize) {
 
         Font font = g2d.getFont();
         boolean hasCapital = false;
@@ -130,14 +129,14 @@ public class ImageHelperDropShip {
         int weaponCount = 1;
         for (int pos = Aero.LOC_NOSE; pos <= ImageHelperDropShip.LOC_AL_AR; pos++) {
 
-            Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
-            if (eqHash.size() < 1) {
+            Vector<EquipmentInfo> eqVector = equipmentLocations.get(pos);
+            if (eqVector.size() < 1) {
                 continue;
             }
 
             hasSubCapital = true;
 
-            for (EquipmentInfo eqi : eqHash.values()) {
+            for (EquipmentInfo eqi : eqVector) {
 
                 weaponCount++;
                 if (eqi.isWeapon) {
@@ -162,14 +161,14 @@ public class ImageHelperDropShip {
 
         for (int pos = Aero.LOC_NOSE; pos <= Aero.LOC_WINGS; pos++) {
 
-            Hashtable<String, EquipmentInfo> eqHash = capitalEquipmentLocations.get(pos);
-            if (eqHash.size() < 1) {
+            Vector<EquipmentInfo> eqVector = capitalEquipmentLocations.get(pos);
+            if (eqVector.size() < 1) {
                 continue;
             }
 
             hasCapital = true;
 
-            for (EquipmentInfo eqi : eqHash.values()) {
+            for (EquipmentInfo eqi : eqVector) {
 
                 weaponCount++;
                 if (eqi.isWeapon) {
@@ -220,8 +219,8 @@ public class ImageHelperDropShip {
         int nameSize = 65;
         float linePoint = 209f;
         float lineFeed = 6.7f;
-        // float maxHeight = 260.9f;
-        float stringHeight = 0f;
+        float maxHeight = 120f;
+        float stringHeight = 0;
         float fontSize = 7.0f;
         boolean newLineNeeded = false;
         boolean hasCapital = false;
@@ -320,98 +319,13 @@ public class ImageHelperDropShip {
         capitalEquipmentLocations.get(ImageHelperDropShip.LOC_AL).clear();
         capitalEquipmentLocations.get(ImageHelperDropShip.LOC_AR).clear();
 
-        Font font = UnitUtil.deriveFont(fontSize);
+        Font font = getDropShipWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, capitalEquipmentLocations, fontSize);
         g2d.setFont(font);
 
         fontSize = font.getSize2D();
-        g2d.setFont(font);
         stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
 
         lineFeed = stringHeight;
-
-        int lines = 0;
-
-        for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
-
-            Vector<EquipmentInfo> eqHash = capitalEquipmentLocations.get(LOCATION_PRINT[pos]);
-
-            if (eqHash.isEmpty()) {
-                continue;
-            }
-
-            if (!hasCapital) {
-                hasCapital = true;
-                lines++;
-                lines++;
-            }
-
-            for (EquipmentInfo eqi : eqHash) {
-                lines++;
-
-                if (!(eqi.c3Level == EquipmentInfo.C3I) &&
-                        !(eqi.c3Level == EquipmentInfo.C3S) &&
-                        !(eqi.c3Level == EquipmentInfo.C3M) &&
-                        !(eqi.c3Level == EquipmentInfo.C3SB) &&
-                        !(eqi.c3Level == EquipmentInfo.C3MB) &&
-                        !(eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) &&
-                        !(eqi.isMashCore) && !(eqi.isDroneControl) &&
-                        (eqi.damage.trim().length() > 0)) {
-                    lines++;
-                }
-                if (!eqi.isAMS && (eqi.hasArtemis || eqi.hasApollo || eqi.hasArtemisV)) {
-                    lines++;
-                }
-            }
-        }
-
-        for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
-
-            Vector<EquipmentInfo> eqHash = equipmentLocations.get(LOCATION_PRINT[pos]);
-
-            if (eqHash.isEmpty()) {
-                continue;
-            }
-
-            if (!hasSubCapital) {
-                hasSubCapital = true;
-                lines++;
-                lines++;
-            }
-
-            for (EquipmentInfo eqi : eqHash) {
-
-                lines++;
-
-                if (!(eqi.c3Level == EquipmentInfo.C3I) &&
-                        !(eqi.c3Level == EquipmentInfo.C3S) &&
-                        !(eqi.c3Level == EquipmentInfo.C3M) &&
-                        !(eqi.c3Level == EquipmentInfo.C3SB) &&
-                        !(eqi.c3Level == EquipmentInfo.C3MB) &&
-                        !(eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) &&
-                        !(eqi.isMashCore) && !(eqi.isDroneControl) &&
-                        (eqi.damage.trim().length() > 0)) {
-                    lines++;
-                }
-                if (!eqi.isAMS && (eqi.hasArtemis || eqi.hasApollo || eqi.hasArtemisV)) {
-                    lines++;
-                }
-            }
-        }
-        hasCapital = false;
-        hasSubCapital = false;
-
-        if (lines > 30) {
-            fontSize = 6f;
-            font = UnitUtil.deriveFont(fontSize);
-            g2d.setFont(font);
-
-            fontSize = font.getSize2D();
-            g2d.setFont(font);
-            stringHeight = ImageHelper.getStringHeight(g2d, "H", font);
-
-            lineFeed = stringHeight;
-        }
-
 
         for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
 
@@ -605,7 +519,7 @@ public class ImageHelperDropShip {
                     ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
-                    if (eqi.damage.trim().length() > 0) {
+                    if ((eqi.damage.trim().length() > 0) && !eqi.isMML) {
                         g2d.drawString(eqi.damage, typePoint, linePoint + lineFeed);
                         newLineNeeded = true;
                     }
@@ -622,7 +536,33 @@ public class ImageHelperDropShip {
 
                 ImageHelper.printCenterString(g2d, location, font, locPoint + 5, linePoint);
                 ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat * eqi.count), font, heatPoint + 4, linePoint);
-                if (eqi.shtRange > 0) {
+                if (eqi.isMML) {
+                    String lrmAmmoString = eqi.damage.substring(0, eqi.damage.indexOf("]")+1);
+                    String srmAmmoString = eqi.damage.substring(eqi.damage.indexOf("]")+1);
+                    linePoint += lineFeed;
+                    g2d.drawString(srmAmmoString, typePoint, linePoint);
+                    String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange * 2) / 10), eqi.count * eqi.shtRange * 2);
+                    font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
+                    g2d.setFont(font);
+                    g2d.drawString(damage, shtPoint, (int) linePoint);
+                    font = UnitUtil.deriveFont(false, fontSize);
+                    g2d.setFont(font);
+                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                    linePoint += lineFeed;
+                    g2d.drawString(lrmAmmoString, typePoint, linePoint);
+                    damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange) / 10), eqi.count * eqi.shtRange);
+                    font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
+                    g2d.setFont(font);
+                    g2d.drawString(damage, shtPoint, (int) linePoint);
+                    g2d.drawString(damage, medPoint, (int) linePoint);
+                    g2d.drawString(damage, longPoint, (int) linePoint);
+                    g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                    font = UnitUtil.deriveFont(false, fontSize);
+                    g2d.setFont(font);
+                } else if (eqi.shtRange > 0) {
                     String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange) / 10), eqi.count * eqi.shtRange);
                     font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
                     g2d.setFont(font);
@@ -635,35 +575,35 @@ public class ImageHelperDropShip {
 
                 if (eqi.isAMS) {
                     g2d.drawString("Point Defense", medPoint, (int) linePoint);
-                } else {
-                    if (eqi.medRange > 0) {
+                } else  {
+                    if ((eqi.medRange > 0) && !eqi.isMML) {
                         String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.medRange) / 10), eqi.count * eqi.medRange);
                         font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
                         g2d.setFont(font);
                         g2d.drawString(damage, medPoint, (int) linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
-                    } else {
+                    } else if (!eqi.isMML){
                         g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     }
-                    if (eqi.longRange > 0) {
+                    if ((eqi.longRange > 0) && !eqi.isMML) {
                         String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.longRange) / 10), eqi.count * eqi.longRange);
                         font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
                         g2d.setFont(font);
                         g2d.drawString(damage, longPoint, (int) linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
-                    } else {
+                    } else if (!eqi.isMML){
                         g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
-                    if (eqi.erRange > 0) {
+                    if ((eqi.erRange > 0) && !eqi.isMML) {
                         String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.erRange) / 10), eqi.count * eqi.erRange);
                         font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
                         g2d.setFont(font);
                         g2d.drawString(damage, erPoint, (int) linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
-                    } else {
+                    } else if (!eqi.isMML) {
                         g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     }
 
@@ -686,7 +626,7 @@ public class ImageHelperDropShip {
                     }
                 }
                 linePoint += lineFeed;
-                if (newLineNeeded) {
+                if (newLineNeeded && !eqi.isMML) {
                     linePoint += lineFeed;
                 }
             }
