@@ -848,7 +848,7 @@ public class PrintLargeSupportVehicle implements Printable {
             baseY += secondPageMargin;
         }
 
-        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
+        Vector<int[]> pipPlotter = new Vector<int[]>(60, 1);
 
         for (int lineCount = 0; lineCount < 3; lineCount++) {
 
@@ -912,7 +912,7 @@ public class PrintLargeSupportVehicle implements Printable {
             baseY += secondPageMargin;
         }
 
-        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
+        Vector<int[]> pipPlotter = new Vector<int[]>(60, 1);
 
         for (int lineCount = 0; lineCount < 10; lineCount++) {
 
@@ -948,7 +948,7 @@ public class PrintLargeSupportVehicle implements Printable {
             baseY += secondPageMargin;
         }
 
-        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
+        Vector<int[]> pipPlotter = new Vector<int[]>(60, 1);
 
         for (int lineCount = 0; lineCount < 5; lineCount++) {
 
@@ -1055,7 +1055,7 @@ public class PrintLargeSupportVehicle implements Printable {
             baseY += secondPageMargin;
         }
 
-        Vector<int[]> pipPlotter = new Vector<int[]>(24, 1);
+        Vector<int[]> pipPlotter = new Vector<int[]>(60, 1);
 
         for (int lineCount = 0; lineCount < 3; lineCount++) {
 
