@@ -33,7 +33,9 @@ import megamek.common.weapons.ISCenturionWeaponSystem;
 import megamek.common.weapons.ISCompactNarc;
 import megamek.common.weapons.ISMineLauncher;
 import megamek.common.weapons.ISVehicularGrenadeLauncher;
+import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MMLWeapon;
+import megamek.common.weapons.SRMWeapon;
 
 public class EquipmentInfo {
     public int count = 0;
@@ -109,11 +111,6 @@ public class EquipmentInfo {
 
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
-        int bonus = 0;
-        if ((hasArtemis || hasArtemisV) && (mount.getType() instanceof WeaponType)) {
-            WeaponType wtype = (WeaponType)mount.getType();
-            bonus = (int)Math.ceil(wtype.getRackSize() / 5.0);
-        }
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
 
         if ((mount.getType() instanceof WeaponType) && !mount.getType().hasFlag(WeaponType.F_MGA)) {
@@ -133,6 +130,22 @@ public class EquipmentInfo {
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
             isCenturion = weapon instanceof ISCenturionWeaponSystem;
+
+            int bonus = 0;
+
+            if (hasArtemis || hasArtemisV) {
+                if (isMML) {
+                    if (weapon.getRackSize() >= 7) {
+                        bonus = 2;
+                    } else if (weapon.getRackSize() >= 5) {
+                        bonus = 1;
+                    }
+                } else if (weapon instanceof LRMWeapon) {
+                    bonus = weapon.getRackSize() / 5;
+                } else if (weapon instanceof SRMWeapon) {
+                    bonus = 2;
+                }
+            }
 
             shtRange = (int) weapon.shortAV + bonus;
             if (weapon.maxRange >= WeaponType.RANGE_MED) {
@@ -210,36 +223,38 @@ public class EquipmentInfo {
             isATM = weapon instanceof ATMWeapon;
             isCenturion = weapon instanceof ISCenturionWeaponSystem;
 
-            shtRange = (int) weapon.shortAV;
+            int bonus = 0;
+            if (hasArtemis || hasArtemisV) {
+                if (isMML) {
+                    if (weapon.getRackSize() >= 7) {
+                        bonus = 2;
+                    } else if (weapon.getRackSize() >= 5) {
+                        bonus = 1;
+                    }
+                } else if (weapon instanceof LRMWeapon) {
+                    bonus = weapon.getRackSize() / 5;
+                } else if (weapon instanceof SRMWeapon) {
+                    bonus = 2;
+                }
+            }
+
+            shtRange = (int) weapon.shortAV + bonus;
+
             if (weapon.hasFlag(WeaponType.F_AMS)) {
                 isAMS = true;
                 shtRange = 3;
             }
             if (weapon.maxRange >= WeaponType.RANGE_MED) {
-                medRange = (int) weapon.medAV;
+                medRange = (int) weapon.medAV + bonus;
             }
             if (weapon.maxRange >= WeaponType.RANGE_LONG) {
-                longRange = (int) weapon.longAV;
+                longRange = (int) weapon.longAV + bonus;
             }
             if (weapon.maxRange >= WeaponType.RANGE_EXT) {
-                erRange = (int) weapon.extAV;
+                erRange = (int) weapon.extAV + bonus;
             }
             heat = weapon.getHeat();
             secondaryLocation = mount.getSecondLocation();
-            if (weapon.getAmmoType() == AmmoType.T_MML) {
-                if (hasArtemis || hasArtemisV) {
-                    if (weapon.getRackSize() >= 7) {
-                        shtRange += 2;
-                        medRange += 2;
-                        longRange += 2;
-                    } else if (weapon.getRackSize() >= 5) {
-                        shtRange += 1;
-                        medRange += 1;
-                        longRange += 1;
-                    }
-                }
-            }
-
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
         } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
