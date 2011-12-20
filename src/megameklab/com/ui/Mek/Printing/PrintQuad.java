@@ -94,7 +94,7 @@ public class PrintQuad implements Printable {
         // (int)pageFormat.getImageableHeight(), null);
         //g2d.drawImage(image, 18, 18, 558, 738, null);
         QuadMechTemplate.paint(g2d);
-        //printMekImage(g2d, hud);
+        printMekImage(g2d, hud);
 
         printMechData(g2d);
         printHeatSinks(g2d);
