@@ -385,8 +385,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                             cruiseMP.setEnabled(true);
                         }
                     }
+                    // we first need to set the weight, because the tank's suspension factor
+                    // depends on the weight, and is needed for the engine rating
+                    float oldWeight = unit.getWeight();
+                    unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
                     int rating = Math.max(10, ((cruiseMP.getSelectedIndex()) * Integer.parseInt(weightClass.getSelectedItem().toString())) - ((Tank) unit).getSuspensionFactor());
                     if (rating > 500) {
+                        // reset the weight if the rating is too high
+                        unit.setWeight(oldWeight);
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
                         unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
