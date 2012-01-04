@@ -182,7 +182,6 @@ public class UnitUtil {
         } else {
             unit.getWeaponList().remove(mount);
         }
-
     }
 
     /**
@@ -620,6 +619,7 @@ public class UnitUtil {
         eq.setLocation(location, rear);
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
+        UnitUtil.reIndexCrits(unit);
     }
 
     public static boolean hasTargComp(Entity unit) {
@@ -1252,6 +1252,18 @@ public class UnitUtil {
         return engineHSCapacity;
     }
 
+    public static boolean isPreviousCritEmpty(Entity unit, CriticalSlot cs, int slot, int location) {
+        if (slot == 0) {
+            return false;
+        }
+        if (unit instanceof Mech) {
+            if ((slot > 0) && (unit.getCritical(location, slot-1) != null)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static boolean isLastCrit(Entity unit, CriticalSlot cs, int slot, int location) {
         if (unit instanceof Mech) {
             return UnitUtil.isLastMechCrit((Mech) unit, cs, slot, location);
@@ -1263,6 +1275,10 @@ public class UnitUtil {
 
         if (cs == null) {
             return true;
+        }
+        // extra check for the last crit in a location, it shouldn't get a border
+        if ((slot+1) >= unit.getNumberOfCriticals(location)) {
+            return false;
         }
 
         int lastIndex = 0;
@@ -1282,7 +1298,16 @@ public class UnitUtil {
             }
 
         } else {
+            CriticalSlot nextCrit = unit.getCritical(location, slot+1);
+            if (nextCrit == null) {
+                return true;
+            } else if ((nextCrit.getMount() == null) || !nextCrit.getMount().equals(cs.getMount())) {
+                return true;
+            } else {
+                return false;
+            }
 
+            /*
             Mounted originalMount = cs.getMount();
             Mounted testMount = null;
 
@@ -1319,8 +1344,7 @@ public class UnitUtil {
                 }
 
             }
-            return true;
-
+            return true;*/
         }
 
         return slot == lastIndex;
