@@ -371,6 +371,10 @@ public class EquipmentInfo {
             shtRange = 0;
             medRange = 0;
             longRange = 170;
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BA_SEARCHLIGHT)) {
+            shtRange = 0;
+            medRange = 0;
+            longRange = 9;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_SPRAYER)) {
             shtRange = 0;
             medRange = 0;
@@ -478,7 +482,8 @@ public class EquipmentInfo {
                 } else if (equipment.getInternalName().equals(Sensor.CLIMPROVED)) {
                     longRange = 3;
                 }
-            } else if (equipment.hasFlag(MiscType.F_SEARCHLIGHT)) {
+            } else if (equipment.hasFlag(MiscType.F_BA_SEARCHLIGHT)) {
+                name = "Searchlight";
                 shtRange = 0;
                 medRange = 0;
                 longRange = 9;
