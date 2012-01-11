@@ -210,8 +210,6 @@ public class ImageHelperBattleArmor {
                 indented = true;
             }
 
-            int count = 0;
-
             Collections.sort(equipmentList, StringUtils.equipmentInfoComparator());
 
             for (EquipmentInfo eqi : equipmentList) {
@@ -373,37 +371,36 @@ public class ImageHelperBattleArmor {
                 if (newLineNeeded) {
                     linePoint += lineFeed;
                 }
-                count++;
                 if (indented) {
                     typePoint -= 5;
                 }
             }
-            if (ba.isBurdened()) {
-                String burdenInfo = "must detach missiles before jumping or swarm/leg attacks";
-                g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
-                g2d.drawString(burdenInfo, typePoint, linePoint);
-                linePoint += lineFeed;
-                g2d.setFont(font);
+        }
+        if (ba.isBurdened()) {
+            String burdenInfo = "must detach missiles before jumping or swarm/leg attacks";
+            g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
+            g2d.drawString(burdenInfo, typePoint, linePoint);
+            linePoint += lineFeed;
+            g2d.setFont(font);
+        }
+        if (ba.isExoskeleton() && !ba.hasWorkingMisc(MiscType.F_EXTENDED_LIFESUPPORT)) {
+            String exoInfo = "unsealed Exoskeleton";
+            g2d.setFont(UnitUtil.getNewFont(g2d, exoInfo, false, 175, 7.0f));
+            g2d.drawString(exoInfo, typePoint, linePoint);
+            linePoint += lineFeed;
+            g2d.setFont(font);
+        }
+        if (ba.hasDWP()) {
+            String burdenInfo;
+            if (ba.getJumpMP(true, true, true) > 0) {
+                burdenInfo = "must detach DWP before jumping or moving full ground speed";
+            } else {
+                burdenInfo = "must detach DWP before moving full ground speed";
             }
-            if (ba.isExoskeleton() && !ba.hasWorkingMisc(MiscType.F_EXTENDED_LIFESUPPORT)) {
-                String exoInfo = "unsealed Exoskeleton";
-                g2d.setFont(UnitUtil.getNewFont(g2d, exoInfo, false, 175, 7.0f));
-                g2d.drawString(exoInfo, typePoint, linePoint);
-                linePoint += lineFeed;
-                g2d.setFont(font);
-            }
-            if (ba.hasDWP()) {
-                String burdenInfo;
-                if (ba.getJumpMP(true, true, true) > 0) {
-                    burdenInfo = "must detach DWP before jumping or moving full ground speed";
-                } else {
-                    burdenInfo = "must detach DWP before moving full ground speed";
-                }
-                g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
-                g2d.drawString(burdenInfo, typePoint, linePoint);
-                linePoint += lineFeed;
-                g2d.setFont(font);
-            }
+            g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
+            g2d.drawString(burdenInfo, typePoint, linePoint);
+            linePoint += lineFeed;
+            g2d.setFont(font);
         }
         ImageHelperBattleArmor.printBAArmor(ba, g2d, lineFeed, offset);
     }
