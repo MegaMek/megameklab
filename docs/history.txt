@@ -77,6 +77,8 @@ V 0.0.0.20 Dev
 + Dropship MML printing fix
 + support rail vehicle printing (not finished)
 + Bug 3464432: tank suspension factor problem
++ Bug: some BA notes didn't print when no equipment was mounted
++ adjusted MASH printing
 
 V 0.0.0.19 Released (01/03/2011 12:58 UTC-8)
 Added Fix for Battle Armor Record sheets. Burdened message was overlapping other text.
