@@ -820,9 +820,9 @@ public class ImageHelper {
         String theaterString = theaters > 1 ? " theaters)" : " theater)";
         String printString;
         if (isArmored) {
-            printString = "O MASH Equipment (" + theaters + theaterString;
+            printString = "O MASH (" + theaters + theaterString;
         } else {
-            printString = "MASH Equipment (" + theaters + theaterString;
+            printString = "MASH (" + theaters + theaterString;
         }
         g2d.setFont(UnitUtil.getNewFont(g2d, printString, false, 85, font.getSize2D()));
         g2d.drawString(printString, lineStart, linePoint);
