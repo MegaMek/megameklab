@@ -1010,6 +1010,7 @@ public class ImageHelperVehicle {
         boolean hasReactive = false;
         boolean hasReflective = false;
         boolean hasHardened = false;
+        boolean hasPrimitive = false;
 
         for (int loc = 0; loc < tank.locations(); loc++) {
             if (tank.getArmorType(loc) == EquipmentType.T_ARMOR_STEALTH) {
@@ -1020,6 +1021,8 @@ public class ImageHelperVehicle {
                 hasReflective = true;
             } else if ((tank.getArmorType(loc) == EquipmentType.T_ARMOR_HARDENED)) {
                 hasHardened = true;
+            } else if ((tank.getArmorType(loc) == EquipmentType.T_ARMOR_PRIMITIVE)) {
+                hasPrimitive = true;
             }
         }
 
@@ -1040,6 +1043,11 @@ public class ImageHelperVehicle {
 
         if (hasHardened) {
             armorTypes.append(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED));
+            armorTypes.append(", ");
+        }
+
+        if (hasPrimitive) {
+            armorTypes.append(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PRIMITIVE));
             armorTypes.append(", ");
         }
 
