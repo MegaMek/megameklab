@@ -81,6 +81,7 @@ V 0.0.0.20 Dev
 + adjusted MASH printing
 + Separated handheld searchlight from mounted searchlight
 + Print ASF cockpit type if it's not standard
++ LAM sheets printing
 
 V 0.0.0.19 Released (01/03/2011 12:58 UTC-8)
 Added Fix for Battle Armor Record sheets. Burdened message was overlapping other text.

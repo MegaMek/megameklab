@@ -43,6 +43,7 @@ import megamek.common.ConvFighter;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
+import megamek.common.LandAirMech;
 import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MiscType;
@@ -542,6 +543,9 @@ public class ImageHelper {
                 count++;
             }
         }
+        if (mech instanceof LandAirMech) {
+            printLAMFuel((LandAirMech)mech, g2d, qtyPoint);
+        }
     }
 
     public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int offset) {
@@ -972,6 +976,20 @@ public class ImageHelper {
                 { x, y });
         }
         return result;
+    }
+
+    public static void printLAMFuel(LandAirMech lam, Graphics2D g2d, int leftMargin) {
+        int pointY = 330;
+        int pointX = leftMargin;
+        String fuel = "Fuel: ";
+
+        g2d.setFont(UnitUtil.getNewFont(g2d, fuel, false, 200, 7.0f));
+        g2d.drawString(fuel, pointX, pointY);
+        pointX += ImageHelper.getStringWidth(g2d, fuel, g2d.getFont());
+
+        String fuelAmount = String.format("%1$s Points", lam.getFuel());
+        g2d.setFont(UnitUtil.getNewFont(g2d, fuelAmount, false, 200, 7.0f));
+        g2d.drawString(fuelAmount, pointX, pointY);
     }
 
 }
