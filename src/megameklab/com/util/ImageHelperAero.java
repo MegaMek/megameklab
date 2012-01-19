@@ -67,7 +67,7 @@ public class ImageHelperAero {
         int pointX = 22;
         String fuel = "Fuel: ";
 
-        g2d.setFont(UnitUtil.getNewFont(g2d, fuel, true, 200, 7.0f));
+        g2d.setFont(UnitUtil.getNewFont(g2d, fuel, false, 200, 7.0f));
         g2d.drawString(fuel, pointX, pointY);
         pointX += ImageHelper.getStringWidth(g2d, fuel, g2d.getFont());
 
@@ -132,6 +132,10 @@ public class ImageHelperAero {
         }
 
         if (aero.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
+            maxHeight -= lineFeed;
+        }
+
+        if (aero.getCockpitType() != Aero.COCKPIT_STANDARD) {
             maxHeight -= lineFeed;
         }
 
@@ -266,6 +270,10 @@ public class ImageHelperAero {
                     linePoint += lineFeed;
                 }
             }
+        }
+        if (aero.getCockpitType() != Aero.COCKPIT_STANDARD) {
+            g2d.drawString(aero.getCockpitTypeString(), 22, linePoint);
+            linePoint += lineFeed;
         }
         if (aero instanceof FixedWingSupport) {
             ImageHelperAero.printFixedWingSupportCargoChassisMod((FixedWingSupport) aero, g2d, (int) linePoint);
