@@ -43,6 +43,7 @@ import megamek.common.AmmoType;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.EquipmentType;
+import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -175,14 +176,21 @@ public class PrintMech implements Printable {
         String mekName = mech.getChassis() + " " + mech.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, mekName, true, 180, 10.0f));
-        g2d.drawString(mekName, 49 + leftMargin, topMargin + 121);
+        g2d.drawString(mekName, 49 + leftMargin, topMargin + 119);
+        Font font;
+        if (mech instanceof LandAirMech) {
+            font = UnitUtil.deriveFont(true, 13.0f);
+            g2d.setFont(font);
+            g2d.drawString("LAND-AIR", 70 + leftMargin, topMargin + 87.5f);
+        }
 
-        Font font = UnitUtil.deriveFont(8.0f);
+        font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
+
 
         if ((mech.getCrew() != null) && !mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Pilot pilot = mech.getCrew();
-            g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 120);
+            g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 121);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
         }
@@ -205,11 +213,14 @@ public class PrintMech implements Printable {
             int mascMP = (mech.getWalkMP() * 2) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79 + leftMargin, topMargin + 144);
             g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79 + leftMargin, topMargin + 155);
+        } else if (mech instanceof LandAirMech) {
+            LandAirMech lam = (LandAirMech)mech;
+            g2d.drawString(Integer.toString(mech.getWalkMP())+"/"+Integer.toString(lam.getAirMechWalkMP())+"/"+Integer.toString(lam.getFighterModeWalkMP()), 79 + leftMargin, topMargin + 144);
+            g2d.drawString(Integer.toString(mech.getRunMP())+"/"+Integer.toString(lam.getAirMechRunMP())+"/"+Integer.toString(lam.getFighterModeRunMP()), 79 + leftMargin, topMargin + 155);
         } else {
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79 + leftMargin, topMargin + 144);
             g2d.drawString(Integer.toString(mech.getRunMP()), 79 + leftMargin, topMargin + 155);
         }
-
         if (mech.hasUMU()) {
             g2d.drawImage(ImageHelper.getUMImage(), 31 + leftMargin, topMargin + 156, 40, 15, null);
             g2d.drawString(Integer.toString(mech.getActiveUMUCount()), 79 + leftMargin, topMargin + 166);

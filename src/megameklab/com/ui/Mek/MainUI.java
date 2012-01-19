@@ -29,6 +29,7 @@ import javax.swing.SwingConstants;
 import megamek.common.BipedMech;
 import megamek.common.Engine;
 import megamek.common.EquipmentType;
+import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
@@ -129,10 +130,12 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(boolean isQuad, boolean isBiped) {
+    public void createNewUnit(boolean isQuad, boolean isLAM) {
 
         if (isQuad) {
             entity = new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
+        } else if (isLAM) {
+            entity = new LandAirMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
         } else {
             entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
         }
@@ -140,9 +143,14 @@ public class MainUI extends MegaMekLabMainUI {
 
         entity.setYear(2750);
         entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
+        if (isLAM) {
+            entity.setTechLevel(TechConstants.T_IS_ADVANCED);
+            entity.setManualBV(-1);
+        }
         entity.setWeight(25);
         mech.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        entity.setArmorTechLevel(entity.getTechLevel());
         entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
         mech.addGyro();
@@ -172,6 +180,20 @@ public class MainUI extends MegaMekLabMainUI {
             String chassis = entity.getChassis();
 
             createNewUnit(structureTab.isQuad());
+
+            entity.setChassis(chassis);
+            entity.setModel(model);
+
+            // setVisible(false);
+            reloadTabs();
+            // setVisible(true);
+            repaint();
+            refreshAll();
+        } else if ((structureTab.isLAM() && !(entity instanceof LandAirMech)) || (!structureTab.isLAM() && (entity instanceof LandAirMech))) {
+            String model = entity.getModel();
+            String chassis = entity.getChassis();
+
+            createNewUnit(false, structureTab.isLAM());
 
             entity.setChassis(chassis);
             entity.setModel(model);

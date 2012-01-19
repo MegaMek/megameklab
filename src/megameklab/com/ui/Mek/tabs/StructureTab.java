@@ -47,6 +47,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -111,6 +112,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox quadCB = new JCheckBox("Quad");
+    JCheckBox lamCB = new JCheckBox("LAM");
     JCheckBox fullHeadEjectCB = new JCheckBox("Full Head Ejection");
     JComboBox structureCombo = new JComboBox(EquipmentType.structureNames);
     Dimension maxSize = new Dimension();
@@ -185,6 +187,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         masterPanel.add(omniCB);
         masterPanel.add(quadCB);
+        masterPanel.add(lamCB);
+        masterPanel.add(new JLabel());
 
         masterPanel.add(createLabel("Year:", maxSize));
         masterPanel.add(era);
@@ -253,6 +257,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         removeAllActionListeners();
         omniCB.setSelected(getMech().isOmni());
         quadCB.setSelected(unit instanceof QuadMech);
+        lamCB.setSelected(unit instanceof LandAirMech);
         fullHeadEjectCB.setSelected(getMech().hasFullHeadEject());
         era.setText(Integer.toString(getMech().getYear()));
         source.setText(getMech().getSource());
@@ -797,6 +802,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         manualBV.removeKeyListener(this);
         omniCB.removeActionListener(this);
         quadCB.removeActionListener(this);
+        lamCB.removeActionListener(this);
         fullHeadEjectCB.removeActionListener(this);
         structureCombo.removeActionListener(this);
         baseChassisHeatSinks.removeActionListener(this);
@@ -817,6 +823,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         manualBV.addKeyListener(this);
         omniCB.addActionListener(this);
         quadCB.addActionListener(this);
+        lamCB.addActionListener(this);
         fullHeadEjectCB.addActionListener(this);
         structureCombo.addActionListener(this);
         baseChassisHeatSinks.addActionListener(this);
@@ -861,6 +868,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     public boolean isQuad() {
         return quadCB.isSelected();
+    }
+
+    public boolean isLAM() {
+        return lamCB.isSelected();
     }
 
     private void createISMounts() {
