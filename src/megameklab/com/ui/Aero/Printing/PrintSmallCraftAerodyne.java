@@ -73,9 +73,9 @@ public class PrintSmallCraftAerodyne implements Printable {
         System.gc();
 
         g2d.drawImage(ImageHelper.getRecordSheet(smallCraft), 18, 18, 558, 738, Color.BLACK, null);
-        PrintSmallCraftAerodyneImage(g2d, ImageHelper.getFluffImage(smallCraft, ImageHelper.imageAero));
+        printSmallCraftAerodyneImage(g2d, ImageHelper.getFluffImage(smallCraft, ImageHelper.imageAero));
 
-        PrintSmallCraftAerodyneData(g2d);
+        printSmallCraftAerodyneData(g2d);
         printArmor(g2d);
         printWeaponsNEquipment(g2d);
         printHeatSinks(g2d);
@@ -93,7 +93,7 @@ public class PrintSmallCraftAerodyne implements Printable {
 
     }
 
-    private void PrintSmallCraftAerodyneData(Graphics2D g2d) {
+    private void printSmallCraftAerodyneData(Graphics2D g2d) {
         String smallCraftName = smallCraft.getChassis() + " " + smallCraft.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, smallCraftName, true, 180, 10.0f));
@@ -454,7 +454,7 @@ public class PrintSmallCraftAerodyne implements Printable {
         }
     }
 
-    private void PrintSmallCraftAerodyneImage(Graphics2D g2d, Image img) {
+    private void printSmallCraftAerodyneImage(Graphics2D g2d, Image img) {
 
         int width = Math.min(220, img.getWidth(null));
         int height = Math.min(130, img.getHeight(null));
