@@ -35,6 +35,7 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
 import megamek.common.LargeSupportTank;
+import megamek.common.MiscType;
 import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -44,9 +45,9 @@ import megameklab.com.util.UnitUtil;
 
 public class PrintLargeSupportVehicle implements Printable {
 
-    private LargeSupportTank largesupportank = null;
-    private LargeSupportTank largesupportank2 = null;
-    private ArrayList<LargeSupportTank> largesupportankList;
+    private LargeSupportTank largesupporttank = null;
+    private LargeSupportTank largesupporttank2 = null;
+    private ArrayList<LargeSupportTank> largesupporttankList;
     private int secondPageMargin = 375; // How far down the text should be
     private boolean singlePrint = false;
     PrinterJob masterPrintJob;
@@ -54,7 +55,7 @@ public class PrintLargeSupportVehicle implements Printable {
     // printed for a second vehicle.
 
     public PrintLargeSupportVehicle(ArrayList<LargeSupportTank> list, boolean singlePrint, PrinterJob masterPrintJob) {
-        largesupportankList = list;
+        largesupporttankList = list;
         this.singlePrint = singlePrint;
         this.masterPrintJob = masterPrintJob;
         /*
@@ -82,12 +83,12 @@ public class PrintLargeSupportVehicle implements Printable {
 
         System.gc();
 
-        g2d.drawImage(ImageHelper.getRecordSheet(largesupportank, false), 18, 18, 558, 368, null);
+        g2d.drawImage(ImageHelper.getRecordSheet(largesupporttank, false), 18, 18, 558, 368, null);
 
-        if (largesupportank2 == null) {
-            g2d.drawImage(ImageHelperVehicle.getTableImage(largesupportank), 18, 18 + secondPageMargin, 558, 368, null);
+        if (largesupporttank2 == null) {
+            g2d.drawImage(ImageHelperVehicle.getTableImage(largesupporttank), 18, 18 + secondPageMargin, 558, 368, null);
         } else {
-            g2d.drawImage(ImageHelper.getRecordSheet(largesupportank2, false), 18, 18 + secondPageMargin, 558, 368, null);
+            g2d.drawImage(ImageHelper.getRecordSheet(largesupporttank2, false), 18, 18 + secondPageMargin, 558, 368, null);
         }
 
         printLargeSupportTankData(g2d);
@@ -95,41 +96,41 @@ public class PrintLargeSupportVehicle implements Printable {
         printWeaponsNEquipment(g2d);
 
         // Armor Pips
-        printFrontArmor(g2d, largesupportank.getOArmor(Tank.LOC_FRONT), false);
-        printFrontLeftArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONTLEFT), false);
-        printFrontRightArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), false);
-        printRearLeftArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REARLEFT), false);
-        printRearRightArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REARRIGHT), false);
-        printRearArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_REAR), false);
-        printTurretArmor(g2d, largesupportank.getOArmor(LargeSupportTank.LOC_TURRET), false);
+        printFrontArmor(g2d, largesupporttank.getOArmor(Tank.LOC_FRONT), false);
+        printFrontLeftArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_FRONTLEFT), false);
+        printFrontRightArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), false);
+        printRearLeftArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_REARLEFT), false);
+        printRearRightArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_REARRIGHT), false);
+        printRearArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_REAR), false);
+        printTurretArmor(g2d, largesupporttank.getOArmor(LargeSupportTank.LOC_TURRET), false);
 
         // Internal Pips
-        printFrontStruct(g2d, largesupportank.getOInternal(Tank.LOC_FRONT), false);
-        printLeftFrontStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_FRONTLEFT), false);
-        printRightFrontStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REARRIGHT), false);
-        printLeftRearStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REARLEFT), false);
-        printRightRearStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REARRIGHT), false);
-        printRearStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_REAR), false);
-        printTurretStruct(g2d, largesupportank.getOInternal(LargeSupportTank.LOC_TURRET), false);
+        printFrontStruct(g2d, largesupporttank.getOInternal(Tank.LOC_FRONT), false);
+        printLeftFrontStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_FRONTLEFT), false);
+        printRightFrontStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_REARRIGHT), false);
+        printLeftRearStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_REARLEFT), false);
+        printRightRearStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_REARRIGHT), false);
+        printRearStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_REAR), false);
+        printTurretStruct(g2d, largesupporttank.getOInternal(LargeSupportTank.LOC_TURRET), false);
 
-        if (largesupportank2 != null) {
+        if (largesupporttank2 != null) {
             // Armor Pips
-            printFrontArmor(g2d, largesupportank2.getOArmor(Tank.LOC_FRONT), true);
-            printFrontLeftArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_FRONTLEFT), true);
-            printFrontRightArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), true);
-            printRearLeftArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_REARLEFT), true);
-            printRearRightArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_REARRIGHT), true);
-            printRearArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_REAR), true);
-            printTurretArmor(g2d, largesupportank2.getOArmor(LargeSupportTank.LOC_TURRET), true);
+            printFrontArmor(g2d, largesupporttank2.getOArmor(Tank.LOC_FRONT), true);
+            printFrontLeftArmor(g2d, largesupporttank2.getOArmor(LargeSupportTank.LOC_FRONTLEFT), true);
+            printFrontRightArmor(g2d, largesupporttank2.getOArmor(LargeSupportTank.LOC_FRONTRIGHT), true);
+            printRearLeftArmor(g2d, largesupporttank2.getOArmor(LargeSupportTank.LOC_REARLEFT), true);
+            printRearRightArmor(g2d, largesupporttank2.getOArmor(LargeSupportTank.LOC_REARRIGHT), true);
+            printRearArmor(g2d, largesupporttank2.getOArmor(LargeSupportTank.LOC_REAR), true);
+            printTurretArmor(g2d, largesupporttank2.getOArmor(LargeSupportTank.LOC_TURRET), true);
 
             // Internal Pips
-            printFrontStruct(g2d, largesupportank2.getOInternal(Tank.LOC_FRONT), true);
-            printLeftFrontStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_FRONTLEFT), true);
-            printRightFrontStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REARRIGHT), true);
-            printLeftRearStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REARLEFT), true);
-            printRightRearStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REARRIGHT), true);
-            printRearStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_REAR), true);
-            printTurretStruct(g2d, largesupportank2.getOInternal(LargeSupportTank.LOC_TURRET), true);
+            printFrontStruct(g2d, largesupporttank2.getOInternal(Tank.LOC_FRONT), true);
+            printLeftFrontStruct(g2d, largesupporttank2.getOInternal(LargeSupportTank.LOC_FRONTLEFT), true);
+            printRightFrontStruct(g2d, largesupporttank2.getOInternal(LargeSupportTank.LOC_REARRIGHT), true);
+            printLeftRearStruct(g2d, largesupporttank2.getOInternal(LargeSupportTank.LOC_REARLEFT), true);
+            printRightRearStruct(g2d, largesupporttank2.getOInternal(LargeSupportTank.LOC_REARRIGHT), true);
+            printRearStruct(g2d, largesupporttank2.getOInternal(LargeSupportTank.LOC_REAR), true);
+            printTurretStruct(g2d, largesupporttank2.getOInternal(LargeSupportTank.LOC_TURRET), true);
 
         }
 
@@ -140,7 +141,7 @@ public class PrintLargeSupportVehicle implements Printable {
     }
 
     private void printLargeSupportTankData(Graphics2D g2d) {
-        String largesupportankName = largesupportank.getChassis() + " " + largesupportank.getModel();
+        String largesupportankName = largesupporttank.getChassis() + " " + largesupporttank.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, largesupportankName, true, 180, 10.0f));
         g2d.drawString(largesupportankName, 49, 120);
@@ -148,21 +149,26 @@ public class PrintLargeSupportVehicle implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        if ((largesupportank.getCrew() != null) && !largesupportank.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = largesupportank.getCrew();
+        if ((largesupporttank.getCrew() != null) && !largesupporttank.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Pilot pilot = largesupporttank.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
         }
 
-        g2d.drawString(Integer.toString(largesupportank.getWalkMP()), 79, 144);
-        g2d.drawString(Integer.toString(largesupportank.getRunMP()), 79, 155);
+        g2d.drawString(Integer.toString(largesupporttank.getWalkMP()), 79, 144);
+        if (!largesupporttank.hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) {
+            g2d.drawString(Integer.toString(largesupporttank.getRunMP()), 79, 155);
+        } else {
+            int mascMP = largesupporttank.getRunMP();
+            g2d.drawString(Integer.toString(largesupporttank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+        }
 
-        g2d.drawString(largesupportank.getMovementModeAsString(), 88, 166);
+        g2d.drawString(largesupporttank.getMovementModeAsString(), 88, 166);
 
         String engineName = "Fusion Engine";
 
-        switch (largesupportank.getEngine().getEngineType()) {
+        switch (largesupporttank.getEngine().getEngineType()) {
             case Engine.COMBUSTION_ENGINE:
                 engineName = "I.C.E.";
                 break;
@@ -190,7 +196,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
         g2d.drawString(engineName, 79, 177);
 
-        int tonnage = (int) Math.ceil(largesupportank.getWeight());
+        int tonnage = (int) Math.ceil(largesupporttank.getWeight());
 
         g2d.drawString(Integer.toString(tonnage), 177, 134);
 
@@ -198,7 +204,7 @@ public class PrintLargeSupportVehicle implements Printable {
         int startLine = 188;
         int lineFeed = 8;
 
-        switch (largesupportank.getTechLevel()) {
+        switch (largesupporttank.getTechLevel()) {
 
             case TechConstants.T_INTRO_BOXSET:
                 ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
@@ -226,28 +232,28 @@ public class PrintLargeSupportVehicle implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (largesupportank.isMixedTech()) {
-            if (largesupportank.isClan()) {
+        if (largesupporttank.isMixedTech()) {
+            if (largesupporttank.isClan()) {
                 techBase = "Mixed Tech (Clan)";
             } else {
                 techBase = "Mixed Tech (I.S.)";
             }
-        } else if (largesupportank.isClan()) {
+        } else if (largesupporttank.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 145);
 
-        if ((largesupportank.getSource() != null) && (largesupportank.getSource().trim().length() > 0)) {
+        if ((largesupporttank.getSource() != null) && (largesupporttank.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
             g2d.drawString(sourceFluff, 138, nextDataLine);
 
-            font = UnitUtil.getNewFont(g2d, largesupportank.getSource(), false, 51, 8.0f);
+            font = UnitUtil.getNewFont(g2d, largesupporttank.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(largesupportank.getSource(), 177, nextDataLine);
+            g2d.drawString(largesupporttank.getSource(), 177, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
@@ -259,7 +265,7 @@ public class PrintLargeSupportVehicle implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", largesupportank.getYear()), 177, nextDataLine);
+            g2d.drawString(String.format("%1$s", largesupporttank.getYear()), 177, nextDataLine);
 
         }
 
@@ -273,36 +279,36 @@ public class PrintLargeSupportVehicle implements Printable {
         // unusualSymbols.setGroupingSeparator(',');
         // DecimalFormat myFormatter = new DecimalFormat("#,###",
         // unusualSymbols);
-        double bv = largesupportank.calculateBattleValue(true, true);
+        double bv = largesupporttank.calculateBattleValue(true, true);
         if (bv != -1) {
             font = UnitUtil.deriveFont(true, 8);
             g2d.setFont(font);
             g2d.drawString("BV: ", 35, 357);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", largesupportank.calculateBattleValue(true, true)), 50, 357);
+            g2d.drawString(String.format("%1$,d", largesupporttank.calculateBattleValue(true, true)), 50, 357);
         }
 
         // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
         // g2d.drawString(myFormatter.format(largesupportank.getCost(true)) +
         // " C-bills", 52, 357);
 
-        if (UnitUtil.hasBAR(largesupportank)) {
+        if (UnitUtil.hasBAR(largesupporttank)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString(Integer.toString(UnitUtil.getLowestBARRating(largesupportank)), 413, 53);
+            g2d.drawString(Integer.toString(UnitUtil.getLowestBARRating(largesupporttank)), 413, 53);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2011", 62.5f, 374f);
         g2d.drawString("2011", 62.5f, 374f + secondPageMargin);
-        if (largesupportank2 != null) {
+        if (largesupporttank2 != null) {
             printLargeSupportTank2Data(g2d);
         }
     }
 
     private void printLargeSupportTank2Data(Graphics2D g2d) {
-        String largesupportankName = largesupportank2.getChassis().toUpperCase() + " " + largesupportank2.getModel().toUpperCase();
+        String largesupportankName = largesupporttank2.getChassis().toUpperCase() + " " + largesupporttank2.getModel().toUpperCase();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, largesupportankName, true, 180, 10.0f));
         g2d.drawString(largesupportankName, 49, 493);
@@ -310,21 +316,26 @@ public class PrintLargeSupportVehicle implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        if ((largesupportank2.getCrew() != null) && !largesupportank2.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = largesupportank2.getCrew();
+        if ((largesupporttank2.getCrew() != null) && !largesupporttank2.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Pilot pilot = largesupporttank2.getCrew();
             g2d.drawString(pilot.getName(), 270, 120 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);
         }
 
-        g2d.drawString(Integer.toString(largesupportank.getWalkMP()), 79, 144 + secondPageMargin);
-        g2d.drawString(Integer.toString(largesupportank.getRunMP()), 79, 155 + secondPageMargin);
+        g2d.drawString(Integer.toString(largesupporttank2.getWalkMP()), 79, 144 + secondPageMargin);
+        if (!largesupporttank2.hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) {
+            g2d.drawString(Integer.toString(largesupporttank2.getRunMP()), 79, 155);
+        } else {
+            int mascMP = largesupporttank2.getRunMP();
+            g2d.drawString(Integer.toString(largesupporttank2.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+        }
 
-        g2d.drawString(largesupportank2.getMovementModeAsString(), 88, 537);
+        g2d.drawString(largesupporttank2.getMovementModeAsString(), 88, 537);
 
         String engineName = "Fusion Engine";
 
-        switch (largesupportank2.getEngine().getEngineType()) {
+        switch (largesupporttank2.getEngine().getEngineType()) {
             case Engine.COMBUSTION_ENGINE:
                 engineName = "I.C.E.";
                 break;
@@ -352,7 +363,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
         g2d.drawString(engineName, 79, 548);
 
-        int tonnage = (int) Math.ceil(largesupportank2.getWeight());
+        int tonnage = (int) Math.ceil(largesupporttank2.getWeight());
 
         g2d.drawString(Integer.toString(tonnage), 177, 505);
 
@@ -360,7 +371,7 @@ public class PrintLargeSupportVehicle implements Printable {
         int startLine = 188;
         int lineFeed = 8;
 
-        switch (largesupportank2.getTechLevel()) {
+        switch (largesupporttank2.getTechLevel()) {
 
             case TechConstants.T_INTRO_BOXSET:
                 ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
@@ -388,28 +399,28 @@ public class PrintLargeSupportVehicle implements Printable {
         }
 
         String techBase = "Inner Sphere";
-        if (largesupportank2.isMixedTech()) {
-            if (largesupportank2.isClan()) {
+        if (largesupporttank2.isMixedTech()) {
+            if (largesupporttank2.isClan()) {
                 techBase = "Mixed Tech (Clan)";
             } else {
                 techBase = "Mixed Tech (I.S.)";
             }
-        } else if (largesupportank2.isClan()) {
+        } else if (largesupporttank2.isClan()) {
             techBase = "Clan";
         }
         g2d.drawString(techBase, 177, 145 + secondPageMargin);
 
-        if ((largesupportank2.getSource() != null) && (largesupportank2.getSource().trim().length() > 0)) {
+        if ((largesupporttank2.getSource() != null) && (largesupporttank2.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
             g2d.drawString(sourceFluff, 138, nextDataLine);
 
-            font = UnitUtil.getNewFont(g2d, largesupportank2.getSource(), false, 51, 8.0f);
+            font = UnitUtil.getNewFont(g2d, largesupporttank2.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(largesupportank2.getSource(), 177, nextDataLine);
+            g2d.drawString(largesupporttank2.getSource(), 177, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
@@ -421,7 +432,7 @@ public class PrintLargeSupportVehicle implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", largesupportank2.getYear()), 177, nextDataLine);
+            g2d.drawString(String.format("%1$s", largesupporttank2.getYear()), 177, nextDataLine);
 
         }
 
@@ -431,24 +442,24 @@ public class PrintLargeSupportVehicle implements Printable {
         // unusualSymbols.setGroupingSeparator(',');
         // DecimalFormat myFormatter = new DecimalFormat("#,###",
         // unusualSymbols);
-        double bv = largesupportank2.calculateBattleValue(true, true);
+        double bv = largesupporttank2.calculateBattleValue(true, true);
         if (bv != -1) {
             font = UnitUtil.deriveFont(true, 8);
             g2d.setFont(font);
             g2d.drawString("BV: ", 35, 357 + secondPageMargin);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", largesupportank2.calculateBattleValue(true, true)), 50, 357 + secondPageMargin);
+            g2d.drawString(String.format("%1$,d", largesupporttank2.calculateBattleValue(true, true)), 50, 357 + secondPageMargin);
         }
-        g2d.drawString(String.format("%1$,d", largesupportank2.calculateBattleValue(true, true)), 150, 728);
+        g2d.drawString(String.format("%1$,d", largesupporttank2.calculateBattleValue(true, true)), 150, 728);
 
         // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
         // g2d.drawString(myFormatter.format(largesupportank2.getCost(true)) +
         // " C-bills", 52, 728);
 
-        if (UnitUtil.hasBAR(largesupportank2)) {
+        if (UnitUtil.hasBAR(largesupporttank2)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(largesupportank2), 400, 64 + secondPageMargin);
+            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(largesupporttank2), 400, 64 + secondPageMargin);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -463,42 +474,42 @@ public class PrintLargeSupportVehicle implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(largesupportank), 463, 48);
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank), 463, 48);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
+        g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
 
-        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_FRONTRIGHT)) + ")", 555, 185);
+        g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(LargeSupportTank.LOC_FRONTRIGHT)) + ")", 555, 185);
 
-        g2d.drawString("(" + largesupportank.getArmor(LargeSupportTank.LOC_FRONTLEFT) + ")", 386, 110);
+        g2d.drawString("(" + largesupporttank.getArmor(LargeSupportTank.LOC_FRONTLEFT) + ")", 386, 110);
 
-        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_REARRIGHT)) + ")", 555, 302);
+        g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(LargeSupportTank.LOC_REARRIGHT)) + ")", 555, 302);
 
-        g2d.drawString("(" + largesupportank.getArmor(LargeSupportTank.LOC_REARLEFT) + ")", 386, 228);
+        g2d.drawString("(" + largesupporttank.getArmor(LargeSupportTank.LOC_REARLEFT) + ")", 386, 228);
 
-        g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_REAR)) + ")", 467, 342);
+        g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(LargeSupportTank.LOC_REAR)) + ")", 467, 342);
 
-        if (largesupportank.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
-            g2d.drawString("(" + Integer.toString(largesupportank.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 405, 360);
+        if (largesupporttank.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
+            g2d.drawString("(" + Integer.toString(largesupporttank.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 405, 360);
         }
 
-        if (largesupportank2 != null) {
+        if (largesupporttank2 != null) {
             font = UnitUtil.deriveFont(true, 11.0f);
             g2d.setFont(font);
-            g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(largesupportank2), 463, 48 + secondPageMargin);
+            g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank2), 463, 48 + secondPageMargin);
             font = UnitUtil.deriveFont(true, 9.0f);
             g2d.setFont(font);
-            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(Tank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
+            g2d.drawString("(" + Integer.toString(largesupporttank2.getArmor(Tank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
 
-            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230 + secondPageMargin);
+            g2d.drawString("(" + Integer.toString(largesupporttank2.getArmor(Tank.LOC_RIGHT)) + ")", 559, 230 + secondPageMargin);
 
-            g2d.drawString("(" + largesupportank2.getArmor(Tank.LOC_LEFT) + ")", 384, 175 + secondPageMargin);
+            g2d.drawString("(" + largesupporttank2.getArmor(Tank.LOC_LEFT) + ")", 384, 175 + secondPageMargin);
 
-            g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_REAR)) + ")", 467, 342 + secondPageMargin);
+            g2d.drawString("(" + Integer.toString(largesupporttank2.getArmor(LargeSupportTank.LOC_REAR)) + ")", 467, 342 + secondPageMargin);
 
-            if (largesupportank2.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
-                g2d.drawString("(" + Integer.toString(largesupportank2.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 455, 186 + secondPageMargin);
+            if (largesupporttank2.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
+                g2d.drawString("(" + Integer.toString(largesupporttank2.getArmor(LargeSupportTank.LOC_TURRET)) + ")", 455, 186 + secondPageMargin);
             }
         }
 
@@ -506,10 +517,10 @@ public class PrintLargeSupportVehicle implements Printable {
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(largesupportank, g2d);
+        ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(largesupporttank, g2d);
 
-        if (largesupportank2 != null) {
-            ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(largesupportank2, g2d, secondPageMargin);
+        if (largesupporttank2 != null) {
+            ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(largesupporttank2, g2d, secondPageMargin);
         }
 
     }
@@ -517,7 +528,7 @@ public class PrintLargeSupportVehicle implements Printable {
     public void print() {
 
         try {
-            for (int pos = 0; pos < largesupportankList.size(); pos++) {
+            for (int pos = 0; pos < largesupporttankList.size(); pos++) {
                 PrinterJob pj = PrinterJob.getPrinterJob();
 
                 pj.setPrintService(masterPrintJob.getPrintService());
@@ -534,13 +545,13 @@ public class PrintLargeSupportVehicle implements Printable {
 
                 pj.setPrintable(this, pageFormat);
 
-                largesupportank = largesupportankList.get(pos);
-                pj.setJobName(largesupportank.getChassis() + " " + largesupportank.getModel());
+                largesupporttank = largesupporttankList.get(pos);
+                pj.setJobName(largesupporttank.getChassis() + " " + largesupporttank.getModel());
 
-                if (!singlePrint && ((pos + 1) < largesupportankList.size())) {
-                    largesupportank2 = largesupportankList.get(++pos);
+                if (!singlePrint && ((pos + 1) < largesupporttankList.size())) {
+                    largesupporttank2 = largesupporttankList.get(++pos);
                 } else {
-                    largesupportank2 = null;
+                    largesupporttank2 = null;
                 }
 
                 try {
@@ -1105,15 +1116,15 @@ public class PrintLargeSupportVehicle implements Printable {
 
     private void printLargeSupportTankImage(Graphics2D g2d) {
 
-        Image img = ImageHelper.getFluffImage(largesupportank, ImageHelper.imageVehicle);
+        Image img = ImageHelper.getFluffImage(largesupporttank, ImageHelper.imageVehicle);
         int width = Math.min(148, img.getWidth(null));
         int height = Math.min(99, img.getHeight(null));
         int drawingX = 235 + ((148 - width) / 2);
         int drawingY = 270 + ((99 - height) / 2);
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
-        if (largesupportank2 != null) {
-            img = ImageHelper.getFluffImage(largesupportank2, ImageHelper.imageVehicle);
+        if (largesupporttank2 != null) {
+            img = ImageHelper.getFluffImage(largesupporttank2, ImageHelper.imageVehicle);
             width = Math.min(148, img.getWidth(null));
             height = Math.min(99, img.getHeight(null));
             drawingX = 235 + ((148 - width) / 2);
