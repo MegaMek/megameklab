@@ -277,6 +277,8 @@ public class ImageHelperAero {
         }
         if (aero instanceof FixedWingSupport) {
             ImageHelperAero.printFixedWingSupportCargoChassisMod((FixedWingSupport) aero, g2d, (int) linePoint);
+        } else {
+            ImageHelperAero.printCargo(aero, g2d, (int)linePoint);
         }
 
         ImageHelper.printVehicleAmmo(aero, g2d, -20);
