@@ -373,7 +373,7 @@ public class PrintMech implements Printable {
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 55f, topMargin + 744.5f);
+        g2d.drawString("2012", 55f, topMargin + 744.5f);
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
             g2d.drawImage(ImageHelper.getGyroPipImage(), 235 + leftMargin, topMargin + 588, 9, 8, null);

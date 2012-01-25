@@ -300,8 +300,8 @@ public class PrintLargeSupportVehicle implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 62.5f, 374f);
-        g2d.drawString("2011", 62.5f, 374f + secondPageMargin);
+        g2d.drawString("2012", 62.5f, 374f);
+        g2d.drawString("2012", 62.5f, 374f + secondPageMargin);
         if (largesupporttank2 != null) {
             printLargeSupportTank2Data(g2d);
         }

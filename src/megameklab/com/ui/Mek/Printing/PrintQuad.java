@@ -322,7 +322,7 @@ public class PrintQuad implements Printable {
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 43.5f + leftMargin, topMargin + 744.5f);
+        g2d.drawString("2012", 43.5f + leftMargin, topMargin + 744.5f);
 
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
