@@ -108,7 +108,7 @@ public class PrintProtomech implements Printable {
         System.gc();
         Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 100.5f, 745f);
+        g2d.drawString("2012", 100.5f, 745f);
 
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 

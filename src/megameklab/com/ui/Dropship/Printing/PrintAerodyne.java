@@ -234,7 +234,7 @@ public class PrintAerodyne implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 65.5f, 744.5f);
+        g2d.drawString("2012", 65.5f, 744.5f);
     }
 
     private void printArmor(Graphics2D g2d) {

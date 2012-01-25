@@ -298,12 +298,12 @@ public class PrintDualTurretVehicle implements Printable {
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
 
-        g2d.drawString("2011", 62.5f, 374f);
+        g2d.drawString("2012", 62.5f, 374f);
 
         if (tank2 != null) {
             printTank2Data(g2d);
         } else {
-            g2d.drawString("2011", 62.5f, 374f + secondPageMargin);
+            g2d.drawString("2012", 62.5f, 374f + secondPageMargin);
         }
     }
 
@@ -467,7 +467,7 @@ public class PrintDualTurretVehicle implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 105f, 745.5f);
+        g2d.drawString("2012", 105f, 745.5f);
     }
 
     private void printArmor(Graphics2D g2d) {
