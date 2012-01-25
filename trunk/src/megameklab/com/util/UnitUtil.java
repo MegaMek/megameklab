@@ -2020,12 +2020,18 @@ public class UnitUtil {
     public static boolean isValidLocation(Entity unit, EquipmentType eq, int location) {
         if ((eq instanceof MiscType)) {
             if (((eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON)))) {
-                if (unit instanceof QuadMech) {
+                if ((unit instanceof QuadMech) && !((QuadMech) unit).isIndustrial()) {
                     return false;
                 }
 
                 if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM)) {
-                    return false;
+                    if ((unit instanceof QuadMech) && ((QuadMech) unit).isIndustrial()) {
+                        if ((location != Mech.LOC_LT) && (location != Mech.LOC_RT)) {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
                 }
             }
 

@@ -231,7 +231,7 @@ public class PrintConventionalFighter implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2011", 62.5f, 745f);
+        g2d.drawString("2012", 62.5f, 745f);
     }
 
     private void printArmor(Graphics2D g2d) {
