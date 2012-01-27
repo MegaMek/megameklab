@@ -27,6 +27,7 @@ import javax.swing.ListSelectionModel;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Mounted;
+import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.loaders.MtfFile;
 import megameklab.com.util.DropTargetCriticalList;
@@ -48,8 +49,12 @@ public class CriticalView extends IView {
     private JPanel turretPanel = new JPanel();
     private JPanel dualTurretPanel = new JPanel();
 
+    private JPanel rearLeftPanel = new JPanel();
+    private JPanel rearRightPanel = new JPanel();
+
     private JPanel topPanel = new JPanel();
     private JPanel middlePanel = new JPanel();
+    private JPanel middlePanel2 = new JPanel();
     private JPanel bottomPanel = new JPanel();
     private JPanel fullTurretPanel = new JPanel();
     private RefreshListener refresh;
@@ -67,6 +72,7 @@ public class CriticalView extends IView {
 
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));
+        middlePanel2.setLayout(new BoxLayout(middlePanel2, BoxLayout.X_AXIS));
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
         fullTurretPanel.setLayout(new BoxLayout(fullTurretPanel, BoxLayout.Y_AXIS));
 
@@ -81,6 +87,15 @@ public class CriticalView extends IView {
         middlePanel.add(rightPanel);
         rightPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Side"));
         mainPanel.add(middlePanel);
+
+        if (unit.isSuperHeavy()) {
+            middlePanel2.add(rearLeftPanel);
+            rearLeftPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Left Side"));
+            middlePanel2.add(new JPanel());
+            middlePanel2.add(rearRightPanel);
+            rearRightPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Right Side"));
+            mainPanel.add(middlePanel2);
+        }
 
         rearPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear"));
         bottomPanel.add(rearPanel);
@@ -103,6 +118,8 @@ public class CriticalView extends IView {
         turretPanel.removeAll();
         dualTurretPanel.removeAll();
         fullTurretPanel.removeAll();
+        rearLeftPanel.removeAll();
+        rearRightPanel.removeAll();
         this.remove(fullTurretPanel);
 
         if (!getTank().hasNoDualTurret()) {
@@ -172,35 +189,69 @@ public class CriticalView extends IView {
                 criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
                 criticalSlotList.setName(Integer.toString(location));
                 criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
-
-                switch (location) {
-                    case Tank.LOC_FRONT:
-                        frontPanel.add(criticalSlotList);
-                        break;
-                    case Tank.LOC_LEFT:
-                        leftPanel.add(criticalSlotList);
-                        break;
-                    case Tank.LOC_RIGHT:
-                        rightPanel.add(criticalSlotList);
-                        break;
-                    case Tank.LOC_BODY:
-                        bodyPanel.add(criticalSlotList);
-                        break;
-                    case Tank.LOC_REAR:
-                        rearPanel.add(criticalSlotList);
-                        break;
-                    case Tank.LOC_TURRET:
-                        turretPanel.add(criticalSlotList);
-                        break;
-                    case Tank.LOC_TURRET_2:
-                        dualTurretPanel.add(criticalSlotList);
-                        break;
+                if (!((Tank)unit).isSuperHeavy()) {
+                    switch (location) {
+                        case Tank.LOC_FRONT:
+                            frontPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_LEFT:
+                            leftPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_RIGHT:
+                            rightPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_BODY:
+                            bodyPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_REAR:
+                            rearPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_TURRET:
+                            turretPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_TURRET_2:
+                            dualTurretPanel.add(criticalSlotList);
+                            break;
+                    }
+                } else {
+                    switch (location) {
+                        case Tank.LOC_FRONT:
+                            frontPanel.add(criticalSlotList);
+                            break;
+                        case SuperHeavyTank.LOC_FRONTLEFT:
+                            leftPanel.add(criticalSlotList);
+                            break;
+                        case SuperHeavyTank.LOC_FRONTRIGHT:
+                            rightPanel.add(criticalSlotList);
+                            break;
+                        case SuperHeavyTank.LOC_REARLEFT:
+                            rearLeftPanel.add(criticalSlotList);
+                            break;
+                        case SuperHeavyTank.LOC_REARRIGHT:
+                            rearRightPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_BODY:
+                            bodyPanel.add(criticalSlotList);
+                            break;
+                        case SuperHeavyTank.LOC_REAR:
+                            rearPanel.add(criticalSlotList);
+                            break;
+                        case SuperHeavyTank.LOC_TURRET:
+                            turretPanel.add(criticalSlotList);
+                            break;
+                        case SuperHeavyTank.LOC_TURRET_2:
+                            dualTurretPanel.add(criticalSlotList);
+                            break;
+                    }
                 }
+
             }
             frontPanel.repaint();
             bodyPanel.repaint();
             leftPanel.repaint();
             rightPanel.repaint();
+            rearLeftPanel.repaint();
+            rearRightPanel.repaint();
             rearPanel.repaint();
             turretPanel.repaint();
             dualTurretPanel.repaint();
