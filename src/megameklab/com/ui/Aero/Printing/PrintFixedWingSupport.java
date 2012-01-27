@@ -98,10 +98,10 @@ public class PrintFixedWingSupport implements Printable {
         g2d.setFont(UnitUtil.getNewFont(g2d, FixedWingSupportName, true, 180, 10.0f));
         g2d.drawString(FixedWingSupportName, 49, 118);
 
-        Font font = UnitUtil.deriveFont(true, 18.0f);
+        Font font = UnitUtil.deriveFont(true, 15.0f);
         g2d.setFont(font);
 
-        g2d.drawString("Fixed Wing Support Vehicle Record Sheet", 60, 90);
+        g2d.drawString("FIXED WING SUPPORT VEHICLE RECORD SHEET", 60, 88);
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);

@@ -34,7 +34,6 @@ import megamek.common.Bay;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
-import megamek.common.LargeSupportTank;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
@@ -126,7 +125,7 @@ public class ImageHelperVehicle {
         ImageHelperVehicle.printTankWeaponsNEquipment(tank, g2d, 0);
     }
 
-    public static void printLargeSupportTankWeaponsNEquipment(LargeSupportTank tank, Graphics2D g2d) {
+    public static void printLargeSupportTankWeaponsNEquipment(Tank tank, Graphics2D g2d) {
         ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(tank, g2d, 0);
     }
 
@@ -418,7 +417,7 @@ public class ImageHelperVehicle {
         ImageHelper.printVehicleAmmo(tank, g2d, (int) offset==0?0:(int)offset-8);
     }
 
-    public static void printLargeSupportTankWeaponsNEquipment(LargeSupportTank tank, Graphics2D g2d, float offset) {
+    public static void printLargeSupportTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float offset) {
         int qtyPoint = 26;
         int typePoint = 38;
         int locPoint = 124;
@@ -1069,7 +1068,7 @@ public class ImageHelperVehicle {
         return returnString.toString();
     }
 
-    public static void printLargeVehicleCargo(LargeSupportTank tank, Graphics2D g2d, int pointY) {
+    public static void printLargeVehicleCargo(Tank tank, Graphics2D g2d, int pointY) {
 
         float troopspace = tank.getTroopCarryingSpace();
         if ((tank.getTransportBays().size() < 1) && (troopspace == 0)) {

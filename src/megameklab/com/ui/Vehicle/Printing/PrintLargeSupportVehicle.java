@@ -45,16 +45,16 @@ import megameklab.com.util.UnitUtil;
 
 public class PrintLargeSupportVehicle implements Printable {
 
-    private LargeSupportTank largesupporttank = null;
-    private LargeSupportTank largesupporttank2 = null;
-    private ArrayList<LargeSupportTank> largesupporttankList;
+    private Tank largesupporttank = null;
+    private Tank largesupporttank2 = null;
+    private ArrayList<Tank> largesupporttankList;
     private int secondPageMargin = 375; // How far down the text should be
     private boolean singlePrint = false;
     PrinterJob masterPrintJob;
 
     // printed for a second vehicle.
 
-    public PrintLargeSupportVehicle(ArrayList<LargeSupportTank> list, boolean singlePrint, PrinterJob masterPrintJob) {
+    public PrintLargeSupportVehicle(ArrayList<Tank> list, boolean singlePrint, PrinterJob masterPrintJob) {
         largesupporttankList = list;
         this.singlePrint = singlePrint;
         this.masterPrintJob = masterPrintJob;
@@ -146,7 +146,16 @@ public class PrintLargeSupportVehicle implements Printable {
         g2d.setFont(UnitUtil.getNewFont(g2d, largesupportankName, true, 180, 10.0f));
         g2d.drawString(largesupportankName, 49, 120);
 
-        Font font = UnitUtil.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(true, 15.0f);
+        g2d.setFont(font);
+
+        if (largesupporttank instanceof LargeSupportTank) {
+            g2d.drawString("LARGE GROUND SUPPORT VEHICLE RECORD SHEET", 60, 88);
+        } else {
+            g2d.drawString("SUPER-HEAVY COMBAT VEHICLE RECORD SHEET", 60, 88);
+        }
+
+        font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         if ((largesupporttank.getCrew() != null) && !largesupporttank.getCrew().getName().equalsIgnoreCase("unnamed")) {
@@ -295,7 +304,7 @@ public class PrintLargeSupportVehicle implements Printable {
 
         if (UnitUtil.hasBAR(largesupporttank)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString(Integer.toString(UnitUtil.getLowestBARRating(largesupporttank)), 413, 53);
+            g2d.drawString("BAR: "+Integer.toString(UnitUtil.getLowestBARRating(largesupporttank)), 400, 64);
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
@@ -313,7 +322,16 @@ public class PrintLargeSupportVehicle implements Printable {
         g2d.setFont(UnitUtil.getNewFont(g2d, largesupportankName, true, 180, 10.0f));
         g2d.drawString(largesupportankName, 49, 493);
 
-        Font font = UnitUtil.deriveFont(8.0f);
+        Font font = UnitUtil.deriveFont(true, 18.0f);
+        g2d.setFont(font);
+
+        if (largesupporttank2 instanceof LargeSupportTank) {
+            g2d.drawString("LARGE GROUND SUPPORT VEHICLE RECORD SHEET", 60, 90);
+        } else {
+            g2d.drawString("SUPER-HEAVY VEHICLE RECORD SHEET", 60, 90);
+        }
+
+        font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         if ((largesupporttank2.getCrew() != null) && !largesupporttank2.getCrew().getName().equalsIgnoreCase("unnamed")) {
