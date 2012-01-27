@@ -155,7 +155,7 @@ public class StatusBar extends ITab {
 
         if (getMech().getOriginalJumpMP() > 0) {
             if (getMech().getJumpType() == Mech.JUMP_IMPROVED) {
-                heat += Math.max(3, getMech().getOriginalJumpMP() / 2);
+                heat += Math.max(3, Math.ceil(getMech().getOriginalJumpMP() / 2.0f));
             } else if (getMech().getJumpType() != Mech.JUMP_BOOSTER) {
                 heat += Math.max(3, getMech().getOriginalJumpMP());
             }
