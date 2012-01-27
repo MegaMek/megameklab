@@ -138,7 +138,7 @@ public class UnitPrintManager {
         ArrayList<Dropship> SpheroidList = new ArrayList<Dropship>();
         ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
         ArrayList<Protomech> protoList = new ArrayList<Protomech>();
-        ArrayList<LargeSupportTank> largeSupportTankList = new ArrayList<LargeSupportTank>();
+        ArrayList<Tank> largeSupportTankList = new ArrayList<Tank>();
         ArrayList<SmallCraft> smallCraftAerodyneList = new ArrayList<SmallCraft>();
         ArrayList<SmallCraft> smallCraftSpheroidList = new ArrayList<SmallCraft>();
 
@@ -153,8 +153,8 @@ public class UnitPrintManager {
                 UnitUtil.expandUnitMounts((Mech) unit);
 
                 bipedList.add((Mech) unit);
-            } else if (unit instanceof LargeSupportTank) {
-                largeSupportTankList.add((LargeSupportTank) unit);
+            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank)unit).isSuperHeavy())) {
+                largeSupportTankList.add((Tank)unit);
             } else if (unit instanceof VTOL) {
                 VTOLList.add((VTOL) unit);
             } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {

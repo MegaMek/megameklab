@@ -28,6 +28,7 @@ import megamek.common.Engine;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
+import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
@@ -122,19 +123,31 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(boolean hasTurret) {
-        createNewUnit(hasTurret, false);
+        createNewUnit(hasTurret, false, false);
     }
+
 
     @Override
     public void createNewUnit(boolean hasTurret, boolean hasDualTurret) {
+        createNewUnit(hasTurret, hasDualTurret, false);
+    }
 
-        entity = new Tank();
+    @Override
+    public void createNewUnit(boolean hasTurret, boolean hasDualTurret, boolean isSuperHeavy) {
+
+        if (isSuperHeavy) {
+            entity = new SuperHeavyTank();
+            entity.setTechLevel(TechConstants.T_IS_ADVANCED);
+        } else {
+            entity = new Tank();
+            entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
+        }
+
         Tank tank = (Tank) entity;
 
         tank.setHasNoTurret(!hasTurret);
         tank.setHasNoDualTurret(!hasDualTurret);
         entity.setYear(2750);
-        entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
         entity.setWeight(25);
         entity.setMovementMode(EntityMovementMode.HOVER);
         tank.setEngine(new Engine(Math.max(10, 25 - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
@@ -158,20 +171,28 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshAll() {
 
+        if ((structureTab.isSuperHeavy() && !(entity instanceof SuperHeavyTank)) || (!structureTab.isSuperHeavy() && (entity instanceof SuperHeavyTank))) {
+            String model = entity.getModel();
+            String chassis = entity.getChassis();
+            createNewUnit(structureTab.hasTurret(),
+                    structureTab.hasDualTurret(), structureTab.isSuperHeavy());
+            entity.setChassis(chassis);
+            entity.setModel(model);
+            reloadTabs();
+            repaint();
+            refreshAll();
+        }
+
         Tank tank = (Tank) entity;
         if ((structureTab.hasTurret() && tank.hasNoTurret()) || (!structureTab.hasTurret() && !tank.hasNoTurret()) || (!structureTab.hasDualTurret() && !tank.hasNoDualTurret()) || (!structureTab.hasDualTurret() && !tank.hasNoDualTurret())) {
-
-            /*
-             * String chassis = entity.getChassis(); String model =
-             * entity.getModel();
-             *
-             * createNewTank(structureTab.hasTurret(),
-             * structureTab.hasDualTurret());
-             *
-             * entity.setChassis(chassis); entity.setModel(model); //
-             * setVisible(false); reloadTabs(); // setVisible(true); repaint();
-             * refreshAll();
-             */
+            String chassis = entity.getChassis(); String model =
+                    entity.getModel();
+            createNewUnit(structureTab.hasTurret(),
+                    structureTab.hasDualTurret(), structureTab.isSuperHeavy());
+            entity.setChassis(chassis);
+            entity.setModel(model);
+            reloadTabs();
+            refreshAll();
         }
         statusbar.refresh();
         structureTab.refresh();

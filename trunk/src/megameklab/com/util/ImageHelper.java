@@ -93,7 +93,7 @@ public class ImageHelper {
             }
         } else if (unit instanceof VTOL) {
             recordSheet = new ImageIcon(path + "twvee-vtol.png").getImage();
-        } else if (unit instanceof LargeSupportTank) {
+        } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && ((Tank)unit).isSuperHeavy())) {
             if (unit.getOInternal(LargeSupportTank.LOC_TURRET) > 0) {
                 recordSheet = new ImageIcon(path + "twvee-lgsupground-turret.png").getImage();
             } else {

@@ -99,6 +99,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     JTextField source = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
+    JCheckBox superHeavyCB = new JCheckBox("Super-Heavy");
     String[] turretTypes =
         { "None", "Single", "Dual" };
     JComboBox turretCombo = new JComboBox(turretTypes);
@@ -107,6 +108,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     JPanel masterPanel;
     JSpinner troopStorage = null;
     int maxTonnage = 50;
+    int minTonnage = 1;
     JTextField manualBV = new JTextField(3);
 
     private CriticalView critView = null;
@@ -170,7 +172,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         maxSize.setSize(110, 20);
 
         masterPanel.add(omniCB);
-        masterPanel.add(new JLabel(""));
+        masterPanel.add(superHeavyCB);
 
         masterPanel.add(createLabel("Turret:", maxSize));
         masterPanel.add(turretCombo);
@@ -189,7 +191,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         masterPanel.add(createLabel("Engine Type:", maxSize));
         masterPanel.add(engineType);
 
-        masterPanel.add(createLabel("Movment Type:", maxSize));
+        masterPanel.add(createLabel("Movement Type:", maxSize));
         masterPanel.add(tankMotiveType);
 
         masterPanel.add(createLabel("Cruise MP:", maxSize));
@@ -229,6 +231,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     public void refresh() {
         removeAllActionListeners();
         omniCB.setSelected(unit.isOmni());
+        superHeavyCB.setSelected(((Tank)unit).isSuperHeavy());
 
         if (!getTank().hasNoDualTurret()) {
             turretCombo.setSelectedIndex(2);
@@ -490,7 +493,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                             techLevel.addItem(item);
                         }
 
-                        unit.setTechLevel(TechConstants.T_CLAN_TW);
+                        if (!((Tank)unit).isSuperHeavy()) {
+                            unit.setTechLevel(TechConstants.T_CLAN_TW);
+                        } else {
+                            if (unit.getTechLevel() == TechConstants.T_IS_ADVANCED) {
+                                unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                            } else if (unit.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) {
+                                unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            } else if (unit.getTechLevel() == TechConstants.T_IS_UNOFFICIAL) {
+                                unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                            }
+                        }
+
                         unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
                         unit.setMixedTech(false);
                     } else if ((techType.getSelectedIndex() == 0) && (unit.isClan() || unit.isMixedTech())) {
@@ -499,8 +513,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
-
-                        unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                        if (!((Tank)unit).isSuperHeavy()) {
+                            unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                        } else {
+                            if (unit.getTechLevel() == TechConstants.T_CLAN_ADVANCED) {
+                                unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                            } else if (unit.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL) {
+                                unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            } else if (unit.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL) {
+                                unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                            }
+                        }
                         unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
                         unit.setMixedTech(false);
 
@@ -593,6 +616,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         source.removeKeyListener(this);
         manualBV.removeKeyListener(this);
         omniCB.removeActionListener(this);
+        superHeavyCB.removeActionListener(this);
         turretCombo.removeActionListener(this);
         tankMotiveType.removeActionListener(this);
         troopStorage.getModel().removeChangeListener(this);
@@ -608,6 +632,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         source.addKeyListener(this);
         manualBV.addKeyListener(this);
         omniCB.addActionListener(this);
+        superHeavyCB.addActionListener(this);
         turretCombo.addActionListener(this);
         tankMotiveType.addActionListener(this);
         troopStorage.getModel().addChangeListener(this);
@@ -669,30 +694,50 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private void populateWeight(int currentTonnage) {
         weightClass.removeAllItems();
 
-        switch (tankMotiveType.getSelectedIndex()) {
-            case 0:
-                maxTonnage = 50;
-                unit.setMovementMode(EntityMovementMode.HOVER);
-                break;
-            case 1:
-                maxTonnage = 80;
-                unit.setMovementMode(EntityMovementMode.WHEELED);
-                break;
-            case 2:
-                maxTonnage = 100;
-                unit.setMovementMode(EntityMovementMode.TRACKED);
-                break;
+        if (!isSuperHeavy()) {
+            switch (tankMotiveType.getSelectedIndex()) {
+                case 0:
+                    maxTonnage = 50;
+                    unit.setMovementMode(EntityMovementMode.HOVER);
+                    break;
+                case 1:
+                    maxTonnage = 80;
+                    unit.setMovementMode(EntityMovementMode.WHEELED);
+                    break;
+                case 2:
+                    maxTonnage = 100;
+                    unit.setMovementMode(EntityMovementMode.TRACKED);
+                    break;
+            }
+        } else {
+            switch (tankMotiveType.getSelectedIndex()) {
+                case 0:
+                    minTonnage = 51;
+                    maxTonnage = 100;
+                    unit.setMovementMode(EntityMovementMode.HOVER);
+                    break;
+                case 1:
+                    minTonnage = 81;
+                    maxTonnage = 160;
+                    unit.setMovementMode(EntityMovementMode.WHEELED);
+                    break;
+                case 2:
+                    minTonnage = 101;
+                    maxTonnage = 200;
+                    unit.setMovementMode(EntityMovementMode.TRACKED);
+                    break;
+            }
         }
 
-        currentTonnage = Math.min(currentTonnage, maxTonnage);
+        currentTonnage = Math.max(minTonnage,Math.min(currentTonnage, maxTonnage));
         unit.setWeight(currentTonnage);
         ((SpinnerNumberModel) troopStorage.getModel()).setMaximum((double) currentTonnage);
 
-        for (int pos = 1; pos <= maxTonnage; pos++) {
+        for (int pos = minTonnage; pos <= maxTonnage; pos++) {
             weightClass.addItem(pos);
         }
 
-        weightClass.setSelectedIndex((int) unit.getWeight() - 1);
+        weightClass.setSelectedIndex((int) unit.getWeight() - minTonnage);
     }
 
     private int convertEngineType(String engineType) {
@@ -828,6 +873,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             addAllActionListeners();
             refresh.refreshAll();
         }
+    }
 
+    public boolean isSuperHeavy() {
+        return superHeavyCB.isSelected();
     }
 }
