@@ -72,7 +72,7 @@ public class PrintFixedWingSupport implements Printable {
 
         System.gc();
 
-        g2d.drawImage(ImageHelper.getRecordSheet(fixedWingSupport), 18, 18, 558, 738, Color.BLACK, null);
+        g2d.drawImage(ImageHelper.getRecordSheet(fixedWingSupport), 18, 18, 558, 754, Color.BLACK, null);
         printFixedWingSupportImage(g2d, ImageHelper.getFluffImage(fixedWingSupport, ImageHelper.imageAero));
 
         printFixedWingSupportData(g2d);
