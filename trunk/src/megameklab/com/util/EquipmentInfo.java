@@ -22,6 +22,7 @@ import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Dropship;
 import megamek.common.Entity;
+import megamek.common.FixedWingSupport;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Sensor;
@@ -29,6 +30,7 @@ import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.CLVehicularGrenadeLauncher;
+import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.ISCenturionWeaponSystem;
 import megamek.common.weapons.ISCompactNarc;
 import megamek.common.weapons.ISMineLauncher;
@@ -157,7 +159,14 @@ public class EquipmentInfo {
             if (weapon.maxRange >= WeaponType.RANGE_EXT) {
                 erRange = (int) weapon.extAV + bonus;
             }
-            heat = weapon.getHeat();
+            if (aero instanceof FixedWingSupport) {
+                if (mount.getType() instanceof EnergyWeapon) {
+                    heat = weapon.getHeat();
+                } else {
+                    heat = 0;
+                }
+            }
+
             secondaryLocation = mount.getSecondLocation();
 
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
