@@ -178,9 +178,9 @@ public class CriticalView extends IView {
                         break;
                     case Mech.LOC_LARM:
                         if (unit instanceof QuadMech) {
-                            laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Front Left Leg"));
+                            laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front Left Leg"));
                         } else {
-                            laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Left Arm"));
+                            laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Arm"));
                             // ((TitledBorder)
                             // laPanel.getBorder()).setTitleColor(Color.BLUE);
                         }
@@ -188,9 +188,9 @@ public class CriticalView extends IView {
                         break;
                     case Mech.LOC_RARM:
                         if (unit instanceof QuadMech) {
-                            raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Front Right Leg"));
+                            raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front Right Leg"));
                         } else {
-                            raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 1, 1, 0), "Right Arm"));
+                            raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Arm"));
                         }
                         raPanel.add(criticalSlotList);
                         break;
