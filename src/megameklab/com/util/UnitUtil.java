@@ -2130,6 +2130,15 @@ public class UnitUtil {
         JDialog jdialog = new JDialog();
 
         jdialog.add(scroll);
+        /*
+        if (unit instanceof Mech) {
+            EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml")); //$NON-NLS-1$
+            TestMech test = new TestMech((Mech)unit, entityVerifier.mechOption, null);
+            JEditorPane pane2 = new JEditorPane();
+            pane2.setText(test.printWeightCalculation().toString());
+            jdialog.add(pane2);
+        }
+        */
         Dimension size = new Dimension(CConfig.getIntParam("WINDOWWIDTH") / 2, CConfig.getIntParam("WINDOWHEIGHT"));
 
         jdialog.setPreferredSize(size);

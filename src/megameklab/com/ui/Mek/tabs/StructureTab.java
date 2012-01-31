@@ -255,6 +255,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     public void refresh() {
         removeAllActionListeners();
+        if (getMech().isPrimitive()) {
+            getMech().setOmni(false);
+            omniCB.setEnabled(false);
+        } else {
+            omniCB.setEnabled(true);
+        }
         omniCB.setSelected(getMech().isOmni());
         quadCB.setSelected(unit instanceof QuadMech);
         lamCB.setSelected(unit instanceof LandAirMech);
@@ -505,12 +511,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                                 break;
                             case Mech.COCKPIT_INDUSTRIAL:
                                 getMech().addIndustrialCockpit();
+                                getMech().setArmorType(EquipmentType.T_ARMOR_INDUSTRIAL);
                                 break;
                             case Mech.COCKPIT_PRIMITIVE:
                                 getMech().addPrimitiveCockpit();
+                                getMech().setArmorType(EquipmentType.T_ARMOR_PRIMITIVE);
                                 break;
                             case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
                                 getMech().addIndustrialPrimitiveCockpit();
+                                getMech().setArmorType(EquipmentType.T_ARMOR_COMMERCIAL);
                                 break;
                             default:
                                 getMech().addCockpit();
