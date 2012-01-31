@@ -111,6 +111,9 @@ public class ArmorTab extends ITab implements ActionListener {
         setTotalTonnage();
         addAllListeners();
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil.getMaximumArmorTonnage(unit));
+        if (!unit.hasPatchworkArmor()) {
+            setArmorType(unit.getArmorType(0));
+        }
         armor.updateUnit(unit);
         armor.refresh();
     }
@@ -221,7 +224,7 @@ public class ArmorTab extends ITab implements ActionListener {
             llArmor.setName("ll");
             JComboBox rlArmor = new JComboBox();
             rlArmor.setName("rl");
-            for (int index = 0; index < armorNames.length-1; index++) {
+            for (int index = 0; index < (armorNames.length-1); index++) {
                 headArmor.addItem(armorNames[index]);
                 laArmor.addItem(armorNames[index]);
                 ltArmor.addItem(armorNames[index]);
