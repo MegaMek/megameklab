@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -25,7 +25,7 @@ import java.util.Locale;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.0.0.20-Dev-100";
+    public static final String VERSION = "0.0.0.20";
 
     public static void main(String[] args) {
         String logFileName = "./logs/megameklab.log";
@@ -67,7 +67,7 @@ public class MegaMekLab {
         if (vehicle) {
             Runtime runtime = Runtime.getRuntime();
 
-            System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
+            System.out.println("Memory Allocated [" + (runtime.maxMemory() / 1000) + "]");
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 200000000) {
                 try {
@@ -89,7 +89,7 @@ public class MegaMekLab {
         } else if (battlearmor) {
             Runtime runtime = Runtime.getRuntime();
 
-            System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
+            System.out.println("Memory Allocated [" + (runtime.maxMemory() / 1000) + "]");
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 200000000) {
                 try {
@@ -112,7 +112,7 @@ public class MegaMekLab {
 
             Runtime runtime = Runtime.getRuntime();
 
-            System.out.println("Memory Allocated [" + runtime.maxMemory() / 1000 + "]");
+            System.out.println("Memory Allocated [" + (runtime.maxMemory() / 1000) + "]");
             // Need at least 200m to run MegaMekLab
             if (runtime.maxMemory() < 200000000) {
                 try {
