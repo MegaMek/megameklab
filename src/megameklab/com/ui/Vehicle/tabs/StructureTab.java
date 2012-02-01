@@ -93,7 +93,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         { "Standard", "Advanced", "Experimental", "Unoffical" };
     JComboBox techLevel = new JComboBox(isTechLevels);
     String[] tankMotiveTypes =
-        { "Hover", "Wheeled", "Tracked" };
+        { "Hover", "Wheeled", "Tracked", "WiGE" };
     JComboBox tankMotiveType = new JComboBox(tankMotiveTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
@@ -708,6 +708,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     maxTonnage = 100;
                     unit.setMovementMode(EntityMovementMode.TRACKED);
                     break;
+                case 3:
+                    maxTonnage = 80;
+                    unit.setMovementMode(EntityMovementMode.WIGE);
             }
         } else {
             switch (tankMotiveType.getSelectedIndex()) {
@@ -725,6 +728,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     minTonnage = 101;
                     maxTonnage = 200;
                     unit.setMovementMode(EntityMovementMode.TRACKED);
+                    break;
+                case 3:
+                    minTonnage = 81;
+                    maxTonnage = 160;
+                    unit.setMovementMode(EntityMovementMode.WIGE);
                     break;
             }
         }
