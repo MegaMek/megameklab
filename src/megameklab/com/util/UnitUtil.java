@@ -161,7 +161,7 @@ public class UnitUtil {
             return 4;
         }
 
-        if (isMisc && (eq.hasFlag(MiscType.F_JUMP_BOOSTER) || eq.hasFlag(MiscType.F_TALON))) {
+        if (isMisc && (eq.hasFlag(MiscType.F_JUMP_BOOSTER) || eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_STEALTH))) {
             return 2;
         }
 
@@ -910,7 +910,6 @@ public class UnitUtil {
                 }
             }
         }
-
     }
 
     /**
@@ -941,6 +940,15 @@ public class UnitUtil {
                 for (int i = 0; i < unit.locations(); i++) {
                     locations.add(i);
                 }
+            } else if (equip.hasFlag(MiscType.F_STEALTH)) {
+                // 2 in arms, legs, side torsos
+                locations.add(Mech.LOC_LLEG);
+                locations.add(Mech.LOC_RLEG);
+                locations.add(Mech.LOC_LARM);
+                locations.add(Mech.LOC_RARM);
+                locations.add(Mech.LOC_LT);
+                locations.add(Mech.LOC_RT);
+                blocks = 6;
             } else if ((equip.hasFlag(MiscType.F_TRACKS) || equip.hasFlag(MiscType.F_TALON) || equip.hasFlag(MiscType.F_JUMP_BOOSTER))) {
                 // 1 block in each leg
                 locations.add(Mech.LOC_LLEG);
@@ -995,9 +1003,16 @@ public class UnitUtil {
                     } else {
                         CriticalSlot cs = new CriticalSlot(CriticalSlot.TYPE_EQUIPMENT, unit.getEquipmentNum(mount), mount.getType().isHittable(), mount.isArmored(), mount);
                         cs.setIndex(unit.getEquipmentNum(mount));
-                        unit.addCritical(locations.get(0), cs);
+                        if (!unit.addCritical(locations.get(0), cs)) {
+                            UnitUtil.removeCriticals(unit, mount);
+                            JOptionPane.showMessageDialog(null, "No room for equipment", mount.getName() + " does not fit into " + unit.getLocationName(locations.get(0)), JOptionPane.INFORMATION_MESSAGE);
+                            unit.getMisc().remove(mount);
+                            unit.getEquipment().remove(mount);
+                            return null;
+                        }
                     }
                 } catch (LocationFullException lfe) {
+                    lfe.printStackTrace();
                     JOptionPane.showMessageDialog(null, lfe.getMessage(), mount.getName() + " does not fit into " + unit.getLocationName(locations.get(0)), JOptionPane.INFORMATION_MESSAGE);
                     unit.getMisc().remove(mount);
                     unit.getEquipment().remove(mount);
