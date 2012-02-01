@@ -39,7 +39,6 @@ import megamek.client.ui.GBC;
 import megamek.common.BipedMech;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
@@ -379,16 +378,11 @@ public class ArmorTab extends ITab implements ActionListener {
             }
             // auto-place stealth crits
             if (getArmorType(armorCombo) == EquipmentType.T_ARMOR_STEALTH) {
-                for (int loc = 0; loc < getMech().locations(); loc++) {
-                    if ((loc != Mech.LOC_HEAD) && (loc != Mech.LOC_CT)) {
-                        try {
-                            getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(loc)))), loc, false);
-                            getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(loc)))), loc, false);
-                        } catch (LocationFullException lfe) {
-                            JOptionPane.showMessageDialog(null, lfe.getMessage(), "Stealth Armor does not fit in location. Resetting to Standard Armor", JOptionPane.INFORMATION_MESSAGE);
-                            setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD, true);
-                        }
-                    }
+                Mounted mount = UnitUtil.createSpreadMounts(getMech(), EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(0))));
+                if (mount == null) {
+                    JOptionPane.showMessageDialog(null, "Stealth Armor does not fit in location.", "Resetting to Standard Armor", JOptionPane.INFORMATION_MESSAGE);
+                    setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD, false);
+                    unit.setArmorType(getArmorType(armorCombo));
                 }
             } else {
                 for (; armorCount > 0; armorCount--) {

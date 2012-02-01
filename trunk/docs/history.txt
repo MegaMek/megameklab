@@ -1,6 +1,8 @@
 VERSION HISTORY:
 ----------------
 V 0.0.0.21-dev
++ Bug: stealth armor bug
++ Added WiGE construction
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
