@@ -33,6 +33,7 @@ import javax.swing.event.ChangeListener;
 
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
+import megamek.common.VTOL;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -133,7 +134,7 @@ public class ArmorView extends IView implements ChangeListener {
         middlePanel.add(leftPanel);
         mainPanel.add(middlePanel);
 
-        if (unit.isSuperHeavy()) {
+        if (unit.isSuperHeavy() && (!(unit instanceof VTOL))) {
             rearLeftPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
             rearRightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
             middlePanel2.add(rearRightPanel);
@@ -144,12 +145,16 @@ public class ArmorView extends IView implements ChangeListener {
         rearPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         bottomPanel.add(rearPanel);
         mainPanel.add(bottomPanel);
-        if (!unit.isSuperHeavy()) {
+        if (!unit.isSuperHeavy() || (unit instanceof VTOL)) {
             frontArmorField.setName(Integer.toString(Tank.LOC_FRONT));
             leftArmorField.setName(Integer.toString(Tank.LOC_LEFT));
             rightArmorField.setName(Integer.toString(Tank.LOC_RIGHT));
             rearArmorField.setName(Integer.toString(Tank.LOC_REAR));
-            turretArmorField.setName(Integer.toString(Tank.LOC_TURRET));
+            if (unit instanceof VTOL) {
+                turretArmorField.setName(Integer.toString(VTOL.LOC_ROTOR));
+            } else {
+                turretArmorField.setName(Integer.toString(Tank.LOC_TURRET));
+            }
             frontTurretArmorField.setName(Integer.toString(Tank.LOC_TURRET_2));
 
             armorFieldList.add(frontArmorField);
@@ -192,7 +197,7 @@ public class ArmorView extends IView implements ChangeListener {
         armorMaxLabelList.add(rearArmorMaxLabel);
         armorMaxLabelList.add(frontTurretArmorMaxLabel);
         armorMaxLabelList.add(turretArmorMaxLabel);
-        if (unit.isSuperHeavy()) {
+        if (unit.isSuperHeavy() && !(unit instanceof VTOL)) {
             armorMaxLabelList.add(rearLeftArmorMaxLabel);
             armorMaxLabelList.add(rearRightArmorMaxLabel);
         }
@@ -216,7 +221,44 @@ public class ArmorView extends IView implements ChangeListener {
 
         synchronized (unit) {
             for (int location = 0; location < unit.getLocationAbbrs().length; location++) {
-                if (!unit.isSuperHeavy()) {
+                if (unit instanceof VTOL) {
+                    switch (location) {
+                        case Tank.LOC_FRONT:
+                            masterPanel = new JPanel();
+                            masterPanel.add(frontArmorField);
+                            masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                            masterPanel.add(frontArmorMaxLabel);
+                            frontPanel.add(new JLabel(unit.getLocationName(location)));
+                            frontPanel.add(masterPanel);
+                            break;
+                        case Tank.LOC_REAR:
+                            masterPanel = new JPanel();
+                            masterPanel.add(rearArmorField);
+                            masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                            masterPanel.add(rearArmorMaxLabel);
+                            rearPanel.add(new JLabel(unit.getLocationName(location)));
+                            rearPanel.add(masterPanel);
+                            break;
+                        case VTOL.LOC_ROTOR:
+                            break;
+                        case Tank.LOC_LEFT:
+                            masterPanel = new JPanel();
+                            masterPanel.add(leftArmorField);
+                            masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                            masterPanel.add(leftArmorMaxLabel);
+                            leftPanel.add(new JLabel(unit.getLocationName(location)));
+                            leftPanel.add(masterPanel);
+                            break;
+                        case Tank.LOC_RIGHT:
+                            masterPanel = new JPanel();
+                            masterPanel.add(rightArmorField);
+                            masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                            masterPanel.add(rightArmorMaxLabel);
+                            rightPanel.add(new JLabel(unit.getLocationName(location)));
+                            rightPanel.add(masterPanel);
+                            break;
+                    }
+                } else if (!unit.isSuperHeavy()) {
                     switch (location) {
                         case Tank.LOC_FRONT:
                             masterPanel = new JPanel();
@@ -310,8 +352,6 @@ public class ArmorView extends IView implements ChangeListener {
                     }
                 }
 
-
-
             }
         }
 
@@ -337,7 +377,6 @@ public class ArmorView extends IView implements ChangeListener {
         totalArmorPanel.add(pointsPanel);
 
         this.add(totalArmorPanel);
-        // refresh();
     }
 
     private void addAllListeners() {
@@ -361,7 +400,52 @@ public class ArmorView extends IView implements ChangeListener {
 
         for (int location = 0; location < unit.locations(); location++) {
 
-            if (!((Tank)unit).isSuperHeavy()) {
+            if (unit instanceof VTOL) {
+                switch (location) {
+                    case Tank.LOC_FRONT:
+                        frontArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                        frontArmorModel.setMaximum(maxArmor);
+                        frontArmorModel.setStepSize(1);
+                        frontArmorModel.setMinimum(0);
+                        frontArmorMaxLabel.setText(Integer.toString(maxArmor));
+                        break;
+                    case Tank.LOC_REAR:
+                        rearArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                        rearArmorModel.setMaximum(maxArmor);
+                        rearArmorModel.setStepSize(1);
+                        rearArmorModel.setMinimum(0);
+                        rearArmorMaxLabel.setText(Integer.toString(maxArmor));
+                        break;
+                    case VTOL.LOC_ROTOR:
+                        turretArmorModel.setValue(Math.min(2, unit.getArmor(location)));
+                        turretArmorModel.setMaximum(2);
+                        turretArmorModel.setStepSize(1);
+                        turretArmorModel.setMinimum(0);
+                        turretArmorMaxLabel.setText(Integer.toString(2));
+                        masterPanel = new JPanel();
+                        masterPanel.add(turretArmorField);
+                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        masterPanel.add(turretArmorMaxLabel);
+                        turretPanel.add(new JLabel("Rotor"));
+                        turretPanel.add(masterPanel);
+                        turretPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+                        break;
+                    case Tank.LOC_LEFT:
+                        leftArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                        leftArmorModel.setMaximum(maxArmor);
+                        leftArmorModel.setStepSize(1);
+                        leftArmorModel.setMinimum(0);
+                        leftArmorMaxLabel.setText(Integer.toString(maxArmor));
+                        break;
+                    case Tank.LOC_RIGHT:
+                        rightArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                        rightArmorModel.setMaximum(maxArmor);
+                        rightArmorModel.setStepSize(1);
+                        rightArmorModel.setMinimum(0);
+                        rightArmorMaxLabel.setText(Integer.toString(maxArmor));
+                        break;
+                }
+            } else if (!((Tank)unit).isSuperHeavy()) {
                 switch (location) {
                     case Tank.LOC_FRONT:
                         frontArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
@@ -525,15 +609,21 @@ public class ArmorView extends IView implements ChangeListener {
     }
 
     public void allocateArmor(double tons) {
-        double pointsToAllocate = UnitUtil.getArmorPoints(unit, tons);
+        int pointsToAllocate = UnitUtil.getArmorPoints(unit, tons);
 
         for (int location = 0; location < unit.locations(); location++) {
             unit.initializeArmor(0, location);
         }
+        if (unit instanceof VTOL) {
+            unit.initializeArmor(Math.min(pointsToAllocate, 2), VTOL.LOC_ROTOR);
+            pointsToAllocate -= 2;
+        }
 
         while (pointsToAllocate > 0) {
             for (int location = 1; location < unit.locations(); location++) {
-
+                if ((unit instanceof VTOL) && (location == VTOL.LOC_ROTOR)) {
+                    continue;
+                }
                 int points = unit.getOArmor(location);
                 if ((location == Tank.LOC_FRONT) && (pointsToAllocate >= 2)) {
                     unit.initializeArmor(++points, location);

@@ -57,6 +57,7 @@ import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
+import megamek.common.verifier.TestTank;
 import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.GaussWeapon;
@@ -195,7 +196,7 @@ public class UnitUtil {
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
-        for (int loc = 0; loc <= unit.locations(); loc++) {
+        for (int loc = 0; loc < unit.locations(); loc++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = unit.getCritical(loc, slot);
                 if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount().equals(eq))) {
@@ -1997,7 +1998,9 @@ public class UnitUtil {
 
         if (unit instanceof Mech) {
             testEntity = new TestMech((Mech) unit, entityVerifier.mechOption, null);
-
+            testEntity.correctEntity(sb, true);
+        } else if (unit instanceof Tank) {
+            testEntity = new TestTank((Tank) unit, entityVerifier.tankOption, null);
             testEntity.correctEntity(sb, true);
         }
 
