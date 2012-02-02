@@ -131,11 +131,6 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(boolean isQuad, boolean isLAM) {
-        createNewUnit(isQuad, isLAM, false);
-    }
-
-    @Override
-    public void createNewUnit(boolean isQuad, boolean isLAM, boolean isAlsoAlsoNew) {
 
         if (isQuad) {
             entity = new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
@@ -246,7 +241,6 @@ public class MainUI extends MegaMekLabMainUI {
             setForeground(Color.BLACK);
         }
         setTitle(title);
-        // loadFileMenuOptions();
 
     }
 

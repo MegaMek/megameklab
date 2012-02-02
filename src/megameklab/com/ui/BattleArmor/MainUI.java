@@ -121,17 +121,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(boolean isQuad) {
-        createNewUnit(isQuad, false);
-    }
-
-    @Override
-    public void createNewUnit(boolean isQuad, boolean isBiped) {
-        createNewUnit(isQuad, isBiped, false);
-    }
-
-    @Override
-    public void createNewUnit(boolean isQuad, boolean isBiped, boolean isAlsoNew) {
+    public void createNewUnit(boolean isNew) {
         entity = new BattleArmor();
         BattleArmor ba = (BattleArmor) entity;
 
@@ -154,6 +144,11 @@ public class MainUI extends MegaMekLabMainUI {
         if (menubarcreator != null) {
             menubarcreator.setUnit(ba);
         }
+    }
+
+    @Override
+    public void createNewUnit(boolean isNew, boolean isAlsoNew) {
+        createNewUnit(isNew);
     }
 
     @Override

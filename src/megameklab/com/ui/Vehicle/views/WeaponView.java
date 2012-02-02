@@ -590,6 +590,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                     weaponList.removeCrit(startRow);
                 }
             }
+            refresh.refreshAll();
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllWeapons();
         } else {
@@ -604,6 +605,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
             weaponList.removeMounted(count);
         }
         weaponList.removeAllCrits();
+        refresh.refreshAll();
     }
 
     public CriticalTableModel getWeaponList() {

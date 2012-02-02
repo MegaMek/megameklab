@@ -16,6 +16,8 @@
 
 package megameklab.com.ui.Vehicle;
 
+import java.awt.Color;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -31,6 +33,7 @@ import megamek.common.MechSummaryCache;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
+import megamek.common.VTOL;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Vehicle.tabs.ArmorTab;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
@@ -38,6 +41,7 @@ import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
 import megameklab.com.ui.Vehicle.tabs.StructureTab;
 import megameklab.com.ui.Vehicle.tabs.WeaponTab;
 import megameklab.com.util.MenuBarCreator;
+import megameklab.com.util.UnitUtil;
 
 public class MainUI extends MegaMekLabMainUI {
 
@@ -122,60 +126,32 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(boolean hasTurret) {
-        createNewUnit(hasTurret, false, false);
-    }
-
-
-    @Override
-    public void createNewUnit(boolean hasTurret, boolean hasDualTurret) {
-        createNewUnit(hasTurret, hasDualTurret, false);
-    }
-
-    @Override
-    public void createNewUnit(boolean hasTurret, boolean hasDualTurret, boolean isSuperHeavy) {
-
-        if (isSuperHeavy) {
-            entity = new SuperHeavyTank();
-            entity.setTechLevel(TechConstants.T_IS_ADVANCED);
-        } else {
-            entity = new Tank();
-            entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
-        }
-
-        Tank tank = (Tank) entity;
-
-        tank.setHasNoTurret(!hasTurret);
-        tank.setHasNoDualTurret(!hasDualTurret);
-        entity.setYear(2750);
-        entity.setWeight(25);
-        entity.setMovementMode(EntityMovementMode.HOVER);
-        tank.setEngine(new Engine(Math.max(10, 25 - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
-        entity.setOriginalWalkMP(1);
-        entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
-
-        entity.autoSetInternal();
-        for (int loc = 0; loc < entity.locations(); loc++) {
-            entity.initializeArmor(0, loc);
-        }
-
-        entity.setChassis("New");
-        entity.setModel("Tank");
-        if (menubarcreator != null) {
-            menubarcreator.setUnit(entity);
-        }
-
+    public void createNewUnit(boolean isSuperHeavy) {
+        createNewUnit(isSuperHeavy, false);
     }
 
     @Override
     public void refreshAll() {
-
-        if ((structureTab.isSuperHeavy() && !(entity instanceof SuperHeavyTank)) || (!structureTab.isSuperHeavy() && (entity instanceof SuperHeavyTank))) {
+        Tank tank = (Tank)entity;
+        if (structureTab.isVTOL() && (entity instanceof VTOL)) {
+            if ((structureTab.isSuperHeavy() && !tank.isSuperHeavy())) {
+                tank.setWeight(31);
+            } else if (!structureTab.isSuperHeavy() && tank.isSuperHeavy()){
+                tank.setWeight(30);
+            }
+        } else if ((structureTab.isVTOL() && !(entity instanceof VTOL)) || (!structureTab.isVTOL() && (entity instanceof VTOL))) {
             String model = entity.getModel();
             String chassis = entity.getChassis();
-            createNewUnit(structureTab.hasTurret(),
-                    structureTab.hasDualTurret(), structureTab.isSuperHeavy());
+            createNewUnit(structureTab.isSuperHeavy(), structureTab.isVTOL());
+            entity.setChassis(chassis);
+            entity.setModel(model);
+            reloadTabs();
+            repaint();
+            refreshAll();
+        } else if ((structureTab.isSuperHeavy() && !(tank.isSuperHeavy())) || (!structureTab.isSuperHeavy() && (tank.isSuperHeavy()))) {
+            String model = entity.getModel();
+            String chassis = entity.getChassis();
+            createNewUnit(structureTab.isSuperHeavy(), structureTab.isVTOL());
             entity.setChassis(chassis);
             entity.setModel(model);
             reloadTabs();
@@ -183,23 +159,13 @@ public class MainUI extends MegaMekLabMainUI {
             refreshAll();
         }
 
-        Tank tank = (Tank) entity;
-        if ((structureTab.hasTurret() && tank.hasNoTurret()) || (!structureTab.hasTurret() && !tank.hasNoTurret()) || (!structureTab.hasDualTurret() && !tank.hasNoDualTurret()) || (!structureTab.hasDualTurret() && !tank.hasNoDualTurret())) {
-            String chassis = entity.getChassis(); String model =
-                    entity.getModel();
-            createNewUnit(structureTab.hasTurret(),
-                    structureTab.hasDualTurret(), structureTab.isSuperHeavy());
-            entity.setChassis(chassis);
-            entity.setModel(model);
-            reloadTabs();
-            refreshAll();
-        }
         statusbar.refresh();
         structureTab.refresh();
         armorTab.refresh();
         equipmentTab.refresh();
         weaponTab.refresh();
         buildTab.refresh();
+        refreshHeader();
         repaint();
 
     }
@@ -222,7 +188,15 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshHeader() {
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
+        String title = entity.getChassis() + " " + entity.getModel() + ".blk";
+
+        if (UnitUtil.validateUnit(entity).length() > 0) {
+            title += "  (Invalid)";
+            setForeground(Color.red);
+        } else {
+            setForeground(Color.BLACK);
+        }
+        setTitle(title);
     }
 
     @Override
@@ -238,6 +212,52 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshWeapons() {
         weaponTab.refresh();
+    }
+
+    @Override
+    public void createNewUnit(boolean isSuperHeavy, boolean isVTOL) {
+        if (isVTOL) {
+            entity = new VTOL();
+            entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
+            if (isSuperHeavy) {
+                entity.setWeight(31);
+                entity.setTechLevel(TechConstants.T_IS_ADVANCED);
+            }
+            entity.setWeight(25);
+            entity.setMovementMode(EntityMovementMode.VTOL);
+        } else {
+            if (isSuperHeavy) {
+                entity = new SuperHeavyTank();
+                entity.setTechLevel(TechConstants.T_IS_ADVANCED);
+                entity.setWeight(51);
+            } else {
+                entity = new Tank();
+                entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                entity.setWeight(25);
+            }
+            entity.setMovementMode(EntityMovementMode.HOVER);
+        }
+
+        Tank tank = (Tank) entity;
+
+        entity.setYear(2750);
+
+        tank.setEngine(new Engine(Math.max(10, 25 - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
+        entity.setOriginalWalkMP(1);
+        entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+
+        entity.autoSetInternal();
+        for (int loc = 0; loc < entity.locations(); loc++) {
+            entity.initializeArmor(0, loc);
+        }
+
+        entity.setChassis("New");
+        entity.setModel("Tank");
+        if (menubarcreator != null) {
+            menubarcreator.setUnit(entity);
+        }
+
     }
 
 }

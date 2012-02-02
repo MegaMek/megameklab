@@ -24,6 +24,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -49,9 +51,13 @@ import javax.swing.event.ChangeListener;
 
 import megamek.common.Engine;
 import megamek.common.EntityMovementMode;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.TroopSpace;
+import megamek.common.WeaponType;
 import megameklab.com.ui.Vehicle.views.CriticalView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
@@ -93,7 +99,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         { "Standard", "Advanced", "Experimental", "Unoffical" };
     JComboBox techLevel = new JComboBox(isTechLevels);
     String[] tankMotiveTypes =
-        { "Hover", "Wheeled", "Tracked", "WiGE" };
+        { "Hover", "Wheeled", "Tracked", "WiGE", "VTOL" };
     JComboBox tankMotiveType = new JComboBox(tankMotiveTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
@@ -298,13 +304,25 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         switch (unit.getMovementMode()) {
             case HOVER:
+                turretCombo.setEnabled(true);
                 tankMotiveType.setSelectedIndex(0);
                 break;
             case WHEELED:
+                turretCombo.setEnabled(true);
                 tankMotiveType.setSelectedIndex(1);
                 break;
             case TRACKED:
+                turretCombo.setEnabled(true);
                 tankMotiveType.setSelectedIndex(2);
+                break;
+            case WIGE:
+                turretCombo.setEnabled(true);
+                tankMotiveType.setSelectedIndex(3);
+            case VTOL:
+                tankMotiveType.setSelectedIndex(4);
+                turretCombo.setSelectedIndex(0);
+                turretCombo.setEnabled(false);
+                updateTurrets(turretCombo);
                 break;
         }
 
@@ -570,17 +588,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
                     populateWeight(currentTonnage);
                 } else if (combo.equals(turretCombo)) {
-
-                    getTank().setHasNoTurret(combo.getSelectedIndex() == 0);
-                    getTank().setHasNoDualTurret(combo.getSelectedIndex() <= 1);
-
-                    getTank().autoSetInternal();
-                    for (int loc = 0; loc < getTank().locations(); loc++) {
-                        getTank().initializeArmor(0, loc);
-                    }
-                    // TODO: Fix me for patchwork armor
-                    getTank().setArmorType(getTank().getArmorType(0));
-                    getTank().setArmorTechLevel(getTank().getTechLevel());
+                    updateTurrets(combo);
                 }
                 addAllActionListeners();
                 refresh.refreshAll();
@@ -711,7 +719,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 case 3:
                     maxTonnage = 80;
                     unit.setMovementMode(EntityMovementMode.WIGE);
+                case 4:
+                    maxTonnage = 30;
+                    unit.setMovementMode(EntityMovementMode.VTOL);
             }
+            minTonnage = 1;
         } else {
             switch (tankMotiveType.getSelectedIndex()) {
                 case 0:
@@ -734,6 +746,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     maxTonnage = 160;
                     unit.setMovementMode(EntityMovementMode.WIGE);
                     break;
+                case 4:
+                    minTonnage = 31;
+                    maxTonnage = 60;
+                    unit.setMovementMode(EntityMovementMode.VTOL);
             }
         }
 
@@ -885,5 +901,72 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
     public boolean isSuperHeavy() {
         return superHeavyCB.isSelected();
+    }
+
+    public boolean isVTOL() {
+        return tankMotiveType.getSelectedIndex() == 4;
+    }
+
+    private void updateTurrets(JComboBox combo) {
+        if ((combo.getSelectedIndex() == 0) || (combo.getSelectedIndex() == 1)) {
+            List<Mounted> toRemove = new ArrayList<Mounted>();
+            List<Mounted> toRemoveMisc = new ArrayList<Mounted>();
+            List<Mounted> toRemoveWeapons = new ArrayList<Mounted>();
+            if (!getTank().hasNoDualTurret()) {
+                // remove dual turret and equipment in it
+                getTank().setArmorType(EquipmentType.T_ARMOR_UNKNOWN, Tank.LOC_TURRET_2);
+                getTank().setArmorTechLevel(TechConstants.T_TECH_UNKNOWN, Tank.LOC_TURRET_2);
+                for (int slot = 0; slot < getTank().getNumberOfCriticals(Tank.LOC_TURRET_2); slot++) {
+                    getTank().setCritical(Tank.LOC_TURRET_2, slot, null);
+                }
+                for (Mounted mount : getTank().getEquipment()) {
+                    if (mount.getLocation() == Tank.LOC_TURRET_2) {
+                        toRemove.add(mount);
+                        if (mount.getType() instanceof WeaponType) {
+                            toRemoveWeapons.add(mount);
+                        } else if (mount.getType() instanceof MiscType) {
+                            toRemoveMisc.add(mount);
+                        }
+                    }
+                }
+                getTank().setHasNoDualTurret(true);
+            }
+            if (getTank().hasNoTurret() && (combo.getSelectedIndex() == 1)) {
+                // add turret
+                getTank().setHasNoTurret(false);
+                getTank().autoSetInternal();
+                getTank().initializeArmor(0, Tank.LOC_TURRET);
+                getTank().setArmorTechLevel(getTank().getArmorTechLevel(Tank.LOC_FRONT), Tank.LOC_TURRET);
+                getTank().setArmorType(getTank().getArmorType(Tank.LOC_FRONT), Tank.LOC_TURRET);
+            } else if (!getTank().hasNoTurret() && (combo.getSelectedIndex() == 0)) {
+                // remove turret and equipment in it
+                getTank().setArmorType(EquipmentType.T_ARMOR_UNKNOWN, Tank.LOC_TURRET);
+                getTank().setArmorTechLevel(TechConstants.T_TECH_UNKNOWN, Tank.LOC_TURRET);
+                for (int slot = 0; slot < getTank().getNumberOfCriticals(Tank.LOC_TURRET); slot++) {
+                    getTank().setCritical(Tank.LOC_TURRET, slot, null);
+                }
+                for (Mounted mount : getTank().getEquipment()) {
+                    if (mount.getLocation() == Tank.LOC_TURRET) {
+                        toRemove.add(mount);
+                        if (mount.getType() instanceof WeaponType) {
+                            toRemoveWeapons.add(mount);
+                        } else if (mount.getType() instanceof MiscType) {
+                            toRemoveMisc.add(mount);
+                        }
+                    }
+                }
+                getTank().setHasNoTurret(true);
+            }
+            getTank().getEquipment().removeAll(toRemove);
+            getTank().getMisc().removeAll(toRemoveMisc);
+            getTank().getWeaponList().removeAll(toRemoveWeapons);
+        } else if (combo.getSelectedIndex() == 2) {
+            // add second turret
+            getTank().setHasNoDualTurret(false);
+            getTank().autoSetInternal();
+            getTank().initializeArmor(0, Tank.LOC_TURRET_2);
+            getTank().setArmorTechLevel(getTank().getArmorTechLevel(Tank.LOC_FRONT), Tank.LOC_TURRET_2);
+            getTank().setArmorType(getTank().getArmorType(Tank.LOC_TURRET), Tank.LOC_TURRET_2);
+        }
     }
 }

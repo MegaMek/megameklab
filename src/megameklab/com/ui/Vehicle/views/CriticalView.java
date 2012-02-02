@@ -29,6 +29,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Mounted;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
+import megamek.common.VTOL;
 import megamek.common.loaders.MtfFile;
 import megameklab.com.util.DropTargetCriticalList;
 import megameklab.com.util.IView;
@@ -88,7 +89,7 @@ public class CriticalView extends IView {
         rightPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Side"));
         mainPanel.add(middlePanel);
 
-        if (unit.isSuperHeavy()) {
+        if (unit.isSuperHeavy() && !(unit instanceof VTOL)) {
             middlePanel2.add(rearLeftPanel);
             rearLeftPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Left Side"));
             middlePanel2.add(new JPanel());
@@ -130,6 +131,10 @@ public class CriticalView extends IView {
             this.add(fullTurretPanel);
         } else if (!getTank().hasNoTurret()) {
             turretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Turret"));
+            fullTurretPanel.add(turretPanel);
+            this.add(fullTurretPanel);
+        } else if (unit instanceof VTOL) {
+            turretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rotor"));
             fullTurretPanel.add(turretPanel);
             this.add(fullTurretPanel);
         }
@@ -213,6 +218,27 @@ public class CriticalView extends IView {
                             dualTurretPanel.add(criticalSlotList);
                             break;
                     }
+                } else if (unit instanceof VTOL) {
+                    switch (location) {
+                        case Tank.LOC_FRONT:
+                            frontPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_LEFT:
+                            leftPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_RIGHT:
+                            rightPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_BODY:
+                            bodyPanel.add(criticalSlotList);
+                            break;
+                        case Tank.LOC_REAR:
+                            rearPanel.add(criticalSlotList);
+                            break;
+                        case VTOL.LOC_ROTOR:
+                            turretPanel.add(criticalSlotList);
+                            break;
+                    }
                 } else {
                     switch (location) {
                         case Tank.LOC_FRONT:
@@ -244,7 +270,6 @@ public class CriticalView extends IView {
                             break;
                     }
                 }
-
             }
             frontPanel.repaint();
             bodyPanel.repaint();
