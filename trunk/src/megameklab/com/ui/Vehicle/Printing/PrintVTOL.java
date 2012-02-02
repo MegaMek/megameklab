@@ -14,7 +14,7 @@
  * details.
  */
 
-package megameklab.com.ui.VTOL.Printing;
+package megameklab.com.ui.Vehicle.Printing;
 
 import java.awt.Color;
 import java.awt.Font;
