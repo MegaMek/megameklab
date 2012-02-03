@@ -248,9 +248,9 @@ public class PrintAdvancedQuad implements Printable {
             unusualSymbols.setDecimalSeparator('.');
             unusualSymbols.setGroupingSeparator(',');
         DecimalFormat myFormatter = new DecimalFormat("#,###", unusualSymbols);
-        g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 159, 359);
+        //g2d.drawString(myFormatter.format(mech.calculateBattleValue(true, true)), 159, 359);
 
-        g2d.drawString(myFormatter.format(mech.getCost(true)) + " C", 54, 359);
+        //g2d.drawString(myFormatter.format(mech.getCost(true)) + " C", 54, 359);
     }
 
     private void printHeatSinks(Graphics2D g2d) {
