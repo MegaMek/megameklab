@@ -79,8 +79,8 @@ public class ArmorView extends IView implements ChangeListener {
     private JSpinner turretArmorField = new JSpinner(turretArmorModel);
     private JSpinner frontTurretArmorField = new JSpinner(frontTurretArmorModel);
 
-    private JSpinner rearLeftArmorField = new JSpinner(leftArmorModel);
-    private JSpinner rearRightArmorField = new JSpinner(rightArmorModel);
+    private JSpinner rearLeftArmorField = new JSpinner(rearLeftArmorModel);
+    private JSpinner rearRightArmorField = new JSpinner(rearRightArmorModel);
 
     private List<JSpinner> armorFieldList = new ArrayList<JSpinner>();
 
@@ -130,15 +130,15 @@ public class ArmorView extends IView implements ChangeListener {
 
         leftPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-        middlePanel.add(rightPanel);
         middlePanel.add(leftPanel);
+        middlePanel.add(rightPanel);
         mainPanel.add(middlePanel);
 
         if (unit.isSuperHeavy() && (!(unit instanceof VTOL))) {
             rearLeftPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
             rearRightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-            middlePanel2.add(rearRightPanel);
             middlePanel2.add(rearLeftPanel);
+            middlePanel2.add(rearRightPanel);
             mainPanel.add(middlePanel2);
         }
 
