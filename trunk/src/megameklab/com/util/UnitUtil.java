@@ -531,12 +531,32 @@ public class UnitUtil {
      * @param hsType
      */
     public static void updateHeatSinks(Mech unit, int hsAmount, String hsType) {
-
         UnitUtil.removeHeatSinks(unit);
-
-        unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit)));
-
-        UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
+        if (hsType.equals("Compact")) {
+            int compactAmount = hsAmount;
+            int baseChassisSinks = UnitUtil.getBaseChassisHeatSinks(unit) * 2;
+            while ((baseChassisSinks > 1) && (hsAmount > 1)) {
+                unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), 1);
+                baseChassisSinks -=2;
+                compactAmount -=2;
+            }
+            if ((baseChassisSinks == 1) || (compactAmount == 1)) {
+                unit.addEngineSinks("IS1 Compact Heat Sink", 1);
+            }
+            if ((hsAmount%2) == 0) {
+                UnitUtil.addHeatSinkMounts(unit, hsAmount/2, hsType);
+            } else {
+                UnitUtil.addHeatSinkMounts(unit, hsAmount/2, hsType);
+                try {
+                    unit.addEquipment(new Mounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), Entity.LOC_NONE, false);
+                } catch (LocationFullException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit)));
+            UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
+        }
     }
 
     public static boolean isPrintableEquipment(EquipmentType eq) {
