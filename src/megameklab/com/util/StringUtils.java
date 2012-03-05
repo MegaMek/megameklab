@@ -227,7 +227,7 @@ public class StringUtils {
                     info += "PD,";
                 } else if (weapon.hasFlag(WeaponType.F_PULSE)) {
                     info += "P,";
-                } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
+                } else if (weapon.hasFlag(WeaponType.F_ENERGY) || weapon.hasFlag(WeaponType.F_PLASMA)) {
                     info += "DE,";
                 }
 
@@ -247,7 +247,7 @@ public class StringUtils {
                     info += "AI,";
                 }
 
-                if (weapon instanceof FlamerWeapon) {
+                if ((weapon instanceof FlamerWeapon) || weapon.hasFlag(WeaponType.F_PLASMA)) {
                     info += "H,AI,";
                 }
 
