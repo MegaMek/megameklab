@@ -45,6 +45,7 @@ import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
+import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
@@ -59,10 +60,12 @@ import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megamek.common.verifier.TestTank;
 import megamek.common.weapons.BPodWeapon;
+import megamek.common.weapons.CLPlasmaCannon;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.HVACWeapon;
+import megamek.common.weapons.ISPlasmaRifle;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.LegAttack;
@@ -894,6 +897,14 @@ public class UnitUtil {
         }
 
         if (weapon instanceof BPodWeapon) {
+            return false;
+        }
+
+        if (weapon instanceof ISPlasmaRifle) {
+            return false;
+        }
+
+        if (weapon instanceof CLPlasmaCannon) {
             return false;
         }
         return true;
@@ -2103,23 +2114,7 @@ public class UnitUtil {
     }
 
     static public Integer getMaxWeight(BattleArmor ba) {
-        Integer weight = 400;
-
-        switch (ba.getWeightClass()) {
-            case 0:
-                weight = 400;
-                break;
-            case 1:
-                weight = 750;
-                break;
-            case 2:
-            case 3:
-            case 4:
-                weight = ba.getWeightClass() * 500;
-                break;
-
-        }
-        return weight;
+        return (int)EntityWeightClass.getClassLimit(ba.getWeightClass());
     }
 
     public static void showValidation(Entity entity, JFrame frame) {
