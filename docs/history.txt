@@ -6,6 +6,8 @@ V 0.0.0.21-dev
 + Added VTOL construction
 + Bug: super-heavy vehicle armor spinners for side armor not working
 + Bug 3159367: compact heat sinks weigh 1 ton
++ Bug: ASF heat not printing
++ Cargo bay printing improved
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
