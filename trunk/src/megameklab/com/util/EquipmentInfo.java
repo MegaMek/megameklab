@@ -165,6 +165,8 @@ public class EquipmentInfo {
                 } else {
                     heat = 0;
                 }
+            } else {
+                heat = weapon.getHeat();
             }
 
             secondaryLocation = mount.getSecondLocation();

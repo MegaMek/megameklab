@@ -398,7 +398,7 @@ public class ImageHelperVehicle {
         }
         for (Bay bay : tank.getTransportBays()) {
             linePoint += lineFeed;
-            g2d.drawString(bay.getUnusedString(), qtyPoint, linePoint);
+            g2d.drawString(ImageHelperVehicle.getBayString(bay), qtyPoint, linePoint);
         }
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             linePoint += lineFeed;
@@ -918,7 +918,7 @@ public class ImageHelperVehicle {
         }
         for (Bay bay : tank.getTransportBays()) {
             linePoint += lineFeed;
-            g2d.drawString(bay.getUnusedString(), qtyPoint, linePoint);
+            g2d.drawString(ImageHelperVehicle.getBayString(bay), qtyPoint, linePoint);
         }
         if (tank.hasWorkingMisc(MiscType.F_CHASSIS_MODIFICATION)) {
             linePoint += lineFeed;
