@@ -74,12 +74,12 @@ public class PrintNavalVehicle implements Printable {
 
         System.gc();
 
-        g2d.drawImage(ImageHelper.getRecordSheet(sub, false), 18, 18, 558, 368, null);
+        g2d.drawImage(ImageHelper.getRecordSheet(sub, false), 18, 18, 558, 736, null);
 
-        if (sub.hasNoDualTurret() && !sub.hasNoTurret()) {
+        /*if (sub.hasNoDualTurret() && !sub.hasNoTurret()) {
             g2d.drawImage(ImageHelperVehicle.getTurretImage(sub), 441, 173, 77, 96, null);
             g2d.drawImage(ImageHelperVehicle.getTurretLabelImage(), 297, 248, 34, 11, null);
-        }
+        }*/
 
         printTankData(g2d);
         printArmor(g2d);
