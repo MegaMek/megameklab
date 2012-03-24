@@ -100,9 +100,12 @@ public class ImageHelper {
                 recordSheet = new ImageIcon(path + "twvee-lgsupground.png").getImage();
             }
         } else if (unit instanceof Tank) {
-            if (unit.getMovementMode() == EntityMovementMode.NAVAL) {
-                String imageName = "twnaval.png";
-                recordSheet = new ImageIcon(path + imageName).getImage();
+            if ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL)) {
+                if (unit.getOInternal(Tank.LOC_TURRET) > 0) {
+                    recordSheet = new ImageIcon(path + "twnaval-turret.png").getImage();
+                } else {
+                    recordSheet = new ImageIcon(path + "twnaval.png").getImage();
+                }
             } else if (advanced) {
                 String imageName = "twvee-" + unit.getMovementModeAsString().toLowerCase().trim() + "-dualturret.png";
                 recordSheet = new ImageIcon(path + imageName).getImage();

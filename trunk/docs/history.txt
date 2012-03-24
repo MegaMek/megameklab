@@ -8,6 +8,7 @@ V 0.0.0.21-dev
 + Bug 3159367: compact heat sinks weigh 1 ton
 + Bug: ASF heat not printing
 + Cargo bay printing improved
++ more work on naval printing
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
