@@ -354,9 +354,6 @@ public class ImageHelperDropShip {
                 g2d.drawString("LRV", longPoint, linePoint);
                 g2d.drawString("ERV", erPoint, linePoint);
                 linePoint += lineFeed;
-
-                font = UnitUtil.deriveFont(fontSize);
-                g2d.setFont(font);
             }
 
             for (EquipmentInfo eqi : eqHash) {
@@ -367,9 +364,17 @@ public class ImageHelperDropShip {
                     typePoint += 5;
                     nameSize -= 10;
                 }
+                font = UnitUtil.deriveFont(false, fontSize);
+                g2d.setFont(font);
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
-
+                if (eqi.hasArtemis) {
+                    name = name + " w/Artemis IV FCS";
+                } else if (eqi.hasArtemisV) {
+                    name = name + " w/Artemis V FCS";
+                } else if (eqi.hasApollo) {
+                    name = name + " w/Apollo FCS";
+                }
                 font = UnitUtil.getNewFont(g2d, name, false, nameSize, fontSize);
                 g2d.setFont(font);
 
@@ -391,6 +396,7 @@ public class ImageHelperDropShip {
                     ImageHelper.printDroneControl(g2d, typePoint, linePoint, font, false, dropship);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
+
                     if (eqi.damage.trim().length() > 0) {
                         g2d.drawString(eqi.damage, typePoint, linePoint + lineFeed);
                         newLineNeeded = true;
@@ -401,8 +407,6 @@ public class ImageHelperDropShip {
                     typePoint -= 5;
                     nameSize += 10;
                 }
-                font = UnitUtil.deriveFont(fontSize);
-                g2d.setFont(font);
 
                 String location = ImageHelperDropShip.LOCATION_ABBRS[LOCATION_PRINT[pos]];
 
@@ -431,24 +435,6 @@ public class ImageHelperDropShip {
                         g2d.drawString(String.format("%1$d", eqi.count * eqi.erRange), erPoint, (int) linePoint);
                     } else {
                         g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
-                    }
-
-                    float drawLine = linePoint + lineFeed;
-                    if (newLineNeeded) {
-                        drawLine += lineFeed;
-                    }
-                    if (eqi.hasArtemis) {
-                        g2d.drawString("w/Artemis IV FCS", typePoint, drawLine);
-                        newLineNeeded = true;
-                        linePoint += lineFeed;
-                    } else if (eqi.hasArtemisV) {
-                        g2d.drawString("w/Artemis V FCS", typePoint, drawLine);
-                        newLineNeeded = true;
-                        linePoint += lineFeed;
-                    } else if (eqi.hasApollo) {
-                        g2d.drawString("w/Apollo FCS", typePoint, drawLine);
-                        newLineNeeded = true;
-                        linePoint += lineFeed;
                     }
                 }
                 linePoint += lineFeed;
@@ -486,9 +472,6 @@ public class ImageHelperDropShip {
                 g2d.drawString("LRV", longPoint, linePoint);
                 g2d.drawString("ERV", erPoint, linePoint);
                 linePoint += lineFeed;
-
-                font = UnitUtil.deriveFont(fontSize);
-                g2d.setFont(font);
             }
 
             for (EquipmentInfo eqi : eqHash) {
@@ -499,9 +482,17 @@ public class ImageHelperDropShip {
                     typePoint += 5;
                     nameSize -= 10;
                 }
+                font = UnitUtil.deriveFont(false, fontSize);
+                g2d.setFont(font);
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
-
+                if (eqi.hasArtemis) {
+                    name = name + " w/Artemis IV FCS";
+                } else if (eqi.hasArtemisV) {
+                    name = name + " w/Artemis V FCS";
+                } else if (eqi.hasApollo) {
+                    name = name + " w/Apollo FCS";
+                }
                 font = UnitUtil.getNewFont(g2d, name, false, 68, fontSize);
                 g2d.setFont(font);
 
@@ -519,6 +510,7 @@ public class ImageHelperDropShip {
                     ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
+
                     if ((eqi.damage.trim().length() > 0) && !eqi.isMML) {
                         g2d.drawString(eqi.damage, typePoint, linePoint + lineFeed);
                         newLineNeeded = true;
@@ -529,9 +521,6 @@ public class ImageHelperDropShip {
                     typePoint -= 5;
                     nameSize += 10;
                 }
-                font = UnitUtil.deriveFont(fontSize);
-                g2d.setFont(font);
-
                 String location = ImageHelperDropShip.LOCATION_ABBRS[LOCATION_PRINT[pos]];
 
                 ImageHelper.printCenterString(g2d, location, font, locPoint + 5, linePoint);
@@ -541,8 +530,8 @@ public class ImageHelperDropShip {
                     String srmAmmoString = eqi.damage.substring(eqi.damage.indexOf("]")+1);
                     linePoint += lineFeed;
                     g2d.drawString(srmAmmoString, typePoint, linePoint);
-                    String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange * 2) / 10), eqi.count * eqi.shtRange * 2);
-                    font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
+                    String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange * 2) / 10f), eqi.count * eqi.shtRange * 2);
+                    font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                     g2d.setFont(font);
                     g2d.drawString(damage, shtPoint, (int) linePoint);
                     font = UnitUtil.deriveFont(false, fontSize);
@@ -553,8 +542,8 @@ public class ImageHelperDropShip {
                     g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     linePoint += lineFeed;
                     g2d.drawString(lrmAmmoString, typePoint, linePoint);
-                    damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange) / 10), eqi.count * eqi.shtRange);
-                    font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
+                    damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange) / 10f), eqi.count * eqi.shtRange);
+                    font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                     g2d.setFont(font);
                     g2d.drawString(damage, shtPoint, (int) linePoint);
                     g2d.drawString(damage, medPoint, (int) linePoint);
@@ -563,8 +552,8 @@ public class ImageHelperDropShip {
                     font = UnitUtil.deriveFont(false, fontSize);
                     g2d.setFont(font);
                 } else if (eqi.shtRange > 0) {
-                    String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange) / 10), eqi.count * eqi.shtRange);
-                    font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
+                    String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange) / 10f), eqi.count * eqi.shtRange);
+                    font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                     g2d.setFont(font);
                     g2d.drawString(damage, shtPoint, (int) linePoint);
                     font = UnitUtil.deriveFont(fontSize);
@@ -577,8 +566,8 @@ public class ImageHelperDropShip {
                     g2d.drawString("Point Defense", medPoint, (int) linePoint);
                 } else  {
                     if ((eqi.medRange > 0) && !eqi.isMML) {
-                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.medRange) / 10), eqi.count * eqi.medRange);
-                        font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
+                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.medRange) / 10f), eqi.count * eqi.medRange);
+                        font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                         g2d.setFont(font);
                         g2d.drawString(damage, medPoint, (int) linePoint);
                         font = UnitUtil.deriveFont(fontSize);
@@ -587,8 +576,8 @@ public class ImageHelperDropShip {
                         g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     }
                     if ((eqi.longRange > 0) && !eqi.isMML) {
-                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.longRange) / 10), eqi.count * eqi.longRange);
-                        font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
+                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.longRange) / 10f), eqi.count * eqi.longRange);
+                        font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                         g2d.setFont(font);
                         g2d.drawString(damage, longPoint, (int) linePoint);
                         font = UnitUtil.deriveFont(fontSize);
@@ -597,32 +586,14 @@ public class ImageHelperDropShip {
                         g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
                     if ((eqi.erRange > 0) && !eqi.isMML) {
-                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.erRange) / 10), eqi.count * eqi.erRange);
-                        font = UnitUtil.getNewFont(g2d, damage, true, 17, fontSize);
+                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.erRange) / 10f), eqi.count * eqi.erRange);
+                        font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                         g2d.setFont(font);
                         g2d.drawString(damage, erPoint, (int) linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
                     } else if (!eqi.isMML) {
                         g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
-                    }
-
-                    float drawLine = linePoint + lineFeed;
-                    if (newLineNeeded) {
-                        drawLine += lineFeed;
-                    }
-                    if (eqi.hasArtemis) {
-                        g2d.drawString("w/Artemis IV FCS", typePoint, drawLine);
-                        newLineNeeded = true;
-                        linePoint += lineFeed;
-                    } else if (eqi.hasArtemisV) {
-                        g2d.drawString("w/Artemis V FCS", typePoint, drawLine);
-                        newLineNeeded = true;
-                        linePoint += lineFeed;
-                    } else if (eqi.hasApollo) {
-                        g2d.drawString("w/Apollo FCS", typePoint, drawLine);
-                        newLineNeeded = true;
-                        linePoint += lineFeed;
                     }
                 }
                 linePoint += lineFeed;

@@ -40,6 +40,7 @@ import megamek.common.Tank;
 import megamek.common.VTOL;
 
 public class ImageHelperVehicle {
+
     public static Image getTableImage(Entity unit) {
         Image table = null;
         String path = new File(ImageHelper.recordSheetPath).getAbsolutePath() + File.separatorChar;
