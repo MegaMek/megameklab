@@ -47,8 +47,9 @@ public class PrintNavalVehicle implements Printable {
     private Tank sub = null;
     private ArrayList<Tank> subList;
     PrinterJob masterPrintJob;
+    private int topmargin = 2;
+    private int leftmargin = -7;
 
-    // printed for a second vehicle.
 
     public PrintNavalVehicle(ArrayList<Tank> list, PrinterJob masterPrintJob) {
         subList = list;
@@ -62,7 +63,6 @@ public class PrintNavalVehicle implements Printable {
         }
 
         Graphics2D g2d = (Graphics2D) graphics;
-        // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
         return Printable.PAGE_EXISTS;
     }
@@ -75,11 +75,6 @@ public class PrintNavalVehicle implements Printable {
         System.gc();
 
         g2d.drawImage(ImageHelper.getRecordSheet(sub, false), 18, 18, 558, 736, null);
-
-        /*if (sub.hasNoDualTurret() && !sub.hasNoTurret()) {
-            g2d.drawImage(ImageHelperVehicle.getTurretImage(sub), 441, 173, 77, 96, null);
-            g2d.drawImage(ImageHelperVehicle.getTurretLabelImage(), 297, 248, 34, 11, null);
-        }*/
 
         printTankData(g2d);
         printArmor(g2d);
@@ -110,27 +105,27 @@ public class PrintNavalVehicle implements Printable {
         String subName = sub.getChassis() + " " + sub.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, subName, true, 180, 10.0f));
-        g2d.drawString(subName, 49, 120);
+        g2d.drawString(subName, 50+leftmargin, topmargin+120) ;
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         if ((sub.getCrew() != null) && !sub.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Pilot pilot = sub.getCrew();
-            g2d.drawString(pilot.getName(), 270, 120);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+            g2d.drawString(pilot.getName(), 270+leftmargin, topmargin+120) ;
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295+leftmargin, topmargin+132) ;
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365+leftmargin, topmargin+132) ;
         }
 
-        g2d.drawString(Integer.toString(sub.getWalkMP()), 79, 144);
+        g2d.drawString(Integer.toString(sub.getWalkMP()), 79+leftmargin, topmargin+144) ;
         if (!sub.hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) {
-            g2d.drawString(Integer.toString(sub.getRunMP()), 79, 155);
+            g2d.drawString(Integer.toString(sub.getRunMP()), 79+leftmargin, topmargin+154) ;
         } else {
             int mascMP = sub.getRunMP();
-            g2d.drawString(Integer.toString(sub.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+            g2d.drawString(Integer.toString(sub.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79+leftmargin, topmargin+154) ;
         }
 
-        g2d.drawString(sub.getMovementModeAsString(), 88, 166);
+        g2d.drawString(sub.getMovementModeAsString(), 90+leftmargin, topmargin+165) ;
 
         String engineName = "Fusion Engine";
 
@@ -157,12 +152,12 @@ public class PrintNavalVehicle implements Printable {
                 break;
         }
 
-        g2d.drawString(engineName, 79, 177);
+        g2d.drawString(engineName, 79f+leftmargin, topmargin+176.5f) ;
 
         if (sub.getWeight() >= 5) {
             int tonnage = (int) Math.ceil(sub.getWeight());
 
-            g2d.drawString(Integer.toString(tonnage), 177, 134);
+            g2d.drawString(Integer.toString(tonnage), 177+leftmargin, topmargin+134) ;
         } else {
             // DecimalFormatSymbols unusualSymbols =
             // new DecimalFormatSymbols();
@@ -170,11 +165,11 @@ public class PrintNavalVehicle implements Printable {
             // unusualSymbols.setGroupingSeparator(',');
             // DecimalFormat myFormatter = new DecimalFormat("#.###",
             // unusualSymbols);
-            g2d.drawString(String.format("%1$,d", sub.getWeight()), 177, 134);
+            g2d.drawString(String.format("%1$,d", sub.getWeight()), 177+leftmargin, topmargin+134) ;
         }
 
-        int nextDataLine = 153;
-        int startLine = 188;
+        int nextDataLine = 153 + topmargin;
+        int startLine = 188 + leftmargin;
         int lineFeed = 8;
 
         switch (sub.getTechLevel()) {
@@ -215,35 +210,35 @@ public class PrintNavalVehicle implements Printable {
         } else if (sub.isClan()) {
             techBase = "Clan";
         }
-        g2d.drawString(techBase, 177, 145);
+        g2d.drawString(techBase, 176+leftmargin, topmargin+145) ;
 
         if ((sub.getSource() != null) && (sub.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sourceFluff, 138, nextDataLine);
+            g2d.drawString(sourceFluff, 133 + leftmargin, nextDataLine);
 
             font = UnitUtil.getNewFont(g2d, sub.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sub.getSource(), 177, nextDataLine);
+            g2d.drawString(sub.getSource(), 176 + leftmargin, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(yearFluff, 138, nextDataLine);
+            g2d.drawString(yearFluff, 133 + leftmargin, nextDataLine);
 
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", sub.getYear()), 177, nextDataLine);
+            g2d.drawString(String.format("%1$s", sub.getYear()), 177+ leftmargin, nextDataLine);
 
         }
 
-        // g2d.drawString(Integer.toString(sub.getYear()), 188, 155);
+        // g2d.drawString(Integer.toString(sub.getYear()), 188+leftmargin, topmargin+155) ;
 
         // Cost/BV
         // DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
@@ -255,25 +250,25 @@ public class PrintNavalVehicle implements Printable {
         if (bv != -1) {
             font = UnitUtil.deriveFont(true, 8);
             g2d.setFont(font);
-            g2d.drawString("BV: ", 35, 357);
+            g2d.drawString("BV: ", 35+leftmargin, topmargin+357) ;
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", sub.calculateBattleValue(true, true)), 50, 357);
+            g2d.drawString(String.format("%1$,d", sub.calculateBattleValue(true, true)), 50+leftmargin, topmargin+357) ;
         }
 
         // myFormatter = new DecimalFormat("#,###.##", unusualSymbol);
         // g2d.drawString(myFormatter.format(sub.getCost(true)) + " C-bills",
-        // 52, 357);
+        // 52+leftmargin, topmargin+357) ;
 
         if (UnitUtil.hasBAR(sub)) {
             font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(sub), 400, 64);
+            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(sub), 400+leftmargin, topmargin+64) ;
         }
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
 
-        g2d.drawString("2012", 62.5f, 374f);
+        g2d.drawString("2012", 62.5f, 743.5f);
 
     }
 
@@ -285,26 +280,27 @@ public class PrintNavalVehicle implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(sub), 463, 48);
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(sub), 463+leftmargin, topmargin+48);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        g2d.drawString("(" + Integer.toString(sub.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
+        g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_FRONT)), 458+leftmargin, topmargin+58);
+        ImageHelper.printRotatedText(g2d, "bla", 0, 100, 100);
+        ImageHelper.printRotatedText(g2d, "ababa", 90, 100, 100);
+        ImageHelper.printRotatedText(g2d, Integer.toString(sub.getArmor(Tank.LOC_RIGHT)), 90, 559+leftmargin, topmargin+330);
 
-        g2d.drawString("(" + sub.getArmor(Tank.LOC_RIGHT) + ")", 559, 230);
+        g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_LEFT)), 384+leftmargin, topmargin+175);
 
-        g2d.drawString("(" + sub.getArmor(Tank.LOC_LEFT) + ")", 384, 175);
-
-        g2d.drawString("(" + Integer.toString(sub.getArmor(Tank.LOC_REAR)) + ")", 467, 342);
+        g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_REAR)), 458+leftmargin, topmargin+650);
 
         if (sub.getOInternal(Tank.LOC_TURRET) > 0) {
-            g2d.drawString("(" + Integer.toString(sub.getArmor(Tank.LOC_TURRET)) + ")", 455, 186);
+            g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_TURRET)), 455+leftmargin, topmargin+186);
         }
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelperVehicle.printTankWeaponsNEquipment(sub, g2d);
+        ImageHelperVehicle.printTankWeaponsNEquipment(sub, g2d, 3);
 
     }
 
