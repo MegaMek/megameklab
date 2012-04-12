@@ -920,34 +920,14 @@ public class ImageHelper {
     }
 
     public static void printRotatedText(Graphics2D g2d, String text, double angle, int xLoc, int yLoc) {
-
-        Font font = g2d.getFont();
-
-        FontMetrics fm = g2d.getFontMetrics(font);
-
-        int width = fm.stringWidth(text);
-        int height = fm.getHeight();
-
-        AffineTransform at = new AffineTransform();
-
-        // scale image
-        at.scale(2.5, 2.5);
-
-        // rotate 45 degrees around image center
-        at.rotate((angle * Math.PI) / 180.0, width / 2.0, height / 2.0);
-
-        /*
-         * AffineTransform translationTransform; translationTransform =
-         * findTranslation(at, sourceBI);
-         * at.preConcatenate(translationTransform);
-         */
-
-        AffineTransform oldTran = g2d.getTransform();
-        g2d.setTransform(at);
-        // instantiate and apply affine transformation filter
-        g2d.drawString(text, xLoc, yLoc);
-
-        g2d.setTransform(oldTran);
+        AffineTransform oldTransform = g2d.getTransform();
+        g2d.translate(xLoc, yLoc);
+        AffineTransform newTransform = (AffineTransform) oldTransform.clone();
+        newTransform.concatenate(AffineTransform.getTranslateInstance(xLoc, yLoc));
+        newTransform.concatenate(AffineTransform.getRotateInstance(Math.toRadians(angle)));
+        g2d.setTransform(newTransform);
+        g2d.drawString(text, 0, 0);
+        g2d.setTransform(oldTransform);
     }
 
     public static Vector<float[]> getPointsAlongLine(float[] start, float[] end, int points) {
