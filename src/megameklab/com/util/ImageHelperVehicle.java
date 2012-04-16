@@ -384,7 +384,7 @@ public class ImageHelperVehicle {
         float troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             linePoint += lineFeed;
-            String troopString = "Cargo, Infantry (";
+            String troopString = "Infantry Compartment (";
             if ((troopspace - Math.floor(troopspace)) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
@@ -904,7 +904,7 @@ public class ImageHelperVehicle {
         float troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             linePoint += lineFeed;
-            String troopString = "Cargo, Infantry (";
+            String troopString = "Infantry Compartment(";
             if ((troopspace - Math.floor(troopspace)) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
@@ -1091,7 +1091,7 @@ public class ImageHelperVehicle {
 
         g2d.setFont(font);
         if (troopspace > 0) {
-            String troopString = "Infantry (";
+            String troopString = "Infantry Compartment (";
             if ((troopspace - Math.floor(troopspace)) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {

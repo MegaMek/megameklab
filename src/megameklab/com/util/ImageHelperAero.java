@@ -341,7 +341,7 @@ public class ImageHelperAero {
         float troopspace = aero.getTroopCarryingSpace();
         if (troopspace > 0) {
             pointY += lineFeed;
-            String troopString = "Infantry (";
+            String troopString = "Infantry Compartment (";
             if ((troopspace - Math.floor(troopspace)) > 0) {
                 troopString += String.valueOf(troopspace);
             } else {
