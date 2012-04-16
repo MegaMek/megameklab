@@ -10,6 +10,7 @@ V 0.0.0.21-dev
 + Cargo bay printing improved
 + more work on naval printing
 + DS printing fixes
++ Infantry compartment printing update
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
