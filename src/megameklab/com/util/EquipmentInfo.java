@@ -62,6 +62,7 @@ public class EquipmentInfo {
     public boolean isBAMineLayer = false;
     public boolean isCompactNarc = false;
     public boolean isManipulator = false;
+    public boolean isBACargolifter = false;
     public boolean isAMS = false;
     public boolean isSponsonMounted = false;
     public boolean isMashCore = false;
@@ -506,6 +507,7 @@ public class EquipmentInfo {
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
         isManipulator = UnitUtil.isManipulator(mount);
+        isBACargolifter = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_CARGOLIFTER);
     }
 
     @Override
