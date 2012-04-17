@@ -217,8 +217,13 @@ public class ImageHelperBattleArmor {
 
                 String name = eqi.name.trim();
 
-                if (eqi.isManipulator && (numberOfGloves > 1)) {
-                    name += " (2)";
+                if (eqi.isBACargolifter) {
+                    float tons = (numberOfGloves*0.5f)/2.0f;
+                    name += " ("+Double.toString(tons)+" ton"+((tons%1)==0?"":"s ")+"lifting capability)";
+                } else if (eqi.isManipulator && (numberOfGloves > 1)) {
+                    if (!eqi.isBACargolifter) {
+                        name += " (2)";
+                    }
                 }
 
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 88, font.getSize()));

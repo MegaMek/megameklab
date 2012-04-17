@@ -1996,7 +1996,7 @@ public class UnitUtil {
 
         MiscType eq = (MiscType) mount.getType();
 
-        if (eq.hasFlag(MiscType.F_BA_EQUIPMENT) && (eq.hasFlag(MiscType.F_ARMORED_GLOVE) || eq.hasFlag(MiscType.F_BASIC_MANIPULATOR) || eq.hasFlag(MiscType.F_BATTLE_CLAW))) {
+        if (eq.hasFlag(MiscType.F_BA_EQUIPMENT) && (eq.hasFlag(MiscType.F_ARMORED_GLOVE) || eq.hasFlag(MiscType.F_BASIC_MANIPULATOR) || eq.hasFlag(MiscType.F_BATTLE_CLAW) || eq.hasFlag(MiscType.F_CARGOLIFTER))) {
             return true;
         }
 
