@@ -127,7 +127,7 @@ public class PrintAerodyne implements Printable {
             tonnage += 5 - (tonnage % 5);
         }
 
-        g2d.drawString(Integer.toString(tonnage), 177, 134.5f);
+        g2d.drawString(String.format("%1$,d", tonnage), 177, 134.5f);
 
         int nextDataLine = 154;
         int startLine = 188;
