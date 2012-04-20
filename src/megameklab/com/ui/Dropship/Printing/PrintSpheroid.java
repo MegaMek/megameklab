@@ -127,7 +127,7 @@ public class PrintSpheroid implements Printable {
             tonnage += 5 - (tonnage % 5);
         }
 
-        g2d.drawString(Integer.toString(tonnage), 177, 139.5f);
+        g2d.drawString(String.format("%1$,d", tonnage), 177, 139.5f);
 
         int nextDataLine = 159;
         int startLine = 188;
