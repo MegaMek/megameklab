@@ -319,7 +319,7 @@ public class ImageHelperDropShip {
         capitalEquipmentLocations.get(ImageHelperDropShip.LOC_AL).clear();
         capitalEquipmentLocations.get(ImageHelperDropShip.LOC_AR).clear();
 
-        Font font = getDropShipWeaponsNEquipmentFont(g2d, false, maxHeight, equipmentLocations, capitalEquipmentLocations, fontSize);
+        Font font = getDropShipWeaponsNEquipmentFont(g2d, true, maxHeight, equipmentLocations, capitalEquipmentLocations, fontSize);
         g2d.setFont(font);
 
         fontSize = font.getSize2D();
@@ -335,6 +335,54 @@ public class ImageHelperDropShip {
                 continue;
             }
 
+            // damage has to be combined for all stuff in a bay
+            for (int i = 0; i<eqHash.size(); i++) {
+                EquipmentInfo eqi = eqHash.get(i);
+                if (!eqi.shouldIndent) {
+                    // first, calculate the damage values here, so we can add other
+                    // weapons in the same bay in the next step
+                    eqi.heat *= eqi.count;
+                    if (eqi.shtRange > 0) {
+                        eqi.shtRange *= eqi.count;
+                    }
+                    if (eqi.medRange > 0) {
+                        eqi.medRange *= eqi.count;
+                    }
+                    if (eqi.longRange > 0) {
+                        eqi.longRange *= eqi.count;
+                    }
+                    if (eqi.erRange > 0) {
+                        eqi.erRange *= eqi.count;
+                    }
+                    // now, get all the equipmentinfos after this that are shouldIndent and as such belong in the same bay
+                    for (int j = i+1; j < eqHash.size(); j++) {
+                        EquipmentInfo eqiBay = eqHash.get(j);
+                        if (eqiBay.shouldIndent) {
+                            eqi.heat += (eqiBay.heat * eqiBay.count);
+                            eqiBay.heat = -1;
+                            if (eqiBay.shtRange > 0) {
+                                eqi.shtRange += (eqiBay.shtRange * eqiBay.count);
+                            }
+                            if (eqiBay.medRange > 0) {
+                                eqi.medRange += (eqiBay.medRange * eqiBay.count);
+                            }
+                            if (eqiBay.longRange > 0) {
+                                eqi.longRange += (eqiBay.longRange * eqiBay.count);
+                            }
+                            if (eqiBay.erRange > 0) {
+                                eqi.erRange += (eqiBay.erRange * eqiBay.count);
+                            }
+                            eqiBay.shtRange = -1;
+                            eqiBay.medRange = -1;
+                            eqiBay.longRange = -1;
+                            eqiBay.erRange = -1;
+                            i++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
             if (!hasCapital) {
                 hasCapital = true;
 
@@ -411,10 +459,12 @@ public class ImageHelperDropShip {
                 String location = ImageHelperDropShip.LOCATION_ABBRS[LOCATION_PRINT[pos]];
 
                 ImageHelper.printCenterString(g2d, location, font, locPoint + 5, linePoint);
-                ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat * eqi.count), font, heatPoint + 4, linePoint);
+                if (eqi.heat != -1) {
+                    ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat), font, heatPoint + 4, linePoint);
+                }
                 if (eqi.shtRange > 0) {
-                    g2d.drawString(String.format("%1$d", eqi.count * eqi.shtRange), shtPoint, (int) linePoint);
-                } else {
+                    g2d.drawString(String.format("%1$d", eqi.shtRange), shtPoint, (int) linePoint);
+                } else if (eqi.shtRange != -1) {
                     g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
                 }
 
@@ -422,18 +472,18 @@ public class ImageHelperDropShip {
                     g2d.drawString("Point Defense", medPoint, (int) linePoint);
                 } else {
                     if (eqi.medRange > 0) {
-                        g2d.drawString(String.format("%1$d", eqi.count * eqi.medRange), medPoint, (int) linePoint);
-                    } else {
+                        g2d.drawString(String.format("%1$d", eqi.medRange), medPoint, (int) linePoint);
+                    } else if (eqi.medRange != -1) {
                         g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     }
                     if (eqi.longRange > 0) {
-                        g2d.drawString(String.format("%1$d", eqi.count * eqi.longRange), longPoint, (int) linePoint);
-                    } else {
+                        g2d.drawString(String.format("%1$d", eqi.longRange), longPoint, (int) linePoint);
+                    } else if (eqi.longRange != -1) {
                         g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
                     if (eqi.erRange > 0) {
-                        g2d.drawString(String.format("%1$d", eqi.count * eqi.erRange), erPoint, (int) linePoint);
-                    } else {
+                        g2d.drawString(String.format("%1$d", eqi.erRange), erPoint, (int) linePoint);
+                    } else if (eqi.erRange != -1) {
                         g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     }
                 }
@@ -443,6 +493,7 @@ public class ImageHelperDropShip {
                 }
             }
         }
+        g2d.setFont(UnitUtil.deriveFont(true, g2d.getFont().getSize2D()));
 
         for (int pos = 0; pos < LOCATION_PRINT.length; pos++) {
 
@@ -451,7 +502,54 @@ public class ImageHelperDropShip {
             if (eqHash.isEmpty()) {
                 continue;
             }
-
+            // damage has to be combined for all stuff in a bay
+            for (int i = 0; i<eqHash.size(); i++) {
+                EquipmentInfo eqi = eqHash.get(i);
+                if (!eqi.shouldIndent) {
+                    // first, calculate the damage values here, so we can add other
+                    // weapons in the same bay in the next step
+                    eqi.heat *= eqi.count;
+                    if (eqi.shtRange > 0) {
+                        eqi.shtRange *= eqi.count;
+                    }
+                    if (eqi.medRange > 0) {
+                        eqi.medRange *= eqi.count;
+                    }
+                    if (eqi.longRange > 0) {
+                        eqi.longRange *= eqi.count;
+                    }
+                    if (eqi.erRange > 0) {
+                        eqi.erRange *= eqi.count;
+                    }
+                    // now, get all the equipmentinfos after this that are shouldIndent and as such belong in the same bay
+                    for (int j = i+1; j < eqHash.size(); j++) {
+                        EquipmentInfo eqiBay = eqHash.get(j);
+                        if (eqiBay.shouldIndent) {
+                            eqi.heat += eqiBay.heat * eqiBay.count;
+                            eqiBay.heat = -1;
+                            if (eqiBay.shtRange > 0) {
+                                eqi.shtRange += eqiBay.shtRange * eqiBay.count;
+                            }
+                            if (eqiBay.medRange > 0) {
+                                eqi.medRange += eqiBay.medRange * eqiBay.count;
+                            }
+                            if (eqiBay.longRange > 0) {
+                                eqi.longRange += eqiBay.longRange * eqiBay.count;
+                            }
+                            if (eqiBay.erRange > 0) {
+                                eqi.erRange += eqiBay.erRange * eqiBay.count;
+                            }
+                            eqiBay.shtRange = -1;
+                            eqiBay.medRange = -1;
+                            eqiBay.longRange = -1;
+                            eqiBay.erRange = -1;
+                            i++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
             if (!hasSubCapital) {
                 hasSubCapital = true;
 
@@ -524,13 +622,15 @@ public class ImageHelperDropShip {
                 String location = ImageHelperDropShip.LOCATION_ABBRS[LOCATION_PRINT[pos]];
 
                 ImageHelper.printCenterString(g2d, location, font, locPoint + 5, linePoint);
-                ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat * eqi.count), font, heatPoint + 4, linePoint);
+                if (eqi.heat != -1) {
+                    ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat), font, heatPoint + 4, linePoint);
+                }
                 if (eqi.isMML) {
                     String lrmAmmoString = eqi.damage.substring(0, eqi.damage.indexOf("]")+1);
                     String srmAmmoString = eqi.damage.substring(eqi.damage.indexOf("]")+1);
                     linePoint += lineFeed;
                     g2d.drawString(srmAmmoString, typePoint, linePoint);
-                    String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange * 2) / 10f), eqi.count * eqi.shtRange * 2);
+                    String damage = String.format("%1$d (%2$d)", Math.round((eqi.shtRange * 2) / 10f), eqi.shtRange * 2);
                     font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                     g2d.setFont(font);
                     g2d.drawString(damage, shtPoint, (int) linePoint);
@@ -542,7 +642,7 @@ public class ImageHelperDropShip {
                     g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     linePoint += lineFeed;
                     g2d.drawString(lrmAmmoString, typePoint, linePoint);
-                    damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange) / 10f), eqi.count * eqi.shtRange);
+                    damage = String.format("%1$d (%2$d)", Math.round((eqi.shtRange) / 10f), eqi.shtRange);
                     font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                     g2d.setFont(font);
                     g2d.drawString(damage, shtPoint, (int) linePoint);
@@ -552,13 +652,13 @@ public class ImageHelperDropShip {
                     font = UnitUtil.deriveFont(false, fontSize);
                     g2d.setFont(font);
                 } else if (eqi.shtRange > 0) {
-                    String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.shtRange) / 10f), eqi.count * eqi.shtRange);
+                    String damage = String.format("%1$d (%2$d)", Math.round((eqi.shtRange) / 10f), eqi.shtRange);
                     font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                     g2d.setFont(font);
                     g2d.drawString(damage, shtPoint, (int) linePoint);
                     font = UnitUtil.deriveFont(fontSize);
                     g2d.setFont(font);
-                } else {
+                } else if (eqi.shtRange != -1) {
                     g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
                 }
 
@@ -566,33 +666,33 @@ public class ImageHelperDropShip {
                     g2d.drawString("Point Defense", medPoint, (int) linePoint);
                 } else  {
                     if ((eqi.medRange > 0) && !eqi.isMML) {
-                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.medRange) / 10f), eqi.count * eqi.medRange);
+                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.medRange) / 10f), eqi.medRange);
                         font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                         g2d.setFont(font);
                         g2d.drawString(damage, medPoint, (int) linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
-                    } else if (!eqi.isMML){
+                    } else if (!eqi.isMML && (eqi.medRange != -1)) {
                         g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     }
                     if ((eqi.longRange > 0) && !eqi.isMML) {
-                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.longRange) / 10f), eqi.count * eqi.longRange);
+                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.longRange) / 10f), eqi.longRange);
                         font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                         g2d.setFont(font);
                         g2d.drawString(damage, longPoint, (int) linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
-                    } else if (!eqi.isMML){
+                    } else if (!eqi.isMML && (eqi.longRange != -1)) {
                         g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
                     if ((eqi.erRange > 0) && !eqi.isMML) {
-                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.count * eqi.erRange) / 10f), eqi.count * eqi.erRange);
+                        String damage = String.format("%1$d (%2$d)", Math.round((eqi.erRange) / 10f), eqi.erRange);
                         font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                         g2d.setFont(font);
                         g2d.drawString(damage, erPoint, (int) linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
-                    } else if (!eqi.isMML) {
+                    } else if (!eqi.isMML && (eqi.erRange != -1)) {
                         g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     }
                 }

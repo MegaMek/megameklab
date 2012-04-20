@@ -12,6 +12,7 @@ V 0.0.0.21-dev
 + DS printing fixes
 + Infantry compartment printing update
 + BA cargo lifters
++ infantry weapons on support vees
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

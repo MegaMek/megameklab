@@ -66,6 +66,7 @@ import megamek.common.weapons.ScreenLauncherWeapon;
 import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
+import megamek.common.weapons.infantry.InfantryWeapon;
 
 public class StringUtils {
 
@@ -212,6 +213,29 @@ public class StringUtils {
                 info += "/Sht [DB,R/C]";
             } else if ((weapon instanceof ISVehicularGrenadeLauncher) || (weapon instanceof CLVehicularGrenadeLauncher)) {
                 info = "[AE,OS]";
+            } else if (weapon instanceof InfantryWeapon) {
+                if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
+                    info = "(B)";
+                } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
+                    info = "(E)";
+                } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
+                    info = "(M)";
+                } else if (weapon.hasFlag(WeaponType.F_INF_POINT_BLANK)) {
+                    info = "(P)";
+                }
+                if (weapon.hasFlag(WeaponType.F_BURST_FIRE)) {
+                    info += "B";
+                }
+                if (weapon.hasFlag(WeaponType.F_INF_AA)) {
+                    info += "A";
+                }
+                if (weapon.hasFlag(WeaponType.F_FLAMER)) {
+                    info += "F";
+                }
+                if (weapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
+                    info += "N";
+                }
+
             } else {
                 if (UnitUtil.isAMS(weapon)) {
                     info = "-";
