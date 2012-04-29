@@ -309,7 +309,30 @@ public class StringUtils {
 
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
-            if (weapon.hasFlag(WeaponType.F_MGA)) {
+            if (weapon instanceof InfantryWeapon) {
+                info = Integer.toString(weapon.getDamage());
+                if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
+                    info += " (B)";
+                } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
+                    info += " (E)";
+                } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
+                    info += " (M)";
+                } else if (weapon.hasFlag(WeaponType.F_INF_POINT_BLANK)) {
+                    info += " (P)";
+                }
+                if (weapon.hasFlag(WeaponType.F_INF_BURST)) {
+                    info += "B";
+                }
+                if (weapon.hasFlag(WeaponType.F_INF_AA)) {
+                    info += "A";
+                }
+                if (weapon.hasFlag(WeaponType.F_FLAMER)) {
+                    info += "F";
+                }
+                if (weapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
+                    info += "N";
+                }
+            } else if (weapon.hasFlag(WeaponType.F_MGA)) {
                 info = "[T]";
             } else if (weapon instanceof ISC3M) {
                 info = "[E]";
