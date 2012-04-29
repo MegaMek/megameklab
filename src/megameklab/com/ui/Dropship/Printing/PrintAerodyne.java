@@ -217,6 +217,13 @@ public class PrintAerodyne implements Printable {
             g2d.drawString(String.format("%1$,d", dropship.calculateBattleValue(true, true)), 50, 470.2f);
         }
 
+        font = UnitUtil.deriveFont(true, 8);
+        g2d.setFont(font);
+        g2d.drawString("Fuel: ", 35, 455f);
+        font = UnitUtil.deriveFont(false, 8);
+        g2d.setFont(font);
+        g2d.drawString(String.format("%1$,d", dropship.getFuel()), 53, 455f);
+
         // Crew data
         g2d.drawString(String.format("%1$s/%2$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 596.6f);
 
