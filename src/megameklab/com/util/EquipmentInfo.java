@@ -28,6 +28,7 @@ import megamek.common.Mounted;
 import megamek.common.Sensor;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
+import megamek.common.weapons.AR10Weapon;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.EnergyWeapon;
@@ -69,7 +70,9 @@ public class EquipmentInfo {
     public boolean isDroneControl = false;
     public boolean isDestroyed = false;
     public boolean isCenturion = false;
-
+    public boolean isAR10 = false;
+    // for AR10, we need to check how many ammo
+    public int ar10AmmoTypes = 0;
     public boolean hasArtemis = false;
     public boolean hasApollo = false;
     public boolean hasArtemisV = false;
@@ -231,6 +234,39 @@ public class EquipmentInfo {
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
 
+            isAR10 = weapon instanceof AR10Weapon;
+
+            if (isAR10) {
+                int barracudaAmmo = 0;
+                int killerwhaleAmmo = 0;
+                int whitesharkAmmo = 0;
+                for (int ammoIndex : bay.getBayAmmo()) {
+                    Mounted ammoMount = dropship.getEquipment(ammoIndex);
+                    try {
+                        AmmoType aType = (AmmoType)ammoMount.getType();
+                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
+                            if (aType.hasFlag(AmmoType.F_AR10_BARRACUDA)) {
+                                barracudaAmmo += ammoMount.getShotsLeft();
+                            } else if (aType.hasFlag(AmmoType.F_AR10_KILLER_WHALE)) {
+                                killerwhaleAmmo += ammoMount.getShotsLeft();
+                            } else if (aType.hasFlag(AmmoType.F_AR10_WHITE_SHARK)) {
+                               whitesharkAmmo += ammoMount.getShotsLeft();
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (barracudaAmmo > 0) {
+                    ar10AmmoTypes++;
+                }
+                if (killerwhaleAmmo > 0) {
+                    ar10AmmoTypes++;
+                }
+                if (whitesharkAmmo > 0) {
+                    ar10AmmoTypes++;
+                }
+            }
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
             isCenturion = weapon instanceof ISCenturionWeaponSystem;
@@ -531,6 +567,7 @@ public class EquipmentInfo {
 
         clone.isWeapon = isWeapon;
         clone.isMML = isMML;
+        clone.isAR10 = isAR10;
         clone.isATM = isATM;
         clone.isCompactNarc = isCompactNarc;
         clone.isBAMineLayer = isBAMineLayer;
