@@ -105,7 +105,38 @@ public class StringUtils {
 
         if (mount.getType() instanceof WeaponType) {
             WeaponType weapon = (WeaponType) mount.getType();
-            if (weapon.getAmmoType() == AmmoType.T_MML) {
+            if (weapon.getAmmoType() == AmmoType.T_AR10) {
+                int barracudaAmmo = 0;
+                int killerwhaleAmmo = 0;
+                int whitesharkAmmo = 0;
+                for (int ammoIndex : bay.getBayAmmo()) {
+                    Mounted ammoMount = unit.getEquipment(ammoIndex);
+                    try {
+                        AmmoType aType = (AmmoType)ammoMount.getType();
+                        if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
+                            if (aType.hasFlag(AmmoType.F_AR10_BARRACUDA)) {
+                                barracudaAmmo += ammoMount.getShotsLeft();
+                            } else if (aType.hasFlag(AmmoType.F_AR10_KILLER_WHALE)) {
+                                killerwhaleAmmo += ammoMount.getShotsLeft();
+                            } else if (aType.hasFlag(AmmoType.F_AR10_WHITE_SHARK)) {
+                               whitesharkAmmo += ammoMount.getShotsLeft();
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                info = "";
+                if (barracudaAmmo > 0) {
+                    info += String.format("[%1$s Barracuda misl]", barracudaAmmo);
+                }
+                if (killerwhaleAmmo > 0) {
+                    info += String.format("[%1$s Killer Whale misl]", killerwhaleAmmo);
+                }
+                if (whitesharkAmmo > 0) {
+                    info += String.format("[%1$s White Shark misl]", whitesharkAmmo);
+                }
+            } else if (weapon.getAmmoType() == AmmoType.T_MML) {
                 int lrmAmmo = 0;
                 int srmAmmo = 0;
                 for (int ammoIndex : bay.getBayAmmo()) {
@@ -423,4 +454,18 @@ public class StringUtils {
         }
         return info;
     }
+
+    public static int countOccurrences(String haystack, char needle)
+    {
+        int count = 0;
+        for (int i=0; i < haystack.length(); i++)
+        {
+            if (haystack.charAt(i) == needle)
+            {
+                 count++;
+            }
+        }
+        return count;
+    }
+
 }

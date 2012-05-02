@@ -178,6 +178,8 @@ public class ImageHelperDropShip {
                         weaponCount++;
                     } else if (eqi.hasArtemis || eqi.hasArtemisV) {
                         weaponCount++;
+                    } else if (eqi.isAR10) {
+                        weaponCount+= eqi.ar10AmmoTypes;
                     }
                     /*
                      * else { if (ImageHelper.getStringWidth(g2d,
@@ -445,7 +447,7 @@ public class ImageHelperDropShip {
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
 
-                    if (eqi.damage.trim().length() > 0) {
+                    if ((eqi.damage.trim().length() > 0) && !eqi.isAR10) {
                         g2d.drawString(eqi.damage, typePoint, linePoint + lineFeed);
                         newLineNeeded = true;
                     }
@@ -459,16 +461,38 @@ public class ImageHelperDropShip {
                 String location = ImageHelperDropShip.LOCATION_ABBRS[LOCATION_PRINT[pos]];
 
                 ImageHelper.printCenterString(g2d, location, font, locPoint + 5, linePoint);
-                if (eqi.heat != -1) {
+                if ((eqi.heat != -1) && !eqi.isAR10) {
                     ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat), font, heatPoint + 4, linePoint);
                 }
-                if (eqi.shtRange > 0) {
+                if (eqi.isAR10) {
+                    int ammoLines = StringUtils.countOccurrences(eqi.damage, '[');
+                    String ammoString = eqi.damage;
+                    for (int i = 0; i < ammoLines; i++) {
+                        String printString = ammoString.substring(0, ammoString.indexOf("]")+1);
+                        ammoString = ammoString.substring(ammoString.indexOf("]")+1);
+                        linePoint += lineFeed;
+                        g2d.drawString(printString, typePoint, linePoint);
+                        int damage = 0;
+                        if (printString.indexOf("Barracuda") != -1) {
+                            ImageHelper.printCenterString(g2d, Integer.toString(10), font, heatPoint + 4, linePoint);
+                            damage = 20;
+                        } else if (printString.indexOf("White Shark") != -1) {
+                            ImageHelper.printCenterString(g2d, Integer.toString(15), font, heatPoint + 4, linePoint);
+                            damage = 30;
+                        } else if (printString.indexOf("Killer Whale") != -1) {
+                            ImageHelper.printCenterString(g2d, Integer.toString(20), font, heatPoint + 4, linePoint);
+                            damage = 40;
+                        }
+                        g2d.drawString(Integer.toString(damage), shtPoint, (int) linePoint);
+                        g2d.drawString(Integer.toString(damage), medPoint, (int) linePoint);
+                        g2d.drawString(Integer.toString(damage), longPoint, (int) linePoint);
+                        g2d.drawString(Integer.toString(damage), erPoint, (int) linePoint);
+                    }
+                } else if (eqi.shtRange > 0) {
                     g2d.drawString(String.format("%1$d", eqi.shtRange), shtPoint, (int) linePoint);
                 } else if (eqi.shtRange != -1) {
                     g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                }
-
-                if (eqi.isAMS) {
+                } else if (eqi.isAMS) {
                     g2d.drawString("Point Defense", medPoint, (int) linePoint);
                 } else {
                     if (eqi.medRange > 0) {
