@@ -472,21 +472,21 @@ public class ImageHelperDropShip {
                         ammoString = ammoString.substring(ammoString.indexOf("]")+1);
                         linePoint += lineFeed;
                         g2d.drawString(printString, typePoint, linePoint);
-                        int damage = 0;
+                        String damage = "";
                         if (printString.indexOf("Barracuda") != -1) {
                             ImageHelper.printCenterString(g2d, Integer.toString(10), font, heatPoint + 4, linePoint);
-                            damage = 20;
+                            damage = "2 (20)" ;
                         } else if (printString.indexOf("White Shark") != -1) {
                             ImageHelper.printCenterString(g2d, Integer.toString(15), font, heatPoint + 4, linePoint);
-                            damage = 30;
+                            damage = "3 (30)";
                         } else if (printString.indexOf("Killer Whale") != -1) {
                             ImageHelper.printCenterString(g2d, Integer.toString(20), font, heatPoint + 4, linePoint);
-                            damage = 40;
+                            damage = "4 (40)";
                         }
-                        g2d.drawString(Integer.toString(damage), shtPoint, (int) linePoint);
-                        g2d.drawString(Integer.toString(damage), medPoint, (int) linePoint);
-                        g2d.drawString(Integer.toString(damage), longPoint, (int) linePoint);
-                        g2d.drawString(Integer.toString(damage), erPoint, (int) linePoint);
+                        g2d.drawString(damage, shtPoint, (int) linePoint);
+                        g2d.drawString(damage, medPoint, (int) linePoint);
+                        g2d.drawString(damage, longPoint, (int) linePoint);
+                        g2d.drawString(damage, erPoint, (int) linePoint);
                     }
                 } else if (eqi.shtRange > 0) {
                     g2d.drawString(String.format("%1$d", eqi.shtRange), shtPoint, (int) linePoint);
