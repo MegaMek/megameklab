@@ -118,7 +118,7 @@ public class PrintSpheroid implements Printable {
         g2d.drawString(Integer.toString(dropship.getWalkMP()), 99, 163);
         g2d.drawString(Integer.toString(dropship.getRunMPwithoutMASC()), 99, 174);
 
-        g2d.drawString(String.format("%1$s / %2$s", ImageHelperDropShip.printTotalDoors(dropship, new ASFBay(1, 1)), ImageHelperDropShip.printTotalDoors(dropship, new SmallCraftBay(1, 1))), 104, 185);
+        g2d.drawString(String.format("%1$s / %2$s", ImageHelperDropShip.printTotalDoors(dropship, new ASFBay(1, 1, 0)), ImageHelperDropShip.printTotalDoors(dropship, new SmallCraftBay(1, 1, 0))), 104, 185);
         g2d.drawString(String.format("%1$s / %2$s", dropship.getFighterLaunchRate(), dropship.getSmallCraftLaunchRate()), 186, 185);
 
         int tonnage = (int) Math.ceil(dropship.getWeight());
