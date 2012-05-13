@@ -20,6 +20,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import megamek.common.Aero;
@@ -91,9 +94,33 @@ public class ImageHelperDropShip {
         font = UnitUtil.deriveFont(g2d.getFont().getSize2D());
 
         g2d.setFont(font);
+        Map<Integer, List<Bay>> baySetup = new HashMap<Integer, List<Bay>>();
         for (Bay bay : dropship.getTransportBays()) {
-            g2d.drawString(ImageHelperDropShip.getBayString(bay), pointX, pointY);
-            pointY += lineFeed;
+            if (baySetup.get(bay.getBayNumber()) == null) {
+                List<Bay> list = new ArrayList<Bay>();
+                list.add(bay);
+                baySetup.put(bay.getBayNumber(), list);
+            } else {
+                baySetup.get(bay.getBayNumber()).add(bay);
+            }
+        }
+        for (int bayNumber : baySetup.keySet()) {
+            List<Bay> bays = baySetup.get(bayNumber);
+            if (bayNumber == 0) {
+                for (Bay bay : bays) {
+                    g2d.drawString(ImageHelperDropShip.getBayString(bay), pointX, pointY);
+                    pointY += lineFeed;
+                }
+            } else {
+                String bayString = "Bay "+bayNumber+":  ";
+                g2d.drawString(bayString, pointX, pointY);
+                float offsetWidth = ImageHelper.getStringWidth(g2d, bayString, g2d.getFont());
+                for (Bay bay : bays) {
+                    g2d.drawString(ImageHelperDropShip.getBayString(bay), pointX + offsetWidth, pointY);
+                    pointY += lineFeed;
+                }
+            }
+
         }
 
     }
