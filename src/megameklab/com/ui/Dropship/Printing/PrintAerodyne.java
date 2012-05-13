@@ -118,7 +118,7 @@ public class PrintAerodyne implements Printable {
         g2d.drawString(Integer.toString(dropship.getWalkMP()), 99, 156);
         g2d.drawString(Integer.toString(dropship.getRunMPwithoutMASC()), 99, 167);
 
-        g2d.drawString(String.format("%1$s / %2$s", ImageHelperDropShip.printTotalDoors(dropship, new ASFBay(1, 1)), ImageHelperDropShip.printTotalDoors(dropship, new SmallCraftBay(1, 1))), 104, 177);
+        g2d.drawString(String.format("%1$s / %2$s", ImageHelperDropShip.printTotalDoors(dropship, new ASFBay(1, 1, 0)), ImageHelperDropShip.printTotalDoors(dropship, new SmallCraftBay(1, 1, 0))), 104, 177);
         g2d.drawString(String.format("%1$s / Turn", dropship.getFighterLaunchRate()), 186, 177);
 
         int tonnage = (int) Math.ceil(dropship.getWeight());
