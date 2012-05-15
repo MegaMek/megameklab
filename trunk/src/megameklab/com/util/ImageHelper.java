@@ -299,14 +299,14 @@ public class ImageHelper {
     public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d, int leftMargin, int topMargin) {
         int qtyPoint = 26 + leftMargin;
         int typePoint = 38 + leftMargin;
-        int locPoint = 115 + leftMargin;
-        int heatPoint = 128 + leftMargin;
-        int damagePoint = 150 + leftMargin;
+        int locPoint = 105 + leftMargin;
+        int heatPoint = 118 + leftMargin;
+        int damagePoint = 145 + leftMargin;
         int minPoint = 167 + leftMargin;
-        int shtPoint = 181 + leftMargin;
+        int shtPoint = 183 + leftMargin;
         int medPoint = 199 + leftMargin;
         int longPoint = 215 + leftMargin;
-        float linePoint = 201f + topMargin;
+        float linePoint = 202f + topMargin;
 
         float lineFeed = 6.7f;
 
