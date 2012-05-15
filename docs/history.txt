@@ -16,6 +16,7 @@ V 0.0.0.21-dev
 + Dropship Fuel printing
 + AR10 printing
 + tank stealth duplicate crit issue
++ Mech print update
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
