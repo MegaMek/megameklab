@@ -66,7 +66,7 @@ public class PrintMech implements Printable {
     private float endMountx = 0;
     private float endMounty = 0;
     private PrinterJob masterPrintJob;
-    private int topMargin = 3;
+    private int topMargin = 6;
     private int leftMargin = 11;
 
     public PrintMech(ArrayList<Mech> list, PrinterJob masterPrintJob) {
@@ -88,6 +88,7 @@ public class PrintMech implements Printable {
 
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
+        BipedMechTemplate.paint(g2d);
         printImage(g2d, awtImage, awtHud, pageFormat);
         return Printable.PAGE_EXISTS;
     }
@@ -102,21 +103,29 @@ public class PrintMech implements Printable {
         // g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(),
         // (int)pageFormat.getImageableHeight(), null);
         // g2d.drawImage(image, 18, 18, 558, 738, Color.BLACK, null);
+
         BipedMechTemplate.paint(g2d);
         printMekImage(g2d, hud);
+
         if (mech.hasShield()) {
-
-            if ((UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) && (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0)) {
-                g2d.drawImage(ImageHelper.getShieldImage(), 382 + leftMargin, topMargin + 18, 193, 351, null, null);
-            } else if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) {
-                g2d.drawImage(ImageHelper.getRightShieldImage(), 382 + leftMargin, topMargin + 18, 193, 351, null, null);
-            } else {
-                g2d.drawImage(ImageHelper.getLeftShieldImage(), 382 + leftMargin, topMargin + 18, 193, 351, null, null);
-            }
-
             printLeftShield(g2d);
             printRightShield(g2d);
+            if ((UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) && (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0)) {
+                BipedBothShields.paint(g2d);
+                //g2d.drawImage(ImageHelper.getShieldImage(), 382 + leftMargin, topMargin + 18, 193, 351, null, null);
+            } else if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) {
+                BipedLeftShield.paint(g2d);
+                //g2d.drawImage(ImageHelper.getRightShieldImage(), 382 + leftMargin, topMargin + 18, 193, 351, null, null);
+            } else {
+                BipedRightShield.paint(g2d);
+                //g2d.drawImage(ImageHelper.getLeftShieldImage(), 382 + leftMargin, topMargin + 18, 193, 351, null, null);
+            }
+        } else {
+            BipedNoShields.paint(g2d);
         }
+
+        g2d.setColor(Color.BLACK);
+
 
         printMechData(g2d);
         printArmor(g2d);
@@ -166,6 +175,8 @@ public class PrintMech implements Printable {
         printRLStruct(g2d);
         printHeatSinks(g2d);
 
+
+
         // g2d.translate(pageFormat.getImageableX(),
         // pageFormat.getImageableY());
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
@@ -176,12 +187,12 @@ public class PrintMech implements Printable {
         String mekName = mech.getChassis() + " " + mech.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, mekName, true, 180, 10.0f));
-        g2d.drawString(mekName, 49 + leftMargin, topMargin + 119);
+        g2d.drawString(mekName, 49 + leftMargin, topMargin + 118.5f);
         Font font;
         if (mech instanceof LandAirMech) {
             font = UnitUtil.deriveFont(true, 13.0f);
             g2d.setFont(font);
-            g2d.drawString("LAND-AIR", 70 + leftMargin, topMargin + 87.5f);
+            g2d.drawString("LAND-AIR", 70 + leftMargin, topMargin + 86.2f);
         }
 
         font = UnitUtil.deriveFont(8.0f);
@@ -199,33 +210,33 @@ public class PrintMech implements Printable {
             int walkTSM = mech.getWalkMP() + 1;
             int runTSM = (int) Math.ceil(walkTSM * 1.5) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79 + leftMargin, topMargin + 144);
-            g2d.drawString(Integer.toString(mech.getRunMP()) + " [" + runTSM + "]", 79 + leftMargin, topMargin + 155);
+            g2d.drawString(Integer.toString(mech.getRunMP()) + " [" + runTSM + "]", 79 + leftMargin, topMargin + 154.8f);
         } else if ((mech.getMASC() != null) && (mech.getSuperCharger() != null)) {
             int mascMP = (int) Math.ceil((mech.getWalkMP() * 2.5)) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79 + leftMargin, topMargin + 144);
-            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79 + leftMargin, topMargin + 155);
+            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79 + leftMargin, topMargin + 154.8f);
         } else if (mech.hasTSM() && (mech.getSuperCharger() != null)) {
             int walkTSM = mech.getWalkMP() + 1;
             int runTSMandSuperCharge = (walkTSM * 2) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()) + " [" + walkTSM + "]", 79 + leftMargin, topMargin + 144);
-            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + runTSMandSuperCharge + "]", 79 + leftMargin, topMargin + 155);
+            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + runTSMandSuperCharge + "]", 79 + leftMargin, topMargin + 154.9f);
         } else if ((mech.getMASC() != null) || (mech.getSuperCharger() != null)) {
             int mascMP = (mech.getWalkMP() * 2) - (mech.hasMPReducingHardenedArmor() ? 1 : 0);
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79 + leftMargin, topMargin + 144);
-            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79 + leftMargin, topMargin + 155);
+            g2d.drawString(Integer.toString(mech.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79 + leftMargin, topMargin + 154.8f);
         } else if (mech instanceof LandAirMech) {
             LandAirMech lam = (LandAirMech)mech;
             g2d.drawString(Integer.toString(mech.getWalkMP())+"/"+Integer.toString(lam.getAirMechWalkMP())+"/"+Integer.toString(lam.getFighterModeWalkMP()), 79 + leftMargin, topMargin + 144);
-            g2d.drawString(Integer.toString(mech.getRunMP())+"/"+Integer.toString(lam.getAirMechRunMP())+"/"+Integer.toString(lam.getFighterModeRunMP()), 79 + leftMargin, topMargin + 155);
+            g2d.drawString(Integer.toString(mech.getRunMP())+"/"+Integer.toString(lam.getAirMechRunMP())+"/"+Integer.toString(lam.getFighterModeRunMP()), 79 + leftMargin, topMargin + 154.8f);
         } else {
             g2d.drawString(Integer.toString(mech.getWalkMP()), 79 + leftMargin, topMargin + 144);
-            g2d.drawString(Integer.toString(mech.getRunMP()), 79 + leftMargin, topMargin + 155);
+            g2d.drawString(Integer.toString(mech.getRunMP()), 79 + leftMargin, topMargin + 154.8f);
         }
         if (mech.hasUMU()) {
             g2d.drawImage(ImageHelper.getUMImage(), 31 + leftMargin, topMargin + 156, 40, 15, null);
-            g2d.drawString(Integer.toString(mech.getActiveUMUCount()), 79 + leftMargin, topMargin + 166);
+            g2d.drawString(Integer.toString(mech.getActiveUMUCount()), 79 + leftMargin, topMargin + 165.4f);
         } else {
-            g2d.drawString(Integer.toString(mech.getJumpMP()), 79 + leftMargin, topMargin + 166);
+            g2d.drawString(Integer.toString(mech.getJumpMP()), 79 + leftMargin, topMargin + 165.4f);
         }
 
         int tonnage = (int) Math.ceil(mech.getWeight());
@@ -234,10 +245,10 @@ public class PrintMech implements Printable {
             tonnage += 5 - (tonnage % 5);
         }
 
-        g2d.drawString(Integer.toString(tonnage), 177 + leftMargin, topMargin + 134);
+        g2d.drawString(Integer.toString(tonnage), 177 + leftMargin, topMargin + 133.5f);
 
         if (mech.isIndustrial()) {
-            g2d.drawString("(Industrial)", 155 + leftMargin, topMargin + 97);
+            g2d.drawString("(Industrial)", 155 + leftMargin, topMargin + 95);
         }
 
         String techBase = "Inner Sphere";
@@ -292,9 +303,9 @@ public class PrintMech implements Printable {
         if (mech.hasFullHeadEject()) {
             String ejectString = "Note: If playing under Advanced Rules, treat head";
             g2d.setFont(UnitUtil.deriveFont(false, 8));
-            g2d.drawString(ejectString, 25 + leftMargin, topMargin + 325);
+            g2d.drawString(ejectString, 25 + leftMargin, topMargin + 327);
             ejectString = "as having a Full-Head Ejection System.";
-            g2d.drawString(ejectString, 45 + leftMargin, topMargin + 335);
+            g2d.drawString(ejectString, 45 + leftMargin, topMargin + 337);
         }
 
         // Cost/BV
@@ -302,10 +313,10 @@ public class PrintMech implements Printable {
         if (bv != -1) {
             font = UnitUtil.deriveFont(true, 8);
             g2d.setFont(font);
-            g2d.drawString("BV: ", 35 + leftMargin, topMargin + 350);
+            g2d.drawString("BV: ", 35 + leftMargin, topMargin + 355);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", mech.calculateBattleValue(true, true)), 50 + leftMargin, topMargin + 350);
+            g2d.drawString(String.format("%1$,d", mech.calculateBattleValue(true, true)), 50 + leftMargin, topMargin + 355);
         }
 
 
@@ -323,7 +334,7 @@ public class PrintMech implements Printable {
 
         if (isName.trim().length() > 0) {
             g2d.setFont(UnitUtil.getNewFont(g2d, isName, true, 44, 10.0f));
-            g2d.drawString(isName, 442 + leftMargin, topMargin + 553);
+            g2d.drawString(isName, 446 + leftMargin, topMargin + 558);
         }
 
         String armorName = "";
@@ -339,7 +350,7 @@ public class PrintMech implements Printable {
 
         if (UnitUtil.hasBAR(mech) && !mech.hasPatchworkArmor()) {
             g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
-            g2d.drawString("BAR " + UnitUtil.getLowestBARRating(mech), 461 + leftMargin, topMargin + 249);
+            g2d.drawString("BAR " + UnitUtil.getLowestBARRating(mech), 464 + leftMargin, topMargin + 249);
         }
 
         if ((mech.getSource() != null) && (mech.getSource().trim().length() > 0)) {
@@ -373,7 +384,7 @@ public class PrintMech implements Printable {
 
         font = new Font("Arial", Font.BOLD, 7);
         g2d.setFont(font);
-        g2d.drawString("2012", 55f, topMargin + 744.5f);
+        g2d.drawString("2012", 46f, topMargin + 762.4f);
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
             g2d.drawImage(ImageHelper.getGyroPipImage(), 235 + leftMargin, topMargin + 588, 9, 8, null);
@@ -387,17 +398,17 @@ public class PrintMech implements Printable {
 
         // Heat Sinks
         if (mech.hasLaserHeatSinks()) {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502 + leftMargin, topMargin + 595);
-            g2d.drawString("Laser", 502 + leftMargin, topMargin + 603);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 507 + leftMargin, topMargin + 600);
+            g2d.drawString("Laser", 507 + leftMargin, topMargin + 608);
         } else if (mech.hasDoubleHeatSinks()) {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502 + leftMargin, topMargin + 595);
-            g2d.drawString("Double", 502 + leftMargin, topMargin + 603);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 507 + leftMargin, topMargin + 600);
+            g2d.drawString("Double", 507 + leftMargin, topMargin + 608);
         } else {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 502 + leftMargin, topMargin + 595);
-            g2d.drawString("Single", 502 + leftMargin, topMargin + 603);
+            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity()) + ")", 507 + leftMargin, topMargin + 600);
+            g2d.drawString("Single", 507 + leftMargin, topMargin + 608);
         }
 
-        Dimension column = new Dimension(504 + leftMargin, topMargin + 612);
+        Dimension column = new Dimension(509 + leftMargin, topMargin + 617);
         Dimension pipShift = new Dimension(9, 9);
 
         int pipsPerColumn = (int) Math.max(10, Math.ceil(mech.heatSinks() / 4.0));
@@ -419,61 +430,61 @@ public class PrintMech implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(7.0f);
         g2d.setFont(font);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485 + leftMargin, topMargin + 45);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 434 + leftMargin, topMargin + 60);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT)) + ")", 506 + leftMargin, topMargin + 60);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT)) + ")", 472 + leftMargin, topMargin + 222);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LARM)) + ")", 394 + leftMargin, topMargin + 215);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RARM)) + ")", 546 + leftMargin, topMargin + 215);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LLEG)) + ")", 384 + leftMargin, topMargin + 273);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485 + leftMargin, topMargin + 42);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 436 + leftMargin, topMargin + 60);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT)) + ")", 514 + leftMargin, topMargin + 60);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT)) + ")", 474 + leftMargin, topMargin + 222);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LARM)) + ")", 400 + leftMargin, topMargin + 217);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RARM)) + ")", 550 + leftMargin, topMargin + 217);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LLEG)) + ")", 388 + leftMargin, topMargin + 273);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RLEG)) + ")", 554 + leftMargin, topMargin + 273);
         // Rear
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT, true)) + ")", 403 + leftMargin, topMargin + 362);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT, true)) + ")", 480 + leftMargin, topMargin + 277);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT, true)) + ")", 546 + leftMargin, topMargin + 362);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT, true)) + ")", 403 + leftMargin, topMargin + 363);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT, true)) + ")", 480 + leftMargin, topMargin + 282);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT, true)) + ")", 546 + leftMargin, topMargin + 363);
         // patchwork armor info
         if (mech.hasPatchworkArmor()) {
             font = UnitUtil.deriveFont(5.5f);
             g2d.setFont(font);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_HEAD), 494 + leftMargin, topMargin + 45);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 434 + leftMargin, topMargin + 68);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 506 + leftMargin, topMargin + 68);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_CT), 472 + leftMargin, topMargin + 230);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LARM), 394 + leftMargin, topMargin + 223);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RARM), 546 + leftMargin, topMargin + 223);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LLEG), 384 + leftMargin, topMargin + 280);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RLEG), 554 + leftMargin, topMargin + 280);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_HEAD), 494 + leftMargin, topMargin + 42);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 436 + leftMargin, topMargin + 68);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 508 + leftMargin, topMargin + 68);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_CT), 475 + leftMargin, topMargin + 230);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LARM), 398 + leftMargin, topMargin + 223);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RARM), 548 + leftMargin, topMargin + 223);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LLEG), 389 + leftMargin, topMargin + 280);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RLEG), 556 + leftMargin, topMargin + 280);
             // Rear
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 416 + leftMargin, topMargin + 362);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_LT), 415 + leftMargin, topMargin + 363);
             g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_CT), 493 + leftMargin, topMargin + 277);
-            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 559 + leftMargin, topMargin + 362);
+            g2d.drawString(UnitUtil.getArmorString(mech, Mech.LOC_RT), 559 + leftMargin, topMargin + 363);
             font = UnitUtil.deriveFont(7.0f);
             g2d.setFont(font);
         }
         // Internal
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LT)) + ")", 432 + leftMargin, topMargin + 403);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RT)) + ")", 525 + leftMargin, topMargin + 403);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LARM)) + ")", 390 + leftMargin, topMargin + 480);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RARM)) + ")", 530 + leftMargin, topMargin + 480);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_CT)) + ")", 459 + leftMargin, topMargin + 509);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LLEG)) + ")", 403 + leftMargin, topMargin + 538);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RLEG)) + ")", 518 + leftMargin, topMargin + 539);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LT)) + ")", 427 + leftMargin, topMargin + 409);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RT)) + ")", 527 + leftMargin, topMargin + 409);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LARM)) + ")", 390 + leftMargin, topMargin + 486);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RARM)) + ")", 533 + leftMargin, topMargin + 486);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_CT)) + ")", 462 + leftMargin, topMargin + 516);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LLEG)) + ")", 403 + leftMargin, topMargin + 547);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RLEG)) + ")", 520 + leftMargin, topMargin + 547);
     }
 
     private void printLACrits(Graphics2D g2d) {
 
         float lineStart = 56;
-        float linePoint = 407;
-        float lineFeed = 8;
+        float linePoint = 415;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_LARM, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printRACrits(Graphics2D g2d) {
 
-        float lineStart = 292;
-        float linePoint = 407;
-        float lineFeed = 8;
+        float lineStart = 294;
+        float linePoint = 415;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_RARM, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
@@ -481,8 +492,8 @@ public class PrintMech implements Printable {
     private void printCTCrits(Graphics2D g2d) {
 
         float lineStart = 174;
-        float linePoint = 467.5f;
-        float lineFeed = 8;
+        float linePoint = 477f;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_CT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
@@ -490,26 +501,26 @@ public class PrintMech implements Printable {
     private void printLTCrits(Graphics2D g2d) {
 
         float lineStart = 56;
-        float linePoint = 544;
-        float lineFeed = 8;
+        float linePoint = 556.5f;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_LT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printRTCrits(Graphics2D g2d) {
 
-        float lineStart = 292;
-        float linePoint = 544;
-        float lineFeed = 8;
+        float lineStart = 294;
+        float linePoint = 556.5f;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_RT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printHeadCrits(Graphics2D g2d) {
 
-        float lineStart = 174;
-        float linePoint = 399;
-        float lineFeed = 8;
+        float lineStart = 174.2f;
+        float linePoint = 405;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_HEAD, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
@@ -517,17 +528,17 @@ public class PrintMech implements Printable {
     private void printLLCrits(Graphics2D g2d) {
 
         float lineStart = 56;
-        float linePoint = 681.5f;
-        float lineFeed = 8;
+        float linePoint = 696.1f;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_LLEG, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
 
     private void printRLCrits(Graphics2D g2d) {
 
-        float lineStart = 292;
-        float linePoint = 681.5f;
-        float lineFeed = 8;
+        float lineStart = 294;
+        float linePoint = 696.1f;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_RLEG, lineStart + leftMargin, topMargin + linePoint, lineFeed);
     }
@@ -1995,7 +2006,7 @@ public class PrintMech implements Printable {
         }
 
         float lineStart = 98;
-        float linePoint = 398;
+        float linePoint = 405;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_LARM)) {
@@ -2012,8 +2023,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        float lineStart = 342;
-        float linePoint = 398;
+        float lineStart = 344;
+        float linePoint = 405;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_RARM)) {
@@ -2030,8 +2041,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        float lineStart = 93;
-        float linePoint = 671;
+        float lineStart = 93.5f;
+        float linePoint = 686;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_LLEG)) {
@@ -2049,7 +2060,7 @@ public class PrintMech implements Printable {
         }
 
         float lineStart = 104;
-        float linePoint = 534;
+        float linePoint = 545;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_LT)) {
@@ -2067,7 +2078,7 @@ public class PrintMech implements Printable {
         }
 
         float lineStart = 196;
-        float linePoint = 388;
+        float linePoint = 395.5f;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_HEAD)) {
@@ -2084,8 +2095,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        float lineStart = 348;
-        float linePoint = 534;
+        float lineStart = 350;
+        float linePoint = 545;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_RT)) {
@@ -2102,8 +2113,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        float lineStart = 338;
-        float linePoint = 671;
+        float lineStart = 339;
+        float linePoint = 686;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_RLEG)) {
@@ -2120,8 +2131,8 @@ public class PrintMech implements Printable {
             return;
         }
 
-        float lineStart = 236.5f;
-        float linePoint = 459;
+        float lineStart = 238f;
+        float linePoint = 466;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (mech.hasCASEII(Mech.LOC_CT)) {
