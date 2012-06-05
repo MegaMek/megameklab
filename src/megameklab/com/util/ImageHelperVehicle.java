@@ -113,7 +113,7 @@ public class ImageHelperVehicle {
         g2d.fillOval(width + 1, height + 1, fillCircle.width, fillCircle.height);
     }
 
-    public static void drawWiGEISPip(Graphics2D g2d, float width, float height) {
+    public static void drawTankISPip(Graphics2D g2d, float width, float height) {
         g2d.setColor(Color.black);
         Ellipse2D.Float circle = new Ellipse2D.Float(width, height, 6f, 6f);
         g2d.fill(circle);
