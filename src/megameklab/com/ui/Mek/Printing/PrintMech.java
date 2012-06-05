@@ -50,7 +50,6 @@ import megameklab.com.util.UnitUtil;
 
 public class PrintMech implements Printable {
 
-    protected Image awtImage = null;
     protected Image awtHud = null;
     private Mech mech = null;
     private ArrayList<Mech> mechList;
@@ -65,7 +64,6 @@ public class PrintMech implements Printable {
     private int leftMargin = 11;
 
     public PrintMech(ArrayList<Mech> list, PrinterJob masterPrintJob) {
-        awtImage = ImageHelper.getRecordSheet(list.get(0), false);
         mechList = list;
         this.masterPrintJob = masterPrintJob;
 
@@ -84,11 +82,11 @@ public class PrintMech implements Printable {
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
         BipedMechTemplate.paint(g2d);
-        printImage(g2d, awtImage, awtHud, pageFormat);
+        printImage(g2d, awtHud, pageFormat);
         return Printable.PAGE_EXISTS;
     }
 
-    public void printImage(Graphics2D g2d, Image image, Image hud, PageFormat pageFormat) {
+    public void printImage(Graphics2D g2d, Image hud, PageFormat pageFormat) {
         // System.out.println("printImage(Graphics2D g2d, Image image)");
         if (g2d == null) {
             return;

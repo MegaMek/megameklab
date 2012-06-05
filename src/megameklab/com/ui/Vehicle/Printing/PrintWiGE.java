@@ -826,14 +826,14 @@ public class PrintWiGE implements Printable {
         totalArmor -= pips;
         boolean shiftleft = true;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelperVehicle.drawWiGEISPip(g2d, topCenter[0], topCenter[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, topCenter[0], topCenter[1]);
             topCenter[0] += (pipShift[0] * pos * (shiftleft ? -1 : 1));
             shiftleft = !shiftleft;
         }
 
         shiftleft = true;
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawWiGEISPip(g2d, bottomCenter[0], bottomCenter[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, bottomCenter[0], bottomCenter[1]);
             bottomCenter[0] += (pipShift[0] * pos * (shiftleft ? -1 : 1));
             shiftleft = !shiftleft;
         }
@@ -861,14 +861,14 @@ public class PrintWiGE implements Printable {
         totalArmor -= pips;
         boolean shiftleft = true;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelperVehicle.drawWiGEISPip(g2d, topColumn[0], topColumn[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, topColumn[0], topColumn[1]);
             topColumn[0] += (pipShift[0] * pos * (shiftleft ? -1 : 1));
             shiftleft = !shiftleft;
         }
 
         shiftleft = true;
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawWiGEISPip(g2d, bottomColumn[0], bottomColumn[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, bottomColumn[0], bottomColumn[1]);
             bottomColumn[0] += (pipShift[0] * pos * (shiftleft ? -1 : 1));
             shiftleft = !shiftleft;
         }
@@ -885,7 +885,7 @@ public class PrintWiGE implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawWiGEISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] -= pipShift[0];
             column[1] += pipShift[1];
         }
@@ -902,7 +902,7 @@ public class PrintWiGE implements Printable {
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawWiGEISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] += pipShift[0];
             column[1] += pipShift[1];
         }
@@ -920,7 +920,7 @@ public class PrintWiGE implements Printable {
 
         boolean shiftleft = true;
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawWiGEISPip(g2d, column[0], column[1]);
+            ImageHelperVehicle.drawTankISPip(g2d, column[0], column[1]);
             column[0] += (pipShift[0] * pos * (shiftleft ? -1 : 1));
             shiftleft = !shiftleft;
         }
