@@ -253,7 +253,8 @@ public class ImageHelperBattleArmor {
 
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -280,7 +281,8 @@ public class ImageHelperBattleArmor {
 
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -292,22 +294,26 @@ public class ImageHelperBattleArmor {
                         if (eqi.minRange > 0) {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, (int) linePoint);
                         } else {
-                            g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", minPoint, linePoint);
+                            //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         }
                         if (eqi.shtRange > 0) {
                             g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, (int) linePoint);
                         } else {
-                            g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", shtPoint, linePoint);
+                            //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
                         }
                         if (eqi.medRange > 0) {
                             g2d.drawString(Integer.toString(eqi.medRange), medPoint, (int) linePoint);
                         } else {
-                            g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", medPoint, linePoint);
+                            //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                         }
                         if (eqi.longRange > 0) {
                             g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                         } else {
-                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", longPoint, linePoint);
+                            //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                         }
                     }
                 } else {
@@ -317,22 +323,26 @@ public class ImageHelperBattleArmor {
                     if (eqi.minRange > 0) {
                         g2d.drawString(Integer.toString(eqi.minRange), minPoint, (int) linePoint);
                     } else {
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                     }
                     if (eqi.shtRange > 0) {
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, (int) linePoint);
                     } else {
-                        g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", shtPoint, linePoint);
+                        //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
                     }
                     if (eqi.medRange > 0) {
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, (int) linePoint);
                     } else {
-                        g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", medPoint, linePoint);
+                        //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     }
                     if (eqi.longRange > 0) {
                         g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                     } else {
-                        g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", longPoint, linePoint);
+                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
                 }
 

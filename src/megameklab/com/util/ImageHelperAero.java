@@ -222,36 +222,43 @@ public class ImageHelperAero {
                     linePoint += lineFeed;
                     g2d.drawString("SRM Ammo", typePoint, linePoint);
                     g2d.drawString(Integer.toString(eqi.shtRange * 2 ), shtPoint, (int) linePoint);
-                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
-                    g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
-                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
-                    g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                    g2d.drawString("\u2014", medPoint, linePoint);
+                    g2d.drawString("\u2014", longPoint, linePoint);
+                    g2d.drawString("\u2014", erPoint, linePoint);
+                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                    //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     linePoint += lineFeed;
                     g2d.drawString("LRM Ammo", typePoint, linePoint);
                     g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, (int) linePoint);
                     g2d.drawString(Integer.toString(eqi.medRange), medPoint, (int) linePoint);
                     g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
-                    g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                    g2d.drawString("\u2014", erPoint, linePoint);
+                    //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                 } else if (eqi.shtRange > 0) {
                     g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, (int) linePoint);
                 } else {
-                    g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                    g2d.drawString("\u2014", shtPoint, linePoint);
+                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
                 }
 
                 if ((eqi.medRange > 0) && !eqi.isMML) {
                     g2d.drawString(Integer.toString(eqi.medRange), medPoint, (int) linePoint);
                 } else if (!eqi.isMML){
-                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    g2d.drawString("\u2014", medPoint, linePoint);
+                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                 }
                 if ((eqi.longRange > 0) && !eqi.isMML) {
                     g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                 } else if (!eqi.isMML) {
-                    g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                    g2d.drawString("\u2014", longPoint, linePoint);
+                    //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                 }
                 if ((eqi.erRange > 0) && !eqi.isMML) {
                     g2d.drawString(Integer.toString(eqi.erRange), erPoint, (int) linePoint);
                 } else if (!eqi.isMML) {
-                    g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                    g2d.drawString("\u2014", erPoint, linePoint);
+                    //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                 }
 
                 if (eqi.hasArtemis) {
@@ -317,7 +324,7 @@ public class ImageHelperAero {
         }
 
         g2d.setFont(font);
-        printCargo(aero, g2d, pointY);
+        ImageHelperAero.printCargo(aero, g2d, pointY);
     }
 
     public static void printCargo(Aero aero, Graphics2D g2d, int pointY) {
