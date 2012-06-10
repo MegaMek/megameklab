@@ -269,11 +269,16 @@ public class ImageHelperVehicle {
                 g2d.drawString(location, locPoint, linePoint);
                 if (eqi.isWeapon) {
                     if (eqi.isAMS) {
-                        g2d.drawLine(damagePoint, (int) linePoint - 2, damagePoint + 6, (int) linePoint - 2);
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
-                        g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                        g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
-                        g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", damagePoint, linePoint);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        g2d.drawString("\u2014", shtPoint, linePoint);
+                        g2d.drawString("\u2014", medPoint, linePoint);
+                        g2d.drawString("\u2014", longPoint, linePoint);
+                        //g2d.drawLine(damagePoint, (int) linePoint - 2, damagePoint + 6, (int) linePoint - 2);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                        //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     } else if (eqi.isMML) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
                         linePoint += lineFeed - 1.0f;
@@ -288,7 +293,8 @@ public class ImageHelperVehicle {
 
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -315,7 +321,8 @@ public class ImageHelperVehicle {
 
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -333,34 +340,42 @@ public class ImageHelperVehicle {
                         if (eqi.minRange > 0) {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
                         } else {
-                            g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", minPoint, linePoint);
+                            //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         }
                         if (eqi.shtRange > 0) {
                             g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         } else {
-                            g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", shtPoint, linePoint);
+                            //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
                         }
                         if (eqi.medRange > 0) {
                             g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
                         } else {
-                            g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", medPoint, linePoint);
+                            //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                         }
 
                         if (eqi.longRange > 0) {
                             g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                         } else {
-                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", longPoint, linePoint);
+                            //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                         }
                     }
                 } else {
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
-                    g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
-                    g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    g2d.drawString("\u2014", minPoint, linePoint);
+                    g2d.drawString("\u2014", shtPoint, linePoint);
+                    g2d.drawString("\u2014", medPoint, linePoint);
+                    //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     if (eqi.longRange > 0) {
                         g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                     } else {
-                        g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", longPoint, linePoint);
+                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
                 }
 
@@ -567,7 +582,8 @@ public class ImageHelperVehicle {
 
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -594,7 +610,8 @@ public class ImageHelperVehicle {
 
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -610,25 +627,31 @@ public class ImageHelperVehicle {
                         if (eqi.minRange > 0) {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
                         } else {
-                            g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", minPoint, linePoint);
+                            //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
                         if (eqi.longRange > 0) {
                             g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                         } else {
-                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", longPoint, linePoint);
+                            //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                         }
                     }
                 } else {
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
-                    g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
-                    g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    g2d.drawString("\u2014", minPoint, linePoint);
+                    g2d.drawString("\u2014", shtPoint, linePoint);
+                    g2d.drawString("\u2014", medPoint, linePoint);
+                    //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     if (eqi.longRange > 0) {
                         g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                     } else {
-                        g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", longPoint, linePoint);
+                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
                 }
 
@@ -827,7 +850,8 @@ public class ImageHelperVehicle {
 
                         g2d.drawString("SRM", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "2/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -854,7 +878,8 @@ public class ImageHelperVehicle {
 
                         g2d.drawString("High-Explosive", typePoint, linePoint);
                         ImageHelper.printCenterString(g2d, "3/Msl", font, damagePoint, linePoint);
-                        g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", minPoint, linePoint);
+                        //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         g2d.drawString("3", shtPoint, linePoint);
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
@@ -873,25 +898,31 @@ public class ImageHelperVehicle {
                         if (eqi.minRange > 0) {
                             g2d.drawString(Integer.toString(eqi.minRange), minPoint, linePoint);
                         } else {
-                            g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", minPoint, linePoint);
+                            //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
                         }
                         g2d.drawString(Integer.toString(eqi.shtRange), shtPoint, linePoint);
                         g2d.drawString(Integer.toString(eqi.medRange), medPoint, linePoint);
                         if (eqi.longRange > 0) {
                             g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                         } else {
-                            g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                            g2d.drawString("\u2014", longPoint, linePoint);
+                            //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                         }
                     }
                 } else {
                     ImageHelper.printCenterString(g2d, eqi.damage, font, damagePoint - 2, linePoint);
-                    g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
-                    g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                    g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                    g2d.drawString("\u2014", minPoint, linePoint);
+                    g2d.drawString("\u2014", shtPoint, linePoint);
+                    g2d.drawString("\u2014", medPoint, linePoint);
+                    //g2d.drawLine(minPoint, (int) linePoint - 2, minPoint + 6, (int) linePoint - 2);
+                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
+                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     if (eqi.longRange > 0) {
                         g2d.drawString(Integer.toString(eqi.longRange), longPoint, (int) linePoint);
                     } else {
-                        g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        g2d.drawString("\u2014", longPoint, linePoint);
+                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
                 }
 
@@ -937,7 +968,7 @@ public class ImageHelperVehicle {
     }
 
     static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, boolean hasModularArmor) {
-        printArmorPoints(g2d, pipPoints, totalArmor, 8.0f, hasModularArmor);
+        ImageHelperVehicle.printArmorPoints(g2d, pipPoints, totalArmor, 8.0f, hasModularArmor);
     }
 
     static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, float fontSize, boolean hasModularArmor) {
