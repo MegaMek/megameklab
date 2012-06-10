@@ -468,9 +468,9 @@ public class ImageHelper {
                         g2d.drawString("6", medPoint, linePoint);
                         g2d.drawString("9", longPoint, linePoint);
                     } else if (eqi.isAMS) {
-                        g2d.drawString("\u2014", damagePoint-5, linePoint);
+                        ImageHelper.printCenterString(g2d, "\u2014 [PD]", font, damagePoint, linePoint);
                         //g2d.drawLine(damagePoint - 9, (int) linePoint - 2, damagePoint - 3, (int) linePoint - 2);
-                        ImageHelper.printCenterString(g2d, "[PD]", font, damagePoint+4, linePoint);
+                        //ImageHelper.printCenterString(g2d, "[PD]", font, damagePoint+4, linePoint);
                         g2d.drawString("\u2014", minPoint, linePoint);
                         g2d.drawString("\u2014", shtPoint, linePoint);
                         g2d.drawString("\u2014", medPoint, linePoint);
