@@ -1175,7 +1175,7 @@ public class UnitUtil {
 
         for (Mounted mount : unit.getEquipment()) {
 
-            if (mount.getType().isExplosive() && ((mount.getLocation() == location) || (mount.getSecondLocation() == location))) {
+            if (mount.getType().isExplosive(mount) && ((mount.getLocation() == location) || (mount.getSecondLocation() == location))) {
                 return true;
             }
         }
