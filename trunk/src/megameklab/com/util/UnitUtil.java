@@ -2114,7 +2114,7 @@ public class UnitUtil {
     }
 
     static public Integer getMaxWeight(BattleArmor ba) {
-        return (int)EntityWeightClass.getClassLimit(ba.getWeightClass());
+        return (int)EntityWeightClass.getClassLimit(ba.getWeightClass(), ba);
     }
 
     public static void showValidation(Entity entity, JFrame frame) {

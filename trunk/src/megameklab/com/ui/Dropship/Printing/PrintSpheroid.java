@@ -214,10 +214,10 @@ public class PrintSpheroid implements Printable {
 
         font = UnitUtil.deriveFont(true, 8);
         g2d.setFont(font);
-        g2d.drawString("Fuel: ", 35, 477.2f);
+        g2d.drawString("Fuel: ", 80, 492.2f);
         font = UnitUtil.deriveFont(false, 8);
         g2d.setFont(font);
-        g2d.drawString(String.format("%1$,d", dropship.getFuel()), 53, 477.2f);
+        g2d.drawString(String.format("%1$,d", dropship.getFuel()), 98, 492.2f);
 
         // Crew data
         g2d.drawString(String.format("%1$s/%2$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 624.6f);
