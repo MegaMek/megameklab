@@ -130,7 +130,7 @@ public class MainUI extends MegaMekLabMainUI {
         ba.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         ba.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
         ba.setWeightClass(0);
-        entity.setWeight(EntityWeightClass.getClassLimit(0));
+        entity.setWeight(EntityWeightClass.getClassLimit(0, entity));
         ba.setTroopers(4);
         ba.setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
 

@@ -70,7 +70,6 @@ public class ImageHelperDropShip {
                 pointY += lineFeed;
             }
         }
-        pointY -= lineFeed;
         ImageHelperDropShip.printDropShipCargo(dropship, g2d, pointY);
     }
 
@@ -248,7 +247,7 @@ public class ImageHelperDropShip {
         int nameSize = 65;
         float linePoint = 209f;
         float lineFeed = 6.7f;
-        float maxHeight = 120f;
+        float maxHeight = 155f;
         float stringHeight = 0;
         float fontSize = 7.0f;
         boolean newLineNeeded = false;
