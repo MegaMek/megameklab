@@ -416,7 +416,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
 
                     getBattleArmor().setWeight(getBattleArmor().getTroopers());
-                    getBattleArmor().setTrooperWeight(EntityWeightClass.getClassLimit(getBattleArmor().getWeightClass()));
+                    getBattleArmor().setTrooperWeight(EntityWeightClass.getClassLimit(getBattleArmor().getWeightClass(), getBattleArmor()));
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
 
@@ -611,7 +611,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         getBattleArmor().initializeArmor(0, loc);
                     }
                     getBattleArmor().setWeight(getBattleArmor().getTroopers());
-                    getBattleArmor().setTrooperWeight(EntityWeightClass.getClassLimit(getBattleArmor().getWeightClass()));
+                    getBattleArmor().setTrooperWeight(EntityWeightClass.getClassLimit(getBattleArmor().getWeightClass(), getBattleArmor()));
                 }
                 addAllActionListeners();
                 refresh.refreshAll();

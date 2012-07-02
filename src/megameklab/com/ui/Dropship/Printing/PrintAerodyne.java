@@ -202,6 +202,7 @@ public class PrintAerodyne implements Printable {
         // unusualSymbols.setGroupingSeparator(',');
         // DecimalFormat myFormatter = new DecimalFormat("#,###",
         // unusualSymbols);
+
         double bv = dropship.calculateBattleValue(true, true);
         if (bv != -1) {
             font = UnitUtil.deriveFont(true, 8);
@@ -214,10 +215,10 @@ public class PrintAerodyne implements Printable {
 
         font = UnitUtil.deriveFont(true, 8);
         g2d.setFont(font);
-        g2d.drawString("Fuel: ", 35, 455f);
+        g2d.drawString("Fuel: ", 80, 470.2f);
         font = UnitUtil.deriveFont(false, 8);
         g2d.setFont(font);
-        g2d.drawString(String.format("%1$,d", dropship.getFuel()), 53, 455f);
+        g2d.drawString(String.format("%1$,d", dropship.getFuel()), 98, 470.2f);
 
         // Crew data
         g2d.drawString(String.format("%1$s/%2$s", dropship.getLifeBoats(), dropship.getEscapePods()), 335, 596.6f);
