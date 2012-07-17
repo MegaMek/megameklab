@@ -710,6 +710,9 @@ public class PrintMech implements Printable {
                         case Engine.FUEL_CELL:
                             engineName = "Fuel Cell Engine";
                             break;
+                        case Engine.FISSION:
+                            engineName = "Fission Engine";
+                            break;
                         default:
                             break;
                     }
