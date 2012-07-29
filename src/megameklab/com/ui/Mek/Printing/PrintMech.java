@@ -798,7 +798,7 @@ public class PrintMech implements Printable {
                     }
                     critName.trimToSize();
                     critName.append(") ");
-                    critName.append(m.getShotsLeft());
+                    critName.append(m.getUsableShotsLeft());
 
                 }
 
