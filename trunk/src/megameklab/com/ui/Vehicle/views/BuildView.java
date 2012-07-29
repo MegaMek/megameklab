@@ -107,7 +107,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
         }
         for (Mounted mount : unit.getAmmo()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && (mount.getShotsLeft() > 1)) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && (mount.getUsableShotsLeft() > 1)) {
                 masterEquipmentList.add(mount);
             }
         }
