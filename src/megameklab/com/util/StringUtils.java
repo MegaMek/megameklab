@@ -115,11 +115,11 @@ public class StringUtils {
                         AmmoType aType = (AmmoType)ammoMount.getType();
                         if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
                             if (aType.hasFlag(AmmoType.F_AR10_BARRACUDA)) {
-                                barracudaAmmo += ammoMount.getShotsLeft();
+                                barracudaAmmo += ammoMount.getUsableShotsLeft();
                             } else if (aType.hasFlag(AmmoType.F_AR10_KILLER_WHALE)) {
-                                killerwhaleAmmo += ammoMount.getShotsLeft();
+                                killerwhaleAmmo += ammoMount.getUsableShotsLeft();
                             } else if (aType.hasFlag(AmmoType.F_AR10_WHITE_SHARK)) {
-                               whitesharkAmmo += ammoMount.getShotsLeft();
+                               whitesharkAmmo += ammoMount.getUsableShotsLeft();
                             }
                         }
                     } catch (Exception ex) {
@@ -145,9 +145,9 @@ public class StringUtils {
                         AmmoType aType = (AmmoType)ammoMount.getType();
                         if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
                             if (aType.hasFlag(AmmoType.F_MML_LRM)) {
-                                lrmAmmo += ammoMount.getShotsLeft();
+                                lrmAmmo += ammoMount.getUsableShotsLeft();
                             } else {
-                                srmAmmo += ammoMount.getShotsLeft();
+                                srmAmmo += ammoMount.getUsableShotsLeft();
                             }
                         }
                     } catch (Exception ex) {
@@ -161,7 +161,7 @@ public class StringUtils {
                     Mounted ammoMount = unit.getEquipment(ammoIndex);
                     try {
                         if ((mount.getLinked() != null) && (ammoMount.getType() == mount.getLinked().getType())) {
-                            totalAmmo += ammoMount.getShotsLeft();
+                            totalAmmo += ammoMount.getUsableShotsLeft();
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();

@@ -246,11 +246,11 @@ public class EquipmentInfo {
                         AmmoType aType = (AmmoType)ammoMount.getType();
                         if ((mount.getLinked() != null) && (aType.getRackSize() == weapon.getRackSize()) && (aType.getAmmoType() == weapon.getAmmoType())) {
                             if (aType.hasFlag(AmmoType.F_AR10_BARRACUDA)) {
-                                barracudaAmmo += ammoMount.getShotsLeft();
+                                barracudaAmmo += ammoMount.getUsableShotsLeft();
                             } else if (aType.hasFlag(AmmoType.F_AR10_KILLER_WHALE)) {
-                                killerwhaleAmmo += ammoMount.getShotsLeft();
+                                killerwhaleAmmo += ammoMount.getUsableShotsLeft();
                             } else if (aType.hasFlag(AmmoType.F_AR10_WHITE_SHARK)) {
-                               whitesharkAmmo += ammoMount.getShotsLeft();
+                               whitesharkAmmo += ammoMount.getUsableShotsLeft();
                             }
                         }
                     } catch (Exception ex) {

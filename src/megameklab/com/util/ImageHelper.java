@@ -607,9 +607,9 @@ public class ImageHelper {
         for (Mounted misc : vehicle.getMisc()) {
             if (misc.getType().hasFlag(MiscType.F_SENSOR_DISPENSER)) {
                 if (ammoHash.get("Remote Sensors") == null) {
-                    ammoHash.put("Remote Sensors", misc.getShotsLeft());
+                    ammoHash.put("Remote Sensors", misc.getUsableShotsLeft());
                 } else {
-                    ammoHash.put("Remote Sensors", misc.getShotsLeft() + ammoHash.get("Remote Sensors"));
+                    ammoHash.put("Remote Sensors", misc.getUsableShotsLeft() + ammoHash.get("Remote Sensors"));
                 }
             }
         }

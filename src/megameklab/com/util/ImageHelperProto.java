@@ -89,10 +89,10 @@ public class ImageHelperProto {
 
             if (ammoHash.containsKey(shortName)) {
                 int currentAmmo = ammoHash.get(shortName);
-                currentAmmo += ammo.getShotsLeft();
+                currentAmmo += ammo.getUsableShotsLeft();
                 ammoHash.put(shortName, currentAmmo);
             } else {
-                int currentAmmo = ammo.getShotsLeft();
+                int currentAmmo = ammo.getUsableShotsLeft();
                 ammoHash.put(shortName, currentAmmo);
             }
         }

@@ -698,7 +698,7 @@ public class UnitUtil {
 
         for (Mounted mount : unit.getAmmo()) {
             // don't add ammo with just one shot, that's OS ammo
-            if ((mount.getLocation() == Entity.LOC_NONE) && (mount.getShotsLeft() > 1)) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && (mount.getUsableShotsLeft() > 1)) {
                 tonnage += mount.getType().getTonnage(unit);
             }
         }
