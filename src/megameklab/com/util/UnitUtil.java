@@ -586,7 +586,7 @@ public class UnitUtil {
         if (UnitUtil.isJumpJet(eq) && isMech) {
             return false;
         }
-        if (!eq.isHittable()) {
+        if (!eq.isHittable() && isMech) {
             return false;
         }
 

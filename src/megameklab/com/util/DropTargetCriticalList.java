@@ -155,7 +155,25 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                             });
                             popup.add(info);
                         }
-
+                    }
+                    if ((mount.getType() instanceof WeaponType) && unit.hasWorkingMisc(MiscType.F_PINTLE_TURRET, mount.getLocation())) {
+                        if (!mount.isPintleTurretMounted()) {
+                            info = new JMenuItem("Mount " + mount.getName() + " in Pintle Turret");
+                            info.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    changePintleTurretMount(true);
+                                }
+                            });
+                            popup.add(info);
+                        } else {
+                            info = new JMenuItem("Remove " + mount.getName() + " from Pintle Turret");
+                            info.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    changePintleTurretMount(false);
+                                }
+                            });
+                            popup.add(info);
+                        }
                     }
                 }
 
@@ -261,6 +279,16 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         getMounted().setSponsonTurretMounted(turret);
         if (getMounted().getLinkedBy() != null) {
             getMounted().getLinkedBy().setSponsonTurretMounted(turret);
+        }
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
+    }
+
+    private void changePintleTurretMount(boolean turret) {
+        getMounted().setPintleTurretMounted(turret);
+        if (getMounted().getLinkedBy() != null) {
+            getMounted().getLinkedBy().setPintleTurretMounted(turret);
         }
         if (refresh != null) {
             refresh.refreshAll();

@@ -261,9 +261,12 @@ public class ImageHelperVehicle {
                 }
                 // this is hacky, but works, left side and right side abbrevs
                 // are
-                // LS and RS, which results in "LSpon" and "RSpon"
+                // LS and RS, which results in "LSpo" and "RSpo"
                 if (eqi.isSponsonMounted) {
                     location += "po";
+                }
+                if (eqi.isPintleMounted) {
+                    location = location.substring(1)+"Pi";
                 }
                 g2d.setFont(font);
                 g2d.drawString(location, locPoint, linePoint);

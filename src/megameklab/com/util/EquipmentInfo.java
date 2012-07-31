@@ -66,6 +66,7 @@ public class EquipmentInfo {
     public boolean isBACargolifter = false;
     public boolean isAMS = false;
     public boolean isSponsonMounted = false;
+    public boolean isPintleMounted = false;
     public boolean isMashCore = false;
     public boolean isDroneControl = false;
     public boolean isDestroyed = false;
@@ -347,6 +348,7 @@ public class EquipmentInfo {
             name += "(R)";
         }
         isSponsonMounted = mount.isSponsonTurretMounted();
+        isPintleMounted = mount.isPintleTurretMounted();
         count = 1;
         techLevel = mount.getType().getTechLevel();
         isDestroyed = mount.isDestroyed();
