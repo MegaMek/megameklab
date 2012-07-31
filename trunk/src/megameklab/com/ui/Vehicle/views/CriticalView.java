@@ -175,6 +175,9 @@ public class CriticalView extends IView {
                             if (m.isSponsonTurretMounted()) {
                                 critName.append(" (ST)");
                             }
+                            if (m.isPintleTurretMounted()) {
+                                critName.append(" (PT)");
+                            }
                             critNames.add(critName.toString());
 
                         } catch (Exception ex) {

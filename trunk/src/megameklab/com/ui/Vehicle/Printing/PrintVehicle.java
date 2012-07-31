@@ -26,6 +26,8 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -198,13 +200,11 @@ public class PrintVehicle implements Printable {
 
             g2d.drawString(Integer.toString(tonnage), 177, 134);
         } else {
-            // DecimalFormatSymbols unusualSymbols =
-            // new DecimalFormatSymbols();
-            // unusualSymbols.setDecimalSeparator('.');
-            // unusualSymbols.setGroupingSeparator(',');
-            // DecimalFormat myFormatter = new DecimalFormat("#.###",
-            // unusualSymbols);
-            g2d.drawString(String.format("%1$,d", tank.getWeight()), 177, 134);
+            DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
+            unusualSymbols.setDecimalSeparator('.');
+            unusualSymbols.setGroupingSeparator(',');
+            DecimalFormat myFormatter = new DecimalFormat("#.###", unusualSymbols);
+            g2d.drawString(myFormatter.format(tank.getWeight()), 177, 134);
         }
 
         int nextDataLine = 153;

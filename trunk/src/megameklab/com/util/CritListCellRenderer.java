@@ -84,6 +84,9 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                     if (mount.isSponsonTurretMounted()) {
                         name += " (ST)";
                     }
+                    if (mount.isPintleTurretMounted()) {
+                        name += " (PT)";
+                    }
                     label.setText(name);
 
                     if (mount.getType() instanceof WeaponType) {
