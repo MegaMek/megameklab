@@ -111,7 +111,7 @@ public class StatusBar extends ITab {
         int walk = getMech().getOriginalWalkMP();
         int run = getMech().getOriginalRunMPwithoutMASC();
         int jump = getMech().getOriginalJumpMP();
-        int heat = getMech().getNumberOfSinks();
+        int heat = getMech().getHeatCapacity(false);
         float tonnage = getMech().getWeight();
         float currentTonnage;
         int bv = getMech().calculateBattleValue();
@@ -122,9 +122,6 @@ public class StatusBar extends ITab {
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
 
         double totalHeat = calculateTotalHeat();
-        if (getMech().hasDoubleHeatSinks()) {
-            heat *= 2;
-        }
 
         heatSink.setText("Heat: " + totalHeat + "/" + heat);
         heatSink.setToolTipText("Total Heat Generated/Total Heat Dissipated");

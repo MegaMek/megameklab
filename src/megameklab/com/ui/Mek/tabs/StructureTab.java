@@ -276,12 +276,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             heatSinkNumber.addItem(Integer.toString(count));
         }
 
-        for (int count = 0; count <= getMech().getEngine().integralHeatSinkCapacity(); count++) {
+        for (int count = 0; count <= getMech().getEngine().integralHeatSinkCapacity(getMech().hasCompactHeatSinks()); count++) {
             baseChassisHeatSinks.addItem(Integer.toString(count));
         }
 
+        int sinks = getMech().heatSinks();
+        int free = getMech().getEngine().getWeightFreeEngineHeatSinks();
         heatSinkNumber.setSelectedIndex(getMech().heatSinks() - getMech().getEngine().getWeightFreeEngineHeatSinks());
-        baseChassisHeatSinks.setSelectedIndex(Math.max(0, getMech().getEngine().getBaseChassisHeatSinks()));
+        baseChassisHeatSinks.setSelectedIndex(Math.max(0, getMech().getEngine().getBaseChassisHeatSinks(getMech().hasCompactHeatSinks())));
 
         if (getMech().isOmni()) {
             masterPanel.remove(structureLabel);
@@ -383,32 +385,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             if (getMech().isClan()) {
                 if (UnitUtil.hasLaserHeatSinks(getMech())) {
                     heatSinkType.setSelectedIndex(3);
+                } else if (getMech().hasCompactHeatSinks()) {
+                    heatSinkType.setSelectedIndex(4);
                 } else if (getMech().hasDoubleHeatSinks()) {
-                    if (UnitUtil.hasCompactHeatSinks(getMech())) {
-                        heatSinkType.setSelectedIndex(4);
-                    } else {
-                        if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
-                            heatSinkType.setSelectedIndex(1);
-                        } else {
-                            heatSinkType.setSelectedIndex(2);
-                        }
-                    }
-                } else {
 
+                    if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
+                        heatSinkType.setSelectedIndex(1);
+                    } else {
+                        heatSinkType.setSelectedIndex(2);
+                    }
+
+                } else {
                     heatSinkType.setSelectedIndex(0);
                 }
             } else {
                 if (UnitUtil.hasLaserHeatSinks(getMech())) {
                     heatSinkType.setSelectedIndex(3);
+                } else if (getMech().hasCompactHeatSinks()) {
+                    heatSinkType.setSelectedIndex(4);
                 } else if (getMech().hasDoubleHeatSinks()) {
-                    if (UnitUtil.hasCompactHeatSinks(getMech())) {
-                        heatSinkType.setSelectedIndex(4);
+                    if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
+                        heatSinkType.setSelectedIndex(1);
                     } else {
-                        if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
-                            heatSinkType.setSelectedIndex(1);
-                        } else {
-                            heatSinkType.setSelectedIndex(2);
-                        }
+                        heatSinkType.setSelectedIndex(2);
                     }
                 } else {
                     heatSinkType.setSelectedIndex(0);
@@ -418,11 +417,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             if (UnitUtil.hasLaserHeatSinks(getMech())) {
                 heatSinkType.setSelectedIndex(2);
             } else if (getMech().hasDoubleHeatSinks()) {
-                if (UnitUtil.hasCompactHeatSinks(getMech())) {
+                if (getMech().hasCompactHeatSinks()) {
                     heatSinkType.setSelectedIndex(2);
                 } else {
                     heatSinkType.setSelectedIndex(1);
                 }
+            } else if (getMech().hasCompactHeatSinks()) {
+                heatSinkType.setSelectedIndex(2);
             } else {
                 heatSinkType.setSelectedIndex(0);
             }
