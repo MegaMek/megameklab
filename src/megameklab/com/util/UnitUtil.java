@@ -1242,10 +1242,8 @@ public class UnitUtil {
         }
         sb.append("<Br>Cost: ");
 
-        double cost = eq.getType().getCost(unit, false);
-        if (cost == EquipmentType.COST_VARIABLE) {
-            cost = eq.getType().resolveVariableCost(unit, false);
-        }
+        double cost = eq.getType().getCost(unit, false, eq.getLocation());
+
         sb.append(myFormatter.format(cost));
         sb.append(" CBills");
 

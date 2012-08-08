@@ -19,6 +19,7 @@ V 0.0.0.21-dev
 + Mech print update
 + DS printing update
 + Compact HS bugfix
++ Fixes for newer MM
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
