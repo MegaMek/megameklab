@@ -222,7 +222,7 @@ public class PrintAdvancedQuad implements Printable {
                 break;
         }
 
-        if (UnitUtil.hasCompactHeatSinks(mech)) {
+        if (mech.hasCompactHeatSinks()) {
             g2d.fillRoundRect(367, 355, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
         } else if (mech.hasLaserHeatSinks()) {
             g2d.fillRoundRect(367, 364, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);

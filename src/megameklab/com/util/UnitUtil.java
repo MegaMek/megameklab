@@ -301,32 +301,6 @@ public class UnitUtil {
     }
 
     /**
-     * Checks to see if the unit uses compact heat sinks
-     *
-     * @param unit
-     * @return
-     */
-    public static boolean hasCompactHeatSinks(Mech unit) {
-
-        if (!unit.hasDoubleHeatSinks() || unit.hasLaserHeatSinks()) {
-            return false;
-        }
-
-        for (Mounted mounted : unit.getMisc()) {
-            if (mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mounted.getType().hasFlag(MiscType.F_HEAT_SINK)) {
-
-                if (mounted.getType().getInternalName().indexOf("Compact") > -1) {
-                    return true;
-                }
-
-                return false;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Checks if the unit has laser heatsinks.
      *
      * @param unit
@@ -476,7 +450,7 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, String hsType) {
-        int engineHSCapacity = UnitUtil.getBaseChassisHeatSinks(unit);
+        int engineHSCapacity = UnitUtil.getBaseChassisHeatSinks(unit, hsType.equals("Compact"));
 
         int heatSinks = hsAmount - engineHSCapacity;
         EquipmentType sinkType;
@@ -536,30 +510,29 @@ public class UnitUtil {
     public static void updateHeatSinks(Mech unit, int hsAmount, String hsType) {
         UnitUtil.removeHeatSinks(unit);
         if (hsType.equals("Compact")) {
-            int compactAmount = hsAmount;
-            int baseChassisSinks = UnitUtil.getBaseChassisHeatSinks(unit) * 2;
-            while ((baseChassisSinks > 1) && (hsAmount > 1)) {
-                unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), 1);
-                baseChassisSinks -=2;
-                compactAmount -=2;
-            }
-            if ((baseChassisSinks == 1) || (compactAmount == 1)) {
-                unit.addEngineSinks("IS1 Compact Heat Sink", 1);
-            }
-            if ((hsAmount%2) == 0) {
-                UnitUtil.addHeatSinkMounts(unit, hsAmount/2, hsType);
-            } else {
-                UnitUtil.addHeatSinkMounts(unit, hsAmount/2, hsType);
+            int engineCompacts = Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit, true));
+            unit.addEngineSinks("IS1 Compact Heat Sink", engineCompacts);
+            int restHS = hsAmount - engineCompacts;
+            if ((restHS%2) == 1) {
                 try {
                     unit.addEquipment(new Mounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), Entity.LOC_NONE, false);
-                } catch (LocationFullException e) {
-                    e.printStackTrace();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                restHS -= 1;
+            }
+            for (;restHS > 0; restHS -=2) {
+                try {
+                    unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan()))), Entity.LOC_NONE, false);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
         } else {
-            unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit)));
+            unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit, false)));
             UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
         }
+
     }
 
     public static boolean isPrintableEquipment(EquipmentType eq) {
@@ -1289,11 +1262,11 @@ public class UnitUtil {
         return sb.toString();
     }
 
-    public static int getBaseChassisHeatSinks(Mech unit) {
-        int engineHSCapacity = unit.getEngine().integralHeatSinkCapacity();
+    public static int getBaseChassisHeatSinks(Mech unit, boolean compact) {
+        int engineHSCapacity = unit.getEngine().integralHeatSinkCapacity(compact);
 
         if (unit.isOmni()) {
-            engineHSCapacity = Math.min(engineHSCapacity, unit.getEngine().getBaseChassisHeatSinks());
+            engineHSCapacity = Math.min(engineHSCapacity, unit.getEngine().getBaseChassisHeatSinks(compact));
         }
 
         return engineHSCapacity;

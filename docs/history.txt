@@ -18,6 +18,7 @@ V 0.0.0.21-dev
 + tank stealth duplicate crit issue
 + Mech print update
 + DS printing update
++ Compact HS bugfix
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
