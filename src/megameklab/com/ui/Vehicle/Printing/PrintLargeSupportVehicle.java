@@ -36,7 +36,7 @@ import javax.print.attribute.standard.PrintQuality;
 import megamek.common.Engine;
 import megamek.common.LargeSupportTank;
 import megamek.common.MiscType;
-import megamek.common.Pilot;
+import megamek.common.Crew;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -159,7 +159,7 @@ public class PrintLargeSupportVehicle implements Printable {
         g2d.setFont(font);
 
         if ((largesupporttank.getCrew() != null) && !largesupporttank.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = largesupporttank.getCrew();
+            Crew pilot = largesupporttank.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
@@ -335,7 +335,7 @@ public class PrintLargeSupportVehicle implements Printable {
         g2d.setFont(font);
 
         if ((largesupporttank2.getCrew() != null) && !largesupporttank2.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = largesupporttank2.getCrew();
+            Crew pilot = largesupporttank2.getCrew();
             g2d.drawString(pilot.getName(), 270, 120 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);

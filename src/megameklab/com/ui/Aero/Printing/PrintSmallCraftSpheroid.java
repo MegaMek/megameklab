@@ -35,7 +35,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
-import megamek.common.Pilot;
+import megamek.common.Crew;
 import megamek.common.SmallCraft;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -103,7 +103,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         g2d.setFont(font);
 
         if ((smallCraft.getCrew() != null) && !smallCraft.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = smallCraft.getCrew();
+            Crew pilot = smallCraft.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);

@@ -35,11 +35,12 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import megamek.common.Crew;
 import megamek.common.Engine;
 import megamek.common.MiscType;
-import megamek.common.Pilot;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
+import megameklab.com.ui.Mek.Printing.BipedMechJumping;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
@@ -149,7 +150,7 @@ public class PrintVehicle implements Printable {
         g2d.setFont(font);
 
         if ((tank.getCrew() != null) && !tank.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = tank.getCrew();
+            Crew pilot = tank.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
@@ -161,6 +162,11 @@ public class PrintVehicle implements Printable {
         } else {
             int mascMP = tank.getRunMP();
             g2d.drawString(Integer.toString(tank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+        }
+
+        if (tank.getJumpMP() > 0){
+            BipedMechJumping.paint(g2d);
+            g2d.drawString(Integer.toString(tank.getJumpMP()), 79, 155f);
         }
 
         g2d.drawString(tank.getMovementModeAsString(), 88, 166);
@@ -325,7 +331,7 @@ public class PrintVehicle implements Printable {
         g2d.setFont(font);
 
         if ((tank2.getCrew() != null) && !tank2.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = tank2.getCrew();
+            Crew pilot = tank2.getCrew();
             g2d.drawString(pilot.getName(), 270, 120 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);

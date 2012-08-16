@@ -103,7 +103,7 @@ public class PrintAero implements Printable {
 
         // if ((aero.getCrew() != null) &&
         // !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
-        // Pilot pilot = aero.getCrew();
+        // Crew pilot = aero.getCrew();
         // TODO: Fixme, these are not the correct coordinates
         // g2d.drawString(pilot.getName(), 270, 120);
         // g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);

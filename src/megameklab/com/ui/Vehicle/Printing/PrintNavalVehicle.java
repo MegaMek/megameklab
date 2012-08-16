@@ -35,7 +35,7 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
 import megamek.common.MiscType;
-import megamek.common.Pilot;
+import megamek.common.Crew;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -111,7 +111,7 @@ public class PrintNavalVehicle implements Printable {
         g2d.setFont(font);
 
         if ((sub.getCrew() != null) && !sub.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = sub.getCrew();
+            Crew pilot = sub.getCrew();
             g2d.drawString(pilot.getName(), 270+leftmargin, topmargin+120) ;
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295+leftmargin, topmargin+132) ;
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365+leftmargin, topmargin+132) ;
