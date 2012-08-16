@@ -35,7 +35,7 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
 import megamek.common.MiscType;
-import megamek.common.Pilot;
+import megamek.common.Crew;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -142,7 +142,7 @@ public class PrintDualTurretVehicle implements Printable {
         g2d.setFont(font);
 
         if ((tank.getCrew() != null) && !tank.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = tank.getCrew();
+            Crew pilot = tank.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
@@ -317,7 +317,7 @@ public class PrintDualTurretVehicle implements Printable {
         g2d.setFont(font);
 
         if ((tank2.getCrew() != null) && !tank2.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = tank2.getCrew();
+            Crew pilot = tank2.getCrew();
             g2d.drawString(pilot.getName(), 270, 120 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);

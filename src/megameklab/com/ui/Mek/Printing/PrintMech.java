@@ -42,7 +42,7 @@ import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.Pilot;
+import megamek.common.Crew;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megameklab.com.util.ImageHelper;
@@ -239,7 +239,7 @@ public class PrintMech implements Printable {
 
 
         if ((mech.getCrew() != null) && !mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = mech.getCrew();
+            Crew pilot = mech.getCrew();
             g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 121);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);

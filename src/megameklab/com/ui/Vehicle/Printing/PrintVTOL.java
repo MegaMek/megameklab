@@ -34,7 +34,7 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
 import megamek.common.MiscType;
-import megamek.common.Pilot;
+import megamek.common.Crew;
 import megamek.common.SupportVTOL;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -150,7 +150,7 @@ public class PrintVTOL implements Printable {
         g2d.setFont(font);
 
         if ((vtol.getCrew() != null) && !vtol.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = vtol.getCrew();
+            Crew pilot = vtol.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
@@ -328,7 +328,7 @@ public class PrintVTOL implements Printable {
         g2d.setFont(font);
 
         if ((vtol2.getCrew() != null) && !vtol2.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = vtol2.getCrew();
+            Crew pilot = vtol2.getCrew();
             g2d.drawString(pilot.getName(), 270, 120 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132 + secondPageMargin);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);

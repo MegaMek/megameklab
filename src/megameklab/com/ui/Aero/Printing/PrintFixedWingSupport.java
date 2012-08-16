@@ -35,7 +35,7 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
 import megamek.common.FixedWingSupport;
-import megamek.common.Pilot;
+import megamek.common.Crew;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperAero;
@@ -106,7 +106,7 @@ public class PrintFixedWingSupport implements Printable {
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
         if ((fixedWingSupport.getCrew() != null) && !fixedWingSupport.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = fixedWingSupport.getCrew();
+            Crew pilot = fixedWingSupport.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
