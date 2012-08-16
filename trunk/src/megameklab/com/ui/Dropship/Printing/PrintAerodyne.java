@@ -34,8 +34,8 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
+import megamek.common.Crew;
 import megamek.common.Dropship;
-import megamek.common.Pilot;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperDropShip;
@@ -107,7 +107,7 @@ public class PrintAerodyne implements Printable {
         g2d.setFont(font);
 
         if ((dropship.getCrew() != null) && !dropship.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = dropship.getCrew();
+            Crew pilot = dropship.getCrew();
             g2d.drawString(pilot.getName(), 270, 120);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);

@@ -35,7 +35,7 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
 import megamek.common.Dropship;
-import megamek.common.Pilot;
+import megamek.common.Crew;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperDropShip;
@@ -107,7 +107,7 @@ public class PrintSpheroid implements Printable {
         g2d.setFont(font);
 
         if ((dropship.getCrew() != null) && !dropship.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Pilot pilot = dropship.getCrew();
+            Crew pilot = dropship.getCrew();
             g2d.drawString(pilot.getName(), 270, 125);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 137);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 137);
