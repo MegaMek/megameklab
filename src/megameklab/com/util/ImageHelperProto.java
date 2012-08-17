@@ -65,7 +65,7 @@ public class ImageHelperProto {
         }
 
         int pointY = 160 + offset;
-        int pointX = 115;
+        int pointX = 124;
 
         HashMap<String, Integer> ammoHash = new HashMap<String, Integer>();
 
@@ -155,17 +155,17 @@ public class ImageHelperProto {
     }
 
     public static void printProtomechWeaponsNEquipment(Protomech proto, Graphics2D g2d, float offset) {
-        int locationPoint = 115;
-        int typePoint = 143;
-        int damagePoint = 216;
-        int minPoint = 234;
-        int shtPoint = 252;
-        int medPoint = 266;
-        int longPoint = 282;
+        int locationPoint = 124;
+        int typePoint = 151;
+        int damagePoint = 224;
+        int minPoint = 242;
+        int shtPoint = 260;
+        int medPoint = 274;
+        int longPoint = 290;
         float linePoint = 119f + offset;
         boolean torsoWeaponUsed = false;
 
-        float lineFeed = 6.7f;
+        float lineFeed = 6.5f;
 
         boolean newLineNeeded = false;
 

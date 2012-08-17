@@ -35,6 +35,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.AmmoType;
+import megamek.common.Crew;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.EquipmentType;
@@ -42,9 +43,9 @@ import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.Crew;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
+import megameklab.com.ui.ProtoMek.Printing.ProtomechTemplate1;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 
@@ -93,6 +94,7 @@ public class PrintMech implements Printable {
         }
 
         System.gc();
+        //ProtomechTemplate1.paint(g2d);
         BipedMechTemplate.paint(g2d);
         printMekImage(g2d, hud);
 
