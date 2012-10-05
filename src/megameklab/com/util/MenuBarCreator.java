@@ -44,6 +44,7 @@ import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
+import megamek.common.Infantry;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Tank;
@@ -325,6 +326,21 @@ public class MenuBarCreator extends JMenuBar {
             });
             unitMenu.add(item);
         }
+        
+        if (!(unit instanceof Infantry) || (unit instanceof BattleArmor)) {
+            item = new JMenuItem();
+            item.setText("Infantry");
+            item.setMnemonic(KeyEvent.VK_I);
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    jMenuLoadInfantry();
+                }
+
+            });
+            unitMenu.add(item);
+        }
+        
         file.add(unitMenu);
 
         JMenu loadMenu = new JMenu("Load");
@@ -847,6 +863,11 @@ public class MenuBarCreator extends JMenuBar {
 
     private void jMenuLoadMech() {
         new megameklab.com.ui.Mek.MainUI();
+        parentFrame.dispose();
+    }
+    
+    private void jMenuLoadInfantry() {
+    	new megameklab.com.ui.Infantry.MainUI();
         parentFrame.dispose();
     }
 

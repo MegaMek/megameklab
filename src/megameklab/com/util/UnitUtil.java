@@ -47,6 +47,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
+import megamek.common.Infantry;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MiscType;
@@ -1227,18 +1228,25 @@ public class UnitUtil {
         DecimalFormat myFormatter = new DecimalFormat("#,##0", unusualSymbols);
         StringBuilder sb = new StringBuilder("<HTML>");
         sb.append(eq.getName());
-        sb.append("<br>Crits: ");
-        sb.append(eq.getType().getCriticals(unit));
-        sb.append("<br>Tonnage: ");
-        if (eq.getType() instanceof MiscType) {
-            sb.append(((MiscType) eq.getType()).getTonnage(unit, eq.getLocation()));
+        if(eq.getType() instanceof InfantryWeapon) {
+        	sb.append("<br>Damage/Trooper: ");
+        	double infDamage = ((InfantryWeapon)eq.getType()).getInfantryDamage();
+            sb.append(infDamage);
+            sb.append("<br>Range Class: " + ((InfantryWeapon)eq.getType()).getInfantryRange());
         } else {
-            sb.append(eq.getType().getTonnage(unit));
-        }
-
-        if (eq.getType() instanceof WeaponType) {
-            sb.append("<br>Heat: ");
-            sb.append(((WeaponType) eq.getType()).getHeat());
+	        sb.append("<br>Crits: ");
+	        sb.append(eq.getType().getCriticals(unit));
+	        sb.append("<br>Tonnage: ");
+	        if (eq.getType() instanceof MiscType) {
+	            sb.append(((MiscType) eq.getType()).getTonnage(unit, eq.getLocation()));
+	        } else {
+	            sb.append(eq.getType().getTonnage(unit));
+	        }
+	
+	        if (eq.getType() instanceof WeaponType) {
+	            sb.append("<br>Heat: ");
+	            sb.append(((WeaponType) eq.getType()).getHeat());
+	        }
         }
         sb.append("<Br>Cost: ");
 
@@ -1247,6 +1255,8 @@ public class UnitUtil {
         sb.append(myFormatter.format(cost));
         sb.append(" CBills");
 
+        
+        
         if (eq.isRearMounted()) {
             sb.append("<br>Rear Facing");
         }
@@ -1514,6 +1524,10 @@ public class UnitUtil {
         if (unit instanceof BattleArmor) {
             return UnitUtil.isBattleArmorWeapon(eq, unit);
         }
+        
+        if(unit instanceof Infantry) {
+        	return UnitUtil.isInfantryEquipment(eq, unit);
+        }
 
         return UnitUtil.isMechWeapon(eq, unit);
     }
@@ -1683,6 +1697,12 @@ public class UnitUtil {
             }
         }
         return true;
+    }
+    
+    public static boolean isInfantryEquipment(EquipmentType eq, Entity unit) {
+
+    	//TODO: adjust for field guns and artillery
+        return eq instanceof InfantryWeapon;
     }
 
     public static boolean isTankEquipment(EquipmentType eq) {

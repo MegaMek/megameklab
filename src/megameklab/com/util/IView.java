@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
+import megamek.common.Infantry;
 import megamek.common.Mech;
 import megamek.common.Tank;
 import megamek.common.VTOL;
@@ -42,6 +43,10 @@ public class IView extends JPanel {
     }
 
     public IView(BattleArmor unit) {
+        this.unit = unit;
+    }
+    
+    public IView(Infantry unit) {
         this.unit = unit;
     }
 
@@ -67,5 +72,9 @@ public class IView extends JPanel {
 
     public BattleArmor getBattleArmor() {
         return (BattleArmor) unit;
+    }
+    
+    public Infantry getInfantry() {
+    	return (Infantry) unit;
     }
 }
