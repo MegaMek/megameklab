@@ -20,7 +20,11 @@ V 0.0.0.21-dev
 + DS printing update
 + Compact HS bugfix
 + Fixes for newer MM 
++ vectorized ProtoMech printing
 + Infantry lab (still needs field gun/artillery options)
++ Added IS Prototype Double Heatsink as per the rules in "Era Report 3052" and 
+   "Starterbook: Sword & Dragon".
++ vectorized BA sheet printing
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

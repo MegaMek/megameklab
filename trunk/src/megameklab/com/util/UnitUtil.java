@@ -82,6 +82,7 @@ import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.ui.Mek.tabs.EquipmentTab;
 
 public class UnitUtil {
 
@@ -372,6 +373,12 @@ public class UnitUtil {
                 }
                 return false;
             }
+            if (mounted.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
+                if (mounted.getType().getInternalName().equals("ISDoubleHeatSinkPrototype")) {
+                    return true;
+                }
+                return false;
+            }
         }
 
         return false;
@@ -384,11 +391,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isHeatSink(Mounted eq) {
-        if ((eq.getType() instanceof MiscType) && (eq.getType().hasFlag(MiscType.F_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
-            return true;
-        }
-
-        return false;
+        return ((eq.getType() != null) || isHeatSink(eq.getType()));
     }
 
     /**
@@ -398,7 +401,8 @@ public class UnitUtil {
      * @return
      */
     public static boolean isHeatSink(EquipmentType eq) {
-        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_HEAT_SINK)
+                || eq.hasFlag(MiscType.F_LASER_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))) {
             return true;
         }
 
@@ -428,7 +432,7 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeHeatSinks(Mech unit) {
-
+        System.out.println("Removing heat sinks.");
         ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(unit.getMisc());
         for (Mounted eq : equipmentList) {
             if (UnitUtil.isHeatSink(eq)) {
@@ -441,6 +445,7 @@ public class UnitUtil {
                 unit.getEquipment().remove(eq);
             }
         }
+        System.out.println("Heat sink removal finished.");
     }
 
     /**
@@ -451,9 +456,16 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, String hsType) {
+        String msg = "addHeatSinkMounts:";
+        msg += "\n  Unit: " + unit.getDisplayName();
+        msg += "\n  HS Amount: " + hsAmount;
+        msg += "\n  HS Type: " + hsType;
+        System.out.println(msg);
         int engineHSCapacity = UnitUtil.getBaseChassisHeatSinks(unit, hsType.equals("Compact"));
+        System.out.println("Engine capacity = " + engineHSCapacity);
 
         int heatSinks = hsAmount - engineHSCapacity;
+        System.out.println("Remaining sinks: " + heatSinks);
         EquipmentType sinkType;
 
         sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan()));
@@ -461,11 +473,13 @@ public class UnitUtil {
         for (; heatSinks > 0; heatSinks--) {
 
             try {
+                System.out.println("Adding Heat Sink " + heatSinks);
                 unit.addEquipment(new Mounted(unit, sinkType), Entity.LOC_NONE, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        System.out.println("Resetting sinks.");
         unit.resetSinks();
     }
 
@@ -509,6 +523,11 @@ public class UnitUtil {
      * @param hsType
      */
     public static void updateHeatSinks(Mech unit, int hsAmount, String hsType) {
+        String msg = "Updating Heat Sinks:";
+        msg += "\n  Unit: " + unit.getDisplayName();
+        msg += "\n  HS Amount: " + hsAmount;
+        msg += "\n  HS Type: " + hsType;
+        System.out.println(msg);
         UnitUtil.removeHeatSinks(unit);
         if (hsType.equals("Compact")) {
             int engineCompacts = Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit, true));
@@ -530,6 +549,7 @@ public class UnitUtil {
                 }
             }
         } else {
+            System.out.println("Adding engine sinks.");
             unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit, false)));
             UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
         }
@@ -1599,7 +1619,12 @@ public class UnitUtil {
             return false;
         }
 
-        if (eq.equals(EquipmentType.get("CLTAG")) || eq.equals(EquipmentType.get("ISC3MasterBoostedSystemUnit")) || eq.equals(EquipmentType.get("ISC3MasterUnit")) || eq.equals(EquipmentType.get("ISTAG")) || eq.equals(EquipmentType.get("IS Coolant Pod")) || eq.equals(EquipmentType.get("Clan Coolant Pod")) || eq.equals(EquipmentType.get("CLLightTAG"))) {
+        if (eq.equals(EquipmentType.get("CLTAG"))
+                || eq.equals(EquipmentType.get("ISC3MasterBoostedSystemUnit"))
+                || eq.equals(EquipmentType.get("ISC3MasterUnit"))
+                || eq.equals(EquipmentType.get("ISTAG")) || eq.equals(EquipmentType.get("IS Coolant Pod"))
+                || eq.equals(EquipmentType.get("Clan Coolant Pod"))
+                || eq.equals(EquipmentType.get("CLLightTAG"))) {
             return true;
         }
 
@@ -1614,9 +1639,11 @@ public class UnitUtil {
 
             if (eq.hasFlag(MiscType.F_MECH_EQUIPMENT) && !eq.hasFlag(MiscType.F_CLUB) && !eq.hasFlag(MiscType.F_HAND_WEAPON)) {
                 return true;
-
             }
 
+            if (eq.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
+                return true;
+            }
         }
 
         return false;

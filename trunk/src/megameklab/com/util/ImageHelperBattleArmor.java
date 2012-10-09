@@ -68,7 +68,7 @@ public class ImageHelperBattleArmor {
     }
 
     public static void printBAArmor(BattleArmor ba, Graphics2D g2d, float lineFeed, float offset) {
-        float positionX = 27;
+        float positionX = 35;
         float positionY = 187 + offset;
         String armorString = "Armor:";
         StringBuffer buffer = new StringBuffer();
@@ -76,7 +76,7 @@ public class ImageHelperBattleArmor {
         // camo system is not armor and should print separately
         if (ba.isStealthActive() && (ba.isStealthy() || ba.isMimetic())) {
             if (ba.isMimetic()) {
-                buffer.append("  "+ba.getStealthName() + " (+3 -hexes moved)");
+                buffer.append("  "+ba.getStealthName() + " (+3 - hexes moved)");
             } else {
                 buffer.append(String.format("  %1$s (+%2$s/+%3$s/+%4$s)", ba.getStealthName(), ba.getShortStealthMod(), ba.getMediumStealthMod(), ba.getLongStealthMod()));
             }
@@ -87,7 +87,6 @@ public class ImageHelperBattleArmor {
         }
 
         if (buffer.length() > 2) {
-
             Font font = UnitUtil.deriveFont(true, 9.0f);
             g2d.setFont(font);
             g2d.drawString(armorString, positionX, positionY);
@@ -99,8 +98,8 @@ public class ImageHelperBattleArmor {
         if (ba.hasCamoSystem()) {
             Font font = UnitUtil.getNewFont(g2d, buffer.toString(), false, 178, 7.0f);
             g2d.setFont(font);
-            String camoString = (ba.getCamoName() + " (+2 -hexes moved)");
-            g2d.drawString(camoString, 27, positionY-lineFeed);
+            String camoString = (ba.getCamoName() + " (+2 - hexes moved)");
+            g2d.drawString(camoString, 35, positionY-lineFeed);
         }
     }
 
@@ -110,13 +109,13 @@ public class ImageHelperBattleArmor {
 
     public static void printBattleArmorWeaponsNEquipment(BattleArmor ba, Graphics2D g2d, float offset) {
 
-        int typePoint = 26;
-        int damagePoint = 130;
-        int minPoint = 150;
-        int shtPoint = 166;
-        int medPoint = 180;
-        int longPoint = 198;
-        float linePoint = 149.1f + offset;
+        int typePoint = 30;
+        int damagePoint = 133;
+        int minPoint = 155;
+        int shtPoint = 172;
+        int medPoint = 188;
+        int longPoint = 204;
+        float linePoint = 150f + offset;
         float maxHeight = 38.0f;
         float lineFeed = 6.7f;
         float stringHeight = 0f;
