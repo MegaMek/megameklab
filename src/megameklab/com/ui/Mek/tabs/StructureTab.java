@@ -541,10 +541,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     if (rating > 500) {
                         JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
                     } else {
+                        System.out.println("Clearning engine crits.");
                         getMech().clearEngineCrits();
+                        System.out.println("Setting new engine rating.");
                         getMech().setEngine(new Engine(rating, convertEngineType(engineType.getSelectedItem().toString()), clanEngineFlag));
                         getMech().addEngineCrits();
+                        System.out.println("Adding engine crits.");
                         int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
+                        System.out.println("Updating # engine heat sinks to " + autoSinks);
                         UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
                     }
                 } else if (combo.equals(structureCombo)) {
@@ -594,10 +598,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
                 } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
                     int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
+                    System.out.println("Heat sink type or number changed.  Updating # engine sinks to " + autoSinks);
                     UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
                 } else if (combo.equals(baseChassisHeatSinks)) {
                     getMech().getEngine().setBaseChassisHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
                     int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
+                    System.out.println("Base chassis sinks changed.  Updating # engine sinks to " + autoSinks);
                     UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
