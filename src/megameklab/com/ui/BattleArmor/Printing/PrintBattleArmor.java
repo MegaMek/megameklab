@@ -202,6 +202,9 @@ public class PrintBattleArmor implements Printable {
         // unusualSymbols);
         double bv = battleArmor.calculateBattleValue(true, true);
         if (bv != -1) {
+            font = UnitUtil.deriveFont(true, 8);
+            g2d.setFont(font);
+            g2d.drawString("BV: ", 230, 209.5f + currentMargin);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
             g2d.drawString(String.format("%1$,d", battleArmor.calculateBattleValue(true, true)) + "/" + String.format("%1$,d", battleArmor.calculateBattleValue(true, true, true)), 245, 209.5f + currentMargin);
