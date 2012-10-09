@@ -45,7 +45,6 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
-import megameklab.com.ui.ProtoMek.Printing.ProtomechTemplate1;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
 

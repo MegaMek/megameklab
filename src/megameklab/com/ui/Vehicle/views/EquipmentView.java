@@ -143,7 +143,7 @@ public class EquipmentView extends IView implements ActionListener {
     private void loadEquipmentTable() {
         for (Mounted mount : unit.getMisc()) {
 
-            if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK) || UnitUtil.isArmorOrStructure(mount.getType()))) {
+            if (isHeatSink(mount) || UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
             if (UnitUtil.isUnitEquipment(mount.getType(), unit)) {
@@ -155,8 +155,7 @@ public class EquipmentView extends IView implements ActionListener {
     private void loadHeatSinks() {
         int engineHeatSinks = 10;// UnitUtil.getBaseChassisHeatSinks(unit);
         for (Mounted mount : unit.getMisc()) {
-
-            if ((mount.getType().hasFlag(MiscType.F_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || mount.getType().hasFlag(MiscType.F_LASER_HEAT_SINK))) {
+            if (isHeatSink(mount)) {
                 if (engineHeatSinks-- > 0) {
                     continue;
                 }
@@ -171,8 +170,7 @@ public class EquipmentView extends IView implements ActionListener {
         for (; location < equipmentList.getRowCount();) {
 
             Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
-            EquipmentType eq = mount.getType();
-            if ((eq.hasFlag(MiscType.F_HEAT_SINK) || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq.hasFlag(MiscType.F_LASER_HEAT_SINK))) {
+            if (isHeatSink(mount)) {
                 try {
                     equipmentList.removeCrit(location);
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
