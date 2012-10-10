@@ -109,7 +109,7 @@ public class ImageHelperBattleArmor {
 
     public static void printBattleArmorWeaponsNEquipment(BattleArmor ba, Graphics2D g2d, float offset) {
 
-        int typePoint = 30;
+        int typePoint = 34;
         int damagePoint = 133;
         int minPoint = 155;
         int shtPoint = 172;
