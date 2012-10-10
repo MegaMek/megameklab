@@ -116,47 +116,47 @@ public class PrintBattleArmor implements Printable {
     }
 
     private void printBattleArmorData(Graphics2D g2d, int squadNumber) {
-        String BattleArmorName = battleArmor.getChassis() + " " + battleArmor.getModel();
+        String battleArmorName = battleArmor.getChassis() + " " + battleArmor.getModel();
 
-        g2d.setFont(UnitUtil.getNewFont(g2d, BattleArmorName, true, 85, 9.0f));
-        g2d.drawString(BattleArmorName, 53, 107.5f + currentMargin);
+        g2d.setFont(UnitUtil.getNewFont(g2d, battleArmorName, true, 85, 8.0f));
+        g2d.drawString(battleArmorName, 53, 107.6f + currentMargin);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
         if ((battleArmor.getSource() != null) && (battleArmor.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
-            font = UnitUtil.deriveFont(true, 7.0f);
+            font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sourceFluff, 143, 108 + currentMargin);
+            g2d.drawString(sourceFluff, 143, 107.6f + currentMargin);
 
-            font = UnitUtil.getNewFont(g2d, battleArmor.getSource(), false, 51, 8.0f);
+            font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(battleArmor.getSource(), 157, 108 + currentMargin);
+            g2d.drawString(battleArmor.getSource(), 158, 107.6f + currentMargin);
 
         } else {
             String yearFluff = "Year: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(yearFluff, 143, 108 + currentMargin);
+            g2d.drawString(yearFluff, 143, 107.6f + currentMargin);
 
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format(" %1$s", battleArmor.getYear()), 161, 108 + currentMargin);
+            g2d.drawString(String.format(" %1$s", battleArmor.getYear()), 161, 107.6f + currentMargin);
         }
 
         font = UnitUtil.deriveFont(true, 12.0f);
         g2d.setFont(font);
 
         if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_ADVANCED) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_ADVANCED))) {
-            g2d.drawString("(Advanced)", 470, 66);
+            g2d.drawString("(ADVANCED)", 485, 64);
             isAdvanced = true;
         } else if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL))) {
-            g2d.drawString("(Experimental)", 466, 66);
+            g2d.drawString("(EXPERIMENTAL)", 473, 64);
             isAdvanced = true;
         }
 
@@ -166,7 +166,7 @@ public class PrintBattleArmor implements Printable {
         if (battleArmor.hasDWP()) {
             groundMP = groundMP + " [" + Integer.toString(battleArmor.getWalkMP(true, true, false, true, false)) + "]";
         }
-        g2d.drawString(groundMP, 78, 131.5f + currentMargin);
+        g2d.drawString(groundMP, 78, 131.3f + currentMargin);
         int secondaryMP = battleArmor.getJumpMP(true, true, true);
         if (battleArmor.getMovementMode() == EntityMovementMode.INF_UMU) {
             secondaryMP = battleArmor.getRunMP(true, true, true);
@@ -181,16 +181,16 @@ public class PrintBattleArmor implements Printable {
                 movment = "Jump:";
             }
 
-            g2d.drawString(movment, 133, 131.5f + currentMargin);
+            g2d.drawString(movment, 143, 131.3f + currentMargin);
 
-            float positionX = 133 + ImageHelper.getStringWidth(g2d, movment, font);
+            float positionX = 143 + ImageHelper.getStringWidth(g2d, movment, font);
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
             String printString = Integer.toString(secondaryMP);
             if (battleArmor.hasDWP() || battleArmor.isBurdened()) {
                 printString = "[" + printString + "]";
             }
-            g2d.drawString(printString, positionX, 131.5f + currentMargin);
+            g2d.drawString(printString, positionX, 131.3f + currentMargin);
         }
 
         // Cost/BV

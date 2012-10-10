@@ -82,7 +82,6 @@ import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megameklab.com.ui.Mek.tabs.EquipmentTab;
 
 public class UnitUtil {
 
@@ -1226,11 +1225,11 @@ public class UnitUtil {
         if (unit.isMixedTech() && (eq.getTechLevel() != TechConstants.T_ALLOWED_ALL) && (eq.getTechLevel() != TechConstants.T_TECH_UNKNOWN)) {
 
             if (unit.isClan() && !UnitUtil.isClanEquipment(eq, unit)) {
-                return eq.getName() + " (IS)";
+                return eq.getShortName() + " (IS)";
             }
 
             if (!unit.isClan() && UnitUtil.isClanEquipment(eq, unit)) {
-                return eq.getName() + " (Clan)";
+                return eq.getShortName() + " (Clan)";
             }
         }
 
@@ -1262,7 +1261,7 @@ public class UnitUtil {
 	        } else {
 	            sb.append(eq.getType().getTonnage(unit));
 	        }
-	
+
 	        if (eq.getType() instanceof WeaponType) {
 	            sb.append("<br>Heat: ");
 	            sb.append(((WeaponType) eq.getType()).getHeat());
@@ -1275,8 +1274,8 @@ public class UnitUtil {
         sb.append(myFormatter.format(cost));
         sb.append(" CBills");
 
-        
-        
+
+
         if (eq.isRearMounted()) {
             sb.append("<br>Rear Facing");
         }
@@ -1544,7 +1543,7 @@ public class UnitUtil {
         if (unit instanceof BattleArmor) {
             return UnitUtil.isBattleArmorWeapon(eq, unit);
         }
-        
+
         if(unit instanceof Infantry) {
         	return UnitUtil.isInfantryEquipment(eq, unit);
         }
@@ -1725,7 +1724,7 @@ public class UnitUtil {
         }
         return true;
     }
-    
+
     public static boolean isInfantryEquipment(EquipmentType eq, Entity unit) {
 
     	//TODO: adjust for field guns and artillery
