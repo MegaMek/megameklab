@@ -386,9 +386,9 @@ public class ImageHelper {
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
 
-                Font nameFont = UnitUtil.getNewFont(g2d, name, false, 65, 7.0f);
+                Font nameFont = UnitUtil.getNewFont(g2d, name, false, 60, 7.0f);
                 if(eqi.isDestroyed) {
-                	nameFont = nameFont.deriveFont(strikeThroughAttr);
+                    nameFont = nameFont.deriveFont(strikeThroughAttr);
                 }
                 g2d.setFont(nameFont);
 
