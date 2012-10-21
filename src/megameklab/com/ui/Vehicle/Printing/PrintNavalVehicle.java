@@ -35,7 +35,6 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Engine;
 import megamek.common.MiscType;
-import megamek.common.Crew;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -47,8 +46,8 @@ public class PrintNavalVehicle implements Printable {
     private Tank sub = null;
     private ArrayList<Tank> subList;
     PrinterJob masterPrintJob;
-    private int topmargin = 2;
-    private int leftmargin = -7;
+    private int topmargin = 0;
+    private int leftmargin = 8;
 
 
     public PrintNavalVehicle(ArrayList<Tank> list, PrinterJob masterPrintJob) {
@@ -74,27 +73,51 @@ public class PrintNavalVehicle implements Printable {
 
         System.gc();
 
-        g2d.drawImage(ImageHelper.getRecordSheet(sub, false), 18, 18, 558, 736, null);
+        //g2d.drawImage(ImageHelper.getRecordSheet(sub, false), 18, 18, 558, 736, null);
+        NavalArmorDiagram.paint(g2d);
+        NavalCritTable.paint(g2d);
+        NavalData.paint(g2d);
+        NavalHitTable.paint(g2d);
+        NavalMotiveDmgTable.paint(g2d);
 
         printTankData(g2d);
         printArmor(g2d);
         printWeaponsNEquipment(g2d);
 
-        // Armor Pips
+        // Armor/IS Pips
+        try {
+            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Left_Armor_"+sub.getArmor(Tank.LOC_LEFT)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Left_Armor_"+sub.getArmor(Tank.LOC_LEFT)), g2d);
+            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Rear_Armor_"+sub.getArmor(Tank.LOC_REAR)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Rear_Armor_"+sub.getArmor(Tank.LOC_REAR)), g2d);
+            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Front_Armor_"+sub.getArmor(Tank.LOC_FRONT)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Front_Armor_"+sub.getArmor(Tank.LOC_FRONT)), g2d);
+            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Right_Armor_"+sub.getArmor(Tank.LOC_RIGHT)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Right_Armor_"+sub.getArmor(Tank.LOC_RIGHT)), g2d);
+            if (!sub.hasNoTurret()) {
+                Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Turret_Armor_"+sub.getArmor(Tank.LOC_TURRET)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Turret_Armor_"+sub.getArmor(Tank.LOC_TURRET)), g2d);
+            }
+            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_IS_"+sub.getInternal(Tank.LOC_LEFT)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_IS_"+sub.getInternal(Tank.LOC_LEFT)), g2d);
+            if (!sub.hasNoTurret()) {
+                Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Turret_IS_"+sub.getInternal(Tank.LOC_TURRET)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Turret_IS_"+sub.getInternal(Tank.LOC_TURRET)), g2d);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*
         printFrontArmor(g2d, sub.getOArmor(Tank.LOC_FRONT), false, sub.hasModularArmor(Tank.LOC_FRONT));
         printLeftArmor(g2d, sub.getOArmor(Tank.LOC_LEFT), false, sub.hasModularArmor(Tank.LOC_LEFT));
         printRightArmor(g2d, sub.getOArmor(Tank.LOC_RIGHT), false, sub.hasModularArmor(Tank.LOC_RIGHT));
         printRearArmor(g2d, sub.getOArmor(Tank.LOC_REAR), false, sub.hasModularArmor(Tank.LOC_REAR));
         printTurretArmor(g2d, sub.getOArmor(Tank.LOC_TURRET), false, sub.hasModularArmor(Tank.LOC_TURRET));
+        */
 
         // Internal Pips
+        /*
         printFrontStruct(g2d, sub.getOInternal(Tank.LOC_FRONT), false);
         printLeftStruct(g2d, sub.getOInternal(Tank.LOC_LEFT), false);
         printRightStruct(g2d, sub.getOInternal(Tank.LOC_RIGHT), false);
         printRearStruct(g2d, sub.getOInternal(Tank.LOC_REAR), false);
 
         printTurretStruct(g2d, sub.getOInternal(Tank.LOC_TURRET), false);
-
+         */
         printTankImage(g2d);
 
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
@@ -105,17 +128,17 @@ public class PrintNavalVehicle implements Printable {
         String subName = sub.getChassis() + " " + sub.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, subName, true, 180, 10.0f));
-        g2d.drawString(subName, 50+leftmargin, topmargin+120) ;
+        g2d.drawString(subName, 50+leftmargin, topmargin+119) ;
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        if ((sub.getCrew() != null) && !sub.getCrew().getName().equalsIgnoreCase("unnamed")) {
+        /*if ((sub.getCrew() != null) && !sub.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = sub.getCrew();
-            g2d.drawString(pilot.getName(), 270+leftmargin, topmargin+120) ;
+            g2d.drawString(pilot.getName(), 270+leftmargin, topmargin+117) ;
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295+leftmargin, topmargin+132) ;
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365+leftmargin, topmargin+132) ;
-        }
+        }*/
 
         g2d.drawString(Integer.toString(sub.getWalkMP()), 79+leftmargin, topmargin+144) ;
         if (!sub.hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) {
@@ -157,7 +180,7 @@ public class PrintNavalVehicle implements Printable {
         if (sub.getWeight() >= 5) {
             int tonnage = (int) Math.ceil(sub.getWeight());
 
-            g2d.drawString(Integer.toString(tonnage), 177+leftmargin, topmargin+134) ;
+            g2d.drawString(Integer.toString(tonnage), 177+leftmargin, topmargin+133) ;
         } else {
             // DecimalFormatSymbols unusualSymbols =
             // new DecimalFormatSymbols();
@@ -210,26 +233,26 @@ public class PrintNavalVehicle implements Printable {
         } else if (sub.isClan()) {
             techBase = "Clan";
         }
-        g2d.drawString(techBase, 176+leftmargin, topmargin+145) ;
+        g2d.drawString(techBase, 178+leftmargin, topmargin+144) ;
 
         if ((sub.getSource() != null) && (sub.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sourceFluff, 133 + leftmargin, nextDataLine);
+            g2d.drawString(sourceFluff, 142 + leftmargin, nextDataLine);
 
             font = UnitUtil.getNewFont(g2d, sub.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sub.getSource(), 176 + leftmargin, nextDataLine);
+            g2d.drawString(sub.getSource(), 178 + leftmargin, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(yearFluff, 133 + leftmargin, nextDataLine);
+            g2d.drawString(yearFluff, 143 + leftmargin, nextDataLine);
 
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
@@ -250,10 +273,10 @@ public class PrintNavalVehicle implements Printable {
         if (bv != -1) {
             font = UnitUtil.deriveFont(true, 8);
             g2d.setFont(font);
-            g2d.drawString("BV: ", 35+leftmargin, topmargin+357) ;
+            g2d.drawString("BV: ", 30+leftmargin, topmargin+368) ;
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", sub.calculateBattleValue(true, true)), 50+leftmargin, topmargin+357) ;
+            g2d.drawString(String.format("%1$,d", sub.calculateBattleValue(true, true)), 45+leftmargin, topmargin+368) ;
         }
 
         // myFormatter = new DecimalFormat("#,###.##", unusualSymbol);
@@ -265,10 +288,9 @@ public class PrintNavalVehicle implements Printable {
             g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(sub), 400+leftmargin, topmargin+64) ;
         }
 
-        font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
+        g2d.setFont(UnitUtil.deriveFont(true, 7.0f));
 
-        g2d.drawString("2012", 62.5f, 743.5f);
+        g2d.drawString("2012", leftmargin+40, topmargin+767.5f);
 
     }
 
@@ -284,19 +306,19 @@ public class PrintNavalVehicle implements Printable {
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_FRONT)), 458+leftmargin, topmargin+58);
-        ImageHelper.printRotatedText(g2d, Integer.toString(sub.getArmor(Tank.LOC_RIGHT)), 90, 545+leftmargin, topmargin+367);
-        ImageHelper.printRotatedText(g2d, Integer.toString(sub.getArmor(Tank.LOC_LEFT)), 270, 382+leftmargin, topmargin+312);
-        g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_REAR)), 458+leftmargin, topmargin+650);
+        g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_FRONT)), 476+leftmargin, topmargin+55.f);
+        ImageHelper.printRotatedText(g2d, Integer.toString(sub.getArmor(Tank.LOC_RIGHT)), 90, 567+leftmargin, topmargin+373);
+        ImageHelper.printRotatedText(g2d, Integer.toString(sub.getArmor(Tank.LOC_LEFT)), 270, 396+leftmargin, topmargin+316);
+        g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_REAR)), 475+leftmargin, topmargin+665.5f);
 
         if (sub.getOInternal(Tank.LOC_TURRET) > 0) {
-            g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_TURRET)), 455+leftmargin, topmargin+391);
+            g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_TURRET)), 474+leftmargin, topmargin+398.5f);
         }
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelperVehicle.printTankWeaponsNEquipment(sub, g2d, 3);
+        ImageHelperVehicle.printTankWeaponsNEquipment(sub, g2d, 3, 14);
 
     }
 
