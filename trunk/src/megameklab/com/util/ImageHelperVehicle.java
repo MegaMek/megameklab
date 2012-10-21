@@ -131,16 +131,21 @@ public class ImageHelperVehicle {
     }
 
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float offset) {
-        int qtyPoint = 26;
-        int typePoint = 38;
-        int locPoint = 124;
-        int damagePoint = 150;
-        int minPoint = 166;
-        int shtPoint = 177;
-        int medPoint = 195;
-        int longPoint = 211;
+        printTankWeaponsNEquipment(tank, g2d, offset, 0);
+    }
+
+    public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float yoffset, int xoffset) {
+
+        int qtyPoint = 26+xoffset;
+        int typePoint = 38+xoffset;
+        int locPoint = 124+xoffset;
+        int damagePoint = 150+xoffset;
+        int minPoint = 166+xoffset;
+        int shtPoint = 177+xoffset;
+        int medPoint = 195+xoffset;
+        int longPoint = 211+xoffset;
         float maxHeight = 130.3f;
-        float linePoint = 212f + offset;
+        float linePoint = 212f + yoffset;
 
         float lineFeed = 6.7f;
 
@@ -224,7 +229,7 @@ public class ImageHelperVehicle {
 
                 g2d.drawString(Integer.toString(eqi.count), qtyPoint, linePoint);
                 String name = eqi.name.trim();
-                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, font.getSize2D()));
+                g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 75, font.getSize2D()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
@@ -433,7 +438,7 @@ public class ImageHelperVehicle {
             g2d.setFont(font);
         }
 
-        ImageHelper.printVehicleAmmo(tank, g2d, (int) offset==0?0:(int)offset-8);
+        ImageHelper.printVehicleAmmo(tank, g2d, (int) yoffset==0?0:(int)yoffset-8, xoffset);
     }
 
     public static void printLargeSupportTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float offset) {

@@ -25,6 +25,8 @@ V 0.0.0.21-dev
 + Added IS Prototype Double Heatsink as per the rules in "Era Report 3052" and 
    "Starterbook: Sword & Dragon".
 + vectorized BA sheet printing
++ vectorized Naval sheet printing, currently only the Mauna Kea will print
+   correctly, missing armor and IS pip files for other units
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
