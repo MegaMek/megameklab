@@ -424,12 +424,6 @@ public class ImageHelperBattleArmor {
         return new ImageIcon(path + "twba-squad.png").getImage();
     }
 
-    public static Image getBASquadNumber(int position) {
-        String path = new File(ImageHelper.recordSheetPath).getAbsolutePath() + File.separatorChar;
-        position++;
-        return new ImageIcon(path + "twba-squad-" + position + ".png").getImage();
-    }
-
     public static Font getBattleArmorWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<ArrayList<EquipmentInfo>> equipmentLocations, float pointSize) {
 
         Font font = g2d.getFont();
