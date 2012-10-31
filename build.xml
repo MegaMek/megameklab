@@ -81,6 +81,9 @@
 			srcdir="${src}"
 			target="1.6"
 			source="1.6"
+            fork="true"
+            memoryinitialsize="256m"
+            memorymaximumsize="512m"
 		>
 		</javac>
 		<touch

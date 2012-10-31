@@ -33,6 +33,7 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Protomech;
 import megamek.common.TechConstants;
+import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperBattleArmor;
 import megameklab.com.util.ImageHelperProto;
 import megameklab.com.util.UnitUtil;
@@ -76,20 +77,19 @@ public class PrintProtomech implements Printable {
 
         currentMargin = 0;
         //g2d.drawImage(ImageHelper.getRecordSheet(protoMech, false), 18, 18, 558, 738, null);
-        //g2d.drawImage(ImageHelper.getFluffImage(protoMech, ImageHelper.imageProto), 410, 23, 35, 45, null);
 
         int stop = Math.min(5, protoMechList.size() - currentPosition);
 
         for (int pos = 1; pos <= stop; pos++) {
 
-            protoMech = protoMechList.get(pos + currentPosition-1);
+            protoMech = protoMechList.get((pos + currentPosition)-1);
 
             try {
                 Class.forName("megameklab.com.ui.ProtoMek.Printing.ProtomechTemplate"+pos).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.ProtoMek.Printing.ProtomechTemplate"+pos), g2d);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            
+
             g2d.setColor(Color.BLACK);
             printProtomechData(g2d);
             printWeaponsNEquipment(g2d);
@@ -102,7 +102,7 @@ public class PrintProtomech implements Printable {
         Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
         g2d.drawString("2012", 120f, 759.5f);
-
+        g2d.drawImage(ImageHelper.getFluffImage(protoMech, ImageHelper.imageProto), 410, 23, 35, 45, null);
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
 
     }
