@@ -280,9 +280,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             baseChassisHeatSinks.addItem(Integer.toString(count));
         }
 
-        int sinks = getMech().heatSinks();
-        int free = getMech().getEngine().getWeightFreeEngineHeatSinks();
-        heatSinkNumber.setSelectedIndex(getMech().heatSinks() - getMech().getEngine().getWeightFreeEngineHeatSinks());
+        int totalSinks = getMech().heatSinks(false);
+        int freeSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
+        heatSinkNumber.setSelectedIndex(totalSinks - freeSinks);
         baseChassisHeatSinks.setSelectedIndex(Math.max(0, getMech().getEngine().getBaseChassisHeatSinks(getMech().hasCompactHeatSinks())));
 
         if (getMech().isOmni()) {
