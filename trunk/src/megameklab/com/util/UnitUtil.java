@@ -390,7 +390,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isHeatSink(Mounted eq) {
-        return ((eq.getType() != null) || isHeatSink(eq.getType()));
+        return ((eq.getType() != null) && isHeatSink(eq.getType()));
     }
 
     /**
