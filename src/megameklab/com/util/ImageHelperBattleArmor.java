@@ -426,7 +426,7 @@ public class ImageHelperBattleArmor {
 
     public static Font getBattleArmorWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<ArrayList<EquipmentInfo>> equipmentLocations, float pointSize) {
 
-        Font font = g2d.getFont();
+        Font font = UnitUtil.deriveFont(pointSize);
 
         int weaponCount = 0;
         for (int pos = BattleArmor.LOC_SQUAD; pos <= BattleArmor.LOC_TROOPER_6; pos++) {
