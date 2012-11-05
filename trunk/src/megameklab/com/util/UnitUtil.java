@@ -455,16 +455,9 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, String hsType) {
-        String msg = "addHeatSinkMounts:";
-        msg += "\n  Unit: " + unit.getDisplayName();
-        msg += "\n  HS Amount: " + hsAmount;
-        msg += "\n  HS Type: " + hsType;
-        System.out.println(msg);
         int engineHSCapacity = UnitUtil.getBaseChassisHeatSinks(unit, hsType.equals("Compact"));
-        System.out.println("Engine capacity = " + engineHSCapacity);
 
         int heatSinks = hsAmount - engineHSCapacity;
-        System.out.println("Remaining sinks: " + heatSinks);
         EquipmentType sinkType;
 
         sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan()));
@@ -472,13 +465,11 @@ public class UnitUtil {
         for (; heatSinks > 0; heatSinks--) {
 
             try {
-                System.out.println("Adding Heat Sink " + heatSinks);
                 unit.addEquipment(new Mounted(unit, sinkType), Entity.LOC_NONE, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        System.out.println("Resetting sinks.");
         unit.resetSinks();
     }
 
@@ -522,11 +513,6 @@ public class UnitUtil {
      * @param hsType
      */
     public static void updateHeatSinks(Mech unit, int hsAmount, String hsType) {
-        String msg = "Updating Heat Sinks:";
-        msg += "\n  Unit: " + unit.getDisplayName();
-        msg += "\n  HS Amount: " + hsAmount;
-        msg += "\n  HS Type: " + hsType;
-        System.out.println(msg);
         UnitUtil.removeHeatSinks(unit);
         if (hsType.equals("Compact")) {
             int engineCompacts = Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit, true));
@@ -548,7 +534,6 @@ public class UnitUtil {
                 }
             }
         } else {
-            System.out.println("Adding engine sinks.");
             unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit, false)));
             UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
         }
@@ -583,7 +568,7 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_JETBOOSTER)) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS) || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION) || eq.hasFlag(MiscType.F_MASH_EXTRA) || eq.hasFlag(MiscType.F_DRONE_EXTRA))) {
+        if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CASE) || eq.hasFlag(MiscType.F_ARTEMIS) || eq.hasFlag(MiscType.F_ARTEMIS_V) || eq.hasFlag(MiscType.F_APOLLO) || (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_JETBOOSTER)) || eq.hasFlag(MiscType.F_HARJEL) || eq.hasFlag(MiscType.F_MASS) || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION) || eq.hasFlag(MiscType.F_MASH_EXTRA) || eq.hasFlag(MiscType.F_DRONE_EXTRA))) {
             return false;
         }
 
