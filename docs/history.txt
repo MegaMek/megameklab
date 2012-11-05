@@ -34,6 +34,8 @@ V 0.0.0.21-dev
    should have been and).
 + Bug: #47 Adding Prototype Double Heat Sinks increases Single Heat Sink count.  This fix is dependant on MegaMek
    revision 9053, which contains the code to satisfy MegaMek Feature Request #1129.
++ BA font size fixed
++ don't print vee case in equipment list
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
