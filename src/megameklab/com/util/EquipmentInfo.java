@@ -527,10 +527,10 @@ public class EquipmentInfo {
                     longRange = 6;
                 } else if (equipment.getInternalName().equals(Sensor.CLAN_AP)) {
                     longRange = 5;
-                } else if (equipment.getInternalName().equals(Sensor.ISIMPROVED)) {
-                    longRange = 2;
-                } else if (equipment.getInternalName().equals(Sensor.CLIMPROVED)) {
+                } else if (equipment.getInternalName().equals(Sensor.CLBALIGHT_AP)) {
                     longRange = 3;
+                } else if (equipment.getInternalName().equals(Sensor.ISIMPROVED) || equipment.getInternalName().equals(Sensor.CLIMPROVED)) {
+                    longRange = 2;
                 }
             } else if (equipment.hasFlag(MiscType.F_BA_SEARCHLIGHT)) {
                 name = "Searchlight";

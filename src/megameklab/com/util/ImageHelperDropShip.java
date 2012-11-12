@@ -491,6 +491,7 @@ public class ImageHelperDropShip {
                     ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat), font, heatPoint + 4, linePoint);
                 }
                 if (eqi.isAR10) {
+                    g2d.setFont(UnitUtil.deriveFont(6.5f));
                     int ammoLines = StringUtils.countOccurrences(eqi.damage, '[');
                     String ammoString = eqi.damage;
                     for (int i = 0; i < ammoLines; i++) {
@@ -500,46 +501,51 @@ public class ImageHelperDropShip {
                         g2d.drawString(printString, typePoint, linePoint);
                         String damage = "";
                         if (printString.indexOf("Barracuda") != -1) {
-                            ImageHelper.printCenterString(g2d, Integer.toString(10), font, heatPoint + 4, linePoint);
-                            damage = "2 (20)" ;
+                            ImageHelper.printCenterString(g2d, Integer.toString(10*eqi.count), font, heatPoint + 4, linePoint);
+                            int baseDam = 2 * eqi.count;
+                            int baseDamNormalScale = 20 * eqi.count;
+                            damage = baseDam+" ("+baseDamNormalScale+")" ;
                         } else if (printString.indexOf("White Shark") != -1) {
-                            ImageHelper.printCenterString(g2d, Integer.toString(15), font, heatPoint + 4, linePoint);
-                            damage = "3 (30)";
+                            ImageHelper.printCenterString(g2d, Integer.toString(15*eqi.count), font, heatPoint + 4, linePoint);
+                            int baseDam = 3 * eqi.count;
+                            int baseDamNormalScale = 30 * eqi.count;
+                            damage = baseDam+" ("+baseDamNormalScale+")" ;
                         } else if (printString.indexOf("Killer Whale") != -1) {
-                            ImageHelper.printCenterString(g2d, Integer.toString(20), font, heatPoint + 4, linePoint);
-                            damage = "4 (40)";
+                            ImageHelper.printCenterString(g2d, Integer.toString(20*eqi.count), font, heatPoint + 4, linePoint);
+                            int baseDam = 4 * eqi.count;
+                            int baseDamNormalScale = 40 * eqi.count;
+                            damage = baseDam+" ("+baseDamNormalScale+")" ;
                         }
-                        g2d.drawString(damage, shtPoint, (int) linePoint);
-                        g2d.drawString(damage, medPoint, (int) linePoint);
-                        g2d.drawString(damage, longPoint, (int) linePoint);
-                        g2d.drawString(damage, erPoint, (int) linePoint);
+                        g2d.drawString(damage, shtPoint, linePoint);
+                        g2d.drawString(damage, medPoint, linePoint);
+                        g2d.drawString(damage, longPoint, linePoint);
+                        g2d.drawString(damage, erPoint, linePoint);
                     }
                 } else if (eqi.shtRange > 0) {
-                    g2d.drawString(String.format("%1$d", eqi.shtRange), shtPoint, (int) linePoint);
-                } else if (eqi.shtRange != -1) {
-                    g2d.drawString("\u2014", shtPoint, linePoint);
-                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
-                } else if (eqi.isAMS) {
-                    g2d.drawString("Point Defense", medPoint, (int) linePoint);
-                } else {
+                    g2d.drawString(String.format("%1$d", eqi.shtRange), shtPoint, linePoint);
                     if (eqi.medRange > 0) {
-                        g2d.drawString(String.format("%1$d", eqi.medRange), medPoint, (int) linePoint);
+                        g2d.drawString(String.format("%1$d", eqi.medRange), medPoint, linePoint);
                     } else if (eqi.medRange != -1) {
                         g2d.drawString("\u2014", medPoint, linePoint);
-                        //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
+                        //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, linePoint - 2);
                     }
                     if (eqi.longRange > 0) {
-                        g2d.drawString(String.format("%1$d", eqi.longRange), longPoint, (int) linePoint);
+                        g2d.drawString(String.format("%1$d", eqi.longRange), longPoint, linePoint);
                     } else if (eqi.longRange != -1) {
                         g2d.drawString("\u2014", longPoint, linePoint);
-                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
+                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, linePoint - 2);
                     }
                     if (eqi.erRange > 0) {
-                        g2d.drawString(String.format("%1$d", eqi.erRange), erPoint, (int) linePoint);
+                        g2d.drawString(String.format("%1$d", eqi.erRange), erPoint, linePoint);
                     } else if (eqi.erRange != -1) {
                         g2d.drawString("\u2014", erPoint, linePoint);
-                        //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+                        //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, linePoint - 2);
                     }
+                } else if (eqi.shtRange != -1) {
+                    g2d.drawString("\u2014", shtPoint, linePoint);
+                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, linePoint - 2);
+                } else if (eqi.isAMS) {
+                    g2d.drawString("Point Defense", medPoint, linePoint);
                 }
                 linePoint += lineFeed;
                 if (newLineNeeded) {
