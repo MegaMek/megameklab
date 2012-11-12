@@ -169,10 +169,8 @@ public class StringUtils {
                 }
                 if (weapon instanceof ScreenLauncherWeapon) {
                     info = String.format("[%1$s Screens]", totalAmmo);
-                } else if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
+                } else if (weapon.hasFlag(WeaponType.F_BALLISTIC) || weapon.hasFlag(WeaponType.F_MISSILE) || weapon.hasFlag(WeaponType.F_ARTILLERY)) {
                     info = String.format("[%1$s rnds]", totalAmmo);
-                } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
-                    info = String.format("[%1$s misl]", totalAmmo);
                 }
             }
         }
