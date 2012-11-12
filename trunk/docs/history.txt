@@ -36,6 +36,8 @@ V 0.0.0.21-dev
    revision 9053, which contains the code to satisfy MegaMek Feature Request #1129.
 + BA font size fixed
 + don't print vee case in equipment list
++ DS printing fixes
++ fix BA sensor range
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
