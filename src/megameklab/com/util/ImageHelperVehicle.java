@@ -1097,7 +1097,7 @@ public class ImageHelperVehicle {
     }
 
     public static String getBayString(Bay bay) {
-        StringBuffer returnString = new StringBuffer(bay.getUnusedString());
+        StringBuffer returnString = new StringBuffer(bay.getUnusedString(false));
 
         if (bay.getDoors() > 0) {
             returnString.append(" (");

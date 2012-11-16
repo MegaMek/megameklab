@@ -1,6 +1,6 @@
 /*
- * MegaMekLab - Copyright (C) 2008 
- * 
+ * MegaMekLab - Copyright (C) 2008
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -16,44 +16,60 @@
 
 package megameklab.com.util;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 import megamek.common.Mech;
 
-public class SaveMechToMTF{
-    
+public class SaveMechToMTF {
+
     private Mech mek;
     private String fileName;
     private static SaveMechToMTF newInstance;
-    
-    public SaveMechToMTF(){
-        
+
+    public SaveMechToMTF() {
+
     }
-    
-    public SaveMechToMTF(Mech mek, String fileName){
+
+    public SaveMechToMTF(Mech mek, String fileName) {
         this.mek = mek;
         this.fileName = fileName;
-        this.save();
+        save();
     }
-    
-    public static SaveMechToMTF getInstance(Mech mek, String fileName){
-        newInstance = new SaveMechToMTF(mek,fileName); 
-        
-        return newInstance;
-        
-    }
-    
-    public void save(){
-        try{
-            FileOutputStream out = new FileOutputStream("./data/mechfiles/"+fileName);
-            PrintStream p = new PrintStream(out);
-            p.println(mek.getMtf());
-            p.close();
-            out.close();
 
-        }catch(Exception ex){
-            ex.printStackTrace();
+    public static SaveMechToMTF getInstance(Mech mek, String fileName) {
+        newInstance = new SaveMechToMTF(mek, fileName);
+
+        return newInstance;
+
+    }
+
+    public void save() {
+
+        Writer out;
+        try {
+            out = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("./data/mechfiles/" + fileName), "UTF-8"));
+            try {
+                out.write(mek.getMtf());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
 
     }

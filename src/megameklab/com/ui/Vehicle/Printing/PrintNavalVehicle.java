@@ -307,8 +307,8 @@ public class PrintNavalVehicle implements Printable {
         g2d.setFont(font);
 
         g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_FRONT)), 476+leftmargin, topmargin+55.f);
-        ImageHelper.printRotatedText(g2d, Integer.toString(sub.getArmor(Tank.LOC_RIGHT)), 90, 567+leftmargin, topmargin+373);
-        ImageHelper.printRotatedText(g2d, Integer.toString(sub.getArmor(Tank.LOC_LEFT)), 270, 396+leftmargin, topmargin+316);
+        ImageHelper.printRotatedText(g2d, Integer.toString(sub.getArmor(Tank.LOC_RIGHT)), 90, 568+leftmargin, topmargin+374);
+        ImageHelper.printRotatedText(g2d, Integer.toString(sub.getArmor(Tank.LOC_LEFT)), 270, 397+leftmargin, topmargin+316);
         g2d.drawString(Integer.toString(sub.getArmor(Tank.LOC_REAR)), 475+leftmargin, topmargin+665.5f);
 
         if (sub.getOInternal(Tank.LOC_TURRET) > 0) {
@@ -891,8 +891,8 @@ public class PrintNavalVehicle implements Printable {
         Image img = ImageHelper.getFluffImage(sub, ImageHelper.imageVehicle);
         int width = Math.min(148, img.getWidth(null));
         int height = Math.min(99, img.getHeight(null));
-        int drawingX = 235 + ((148 - width) / 2);
-        int drawingY = 270 + ((99 - height) / 2);
+        int drawingX = 247 + ((148 - width) / 2);
+        int drawingY = 280 + ((99 - height) / 2);
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
     }
