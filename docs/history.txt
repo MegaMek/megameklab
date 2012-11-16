@@ -38,6 +38,7 @@ V 0.0.0.21-dev
 + don't print vee case in equipment list
 + DS printing fixes
 + fix BA sensor range
++ Fix for superheavy tanks with lots of armor
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

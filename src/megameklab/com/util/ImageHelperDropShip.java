@@ -245,7 +245,7 @@ public class ImageHelperDropShip {
         int longPoint = 192;
         int erPoint = 211;
         int nameSize = 65;
-        float linePoint = 209f;
+        float linePoint = 210f;
         float lineFeed = 6.7f;
         float maxHeight = 155f;
         float stringHeight = 0;
@@ -504,17 +504,29 @@ public class ImageHelperDropShip {
                             ImageHelper.printCenterString(g2d, Integer.toString(10*eqi.count), font, heatPoint + 4, linePoint);
                             int baseDam = 2 * eqi.count;
                             int baseDamNormalScale = 20 * eqi.count;
-                            damage = baseDam+" ("+baseDamNormalScale+")" ;
+                            if (baseDamNormalScale < 100) {
+                                damage = baseDam+" ("+baseDamNormalScale+")" ;
+                            } else {
+                                damage = Integer.toString(baseDam);
+                            }
                         } else if (printString.indexOf("White Shark") != -1) {
                             ImageHelper.printCenterString(g2d, Integer.toString(15*eqi.count), font, heatPoint + 4, linePoint);
                             int baseDam = 3 * eqi.count;
                             int baseDamNormalScale = 30 * eqi.count;
-                            damage = baseDam+" ("+baseDamNormalScale+")" ;
+                            if (baseDamNormalScale < 100) {
+                                damage = baseDam+" ("+baseDamNormalScale+")" ;
+                            } else {
+                                damage = Integer.toString(baseDam);
+                            }
                         } else if (printString.indexOf("Killer Whale") != -1) {
                             ImageHelper.printCenterString(g2d, Integer.toString(20*eqi.count), font, heatPoint + 4, linePoint);
                             int baseDam = 4 * eqi.count;
                             int baseDamNormalScale = 40 * eqi.count;
-                            damage = baseDam+" ("+baseDamNormalScale+")" ;
+                            if (baseDamNormalScale < 100) {
+                                damage = baseDam+" ("+baseDamNormalScale+")" ;
+                            } else {
+                                damage = Integer.toString(baseDam);
+                            }
                         }
                         g2d.drawString(damage, shtPoint, linePoint);
                         g2d.drawString(damage, medPoint, linePoint);
@@ -522,28 +534,40 @@ public class ImageHelperDropShip {
                         g2d.drawString(damage, erPoint, linePoint);
                     }
                 } else if (eqi.shtRange > 0) {
-                    g2d.drawString(String.format("%1$d", eqi.shtRange), shtPoint, linePoint);
+                    if ((eqi.shtRange*10) < 100) {
+                        g2d.drawString(String.format("%1$d (%2$d)", eqi.shtRange, eqi.shtRange * 10), shtPoint, linePoint);
+                    } else {
+                        g2d.drawString(String.format("%1$d", eqi.shtRange), shtPoint, linePoint);
+                    }
                     if (eqi.medRange > 0) {
-                        g2d.drawString(String.format("%1$d", eqi.medRange), medPoint, linePoint);
+                        if ((eqi.medRange*10) < 100) {
+                            g2d.drawString(String.format("%1$d (%2$d)", eqi.medRange, eqi.medRange * 10), medPoint, linePoint);
+                        } else {
+                            g2d.drawString(String.format("%1$d", eqi.medRange), medPoint, linePoint);
+                        }
                     } else if (eqi.medRange != -1) {
                         g2d.drawString("\u2014", medPoint, linePoint);
-                        //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, linePoint - 2);
                     }
                     if (eqi.longRange > 0) {
-                        g2d.drawString(String.format("%1$d", eqi.longRange), longPoint, linePoint);
+                        if ((eqi.longRange*10) < 100) {
+                            g2d.drawString(String.format("%1$d (%2$d)", eqi.longRange, eqi.longRange * 10), longPoint, linePoint);
+                        } else {
+                            g2d.drawString(String.format("%1$d", eqi.longRange), longPoint, linePoint);
+                        }
                     } else if (eqi.longRange != -1) {
                         g2d.drawString("\u2014", longPoint, linePoint);
-                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, linePoint - 2);
                     }
                     if (eqi.erRange > 0) {
-                        g2d.drawString(String.format("%1$d", eqi.erRange), erPoint, linePoint);
+                        if ((eqi.erRange*10) < 100) {
+                            g2d.drawString(String.format("%1$d (%2$d)", eqi.erRange, eqi.erRange * 10), erPoint, linePoint);
+                        } else {
+                            g2d.drawString(String.format("%1$d", eqi.erRange), erPoint, linePoint);
+                        }
                     } else if (eqi.erRange != -1) {
                         g2d.drawString("\u2014", erPoint, linePoint);
-                        //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, linePoint - 2);
                     }
                 } else if (eqi.shtRange != -1) {
                     g2d.drawString("\u2014", shtPoint, linePoint);
-                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, linePoint - 2);
                 } else if (eqi.isAMS) {
                     g2d.drawString("Point Defense", medPoint, linePoint);
                 }
@@ -693,74 +717,67 @@ public class ImageHelperDropShip {
                     String damage = String.format("%1$d (%2$d)", Math.round((eqi.shtRange * 2) / 10f), eqi.shtRange * 2);
                     font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                     g2d.setFont(font);
-                    g2d.drawString(damage, shtPoint, (int) linePoint);
+                    g2d.drawString(damage, shtPoint, linePoint);
                     font = UnitUtil.deriveFont(false, fontSize);
                     g2d.setFont(font);
                     g2d.drawString("\u2014", medPoint, linePoint);
                     g2d.drawString("\u2014", longPoint, linePoint);
                     g2d.drawString("\u2014", erPoint, linePoint);
-                    //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
-                    //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
+
                     linePoint += lineFeed;
                     g2d.drawString(lrmAmmoString, typePoint, linePoint);
                     damage = String.format("%1$d (%2$d)", Math.round((eqi.shtRange) / 10f), eqi.shtRange);
                     font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                     g2d.setFont(font);
-                    g2d.drawString(damage, shtPoint, (int) linePoint);
-                    g2d.drawString(damage, medPoint, (int) linePoint);
-                    g2d.drawString(damage, longPoint, (int) linePoint);
+                    g2d.drawString(damage, shtPoint, linePoint);
+                    g2d.drawString(damage, medPoint, linePoint);
+                    g2d.drawString(damage, longPoint, linePoint);
                     g2d.drawString("\u2014", erPoint, linePoint);
-                    //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     font = UnitUtil.deriveFont(false, fontSize);
                     g2d.setFont(font);
                 } else if (eqi.shtRange > 0) {
                     String damage = String.format("%1$d (%2$d)", Math.round((eqi.shtRange) / 10f), eqi.shtRange);
                     font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                     g2d.setFont(font);
-                    g2d.drawString(damage, shtPoint, (int) linePoint);
+                    g2d.drawString(damage, shtPoint, linePoint);
                     font = UnitUtil.deriveFont(fontSize);
                     g2d.setFont(font);
                 } else if (eqi.shtRange != -1) {
                     g2d.drawString("\u2014", shtPoint, linePoint);
-                    //g2d.drawLine(shtPoint, (int) linePoint - 2, shtPoint + 6, (int) linePoint - 2);
                 }
 
                 if (eqi.isAMS) {
-                    g2d.drawString("Point Defense", medPoint, (int) linePoint);
+                    g2d.drawString("Point Defense", medPoint, linePoint);
                 } else  {
                     if ((eqi.medRange > 0) && !eqi.isMML) {
                         String damage = String.format("%1$d (%2$d)", Math.round((eqi.medRange) / 10f), eqi.medRange);
                         font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                         g2d.setFont(font);
-                        g2d.drawString(damage, medPoint, (int) linePoint);
+                        g2d.drawString(damage, medPoint, linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
                     } else if (!eqi.isMML && (eqi.medRange != -1)) {
                         g2d.drawString("\u2014", medPoint, linePoint);
-                        //g2d.drawLine(medPoint, (int) linePoint - 2, medPoint + 6, (int) linePoint - 2);
                     }
                     if ((eqi.longRange > 0) && !eqi.isMML) {
                         String damage = String.format("%1$d (%2$d)", Math.round((eqi.longRange) / 10f), eqi.longRange);
                         font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                         g2d.setFont(font);
-                        g2d.drawString(damage, longPoint, (int) linePoint);
+                        g2d.drawString(damage, longPoint, linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
                     } else if (!eqi.isMML && (eqi.longRange != -1)) {
                         g2d.drawString("\u2014", longPoint, linePoint);
-                        //g2d.drawLine(longPoint, (int) linePoint - 2, longPoint + 6, (int) linePoint - 2);
                     }
                     if ((eqi.erRange > 0) && !eqi.isMML) {
                         String damage = String.format("%1$d (%2$d)", Math.round((eqi.erRange) / 10f), eqi.erRange);
                         font = UnitUtil.getNewFont(g2d, damage, false, 17, fontSize);
                         g2d.setFont(font);
-                        g2d.drawString(damage, erPoint, (int) linePoint);
+                        g2d.drawString(damage, erPoint, linePoint);
                         font = UnitUtil.deriveFont(fontSize);
                         g2d.setFont(font);
                     } else if (!eqi.isMML && (eqi.erRange != -1)) {
                         g2d.drawString("\u2014", erPoint, linePoint);
-                        //g2d.drawLine(erPoint, (int) linePoint - 2, erPoint + 6, (int) linePoint - 2);
                     }
                 }
                 linePoint += lineFeed;
@@ -775,7 +792,7 @@ public class ImageHelperDropShip {
     }
 
     public static String getBayString(Bay bay) {
-        StringBuffer returnString = new StringBuffer(bay.getUnusedString());
+        StringBuffer returnString = new StringBuffer(bay.getUnusedString(false));
 
         if (bay.getDoors() > 0) {
             returnString.append(" (");
