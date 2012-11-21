@@ -214,6 +214,10 @@ public class PrintMech implements Printable {
             BipedIS25.paint(g2d);
         } else if (mech.getWeight() == 20) {
             BipedIS20.paint(g2d);
+        } else if (mech.getWeight() == 15) {
+            BipedIS15.paint(g2d);
+        } else if (mech.getWeight() == 10) {
+            BipedIS10.paint(g2d);
         }
         printHeatSinks(g2d);
         // g2d.translate(pageFormat.getImageableX(),
