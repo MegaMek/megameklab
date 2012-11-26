@@ -148,7 +148,7 @@ public class ImageHelperDropShip {
 
     public static Font getDropShipWeaponsNEquipmentFont(Graphics2D g2d, boolean bold, float stringHeight, ArrayList<Vector<EquipmentInfo>> equipmentLocations, ArrayList<Vector<EquipmentInfo>> capitalEquipmentLocations, float pointSize) {
 
-        Font font = g2d.getFont();
+        Font font = UnitUtil.deriveFont(bold, pointSize);
         boolean hasCapital = false;
         boolean hasSubCapital = false;
 
@@ -490,8 +490,9 @@ public class ImageHelperDropShip {
                 if ((eqi.heat != -1) && !eqi.isAR10) {
                     ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat), font, heatPoint + 4, linePoint);
                 }
+                font = UnitUtil.deriveFont(Math.min(6f, fontSize));
+                g2d.setFont(font);
                 if (eqi.isAR10) {
-                    g2d.setFont(UnitUtil.deriveFont(6.5f));
                     int ammoLines = StringUtils.countOccurrences(eqi.damage, '[');
                     String ammoString = eqi.damage;
                     for (int i = 0; i < ammoLines; i++) {

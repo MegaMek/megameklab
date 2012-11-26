@@ -194,6 +194,7 @@ public class PrintVehicle implements Printable {
                 break;
             case Engine.FISSION:
                 engineName = "Fission Engine";
+                break;
             case Engine.NONE:
                 engineName = "None";
                 break;
