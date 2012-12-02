@@ -714,6 +714,9 @@ public class PrintMech implements Printable {
                             break;
                         case Engine.FUEL_CELL:
                             engineName = "Fuel Cell Engine";
+                            if (mech.isPrimitive()) {
+                                engineName = "Primitive Fuel Cell Engine";
+                            }
                             break;
                         case Engine.FISSION:
                             engineName = "Fission Engine";
