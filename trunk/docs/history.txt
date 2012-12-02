@@ -42,6 +42,7 @@ V 0.0.0.21-dev
 + Fix for IS for superlight mechs
 + print vee fission engine
 + Print primitive fuel cell engine as primitive
++ Better table printing for large support and super heavy weight tanks
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

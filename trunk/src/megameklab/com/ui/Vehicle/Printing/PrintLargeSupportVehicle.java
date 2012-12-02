@@ -37,6 +37,7 @@ import megamek.common.Crew;
 import megamek.common.Engine;
 import megamek.common.LargeSupportTank;
 import megamek.common.MiscType;
+import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -85,16 +86,30 @@ public class PrintLargeSupportVehicle implements Printable {
 
         System.gc();
 
-        g2d.drawImage(ImageHelper.getRecordSheet(largesupporttank, false), 18,
-                18, 558, 368, null);
-
         if (largesupporttank2 == null) {
-            g2d.drawImage(ImageHelperVehicle.getTableImage(largesupporttank),
-                    18, 18 + secondPageMargin, 558, 368, null);
+            if (largesupporttank instanceof SuperHeavyTank) {
+                SuperHeavyTankCritTable.paint(g2d);
+                g2d.setColor(Color.BLACK);
+                SuperHeavyTankHitTable.paint(g2d);
+            } else {
+                LargeSupportTankCritTable.paint(g2d);
+                g2d.setColor(Color.BLACK);
+                LargeSupportTankHitTable.paint(g2d);
+            }
+            g2d.setColor(Color.BLACK);
+            TankMotiveDmgTable.paint(g2d);
+            g2d.setColor(Color.BLACK);
+            TankSheetCopyrightInfo.paint(g2d);
+            g2d.setColor(Color.BLACK);
+            //g2d.drawImage(ImageHelperVehicle.getTableImage(largesupporttank),
+            //        18, 18 + secondPageMargin, 558, 368, null);
         } else {
             g2d.drawImage(ImageHelper.getRecordSheet(largesupporttank2, false),
                     18, 18 + secondPageMargin, 558, 368, null);
         }
+        g2d.drawImage(ImageHelper.getRecordSheet(largesupporttank, false), 18,
+                18, 558, 368, null);
+
 
         printLargeSupportTankData(g2d);
         printArmor(g2d);
@@ -386,10 +401,11 @@ public class PrintLargeSupportVehicle implements Printable {
                     400, 64);
         }
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
         g2d.drawString("2012", 62.5f, 374f);
-        g2d.drawString("2012", 62.5f, 374f + secondPageMargin);
+        font = UnitUtil.deriveFont(true, 5.5f);
+        g2d.drawString("2012", 50f, 395.5f + secondPageMargin);
         if (largesupporttank2 != null) {
             printLargeSupportTank2Data(g2d);
         }
