@@ -410,7 +410,9 @@ public class EquipmentInfo {
                 longRange = 6;
             }
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BAP)) {
-            if (mount.getType().getInternalName().equals(Sensor.BAP)) {
+            if (mount.getType().getInternalName().equals(Sensor.LIGHT_AP)) {
+                longRange = 3;
+            } else if (mount.getType().getInternalName().equals(Sensor.BAP)) {
                 longRange = 4;
             } else if (mount.getType().getInternalName().equals(Sensor.BLOODHOUND)) {
                 longRange = 6;
