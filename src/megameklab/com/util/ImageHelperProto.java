@@ -162,10 +162,10 @@ public class ImageHelperProto {
         int shtPoint = 260;
         int medPoint = 274;
         int longPoint = 290;
-        float linePoint = 119f + offset;
+        float linePoint = 116f + offset;
         boolean torsoWeaponUsed = false;
 
-        float lineFeed = 6.5f;
+        float lineFeed = 6.2f;
 
         boolean newLineNeeded = false;
 
@@ -310,8 +310,6 @@ public class ImageHelperProto {
                             font = UnitUtil.deriveFont(6.0f);
                             g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(0, eqi.damage.indexOf('[')), font, damagePoint, linePoint);
-                            font = UnitUtil.deriveFont(7.0f);
-                            g2d.setFont(font);
                             ImageHelper.printCenterString(g2d, eqi.damage.substring(eqi.damage.indexOf('[')), font, damagePoint, (linePoint + lineFeed) - 1.0f);
                             newLineNeeded = true;
                         } else {
