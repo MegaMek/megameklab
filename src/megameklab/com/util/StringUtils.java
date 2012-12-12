@@ -63,6 +63,7 @@ import megamek.common.weapons.PPCWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.ScreenLauncherWeapon;
+import megamek.common.weapons.StreakLRMWeapon;
 import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
@@ -217,6 +218,8 @@ public class StringUtils {
                     info = "2/Msl [M,C]";
                 } else if (weapon instanceof SRMWeapon) {
                     info = "2/Msl [M,C,S]";
+                } else if ((weapon instanceof StreakLRMWeapon)) {
+                    info = "1/Msl [M,C]";
                 } else if ((weapon instanceof LRMWeapon)) {
                     info = "1/Msl [M,C,S]";
                 } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
@@ -237,7 +240,7 @@ public class StringUtils {
                     info = "[DE,H,AI]";
                 } else if (weapon instanceof HAGWeapon) {
                     info = Integer.toString(weapon.getRackSize());
-                    info += " [C,F]";
+                    info += " [C,F,X]";
                 } else if (weapon instanceof ArtilleryWeapon) {
                     info = Integer.toString(weapon.getRackSize());
                     info += "[AE,S,F]";
@@ -291,17 +294,18 @@ public class StringUtils {
                 if (UnitUtil.hasSwitchableAmmo(weapon)) {
                     info += "S,";
                 }
+
+                if ((weapon instanceof FlamerWeapon) || weapon.hasFlag(WeaponType.F_PLASMA)) {
+                    info += "H,";
+                }
                 if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
                         (weapon instanceof CLERSmallPulseLaser) ||
                         (weapon instanceof ISSmallXPulseLaser) ||
                         (weapon instanceof ISSmallPulseLaser) ||
                         (weapon instanceof CLSmallPulseLaser) ||
-                        (weapon instanceof CLMicroPulseLaser)) {
+                        (weapon instanceof CLMicroPulseLaser) ||
+                        (weapon instanceof FlamerWeapon)) {
                     info += "AI,";
-                }
-
-                if ((weapon instanceof FlamerWeapon) || weapon.hasFlag(WeaponType.F_PLASMA)) {
-                    info += "H,AI,";
                 }
 
                 if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon) && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null) && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {

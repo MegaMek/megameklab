@@ -77,6 +77,8 @@ import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.SRTWeapon;
 import megamek.common.weapons.StopSwarmAttack;
+import megamek.common.weapons.StreakLRMWeapon;
+import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.SwarmAttack;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
@@ -838,6 +840,12 @@ public class UnitUtil {
 
     public static boolean hasSwitchableAmmo(WeaponType weapon) {
 
+        if (weapon instanceof StreakLRMWeapon) {
+            return false;
+        }
+        if (weapon instanceof StreakSRMWeapon) {
+            return false;
+        }
         if (weapon instanceof EnergyWeapon) {
             return false;
         }
