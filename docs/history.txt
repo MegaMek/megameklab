@@ -43,6 +43,7 @@ V 0.0.0.21-dev
 + print vee fission engine
 + Print primitive fuel cell engine as primitive
 + Better table printing for large support and super heavy weight tanks
++ massive re-structuring of the Mek GUI (work in progress)
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

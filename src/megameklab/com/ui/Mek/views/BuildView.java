@@ -74,10 +74,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         CriticalTransferHandler cth = new CriticalTransferHandler(unit, null);
         equipmentTable.setTransferHandler(cth);
 
-        equipmentList.initColumnSizes(equipmentTable);
+        //equipmentList.initColumnSizes(equipmentTable);
 
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
-            equipmentTable.getColumnModel().getColumn(i).setCellRenderer(equipmentList.getRenderer());
+        //    equipmentTable.getColumnModel().getColumn(i).setCellRenderer(equipmentList.getRenderer());
         }
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -85,6 +85,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         //equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
+        equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 400));
+        equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 400));
 
         mainPanel.add(equipmentScroll);
         equipmentTable.addMouseListener(this);

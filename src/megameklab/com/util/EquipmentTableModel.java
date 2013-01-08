@@ -17,96 +17,135 @@
 package megameklab.com.util;
 
 import java.awt.Component;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.awt.Font;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
-import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
 
 import megamek.common.AmmoType;
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 
+/**
+ * this model was not being used by anything, so I totally redid so that it 
+ * can be used as the model for the equipment tab. It will be a sortable, filterable
+ * table of equipment, similar to the tables in MHQ
+ * @author Jay lawson
+ */
 public class EquipmentTableModel extends AbstractTableModel {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -485714883739423617L;
+	private static final long serialVersionUID = -5207167419079014157L;
 
-    public Vector<EquipmentType> sortedEquipment = new Vector<EquipmentType>();
+	private final static int COL_NAME      = 0;
+	private final static int COL_DAMAGE    = 1;
+    private final static int COL_HEAT      = 2;
+    private final static int COL_RANGE     = 3;
+    private final static int COL_TON       = 4;
+    private final static int COL_CRIT      = 5;
+    private final static int COL_BV        = 6;
+    private final static int COL_TECH      = 7;
+    private final static int COL_TRATING   = 8;
+    private final static int COL_DATES     = 9;
+    private final static int COL_COST      = 10;
+    public final static int N_COL          = 11;
 
-    public final static int TYPE = 0;
-    public final static int TECH = 1;
-    public final static int RULES = 2;
-    public final static int NAME = 3;
-    public final static int ALIASES = 4;
-
-    public final static int EQUIPMENTTABLE = 0;
-
-    String[] columnNames =
-        { "Type", "Tech", "Rules", "Name", "Aliases", };
-
-    String[] longValues =
-        { "X", "XXXX", "XXXX", "XXXX", "XXXX", };
+    private ArrayList<EquipmentType> data = new ArrayList<EquipmentType>();
+    private Entity entity = null;
+    
+    public EquipmentTableModel(Entity e) {
+    	entity = e;
+    }
+    
+    public int getRowCount() {
+        return data.size();
+    }
 
     public int getColumnCount() {
-        return columnNames.length;
-    }
-
-    public EquipmentTableModel() {
-    }
-
-    public void refreshModel(String filter) {
-        // do a resort
-        sortedEquipment.removeAllElements();
-        for (Enumeration<EquipmentType> e = EquipmentType.getAllTypes(); e.hasMoreElements();) {
-            EquipmentType type = e.nextElement();
-
-            if (type.getName().toLowerCase().contains(filter.toLowerCase())) {
-                sortedEquipment.add(type);
-            } else {
-                for (Enumeration<String> names = type.getNames(); names.hasMoreElements();) {
-                    String name = names.nextElement();
-                    if (name.toLowerCase().contains(filter.toLowerCase())) {
-                        sortedEquipment.add(type);
-                        break;
-                    }
-                }
-            }
-        }
-        fireTableDataChanged();
-    }
-
-    public void refreshModel() {
-        refreshModel("");
-    }
-
-    public void initColumnSizes(JTable table) {
-        TableColumn column = null;
-        Component comp = null;
-        int headerWidth = 0;
-        int cellWidth = 0;
-        EquipmentTableModel model = this;
-        for (int i = 0; i < getColumnCount(); i++) {
-            column = table.getColumnModel().getColumn(i);
-            comp = table.getDefaultRenderer(model.getColumnClass(i)).getTableCellRendererComponent(table, longValues[i], false, false, 0, i);
-            cellWidth = comp.getPreferredSize().width;
-            column.setPreferredWidth(Math.max(headerWidth, cellWidth));
-        }
-    }
-
-    public int getRowCount() {
-        return sortedEquipment.size();
+        return N_COL;
     }
 
     @Override
-    public String getColumnName(int col) {
-        return (columnNames[col]);
+    public String getColumnName(int column) {
+        switch(column) {
+            case COL_NAME:
+                return "Name";
+            case COL_DAMAGE:
+                return "Damage";
+            case COL_HEAT:
+                return "Heat";
+            case COL_RANGE:
+                return "Range";
+            case COL_TON:
+                return "Tonnage";
+            case COL_CRIT:
+                return "Crits";
+            case COL_TECH:
+                return "Tech";
+            case COL_TRATING:
+                return "Rating";
+            case COL_COST:
+                return "Cost";
+            case COL_BV:
+                return "BV";
+            case COL_DATES:
+                return "Dates";
+            default:
+                return "?";
+        }
+    }
+
+    public int getColumnWidth(int c) {
+        switch(c) {
+        case COL_NAME:
+            return 100;
+        case COL_DATES:
+            return 100;
+        case COL_RANGE:
+            return 30;
+        case COL_TRATING:
+        case COL_COST:
+        	return 20;
+        default:
+            return 10;
+        }
+    }
+
+    public int getAlignment(int col) {
+        switch(col) {
+        case COL_NAME:
+        //case COL_DATES:
+        	return SwingConstants.LEFT;
+        case COL_TRATING:
+        case COL_TECH:
+        case COL_RANGE:
+        	return SwingConstants.CENTER;
+        default:
+        	return SwingConstants.CENTER;
+        }
+    }
+
+    public String getTooltip(int row, int col) {
+    	EquipmentType type = data.get(row);
+    	switch(col) {
+    	case COL_DATES:
+            return "Intro/Extinct/Re-Intro";
+    	case COL_RANGE:
+            return "Min/Short/Medium/Long";
+        default:
+        	return null;
+        }
+    }
+
+    @Override
+    public Class<?> getColumnClass(int c) {
+        return getValueAt(0, c).getClass();
     }
 
     @Override
@@ -114,76 +153,128 @@ public class EquipmentTableModel extends AbstractTableModel {
         return false;
     }
 
+    public EquipmentType getType(int i) {
+    	if( i >= data.size()) {
+    		return null;
+    	}
+        return data.get(i);
+    }
+
+    //fill table with values
+    public void setData(ArrayList<EquipmentType> equip) {
+        data = equip;
+        fireTableDataChanged();
+    }
+
     public Object getValueAt(int row, int col) {
-        if (row < 0) {
-            return "";
+    	EquipmentType type;
+    	WeaponType wtype = null;
+    	AmmoType atype = null;
+    	MiscType mtype = null;
+    	if(data.isEmpty()) {
+    		return "";
+    	} else {
+    		type = data.get(row);
+    	}
+    	if(type instanceof WeaponType) {
+    		wtype = (WeaponType)type;
+    	}
+    	if(type instanceof AmmoType) {
+    		atype = (AmmoType)type;
+    	}
+    	if(type instanceof MiscType) {
+    		mtype = (MiscType)type;
+    	}
+    	DecimalFormat formatter = new DecimalFormat();
+    	
+        if(col == COL_NAME) {
+            return type.getName();
         }
-        if (row >= sortedEquipment.size()) {
-            return "";
+        if(col == COL_DAMAGE) {
+        	if(null != wtype) {
+        		return getDamageString(wtype);
+        	} else {
+        		return "-";
+        	}
         }
-        EquipmentType type = sortedEquipment.get(row);
-        switch (col) {
-            case NAME:
-                return type.getName();
-            case TYPE:
-                if (type instanceof AmmoType) {
-                    return ("A");
-                }
-                if (type instanceof WeaponType) {
-                    return ("W");
-                }
-                return ("M");
-            case TECH:
-                return TechConstants.getTechName(type.getTechLevel());
-            case RULES:
-                return TechConstants.getLevelName(type.getTechLevel());
-            case ALIASES:
-                StringBuffer aliases = new StringBuffer();
-                for (Enumeration<String> names = type.getNames(); names.hasMoreElements();) {
-                    String name = names.nextElement();
-                    aliases.append(name);
-                    aliases.append(", ");
-                }
-                return aliases.toString();
+        if(col == COL_HEAT) {
+        	if(null != wtype) {
+        		return wtype.getHeat();
+        	} else {
+        		return "-";
+        	}
         }
-        return "";
+        if(col == COL_RANGE) {
+        	if(null != wtype) {
+        		int minRange = wtype.getMinimumRange();
+        		if(minRange < 0) {
+        			minRange = 0;
+        		}
+        		return minRange + "/" + wtype.getShortRange() + "/" + wtype.getMediumRange() + "/" + wtype.getLongRange();
+        	} else {
+        		return "-";
+        	}
+        }
+        if(col == COL_TON) {
+            return type.getTonnage(entity);
+        }
+        if(col == COL_CRIT) {
+            return type.getCriticals(entity);
+        }
+        if(col == COL_TRATING) {
+            return type.getFullRatingName();
+        }
+        if(col == COL_COST) {
+            return type.getCost(entity, false, Entity.LOC_NONE);
+        }
+        if(col == COL_BV) {
+            return type.getBV(entity);
+        }
+        if(col == COL_DATES) {
+            return EquipmentType.getEquipDateAsString(type.getIntroductionDate()) + "/" + EquipmentType.getEquipDateAsString(type.getExtinctionDate()) + "/" + EquipmentType.getEquipDateAsString(type.getReintruductionDate());
+        }
+        if(col == COL_TECH) {
+        	return TechConstants.isClan(type.getTechLevel()) ? "Clan" : "IS";
+        }
+        return "?";
+    }
+    
+    private static String getDamageString(WeaponType wtype) {
+    	if(wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
+    		return wtype.getDamage(WeaponType.RANGE_SHORT) + "/" + wtype.getDamage(WeaponType.RANGE_MED) + "/" + wtype.getDamage(WeaponType.RANGE_LONG);
+    	}
+    	else if(wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+    		return "Cluster";
+    	}
+    	else if(wtype.getDamage() < 0) {
+    		return "Special";
+    	}
+    	else {
+    		return Integer.toString(wtype.getDamage());
+    	}
     }
 
     public EquipmentTableModel.Renderer getRenderer() {
-        return new Renderer();
-    }
+		return new EquipmentTableModel.Renderer();
+	}
 
-    /*
-     * Rendered cannot be static because it uses parent data structs.
-     */
-    private class Renderer extends DefaultTableCellRenderer {
+	public class Renderer extends DefaultTableCellRenderer {
 
-        /**
-         *
-         */
-        private static final long serialVersionUID = 149542030113164984L;
+		private static final long serialVersionUID = 9054581142945717303L;
 
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component d = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-            JLabel c = new JLabel();
-            c.setOpaque(true);
-            if ((sortedEquipment.size() < row) || (row < 0)) {
-                return c;
-            }
-            if (table.getModel().getValueAt(row, column) != null) {
-                c.setText(table.getModel().getValueAt(row, column).toString());
-            }
-
-            if (isSelected) {
-                c.setForeground(d.getForeground());
-                c.setBackground(d.getBackground());
-                return c;
-            }
-
-            return c;
-        }
-    }
+		public Component getTableCellRendererComponent(JTable table,
+				Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			super.getTableCellRendererComponent(table, value, isSelected,
+					hasFocus, row, column);
+			setOpaque(true);
+			//setFont(new Font("Arial", Font.PLAIN, 12));
+			int actualCol = table.convertColumnIndexToModel(column);
+			int actualRow = table.convertRowIndexToModel(row);
+			setHorizontalAlignment(getAlignment(actualCol));
+			setToolTipText(getTooltip(actualRow, actualCol));
+			return this;
+		}
+	}
 
 }

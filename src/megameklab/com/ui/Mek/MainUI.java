@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.Mek;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
@@ -37,6 +38,7 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Mek.tabs.ArmorTab;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
+import megameklab.com.ui.Mek.tabs.PreviewTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
 import megameklab.com.ui.Mek.tabs.WeaponTab;
 import megameklab.com.util.MenuBarCreator;
@@ -55,6 +57,7 @@ public class MainUI extends MegaMekLabMainUI {
     private ArmorTab armorTab;
     private EquipmentTab equipmentTab;
     private WeaponTab weaponTab;
+    private PreviewTab previewTab;
     private BuildTab buildTab;
     private Header header;
     private StatusBar statusbar;
@@ -88,15 +91,17 @@ public class MainUI extends MegaMekLabMainUI {
         masterPanel.removeAll();
         ConfigPane.removeAll();
 
-        masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
+        masterPanel.setLayout(new BorderLayout());
 
         Mech mech = (Mech) entity;
 
         structureTab = new StructureTab(mech);
-
+        
         armorTab = new ArmorTab(mech);
         armorTab.setArmorType(entity.getArmorType(0));
         armorTab.refresh();
+       
+        previewTab = new PreviewTab(mech);
 
         header = new Header(mech);
         statusbar = new StatusBar(mech);
@@ -110,15 +115,16 @@ public class MainUI extends MegaMekLabMainUI {
         weaponTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
 
-        ConfigPane.addTab("Structure", structureTab);
-        ConfigPane.addTab("Armor", armorTab);
+        ConfigPane.addTab("Structure/Armor", structureTab);
+        //ConfigPane.addTab("Armor", armorTab);
         ConfigPane.addTab("Equipment", equipmentTab);
-        ConfigPane.addTab("Weapons", weaponTab);
-        ConfigPane.addTab("Build", buildTab);
+        //ConfigPane.addTab("Weapons", weaponTab);
+        ConfigPane.addTab("Assign Criticals", buildTab);
+        ConfigPane.addTab("Preview", previewTab);
 
-        masterPanel.add(header);
-        masterPanel.add(ConfigPane);
-        masterPanel.add(statusbar);
+        //masterPanel.add(header);
+        masterPanel.add(ConfigPane, BorderLayout.CENTER);
+        masterPanel.add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
         this.repaint();
@@ -210,6 +216,7 @@ public class MainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         weaponTab.refresh();
         buildTab.refresh();
+        previewTab.refresh();
         refreshHeader();
     }
 

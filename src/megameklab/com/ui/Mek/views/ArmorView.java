@@ -18,6 +18,9 @@ package megameklab.com.ui.Mek.views;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -46,10 +50,6 @@ public class ArmorView extends IView implements ChangeListener {
     private JPanel mainPanel = new JPanel();
 
     private JPanel headPanel = new JPanel();
-    private JPanel torsoPanel = new JPanel();
-    private JPanel legPanel = new JPanel();
-    private JPanel rearPanel = new JPanel();
-
     private JPanel laPanel = new JPanel();
     private JPanel raPanel = new JPanel();
     private JPanel llPanel = new JPanel();
@@ -134,47 +134,50 @@ public class ArmorView extends IView implements ChangeListener {
     private RefreshListener refresh;
 
     public ArmorView(Mech unit) {
-
         super(unit);
+        
+    	setLayout(new GridLayout(1,1));
 
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc;
 
-        headPanel.setLayout(new BoxLayout(headPanel, BoxLayout.X_AXIS));
-        torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
-        legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
-
+        headPanel.setLayout(new BoxLayout(headPanel, BoxLayout.Y_AXIS));
         laPanel.setLayout(new BoxLayout(laPanel, BoxLayout.Y_AXIS));
         raPanel.setLayout(new BoxLayout(raPanel, BoxLayout.Y_AXIS));
         ltPanel.setLayout(new BoxLayout(ltPanel, BoxLayout.Y_AXIS));
         ctPanel.setLayout(new BoxLayout(ctPanel, BoxLayout.Y_AXIS));
         rtPanel.setLayout(new BoxLayout(rtPanel, BoxLayout.Y_AXIS));
-
         rtrPanel.setLayout(new BoxLayout(rtrPanel, BoxLayout.Y_AXIS));
         ctrPanel.setLayout(new BoxLayout(ctrPanel, BoxLayout.Y_AXIS));
         ltrPanel.setLayout(new BoxLayout(ltrPanel, BoxLayout.Y_AXIS));
 
-        mainPanel.add(headPanel);
-
-        laPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-        raPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-        ltPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-        rtPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-        ctPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-
-        ltrPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-        rtrPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-        ctrPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-
-        torsoPanel.add(laPanel);
-        torsoPanel.add(ltPanel);
-        torsoPanel.add(ctPanel);
-        torsoPanel.add(rtPanel);
-        torsoPanel.add(raPanel);
-        mainPanel.add(torsoPanel);
-
-        legPanel.add(llPanel);
-        legPanel.add(rlPanel);
-        mainPanel.add(legPanel);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        mainPanel.add(headPanel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        mainPanel.add(laPanel, gbc);
+        gbc.gridx = 1;
+        mainPanel.add(ltPanel, gbc);
+        gbc.gridx = 2;
+        mainPanel.add(ctPanel, gbc);
+        gbc.gridx = 3;
+        mainPanel.add(rtPanel, gbc);
+        gbc.gridx = 4;
+        mainPanel.add(raPanel, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        mainPanel.add(ltrPanel, gbc);
+        gbc.gridx = 2;
+        mainPanel.add(ctrPanel, gbc);
+        gbc.gridx = 3;
+        mainPanel.add(rtrPanel, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        mainPanel.add(llPanel, gbc);
+        gbc.gridx = 3;
+        mainPanel.add(rlPanel, gbc);
 
         laArmorField.setName(Integer.toString(Mech.LOC_LARM));
         raArmorField.setName(Integer.toString(Mech.LOC_RARM));
@@ -200,13 +203,20 @@ public class ArmorView extends IView implements ChangeListener {
         armorFieldList.add(ctrArmorField);
         armorFieldList.add(rtrArmorField);
 
+        /*Dimension panelSize = new Dimension(75, 75);
+        headPanel.setSize(panelSize);
+        headPanel.setPreferredSize(panelSize);
+        headPanel.setMaximumSize(panelSize);
+        headPanel.setMinimumSize(panelSize);*/
+        
         Dimension size = new Dimension(35, 20);
         for (JSpinner spinner : armorFieldList) {
             spinner.setToolTipText("Front Armor");
-            spinner.setSize(size);
-            spinner.setMaximumSize(size);
-            spinner.setPreferredSize(size);
-            spinner.setMinimumSize(size);
+            //you don't set the size of the jspinner, but rather its internal textfield            
+            ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setSize(size);
+            ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setMaximumSize(size);
+            ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setPreferredSize(size);
+            ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setMinimumSize(size);
         }
         rtrArmorField.setToolTipText("Rear Armor");
         ltrArmorField.setToolTipText("Rear Armor");
@@ -233,9 +243,6 @@ public class ArmorView extends IView implements ChangeListener {
 
         addAllListeners();
 
-        torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
-        legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
-
         JPanel masterPanel;
 
         synchronized (unit) {
@@ -245,127 +252,111 @@ public class ArmorView extends IView implements ChangeListener {
                     case Mech.LOC_HEAD:
                         masterPanel = new JPanel();
                         JPanel topPanel = new JPanel();
+                        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
                         JPanel bottomPanel = new JPanel();
                         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
                         topPanel.add(hdArmorField);
-                        JLabel label = new JLabel("/ 9", SwingConstants.TRAILING);
-                        label.setSize(labelSize);
-                        label.setMaximumSize(labelSize);
-                        label.setPreferredSize(labelSize);
-                        label.setMinimumSize(labelSize);
-                        topPanel.add(label);
-                        masterPanel.add(new JLabel(unit.getLocationName(location)));
+                        JLabel label = new JLabel("max: 9", SwingConstants.TRAILING);
+                        //label.setSize(labelSize);
+                        //label.setMaximumSize(labelSize);
+                        //label.setPreferredSize(labelSize);
+                        //label.setMinimumSize(labelSize);
+                        //topPanel.add(label);
                         masterPanel.add(topPanel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkHead);
                         bottomPanel.add(unallocatedPointsFieldHead);
                         masterPanel.add(bottomPanel);
-                        masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         headPanel.add(masterPanel);
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
-                        headPanel.add(new JPanel());
                         break;
                     case Mech.LOC_LARM:
                         masterPanel = new JPanel();
                         masterPanel.add(laArmorField);
-                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        masterPanel.add(laArmorMaxLabel);
+                        //masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //masterPanel.add(laArmorMaxLabel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkLa);
                         bottomPanel.add(unallocatedPointsFieldLa);
-                        laPanel.add(new JLabel(unit.getLocationAbbr(location)));
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         laPanel.add(masterPanel);
                         laPanel.add(bottomPanel);
                         break;
                     case Mech.LOC_RARM:
                         masterPanel = new JPanel();
                         masterPanel.add(raArmorField);
-                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        masterPanel.add(raArmorMaxLabel);
+                        //masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //masterPanel.add(raArmorMaxLabel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkRa);
                         bottomPanel.add(unallocatedPointsFieldRa);
-                        raPanel.add(new JLabel(unit.getLocationAbbr(location)));
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         raPanel.add(masterPanel);
                         raPanel.add(bottomPanel);
                         break;
                     case Mech.LOC_CT:
                         masterPanel = new JPanel();
                         masterPanel.add(ctArmorField);
-                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        masterPanel.add(ctArmorMaxLabel);
+                        //masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //masterPanel.add(ctArmorMaxLabel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkCt);
                         bottomPanel.add(unallocatedPointsFieldCt);
-                        ctPanel.add(new JLabel(unit.getLocationAbbr(location)));
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         ctPanel.add(masterPanel);
                         ctPanel.add(bottomPanel);
                         masterPanel = new JPanel();
                         masterPanel.add(ctrArmorField);
-                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        masterPanel.add(ctrArmorMaxLabel);
+                        //masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //masterPanel.add(ctrArmorMaxLabel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkCtr);
                         bottomPanel.add(unallocatedPointsFieldCtr);
-                        ctrPanel.add(new JPanel());
-                        ctrPanel.add(new JPanel());
-                        ctrPanel.add(new JLabel(unit.getLocationAbbr(location) + "r"));
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location) + "(R)", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         ctrPanel.add(masterPanel);
                         ctrPanel.add(bottomPanel);
                         break;
                     case Mech.LOC_LT:
                         masterPanel = new JPanel();
                         masterPanel.add(ltArmorField);
-                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        masterPanel.add(ltArmorMaxLabel);
+                        //masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //masterPanel.add(ltArmorMaxLabel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkLt);
                         bottomPanel.add(unallocatedPointsFieldLt);
-                        ltPanel.add(new JLabel(unit.getLocationAbbr(location)));
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         ltPanel.add(masterPanel);
                         ltPanel.add(bottomPanel);
                         masterPanel = new JPanel();
                         masterPanel.add(ltrArmorField);
-                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        masterPanel.add(ltrArmorMaxLabel);
+                        //masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //masterPanel.add(ltrArmorMaxLabel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkLtr);
                         bottomPanel.add(unallocatedPointsFieldLtr);
-                        ltrPanel.add(new JPanel());
-                        ltrPanel.add(new JLabel(unit.getLocationAbbr(location) + "r"));
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location) + "(R)", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         ltrPanel.add(masterPanel);
                         ltrPanel.add(bottomPanel);
                         break;
                     case Mech.LOC_RT:
                         masterPanel = new JPanel();
                         masterPanel.add(rtArmorField);
-                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        masterPanel.add(rtArmorMaxLabel);
+                        //masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //masterPanel.add(rtArmorMaxLabel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkRt);
                         bottomPanel.add(unallocatedPointsFieldRt);
-                        rtPanel.add(new JLabel(unit.getLocationAbbr(location)));
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         rtPanel.add(masterPanel);
                         rtPanel.add(bottomPanel);
                         masterPanel = new JPanel();
                         masterPanel.add(rtrArmorField);
-                        masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        masterPanel.add(rtrArmorMaxLabel);
+                        //masterPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //masterPanel.add(rtrArmorMaxLabel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkRtr);
                         bottomPanel.add(unallocatedPointsFieldRtr);
-                        rtrPanel.add(new JPanel());
-                        rtrPanel.add(new JLabel(unit.getLocationAbbr(location) + "r"));
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location) + "(R)", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         rtrPanel.add(masterPanel);
                         rtrPanel.add(bottomPanel);
                         break;
@@ -375,20 +366,15 @@ public class ArmorView extends IView implements ChangeListener {
                         bottomPanel = new JPanel();
                         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
                         topPanel.add(llArmorField);
-                        topPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        topPanel.add(llArmorMaxLabel);
-                        masterPanel.add(new JLabel(unit.getLocationAbbr(location)));
+                        //topPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //topPanel.add(llArmorMaxLabel);
                         masterPanel.add(topPanel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkLl);
                         bottomPanel.add(unallocatedPointsFieldLl);
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         masterPanel.add(bottomPanel);
-                        masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-                        llPanel.add(new JPanel());
-                        llPanel.add(new JPanel());
                         llPanel.add(masterPanel);
-                        llPanel.add(new JPanel());
-                        llPanel.add(new JPanel());
                         break;
                     case Mech.LOC_RLEG:
                         masterPanel = new JPanel();
@@ -396,38 +382,26 @@ public class ArmorView extends IView implements ChangeListener {
                         bottomPanel = new JPanel();
                         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
                         topPanel.add(rlArmorField);
-                        topPanel.add(new JLabel("/", SwingConstants.TRAILING));
-                        topPanel.add(rlArmorMaxLabel);
-                        masterPanel.add(new JLabel(unit.getLocationAbbr(location)));
+                        //topPanel.add(new JLabel("/", SwingConstants.TRAILING));
+                        //topPanel.add(rlArmorMaxLabel);
                         masterPanel.add(topPanel);
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkRl);
                         bottomPanel.add(unallocatedPointsFieldRl);
+                        masterPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         masterPanel.add(bottomPanel);
-                        masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
-                        rlPanel.add(new JPanel());
-                        rlPanel.add(new JPanel());
                         rlPanel.add(masterPanel);
-                        rlPanel.add(new JPanel());
-                        rlPanel.add(new JPanel());
                         break;
                 }
             }
         }
-
-        rearPanel.add(ltrPanel);
-        rearPanel.add(ctrPanel);
-        rearPanel.add(rtrPanel);
-
-        this.add(mainPanel);
-        this.add(rearPanel);
 
         JPanel totalArmorPanel = new JPanel();
         JPanel headerPanel = new JPanel();
         JPanel bottomPanel = new JPanel();
         JPanel pointsPanel = new JPanel();
 
-        totalArmorPanel.setLayout(new BoxLayout(totalArmorPanel, BoxLayout.Y_AXIS));
+        totalArmorPanel.setLayout(new BoxLayout(totalArmorPanel, BoxLayout.X_AXIS));
         headerPanel.add(new JLabel("Current/Maximum Armor"));
         bottomPanel.add(currentArmorLabel);
         bottomPanel.add(new JLabel("/", SwingConstants.TRAILING));
@@ -441,7 +415,14 @@ public class ArmorView extends IView implements ChangeListener {
         totalArmorPanel.add(bottomPanel);
         totalArmorPanel.add(pointsPanel);
 
-        this.add(totalArmorPanel);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 5;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        mainPanel.add(totalArmorPanel, gbc);
+        this.add(mainPanel);
+        //this.add(totalArmorPanel);
+
         // refresh();
     }
 

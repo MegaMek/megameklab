@@ -541,6 +541,62 @@ public class UnitUtil {
         }
 
     }
+    
+    public static boolean isJumpJet(Mounted m) {
+    	return m.getType().hasFlag(MiscType.F_JUMP_JET);
+    }
+    
+    public static String getJumpJetType(int type, boolean clan) {
+        if(type == Mech.JUMP_IMPROVED) {
+	    	if (clan) {
+	    		return "CLImprovedJump Jet";
+	        } else {
+	        	return "ISImprovedJump Jet";
+	        }
+        }
+        return "JumpJet";
+    }
+    
+    /**
+     * Removes all jump jets from the mek
+     *
+     * @param unit
+     */
+    public static void removeJumpJets(Mech unit) {
+        System.out.println("Removing jump jets.");
+        ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(unit.getMisc());
+        for (Mounted eq : equipmentList) {
+            if (UnitUtil.isJumpJet(eq)) {
+                UnitUtil.removeCriticals(unit, eq);
+            }
+        }
+        for (Mounted eq : equipmentList) {
+            if (UnitUtil.isJumpJet(eq)) {
+                unit.getMisc().remove(eq);
+                unit.getEquipment().remove(eq);
+            }
+        }
+        System.out.println("Jump jet removal finished.");
+    }
+    
+    /**
+     * updates the Jump Jets.
+     *
+     * @param unit
+     * @param jjAmount
+     * @param jjType
+     */
+    public static void updateJumpJets(Mech unit, int jjAmount, int jjType) {
+        UnitUtil.removeJumpJets(unit);
+        while(jjAmount > 0) {
+        	try {
+            	unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType, unit.isClan()))), Entity.LOC_NONE, false);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        	jjAmount--;
+        }
+    }
 
     public static boolean isPrintableEquipment(EquipmentType eq) {
         return UnitUtil.isPrintableEquipment(eq, false);
@@ -1565,6 +1621,10 @@ public class UnitUtil {
             return false;
         }
 
+        if(eq instanceof AmmoType) {
+        	return false;
+        }
+        
         if (eq instanceof WeaponType) {
 
             WeaponType weapon = (WeaponType) eq;
@@ -2350,5 +2410,15 @@ public class UnitUtil {
             sb.append(" B"+mech.getBARRating(loc));
         }
         return sb.toString();
+    }
+    
+    public static boolean canUseAmmo(Entity unit, AmmoType atype) {
+    	for(Mounted m : unit.getWeaponList()) {
+    		if(m.getType() instanceof WeaponType) {
+    			WeaponType wtype = (WeaponType)m.getType();
+    			return wtype.getAmmoType() == atype.getAmmoType() && wtype.getRackSize() == atype.getRackSize();
+    		}
+    	}
+    	return false;
     }
 }
