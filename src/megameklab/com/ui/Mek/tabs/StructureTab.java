@@ -30,6 +30,7 @@ import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -525,62 +526,31 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         setFieldSize(jjType, comboSize);
 
 
+        JPanel leftPanel = new JPanel();
+        JPanel rightPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+
+        leftPanel.add(panInfo);
+        leftPanel.add(panChassis);
+        leftPanel.add(Box.createGlue());
+        rightPanel.add(panArmor);
+        rightPanel.add(panMovement);
+        rightPanel.add(panHeat);
+        leftPanel.add(Box.createVerticalGlue());
+
+        
         gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.fill = java.awt.GridBagConstraints.NONE;
 		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-		gbc.gridwidth = 2;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		masterPanel.add(panInfo, gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridheight = 2;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		masterPanel.add(panChassis, gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.gridheight = 1;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		masterPanel.add(panArmor, gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		masterPanel.add(panMovement, gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		masterPanel.add(panHeat, gbc);
-        
-		gbc = new GridBagConstraints();
-		gbc.gridx = 2;
-		gbc.gridy = 0;
-		gbc.gridheight = 3;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
+		masterPanel.add(leftPanel, gbc);		
+		gbc.gridx = 1;
+		masterPanel.add(rightPanel, gbc);		
+		gbc.gridx = 2;
 		masterPanel.add(armor, gbc);
 		
         SpringLayoutHelper.setupSpringGrid(panHeat, 2);

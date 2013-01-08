@@ -44,6 +44,7 @@ V 0.0.0.21-dev
 + Print primitive fuel cell engine as primitive
 + Better table printing for large support and super heavy weight tanks
 + massive re-structuring of the Mek GUI (work in progress)
++ alignment of panels in structure tab improved
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
