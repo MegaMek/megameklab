@@ -16,6 +16,8 @@
 
 package megameklab.com.ui.Mek.tabs;
 
+import java.awt.BorderLayout;
+
 import javax.swing.SpringLayout;
 
 import megamek.common.Mech;
@@ -36,9 +38,9 @@ public class EquipmentTab extends ITab {
     public EquipmentTab(Mech unit) {
         this.unit = unit;
         equipment = new EquipmentView(unit);
-        setLayout(new SpringLayout());
-        this.add(equipment);
-        SpringLayoutHelper.setupSpringGrid(this, 1);
+        setLayout(new BorderLayout());
+        this.add(equipment, BorderLayout.CENTER);
+        //SpringLayoutHelper.setupSpringGrid(this, 1);
 
         refresh();
     }

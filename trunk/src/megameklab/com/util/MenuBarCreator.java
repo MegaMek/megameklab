@@ -52,7 +52,6 @@ import megamek.common.UnitType;
 import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.dialog.EquipmentViewerDialog;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 
 public class MenuBarCreator extends JMenuBar {
@@ -1123,7 +1122,7 @@ public class MenuBarCreator extends JMenuBar {
     }
 
     private void jMenuCreateEquipmentFile_actionPerformed() {
-        new EquipmentViewerDialog(parentFrame);
+       // new EquipmentViewerDialog(parentFrame);
     }
 
     public void setUnit(Entity unit) {
