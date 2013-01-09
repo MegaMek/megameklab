@@ -17,17 +17,13 @@
 package megameklab.com.ui.Mek.tabs;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -36,15 +32,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
@@ -64,15 +56,13 @@ import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megameklab.com.ui.Mek.views.ArmorView;
-import megameklab.com.ui.Mek.views.CriticalView;
 import megameklab.com.util.ITab;
-import megameklab.com.util.ImageHelper;
-import megameklab.com.util.ImagePanel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements ActionListener, KeyListener, ChangeListener {
+public class StructureTab extends ITab implements ActionListener, KeyListener,
+        ChangeListener {
 
     /**
      *
@@ -88,14 +78,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private static final String ENGINEXXL = "XXL";
     private static final String ENGINEICE = "I.C.E";
 
-    String[] isEngineTypes =
-        { ENGINESTANDARD, ENGINEXL, ENGINELIGHT, ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL };
-    String[] isIndustrialEngineTypes =
-        { ENGINESTANDARD, ENGINEICE, ENGINEFUELCELL, ENGINEFISSION };
-    String[] clanEngineTypes =
-        { ENGINESTANDARD, ENGINEXL, ENGINEFUELCELL, ENGINEXXL };
-    String[] clanIndustrialEngineTypes =
-        { ENGINESTANDARD, ENGINEICE, ENGINEFUELCELL, ENGINEFISSION };
+    String[] isEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINELIGHT,
+            ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL };
+    String[] isIndustrialEngineTypes = { ENGINESTANDARD, ENGINEICE,
+            ENGINEFUELCELL, ENGINEFISSION };
+    String[] clanEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINEFUELCELL,
+            ENGINEXXL };
+    String[] clanIndustrialEngineTypes = { ENGINESTANDARD, ENGINEICE,
+            ENGINEFUELCELL, ENGINEFISSION };
     private int clanEngineFlag = 0;
 
     JPanel panInfo;
@@ -103,9 +93,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     JPanel panArmor;
     JPanel panMovement;
     JPanel panHeat;
-    
+
     private ArmorView armor;
-    
+
     JComboBox engineType = new JComboBox(isEngineTypes);
     JSpinner walkMP;
     JTextField runMP;
@@ -113,26 +103,22 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     JComboBox gyroType = new JComboBox(Mech.GYRO_SHORT_STRING);
     JSpinner weightClass;
     JComboBox cockpitType = new JComboBox(Mech.COCKPIT_SHORT_STRING);
-    String[] clanHeatSinkTypes =
-        { "Single", "Double", "Laser" };
-    String[] isHeatSinkTypes =
-        { "Single", "Double", "Compact" };
+    String[] clanHeatSinkTypes = { "Single", "Double", "Laser" };
+    String[] isHeatSinkTypes = { "Single", "Double", "Compact" };
     JComboBox heatSinkType = new JComboBox(isHeatSinkTypes);
     JComboBox heatSinkNumber;
     JComboBox baseChassisHeatSinks;
-    String[] techTypes =
-        { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
+    String[] techTypes = { "Inner Sphere", "Clan", "Mixed Inner Sphere",
+            "Mixed Clan" };
     JComboBox techType = new JComboBox(techTypes);
-    String[] isTechLevels =
-        { "Introductory", "Standard", "Advanced", "Experimental", "Unoffical" };
-    String[] clanTechLevels =
-        { "Standard", "Advanced", "Experimental", "Unoffical" };
-    String[] motiveTypes = 
-    	{ "Biped", "Quad" };
+    String[] isTechLevels = { "Introductory", "Standard", "Advanced",
+            "Experimental", "Unoffical" };
+    String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
+            "Unoffical" };
+    String[] motiveTypes = { "Biped", "Quad" };
     JComboBox motiveType = new JComboBox(motiveTypes);
     JComboBox techLevel = new JComboBox(isTechLevels);
-    String[] jjTypes = 
-    	{"Standard", "Improved"};
+    String[] jjTypes = { "Standard", "Improved" };
     JComboBox jjType = new JComboBox(jjTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
@@ -142,32 +128,32 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     JCheckBox fullHeadEjectCB = new JCheckBox("Full Head Ejection");
     JComboBox structureCombo = new JComboBox(EquipmentType.structureNames);
     JPanel masterPanel;
-    JTextField manualBV = new JTextField(3);    
+    JTextField manualBV = new JTextField(3);
     private JTextField chassis = new JTextField(5);
     private JTextField model = new JTextField(5);
-    
-    private String[] armorNames = new String[]
-        { EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_COMMERCIAL],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_INDUSTRIAL],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_PRIMITIVE],
-          EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK]};
+
+    private String[] armorNames = new String[] {
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_COMMERCIAL],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_INDUSTRIAL],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_PRIMITIVE],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK] };
     private JComboBox armorCombo = new JComboBox(armorNames);
     private JButton allocateArmorButton = new JButton("Allocate Armor");
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
     private JSpinner armorTonnage;
     private JCheckBox clanArmor = new JCheckBox("Clan Armor");
-    
+
     public StructureTab(Mech unit) {
         this.unit = unit;
         armor = new ArmorView(getMech());
@@ -177,7 +163,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         setArmorType(unit.getArmorType(0));
         refresh();
     }
-    
+
     private void setUpPanels() {
         masterPanel = new JPanel(new GridBagLayout());
         panInfo = new JPanel(new GridBagLayout());
@@ -187,329 +173,350 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         panHeat = new JPanel(new SpringLayout());
 
         GridBagConstraints gbc;
-        
+
         Dimension spinnerSize = new Dimension(35, 25);
 
-        walkMP = new JSpinner(new SpinnerNumberModel(1,1,25,1));
-        ((JSpinner.DefaultEditor)walkMP.getEditor()).getTextField().setSize(spinnerSize);
-        ((JSpinner.DefaultEditor)walkMP.getEditor()).getTextField().setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor)walkMP.getEditor()).getTextField().setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor)walkMP.getEditor()).getTextField().setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor)walkMP.getEditor()).getTextField().setEditable(false);
+        walkMP = new JSpinner(new SpinnerNumberModel(1, 1, 25, 1));
+        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField().setSize(
+                spinnerSize);
+        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
+                .setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
+                .setEditable(false);
         runMP = new JTextField();
         runMP.setEditable(false);
-        //runMP.setEnabled(false);
+        // runMP.setEnabled(false);
         setFieldSize(runMP, new Dimension(37, 25));
-        runMP.setHorizontalAlignment(JTextField.RIGHT);
-        
-        jumpMP = new JSpinner(new SpinnerNumberModel(0,0,25,1));
-        ((JSpinner.DefaultEditor)jumpMP.getEditor()).getTextField().setSize(spinnerSize);
-        ((JSpinner.DefaultEditor)jumpMP.getEditor()).getTextField().setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor)jumpMP.getEditor()).getTextField().setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor)jumpMP.getEditor()).getTextField().setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor)jumpMP.getEditor()).getTextField().setEditable(false);
-        
-        weightClass = new JSpinner(new SpinnerNumberModel(20,10,100,5));
-        ((JSpinner.DefaultEditor)weightClass.getEditor()).getTextField().setEditable(false);
-        
+        runMP.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        jumpMP = new JSpinner(new SpinnerNumberModel(0, 0, 25, 1));
+        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField().setSize(
+                spinnerSize);
+        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
+                .setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
+                .setEditable(false);
+
+        weightClass = new JSpinner(new SpinnerNumberModel(20, 10, 100, 5));
+        ((JSpinner.DefaultEditor) weightClass.getEditor()).getTextField()
+                .setEditable(false);
+
         heatSinkNumber = new JComboBox();
         baseChassisHeatSinks = new JComboBox();
-        
-        armorTonnage = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 30.5, 0.5));     
-        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setSize(spinnerSize);
-        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setEditable(false);
-     
+
+        armorTonnage = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 30.5, 0.5));
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
+                .setSize(spinnerSize);
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
+                .setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
+                .setEditable(false);
+
         chassis.setText(unit.getChassis());
         model.setText(unit.getModel());
-        
-        Dimension labelSize = new Dimension(110,25);
+
+        Dimension labelSize = new Dimension(110, 25);
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-		gbc.gridy = 0;
-		//gridBagConstraints.ipadx = 5;
-		//gridBagConstraints.ipady = 5;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
+        gbc.gridy = 0;
+        // gridBagConstraints.ipadx = 5;
+        // gridBagConstraints.ipady = 5;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         panInfo.add(createLabel("Chassis:", labelSize), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.weightx = 1.0;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
         panInfo.add(chassis, gbc);
-        
+
         gbc.gridx = 0;
-		gbc.gridy = 1;
-		//gridBagConstraints.ipadx = 5;
-		//gridBagConstraints.ipady = 5;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
+        gbc.gridy = 1;
+        // gridBagConstraints.ipadx = 5;
+        // gridBagConstraints.ipady = 5;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         panInfo.add(createLabel("Model:", labelSize), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.weightx = 1.0;
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
         panInfo.add(model, gbc);
-        
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		//gridBagConstraints.ipadx = 5;
-		//gridBagConstraints.ipady = 5;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        // gridBagConstraints.ipadx = 5;
+        // gridBagConstraints.ipady = 5;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         panInfo.add(createLabel("Year:", labelSize), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.weightx = 1.0;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
         panInfo.add(era, gbc);
 
         gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.weightx = 0.0;
+        gbc.gridy = 3;
+        gbc.weightx = 0.0;
         panInfo.add(createLabel("Source/Era:", labelSize), gbc);
         gbc.gridx = 1;
-		gbc.gridy = 3;
-		gbc.weightx = 1.0;
+        gbc.gridy = 3;
+        gbc.weightx = 1.0;
         panInfo.add(source, gbc);
 
         gbc.gridx = 0;
-		gbc.gridy = 4;
-		gbc.weightx = 0.0;
+        gbc.gridy = 4;
+        gbc.weightx = 0.0;
         panInfo.add(createLabel("Tech:", labelSize), gbc);
         gbc.gridx = 1;
-		gbc.gridy = 4;
-		gbc.weightx = 1.0;
+        gbc.gridy = 4;
+        gbc.weightx = 1.0;
         panInfo.add(techType, gbc);
-        
+
         gbc.gridx = 0;
-		gbc.gridy = 5;
-		gbc.weightx = 0.0;
+        gbc.gridy = 5;
+        gbc.weightx = 0.0;
         panInfo.add(createLabel("Tech Level:", labelSize), gbc);
         gbc.gridx = 1;
-		gbc.gridy = 5;
-		gbc.weightx = 1.0;
+        gbc.gridy = 5;
+        gbc.weightx = 1.0;
         panInfo.add(techLevel, gbc);
 
-        //Taharqa: leaving this out right now, because I don't think it does anything
-        //panChassis.add(lamCB);
-        gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-        panChassis.add(createLabel("Tonnage:", labelSize), gbc);
-        gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.anchor = GridBagConstraints.WEST;
-        panChassis.add(weightClass, gbc);   
-        gbc.gridx = 2;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.WEST;		
-		gbc.weightx = 1.0;
-        panChassis.add(omniCB, gbc);
-        
-        gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-        panChassis.add(createLabel("Motive Type:", labelSize), gbc);
-        gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.gridwidth = 2;
-		gbc.weightx = 1.0;
-        panChassis.add(motiveType, gbc);     
-        
-        gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = 1;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-        panChassis.add(createLabel("Structure Type:", labelSize), gbc);
-        gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.gridwidth = 2;
-		gbc.weightx = 1.0;
-        panChassis.add(structureCombo, gbc);
-        
-        gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.gridwidth = 1;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-        panChassis.add(createLabel("Engine Type:", labelSize), gbc);
-        gbc.gridx = 1;
-		gbc.gridy = 3;
-		gbc.gridwidth = 2;
-		gbc.weightx = 1.0;
-        panChassis.add(engineType, gbc);
-        
-        gbc.gridx = 0;
-		gbc.gridy = 4;
-		gbc.gridwidth = 1;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-        panChassis.add(createLabel("Gyro Type:", labelSize), gbc);
-        gbc.gridx = 1;
-		gbc.gridy = 4;
-		gbc.gridwidth = 2;
-		gbc.weightx = 1.0;
-        panChassis.add(gyroType, gbc);
-        
-        gbc.gridx = 0;
-		gbc.gridy = 5;
-		gbc.gridwidth = 1;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.0;
-		gbc.weighty = 1.0;
-        panChassis.add(createLabel("Cockpit Type:", labelSize), gbc);
-        gbc.gridx = 1;
-		gbc.gridy = 5;
-		gbc.gridwidth = 2;
-		gbc.weightx = 1.0;
-        panChassis.add(cockpitType, gbc);
-        gbc.gridx = 1;
-		gbc.gridy = 6;
-		gbc.gridwidth = 2;
-		gbc.weightx = 1.0;
-        panChassis.add(fullHeadEjectCB, gbc);        
 
         gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		//gridBagConstraints.ipadx = 5;
-		//gridBagConstraints.ipady = 5;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-        panArmor.add(createLabel("Armor Type:", labelSize), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.gridwidth = 2;
-		gbc.weightx = 1.0;
-        panArmor.add(armorCombo, gbc);
-        
         gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        panChassis.add(createLabel("Tonnage:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        panChassis.add(weightClass, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 1.0;
+        panChassis.add(omniCB, gbc);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panChassis.add(lamCB, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        panChassis.add(createLabel("Motive Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        panChassis.add(motiveType, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        panChassis.add(createLabel("Structure Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        panChassis.add(structureCombo, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        panChassis.add(createLabel("Engine Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        panChassis.add(engineType, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        panChassis.add(createLabel("Gyro Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        panChassis.add(gyroType, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 1.0;
+        panChassis.add(createLabel("Cockpit Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        panChassis.add(cockpitType, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        panChassis.add(fullHeadEjectCB, gbc);
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        // gridBagConstraints.ipadx = 5;
+        // gridBagConstraints.ipady = 5;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        panArmor.add(createLabel("Armor Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        panArmor.add(armorCombo, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         panArmor.add(createLabel("Armor Tonnage:", labelSize), gbc);
         gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.weightx = 0.0;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.anchor = GridBagConstraints.WEST;
-        panArmor.add(armorTonnage, gbc);     
+        gbc.gridy = 1;
+        gbc.weightx = 0.0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        panArmor.add(armorTonnage, gbc);
         gbc.gridx = 2;
-		gbc.gridy = 1;
-		gbc.weightx = 1.0;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.anchor = GridBagConstraints.WEST;
-        panArmor.add(clanArmor, gbc);    
-        
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        panArmor.add(clanArmor, gbc);
+
         gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = 3;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
         panArmor.add(allocateArmorButton, gbc);
         gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.gridwidth = 3;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
         panArmor.add(maximizeArmorButton, gbc);
-        
-        
+
         gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         panMovement.add(createLabel("Walking MP:", labelSize), gbc);
         gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.weightx = 0.0;
+        gbc.gridy = 0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 0.0;
         panMovement.add(walkMP, gbc);
         gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         panMovement.add(createLabel("Running MP:", labelSize), gbc);
         gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.weightx = 0.0;
+        gbc.gridy = 1;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 0.0;
         panMovement.add(runMP, gbc);
         gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
+        gbc.gridy = 2;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         panMovement.add(createLabel("Jumping MP:", labelSize), gbc);
         gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.weightx = 0.0;
+        gbc.gridy = 2;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 0.0;
         panMovement.add(jumpMP, gbc);
         gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
+        gbc.gridy = 3;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         panMovement.add(createLabel("Jump Jet Type:", labelSize), gbc);
         gbc.gridx = 1;
-		gbc.gridy = 3;
-		gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.weightx = 1.0;
+        gbc.gridy = 3;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 1.0;
         panMovement.add(jjType, gbc);
 
         panHeat.add(createLabel("Base (Omni):", labelSize));
         panHeat.add(baseChassisHeatSinks);
-        
+
         panHeat.add(createLabel("Sink Type:", labelSize));
         panHeat.add(heatSinkType);
 
         panHeat.add(createLabel("Number:", labelSize));
         panHeat.add(heatSinkNumber);
-        
-        //masterPanel.add(createLabel("Manual BV:", maxSize));
-        //masterPanel.add(manualBV);
-       
-        Dimension comboSize = new Dimension(180,25);
-        
+
+        // masterPanel.add(createLabel("Manual BV:", maxSize));
+        // masterPanel.add(manualBV);
+
+        Dimension comboSize = new Dimension(180, 25);
+
         setFieldSize(era, comboSize);
         setFieldSize(manualBV, comboSize);
         setFieldSize(source, comboSize);
@@ -525,7 +532,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         setFieldSize(structureCombo, comboSize);
         setFieldSize(jjType, comboSize);
 
-
         JPanel leftPanel = new JPanel();
         JPanel rightPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -539,30 +545,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         rightPanel.add(panHeat);
         leftPanel.add(Box.createVerticalGlue());
 
-        
         gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.fill = java.awt.GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		gbc.weighty = 1.0;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		masterPanel.add(leftPanel, gbc);		
-		gbc.gridx = 1;
-		masterPanel.add(rightPanel, gbc);		
-		gbc.gridx = 2;
-		masterPanel.add(armor, gbc);
-		
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        masterPanel.add(leftPanel, gbc);
+        gbc.gridx = 1;
+        masterPanel.add(rightPanel, gbc);
+        gbc.gridx = 2;
+        masterPanel.add(armor, gbc);
+
         SpringLayoutHelper.setupSpringGrid(panHeat, 2);
 
-        //masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        // masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(),
+        // Color.blue.darker()));
         panInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         armor.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
-
 
     }
 
@@ -575,10 +580,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             omniCB.setEnabled(true);
         }
         omniCB.setSelected(getMech().isOmni());
-        if(unit instanceof QuadMech) {
-        	motiveType.setSelectedItem("Quad");
+        if (unit instanceof QuadMech) {
+            motiveType.setSelectedItem("Quad");
         } else {
-        	motiveType.setSelectedItem("Biped");
+            motiveType.setSelectedItem("Biped");
         }
         lamCB.setSelected(unit instanceof LandAirMech);
         fullHeadEjectCB.setSelected(getMech().hasFullHeadEject());
@@ -586,7 +591,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         source.setText(getMech().getSource());
         manualBV.setText(Integer.toString(Math.max(0, getMech().getManualBV())));
         weightClass.setValue((int) (getMech().getWeight()));
-        //weightClass.setSelectedIndex((int) (getMech().getWeight() / 5) - 2);
+        // weightClass.setSelectedIndex((int) (getMech().getWeight() / 5) - 2);
         heatSinkNumber.removeAllItems();
         baseChassisHeatSinks.removeAllItems();
 
@@ -594,20 +599,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             heatSinkNumber.addItem(Integer.toString(count));
         }
 
-        for (int count = 0; count <= getMech().getEngine().integralHeatSinkCapacity(getMech().hasCompactHeatSinks()); count++) {
+        for (int count = 0; count <= getMech().getEngine()
+                .integralHeatSinkCapacity(getMech().hasCompactHeatSinks()); count++) {
             baseChassisHeatSinks.addItem(Integer.toString(count));
         }
 
         int totalSinks = getMech().heatSinks(false);
         int freeSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
         heatSinkNumber.setSelectedIndex(totalSinks - freeSinks);
-        baseChassisHeatSinks.setSelectedIndex(Math.max(0, getMech().getEngine().getBaseChassisHeatSinks(getMech().hasCompactHeatSinks())));
+        baseChassisHeatSinks.setSelectedIndex(Math.max(0, getMech().getEngine()
+                .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks())));
 
         if (getMech().isOmni()) {
-        	baseChassisHeatSinks.setEnabled(true);
-            getMech().getEngine().setBaseChassisHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
+            baseChassisHeatSinks.setEnabled(true);
+            getMech().getEngine().setBaseChassisHeatSinks(
+                    Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
         } else {
-        	baseChassisHeatSinks.setEnabled(false);
+            baseChassisHeatSinks.setEnabled(false);
             getMech().getEngine().setBaseChassisHeatSinks(-1);
         }
 
@@ -626,14 +634,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         }
 
-        engineType.setSelectedIndex(convertEngineType(getMech().getEngine().getEngineType()));
+        engineType.setSelectedIndex(convertEngineType(getMech().getEngine()
+                .getEngineType()));
 
         createSystemList();
         createHeatSinkList();
         createJumpJetList();
         createGyroList();
 
-        cockpitType.setSelectedItem(Mech.COCKPIT_SHORT_STRING[getMech().getCockpitType()]);
+        cockpitType.setSelectedItem(Mech.COCKPIT_SHORT_STRING[getMech()
+                .getCockpitType()]);
         setStructureCombo();
         gyroType.setSelectedIndex(getMech().getGyroType());
 
@@ -737,27 +747,30 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         }
         walkMP.setValue(getMech().getWalkMP(true, false, true));
         jumpMP.setValue(getMech().getJumpMP());
-        if(getJumpJetType() == Mech.JUMP_IMPROVED) {
-        	((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech().getRunMP());
+        if (getJumpJetType() == Mech.JUMP_IMPROVED) {
+            ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
+                    .getRunMP());
         } else {
-        	((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech().getWalkMP(true, false, true));
+            ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
+                    .getWalkMP(true, false, true));
         }
         runMP.setText(getMech().getRunMPasString());
 
-        if(getMech().getJumpType() == Mech.JUMP_IMPROVED) {
-        	jjType.setSelectedIndex(1);
-        } 
-        
+        if (getMech().getJumpType() == Mech.JUMP_IMPROVED) {
+            jjType.setSelectedIndex(1);
+        }
+
         clanArmor.setEnabled(unit.isMixedTech());
         clanArmor.setSelected(unit.isClanArmor(0));
         setTotalArmorTonnage();
-        ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil.getMaximumArmorTonnage(unit));
-        //if (!unit.hasPatchworkArmor()) {
-         //   setArmorType(unit.getArmorType(0));
-        //}
+        ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
+                .getMaximumArmorTonnage(unit));
+        // if (!unit.hasPatchworkArmor()) {
+        // setArmorType(unit.getArmorType(0));
+        // }
         armor.updateUnit(unit);
         armor.refresh();
-        
+
         addAllListeners();
 
     }
@@ -775,36 +788,40 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
     }
-    
+
     public void actionPerformed(ActionEvent e) {
-/*
-        if ((e.getSource() instanceof JButton) && e.getSource().equals(browseButton)) {
-            FileDialog fDialog = new FileDialog(new JFrame(), "Image Path", FileDialog.LOAD);
-
-            if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
-                String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
-                String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
-                fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-                fDialog.setDirectory(fullPath);
-                fDialog.setFile(imageName);
-            } else {
-                fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-                fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
-            }
-
-            fDialog.setLocationRelativeTo(this);
-
-            fDialog.setVisible(true);
-
-            if (fDialog.getFile() != null) {
-                String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-                relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
-                getMech().getFluff().setMMLImagePath(relativeFilePath);
-                refresh();
-            }
-            return;
-        }
-*/
+        /*
+         * if ((e.getSource() instanceof JButton) &&
+         * e.getSource().equals(browseButton)) { FileDialog fDialog = new
+         * FileDialog(new JFrame(), "Image Path", FileDialog.LOAD);
+         *
+         * if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
+         * String fullPath = new
+         * File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
+         * String imageName =
+         * fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
+         * fullPath = fullPath.substring(0,
+         * fullPath.lastIndexOf(File.separatorChar) + 1);
+         * fDialog.setDirectory(fullPath); fDialog.setFile(imageName); } else {
+         * fDialog.setDirectory(new
+         * File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar +
+         * ImageHelper.imageMech + File.separatorChar);
+         * fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() +
+         * ".png"); }
+         *
+         * fDialog.setLocationRelativeTo(this);
+         *
+         * fDialog.setVisible(true);
+         *
+         * if (fDialog.getFile() != null) { String relativeFilePath = new
+         * File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+         * relativeFilePath = "." + File.separatorChar +
+         * relativeFilePath.substring(new
+         * File(System.getProperty("user.dir").toString
+         * ()).getAbsolutePath().length() + 1);
+         * getMech().getFluff().setMMLImagePath(relativeFilePath); refresh(); }
+         * return; }
+         */
         if (e.getSource() instanceof JComboBox) {
             JComboBox combo = (JComboBox) e.getSource();
             removeAllListeners();
@@ -815,7 +832,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 // if a mech is primitive and thus needs a larger engine
                 if (combo.equals(engineType) || combo.equals(cockpitType)) {
                     if (combo.equals(cockpitType)) {
-                        getMech().setCockpitType(Mech.getCockpitTypeForString(combo.getSelectedItem().toString()));
+                        getMech().setCockpitType(
+                                Mech.getCockpitTypeForString(combo
+                                        .getSelectedItem().toString()));
                         getMech().clearCockpitCrits();
                         switch (getMech().getCockpitType()) {
                             case Mech.COCKPIT_COMMAND_CONSOLE:
@@ -834,54 +853,81 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                                 break;
                             case Mech.COCKPIT_INDUSTRIAL:
                                 getMech().addIndustrialCockpit();
-                                getMech().setArmorType(EquipmentType.T_ARMOR_INDUSTRIAL);
+                                getMech().setArmorType(
+                                        EquipmentType.T_ARMOR_INDUSTRIAL);
                                 break;
                             case Mech.COCKPIT_PRIMITIVE:
                                 getMech().addPrimitiveCockpit();
-                                getMech().setArmorType(EquipmentType.T_ARMOR_PRIMITIVE);
+                                getMech().setArmorType(
+                                        EquipmentType.T_ARMOR_PRIMITIVE);
                                 break;
                             case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
                                 getMech().addIndustrialPrimitiveCockpit();
-                                getMech().setArmorType(EquipmentType.T_ARMOR_COMMERCIAL);
+                                getMech().setArmorType(
+                                        EquipmentType.T_ARMOR_COMMERCIAL);
                                 break;
                             default:
                                 getMech().addCockpit();
                         }
                     }
-                    int rating = ((Integer)walkMP.getValue()) * ((Integer)weightClass.getValue());
+                    int rating = ((Integer) walkMP.getValue())
+                            * ((Integer) weightClass.getValue());
                     if (getMech().isPrimitive()) {
-                        double dRating = ((Integer)walkMP.getValue()) * ((Integer)weightClass.getValue());
+                        double dRating = ((Integer) walkMP.getValue())
+                                * ((Integer) weightClass.getValue());
                         dRating *= 1.2;
                         if ((dRating % 5) != 0) {
                             dRating = (dRating - (dRating % 5)) + 5;
                         }
                         rating = (int) dRating;
                     }
-                    if ((rating > 400) && (getMech().getGyroType() == Mech.GYRO_XL)) {
-                        JOptionPane.showMessageDialog(this, "That speed would require a large engine, which doesn't fit", "Bad Engine", JOptionPane.ERROR_MESSAGE);
+                    if ((rating > 400)
+                            && (getMech().getGyroType() == Mech.GYRO_XL)) {
+                        JOptionPane
+                                .showMessageDialog(
+                                        this,
+                                        "That speed would require a large engine, which doesn't fit",
+                                        "Bad Engine", JOptionPane.ERROR_MESSAGE);
                     }
                     if (rating > 500) {
-                        JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane
+                                .showMessageDialog(
+                                        this,
+                                        "That speed would create an engine with a rating over 500.",
+                                        "Bad Engine Rating",
+                                        JOptionPane.ERROR_MESSAGE);
                     } else {
                         System.out.println("Clearning engine crits.");
                         getMech().clearEngineCrits();
                         System.out.println("Setting new engine rating.");
-                        getMech().setEngine(new Engine(rating, convertEngineType(engineType.getSelectedItem().toString()), clanEngineFlag));
+                        getMech().setEngine(
+                                new Engine(rating, convertEngineType(engineType
+                                        .getSelectedItem().toString()),
+                                        clanEngineFlag));
                         getMech().addEngineCrits();
                         System.out.println("Adding engine crits.");
-                        int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-                        System.out.println("Updating # engine heat sinks to " + autoSinks);
-                        UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
+                        int autoSinks = getMech().getEngine()
+                                .getWeightFreeEngineHeatSinks();
+                        System.out.println("Updating # engine heat sinks to "
+                                + autoSinks);
+                        UnitUtil.updateHeatSinks(getMech(),
+                                heatSinkNumber.getSelectedIndex() + autoSinks,
+                                heatSinkType.getSelectedItem().toString());
                     }
                 } else if (combo.equals(armorCombo)) {
-                	UnitUtil.removeISorArmorMounts(unit, false);
+                    UnitUtil.removeISorArmorMounts(unit, false);
                     createArmorMountsAndSetArmorType();
                 } else if (combo.equals(structureCombo)) {
                     UnitUtil.removeISorArmorMounts(getMech(), true);
                     createISMounts();
                 } else if (combo.equals(gyroType)) {
-                    if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE) && (combo.getSelectedIndex() == Mech.GYRO_XL)) {
-                        JOptionPane.showMessageDialog(this, "A XL gyro does not fit with a large engine installed", "Bad Gyro", JOptionPane.ERROR_MESSAGE);
+                    if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE)
+                            && (combo.getSelectedIndex() == Mech.GYRO_XL)) {
+                        JOptionPane
+                                .showMessageDialog(
+                                        this,
+                                        "A XL gyro does not fit with a large engine installed",
+                                        "Bad Gyro", JOptionPane.ERROR_MESSAGE);
                     } else {
                         getMech().setGyroType(combo.getSelectedIndex());
                         getMech().clearGyroCrits();
@@ -902,80 +948,116 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                                 getMech().addGyro();
                         }
                     }
-                } else if (combo.equals(heatSinkType) || combo.equals(heatSinkNumber)) {
-                    int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-                    System.out.println("Heat sink type or number changed.  Updating # engine sinks to " + autoSinks);
-                    UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
+                } else if (combo.equals(heatSinkType)
+                        || combo.equals(heatSinkNumber)) {
+                    int autoSinks = getMech().getEngine()
+                            .getWeightFreeEngineHeatSinks();
+                    System.out
+                            .println("Heat sink type or number changed.  Updating # engine sinks to "
+                                    + autoSinks);
+                    UnitUtil.updateHeatSinks(getMech(),
+                            heatSinkNumber.getSelectedIndex() + autoSinks,
+                            heatSinkType.getSelectedItem().toString());
                 } else if (combo.equals(baseChassisHeatSinks)) {
-                    getMech().getEngine().setBaseChassisHeatSinks(Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
-                    int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-                    System.out.println("Base chassis sinks changed.  Updating # engine sinks to " + autoSinks);
-                    UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
-                } else if(combo.equals(jjType)) {
-                	if(getJumpJetType() == Mech.JUMP_STANDARD) {
-                		//check to make sure we are not over the number of jets we are allowed
-                		if(((Integer)jumpMP.getValue()) > getMech().getWalkMP(true, false, true)) {
-                			jumpMP.setValue(getMech().getWalkMP(true, false, true));
-                		}
-                	}
-                	UnitUtil.updateJumpJets(getMech(), (Integer)jumpMP.getValue(), getJumpJetType());
-                }else if (combo.equals(techLevel)) {
+                    getMech().getEngine()
+                            .setBaseChassisHeatSinks(
+                                    Math.max(0, baseChassisHeatSinks
+                                            .getSelectedIndex()));
+                    int autoSinks = getMech().getEngine()
+                            .getWeightFreeEngineHeatSinks();
+                    System.out
+                            .println("Base chassis sinks changed.  Updating # engine sinks to "
+                                    + autoSinks);
+                    UnitUtil.updateHeatSinks(getMech(),
+                            heatSinkNumber.getSelectedIndex() + autoSinks,
+                            heatSinkType.getSelectedItem().toString());
+                } else if (combo.equals(jjType)) {
+                    if (getJumpJetType() == Mech.JUMP_STANDARD) {
+                        // check to make sure we are not over the number of jets
+                        // we are allowed
+                        if (((Integer) jumpMP.getValue()) > getMech()
+                                .getWalkMP(true, false, true)) {
+                            jumpMP.setValue(getMech().getWalkMP(true, false,
+                                    true));
+                        }
+                    }
+                    UnitUtil.updateJumpJets(getMech(),
+                            (Integer) jumpMP.getValue(), getJumpJetType());
+                } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
 
                     if (getMech().isClan()) {
                         switch (unitTechLevel) {
                             case 0:
                                 getMech().setTechLevel(TechConstants.T_CLAN_TW);
-                                getMech().setArmorTechLevel(TechConstants.T_CLAN_TW);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_CLAN_TW);
                                 addAllListeners();
                                 techType.setSelectedIndex(1);
                                 removeAllListeners();
                                 break;
                             case 1:
-                                getMech().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                                getMech().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                                getMech().setTechLevel(
+                                        TechConstants.T_CLAN_ADVANCED);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_CLAN_ADVANCED);
                                 break;
                             case 2:
-                                getMech().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                                getMech().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                                getMech().setTechLevel(
+                                        TechConstants.T_CLAN_EXPERIMENTAL);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_CLAN_EXPERIMENTAL);
                                 break;
                             case 3:
-                                getMech().setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
-                                getMech().setArmorTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                                getMech().setTechLevel(
+                                        TechConstants.T_CLAN_UNOFFICIAL);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_CLAN_UNOFFICIAL);
                                 break;
                             default:
                                 getMech().setTechLevel(TechConstants.T_CLAN_TW);
-                                getMech().setArmorTechLevel(TechConstants.T_CLAN_TW);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_CLAN_TW);
                                 break;
                         }
 
                     } else {
                         switch (unitTechLevel) {
                             case 0:
-                                getMech().setTechLevel(TechConstants.T_INTRO_BOXSET);
-                                getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                                getMech().setTechLevel(
+                                        TechConstants.T_INTRO_BOXSET);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_INTRO_BOXSET);
                                 addAllListeners();
                                 techType.setSelectedIndex(0);
                                 removeAllListeners();
                                 break;
                             case 1:
-                                getMech().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                                getMech().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                                getMech().setTechLevel(
+                                        TechConstants.T_IS_TW_NON_BOX);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_IS_TW_NON_BOX);
                                 addAllListeners();
                                 techType.setSelectedIndex(0);
                                 removeAllListeners();
                                 break;
                             case 2:
-                                getMech().setTechLevel(TechConstants.T_IS_ADVANCED);
-                                getMech().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                                getMech().setTechLevel(
+                                        TechConstants.T_IS_ADVANCED);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_IS_ADVANCED);
                                 break;
                             case 3:
-                                getMech().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                                getMech().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                                getMech().setTechLevel(
+                                        TechConstants.T_IS_EXPERIMENTAL);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_IS_EXPERIMENTAL);
                                 break;
                             default:
-                                getMech().setTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                                getMech().setArmorTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                                getMech().setTechLevel(
+                                        TechConstants.T_IS_UNOFFICIAL);
+                                getMech().setArmorTechLevel(
+                                        TechConstants.T_IS_UNOFFICIAL);
                                 break;
                         }
 
@@ -992,7 +1074,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     addAllListeners();
                     return;
                 } else if (combo.equals(techType)) {
-                    if ((techType.getSelectedIndex() == 1) && (!getMech().isClan() || getMech().isMixedTech())) {
+                    if ((techType.getSelectedIndex() == 1)
+                            && (!getMech().isClan() || getMech().isMixedTech())) {
                         techLevel.removeAllItems();
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
@@ -1005,7 +1088,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         createHeatSinkList();
                         createJumpJetList();
                         heatSinkType.setSelectedItem("Double");
-                    } else if ((techType.getSelectedIndex() == 0) && (getMech().isClan() || getMech().isMixedTech())) {
+                    } else if ((techType.getSelectedIndex() == 0)
+                            && (getMech().isClan() || getMech().isMixedTech())) {
                         techLevel.removeAllItems();
 
                         for (String item : isTechLevels) {
@@ -1013,14 +1097,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         }
 
                         getMech().setTechLevel(TechConstants.T_INTRO_BOXSET);
-                        getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                        getMech().setArmorTechLevel(
+                                TechConstants.T_INTRO_BOXSET);
                         getMech().setMixedTech(false);
                         UnitUtil.removeAllMounteds(getMech(), MiscType.F_TALON);
                         createEngineList(false);
                         createHeatSinkList();
                         createJumpJetList();
 
-                    } else if ((techType.getSelectedIndex() == 2) && (!getMech().isMixedTech() || getMech().isClan())) {
+                    } else if ((techType.getSelectedIndex() == 2)
+                            && (!getMech().isMixedTech() || getMech().isClan())) {
                         techLevel.removeAllItems();
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
@@ -1029,16 +1115,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         // experimental if
                         // we're not already unofficial
                         if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                            getMech().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                            getMech().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            getMech().setTechLevel(
+                                    TechConstants.T_IS_EXPERIMENTAL);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_IS_EXPERIMENTAL);
                         }
-                        techLevel.setSelectedIndex(techLevel.getModel().getSize() - 2);
+                        techLevel.setSelectedIndex(techLevel.getModel()
+                                .getSize() - 2);
                         getMech().setMixedTech(true);
                         createEngineList(false);
                         createHeatSinkList();
                         createJumpJetList();
 
-                    } else if ((techType.getSelectedIndex() == 3) && (!getMech().isMixedTech() || !getMech().isClan())) {
+                    } else if ((techType.getSelectedIndex() == 3)
+                            && (!getMech().isMixedTech() || !getMech().isClan())) {
                         techLevel.removeAllItems();
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
@@ -1046,10 +1136,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         // only set techlevel and armor techlevel to advanced if
                         // we're not already experimental or unofficial
                         if (getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) {
-                            getMech().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                            getMech().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            getMech().setTechLevel(
+                                    TechConstants.T_CLAN_EXPERIMENTAL);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_CLAN_EXPERIMENTAL);
                         }
-                        techLevel.setSelectedIndex(techLevel.getModel().getSize() - 2);
+                        techLevel.setSelectedIndex(techLevel.getModel()
+                                .getSize() - 2);
                         getMech().setMixedTech(true);
                         createEngineList(true);
                         createHeatSinkList();
@@ -1059,7 +1152,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         createEngineList(getMech().isClan());
                         createHeatSinkList();
                         createJumpJetList();
-                        heatSinkType.setSelectedItem(getMech().isClan() ? "Double" : "Single");
+                        heatSinkType
+                                .setSelectedItem(getMech().isClan() ? "Double"
+                                        : "Single");
                         addAllListeners();
                         return;
                     }
@@ -1080,27 +1175,32 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 getMech().setOmni(omniCB.isSelected());
                 if (getMech().isOmni()) {
                     baseChassisHeatSinks.setEnabled(true);
-                    getMech().getEngine().setBaseChassisHeatSinks(10 + baseChassisHeatSinks.getSelectedIndex());
+                    getMech().getEngine().setBaseChassisHeatSinks(
+                            10 + baseChassisHeatSinks.getSelectedIndex());
                 } else {
                     baseChassisHeatSinks.setEnabled(false);
                     getMech().getEngine().setBaseChassisHeatSinks(-1);
                 }
-                int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-                UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
-            }
-            else if (check.equals(fullHeadEjectCB)) {
+                int autoSinks = getMech().getEngine()
+                        .getWeightFreeEngineHeatSinks();
+                UnitUtil.updateHeatSinks(getMech(),
+                        heatSinkNumber.getSelectedIndex() + autoSinks,
+                        heatSinkType.getSelectedItem().toString());
+            } else if (check.equals(fullHeadEjectCB)) {
                 getMech().setFullHeadEject(fullHeadEjectCB.isSelected());
             } else if (check.equals(clanArmor)) {
                 removeAllListeners();
-            	UnitUtil.removeISorArmorMounts(unit, false);
+                UnitUtil.removeISorArmorMounts(unit, false);
                 if (clanArmor.isSelected()) {
                     if (unit.isClan()) {
                         unit.setArmorTechLevel(unit.getTechLevel());
                     } else {
-                        unit.setArmorTechLevel(TechConstants.getOppositeTechLevel(unit.getTechLevel()));
+                        unit.setArmorTechLevel(TechConstants
+                                .getOppositeTechLevel(unit.getTechLevel()));
                     }
                 } else if (unit.isClan()) {
-                    unit.setArmorTechLevel(TechConstants.getOppositeTechLevel(unit.getTechLevel()));
+                    unit.setArmorTechLevel(TechConstants
+                            .getOppositeTechLevel(unit.getTechLevel()));
                 } else {
                     unit.setArmorTechLevel(unit.getTechLevel());
                 }
@@ -1109,13 +1209,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             }
             refresh.refreshAll();
 
-        } else if(e.getSource() instanceof JButton) {
-        	removeAllListeners();
-        	if (e.getSource().equals(allocateArmorButton)) {
-        		armor.allocateArmor((Double) armorTonnage.getValue());
-        	} else if (e.getSource().equals(maximizeArmorButton)) {
-        		maximizeArmor();
-        	} 
+        } else if (e.getSource() instanceof JButton) {
+            removeAllListeners();
+            if (e.getSource().equals(allocateArmorButton)) {
+                armor.allocateArmor((Double) armorTonnage.getValue());
+            } else if (e.getSource().equals(maximizeArmorButton)) {
+                maximizeArmor();
+            }
             addAllListeners();
             refresh.refreshAll();
 
@@ -1140,10 +1240,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     }
 
     public void removeAllListeners() {
-    	maximizeArmorButton.removeActionListener(this);
-    	allocateArmorButton.removeActionListener(this);
+        maximizeArmorButton.removeActionListener(this);
+        allocateArmorButton.removeActionListener(this);
         clanArmor.removeActionListener(this);
-    	armorCombo.removeActionListener(this);
+        armorCombo.removeActionListener(this);
         gyroType.removeActionListener(this);
         engineType.removeActionListener(this);
         weightClass.removeChangeListener(this);
@@ -1169,10 +1269,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     }
 
     public void addAllListeners() {
-    	maximizeArmorButton.addActionListener(this);
-    	allocateArmorButton.addActionListener(this);
+        maximizeArmorButton.addActionListener(this);
+        allocateArmorButton.addActionListener(this);
         clanArmor.addActionListener(this);
-    	armorCombo.addActionListener(this);
+        armorCombo.addActionListener(this);
         gyroType.addActionListener(this);
         engineType.addActionListener(this);
         weightClass.addChangeListener(this);
@@ -1213,7 +1313,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         } else if (e.getSource().equals(source)) {
             getMech().setSource(source.getText());
         } else if (e.getSource().equals(manualBV)) {
-            if(!manualBV.getText().equals("-")) {
+            if (!manualBV.getText().equals("-")) {
                 int bv = Integer.parseInt(manualBV.getText());
                 if (bv == 0) {
                     getMech().setUseManualBV(false);
@@ -1223,12 +1323,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     getMech().setManualBV(bv);
                 }
             }
-        } else if(e.getSource().equals(chassis)) {
-        	unit.setChassis(chassis.getText().trim());
-        	refresh.refreshHeader();
-        } else if(e.getSource().equals(model)) {
-        	unit.setChassis(model.getText().trim());
-        	refresh.refreshHeader();
+        } else if (e.getSource().equals(chassis)) {
+            unit.setChassis(chassis.getText().trim());
+            refresh.refreshHeader();
+        } else if (e.getSource().equals(model)) {
+            unit.setChassis(model.getText().trim());
+            refresh.refreshHeader();
         }
     }
 
@@ -1255,12 +1355,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         if (getMech().isMixedTech()) {
             structName = structureCombo.getSelectedItem().toString();
-            boolean clanStruct = getMech().isClan() ? structName.indexOf(" (IS)") == -1 : structName.indexOf(" (Clan)") > -1;
+            boolean clanStruct = getMech().isClan() ? structName
+                    .indexOf(" (IS)") == -1
+                    : structName.indexOf(" (Clan)") > -1;
 
-            structName = structureCombo.getSelectedItem().toString().replace(" (IS)", "").replace(" (Clan)", "");
+            structName = structureCombo.getSelectedItem().toString()
+                    .replace(" (IS)", "").replace(" (Clan)", "");
 
             for (structType = 0; structType < EquipmentType.structureNames.length; structType++) {
-                if (EquipmentType.getStructureTypeName(structType).equals(structName)) {
+                if (EquipmentType.getStructureTypeName(structType).equals(
+                        structName)) {
                     break;
                 }
             }
@@ -1277,7 +1381,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         }
         for (; isCount > 0; isCount--) {
             try {
-                getMech().addEquipment(new Mounted(getMech(), EquipmentType.get(structName)), Entity.LOC_NONE, false);
+                getMech().addEquipment(
+                        new Mounted(getMech(), EquipmentType.get(structName)),
+                        Entity.LOC_NONE, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -1288,7 +1394,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         if (getMech().isMixedTech()) {
             // Clan Chassis with Clan Engine
-            if (getMech().isClan() && getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
+            if (getMech().isClan()
+                    && getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
                 switch (engineType) {
                     case Engine.NORMAL_ENGINE:
                         return 0;
@@ -1300,7 +1407,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         return 9;
                 }
             }// Clan Chassis with IS Engine
-            else if (getMech().isClan() && !getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
+            else if (getMech().isClan()
+                    && !getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
                 switch (engineType) {
                     case Engine.NORMAL_ENGINE:
                         return 1;
@@ -1318,7 +1426,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         return 10;
                 }
             }// IS Chassis with Clan Engine
-            else if (!getMech().isClan() && getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
+            else if (!getMech().isClan()
+                    && getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
                 switch (engineType) {
                     case Engine.NORMAL_ENGINE:
                         return 1;
@@ -1418,7 +1527,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     clanEngineFlag = 0;
                 }
 
-                engineType = engineType.substring(engineType.lastIndexOf(")") + 1).trim();
+                engineType = engineType.substring(
+                        engineType.lastIndexOf(")") + 1).trim();
             } else {
                 if (getMech().isClan()) {
                     clanEngineFlag = Engine.CLAN_ENGINE;
@@ -1457,7 +1567,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     }
 
     private void createSystemList() {
-    	int selectedIndex = armorCombo.getSelectedIndex();
+        int selectedIndex = armorCombo.getSelectedIndex();
         armorCombo.removeAllItems();
         int armorCount = armorNames.length;
 
@@ -1487,7 +1597,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         } else {
             armorCombo.setSelectedIndex(selectedIndex);
         }
-    	
+
         structureCombo.removeAllItems();
         cockpitType.removeAllItems();
         int structCount = EquipmentType.structureNames.length;
@@ -1498,89 +1608,147 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         switch (getMech().getTechLevel()) {
             case TechConstants.T_INTRO_BOXSET:
                 structCount = 1;
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
                 break;
             case TechConstants.T_CLAN_TW:
                 structCount = 3;
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
                 break;
             case TechConstants.T_IS_TW_NON_BOX:
                 structCount = 3;
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
                 break;
             case TechConstants.T_CLAN_ADVANCED:
                 structCount = 3;
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
                 break;
             case TechConstants.T_IS_ADVANCED:
                 structCount = 3;
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
                 break;
             case TechConstants.T_CLAN_EXPERIMENTAL:
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
                 break;
             case TechConstants.T_IS_EXPERIMENTAL:
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
                 break;
             case TechConstants.T_CLAN_UNOFFICIAL:
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
 
                 break;
             case TechConstants.T_IS_UNOFFICIAL:
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
-                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                cockpitType
+                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
                 break;
         }
 
         for (int index = 0; index < structCount; index++) {
-            if (isMixed && !EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_STANDARD]) && !EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_INDUSTRIAL])) {
+            if (isMixed
+                    && !EquipmentType.structureNames[index]
+                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_STANDARD])
+                    && !EquipmentType.structureNames[index]
+                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_INDUSTRIAL])) {
                 if (isClan) {
-                    structureCombo.addItem(String.format("%1$s (IS)", EquipmentType.structureNames[index]));
-                    if (EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
-                        structureCombo.addItem(EquipmentType.structureNames[index]);
-                    } else if (EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
-                        structureCombo.addItem(EquipmentType.structureNames[index]);
+                    structureCombo.addItem(String.format("%1$s (IS)",
+                            EquipmentType.structureNames[index]));
+                    if (EquipmentType.structureNames[index]
+                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
+                        structureCombo
+                                .addItem(EquipmentType.structureNames[index]);
+                    } else if (EquipmentType.structureNames[index]
+                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
+                        structureCombo
+                                .addItem(EquipmentType.structureNames[index]);
                     }
                 } else {
-                    if (EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
-                        structureCombo.addItem(String.format("%1$s (Clan)", EquipmentType.structureNames[index]));
-                    } else if (EquipmentType.structureNames[index].equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
-                        structureCombo.addItem(String.format("%1$s (Clan)", EquipmentType.structureNames[index]));
+                    if (EquipmentType.structureNames[index]
+                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
+                        structureCombo.addItem(String.format("%1$s (Clan)",
+                                EquipmentType.structureNames[index]));
+                    } else if (EquipmentType.structureNames[index]
+                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
+                        structureCombo.addItem(String.format("%1$s (Clan)",
+                                EquipmentType.structureNames[index]));
                     }
                     structureCombo.addItem(EquipmentType.structureNames[index]);
                 }
@@ -1590,7 +1758,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         }
 
     }
-    
+
     private void createHeatSinkList() {
 
         int heatSinkCount = 0;
@@ -1611,7 +1779,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     if (isHeatSink.equals("Single")) {
                         continue;
                     }
-                    heatSinkList[heatSinkPos] = String.format("(IS) %1$s", isHeatSink);
+                    heatSinkList[heatSinkPos] = String.format("(IS) %1$s",
+                            isHeatSink);
                     heatSinkPos++;
                 }
             } else {
@@ -1619,7 +1788,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     heatSinkList[heatSinkPos] = isHeatSink;
                     heatSinkPos++;
                     if (clanPos < clanHeatSinkTypes.length) {
-                        heatSinkList[heatSinkPos] = String.format("(Clan) %1$s", clanHeatSinkTypes[clanPos]);
+                        heatSinkList[heatSinkPos] = String.format(
+                                "(Clan) %1$s", clanHeatSinkTypes[clanPos]);
                     }
                     clanPos++;
                     heatSinkPos++;
@@ -1663,34 +1833,36 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             heatSinkType.addItem(heatSinkList[index]);
         }
     }
-    
+
     private void createJumpJetList() {
 
         int jjCount = 0;
-        //need to preserve choice here, because it cannot be when reset
+        // need to preserve choice here, because it cannot be when reset
         int selIndex = jjType.getSelectedIndex();
         jjType.removeAllItems();
 
         switch (getMech().getTechLevel()) {
-        case TechConstants.T_INTRO_BOXSET:
-        	jjCount = 1;
-        	break;
-        default:
-        	jjCount = 2;
+            case TechConstants.T_INTRO_BOXSET:
+                jjCount = 1;
+                break;
+            default:
+                jjCount = 2;
         }
 
         for (int index = 0; index < jjCount; index++) {
             jjType.addItem(jjTypes[index]);
         }
-        
-        if(jjType.getItemCount() > selIndex) {
-        	jjType.setSelectedIndex(selIndex);
+
+        if (jjType.getItemCount() > selIndex) {
+            jjType.setSelectedIndex(selIndex);
         } else {
-        	jjType.setSelectedIndex(0);
-        	if(((Integer)jumpMP.getValue()) > getMech().getWalkMP(true, false, true)) {
-    			jumpMP.setValue(getMech().getWalkMP(true, false, true));
-    		}
-        	UnitUtil.updateJumpJets(getMech(), (Integer)jumpMP.getValue(), Mech.JUMP_STANDARD);
+            jjType.setSelectedIndex(0);
+            if (((Integer) jumpMP.getValue()) > getMech().getWalkMP(true,
+                    false, true)) {
+                jumpMP.setValue(getMech().getWalkMP(true, false, true));
+            }
+            UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(),
+                    Mech.JUMP_STANDARD);
         }
     }
 
@@ -1713,7 +1885,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         clanPos++;
                         enginePos++;
                     }
-                    engineList[enginePos] = String.format("(IS) %1$s", isEngine);
+                    engineList[enginePos] = String
+                            .format("(IS) %1$s", isEngine);
                     enginePos++;
                 }
             } else {
@@ -1725,7 +1898,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     engineList[enginePos] = isEngine;
                     enginePos++;
                     if (clanEngineTypes[clanPos].equals(isEngine)) {
-                        engineList[enginePos] = String.format("(Clan) %1$s", clanEngineTypes[clanPos]);
+                        engineList[enginePos] = String.format("(Clan) %1$s",
+                                clanEngineTypes[clanPos]);
                         clanPos++;
                         enginePos++;
                     }
@@ -1838,18 +2012,34 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         if (getMech().isMixedTech()) {
             String structName;
             if (getMech().isClan()) {
-                structName = EquipmentType.structureNames[getMech().getStructureType()] + " (IS)";
-                if (getMech().hasWorkingMisc("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
+                structName = EquipmentType.structureNames[getMech()
+                        .getStructureType()] + " (IS)";
+                if (getMech()
+                        .hasWorkingMisc(
+                                "Clan "
+                                        + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
                     structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL];
-                } else if (getMech().hasWorkingMisc("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
+                } else if (getMech()
+                        .hasWorkingMisc(
+                                "Clan "
+                                        + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
                     structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE];
                 }
             } else {
-                structName = EquipmentType.structureNames[getMech().getStructureType()];
-                if (getMech().hasWorkingMisc("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
-                    structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL] + " (Clan)";
-                } else if (getMech().hasWorkingMisc("Clan " + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
-                    structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE] + " (Clan)";
+                structName = EquipmentType.structureNames[getMech()
+                        .getStructureType()];
+                if (getMech()
+                        .hasWorkingMisc(
+                                "Clan "
+                                        + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
+                    structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL]
+                            + " (Clan)";
+                } else if (getMech()
+                        .hasWorkingMisc(
+                                "Clan "
+                                        + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
+                    structName = EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE]
+                            + " (Clan)";
                 }
             }
             structureCombo.setSelectedIndex(0);
@@ -1864,35 +2054,43 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         }
     }
 
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		if (e.getSource() instanceof JSpinner) {
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource() instanceof JSpinner) {
             JSpinner spinner = (JSpinner) e.getSource();
-			removeAllListeners();
-			if(spinner.equals(weightClass)) {
-		    	int rating = ((Integer)walkMP.getValue()) * ((Integer)weightClass.getValue());
-		        if (getMech().isPrimitive()) {
-		            double dRating = ((Integer)walkMP.getValue()) * ((Integer)weightClass.getValue());
-		            dRating *= 1.2;
-		            if ((dRating % 5) != 0) {
-		                dRating = (dRating - (dRating % 5)) + 5;
-		            }
-		            rating = (int) dRating;
-		        }
-		        if (rating > 500) {
-		            JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
-		        } else {
-		            getMech().setWeight((Integer)weightClass.getValue());
-		            getMech().autoSetInternal();
-		            addAllListeners();
-		            engineType.setSelectedIndex(engineType.getSelectedIndex());
-		            removeAllListeners();
-		        }
-			}
-			else if(spinner.equals(walkMP)) {
-				int rating = ((Integer)walkMP.getValue()) * ((Integer)weightClass.getValue());
+            removeAllListeners();
+            if (spinner.equals(weightClass)) {
+                int rating = ((Integer) walkMP.getValue())
+                        * ((Integer) weightClass.getValue());
                 if (getMech().isPrimitive()) {
-                    double dRating = ((Integer)walkMP.getValue()) * ((Integer)weightClass.getValue());
+                    double dRating = ((Integer) walkMP.getValue())
+                            * ((Integer) weightClass.getValue());
+                    dRating *= 1.2;
+                    if ((dRating % 5) != 0) {
+                        dRating = (dRating - (dRating % 5)) + 5;
+                    }
+                    rating = (int) dRating;
+                }
+                if (rating > 500) {
+                    JOptionPane
+                            .showMessageDialog(
+                                    this,
+                                    "That speed would create an engine with a rating over 500.",
+                                    "Bad Engine Rating",
+                                    JOptionPane.ERROR_MESSAGE);
+                } else {
+                    getMech().setWeight((Integer) weightClass.getValue());
+                    getMech().autoSetInternal();
+                    addAllListeners();
+                    engineType.setSelectedIndex(engineType.getSelectedIndex());
+                    removeAllListeners();
+                }
+            } else if (spinner.equals(walkMP)) {
+                int rating = ((Integer) walkMP.getValue())
+                        * ((Integer) weightClass.getValue());
+                if (getMech().isPrimitive()) {
+                    double dRating = ((Integer) walkMP.getValue())
+                            * ((Integer) weightClass.getValue());
                     dRating *= 1.2;
                     if ((dRating % 5) != 0) {
                         dRating = (dRating - (dRating % 5)) + 5;
@@ -1900,30 +2098,46 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     rating = (int) dRating;
                 }
                 if ((rating > 400) && (getMech().getGyroType() == Mech.GYRO_XL)) {
-                    JOptionPane.showMessageDialog(this, "That speed would require a large engine, which doesn't fit", "Bad Engine", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane
+                            .showMessageDialog(
+                                    this,
+                                    "That speed would require a large engine, which doesn't fit",
+                                    "Bad Engine", JOptionPane.ERROR_MESSAGE);
                 }
                 if (rating > 500) {
-                    JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane
+                            .showMessageDialog(
+                                    this,
+                                    "That speed would create an engine with a rating over 500.",
+                                    "Bad Engine Rating",
+                                    JOptionPane.ERROR_MESSAGE);
                 } else {
                     System.out.println("Clearning engine crits.");
                     getMech().clearEngineCrits();
                     System.out.println("Setting new engine rating.");
-                    getMech().setEngine(new Engine(rating, convertEngineType(engineType.getSelectedItem().toString()), clanEngineFlag));
+                    getMech().setEngine(
+                            new Engine(rating, convertEngineType(engineType
+                                    .getSelectedItem().toString()),
+                                    clanEngineFlag));
                     getMech().addEngineCrits();
                     System.out.println("Adding engine crits.");
-                    int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-                    System.out.println("Updating # engine heat sinks to " + autoSinks);
-                    UnitUtil.updateHeatSinks(getMech(), heatSinkNumber.getSelectedIndex() + autoSinks, heatSinkType.getSelectedItem().toString());
+                    int autoSinks = getMech().getEngine()
+                            .getWeightFreeEngineHeatSinks();
+                    System.out.println("Updating # engine heat sinks to "
+                            + autoSinks);
+                    UnitUtil.updateHeatSinks(getMech(),
+                            heatSinkNumber.getSelectedIndex() + autoSinks,
+                            heatSinkType.getSelectedItem().toString());
                 }
-			}
-			else if(spinner.equals(jumpMP)) {
-				UnitUtil.updateJumpJets(getMech(), (Integer)jumpMP.getValue(), getJumpJetType());
-			}
-	        addAllListeners();
-	        refresh.refreshAll();
-		}
-	}
-	
+            } else if (spinner.equals(jumpMP)) {
+                UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(),
+                        getJumpJetType());
+            }
+            addAllListeners();
+            refresh.refreshAll();
+        }
+    }
+
     private void maximizeArmor() {
         double maxArmor = UnitUtil.getMaximumArmorTonnage(unit);
         armor.allocateArmor(maxArmor);
@@ -1948,7 +2162,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             llArmor.setName("ll");
             JComboBox rlArmor = new JComboBox();
             rlArmor.setName("rl");
-            for (int index = 0; index < (armorNames.length-1); index++) {
+            for (int index = 0; index < (armorNames.length - 1); index++) {
                 headArmor.addItem(armorNames[index]);
                 laArmor.addItem(armorNames[index]);
                 ltArmor.addItem(armorNames[index]);
@@ -1975,13 +2189,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             JCheckBox llClan = new JCheckBox("clan", unit.isClan());
             JCheckBox rlClan = new JCheckBox("clan", unit.isClan());
             JLabel headLabel = new JLabel("Head:");
-            JLabel laLabel = new JLabel(unit instanceof BipedMech?"Left Arm:":"Front Left Leg");
+            JLabel laLabel = new JLabel(unit instanceof BipedMech ? "Left Arm:"
+                    : "Front Left Leg");
             JLabel ltLabel = new JLabel("Left Torso:");
             JLabel ctLabel = new JLabel("Center Torso:");
             JLabel rtLabel = new JLabel("Right Torso:");
-            JLabel raLabel = new JLabel(unit instanceof BipedMech?"Right Arm:":"Front Right Leg");
-            JLabel llLabel = new JLabel(unit instanceof BipedMech?"Left Leg:":"Rear Left Leg");
-            JLabel rlLabel = new JLabel(unit instanceof BipedMech?"Right Leg:":"Rear Right Leg");
+            JLabel raLabel = new JLabel(
+                    unit instanceof BipedMech ? "Right Arm:"
+                            : "Front Right Leg");
+            JLabel llLabel = new JLabel(unit instanceof BipedMech ? "Left Leg:"
+                    : "Rear Left Leg");
+            JLabel rlLabel = new JLabel(
+                    unit instanceof BipedMech ? "Right Leg:" : "Rear Right Leg");
             JPanel panel = new JPanel(new GridBagLayout());
             panel.add(headLabel, GBC.std());
             panel.add(headClan, GBC.std());
@@ -2017,7 +2236,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 llClan.setVisible(false);
                 rlClan.setVisible(false);
             }
-            JOptionPane.showMessageDialog(this, panel, "Please choose the armor types", JOptionPane.QUESTION_MESSAGE);
+            JOptionPane.showMessageDialog(this, panel,
+                    "Please choose the armor types",
+                    JOptionPane.QUESTION_MESSAGE);
             unit.setArmorType(getArmorType(headArmor), Mech.LOC_HEAD);
             unit.setArmorType(getArmorType(laArmor), Mech.LOC_LARM);
             unit.setArmorType(getArmorType(ltArmor), Mech.LOC_LT);
@@ -2067,27 +2288,35 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     break;
                 }
                 // auto-place stealth crits
-                /*if (getArmorType() == EquipmentType.T_ARMOR_STEALTH) {
-                    for (int loc = 0; loc < getMech().locations(); loc++) {
-                        if ((loc != Mech.LOC_HEAD) && (loc != Mech.LOC_CT)) {
-                            try {
-                                getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(loc)))), loc, false);
-                                getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(loc)))), loc, false);
-                            } catch (LocationFullException lfe) {
-                                JOptionPane.showMessageDialog(null, lfe.getMessage(), "Stealth Armor does not fit in location. Resetting to Standard Armor", JOptionPane.INFORMATION_MESSAGE);
-                                setArmorType(EquipmentType.T_ARMOR_STANDARD);
-                            }
-                        }
+                /*
+                 * if (getArmorType() == EquipmentType.T_ARMOR_STEALTH) { for
+                 * (int loc = 0; loc < getMech().locations(); loc++) { if ((loc
+                 * != Mech.LOC_HEAD) && (loc != Mech.LOC_CT)) { try {
+                 * getMech().addEquipment(new Mounted(unit,
+                 * EquipmentType.get(EquipmentType
+                 * .getArmorTypeName(unit.getArmorType(loc)))), loc, false);
+                 * getMech().addEquipment(new Mounted(unit,
+                 * EquipmentType.get(EquipmentType
+                 * .getArmorTypeName(unit.getArmorType(loc)))), loc, false); }
+                 * catch (LocationFullException lfe) {
+                 * JOptionPane.showMessageDialog(null, lfe.getMessage(),
+                 * "Stealth Armor does not fit in location. Resetting to Standard Armor"
+                 * , JOptionPane.INFORMATION_MESSAGE);
+                 * setArmorType(EquipmentType.T_ARMOR_STANDARD); } } } } else {
+                 */
+                for (; armorCount > 0; armorCount--) {
+                    try {
+                        getMech().addEquipment(
+                                new Mounted(unit,
+                                        EquipmentType.get(EquipmentType
+                                                .getArmorTypeName(unit
+                                                        .getArmorType(i)))),
+                                Entity.LOC_NONE, false);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                } else {*/
-                    for (; armorCount > 0; armorCount--) {
-                        try {
-                            getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(i)))), Entity.LOC_NONE, false);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                //}
+                }
+                // }
             }
             if (!unit.hasPatchworkArmor()) {
                 setArmorType(EquipmentType.T_ARMOR_STANDARD);
@@ -2096,23 +2325,36 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             unit.setArmorType(getArmorType(armorCombo));
             int armorCount = 0;
 
-            armorCount = EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(0))).getCriticals(unit);
+            armorCount = EquipmentType.get(
+                    EquipmentType.getArmorTypeName(unit.getArmorType(0)))
+                    .getCriticals(unit);
 
             if (armorCount < 1) {
                 return;
             }
             // auto-place stealth crits
             if (getArmorType(armorCombo) == EquipmentType.T_ARMOR_STEALTH) {
-                Mounted mount = UnitUtil.createSpreadMounts(getMech(), EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(0))));
+                Mounted mount = UnitUtil.createSpreadMounts(getMech(),
+                        EquipmentType.get(EquipmentType.getArmorTypeName(unit
+                                .getArmorType(0))));
                 if (mount == null) {
-                    JOptionPane.showMessageDialog(null, "Stealth Armor does not fit in location.", "Resetting to Standard Armor", JOptionPane.INFORMATION_MESSAGE);
-                    setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD, false);
+                    JOptionPane.showMessageDialog(null,
+                            "Stealth Armor does not fit in location.",
+                            "Resetting to Standard Armor",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD,
+                            false);
                     unit.setArmorType(getArmorType(armorCombo));
                 }
             } else {
                 for (; armorCount > 0; armorCount--) {
                     try {
-                        getMech().addEquipment(new Mounted(unit, EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(0)))), Entity.LOC_NONE, false);
+                        getMech().addEquipment(
+                                new Mounted(unit,
+                                        EquipmentType.get(EquipmentType
+                                                .getArmorTypeName(unit
+                                                        .getArmorType(0)))),
+                                Entity.LOC_NONE, false);
                     } catch (Exception ex) {
                     }
                 }
@@ -2124,7 +2366,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private void setTotalArmorTonnage() {
         double currentTonnage = unit.getArmorWeight();
         armorTonnage.setValue(currentTonnage);
-        armorTonnage.setToolTipText("Max Tonnage: " + UnitUtil.getMaximumArmorTonnage(unit));
+        armorTonnage.setToolTipText("Max Tonnage: "
+                + UnitUtil.getMaximumArmorTonnage(unit));
     }
 
     private void setArmorType(JComboBox combo, int type, boolean removeListeners) {
@@ -2145,13 +2388,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     }
 
     private int getJumpJetType() {
-    	return jjType.getSelectedIndex() + 1;
+        return jjType.getSelectedIndex() + 1;
     }
-    
+
     public void setArmorType(int type) {
         setArmorType(armorCombo, type, true);
     }
-    
+
     private int getArmorType(JComboBox combo) {
         String armorType = combo.getSelectedItem().toString();
 
@@ -2163,16 +2406,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         return EquipmentType.T_ARMOR_STANDARD;
     }
-    
+
     private void setArmorTechLevel(int loc, boolean clan) {
         if (clan) {
             if (unit.isClan()) {
                 unit.setArmorTechLevel(unit.getTechLevel(), loc);
             } else {
-                unit.setArmorTechLevel(TechConstants.getOppositeTechLevel(unit.getTechLevel()), loc);
+                unit.setArmorTechLevel(
+                        TechConstants.getOppositeTechLevel(unit.getTechLevel()),
+                        loc);
             }
         } else if (unit.isClan()) {
-            unit.setArmorTechLevel(TechConstants.getOppositeTechLevel(unit.getTechLevel()), loc);
+            unit.setArmorTechLevel(
+                    TechConstants.getOppositeTechLevel(unit.getTechLevel()),
+                    loc);
         } else {
             unit.setArmorTechLevel(unit.getTechLevel(), loc);
         }
