@@ -212,7 +212,7 @@ public class MainUI extends MegaMekLabMainUI {
         }
         statusbar.refresh();
         structureTab.refresh();
-        armorTab.refresh();
+        //armorTab.refresh();
         equipmentTab.refresh();
         weaponTab.refresh();
         buildTab.refresh();
@@ -222,7 +222,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshArmor() {
-        armorTab.refresh();
+        //armorTab.refresh();
     }
 
     @Override

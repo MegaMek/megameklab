@@ -17,15 +17,20 @@
 package megameklab.com.ui.Mek.tabs;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 
 import megamek.common.Entity;
 import megamek.common.Mech;
@@ -63,13 +68,13 @@ public class BuildTab extends ITab implements ActionListener {
     public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons) {
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setLayout(new GridBagLayout());
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        
         critView = new CriticalView(getMech(), true, refresh);
         buildView = new BuildView(getMech());
-
-        mainPanel.add(buildView);
 
         autoFillButton.setMnemonic('A');
         autoFillButton.setActionCommand(AUTOFILLCOMMAND);
@@ -81,8 +86,18 @@ public class BuildTab extends ITab implements ActionListener {
         buttonPanel.add(resetButton);
         buttonPanel.add(compactButton);
 
-        mainPanel.add(buttonPanel);
 
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        mainPanel.add(buildView, gbc);
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weighty = 0.0;
+        mainPanel.add(buttonPanel, gbc);
         this.add(critView);
         this.add(mainPanel);
         refresh();
