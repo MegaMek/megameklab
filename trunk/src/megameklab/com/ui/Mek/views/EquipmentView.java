@@ -135,7 +135,7 @@ public class EquipmentView extends IView implements ActionListener {
             jumpBoosterMP = unit.getOriginalJumpMP();
         }
 
-        equipmentList = new CriticalTableModel(unit, CriticalTableModel.EQUIPMENT);
+        equipmentList = new CriticalTableModel(unit, CriticalTableModel.WEAPONTABLE);
         equipmentTable.setModel(equipmentList);
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
@@ -532,6 +532,9 @@ public class EquipmentView extends IView implements ActionListener {
         			atype = (AmmoType)etype;
         		}
         		if(!UnitUtil.isLegal(unit, etype.getTechLevel())) {
+        			return false;
+        		}
+        		if(UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
         			return false;
         		}
         		if ((nType == T_OTHER && UnitUtil.isMechEquipment(etype, (Mech)unit))

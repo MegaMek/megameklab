@@ -107,11 +107,16 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     private JLabel ctrArmorMaxLabel = new JLabel();
     private List<JLabel> armorMaxLabelList = new ArrayList<JLabel>();
 
-    private JLabel lblAllocatedArmor = new JLabel();
-    private JLabel lblUnallocatedArmor = new JLabel();
-    private JLabel currentArmorLabel = new JLabel();
-    private JLabel maxArmorLabel = new JLabel();
-    private JLabel lblWastedArmor = new JLabel();
+    private JLabel lblAllocatedArmor = new JLabel("Allocated Armor Points:");
+    private JLabel valueAllocatedArmor = new JLabel();
+    private JLabel lblUnallocatedArmor = new JLabel("Unallocated Armor Points:");
+    private JLabel valueUnallocatedArmor = new JLabel();
+    private JLabel lblCurrentArmor = new JLabel("Total Armor Points:");
+    private JLabel valueCurrentArmor = new JLabel();
+    private JLabel lblMaxArmor = new JLabel("Maximum Possible Armor Points:");
+    private JLabel valueMaxArmor = new JLabel();
+    private JLabel lblWastedArmor = new JLabel("Wasted Armor Points:");
+    private JLabel valueWastedArmor = new JLabel();
     //private JLabel unallocatedPointsLabel = new JLabel("Unallocated:", SwingConstants.TRAILING);
     //private JLabel unallocatedPointsField = new JLabel();
 
@@ -402,19 +407,48 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
         JPanel totalArmorPanel = new JPanel();
 
-        totalArmorPanel.setLayout(new BoxLayout(totalArmorPanel, BoxLayout.Y_AXIS));
-        totalArmorPanel.add(lblAllocatedArmor);
-        totalArmorPanel.add(lblUnallocatedArmor);
-        totalArmorPanel.add(currentArmorLabel);
-        totalArmorPanel.add(maxArmorLabel);
-        totalArmorPanel.add(lblWastedArmor);
-        totalArmorPanel.add(allocateArmorButton);
-
-
+        totalArmorPanel.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.ipadx = 5;
+        gbc.ipady = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        totalArmorPanel.add(lblUnallocatedArmor, gbc);
+        gbc.gridx = 1;
+        totalArmorPanel.add(valueUnallocatedArmor, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        totalArmorPanel.add(lblAllocatedArmor, gbc);
+        gbc.gridx = 1;
+        totalArmorPanel.add(valueAllocatedArmor, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        totalArmorPanel.add(lblCurrentArmor, gbc);
+        gbc.gridx = 1;
+        totalArmorPanel.add(valueCurrentArmor, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        totalArmorPanel.add(lblMaxArmor, gbc);
+        gbc.gridx = 1;
+        totalArmorPanel.add(valueMaxArmor, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        totalArmorPanel.add(lblWastedArmor, gbc);
+        gbc.gridx = 1;
+        totalArmorPanel.add(valueWastedArmor, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        totalArmorPanel.add(allocateArmorButton, gbc);
+        
+        gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 5;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(totalArmorPanel, gbc);
         this.add(mainPanel);
         
@@ -617,13 +651,20 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             //unallocatedPointsField.setVisible(true);
             //unallocatedPointsField.setText(Integer.toString(UnitUtil.getArmorPoints(unit, unit.getArmorWeight()) - unit.getTotalOArmor()));
         }
-        lblAllocatedArmor.setText("Allocated Armor Points: " + Integer.toString(unit.getTotalOArmor()));
-        lblUnallocatedArmor.setText("Unallocated Armor Points: " + Integer.toString(armorPoints - unit.getTotalOArmor()));
-        currentArmorLabel.setText("Total Armor Points: " + Integer.toString(armorPoints));
+        valueAllocatedArmor.setText(Integer.toString(unit.getTotalOArmor()));
+        valueUnallocatedArmor.setText(Integer.toString(armorPoints - unit.getTotalOArmor()));
+        if(armorPoints != unit.getTotalOArmor()) {
+        	valueUnallocatedArmor.setForeground(Color.RED);
+        	lblUnallocatedArmor.setForeground(Color.RED);
+        } else {
+        	valueUnallocatedArmor.setForeground(Color.BLACK);
+        	lblUnallocatedArmor.setForeground(Color.BLACK);
+        }
+        valueCurrentArmor.setText(Integer.toString(armorPoints));
         // Total Possible armor is Internal*2 +3 for the extra 3 armor the head
         // can support.
-        maxArmorLabel.setText("Maximum Armor Points: " + Integer.toString((unit.getTotalOInternal() * 2) + 3));
-        lblWastedArmor.setText("Wasted Armor Points: " + Integer.toString(wastedArmorPoints));
+        valueMaxArmor.setText(Integer.toString((unit.getTotalOInternal() * 2) + 3));
+        valueWastedArmor.setText(Integer.toString(wastedArmorPoints));
 
         addAllListeners();
     }
