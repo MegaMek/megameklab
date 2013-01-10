@@ -554,6 +554,9 @@ public class UnitUtil {
 	        	return "ISImprovedJump Jet";
 	        }
         }
+        else if(type == Mech.JUMP_PROTOTYPE) {
+            return "ISPrototypeJumpJet";
+        }
         return "JumpJet";
     }
     
