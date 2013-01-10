@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -30,11 +31,13 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -63,6 +66,7 @@ import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
+import megameklab.com.util.XTableColumnModel;
 
 public class EquipmentView extends IView implements ActionListener {
 
@@ -89,6 +93,10 @@ public class EquipmentView extends IView implements ActionListener {
     private JButton removeAllButton = new JButton("Remove All");
     private JComboBox choiceType = new JComboBox();
     private JTextField txtFilter = new JTextField();
+    
+    private JRadioButton rbtnStats = new JRadioButton("Stats");
+    private JRadioButton rbtnFluff = new JRadioButton("Fluff");
+
     
 	private TableRowSorter<EquipmentTableModel> equipmentSorter;
 
@@ -149,6 +157,9 @@ public class EquipmentView extends IView implements ActionListener {
         masterEquipmentList = new EquipmentTableModel(unit);
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        XTableColumnModel equipColumnModel = new XTableColumnModel();
+        masterEquipmentTable.setColumnModel(equipColumnModel);
+        masterEquipmentTable.createDefaultColumnsFromModel();
 		TableColumn column = null;
         for (int i = 0; i < EquipmentTableModel.N_COL; i++) {
             column = masterEquipmentTable.getColumnModel().getColumn(i);
@@ -210,6 +221,26 @@ public class EquipmentView extends IView implements ActionListener {
         removeButton.setMnemonic('R');
         removeAllButton.setMnemonic('l');
         
+        ButtonGroup bgroupView = new ButtonGroup();
+        bgroupView.add(rbtnStats);
+        bgroupView.add(rbtnFluff);
+        
+        rbtnStats.setSelected(true);
+        rbtnStats.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setEquipmentView();
+            }
+        });
+        rbtnFluff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setEquipmentView();
+            }
+        });
+        JPanel viewPanel = new JPanel(new GridLayout(0,2));
+        viewPanel.add(rbtnStats);
+        viewPanel.add(rbtnFluff);
+        setEquipmentView();
+
         //layout
 		GridBagConstraints gridBagConstraints;
 		setLayout(new GridBagLayout());
@@ -232,6 +263,14 @@ public class EquipmentView extends IView implements ActionListener {
 		add(txtFilter, gridBagConstraints);
 		
 		gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
+        gridBagConstraints.weightx = 0.0;
+        gridBagConstraints.weighty = 0.0;
+        add(viewPanel, gridBagConstraints);
+		
+		gridBagConstraints.gridx = 3;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.gridwidth = 1;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
@@ -240,7 +279,7 @@ public class EquipmentView extends IView implements ActionListener {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
 		add(addButton, gridBagConstraints);
 		
-		gridBagConstraints.gridx = 3;
+		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.gridwidth = 1;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
@@ -248,7 +287,7 @@ public class EquipmentView extends IView implements ActionListener {
 		gridBagConstraints.weighty = 0.0;
 		add(removeButton, gridBagConstraints);
 		
-		gridBagConstraints.gridx = 4;
+		gridBagConstraints.gridx = 5;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.gridwidth = 1;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
@@ -259,13 +298,13 @@ public class EquipmentView extends IView implements ActionListener {
 		
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 3;
+		gridBagConstraints.gridwidth = 4;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
 		gridBagConstraints.weighty = 1.0;
 		add(masterEquipmentScroll, gridBagConstraints);
 		
-		gridBagConstraints.gridx = 3;
+		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
@@ -565,5 +604,47 @@ public class EquipmentView extends IView implements ActionListener {
         };
         equipmentSorter.setRowFilter(equipmentTypeFilter);
     }
-
+    
+    public void setEquipmentView() {
+        XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
+        if(rbtnStats.isSelected()) {
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MRANGE), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSL), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSW), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVCL), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DINTRO), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), true);
+        } else {
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MRANGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSL), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSW), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVCL), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DINTRO), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), true);
+        }
+    }
 }

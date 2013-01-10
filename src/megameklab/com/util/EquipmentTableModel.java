@@ -43,18 +43,25 @@ public class EquipmentTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = -5207167419079014157L;
 
-	private final static int COL_NAME      = 0;
-	private final static int COL_DAMAGE    = 1;
-    private final static int COL_HEAT      = 2;
-    private final static int COL_RANGE     = 3;
-    private final static int COL_TON       = 4;
-    private final static int COL_CRIT      = 5;
-    private final static int COL_BV        = 6;
-    private final static int COL_TECH      = 7;
-    private final static int COL_TRATING   = 8;
-    private final static int COL_DATES     = 9;
-    private final static int COL_COST      = 10;
-    public final static int N_COL          = 11;
+    public final static int COL_NAME      = 0;
+    public final static int COL_DAMAGE    = 1;
+    public final static int COL_HEAT      = 2;
+    public final static int COL_MRANGE    = 3;
+    public final static int COL_RANGE     = 4;
+    public final static int COL_SHOTS     = 5;
+    public final static int COL_TECH      = 6;
+    public final static int COL_TRATING   = 7;
+    public final static int COL_AVSL      = 8;
+    public final static int COL_AVSW      = 9;
+    public final static int COL_AVCL      = 10;
+    public final static int COL_DINTRO    = 11;
+    public final static int COL_DEXTINCT  = 12;
+    public final static int COL_DREINTRO  = 13;
+    public final static int COL_COST      = 14;
+    public final static int COL_BV        = 15;
+    public final static int COL_TON       = 16;
+    public final static int COL_CRIT      = 17;
+    public final static int N_COL         = 18;
 
     private ArrayList<EquipmentType> data = new ArrayList<EquipmentType>();
     private Entity entity = null;
@@ -80,22 +87,36 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "Damage";
             case COL_HEAT:
                 return "Heat";
+            case COL_MRANGE:
+            	return "Min R";
             case COL_RANGE:
                 return "Range";
             case COL_TON:
-                return "Tonnage";
+                return "Ton";
             case COL_CRIT:
-                return "Crits";
+                return "Crit";
             case COL_TECH:
-                return "Tech";
+                return "Base";
             case COL_TRATING:
                 return "Rating";
+            case COL_AVSL:
+                return "SL";
+            case COL_AVSW:
+                return "SW";
+            case COL_AVCL:
+                return "CL";
             case COL_COST:
                 return "Cost";
+            case COL_SHOTS:
+            	return "Shots";
             case COL_BV:
                 return "BV";
-            case COL_DATES:
-                return "Dates";
+            case COL_DINTRO:
+                return "Intro";
+            case COL_DEXTINCT:
+                return "Extinct";
+            case COL_DREINTRO:
+                return "Re-intro";
             default:
                 return "?";
         }
@@ -104,16 +125,25 @@ public class EquipmentTableModel extends AbstractTableModel {
     public int getColumnWidth(int c) {
         switch(c) {
         case COL_NAME:
+            return 120;
+        /*case COL_DATES:
             return 100;
-        case COL_DATES:
-            return 100;
+            */
         case COL_RANGE:
-            return 30;
-        case COL_TRATING:
         case COL_COST:
-        	return 20;
+            return 50;
+        /*case COL_TRATING:
+        case COL_COST:
+        	return 20;*/
+        case COL_AVSL:
+        case COL_AVSW:
+        case COL_AVCL:
+        case COL_TON:
+        case COL_CRIT:
+        case COL_MRANGE:
+        	return 5;
         default:
-            return 10;
+            return 30;
         }
     }
 
@@ -122,10 +152,6 @@ public class EquipmentTableModel extends AbstractTableModel {
         case COL_NAME:
         //case COL_DATES:
         	return SwingConstants.LEFT;
-        case COL_TRATING:
-        case COL_TECH:
-        case COL_RANGE:
-        	return SwingConstants.CENTER;
         default:
         	return SwingConstants.CENTER;
         }
@@ -134,10 +160,10 @@ public class EquipmentTableModel extends AbstractTableModel {
     public String getTooltip(int row, int col) {
     	EquipmentType type = data.get(row);
     	switch(col) {
-    	case COL_DATES:
-            return "Intro/Extinct/Re-Intro";
+    	//case COL_DATES:
+         //   return "Intro/Extinct/Re-Intro";
     	case COL_RANGE:
-            return "Min/Short/Medium/Long";
+            return "Short/Medium/Long";
         default:
         	return null;
         }
@@ -204,15 +230,34 @@ public class EquipmentTableModel extends AbstractTableModel {
         		return "-";
         	}
         }
+        if(col == COL_SHOTS) {
+        	if(null != atype) {
+        		return atype.getShots();
+        	} 
+        	else {
+        		return "-";
+        	}
+        }
         if(col == COL_RANGE) {
         	if(null != wtype) {
         		int minRange = wtype.getMinimumRange();
         		if(minRange < 0) {
         			minRange = 0;
         		}
-        		return minRange + "/" + wtype.getShortRange() + "/" + wtype.getMediumRange() + "/" + wtype.getLongRange();
+        		return wtype.getShortRange() + "/" + wtype.getMediumRange() + "/" + wtype.getLongRange();
         	} else {
         		return "-";
+        	}
+        }
+        if(col == COL_MRANGE) {
+        	if(null != wtype) {
+        		int minRange = wtype.getMinimumRange();
+        		if(minRange < 0) {
+        			minRange = 0;
+        		}
+        		return minRange;
+        	} else {
+        		return "-";    		
         	}
         }
         if(col == COL_TON) {
@@ -222,7 +267,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             return type.getCriticals(entity);
         }
         if(col == COL_TRATING) {
-            return type.getFullRatingName();
+            return type.getTechRatingName();
         }
         if(col == COL_COST) {
             return type.getCost(entity, false, Entity.LOC_NONE);
@@ -230,8 +275,23 @@ public class EquipmentTableModel extends AbstractTableModel {
         if(col == COL_BV) {
             return type.getBV(entity);
         }
-        if(col == COL_DATES) {
-            return EquipmentType.getEquipDateAsString(type.getIntroductionDate()) + "/" + EquipmentType.getEquipDateAsString(type.getExtinctionDate()) + "/" + EquipmentType.getEquipDateAsString(type.getReintruductionDate());
+        if(col == COL_DINTRO) {
+            return EquipmentType.getEquipDateAsString(type.getIntroductionDate());
+        }
+        if(col == COL_DEXTINCT) {
+            return EquipmentType.getEquipDateAsString(type.getExtinctionDate());
+        }
+        if(col == COL_DREINTRO) {
+            return EquipmentType.getEquipDateAsString(type.getReintruductionDate());
+        }
+        if(col == COL_AVSL) {
+            return type.getAvailabilityName(EquipmentType.ERA_SL);
+        }
+        if(col == COL_AVSW) {
+            return type.getAvailabilityName(EquipmentType.ERA_SW);
+        }
+        if(col == COL_AVCL) {
+            return type.getAvailabilityName(EquipmentType.ERA_CLAN);
         }
         if(col == COL_TECH) {
         	return TechConstants.isClan(type.getTechLevel()) ? "Clan" : "IS";
@@ -241,7 +301,7 @@ public class EquipmentTableModel extends AbstractTableModel {
     
     private static String getDamageString(WeaponType wtype) {
     	if(wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
-    		return wtype.getDamage(WeaponType.RANGE_SHORT) + "/" + wtype.getDamage(WeaponType.RANGE_MED) + "/" + wtype.getDamage(WeaponType.RANGE_LONG);
+    		return wtype.getDamage(wtype.getShortRange()) + "/" + wtype.getDamage(wtype.getMediumRange()) + "/" + wtype.getDamage(wtype.getLongRange());
     	}
     	else if(wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
     		return "Cluster";
