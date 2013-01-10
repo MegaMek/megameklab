@@ -149,7 +149,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             EquipmentType.armorNames[EquipmentType.T_ARMOR_PRIMITIVE],
             EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK] };
     private JComboBox armorCombo = new JComboBox(armorNames);
-    private JButton allocateArmorButton = new JButton("Allocate Armor");
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
     private JSpinner armorTonnage;
     private JCheckBox clanArmor = new JCheckBox("Clan Armor");
@@ -211,18 +210,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         heatSinkNumber = new JComboBox();
         baseChassisHeatSinks = new JComboBox();
-
-        armorTonnage = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 30.5, 0.5));
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
-                .setSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
-                .setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
-                .setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
-                .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
-                .setEditable(false);
+        
+        armorTonnage = new JSpinner(new SpinnerNumberModel(unit.getArmorWeight(), 0.0, 30.5, 0.5));     
+        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setSize(spinnerSize);
+        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setEditable(false);
+     
 
         chassis.setText(unit.getChassis());
         model.setText(unit.getModel());
@@ -433,14 +428,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.gridwidth = 3;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        panArmor.add(allocateArmorButton, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 3;
         gbc.gridwidth = 3;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
@@ -762,7 +749,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         clanArmor.setEnabled(unit.isMixedTech());
         clanArmor.setSelected(unit.isClanArmor(0));
-        setTotalArmorTonnage();
+        //setTotalArmorTonnage();
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
                 .getMaximumArmorTonnage(unit));
         // if (!unit.hasPatchworkArmor()) {
@@ -917,6 +904,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 } else if (combo.equals(armorCombo)) {
                     UnitUtil.removeISorArmorMounts(unit, false);
                     createArmorMountsAndSetArmorType();
+                    armor.resetArmorPoints();
                 } else if (combo.equals(structureCombo)) {
                     UnitUtil.removeISorArmorMounts(getMech(), true);
                     createISMounts();
@@ -1068,6 +1056,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     createEngineList(getMech().isClan());
                     createHeatSinkList();
                     createJumpJetList();
+                    armor.resetArmorPoints();
                     refresh.refreshArmor();
                     refresh.refreshEquipment();
                     refresh.refreshWeapons();
@@ -1162,6 +1151,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     engineType.setSelectedIndex(0);
                     removeAllListeners();
                 }
+                armor.resetArmorPoints();
                 addAllListeners();
                 refresh.refreshAll();
             } catch (Exception ex) {
@@ -1208,14 +1198,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 addAllListeners();
             }
             refresh.refreshAll();
-
-        } else if (e.getSource() instanceof JButton) {
-            removeAllListeners();
-            if (e.getSource().equals(allocateArmorButton)) {
-                armor.allocateArmor((Double) armorTonnage.getValue());
-            } else if (e.getSource().equals(maximizeArmorButton)) {
-                maximizeArmor();
-            }
+        } else if(e.getSource() instanceof JButton) {
+        	removeAllListeners();
+        	if (e.getSource().equals(maximizeArmorButton)) {
+        		maximizeArmor();
+        	} 
             addAllListeners();
             refresh.refreshAll();
 
@@ -1240,8 +1227,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     public void removeAllListeners() {
-        maximizeArmorButton.removeActionListener(this);
-        allocateArmorButton.removeActionListener(this);
+    	maximizeArmorButton.removeActionListener(this);
         clanArmor.removeActionListener(this);
         armorCombo.removeActionListener(this);
         gyroType.removeActionListener(this);
@@ -1266,11 +1252,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         model.removeKeyListener(this);
         jumpMP.removeChangeListener(this);
         jjType.removeActionListener(this);
+        armorTonnage.removeChangeListener(this);
     }
 
     public void addAllListeners() {
-        maximizeArmorButton.addActionListener(this);
-        allocateArmorButton.addActionListener(this);
+    	maximizeArmorButton.addActionListener(this);
         clanArmor.addActionListener(this);
         armorCombo.addActionListener(this);
         gyroType.addActionListener(this);
@@ -1295,6 +1281,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         model.addKeyListener(this);
         jumpMP.addChangeListener(this);
         jjType.addActionListener(this);
+        armorTonnage.addChangeListener(this);
 
     }
 
@@ -2129,19 +2116,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             heatSinkNumber.getSelectedIndex() + autoSinks,
                             heatSinkType.getSelectedItem().toString());
                 }
-            } else if (spinner.equals(jumpMP)) {
-                UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(),
-                        getJumpJetType());
-            }
-            addAllListeners();
-            refresh.refreshAll();
-        }
-    }
+			}
+			else if(spinner.equals(jumpMP)) {
+				UnitUtil.updateJumpJets(getMech(), (Integer)jumpMP.getValue(), getJumpJetType());
+			}
+			else if(spinner.equals(armorTonnage)) {
+				setArmorTonnage();
+			}
+	        addAllListeners();
+	        refresh.refreshAll();
+		}
+	}
 
     private void maximizeArmor() {
         double maxArmor = UnitUtil.getMaximumArmorTonnage(unit);
-        armor.allocateArmor(maxArmor);
         armorTonnage.setValue(maxArmor);
+        unit.setArmorTonnage(maxArmor);
+        armor.resetArmorPoints();
     }
 
     private void createArmorMountsAndSetArmorType() {
@@ -2363,12 +2354,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     }
 
+    /*
     private void setTotalArmorTonnage() {
         double currentTonnage = unit.getArmorWeight();
         armorTonnage.setValue(currentTonnage);
         armorTonnage.setToolTipText("Max Tonnage: "
                 + UnitUtil.getMaximumArmorTonnage(unit));
     }
+    */
 
     private void setArmorType(JComboBox combo, int type, boolean removeListeners) {
         if (removeListeners) {
@@ -2423,5 +2416,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         } else {
             unit.setArmorTechLevel(unit.getTechLevel(), loc);
         }
+    }
+    
+    private void setArmorTonnage() {
+    	unit.setArmorTonnage(((Double)armorTonnage.getValue()));
+    	armor.resetArmorPoints();
     }
 }

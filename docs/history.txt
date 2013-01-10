@@ -46,6 +46,9 @@ V 0.0.0.21-dev
 + massive re-structuring of the Mek GUI (work in progress)
 + alignment of panels in structure tab improved
 + re-enabled LAM checkbox
++ layout of mek critical tab improved
++ changed armor allocation system for meks (WIP)
+
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

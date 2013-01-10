@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.Mek.views;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -55,8 +56,6 @@ public class BuildView extends IView implements ActionListener, MouseListener {
      */
     private static final long serialVersionUID = 799195356642563937L;
 
-    private JPanel mainPanel = new JPanel();
-
     private CriticalTableModel equipmentList;
     private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
     private JTable equipmentTable = new JTable();
@@ -66,7 +65,6 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     public BuildView(Mech unit) {
         super(unit);
 
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
@@ -85,13 +83,13 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         //equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
-        equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 400));
-        equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 400));
+        //equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 400));
+        //equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 400));
 
-        mainPanel.add(equipmentScroll);
         equipmentTable.addMouseListener(this);
 
-        this.add(mainPanel);
+        setLayout(new BorderLayout());
+        this.add(equipmentScroll, BorderLayout.CENTER);
         // loadEquipmentTable();
 
     }
