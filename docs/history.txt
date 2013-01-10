@@ -48,6 +48,8 @@ V 0.0.0.21-dev
 + re-enabled LAM checkbox
 + layout of mek critical tab improved
 + changed armor allocation system for meks (WIP)
++ better layout of armor point allocation totals
++ removed jump jets from equipment table
 
 
 V 0.0.0.20
