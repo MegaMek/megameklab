@@ -129,7 +129,7 @@ public class ArmorTab extends ITab implements ActionListener {
             createArmorMountsAndSetArmorType();
         }
         if (arg0.getSource().equals(allocateArmorButton)) {
-            armor.allocateArmor((Double) armorTonnage.getValue());
+            //armor.allocateArmor((Double) armorTonnage.getValue());
         }
         if (arg0.getSource().equals(maximizeArmorButton)) {
             maximizeArmor();
@@ -201,7 +201,7 @@ public class ArmorTab extends ITab implements ActionListener {
 
     private void maximizeArmor() {
         double maxArmor = UnitUtil.getMaximumArmorTonnage(unit);
-        armor.allocateArmor(maxArmor);
+        //armor.allocateArmor(maxArmor);
         armorTonnage.setValue(maxArmor);
     }
 

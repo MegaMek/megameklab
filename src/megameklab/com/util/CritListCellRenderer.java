@@ -18,6 +18,7 @@ package megameklab.com.util;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -52,6 +53,10 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
         this.index = index;
+
+        setPreferredSize(new Dimension(100,15));
+        setMaximumSize(new Dimension(100,15));
+        setMinimumSize(new Dimension(100,15));
 
         CriticalSlot cs = getCrit();
 
