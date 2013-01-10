@@ -118,7 +118,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     String[] motiveTypes = { "Biped", "Quad" };
     JComboBox motiveType = new JComboBox(motiveTypes);
     JComboBox techLevel = new JComboBox(isTechLevels);
-    String[] jjTypes = { "Standard", "Improved" };
+    String[] jjTypes = { "Standard", "Improved", "Improved Prototype" };
     JComboBox jjType = new JComboBox(jjTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
@@ -734,7 +734,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
         walkMP.setValue(getMech().getWalkMP(true, false, true));
         jumpMP.setValue(getMech().getJumpMP());
-        if (getJumpJetType() == Mech.JUMP_IMPROVED) {
+        if (getJumpJetType() == Mech.JUMP_IMPROVED || getJumpJetType() == Mech.JUMP_PROTOTYPE) {
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
                     .getRunMP());
         } else {
@@ -1831,6 +1831,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         switch (getMech().getTechLevel()) {
             case TechConstants.T_INTRO_BOXSET:
                 jjCount = 1;
+                break;
+            case TechConstants.T_IS_EXPERIMENTAL:
+                jjCount = jjTypes.length;
                 break;
             default:
                 jjCount = 2;
