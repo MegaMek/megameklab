@@ -50,6 +50,7 @@ V 0.0.0.21-dev
 + changed armor allocation system for meks (WIP)
 + better layout of armor point allocation totals
 + removed jump jets from equipment table
++ separate stat and fluff views for equipment table
 
 
 V 0.0.0.20
