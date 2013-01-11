@@ -543,7 +543,7 @@ public class UnitUtil {
     }
     
     public static boolean isJumpJet(Mounted m) {
-    	return m.getType().hasFlag(MiscType.F_JUMP_JET);
+    	return m.getType().hasFlag(MiscType.F_JUMP_JET) || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER);
     }
     
     public static String getJumpJetType(int type, boolean clan) {
@@ -556,6 +556,9 @@ public class UnitUtil {
         }
         else if(type == Mech.JUMP_PROTOTYPE) {
             return "ISPrototypeJumpJet";
+        }
+        else if(type == Mech.JUMP_BOOSTER) {
+            return "Jump Booster";
         }
         return "JumpJet";
     }
@@ -591,13 +594,18 @@ public class UnitUtil {
      */
     public static void updateJumpJets(Mech unit, int jjAmount, int jjType) {
         UnitUtil.removeJumpJets(unit);
-        while(jjAmount > 0) {
-        	try {
-            	unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType, unit.isClan()))), Entity.LOC_NONE, false);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+        unit.setOriginalJumpMP(jjAmount);
+        if(jjType == Mech.JUMP_BOOSTER) {
+            createSpreadMounts(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType, unit.isClan())));
+        } else {
+            while(jjAmount > 0) {
+            	try {
+                	unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType, unit.isClan()))), Entity.LOC_NONE, false);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            	jjAmount--;
             }
-        	jjAmount--;
         }
     }
 

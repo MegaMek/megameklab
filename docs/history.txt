@@ -52,6 +52,7 @@ V 0.0.0.21-dev
 + removed jump jets from equipment table
 + separate stat and fluff views for equipment table
 + prototype improved jump jets added to jump jet chooser
++ mechanical jump booster added to jump jet chooser
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
