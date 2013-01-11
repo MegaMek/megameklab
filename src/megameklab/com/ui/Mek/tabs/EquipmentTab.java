@@ -40,7 +40,6 @@ public class EquipmentTab extends ITab {
         equipment = new EquipmentView(unit);
         setLayout(new BorderLayout());
         this.add(equipment, BorderLayout.CENTER);
-        //SpringLayoutHelper.setupSpringGrid(this, 1);
 
         refresh();
     }

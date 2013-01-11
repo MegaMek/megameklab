@@ -24,6 +24,10 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -41,6 +45,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.RowFilter.Entry;
@@ -68,7 +73,7 @@ import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 import megameklab.com.util.XTableColumnModel;
 
-public class EquipmentView extends IView implements ActionListener {
+public class EquipmentView extends IView implements ActionListener, KeyListener {
 
     /**
      *
@@ -145,11 +150,19 @@ public class EquipmentView extends IView implements ActionListener {
 
         equipmentList = new CriticalTableModel(unit, CriticalTableModel.WEAPONTABLE);
         equipmentTable.setModel(equipmentList);
+        equipmentTable.setIntercellSpacing(new Dimension(0, 0));
+        equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
-        //equipmentTable.setMinimumSize(new Dimension(200,500));
-        //equipmentTable.setPreferredSize(new Dimension(200,500));
-       // equipmentTable.setMaximumSize(new Dimension(100,100));
+        TableColumn column = null;
+        for (int i = 0; i < equipmentList.getColumnCount(); i++) {
+            column = equipmentTable.getColumnModel().getColumn(i);
+            if(i == 0) {
+                column.setPreferredWidth(200);
+            }
+            column.setCellRenderer(equipmentList.getRenderer());
+
+        }
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
@@ -160,7 +173,7 @@ public class EquipmentView extends IView implements ActionListener {
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         masterEquipmentTable.setColumnModel(equipColumnModel);
         masterEquipmentTable.createDefaultColumnsFromModel();
-		TableColumn column = null;
+		column = null;
         for (int i = 0; i < EquipmentTableModel.N_COL; i++) {
             column = masterEquipmentTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(masterEquipmentList.getColumnWidth(i));
@@ -168,12 +181,23 @@ public class EquipmentView extends IView implements ActionListener {
         }
         masterEquipmentTable.setIntercellSpacing(new Dimension(0, 0));
         masterEquipmentTable.setShowGrid(false);
-        //masterEquipmentTable.setMaximumSize(new Dimension(800,500));
         masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         masterEquipmentTable.setDoubleBuffered(true);
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
-        //masterEquipmentScroll.setMinimumSize(new java.awt.Dimension(500, 200));
-        //masterEquipmentScroll.setPreferredSize(new java.awt.Dimension(500, 200));
+
+        masterEquipmentTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    JTable target = (JTable)e.getSource();
+                    int view = target.getSelectedRow();
+                    int selected = masterEquipmentTable.convertRowIndexToModel(view);
+                    EquipmentType equip = (EquipmentType) masterEquipmentList.getType(selected);
+                    addEquipment(equip);
+                    fireTableRefresh();
+                }
+            }
+        });
+        masterEquipmentTable.addKeyListener(this);
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<EquipmentType>();
@@ -242,76 +266,85 @@ public class EquipmentView extends IView implements ActionListener {
         setEquipmentView();
 
         //layout
-		GridBagConstraints gridBagConstraints;
-		setLayout(new GridBagLayout());
-		gridBagConstraints = new GridBagConstraints();
+		GridBagConstraints gbc;
+		gbc = new GridBagConstraints();
 
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridwidth = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
-		gridBagConstraints.weightx = 0.0;
-		gridBagConstraints.weighty = 0.0;
-		add(choiceType, gridBagConstraints);
+		JPanel loadoutPanel = new JPanel(new GridBagLayout());
+		JPanel databasePanel = new JPanel(new GridBagLayout());
 		
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridwidth = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
-		gridBagConstraints.weightx = 0.0;
-		gridBagConstraints.weighty = 0.0;
-		add(txtFilter, gridBagConstraints);
-		
-		gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
-        gridBagConstraints.weightx = 0.0;
-        gridBagConstraints.weighty = 0.0;
-        add(viewPanel, gridBagConstraints);
-		
-		gridBagConstraints.gridx = 3;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridwidth = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
-		gridBagConstraints.weightx = 0.0;
-		gridBagConstraints.weighty = 0.0;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		add(addButton, gridBagConstraints);
-		
-		gridBagConstraints.gridx = 4;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridwidth = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
-		gridBagConstraints.weightx = 0.0;
-		gridBagConstraints.weighty = 0.0;
-		add(removeButton, gridBagConstraints);
-		
-		gridBagConstraints.gridx = 5;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridwidth = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
-		gridBagConstraints.weightx = 0.0;
-		gridBagConstraints.weighty = 0.0;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-		add(removeAllButton, gridBagConstraints);
-		
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 4;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.weighty = 1.0;
-		add(masterEquipmentScroll, gridBagConstraints);
-		
-		gridBagConstraints.gridx = 4;
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 2;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-		gridBagConstraints.weightx = 0.0;
-		gridBagConstraints.weighty = 1.0;
-		add(equipmentScroll, gridBagConstraints);
+		loadoutPanel.setBorder(BorderFactory.createTitledBorder("Current Loadout"));
+	    databasePanel.setBorder(BorderFactory.createTitledBorder("Equipment Database"));
+
+	    gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        databasePanel.add(addButton, gbc);
         
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.fill = java.awt.GridBagConstraints.NONE;
+		gbc.weightx = 0.0;
+		gbc.weighty = 0.0;
+		databasePanel.add(choiceType, gbc);
+		
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.fill = java.awt.GridBagConstraints.NONE;
+		gbc.weightx = 0.0;
+		gbc.weighty = 0.0;
+		databasePanel.add(txtFilter, gbc);
+		
+		gbc.gridx = 3;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        databasePanel.add(viewPanel, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.fill = java.awt.GridBagConstraints.NONE;
+		gbc.weightx = 0.0;
+		gbc.weighty = 0.0;
+		loadoutPanel.add(removeButton, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.fill = java.awt.GridBagConstraints.NONE;
+		gbc.weightx = 0.0;
+		gbc.weighty = 0.0;
+		gbc.anchor = java.awt.GridBagConstraints.WEST;
+		loadoutPanel.add(removeAllButton, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 4;
+		gbc.fill = java.awt.GridBagConstraints.BOTH;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		databasePanel.add(masterEquipmentScroll, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		gbc.fill = java.awt.GridBagConstraints.VERTICAL;
+		gbc.weightx = 0.0;
+		gbc.weighty = 1.0;
+		loadoutPanel.add(equipmentScroll, gbc);
+        
+		setLayout(new BorderLayout());
+		this.add(loadoutPanel, BorderLayout.WEST);
+		this.add(databasePanel, BorderLayout.CENTER);
+		
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -353,7 +386,11 @@ public class EquipmentView extends IView implements ActionListener {
         
         for (Mounted mount : unit.getMisc()) {
 
-            if (isHeatSink(mount) || mount.getType().hasFlag(MiscType.F_JUMP_JET)
+            if (isHeatSink(mount) 
+                    || mount.getType().hasFlag(MiscType.F_JUMP_JET)
+                    || mount.getType().hasFlag(MiscType.F_TSM)
+                    || mount.getType().hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                    || mount.getType().hasFlag(MiscType.F_MASC)
                     || UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
@@ -437,11 +474,33 @@ public class EquipmentView extends IView implements ActionListener {
         removeButton.setMnemonic('R');
         removeAllButton.setMnemonic('L');
     }
+    
+    private void addEquipment(EquipmentType equip) {
+        boolean success = false;
+        Mounted mount = null;
+        boolean isMisc = equip instanceof MiscType;
+        if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
+            if (!UnitUtil.hasTargComp(unit)) {
+                mount = UnitUtil.updateTC(getMech(), equip);
+                success = mount != null;
+            }
+        } else {
+            try {
+                mount = new Mounted(unit, equip);
+                getMech().addEquipment(mount, Entity.LOC_NONE, false);
+                success = true;
+            } catch (LocationFullException lfe) {
+                // this can't happen, we add to Entity.LOC_NONE
+            }
+        }
+        if (success) {
+            equipmentList.addCrit(mount);
+        }
+    }
 
     public void actionPerformed(ActionEvent e) {
 
         if (e.getActionCommand().equals(ADD_COMMAND)) {
-            boolean success = false;
             int view = masterEquipmentTable.getSelectedRow();
             if(view < 0) {
                 //selection got filtered away
@@ -449,41 +508,7 @@ public class EquipmentView extends IView implements ActionListener {
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = (EquipmentType) masterEquipmentList.getType(selected);
-            Mounted mount = null;
-            boolean isMisc = equip instanceof MiscType;
-            if (isMisc && ((equip.hasFlag(MiscType.F_TSM) && !getMech().hasTSM()) || (equip.hasFlag(MiscType.F_INDUSTRIAL_TSM) && !getMech().hasIndustrialTSM()) || (equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) && !unit.hasEnvironmentalSealing()) || (equip.hasFlag(MiscType.F_NULLSIG) && !getMech().hasNullSig()) || (equip.hasFlag(MiscType.F_VOIDSIG) && !getMech().hasVoidSig()) || (equip.hasFlag(MiscType.F_TRACKS) && !getMech().hasTracks()) || (equip.hasFlag(MiscType.F_PARTIAL_WING) && !getMech().hasWorkingMisc(MiscType.F_PARTIAL_WING)) || (equip.hasFlag(MiscType.F_CHAMELEON_SHIELD) && !getMech().hasChameleonShield()) || ((equip.hasFlag(MiscType.F_BLUE_SHIELD)) && !unit.hasWorkingMisc(MiscType.F_BLUE_SHIELD)))) {
-                mount = UnitUtil.createSpreadMounts(getMech(), equip);
-                success = mount != null;
-            } else if (isMisc && equip.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                String jumpMp = JOptionPane.showInputDialog(this, "How many Jump MP?");
-                try {
-                    setJumpBoosterMP(Integer.parseInt(jumpMp));
-                    updateJumpMP();
-                    if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-                        mount = UnitUtil.createSpreadMounts(getMech(), equip);
-                        success = mount != null;
-                    }
-                } catch (NumberFormatException ex) {
-                    // user didn't enter a number, don't add the jump booster
-                }
-
-            } else if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-                if (!UnitUtil.hasTargComp(unit)) {
-                    mount = UnitUtil.updateTC(getMech(), equip);
-                    success = mount != null;
-                }
-            } else {
-                try {
-                    mount = new Mounted(unit, equip);
-                    getMech().addEquipment(mount, Entity.LOC_NONE, false);
-                    success = true;
-                } catch (LocationFullException lfe) {
-                    // this can't happen, we add to Entity.LOC_NONE
-                }
-            }
-            if (success) {
-                equipmentList.addCrit(mount);
-            }
+            addEquipment(equip);         
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
             int startRow = equipmentTable.getSelectedRow();
             int count = equipmentTable.getSelectedRowCount();
@@ -525,31 +550,11 @@ public class EquipmentView extends IView implements ActionListener {
     private void fireTableRefresh() {
         equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
-        //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
-        //equipmentScroll.repaint();
-        updateJumpMP();
         if (refresh != null) {
             refresh.refreshStatus();
             refresh.refreshBuild();
+            refresh.refreshPreview();
         }
-    }
-
-    private void updateJumpMP() {
-        /*
-        int mp = 0;
-        if (jumpBoosterMP > 0) {
-            mp = jumpBoosterMP;
-        } else {
-            for (Mounted mount : unit.getEquipment()) {
-                if (mount.getType() instanceof MiscType) {
-                    if (mount.getType().hasFlag(MiscType.F_JUMP_JET)) {
-                        mp++;
-                    }
-                }
-            }
-        }
-        unit.setOriginalJumpMP(mp);
-        */
     }
 
     public CriticalTableModel getEquipmentList() {
@@ -577,6 +582,9 @@ public class EquipmentView extends IView implements ActionListener {
         		}
         		if(UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
         			return false;
+        		}
+        		if(etype.hasFlag(MiscType.F_TSM) || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) || etype.hasFlag(MiscType.F_MASC)) {
+        		    return false;
         		}
         		if ((nType == T_OTHER && UnitUtil.isMechEquipment(etype, (Mech)unit))
         				|| (nType == T_WEAPON && UnitUtil.isMechWeapon(etype, (Mech)unit))
@@ -648,5 +656,25 @@ public class EquipmentView extends IView implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), true);
         }
+    }
+    
+    public void keyReleased(KeyEvent ke) {
+    }
+
+    public void keyPressed(KeyEvent ke) {
+        if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
+            int view = masterEquipmentTable.getSelectedRow();
+            if(view < 0) {
+                //selection got filtered away
+                return;
+            }
+            int selected = masterEquipmentTable.convertRowIndexToModel(view);
+            EquipmentType equip = (EquipmentType) masterEquipmentList.getType(selected);
+            addEquipment(equip);
+            fireTableRefresh();
+        }
+    }
+
+    public void keyTyped(KeyEvent ke) {
     }
 }
