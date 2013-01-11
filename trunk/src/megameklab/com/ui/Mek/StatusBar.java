@@ -17,20 +17,32 @@
 package megameklab.com.ui.Mek;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FileDialog;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.File;
+import java.text.DecimalFormat;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
 import megamek.common.AmmoType;
+import megamek.common.BipedMech;
 import megamek.common.Engine;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
+import megameklab.com.util.ImageHelper;
+import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
@@ -41,81 +53,73 @@ public class StatusBar extends ITab {
      */
     private static final long serialVersionUID = -6754327753693500675L;
 
-    private JPanel heatPanel = new JPanel();
-    private JPanel tonnagePanel = new JPanel();
-    private JPanel movementPanel = new JPanel();
-    private JPanel bvPanel = new JPanel();
-    private JLabel move = new JLabel();
+    private JButton btnValidate = new JButton("Validate Unit");
+    private JButton btnFluffImage = new JButton("Set Fluff Image");
+    private JLabel crits = new JLabel();
     private JLabel bvLabel = new JLabel();
     private JLabel tons = new JLabel();
     private JLabel heatSink = new JLabel();
+    private JLabel cost = new JLabel();
     private EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
     private TestMech testEntity = null;
+    private DecimalFormat formatter;
+    private JFrame parentFrame;
+    
+    private RefreshListener refresh;
 
-    public StatusBar(Mech unit) {
+    public StatusBar(Mech unit, MegaMekLabMainUI parent) {
+        this.parentFrame = parent;
         this.unit = unit;
 
+        formatter = new DecimalFormat();
         testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
-        setLayout(new SpringLayout());
-        this.add(movementPanel());
-        this.add(bvPanel());
-        this.add(tonnagePanel());
-        this.add(heatPanel());
+        btnValidate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UnitUtil.showValidation(getMech(), getParentFrame());
+            }
+        });
+        btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                getFluffImage();
+            }
+        });
+        //btnFluffImage.setEnabled(false);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.ipadx = 20;
+        gbc.anchor = GridBagConstraints.WEST;
+        this.add(btnValidate, gbc);
+        gbc.gridx = 1;
+        this.add(btnFluffImage, gbc);
+        gbc.gridx = 2;
+        this.add(tons, gbc);
+        gbc.gridx = 3;
+        this.add(crits, gbc);
+        gbc.gridx = 4;
+        this.add(heatSink, gbc);
+        gbc.gridx = 5;
+        this.add(bvLabel, gbc);
+        gbc.gridx = 6;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        this.add(cost, gbc);
+        
 
-        SpringLayoutHelper.setupSpringGrid(this, 4);
         refresh();
-    }
-
-    public JPanel movementPanel() {
-        int walk = getMech().getOriginalWalkMP();
-        int run = getMech().getOriginalRunMPwithoutMASC();
-        int jump = getMech().getOriginalJumpMP();
-
-        move.setText("Movement: " + walk + "/" + run + "/" + jump);
-        movementPanel.add(move);
-        return movementPanel;
-    }
-
-    public JPanel bvPanel() {
-        int bv = getMech().calculateBattleValue();
-        bvLabel.setText("BV: " + bv);
-        bvPanel.add(bvLabel);
-
-        return bvPanel;
-    }
-
-    public JPanel tonnagePanel() {
-        float tonnage = getMech().getWeight();
-        float currentTonnage;
-
-        currentTonnage = testEntity.calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
-
-        tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
-        tonnagePanel.add(tons);
-
-        return tonnagePanel;
-    }
-
-    public JPanel heatPanel() {
-        int heat = getMech().heatSinks();
-
-        heatSink.setText("Heat: 0/" + heat);
-        heatPanel.add(heatSink);
-
-        return heatPanel;
     }
 
     public void refresh() {
 
-        int walk = getMech().getOriginalWalkMP();
-        int run = getMech().getOriginalRunMPwithoutMASC();
-        int jump = getMech().getOriginalJumpMP();
         int heat = getMech().getHeatCapacity(false);
         float tonnage = getMech().getWeight();
         float currentTonnage;
         int bv = getMech().calculateBattleValue();
-
+        int maxCrits = (getMech() instanceof BipedMech) ? 78 : 66;
+        int currentCrits = UnitUtil.countUsedCriticals(getMech());
+        int currentCost = (int)Math.round(getMech().getCost(false));
+        
         testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
 
         currentTonnage = testEntity.calculateWeight();
@@ -142,9 +146,15 @@ public class StatusBar extends ITab {
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
 
-        move.setText("Movement: " + walk + "/" + run + "/" + jump);
-        move.setToolTipText("Walk/Run/Jump MP");
-
+        cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+        
+        crits.setText("Criticals: " +  currentCrits + "/" + maxCrits);
+        if(currentCrits > maxCrits) {
+            crits.setForeground(Color.red);
+        } else {
+            crits.setForeground(Color.BLACK);
+        }
+        
     }
 
     public double calculateTotalHeat() {
@@ -204,6 +214,44 @@ public class StatusBar extends ITab {
             heat += weaponHeat;
         }
         return heat;
+    }
+    
+    private void getFluffImage() {
+        //copied from structureTab
+        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        /*
+         //This does not seem to be working
+        if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
+            String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
+            String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
+            fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
+            fDialog.setDirectory(fullPath); 
+            fDialog.setFile(imageName); 
+        } else {
+            fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png"); 
+        }
+        */
+        fDialog.setLocationRelativeTo(this);
+        
+        fDialog.setVisible(true);
+        
+        if (fDialog.getFile() != null) { 
+            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            getMech().getFluff().setMMLImagePath(relativeFilePath); 
+        }
+        refresh.refreshPreview();
+        return; 
+    }
+    
+    private JFrame getParentFrame() {
+        return parentFrame;
+    }
+    
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
     }
 
 }

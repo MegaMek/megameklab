@@ -83,7 +83,6 @@ public class MainUI extends MegaMekLabMainUI {
         setVisible(true);
         repaint();
         refreshAll();
-
     }
 
     @Override
@@ -104,7 +103,7 @@ public class MainUI extends MegaMekLabMainUI {
         previewTab = new PreviewTab(mech);
 
         header = new Header(mech);
-        statusbar = new StatusBar(mech);
+        statusbar = new StatusBar(mech, this);
         equipmentTab = new EquipmentTab(mech);
         weaponTab = new WeaponTab(mech);
         buildTab = new BuildTab(mech, equipmentTab, weaponTab);
@@ -114,6 +113,7 @@ public class MainUI extends MegaMekLabMainUI {
         equipmentTab.addRefreshedListener(this);
         weaponTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
+        statusbar.addRefreshedListener(this);
 
         ConfigPane.addTab("Structure/Armor", structureTab);
         //ConfigPane.addTab("Armor", armorTab);
@@ -233,6 +233,12 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipment() {
         equipmentTab.refresh();
+
+    }
+    
+    @Override
+    public void refreshPreview() {
+        previewTab.refresh();
 
     }
 
