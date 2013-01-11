@@ -535,6 +535,7 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void updateJumpMP() {
+        /*
         int mp = 0;
         if (jumpBoosterMP > 0) {
             mp = jumpBoosterMP;
@@ -548,6 +549,7 @@ public class EquipmentView extends IView implements ActionListener {
             }
         }
         unit.setOriginalJumpMP(mp);
+        */
     }
 
     public CriticalTableModel getEquipmentList() {
