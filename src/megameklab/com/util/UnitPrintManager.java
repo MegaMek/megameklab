@@ -88,11 +88,13 @@ public class UnitPrintManager {
 
         Entity entity = null;
 
-        entity = viewer.getSelectedEntity();
+        entity = viewer.getChosenEntity();
 
         viewer.setVisible(false);
         viewer.dispose();
-        UnitPrintManager.printEntity(entity);
+        if(null != entity) {
+            UnitPrintManager.printEntity(entity);
+        }
     }
 
     public static void printMuls(Frame parent, boolean singlePrint) {
@@ -375,7 +377,7 @@ public class UnitPrintManager {
         UnitViewerDialog viewer = new UnitViewerDialog(parent, unitLoadingDialog, -1);
 
         viewer.setVisible(false);
-        Entity entity = viewer.getSelectedEntity();
+        Entity entity = viewer.getChosenEntity();
 
         if (entity != null) {
             boolean printed = UnitPrintManager.printEntity(entity);
