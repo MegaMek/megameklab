@@ -777,7 +777,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         
         if (getMech().getJumpType() > Mech.JUMP_STANDARD) {
             jjType.setSelectedIndex(getMech().getJumpType()-1);
-        } else {
+        } else if (jjType.getSelectedIndex() < 0){
             jjType.setSelectedIndex(0);
         }
 

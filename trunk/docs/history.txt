@@ -56,6 +56,8 @@ V 0.0.0.21-dev
 + enhancement combobox (TSM and MASC)
 + new UnitViewerDialog
 + new Mek statusbar
++ various improvements to equipment tab
++ Bug: can't switch jump jet type when jump mp is zero
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
