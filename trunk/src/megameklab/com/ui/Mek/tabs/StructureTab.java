@@ -118,7 +118,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     String[] motiveTypes = { "Biped", "Quad" };
     JComboBox motiveType = new JComboBox(motiveTypes);
     JComboBox techLevel = new JComboBox(isTechLevels);
-    String[] jjTypes = { "Standard", "Improved", "Improved Prototype" };
+    String[] jjTypes = { "Standard", "Improved", "Improved Prototype", "Mechanical Boosters" };
     JComboBox jjType = new JComboBox(jjTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
@@ -737,14 +737,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         if (getJumpJetType() == Mech.JUMP_IMPROVED || getJumpJetType() == Mech.JUMP_PROTOTYPE) {
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
                     .getRunMP());
-        } else {
+        } 
+        else if(getJumpJetType() == Mech.JUMP_BOOSTER) {
+            ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(20);
+        }
+        else {
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
                     .getWalkMP(true, false, true));
         }
         runMP.setText(getMech().getRunMPasString());
-
-        if (getMech().getJumpType() == Mech.JUMP_IMPROVED) {
-            jjType.setSelectedIndex(1);
+        
+        if (getMech().getJumpType() > Mech.JUMP_STANDARD) {
+            jjType.setSelectedIndex(getMech().getJumpType()-1);
+        } else {
+            jjType.setSelectedIndex(0);
         }
 
         clanArmor.setEnabled(unit.isMixedTech());
@@ -967,6 +973,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                 .getWalkMP(true, false, true)) {
                             jumpMP.setValue(getMech().getWalkMP(true, false,
                                     true));
+                        }
+                    }
+                    else if(getJumpJetType() == Mech.JUMP_IMPROVED || getJumpJetType() == Mech.JUMP_PROTOTYPE) {
+                        if(((Integer) jumpMP.getValue()) > getMech()
+                                .getRunMP()) {
+                            jumpMP.setValue(getMech().getRunMP());
                         }
                     }
                     UnitUtil.updateJumpJets(getMech(),
