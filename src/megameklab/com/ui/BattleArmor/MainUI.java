@@ -209,4 +209,10 @@ public class MainUI extends MegaMekLabMainUI {
         weaponTab.refresh();
     }
 
+    @Override
+    public void refreshPreview() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
