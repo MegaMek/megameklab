@@ -53,6 +53,7 @@ import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.UnitViewerDialog;
+import megameklab.com.ui.dialog.UnitViewerDialog;
 
 public class MenuBarCreator extends JMenuBar {
 
@@ -509,7 +510,10 @@ public class MenuBarCreator extends JMenuBar {
         unitLoadingDialog.setVisible(true);
         UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
 
-        Entity tempEntity = viewer.getSelectedEntity();
+        Entity tempEntity = viewer.getChosenEntity();
+        if(null == tempEntity) {
+            return;
+        }
         tempEntity.calculateBattleValue(true, true);
         UnitUtil.showBVCalculations(tempEntity.getBVText(), parentFrame);
 
@@ -520,7 +524,10 @@ public class MenuBarCreator extends JMenuBar {
         unitLoadingDialog.setVisible(true);
         UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
 
-        Entity tempEntity = viewer.getSelectedEntity();
+        Entity tempEntity = viewer.getChosenEntity();
+        if(null == tempEntity) {
+            return;
+        }
         UnitUtil.showValidation(tempEntity, parentFrame);
 
     }
@@ -530,7 +537,10 @@ public class MenuBarCreator extends JMenuBar {
         unitLoadingDialog.setVisible(true);
         UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
 
-        Entity tempEntity = viewer.getSelectedEntity();
+        Entity tempEntity = viewer.getChosenEntity();
+        if(null == tempEntity) {
+            return;
+        }
         UnitUtil.showUnitSpecs(tempEntity, parentFrame);
 
     }
@@ -540,7 +550,10 @@ public class MenuBarCreator extends JMenuBar {
         unitLoadingDialog.setVisible(true);
         UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
 
-        Entity tempEntity = viewer.getSelectedEntity();
+        Entity tempEntity = viewer.getChosenEntity();
+        if(null == tempEntity) {
+            return;
+        }
         UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
 
     }
@@ -1000,47 +1013,75 @@ public class MenuBarCreator extends JMenuBar {
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
 
-            unit = viewer.getSelectedEntity();
-
-            CConfig.updateSaveFiles("");
-            UnitUtil.updateLoadedMech(unit);
+            unit = viewer.getChosenEntity();
             viewer.setVisible(false);
             viewer.dispose();
-
-            if (viewer.getSelectedMechSummary().getSourceFile().getName().endsWith(".zip")) {
-                String fileName = viewer.getSelectedMechSummary().getSourceFile().getAbsolutePath();
+            
+            if(null == unit) {
+                return;
+            }
+            
+            CConfig.updateSaveFiles("");
+            UnitUtil.updateLoadedMech(unit);
+            
+            if (viewer.getChosenMechSummary().getSourceFile().getName().endsWith(".zip")) {
+                String fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
                 fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
-                fileName = fileName + viewer.getSelectedMechSummary().getName() + ".mtf";
+                fileName = fileName + viewer.getChosenMechSummary().getName() + ".mtf";
                 CConfig.updateSaveFiles(fileName);
             } else {
-                CConfig.updateSaveFiles(viewer.getSelectedMechSummary().getSourceFile().getAbsolutePath());
+                CConfig.updateSaveFiles(viewer.getChosenMechSummary().getSourceFile().getAbsolutePath());
             }
         } else if (unit instanceof Tank) {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.TANK);
-
-            if (!(viewer.getSelectedEntity() instanceof Tank)) {
-                return;
-            }
-            unit = viewer.getSelectedEntity();
-
-            // UnitUtil.updateLoadedTank(entity);
+            
+            unit = viewer.getChosenEntity();
             viewer.setVisible(false);
             viewer.dispose();
+            
+            if(null == unit) {
+                return;
+            }
+            
+            if (!(unit instanceof Tank)) {
+                return;
+            }
         } else if (unit instanceof BattleArmor) {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.BATTLE_ARMOR);
 
-            if (!(viewer.getSelectedEntity() instanceof BattleArmor)) {
-                return;
-            }
-            unit = viewer.getSelectedEntity();
-
-            // UnitUtil.updateLoadedTank(entity);
+            unit = viewer.getChosenEntity();
+            
             viewer.setVisible(false);
             viewer.dispose();
+            
+            if(null == unit) {
+                return;
+            }
+            
+            if (!(unit instanceof BattleArmor)) {
+                return;
+            }            
+        }
+        else if (unit instanceof Infantry) {
+            UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
+            unitLoadingDialog.setVisible(true);
+            UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.INFANTRY);
+
+            unit = viewer.getChosenEntity();
+            viewer.setVisible(false);
+            viewer.dispose();
+            
+            if(null == unit) {
+                return;
+            }
+            
+            if (!(unit instanceof Infantry)) {
+                return;
+            }       
         }
         parentFrame.setEntity(unit);
         reload();

@@ -97,6 +97,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private ArmorView armor;
 
     JComboBox engineType = new JComboBox(isEngineTypes);
+    String[] enhancements = { "None", "MASC" , "TSM"};
+    JComboBox enhancement = new JComboBox(enhancements);
     JSpinner walkMP;
     JTextField runMP;
     JSpinner jumpMP;
@@ -384,8 +386,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridwidth = 3;
         gbc.weightx = 1.0;
         panChassis.add(cockpitType, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridwidth = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 1.0;
+        panChassis.add(createLabel("Enhancements:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 6;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        panChassis.add(enhancement, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 7;
         gbc.gridwidth = 3;
         gbc.weightx = 1.0;
         panChassis.add(fullHeadEjectCB, gbc);
@@ -514,6 +528,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setFieldSize(heatSinkType, comboSize);
         setFieldSize(baseChassisHeatSinks, comboSize);
         setFieldSize(engineType, comboSize);
+        setFieldSize(enhancement, comboSize);
         setFieldSize(gyroType, comboSize);
         setFieldSize(cockpitType, comboSize);
         setFieldSize(structureCombo, comboSize);
@@ -627,8 +642,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         createSystemList();
         createHeatSinkList();
         createJumpJetList();
+        createEnhancementList();
         createGyroList();
-
+        createEnhancementList();
+        if(getMech().hasMASC()) {
+            enhancement.setSelectedItem("MASC");
+        }
+        else if(getMech().hasIndustrialTSM()) {
+            enhancement.setSelectedItem("Industrial TSM");
+        } 
+        else if(getMech().hasTSM()) {
+            enhancement.setSelectedItem("TSM");
+        } else {
+            enhancement.setSelectedIndex(0);
+        }
+        
         cockpitType.setSelectedItem(Mech.COCKPIT_SHORT_STRING[getMech()
                 .getCockpitType()]);
         setStructureCombo();
@@ -983,6 +1011,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }
                     UnitUtil.updateJumpJets(getMech(),
                             (Integer) jumpMP.getValue(), getJumpJetType());
+                } else if(combo.equals(enhancement)) {
+                    UnitUtil.updateEnhancments(getMech(), hasMASC(), hasTSM());
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
 
@@ -1068,6 +1098,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     createEngineList(getMech().isClan());
                     createHeatSinkList();
                     createJumpJetList();
+                    createEnhancementList();
                     armor.resetArmorPoints();
                     refresh.refreshArmor();
                     refresh.refreshEquipment();
@@ -1088,6 +1119,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         createEngineList(true);
                         createHeatSinkList();
                         createJumpJetList();
+                        createEnhancementList();
                         heatSinkType.setSelectedItem("Double");
                     } else if ((techType.getSelectedIndex() == 0)
                             && (getMech().isClan() || getMech().isMixedTech())) {
@@ -1105,6 +1137,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         createEngineList(false);
                         createHeatSinkList();
                         createJumpJetList();
+                        createEnhancementList();
 
                     } else if ((techType.getSelectedIndex() == 2)
                             && (!getMech().isMixedTech() || getMech().isClan())) {
@@ -1127,6 +1160,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         createEngineList(false);
                         createHeatSinkList();
                         createJumpJetList();
+                        createEnhancementList();
 
                     } else if ((techType.getSelectedIndex() == 3)
                             && (!getMech().isMixedTech() || !getMech().isClan())) {
@@ -1148,19 +1182,27 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         createEngineList(true);
                         createHeatSinkList();
                         createJumpJetList();
+                        createEnhancementList();
                         heatSinkType.setSelectedItem("Double");
                     } else {
                         createEngineList(getMech().isClan());
                         createHeatSinkList();
                         createJumpJetList();
+                        createEnhancementList();
                         heatSinkType
                                 .setSelectedItem(getMech().isClan() ? "Double"
                                         : "Single");
                         addAllListeners();
                         return;
                     }
-                    addAllListeners();
+                    addAllListeners();                
+                    enhancement.setSelectedIndex(0);
+                    structureCombo.setSelectedIndex(0);
+                    gyroType.setSelectedIndex(0);
                     engineType.setSelectedIndex(0);
+                    armorCombo.setSelectedIndex(0);
+                    cockpitType.setSelectedIndex(0);
+                    armor.resetArmorPoints();
                     removeAllListeners();
                 }
                 armor.resetArmorPoints();
@@ -1264,6 +1306,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         model.removeKeyListener(this);
         jumpMP.removeChangeListener(this);
         jjType.removeActionListener(this);
+        enhancement.removeActionListener(this);
         armorTonnage.removeChangeListener(this);
     }
 
@@ -1293,6 +1336,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         model.addKeyListener(this);
         jumpMP.addChangeListener(this);
         jjType.addActionListener(this);
+        enhancement.addActionListener(this);
         armorTonnage.addChangeListener(this);
 
     }
@@ -1867,6 +1911,38 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     Mech.JUMP_STANDARD);
         }
     }
+    
+    private void createEnhancementList() {
+        // need to preserve choice here, because it cannot be when reset
+        String selItem = (String)enhancement.getSelectedItem();
+        enhancement.removeAllItems();
+
+        enhancement.addItem("None");
+        if(getMech().getTechLevel() > TechConstants.T_INTRO_BOXSET) {
+            enhancement.addItem("MASC");
+            if(!TechConstants.isClan(getMech().getTechLevel())) {
+                if(getMech().isIndustrial()) {
+                    enhancement.addItem("Industrial TSM");
+                } else {
+                    enhancement.addItem("TSM");
+                }
+            }
+        }
+
+        int selIndex = -1;
+        for(int i = 0; i < enhancement.getItemCount(); i++) {
+            if(enhancement.getItemAt(i).equals(selItem)) {
+                selIndex = i;
+                break;
+            }
+        }
+        if (selIndex != -1) {
+            enhancement.setSelectedIndex(selIndex);
+        } else {
+            enhancement.setSelectedIndex(0);
+            UnitUtil.updateEnhancments(getMech(), false, false);
+        }
+    }
 
     private void createEngineList(boolean isClan) {
 
@@ -2436,5 +2512,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private void setArmorTonnage() {
     	unit.setArmorTonnage(((Double)armorTonnage.getValue()));
     	armor.resetArmorPoints();
+    }
+    
+    private boolean hasTSM() {
+        return ((String)enhancement.getSelectedItem()).contains("TSM");
+    }
+    
+    private boolean hasMASC() {
+        return ((String)enhancement.getSelectedItem()).contains("MASC");
     }
 }
