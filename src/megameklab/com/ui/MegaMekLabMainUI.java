@@ -108,6 +108,8 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     public abstract void refreshWeapons();
 
+    public abstract void refreshPreview();
+
     public void setEntity(Entity en) {
         entity = en;
     }

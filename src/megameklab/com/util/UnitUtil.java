@@ -2486,4 +2486,44 @@ public class UnitUtil {
     	}
     	return false;
     }
+    
+    public static int countUsedCriticals(Mech unit) {
+        int nCrits = 0;
+        for(int i = 0; i < unit.locations(); i++) {
+            for(int j = 0; j < unit.getNumberOfCriticals(i); j++) {
+                CriticalSlot cs = unit.getCritical(i, j);
+                if(null != cs) {
+                    nCrits++;
+                }
+            }
+        }
+        return nCrits + countUnallocatedCriticals(unit);
+    }
+    
+    public static int countUnallocatedCriticals(Mech unit) {
+        int nCrits = 0;
+        int engineHeatSinkCount = UnitUtil.getBaseChassisHeatSinks(unit, unit.hasCompactHeatSinks());
+        for (Mounted mount : unit.getMisc()) {
+            if(UnitUtil.isHeatSink(mount)) {
+                if(engineHeatSinkCount > 0) {
+                    engineHeatSinkCount--;
+                    continue;
+                }
+            }
+            if ((mount.getLocation() == Entity.LOC_NONE)) {
+                nCrits += UnitUtil.getCritsUsed(unit, mount.getType());            
+            }
+        }
+        for (Mounted mount : unit.getWeaponList()) {
+            if (mount.getLocation() == Entity.LOC_NONE) {
+                nCrits += UnitUtil.getCritsUsed(unit, mount.getType());            
+            }
+        }
+        for (Mounted mount : unit.getAmmo()) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && ((mount.getUsableShotsLeft() > 1) || (((AmmoType)mount.getType()).getAmmoType() == AmmoType.T_COOLANT_POD))) {
+                nCrits += UnitUtil.getCritsUsed(unit, mount.getType());            
+            }
+        }
+        return nCrits;
+    }
 }

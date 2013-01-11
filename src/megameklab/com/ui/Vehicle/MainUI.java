@@ -260,4 +260,10 @@ public class MainUI extends MegaMekLabMainUI {
 
     }
 
+    @Override
+    public void refreshPreview() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
