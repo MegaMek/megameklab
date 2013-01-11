@@ -148,6 +148,16 @@ public class UnitUtil {
     public static boolean isTSM(EquipmentType eq) {
         return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_TSM) || eq.hasFlag((MiscType.F_INDUSTRIAL_TSM)));
     }
+    
+    /**
+     * tells if EquipmentType is MASC
+     *
+     * @param eq
+     * @return
+     */
+    public static boolean isMASC(EquipmentType eq) {
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC));
+    }
 
     /**
      * Returns the number of crits used by EquipmentType eq, 1 if armor or
@@ -609,6 +619,50 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Removes all enhancements (TSM and MASC) from the mek
+     *
+     * @param unit
+     */
+    public static void removeEnhancements(Mech unit) {
+        System.out.println("Removing enhancements.");
+        ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(unit.getMisc());
+        for (Mounted eq : equipmentList) {
+            if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())) {
+                UnitUtil.removeCriticals(unit, eq);
+            }
+        }
+        for (Mounted eq : equipmentList) {
+            if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())) {
+                unit.getMisc().remove(eq);
+                unit.getEquipment().remove(eq);
+            }
+        }
+        System.out.println("enhancements removal finished.");
+    }
+    
+    public static void updateEnhancments(Mech unit, boolean hasMASC, boolean hasTSM) {
+        UnitUtil.removeEnhancements(unit);
+        if(hasTSM) {
+            if(unit.isIndustrial()) {
+                UnitUtil.createSpreadMounts(unit, EquipmentType.get("Industrial TSM"));
+            } else {
+                UnitUtil.createSpreadMounts(unit, EquipmentType.get("TSM"));
+            }
+        }
+        if(hasMASC) {
+            Mounted mount = new Mounted(unit, EquipmentType.get("ISMASC"));
+            if(unit.isClan()) {
+                mount = new Mounted(unit, EquipmentType.get("CLMASC"));
+            }
+            try {
+                unit.addEquipment(mount, Entity.LOC_NONE, false);
+            } catch (LocationFullException lfe) {
+                // this can't happen, we add to Entity.LOC_NONE
+            }
+        }
+    }
+    
     public static boolean isPrintableEquipment(EquipmentType eq) {
         return UnitUtil.isPrintableEquipment(eq, false);
     }

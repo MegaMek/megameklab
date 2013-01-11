@@ -158,7 +158,7 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
             UnitViewerDialog viewer = new UnitViewerDialog(clientgui, unitLoadingDialog, -1);
 
             viewer.setVisible(false);
-            Entity entity = viewer.getSelectedEntity();
+            Entity entity = viewer.getChosenEntity();
 
             if (entity != null) {
                 units.add(entity);
