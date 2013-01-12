@@ -60,6 +60,7 @@ V 0.0.0.21-dev
 + Bug: can't switch jump jet type when jump mp is zero
 + summaryView panel (WIP)
 + setAsCustomization option in StructureTab (for MHQ)
++ Bug: model was setting chassis
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

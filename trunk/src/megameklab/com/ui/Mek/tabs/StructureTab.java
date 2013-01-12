@@ -1376,7 +1376,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             unit.setChassis(chassis.getText().trim());
             refresh.refreshHeader();
         } else if (e.getSource().equals(model)) {
-            unit.setChassis(model.getText().trim());
+            unit.setModel(model.getText().trim());
             refresh.refreshHeader();
         }
     }
