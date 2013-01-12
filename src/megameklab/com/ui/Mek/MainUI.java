@@ -212,12 +212,9 @@ public class MainUI extends MegaMekLabMainUI {
         }
         statusbar.refresh();
         structureTab.refresh();
-        //armorTab.refresh();
         equipmentTab.refresh();
-        weaponTab.refresh();
         buildTab.refresh();
         previewTab.refresh();
-        refreshHeader();
     }
 
     @Override

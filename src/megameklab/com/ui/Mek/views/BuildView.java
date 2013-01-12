@@ -17,6 +17,7 @@
 package megameklab.com.ui.Mek.views;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -24,6 +25,7 @@ import java.awt.event.MouseListener;
 import java.util.Collections;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -33,6 +35,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -71,27 +75,30 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentTable.setDragEnabled(true);
         CriticalTransferHandler cth = new CriticalTransferHandler(unit, null);
         equipmentTable.setTransferHandler(cth);
-
-        //equipmentList.initColumnSizes(equipmentTable);
-
+        TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
-        //    equipmentTable.getColumnModel().getColumn(i).setCellRenderer(equipmentList.getRenderer());
-        }
+            column = equipmentTable.getColumnModel().getColumn(i);
+            if(i == 0) {
+                column.setPreferredWidth(250);
+            }
+            column.setCellRenderer(equipmentList.getRenderer());
 
+        }
+        equipmentTable.setIntercellSpacing(new Dimension(0, 0));
+        equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        // equipmentScroll.setToolTipText("");
-        //equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
-        //equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 400));
-        //equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 400));
+        equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 400));
+        equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 400));
 
         equipmentTable.addMouseListener(this);
 
         setLayout(new BorderLayout());
         this.add(equipmentScroll, BorderLayout.CENTER);
+        //this.add(equipmentScroll);
         // loadEquipmentTable();
-
+        this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Unallocated Equipment", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
