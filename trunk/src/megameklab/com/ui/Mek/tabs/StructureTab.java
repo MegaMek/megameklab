@@ -2527,4 +2527,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private boolean hasMASC() {
         return ((String)enhancement.getSelectedItem()).contains("MASC");
     }
+    
+    public void setAsCustomization() {
+        chassis.setEditable(false);
+        chassis.setEnabled(false);
+        weightClass.setEnabled(false);
+        era.setEditable(false);
+        era.setEnabled(false);
+        motiveType.setEnabled(false);
+        
+        
+    }
 }
