@@ -554,6 +554,8 @@ public class EquipmentView extends IView implements ActionListener, KeyListener 
             refresh.refreshStatus();
             refresh.refreshBuild();
             refresh.refreshPreview();
+            //FIXME: this is causing some kind of infinite loop
+            //refresh.refreshStructure();
         }
     }
 

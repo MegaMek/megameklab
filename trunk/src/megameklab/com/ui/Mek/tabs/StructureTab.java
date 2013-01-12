@@ -56,6 +56,7 @@ import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megameklab.com.ui.Mek.views.ArmorView;
+import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
@@ -93,6 +94,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JPanel panArmor;
     JPanel panMovement;
     JPanel panHeat;
+    SummaryView panSummary;
 
     private ArmorView armor;
 
@@ -172,6 +174,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
         panHeat = new JPanel(new SpringLayout());
+        panSummary = new SummaryView(getMech());
 
         GridBagConstraints gbc;
 
@@ -541,10 +544,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         leftPanel.add(panInfo);
         leftPanel.add(panChassis);
+        leftPanel.add(panHeat);
         leftPanel.add(Box.createGlue());
         rightPanel.add(panArmor);
         rightPanel.add(panMovement);
-        rightPanel.add(panHeat);
+        rightPanel.add(panSummary);
         leftPanel.add(Box.createVerticalGlue());
 
         gbc = new GridBagConstraints();
@@ -569,6 +573,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
+        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         armor.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
 
     }
@@ -791,7 +796,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         // }
         armor.updateUnit(unit);
         armor.refresh();
-
+        panSummary.updateUnit(unit);
+        panSummary.refresh();
         addAllListeners();
 
     }

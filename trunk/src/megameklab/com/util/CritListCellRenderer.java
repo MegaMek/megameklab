@@ -54,9 +54,9 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         this.list = list;
         this.index = index;
 
-        setPreferredSize(new Dimension(100,15));
-        setMaximumSize(new Dimension(100,15));
-        setMinimumSize(new Dimension(100,15));
+        setPreferredSize(new Dimension(110,15));
+        setMaximumSize(new Dimension(110,15));
+        setMinimumSize(new Dimension(110,15));
 
         CriticalSlot cs = getCrit();
 
