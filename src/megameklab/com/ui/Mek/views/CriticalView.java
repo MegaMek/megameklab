@@ -116,10 +116,10 @@ public class CriticalView extends IView {
         ctPanel.removeAll();
         headPanel.removeAll();
 
-        //the CritListCellRenderer has a default size of 100x15 and 
+        //the CritListCellRenderer has a default size of 110x15 and 
         //the border has a width of 1 so this should make each one the right size
-        Dimension size = new Dimension(102, 182);
-        Dimension legSize = new Dimension(102, 92);
+        Dimension size = new Dimension(112, 182);
+        Dimension legSize = new Dimension(112, 92);
         
         synchronized (unit) {
             for (int location = 0; location < unit.locations(); location++) {

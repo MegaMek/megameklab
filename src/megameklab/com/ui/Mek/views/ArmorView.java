@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -32,6 +33,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
@@ -108,15 +110,15 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     private List<JLabel> armorMaxLabelList = new ArrayList<JLabel>();
 
     private JLabel lblAllocatedArmor = new JLabel("Allocated Armor Points:");
-    private JLabel valueAllocatedArmor = new JLabel();
+    private JTextField valueAllocatedArmor = new JTextField();
     private JLabel lblUnallocatedArmor = new JLabel("Unallocated Armor Points:");
-    private JLabel valueUnallocatedArmor = new JLabel();
+    private JTextField valueUnallocatedArmor = new JTextField();
     private JLabel lblCurrentArmor = new JLabel("Total Armor Points:");
-    private JLabel valueCurrentArmor = new JLabel();
+    private JTextField valueCurrentArmor = new JTextField();
     private JLabel lblMaxArmor = new JLabel("Maximum Possible Armor Points:");
-    private JLabel valueMaxArmor = new JLabel();
+    private JTextField valueMaxArmor = new JTextField();
     private JLabel lblWastedArmor = new JLabel("Wasted Armor Points:");
-    private JLabel valueWastedArmor = new JLabel();
+    private JTextField valueWastedArmor = new JTextField();
     //private JLabel unallocatedPointsLabel = new JLabel("Unallocated:", SwingConstants.TRAILING);
     //private JLabel unallocatedPointsField = new JLabel();
 
@@ -407,6 +409,23 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
         JPanel totalArmorPanel = new JPanel();
 
+        Vector<JTextField> valueFields = new Vector<JTextField>();
+        valueFields.add(valueUnallocatedArmor);
+        valueFields.add(valueAllocatedArmor);
+        valueFields.add(valueCurrentArmor);
+        valueFields.add(valueMaxArmor);
+        valueFields.add(valueWastedArmor);
+        
+        Dimension valueSize = new Dimension(45,20);
+        for(JTextField field : valueFields) {
+            field.setEditable(false);
+            field.setSize(valueSize);
+            field.setPreferredSize(valueSize);
+            field.setMinimumSize(valueSize);
+            field.setMaximumSize(valueSize);
+            field.setHorizontalAlignment(JTextField.RIGHT);
+        }
+        
         totalArmorPanel.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
