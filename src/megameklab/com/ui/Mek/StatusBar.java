@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.text.DecimalFormat;
 
@@ -88,7 +89,7 @@ public class StatusBar extends ITab {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.ipadx = 20;
+        gbc.insets = new Insets(5,2,2,20);
         gbc.anchor = GridBagConstraints.WEST;
         this.add(btnValidate, gbc);
         gbc.gridx = 1;

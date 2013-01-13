@@ -20,6 +20,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -97,7 +98,7 @@ public class MenuBarCreator extends JMenuBar {
 
         item = new JMenuItem();
         item.setText("Equipment Database");
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuCreateEquipmentFile_actionPerformed();
@@ -274,7 +275,7 @@ public class MenuBarCreator extends JMenuBar {
 
         item = new JMenuItem("Reset Current Unit");
         item.setMnemonic(KeyEvent.VK_R);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuResetEntity_actionPerformed(e);
@@ -289,7 +290,7 @@ public class MenuBarCreator extends JMenuBar {
             item = new JMenuItem();
             item.setText("Mech");
             item.setMnemonic(KeyEvent.VK_M);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     jMenuLoadMech();
@@ -303,7 +304,7 @@ public class MenuBarCreator extends JMenuBar {
             item = new JMenuItem();
             item.setText("Tank");
             item.setMnemonic(KeyEvent.VK_T);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     jMenuLoadVehicle();
@@ -317,7 +318,7 @@ public class MenuBarCreator extends JMenuBar {
             item = new JMenuItem();
             item.setText("BattleArmor");
             item.setMnemonic(KeyEvent.VK_A);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     jMenuLoadBattleArmor();
@@ -331,7 +332,7 @@ public class MenuBarCreator extends JMenuBar {
             item = new JMenuItem();
             item.setText("Infantry");
             item.setMnemonic(KeyEvent.VK_I);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     jMenuLoadInfantry();
@@ -349,7 +350,7 @@ public class MenuBarCreator extends JMenuBar {
 
         item.setText("From Cache");
         item.setMnemonic(KeyEvent.VK_C);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadEntity_actionPerformed(e);
@@ -360,7 +361,7 @@ public class MenuBarCreator extends JMenuBar {
         item = new JMenuItem();
         item.setText("From File");
         item.setMnemonic(KeyEvent.VK_F);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadEntityFromFile_actionPerformed(e);
@@ -371,7 +372,7 @@ public class MenuBarCreator extends JMenuBar {
         file.add(loadMenu);
 
         item = new JMenuItem(String.format("Current Unit"));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -384,7 +385,7 @@ public class MenuBarCreator extends JMenuBar {
         item = new JMenuItem();
         item.setText("Save");
         item.setMnemonic(KeyEvent.VK_S);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuSaveEntity_actionPerformed(e);
@@ -395,7 +396,7 @@ public class MenuBarCreator extends JMenuBar {
         item = new JMenuItem();
         item.setText("Save As");
         item.setMnemonic(KeyEvent.VK_A);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuSaveAsEntity_actionPerformed(e);
@@ -495,7 +496,7 @@ public class MenuBarCreator extends JMenuBar {
         item = new JMenuItem();
         item.setText("Exit");
         item.setMnemonic(KeyEvent.VK_X);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuExit_actionPerformed(e);
