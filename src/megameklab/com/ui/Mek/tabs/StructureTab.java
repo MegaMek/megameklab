@@ -111,8 +111,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     String[] clanHeatSinkTypes = { "Single", "Double", "Laser" };
     String[] isHeatSinkTypes = { "Single", "Double", "Compact" };
     JComboBox heatSinkType = new JComboBox(isHeatSinkTypes);
-    JComboBox heatSinkNumber;
-    JComboBox baseChassisHeatSinks;
+    JSpinner heatSinkNumber;
+    JSpinner baseChassisHeatSinks;
     String[] techTypes = { "Inner Sphere", "Clan", "Mixed Inner Sphere",
             "Mixed Clan" };
     JComboBox techType = new JComboBox(techTypes);
@@ -174,7 +174,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panChassis = new JPanel(new GridBagLayout());
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
-        panHeat = new JPanel(new SpringLayout());
+        panHeat = new JPanel(new GridBagLayout());
         panSummary = new SummaryView(getMech());
 
         GridBagConstraints gbc;
@@ -194,7 +194,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setEditable(false);
         runMP = new JTextField();
         runMP.setEditable(false);
-        // runMP.setEnabled(false);
         setFieldSize(runMP, spinnerSize);
         runMP.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -214,8 +213,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         ((JSpinner.DefaultEditor) weightClass.getEditor()).getTextField()
                 .setEditable(false);
 
-        heatSinkNumber = new JComboBox();
-        baseChassisHeatSinks = new JComboBox();
+        heatSinkNumber = new JSpinner(new SpinnerNumberModel(0,0,50,1));
+        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor()).setSize(
+                spinnerSize);
+        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
+                .setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor()).getTextField()
+                .setEditable(false);
+        
+        baseChassisHeatSinks = new JSpinner(new SpinnerNumberModel(0,0,50,1));
+        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor()).setSize(
+                spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
+                .setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor()).getTextField()
+                .setEditable(false);
         
         armorTonnage = new JSpinner(new SpinnerNumberModel(unit.getArmorWeight(), 0.0, 30.5, 0.5));     
         spinnerSize = new Dimension(45, 25);
@@ -399,17 +419,27 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         panMovement.add(jjType, gbc);
 
-        panHeat.add(createLabel("Base (Omni):", labelSize));
-        panHeat.add(baseChassisHeatSinks);
-
-        panHeat.add(createLabel("Sink Type:", labelSize));
-        panHeat.add(heatSinkType);
-
-        panHeat.add(createLabel("Number:", labelSize));
-        panHeat.add(heatSinkNumber);
-
-        // masterPanel.add(createLabel("Manual BV:", maxSize));
-        // masterPanel.add(manualBV);
+        
+       
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panHeat.add(createLabel("Sink Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panHeat.add(heatSinkType, gbc);     
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panHeat.add(createLabel("Number:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        panHeat.add(heatSinkNumber, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panHeat.add(createLabel("Base (Omni):", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        panHeat.add(baseChassisHeatSinks, gbc);
 
         Dimension comboSize = new Dimension(180, 25);
 
@@ -419,9 +449,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setFieldSize(techType, comboSize);
         setFieldSize(armorCombo, comboSize);
         setFieldSize(techLevel, comboSize);
-        setFieldSize(heatSinkNumber, comboSize);
         setFieldSize(heatSinkType, comboSize);
-        setFieldSize(baseChassisHeatSinks, comboSize);
         setFieldSize(engineType, comboSize);
         setFieldSize(enhancement, comboSize);
         setFieldSize(gyroType, comboSize);
@@ -458,10 +486,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridx = 2;
         masterPanel.add(armor, gbc);
 
-        SpringLayoutHelper.setupSpringGrid(panHeat, 2);
-
-        // masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(),
-        // Color.blue.darker()));
         panInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
@@ -493,28 +517,22 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         manualBV.setText(Integer.toString(Math.max(0, getMech().getManualBV())));
         weightClass.setValue((int) (getMech().getWeight()));
         // weightClass.setSelectedIndex((int) (getMech().getWeight() / 5) - 2);
-        heatSinkNumber.removeAllItems();
-        baseChassisHeatSinks.removeAllItems();
-
-        for (int count = getMech().getEngine().getWeightFreeEngineHeatSinks(); count < 50; count++) {
-            heatSinkNumber.addItem(Integer.toString(count));
-        }
-
-        for (int count = 0; count <= getMech().getEngine()
-                .integralHeatSinkCapacity(getMech().hasCompactHeatSinks()); count++) {
-            baseChassisHeatSinks.addItem(Integer.toString(count));
-        }
 
         int totalSinks = getMech().heatSinks(false);
         int freeSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-        heatSinkNumber.setSelectedIndex(totalSinks - freeSinks);
-        baseChassisHeatSinks.setSelectedIndex(Math.max(0, getMech().getEngine()
+        ((SpinnerNumberModel) heatSinkNumber.getModel()).setMinimum(freeSinks);
+        heatSinkNumber.setValue(totalSinks);
+        
+        ((SpinnerNumberModel) baseChassisHeatSinks.getModel()).setMaximum(getMech().getEngine()
+                .integralHeatSinkCapacity(getMech().hasCompactHeatSinks()));
+        
+        baseChassisHeatSinks.setValue(Math.max(0, getMech().getEngine()
                 .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks())));
 
         if (getMech().isOmni()) {
             baseChassisHeatSinks.setEnabled(true);
             getMech().getEngine().setBaseChassisHeatSinks(
-                    Math.max(0, baseChassisHeatSinks.getSelectedIndex()));
+                    Math.max(0, (Integer)baseChassisHeatSinks.getValue()));
         } else {
             baseChassisHeatSinks.setEnabled(false);
             getMech().getEngine().setBaseChassisHeatSinks(-1);
@@ -827,13 +845,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                         clanEngineFlag));
                         getMech().addEngineCrits();
                         System.out.println("Adding engine crits.");
-                        int autoSinks = getMech().getEngine()
-                                .getWeightFreeEngineHeatSinks();
-                        System.out.println("Updating # engine heat sinks to "
-                                + autoSinks);
-                        UnitUtil.updateHeatSinks(getMech(),
-                                heatSinkNumber.getSelectedIndex() + autoSinks,
-                                heatSinkType.getSelectedItem().toString());
+                        updateAutoSinks();
                     }
                 } else if (combo.equals(armorCombo)) {
                     UnitUtil.removeISorArmorMounts(unit, false);
@@ -870,28 +882,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                 getMech().addGyro();
                         }
                     }
-                } else if (combo.equals(heatSinkType)
-                        || combo.equals(heatSinkNumber)) {
+                } else if (combo.equals(heatSinkType)) {
                     int autoSinks = getMech().getEngine()
                             .getWeightFreeEngineHeatSinks();
                     System.out
                             .println("Heat sink type or number changed.  Updating # engine sinks to "
                                     + autoSinks);
                     UnitUtil.updateHeatSinks(getMech(),
-                            heatSinkNumber.getSelectedIndex() + autoSinks,
-                            heatSinkType.getSelectedItem().toString());
-                } else if (combo.equals(baseChassisHeatSinks)) {
-                    getMech().getEngine()
-                            .setBaseChassisHeatSinks(
-                                    Math.max(0, baseChassisHeatSinks
-                                            .getSelectedIndex()));
-                    int autoSinks = getMech().getEngine()
-                            .getWeightFreeEngineHeatSinks();
-                    System.out
-                            .println("Base chassis sinks changed.  Updating # engine sinks to "
-                                    + autoSinks);
-                    UnitUtil.updateHeatSinks(getMech(),
-                            heatSinkNumber.getSelectedIndex() + autoSinks,
+                            (Integer)heatSinkNumber.getValue(),
                             heatSinkType.getSelectedItem().toString());
                 } else if (combo.equals(jjType)) {
                     if (getJumpJetType() == Mech.JUMP_STANDARD) {
@@ -1120,16 +1118,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 if (getMech().isOmni()) {
                     baseChassisHeatSinks.setEnabled(true);
                     getMech().getEngine().setBaseChassisHeatSinks(
-                            10 + baseChassisHeatSinks.getSelectedIndex());
+                            10 + (Integer)baseChassisHeatSinks.getValue());
                 } else {
                     baseChassisHeatSinks.setEnabled(false);
                     getMech().getEngine().setBaseChassisHeatSinks(-1);
                 }
-                int autoSinks = getMech().getEngine()
-                        .getWeightFreeEngineHeatSinks();
-                UnitUtil.updateHeatSinks(getMech(),
-                        heatSinkNumber.getSelectedIndex() + autoSinks,
-                        heatSinkType.getSelectedItem().toString());
+                updateAutoSinks();
             } else if (check.equals(fullHeadEjectCB)) {
                 getMech().setFullHeadEject(fullHeadEjectCB.isSelected());
             } else if (check.equals(clanArmor)) {
@@ -1188,7 +1182,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         engineType.removeActionListener(this);
         weightClass.removeChangeListener(this);
         cockpitType.removeActionListener(this);
-        heatSinkNumber.removeActionListener(this);
+        heatSinkNumber.removeChangeListener(this);
         heatSinkType.removeActionListener(this);
         walkMP.removeChangeListener(this);
         techLevel.removeActionListener(this);
@@ -1201,7 +1195,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         lamCB.removeActionListener(this);
         fullHeadEjectCB.removeActionListener(this);
         structureCombo.removeActionListener(this);
-        baseChassisHeatSinks.removeActionListener(this);
+        baseChassisHeatSinks.removeChangeListener(this);
         chassis.removeKeyListener(this);
         model.removeKeyListener(this);
         jumpMP.removeChangeListener(this);
@@ -1218,7 +1212,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         engineType.addActionListener(this);
         weightClass.addChangeListener(this);
         cockpitType.addActionListener(this);
-        heatSinkNumber.addActionListener(this);
+        heatSinkNumber.addChangeListener(this);
         heatSinkType.addActionListener(this);
         walkMP.addChangeListener(this);
         techLevel.addActionListener(this);
@@ -1231,7 +1225,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         lamCB.addActionListener(this);
         fullHeadEjectCB.addActionListener(this);
         structureCombo.addActionListener(this);
-        baseChassisHeatSinks.addActionListener(this);
+        baseChassisHeatSinks.addChangeListener(this);
         chassis.addKeyListener(this);
         model.addKeyListener(this);
         jumpMP.addChangeListener(this);
@@ -2103,9 +2097,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             .getWeightFreeEngineHeatSinks();
                     System.out.println("Updating # engine heat sinks to "
                             + autoSinks);
-                    UnitUtil.updateHeatSinks(getMech(),
-                            heatSinkNumber.getSelectedIndex() + autoSinks,
-                            heatSinkType.getSelectedItem().toString());
+                    updateAutoSinks();
                 }
 			}
 			else if(spinner.equals(jumpMP)) {
@@ -2114,6 +2106,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 			else if(spinner.equals(armorTonnage)) {
 				setArmorTonnage();
 			}
+			else if (spinner.equals(heatSinkNumber)) {
+                int autoSinks = getMech().getEngine()
+                        .getWeightFreeEngineHeatSinks();
+                System.out
+                        .println("Heat sink type or number changed.  Updating # engine sinks to "
+                                + autoSinks);
+                UnitUtil.updateHeatSinks(getMech(),
+                        (Integer)heatSinkNumber.getValue(),
+                        heatSinkType.getSelectedItem().toString());
+            } 
+			else if (spinner.equals(baseChassisHeatSinks)) {
+                getMech().getEngine()
+                        .setBaseChassisHeatSinks(
+                                Math.max(0, (Integer)baseChassisHeatSinks
+                                        .getValue()));
+                updateAutoSinks();
+            } 
 	        addAllListeners();
 	        refresh.refreshAll();
 		}
@@ -2428,8 +2437,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         weightClass.setEnabled(false);
         era.setEditable(false);
         era.setEnabled(false);
-        motiveType.setEnabled(false);
-        
-        
+        motiveType.setEnabled(false);      
+    }
+    
+    private void updateAutoSinks() {  
+        int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
+        System.out.println("Updating # engine heat sinks to " + autoSinks);
+        int currentSinks = (Integer)heatSinkNumber.getValue();
+        //if the current sinks is less than auto sinks - then update to auto sinks
+        //otherwise keep current sinks
+        if(currentSinks < autoSinks) {
+            currentSinks = autoSinks;
+        }
+        UnitUtil.updateHeatSinks(getMech(), currentSinks, heatSinkType.getSelectedItem().toString());
     }
 }

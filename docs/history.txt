@@ -63,6 +63,7 @@ V 0.0.0.21-dev
 + Bug: model was setting chassis
 + various layout fixes (better insetting, alignments, spacing, etc.)
 + use system-specific key not control key for hot-keys
++ updated heat panel (use JSpinners instead of comboboxes)
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

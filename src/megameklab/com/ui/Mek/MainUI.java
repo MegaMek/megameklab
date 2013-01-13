@@ -148,7 +148,7 @@ public class MainUI extends MegaMekLabMainUI {
         Mech mech = (Mech) entity;
 
         entity.setYear(2750);
-        entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
+        entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         if (isLAM) {
             entity.setTechLevel(TechConstants.T_IS_ADVANCED);
             entity.setManualBV(-1);
