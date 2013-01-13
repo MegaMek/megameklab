@@ -22,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -34,6 +35,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -73,7 +75,7 @@ import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 import megameklab.com.util.XTableColumnModel;
 
-public class EquipmentView extends IView implements ActionListener, KeyListener {
+public class EquipmentView extends IView implements ActionListener {
 
     /**
      *
@@ -197,8 +199,10 @@ public class EquipmentView extends IView implements ActionListener, KeyListener 
                 }
             }
         });
-        masterEquipmentTable.addKeyListener(this);
 
+        masterEquipmentTable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "add");
+        masterEquipmentTable.getActionMap().put("add", new EnterAction());
+        
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<EquipmentType>();
         while (miscTypes.hasMoreElements()) {
@@ -278,6 +282,7 @@ public class EquipmentView extends IView implements ActionListener, KeyListener 
 	    gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
+        gbc.insets = new Insets(2,2,2,2);
         gbc.fill = java.awt.GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
@@ -325,6 +330,7 @@ public class EquipmentView extends IView implements ActionListener, KeyListener 
 		gbc.anchor = java.awt.GridBagConstraints.WEST;
 		loadoutPanel.add(removeAllButton, gbc);
 		
+        gbc.insets = new Insets(2,0,0,0);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 4;
@@ -660,11 +666,15 @@ public class EquipmentView extends IView implements ActionListener, KeyListener 
         }
     }
     
-    public void keyReleased(KeyEvent ke) {
-    }
+    private class EnterAction extends AbstractAction {
 
-    public void keyPressed(KeyEvent ke) {
-        if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 8247993757008802162L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
             int view = masterEquipmentTable.getSelectedRow();
             if(view < 0) {
                 //selection got filtered away
@@ -675,8 +685,5 @@ public class EquipmentView extends IView implements ActionListener, KeyListener 
             addEquipment(equip);
             fireTableRefresh();
         }
-    }
-
-    public void keyTyped(KeyEvent ke) {
     }
 }
