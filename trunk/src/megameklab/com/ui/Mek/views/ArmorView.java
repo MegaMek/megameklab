@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -95,14 +96,14 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     private JSpinner ctrArmorField = new JSpinner(ctrArmorModel);
     private List<JSpinner> armorFieldList = new ArrayList<JSpinner>();
 
-    private JLabel hdArmorMaxLabel = new JLabel();
-    private JLabel laArmorMaxLabel = new JLabel();
-    private JLabel raArmorMaxLabel = new JLabel();
-    private JLabel llArmorMaxLabel = new JLabel();
-    private JLabel rlArmorMaxLabel = new JLabel();
-    private JLabel ltArmorMaxLabel = new JLabel();
-    private JLabel rtArmorMaxLabel = new JLabel();
-    private JLabel ctArmorMaxLabel = new JLabel();
+    private JLabel hdArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
+    private JLabel laArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
+    private JLabel raArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
+    private JLabel llArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
+    private JLabel rlArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
+    private JLabel ltArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
+    private JLabel rtArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
+    private JLabel ctArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
 
     private JLabel ltrArmorMaxLabel = new JLabel();
     private JLabel rtrArmorMaxLabel = new JLabel();
@@ -222,14 +223,14 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         headPanel.setMaximumSize(panelSize);
         headPanel.setMinimumSize(panelSize);*/
         
-        Dimension size = new Dimension(40, 20);
+        Dimension size = new Dimension(40, 25);
         for (JSpinner spinner : armorFieldList) {
             spinner.setToolTipText("Front Armor");
             //you don't set the size of the jspinner, but rather its internal textfield            
-            ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setSize(size);
-            ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setMaximumSize(size);
-            ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setPreferredSize(size);
-            ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setMinimumSize(size);
+            ((JSpinner.DefaultEditor)spinner.getEditor()).setSize(size);
+            ((JSpinner.DefaultEditor)spinner.getEditor()).setMaximumSize(size);
+            ((JSpinner.DefaultEditor)spinner.getEditor()).setPreferredSize(size);
+            ((JSpinner.DefaultEditor)spinner.getEditor()).setMinimumSize(size);
         }
         rtrArmorField.setToolTipText("Rear Armor");
         ltrArmorField.setToolTipText("Rear Armor");
@@ -303,34 +304,27 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         raPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         break;
                     case Mech.LOC_CT:
-                    	topPanel = new JPanel(new GridLayout(2,0));
+                    	topPanel = new JPanel(new GridLayout(4,0));
                         topPanel.add(ctArmorField);
-                        topPanel.add(ctArmorMaxLabel);
-                        ctPanel.add(topPanel);
-                        /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkCt);
-                        bottomPanel.add(unallocatedPointsFieldCt);
-                        ctPanel.add(bottomPanel);
-                        */
-                        ctPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                    	topPanel = new JPanel(new GridLayout(2,0));
+                        topPanel.add(new JLabel("Rear", SwingConstants.CENTER));
                         topPanel.add(ctrArmorField);
-                        topPanel.add(ctrArmorMaxLabel);
-                        ctrPanel.add(topPanel);
+                        topPanel.add(ctArmorMaxLabel);
+                        ctPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        ctPanel.add(topPanel);
                         /*
                         bottomPanel = new JPanel();
                         bottomPanel.add(unallocatedPointsLabelPatchworkCtr);
                         bottomPanel.add(unallocatedPointsFieldCtr);
                         ctrPanel.add(bottomPanel);
                         */
-                        ctrPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                        ctPanel.add(ctrPanel);
                         break;
                     case Mech.LOC_LT:
-                    	topPanel = new JPanel(new GridLayout(2,0));
+                        topPanel = new JPanel(new GridLayout(4,0));
                         topPanel.add(ltArmorField);
+                        topPanel.add(new JLabel("Rear", SwingConstants.CENTER));
+                        topPanel.add(ltrArmorField);
                         topPanel.add(ltArmorMaxLabel);
+                        ltPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         ltPanel.add(topPanel);
                         /*
                         bottomPanel = new JPanel();
@@ -338,24 +332,14 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         bottomPanel.add(unallocatedPointsFieldLt);
                         ltPanel.add(bottomPanel);
                         */
-                        ltPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                    	topPanel = new JPanel(new GridLayout(2,0));
-                        topPanel.add(ltrArmorField);
-                        topPanel.add(ltrArmorMaxLabel);
-                        ltrPanel.add(topPanel);
-                        /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkLtr);
-                        bottomPanel.add(unallocatedPointsFieldLtr);
-                        ltrPanel.add(bottomPanel);
-                        */
-                        ltrPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                        ltPanel.add(ltrPanel);
                         break;
                     case Mech.LOC_RT:
-                    	topPanel = new JPanel(new GridLayout(2,0));
+                        topPanel = new JPanel(new GridLayout(4,0));
                         topPanel.add(rtArmorField);
+                        topPanel.add(new JLabel("Rear", SwingConstants.CENTER));
+                        topPanel.add(rtrArmorField);
                         topPanel.add(rtArmorMaxLabel);
+                        rtPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         rtPanel.add(topPanel);
                         /*
                         bottomPanel = new JPanel();
@@ -363,19 +347,6 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         bottomPanel.add(unallocatedPointsFieldRt);
                         rtPanel.add(bottomPanel);
                         */
-                        rtPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                    	topPanel = new JPanel(new GridLayout(2,0));
-                    	topPanel.add(rtrArmorField);
-                        topPanel.add(rtrArmorMaxLabel);
-                        rtrPanel.add(topPanel);
-                        /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkRtr);
-                        bottomPanel.add(unallocatedPointsFieldRtr);
-                        rtrPanel.add(bottomPanel);
-                        */
-                        rtrPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-                        rtPanel.add(rtrPanel);
                         break;
                     case Mech.LOC_LLEG:
                     	topPanel = new JPanel(new GridLayout(2,0));
@@ -430,8 +401,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.ipadx = 5;
-        gbc.ipady = 5;
+        gbc.insets = new Insets(2,2,2,2);
         gbc.anchor = GridBagConstraints.WEST;
         totalArmorPanel.add(lblUnallocatedArmor, gbc);
         gbc.gridx = 1;

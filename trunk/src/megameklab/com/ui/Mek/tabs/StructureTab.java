@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -178,33 +179,33 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         GridBagConstraints gbc;
 
-        Dimension spinnerSize = new Dimension(35, 25);
+        Dimension spinnerSize = new Dimension(55, 25);
 
         walkMP = new JSpinner(new SpinnerNumberModel(1, 1, 25, 1));
-        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField().setSize(
+        ((JSpinner.DefaultEditor) walkMP.getEditor()).setSize(
                 spinnerSize);
-        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
+        ((JSpinner.DefaultEditor) walkMP.getEditor())
                 .setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
+        ((JSpinner.DefaultEditor) walkMP.getEditor())
                 .setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
+        ((JSpinner.DefaultEditor) walkMP.getEditor())
                 .setMinimumSize(spinnerSize);
         ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
                 .setEditable(false);
         runMP = new JTextField();
         runMP.setEditable(false);
         // runMP.setEnabled(false);
-        setFieldSize(runMP, new Dimension(37, 25));
+        setFieldSize(runMP, spinnerSize);
         runMP.setHorizontalAlignment(SwingConstants.RIGHT);
 
         jumpMP = new JSpinner(new SpinnerNumberModel(0, 0, 25, 1));
-        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField().setSize(
+        ((JSpinner.DefaultEditor) jumpMP.getEditor()).setSize(
                 spinnerSize);
-        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
+        ((JSpinner.DefaultEditor) jumpMP.getEditor())
                 .setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
+        ((JSpinner.DefaultEditor) jumpMP.getEditor())
                 .setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
+        ((JSpinner.DefaultEditor) jumpMP.getEditor())
                 .setMinimumSize(spinnerSize);
         ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
                 .setEditable(false);
@@ -217,10 +218,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         baseChassisHeatSinks = new JComboBox();
         
         armorTonnage = new JSpinner(new SpinnerNumberModel(unit.getArmorWeight(), 0.0, 30.5, 0.5));     
-        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setSize(spinnerSize);
-        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setMinimumSize(spinnerSize);
+        spinnerSize = new Dimension(45, 25);
+        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).setSize(spinnerSize);
+        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor)armorTonnage.getEditor()).setMinimumSize(spinnerSize);
         ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setEditable(false);
      
 
@@ -231,280 +233,170 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        // gridBagConstraints.ipadx = 5;
-        // gridBagConstraints.ipady = 5;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(0,0,1,2);
         panInfo.add(createLabel("Chassis:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.weightx = 1.0;
         panInfo.add(chassis, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        // gridBagConstraints.ipadx = 5;
-        // gridBagConstraints.ipady = 5;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panInfo.add(createLabel("Model:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.weightx = 1.0;
         panInfo.add(model, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        // gridBagConstraints.ipadx = 5;
-        // gridBagConstraints.ipady = 5;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panInfo.add(createLabel("Year:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        gbc.weightx = 1.0;
         panInfo.add(era, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.weightx = 0.0;
         panInfo.add(createLabel("Source/Era:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
-        gbc.weightx = 1.0;
         panInfo.add(source, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
-        gbc.weightx = 0.0;
         panInfo.add(createLabel("Tech:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
-        gbc.weightx = 1.0;
         panInfo.add(techType, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 5;
-        gbc.weightx = 0.0;
         panInfo.add(createLabel("Tech Level:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 5;
-        gbc.weightx = 1.0;
         panInfo.add(techLevel, gbc);
 
 
-        gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panChassis.add(createLabel("Tonnage:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
         panChassis.add(weightClass, gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.weightx = 1.0;
         panChassis.add(omniCB, gbc);
         gbc.gridx = 3;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.EAST;
         panChassis.add(lamCB, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panChassis.add(createLabel("Motive Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
         panChassis.add(motiveType, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panChassis.add(createLabel("Structure Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
         panChassis.add(structureCombo, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panChassis.add(createLabel("Engine Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
         panChassis.add(engineType, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panChassis.add(createLabel("Gyro Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
         panChassis.add(gyroType, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 1.0;
         panChassis.add(createLabel("Cockpit Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
         panChassis.add(cockpitType, gbc);
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 1.0;
         panChassis.add(createLabel("Enhancements:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 6;
         gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
         panChassis.add(enhancement, gbc);
         gbc.gridx = 1;
         gbc.gridy = 7;
         gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
         panChassis.add(fullHeadEjectCB, gbc);
 
-        gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        // gridBagConstraints.ipadx = 5;
-        // gridBagConstraints.ipady = 5;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
+        gbc.gridwidth = 1;
         panArmor.add(createLabel("Armor Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        gbc.weightx = 1.0;
         panArmor.add(armorCombo, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panArmor.add(createLabel("Armor Tonnage:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.weightx = 0.0;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
         panArmor.add(armorTonnage, gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
         panArmor.add(clanArmor, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
         panArmor.add(maximizeArmorButton, gbc);
 
-        gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
+        gbc.gridwidth = 1;
         panMovement.add(createLabel("Walking MP:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.weightx = 0.0;
         panMovement.add(walkMP, gbc);
-        gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panMovement.add(createLabel("Running MP:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.weightx = 0.0;
         panMovement.add(runMP, gbc);
         gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panMovement.add(createLabel("Jumping MP:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.weightx = 0.0;
         panMovement.add(jumpMP, gbc);
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
         panMovement.add(createLabel("Jump Jet Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.weightx = 1.0;
         panMovement.add(jjType, gbc);
 
         panHeat.add(createLabel("Base (Omni):", labelSize));
@@ -536,6 +428,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setFieldSize(cockpitType, comboSize);
         setFieldSize(structureCombo, comboSize);
         setFieldSize(jjType, comboSize);
+        setFieldSize(model, comboSize);
+        setFieldSize(chassis, comboSize);
 
         JPanel leftPanel = new JPanel();
         JPanel rightPanel = new JPanel();
@@ -804,7 +698,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public JLabel createLabel(String text, Dimension maxSize) {
 
-        JLabel label = new JLabel(text, SwingConstants.TRAILING);
+        JLabel label = new JLabel(text, SwingConstants.RIGHT);
 
         setFieldSize(label, maxSize);
         return label;

@@ -19,6 +19,7 @@ package megameklab.com.ui.Mek.views;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.util.Vector;
 
@@ -146,6 +147,7 @@ public class SummaryView extends IView{
 
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.insets = new Insets(0,0,0,5);
         this.add(createLabel("Category", size, JLabel.CENTER), gbc);
         gbc.gridy = 1;
         this.add(createLabel("Internal Structure:", size, JLabel.RIGHT), gbc);
@@ -171,6 +173,7 @@ public class SummaryView extends IView{
         size = new Dimension(45,25);
         gbc.gridx = 1;
         gbc.gridy = 0;
+        gbc.insets = new Insets(0,0,0,0);
         this.add(createLabel("Ton", size, JLabel.CENTER), gbc);
         gbc.gridy = 1;
         this.add(txtStructTon, gbc);
