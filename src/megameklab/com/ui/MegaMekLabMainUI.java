@@ -52,6 +52,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
         } catch (Exception e) {
             System.out.println("Setting look and feel failed: ");
             e.printStackTrace();
