@@ -65,7 +65,7 @@ public class BuildTab extends ITab implements ActionListener {
     private String RESETCOMMAND = "resetbuttoncommand";
     private String COMPACTCOMMAND = "compactbuttoncommand";
 
-    public BuildTab(Mech unit, EquipmentTab equipment, WeaponTab weapons) {
+    public BuildTab(Mech unit, EquipmentTab equipment) {
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new GridBagLayout());
@@ -86,7 +86,6 @@ public class BuildTab extends ITab implements ActionListener {
         buttonPanel.add(resetButton);
         buttonPanel.add(compactButton);
 
-
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.VERTICAL;
@@ -103,20 +102,6 @@ public class BuildTab extends ITab implements ActionListener {
         refresh();
     }
 
-    public JPanel availableCritsPanel() {
-        JPanel masterPanel = new JPanel(new SpringLayout());
-        Dimension maxSize = new Dimension();
-
-        masterPanel.add(buildView);
-
-        SpringLayoutHelper.setupSpringGrid(masterPanel, 1);
-        maxSize.setSize(300, 5);
-        masterPanel.setPreferredSize(maxSize);
-        masterPanel.setMinimumSize(maxSize);
-        masterPanel.setMaximumSize(maxSize);
-        return masterPanel;
-    }
-
     public void refresh() {
         removeAllActionListeners();
         critView.updateUnit(unit);
@@ -124,17 +109,6 @@ public class BuildTab extends ITab implements ActionListener {
         critView.refresh();
         buildView.refresh();
         addAllActionListeners();
-    }
-
-    public JLabel createLabel(String text, Dimension maxSize) {
-
-        JLabel label = new JLabel(text, SwingConstants.TRAILING);
-
-        label.setMaximumSize(maxSize);
-        label.setMinimumSize(maxSize);
-        label.setPreferredSize(maxSize);
-
-        return label;
     }
 
     public void actionPerformed(ActionEvent e) {

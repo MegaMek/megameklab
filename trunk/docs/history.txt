@@ -64,6 +64,8 @@ V 0.0.0.21-dev
 + various layout fixes (better insetting, alignments, spacing, etc.)
 + use system-specific key not control key for hot-keys
 + updated heat panel (use JSpinners instead of comboboxes)
++ jump jet addition/removal dont reset location of allocated ones to none if same type
++ removed unused code
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

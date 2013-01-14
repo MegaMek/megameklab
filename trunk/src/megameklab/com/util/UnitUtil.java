@@ -28,6 +28,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JDialog;
@@ -578,19 +579,19 @@ public class UnitUtil {
      *
      * @param unit
      */
-    public static void removeJumpJets(Mech unit) {
+    public static void removeJumpJets(Mech unit, int number) {
         System.out.println("Removing jump jets.");
-        ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(unit.getMisc());
-        for (Mounted eq : equipmentList) {
+        Vector<Mounted> toRemove = new Vector<Mounted>(); 
+        for (Mounted eq : unit.getMisc()) {
             if (UnitUtil.isJumpJet(eq)) {
-                UnitUtil.removeCriticals(unit, eq);
+                toRemove.add(eq);
+                if(toRemove.size() >= number) {
+                    break;
+                }
             }
         }
-        for (Mounted eq : equipmentList) {
-            if (UnitUtil.isJumpJet(eq)) {
-                unit.getMisc().remove(eq);
-                unit.getEquipment().remove(eq);
-            }
+        for (Mounted eq : toRemove) {
+            UnitUtil.removeMounted(unit, eq);
         }
         System.out.println("Jump jet removal finished.");
     }
@@ -603,9 +604,23 @@ public class UnitUtil {
      * @param jjType
      */
     public static void updateJumpJets(Mech unit, int jjAmount, int jjType) {
-        UnitUtil.removeJumpJets(unit);
         unit.setOriginalJumpMP(jjAmount);
+        if(jjType == unit.getJumpType()) {
+            int currentJJ = unit.getJumpMP();
+            if(jjAmount < currentJJ) {
+                UnitUtil.removeJumpJets(unit, currentJJ - jjAmount);
+                return;
+            }
+            else if(jjAmount > currentJJ) {
+                jjAmount = jjAmount - currentJJ;
+            }
+        } else {
+            UnitUtil.removeJumpJets(unit, unit.getJumpMP());
+        }
+        //if this is the same jump jet type, then only remove if too many
+        //and add if too low
         if(jjType == Mech.JUMP_BOOSTER) {
+            UnitUtil.removeJumpJets(unit, unit.getJumpMP());
             createSpreadMounts(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType, unit.isClan())));
         } else {
             while(jjAmount > 0) {

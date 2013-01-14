@@ -20,7 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -35,12 +34,10 @@ import megamek.common.Mech;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Mek.tabs.ArmorTab;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
 import megameklab.com.ui.Mek.tabs.PreviewTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
-import megameklab.com.ui.Mek.tabs.WeaponTab;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
@@ -54,9 +51,7 @@ public class MainUI extends MegaMekLabMainUI {
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
-    private ArmorTab armorTab;
     private EquipmentTab equipmentTab;
-    private WeaponTab weaponTab;
     private PreviewTab previewTab;
     private BuildTab buildTab;
     private Header header;
@@ -95,23 +90,16 @@ public class MainUI extends MegaMekLabMainUI {
         Mech mech = (Mech) entity;
 
         structureTab = new StructureTab(mech);
-        
-        armorTab = new ArmorTab(mech);
-        armorTab.setArmorType(entity.getArmorType(0));
-        armorTab.refresh();
-       
+      
         previewTab = new PreviewTab(mech);
 
         header = new Header(mech);
         statusbar = new StatusBar(mech, this);
         equipmentTab = new EquipmentTab(mech);
-        weaponTab = new WeaponTab(mech);
-        buildTab = new BuildTab(mech, equipmentTab, weaponTab);
+        buildTab = new BuildTab(mech, equipmentTab);
         header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
-        armorTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
-        weaponTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
@@ -190,9 +178,7 @@ public class MainUI extends MegaMekLabMainUI {
             entity.setChassis(chassis);
             entity.setModel(model);
 
-            // setVisible(false);
             reloadTabs();
-            // setVisible(true);
             repaint();
             refreshAll();
         } else if ((structureTab.isLAM() && !(entity instanceof LandAirMech)) || (!structureTab.isLAM() && (entity instanceof LandAirMech))) {
@@ -204,9 +190,7 @@ public class MainUI extends MegaMekLabMainUI {
             entity.setChassis(chassis);
             entity.setModel(model);
 
-            // setVisible(false);
             reloadTabs();
-            // setVisible(true);
             repaint();
             refreshAll();
         }
@@ -219,7 +203,6 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshArmor() {
-        //armorTab.refresh();
     }
 
     @Override
@@ -266,7 +249,6 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshWeapons() {
-        weaponTab.refresh();
     }
 
 }
