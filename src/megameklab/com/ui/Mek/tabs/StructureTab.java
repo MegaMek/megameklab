@@ -18,6 +18,7 @@ package megameklab.com.ui.Mek.tabs;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -134,7 +135,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JTextField manualBV = new JTextField(3);
     private JTextField chassis = new JTextField(5);
     private JTextField model = new JTextField(5);
-
+    private JLabel lblFreeSinks = new JLabel("");
+    
     private String[] armorNames = new String[] {
             EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD],
             EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS],
@@ -212,6 +214,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setEditable(false);
 
         heatSinkNumber = new JSpinner(new SpinnerNumberModel(0,0,50,1));
+        spinnerSize = new Dimension(40, 25);
         ((JSpinner.DefaultEditor) heatSinkNumber.getEditor()).setSize(
                 spinnerSize);
         ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
@@ -243,6 +246,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         ((JSpinner.DefaultEditor)armorTonnage.getEditor()).setMinimumSize(spinnerSize);
         ((JSpinner.DefaultEditor)armorTonnage.getEditor()).getTextField().setEditable(false);
      
+        //lblFreeSinks.setFont(new Font(lblFreeSinks.getName(), Font.PLAIN, 10));
 
         chassis.setText(unit.getChassis());
         model.setText(unit.getModel());
@@ -424,19 +428,26 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panHeat.add(createLabel("Sink Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
         panHeat.add(heatSinkType, gbc);     
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.gridwidth = 1;
         panHeat.add(createLabel("Number:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.fill = java.awt.GridBagConstraints.NONE;
         panHeat.add(heatSinkNumber, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        panHeat.add(lblFreeSinks, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         panHeat.add(createLabel("Base (Omni):", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         panHeat.add(baseChassisHeatSinks, gbc);
 
         Dimension comboSize = new Dimension(180, 25);
@@ -535,6 +546,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             baseChassisHeatSinks.setEnabled(false);
             getMech().getEngine().setBaseChassisHeatSinks(-1);
         }
+        
+        lblFreeSinks.setText("Engine Free: " + UnitUtil.getBaseChassisHeatSinks(getMech(), getMech().hasCompactHeatSinks()));
 
         if (getMech().isClan()) {
             techLevel.removeAllItems();
@@ -834,7 +847,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                         "Bad Engine Rating",
                                         JOptionPane.ERROR_MESSAGE);
                     } else {
-                        System.out.println("Clearning engine crits.");
+                        System.out.println("Cleaning engine crits.");
                         getMech().clearEngineCrits();
                         System.out.println("Setting new engine rating.");
                         getMech().setEngine(
@@ -843,7 +856,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                         clanEngineFlag));
                         getMech().addEngineCrits();
                         System.out.println("Adding engine crits.");
-                        updateAutoSinks();
+                        UnitUtil.updateAutoSinks(getMech(), (String)heatSinkType.getSelectedItem());
                     }
                 } else if (combo.equals(armorCombo)) {
                     UnitUtil.removeISorArmorMounts(unit, false);
@@ -881,11 +894,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         }
                     }
                 } else if (combo.equals(heatSinkType)) {
-                    int autoSinks = getMech().getEngine()
-                            .getWeightFreeEngineHeatSinks();
-                    System.out
-                            .println("Heat sink type or number changed.  Updating # engine sinks to "
-                                    + autoSinks);
                     UnitUtil.updateHeatSinks(getMech(),
                             (Integer)heatSinkNumber.getValue(),
                             heatSinkType.getSelectedItem().toString());
@@ -1121,7 +1129,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     baseChassisHeatSinks.setEnabled(false);
                     getMech().getEngine().setBaseChassisHeatSinks(-1);
                 }
-                updateAutoSinks();
+                UnitUtil.updateAutoSinks(getMech(), (String)heatSinkType.getSelectedItem());
             } else if (check.equals(fullHeadEjectCB)) {
                 getMech().setFullHeadEject(fullHeadEjectCB.isSelected());
             } else if (check.equals(clanArmor)) {
@@ -1261,9 +1269,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         } else if (e.getSource().equals(chassis)) {
             unit.setChassis(chassis.getText().trim());
             refresh.refreshPreview();
+            refresh.refreshHeader();
         } else if (e.getSource().equals(model)) {
             unit.setModel(model.getText().trim());
             refresh.refreshPreview();
+            refresh.refreshHeader();
         }
     }
 
@@ -2095,7 +2105,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             .getWeightFreeEngineHeatSinks();
                     System.out.println("Updating # engine heat sinks to "
                             + autoSinks);
-                    updateAutoSinks();
+                    UnitUtil.updateAutoSinks(getMech(), (String)heatSinkType.getSelectedItem());
                 }
 			}
 			else if(spinner.equals(jumpMP)) {
@@ -2105,11 +2115,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 				setArmorTonnage();
 			}
 			else if (spinner.equals(heatSinkNumber)) {
-                int autoSinks = getMech().getEngine()
-                        .getWeightFreeEngineHeatSinks();
-                System.out
-                        .println("Heat sink type or number changed.  Updating # engine sinks to "
-                                + autoSinks);
                 UnitUtil.updateHeatSinks(getMech(),
                         (Integer)heatSinkNumber.getValue(),
                         heatSinkType.getSelectedItem().toString());
@@ -2119,7 +2124,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         .setBaseChassisHeatSinks(
                                 Math.max(0, (Integer)baseChassisHeatSinks
                                         .getValue()));
-                updateAutoSinks();
+                UnitUtil.updateAutoSinks(getMech(), (String)heatSinkType.getSelectedItem());
             } 
 	        addAllListeners();
 	        refresh.refreshAll();
@@ -2436,17 +2441,5 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         era.setEditable(false);
         era.setEnabled(false);
         motiveType.setEnabled(false);      
-    }
-    
-    private void updateAutoSinks() {  
-        int autoSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-        System.out.println("Updating # engine heat sinks to " + autoSinks);
-        int currentSinks = (Integer)heatSinkNumber.getValue();
-        //if the current sinks is less than auto sinks - then update to auto sinks
-        //otherwise keep current sinks
-        if(currentSinks < autoSinks) {
-            currentSinks = autoSinks;
-        }
-        UnitUtil.updateHeatSinks(getMech(), currentSinks, heatSinkType.getSelectedItem().toString());
     }
 }
