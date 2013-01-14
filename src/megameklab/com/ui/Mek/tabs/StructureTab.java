@@ -39,7 +39,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -60,7 +59,6 @@ import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements ActionListener, KeyListener,
