@@ -439,23 +439,78 @@ public class UnitUtil {
     }
 
     /**
-     * Removes all heat sinks from the mek
+     * Removes the specified number of heat sinks from the mek
+     * Heat sinks are removed first fwith LOC_NONE above the free crit limit
+     * then they are removed with a location, and lastly they are removed 
+     * below the free crit limit
      *
      * @param unit
      */
-    public static void removeHeatSinks(Mech unit) {
+    public static void removeHeatSinks(Mech unit, int number) {
         System.out.println("Removing heat sinks.");
-        ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(unit.getMisc());
-        for (Mounted eq : equipmentList) {
-            if (UnitUtil.isHeatSink(eq)) {
-                UnitUtil.removeCriticals(unit, eq);
+        Vector<Mounted> toRemove = new Vector<Mounted>(); 
+        int base = UnitUtil.getBaseChassisHeatSinks(unit, unit.hasCompactHeatSinks());
+        boolean splitCompact = false;
+        if(unit.hasCompactHeatSinks()) {
+            //first check to see if there is a single compact heat sink outside of 
+            //the engine and remove this first if so
+            Mounted mount = UnitUtil.getSingleCompactHeatSink(unit);
+            if(null != mount && number > 0) {
+                UnitUtil.removeMounted(unit, mount);
+                number--;
+            }
+            //if number is now uneven, then note that we will need to split a compact
+            if(number%2 == 1) {
+                splitCompact = true;
+                number--;
             }
         }
-        for (Mounted eq : equipmentList) {
-            if (UnitUtil.isHeatSink(eq)) {
-                unit.getMisc().remove(eq);
-                unit.getEquipment().remove(eq);
+        Vector<Mounted> unassigned = new Vector<Mounted>();
+        Vector<Mounted> assigned = new Vector<Mounted>();
+        Vector<Mounted> free = new Vector<Mounted>();
+        for(Mounted m : unit.getMisc()) {
+            if(UnitUtil.isHeatSink(m)) {
+                if(m.getLocation() == Entity.LOC_NONE) {
+                    if(base > 0) {
+                        free.add(m);
+                        base--;
+                    } else {
+                        unassigned.add(m);
+                    }
+                } else {
+                    assigned.add(m);
+                }
             }
+        }
+        toRemove.addAll(unassigned);
+        toRemove.addAll(assigned);
+        toRemove.addAll(free);
+        if(unit.hasCompactHeatSinks()) {
+            //need to do some number magic here. The unassigned and assigned slots 
+            //should each contain two heat sinks, but if we dip into the free then we 
+            //are looking at one heat sink.
+            int numberDouble = Math.min(number/2, unassigned.size() + assigned.size());
+            int numberSingle = Math.max(0, number - (2*numberDouble));
+            number = numberDouble + numberSingle;
+        }
+        number = Math.min(number, toRemove.size());
+        for(int i = 0; i < number; i++) {
+            Mounted eq = toRemove.get(i);
+            UnitUtil.removeMounted(unit, eq);
+        }
+        if(splitCompact) {
+            Mounted eq = toRemove.get(number);
+            int loc = eq.getLocation();
+            //remove singleCompact mount and replace with a double
+            UnitUtil.removeMounted(unit, eq);
+            if(!eq.getType().hasFlag(MiscType.F_HEAT_SINK)) {
+                try {
+                    unit.addEquipment(new Mounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), loc, false);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } 
+            }
+            
         }
         System.out.println("Heat sink removal finished.");
     }
@@ -468,22 +523,74 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, String hsType) {
-        int engineHSCapacity = UnitUtil.getBaseChassisHeatSinks(unit, hsType.equals("Compact"));
 
-        int heatSinks = hsAmount - engineHSCapacity;
         EquipmentType sinkType;
-
-        sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan()));
-
-        for (; heatSinks > 0; heatSinks--) {
-
+        sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan()));       
+        if (hsType.equals("Compact")) {
+            UnitUtil.addCompactHeatSinkMounts(unit, hsAmount);
+        } else {
+            for (; hsAmount > 0; hsAmount--) {
+                try {
+                    unit.addEquipment(new Mounted(unit, sinkType), Entity.LOC_NONE, false);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static void addCompactHeatSinkMounts(Mech unit, int hsAmount) {
+        //first we need to figure out how many single compacts we need to add for the engine, if any
+        int currentSinks = UnitUtil.countActualHeatSinks(unit);
+        int engineCompacts = Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit, true));
+        int engineToAdd = Math.max(0, engineCompacts - currentSinks);
+        unit.addEngineSinks("IS1 Compact Heat Sink", engineToAdd);
+        int restHS = hsAmount - engineToAdd;
+        Mounted singleCompact = getSingleCompactHeatSink(unit);
+        if ((restHS%2) == 1) {
+            if(null == singleCompact) {
+                try {
+                    unit.addEquipment(new Mounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), Entity.LOC_NONE, false);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                int loc = singleCompact.getLocation();
+                //remove singleCompact mount and replace with a double
+                UnitUtil.removeMounted(unit, singleCompact);
+                try {
+                    unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil.getHeatSinkType("Compact", unit.isClan()))), loc, false);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } 
+            }
+            restHS -= 1;
+        }
+        for (;restHS > 0; restHS -=2) {
             try {
-                unit.addEquipment(new Mounted(unit, sinkType), Entity.LOC_NONE, false);
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil.getHeatSinkType("Compact", unit.isClan()))), Entity.LOC_NONE, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        unit.resetSinks();
+    }
+    
+    /**
+     * get the single non-compact heat sink that is a non-engine sink, if it exits
+     * @param unit
+     */
+    public static Mounted getSingleCompactHeatSink(Mech unit) {
+        int base = UnitUtil.getBaseChassisHeatSinks(unit, true);
+        for(Mounted m : unit.getMisc()) {
+            if(m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) && m.getType().hasFlag(MiscType.F_HEAT_SINK)) {
+                if(base <= 0) {
+                    return m;
+                } else {
+                    base--;
+                }
+            }
+        }
+        return null;
     }
 
     public static String getHeatSinkType(String type, boolean clan) {
@@ -517,6 +624,22 @@ public class UnitUtil {
 
         return heatSinkType;
     }
+    
+    public static boolean hasSameHeatSinkType(Mech unit, String type) {
+        //this seems like a total hack, but at present we apparently have no
+        //good static integer codes for this on entity
+        String heatSinkType = UnitUtil.getHeatSinkType(type, unit.isClan());
+        for (Mounted mounted : unit.getMisc()) {
+            if(type.equals("Compact") && mounted.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)) {
+                return true;
+            }
+            if (mounted.getType().hasFlag(MiscType.F_HEAT_SINK) 
+                    || mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                return mounted.getType().getInternalName().equals(heatSinkType);
+            }
+        }
+        return false;
+    }
 
     /**
      * updates the heat sinks.
@@ -526,31 +649,57 @@ public class UnitUtil {
      * @param hsType
      */
     public static void updateHeatSinks(Mech unit, int hsAmount, String hsType) {
-        UnitUtil.removeHeatSinks(unit);
-        if (hsType.equals("Compact")) {
-            int engineCompacts = Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit, true));
-            unit.addEngineSinks("IS1 Compact Heat Sink", engineCompacts);
-            int restHS = hsAmount - engineCompacts;
-            if ((restHS%2) == 1) {
-                try {
-                    unit.addEquipment(new Mounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), Entity.LOC_NONE, false);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                restHS -= 1;
+        //if we have the same type of heat sink, then we should not remove the 
+        //existing heat sinks
+        int currentSinks = UnitUtil.countActualHeatSinks(unit);
+        if(UnitUtil.hasSameHeatSinkType(unit, hsType)) {
+            if(hsAmount < currentSinks) {
+                UnitUtil.removeHeatSinks(unit, currentSinks - hsAmount);
             }
-            for (;restHS > 0; restHS -=2) {
-                try {
-                    unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan()))), Entity.LOC_NONE, false);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+            else if(hsAmount > currentSinks) {
+                UnitUtil.addHeatSinkMounts(unit, hsAmount - currentSinks, hsType);
             }
         } else {
-            unit.addEngineSinks(UnitUtil.getHeatSinkType(hsType, unit.isClan()), Math.min(hsAmount, UnitUtil.getBaseChassisHeatSinks(unit, false)));
+            UnitUtil.removeHeatSinks(unit, hsAmount);
             UnitUtil.addHeatSinkMounts(unit, hsAmount, hsType);
         }
-
+        unit.resetSinks();
+    }
+    
+    /**
+     * This will cycle through the heat sinks and make sure that enough of 
+     * them are set LOC_NONE based on the basechassisheat sinks
+     * @param unit
+     */
+    public static void updateAutoSinks(Mech unit, String hsType) {
+        int base = UnitUtil.getBaseChassisHeatSinks(unit, hsType.equals("Compact"));
+        Vector<Mounted> unassigned = new Vector<Mounted>();
+        Vector<Mounted> assigned = new Vector<Mounted>();
+        for(Mounted m : unit.getMisc()) {
+            if(UnitUtil.isHeatSink(m)) {
+                if(m.getLocation() == Entity.LOC_NONE) {
+                    unassigned.add(m);
+                } else {
+                    assigned.add(m);
+                }
+            }
+        }
+        int needed = base - unassigned.size();
+        if(needed <= 0) {
+            return;
+        }
+        for(Mounted m : assigned) {
+            if(needed <= 0) {
+                break;
+            }
+            UnitUtil.removeCriticals(unit, m);
+            m.setLocation(Entity.LOC_NONE);
+            needed--;
+        }
+        //if for some reason we still didn't find enough heat sinks then make some more
+        if(needed > 0) {
+            UnitUtil.addHeatSinkMounts(unit, needed, hsType);
+        }
     }
     
     public static boolean isJumpJet(Mounted m) {
@@ -2540,5 +2689,26 @@ public class UnitUtil {
             }
         }
         return nCrits;
+    }
+    
+    // gives total number of sinks, not just critical slots
+    public static int countActualHeatSinks(Mech unit) {
+        int sinks = 0;
+        for (Mounted mounted : unit.getMisc()) {
+            if(!UnitUtil.isHeatSink(mounted)) {
+                continue;
+            }
+            if(mounted.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)) {
+                if (mounted.getType().hasFlag(MiscType.F_HEAT_SINK)) {
+                    sinks++;
+                } else if (mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                    sinks++;
+                    sinks++;
+                }
+            } else {
+                sinks++;
+            }
+        }
+        return sinks;
     }
 }

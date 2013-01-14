@@ -226,13 +226,14 @@ public class MainUI extends MegaMekLabMainUI {
     public void refreshHeader() {
 
         String title = entity.getChassis() + " " + entity.getModel() + ".mtf";
-
+/*
         if (UnitUtil.validateUnit(entity).length() > 0) {
             title += "  (Invalid)";
             setForeground(Color.red);
         } else {
             setForeground(Color.BLACK);
         }
+        */
         setTitle(title);
 
     }

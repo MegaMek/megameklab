@@ -66,6 +66,7 @@ V 0.0.0.21-dev
 + updated heat panel (use JSpinners instead of comboboxes)
 + jump jet addition/removal dont reset location of allocated ones to none if same type
 + removed unused code
++ heat sink addition/removal does not reset location of allocated HS if same type
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
