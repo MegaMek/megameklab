@@ -33,6 +33,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
@@ -66,7 +67,7 @@ public class SummaryView extends IView{
     private JTextField txtEnhanceCrit = new JTextField("?");
     private JTextField txtJumpCrit = new JTextField("?");
     private JTextField txtEquipCrit = new JTextField("?");
-    private JTextField txtOtherCrit = new JTextField("?");
+    private JTextField txtOtherCrit = new JTextField("-");
     
     private JTextField txtStructAvail = new JTextField("?");
     private JTextField txtEngineAvail = new JTextField("?");
@@ -274,67 +275,85 @@ public class SummaryView extends IView{
         txtHeatTon.setText(Float.toString(testMech.getWeightHeatSinks()));
         txtStructTon.setText(Float.toString(testMech.getWeightStructure()));
         txtArmorTon.setText(Float.toString(testMech.getWeightArmor()));
-        txtJumpTon.setText(Float.toString(getWeightJumpJets()));
-        txtEnhanceTon.setText(Float.toString(getWeightEnhancements()));
-        txtEquipTon.setText(Float.toString(testMech.getWeightWeapon() + testMech.getWeightAmmo() + testMech.getArmoredComponentWeight() + getWeightMiscEquip()));
         txtOtherTon.setText(Float.toString(testMech.getWeightPowerAmp() + testMech.getWeightCarryingSpace() + testMech.getWeightMisc()));
 
+        
         txtGyroCrit.setText(Integer.toString(getGyroCrits()));
+        txtEngineCrit.setText(Integer.toString(getEngineCrits()));
         txtCockpitCrit.setText(Integer.toString(getCockpitCrits()));
         String structName = EquipmentType.getStructureTypeName(getMech().getStructureType());
         txtStructCrit.setText(Integer.toString(EquipmentType.get(structName).getCriticals(getMech())));
         txtArmorCrit.setText(Integer.toString(EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(0))).getCriticals(unit)));
         
+        runThroughEquipment(testMech);
+        
+        int numberSinks = UnitUtil.countActualHeatSinks(getMech());
+        numberSinks = Math.max(0, numberSinks - UnitUtil.getBaseChassisHeatSinks(getMech(), getMech().hasCompactHeatSinks()));
+        int critSinks = numberSinks;
+        if(UnitUtil.hasClanDoubleHeatSinks(getMech())) {
+            critSinks = numberSinks * 2;
+        }
+        else if(getMech().hasDoubleHeatSinks()) {
+            critSinks = numberSinks * 3;
+        }
+        else if(getMech().hasCompactHeatSinks()) {
+            critSinks = critSinks/2 + critSinks%2;
+        }
+        txtHeatCrit.setText(Integer.toString(critSinks));
+
     
     }
     
-    private float getWeightMiscEquip() {
-        float weightSum = 0.0f;
+    private void runThroughEquipment(TestMech testMech) {
+        float weightJJ = 0.0f;
+        float weightEnhance = 0.0f;
+        float weightEquip = 0.0f;
+        int critJJ = 0;
+        int critEquip = 0;
+        int critEnhance = 0;
+        
         for (Mounted m : getMech().getMisc()) {
             MiscType mt = (MiscType) m.getType();
-            if (mt.hasFlag(MiscType.F_ENDO_STEEL)
-                    || mt.hasFlag(MiscType.F_FERRO_FIBROUS)
-                    || mt.hasFlag(MiscType.F_FERRO_LAMELLOR)
-                    || mt.hasFlag(MiscType.F_ENDO_COMPOSITE)
-                    || mt.hasFlag(MiscType.F_HEAT_SINK)
-                    || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
-                    || mt.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)
-                    || mt.hasFlag(MiscType.F_JUMP_JET)
-                    || mt.hasFlag(MiscType.F_JUMP_BOOSTER)
-                    || mt.hasFlag(MiscType.F_TSM)
+            if(UnitUtil.isArmorOrStructure(mt)) {
+                continue;
+            } 
+            else if (mt.hasFlag(MiscType.F_TSM)
                     || mt.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || mt.hasFlag(MiscType.F_MASC)) {
+                weightEnhance += mt.getTonnage(getMech(), m.getLocation());
+                critEnhance += UnitUtil.getCritsUsed(getMech(), mt);
+            }
+            else if (mt.hasFlag(MiscType.F_JUMP_JET)
+                    || mt.hasFlag(MiscType.F_JUMP_BOOSTER)) {
+                weightJJ += mt.getTonnage(getMech(), m.getLocation());
+                critJJ += mt.getCriticals(getMech());
+            }
+            else if (mt.hasFlag(MiscType.F_HEAT_SINK)
+                    || mt.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 continue;
             }
-            weightSum += mt.getTonnage(getMech(), m.getLocation());
+            else {
+                weightEquip += mt.getTonnage(getMech(), m.getLocation());
+                critEquip += mt.getCriticals(getMech());
+            }
         }
-        return weightSum;
-    }
+        for (Mounted m : getMech().getWeaponList()) {
+            EquipmentType et = (EquipmentType) m.getType();
+            weightEquip += et.getTonnage(getMech());
+            critEquip += et.getCriticals(getMech());
+        }
+        for (Mounted m : getMech().getAmmo()) {
+            EquipmentType et = (EquipmentType) m.getType();
+            weightEquip += et.getTonnage(getMech());
+            critEquip += et.getCriticals(getMech());
+        }
+        txtJumpTon.setText(Float.toString(weightJJ));
+        txtEnhanceTon.setText(Float.toString(weightEnhance));
+        txtEquipTon.setText(Float.toString(weightEquip));
         
-    private float getWeightEnhancements() {
-        float weightSum = 0.0f;
-        for (Mounted m : getMech().getMisc()) {
-            MiscType mt = (MiscType) m.getType();
-            if (mt.hasFlag(MiscType.F_TSM)
-                    || mt.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || mt.hasFlag(MiscType.F_MASC)) {
-                weightSum += mt.getTonnage(getMech(), m.getLocation());
-            }
-            
-        }
-        return weightSum;
-    }
-    
-    private float getWeightJumpJets() {
-        float weightSum = 0.0f;
-        for (Mounted m : getMech().getMisc()) {
-            MiscType mt = (MiscType) m.getType();
-            if (mt.hasFlag(MiscType.F_JUMP_JET)
-                    || mt.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                weightSum += mt.getTonnage(getMech(), m.getLocation());
-            }
-        }
-        return weightSum;
+        txtJumpCrit.setText(Integer.toString(critJJ));
+        txtEnhanceCrit.setText(Integer.toString(critEnhance));
+        txtEquipCrit.setText(Integer.toString(critEquip));
     }
     
     private int getGyroCrits() {
@@ -346,6 +365,10 @@ public class SummaryView extends IView{
         default:
             return 4;
         }
+    }
+    
+    private int getEngineCrits() {
+        return 6 + 2 * getMech().getEngine().getSideTorsoCriticalSlots().length;
     }
     
     private int getCockpitCrits() {
