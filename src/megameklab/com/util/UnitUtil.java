@@ -2711,4 +2711,25 @@ public class UnitUtil {
         }
         return sinks;
     }
+    
+    public static void checkEquipmentByTechLevel(Entity unit) {
+        Vector<Mounted> toRemove = new Vector<Mounted>();
+        for(Mounted m : unit.getEquipment()) {
+            EquipmentType etype = m.getType();
+            if(UnitUtil.isArmorOrStructure(etype) 
+                    || UnitUtil.isHeatSink(etype)
+                    || UnitUtil.isJumpJet(etype)) {
+                continue;
+            }
+            if(etype.hasFlag(MiscType.F_TSM) || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) || etype.hasFlag(MiscType.F_MASC)) {
+                continue;
+            }
+            if(!UnitUtil.isLegal(unit, etype.getTechLevel())) {
+                toRemove.add(m);
+            }
+        }
+        for(Mounted m : toRemove) {
+            UnitUtil.removeMounted(unit, m);
+        }
+    }
 }
