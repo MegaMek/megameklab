@@ -69,6 +69,8 @@ V 0.0.0.21-dev
 + heat sink addition/removal does not reset location of allocated HS if same type
 + added remainder of crit calcluations to SummaryView
 + altered refreshing so that changing tech base and type do not reset equipment on the unit unless it is illegal
++ remove illegal equipment on tech base/tech type change
++ some corrections on tech base listener in StructureTab
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
