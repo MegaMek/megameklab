@@ -68,6 +68,7 @@ V 0.0.0.21-dev
 + removed unused code
 + heat sink addition/removal does not reset location of allocated HS if same type
 + added remainder of crit calcluations to SummaryView
++ altered refreshing so that changing tech base and type do not reset equipment on the unit unless it is illegal
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
