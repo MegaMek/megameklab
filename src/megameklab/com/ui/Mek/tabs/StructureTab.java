@@ -880,6 +880,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
                     }
                     populateChoices(true);
+                    armor.resetArmorPoints();
+                    UnitUtil.checkEquipmentByTechLevel(unit);
                     refresh.refreshAll();
                 } else if (combo.equals(techType)) {
                     if ((techType.getSelectedIndex() == 1)
@@ -888,20 +890,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
                         }
-                        getMech().setTechLevel(TechConstants.getOppositeTechLevel(getMech().getTechLevel()));
-                        getMech().setArmorTechLevel(TechConstants.getOppositeTechLevel(getMech().getTechLevel()));
                         getMech().setMixedTech(false);
+                        if(!getMech().isClan()) {
+                            int level = TechConstants.getOppositeTechLevel(getMech().getTechLevel());
+                            getMech().setTechLevel(level);
+                            getMech().setArmorTechLevel(level);
+                        }
                     } else if ((techType.getSelectedIndex() == 0)
                             && (getMech().isClan() || getMech().isMixedTech())) {
                         techLevel.removeAllItems();
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
-
-                        getMech().setTechLevel(TechConstants.getOppositeTechLevel(getMech().getTechLevel()));
-                        getMech().setArmorTechLevel(TechConstants.getOppositeTechLevel(getMech().getTechLevel()));
                         getMech().setMixedTech(false);
-                        UnitUtil.removeAllMounteds(getMech(), MiscType.F_TALON);
+                        if(getMech().isClan()) {
+                            int level = TechConstants.getOppositeTechLevel(getMech().getTechLevel());
+                            getMech().setTechLevel(level);
+                            getMech().setArmorTechLevel(level);
+                        }
                     } else if ((techType.getSelectedIndex() == 2)
                             && (!getMech().isMixedTech() || getMech().isClan())) {
                         techLevel.removeAllItems();
@@ -938,8 +944,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                 .getSize() - 2);
                         getMech().setMixedTech(true);
                     } 
+                    populateChoices(true);
+                    armor.resetArmorPoints();
+                    UnitUtil.checkEquipmentByTechLevel(unit);
                 }
-                populateChoices(true);
                 refresh.refreshAll();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -983,7 +991,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         		maximizeArmor();
         	} 
             refresh.refreshAll();
-
         }
     }
 
