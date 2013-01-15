@@ -67,6 +67,7 @@ V 0.0.0.21-dev
 + jump jet addition/removal dont reset location of allocated ones to none if same type
 + removed unused code
 + heat sink addition/removal does not reset location of allocated HS if same type
++ added remainder of crit calcluations to SummaryView
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
