@@ -143,7 +143,7 @@ public class EquipmentView extends IView implements ActionListener {
     private void loadEquipmentTable() {
         for (Mounted mount : unit.getMisc()) {
 
-            if (isHeatSink(mount) || UnitUtil.isArmorOrStructure(mount.getType())) {
+            if (UnitUtil.isHeatSink(mount) || UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
             if (UnitUtil.isUnitEquipment(mount.getType(), unit)) {
@@ -155,7 +155,7 @@ public class EquipmentView extends IView implements ActionListener {
     private void loadHeatSinks() {
         int engineHeatSinks = 10;// UnitUtil.getBaseChassisHeatSinks(unit);
         for (Mounted mount : unit.getMisc()) {
-            if (isHeatSink(mount)) {
+            if (UnitUtil.isHeatSink(mount)) {
                 if (engineHeatSinks-- > 0) {
                     continue;
                 }
@@ -170,7 +170,7 @@ public class EquipmentView extends IView implements ActionListener {
         for (; location < equipmentList.getRowCount();) {
 
             Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
-            if (isHeatSink(mount)) {
+            if (UnitUtil.isHeatSink(mount)) {
                 try {
                     equipmentList.removeCrit(location);
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
