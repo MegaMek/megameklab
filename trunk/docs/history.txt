@@ -71,6 +71,7 @@ V 0.0.0.21-dev
 + altered refreshing so that changing tech base and type do not reset equipment on the unit unless it is illegal
 + remove illegal equipment on tech base/tech type change
 + some corrections on tech base listener in StructureTab
++ equipmentView code placed directly into equipmentTab because of redundancy
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

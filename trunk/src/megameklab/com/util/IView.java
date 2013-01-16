@@ -77,17 +77,6 @@ public class IView extends JPanel {
         return (BattleArmor) unit;
     }
 
-    public boolean isHeatSink(Mounted mounted) {
-        EquipmentType eq = mounted.getType();
-        if (eq.hasFlag(MiscType.F_HEAT_SINK)
-                || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
-                || eq.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)
-                || eq.hasFlag(MiscType.F_LASER_HEAT_SINK)) {
-            return true;
-        }
-        return false;
-    }
-
     public Infantry getInfantry() {
     	return (Infantry) unit;
     }
