@@ -27,7 +27,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -45,8 +47,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
-import javax.swing.SpringLayout;
-import javax.swing.RowFilter.Entry;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
@@ -65,7 +65,6 @@ import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 import megameklab.com.util.XTableColumnModel;
 
@@ -166,6 +165,13 @@ public class EquipmentTab extends ITab implements ActionListener {
         masterEquipmentList = new EquipmentTableModel(unit);
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
+        equipmentSorter.setComparator(EquipmentTableModel.COL_HEAT, new WeaponIntegerSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_MRANGE, new WeaponIntegerSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
+        masterEquipmentTable.setRowSorter(equipmentSorter);
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         masterEquipmentTable.setColumnModel(equipColumnModel);
         masterEquipmentTable.createDefaultColumnsFromModel();
@@ -207,9 +213,6 @@ public class EquipmentTab extends ITab implements ActionListener {
         masterEquipmentList.setData(allTypes);
 
         loadEquipmentTable();
-        
-        equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
-        masterEquipmentTable.setRowSorter(equipmentSorter);
 
         DefaultComboBoxModel typeModel = new DefaultComboBoxModel();
         for (int i = 0; i < T_NUM; i++) {
@@ -657,6 +660,148 @@ public class EquipmentTab extends ITab implements ActionListener {
             EquipmentType equip = (EquipmentType) masterEquipmentList.getType(selected);
             addEquipment(equip);
             fireTableRefresh();
+        }
+    }
+    
+    /**
+     * A comparator for integers written as strings with "-" sorted to the bottom always
+     * @author Jay Lawson
+     *
+     */
+    public class WeaponIntegerSorter implements Comparator<String> {
+
+        @Override
+        public int compare(String s0, String s1) {
+            if(s0.equals("-") && s1.equals("-")) {
+                return 0;
+            } else if(s0.equals("-")) {
+                return 1;
+            } else if(s1.equals("-")) {
+                return -1;
+            } else {
+                //get the numbers associated with each string
+                int r0 = Integer.parseInt(s0);
+                int r1 = Integer.parseInt(s1);
+                return ((Comparable<Integer>)r1).compareTo(r0);
+            }
+        }
+    }
+    
+    /**
+     * A comparator for integers written as strings with "-" sorted to the bottom always
+     * @author Jay Lawson
+     *
+     */
+    public class WeaponRangeSorter implements Comparator<String> {
+
+        @Override
+        public int compare(String s0, String s1) {
+            if(s0.equals("-") && s1.equals("-")) {
+                return 0;
+            } else if(s0.equals("-")) {
+                return 1;
+            } else if(s1.equals("-")) {
+                return -1;
+            } else {
+                //get the numbers associated with each string
+                int short0 = Integer.parseInt(s0.split("/")[0]);
+                int short1 = Integer.parseInt(s1.split("/")[0]);
+                int med0 = Integer.parseInt(s0.split("/")[1]);
+                int med1 = Integer.parseInt(s1.split("/")[1]);
+                int long0 = Integer.parseInt(s0.split("/")[2]);
+                int long1 = Integer.parseInt(s1.split("/")[2]);
+                int compare = ((Comparable<Integer>)short1).compareTo(short0);
+                if(compare != 0) {
+                    return compare;
+                }
+                compare = ((Comparable<Integer>)med1).compareTo(med0);
+                if(compare != 0) {
+                    return compare;
+                }
+                return ((Comparable<Integer>)long1).compareTo(long0);
+            }
+        }
+    }
+    
+    public class WeaponDamageSorter implements Comparator<String> {
+
+        @Override
+        public int compare(String s0, String s1) {
+            if(s0.equals("-") && s1.equals("-")) {
+                return 0;
+            } else if(s0.equals("-")) {
+                return 1;
+            } else if(s1.equals("-")) {
+                return -1;
+            } else if(s0.equals("Cluster") && s1.equals("-")) {
+                return 1;
+            } else if(s0.equals("-") && s1.equals("Cluster")) {
+                return -1;
+            } else if(s0.equals("Cluster") && s1.equals("Special")) {
+                return 1;
+            } else if(s0.equals("Special") && s1.equals("Cluster")) {
+                return -1;
+            } else if(s0.equals("Special") && s1.equals("-")) {
+                return 1;
+            } else if(s0.equals("-") && s1.equals("Special")) {
+                return -1;
+            } else if(s0.equals("Cluster") && s1.equals("Cluster")) {
+                return 0;
+            } else if(s0.equals("Cluster")) {
+                return 1;
+            } else if(s1.equals("Cluster")) {
+                return -1;
+            } else if(s0.equals("Special") && s1.equals("Special")) {
+                return 0;
+            } else if(s0.equals("Special")) {
+                return 1;
+            } else if(s1.equals("Special")) {
+                return -1;
+            } else {
+                //get the numbers associated with each string
+                int r1 = parseDamage(s1);
+                int r0 = parseDamage(s0);
+                return ((Comparable<Integer>)r1).compareTo(r0);
+            }
+        }
+        
+        private int parseDamage(String s) {
+            int damage = 0;
+            if(s.contains("/")) { 
+                damage = Integer.parseInt(s.split("/")[0]);
+            } else {
+                damage = Integer.parseInt(s);
+            }
+            return damage;
+        }
+    }
+    
+    /**
+     * A comparator for numbers that have been formatted with DecimalFormat
+     * @author Jay Lawson
+     *
+     */
+    public class FormattedNumberSorter implements Comparator<String> {
+
+        @Override
+        public int compare(String s0, String s1) {
+            //lets find the weight class integer for each name
+            DecimalFormat format = new DecimalFormat();
+            int l0 = 0;
+            try {
+                l0 = format.parse(s0).intValue();
+            } catch (java.text.ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            int l1 = 0;
+            try {
+                l1 = format.parse(s1).intValue();
+            } catch (java.text.ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return ((Comparable<Integer>)l0).compareTo(l1);
         }
     }
 }
