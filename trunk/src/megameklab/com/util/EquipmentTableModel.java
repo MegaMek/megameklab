@@ -225,14 +225,14 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if(col == COL_HEAT) {
         	if(null != wtype) {
-        		return wtype.getHeat();
+        		return Integer.toString(wtype.getHeat());
         	} else {
         		return "-";
         	}
         }
         if(col == COL_SHOTS) {
         	if(null != atype) {
-        		return atype.getShots();
+        		return Integer.toString(atype.getShots());
         	} 
         	else {
         		return "-";
@@ -255,7 +255,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         		if(minRange < 0) {
         			minRange = 0;
         		}
-        		return minRange;
+        		return Integer.toString(minRange);
         	} else {
         		return "-";    		
         	}
@@ -270,7 +270,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             return type.getTechRatingName();
         }
         if(col == COL_COST) {
-            return type.getCost(entity, false, Entity.LOC_NONE);
+            return formatter.format(type.getCost(entity, false, Entity.LOC_NONE));
         }
         if(col == COL_BV) {
             return type.getBV(entity);
