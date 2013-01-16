@@ -717,6 +717,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             default:
                                 getMech().addCockpit();
                         }
+                        armor.resetArmorPoints();
                     }
                     int rating = ((Integer) walkMP.getValue())
                             * ((Integer) weightClass.getValue());

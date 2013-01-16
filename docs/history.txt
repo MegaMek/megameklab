@@ -72,6 +72,7 @@ V 0.0.0.21-dev
 + remove illegal equipment on tech base/tech type change
 + some corrections on tech base listener in StructureTab
 + equipmentView code placed directly into equipmentTab because of redundancy
++ update armor points on cockpit change (for industrial armor)
 
 V 0.0.0.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
