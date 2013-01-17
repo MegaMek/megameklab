@@ -698,5 +698,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         // TODO Auto-generated method stub
         
     }
+    
+    public void setAsCustomization() {
+        chassis.setEditable(false);
+        chassis.setEnabled(false);
+        era.setEditable(false);
+        era.setEnabled(false);
+    }
 
 }
