@@ -14,10 +14,12 @@
  * details.
  */
 
-package megameklab.com.ui.Infantry.tabs;
+package megameklab.com.ui.Infantry.views;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -44,11 +46,12 @@ import megamek.common.EquipmentType;
 import megamek.common.Infantry;
 import megamek.common.TechConstants;
 import megameklab.com.util.ITab;
+import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
-public class ArmorTab extends ITab implements ActionListener, ChangeListener {
+public class ArmorView extends IView implements ActionListener, ChangeListener {
 
     /**
      *
@@ -56,7 +59,6 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
     private static final long serialVersionUID = -7235362583437251408L;
 
     private RefreshListener refresh = null;
-    private JPanel basicPanel;
     JCheckBox chEncumber = new JCheckBox();
     JCheckBox chSpaceSuit = new JCheckBox();
     JCheckBox chDEST = new JCheckBox();
@@ -67,49 +69,39 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
     private Dimension maxSize = new Dimension();
 
     
-    public ArmorTab(Infantry unit) {
-
-        this.unit = unit;
-
-        setLayout(new SpringLayout());
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.add(basicPanel());
+    public ArmorView(Infantry unit) {
+        super(unit);
+        setUpPanels();
         refresh();
     }
     
-    private JPanel basicPanel() {
-    	basicPanel = new JPanel(new SpringLayout());
+    private void setUpPanels() {
+        JPanel divisorPanel = new JPanel();
+        JPanel choicePanel = new JPanel(new GridLayout(3,2));
         maxSize.setSize(110, 20);
 
-        basicPanel.add(createLabel("Damage Divisor:", maxSize));
-        basicPanel.add(armorValue);
+        divisorPanel.add(createLabel("Damage Divisor:", maxSize));
+        divisorPanel.add(armorValue);
         JFormattedTextField tf = ((JSpinner.DefaultEditor)armorValue.getEditor()).getTextField();
         tf.setEditable(false);
         tf.setBackground(Color.white);
+        chEncumber.setText("Encumbering");
+        chSpaceSuit.setText("Space Suit");
+        chDEST.setText("DEST");
+        chSneakCamo.setText("Sneak (CAMO)");
+        chSneakIR.setText("Sneak (IR)");
+        chSneakECM.setText("Sneak (ECM)");
 
-        basicPanel.add(createLabel("Encumbering:", maxSize));
-        basicPanel.add(chEncumber);
-        basicPanel.add(createLabel("Space Suit:", maxSize));
-        basicPanel.add(chSpaceSuit);
-        basicPanel.add(createLabel("DEST:", maxSize));
-        basicPanel.add(chDEST);
-        basicPanel.add(createLabel("Sneak (Camo):", maxSize));
-        basicPanel.add(chSneakCamo);
-        basicPanel.add(createLabel("Sneak (IR):", maxSize));
-        basicPanel.add(chSneakIR);
-        basicPanel.add(createLabel("Sneak (ECM):", maxSize));
-        basicPanel.add(chSneakECM);
+        choicePanel.add(chEncumber);
+        choicePanel.add(chSpaceSuit);
+        choicePanel.add(chDEST);
+        choicePanel.add(chSneakCamo);
+        choicePanel.add(chSneakIR);
+        choicePanel.add(chSneakECM);
 
-        setFieldSize(armorValue, maxSize);
-        setFieldSize(chEncumber, maxSize);
-        setFieldSize(chSpaceSuit, maxSize);
-        setFieldSize(chDEST, maxSize);
-        setFieldSize(chSneakCamo, maxSize);
-        setFieldSize(chSneakIR, maxSize);
-        setFieldSize(chSneakECM, maxSize);
-      
-        SpringLayoutHelper.setupSpringGrid(basicPanel, 2);
-        return basicPanel;
+        setLayout(new BorderLayout());
+        add(divisorPanel, BorderLayout.NORTH);
+        add(choicePanel, BorderLayout.CENTER);
     }
     
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -119,45 +111,38 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
         setFieldSize(label, maxSize);
         return label;
     }
-	
-	public void setFieldSize(JComponent box, Dimension maxSize) {
-		box.setPreferredSize(maxSize);
-		box.setMaximumSize(maxSize);
-		box.setMinimumSize(maxSize);
-	}
+    
+    public void setFieldSize(JComponent box, Dimension maxSize) {
+        box.setPreferredSize(maxSize);
+        box.setMaximumSize(maxSize);
+        box.setMinimumSize(maxSize);
+    }
 
     public void refresh() {
         removeAllListeners();
+        armorValue.setValue((double)getInfantry().getDamageDivisor());
+        chEncumber.setSelected(getInfantry().isArmorEncumbering());
+        chSpaceSuit.setSelected(getInfantry().hasSpaceSuit());
+        chDEST.setSelected(getInfantry().hasDEST());
+        chSneakCamo.setSelected(getInfantry().hasSneakCamo());
+        chSneakIR.setSelected(getInfantry().hasSneakIR());
+        chSneakECM.setSelected(getInfantry().hasSneakECM());
         if(unit.getTechLevel() < TechConstants.T_TW_ALL) {
-        	armorValue.setValue(1);
-	        chEncumber.setSelected(false);
-	        chSpaceSuit.setSelected(false);
-	        chDEST.setSelected(false);
-	        chSneakCamo.setSelected(false);
-	        chSneakIR.setSelected(false);
-	        chSneakECM.setSelected(false);
-	        armorValue.setEnabled(false);
-	        chEncumber.setEnabled(false);
-	        chSpaceSuit.setEnabled(false);
-	        chDEST.setEnabled(false);
-	        chSneakCamo.setEnabled(false);
-	        chSneakIR.setEnabled(false);
-	        chSneakECM.setEnabled(false);
-        } else {
-	        armorValue.setValue((double)getInfantry().getDamageDivisor());
-	        chEncumber.setSelected(getInfantry().isArmorEncumbering());
-	        chSpaceSuit.setSelected(getInfantry().hasSpaceSuit());
-	        chDEST.setSelected(getInfantry().hasDEST());
-	        chSneakCamo.setSelected(getInfantry().hasSneakCamo());
-	        chSneakIR.setSelected(getInfantry().hasSneakIR());
-	        chSneakECM.setSelected(getInfantry().hasSneakECM());
-	        armorValue.setEnabled(true);
-	        chEncumber.setEnabled(true);
-	        chSpaceSuit.setEnabled(true);
-	        chDEST.setEnabled(true);
-	        chSneakCamo.setEnabled(true);
-	        chSneakIR.setEnabled(true);
-	        chSneakECM.setEnabled(true);
+            armorValue.setEnabled(false);
+            chEncumber.setEnabled(false);
+            chSpaceSuit.setEnabled(false);
+            chDEST.setEnabled(false);
+            chSneakCamo.setEnabled(false);
+            chSneakIR.setEnabled(false);
+            chSneakECM.setEnabled(false);
+        } else {            
+            armorValue.setEnabled(true);
+            chEncumber.setEnabled(true);
+            chSpaceSuit.setEnabled(true);
+            chDEST.setEnabled(true);
+            chSneakCamo.setEnabled(true);
+            chSneakIR.setEnabled(true);
+            chSneakECM.setEnabled(true);
         }
         addAllListeners();
     }
@@ -189,6 +174,7 @@ public class ArmorTab extends ITab implements ActionListener, ChangeListener {
         addAllListeners();
         if (refresh != null) {
             refresh.refreshStatus();
+            refresh.refreshPreview();
         }
     }
 

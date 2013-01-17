@@ -2731,5 +2731,64 @@ public class UnitUtil {
         for(Mounted m : toRemove) {
             UnitUtil.removeMounted(unit, m);
         }
+        if(unit instanceof Infantry) {
+            Infantry pbi = (Infantry)unit;
+            if(null != pbi.getPrimaryWeapon()
+                    && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon().getTechLevel())) {
+                UnitUtil.replaceMainWeapon((Infantry)unit, (InfantryWeapon)EquipmentType.get("Infantry Auto Rifle"), false);
+            }
+            if(null != pbi.getSecondaryWeapon() 
+                    && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon().getTechLevel())) {
+                UnitUtil.replaceMainWeapon((Infantry)unit, null, true);
+            }
+        }
+    }
+    
+    public static void replaceMainWeapon(Infantry unit, InfantryWeapon weapon, boolean secondary) {
+        Mounted existingInfantryMount = null;
+        for(Mounted m : unit.getWeaponList()) {
+            if(m.getType() instanceof InfantryWeapon && m.getLocation() == Infantry.LOC_INFANTRY) {
+                existingInfantryMount = m;
+                break;
+            }
+        }
+        if(null != existingInfantryMount) {
+            UnitUtil.removeMounted(unit, existingInfantryMount);
+        }
+        if(secondary) {
+            unit.setSecondaryWeapon(weapon);
+        } else {
+            unit.setPrimaryWeapon(weapon);
+        }
+        //if there is more than one secondary weapon per squad, then add that
+        // to the unit
+        // otherwise add the primary weapon
+        if ((unit.getSecondaryN() < 2) || (null == unit.getSecondaryWeapon())) {
+            try {
+                unit.addEquipment(unit.getPrimaryWeapon(), Infantry.LOC_INFANTRY);
+            } catch (LocationFullException ex) {
+                
+            }
+        } else {
+            try {
+                unit.addEquipment(unit.getSecondaryWeapon(), Infantry.LOC_INFANTRY);
+            } catch (LocationFullException ex) {
+                
+            }
+        }
+    }
+    
+    public static String trimInfantryWeaponNames(String wname) {
+        return wname.replace("Infantry ", "");
+    }
+    
+    public static void resetInfantryArmor(Infantry unit) {
+        unit.setArmorEncumbering(false);
+        unit.setSpaceSuit(false);
+        unit.setDEST(false);
+        unit.setSneakCamo(false);
+        unit.setSneakECM(false);
+        unit.setSneakIR(false);
+        unit.setDamageDivisor(1.0);
     }
 }
