@@ -16,101 +16,145 @@
 
 package megameklab.com.ui.Infantry;
 
-import java.awt.Color;
+import java.awt.FileDialog;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.io.File;
+import java.text.DecimalFormat;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 
 import megamek.common.Infantry;
-import megamek.common.verifier.EntityVerifier;
-import megamek.common.verifier.TestMech;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
-import megameklab.com.util.SpringLayoutHelper;
+import megameklab.com.util.ImageHelper;
+import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class StatusBar extends ITab {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6757027053670782126L;
-	
-	private JPanel tonnagePanel = new JPanel();
-	private JPanel movementPanel = new JPanel();
-	private JPanel bvPanel = new JPanel();
-	private JPanel damagePanel = new JPanel();
-	private JLabel move = new JLabel();
-	private JLabel bvLabel = new JLabel();
-	private JLabel tons = new JLabel();
-	private JLabel damageLabel = new JLabel();
-	
-	public StatusBar(Infantry unit) {
-		this.unit = unit;
-		
-		//testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
-		setLayout(new SpringLayout());
-		this.add(movementPanel());
-		this.add(bvPanel());
-		this.add(damagePanel());
-		this.add(tonnagePanel());
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6754327753693500675L;
 
-		SpringLayoutHelper.setupSpringGrid(this, 4);
-		refresh();
-	}
-	 
-	public JPanel bvPanel() {
-		int bv = getInfantry().calculateBattleValue();
-		bvLabel.setText("BV: " + bv);
-		bvPanel.add(bvLabel);
-		 
-		return bvPanel;
-	}
-	
-	public JPanel damagePanel() {
-		double damage = getInfantry().getDamagePerTrooper();
-		damageLabel.setText("Damage/Trooper: " + damage);
-		damagePanel.add(damageLabel);
-		 
-		return damagePanel;
-	}
-	
-	public JPanel movementPanel() {
-        int walk = getInfantry().getOriginalWalkMP();
-        int jump = getInfantry().getOriginalJumpMP();
+    private JButton btnValidate = new JButton("Validate Unit");
+    private JButton btnFluffImage = new JButton("Set Fluff Image");
+    private JLabel move = new JLabel();
+    private JLabel damage = new JLabel();
+    private JLabel bvLabel = new JLabel();
+    private JLabel tons = new JLabel();
+    private JLabel cost = new JLabel();
+    private DecimalFormat formatter;
+    private JFrame parentFrame;
+    
+    private RefreshListener refresh;
 
-        move.setText("Movement: " + walk + "/" + jump);
-        movementPanel.add(move);
-        return movementPanel;
-    }
-	
-	public JPanel tonnagePanel() {
-        float tonnage = getInfantry().getWeight();
+    public StatusBar(Infantry unit, MegaMekLabMainUI parent) {
+        this.parentFrame = parent;
+        this.unit = unit;
+
+        formatter = new DecimalFormat();
+        btnValidate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UnitUtil.showValidation(getInfantry(), getParentFrame());
+            }
+        });
+        btnValidate.setEnabled(false);
+        btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                getFluffImage();
+            }
+        });
+        btnFluffImage.setEnabled(false);
         
-        tons.setText("Tonnage: " + tonnage);
-        tonnagePanel.add(tons);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(5,2,2,20);
+        gbc.anchor = GridBagConstraints.WEST;
+        this.add(btnValidate, gbc);
+        gbc.gridx = 1;
+        this.add(btnFluffImage, gbc);
+        gbc.gridx = 2;
+        this.add(move, gbc);
+        gbc.gridx = 3;
+        this.add(damage, gbc);
+        gbc.gridx = 4;
+        this.add(tons, gbc);
+        gbc.gridx = 5;
+        this.add(bvLabel, gbc);
+        gbc.gridx = 6;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        this.add(cost, gbc);
+        
 
-        return tonnagePanel;
+        refresh();
     }
-	
-	public void refresh() {
 
-        int walk = getInfantry().getOriginalWalkMP();
-        int jump = getInfantry().getOriginalJumpMP();
-        float tonnage = getInfantry().getWeight();
+    public void refresh() {
+
+        DecimalFormat roundFormat = new DecimalFormat("#.##");
+        float currentTonnage;
         int bv = getInfantry().calculateBattleValue();
-        double damage = getInfantry().getDamagePerTrooper();
+        int currentCost = (int)Math.round(getInfantry().getCost(false));
+     
+        currentTonnage = getInfantry().getWeight();
 
-        tons.setText("Tonnage: " + tonnage);
+        move.setText("Movement: " + getInfantry().getWalkMP() + "/" + getInfantry().getJumpMP());
+        
+        damage.setText("Damage/Trooper: " + roundFormat.format(getInfantry().getDamagePerTrooper()));
+
+        tons.setText("Tons: " + currentTonnage);
 
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
 
-        move.setText("Movement: " + walk + "/" + jump);
-        move.setToolTipText("Walk/Jump MP");
+        cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
         
-        damageLabel.setText("Damage/Trooper: " + damage);
-
     }
-	
+    
+    private void getFluffImage() {
+        //copied from structureTab
+        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        /*
+         //This does not seem to be working
+        if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
+            String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
+            String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
+            fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
+            fDialog.setDirectory(fullPath); 
+            fDialog.setFile(imageName); 
+        } else {
+            fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png"); 
+        }
+        */
+        fDialog.setLocationRelativeTo(this);
+        
+        fDialog.setVisible(true);
+        
+        if (fDialog.getFile() != null) { 
+            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            getInfantry().getFluff().setMMLImagePath(relativeFilePath); 
+        }
+        refresh.refreshPreview();
+        return; 
+    }
+    
+    private JFrame getParentFrame() {
+        return parentFrame;
+    }
+    
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
+    }
+
 }
