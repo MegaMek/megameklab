@@ -32,6 +32,7 @@ import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
+import megamek.common.weapons.infantry.InfantryWeapon;
 
 /**
  * this model was not being used by anything, so I totally redid so that it 
@@ -45,23 +46,25 @@ public class EquipmentTableModel extends AbstractTableModel {
 
     public final static int COL_NAME      = 0;
     public final static int COL_DAMAGE    = 1;
-    public final static int COL_HEAT      = 2;
-    public final static int COL_MRANGE    = 3;
-    public final static int COL_RANGE     = 4;
-    public final static int COL_SHOTS     = 5;
-    public final static int COL_TECH      = 6;
-    public final static int COL_TRATING   = 7;
-    public final static int COL_AVSL      = 8;
-    public final static int COL_AVSW      = 9;
-    public final static int COL_AVCL      = 10;
-    public final static int COL_DINTRO    = 11;
-    public final static int COL_DEXTINCT  = 12;
-    public final static int COL_DREINTRO  = 13;
-    public final static int COL_COST      = 14;
-    public final static int COL_BV        = 15;
-    public final static int COL_TON       = 16;
-    public final static int COL_CRIT      = 17;
-    public final static int N_COL         = 18;
+    public final static int COL_SPECIAL   = 2;
+    public final static int COL_HEAT      = 3;
+    public final static int COL_MRANGE    = 4;
+    public final static int COL_RANGE     = 5;
+    public final static int COL_SHOTS     = 6;
+    public final static int COL_TECH      = 7;
+    public final static int COL_TRATING   = 8;
+    public final static int COL_AVSL      = 9;
+    public final static int COL_AVSW      = 10;
+    public final static int COL_AVCL      = 11;
+    public final static int COL_DINTRO    = 12;
+    public final static int COL_DEXTINCT  = 13;
+    public final static int COL_DREINTRO  = 14;
+    public final static int COL_COST      = 15;
+    public final static int COL_CREW      = 16;
+    public final static int COL_BV        = 17;
+    public final static int COL_TON       = 18;
+    public final static int COL_CRIT      = 19;
+    public final static int N_COL         = 20;
 
     private ArrayList<EquipmentType> data = new ArrayList<EquipmentType>();
     private Entity entity = null;
@@ -85,6 +88,8 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "Name";
             case COL_DAMAGE:
                 return "Damage";
+            case COL_SPECIAL:
+                return "Special";
             case COL_HEAT:
                 return "Heat";
             case COL_MRANGE:
@@ -95,6 +100,8 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "Ton";
             case COL_CRIT:
                 return "Crit";
+            case COL_CREW:
+                return "Crew";
             case COL_TECH:
                 return "Base";
             case COL_TRATING:
@@ -160,10 +167,6 @@ public class EquipmentTableModel extends AbstractTableModel {
     public String getTooltip(int row, int col) {
     	EquipmentType type = data.get(row);
     	switch(col) {
-    	//case COL_DATES:
-         //   return "Intro/Extinct/Re-Intro";
-    	case COL_RANGE:
-            return "Short/Medium/Long";
         default:
         	return null;
         }
@@ -214,7 +217,7 @@ public class EquipmentTableModel extends AbstractTableModel {
     	DecimalFormat formatter = new DecimalFormat();
     	
         if(col == COL_NAME) {
-            return type.getName();
+            return UnitUtil.trimInfantryWeaponNames(type.getName());
         }
         if(col == COL_DAMAGE) {
         	if(null != wtype) {
@@ -222,6 +225,37 @@ public class EquipmentTableModel extends AbstractTableModel {
         	} else {
         		return "-";
         	}
+        }  
+        if(col == COL_SPECIAL) {
+            String special = "";
+            if(type instanceof InfantryWeapon) {
+                if(type.hasFlag(WeaponType.F_INF_POINT_BLANK)) {
+                    special += "(P)";
+                }
+                if(type.hasFlag(WeaponType.F_INF_AA)) {
+                    special += "A";
+                }
+                if(type.hasFlag(WeaponType.F_INF_BURST)) {
+                    special += "B";
+                }
+                if(type.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
+                    special += "N";
+                }
+                if(type.hasFlag(WeaponType.F_PLASMA) || type.hasFlag(WeaponType.F_INCENDIARY_NEEDLES) || type.hasFlag(WeaponType.F_INFERNO)) {
+                    special += "F";
+                }
+            }
+            return special;
+        }
+        if(col == COL_CREW) {
+            String special = "";
+            if(type instanceof InfantryWeapon) {
+                special += Integer.toString(((InfantryWeapon)type).getCrew());
+                if(type.hasFlag(WeaponType.F_INF_ENCUMBER)) {
+                    special += "E";
+                }
+            }
+            return special;
         }
         if(col == COL_HEAT) {
         	if(null != wtype) {
@@ -240,9 +274,8 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if(col == COL_RANGE) {
         	if(null != wtype) {
-        		int minRange = wtype.getMinimumRange();
-        		if(minRange < 0) {
-        			minRange = 0;
+        		if(wtype instanceof InfantryWeapon) {
+        		    return ((InfantryWeapon)wtype).getInfantryRange();
         		}
         		return wtype.getShortRange() + "/" + wtype.getMediumRange() + "/" + wtype.getLongRange();
         	} else {
@@ -300,6 +333,9 @@ public class EquipmentTableModel extends AbstractTableModel {
     }
     
     private static String getDamageString(WeaponType wtype) {
+        if(wtype instanceof InfantryWeapon) {
+            return Double.toString(((InfantryWeapon)wtype).getInfantryDamage());
+        }
     	if(wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
     		return wtype.getDamage(wtype.getShortRange()) + "/" + wtype.getDamage(wtype.getMediumRange()) + "/" + wtype.getDamage(wtype.getLongRange());
     	}

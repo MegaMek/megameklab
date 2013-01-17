@@ -16,8 +16,9 @@
 
 package megameklab.com.ui.Infantry;
 
+import java.awt.BorderLayout;
+
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -32,9 +33,8 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Infantry.Header;
 import megameklab.com.ui.Infantry.StatusBar;
-import megameklab.com.ui.Infantry.tabs.ArmorTab;
+import megameklab.com.ui.Infantry.tabs.PreviewTab;
 import megameklab.com.ui.Infantry.tabs.StructureTab;
-import megameklab.com.ui.Infantry.tabs.WeaponTab;
 import megameklab.com.util.MenuBarCreator;
 
 
@@ -46,8 +46,7 @@ public class MainUI extends MegaMekLabMainUI {
 	private static final long serialVersionUID = 5338040000652349619L;
 
 	StructureTab structureTab;
-	WeaponTab weaponTab;
-	ArmorTab armorTab;
+	PreviewTab previewTab;
 	Header header;
 	StatusBar statusbar;
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
@@ -79,30 +78,24 @@ public class MainUI extends MegaMekLabMainUI {
 	@Override
 	public void reloadTabs() {
 		masterPanel.removeAll();
-        //ConfigPane.removeAll();
+        ConfigPane.removeAll();
 
-        masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
+        masterPanel.setLayout(new BorderLayout());
 
         Infantry pbi = (Infantry) entity;
 
         header = new Header(pbi);
-        statusbar = new StatusBar(pbi);
+        statusbar = new StatusBar(pbi, this);
         structureTab = new StructureTab(pbi);
-        armorTab = new ArmorTab(pbi);
-        weaponTab = new WeaponTab(pbi);
+        previewTab = new PreviewTab(pbi);
         
-        //header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
-        armorTab.addRefreshedListener(this);
-        weaponTab.addRefreshedListener(this);
 
-        ConfigPane.addTab("Characteristics", structureTab);
-        ConfigPane.addTab("Armor", armorTab);
-        ConfigPane.addTab("Weapons", weaponTab);
+        ConfigPane.addTab("Build", structureTab);
+        ConfigPane.addTab("Preview", previewTab);
 
-        masterPanel.add(header);
-        masterPanel.add(ConfigPane);
-        masterPanel.add(statusbar);
+        masterPanel.add(ConfigPane, BorderLayout.CENTER);
+        masterPanel.add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
         this.repaint();
@@ -135,13 +128,12 @@ public class MainUI extends MegaMekLabMainUI {
 	public void refreshAll() {
         statusbar.refresh();
         structureTab.refresh();
-        weaponTab.refresh();
-        armorTab.refresh();
+        previewTab.refresh();
 	}
 
 	@Override
 	public void refreshArmor() {
-		armorTab.refresh();
+		//armorTab.refresh();
 	}
 
 	@Override
@@ -172,13 +164,12 @@ public class MainUI extends MegaMekLabMainUI {
 
 	@Override
 	public void refreshWeapons() {
-		weaponTab.refresh();
+		//weaponTab.refresh();
 	}
 
     @Override
     public void refreshPreview() {
-        // TODO Auto-generated method stub
-        
+        previewTab.refresh();
     }
 
 }
