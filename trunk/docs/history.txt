@@ -75,6 +75,7 @@ V 0.1.21-dev
 + update armor points on cockpit change (for industrial armor)
 + sorters for master equipment table
 + facelift of infantry builder
++ setAsCustomization option for infantry tab
 
 V 0.1.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
