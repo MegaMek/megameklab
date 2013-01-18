@@ -42,6 +42,7 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.MegaMek;
+import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
@@ -404,6 +405,17 @@ public class MenuBarCreator extends JMenuBar {
         });
         file.add(item);
 
+        JMenu exportMenu = new JMenu("Export");
+        
+        item = new JMenuItem("to HTML");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuExportEntityHTML_actionPerformed(e);
+            }
+        });
+        exportMenu.add(item);
+        file.add(exportMenu);
+        
         item = new JMenuItem("Configuration");
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(new ActionListener() {
@@ -1005,6 +1017,42 @@ public class MenuBarCreator extends JMenuBar {
 
         JOptionPane.showMessageDialog(parentFrame, unit.getChassis() + " " + unit.getModel() + " saved to " + filePathName);
 
+    }
+    
+    public void jMenuExportEntityHTML_actionPerformed(ActionEvent event) {
+
+        if (UnitUtil.validateUnit(unit).length() > 0) {
+            JOptionPane.showMessageDialog(parentFrame, "Warning: exporting an invalid unit!");
+        }
+
+        String unitName = unit.getChassis() + " " + unit.getModel();
+        MechView mview = new MechView(unit, false);
+        
+        FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
+
+        String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
+
+        fDialog.setDirectory(filePathName);
+        fDialog.setFile(unitName + ".html");
+        fDialog.setLocationRelativeTo(parentFrame);
+
+        fDialog.setVisible(true);
+
+        if (fDialog.getFile() != null) {
+            filePathName = fDialog.getDirectory() + fDialog.getFile();
+        } else {
+            return;
+        }
+        
+        try {
+            FileOutputStream out = new FileOutputStream(filePathName);
+            PrintStream p = new PrintStream(out);            
+            p.println(mview.getMechReadout());
+            p.close();
+            out.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void loadUnit() {
