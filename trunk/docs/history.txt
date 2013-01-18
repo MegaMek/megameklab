@@ -78,6 +78,8 @@ V 0.1.21-dev
 + setAsCustomization option for infantry tab
 + export to html option
 + export to text and clipboard options
++ updated MM.jar
++ packaging.xml and packaging_utils
 
 V 0.1.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
