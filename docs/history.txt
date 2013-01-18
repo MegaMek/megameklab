@@ -76,6 +76,7 @@ V 0.1.21-dev
 + sorters for master equipment table
 + facelift of infantry builder
 + setAsCustomization option for infantry tab
++ export to html option
 
 V 0.1.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
