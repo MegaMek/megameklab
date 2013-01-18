@@ -21,6 +21,10 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -42,13 +46,14 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.MegaMek;
-import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.Infantry;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
+import megamek.common.MechTextView;
+import megamek.common.MechView;
 import megamek.common.Tank;
 import megamek.common.UnitType;
 import megamek.common.loaders.BLKFile;
@@ -57,7 +62,7 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 import megameklab.com.ui.dialog.UnitViewerDialog;
 
-public class MenuBarCreator extends JMenuBar {
+public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     /**
      *
@@ -414,6 +419,23 @@ public class MenuBarCreator extends JMenuBar {
             }
         });
         exportMenu.add(item);
+        
+        item = new JMenuItem("to Text");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuExportEntityText_actionPerformed(e);
+            }
+        });
+        exportMenu.add(item);
+        
+        item = new JMenuItem("to Clipboard (text)");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuExportEntityClipboard_actionPerformed(e);
+            }
+        });
+        exportMenu.add(item);
+        
         file.add(exportMenu);
         
         item = new JMenuItem("Configuration");
@@ -1054,6 +1076,49 @@ public class MenuBarCreator extends JMenuBar {
             ex.printStackTrace();
         }
     }
+    
+    public void jMenuExportEntityText_actionPerformed(ActionEvent event) {
+
+        if (UnitUtil.validateUnit(unit).length() > 0) {
+            JOptionPane.showMessageDialog(parentFrame, "Warning: exporting an invalid unit!");
+        }
+
+        String unitName = unit.getChassis() + " " + unit.getModel();
+        MechTextView mview = new MechTextView(unit, false);
+        
+        FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
+
+        String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
+
+        fDialog.setDirectory(filePathName);
+        fDialog.setFile(unitName + ".html");
+        fDialog.setLocationRelativeTo(parentFrame);
+
+        fDialog.setVisible(true);
+
+        if (fDialog.getFile() != null) {
+            filePathName = fDialog.getDirectory() + fDialog.getFile();
+        } else {
+            return;
+        }
+        
+        try {
+            FileOutputStream out = new FileOutputStream(filePathName);
+            PrintStream p = new PrintStream(out);            
+            p.println(mview.getMechReadout());
+            p.close();
+            out.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void jMenuExportEntityClipboard_actionPerformed(ActionEvent event) {
+        MechTextView mview = new MechTextView(unit, false);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        StringSelection stringSelection = new StringSelection(mview.getMechReadout());
+        clipboard.setContents(stringSelection, this);
+    }
 
     private void loadUnit() {
 
@@ -1217,6 +1282,12 @@ public class MenuBarCreator extends JMenuBar {
 
     public void setUnit(Entity unit) {
         this.unit = unit;
+    }
+
+    @Override
+    public void lostOwnership(Clipboard arg0, Transferable arg1) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

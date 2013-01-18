@@ -18,40 +18,15 @@ package megameklab.com.ui.Mek.tabs;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-
-import megamek.client.ui.GBC;
-import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.MechViewPanel;
-import megamek.common.BipedMech;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.Mech;
-import megamek.common.Mounted;
-import megamek.common.TechConstants;
-import megameklab.com.ui.Mek.views.ArmorView;
+import megamek.common.MechView;
 import megameklab.com.util.ITab;
-import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
-import megameklab.com.util.UnitUtil;
 
-public class PreviewTab extends ITab implements ActionListener {
+public class PreviewTab extends ITab {
 
 	/**
 	 * 
@@ -84,12 +59,6 @@ public class PreviewTab extends ITab implements ActionListener {
         } else {
             panelMekView.reset();
         }
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

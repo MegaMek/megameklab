@@ -22,9 +22,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-import megamek.client.ui.swing.MechView;
 import megamek.client.ui.swing.MechViewPanel;
 import megamek.common.Infantry;
+import megamek.common.MechView;
 import megameklab.com.util.ITab;
 
 public class PreviewTab extends ITab implements ActionListener {

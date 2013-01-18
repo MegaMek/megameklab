@@ -40,7 +40,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
-import megamek.client.ui.swing.MechView;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
@@ -51,6 +50,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Infantry;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
+import megamek.common.MechView;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
