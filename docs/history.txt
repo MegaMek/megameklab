@@ -82,6 +82,7 @@ V 0.1.21-dev
 + packaging.xml and packaging_utils
 + bug: no maximum size for main frame
 + fixes to packaging.xml
++ print correct amount of IS for ProtoMechs
 
 V 0.1.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
