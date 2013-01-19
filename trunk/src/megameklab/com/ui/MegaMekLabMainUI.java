@@ -81,7 +81,6 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         // scroll.setPreferredSize(maxSize);
         setResizable(true);
         setSize(maxSize);
-        setMaximumSize(maxSize);
         setPreferredSize(maxSize);
         setExtendedState(CConfig.getIntParam("WINDOWSTATE"));
         setLocation(CConfig.getIntParam("WINDOWLEFT"), CConfig.getIntParam("WINDOWTOP"));
