@@ -30,14 +30,14 @@
 	<property name="svnbuilddir" value="${svndir}/${builddir}" />
 
 	<!-- svnroot used for svn authentification -->
-	<property name="svnroot" value="svn://svn.code.sf.net/p/mekhq/code/MegaMekLab" />
+	<property name="svnroot" value="svn://svn.code.sf.net/p/megameklab/code/trunk" />
 
 	<property name="timestampfile" value="${logdir}/timestamp" />
 	<property name="TinyXMLsrc" value="TinyXML07-src.zip" />
 
 	<!-- Name of the target jarfile and the class containing the main-Method -->
 	<property name="jarfile" value="MegaMekLab.jar" />
-	<property name="jarmainclass" value="megameklab.com.MegaMekLab />
+	<property name="jarmainclass" value="megameklab.com.MegaMekLab" />
 
 	<!-- This is the relative path to the 'data' directory -->
 	<property name="dataclasspath" value="." />
@@ -121,8 +121,8 @@
 				<include name="**/*"/>
 			</fileset>
 		</copy>
-		<copy file="${util}/JavaApplicationStub" todir="${osxdist}/MekHQ.app/Contents/MacOS/"/>
-		<move file="${osxdist}/MekHQ.jar" todir="${osxdist}/MekHQ.app/Contents/Resources/Java/" />
+		<copy file="${util}/JavaApplicationStub" todir="${osxdist}/MegaMekLab.app/Contents/MacOS/"/>
+		<move file="${osxdist}/MegaMekLab.jar" todir="${osxdist}/MegaMekLab.app/Contents/Resources/Java/" />
 	</target>
 	
 	<!-- Replace actual stubs with symlinks on mac systems -->
@@ -132,7 +132,6 @@
 			<arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub" />
 			<arg value="${osxdist}/MegaMekLab.app/Contents/MacOS/JavaApplicationStub" />
 		</exec>
-		-->
 	</target>
 			
 	<target name="mac-zip">
@@ -192,7 +191,7 @@
 				<include name="MegaMekLab.exe" />
 			</fileset>
 		</copy>
-		<copy file="${util}/mekhq.l4j.ini" todir="${windist}"/>
+		<copy file="${util}/megameklab.l4j.ini" todir="${windist}"/>
 	</target>
 	
 	<target name="win-zip" description="Create a zipfile of the Windows distribution">
