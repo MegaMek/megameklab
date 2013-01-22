@@ -16,31 +16,22 @@
 
 package megameklab.com.ui.Mek.tabs;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
 
 import megamek.common.Entity;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megameklab.com.ui.Mek.views.BuildView;
 import megameklab.com.ui.Mek.views.CriticalView;
-import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
 public class BuildTab extends ITab implements ActionListener {
@@ -52,7 +43,6 @@ public class BuildTab extends ITab implements ActionListener {
 
     private RefreshListener refresh = null;
     private CriticalView critView = null;
-    private CriticalTableModel critList;
     private BuildView buildView = null;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
@@ -72,7 +62,7 @@ public class BuildTab extends ITab implements ActionListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         critView = new CriticalView(getMech(), true, refresh);
         buildView = new BuildView(getMech());
 
@@ -194,10 +184,6 @@ public class BuildTab extends ITab implements ActionListener {
         refresh = l;
         critView.updateRefresh(refresh);
 
-    }
-
-    public void addCrit(Mounted mount) {
-        critList.addCrit(mount);
     }
 
     public void refreshAll() {

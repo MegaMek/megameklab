@@ -19,7 +19,9 @@ package megameklab.com.util;
 import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
 import javax.swing.JList;
+
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
@@ -40,7 +42,7 @@ public class EquipmentListCellRenderer extends DefaultListCellRenderer {
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-        Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        JLabel label = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         StringBuffer text = new StringBuffer();
         EquipmentType etype = (EquipmentType) value;
         text.append(etype.getName());
@@ -50,8 +52,8 @@ public class EquipmentListCellRenderer extends DefaultListCellRenderer {
         if (!unit.isClan() && ((etype.getTechLevel() == TechConstants.T_CLAN_TW) || (etype.getTechLevel() == TechConstants.T_CLAN_ADVANCED) || (etype.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL) || (etype.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL))) {
             text.append(" (Clan)");
         }
-        setText(text.toString());
-        return comp;
+        label.setText(text.toString());
+        return label;
     }
 
 }

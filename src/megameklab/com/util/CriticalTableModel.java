@@ -21,6 +21,7 @@ import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -45,7 +46,8 @@ public class CriticalTableModel extends AbstractTableModel {
     public final static int TONNAGE = 1;
     public final static int CRITS = 2;
     public final static int HEAT = 3;
-    public final static int EQUIPMENT = 4;
+    public final static int LOCATION = 4;
+    public final static int EQUIPMENT = 5;
 
     public final static int EQUIPMENTTABLE = 0;
     public final static int WEAPONTABLE = 1;
@@ -53,9 +55,9 @@ public class CriticalTableModel extends AbstractTableModel {
 
     private int tableType = EQUIPMENTTABLE;
 
-    String[] columnNames = { "Name", "Tons", "Crits", };
+    String[] columnNames = { "Name", "Tons", "Crits"};
 
-    String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", };
+    String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX"};
 
     public int getColumnCount() {
         return columnNames.length;
@@ -65,8 +67,8 @@ public class CriticalTableModel extends AbstractTableModel {
         this.tableType = tableType;
 
         if (tableType == WEAPONTABLE) {
-            longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", };
-            columnNames = new String[] { "Name", "Tons", "Crits", "Heat", };
+            longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXX" };
+            columnNames = new String[] { "Name", "Tons", "Crits", "Heat", "Loc"};
         }
         this.unit = unit;
     }
@@ -137,6 +139,8 @@ public class CriticalTableModel extends AbstractTableModel {
                 return new Integer(((WeaponType) crit.getType()).getHeat());
             }
             return new Integer(0);
+        case LOCATION:
+            return unit.getLocationAbbr(crit.getLocation());
         }
         return "";
     }
@@ -157,9 +161,9 @@ public class CriticalTableModel extends AbstractTableModel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component d = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            //Component d = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-            JLabel c = new JLabel();
+            JLabel c = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);;
             c.setOpaque(true);
             if ((crits.size() < row) || (row < 0)) {
                 return c;
@@ -170,10 +174,9 @@ public class CriticalTableModel extends AbstractTableModel {
 
             Mounted mount = sortedEquipment[row];
             c.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
+            c.setHorizontalAlignment(getAlignment(column));
 
             if (isSelected) {
-                c.setForeground(d.getForeground());
-                c.setBackground(d.getBackground());
                 return c;
             }
 
@@ -208,5 +211,16 @@ public class CriticalTableModel extends AbstractTableModel {
 
     public Vector<Mounted> getCrits() {
         return crits;
+    }
+
+    public int getAlignment(int col) {
+        switch (col) {
+            case NAME:
+                return SwingConstants.LEFT;
+            case TONNAGE:
+                return SwingConstants.RIGHT;
+            default:
+                return SwingConstants.CENTER;
+        }
     }
 }
