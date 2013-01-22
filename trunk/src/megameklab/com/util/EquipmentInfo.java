@@ -381,6 +381,12 @@ public class EquipmentInfo {
             medRange = weapon.mediumRange;
             longRange = weapon.longRange;
 
+            if ((weapon.getAmmoType() == AmmoType.T_LRM_TORPEDO) || (weapon.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                shtRange = weapon.waterShortRange;
+                medRange = weapon.waterMediumRange;
+                longRange = weapon.waterLongRange;
+            }
+
             if (medRange >= longRange) {
                 longRange = -1;
             }
@@ -433,6 +439,8 @@ public class EquipmentInfo {
             longRange = 1;
         } else if (mount.getType().hasFlag(MiscType.F_CLUB) && (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE) || mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM) || mount.getType().hasSubType(MiscType.S_VIBRO_SMALL))) {
             heat = unit.getActiveVibrobladeHeat(mount.getLocation(), true);
+        } else if (mount.getType().hasFlag(MiscType.F_CLUB) && (mount.getType().hasSubType(MiscType.S_SPOT_WELDER))) {
+            heat = 2;
         }
 
         isBAMineLayer = mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
