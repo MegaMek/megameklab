@@ -17,7 +17,6 @@
 package megameklab.com.ui.Mek;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -90,7 +89,7 @@ public class MainUI extends MegaMekLabMainUI {
         Mech mech = (Mech) entity;
 
         structureTab = new StructureTab(mech);
-      
+
         previewTab = new PreviewTab(mech);
 
         header = new Header(mech);
@@ -215,7 +214,7 @@ public class MainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
 
     }
-    
+
     @Override
     public void refreshPreview() {
         previewTab.refresh();

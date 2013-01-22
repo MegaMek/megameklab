@@ -85,6 +85,8 @@ V 0.1.21-dev
 + print correct amount of IS for ProtoMechs
 + changed name of megameklab.log to megameklablog.txt
 + changed name of config.txt to megameklab.properties and placed in mmconf directory (created by program if missing)
++ Bug: filtering of weapons in equipment tab not working correctly
++ Added location to equipment list
 
 V 0.1.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

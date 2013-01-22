@@ -48,6 +48,8 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
@@ -113,8 +115,6 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
-    private int jumpBoosterMP = 0;
-
     public static String getTypeName(int type) {
         switch(type) {
         case T_WEAPON:
@@ -140,9 +140,6 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     public EquipmentTab(Mech unit) {
         this.unit = unit;
-        if (unit.hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-            jumpBoosterMP = unit.getOriginalJumpMP();
-        }
 
         equipmentList = new CriticalTableModel(unit, CriticalTableModel.WEAPONTABLE);
         equipmentTable.setModel(equipmentList);
@@ -173,6 +170,9 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentSorter.setComparator(EquipmentTableModel.COL_RANGE, new WeaponRangeSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
         masterEquipmentTable.setRowSorter(equipmentSorter);
+        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+        sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
+        equipmentSorter.setSortKeys(sortKeys);
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         masterEquipmentTable.setColumnModel(equipColumnModel);
         masterEquipmentTable.createDefaultColumnsFromModel();
@@ -342,7 +342,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.fill = java.awt.GridBagConstraints.VERTICAL;
-        gbc.weightx = 0.0;
+        gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         loadoutPanel.add(equipmentScroll, gbc);
 
@@ -372,6 +372,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
             if (UnitUtil.isHeatSink(mount)
                     || mount.getType().hasFlag(MiscType.F_JUMP_JET)
+                    || mount.getType().hasFlag(MiscType.F_JUMP_BOOSTER)
                     || mount.getType().hasFlag(MiscType.F_TSM)
                     || mount.getType().hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || mount.getType().hasFlag(MiscType.F_MASC)
@@ -427,10 +428,6 @@ public class EquipmentTab extends ITab implements ActionListener {
                 location++;
             }
         }
-    }
-
-    public void setJumpBoosterMP(int mp) {
-        jumpBoosterMP = mp;
     }
 
     public void refresh() {
@@ -500,9 +497,6 @@ public class EquipmentTab extends ITab implements ActionListener {
             for (; count > 0; count--) {
                 if (startRow > -1) {
                     EquipmentType et = ((Mounted)equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).getType();
-                    if ((et instanceof MiscType) && et.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                        setJumpBoosterMP(0);
-                    }
                     equipmentList.removeMounted(startRow);
                     equipmentList.removeCrit(startRow);
                 }
