@@ -83,6 +83,8 @@ V 0.1.21-dev
 + bug: no maximum size for main frame
 + fixes to packaging.xml
 + print correct amount of IS for ProtoMechs
++ changed name of megameklab.log to megameklablog.txt
++ changed name of config.txt to megameklab.properties and placed in mmconf directory (created by program if missing)
 
 V 0.1.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's

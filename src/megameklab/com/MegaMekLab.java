@@ -31,10 +31,13 @@ public class MegaMekLab {
     	System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");  
     	
-        String logFileName = "./logs/megameklab.log";
+        String logFileName = "./logs/megameklablog.txt";
         Locale.setDefault(Locale.US);
 
-        new File("./data/mechfiles/units.cache").delete();
+        //Taharqa: I am not sure why this is here, so I am commenting it
+        //out for awhile because I suspect it might be responsible for the 
+        //partial unit.cache problem in MHQ.
+        //new File("./data/mechfiles/units.cache").delete();
 
         boolean logs = true;
         boolean vehicle = false;
