@@ -31,8 +31,9 @@ import java.util.Properties;
 public class CConfig {
 
     // VARIABLES
-    public static final String CONFIG_FILE = "./data/config.txt";
-    public static final String CONFIG_BACKUP_FILE = "./data/config.txt.bak";
+    public static final String CONFIG_DIR = "./mmconf";
+    public static final String CONFIG_FILE = "./mmconf/megameklab.properties";
+    public static final String CONFIG_BACKUP_FILE = "./mmconf/megameklab.properties.bak";
 
     public static final String CONFIG_WEAPONS = "Weapons";
     public static final String CONFIG_AMMO = "Ammo";
@@ -63,7 +64,11 @@ public class CConfig {
 
     // CONSTRUCTOR
     public CConfig() {
-
+        
+        if(!new File(CONFIG_DIR).exists()) {
+            new File(CONFIG_DIR).mkdir();
+        }
+        
         config = setDefaults();
         // check to see if a config is present. if not, make one.
         if (!(new File(CONFIG_FILE).exists()) && !(new File(CONFIG_BACKUP_FILE).exists())) {
