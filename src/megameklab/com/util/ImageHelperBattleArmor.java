@@ -390,7 +390,7 @@ public class ImageHelperBattleArmor {
                 }
             }
         }
-        if (ba.isBurdened()) {
+        if (ba.isBurdened() && ((ba.getJumpMP(false, true, true) > 0) || UnitUtil.canLegAttack(ba) || UnitUtil.canSwarm(ba))) {
             String burdenInfo = "must detach missiles before jumping or swarm/leg attacks";
             g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
             g2d.drawString(burdenInfo, typePoint, linePoint);
