@@ -6,6 +6,14 @@
 <!--     b) A Windows release with the EXE file using launch4j            -->
 <!--     c) A "unix" release containing only jars                         -->
 <!--     d) A source-file only release to comply with GPL                 --> 
+<!-- Unlike the packaging routine for MHQ, we will not package a separate -->
+<!-- executable MegaMek copy in the OSX and Windows version, but rather   -->
+<!-- "bundle" it (and TinyXML.jar) into the MML.jar. This is              -->
+<!-- to discourage users from trying to "update" their MM.jar which       -->
+<!-- can cause problems. So The MML executable can still be put into a    -->
+<!-- megamek directory to take advantage of existing mechfiles, fluff     -->
+<!-- images and the like, but it will not utilize the MM.jar that is      --> 
+<!-- contained in that directory.                                         -->
 
 <project default="release" name="MegaMekLab" basedir=".">
 
@@ -31,6 +39,7 @@
 
 	<!-- svnroot used for svn authentification -->
 	<property name="svnroot" value="svn://svn.code.sf.net/p/megameklab/code/trunk" />
+	<property name="svnmechdata" value="svn://svn.code.sf.net/p/megamek/code/trunk/megamek/data/mechfiles" />
 
 	<property name="timestampfile" value="${logdir}/timestamp" />
 	<property name="TinyXMLsrc" value="TinyXML07-src.zip" />
@@ -54,8 +63,9 @@
 			<os family="mac" />
 		</condition>
 	
-	<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" classpath="${util}/jarbundler-2.1.0.jar"/>
 	<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${util}/launch4j/launch4j.jar:${util}/launch4j/lib/xstream.jar" />
+	<taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" 
+	        classpath="${one-jar.ant.jar}" onerror="report"/>
 
 	<target name="svndev-init">
 		<tstamp />
@@ -67,54 +77,51 @@
 		<exec executable="svn">
 			<arg line="export ${svnroot} ${svndir}" />
 		</exec>
+		<exec executable="svn">
+			<arg line="export ${svnmechdata} ${svndir}/data/mechfiles" />
+		</exec>
 	</target>
 	
 	<target name="svndev-build" depends="svndev-get" description="compile project from SVN and generate JAR file" >
-			<mkdir dir="${svnbuilddir}" />
-			<!-- compile -->
-			<echo message="MegaMekLab" />
-			<javac debug="true" debuglevel="lines,source" target="1.5" source="1.5" destdir="${svnbuilddir}" srcdir="${svndir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
-				<classpath>
-					<pathelement location="${svndir}" />
-					<fileset dir="${svndir}/${libdir}" includes="*.jar" />
-					<fileset dir="${svndir}" includes="MegaMek.jar" />
-				</classpath>			
-			</javac>
+		<mkdir dir="${svnbuilddir}" />
+		<!-- compile -->
+		<echo message="MegaMekLab" />
+		<javac debug="true" debuglevel="lines,source" target="1.5" source="1.5" destdir="${svnbuilddir}" srcdir="${svndir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
+			<classpath>
+				<pathelement location="${svndir}" />
+				<fileset dir="${svndir}/${libdir}" includes="*.jar" />
+				<fileset dir="${svndir}" includes="MegaMek.jar" />
+			</classpath>
+		</javac>
 
-			<!-- jar -->
-			<jar basedir="${svnbuilddir}" jarfile="${svndir}/${jarfile}" manifest="manifest.txt">
-				<fileset dir="${svndir}/${srcdir}" includes="**/*.properties"/>
-			</jar>
-
-			<!-- Ensure that the log directory exists. -->
-			<mkdir dir="${svndir}/${logdir}" />
-			<touch file="${svndir}/${timestampfile}" />	
-		</target>
+		<jar destfile="${svndir}/${jarfile}" basedir="${svnbuilddir}">
+			<fileset dir="${svndir}/${srcdir}" includes="**/*.properties"/>
+		    <zipgroupfileset dir="${svndir}/${libdir}" includes="*.jar"/>
+		    <zipfileset dir="${svndir}" includes="MegaMek.jar"/>
+		    <manifest>
+		    	<attribute name="Main-Class" value="megameklab.com.MegaMekLab"/> 
+		    </manifest>
+		</jar>
+		
+		<!-- Ensure that the log directory exists. -->
+		<mkdir dir="${svndir}/${logdir}" />
+		<touch file="${svndir}/${timestampfile}" />	
+	</target>
 			
-		<target name="svndev-clean" description="remove the SVN build directory">
-			<delete dir="${svnbuilddir}" />
-		</target>
+	<target name="svndev-clean" description="remove the SVN build directory">
+		<delete dir="${svnbuilddir}" />
+	</target>
 	
 	<target name="mac-bundle" description="Bundle the project built from SVN into an Mac OSX distribution">
 		<mkdir dir="${osxdist}" />
 		<copy todir="${osxdist}">
 			<fileset dir="${svndir}" >
 				<include name="${jarfile}" />
-				<include name="${libdir}/*.jar" />
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
 				<include name="${docdir}/" />
-				<include name="MegaMek.jar" />
 			</fileset>
 		</copy>
-		<mkdir dir="${osxdist}/MegaMek.app" />
-		<copy todir="${osxdist}/MegaMek.app">
-			<fileset dir="${util}/MegaMek.app" >
-				<include name="**/*"/>
-			</fileset>
-		</copy>
-		<copy file="${util}/JavaApplicationStub" todir="${osxdist}/MegaMek.app/Contents/MacOS/"/>
-		<move file="${osxdist}/MegaMek.jar" todir="${osxdist}/MegaMek.app/Contents/Resources/Java/" />
 		<mkdir dir="${osxdist}/MegaMekLab.app" />
 		<copy todir="${osxdist}/MegaMekLab.app">
 			<fileset dir="${util}/MegaMekLab.app" >
@@ -153,11 +160,9 @@
 		<copy todir="${nixdist}">
 			<fileset dir="${svndir}" >
 				<include name="${jarfile}" />
-				<include name="${libdir}/*.jar" />
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
 				<include name="${docdir}/" />
-				<include name="MegaMek.jar" />
 			</fileset>
 		</copy>
 	</target>
@@ -182,12 +187,9 @@
 		<mkdir dir="${windist}" />
 		<copy todir="${windist}">
 			<fileset dir="${svndir}" >
-				<!--<include name="${jarfile}" />-->
-				<include name="${libdir}/*.jar" />
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
 				<include name="${docdir}/" />
-				<include name="MegaMek.jar" />
 				<include name="MegaMekLab.exe" />
 			</fileset>
 		</copy>
