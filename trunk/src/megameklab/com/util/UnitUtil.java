@@ -2086,8 +2086,7 @@ public class UnitUtil {
             }
 
             if (!(unit instanceof BipedMech)
-                    && (eq.hasFlag(MiscType.F_SHOULDER_TURRET) || ((eq
-                            .hasFlag(MiscType.F_HEAD_TURRET))))) {
+                    && (eq.hasFlag(MiscType.F_SHOULDER_TURRET))) {
                 return false;
             }
 
