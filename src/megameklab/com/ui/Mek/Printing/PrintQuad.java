@@ -61,7 +61,7 @@ public class PrintQuad implements Printable {
     private float endMountx = 0;
     private float endMounty = 0;
     PrinterJob masterPrintJob;
-    private int topMargin = 3;
+    private int topMargin = 6;
     private int leftMargin = 11;
 
     public PrintQuad(ArrayList<Mech> list, PrinterJob masterPrintJob) {
@@ -152,7 +152,7 @@ public class PrintQuad implements Printable {
         String mekName = mech.getChassis() + " " + mech.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, mekName, true, 180, 10.0f));
-        g2d.drawString(mekName, 49 + leftMargin, 121 + topMargin);
+        g2d.drawString(mekName, 49 + leftMargin, 119 + topMargin);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
@@ -176,9 +176,11 @@ public class PrintQuad implements Printable {
         }
 
         if (mech.hasUMU()) {
-            g2d.drawImage(ImageHelper.getUMImage(), 31 + leftMargin, 156 + topMargin, 40, 15, null);
+            BipedMechUnderwater.paint(g2d);
+            //g2d.drawImage(ImageHelper.getUMImage(), 31 + leftMargin, 156 + topMargin, 40, 15, null);
             g2d.drawString(Integer.toString(mech.getAllUMUCount()), 79 + leftMargin, topMargin + 166);
-        } else {
+        } else if (mech.getJumpMP() > 0) {
+            BipedMechJumping.paint(g2d);
             g2d.drawString(Integer.toString(mech.getJumpMP()), 79 + leftMargin, topMargin + 166);
         }
 
@@ -279,10 +281,10 @@ public class PrintQuad implements Printable {
         if (bv != -1) {
             font = UnitUtil.deriveFont(true, 8);
             g2d.setFont(font);
-            g2d.drawString("BV: ", 35 + leftMargin, topMargin + 350);
+            g2d.drawString("BV: ", 35 + leftMargin, topMargin + 355);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", mech.calculateBattleValue(true, true)), 50 + leftMargin, topMargin + 350);
+            g2d.drawString(String.format("%1$,d", mech.calculateBattleValue(true, true)), 50 + leftMargin, topMargin + 355);
         }
 
         // myFormatter = new DecimalFormat("#,###.##");
@@ -320,13 +322,14 @@ public class PrintQuad implements Printable {
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
         g2d.drawString(techBase, 177 + leftMargin, topMargin + 145);
 
-        font = new Font("Arial", Font.BOLD, 7);
+        font = new Font("Arial", Font.BOLD, 6);
         g2d.setFont(font);
-        g2d.drawString("2012", 43.5f + leftMargin, topMargin + 744.5f);
+        g2d.drawString("2012", 36 + leftMargin, topMargin + 762.2f);
 
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
-            g2d.drawImage(ImageHelper.getGyroPipImage(), 235 + leftMargin, topMargin + 588, 9, 8, null);
+            QuadMech3rdGyro.paint(g2d);
+            //g2d.drawImage(ImageHelper.getGyroPipImage(), 235 + leftMargin, topMargin + 588, 9, 8, null);
         }
 
     }
@@ -369,7 +372,7 @@ public class PrintQuad implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(7.0f);
         g2d.setFont(font);
-        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_HEAD)), 485 + leftMargin, topMargin + 45);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_HEAD)), 490 + leftMargin, topMargin + 42);
         g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_LT)), 393 + leftMargin, topMargin + 138);
         g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_RT)), 553 + leftMargin, topMargin + 138);
         g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_CT)), 475 + leftMargin, topMargin + 209);
@@ -379,8 +382,8 @@ public class PrintQuad implements Printable {
         g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_RLEG)), 501 + leftMargin, topMargin + 300);
         // Rear
         g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_LT, true)), 406 + leftMargin, topMargin + 357);
-        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_CT, true)), 506 + leftMargin, topMargin + 366);
-        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_RT, true)), 542 + leftMargin, topMargin + 357);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_CT, true)), 512 + leftMargin, topMargin + 372);
+        g2d.drawString(String.format("(%1$s)", mech.getArmor(Mech.LOC_RT, true)), 544 + leftMargin, topMargin + 357);
         // patchwork armor info
         if (mech.hasPatchworkArmor()) {
             font = UnitUtil.deriveFont(5.5f);
@@ -403,18 +406,18 @@ public class PrintQuad implements Printable {
         // Internal
         g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_LT)), 400 + leftMargin, topMargin + 418);
         g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_RT)), 521 + leftMargin, topMargin + 418);
-        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_LARM)), 398 + leftMargin, topMargin + 483);
-        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_RARM)), 523 + leftMargin, topMargin + 484);
-        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_CT)), 459 + leftMargin, topMargin + 511);
-        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_LLEG)), 395 + leftMargin, topMargin + 532);
-        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_RLEG)), 526 + leftMargin, topMargin + 532);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_LARM)), 398 + leftMargin, topMargin + 489);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_RARM)), 523 + leftMargin, topMargin + 489);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_CT)), 459 + leftMargin, topMargin + 518);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_LLEG)), 395 + leftMargin, topMargin + 538);
+        g2d.drawString(String.format("(%1$s)", mech.getInternal(Mech.LOC_RLEG)), 526 + leftMargin, topMargin + 538);
     }
 
     private void printLACrits(Graphics2D g2d) {
 
         int lineStart = 56 + leftMargin;
-        float linePoint = 437f + topMargin;
-        int lineFeed = 8;
+        float linePoint = 445.5f + topMargin;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_LARM, lineStart, linePoint, lineFeed);
     }
@@ -422,8 +425,8 @@ public class PrintQuad implements Printable {
     private void printRACrits(Graphics2D g2d) {
 
         int lineStart = 292 + leftMargin;
-        float linePoint = 437f + topMargin;
-        int lineFeed = 8;
+        float linePoint = 445.5f + topMargin;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_RARM, lineStart, linePoint, lineFeed);
     }
@@ -431,8 +434,8 @@ public class PrintQuad implements Printable {
     private void printCTCrits(Graphics2D g2d) {
 
         int lineStart = 174 + leftMargin;
-        float linePoint = 468.5f + topMargin;
-        int lineFeed = 8;
+        float linePoint = 477f + topMargin;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_CT, lineStart, linePoint, lineFeed);
     }
@@ -440,17 +443,17 @@ public class PrintQuad implements Printable {
     private void printLTCrits(Graphics2D g2d) {
 
         int lineStart = 56 + leftMargin;
-        float linePoint = 521f + topMargin;
-        int lineFeed = 8;
+        float linePoint = 555f + topMargin;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_LT, lineStart, linePoint, lineFeed);
     }
 
     private void printRTCrits(Graphics2D g2d) {
 
-        int lineStart = 292 + leftMargin;
-        float linePoint = 521f + topMargin;
-        int lineFeed = 8;
+        int lineStart = 294 + leftMargin;
+        float linePoint = 555f + topMargin;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_RT, lineStart, linePoint, lineFeed);
     }
@@ -458,17 +461,17 @@ public class PrintQuad implements Printable {
     private void printHeadCrits(Graphics2D g2d) {
 
         int lineStart = 174 + leftMargin;
-        int linePoint = 399 + topMargin;
-        int lineFeed = 8;
+        int linePoint = 406 + topMargin;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_HEAD, lineStart, linePoint, lineFeed);
     }
 
     private void printLLCrits(Graphics2D g2d) {
 
-        int lineStart = 56 + leftMargin;
-        float linePoint = 658f + topMargin;
-        int lineFeed = 8;
+        int lineStart = 57 + leftMargin;
+        float linePoint = 696.5f + topMargin;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_LLEG, lineStart, linePoint, lineFeed);
     }
@@ -476,8 +479,8 @@ public class PrintQuad implements Printable {
     private void printRLCrits(Graphics2D g2d) {
 
         int lineStart = 292 + leftMargin;
-        float linePoint = 658f + topMargin;
-        int lineFeed = 8;
+        float linePoint = 696.5f + topMargin;
+        float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_RLEG, lineStart, linePoint, lineFeed);
     }
@@ -526,7 +529,7 @@ public class PrintQuad implements Printable {
 
     private void printRLArmor(Graphics2D g2d) {
         float[] column =
-            { 504 + leftMargin, topMargin + 142};
+            { 504 + leftMargin, topMargin + 144};
         float[] pipShift =
             { 6, 6 };
 
@@ -582,7 +585,7 @@ public class PrintQuad implements Printable {
 
     private void printLLArmor(Graphics2D g2d) {
         float[] column =
-            { 448 + leftMargin, topMargin + 142};
+            { 448 + leftMargin, topMargin + 144};
         float[] pipShift =
             { 6, 6 };
 
@@ -731,7 +734,7 @@ public class PrintQuad implements Printable {
 
     private void printLTRArmor(Graphics2D g2d) {
         float[] column =
-            { 450 + leftMargin, topMargin + 311};
+            { 451 + leftMargin, topMargin + 315};
         float[] pipShift =
             { 6, 6 };
 
@@ -833,7 +836,7 @@ public class PrintQuad implements Printable {
 
     private void printRTRArmor(Graphics2D g2d) {
         float[] column =
-            { 496 + leftMargin, topMargin + 311};
+            { 499 + leftMargin, topMargin + 315};
         float[] pipShift =
             { 6, 6 };
 
@@ -962,7 +965,7 @@ public class PrintQuad implements Printable {
 
     private void printCTRArmor(Graphics2D g2d) {
         float[] column =
-            { 464 + leftMargin, topMargin + 308};
+            { 466 + leftMargin, topMargin + 312};
         float[] pipShift =
             { 6, 6 };
 
@@ -985,7 +988,7 @@ public class PrintQuad implements Printable {
 
     private void printLAStruct(Graphics2D g2d) {
         float[] column =
-            { 427 + leftMargin, topMargin + 471};
+            { 429 + leftMargin, topMargin + 479};
         float[] pipShift =
             { 4, 4 };
 
@@ -1011,7 +1014,7 @@ public class PrintQuad implements Printable {
 
     private void printLLStruct(Graphics2D g2d) {
         float[] column =
-            { 445 + leftMargin, topMargin + 465};
+            { 445 + leftMargin, topMargin + 475};
         float[] pipShift =
             { 4, 4 };
 
@@ -1033,7 +1036,7 @@ public class PrintQuad implements Printable {
 
     private void printRLStruct(Graphics2D g2d) {
         float[] column =
-            { 480 + leftMargin, topMargin + 465};
+            { 482 + leftMargin, topMargin + 475};
         float[] pipShift =
             { 4, 4 };
 
@@ -1054,7 +1057,7 @@ public class PrintQuad implements Printable {
 
     private void printRAStruct(Graphics2D g2d) {
         float[] column =
-            { 498 + leftMargin, topMargin + 471};
+            { 500 + leftMargin, topMargin + 479};
         float[] pipShift =
             { 4, 4 };
 
@@ -1081,7 +1084,7 @@ public class PrintQuad implements Printable {
 
     private void printLTStruct(Graphics2D g2d) {
         float[] column =
-            { 424 + leftMargin, topMargin + 416};
+            { 426 + leftMargin, topMargin + 421};
         float[] pipShift =
             { 6, 6 };
 
@@ -1106,7 +1109,7 @@ public class PrintQuad implements Printable {
 
     private void printRTStruct(Graphics2D g2d) {
         float[] column =
-            { 484 + leftMargin, topMargin + 416};
+            { 485 + leftMargin, topMargin + 421};
         float[] pipShift =
             { 6, 6 };
 
@@ -1134,7 +1137,7 @@ public class PrintQuad implements Printable {
 
     private void printCTStruct(Graphics2D g2d) {
         float[] column =
-            { 454 + leftMargin, topMargin + 433};
+            { 456 + leftMargin, topMargin + 440};
         float[] pipShift =
             { 6, 5 };
 
@@ -1169,9 +1172,9 @@ public class PrintQuad implements Printable {
     }
 
     private void printHeadStruct(Graphics2D g2d) {
-        ImageHelper.drawISPip(g2d, 462 + leftMargin, topMargin + 414);
-        ImageHelper.drawISPip(g2d, 458 + leftMargin, topMargin + 421);
-        ImageHelper.drawISPip(g2d, 467 + leftMargin, topMargin + 421);
+        ImageHelper.drawISPip(g2d, 464 + leftMargin, topMargin + 419);
+        ImageHelper.drawISPip(g2d, 460 + leftMargin, topMargin + 426);
+        ImageHelper.drawISPip(g2d, 469 + leftMargin, topMargin + 426);
     }
 
     private void setCritConnection(Mounted m, float startx, float starty, float endx, float endy, Graphics2D g2d) {
@@ -1215,7 +1218,7 @@ public class PrintQuad implements Printable {
         g2d.draw(new Line2D.Float(endx - 1, endy, endx - 4, endy));
     }
 
-    private void printLocationCriticals(Graphics2D g2d, int location, float lineStart, float linePoint, int lineFeed) {
+    private void printLocationCriticals(Graphics2D g2d, int location, float lineStart, float linePoint, float lineFeed) {
         Font font;
         HashMap<TextAttribute, Object> strikeThroughAttr = new HashMap<TextAttribute, Object>();
         strikeThroughAttr.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
@@ -1378,7 +1381,7 @@ public class PrintQuad implements Printable {
 
         int width = Math.min(148, img.getWidth(null));
         int height = Math.min(200, img.getHeight(null));
-        g2d.drawImage(img, 235 + leftMargin, 172 + topMargin, width, height, null);
+        g2d.drawImage(img, 237 + leftMargin, 172 + topMargin, width, height, null);
 
         // g2d.drawRect(235, 172, 165, 200);
     }
