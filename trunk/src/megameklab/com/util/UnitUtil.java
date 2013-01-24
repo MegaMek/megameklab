@@ -61,6 +61,7 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megamek.common.verifier.TestTank;
+import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.CLPlasmaCannon;
 import megamek.common.weapons.EnergyWeapon;
@@ -2898,14 +2899,17 @@ public class UnitUtil {
     }
 
     public static boolean canUseAmmo(Entity unit, AmmoType atype) {
+        boolean match = false;
         for (Mounted m : unit.getWeaponList()) {
-            if (m.getType() instanceof WeaponType) {
+            if (m.getType() instanceof AmmoWeapon) {
                 WeaponType wtype = (WeaponType) m.getType();
-                return (wtype.getAmmoType() == atype.getAmmoType())
-                        && (wtype.getRackSize() == atype.getRackSize());
+                if ((wtype.getAmmoType() == atype.getAmmoType())
+                        && (wtype.getRackSize() == atype.getRackSize())) {
+                    match = true;
+                }
             }
         }
-        return false;
+        return match;
     }
 
     public static int countUsedCriticals(Mech unit) {

@@ -88,6 +88,7 @@ V 0.1.21-dev
 + Bug: filtering of weapons in equipment tab not working correctly
 + Added location to equipment list
 + updated packaging to place the external jars within MegaMekLab.jar
++ Bug with available ammo in equipment tab
 
 V 0.1.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
