@@ -2,7 +2,7 @@
   <headerType>gui</headerType>
   <jar>MegaMekLab.jar</jar>
   <outfile>../svndev/MegaMekLab.exe</outfile>
-  <dontWrapJar>true</dontWrapJar>
+  <dontWrapJar>false</dontWrapJar>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
