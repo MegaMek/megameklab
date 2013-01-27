@@ -24,7 +24,8 @@
 	<property name="osxdist" value="${project.name}-${version}-mac" />
 	<property name="windist" value="${project.name}-${version}-windows" />
 	<property name="nixdist" value="${project.name}-${version}" />
-	
+	<property name="srcdist" value="${project.name}-${version}-source" />
+
 	<property name="srcdir" value="src" />
 	<property name="logdir" value="logs" />
 	<property name="builddir" value="classes" />
@@ -157,7 +158,8 @@
 	
 	<target name="nix-bundle" description="Bundle the project built from SVN into a unix distribution">
 		<mkdir dir="${nixdist}" />
-		<copy todir="${nixdist}">
+		<mkdir dir="${nixdist}/${nixdist}" />
+		<copy todir="${nixdist}/${nixdist}">
 			<fileset dir="${svndir}" >
 				<include name="${jarfile}" />
 				<include name="${logdir}/" />
@@ -207,10 +209,15 @@
 	<target name="win-package" depends="win-bundle, win-zip, win-clean" description="Package a Windows distribution of the project built from SVN"/>
 	
 	<target name="source-package" description="Package a source-only distribution of the project built from SVN">
-		<tar destfile="${project.name}-${version}-source.tar.gz" basedir="${svndir}" compression="gzip" longfile="gnu">
+		<mkdir dir="${srcdist}" />
+		<mkdir dir="${srcdist}/${srcdist}" />
+		<copy todir="${srcdist}/${srcdist}">
+			<fileset dir="${svndir}" >
+				<exclude name="${builddir}/**"/>
+			</fileset>
+		</copy>
+		<tar destfile="${srcdist}.tar.gz" basedir="${srcdist}" compression="gzip"  longfile="gnu">
 			<exclude name="${builddir}/**"/>
-			<exclude name="MegaMekLab.jar"/>
-			<exclude name="**/*.exe"/>
 		</tar>
 	</target>
 	
