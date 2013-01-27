@@ -90,6 +90,7 @@ V 0.1.21-dev
 + updated packaging to place the external jars within MegaMekLab.jar
 + Bug with available ammo in equipment tab
 + dontWrapJar set to false in megameklab.4j.xml (yay for double negatives)
++ updated MM.jar to 0.35.34
 
 V 0.1.20
 + Refactored all Menu Code into one Class MenuBarCreator.java used by all MainUI's
