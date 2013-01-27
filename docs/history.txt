@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-V 0.1.21-dev
+V 0.1.21
 + Bug: stealth armor bug
 + Added WiGE construction
 + Added VTOL construction
