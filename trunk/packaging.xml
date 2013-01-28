@@ -20,7 +20,7 @@
 	<!-- Global properties for this build -->
 	<!-- Version and packaging properties -->
 	<property name="project.name" value="megameklab" />
-	<property name="version" value="0.1.21"/>
+	<property name="version" value="0.1.22"/>
 	<property name="osxdist" value="${project.name}-${version}-mac" />
 	<property name="windist" value="${project.name}-${version}-windows" />
 	<property name="nixdist" value="${project.name}-${version}" />
@@ -98,7 +98,7 @@
 		<jar destfile="${svndir}/${jarfile}" basedir="${svnbuilddir}">
 			<fileset dir="${svndir}/${srcdir}" includes="**/*.properties"/>
 		    <zipgroupfileset dir="${svndir}/${libdir}" includes="*.jar"/>
-		    <zipfileset dir="${svndir}" includes="MegaMek.jar"/>
+		    <zipgroupfileset dir="${svndir}" includes="MegaMek.jar"/>
 		    <manifest>
 		    	<attribute name="Main-Class" value="megameklab.com.MegaMekLab"/> 
 		    </manifest>
@@ -181,7 +181,6 @@
 	
 	<!-- Produce an EXE file -->
 	<target name="exe" description="Generate an EXE wrappers for MegaMekLab.jar">
-		<delete file="${svndir}/MegaMekLab.exe"/>
 		<launch4j configFile="${util}/megameklab.4j.xml" />
 	</target>
 	
@@ -214,10 +213,11 @@
 		<copy todir="${srcdist}/${srcdist}">
 			<fileset dir="${svndir}" >
 				<exclude name="${builddir}/**"/>
+				<exclude name="MegaMekLab.jar"/>
+				<exclude name="MegaMekLab.exe"/>
 			</fileset>
 		</copy>
 		<tar destfile="${srcdist}.tar.gz" basedir="${srcdist}" compression="gzip"  longfile="gnu">
-			<exclude name="${builddir}/**"/>
 		</tar>
 	</target>
 	
