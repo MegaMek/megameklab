@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 V 0.1.22-dev
 + Bug: removing multiple equipments at once doesn't work
++ Bug 36: Hang when Building Battlearmor 
 
 V 0.1.21
 + Bug: stealth armor bug
