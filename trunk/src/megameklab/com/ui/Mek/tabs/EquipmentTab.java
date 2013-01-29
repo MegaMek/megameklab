@@ -494,9 +494,8 @@ public class EquipmentTab extends ITab implements ActionListener {
             int startRow = equipmentTable.getSelectedRow();
             int count = equipmentTable.getSelectedRowCount();
 
-            for (; count > 0; count--) {
+            for (int i = 0; i < count; i++) {
                 if (startRow > -1) {
-                    EquipmentType et = ((Mounted)equipmentList.getValueAt(startRow, CriticalTableModel.EQUIPMENT)).getType();
                     equipmentList.removeMounted(startRow);
                     equipmentList.removeCrit(startRow);
                 }
