@@ -2157,8 +2157,9 @@ public class UnitUtil {
                     return false;
                 }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     public static boolean isBattleArmorWeapon(EquipmentType eq, Entity unit) {
@@ -2194,8 +2195,9 @@ public class UnitUtil {
                     return false;
                 }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     public static boolean isInfantryEquipment(EquipmentType eq, Entity unit) {

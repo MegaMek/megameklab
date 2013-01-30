@@ -29,6 +29,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -324,7 +325,7 @@ public class PrintQuad implements Printable {
 
         font = new Font("Arial", Font.BOLD, 6);
         g2d.setFont(font);
-        g2d.drawString("2012", 36 + leftMargin, topMargin + 762.2f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 36 + leftMargin, topMargin + 762.2f);
 
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {

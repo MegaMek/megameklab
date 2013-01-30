@@ -27,15 +27,16 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import megamek.common.Crew;
 import megamek.common.Engine;
 import megamek.common.MiscType;
-import megamek.common.Crew;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -309,12 +310,12 @@ public class PrintWiGE implements Printable {
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
 
-        g2d.drawString("2012", 62.5f, 374f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 374f);
 
         if (tank2 != null) {
             printTank2Data(g2d);
         } else {
-            g2d.drawString("2012", 62.5f, 374f + secondPageMargin);
+            g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 374f + secondPageMargin);
         }
     }
 

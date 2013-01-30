@@ -27,6 +27,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -231,7 +232,7 @@ public class PrintConventionalFighter implements Printable {
 
         font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2012", 62.5f, 745f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 745f);
     }
 
     private void printArmor(Graphics2D g2d) {
