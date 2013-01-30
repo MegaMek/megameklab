@@ -27,6 +27,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -403,9 +404,9 @@ public class PrintLargeSupportVehicle implements Printable {
 
         font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
-        g2d.drawString("2012", 62.5f, 374f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 374f);
         font = UnitUtil.deriveFont(true, 5.5f);
-        g2d.drawString("2012", 50f, 395.5f + secondPageMargin);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 50f, 395.5f + secondPageMargin);
         if (largesupporttank2 != null) {
             printLargeSupportTank2Data(g2d);
         }

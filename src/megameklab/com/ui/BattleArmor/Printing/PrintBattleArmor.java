@@ -25,6 +25,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
@@ -110,7 +111,7 @@ public class PrintBattleArmor implements Printable {
         System.gc();
         Font font = new Font("Arial", Font.PLAIN, 7);
         g2d.setFont(font);
-        g2d.drawString("2012", 41f, 769.5f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 41f, 769.5f);
 
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
     }
