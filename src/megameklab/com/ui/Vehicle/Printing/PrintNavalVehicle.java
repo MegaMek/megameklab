@@ -27,6 +27,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -290,7 +291,7 @@ public class PrintNavalVehicle implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(true, 7.0f));
 
-        g2d.drawString("2012", leftmargin+40, topmargin+767.5f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), leftmargin+40, topmargin+767.5f);
 
     }
 
