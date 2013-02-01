@@ -2,7 +2,9 @@ VERSION HISTORY:
 ----------------
 V 0.1.22-dev
 + Bug: removing multiple equipments at once doesn't work
-+ Bug 36: Hang when Building Battlearmor 
++ Bug 36: Hang when Building Battlearmor
++ Bug: extra crits when loading unit with crit-using IS or armor and using 
+    reset button in build tab
 
 V 0.1.21
 + Bug: stealth armor bug
