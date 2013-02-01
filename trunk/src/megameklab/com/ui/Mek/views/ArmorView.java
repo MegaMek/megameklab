@@ -120,20 +120,32 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     private JTextField valueMaxArmor = new JTextField();
     private JLabel lblWastedArmor = new JLabel("Wasted Armor Points:");
     private JTextField valueWastedArmor = new JTextField();
-    //private JLabel unallocatedPointsLabel = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    //private JLabel unallocatedPointsField = new JLabel();
+    // private JLabel unallocatedPointsLabel = new JLabel("Unallocated:",
+    // SwingConstants.TRAILING);
+    // private JLabel unallocatedPointsField = new JLabel();
 
-    private JLabel unallocatedPointsLabelPatchworkHead = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkLa = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkLt = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkCt = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkRt = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkRa = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkLl = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkRl = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkCtr = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkLtr = new JLabel("Unallocated:", SwingConstants.TRAILING);
-    private JLabel unallocatedPointsLabelPatchworkRtr = new JLabel("Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkHead = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkLa = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkLt = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkCt = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkRt = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkRa = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkLl = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkRl = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkCtr = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkLtr = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkRtr = new JLabel(
+            "Unallocated:", SwingConstants.TRAILING);
 
     private JLabel unallocatedPointsFieldHead = new JLabel();
     private JLabel unallocatedPointsFieldLa = new JLabel();
@@ -149,15 +161,15 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     private int armorPoints;
     private int wastedArmorPoints;
-    
+
     private JButton allocateArmorButton = new JButton("Auto-Allocate Armor");
-    
+
     private RefreshListener refresh;
 
     public ArmorView(Mech unit) {
         super(unit);
-        
-    	setLayout(new GridLayout(1,1));
+
+        setLayout(new GridLayout(1, 1));
 
         mainPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc;
@@ -217,20 +229,23 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         armorFieldList.add(ctrArmorField);
         armorFieldList.add(rtrArmorField);
 
-        /*Dimension panelSize = new Dimension(75, 75);
-        headPanel.setSize(panelSize);
-        headPanel.setPreferredSize(panelSize);
-        headPanel.setMaximumSize(panelSize);
-        headPanel.setMinimumSize(panelSize);*/
-        
+        /*
+         * Dimension panelSize = new Dimension(75, 75);
+         * headPanel.setSize(panelSize); headPanel.setPreferredSize(panelSize);
+         * headPanel.setMaximumSize(panelSize);
+         * headPanel.setMinimumSize(panelSize);
+         */
+
         Dimension size = new Dimension(40, 25);
         for (JSpinner spinner : armorFieldList) {
             spinner.setToolTipText("Front Armor");
-            //you don't set the size of the jspinner, but rather its internal textfield            
-            ((JSpinner.DefaultEditor)spinner.getEditor()).setSize(size);
-            ((JSpinner.DefaultEditor)spinner.getEditor()).setMaximumSize(size);
-            ((JSpinner.DefaultEditor)spinner.getEditor()).setPreferredSize(size);
-            ((JSpinner.DefaultEditor)spinner.getEditor()).setMinimumSize(size);
+            // you don't set the size of the jspinner, but rather its internal
+            // textfield
+            ((JSpinner.DefaultEditor) spinner.getEditor()).setSize(size);
+            ((JSpinner.DefaultEditor) spinner.getEditor()).setMaximumSize(size);
+            ((JSpinner.DefaultEditor) spinner.getEditor())
+                    .setPreferredSize(size);
+            ((JSpinner.DefaultEditor) spinner.getEditor()).setMinimumSize(size);
         }
         rtrArmorField.setToolTipText("Rear Armor");
         ltrArmorField.setToolTipText("Rear Armor");
@@ -260,119 +275,137 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
         JPanel topPanel;
         JPanel bottomPanel;
-        
+
         synchronized (unit) {
             for (int location = 0; location < unit.locations(); location++) {
 
                 switch (location) {
                     case Mech.LOC_HEAD:
-                    	topPanel = new JPanel(new GridLayout(2,0));
+                        topPanel = new JPanel(new GridLayout(2, 0));
                         topPanel.add(hdArmorField);
                         topPanel.add(hdArmorMaxLabel);
                         headPanel.add(topPanel);
                         /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkHead);
-                        bottomPanel.add(unallocatedPointsFieldHead);
-                        */
-                        headPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                         * bottomPanel = new JPanel();
+                         * bottomPanel.add(unallocatedPointsLabelPatchworkHead);
+                         * bottomPanel.add(unallocatedPointsFieldHead);
+                         */
+                        headPanel
+                                .setBorder(BorderFactory.createTitledBorder(
+                                        null, unit.getLocationAbbr(location),
+                                        TitledBorder.TOP,
+                                        TitledBorder.DEFAULT_POSITION));
                         break;
                     case Mech.LOC_LARM:
-                    	topPanel = new JPanel(new GridLayout(2,0));
+                        topPanel = new JPanel(new GridLayout(2, 0));
                         topPanel.add(laArmorField);
                         topPanel.add(laArmorMaxLabel);
                         laPanel.add(topPanel);
-                       /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkLa);
-                        bottomPanel.add(unallocatedPointsFieldLa);
-                        laPanel.add(bottomPanel);
-                        */
-                        laPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        /*
+                         * bottomPanel = new JPanel();
+                         * bottomPanel.add(unallocatedPointsLabelPatchworkLa);
+                         * bottomPanel.add(unallocatedPointsFieldLa);
+                         * laPanel.add(bottomPanel);
+                         */
+                        laPanel.setBorder(BorderFactory.createTitledBorder(
+                                null, unit.getLocationAbbr(location),
+                                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         break;
                     case Mech.LOC_RARM:
-                    	topPanel = new JPanel(new GridLayout(2,0));
-                        topPanel.add(raArmorField);                     
+                        topPanel = new JPanel(new GridLayout(2, 0));
+                        topPanel.add(raArmorField);
                         topPanel.add(raArmorMaxLabel);
                         raPanel.add(topPanel);
                         /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkRa);
-                        bottomPanel.add(unallocatedPointsFieldRa);
-                        raPanel.add(bottomPanel);
-                        */
-                        raPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                         * bottomPanel = new JPanel();
+                         * bottomPanel.add(unallocatedPointsLabelPatchworkRa);
+                         * bottomPanel.add(unallocatedPointsFieldRa);
+                         * raPanel.add(bottomPanel);
+                         */
+                        raPanel.setBorder(BorderFactory.createTitledBorder(
+                                null, unit.getLocationAbbr(location),
+                                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         break;
                     case Mech.LOC_CT:
-                    	topPanel = new JPanel(new GridLayout(4,0));
+                        topPanel = new JPanel(new GridLayout(4, 0));
                         topPanel.add(ctArmorField);
                         topPanel.add(new JLabel("Rear", SwingConstants.CENTER));
                         topPanel.add(ctrArmorField);
                         topPanel.add(ctArmorMaxLabel);
-                        ctPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        ctPanel.setBorder(BorderFactory.createTitledBorder(
+                                null, unit.getLocationAbbr(location),
+                                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         ctPanel.add(topPanel);
                         /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkCtr);
-                        bottomPanel.add(unallocatedPointsFieldCtr);
-                        ctrPanel.add(bottomPanel);
-                        */
+                         * bottomPanel = new JPanel();
+                         * bottomPanel.add(unallocatedPointsLabelPatchworkCtr);
+                         * bottomPanel.add(unallocatedPointsFieldCtr);
+                         * ctrPanel.add(bottomPanel);
+                         */
                         break;
                     case Mech.LOC_LT:
-                        topPanel = new JPanel(new GridLayout(4,0));
+                        topPanel = new JPanel(new GridLayout(4, 0));
                         topPanel.add(ltArmorField);
                         topPanel.add(new JLabel("Rear", SwingConstants.CENTER));
                         topPanel.add(ltrArmorField);
                         topPanel.add(ltArmorMaxLabel);
-                        ltPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        ltPanel.setBorder(BorderFactory.createTitledBorder(
+                                null, unit.getLocationAbbr(location),
+                                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         ltPanel.add(topPanel);
                         /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkLt);
-                        bottomPanel.add(unallocatedPointsFieldLt);
-                        ltPanel.add(bottomPanel);
-                        */
+                         * bottomPanel = new JPanel();
+                         * bottomPanel.add(unallocatedPointsLabelPatchworkLt);
+                         * bottomPanel.add(unallocatedPointsFieldLt);
+                         * ltPanel.add(bottomPanel);
+                         */
                         break;
                     case Mech.LOC_RT:
-                        topPanel = new JPanel(new GridLayout(4,0));
+                        topPanel = new JPanel(new GridLayout(4, 0));
                         topPanel.add(rtArmorField);
                         topPanel.add(new JLabel("Rear", SwingConstants.CENTER));
                         topPanel.add(rtrArmorField);
                         topPanel.add(rtArmorMaxLabel);
-                        rtPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        rtPanel.setBorder(BorderFactory.createTitledBorder(
+                                null, unit.getLocationAbbr(location),
+                                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         rtPanel.add(topPanel);
                         /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkRt);
-                        bottomPanel.add(unallocatedPointsFieldRt);
-                        rtPanel.add(bottomPanel);
-                        */
+                         * bottomPanel = new JPanel();
+                         * bottomPanel.add(unallocatedPointsLabelPatchworkRt);
+                         * bottomPanel.add(unallocatedPointsFieldRt);
+                         * rtPanel.add(bottomPanel);
+                         */
                         break;
                     case Mech.LOC_LLEG:
-                    	topPanel = new JPanel(new GridLayout(2,0));
+                        topPanel = new JPanel(new GridLayout(2, 0));
                         topPanel.add(llArmorField);
                         topPanel.add(llArmorMaxLabel);
                         llPanel.add(topPanel);
                         /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkLl);
-                        bottomPanel.add(unallocatedPointsFieldLl);
-                        llPanel.add(bottomPanel);
-                        */
-                        llPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                         * bottomPanel = new JPanel();
+                         * bottomPanel.add(unallocatedPointsLabelPatchworkLl);
+                         * bottomPanel.add(unallocatedPointsFieldLl);
+                         * llPanel.add(bottomPanel);
+                         */
+                        llPanel.setBorder(BorderFactory.createTitledBorder(
+                                null, unit.getLocationAbbr(location),
+                                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         break;
                     case Mech.LOC_RLEG:
-                    	topPanel = new JPanel(new GridLayout(2,0));
+                        topPanel = new JPanel(new GridLayout(2, 0));
                         topPanel.add(rlArmorField);
                         topPanel.add(rlArmorMaxLabel);
                         rlPanel.add(topPanel);
                         /*
-                        bottomPanel = new JPanel();
-                        bottomPanel.add(unallocatedPointsLabelPatchworkRl);
-                        bottomPanel.add(unallocatedPointsFieldRl);
-                        rlPanel.add(bottomPanel);
-                        */
-                        rlPanel.setBorder(BorderFactory.createTitledBorder(null, unit.getLocationAbbr(location), TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                         * bottomPanel = new JPanel();
+                         * bottomPanel.add(unallocatedPointsLabelPatchworkRl);
+                         * bottomPanel.add(unallocatedPointsFieldRl);
+                         * rlPanel.add(bottomPanel);
+                         */
+                        rlPanel.setBorder(BorderFactory.createTitledBorder(
+                                null, unit.getLocationAbbr(location),
+                                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         break;
                 }
             }
@@ -386,22 +419,22 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         valueFields.add(valueCurrentArmor);
         valueFields.add(valueMaxArmor);
         valueFields.add(valueWastedArmor);
-        
-        Dimension valueSize = new Dimension(45,20);
-        for(JTextField field : valueFields) {
+
+        Dimension valueSize = new Dimension(45, 20);
+        for (JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(valueSize);
             field.setPreferredSize(valueSize);
             field.setMinimumSize(valueSize);
             field.setMaximumSize(valueSize);
-            field.setHorizontalAlignment(JTextField.RIGHT);
+            field.setHorizontalAlignment(SwingConstants.RIGHT);
         }
-        
+
         totalArmorPanel.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(2,2,2,2);
+        gbc.insets = new Insets(2, 2, 2, 2);
         gbc.anchor = GridBagConstraints.WEST;
         totalArmorPanel.add(lblUnallocatedArmor, gbc);
         gbc.gridx = 1;
@@ -431,7 +464,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         totalArmorPanel.add(allocateArmorButton, gbc);
-        
+
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -440,21 +473,21 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(totalArmorPanel, gbc);
         this.add(mainPanel);
-        
+
         resetArmorPoints();
 
         // refresh();
     }
 
     private void addAllListeners() {
-    	allocateArmorButton.addActionListener(this);
+        allocateArmorButton.addActionListener(this);
         for (JSpinner spinner : armorFieldList) {
             spinner.addChangeListener(this);
         }
     }
 
     private void removeAllListeners() {
-    	allocateArmorButton.removeActionListener(this);
+        allocateArmorButton.removeActionListener(this);
         for (JSpinner spinner : armorFieldList) {
             spinner.removeChangeListener(this);
         }
@@ -468,127 +501,166 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             switch (location) {
                 case Mech.LOC_HEAD:
                     hdArmorModel.setValue(Math.min(9, unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	hdArmorModel.setMaximum((Integer)hdArmorModel.getValue());
+                    if (isFullyAllocated()) {
+                        hdArmorModel.setMaximum((Integer) hdArmorModel
+                                .getValue());
                     } else {
-                    	hdArmorModel.setMaximum(9);
+                        hdArmorModel.setMaximum(9);
                     }
                     hdArmorModel.setStepSize(1);
                     hdArmorModel.setMinimum(0);
                     hdArmorMaxLabel.setText("max: 9");
                     break;
                 case Mech.LOC_LARM:
-                    laArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	laArmorModel.setMaximum((Integer)laArmorModel.getValue());
+                    laArmorModel.setValue(Math.min(maxArmor,
+                            unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        laArmorModel.setMaximum((Integer) laArmorModel
+                                .getValue());
                     } else {
-                    	laArmorModel.setMaximum(maxArmor);
+                        laArmorModel.setMaximum(maxArmor);
                     }
                     laArmorModel.setStepSize(1);
                     laArmorModel.setMinimum(0);
-                    laArmorMaxLabel.setText("max: " + Integer.toString(maxArmor));
+                    laArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor));
                     break;
                 case Mech.LOC_RARM:
-                    raArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	raArmorModel.setMaximum((Integer)raArmorModel.getValue());
+                    raArmorModel.setValue(Math.min(maxArmor,
+                            unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        raArmorModel.setMaximum((Integer) raArmorModel
+                                .getValue());
                     } else {
-                    	raArmorModel.setMaximum(maxArmor);
-                    }                   
+                        raArmorModel.setMaximum(maxArmor);
+                    }
                     raArmorModel.setStepSize(1);
                     raArmorModel.setMinimum(0);
-                    raArmorMaxLabel.setText("max: " + Integer.toString(maxArmor));
+                    raArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor));
                     break;
                 case Mech.LOC_CT:
-                    ctArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	ctArmorModel.setMaximum((Integer)ctArmorModel.getValue());
+                    ctArmorModel.setValue(Math.min(maxArmor,
+                            unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        ctArmorModel.setMaximum((Integer) ctArmorModel
+                                .getValue());
                     } else {
-                    	ctArmorModel.setMaximum(maxArmor);
-                    } 
+                        ctArmorModel.setMaximum(maxArmor);
+                    }
                     ctArmorModel.setStepSize(1);
                     ctArmorModel.setMinimum(0);
-                    ctrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor - unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	ctrArmorModel.setMaximum((Integer)ctrArmorModel.getValue());
+                    ctrArmorModel.setValue(Math.min(
+                            unit.getArmor(location, true),
+                            maxArmor - unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        ctrArmorModel.setMaximum((Integer) ctrArmorModel
+                                .getValue());
                     } else {
-                    	ctrArmorModel.setMaximum(maxArmor - unit.getArmor(location));
-                    } 
+                        ctrArmorModel.setMaximum(maxArmor
+                                - unit.getArmor(location));
+                    }
                     ctrArmorModel.setStepSize(1);
                     ctrArmorModel.setMinimum(0);
-                    ctArmorMaxLabel.setText("max: " + Integer.toString(maxArmor));
-                    ctrArmorMaxLabel.setText("max: " + Integer.toString(maxArmor - unit.getArmor(location)));
+                    ctArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor));
+                    ctrArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor
+                                    - unit.getArmor(location)));
                     break;
                 case Mech.LOC_LT:
-                    ltArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	ltArmorModel.setMaximum((Integer)ltArmorModel.getValue());
+                    ltArmorModel.setValue(Math.min(maxArmor,
+                            unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        ltArmorModel.setMaximum((Integer) ltArmorModel
+                                .getValue());
                     } else {
-                    	ltArmorModel.setMaximum(maxArmor);
-                    } 
+                        ltArmorModel.setMaximum(maxArmor);
+                    }
                     ltArmorModel.setStepSize(1);
                     ltArmorModel.setMinimum(0);
-                    ltrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor - unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	ltrArmorModel.setMaximum((Integer)ltrArmorModel.getValue());
+                    ltrArmorModel.setValue(Math.min(
+                            unit.getArmor(location, true),
+                            maxArmor - unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        ltrArmorModel.setMaximum((Integer) ltrArmorModel
+                                .getValue());
                     } else {
-                    	ltrArmorModel.setMaximum(maxArmor - unit.getArmor(location));
-                    }                     
+                        ltrArmorModel.setMaximum(maxArmor
+                                - unit.getArmor(location));
+                    }
                     ltrArmorModel.setStepSize(1);
                     ltrArmorModel.setMinimum(0);
-                    ltArmorMaxLabel.setText("max: " + Integer.toString(maxArmor));
-                    ltrArmorMaxLabel.setText("max: " + Integer.toString(maxArmor - unit.getArmor(location)));
+                    ltArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor));
+                    ltrArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor
+                                    - unit.getArmor(location)));
                     break;
                 case Mech.LOC_RT:
-                    rtArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	rtArmorModel.setMaximum((Integer)rtArmorModel.getValue());
+                    rtArmorModel.setValue(Math.min(maxArmor,
+                            unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        rtArmorModel.setMaximum((Integer) rtArmorModel
+                                .getValue());
                     } else {
-                    	rtArmorModel.setMaximum(maxArmor);
-                    } 
+                        rtArmorModel.setMaximum(maxArmor);
+                    }
                     rtArmorModel.setStepSize(1);
                     rtArmorModel.setMinimum(0);
-                    rtrArmorModel.setValue(Math.min(unit.getArmor(location, true), maxArmor - unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	rtrArmorModel.setMaximum((Integer)rtrArmorModel.getValue());
+                    rtrArmorModel.setValue(Math.min(
+                            unit.getArmor(location, true),
+                            maxArmor - unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        rtrArmorModel.setMaximum((Integer) rtrArmorModel
+                                .getValue());
                     } else {
-                    	rtrArmorModel.setMaximum(maxArmor - unit.getArmor(location));
-                    } 
+                        rtrArmorModel.setMaximum(maxArmor
+                                - unit.getArmor(location));
+                    }
                     rtrArmorModel.setStepSize(1);
                     rtrArmorModel.setMinimum(0);
-                    rtArmorMaxLabel.setText("max: " + Integer.toString(maxArmor));
-                    rtrArmorMaxLabel.setText("max: " + Integer.toString(maxArmor - unit.getArmor(location)));
+                    rtArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor));
+                    rtrArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor
+                                    - unit.getArmor(location)));
                     break;
                 case Mech.LOC_LLEG:
-                    llArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	llArmorModel.setMaximum((Integer)llArmorModel.getValue());
+                    llArmorModel.setValue(Math.min(maxArmor,
+                            unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        llArmorModel.setMaximum((Integer) llArmorModel
+                                .getValue());
                     } else {
-                    	llArmorModel.setMaximum(maxArmor);
-                    }                 
+                        llArmorModel.setMaximum(maxArmor);
+                    }
                     llArmorModel.setStepSize(1);
                     llArmorModel.setMinimum(0);
-                    llArmorMaxLabel.setText("max: " + Integer.toString(maxArmor));
+                    llArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor));
                     break;
                 case Mech.LOC_RLEG:
-                    rlArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
-                    if(isFullyAllocated()) {
-                    	rlArmorModel.setMaximum((Integer)rlArmorModel.getValue());
+                    rlArmorModel.setValue(Math.min(maxArmor,
+                            unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        rlArmorModel.setMaximum((Integer) rlArmorModel
+                                .getValue());
                     } else {
-                    	rlArmorModel.setMaximum(maxArmor);
-                    } 
+                        rlArmorModel.setMaximum(maxArmor);
+                    }
                     rlArmorModel.setStepSize(1);
                     rlArmorModel.setMinimum(0);
-                    rlArmorMaxLabel.setText("max: " + Integer.toString(maxArmor));
+                    rlArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor));
                     break;
             }
         }
 
-        
         // unallocated armorpoints
         if (unit.hasPatchworkArmor()) {
-            //unallocatedPointsLabel.setVisible(false);
-            //unallocatedPointsField.setVisible(false);
+            // unallocatedPointsLabel.setVisible(false);
+            // unallocatedPointsField.setVisible(false);
             unallocatedPointsLabelPatchworkHead.setVisible(true);
             unallocatedPointsLabelPatchworkLa.setVisible(true);
             unallocatedPointsLabelPatchworkLt.setVisible(true);
@@ -608,14 +680,38 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             unallocatedPointsFieldRa.setVisible(true);
             unallocatedPointsFieldLl.setVisible(true);
             unallocatedPointsFieldRl.setVisible(true);
-            unallocatedPointsFieldHead.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_HEAD, unit.getArmorWeight(Mech.LOC_HEAD)) - unit.getOArmor(Mech.LOC_HEAD)));
-            unallocatedPointsFieldLa.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LARM, unit.getArmorWeight(Mech.LOC_LARM)) - unit.getOArmor(Mech.LOC_LARM)));
-            unallocatedPointsFieldLt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LT, unit.getArmorWeight(Mech.LOC_LT)) - unit.getOArmor(Mech.LOC_LT)));
-            unallocatedPointsFieldCt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_CT, unit.getArmorWeight(Mech.LOC_CT)) - unit.getOArmor(Mech.LOC_CT)));
-            unallocatedPointsFieldRt.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RT, unit.getArmorWeight(Mech.LOC_RT)) - unit.getOArmor(Mech.LOC_RT)));
-            unallocatedPointsFieldRa.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RARM, unit.getArmorWeight(Mech.LOC_RARM)) - unit.getOArmor(Mech.LOC_RARM)));
-            unallocatedPointsFieldLl.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_LLEG, unit.getArmorWeight(Mech.LOC_LLEG)) - unit.getOArmor(Mech.LOC_LLEG)));
-            unallocatedPointsFieldRl.setText(Integer.toString(UnitUtil.getArmorPoints(unit, Mech.LOC_RLEG, unit.getArmorWeight(Mech.LOC_RLEG)) - unit.getOArmor(Mech.LOC_RLEG)));
+            unallocatedPointsFieldHead.setText(Integer.toString(UnitUtil
+                    .getArmorPoints(unit, Mech.LOC_HEAD,
+                            unit.getArmorWeight(Mech.LOC_HEAD))
+                    - unit.getOArmor(Mech.LOC_HEAD)));
+            unallocatedPointsFieldLa.setText(Integer.toString(UnitUtil
+                    .getArmorPoints(unit, Mech.LOC_LARM,
+                            unit.getArmorWeight(Mech.LOC_LARM))
+                    - unit.getOArmor(Mech.LOC_LARM)));
+            unallocatedPointsFieldLt.setText(Integer.toString(UnitUtil
+                    .getArmorPoints(unit, Mech.LOC_LT,
+                            unit.getArmorWeight(Mech.LOC_LT))
+                    - unit.getOArmor(Mech.LOC_LT)));
+            unallocatedPointsFieldCt.setText(Integer.toString(UnitUtil
+                    .getArmorPoints(unit, Mech.LOC_CT,
+                            unit.getArmorWeight(Mech.LOC_CT))
+                    - unit.getOArmor(Mech.LOC_CT)));
+            unallocatedPointsFieldRt.setText(Integer.toString(UnitUtil
+                    .getArmorPoints(unit, Mech.LOC_RT,
+                            unit.getArmorWeight(Mech.LOC_RT))
+                    - unit.getOArmor(Mech.LOC_RT)));
+            unallocatedPointsFieldRa.setText(Integer.toString(UnitUtil
+                    .getArmorPoints(unit, Mech.LOC_RARM,
+                            unit.getArmorWeight(Mech.LOC_RARM))
+                    - unit.getOArmor(Mech.LOC_RARM)));
+            unallocatedPointsFieldLl.setText(Integer.toString(UnitUtil
+                    .getArmorPoints(unit, Mech.LOC_LLEG,
+                            unit.getArmorWeight(Mech.LOC_LLEG))
+                    - unit.getOArmor(Mech.LOC_LLEG)));
+            unallocatedPointsFieldRl.setText(Integer.toString(UnitUtil
+                    .getArmorPoints(unit, Mech.LOC_RLEG,
+                            unit.getArmorWeight(Mech.LOC_RLEG))
+                    - unit.getOArmor(Mech.LOC_RLEG)));
         } else {
             unallocatedPointsLabelPatchworkHead.setVisible(false);
             unallocatedPointsLabelPatchworkLa.setVisible(false);
@@ -636,23 +732,26 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             unallocatedPointsFieldRa.setVisible(false);
             unallocatedPointsFieldLl.setVisible(false);
             unallocatedPointsFieldRl.setVisible(false);
-            //unallocatedPointsLabel.setVisible(true);
-            //unallocatedPointsField.setVisible(true);
-            //unallocatedPointsField.setText(Integer.toString(UnitUtil.getArmorPoints(unit, unit.getArmorWeight()) - unit.getTotalOArmor()));
+            // unallocatedPointsLabel.setVisible(true);
+            // unallocatedPointsField.setVisible(true);
+            // unallocatedPointsField.setText(Integer.toString(UnitUtil.getArmorPoints(unit,
+            // unit.getArmorWeight()) - unit.getTotalOArmor()));
         }
         valueAllocatedArmor.setText(Integer.toString(unit.getTotalOArmor()));
-        valueUnallocatedArmor.setText(Integer.toString(armorPoints - unit.getTotalOArmor()));
-        if(armorPoints != unit.getTotalOArmor()) {
-        	valueUnallocatedArmor.setForeground(Color.RED);
-        	lblUnallocatedArmor.setForeground(Color.RED);
+        valueUnallocatedArmor.setText(Integer.toString(armorPoints
+                - unit.getTotalOArmor()));
+        if (armorPoints != unit.getTotalOArmor()) {
+            valueUnallocatedArmor.setForeground(Color.RED);
+            lblUnallocatedArmor.setForeground(Color.RED);
         } else {
-        	valueUnallocatedArmor.setForeground(Color.BLACK);
-        	lblUnallocatedArmor.setForeground(Color.BLACK);
+            valueUnallocatedArmor.setForeground(Color.BLACK);
+            lblUnallocatedArmor.setForeground(Color.BLACK);
         }
         valueCurrentArmor.setText(Integer.toString(armorPoints));
         // Total Possible armor is Internal*2 +3 for the extra 3 armor the head
         // can support.
-        valueMaxArmor.setText(Integer.toString((unit.getTotalOInternal() * 2) + 3));
+        valueMaxArmor
+                .setText(Integer.toString((unit.getTotalOInternal() * 2) + 3));
         valueWastedArmor.setText(Integer.toString(wastedArmorPoints));
 
         addAllListeners();
@@ -714,53 +813,90 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             // if two or more are left, add armor to symmetrical locations,
             // to torso, legs, arms, in that order
             if (points >= 2) {
-                if ((unit.getOArmor(Mech.LOC_LT) + unit.getOArmor(Mech.LOC_LT, true) < (unit.getOInternal(Mech.LOC_LT) * 2)) && (unit.getOArmor(Mech.LOC_RT) + unit.getOArmor(Mech.LOC_RT, true) < (unit.getOInternal(Mech.LOC_RT) * 2))) {
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LT) + 1, Mech.LOC_LT);
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RT) + 1, Mech.LOC_RT);
+                if (((unit.getOArmor(Mech.LOC_LT)
+                        + unit.getOArmor(Mech.LOC_LT, true)) < (unit
+                        .getOInternal(Mech.LOC_LT) * 2))
+                        && ((unit.getOArmor(Mech.LOC_RT)
+                                + unit.getOArmor(Mech.LOC_RT, true)) < (unit
+                                .getOInternal(Mech.LOC_RT) * 2))) {
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LT) + 1,
+                            Mech.LOC_LT);
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RT) + 1,
+                            Mech.LOC_RT);
                     points -= 2;
-                } else if ((unit.getOArmor(Mech.LOC_LLEG) < (unit.getOInternal(Mech.LOC_LLEG) * 2)) && (unit.getOArmor(Mech.LOC_RLEG) < (unit.getOInternal(Mech.LOC_RLEG) * 2))) {
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LLEG) + 1, Mech.LOC_LLEG);
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RLEG) + 1, Mech.LOC_RLEG);
+                } else if ((unit.getOArmor(Mech.LOC_LLEG) < (unit
+                        .getOInternal(Mech.LOC_LLEG) * 2))
+                        && (unit.getOArmor(Mech.LOC_RLEG) < (unit
+                                .getOInternal(Mech.LOC_RLEG) * 2))) {
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LLEG) + 1,
+                            Mech.LOC_LLEG);
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RLEG) + 1,
+                            Mech.LOC_RLEG);
                     points -= 2;
-                } else if ((unit.getOArmor(Mech.LOC_LARM) < (unit.getOInternal(Mech.LOC_LARM) * 2)) && (unit.getOArmor(Mech.LOC_RARM) < (unit.getOInternal(Mech.LOC_RARM) * 2))) {
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LARM) + 1, Mech.LOC_LARM);
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RARM) + 1, Mech.LOC_RARM);
+                } else if ((unit.getOArmor(Mech.LOC_LARM) < (unit
+                        .getOInternal(Mech.LOC_LARM) * 2))
+                        && (unit.getOArmor(Mech.LOC_RARM) < (unit
+                                .getOInternal(Mech.LOC_RARM) * 2))) {
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_LARM) + 1,
+                            Mech.LOC_LARM);
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_RARM) + 1,
+                            Mech.LOC_RARM);
                     points -= 2;
                 }
                 // otherwise, first add to the head, and then even out uneven
                 // allocation
             } else if (unit.getOArmor(Mech.LOC_HEAD) < 9) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_HEAD) + 1, Mech.LOC_HEAD);
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_HEAD) + 1,
+                        Mech.LOC_HEAD);
                 points--;
-            } else if (unit.getOArmor(Mech.LOC_LT) < unit.getOArmor(Mech.LOC_RT)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_LT) + 1, Mech.LOC_LT);
+            } else if (unit.getOArmor(Mech.LOC_LT) < unit
+                    .getOArmor(Mech.LOC_RT)) {
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_LT) + 1,
+                        Mech.LOC_LT);
                 points--;
-            } else if (unit.getOArmor(Mech.LOC_RT) < unit.getOArmor(Mech.LOC_LT)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_RT) + 1, Mech.LOC_RT);
+            } else if (unit.getOArmor(Mech.LOC_RT) < unit
+                    .getOArmor(Mech.LOC_LT)) {
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_RT) + 1,
+                        Mech.LOC_RT);
                 points--;
-            } else if (unit.getOArmor(Mech.LOC_RARM) < unit.getOArmor(Mech.LOC_LARM)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_RARM) + 1, Mech.LOC_RARM);
+            } else if (unit.getOArmor(Mech.LOC_RARM) < unit
+                    .getOArmor(Mech.LOC_LARM)) {
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_RARM) + 1,
+                        Mech.LOC_RARM);
                 points--;
-            } else if (unit.getOArmor(Mech.LOC_LARM) < unit.getOArmor(Mech.LOC_RARM)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_LARM) + 1, Mech.LOC_LARM);
+            } else if (unit.getOArmor(Mech.LOC_LARM) < unit
+                    .getOArmor(Mech.LOC_RARM)) {
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_LARM) + 1,
+                        Mech.LOC_LARM);
                 points--;
-            } else if (unit.getOArmor(Mech.LOC_RLEG) < unit.getArmor(Mech.LOC_LLEG)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_RLEG) + 1, Mech.LOC_RLEG);
+            } else if (unit.getOArmor(Mech.LOC_RLEG) < unit
+                    .getArmor(Mech.LOC_LLEG)) {
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_RLEG) + 1,
+                        Mech.LOC_RLEG);
                 points--;
-            } else if (unit.getOArmor(Mech.LOC_LLEG) < unit.getOArmor(Mech.LOC_RLEG)) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_LLEG) + 1, Mech.LOC_LLEG);
+            } else if (unit.getOArmor(Mech.LOC_LLEG) < unit
+                    .getOArmor(Mech.LOC_RLEG)) {
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_LLEG) + 1,
+                        Mech.LOC_LLEG);
                 points--;
                 // if nothing is uneven, add to the CT
-            } else if ((unit.getOArmor(Mech.LOC_CT) + unit.getOArmor(Mech.LOC_CT, true) < (unit.getOInternal(Mech.LOC_CT) * 2))) {
-                unit.initializeArmor(unit.getOArmor(Mech.LOC_CT) + 1, Mech.LOC_CT);
+            } else if (((unit.getOArmor(Mech.LOC_CT)
+                    + unit.getOArmor(Mech.LOC_CT, true)) < (unit
+                    .getOInternal(Mech.LOC_CT) * 2))) {
+                unit.initializeArmor(unit.getOArmor(Mech.LOC_CT) + 1,
+                        Mech.LOC_CT);
                 points--;
             }
             // if only one is left, and head and CT have max, remove one from CT
             // so symmetric locations can get extra, unless they are already at
             // max
             if (points == 1) {
-                if ((unit.getOArmor(Mech.LOC_HEAD) == 9) && ((unit.getOArmor(Mech.LOC_CT) + unit.getOArmor(Mech.LOC_CT, true)) == unit.getOInternal(Mech.LOC_CT) * 2)) {
-                    unit.initializeArmor(unit.getOArmor(Mech.LOC_CT) - 1, Mech.LOC_CT);
+                if ((unit.getOArmor(Mech.LOC_HEAD) == 9)
+                        && ((unit.getOArmor(Mech.LOC_CT) + unit.getOArmor(
+                                Mech.LOC_CT, true)) == (unit
+                                .getOInternal(Mech.LOC_CT) * 2))) {
+                    unit.initializeArmor(unit.getOArmor(Mech.LOC_CT) - 1,
+                            Mech.LOC_CT);
                     points++;
                 }
             }
@@ -770,14 +906,15 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                 double is = (unit.getInternal(location) * 2);
                 switch (location) {
                     case Mech.LOC_HEAD:
-                        if (is + 3 > unit.getOArmor(location)) {
+                        if ((is + 3) > unit.getOArmor(location)) {
                             toReturn = false;
                         }
                         break;
                     case Mech.LOC_CT:
                     case Mech.LOC_LT:
                     case Mech.LOC_RT:
-                        if (is > unit.getOArmor(location) + unit.getOArmor(location, true)) {
+                        if (is > (unit.getOArmor(location)
+                                + unit.getOArmor(location, true))) {
                             toReturn = false;
                         }
                         break;
@@ -795,7 +932,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     }
 
     public void stateChanged(ChangeEvent e) {
-    	removeAllListeners();
+        removeAllListeners();
         JSpinner field = (JSpinner) e.getSource();
         int location = Integer.parseInt(field.getName());
         int value = (Integer) field.getModel().getValue();
@@ -832,32 +969,34 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         }
         refresh();
     }
-    
+
     public void setArmorPoints(int points) {
         int maxArmor = (unit.getTotalOInternal() * 2) + 3;
-        wastedArmorPoints = Math.max(points-maxArmor,0);
-    	armorPoints = Math.min(maxArmor, points);
-    }
-    
-    private boolean isFullyAllocated() {
-    	return armorPoints == unit.getTotalOArmor();
+        wastedArmorPoints = Math.max(points - maxArmor, 0);
+        armorPoints = Math.min(maxArmor, points);
     }
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		removeAllListeners();
-		if (e.getSource().equals(allocateArmorButton)) {
-    		allocateArmor();
-    	}
-		addAllListeners();
-		refresh.refreshAll();	
-	}
-	
-	public void resetArmorPoints() {
-		double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(unit.getArmorType(0), unit.getArmorTechLevel(0));
-		if (unit.getArmorType(0) == EquipmentType.T_ARMOR_HARDENED) {
-			armorPerTon = 8.0;
-		}
-		setArmorPoints((int)Math.floor(unit.getLabArmorTonnage() * armorPerTon));
-	 }
+    private boolean isFullyAllocated() {
+        return armorPoints == unit.getTotalOArmor();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        removeAllListeners();
+        if (e.getSource().equals(allocateArmorButton)) {
+            allocateArmor();
+        }
+        addAllListeners();
+        refresh.refreshAll();
+    }
+
+    public void resetArmorPoints() {
+        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
+                unit.getArmorType(0), unit.getArmorTechLevel(0));
+        if (unit.getArmorType(0) == EquipmentType.T_ARMOR_HARDENED) {
+            armorPerTon = 8.0;
+        }
+        setArmorPoints((int) Math
+                .floor(unit.getLabArmorTonnage() * armorPerTon));
+    }
 }

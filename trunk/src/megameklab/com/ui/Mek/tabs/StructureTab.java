@@ -301,6 +301,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panInfo.add(techLevel, gbc);
 
         gbc.gridx = 0;
+        gbc.gridy = 6;
+        panInfo.add(createLabel("Manual BV:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        panInfo.add(manualBV, gbc);
+
+
+
+        gbc.gridx = 0;
         gbc.gridy = 0;
         panChassis.add(createLabel("Tonnage:", labelSize), gbc);
         gbc.gridx = 1;
