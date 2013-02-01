@@ -1316,6 +1316,8 @@ public class UnitUtil {
                     cs.setArmored(mount.isArmored());
                     unit.getEquipment().add(newMount);
                     unit.getMisc().add(newMount);
+                    unit.getEquipment().remove(mount);
+                    unit.getMisc().remove(mount);
                     cs.setIndex(unit.getEquipmentNum(newMount));
                 }
             }
