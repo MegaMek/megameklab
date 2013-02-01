@@ -465,6 +465,9 @@ public class EquipmentTab extends ITab implements ActionListener {
                 mount = UnitUtil.updateTC(getMech(), equip);
                 success = mount != null;
             }
+        } else if (isMisc && UnitUtil.isSpreadEquipment(equip)) {
+            mount = UnitUtil.createSpreadMounts(getMech(), equip);
+            success = mount != null;
         } else {
             try {
                 mount = new Mounted(unit, equip);
