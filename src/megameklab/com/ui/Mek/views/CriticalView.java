@@ -82,15 +82,23 @@ public class CriticalView extends IView {
         torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
         legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
 
-        headPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Head", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        headPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Head", TitledBorder.TOP,
+                TitledBorder.DEFAULT_POSITION));
         mainPanel.add(headPanel);
 
         torsoPanel.add(laPanel);
-        ltPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Torso", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        ltPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Left Torso",
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         torsoPanel.add(ltPanel);
-        ctPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Center Torso", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        ctPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Center Torso",
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         torsoPanel.add(ctPanel);
-        rtPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Torso", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        rtPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Right Torso",
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         torsoPanel.add(rtPanel);
         torsoPanel.add(raPanel);
         mainPanel.add(torsoPanel);
@@ -116,11 +124,12 @@ public class CriticalView extends IView {
         ctPanel.removeAll();
         headPanel.removeAll();
 
-        //the CritListCellRenderer has a default size of 110x15 and 
-        //the border has a width of 1 so this should make each one the right size
+        // the CritListCellRenderer has a default size of 110x15 and
+        // the border has a width of 1 so this should make each one the right
+        // size
         Dimension size = new Dimension(112, 182);
         Dimension legSize = new Dimension(112, 92);
-        
+
         synchronized (unit) {
             for (int location = 0; location < unit.locations(); location++) {
                 // JPanel locationPanel = new JPanel();
@@ -151,7 +160,8 @@ public class CriticalView extends IView {
                                 }
                                 cs.setMount(m);
                             }
-                            StringBuffer critName = new StringBuffer(m.getName());
+                            StringBuffer critName = new StringBuffer(
+                                    m.getName());
                             if (critName.length() > 25) {
                                 critName.setLength(25);
                                 critName.append("...");
@@ -173,24 +183,33 @@ public class CriticalView extends IView {
                 if (critNames.size() == 0) {
                     critNames.add(MtfFile.EMPTY);
                 }
-                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(critNames, getMech(), refresh, showEmpty);
+                DropTargetCriticalList criticalSlotList = new DropTargetCriticalList(
+                        critNames, getMech(), refresh, showEmpty);
                 criticalSlotList.setVisibleRowCount(critNames.size());
-                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                criticalSlotList
+                        .setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
                 criticalSlotList.setName(Integer.toString(location));
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+                criticalSlotList.setBorder(BorderFactory.createLineBorder(
+                        Color.BLACK, 1));
                 switch (location) {
                     case Mech.LOC_HEAD:
-                    	criticalSlotList.setSize(legSize);
+                        criticalSlotList.setSize(legSize);
                         criticalSlotList.setPreferredSize(legSize);
                         criticalSlotList.setMaximumSize(legSize);
-                        headPanel.add(criticalSlotList);              
+                        headPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_LARM:
                         if (unit instanceof QuadMech) {
-                            laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front Left Leg", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                            laPanel.setBorder(BorderFactory.createTitledBorder(
+                                    BorderFactory.createEmptyBorder(),
+                                    "Front Left Leg", TitledBorder.TOP,
+                                    TitledBorder.DEFAULT_POSITION));
                         } else {
-                            laPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Arm", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                            laPanel.setBorder(BorderFactory.createTitledBorder(
+                                    BorderFactory.createEmptyBorder(),
+                                    "Left Arm", TitledBorder.TOP,
+                                    TitledBorder.DEFAULT_POSITION));
                             // ((TitledBorder)
                             // laPanel.getBorder()).setTitleColor(Color.BLUE);
                         }
@@ -201,9 +220,15 @@ public class CriticalView extends IView {
                         break;
                     case Mech.LOC_RARM:
                         if (unit instanceof QuadMech) {
-                            raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front Right Leg", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                            raPanel.setBorder(BorderFactory.createTitledBorder(
+                                    BorderFactory.createEmptyBorder(),
+                                    "Front Right Leg", TitledBorder.TOP,
+                                    TitledBorder.DEFAULT_POSITION));
                         } else {
-                            raPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Arm", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                            raPanel.setBorder(BorderFactory.createTitledBorder(
+                                    BorderFactory.createEmptyBorder(),
+                                    "Right Arm", TitledBorder.TOP,
+                                    TitledBorder.DEFAULT_POSITION));
                         }
                         criticalSlotList.setSize(size);
                         criticalSlotList.setPreferredSize(size);
@@ -211,28 +236,34 @@ public class CriticalView extends IView {
                         raPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_CT:
-                    	criticalSlotList.setSize(size);
+                        criticalSlotList.setSize(size);
                         criticalSlotList.setPreferredSize(size);
                         criticalSlotList.setMaximumSize(size);
                         ctPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_LT:
-                    	criticalSlotList.setSize(size);
+                        criticalSlotList.setSize(size);
                         criticalSlotList.setPreferredSize(size);
                         criticalSlotList.setMaximumSize(size);
                         ltPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_RT:
-                    	criticalSlotList.setSize(size);
+                        criticalSlotList.setSize(size);
                         criticalSlotList.setPreferredSize(size);
                         criticalSlotList.setMaximumSize(size);
                         rtPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_LLEG:
                         if (unit instanceof QuadMech) {
-                            llPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Left Leg", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                            llPanel.setBorder(BorderFactory.createTitledBorder(
+                                    BorderFactory.createEmptyBorder(),
+                                    "Rear Left Leg", TitledBorder.TOP,
+                                    TitledBorder.DEFAULT_POSITION));
                         } else {
-                            llPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Leg", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                            llPanel.setBorder(BorderFactory.createTitledBorder(
+                                    BorderFactory.createEmptyBorder(),
+                                    "Left Leg", TitledBorder.TOP,
+                                    TitledBorder.DEFAULT_POSITION));
                         }
                         criticalSlotList.setSize(legSize);
                         criticalSlotList.setPreferredSize(legSize);
@@ -241,9 +272,15 @@ public class CriticalView extends IView {
                         break;
                     case Mech.LOC_RLEG:
                         if (unit instanceof QuadMech) {
-                            rlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Right Leg", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                            rlPanel.setBorder(BorderFactory.createTitledBorder(
+                                    BorderFactory.createEmptyBorder(),
+                                    "Rear Right Leg", TitledBorder.TOP,
+                                    TitledBorder.DEFAULT_POSITION));
                         } else {
-                            rlPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Leg", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                            rlPanel.setBorder(BorderFactory.createTitledBorder(
+                                    BorderFactory.createEmptyBorder(),
+                                    "Right Leg", TitledBorder.TOP,
+                                    TitledBorder.DEFAULT_POSITION));
                         }
                         criticalSlotList.setSize(legSize);
                         criticalSlotList.setPreferredSize(legSize);

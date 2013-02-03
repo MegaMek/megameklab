@@ -380,7 +380,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 continue;
             }
             //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isSpreadEquipment(mount.getType()) && !spreadAlreadyAdded.contains(mount.getType())) {
+                if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType()) && !spreadAlreadyAdded.contains(mount.getType())) {
                     equipmentList.addCrit(mount);
                     // keep track of spreadable equipment here, so it doesn't
                     // show up multiple times in the table
@@ -465,7 +465,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 mount = UnitUtil.updateTC(getMech(), equip);
                 success = mount != null;
             }
-        } else if (isMisc && UnitUtil.isSpreadEquipment(equip)) {
+        } else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
             mount = UnitUtil.createSpreadMounts(getMech(), equip);
             success = mount != null;
         } else {

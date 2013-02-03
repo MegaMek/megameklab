@@ -123,7 +123,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                 if (mount != null) {
                     popup.setAutoscrolls(true);
                     JMenuItem info;
-                    if (!UnitUtil.isSpreadEquipment(mount.getType())) {
+                    if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                         info = new JMenuItem("Remove " + mount.getName());
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {

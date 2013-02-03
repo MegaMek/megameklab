@@ -19,6 +19,8 @@ package megameklab.com.util.Mech;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -27,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
+import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
@@ -45,12 +48,57 @@ public class CriticalTransferHandler extends TransferHandler {
      */
     private static final long serialVersionUID = -5215375829853683877L;
     private Entity unit;
-    private int location;
+    private int location = -1;
     private RefreshListener refresh;
 
     public CriticalTransferHandler(Entity unit, RefreshListener refresh) {
         this.unit = unit;
         this.refresh = refresh;
+    }
+
+    @Override
+    public void exportDone(JComponent source, Transferable data, int action) {
+        if (data == null) {
+            return;
+        }
+        Mounted mounted = null;
+        try {
+            mounted = unit.getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (UnsupportedFlavorException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if ((source instanceof DropTargetCriticalList) && (mounted.getLocation() != Entity.LOC_NONE)) {
+            DropTargetCriticalList list = (DropTargetCriticalList)source;
+            int loc = Integer.parseInt(list.getName());
+            if (loc == mounted.getLocation()) {
+                return;
+            }
+            int slot = list.getSelectedIndex();
+            int startSlot = slot;
+            mounted = list.getMounted();
+            if (mounted == null) {
+                return;
+            }
+            if (UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
+                return;
+            }
+            while (slot > 0) {
+                slot--;
+                CriticalSlot cs = unit.getCritical(loc, slot);
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && cs.getMount().equals(mounted)) {
+                    startSlot = slot;
+                }
+            }
+            for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(unit, mounted.getType())); i++) {
+                unit.setCritical(loc, i, null);
+            }
+            UnitUtil.compactCriticals(unit);
+            refresh.refreshBuild();
+        }
     }
 
     @Override
@@ -66,23 +114,12 @@ public class CriticalTransferHandler extends TransferHandler {
             Transferable t = info.getTransferable();
             try {
                 Mounted eq = unit.getEquipment(Integer.parseInt((String) t.getTransferData(DataFlavor.stringFlavor)));
-
-                /*
-                 * commented out for now, because quads can mount stuff like
-                 * spot welders TODO: find a better way to do this if
-                 * (eq.getType() instanceof MiscType &&
-                 * (eq.getType().hasFlag(MiscType.F_CLUB) ||
-                 * eq.getType().hasFlag(MiscType.F_HAND_WEAPON))) { if (unit
-                 * instanceof QuadMech) { JOptionPane.showMessageDialog(null,
-                 * "Quads Cannot use Physcial Weapons!",
-                 * "Not Physicals For Quads", JOptionPane.INFORMATION_MESSAGE);
-                 * return false; }
-                 *
-                 * if (location != Mech.LOC_RARM && location != Mech.LOC_LARM) {
-                 * JOptionPane.showMessageDialog(null,
-                 * "Physical Weapons can only go in the arms!", "Bad Location",
-                 * JOptionPane.INFORMATION_MESSAGE); return false; } }
-                 */
+                if (location == eq.getLocation()) {
+                    return false;
+                }
+                /*if (UnitUtil.isFixedLocationSpreadEquipment(eq.getType())) {
+                    return false;
+                }*/
 
                 if (!UnitUtil.isValidLocation(unit, eq.getType(), location)) {
                     JOptionPane.showMessageDialog(null, eq.getName() + " can't be placed in " + unit.getLocationName(location) + "!", "Invalid Location", JOptionPane.INFORMATION_MESSAGE);
@@ -171,7 +208,7 @@ public class CriticalTransferHandler extends TransferHandler {
                         }
                     }
                     // No big splitables in the head!
-                    if ((emptyCrits < totalCrits) && ((nextLocation == Entity.LOC_DESTROYED) || (unit.getEmptyCriticals(location) + unit.getEmptyCriticals(nextLocation) < totalCrits))) {
+                    if ((emptyCrits < totalCrits) && ((nextLocation == Entity.LOC_DESTROYED) || ((unit.getEmptyCriticals(location) + unit.getEmptyCriticals(nextLocation)) < totalCrits))) {
                         throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());
                     }
 
@@ -235,6 +272,7 @@ public class CriticalTransferHandler extends TransferHandler {
                 }
             } catch (LocationFullException lfe) {
                 JOptionPane.showMessageDialog(null, lfe.getMessage(), "Location Full", JOptionPane.INFORMATION_MESSAGE);
+                return false;
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -243,10 +281,39 @@ public class CriticalTransferHandler extends TransferHandler {
         return false;
     }
 
+
+
     @Override
     public boolean canImport(TransferSupport info) {
         // Check for String flavor
         if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            return false;
+        }
+        // check the target component
+        if (!(info.getComponent() instanceof DropTargetCriticalList)) {
+            return false;
+        }
+        // check if the dragged mounted should be transferrable
+        Mounted mounted = null;
+        try {
+            mounted = unit.getEquipment(Integer.parseInt((String)info.getTransferable().getTransferData(DataFlavor.stringFlavor)));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (UnsupportedFlavorException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // not actually dragged a Mounted? not transferable
+        if (mounted == null) {
+            return false;
+        }
+        // stuff that has a fixed location is also not transferable
+        if (UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
+            return false;
+        }
+        // no transfer in the same location
+        if (Integer.parseInt(info.getComponent().getName()) == mounted.getLocation()) {
             return false;
         }
         return true;
@@ -254,14 +321,23 @@ public class CriticalTransferHandler extends TransferHandler {
 
     @Override
     protected Transferable createTransferable(JComponent c) {
-        JTable table = (JTable) c;
-        Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-        return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));
+        if (c instanceof JTable) {
+            JTable table = (JTable) c;
+            Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+            return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));
+        } else if (c instanceof DropTargetCriticalList) {
+            DropTargetCriticalList list = (DropTargetCriticalList)c;
+            Mounted mount = list.getMounted();
+            if (mount != null) {
+                return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));
+            }
+        }
+        return null;
     }
 
     @Override
     public int getSourceActions(JComponent c) {
-        return TransferHandler.LINK;
+        return TransferHandler.MOVE;
     }
 
     private void changeMountStatus(Mounted eq, int location, boolean rear) {
