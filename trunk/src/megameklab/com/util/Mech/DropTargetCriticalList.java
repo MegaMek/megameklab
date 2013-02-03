@@ -54,6 +54,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
 
     public DropTargetCriticalList(Vector<String> vector, Entity unit, RefreshListener refresh, boolean buildView) {
         super(vector);
+        setDragEnabled(true);
         // new DropTarget(this, this);
         this.unit = unit;
         this.refresh = refresh;
@@ -267,7 +268,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
     public void mouseReleased(MouseEvent e) {
     }
 
-    private Mounted getMounted() {
+    public Mounted getMounted() {
         CriticalSlot crit = getCrit();
         Mounted mount = null;
         try {
@@ -284,7 +285,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         return mount;
     }
 
-    private CriticalSlot getCrit() {
+    public CriticalSlot getCrit() {
         int slot = getSelectedIndex();
         int location = getCritLocation();
         CriticalSlot crit = null;
@@ -295,7 +296,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         return crit;
     }
 
-    private void removeMount() {
+    public void removeMount() {
         Mounted mounted = getMounted();
 
         if (mounted == null) {
@@ -330,7 +331,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
 
     }
 
-    private void removeCrit() {
+    public void removeCrit() {
         CriticalSlot crit = getCrit();
         Mounted mounted = getMounted();
 

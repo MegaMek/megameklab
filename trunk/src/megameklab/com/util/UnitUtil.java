@@ -105,7 +105,7 @@ public class UnitUtil {
      * @param eq
      * @return
      */
-    public static boolean isSpreadEquipment(EquipmentType eq) {
+    public static boolean isFixedLocationSpreadEquipment(EquipmentType eq) {
         return (eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
                         || eq.hasFlag(MiscType.F_PARTIAL_WING)
@@ -200,7 +200,7 @@ public class UnitUtil {
             return 2;
         }
 
-        if (UnitUtil.isSpreadEquipment(eq) || UnitUtil.isTSM(eq)
+        if (UnitUtil.isFixedLocationSpreadEquipment(eq) || UnitUtil.isTSM(eq)
                 || UnitUtil.isArmorOrStructure(eq)) {
             return 1;
         }
@@ -915,7 +915,7 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isSpreadEquipment(eq)) {
+        if (UnitUtil.isFixedLocationSpreadEquipment(eq)) {
             return false;
         }
 
@@ -962,7 +962,7 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isSpreadEquipment(eq)) {
+        if (UnitUtil.isFixedLocationSpreadEquipment(eq)) {
             return false;
         }
 
