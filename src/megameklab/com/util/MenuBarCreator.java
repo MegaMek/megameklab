@@ -17,9 +17,7 @@
 package megameklab.com.util;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -60,7 +58,6 @@ import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.dialog.UnitViewerDialog;
-import megameklab.com.ui.dialog.UnitViewerDialog;
 
 public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
@@ -98,16 +95,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuHelpFluff_actionPerformed();
-            }
-        });
-        help.add(item);
-
-        item = new JMenuItem();
-        item.setText("Equipment Database");
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jMenuCreateEquipmentFile_actionPerformed();
             }
         });
         help.add(item);
@@ -333,7 +320,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             });
             unitMenu.add(item);
         }
-        
+
         if (!(unit instanceof Infantry) || (unit instanceof BattleArmor)) {
             item = new JMenuItem();
             item.setText("Infantry");
@@ -347,7 +334,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             });
             unitMenu.add(item);
         }
-        
+
         file.add(unitMenu);
 
         JMenu loadMenu = new JMenu("Load");
@@ -411,7 +398,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         file.add(item);
 
         JMenu exportMenu = new JMenu("Export");
-        
+
         item = new JMenuItem("to HTML");
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -419,7 +406,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
         });
         exportMenu.add(item);
-        
+
         item = new JMenuItem("to Text");
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -427,7 +414,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
         });
         exportMenu.add(item);
-        
+
         item = new JMenuItem("to Clipboard (text)");
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -435,9 +422,9 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
         });
         exportMenu.add(item);
-        
+
         file.add(exportMenu);
-        
+
         item = new JMenuItem("Configuration");
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(new ActionListener() {
@@ -842,12 +829,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         // then add child panel to the content pane.
         dlg.getContentPane().add(child);
-
-        // set the location of the dialog
-        Dimension dlgSize = dlg.getPreferredSize();
-        Dimension frmSize = getSize();
-        Point loc = getLocation();
-        dlg.setLocation((frmSize.width - dlgSize.width) / 2 + loc.x, (frmSize.height - dlgSize.height) / 2 + loc.y);
+        dlg.setLocationRelativeTo(parentFrame);
         dlg.setModal(true);
         dlg.setResizable(false);
         dlg.pack();
@@ -880,10 +862,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         dlg.getContentPane().add(child);
 
         // set the location of the dialog
-        Dimension dlgSize = dlg.getPreferredSize();
-        Dimension frmSize = getSize();
-        Point loc = getLocation();
-        dlg.setLocation((frmSize.width - dlgSize.width) / 2 + loc.x, (frmSize.height - dlgSize.height) / 2 + loc.y);
+        dlg.setLocationRelativeTo(parentFrame);
         dlg.setModal(true);
         dlg.setResizable(false);
         dlg.pack();
@@ -912,7 +891,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         new megameklab.com.ui.Mek.MainUI();
         parentFrame.dispose();
     }
-    
+
     private void jMenuLoadInfantry() {
     	new megameklab.com.ui.Infantry.MainUI();
         parentFrame.dispose();
@@ -1040,7 +1019,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JOptionPane.showMessageDialog(parentFrame, unit.getChassis() + " " + unit.getModel() + " saved to " + filePathName);
 
     }
-    
+
     public void jMenuExportEntityHTML_actionPerformed(ActionEvent event) {
 
         if (UnitUtil.validateUnit(unit).length() > 0) {
@@ -1049,7 +1028,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         String unitName = unit.getChassis() + " " + unit.getModel();
         MechView mview = new MechView(unit, false);
-        
+
         FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
 
         String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
@@ -1065,10 +1044,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         } else {
             return;
         }
-        
+
         try {
             FileOutputStream out = new FileOutputStream(filePathName);
-            PrintStream p = new PrintStream(out);            
+            PrintStream p = new PrintStream(out);
             p.println(mview.getMechReadout());
             p.close();
             out.close();
@@ -1076,7 +1055,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             ex.printStackTrace();
         }
     }
-    
+
     public void jMenuExportEntityText_actionPerformed(ActionEvent event) {
 
         if (UnitUtil.validateUnit(unit).length() > 0) {
@@ -1085,7 +1064,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         String unitName = unit.getChassis() + " " + unit.getModel();
         MechTextView mview = new MechTextView(unit, false);
-        
+
         FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
 
         String filePathName = new File(System.getProperty("user.dir").toString()).getAbsolutePath();
@@ -1101,10 +1080,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         } else {
             return;
         }
-        
+
         try {
             FileOutputStream out = new FileOutputStream(filePathName);
-            PrintStream p = new PrintStream(out);            
+            PrintStream p = new PrintStream(out);
             p.println(mview.getMechReadout());
             p.close();
             out.close();
@@ -1112,7 +1091,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             ex.printStackTrace();
         }
     }
-    
+
     public void jMenuExportEntityClipboard_actionPerformed(ActionEvent event) {
         MechTextView mview = new MechTextView(unit, false);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -1130,14 +1109,14 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unit = viewer.getChosenEntity();
             viewer.setVisible(false);
             viewer.dispose();
-            
+
             if(null == unit) {
                 return;
             }
-            
+
             CConfig.updateSaveFiles("");
             UnitUtil.updateLoadedMech(unit);
-            
+
             if (viewer.getChosenMechSummary().getSourceFile().getName().endsWith(".zip")) {
                 String fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
                 fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
@@ -1150,15 +1129,15 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.TANK);
-            
+
             unit = viewer.getChosenEntity();
             viewer.setVisible(false);
             viewer.dispose();
-            
+
             if(null == unit) {
                 return;
             }
-            
+
             if (!(unit instanceof Tank)) {
                 return;
             }
@@ -1168,17 +1147,17 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.BATTLE_ARMOR);
 
             unit = viewer.getChosenEntity();
-            
+
             viewer.setVisible(false);
             viewer.dispose();
-            
+
             if(null == unit) {
                 return;
             }
-            
+
             if (!(unit instanceof BattleArmor)) {
                 return;
-            }            
+            }
         }
         else if (unit instanceof Infantry) {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
@@ -1188,14 +1167,14 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unit = viewer.getChosenEntity();
             viewer.setVisible(false);
             viewer.dispose();
-            
+
             if(null == unit) {
                 return;
             }
-            
+
             if (!(unit instanceof Infantry)) {
                 return;
-            }       
+            }
         }
         parentFrame.setEntity(unit);
         reload();
@@ -1276,10 +1255,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         parentFrame.reloadTabs();
     }
 
-    private void jMenuCreateEquipmentFile_actionPerformed() {
-       // new EquipmentViewerDialog(parentFrame);
-    }
-
     public void setUnit(Entity unit) {
         this.unit = unit;
     }
@@ -1287,7 +1262,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     @Override
     public void lostOwnership(Clipboard arg0, Transferable arg1) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }
