@@ -154,7 +154,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void resetCrits() {
         for (Mounted mount : unit.getEquipment()) {
-            if (!UnitUtil.isSpreadEquipment(mount.getType())) {
+            if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 UnitUtil.removeCriticals(getMech(), mount);
                 UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }

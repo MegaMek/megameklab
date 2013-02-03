@@ -26,11 +26,9 @@ import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -53,6 +51,11 @@ import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 import megameklab.com.util.Mech.CriticalTransferHandler;
 
+/**
+ * This IView shows all the equipment that's not yet been assigned a location
+ * @author beerockxs
+ *
+ */
 public class BuildView extends IView implements ActionListener, MouseListener {
 
     /**
@@ -96,9 +99,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         setLayout(new BorderLayout());
         this.add(equipmentScroll, BorderLayout.CENTER);
-        //this.add(equipmentScroll);
-        // loadEquipmentTable();
-        this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Unallocated Equipment", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Unallocated Equipment", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -203,7 +204,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private boolean isEngineHeatSink(Mounted mount) {
-        if (mount.getLocation() == Entity.LOC_NONE && UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)) {
+        if ((mount.getLocation() == Entity.LOC_NONE) && UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)) {
             if(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 //only single compact HS should be used for engine sinks
                 return false;

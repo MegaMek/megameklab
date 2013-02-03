@@ -6,6 +6,7 @@ V 0.1.22-dev
 + Bug: extra crits when loading unit with crit-using IS or armor and using 
     reset button in build tab
 + Bug 50: fixed location equipment can't be added correctly and shouldn't be removed on reset
++ Drag and Drop for moving stuff from location to location in mech build view
 
 V 0.1.21
 + Bug: stealth armor bug

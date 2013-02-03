@@ -107,7 +107,6 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 }
                 label.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
             }
-
         } else if (useColor) {
             label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EMPTY));
             label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
