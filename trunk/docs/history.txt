@@ -7,6 +7,7 @@ V 0.1.22-dev
     reset button in build tab
 + Bug 50: fixed location equipment can't be added correctly and shouldn't be removed on reset
 + Drag and Drop for moving stuff from location to location in mech build view
++ MASC and Supercharger bug fix
 
 V 0.1.21
 + Bug: stealth armor bug

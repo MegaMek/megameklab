@@ -169,7 +169,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isMASC(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_SUPERCHARGER));
     }
 
     /**
@@ -874,7 +874,7 @@ public class UnitUtil {
         System.out.println("enhancements removal finished.");
     }
 
-    public static void updateEnhancments(Mech unit, boolean hasMASC,
+    public static void updateEnhancements(Mech unit, boolean hasMASC,
             boolean hasTSM) {
         UnitUtil.removeEnhancements(unit);
         if (hasTSM) {

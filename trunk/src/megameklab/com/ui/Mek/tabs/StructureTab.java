@@ -49,6 +49,7 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LandAirMech;
 import megamek.common.Mech;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
@@ -818,7 +819,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     UnitUtil.updateJumpJets(getMech(),
                             (Integer) jumpMP.getValue(), getJumpJetType());
                 } else if (combo.equals(enhancement)) {
-                    UnitUtil.updateEnhancments(getMech(), hasMASC(), hasTSM());
+                    UnitUtil.updateEnhancements(getMech(), hasMASC(), hasTSM());
                 } else if (combo.equals(techLevel)) {
                     int unitTechLevel = techLevel.getSelectedIndex();
 
@@ -1870,7 +1871,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setEnhancementCombo();
             if (enhancement.getSelectedIndex() == -1) {
                 enhancement.setSelectedIndex(0);
-                UnitUtil.updateEnhancments(getMech(), false, false);
+                UnitUtil.updateEnhancements(getMech(), false, false);
             }
         }
 
@@ -1937,7 +1938,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private void setEnhancementCombo() {
         String selEnhance = "None";
-        if (getMech().hasMASC()) {
+        if ((getMech().hasMASC() && !getMech().hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) || getMech().hasMASCAndSuperCharger()) {
             selEnhance = "MASC";
         } else if (getMech().hasIndustrialTSM()) {
             selEnhance = "Industrial TSM";
