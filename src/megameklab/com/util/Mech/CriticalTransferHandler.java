@@ -96,6 +96,17 @@ public class CriticalTransferHandler extends TransferHandler {
             for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(unit, mounted.getType())); i++) {
                 unit.setCritical(loc, i, null);
             }
+            Mounted linkedBy = mounted.getLinkedBy();
+            if (linkedBy != null) {
+                UnitUtil.removeCriticals(unit, linkedBy);
+                try {
+                    unit.addEquipment(linkedBy, mounted.getLocation(), linkedBy.isRearMounted());
+                } catch (LocationFullException e) {
+                    UnitUtil.changeMountStatus(unit, linkedBy, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                    linkedBy.setLinked(null);
+                    mounted.setLinkedBy(null);
+                }
+            }
             UnitUtil.compactCriticals(unit);
             refresh.refreshBuild();
         }
