@@ -483,7 +483,6 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeHeatSinks(Mech unit, int number) {
-        System.out.println("Removing heat sinks.");
         Vector<Mounted> toRemove = new Vector<Mounted>();
         int base = UnitUtil.getBaseChassisHeatSinks(unit,
                 unit.hasCompactHeatSinks());
@@ -556,7 +555,6 @@ public class UnitUtil {
             }
 
         }
-        System.out.println("Heat sink removal finished.");
     }
 
     /**
