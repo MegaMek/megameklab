@@ -14,7 +14,6 @@
 
 package megameklab.com.ui.dialog;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -30,10 +29,8 @@ import javax.swing.DefaultRowSorter;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -41,16 +38,13 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter.SortKey;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SortOrder;
-import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-import megamek.client.Client;
 import megamek.client.ui.Messages;
 import megamek.client.ui.swing.AdvancedSearchDialog;
 import megamek.client.ui.swing.MechViewPanel;
@@ -66,8 +60,6 @@ import megamek.common.MechView;
 import megamek.common.TechConstants;
 import megamek.common.UnitType;
 import megamek.common.loaders.EntityLoadingException;
-import megamek.common.preference.IClientPreferences;
-import megamek.common.preference.PreferenceManager;
 
 /**
  *
@@ -110,10 +102,10 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
     JFrame parentFrame;
 
     private MechSummary[] mechs;
-        
+
     private Entity chosenEntity;
     private MechSummary chosenMechSummary;
-    
+
     private MechTableModel unitModel;
     private MechSearchFilter searchFilter;
 
@@ -123,7 +115,7 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
     private TableRowSorter<MechTableModel> sorter;
 
     private int unitType = 0;
-    
+
     /** Creates new form UnitSelectorDialog */
     public UnitViewerDialog(JFrame frame, UnitLoadingDialog uld, int type) {
         super(frame, true);
@@ -163,7 +155,7 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         lblWeight = new JLabel(Messages.getString("MechSelectorDialog.m_labelWeightClass"));
         lblFilter = new JLabel(Messages.getString("MechSelectorDialog.m_labelFilter"));
         lblImage = new JLabel();
-   
+
         getContentPane().setLayout(new GridBagLayout());
 
         scrTableUnits.setMinimumSize(new java.awt.Dimension(500, 400));
@@ -375,7 +367,7 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         chosenEntity = null;
         setVisible(false);
     }
-    
+
     private void filterUnits() {
         RowFilter<MechTableModel, Integer> unitTypeFilter = null;
         final int nType = comboType.getSelectedIndex();
@@ -389,7 +381,7 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
                     MechTableModel mechModel = entry.getModel();
                     MechSummary mech = mechModel.getMechSummary(entry.getIdentifier());
                     if (/* Weight */
-                            ((nClass == EntityWeightClass.SIZE) || (mech.getWeightClass() == nClass)) &&                
+                            ((nClass == EntityWeightClass.SIZE) || (mech.getWeightClass() == nClass)) &&
                             /*Technology Level*/
                             ((nType == TechConstants.T_ALL)
                                 || (nType == mech.getType())
@@ -411,13 +403,13 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
                                      || (mech.getType() == TechConstants.T_CLAN_ADVANCED)
                                      || (mech.getType() == TechConstants.T_CLAN_EXPERIMENTAL)
                                      || (mech.getType() == TechConstants.T_CLAN_UNOFFICIAL))))
-                            && (mech.getUnitType().equals(UnitType.getTypeName(unitType)))
+                            && ((((unitType != -1) && mech.getUnitType().equals(UnitType.getTypeName(unitType))) || (unitType == -1)))
                             /*Advanced Search*/
                             && ((searchFilter==null) || MechSearchFilter.isMatch(mech, searchFilter))) {
                         //yuck, I have to pull up a full Entity to get MechView to search in
                         //TODO: why not put mechview into the mech summary itself?
-                        if(txtFilter.getText().length() > 0) {                     
-                            String text = txtFilter.getText();                         
+                        if(txtFilter.getText().length() > 0) {
+                            String text = txtFilter.getText();
                             return mech.getName().toLowerCase().contains(text.toLowerCase());
                         }
                         return true;
@@ -447,15 +439,15 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
            return null;
       }
     }
-    
+
     public Entity getChosenEntity() {
         return chosenEntity;
     }
-    
+
     public MechSummary getChosenMechSummary() {
         return chosenMechSummary;
     }
-    
+
     void refreshUnitView() {
         boolean populateTextFields = true;
 
