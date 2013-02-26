@@ -636,6 +636,7 @@ public class ArmorView extends IView implements ChangeListener {
             }
 
         }
+        unit.setArmorTonnage(tons);
         refresh();
         if (refresh != null) {
             refresh.refreshStatus();
@@ -652,6 +653,7 @@ public class ArmorView extends IView implements ChangeListener {
         } else {
             unit.initializeArmor(value, location);
         }
+        unit.setArmorTonnage(unit.getArmorWeight());
         if (refresh != null) {
             refresh.refreshStatus();
             refresh.refreshArmor();
