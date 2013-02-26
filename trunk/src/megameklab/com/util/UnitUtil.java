@@ -108,7 +108,7 @@ public class UnitUtil {
     public static boolean isFixedLocationSpreadEquipment(EquipmentType eq) {
         return (eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || eq.hasFlag(MiscType.F_PARTIAL_WING)
+                        || (eq.hasFlag(MiscType.F_PARTIAL_WING) && eq.hasFlag(MiscType.F_MECH_EQUIPMENT))
                         || eq.hasFlag(MiscType.F_NULLSIG)
                         || eq.hasFlag(MiscType.F_VOIDSIG)
                         || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
