@@ -28,6 +28,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
@@ -624,6 +625,34 @@ public class PrintVTOL implements Printable {
         if (totalArmor > 13) {
             fontSize = 6;
             pipShift[0] = pipShift[1] = 4;
+        }
+
+        if (totalArmor > 16) {
+            fontSize = 7;
+            float[] firstColStart = new float[] {472, 253};
+            float[] firstColEnd = new float[] {472, 305};
+            float[] secondColStart = new float[] {478, 253};
+            float[] secondColEnd = new float[] {478, 305};
+            int firstColPips = totalArmor / 2;
+            int secondColPips = (totalArmor / 2);
+            if (secondImage) {
+                firstColStart[1] += secondPageMargin;
+                firstColEnd[1] += secondPageMargin;
+                secondColStart[1] += secondPageMargin;
+                secondColStart[1] += secondPageMargin;
+            }
+            Vector<float[]> first = ImageHelper.getPointsAlongLine(firstColStart, firstColEnd, firstColPips);
+            Vector<float[]> second = ImageHelper.getPointsAlongLine(secondColStart, secondColEnd, secondColPips);
+            for (float[] pip : first) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, pip[0], pip[1], fontSize);
+            }
+            for (float[] pip : second) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, pip[0], pip[1], fontSize);
+            }
+            if ((totalArmor%2) != 0) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, 475, 310, fontSize);
+            }
+            return;
         }
 
         if (secondImage) {
