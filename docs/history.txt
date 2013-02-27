@@ -9,6 +9,7 @@ V 0.1.22-dev
 + Drag and Drop for moving stuff from location to location in mech build view
 + MASC and Supercharger bug fix
 + VTOL with lots of rear armor printing fix
++ Spheroid Small Craft vectorized printout
 
 V 0.1.21
 + Bug: stealth armor bug

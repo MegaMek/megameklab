@@ -36,7 +36,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
-import megamek.common.Crew;
 import megamek.common.SmallCraft;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -49,13 +48,15 @@ public class PrintSmallCraftSpheroid implements Printable {
     private ArrayList<SmallCraft> smallCraftList;
     PrinterJob masterPrintJob;
 
-    public PrintSmallCraftSpheroid(ArrayList<SmallCraft> list, PrinterJob masterPrintJob) {
+    public PrintSmallCraftSpheroid(ArrayList<SmallCraft> list,
+            PrinterJob masterPrintJob) {
         smallCraftList = list;
         this.masterPrintJob = masterPrintJob;
 
     }
 
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+            throws PrinterException {
         if (pageIndex >= 1) {
             return Printable.NO_SUCH_PAGE;
         }
@@ -73,8 +74,12 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         System.gc();
 
-        g2d.drawImage(ImageHelper.getRecordSheet(smallCraft), 18, 18, 558, 738, Color.BLACK, null);
-        PrintSmallCraftSpheroidImage(g2d, ImageHelper.getFluffImage(smallCraft, ImageHelper.imageAero));
+        // g2d.drawImage(ImageHelper.getRecordSheet(smallCraft), 18, 18, 558,
+        // 738, Color.BLACK, null);
+        SpheroidSmallCraftTemplate.paint(g2d);
+        g2d.setColor(Color.BLACK);
+        PrintSmallCraftSpheroidImage(g2d,
+                ImageHelper.getFluffImage(smallCraft, ImageHelper.imageAero));
 
         printSmallCraftSpheroidData(g2d);
         printArmor(g2d);
@@ -90,28 +95,31 @@ public class PrintSmallCraftSpheroid implements Printable {
         // Internal Pips
         printStruct(g2d, smallCraft.get0SI());
 
-        g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
+        g2d.scale(pageFormat.getImageableWidth(),
+                pageFormat.getImageableHeight());
 
     }
 
     private void printSmallCraftSpheroidData(Graphics2D g2d) {
-        String smallCraftName = smallCraft.getChassis() + " " + smallCraft.getModel();
+        String smallCraftName = smallCraft.getChassis() + " "
+                + smallCraft.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, smallCraftName, true, 180, 10.0f));
-        g2d.drawString(smallCraftName, 49, 118);
+        g2d.drawString(smallCraftName, 52, 117);
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        if ((smallCraft.getCrew() != null) && !smallCraft.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Crew pilot = smallCraft.getCrew();
-            g2d.drawString(pilot.getName(), 270, 120);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
-        }
+        /*
+         * if ((smallCraft.getCrew() != null) &&
+         * !smallCraft.getCrew().getName().equalsIgnoreCase("unnamed")) { Crew
+         * pilot = smallCraft.getCrew(); g2d.drawString(pilot.getName(), 270,
+         * 120); g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
+         * g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132); }
+         */
 
-        g2d.drawString(Integer.toString(smallCraft.getWalkMP()), 99, 143);
-        g2d.drawString(Integer.toString(smallCraft.getRunMP()), 99, 154);
+        g2d.drawString(Integer.toString(smallCraft.getWalkMP()), 102, 142);
+        g2d.drawString(Integer.toString(smallCraft.getRunMP()), 102, 152.5f);
 
         int tonnage = (int) Math.ceil(smallCraft.getWeight());
 
@@ -119,16 +127,17 @@ public class PrintSmallCraftSpheroid implements Printable {
             tonnage += 5 - (tonnage % 5);
         }
 
-        g2d.drawString(Integer.toString(tonnage), 177, 132.5f);
+        g2d.drawString(Integer.toString(tonnage), 185, 131.5f);
 
-        int nextDataLine = 153;
+        int nextDataLine = 152;
         int startLine = 188;
         int lineFeed = 8;
 
         switch (smallCraft.getTechLevel()) {
 
             case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine,
+                        nextDataLine);
                 nextDataLine += lineFeed;
                 break;
             case TechConstants.T_IS_TW_NON_BOX:
@@ -137,17 +146,20 @@ public class PrintSmallCraftSpheroid implements Printable {
                 break;
             case TechConstants.T_IS_ADVANCED:
             case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                ImageHelper.printCenterString(g2d, "(Advanced)", font,
+                        startLine, nextDataLine);
                 nextDataLine += lineFeed;
                 break;
             case TechConstants.T_IS_EXPERIMENTAL:
             case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                ImageHelper.printCenterString(g2d, "(Experimental)", font,
+                        startLine, nextDataLine);
                 nextDataLine += lineFeed;
                 break;
             case TechConstants.T_IS_UNOFFICIAL:
             case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                ImageHelper.printCenterString(g2d, "(Unofficial)", font,
+                        startLine, nextDataLine);
                 nextDataLine += lineFeed;
                 break;
         }
@@ -163,16 +175,18 @@ public class PrintSmallCraftSpheroid implements Printable {
         } else if (smallCraft.isClan()) {
             techBase = "Clan";
         }
-        g2d.drawString(techBase, 177, 143.5f);
+        g2d.drawString(techBase, 185, 142.5f);
 
-        if ((smallCraft.getSource() != null) && (smallCraft.getSource().trim().length() > 0)) {
+        if ((smallCraft.getSource() != null)
+                && (smallCraft.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
             g2d.drawString(sourceFluff, 138, nextDataLine);
 
-            font = UnitUtil.getNewFont(g2d, smallCraft.getSource(), false, 51, 8.0f);
+            font = UnitUtil.getNewFont(g2d, smallCraft.getSource(), false, 51,
+                    8.0f);
 
             g2d.setFont(font);
 
@@ -188,7 +202,8 @@ public class PrintSmallCraftSpheroid implements Printable {
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", smallCraft.getYear()), 177, nextDataLine);
+            g2d.drawString(String.format("%1$s", smallCraft.getYear()), 177,
+                    nextDataLine);
 
         }
 
@@ -205,10 +220,13 @@ public class PrintSmallCraftSpheroid implements Printable {
         if (bv != -1) {
             font = UnitUtil.deriveFont(true, 8);
             g2d.setFont(font);
-            g2d.drawString("BV: ", 35, 346.2f);
+            g2d.drawString("BV: ", 35, 348);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", smallCraft.calculateBattleValue(true, true)), 50, 346.2f);
+            g2d.drawString(
+                    String.format("%1$,d",
+                            smallCraft.calculateBattleValue(true, true)), 50,
+                    348);
         }
 
         // myFormatter = new DecimalFormat("#,###.##");
@@ -216,9 +234,11 @@ public class PrintSmallCraftSpheroid implements Printable {
         // smallCraft.getCost(true)),
         // 52, 346.2f);
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 6);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 745f);
+        g2d.drawString(
+                Integer.toString(Calendar.getInstance().get(Calendar.YEAR)),
+                40, 762);
     }
 
     private void printArmor(Graphics2D g2d) {
@@ -227,15 +247,32 @@ public class PrintSmallCraftSpheroid implements Printable {
         Font font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_NOSE), smallCraft.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 300, 139);
+        ImageHelper.printCenterString(
+                g2d,
+                String.format("%1$S (%2$s)",
+                        smallCraft.getThresh(Aero.LOC_NOSE),
+                        smallCraft.getArmor(Aero.LOC_NOSE)), g2d.getFont(),
+                445, 92);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_RWING), smallCraft.getArmor(Aero.LOC_RWING)), g2d.getFont(), 495, 310);
+        ImageHelper.printCenterString(
+                g2d,
+                String.format("%1$S (%2$s)",
+                        smallCraft.getThresh(Aero.LOC_RWING),
+                        smallCraft.getArmor(Aero.LOC_RWING)), g2d.getFont(),
+                520, 412);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_LWING), smallCraft.getArmor(Aero.LOC_LWING)), g2d.getFont(), 290, 310);
+        ImageHelper.printCenterString(
+                g2d,
+                String.format("%1$S (%2$s)",
+                        smallCraft.getThresh(Aero.LOC_LWING),
+                        smallCraft.getArmor(Aero.LOC_LWING)), g2d.getFont(),
+                270, 412);
 
-        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)", smallCraft.getThresh(Aero.LOC_AFT), smallCraft.getArmor(Aero.LOC_AFT)), g2d.getFont(), 398, 487);
+        ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)",
+                smallCraft.getThresh(Aero.LOC_AFT),
+                smallCraft.getArmor(Aero.LOC_AFT)), g2d.getFont(), 370, 508);
 
-        g2d.drawString(String.format("%1$S", smallCraft.get0SI()), 390, 268);
+        g2d.drawString(String.format("%1$S", smallCraft.get0SI()), 395, 269f);
     }
 
     private void printHeatSinks(Graphics2D g2d) {
@@ -244,14 +281,18 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         // Heat Sinks
         if (smallCraft.getHeatType() == Aero.HEAT_DOUBLE) {
-            g2d.drawString(String.format("%1$s (%2$s)", smallCraft.getHeatSinks(), smallCraft.getHeatSinks() * 2), 502, 535);
-            g2d.drawString("Double", 502, 543);
+            g2d.drawString(String.format("%1$s (%2$s)",
+                    smallCraft.getHeatSinks(), smallCraft.getHeatSinks() * 2),
+                    508, 540);
+            g2d.drawString("Double", 508, 546.5f);
         } else {
-            g2d.drawString(String.format("%1$s (%1$s)", smallCraft.getHeatSinks()), 502, 535);
-            g2d.drawString("Single", 502, 543);
+            g2d.drawString(
+                    String.format("%1$s (%1$s)", smallCraft.getHeatSinks()),
+                    508, 540);
+            g2d.drawString("Single", 508, 546.5f);
         }
 
-        Dimension column = new Dimension(504, 552);
+        Dimension column = new Dimension(510, 556);
         Dimension pipShift = new Dimension(9, 9);
 
         for (int pos = 1; pos <= smallCraft.getHeatSinks(); pos++) {
@@ -292,7 +333,8 @@ public class PrintSmallCraftSpheroid implements Printable {
 
                 pj.setPrintable(this, pageFormat);
                 smallCraft = smallCraftList.get(pos);
-                pj.setJobName(smallCraft.getChassis() + " " + smallCraft.getModel());
+                pj.setJobName(smallCraft.getChassis() + " "
+                        + smallCraft.getModel());
 
                 try {
                     pj.print(aset);
@@ -307,18 +349,15 @@ public class PrintSmallCraftSpheroid implements Printable {
     }
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn =
-            { 302, 167 };
-        float[] pipShift =
-            { 7, 7 };
-        float maxColumns = 25;
+        float[] topColumn = { 370, 105 };
+        float[] pipShift = { 7, 7 };
+        float maxColumns = 8;
 
         Vector<float[]> pipPlotter = new Vector<float[]>(200);
         for (int pos = 1; pos <= 200; pos++) {
             // ImageHelperAero.drawAeroArmorPip(g2d, topColumn[0],
             // topColumn[1]);
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if ((pos % maxColumns) == 0) {
                 topColumn[1] += pipShift[1];
@@ -334,7 +373,8 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         int pipSpace = 200 / totalArmor;
         for (int pos = 0; pos < 200; pos += pipSpace) {
-            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
+                    pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -342,16 +382,13 @@ public class PrintSmallCraftSpheroid implements Printable {
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[]
-            { 374, 303 };
-        float[] pipShift = new float[]
-            { 7, 7 };
-        float maxColumns = 6;
+        float[] topColumn = new float[] { 370, 310 };
+        float[] pipShift = new float[] { 7, 7 };
+        float maxColumns = 8;
 
         Vector<float[]> pipPlotter = new Vector<float[]>(132);
         for (int pos = 1; pos <= 132; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if ((pos % maxColumns) == 0) {
                 topColumn[1] += pipShift[1];
@@ -362,7 +399,8 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         int pipSpace = 132 / totalArmor;
         for (int pos = 0; pos < 132; pos += pipSpace) {
-            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
+                    pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -371,65 +409,26 @@ public class PrintSmallCraftSpheroid implements Printable {
     }
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[]
-            { 336f, 325 };
-        float[] pipShift = new float[]
-            { 6.3f, 7 };
 
-        int numberPerRow = 3;
-        int curretNumber = 0;
-        Vector<float[]> pipPlotter = new Vector<float[]>(132);
+        float[] topColumn = new float[] { 280, 220 };
+        float[] pipShift = new float[] { 7, 7 };
+        float maxColumns = 8;
 
-        for (int pos = 1; pos < 148; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
+        Vector<float[]> pipPlotter = new Vector<float[]>(200);
+        for (int pos = 1; pos <= 132; pos++) {
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
-
-            if (++curretNumber == numberPerRow) {
+            if ((pos % maxColumns) == 0) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
-
-                curretNumber = 0;
-                if (pos == 18) {
-                    topColumn[0] -= pipShift[0] * .8;
-                    numberPerRow++;
-                } else if (pos == 48) {
-                    topColumn[0] -= Math.abs(pipShift[0]) * 1.6;
-                } else if (pos == 76) {
-                    topColumn[0] -= Math.abs(pipShift[0]) * 1.6;
-                } else if (pos == 104) {
-                    numberPerRow = 13;
-                    topColumn[0] -= Math.abs(pipShift[0]) * 1.5;
-                } else if (pos == 130) {
-                    numberPerRow = 11;
-                    topColumn[0] -= Math.abs(pipShift[0]) * 1.5;
-                } else if (pos == 141) {
-                    numberPerRow = 8;
-                    topColumn[0] += Math.abs(pipShift[0]) * 3;
-                } else if (numberPerRow < 13) {
-                    if (numberPerRow == 7) {
-                        numberPerRow = 9;
-                        // topColumn[0] += Math.abs(pipShift[0]);
-                    } else if (numberPerRow == 9) {
-                        numberPerRow = 14;
-                        topColumn[0] -= pipShift[0] * 4;
-                    } else {
-                        numberPerRow++;
-                    }
-
-                    if (pipShift[0] < 0) {
-                        topColumn[0] += pipShift[0];
-                    }
-                } else {
-                    topColumn[0] += pipShift[0];
-                }
-
+                topColumn[0] += pipShift[0];
             }
         }
 
-        int pipSpace = 148 / totalArmor;
-        for (int pos = 0; pos < 148; pos += pipSpace) {
-            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+        int pipSpace = 200 / totalArmor;
+        for (int pos = 0; pos < 132; pos += pipSpace) {
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
+                    pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -437,68 +436,25 @@ public class PrintSmallCraftSpheroid implements Printable {
     }
 
     private void printRightArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[]
-            { 430f, 325 };
-        float[] pipShift = new float[]
-            { 6.3f, 7 };
+        float[] topColumn = new float[] { 460, 220 };
+        float[] pipShift = new float[] { 7, 7 };
+        float maxColumns = 8;
 
-        int numberPerRow = 3;
-        int curretNumber = 0;
-        Vector<float[]> pipPlotter = new Vector<float[]>(132);
-
-        for (int pos = 1; pos < 148; pos++) {
-            pipPlotter.add(new float[]
-                { topColumn[0], topColumn[1] });
-
+        Vector<float[]> pipPlotter = new Vector<float[]>(200);
+        for (int pos = 1; pos <= 132; pos++) {
+            pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
-
-            if (++curretNumber == numberPerRow) {
+            if ((pos % maxColumns) == 0) {
                 topColumn[1] += pipShift[1];
                 pipShift[0] *= -1;
-
-                curretNumber = 0;
-                if (pos == 18) {
-                    topColumn[0] += pipShift[0] * 2;
-                } else if (pos == 103) {
-                    numberPerRow = 13;
-                    topColumn[0] += pipShift[0] * 1.5;
-                } else if (pos == 116) {
-                    numberPerRow = 12;
-                    topColumn[0] += pipShift[0];
-                } else if (pos == 128) {
-                    numberPerRow = 11;
-                    topColumn[0] += pipShift[0] * 1.5;
-                } else if (pos == 139) {
-                    numberPerRow = 8;
-                    topColumn[0] += pipShift[0];
-                } else if (numberPerRow < 13) {
-                    if (numberPerRow == 7) {
-                        numberPerRow = 12;
-                        topColumn[0] += Math.abs(pipShift[0] * 4);
-                    } else if (numberPerRow == 6) {
-                        numberPerRow = 9;
-                        topColumn[0] -= pipShift[0] * 2;
-                    } else if (numberPerRow == 9) {
-                        numberPerRow = 14;
-                    } else {
-                        numberPerRow++;
-                    }
-
-                    if (pipShift[0] > 0) {
-                        topColumn[0] += pipShift[0];
-                    }
-                } else if (pipShift[0] > 0) {
-                    topColumn[0] += pipShift[0] * .8;
-                } else if (pipShift[0] < 0) {
-                    topColumn[0] += pipShift[0] * .2;
-                }
-
+                topColumn[0] += pipShift[0];
             }
         }
 
-        int pipSpace = 148 / totalArmor;
-        for (int pos = 0; pos < 148; pos += pipSpace) {
-            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+        int pipSpace = 200 / totalArmor;
+        for (int pos = 0; pos < 132; pos += pipSpace) {
+            ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
+                    pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }
@@ -508,16 +464,13 @@ public class PrintSmallCraftSpheroid implements Printable {
 
     private void printStruct(Graphics2D g2d, int totalArmor) {
         int posY = 369;
-        int posX = 269;
-        int[] topColumn = new int[]
-            { posY, posX };
-        int[] pipShift = new int[]
-            { 6, 6 };
+        int posX = 270;
+        int[] topColumn = new int[] { posY, posX };
+        int[] pipShift = new int[] { 6, 6 };
 
         Vector<int[]> pipPlotter = new Vector<int[]>(132);
         for (int pos = 1; pos <= 32; pos++) {
-            pipPlotter.add(new int[]
-                { topColumn[0], topColumn[1] });
+            pipPlotter.add(new int[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if ((pos % 8) == 0) {
                 topColumn[1] += pipShift[1];
@@ -528,7 +481,8 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         int pipSpace = (int) Math.floor(32 / totalArmor);
         for (int pos = 0; pos < 32; pos += pipSpace) {
-            ImageHelperAero.drawAeroISPip(g2d, pipPlotter.get(pos)[0], pipPlotter.get(pos)[1]);
+            ImageHelperAero.drawAeroISPip(g2d, pipPlotter.get(pos)[0],
+                    pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
                 return;
             }

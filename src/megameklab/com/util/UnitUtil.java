@@ -82,6 +82,7 @@ import megamek.common.weapons.StopSwarmAttack;
 import megamek.common.weapons.StreakLRMWeapon;
 import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.SwarmAttack;
+import megamek.common.weapons.SwarmWeaponAttack;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
@@ -987,7 +988,8 @@ public class UnitUtil {
 
         if ((eq instanceof LegAttack) || (eq instanceof SwarmAttack)
                 || (eq instanceof StopSwarmAttack)
-                || (eq instanceof InfantryRifleAutoRifleWeapon)) {
+                || (eq instanceof InfantryRifleAutoRifleWeapon)
+                || (eq instanceof SwarmWeaponAttack)) {
             return false;
         }
 
