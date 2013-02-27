@@ -63,8 +63,12 @@ public class ImageHelperAero {
     }
 
     public static void printAeroFuel(Aero aero, Graphics2D g2d) {
+        printAeroFuel(aero, g2d, 0);
+    }
+
+    public static void printAeroFuel(Aero aero, Graphics2D g2d, int xoffset) {
         int pointY = 330;
-        int pointX = 22;
+        int pointX = 22 + xoffset;
         String fuel = "Fuel: ";
 
         g2d.setFont(UnitUtil.getNewFont(g2d, fuel, false, 200, 7.0f));
@@ -77,14 +81,14 @@ public class ImageHelperAero {
     }
 
     public static void printAeroWeaponsNEquipment(Aero aero, Graphics2D g2d) {
-        int qtyPoint = 26;
-        int typePoint = 38;
-        int locPoint = 109;
-        int heatPoint = 133;
-        int shtPoint = 151;
-        int medPoint = 169;
-        int longPoint = 192;
-        int erPoint = 211;
+        int qtyPoint = 30;
+        int typePoint = 42;
+        int locPoint = 125;
+        int heatPoint = 145;
+        int shtPoint = 157;
+        int medPoint = 175;
+        int longPoint = 199;
+        int erPoint = 216;
         float linePoint = 204f;
         float maxHeight = 97.0f;
 
@@ -288,8 +292,8 @@ public class ImageHelperAero {
             ImageHelperAero.printCargo(aero, g2d, (int)linePoint);
         }
 
-        ImageHelper.printVehicleAmmo(aero, g2d, -20);
-        ImageHelperAero.printAeroFuel(aero, g2d);
+        ImageHelper.printVehicleAmmo(aero, g2d, -20, 8);
+        ImageHelperAero.printAeroFuel(aero, g2d, 8);
     }
 
     static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPlotter, float totalArmor, float maxArmor) {
@@ -333,7 +337,7 @@ public class ImageHelperAero {
             return;
         }
 
-        int pointX = 22;
+        int pointX = 30;
         double lineFeed = ImageHelper.getStringHeight(g2d, "H", g2d.getFont());
 
         Font font = UnitUtil.deriveFont(true, g2d.getFont().getSize2D());
