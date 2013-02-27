@@ -415,7 +415,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         float maxColumns = 8;
 
         Vector<float[]> pipPlotter = new Vector<float[]>(200);
-        for (int pos = 1; pos <= 132; pos++) {
+        for (int pos = 1; pos <= 200; pos++) {
             pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if ((pos % maxColumns) == 0) {
@@ -426,7 +426,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         }
 
         int pipSpace = 200 / totalArmor;
-        for (int pos = 0; pos < 132; pos += pipSpace) {
+        for (int pos = 0; pos < 200; pos += pipSpace) {
             ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
                     pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
@@ -441,7 +441,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         float maxColumns = 8;
 
         Vector<float[]> pipPlotter = new Vector<float[]>(200);
-        for (int pos = 1; pos <= 132; pos++) {
+        for (int pos = 1; pos <= 200; pos++) {
             pipPlotter.add(new float[] { topColumn[0], topColumn[1] });
             topColumn[0] += pipShift[0];
             if ((pos % maxColumns) == 0) {
@@ -452,7 +452,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         }
 
         int pipSpace = 200 / totalArmor;
-        for (int pos = 0; pos < 132; pos += pipSpace) {
+        for (int pos = 0; pos < 200; pos += pipSpace) {
             ImageHelperAero.drawAeroArmorPip(g2d, pipPlotter.get(pos)[0],
                     pipPlotter.get(pos)[1]);
             if (--totalArmor <= 0) {
