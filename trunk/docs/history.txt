@@ -10,6 +10,7 @@ V 0.1.22-dev
 + MASC and Supercharger bug fix
 + VTOL with lots of rear armor printing fix
 + Spheroid Small Craft vectorized printout
++ Raw type warnings removed
 
 V 0.1.21
 + Bug: stealth armor bug
