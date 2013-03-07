@@ -11,6 +11,7 @@ V 0.1.22-dev
 + VTOL with lots of rear armor printing fix
 + Spheroid Small Craft vectorized printout
 + Raw type warnings removed
++ Bug 60: Remove Lower Arm Actuator
 
 V 0.1.21
 + Bug: stealth armor bug

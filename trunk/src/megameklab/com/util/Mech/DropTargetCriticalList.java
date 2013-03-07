@@ -383,7 +383,12 @@ public class DropTargetCriticalList extends JList implements MouseListener {
 
     private void removeArm(int location) {
         unit.setCritical(location, 2, null);
-        removeHand(location);
+        // Only remove the next slot of it actually is a hand
+        if(unit.hasSystem(Mech.ACTUATOR_HAND, location)) {
+        	removeHand(location);
+        } else if (refresh != null) {
+            refresh.refreshAll();
+        }
     }
 
     private void addArm(int location) {
