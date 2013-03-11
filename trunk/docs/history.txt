@@ -12,6 +12,8 @@ V 0.1.22-dev
 + Spheroid Small Craft vectorized printout
 + Raw type warnings removed
 + Bug 60: Remove Lower Arm Actuator
++ Bug 63: Stealth Armor shouldn't get removed on reset click in build view
++ Bug: Fixed location equipment should be only deletable, not removable
 
 V 0.1.21
 + Bug: stealth armor bug
