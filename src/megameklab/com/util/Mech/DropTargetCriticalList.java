@@ -111,14 +111,17 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                 }
 
                 if (mount != null) {
-                    popup.setAutoscrolls(true);
-                    JMenuItem info = new JMenuItem("Remove " + mount.getName());
-                    info.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            removeCrit();
-                        }
-                    });
-                    popup.add(info);
+                    JMenuItem info;
+                    if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+                        popup.setAutoscrolls(true);
+                        info = new JMenuItem("Remove " + mount.getName());
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                removeCrit();
+                            }
+                        });
+                        popup.add(info);
+                    }
 
                     info = new JMenuItem("Delete " + mount.getName());
                     info.addActionListener(new ActionListener() {
