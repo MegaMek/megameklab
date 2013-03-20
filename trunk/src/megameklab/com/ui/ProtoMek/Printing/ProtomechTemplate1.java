@@ -16,12 +16,20 @@
 
 package megameklab.com.ui.ProtoMek.Printing;
 
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
@@ -33,8 +41,8 @@ public class ProtomechTemplate1 {
 	 * Paints the transcoded SVG image on the specified graphics context. You
 	 * can install a custom transformation on the graphics context to scale the
 	 * image.
-	 * 
-	 * @param g 
+	 *
+	 * @param g
 	 *            Graphics context.
 	 */
 	public static void paint(Graphics2D g) {
@@ -44,9 +52,9 @@ public class ProtomechTemplate1 {
 		Area clip = null;
 
 		float origAlpha = 1.0f;
-		Composite origComposite = ((Graphics2D)g).getComposite();
+		Composite origComposite = g.getComposite();
 		if (origComposite instanceof AlphaComposite) {
-			AlphaComposite origAlphaComposite = 
+			AlphaComposite origAlphaComposite =
 				(AlphaComposite)origComposite;
 			if (origAlphaComposite.getRule() == AlphaComposite.SRC_OVER) {
 				origAlpha = origAlphaComposite.getAlpha();
@@ -59,7 +67,7 @@ public class ProtomechTemplate1 {
 		float alpha__0 = origAlpha;		g.setComposite(AlphaComposite.getInstance(3, origAlpha));
 		Shape clip__0 = g.getClip();
 		AffineTransform defaultTransform__0 = g.getTransform();
-		
+
 		clip = new Area(g.getClip());
 		clip.intersect(new Area(new Rectangle2D.Double(0.0,0.0,612.0,792.0)));
 		g.setClip(clip);
@@ -739,8 +747,8 @@ public class ProtomechTemplate1 {
 		float alpha__0_26_0_0_0 = origAlpha;		g.setComposite(AlphaComposite.getInstance(3, origAlpha));
 		Shape clip__0_26_0_0_0 = g.getClip();
 		AffineTransform defaultTransform__0_26_0_0_0 = g.getTransform();
-		g.transform(new AffineTransform(0.7181000113487244f, 0.0f, 0.0f, 0.7156999707221985f, 309.8027038574219f, 19.313499450683594f));
-//		_0_26_0_0_0 is CompositeGraphicsNode
+		g.transform(new AffineTransform(0.23510000109672546f, 0.0f, 0.0f, 0.2354000061750412f, 309.8027038574219f, 19.313499450683594f));
+		//_0_26_0_0_0 is CompositeGraphicsNode
 		Shape clip__0_26_0_0_0_0 = g.getClip();
 		AffineTransform defaultTransform__0_26_0_0_0_0 = g.getTransform();
 		g.transform(new AffineTransform(0.982300877571106f, 0.0f, 0.0f, 0.982300877571106f, -0.0f, 0.12831844807260495f));
@@ -22280,7 +22288,7 @@ public class ProtomechTemplate1 {
 
 	/**
 	 * Returns the X of the bounding box of the original SVG image.
-	 * 
+	 *
 	 * @return The X of the bounding box of the original SVG image.
 	 */
 	public static int getOrigX() {
@@ -22289,7 +22297,7 @@ public class ProtomechTemplate1 {
 
 	/**
 	 * Returns the Y of the bounding box of the original SVG image.
-	 * 
+	 *
 	 * @return The Y of the bounding box of the original SVG image.
 	 */
 	public static int getOrigY() {
@@ -22298,7 +22306,7 @@ public class ProtomechTemplate1 {
 
 	/**
 	 * Returns the width of the bounding box of the original SVG image.
-	 * 
+	 *
 	 * @return The width of the bounding box of the original SVG image.
 	 */
 	public static int getOrigWidth() {
@@ -22307,7 +22315,7 @@ public class ProtomechTemplate1 {
 
 	/**
 	 * Returns the height of the bounding box of the original SVG image.
-	 * 
+	 *
 	 * @return The height of the bounding box of the original SVG image.
 	 */
 	public static int getOrigHeight() {

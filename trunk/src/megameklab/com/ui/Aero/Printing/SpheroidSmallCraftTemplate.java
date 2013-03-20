@@ -2271,8 +2271,8 @@ public class SpheroidSmallCraftTemplate {
         g.setComposite(AlphaComposite.getInstance(3, origAlpha));
         Shape clip__0_0_0_1_0_0_0 = g.getClip();
         AffineTransform defaultTransform__0_0_0_1_0_0_0 = g.getTransform();
-        g.transform(new AffineTransform(0.7181000113487244f, 0.0f, 0.0f,
-                0.7156999707221985f, 303.6669921875f, 16.35689926147461f));
+        g.transform(new AffineTransform(0.23510000109672546f, 0.0f, 0.0f,
+                0.2354000061750412f, 303.6669921875f, 16.35689926147461f));
         // _0_0_0_1_0_0_0 is CompositeGraphicsNode
         Shape clip__0_0_0_1_0_0_0_0 = g.getClip();
         AffineTransform defaultTransform__0_0_0_1_0_0_0_0 = g.getTransform();

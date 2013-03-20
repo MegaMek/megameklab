@@ -701,21 +701,18 @@ public class ImageHelperVehicle {
 
     }
 
-    public static void printVTOLWeaponsNEquipment(Tank tank, Graphics2D g2d) {
-        ImageHelperVehicle.printVTOLWeaponsNEquipment(tank, g2d, 0);
-    }
 
-    public static void printVTOLWeaponsNEquipment(Tank tank, Graphics2D g2d, float offset) {
-        int qtyPoint = 26;
-        int typePoint = 38;
-        int locPoint = 127;
-        int damagePoint = 150;
-        int minPoint = 166;
-        int shtPoint = 177;
-        int medPoint = 195;
-        int longPoint = 211;
+    public static void printVTOLWeaponsNEquipment(Tank tank, Graphics2D g2d, float offsetY, float offsetX) {
+        float qtyPoint = 26+offsetX;
+        float typePoint = 38+offsetX;
+        float locPoint = 127+offsetX;
+        float damagePoint = 150+offsetX;
+        float minPoint = 166+offsetX;
+        float shtPoint = 177+offsetX;
+        float medPoint = 195+offsetX;
+        float longPoint = 211+offsetX;
         float maxHeight = 130.3f;
-        float linePoint = 202f + offset;
+        float linePoint = 202f + offsetY;
 
         float lineFeed = 6.7f;
 
@@ -723,7 +720,7 @@ public class ImageHelperVehicle {
 
         ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Tank.LOC_TURRET + 1);
 
-        for (int pos = 0; pos <= Tank.LOC_TURRET; pos++) {
+        for (int pos = 0; pos <= tank.locations(); pos++) {
             equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
         }
 
@@ -775,7 +772,7 @@ public class ImageHelperVehicle {
 
         lineFeed = stringHeight;
 
-        for (int pos = Tank.LOC_BODY; pos <= VTOL.LOC_ROTOR; pos++) {
+        for (int pos = Tank.LOC_BODY; pos <= tank.locations(); pos++) {
 
             Hashtable<String, EquipmentInfo> eqHash = equipmentLocations.get(pos);
 
@@ -972,7 +969,7 @@ public class ImageHelperVehicle {
             g2d.drawString(chassisMods, qtyPoint, linePoint);
         }
 
-        ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
+        ImageHelper.printVehicleAmmo(tank, g2d, (int) offsetY, (int) offsetX);
     }
 
     static public void printArmorPoints(Graphics2D g2d, Vector<float[]> pipPoints, float totalArmor, boolean hasModularArmor) {
