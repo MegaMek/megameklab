@@ -83,7 +83,7 @@
 			source="1.6"
             fork="true"
             memoryinitialsize="256m"
-            memorymaximumsize="512m"
+            memorymaximumsize="1024m"
 		>
 		</javac>
 		<touch
