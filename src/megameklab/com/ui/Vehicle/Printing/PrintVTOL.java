@@ -48,33 +48,22 @@ import megameklab.com.util.UnitUtil;
 public class PrintVTOL implements Printable {
 
     private VTOL vtol = null;
-    private VTOL vtol2 = null;
     private ArrayList<VTOL> vtolList;
-    private int secondPageMargin = 373; // How far down the text should be
-    private boolean singlePrint = false;
     PrinterJob masterPrintJob;
 
-    // printed for a second vehicle.
-
-    public PrintVTOL(ArrayList<VTOL> list, boolean singlePrint, PrinterJob masterPrintJob) {
+    public PrintVTOL(ArrayList<VTOL> list, PrinterJob masterPrintJob) {
         vtolList = list;
-        this.singlePrint = singlePrint;
         this.masterPrintJob = masterPrintJob;
 
-        /*
-         * if (awtImage != null) { System.out.println("Width: " +
-         * awtImage.getWidth(null)); System.out.println("Height: " +
-         * awtImage.getHeight(null)); }
-         */
     }
 
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+            throws PrinterException {
         if (pageIndex >= 1) {
             return Printable.NO_SUCH_PAGE;
         }
 
         Graphics2D g2d = (Graphics2D) graphics;
-        // f.setPaper(this.paper);
         printImage(g2d, pageFormat);
         return Printable.PAGE_EXISTS;
     }
@@ -86,52 +75,43 @@ public class PrintVTOL implements Printable {
 
         System.gc();
 
-        g2d.drawImage(ImageHelper.getRecordSheet(vtol, false), 18, 18, 558, 368, null);
-
-        if (vtol2 == null) {
-            g2d.drawImage(ImageHelperVehicle.getTableImage(vtol), 18, 18 + secondPageMargin, 558, 366, null);
+        VTOLCommonTemplate.paint(g2d);
+        if (vtol.hasNoTurret()) {
+            VTOLNoTurretTemplate.paint(g2d);
         } else {
-            g2d.drawImage(ImageHelper.getRecordSheet(vtol2, false), 18, 18 + secondPageMargin, 558, 366, null);
+            VTOLTurretTemplate.paint(g2d);
         }
+        VTOLCatalystLogo.paint(g2d);
+        g2d.setColor(Color.black);
 
         printVTOLData(g2d);
         printArmor(g2d);
         printWeaponsNEquipment(g2d);
 
         // Armor Pips
-        printFrontArmor(g2d, vtol.getOArmor(Tank.LOC_FRONT), false);
-        printLeftArmor(g2d, vtol.getOArmor(Tank.LOC_LEFT), false);
-        printRightArmor(g2d, vtol.getOArmor(Tank.LOC_RIGHT), false);
-        printRearArmor(g2d, vtol.getOArmor(Tank.LOC_REAR), false);
-        printRotorArmor(g2d, vtol.getOArmor(VTOL.LOC_ROTOR), false);
+        printFrontArmor(g2d, vtol.getOArmor(Tank.LOC_FRONT));
+        printLeftArmor(g2d, vtol.getOArmor(Tank.LOC_LEFT));
+        printRightArmor(g2d, vtol.getOArmor(Tank.LOC_RIGHT));
+        printRearArmor(g2d, vtol.getOArmor(Tank.LOC_REAR));
+        printRotorArmor(g2d, vtol.getOArmor(VTOL.LOC_ROTOR));
+        if (!vtol.hasNoTurret()) {
+            printTurretArmor(g2d, vtol.getOArmor(VTOL.LOC_TURRET));
+        }
 
         // Internal Pips
-        printFrontStruct(g2d, vtol.getOInternal(Tank.LOC_FRONT), false);
-        printLeftStruct(g2d, vtol.getOInternal(Tank.LOC_LEFT), false);
-        printRightStruct(g2d, vtol.getOInternal(Tank.LOC_RIGHT), false);
-        printRearStruct(g2d, vtol.getOInternal(Tank.LOC_REAR), false);
-        printRotorStruct(g2d, vtol.getOInternal(VTOL.LOC_ROTOR), false);
-
-        if (vtol2 != null) {
-            // Armor Pips
-            printFrontArmor(g2d, vtol2.getOArmor(Tank.LOC_FRONT), true);
-            printLeftArmor(g2d, vtol2.getOArmor(Tank.LOC_LEFT), true);
-            printRightArmor(g2d, vtol2.getOArmor(Tank.LOC_RIGHT), true);
-            printRearArmor(g2d, vtol2.getOArmor(Tank.LOC_REAR), true);
-            printRotorArmor(g2d, vtol2.getOArmor(VTOL.LOC_ROTOR), true);
-
-            // Internal Pips
-            printFrontStruct(g2d, vtol2.getOInternal(Tank.LOC_FRONT), true);
-            printLeftStruct(g2d, vtol2.getOInternal(Tank.LOC_LEFT), true);
-            printRightStruct(g2d, vtol2.getOInternal(Tank.LOC_RIGHT), true);
-            printRearStruct(g2d, vtol2.getOInternal(Tank.LOC_REAR), true);
-            printRotorStruct(g2d, vtol2.getOInternal(VTOL.LOC_ROTOR), true);
-
+        printFrontStruct(g2d, vtol.getOInternal(Tank.LOC_FRONT));
+        printLeftStruct(g2d, vtol.getOInternal(Tank.LOC_LEFT));
+        printRightStruct(g2d, vtol.getOInternal(Tank.LOC_RIGHT));
+        printRearStruct(g2d, vtol.getOInternal(Tank.LOC_REAR));
+        printRotorStruct(g2d, vtol.getOInternal(VTOL.LOC_ROTOR));
+        if (!vtol.hasNoTurret()) {
+            printTurretStruct(g2d, vtol.getOInternal(VTOL.LOC_TURRET));
         }
 
         printVTOLImage(g2d);
 
-        g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
+        g2d.scale(pageFormat.getImageableWidth(),
+                pageFormat.getImageableHeight());
 
     }
 
@@ -139,31 +119,33 @@ public class PrintVTOL implements Printable {
         String VTOLName = vtol.getChassis() + " " + vtol.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, VTOLName, true, 180, 10.0f));
-        g2d.drawString(VTOLName, 49, 120);
+        g2d.drawString(VTOLName, 55, 119);
 
-        Font font = UnitUtil.deriveFont(true, 15.0f);
+        Font font = UnitUtil.deriveFont(true, 13.5f);
         g2d.setFont(font);
 
         if (vtol instanceof SupportVTOL) {
-            g2d.drawString("Support", 70, 89);
+            g2d.drawString("SUPPORT", 73, 86.5f);
         }
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        if ((vtol.getCrew() != null) && !vtol.getCrew().getName().equalsIgnoreCase("unnamed")) {
+        if ((vtol.getCrew() != null)
+                && !vtol.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = vtol.getCrew();
-            g2d.drawString(pilot.getName(), 270, 120);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132);
+            g2d.drawString(pilot.getName(), 276, 120);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 301, 131);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 371, 132);
         }
 
-        g2d.drawString(Integer.toString(vtol.getWalkMP()), 79, 144);
+        g2d.drawString(Integer.toString(vtol.getWalkMP()), 85, 144);
         if (!vtol.hasWorkingMisc(MiscType.F_MASC, MiscType.S_JETBOOSTER)) {
-            g2d.drawString(Integer.toString(vtol.getRunMP()), 79, 155);
+            g2d.drawString(Integer.toString(vtol.getRunMP()), 85, 154);
         } else {
             int mascMP = vtol.getRunMP();
-            g2d.drawString(Integer.toString(vtol.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+            g2d.drawString(Integer.toString(vtol.getRunMPwithoutMASC()) + " ["
+                    + mascMP + "]", 85, 154);
         }
 
         String engineName = "Fusion Engine";
@@ -191,30 +173,24 @@ public class PrintVTOL implements Printable {
                 break;
         }
 
-        g2d.drawString(engineName, 79, 164);
+        g2d.drawString(engineName, 85, 165);
 
         if (vtol.getWeight() >= 5) {
             int tonnage = (int) Math.ceil(vtol.getWeight());
-
-            g2d.drawString(Integer.toString(tonnage), 177, 134);
+            g2d.drawString(Integer.toString(tonnage), 183, 133);
         } else {
-            // DecimalFormatSymbols unusualSymbols =
-            // new DecimalFormatSymbols();
-            // unusualSymbols.setDecimalSeparator('.');
-            // unusualSymbols.setGroupingSeparator(',');
-            // DecimalFormat myFormatter = new DecimalFormat("#.###",
-            // unusualSymbols);
-            g2d.drawString(String.format("%1$,d", vtol.getWeight()), 177, 134);
+            g2d.drawString(String.format("%1$,d", vtol.getWeight()), 183, 133);
         }
 
         int nextDataLine = 153;
-        int startLine = 188;
+        float startLine = 200;
         int lineFeed = 8;
 
         switch (vtol.getTechLevel()) {
 
             case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
+                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine,
+                        nextDataLine);
                 nextDataLine += lineFeed;
                 break;
             case TechConstants.T_IS_TW_NON_BOX:
@@ -223,17 +199,20 @@ public class PrintVTOL implements Printable {
                 break;
             case TechConstants.T_IS_ADVANCED:
             case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
+                ImageHelper.printCenterString(g2d, "(Advanced)", font,
+                        startLine, nextDataLine);
                 nextDataLine += lineFeed;
                 break;
             case TechConstants.T_IS_EXPERIMENTAL:
             case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
+                ImageHelper.printCenterString(g2d, "(Experimental)", font,
+                        startLine, nextDataLine);
                 nextDataLine += lineFeed;
                 break;
             case TechConstants.T_IS_UNOFFICIAL:
             case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
+                ImageHelper.printCenterString(g2d, "(Unofficial)", font,
+                        startLine, nextDataLine);
                 nextDataLine += lineFeed;
                 break;
         }
@@ -249,31 +228,33 @@ public class PrintVTOL implements Printable {
         } else if (vtol.isClan()) {
             techBase = "Clan";
         }
-        g2d.drawString(techBase, 177, 145);
+        g2d.drawString(techBase, 183, 144.5f);
 
-        if ((vtol.getSource() != null) && (vtol.getSource().trim().length() > 0)) {
+        if ((vtol.getSource() != null)
+                && (vtol.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(sourceFluff, 138, nextDataLine);
+            g2d.drawString(sourceFluff, 150, nextDataLine);
 
             font = UnitUtil.getNewFont(g2d, vtol.getSource(), false, 51, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(vtol.getSource(), 177, nextDataLine);
+            g2d.drawString(vtol.getSource(), 183, nextDataLine);
 
         } else {
             String yearFluff = "Year: ";
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(yearFluff, 138, nextDataLine);
+            g2d.drawString(yearFluff, 150, nextDataLine);
 
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
 
-            g2d.drawString(String.format("%1$s", vtol.getYear()), 177, nextDataLine);
+            g2d.drawString(String.format("%1$s", vtol.getYear()), 183,
+                    nextDataLine);
 
         }
 
@@ -287,10 +268,12 @@ public class PrintVTOL implements Printable {
         if (bv != -1) {
             font = UnitUtil.deriveFont(true, 8);
             g2d.setFont(font);
-            g2d.drawString("BV: ", 35, 357);
+            g2d.drawString("BV: ", 35, 365);
             font = UnitUtil.deriveFont(false, 8);
             g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", vtol.calculateBattleValue(true, true)), 50, 357);
+            g2d.drawString(
+                    String.format("%1$,d",
+                            vtol.calculateBattleValue(true, true)), 50, 365);
         }
 
         // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
@@ -302,185 +285,12 @@ public class PrintVTOL implements Printable {
             g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(vtol), 400, 55);
         }
 
-        font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 374.5f);
-
-        if (vtol2 != null) {
-            printVTOL2Data(g2d);
-        } else {
-            g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 745f);
-        }
-    }
-
-    private void printVTOL2Data(Graphics2D g2d) {
-        String VTOLName = vtol2.getChassis() + " " + vtol2.getModel();
-
-        g2d.setFont(UnitUtil.getNewFont(g2d, VTOLName, true, 180, 10.0f));
-        g2d.drawString(VTOLName, 49, 493);
-
-        Font font = UnitUtil.deriveFont(true, 15.0f);
+        font = UnitUtil.deriveFont(true, 6.5f);
         g2d.setFont(font);
 
-        if (vtol2 instanceof SupportVTOL) {
-            g2d.drawString("Support", 70, 89 + secondPageMargin);
-        }
-
-        font = UnitUtil.deriveFont(8.0f);
-        g2d.setFont(font);
-
-        if ((vtol2.getCrew() != null) && !vtol2.getCrew().getName().equalsIgnoreCase("unnamed")) {
-            Crew pilot = vtol2.getCrew();
-            g2d.drawString(pilot.getName(), 270, 120 + secondPageMargin);
-            g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132 + secondPageMargin);
-            g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132 + secondPageMargin);
-        }
-
-        g2d.drawString(Integer.toString(vtol2.getWalkMP()), 79, 515);
-        if (!vtol2.hasWorkingMisc(MiscType.F_MASC, MiscType.S_JETBOOSTER)) {
-            g2d.drawString(Integer.toString(vtol2.getRunMP()), 79, 526);
-        } else {
-            int mascMP = vtol2.getRunMP();
-            g2d.drawString(Integer.toString(vtol2.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 526);
-        }
-
-        String engineName = "Fusion Engine";
-
-        switch (vtol2.getEngine().getEngineType()) {
-            case Engine.COMBUSTION_ENGINE:
-                engineName = "I.C.E.";
-                break;
-            case Engine.LIGHT_ENGINE:
-                engineName = "Light Fusion Engine";
-                break;
-            case Engine.XL_ENGINE:
-                engineName = "XL Fusion Engine";
-                break;
-            case Engine.XXL_ENGINE:
-                engineName = "XXL Fusion Engine";
-                break;
-            case Engine.COMPACT_ENGINE:
-                engineName = "Compact Fusion Engine";
-                break;
-            case Engine.FUEL_CELL:
-                engineName = "Fuel Cell";
-                break;
-            default:
-                break;
-        }
-
-        g2d.drawString(engineName, 79, 537);
-
-        if (vtol2.getWeight() >= 5) {
-            int tonnage = (int) Math.ceil(vtol2.getWeight());
-
-            g2d.drawString(Integer.toString(tonnage), 177, 505);
-        } else {
-            // DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
-            // unusualSymbols.setDecimalSeparator('.');
-            // unusualSymbols.setGroupingSeparator(',');
-            // DecimalFormat myFormatter = new DecimalFormat("#.###",
-            // unusualSymbols);
-            g2d.drawString(String.format("%1$,d", vtol2.getWeight()), 177, 505);
-        }
-
-        int nextDataLine = 526;
-        int startLine = 188;
-        int lineFeed = 8;
-
-        switch (vtol2.getTechLevel()) {
-
-            case TechConstants.T_INTRO_BOXSET:
-                ImageHelper.printCenterString(g2d, "(Intro)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_CLAN_TW:
-                break;
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_CLAN_ADVANCED:
-                ImageHelper.printCenterString(g2d, "(Advanced)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                ImageHelper.printCenterString(g2d, "(Experimental)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                ImageHelper.printCenterString(g2d, "(Unofficial)", font, startLine, nextDataLine);
-                nextDataLine += lineFeed;
-                break;
-        }
-
-        String techBase = "Inner Sphere";
-
-        if (vtol2.isMixedTech()) {
-            if (vtol2.isClan()) {
-                techBase = "Mixed Tech (Clan)";
-            } else {
-                techBase = "Mixed Tech (I.S.)";
-            }
-        } else if (vtol2.isClan()) {
-            techBase = "Clan";
-        }
-        g2d.drawString(techBase, 177, 145);
-
-        if ((vtol2.getSource() != null) && (vtol2.getSource().trim().length() > 0)) {
-            String sourceFluff = "Era: ";
-            font = UnitUtil.deriveFont(true, 8.0f);
-            g2d.setFont(font);
-
-            g2d.drawString(sourceFluff, 138, nextDataLine);
-
-            font = UnitUtil.getNewFont(g2d, vtol2.getSource(), false, 51, 8.0f);
-            g2d.setFont(font);
-
-            g2d.drawString(vtol2.getSource(), 177, nextDataLine);
-
-        } else {
-            String yearFluff = "Year: ";
-            font = UnitUtil.deriveFont(true, 8.0f);
-            g2d.setFont(font);
-
-            g2d.drawString(yearFluff, 138, nextDataLine);
-
-            font = UnitUtil.deriveFont(8.0f);
-            g2d.setFont(font);
-
-            g2d.drawString(String.format("%1$s", vtol2.getYear()), 177, nextDataLine);
-
-        }
-
-        // // Cost/BV
-        // DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
-        // unusualSymbols.setDecimalSeparator('.');
-        // unusualSymbols.setGroupingSeparator(',');
-        // DecimalFormat myFormatter = new DecimalFormat("#,###",
-        // unusualSymbols);
-        double bv = vtol2.calculateBattleValue(true, true);
-        if (bv != -1) {
-            font = UnitUtil.deriveFont(true, 8);
-            g2d.setFont(font);
-            g2d.drawString("BV: ", 35, 357 + secondPageMargin);
-            font = UnitUtil.deriveFont(false, 8);
-            g2d.setFont(font);
-            g2d.drawString(String.format("%1$,d", vtol2.calculateBattleValue(true, true)), 50, 357 + secondPageMargin);
-        }
-        // myFormatter = new DecimalFormat("#,###.##", unusualSymbols);
-        // g2d.drawString(myFormatter.format(vtol2.getCost(true)) + " C-bills",
-        // 52, 728);
-
-        if (UnitUtil.hasBAR(vtol2)) {
-            font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(vtol2), 400, 55 + secondPageMargin);
-        }
-
-        font = new Font("Arial", Font.PLAIN, 7);
-        g2d.setFont(font);
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 105f, 745.5f);
+        g2d.drawString(
+                Integer.toString(Calendar.getInstance().get(Calendar.YEAR)),
+                39.5f, 763.3f);
     }
 
     private void printArmor(Graphics2D g2d) {
@@ -490,47 +300,38 @@ public class PrintVTOL implements Printable {
         g2d.setFont(font);
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(vtol), 463, 48);
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(vtol), 463,
+                48);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
-        g2d.drawString("(" + Integer.toString(vtol.getArmor(Tank.LOC_FRONT)) + ")", 467, 64);
+        g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_FRONT)),
+                480 + (vtol.hasNoTurret() ? 0 : 60),
+                64 + (vtol.hasNoTurret() ? 0 : 48.5f));
 
-        g2d.drawString("(" + Integer.toString(vtol.getArmor(Tank.LOC_RIGHT)) + ")", 535, 253);
+        g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_RIGHT)), 544,
+                262 + (vtol.hasNoTurret() ? 0 : 36.5f));
 
-        g2d.drawString("(" + vtol.getArmor(Tank.LOC_LEFT) + ")", 407, 195);
+        g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_LEFT)), 417,
+                195 + (vtol.hasNoTurret() ? 0 : 36.5f));
 
-        g2d.drawString("(" + Integer.toString(vtol.getArmor(Tank.LOC_REAR)) + ")", 472, 336);
+        g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_REAR)), 482,
+                344 + (vtol.hasNoTurret() ? 0 : 33));
 
-        g2d.drawString("(" + Integer.toString(vtol.getArmor(VTOL.LOC_ROTOR)) + ")", 535, 140);
+        g2d.drawString(Integer.toString(vtol.getArmor(VTOL.LOC_ROTOR)),
+                548 + (vtol.hasNoTurret() ? 0 : 8),
+                140 + (vtol.hasNoTurret() ? 0 : 36.5f));
 
-        if (vtol2 != null) {
-            font = UnitUtil.deriveFont(true, 11.0f);
-            g2d.setFont(font);
-            g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(vtol2), 463, 48 + secondPageMargin);
-            font = UnitUtil.deriveFont(true, 9.0f);
-            g2d.setFont(font);
-
-            g2d.drawString("(" + Integer.toString(vtol2.getArmor(Tank.LOC_FRONT)) + ")", 467, 64 + secondPageMargin);
-
-            g2d.drawString("(" + Integer.toString(vtol2.getArmor(Tank.LOC_RIGHT)) + ")", 535, 253 + secondPageMargin);
-
-            g2d.drawString("(" + vtol2.getArmor(Tank.LOC_LEFT) + ")", 407, 195 + secondPageMargin);
-
-            g2d.drawString("(" + Integer.toString(vtol2.getArmor(Tank.LOC_REAR)) + ")", 472, 336 + secondPageMargin);
-
-            g2d.drawString("(" + Integer.toString(vtol2.getArmor(VTOL.LOC_ROTOR)) + ")", 535, 140 + secondPageMargin);
-
+        if (!vtol.hasNoTurret()) {
+            g2d.drawString(Integer.toString(vtol.getArmor(VTOL.LOC_TURRET)),
+                    446, 75);
         }
+
     }
 
     private void printWeaponsNEquipment(Graphics2D g2d) {
 
-        ImageHelperVehicle.printVTOLWeaponsNEquipment(vtol, g2d);
-
-        if (vtol2 != null) {
-            ImageHelperVehicle.printVTOLWeaponsNEquipment(vtol2, g2d, secondPageMargin);
-        }
+        ImageHelperVehicle.printVTOLWeaponsNEquipment(vtol, g2d, 6, 9);
 
     }
 
@@ -556,12 +357,6 @@ public class PrintVTOL implements Printable {
                 vtol = vtolList.get(pos);
                 pj.setJobName(vtol.getChassis() + " " + vtol.getModel());
 
-                if (((pos + 1) < vtolList.size()) && !singlePrint) {
-                    vtol2 = vtolList.get(++pos);
-                } else {
-                    vtol2 = null;
-                }
-
                 try {
                     pj.print(aset);
                 } catch (Exception ex) {
@@ -576,17 +371,11 @@ public class PrintVTOL implements Printable {
         }
     }
 
-    private void printFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topColumn =
-            { 461, 82 };
-        float[] middleColumn =
-            { 456, 88 };
-        float[] pipShift =
-            { 6, 6 };
-
-        if (secondImage) {
-            topColumn[1] += secondPageMargin;
-        }
+    private void printFrontArmor(Graphics2D g2d, int totalArmor) {
+        float turretVTOLOffset = vtol.hasNoTurret() ? 0 : 25;
+        float[] topColumn = { 471, 82 + turretVTOLOffset };
+        float[] middleColumn = { 466, 88 + turretVTOLOffset };
+        float[] pipShift = { 6, 6 };
 
         if (totalArmor < 1) {
             return;
@@ -595,12 +384,14 @@ public class PrintVTOL implements Printable {
         int pips = Math.min(5, totalArmor);
         totalArmor -= pips;
         for (int pos = 1; pos <= pips; pos++) {
-            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0], topColumn[1], 8.0f);
+            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0],
+                    topColumn[1], 8.0f);
             topColumn[0] += pipShift[0];
         }
 
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawTankArmorPip(g2d, middleColumn[0], middleColumn[1], 8.0f);
+            ImageHelperVehicle.drawTankArmorPip(g2d, middleColumn[0],
+                    middleColumn[1], 8.0f);
             middleColumn[0] += pipShift[0];
             if ((pos % 7) == 0) {
                 middleColumn[1] += pipShift[1];
@@ -610,11 +401,34 @@ public class PrintVTOL implements Printable {
         }
     }
 
-    private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[] topColumn = new int[]
-            { 475, 252 };
-        int[] pipShift = new int[]
-            { 6, 6 };
+    private void printTurretArmor(Graphics2D g2d, int totalArmor) {
+        float[] topColumn = { 473, 62 };
+        float[] middleColumn = { 473, 70 };
+        float[] pipShift = { 6, 6 };
+
+        if (totalArmor < 1) {
+            return;
+        }
+
+        int pips = Math.min(5, totalArmor);
+        totalArmor -= pips;
+        for (int pos = 1; pos <= pips; pos++) {
+            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0],
+                    topColumn[1], 8.0f);
+            topColumn[0] += pipShift[0];
+        }
+
+        for (int pos = 1; pos <= totalArmor; pos++) {
+            ImageHelperVehicle.drawTankArmorPip(g2d, middleColumn[0],
+                    middleColumn[1], 8.0f);
+            middleColumn[0] += pipShift[0];
+        }
+    }
+
+    private void printRearArmor(Graphics2D g2d, int totalArmor) {
+        float turretVTOLOffset = vtol.hasNoTurret() ? 0 : 32.5f;
+        float[] topColumn = new float[] { 485f, 256 + turretVTOLOffset };
+        int[] pipShift = new int[] { 6, 6 };
         float fontSize = 8.0f;
 
         if (totalArmor > 11) {
@@ -629,68 +443,61 @@ public class PrintVTOL implements Printable {
 
         if (totalArmor > 16) {
             fontSize = 7;
-            float[] firstColStart = new float[] {472, 253};
-            float[] firstColEnd = new float[] {472, 305};
-            float[] secondColStart = new float[] {478, 253};
-            float[] secondColEnd = new float[] {478, 305};
+            float[] firstColStart = new float[] { 481, 256 + turretVTOLOffset };
+            float[] firstColEnd = new float[] { 481, 307 + turretVTOLOffset };
+            float[] secondColStart = new float[] { 489, 256 + turretVTOLOffset };
+            float[] secondColEnd = new float[] { 489, 307 + turretVTOLOffset };
             int firstColPips = totalArmor / 2;
             int secondColPips = (totalArmor / 2);
-            if (secondImage) {
-                firstColStart[1] += secondPageMargin;
-                firstColEnd[1] += secondPageMargin;
-                secondColStart[1] += secondPageMargin;
-                secondColStart[1] += secondPageMargin;
-            }
-            Vector<float[]> first = ImageHelper.getPointsAlongLine(firstColStart, firstColEnd, firstColPips);
-            Vector<float[]> second = ImageHelper.getPointsAlongLine(secondColStart, secondColEnd, secondColPips);
+            Vector<float[]> first = ImageHelper.getPointsAlongLine(
+                    firstColStart, firstColEnd, firstColPips);
+            Vector<float[]> second = ImageHelper.getPointsAlongLine(
+                    secondColStart, secondColEnd, secondColPips);
             for (float[] pip : first) {
-                ImageHelperVehicle.drawTankArmorPip(g2d, pip[0], pip[1], fontSize);
+                ImageHelperVehicle.drawTankArmorPip(g2d, pip[0], pip[1],
+                        fontSize);
             }
             for (float[] pip : second) {
-                ImageHelperVehicle.drawTankArmorPip(g2d, pip[0], pip[1], fontSize);
+                ImageHelperVehicle.drawTankArmorPip(g2d, pip[0], pip[1],
+                        fontSize);
             }
-            if ((totalArmor%2) != 0) {
-                ImageHelperVehicle.drawTankArmorPip(g2d, 475, 310, fontSize);
+            if ((totalArmor % 2) != 0) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, 485,
+                        312 + turretVTOLOffset, fontSize);
             }
             return;
         }
 
-        if (secondImage) {
-            topColumn[1] += secondPageMargin;
-        }
-
         for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0],
+                    topColumn[1], fontSize);
             topColumn[1] += pipShift[1];
         }
 
     }
 
-    private void printRotorArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-
-        float[][] armor =
-            {
-                { 392, 154.5f },
-                { 552, 154.5f } };
+    private void printRotorArmor(Graphics2D g2d, int totalArmor) {
+        float turretVTOLOffset = vtol.hasNoTurret() ? 0 : 36.5f;
+        float[][] armor = { { 405, 154.5f + turretVTOLOffset },
+                { 562, 154.5f + turretVTOLOffset } };
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelperVehicle.drawTankArmorPip(g2d, armor[pos][0], armor[pos][1]);
+            ImageHelperVehicle.drawTankArmorPip(g2d, armor[pos][0],
+                    armor[pos][1]);
         }
 
     }
 
-    private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topColumn = new float[]
-            { 443, 106 };
-        float[] pipShift = new float[]
-            { 6, 6 };
+    private void printLeftArmor(Graphics2D g2d, int totalArmor) {
+        float turretVTOLYOffset = vtol.hasNoTurret() ? 0 : 36.5f;
+        float turretVTOLXOffset = vtol.hasNoTurret() ? 0 : -10;
+        float[] topColumn = new float[] { 454 + turretVTOLXOffset,
+                106 + turretVTOLYOffset };
+        float[] pipShift = new float[] { 6, 6 };
         float fontSize = 8.0f;
 
-        if (secondImage) {
-            topColumn[1] += secondPageMargin;
-        }
-
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0],
+                    topColumn[1], fontSize);
 
             switch (pos) {
                 case 0:
@@ -726,24 +533,17 @@ public class PrintVTOL implements Printable {
         }
     }
 
-    private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        float[] topColumn = new float[]
-            { 503, 106 };
-        float[] pipShift = new float[]
-            { 6, 6 };
+    private void printRightArmor(Graphics2D g2d, int totalArmor) {
+        float turretVTOLOffset = vtol.hasNoTurret() ? 0 : 36.5f;
+        float turretVTOLXOffset = vtol.hasNoTurret() ? 0 : 10;
+        float[] topColumn = new float[] { 513 + turretVTOLXOffset,
+                106 + turretVTOLOffset };
+        float[] pipShift = new float[] { 6, 6 };
         float fontSize = 8.0f;
 
-        /*
-         * if (totalArmor > 68) { fontSize = 8.0f; pipShift = new float[] { 6f,
-         * 6f }; topColumn = new float[] { 418.5f, 92 }; }
-         */
-
-        if (secondImage) {
-            topColumn[1] += secondPageMargin;
-        }
-
         for (int pos = 0; pos < totalArmor; pos++) {
-            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0], topColumn[1], fontSize);
+            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0],
+                    topColumn[1], fontSize);
 
             switch (pos) {
                 case 0:
@@ -778,138 +578,138 @@ public class PrintVTOL implements Printable {
         }
     }
 
-    private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[][] struct =
-            {
-                { 472, 119 },
-                { 472, 128 },
-                { 472, 137 } };
+    private void printFrontStruct(Graphics2D g2d, int totalArmor) {
+        float turretVTOLYOffset = vtol.hasNoTurret() ? 0 : 36.5f;
+        float turretVTOLXOffset = vtol.hasNoTurret() ? 0 : 1;
+        float[][] struct = {
+                { 483.5f + turretVTOLXOffset, 119 + turretVTOLYOffset },
+                { 483.5f + turretVTOLXOffset, 128 + turretVTOLYOffset },
+                { 483.5f + turretVTOLXOffset, 137 + turretVTOLYOffset } };
 
         if (totalArmor > 3) {
-            struct = new int[][]
-                {
-                    { 468, 119 },
-                    { 468, 128 },
-                    { 468, 137 },
-                    { 477, 119 },
-                    { 477, 128 },
-                    { 477, 137 } };
+            struct = new float[][] {
+                    { 477 + turretVTOLXOffset, 119 + turretVTOLYOffset },
+                    { 477 + turretVTOLXOffset, 128 + turretVTOLYOffset },
+                    { 477 + turretVTOLXOffset, 137 + turretVTOLYOffset },
+                    { 490 + turretVTOLXOffset, 119 + turretVTOLYOffset },
+                    { 490 + turretVTOLXOffset, 128 + turretVTOLYOffset },
+                    { 490 + turretVTOLXOffset, 137 + turretVTOLYOffset } };
 
         }
 
         for (int pos = 0; pos < totalArmor; pos++) {
-            if (secondImage) {
-                struct[pos][1] += secondPageMargin;
-            }
-            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0],
+                    struct[pos][1]);
         }
 
     }
 
-    private void printRotorStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[][] struct =
-            {
-                { 472, 148 },
-                { 422, 148 },
-                { 522, 148 } };
+    private void printRotorStruct(Graphics2D g2d, int totalArmor) {
+        float turretVTOLXOffset = vtol.hasNoTurret() ? 0 : 1;
+        float turretVTOLYOffset = vtol.hasNoTurret() ? 0 : 36.5f;
+        float[][] struct = {
+                { 483.5f + turretVTOLXOffset, 148 + turretVTOLYOffset },
+                { 433.5f + turretVTOLXOffset, 148 + turretVTOLYOffset },
+                { 533.5f + turretVTOLXOffset, 148 + turretVTOLYOffset } };
 
         if (totalArmor > 3) {
-            struct = new int[][]
-                {
-                    { 472, 148 },
-                    { 422, 148 },
-                    { 522, 148 },
-                    { 452, 148 },
-                    { 442, 148 },
-                    { 502, 148 } };
+            struct = new float[][] {
+                    { 483.5f + turretVTOLXOffset, 148 + turretVTOLYOffset },
+                    { 433.5f + turretVTOLXOffset, 148 + turretVTOLYOffset },
+                    { 533.5f + turretVTOLXOffset, 148 + turretVTOLYOffset },
+                    { 463.5f + turretVTOLXOffset, 148 + turretVTOLYOffset },
+                    { 453.5f + turretVTOLXOffset, 148 + turretVTOLYOffset },
+                    { 513.5f + turretVTOLXOffset, 148 + turretVTOLYOffset } };
 
         }
         for (int pos = 0; pos < totalArmor; pos++) {
-            if (secondImage) {
-                struct[pos][1] += secondPageMargin;
-            }
-            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0],
+                    struct[pos][1]);
         }
 
     }
 
-    private void printLeftStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[][] struct =
-            {
-                { 467, 164 },
-                { 467, 178 },
-                { 467, 192 } };
+    private void printLeftStruct(Graphics2D g2d, int totalArmor) {
+        float turretVTOLXOffset = vtol.hasNoTurret() ? 0 : 1f;
+        float turretVTOLYOffset = vtol.hasNoTurret() ? 0 : 36.5f;
+        float[][] struct = {
+                { 477 + turretVTOLXOffset, 164 + turretVTOLYOffset },
+                { 477 + turretVTOLXOffset, 178 + turretVTOLYOffset },
+                { 477 + turretVTOLXOffset, 192 + turretVTOLYOffset } };
 
         if (totalArmor > 3) {
-            struct = new int[][]
-                {
-                    { 467, 164 },
-                    { 467, 170 },
-                    { 467, 176 },
-                    { 467, 182 },
-                    { 467, 188 },
-                    { 467, 194 } };
+            struct = new float[][] {
+                    { 477 + turretVTOLXOffset, 164 + turretVTOLYOffset },
+                    { 477 + turretVTOLXOffset, 171 + turretVTOLYOffset },
+                    { 477 + turretVTOLXOffset, 178 + turretVTOLYOffset },
+                    { 477 + turretVTOLXOffset, 185 + turretVTOLYOffset },
+                    { 477 + turretVTOLXOffset, 192 + turretVTOLYOffset },
+                    { 477 + turretVTOLXOffset, 199 + turretVTOLYOffset } };
 
         }
         for (int pos = 0; pos < totalArmor; pos++) {
-            if (secondImage) {
-                struct[pos][1] += secondPageMargin;
-            }
-            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0],
+                    struct[pos][1]);
+        }
+    }
+
+    private void printTurretStruct(Graphics2D g2d, int totalArmor) {
+        float[][] struct = { { 476, 79 }, { 485, 79 }, { 494, 79 },
+                { 476, 86 }, { 485, 86 }, { 494, 86 } };
+
+        for (int pos = 0; pos < totalArmor; pos++) {
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0],
+                    struct[pos][1]);
         }
 
     }
 
-    private void printRightStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[][] struct =
-            {
-                { 480, 164 },
-                { 480, 178 },
-                { 480, 192 } };
+    private void printRightStruct(Graphics2D g2d, int totalArmor) {
+        float turretVTOLXOffset = vtol.hasNoTurret() ? 0 : 1f;
+        float turretVTOLYOffset = vtol.hasNoTurret() ? 0 : 36.5f;
+        float[][] struct = {
+                { 490 + turretVTOLXOffset, 164 + turretVTOLYOffset },
+                { 490 + turretVTOLXOffset, 178 + turretVTOLYOffset },
+                { 490 + turretVTOLXOffset, 192 + turretVTOLYOffset } };
 
         if (totalArmor > 3) {
-            struct = new int[][]
-                {
-                    { 480, 164 },
-                    { 480, 170 },
-                    { 480, 176 },
-                    { 480, 182 },
-                    { 480, 188 },
-                    { 480, 194 } };
+            struct = new float[][] {
+                    { 490 + turretVTOLXOffset, 164 + turretVTOLYOffset },
+                    { 490 + turretVTOLXOffset, 171 + turretVTOLYOffset },
+                    { 490 + turretVTOLXOffset, 178 + turretVTOLYOffset },
+                    { 490 + turretVTOLXOffset, 185 + turretVTOLYOffset },
+                    { 490 + turretVTOLXOffset, 192 + turretVTOLYOffset },
+                    { 490 + turretVTOLXOffset, 199 + turretVTOLYOffset } };
 
         }
         for (int pos = 0; pos < totalArmor; pos++) {
-            if (secondImage) {
-                struct[pos][1] += secondPageMargin;
-            }
-            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0],
+                    struct[pos][1]);
         }
 
     }
 
-    private void printRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
-        int[][] struct =
-            {
-                { 473, 216 },
-                { 473, 225 },
-                { 473, 234 } };
+    private void printRearStruct(Graphics2D g2d, int totalArmor) {
+        float turretVTOLXOffset = vtol.hasNoTurret() ? 0 : 1;
+        float turretVTOLYOffset = vtol.hasNoTurret() ? 0 : 36.5f;
+        float[][] struct = {
+                { 483.5f + turretVTOLXOffset, 216 + turretVTOLYOffset },
+                { 483.5f + turretVTOLXOffset, 225 + turretVTOLYOffset },
+                { 483.5f + turretVTOLXOffset, 234 + turretVTOLYOffset } };
 
         if (totalArmor > 3) {
-            struct = new int[][]
-                {
-                    { 468, 216 },
-                    { 468, 225 },
-                    { 468, 234 },
-                    { 478, 216 },
-                    { 478, 225 },
-                    { 478, 234 } };
+            struct = new float[][] {
+                    { 479 + turretVTOLXOffset, 216 + turretVTOLYOffset },
+                    { 479 + turretVTOLXOffset, 225 + turretVTOLYOffset },
+                    { 479 + turretVTOLXOffset, 234 + turretVTOLYOffset },
+                    { 488.5f + turretVTOLXOffset, 216 + turretVTOLYOffset },
+                    { 488.5f + turretVTOLXOffset, 225 + turretVTOLYOffset },
+                    { 488.5f + turretVTOLXOffset, 234 + turretVTOLYOffset } };
 
         }
         for (int pos = 0; pos < totalArmor; pos++) {
-            if (secondImage) {
-                struct[pos][1] += secondPageMargin;
-            }
-            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0], struct[pos][1]);
+            ImageHelperVehicle.drawTankISPip(g2d, struct[pos][0],
+                    struct[pos][1]);
         }
     }
 
@@ -922,13 +722,5 @@ public class PrintVTOL implements Printable {
         int drawingY = 250 + ((120 - height) / 2);
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
-        if (vtol2 != null) {
-            img = ImageHelper.getFluffImage(vtol2, ImageHelper.imageVehicle);
-            width = Math.min(148, img.getWidth(null));
-            height = Math.min(119, img.getHeight(null));
-            drawingX = 235 + ((148 - width) / 2);
-            drawingY = 248 + ((119 - height) / 2) + secondPageMargin;
-            g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
-        }
     }
 }
