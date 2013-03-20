@@ -137,7 +137,7 @@ public class UnitPrintManager {
         ArrayList<ConvFighter> convFighterList = new ArrayList<ConvFighter>();
         ArrayList<FixedWingSupport> fixedWingSupportList = new ArrayList<FixedWingSupport>();
         ArrayList<Dropship> aerodyneList = new ArrayList<Dropship>();
-        ArrayList<Dropship> SpheroidList = new ArrayList<Dropship>();
+        ArrayList<Dropship> spheroidList = new ArrayList<Dropship>();
         ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
         ArrayList<Protomech> protoList = new ArrayList<Protomech>();
         ArrayList<Tank> largeSupportTankList = new ArrayList<Tank>();
@@ -174,7 +174,7 @@ public class UnitPrintManager {
                     if (unit.getMovementMode() == EntityMovementMode.AERODYNE) {
                         aerodyneList.add((Dropship) unit);
                     } else {
-                        SpheroidList.add((Dropship) unit);
+                        spheroidList.add((Dropship) unit);
                     }
                 } else if (unit instanceof FixedWingSupport) {
                     fixedWingSupportList.add((FixedWingSupport) unit);
@@ -259,13 +259,13 @@ public class UnitPrintManager {
             printAerodyne.print();
         }
 
-        if (SpheroidList.size() > 0) {
-            PrintSpheroid printSpheroid = new PrintSpheroid(SpheroidList, masterPrintJob);
+        if (spheroidList.size() > 0) {
+            PrintSpheroid printSpheroid = new PrintSpheroid(spheroidList, masterPrintJob);
             printSpheroid.print();
         }
 
         if (VTOLList.size() > 0) {
-            PrintVTOL printVTOL = new PrintVTOL(VTOLList, singlePrint, masterPrintJob);
+            PrintVTOL printVTOL = new PrintVTOL(VTOLList, masterPrintJob);
 
             printVTOL.print();
         }
@@ -331,7 +331,7 @@ public class UnitPrintManager {
 
         item = new JMenuItem("From File");
         item.setMnemonic(KeyEvent.VK_I);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 UnitPrintManager.printUnitFile(parent);

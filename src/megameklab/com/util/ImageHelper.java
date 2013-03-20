@@ -870,7 +870,7 @@ public class ImageHelper {
         g2d.setFont(UnitUtil.deriveFont(7));
     }
 
-    public static void printCenterString(Graphics2D g2d, String info, Font font, int printWidth, float printHeight) {
+    public static void printCenterString(Graphics2D g2d, String info, Font font, float printWidth, float printHeight) {
         int textWidth = ImageHelper.getStringWidth(g2d, info, font);
 
         g2d.drawString(info, printWidth - (textWidth / 2), printHeight);
