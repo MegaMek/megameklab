@@ -97,12 +97,12 @@ public class PrintConventionalFighter implements Printable {
         String ConvFighterName = convFighter.getChassis() + " " + convFighter.getModel();
 
         g2d.setFont(UnitUtil.getNewFont(g2d, ConvFighterName, true, 180, 10.0f));
-        g2d.drawString(ConvFighterName, 49, 118);
+        g2d.drawString(ConvFighterName, 49, 119);
 
-        Font font = UnitUtil.deriveFont(true, 18.0f);
+        Font font = UnitUtil.deriveFont(true, 15.0f);
         g2d.setFont(font);
 
-        g2d.drawString("Conventional Fighter Record Sheet", 60, 90);
+        g2d.drawString("CONVENTIONAL FIGHTER RECORD SHEET", 60, 88);
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
