@@ -83,12 +83,12 @@ public class ImageHelperAero {
     public static void printAeroWeaponsNEquipment(Aero aero, Graphics2D g2d) {
         int qtyPoint = 30;
         int typePoint = 42;
-        int locPoint = 125;
-        int heatPoint = 145;
-        int shtPoint = 157;
-        int medPoint = 175;
-        int longPoint = 199;
-        int erPoint = 216;
+        int locPoint = 115;
+        int heatPoint = 130;
+        int shtPoint = 147;
+        int medPoint = 165;
+        int longPoint = 190;
+        int erPoint = 210;
         float linePoint = 204f;
         float maxHeight = 97.0f;
 

@@ -600,10 +600,10 @@ public class ImageHelper {
 
             if (ammoHash.containsKey(shortName)) {
                 int currentAmmo = ammoHash.get(shortName);
-                currentAmmo += aType.getShots();
+                currentAmmo += ammo.getUsableShotsLeft();
                 ammoHash.put(shortName, currentAmmo);
             } else {
-                int currentAmmo = aType.getShots();
+                int currentAmmo = ammo.getUsableShotsLeft();
                 ammoHash.put(shortName, currentAmmo);
             }
         }
