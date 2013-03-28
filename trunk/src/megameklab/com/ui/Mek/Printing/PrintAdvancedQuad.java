@@ -1161,7 +1161,7 @@ public class PrintAdvancedQuad implements Printable {
 
                 if (m.getType() instanceof AmmoType) {
                     critName.append(" (");
-                    critName.append(((AmmoType) m.getType()).getShots());
+                    critName.append(m.getUsableShotsLeft());
                     critName.append(")");
                 }
                 if (critName.length() >= 44) {
