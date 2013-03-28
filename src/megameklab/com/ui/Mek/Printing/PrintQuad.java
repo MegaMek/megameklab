@@ -1336,7 +1336,7 @@ public class PrintQuad implements Printable {
                         critName.trimToSize();
                     }
                     critName.append(") ");
-                    critName.append(ammo.getShots());
+                    critName.append(m.getUsableShotsLeft());
                 }
 
                 font = UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 85, 7.0f);
