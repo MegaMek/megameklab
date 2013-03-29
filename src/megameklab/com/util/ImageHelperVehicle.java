@@ -1047,6 +1047,7 @@ public class ImageHelperVehicle {
         boolean hasReflective = false;
         boolean hasHardened = false;
         boolean hasPrimitive = false;
+        boolean hasLamellor = false;
 
         for (int loc = 0; loc < tank.locations(); loc++) {
             if (tank.getArmorType(loc) == EquipmentType.T_ARMOR_STEALTH) {
@@ -1059,6 +1060,8 @@ public class ImageHelperVehicle {
                 hasHardened = true;
             } else if ((tank.getArmorType(loc) == EquipmentType.T_ARMOR_PRIMITIVE)) {
                 hasPrimitive = true;
+            } else if ((tank.getArmorType(loc) == EquipmentType.T_ARMOR_FERRO_LAMELLOR)) {
+                hasLamellor = true;
             }
         }
 
@@ -1084,6 +1087,11 @@ public class ImageHelperVehicle {
 
         if (hasPrimitive) {
             armorTypes.append(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PRIMITIVE));
+            armorTypes.append(", ");
+        }
+
+        if (hasLamellor) {
+            armorTypes.append(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_FERRO_LAMELLOR));
             armorTypes.append(", ");
         }
 

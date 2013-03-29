@@ -388,6 +388,9 @@ public class PrintMech implements Printable {
         if (mech.hasHardenedArmor() && !mech.hasPatchworkArmor()) {
             armorName = EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_HARDENED);
         }
+        if ((mech.getArmorType(0) == EquipmentType.T_ARMOR_FERRO_LAMELLOR) && !mech.hasPatchworkArmor()) {
+            armorName = EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_FERRO_LAMELLOR);
+        }
 
         if (armorName.trim().length() > 0) {
             g2d.setFont(UnitUtil.getNewFont(g2d, armorName, true, 38, 10.0f));
