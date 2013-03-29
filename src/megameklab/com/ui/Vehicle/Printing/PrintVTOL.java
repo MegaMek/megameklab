@@ -21,6 +21,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -309,11 +310,28 @@ public class PrintVTOL implements Printable {
                 480 + (vtol.hasNoTurret() ? 0 : 60),
                 64 + (vtol.hasNoTurret() ? 0 : 48.5f));
 
-        g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_RIGHT)), 544,
-                262 + (vtol.hasNoTurret() ? 0 : 36.5f));
+        if (vtol.hasNoTurret()) {
+            g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_RIGHT)), 544,
+                    262 + (vtol.hasNoTurret() ? 0 : 36.5f));
 
-        g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_LEFT)), 417,
-                195 + (vtol.hasNoTurret() ? 0 : 36.5f));
+            g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_LEFT)), 417,
+                    195 + (vtol.hasNoTurret() ? 0 : 36.5f));
+        } else {
+            AffineTransform at = new AffineTransform();
+            at.setToRotation(Math.toRadians(90), 547, 292);
+            AffineTransform oldat = g2d.getTransform();
+            g2d.transform(at);
+            g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_RIGHT)), 547,
+                    292);
+            g2d.setTransform(oldat);
+
+            at.setToRotation(Math.toRadians(270), 427, 232);
+            g2d.transform(at);
+            g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_LEFT)), 427,
+                    232);
+            g2d.setTransform(oldat);
+        }
+
 
         g2d.drawString(Integer.toString(vtol.getArmor(Tank.LOC_REAR)), 482,
                 344 + (vtol.hasNoTurret() ? 0 : 33));
@@ -324,7 +342,7 @@ public class PrintVTOL implements Printable {
 
         if (!vtol.hasNoTurret()) {
             g2d.drawString(Integer.toString(vtol.getArmor(VTOL.LOC_TURRET)),
-                    446, 75);
+                    444, 75);
         }
 
     }
@@ -402,33 +420,59 @@ public class PrintVTOL implements Printable {
     }
 
     private void printTurretArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = { 473, 62 };
-        float[] middleColumn = { 473, 70 };
-        float[] pipShift = { 6, 6 };
-
         if (totalArmor < 1) {
             return;
         }
+        if (totalArmor <= 10) {
+            float[] topColumn = { 473, 62 };
+            float[] middleColumn = { 473, 70 };
+            float[] pipShift = { 6, 6 };
 
-        int pips = Math.min(5, totalArmor);
-        totalArmor -= pips;
-        for (int pos = 1; pos <= pips; pos++) {
-            ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0],
-                    topColumn[1], 8.0f);
-            topColumn[0] += pipShift[0];
-        }
+            int pips = Math.min(5, totalArmor);
+            totalArmor -= pips;
+            for (int pos = 1; pos <= pips; pos++) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0],
+                        topColumn[1], 8.0f);
+                topColumn[0] += pipShift[0];
+            }
 
-        for (int pos = 1; pos <= totalArmor; pos++) {
-            ImageHelperVehicle.drawTankArmorPip(g2d, middleColumn[0],
-                    middleColumn[1], 8.0f);
-            middleColumn[0] += pipShift[0];
+            for (int pos = 1; pos <= totalArmor; pos++) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, middleColumn[0],
+                        middleColumn[1], 8.0f);
+                middleColumn[0] += pipShift[0];
+            }
+        } else  {
+            float[] topColumn = { 473.5f, 60 };
+            float[] middleColumn = { 471.5f, 66.5f };
+            float[] bottomColumn = { 469f, 73};
+            float[] pipShift = { 5.5f, 5.5f };
+            int pips = Math.min(5, totalArmor);
+            totalArmor -= pips;
+            for (int pos = 1; pos <= pips; pos++) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0],
+                        topColumn[1], 7.0f);
+                topColumn[0] += pipShift[0];
+            }
+            pips = Math.min(6, totalArmor);
+            totalArmor -= pips;
+            for (int pos = 1; pos <= pips; pos++) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, middleColumn[0],
+                        middleColumn[1], 7.0f);
+                middleColumn[0] += pipShift[0];
+            }
+            for (int pos = 1; pos <= totalArmor; pos++) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, bottomColumn[0],
+                        bottomColumn[1], 7.0f);
+                bottomColumn[0] += pipShift[0];
+            }
+
         }
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor) {
-        float turretVTOLOffset = vtol.hasNoTurret() ? 0 : 32.5f;
+        float turretVTOLOffset = vtol.hasNoTurret() ? 0 : 30.5f;
         float[] topColumn = new float[] { 485f, 256 + turretVTOLOffset };
-        int[] pipShift = new int[] { 6, 6 };
+        float[] pipShift = new float[] { 6, 6 };
         float fontSize = 8.0f;
 
         if (totalArmor > 11) {
@@ -438,7 +482,7 @@ public class PrintVTOL implements Printable {
 
         if (totalArmor > 13) {
             fontSize = 6;
-            pipShift[0] = pipShift[1] = 4;
+            pipShift[0] = pipShift[1] = 4.5f;
         }
 
         if (totalArmor > 16) {
