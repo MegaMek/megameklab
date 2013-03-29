@@ -16,6 +16,7 @@ V 0.1.22-dev
 + Bug: Fixed location equipment should be only deletable, not removable
 + vectorized VTOL printing
 + added support for printing VTOLs with turrets
++ Print Ferro-Lamellor armor info on sheets
 
 V 0.1.21
 + Bug: stealth armor bug
