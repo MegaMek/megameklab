@@ -1396,15 +1396,15 @@ public class PrintQuad implements Printable {
             return;
         }
 
-        int lineStart = 114 + leftMargin;
-        int linePoint = 425 + topMargin;
+        int lineStart = 116 + leftMargin;
+        int linePoint = 429 + topMargin;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        if (mech.hasCASEII(Mech.LOC_LARM)) {
-            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-
-        } else {
+        if (!mech.hasCASEII(Mech.LOC_LARM)) {
+            //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
+        } else {
+
         }
     }
 
@@ -1414,15 +1414,15 @@ public class PrintQuad implements Printable {
             return;
         }
 
-        int lineStart = 357 + leftMargin;
-        int linePoint = 425 + topMargin;
+        int lineStart = 349 + leftMargin;
+        int linePoint = 438 + topMargin;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        if (mech.hasCASEII(Mech.LOC_RARM)) {
-            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-
-        } else {
+        if (!mech.hasCASEII(Mech.LOC_RARM)) {
+            //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
+        } else {
+
         }
     }
 
@@ -1432,15 +1432,15 @@ public class PrintQuad implements Printable {
             return;
         }
 
-        int lineStart = 110 + leftMargin;
-        int linePoint = 644 + topMargin;
+        int lineStart = 112 + leftMargin;
+        int linePoint = 680 + topMargin;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        if (mech.hasCASEII(Mech.LOC_LLEG)) {
-            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-
-        } else {
+        if (!mech.hasCASEII(Mech.LOC_LLEG)) {
+            //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
+        } else {
+
         }
     }
 
@@ -1450,15 +1450,15 @@ public class PrintQuad implements Printable {
             return;
         }
 
-        int lineStart = 96 + leftMargin;
-        int linePoint = 507 + topMargin;
+        int lineStart = 95 + leftMargin;
+        int linePoint = 538 + topMargin;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        if (mech.hasCASEII(Mech.LOC_LT)) {
-            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-
-        } else {
+        if (!mech.hasCASEII(Mech.LOC_LT)) {
+            //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
+        } else {
+
         }
     }
 
@@ -1469,14 +1469,14 @@ public class PrintQuad implements Printable {
         }
 
         int lineStart = 186 + leftMargin;
-        int linePoint = 384 + topMargin;
+        int linePoint = 388 + topMargin;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        if (mech.hasCASEII(Mech.LOC_HEAD)) {
-            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-
-        } else {
+        if (!mech.hasCASEII(Mech.LOC_HEAD)) {
+            //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
+        } else {
+
         }
     }
 
@@ -1487,14 +1487,14 @@ public class PrintQuad implements Printable {
         }
 
         int lineStart = 340 + leftMargin;
-        int linePoint = 507 + topMargin;
+        int linePoint = 538 + topMargin;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        if (mech.hasCASEII(Mech.LOC_RT)) {
-            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-
-        } else {
+        if (!mech.hasCASEII(Mech.LOC_RT)) {
+            //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
+        } else {
+
         }
     }
 
@@ -1504,15 +1504,15 @@ public class PrintQuad implements Printable {
             return;
         }
 
-        int lineStart = 354 + leftMargin;
-        int linePoint = 644 + topMargin;
+        int lineStart = 349 + leftMargin;
+        int linePoint = 690 + topMargin;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        if (mech.hasCASEII(Mech.LOC_RLEG)) {
-            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-
-        } else {
+        if (!mech.hasCASEII(Mech.LOC_RLEG)) {
+            //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
+        } else {
+
         }
     }
 
@@ -1523,14 +1523,14 @@ public class PrintQuad implements Printable {
         }
 
         int lineStart = 228 + leftMargin;
-        float linePoint = 453.5f + topMargin;
+        float linePoint = 460f + topMargin;
 
         g2d.setFont(UnitUtil.deriveFont(7.0f));
-        if (mech.hasCASEII(Mech.LOC_CT)) {
-            g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-
-        } else {
+        if (!mech.hasCASEII(Mech.LOC_CT)) {
+            //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
+        } else {
+
         }
     }
 
