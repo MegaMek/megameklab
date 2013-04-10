@@ -636,7 +636,7 @@ public class ImageHelper {
         sb.setLength(0);
         sb.append("Ammo: ");
 
-        if (vehicle.hasWorkingMisc(MiscType.F_CASE, -1)) {
+        if (vehicle.hasWorkingMisc(MiscType.F_CASE, -1) || vehicle.isClan()) {
             sb = new StringBuffer("Ammo (CASE): ");
         }
 
