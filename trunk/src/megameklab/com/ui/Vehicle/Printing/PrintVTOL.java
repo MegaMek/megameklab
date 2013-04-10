@@ -760,10 +760,18 @@ public class PrintVTOL implements Printable {
     private void printVTOLImage(Graphics2D g2d) {
 
         Image img = ImageHelper.getFluffImage(vtol, ImageHelper.imageVehicle);
-        int width = Math.min(148, img.getWidth(null));
-        int height = Math.min(120, img.getHeight(null));
-        int drawingX = 235 + ((148 - width) / 2);
-        int drawingY = 250 + ((120 - height) / 2);
+        int width, height, drawingX, drawingY;
+        if (vtol.hasNoTurret()) {
+            width = Math.min(148, img.getWidth(null));
+            height = Math.min(120, img.getHeight(null));
+            drawingX = 246 + ((148 - width) / 2);
+            drawingY = 258 + ((120 - height) / 2);
+        } else {
+            width = Math.min(148, img.getWidth(null));
+            height = Math.min(97, img.getHeight(null));
+            drawingX = 246 + ((148 - width) / 2);
+            drawingY = 280 + ((97 - height) / 2);
+        }
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
     }
