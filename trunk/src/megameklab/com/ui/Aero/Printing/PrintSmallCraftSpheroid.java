@@ -78,7 +78,7 @@ public class PrintSmallCraftSpheroid implements Printable {
         // 738, Color.BLACK, null);
         SpheroidSmallCraftTemplate.paint(g2d);
         g2d.setColor(Color.BLACK);
-        PrintSmallCraftSpheroidImage(g2d,
+        printSmallCraftSpheroidImage(g2d,
                 ImageHelper.getFluffImage(smallCraft, ImageHelper.imageAero));
 
         printSmallCraftSpheroidData(g2d);
@@ -489,12 +489,12 @@ public class PrintSmallCraftSpheroid implements Printable {
         }
     }
 
-    private void PrintSmallCraftSpheroidImage(Graphics2D g2d, Image img) {
+    private void printSmallCraftSpheroidImage(Graphics2D g2d, Image img) {
 
         int width = Math.min(220, img.getWidth(null));
         int height = Math.min(130, img.getHeight(null));
         int drawingX = 18 + ((220 - width) / 2);
-        int drawingY = 365 + ((130 - height) / 2);
+        int drawingY = 370 + ((130 - height) / 2);
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
     }
