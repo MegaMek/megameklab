@@ -391,42 +391,6 @@ public class UnitUtil {
     }
 
     /**
-     * Checks for IS Double Heat Sinks
-     *
-     * @param unit
-     * @return
-     */
-    public static boolean hasIsDoubleHeatSinks(Mech unit) {
-
-        if (!unit.hasDoubleHeatSinks()) {
-            return false;
-        }
-
-        for (Mounted mounted : unit.getMisc()) {
-            if (mounted.getType().hasFlag(MiscType.F_LASER_HEAT_SINK)) {
-                return true;
-            }
-            if (mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
-                if (mounted.getType().getInternalName()
-                        .equals("ISDoubleHeatSink")) {
-                    return true;
-                }
-                return false;
-            }
-            if (mounted.getType().hasFlag(
-                    MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
-                if (mounted.getType().getInternalName()
-                        .equals("ISDoubleHeatSinkPrototype")) {
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * checks if Mounted is a heat sink
      *
      * @param eq
@@ -443,11 +407,16 @@ public class UnitUtil {
      * @return
      */
     public static boolean isHeatSink(EquipmentType eq) {
+        return isHeatSink(eq, false);
+    }
+
+    public static boolean isHeatSink(EquipmentType eq, boolean ignoreprototype) {
         if ((eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_HEAT_SINK)
                         || eq.hasFlag(MiscType.F_LASER_HEAT_SINK)
-                        || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || eq
-                            .hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))) {
+                        || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || (eq
+                            .hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE) &&
+                            !ignoreprototype))) {
             return true;
         }
 
