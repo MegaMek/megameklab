@@ -63,12 +63,17 @@ import megamek.common.verifier.TestMech;
 import megamek.common.verifier.TestTank;
 import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.BPodWeapon;
+import megamek.common.weapons.CLLightTAG;
 import megamek.common.weapons.CLPlasmaCannon;
+import megamek.common.weapons.CLTAG;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.HVACWeapon;
+import megamek.common.weapons.ISC3M;
+import megamek.common.weapons.ISC3MBS;
 import megamek.common.weapons.ISPlasmaRifle;
+import megamek.common.weapons.ISTAG;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.LegAttack;
@@ -2042,13 +2047,13 @@ public class UnitUtil {
             return false;
         }
 
-        if (eq.equals(EquipmentType.get("CLTAG"))
-                || eq.equals(EquipmentType.get("ISC3MasterBoostedSystemUnit"))
-                || eq.equals(EquipmentType.get("ISC3MasterUnit"))
-                || eq.equals(EquipmentType.get("ISTAG"))
+        if ((eq instanceof CLTAG)
+                || (eq instanceof ISC3MBS)
+                || (eq instanceof ISC3M)
+                || (eq instanceof ISTAG)
                 || eq.equals(EquipmentType.get("IS Coolant Pod"))
                 || eq.equals(EquipmentType.get("Clan Coolant Pod"))
-                || eq.equals(EquipmentType.get("CLLightTAG"))) {
+                || (eq instanceof CLLightTAG)) {
             return true;
         }
 
@@ -2065,7 +2070,8 @@ public class UnitUtil {
 
             if (eq.hasFlag(MiscType.F_MECH_EQUIPMENT)
                     && !eq.hasFlag(MiscType.F_CLUB)
-                    && !eq.hasFlag(MiscType.F_HAND_WEAPON)) {
+                    && !eq.hasFlag(MiscType.F_HAND_WEAPON)
+                    && !eq.hasFlag(MiscType.F_TALON)) {
                 return true;
             }
 
@@ -2184,12 +2190,10 @@ public class UnitUtil {
             return false;
         }
 
-        if (eq.equals(EquipmentType.get("CLTAG"))
-                || eq.equals(EquipmentType.get("ISC3MasterUnit"))
-                || eq.equals(EquipmentType.get("ISTAG"))
-                || eq.equals(EquipmentType.get("IS Coolant Pod"))
-                || eq.equals(EquipmentType.get("Clan Coolant Pod"))
-                || eq.equals(EquipmentType.get("CLLightTAG"))) {
+        if ((eq instanceof CLTAG)
+                || (eq instanceof ISC3MBS)
+                || (eq instanceof ISTAG)
+                || (eq instanceof CLLightTAG)) {
             return true;
         }
 
@@ -2207,12 +2211,9 @@ public class UnitUtil {
             return false;
         }
 
-        if (eq.equals(EquipmentType.get("CLTAG"))
-                || eq.equals(EquipmentType.get("ISC3MasterUnit"))
-                || eq.equals(EquipmentType.get("ISTAG"))
-                || eq.equals(EquipmentType.get("IS Coolant Pod"))
-                || eq.equals(EquipmentType.get("Clan Coolant Pod"))
-                || eq.equals(EquipmentType.get("CLLightTAG"))) {
+        if ((eq instanceof CLTAG)
+                || (eq instanceof ISTAG)
+                || (eq instanceof CLLightTAG)) {
             return true;
         }
 

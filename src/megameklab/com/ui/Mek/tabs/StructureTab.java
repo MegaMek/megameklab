@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -43,16 +44,21 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.client.ui.GBC;
+import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LandAirMech;
+import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
+import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestMech;
 import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.util.ITab;
@@ -307,8 +313,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridx = 1;
         gbc.gridy = 6;
         panInfo.add(manualBV, gbc);
-
-
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -577,7 +581,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         setEnhancementCombo();
         setStructureCombo();
-        setArmorCombo(getMech().getArmorType(0));
+        Object test = armorCombo.getActionListeners();
+        if (getMech().hasPatchworkArmor()) {
+            setArmorCombo(EquipmentType.T_ARMOR_PATCHWORK);
+        } else {
+            setArmorCombo(getMech().getArmorType(0));
+        }
 
         cockpitType.setSelectedItem(Mech.COCKPIT_SHORT_STRING[getMech()
                 .getCockpitType()]);
@@ -653,13 +662,26 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setJumpJetCombo();
 
         clanArmor.setEnabled(unit.isMixedTech());
-        clanArmor.setSelected(unit.isClanArmor(0));
-        // setTotalArmorTonnage();
+        clanArmor.setSelected(unit.isClanArmor(0) && !unit.hasPatchworkArmor());
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
                 .getMaximumArmorTonnage(unit));
-        // if (!unit.hasPatchworkArmor()) {
-        // setArmorType(unit.getArmorType(0));
-        // }
+        if (unit.hasPatchworkArmor()) {
+            TestMech testMech = new TestMech(
+                    (Mech) unit,
+                    new EntityVerifier(new File(
+                            "data/mechfiles/UnitVerifierOptions.xml")).mechOption,
+                    null);
+            clanArmor.setEnabled(false);
+            armorTonnage.setEnabled(false);
+            float weight = testMech.getWeightAllocatedArmor();
+            armorTonnage.getModel()
+                    .setValue(testMech.getWeightAllocatedArmor());
+            unit.setArmorTonnage(testMech.getWeightAllocatedArmor());
+            maximizeArmorButton.setEnabled(false);
+        } else {
+            armorTonnage.setEnabled(true);
+            maximizeArmorButton.setEnabled(true);
+        }
         armor.updateUnit(unit);
         armor.refresh();
         panSummary.updateUnit(unit);
@@ -686,290 +708,280 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         removeAllListeners();
         if (e.getSource() instanceof JComboBox) {
             JComboBox combo = (JComboBox) e.getSource();
-            try {
-                // we need to do cockpit also here, because cockpitType
-                // determines
-                // if a mech is primitive and thus needs a larger engine
-                if (combo.equals(engineType) || combo.equals(cockpitType)) {
-                    if (combo.equals(cockpitType)) {
-                        getMech().setCockpitType(
-                                Mech.getCockpitTypeForString(combo
-                                        .getSelectedItem().toString()));
-                        getMech().clearCockpitCrits();
-                        switch (getMech().getCockpitType()) {
-                            case Mech.COCKPIT_COMMAND_CONSOLE:
-                                getMech().addCommandConsole();
-                                break;
-                            case Mech.COCKPIT_DUAL:
-                                getMech().addDualCockpit();
-                                break;
-                            case Mech.COCKPIT_SMALL:
-                                getMech().addSmallCockpit();
-                                break;
-                            case Mech.COCKPIT_TORSO_MOUNTED:
-                                removeSystemCrits(Mech.SYSTEM_ENGINE);
-                                getMech().addEngineCrits();
-                                getMech().addTorsoMountedCockpit();
-                                break;
-                            case Mech.COCKPIT_INDUSTRIAL:
-                                getMech().addIndustrialCockpit();
-                                getMech().setArmorType(
-                                        EquipmentType.T_ARMOR_INDUSTRIAL);
-                                break;
-                            case Mech.COCKPIT_PRIMITIVE:
-                                getMech().addPrimitiveCockpit();
-                                getMech().setArmorType(
-                                        EquipmentType.T_ARMOR_PRIMITIVE);
-                                break;
-                            case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
-                                getMech().addIndustrialPrimitiveCockpit();
-                                getMech().setArmorType(
-                                        EquipmentType.T_ARMOR_COMMERCIAL);
-                                break;
-                            default:
-                                getMech().addCockpit();
-                        }
-                        armor.resetArmorPoints();
+
+            // we need to do cockpit also here, because cockpitType
+            // determines
+            // if a mech is primitive and thus needs a larger engine
+            if (combo.equals(engineType) || combo.equals(cockpitType)) {
+                if (combo.equals(cockpitType)) {
+                    getMech().setCockpitType(
+                            Mech.getCockpitTypeForString(combo
+                                    .getSelectedItem().toString()));
+                    getMech().clearCockpitCrits();
+                    switch (getMech().getCockpitType()) {
+                        case Mech.COCKPIT_COMMAND_CONSOLE:
+                            getMech().addCommandConsole();
+                            break;
+                        case Mech.COCKPIT_DUAL:
+                            getMech().addDualCockpit();
+                            break;
+                        case Mech.COCKPIT_SMALL:
+                            getMech().addSmallCockpit();
+                            break;
+                        case Mech.COCKPIT_TORSO_MOUNTED:
+                            removeSystemCrits(Mech.SYSTEM_ENGINE);
+                            getMech().addEngineCrits();
+                            getMech().addTorsoMountedCockpit();
+                            break;
+                        case Mech.COCKPIT_INDUSTRIAL:
+                            getMech().addIndustrialCockpit();
+                            getMech().setArmorType(
+                                    EquipmentType.T_ARMOR_INDUSTRIAL);
+                            break;
+                        case Mech.COCKPIT_PRIMITIVE:
+                            getMech().addPrimitiveCockpit();
+                            getMech().setArmorType(
+                                    EquipmentType.T_ARMOR_PRIMITIVE);
+                            break;
+                        case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
+                            getMech().addIndustrialPrimitiveCockpit();
+                            getMech().setArmorType(
+                                    EquipmentType.T_ARMOR_COMMERCIAL);
+                            break;
+                        default:
+                            getMech().addCockpit();
                     }
-                    int rating = ((Integer) walkMP.getValue())
-                            * ((Integer) weightClass.getValue());
-                    if (getMech().isPrimitive()) {
-                        double dRating = ((Integer) walkMP.getValue())
-                                * ((Integer) weightClass.getValue());
-                        dRating *= 1.2;
-                        if ((dRating % 5) != 0) {
-                            dRating = (dRating - (dRating % 5)) + 5;
-                        }
-                        rating = (int) dRating;
-                    }
-                    if ((rating > 400)
-                            && (getMech().getGyroType() == Mech.GYRO_XL)) {
-                        JOptionPane
-                                .showMessageDialog(
-                                        this,
-                                        "That speed would require a large engine, which doesn't fit",
-                                        "Bad Engine", JOptionPane.ERROR_MESSAGE);
-                    }
-                    if (rating > 500) {
-                        JOptionPane
-                                .showMessageDialog(
-                                        this,
-                                        "That speed would create an engine with a rating over 500.",
-                                        "Bad Engine Rating",
-                                        JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        setNewEngine(rating, convertEngineType(engineType
-                                .getSelectedItem().toString()));
-                    }
-                } else if (combo.equals(armorCombo)) {
-                    UnitUtil.removeISorArmorMounts(unit, false);
-                    createArmorMountsAndSetArmorType();
                     armor.resetArmorPoints();
-                } else if (combo.equals(structureCombo)) {
-                    UnitUtil.removeISorArmorMounts(getMech(), true);
-                    createISMounts();
-                } else if (combo.equals(gyroType)) {
-                    if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE)
-                            && (combo.getSelectedIndex() == Mech.GYRO_XL)) {
-                        JOptionPane
-                                .showMessageDialog(
-                                        this,
-                                        "A XL gyro does not fit with a large engine installed",
-                                        "Bad Gyro", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        getMech().setGyroType(combo.getSelectedIndex());
-                        getMech().clearGyroCrits();
-
-                        switch (getMech().getGyroType()) {
-                            case Mech.GYRO_COMPACT:
-                                getMech().addCompactGyro();
-                                getMech().clearEngineCrits();
-                                getMech().addEngineCrits();
-                                break;
-                            case Mech.GYRO_HEAVY_DUTY:
-                                getMech().addHeavyDutyGyro();
-                                break;
-                            case Mech.GYRO_XL:
-                                getMech().addXLGyro();
-                                break;
-                            default:
-                                getMech().addGyro();
-                        }
-                    }
-                } else if (combo.equals(heatSinkType)) {
-                    UnitUtil.updateHeatSinks(getMech(),
-                            (Integer) heatSinkNumber.getValue(), heatSinkType
-                                    .getSelectedItem().toString());
-                } else if (combo.equals(jjType)) {
-                    if (getJumpJetType() == Mech.JUMP_STANDARD) {
-                        // check to make sure we are not over the number of jets
-                        // we are allowed
-                        if (((Integer) jumpMP.getValue()) > getMech()
-                                .getWalkMP(true, false, true)) {
-                            jumpMP.setValue(getMech().getWalkMP(true, false,
-                                    true));
-                        }
-                    } else if ((getJumpJetType() == Mech.JUMP_IMPROVED)
-                            || (getJumpJetType() == Mech.JUMP_PROTOTYPE)) {
-                        if (((Integer) jumpMP.getValue()) > getMech()
-                                .getRunMP()) {
-                            jumpMP.setValue(getMech().getRunMP());
-                        }
-                    }
-                    UnitUtil.updateJumpJets(getMech(),
-                            (Integer) jumpMP.getValue(), getJumpJetType());
-                } else if (combo.equals(enhancement)) {
-                    UnitUtil.updateEnhancements(getMech(), hasMASC(), hasTSM());
-                } else if (combo.equals(techLevel)) {
-                    int unitTechLevel = techLevel.getSelectedIndex();
-
-                    if (getMech().isClan()) {
-                        switch (unitTechLevel) {
-                            case 0:
-                                getMech().setTechLevel(TechConstants.T_CLAN_TW);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_CLAN_TW);
-                                techType.setSelectedIndex(1);
-                                break;
-                            case 1:
-                                getMech().setTechLevel(
-                                        TechConstants.T_CLAN_ADVANCED);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_CLAN_ADVANCED);
-                                break;
-                            case 2:
-                                getMech().setTechLevel(
-                                        TechConstants.T_CLAN_EXPERIMENTAL);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_CLAN_EXPERIMENTAL);
-                                break;
-                            case 3:
-                                getMech().setTechLevel(
-                                        TechConstants.T_CLAN_UNOFFICIAL);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_CLAN_UNOFFICIAL);
-                                break;
-                            default:
-                                getMech().setTechLevel(TechConstants.T_CLAN_TW);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_CLAN_TW);
-                                break;
-                        }
-
-                    } else {
-                        switch (unitTechLevel) {
-                            case 0:
-                                getMech().setTechLevel(
-                                        TechConstants.T_INTRO_BOXSET);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_INTRO_BOXSET);
-                                techType.setSelectedIndex(0);
-                                break;
-                            case 1:
-                                getMech().setTechLevel(
-                                        TechConstants.T_IS_TW_NON_BOX);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_IS_TW_NON_BOX);
-                                techType.setSelectedIndex(0);
-                                break;
-                            case 2:
-                                getMech().setTechLevel(
-                                        TechConstants.T_IS_ADVANCED);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_IS_ADVANCED);
-                                break;
-                            case 3:
-                                getMech().setTechLevel(
-                                        TechConstants.T_IS_EXPERIMENTAL);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_IS_EXPERIMENTAL);
-                                break;
-                            default:
-                                getMech().setTechLevel(
-                                        TechConstants.T_IS_UNOFFICIAL);
-                                getMech().setArmorTechLevel(
-                                        TechConstants.T_IS_UNOFFICIAL);
-                                break;
-                        }
-
-                    }
-                    populateChoices(true);
-                    armor.resetArmorPoints();
-                    UnitUtil.checkEquipmentByTechLevel(unit);
-                    refresh.refreshAll();
-                } else if (combo.equals(techType)) {
-                    if ((techType.getSelectedIndex() == 1)
-                            && (!getMech().isClan() || getMech().isMixedTech())) {
-                        techLevel.removeAllItems();
-                        for (String item : clanTechLevels) {
-                            techLevel.addItem(item);
-                        }
-                        getMech().setMixedTech(false);
-                        if (!getMech().isClan()) {
-                            int level = TechConstants
-                                    .getOppositeTechLevel(getMech()
-                                            .getTechLevel());
-                            getMech().setTechLevel(level);
-                            getMech().setArmorTechLevel(level);
-                        }
-                    } else if ((techType.getSelectedIndex() == 0)
-                            && (getMech().isClan() || getMech().isMixedTech())) {
-                        techLevel.removeAllItems();
-                        for (String item : isTechLevels) {
-                            techLevel.addItem(item);
-                        }
-                        getMech().setMixedTech(false);
-                        if (getMech().isClan()) {
-                            int level = TechConstants
-                                    .getOppositeTechLevel(getMech()
-                                            .getTechLevel());
-                            getMech().setTechLevel(level);
-                            getMech().setArmorTechLevel(level);
-                        }
-                    } else if ((techType.getSelectedIndex() == 2)
-                            && (!getMech().isMixedTech() || getMech().isClan())) {
-                        techLevel.removeAllItems();
-                        for (String item : isTechLevels) {
-                            techLevel.addItem(item);
-                        }
-                        // only set techlevel and armor techlevel to
-                        // experimental if
-                        // we're not already unofficial
-                        if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                            getMech().setTechLevel(
-                                    TechConstants.T_IS_EXPERIMENTAL);
-                            getMech().setArmorTechLevel(
-                                    TechConstants.T_IS_EXPERIMENTAL);
-                        }
-                        techLevel.setSelectedIndex(techLevel.getModel()
-                                .getSize() - 2);
-                        getMech().setMixedTech(true);
-                    } else if ((techType.getSelectedIndex() == 3)
-                            && (!getMech().isMixedTech() || !getMech().isClan())) {
-                        techLevel.removeAllItems();
-                        for (String item : clanTechLevels) {
-                            techLevel.addItem(item);
-                        }
-                        // only set techlevel and armor techlevel to advanced if
-                        // we're not already experimental or unofficial
-                        if (getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) {
-                            getMech().setTechLevel(
-                                    TechConstants.T_CLAN_EXPERIMENTAL);
-                            getMech().setArmorTechLevel(
-                                    TechConstants.T_CLAN_EXPERIMENTAL);
-                        }
-                        techLevel.setSelectedIndex(techLevel.getModel()
-                                .getSize() - 2);
-                        getMech().setMixedTech(true);
-                    }
-                    populateChoices(true);
-                    armor.resetArmorPoints();
-                    UnitUtil.checkEquipmentByTechLevel(unit);
                 }
-                refresh.refreshAll();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                addAllListeners();
+                int rating = ((Integer) walkMP.getValue())
+                        * ((Integer) weightClass.getValue());
+                if (getMech().isPrimitive()) {
+                    double dRating = ((Integer) walkMP.getValue())
+                            * ((Integer) weightClass.getValue());
+                    dRating *= 1.2;
+                    if ((dRating % 5) != 0) {
+                        dRating = (dRating - (dRating % 5)) + 5;
+                    }
+                    rating = (int) dRating;
+                }
+                if ((rating > 400) && (getMech().getGyroType() == Mech.GYRO_XL)) {
+                    JOptionPane
+                            .showMessageDialog(
+                                    this,
+                                    "That speed would require a large engine, which doesn't fit",
+                                    "Bad Engine", JOptionPane.ERROR_MESSAGE);
+                }
+                if (rating > 500) {
+                    JOptionPane
+                            .showMessageDialog(
+                                    this,
+                                    "That speed would create an engine with a rating over 500.",
+                                    "Bad Engine Rating",
+                                    JOptionPane.ERROR_MESSAGE);
+                } else {
+                    setNewEngine(rating, convertEngineType(engineType
+                            .getSelectedItem().toString()));
+                }
+            } else if (combo.equals(armorCombo)) {
+                if (!unit.hasPatchworkArmor()) {
+                    UnitUtil.removeISorArmorMounts(unit, false);
+                }
+                createArmorMountsAndSetArmorType();
+                if (!unit.hasPatchworkArmor()) {
+                    armor.resetArmorPoints();
+                }
+            } else if (combo.equals(structureCombo)) {
+                UnitUtil.removeISorArmorMounts(getMech(), true);
+                createISMounts();
+            } else if (combo.equals(gyroType)) {
+                if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE)
+                        && (combo.getSelectedIndex() == Mech.GYRO_XL)) {
+                    JOptionPane
+                            .showMessageDialog(
+                                    this,
+                                    "A XL gyro does not fit with a large engine installed",
+                                    "Bad Gyro", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    getMech().setGyroType(combo.getSelectedIndex());
+                    getMech().clearGyroCrits();
+
+                    switch (getMech().getGyroType()) {
+                        case Mech.GYRO_COMPACT:
+                            getMech().addCompactGyro();
+                            getMech().clearEngineCrits();
+                            getMech().addEngineCrits();
+                            break;
+                        case Mech.GYRO_HEAVY_DUTY:
+                            getMech().addHeavyDutyGyro();
+                            break;
+                        case Mech.GYRO_XL:
+                            getMech().addXLGyro();
+                            break;
+                        default:
+                            getMech().addGyro();
+                    }
+                }
+            } else if (combo.equals(heatSinkType)) {
+                UnitUtil.updateHeatSinks(getMech(), (Integer) heatSinkNumber
+                        .getValue(), heatSinkType.getSelectedItem().toString());
+            } else if (combo.equals(jjType)) {
+                if (getJumpJetType() == Mech.JUMP_STANDARD) {
+                    // check to make sure we are not over the number of jets
+                    // we are allowed
+                    if (((Integer) jumpMP.getValue()) > getMech().getWalkMP(
+                            true, false, true)) {
+                        jumpMP.setValue(getMech().getWalkMP(true, false, true));
+                    }
+                } else if ((getJumpJetType() == Mech.JUMP_IMPROVED)
+                        || (getJumpJetType() == Mech.JUMP_PROTOTYPE)) {
+                    if (((Integer) jumpMP.getValue()) > getMech().getRunMP()) {
+                        jumpMP.setValue(getMech().getRunMP());
+                    }
+                }
+                UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(),
+                        getJumpJetType());
+            } else if (combo.equals(enhancement)) {
+                UnitUtil.updateEnhancements(getMech(), hasMASC(), hasTSM());
+            } else if (combo.equals(techLevel)) {
+                int unitTechLevel = techLevel.getSelectedIndex();
+
+                if (getMech().isClan()) {
+                    switch (unitTechLevel) {
+                        case 0:
+                            getMech().setTechLevel(TechConstants.T_CLAN_TW);
+                            getMech()
+                                    .setArmorTechLevel(TechConstants.T_CLAN_TW);
+                            techType.setSelectedIndex(1);
+                            break;
+                        case 1:
+                            getMech().setTechLevel(
+                                    TechConstants.T_CLAN_ADVANCED);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_CLAN_ADVANCED);
+                            break;
+                        case 2:
+                            getMech().setTechLevel(
+                                    TechConstants.T_CLAN_EXPERIMENTAL);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_CLAN_EXPERIMENTAL);
+                            break;
+                        case 3:
+                            getMech().setTechLevel(
+                                    TechConstants.T_CLAN_UNOFFICIAL);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_CLAN_UNOFFICIAL);
+                            break;
+                        default:
+                            getMech().setTechLevel(TechConstants.T_CLAN_TW);
+                            getMech()
+                                    .setArmorTechLevel(TechConstants.T_CLAN_TW);
+                            break;
+                    }
+
+                } else {
+                    switch (unitTechLevel) {
+                        case 0:
+                            getMech()
+                                    .setTechLevel(TechConstants.T_INTRO_BOXSET);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_INTRO_BOXSET);
+                            techType.setSelectedIndex(0);
+                            break;
+                        case 1:
+                            getMech().setTechLevel(
+                                    TechConstants.T_IS_TW_NON_BOX);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_IS_TW_NON_BOX);
+                            techType.setSelectedIndex(0);
+                            break;
+                        case 2:
+                            getMech().setTechLevel(TechConstants.T_IS_ADVANCED);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_IS_ADVANCED);
+                            break;
+                        case 3:
+                            getMech().setTechLevel(
+                                    TechConstants.T_IS_EXPERIMENTAL);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_IS_EXPERIMENTAL);
+                            break;
+                        default:
+                            getMech().setTechLevel(
+                                    TechConstants.T_IS_UNOFFICIAL);
+                            getMech().setArmorTechLevel(
+                                    TechConstants.T_IS_UNOFFICIAL);
+                            break;
+                    }
+
+                }
+                populateChoices(true);
+                armor.resetArmorPoints();
+                UnitUtil.checkEquipmentByTechLevel(unit);
+            } else if (combo.equals(techType)) {
+                if ((techType.getSelectedIndex() == 1)
+                        && (!getMech().isClan() || getMech().isMixedTech())) {
+                    techLevel.removeAllItems();
+                    for (String item : clanTechLevels) {
+                        techLevel.addItem(item);
+                    }
+                    getMech().setMixedTech(false);
+                    if (!getMech().isClan()) {
+                        int level = TechConstants
+                                .getOppositeTechLevel(getMech().getTechLevel());
+                        getMech().setTechLevel(level);
+                        getMech().setArmorTechLevel(level);
+                    }
+                } else if ((techType.getSelectedIndex() == 0)
+                        && (getMech().isClan() || getMech().isMixedTech())) {
+                    techLevel.removeAllItems();
+                    for (String item : isTechLevels) {
+                        techLevel.addItem(item);
+                    }
+                    getMech().setMixedTech(false);
+                    if (getMech().isClan()) {
+                        int level = TechConstants
+                                .getOppositeTechLevel(getMech().getTechLevel());
+                        getMech().setTechLevel(level);
+                        getMech().setArmorTechLevel(level);
+                    }
+                } else if ((techType.getSelectedIndex() == 2)
+                        && (!getMech().isMixedTech() || getMech().isClan())) {
+                    techLevel.removeAllItems();
+                    for (String item : isTechLevels) {
+                        techLevel.addItem(item);
+                    }
+                    // only set techlevel and armor techlevel to
+                    // experimental if
+                    // we're not already unofficial
+                    if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                        getMech().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        getMech().setArmorTechLevel(
+                                TechConstants.T_IS_EXPERIMENTAL);
+                    }
+                    techLevel
+                            .setSelectedIndex(techLevel.getModel().getSize() - 2);
+                    getMech().setMixedTech(true);
+                } else if ((techType.getSelectedIndex() == 3)
+                        && (!getMech().isMixedTech() || !getMech().isClan())) {
+                    techLevel.removeAllItems();
+                    for (String item : clanTechLevels) {
+                        techLevel.addItem(item);
+                    }
+                    // only set techlevel and armor techlevel to advanced if
+                    // we're not already experimental or unofficial
+                    if (getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) {
+                        getMech().setTechLevel(
+                                TechConstants.T_CLAN_EXPERIMENTAL);
+                        getMech().setArmorTechLevel(
+                                TechConstants.T_CLAN_EXPERIMENTAL);
+                    }
+                    techLevel
+                            .setSelectedIndex(techLevel.getModel().getSize() - 2);
+                    getMech().setMixedTech(true);
+                }
+                populateChoices(true);
+                armor.resetArmorPoints();
+                UnitUtil.checkEquipmentByTechLevel(unit);
             }
         } else if (e.getSource() instanceof JCheckBox) {
             JCheckBox check = (JCheckBox) e.getSource();
@@ -1004,13 +1016,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 createArmorMountsAndSetArmorType();
             }
-            refresh.refreshAll();
         } else if (e.getSource() instanceof JButton) {
             if (e.getSource().equals(maximizeArmorButton)) {
                 maximizeArmor();
             }
-            refresh.refreshAll();
         }
+        addAllListeners();
+        refresh.refreshAll();
     }
 
     public void removeSystemCrits(int systemType) {
@@ -1938,7 +1950,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private void setEnhancementCombo() {
         String selEnhance = "None";
-        if ((getMech().hasMASC() && !getMech().hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) || getMech().hasMASCAndSuperCharger()) {
+        if ((getMech().hasMASC() && !getMech().hasWorkingMisc(MiscType.F_MASC,
+                MiscType.S_SUPERCHARGER))
+                || getMech().hasMASCAndSuperCharger()) {
             selEnhance = "MASC";
         } else if (getMech().hasIndustrialTSM()) {
             selEnhance = "Industrial TSM";
@@ -2043,6 +2057,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         (String) heatSinkType.getSelectedItem());
             }
             addAllListeners();
+
             refresh.refreshAll();
         }
     }
@@ -2055,156 +2070,215 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void createArmorMountsAndSetArmorType() {
-        /*
-         * if (getArmorType(armorCombo) == EquipmentType.T_ARMOR_PATCHWORK) {
-         * JComboBox headArmor = new JComboBox(); headArmor.setName("head");
-         * JComboBox laArmor = new JComboBox(); laArmor.setName("la"); JComboBox
-         * ltArmor = new JComboBox(); ltArmor.setName("lt"); JComboBox ctArmor =
-         * new JComboBox(); ctArmor.setName("ct"); JComboBox rtArmor = new
-         * JComboBox(); rtArmor.setName("rt"); JComboBox raArmor = new
-         * JComboBox(); raArmor.setName("ra"); JComboBox llArmor = new
-         * JComboBox(); llArmor.setName("ll"); JComboBox rlArmor = new
-         * JComboBox(); rlArmor.setName("rl"); for (int index = 0; index <
-         * (armorNames.length - 1); index++) {
-         * headArmor.addItem(armorNames[index]);
-         * laArmor.addItem(armorNames[index]);
-         * ltArmor.addItem(armorNames[index]);
-         * ctArmor.addItem(armorNames[index]);
-         * rtArmor.addItem(armorNames[index]);
-         * raArmor.addItem(armorNames[index]);
-         * llArmor.addItem(armorNames[index]);
-         * rlArmor.addItem(armorNames[index]); } setArmorType(headArmor,
-         * unit.getArmorType(Mech.LOC_HEAD), false); setArmorType(laArmor,
-         * unit.getArmorType(Mech.LOC_LARM), false); setArmorType(ltArmor,
-         * unit.getArmorType(Mech.LOC_LT), false); setArmorType(ctArmor,
-         * unit.getArmorType(Mech.LOC_CT), false); setArmorType(rtArmor,
-         * unit.getArmorType(Mech.LOC_RT), false); setArmorType(raArmor,
-         * unit.getArmorType(Mech.LOC_RARM), false); setArmorType(llArmor,
-         * unit.getArmorType(Mech.LOC_LLEG), false); setArmorType(rlArmor,
-         * unit.getArmorType(Mech.LOC_RLEG), false); JCheckBox headClan = new
-         * JCheckBox("clan", unit.isClan()); JCheckBox laClan = new
-         * JCheckBox("clan", unit.isClan()); JCheckBox ltClan = new
-         * JCheckBox("clan", unit.isClan()); JCheckBox ctClan = new
-         * JCheckBox("clan", unit.isClan()); JCheckBox rtClan = new
-         * JCheckBox("clan", unit.isClan()); JCheckBox raClan = new
-         * JCheckBox("clan", unit.isClan()); JCheckBox llClan = new
-         * JCheckBox("clan", unit.isClan()); JCheckBox rlClan = new
-         * JCheckBox("clan", unit.isClan()); JLabel headLabel = new
-         * JLabel("Head:"); JLabel laLabel = new JLabel(unit instanceof
-         * BipedMech ? "Left Arm:" : "Front Left Leg"); JLabel ltLabel = new
-         * JLabel("Left Torso:"); JLabel ctLabel = new JLabel("Center Torso:");
-         * JLabel rtLabel = new JLabel("Right Torso:"); JLabel raLabel = new
-         * JLabel( unit instanceof BipedMech ? "Right Arm:" :
-         * "Front Right Leg"); JLabel llLabel = new JLabel(unit instanceof
-         * BipedMech ? "Left Leg:" : "Rear Left Leg"); JLabel rlLabel = new
-         * JLabel( unit instanceof BipedMech ? "Right Leg:" : "Rear Right Leg");
-         * JPanel panel = new JPanel(new GridBagLayout()); panel.add(headLabel,
-         * GBC.std()); panel.add(headClan, GBC.std()); panel.add(headArmor,
-         * GBC.eol()); panel.add(laLabel, GBC.std()); panel.add(laClan,
-         * GBC.std()); panel.add(laArmor, GBC.eol()); panel.add(ltLabel,
-         * GBC.std()); panel.add(ltClan, GBC.std()); panel.add(ltArmor,
-         * GBC.eol()); panel.add(ctLabel, GBC.std()); panel.add(ctClan,
-         * GBC.std()); panel.add(ctArmor, GBC.eol()); panel.add(rtLabel,
-         * GBC.std()); panel.add(rtClan, GBC.std()); panel.add(rtArmor,
-         * GBC.eol()); panel.add(raLabel, GBC.std()); panel.add(raClan,
-         * GBC.std()); panel.add(raArmor, GBC.eol()); panel.add(llLabel,
-         * GBC.std()); panel.add(llClan, GBC.std()); panel.add(llArmor,
-         * GBC.eol()); panel.add(rlLabel, GBC.std()); panel.add(rlClan,
-         * GBC.std()); panel.add(rlArmor, GBC.eol()); if (!unit.isMixedTech()) {
-         * headClan.setVisible(false); laClan.setVisible(false);
-         * ltClan.setVisible(false); ctClan.setVisible(false);
-         * rtClan.setVisible(false); raClan.setVisible(false);
-         * llClan.setVisible(false); rlClan.setVisible(false); }
-         * JOptionPane.showMessageDialog(this, panel,
-         * "Please choose the armor types", JOptionPane.QUESTION_MESSAGE);
-         * unit.setArmorType(getArmorType(headArmor), Mech.LOC_HEAD);
-         * unit.setArmorType(getArmorType(laArmor), Mech.LOC_LARM);
-         * unit.setArmorType(getArmorType(ltArmor), Mech.LOC_LT);
-         * unit.setArmorType(getArmorType(ctArmor), Mech.LOC_CT);
-         * unit.setArmorType(getArmorType(rtArmor), Mech.LOC_RT);
-         * unit.setArmorType(getArmorType(raArmor), Mech.LOC_RARM);
-         * unit.setArmorType(getArmorType(llArmor), Mech.LOC_LLEG);
-         * unit.setArmorType(getArmorType(rlArmor), Mech.LOC_RLEG);
-         * setArmorTechLevel(Mech.LOC_HEAD, headClan.isSelected());
-         * setArmorTechLevel(Mech.LOC_LARM, laClan.isSelected());
-         * setArmorTechLevel(Mech.LOC_LT, ltClan.isSelected());
-         * setArmorTechLevel(Mech.LOC_CT, ctClan.isSelected());
-         * setArmorTechLevel(Mech.LOC_RT, rtClan.isSelected());
-         * setArmorTechLevel(Mech.LOC_RARM, raClan.isSelected());
-         * setArmorTechLevel(Mech.LOC_LLEG, llClan.isSelected());
-         * setArmorTechLevel(Mech.LOC_RLEG, rlClan.isSelected()); for (int i =
-         * 0; i < unit.locations(); i++) { int armorCount = 0; switch
-         * (unit.getArmorType(i)) { case EquipmentType.T_ARMOR_STANDARD: case
-         * EquipmentType.T_ARMOR_HARDENED: case
-         * EquipmentType.T_ARMOR_INDUSTRIAL: case
-         * EquipmentType.T_ARMOR_COMMERCIAL: case
-         * EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL: armorCount = 0; break; case
-         * EquipmentType.T_ARMOR_STEALTH: case
-         * EquipmentType.T_ARMOR_FERRO_LAMELLOR: armorCount = 2; break; case
-         * EquipmentType.T_ARMOR_HEAVY_FERRO: armorCount = 3; break; case
-         * EquipmentType.T_ARMOR_FERRO_FIBROUS: case
-         * EquipmentType.T_ARMOR_REFLECTIVE: case
-         * EquipmentType.T_ARMOR_REACTIVE: if
-         * (TechConstants.isClan(unit.getArmorTechLevel(i))) { armorCount = 1; }
-         * else { armorCount = 2; } break; default: break; } if (armorCount < 1)
-         * { break; } // auto-place stealth crits /* if (getArmorType() ==
-         * EquipmentType.T_ARMOR_STEALTH) { for (int loc = 0; loc <
-         * getMech().locations(); loc++) { if ((loc != Mech.LOC_HEAD) && (loc !=
-         * Mech.LOC_CT)) { try { getMech().addEquipment(new Mounted(unit,
-         * EquipmentType.get(EquipmentType
-         * .getArmorTypeName(unit.getArmorType(loc)))), loc, false);
-         * getMech().addEquipment(new Mounted(unit,
-         * EquipmentType.get(EquipmentType
-         * .getArmorTypeName(unit.getArmorType(loc)))), loc, false); } catch
-         * (LocationFullException lfe) { JOptionPane.showMessageDialog(null,
-         * lfe.getMessage(),
-         * "Stealth Armor does not fit in location. Resetting to Standard Armor"
-         * , JOptionPane.INFORMATION_MESSAGE);
-         * setArmorType(EquipmentType.T_ARMOR_STANDARD); } } } } else {
-         */
-        /*
-         * for (; armorCount > 0; armorCount--) { try { getMech().addEquipment(
-         * new Mounted(unit, EquipmentType.get(EquipmentType
-         * .getArmorTypeName(unit .getArmorType(i)))), Entity.LOC_NONE, false);
-         * } catch (Exception ex) { ex.printStackTrace(); } } // } } if
-         * (!unit.hasPatchworkArmor()) {
-         * setArmorType(EquipmentType.T_ARMOR_STANDARD); } } else {
-         */
-        unit.setArmorType(getArmorType(armorCombo));
-        int armorCount = 0;
 
-        armorCount = EquipmentType.get(
-                EquipmentType.getArmorTypeName(unit.getArmorType(0)))
-                .getCriticals(unit);
+        if (getArmorType(armorCombo) == EquipmentType.T_ARMOR_PATCHWORK) {
+            JComboBox headArmor = new JComboBox();
+            headArmor.setName("head");
+            JComboBox laArmor = new JComboBox();
+            laArmor.setName("la");
+            JComboBox ltArmor = new JComboBox();
+            ltArmor.setName("lt");
+            JComboBox ctArmor = new JComboBox();
+            ctArmor.setName("ct");
+            JComboBox rtArmor = new JComboBox();
+            rtArmor.setName("rt");
+            JComboBox raArmor = new JComboBox();
+            raArmor.setName("ra");
+            JComboBox llArmor = new JComboBox();
+            llArmor.setName("ll");
+            JComboBox rlArmor = new JComboBox();
+            rlArmor.setName("rl");
+            for (int index = 0; index < (armorNames.length - 1); index++) {
+                headArmor.addItem(armorNames[index]);
+                laArmor.addItem(armorNames[index]);
+                ltArmor.addItem(armorNames[index]);
+                ctArmor.addItem(armorNames[index]);
+                rtArmor.addItem(armorNames[index]);
+                raArmor.addItem(armorNames[index]);
+                llArmor.addItem(armorNames[index]);
+                rlArmor.addItem(armorNames[index]);
+            }
+            setArmorType(headArmor, unit.getArmorType(Mech.LOC_HEAD), false);
+            setArmorType(laArmor, unit.getArmorType(Mech.LOC_LARM), false);
+            setArmorType(ltArmor, unit.getArmorType(Mech.LOC_LT), false);
+            setArmorType(ctArmor, unit.getArmorType(Mech.LOC_CT), false);
+            setArmorType(rtArmor, unit.getArmorType(Mech.LOC_RT), false);
+            setArmorType(raArmor, unit.getArmorType(Mech.LOC_RARM), false);
+            setArmorType(llArmor, unit.getArmorType(Mech.LOC_LLEG), false);
+            setArmorType(rlArmor, unit.getArmorType(Mech.LOC_RLEG), false);
+            JCheckBox headClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox laClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox ltClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox ctClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox rtClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox raClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox llClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox rlClan = new JCheckBox("Clan", unit.isClan());
+            JLabel headLabel = new JLabel("Head:");
+            JLabel laLabel = new JLabel(unit instanceof BipedMech ? "Left Arm:"
+                    : "Front Left Leg");
+            JLabel ltLabel = new JLabel("Left Torso:");
+            JLabel ctLabel = new JLabel("Center Torso:");
+            JLabel rtLabel = new JLabel("Right Torso:");
+            JLabel raLabel = new JLabel(
+                    unit instanceof BipedMech ? "Right Arm:"
+                            : "Front Right Leg");
+            JLabel llLabel = new JLabel(unit instanceof BipedMech ? "Left Leg:"
+                    : "Rear Left Leg");
+            JLabel rlLabel = new JLabel(
+                    unit instanceof BipedMech ? "Right Leg:" : "Rear Right Leg");
+            JPanel panel = new JPanel(new GridBagLayout());
+            panel.add(headLabel, GBC.std());
+            panel.add(headClan, GBC.std());
+            panel.add(headArmor, GBC.eol());
+            panel.add(laLabel, GBC.std());
+            panel.add(laClan, GBC.std());
+            panel.add(laArmor, GBC.eol());
+            panel.add(ltLabel, GBC.std());
+            panel.add(ltClan, GBC.std());
+            panel.add(ltArmor, GBC.eol());
+            panel.add(ctLabel, GBC.std());
+            panel.add(ctClan, GBC.std());
+            panel.add(ctArmor, GBC.eol());
+            panel.add(rtLabel, GBC.std());
+            panel.add(rtClan, GBC.std());
+            panel.add(rtArmor, GBC.eol());
+            panel.add(raLabel, GBC.std());
+            panel.add(raClan, GBC.std());
+            panel.add(raArmor, GBC.eol());
+            panel.add(llLabel, GBC.std());
+            panel.add(llClan, GBC.std());
+            panel.add(llArmor, GBC.eol());
+            panel.add(rlLabel, GBC.std());
+            panel.add(rlClan, GBC.std());
+            panel.add(rlArmor, GBC.eol());
+            if (!unit.isMixedTech()) {
+                headClan.setVisible(false);
+                laClan.setVisible(false);
 
-        if (armorCount < 1) {
-            return;
-        }
-        // auto-place stealth crits
-        if (getArmorType(armorCombo) == EquipmentType.T_ARMOR_STEALTH) {
-            Mounted mount = UnitUtil.createSpreadMounts(getMech(),
-                    EquipmentType.get(EquipmentType.getArmorTypeName(unit
-                            .getArmorType(0))));
-            if (mount == null) {
-                JOptionPane.showMessageDialog(null,
-                        "Stealth Armor does not fit in location.",
-                        "Resetting to Standard Armor",
-                        JOptionPane.INFORMATION_MESSAGE);
-                setArmorCombo(EquipmentType.T_ARMOR_STANDARD);
-                unit.setArmorType(getArmorType(armorCombo));
+                ltClan.setVisible(false);
+                ctClan.setVisible(false);
+                rtClan.setVisible(false);
+                raClan.setVisible(false);
+                llClan.setVisible(false);
+                rlClan.setVisible(false);
+            }
+            JOptionPane.showMessageDialog(this, panel,
+                    "Please choose the armor types",
+                    JOptionPane.QUESTION_MESSAGE);
+            unit.setArmorType(getArmorType(headArmor), Mech.LOC_HEAD);
+            unit.setArmorType(getArmorType(laArmor), Mech.LOC_LARM);
+            unit.setArmorType(getArmorType(ltArmor), Mech.LOC_LT);
+            unit.setArmorType(getArmorType(ctArmor), Mech.LOC_CT);
+            unit.setArmorType(getArmorType(rtArmor), Mech.LOC_RT);
+            unit.setArmorType(getArmorType(raArmor), Mech.LOC_RARM);
+            unit.setArmorType(getArmorType(llArmor), Mech.LOC_LLEG);
+            unit.setArmorType(getArmorType(rlArmor), Mech.LOC_RLEG);
+            setArmorTechLevel(Mech.LOC_HEAD, headClan.isSelected());
+            setArmorTechLevel(Mech.LOC_LARM, laClan.isSelected());
+            setArmorTechLevel(Mech.LOC_LT, ltClan.isSelected());
+            setArmorTechLevel(Mech.LOC_CT, ctClan.isSelected());
+            setArmorTechLevel(Mech.LOC_RT, rtClan.isSelected());
+            setArmorTechLevel(Mech.LOC_RARM, raClan.isSelected());
+            setArmorTechLevel(Mech.LOC_LLEG, llClan.isSelected());
+            setArmorTechLevel(Mech.LOC_RLEG, rlClan.isSelected());
+            for (int i = 0; i < unit.locations(); i++) {
+                int armorCount = 0;
+                switch (unit.getArmorType(i)) {
+                    case EquipmentType.T_ARMOR_STANDARD:
+                    case EquipmentType.T_ARMOR_HARDENED:
+                    case EquipmentType.T_ARMOR_INDUSTRIAL:
+                    case EquipmentType.T_ARMOR_COMMERCIAL:
+                    case EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL:
+                        armorCount = 0;
+                        break;
+                    case EquipmentType.T_ARMOR_STEALTH:
+                    case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+                        armorCount = 2;
+                        break;
+                    case EquipmentType.T_ARMOR_HEAVY_FERRO:
+                        armorCount = 3;
+                        break;
+                    case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+                    case EquipmentType.T_ARMOR_REFLECTIVE:
+                    case EquipmentType.T_ARMOR_REACTIVE:
+                        if (TechConstants.isClan(unit.getArmorTechLevel(i))) {
+                            armorCount = 1;
+                        } else {
+                            armorCount = 2;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                if (armorCount < 1) {
+                    continue;
+                }
+
+                for (; armorCount > 0; armorCount--) {
+                    try {
+                        getMech().addEquipment(
+                                new Mounted(unit,
+                                        EquipmentType.get(EquipmentType
+                                                .getArmorTypeName(unit
+                                                        .getArmorType(i)))), i,
+                                false);
+                    } catch (LocationFullException ex) {
+                        JOptionPane
+                                .showMessageDialog(
+                                        null,
+                                        EquipmentType.getArmorTypeName(unit
+                                                .getArmorType(i))
+                                                + " does not fit in location "
+                                                + unit.getLocationName(i)
+                                                + ". Resetting to Standard Armor in this location.",
+                                        "Error",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                        unit.setArmorType(EquipmentType.T_ARMOR_STANDARD, i);
+                    }
+                }
+            }
+            if (!unit.hasPatchworkArmor()) {
+                setArmorType(EquipmentType.T_ARMOR_STANDARD);
             }
         } else {
-            for (; armorCount > 0; armorCount--) {
-                try {
-                    getMech().addEquipment(
-                            new Mounted(unit, EquipmentType.get(EquipmentType
-                                    .getArmorTypeName(unit.getArmorType(0)))),
-                            Entity.LOC_NONE, false);
-                } catch (Exception ex) {
+            unit.setArmorType(getArmorType(armorCombo));
+            int armorCount = 0;
+
+            armorCount = EquipmentType.get(
+                    EquipmentType.getArmorTypeName(unit.getArmorType(0)))
+                    .getCriticals(unit);
+
+            if (armorCount < 1) {
+                return;
+            }
+            // auto-place stealth crits
+            if (getArmorType(armorCombo) == EquipmentType.T_ARMOR_STEALTH) {
+                Mounted mount = UnitUtil.createSpreadMounts(getMech(),
+                        EquipmentType.get(EquipmentType.getArmorTypeName(unit
+                                .getArmorType(0))));
+                if (mount == null) {
+                    JOptionPane.showMessageDialog(null,
+                            "Stealth Armor does not fit in location.",
+                            "Resetting to Standard Armor",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    setArmorCombo(EquipmentType.T_ARMOR_STANDARD);
+                    unit.setArmorType(getArmorType(armorCombo));
+                }
+            } else {
+                for (; armorCount > 0; armorCount--) {
+                    try {
+                        getMech().addEquipment(
+                                new Mounted(unit,
+                                        EquipmentType.get(EquipmentType
+                                                .getArmorTypeName(unit
+                                                        .getArmorType(0)))),
+                                Entity.LOC_NONE, false);
+                    } catch (Exception ex) {
+                    }
                 }
             }
         }
-        // }
     }
 
     private void setArmorCombo(int type) {
@@ -2278,12 +2352,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void setNewEngine(int rating, int type) {
-        System.out.println("Cleaning engine crits.");
         getMech().clearEngineCrits();
-        System.out.println("Setting new engine rating.");
         getMech().setEngine(new Engine(rating, type, clanEngineFlag));
         getMech().addEngineCrits();
-        System.out.println("Adding engine crits.");
         UnitUtil.updateAutoSinks(getMech(),
                 (String) heatSinkType.getSelectedItem());
     }
@@ -2341,5 +2412,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             selIndex = -1;
         }
         heatSinkType.setSelectedIndex(selIndex);
+    }
+
+    private void setArmorType(JComboBox combo, int type, boolean removeListeners) {
+        if (removeListeners) {
+            removeAllListeners();
+        }
+        for (int pos = 0; pos < armorNames.length; pos++) {
+            if (armorNames[type].equals(armorNames[pos])) {
+                combo.setSelectedIndex(pos);
+                break;
+            }
+        }
+        if (removeListeners) {
+            addAllListeners();
+        }
+    }
+
+    public void setArmorType(int type) {
+        setArmorType(armorCombo, type, true);
     }
 }
