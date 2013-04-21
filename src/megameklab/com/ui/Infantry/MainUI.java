@@ -31,30 +31,27 @@ import megamek.common.LocationFullException;
 import megamek.common.TechConstants;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Infantry.Header;
-import megameklab.com.ui.Infantry.StatusBar;
 import megameklab.com.ui.Infantry.tabs.PreviewTab;
 import megameklab.com.ui.Infantry.tabs.StructureTab;
 import megameklab.com.util.MenuBarCreator;
 
-
 public class MainUI extends MegaMekLabMainUI {
 
-	/**
-	 * 
+    /**
+	 *
 	 */
-	private static final long serialVersionUID = 5338040000652349619L;
+    private static final long serialVersionUID = 5338040000652349619L;
 
-	StructureTab structureTab;
-	PreviewTab previewTab;
-	Header header;
-	StatusBar statusbar;
+    StructureTab structureTab;
+    PreviewTab previewTab;
+    Header header;
+    StatusBar statusbar;
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
-	
-	public MainUI() {
+
+    public MainUI() {
 
         super();
         createNewUnit(false);
@@ -72,12 +69,12 @@ public class MainUI extends MegaMekLabMainUI {
         setVisible(true);
         repaint();
         refreshAll();
-        
-	}
-	
-	@Override
-	public void reloadTabs() {
-		masterPanel.removeAll();
+
+    }
+
+    @Override
+    public void reloadTabs() {
+        masterPanel.removeAll();
         ConfigPane.removeAll();
 
         masterPanel.setLayout(new BorderLayout());
@@ -88,7 +85,7 @@ public class MainUI extends MegaMekLabMainUI {
         statusbar = new StatusBar(pbi, this);
         structureTab = new StructureTab(pbi);
         previewTab = new PreviewTab(pbi);
-        
+
         structureTab.addRefreshedListener(this);
 
         ConfigPane.addTab("Build", structureTab);
@@ -99,73 +96,75 @@ public class MainUI extends MegaMekLabMainUI {
 
         refreshHeader();
         this.repaint();
-	}
+    }
 
-	@Override
-	public void createNewUnit(boolean isNew) {
-		createNewUnit(false, false);
-	}
+    @Override
+    public void createNewUnit(boolean isNew) {
+        createNewUnit(false, false);
+    }
 
-	@Override
-	public void createNewUnit(boolean isNew, boolean isAlsoNew) {
-		entity = new Infantry();
-		entity.setYear(2750);
+    @Override
+    public void createNewUnit(boolean isNew, boolean isAlsoNew) {
+        entity = new Infantry();
+        entity.setYear(2750);
         entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         entity.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
-		((Infantry)entity).setSquadN(4);
-		((Infantry)entity).setSquadSize(7);
-		((Infantry)entity).setPrimaryWeapon((InfantryWeapon)EquipmentType.get("InfantryAssaultRifle"));
-		try {
-            entity.addEquipment(EquipmentType.get("InfantryAssaultRifle"), Infantry.LOC_INFANTRY);
+        ((Infantry) entity).setSquadN(4);
+        ((Infantry) entity).setSquadSize(7);
+        ((Infantry) entity).setPrimaryWeapon((InfantryWeapon) EquipmentType
+                .get("InfantryAssaultRifle"));
+        try {
+            entity.addEquipment(EquipmentType.get("InfantryAssaultRifle"),
+                    Infantry.LOC_INFANTRY);
         } catch (LocationFullException ex) {
         }
-		entity.autoSetInternal();
-		entity.setChassis("New");
-		entity.setModel("Infantry");
-	}
+        entity.autoSetInternal();
+        entity.setChassis("New");
+        entity.setModel("Infantry");
+    }
 
-	@Override
-	public void refreshAll() {
+    @Override
+    public void refreshAll() {
         statusbar.refresh();
         structureTab.refresh();
         previewTab.refresh();
-	}
+    }
 
-	@Override
-	public void refreshArmor() {
-		//armorTab.refresh();
-	}
+    @Override
+    public void refreshArmor() {
+        // armorTab.refresh();
+    }
 
-	@Override
-	public void refreshBuild() {
-		
-	}
+    @Override
+    public void refreshBuild() {
 
-	@Override
-	public void refreshEquipment() {
-		
-	}
+    }
 
-	@Override
-	public void refreshHeader() {
-		
-	}
+    @Override
+    public void refreshEquipment() {
 
-	@Override
-	public void refreshStatus() {
-		statusbar.refresh();
-	}
+    }
 
-	@Override
-	public void refreshStructure() {
-		structureTab.refresh();
-		
-	}
+    @Override
+    public void refreshHeader() {
 
-	@Override
-	public void refreshWeapons() {
-		//weaponTab.refresh();
-	}
+    }
+
+    @Override
+    public void refreshStatus() {
+        statusbar.refresh();
+    }
+
+    @Override
+    public void refreshStructure() {
+        structureTab.refresh();
+
+    }
+
+    @Override
+    public void refreshWeapons() {
+        // weaponTab.refresh();
+    }
 
     @Override
     public void refreshPreview() {

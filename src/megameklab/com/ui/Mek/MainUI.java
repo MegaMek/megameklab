@@ -47,13 +47,12 @@ public class MainUI extends MegaMekLabMainUI {
      */
     private static final long serialVersionUID = -5836932822468918198L;
 
-    JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
+    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private BuildTab buildTab;
-    private Header header;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
@@ -82,7 +81,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         masterPanel.removeAll();
-        ConfigPane.removeAll();
+        configPane.removeAll();
 
         masterPanel.setLayout(new BorderLayout());
 
@@ -92,25 +91,23 @@ public class MainUI extends MegaMekLabMainUI {
 
         previewTab = new PreviewTab(mech);
 
-        header = new Header(mech);
         statusbar = new StatusBar(mech, this);
         equipmentTab = new EquipmentTab(mech);
         buildTab = new BuildTab(mech, equipmentTab);
-        header.addRefreshedListener(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
-        ConfigPane.addTab("Structure/Armor", structureTab);
+        configPane.addTab("Structure/Armor", structureTab);
         //ConfigPane.addTab("Armor", armorTab);
-        ConfigPane.addTab("Equipment", equipmentTab);
+        configPane.addTab("Equipment", equipmentTab);
         //ConfigPane.addTab("Weapons", weaponTab);
-        ConfigPane.addTab("Assign Criticals", buildTab);
-        ConfigPane.addTab("Preview", previewTab);
+        configPane.addTab("Assign Criticals", buildTab);
+        configPane.addTab("Preview", previewTab);
 
         //masterPanel.add(header);
-        masterPanel.add(ConfigPane, BorderLayout.CENTER);
+        masterPanel.add(configPane, BorderLayout.CENTER);
         masterPanel.add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
@@ -203,7 +200,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshArmor() {
     }
-
+    
     @Override
     public void refreshBuild() {
         buildTab.refresh();
