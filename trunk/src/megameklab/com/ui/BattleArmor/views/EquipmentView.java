@@ -37,7 +37,6 @@ import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentListCellKeySelectionManager;
@@ -97,7 +96,7 @@ public class EquipmentView extends IView implements ActionListener {
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         // equipmentScroll.setToolTipText("");
-        equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
+        equipmentScroll.setPreferredSize(new Dimension((getWidth() * 90) / 100, (getHeight() * 8) / 10));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
 
@@ -142,9 +141,6 @@ public class EquipmentView extends IView implements ActionListener {
         equipmentTypes = new Vector<EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
-            if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_TALON)) {
-                continue;
-            }
             if (UnitUtil.isLegal(unit, eq.getTechLevel())) {
                 equipmentTypes.add(eq);
                 equipmentCombo.addItem(eq);
@@ -238,7 +234,7 @@ public class EquipmentView extends IView implements ActionListener {
     private void fireTableRefresh() {
         equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
-        equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
+        equipmentScroll.setPreferredSize(new Dimension((getWidth() * 90) / 100, (getHeight() * 8) / 10));
         equipmentScroll.repaint();
     }
 
