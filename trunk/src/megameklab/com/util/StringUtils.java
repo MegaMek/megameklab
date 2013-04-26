@@ -65,6 +65,7 @@ import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.ScreenLauncherWeapon;
 import megamek.common.weapons.StreakLRMWeapon;
 import megamek.common.weapons.StreakSRMWeapon;
+import megamek.common.weapons.TAGWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -209,7 +210,7 @@ public class StringUtils {
                 }
             } else if (weapon.hasFlag(WeaponType.F_MGA)) {
                 info = "  [T]";
-            } else if (weapon instanceof ISC3M) {
+            } else if ((weapon instanceof ISC3M) || (weapon instanceof TAGWeapon)) {
                 info = "  [E]";
             } else if (weapon instanceof ISC3RemoteSensorLauncher) {
                 info = "  [M,E]";
