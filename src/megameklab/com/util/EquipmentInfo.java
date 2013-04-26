@@ -34,7 +34,7 @@ import megamek.common.weapons.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.ISCenturionWeaponSystem;
 import megamek.common.weapons.ISCompactNarc;
-import megamek.common.weapons.ISMineLauncher;
+import megamek.common.weapons.ISPopUpMineLauncher;
 import megamek.common.weapons.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MMLWeapon;
@@ -62,6 +62,7 @@ public class EquipmentInfo {
     public boolean isATM = false;
     public boolean isBAMineLayer = false;
     public boolean isCompactNarc = false;
+    public boolean isBAPopUpMine = false;
     public boolean isManipulator = false;
     public boolean isBACargolifter = false;
     public boolean isAMS = false;
@@ -437,13 +438,15 @@ public class EquipmentInfo {
             shtRange = 0;
             medRange = 0;
             longRange = 1;
-        } else if (mount.getType().hasFlag(MiscType.F_CLUB) && (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE) || mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM) || mount.getType().hasSubType(MiscType.S_VIBRO_SMALL))) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_CLUB) && (mount.getType().hasSubType(MiscType.S_VIBRO_LARGE) || mount.getType().hasSubType(MiscType.S_VIBRO_MEDIUM) || mount.getType().hasSubType(MiscType.S_VIBRO_SMALL))) {
             heat = unit.getActiveVibrobladeHeat(mount.getLocation(), true);
-        } else if (mount.getType().hasFlag(MiscType.F_CLUB) && (mount.getType().hasSubType(MiscType.S_SPOT_WELDER))) {
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_CLUB) && (mount.getType().hasSubType(MiscType.S_SPOT_WELDER))) {
             heat = 2;
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
+            heat = 5;
         }
 
-        isBAMineLayer = mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
+        isBAMineLayer = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
         hasArtemisV = hasLinkedEquipment(mount, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(mount, MiscType.F_APOLLO);
@@ -456,9 +459,7 @@ public class EquipmentInfo {
 
         name = UnitUtil.getCritName(unit, mount.getType());
 
-        if (mount.getType() instanceof ISMineLauncher) {
-            name = "Pop-Up Mine";
-        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
+        if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
             name = "ECM Suite";
         }
 
@@ -486,6 +487,10 @@ public class EquipmentInfo {
 
             WeaponType weapon = (WeaponType) mount.getType();
 
+            isCompactNarc = weapon instanceof ISCompactNarc;
+            isBAPopUpMine = weapon instanceof ISPopUpMineLauncher;
+
+
             if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
                 c3Level = C3REMOTESENSOR;
             }
@@ -493,6 +498,9 @@ public class EquipmentInfo {
             if ((weapon.getAmmoType() != AmmoType.T_NA) && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                 hasAmmo = true;
                 ammoCount = UnitUtil.getBAAmmoCount(unit, weapon, mount.getLocation()) / UnitUtil.getNumberOfEquipmentLikeThis(unit, weapon);
+                if (isBAPopUpMine) {
+                    ammoCount = 1;
+                }
                 location = mount.getLocation();
             }
 
@@ -501,7 +509,7 @@ public class EquipmentInfo {
 
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
-            isCompactNarc = weapon instanceof ISCompactNarc;
+
 
             shtRange = weapon.shortRange;
             medRange = weapon.mediumRange;
@@ -582,6 +590,7 @@ public class EquipmentInfo {
         clone.isAR10 = isAR10;
         clone.isATM = isATM;
         clone.isCompactNarc = isCompactNarc;
+        clone.isBAPopUpMine = isBAPopUpMine;
         clone.isBAMineLayer = isBAMineLayer;
 
         clone.hasAmmo = hasAmmo;
