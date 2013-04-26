@@ -1292,14 +1292,15 @@ public class UnitUtil {
                     newMount.setArmored(mount.isArmored());
                     cs.setMount(newMount);
                     cs.setArmored(mount.isArmored());
-                    unit.getEquipment().add(newMount);
-                    unit.getMisc().add(newMount);
                     unit.getEquipment().remove(mount);
                     unit.getMisc().remove(mount);
+                    unit.getEquipment().add(newMount);
+                    unit.getMisc().add(newMount);
                     cs.setIndex(unit.getEquipmentNum(newMount));
                 }
             }
         }
+        reIndexCrits(unit);
     }
 
     /**
