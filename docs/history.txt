@@ -18,6 +18,7 @@ V 0.1.22-dev
 + added support for printing VTOLs with turrets
 + Print Ferro-Lamellor armor info on sheets
 + Fix patchwork armor allocation for mechs
++ Revamped UI for tanks
 
 V 0.1.21
 + Bug: stealth armor bug

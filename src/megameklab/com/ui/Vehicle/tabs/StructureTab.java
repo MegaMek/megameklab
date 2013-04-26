@@ -16,56 +16,61 @@
 
 package megameklab.com.ui.Vehicle.tabs;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FileDialog;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.client.ui.GBC;
 import megamek.common.Engine;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
+import megamek.common.LocationFullException;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.TroopSpace;
+import megamek.common.VTOL;
 import megamek.common.WeaponType;
-import megameklab.com.ui.Vehicle.views.CriticalView;
+import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestTank;
+import megameklab.com.ui.Vehicle.views.ArmorView;
 import megameklab.com.util.ITab;
-import megameklab.com.util.ImageHelper;
-import megameklab.com.util.ImagePanel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
+import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements ActionListener, KeyListener, ChangeListener {
+public class StructureTab extends ITab implements ActionListener, KeyListener,
+        ChangeListener, ItemListener {
 
     /**
      *
@@ -82,162 +87,342 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private static final String ENGINEICE = "I.C.E";
     private static final String ENGINENONE = "None";
 
-    String[] isEngineTypes =
-        { ENGINESTANDARD, ENGINEICE, ENGINENONE, ENGINEXL, ENGINELIGHT, ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL };
-    String[] clanEngineTypes =
-        { ENGINESTANDARD, ENGINEICE, ENGINEXL, ENGINENONE, ENGINEFUELCELL, ENGINEXXL };
+    String[] isEngineTypes = { ENGINESTANDARD, ENGINEICE, ENGINENONE, ENGINEXL,
+            ENGINELIGHT, ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL,
+            ENGINEXXL };
+    String[] clanEngineTypes = { ENGINESTANDARD, ENGINEICE, ENGINEXL,
+            ENGINENONE, ENGINEFUELCELL, ENGINEXXL };
+
+    private int clanEngineFlag = 0;
 
     JComboBox engineType = new JComboBox(isEngineTypes);
-    JComboBox cruiseMP;
-    JComboBox weightClass;
-    String[] techTypes =
-        { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
+
+    JSpinner cruiseMP;
+    JSpinner jumpMP;
+    JTextField flankMP;
+    JSpinner weight;
+    JSpinner armorTonnage;
+    private JCheckBox clanArmor = new JCheckBox("Clan Armor");
+    private JButton maximizeArmorButton = new JButton("Maximize Armor");
+    private JTextField chassis = new JTextField(5);
+    private JTextField model = new JTextField(5);
+    String[] techTypes = { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
     JComboBox techType = new JComboBox(techTypes);
-    String[] isTechLevels =
-        { "Intro", "Standard", "Advanced", "Experimental", "Unoffical" };
-    String[] clanTechLevels =
-        { "Standard", "Advanced", "Experimental", "Unoffical" };
+    String[] isTechLevels = { "Intro", "Standard", "Advanced", "Experimental",
+            "Unoffical" };
+    String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
+            "Unoffical" };
     JComboBox techLevel = new JComboBox(isTechLevels);
-    String[] tankMotiveTypes =
-        { "Hover", "Wheeled", "Tracked", "WiGE", "VTOL" };
+    String[] tankMotiveTypes = { "Hover", "Wheeled", "Tracked", "WiGE", "VTOL" };
     JComboBox tankMotiveType = new JComboBox(tankMotiveTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox superHeavyCB = new JCheckBox("Super-Heavy");
-    String[] turretTypes =
-        { "None", "Single", "Dual" };
+    String[] turretTypes = { "None", "Single", "Dual" };
     JComboBox turretCombo = new JComboBox(turretTypes);
     Dimension maxSize = new Dimension();
-    JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:", SwingConstants.TRAILING);
+    JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:",
+            SwingConstants.TRAILING);
     JPanel masterPanel;
+    JPanel panInfo;
+    JPanel panChassis;
+    JPanel panArmor;
+    JPanel panMovement;
     JSpinner troopStorage = null;
     int maxTonnage = 50;
     int minTonnage = 1;
     JTextField manualBV = new JTextField(3);
 
-    private CriticalView critView = null;
-    private ImagePanel unitImage = null;
-    private JButton browseButton = null;
+    private ArmorView armor;
+    private String[] armorNames = new String[] {
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_STANDARD],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_FIBROUS],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_LIGHT_FERRO],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_HEAVY_FERRO],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_STEALTH],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_FERRO_LAMELLOR],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_HARDENED],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_REACTIVE],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_REFLECTIVE],
+            EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK]};
+    private JComboBox armorCombo = new JComboBox();
 
     public StructureTab(Tank unit) {
-        JScrollPane scroll = new JScrollPane();
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.setAutoscrolls(true);
-        scroll.setWheelScrollingEnabled(true);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-        JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, enginePanel(), scroll);
-
         this.unit = unit;
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        JPanel scrollPanel = new JPanel();
-        scrollPanel.setLayout(new BoxLayout(scrollPanel, BoxLayout.X_AXIS));
-        critView = new CriticalView(unit, false, refresh);
-
-        JPanel imagePanel = new JPanel();
-
-        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
-
-        unitImage = new ImagePanel(getTank(), ImageHelper.imageVehicle);
-        browseButton = new JButton("Browse");
-        browseButton.addActionListener(this);
-
-        imagePanel.add(unitImage);
-        imagePanel.add(browseButton);
-
-        scrollPanel.add(critView);
-        scrollPanel.add(imagePanel);
-        scroll.setViewportView(scrollPanel);
-
-        this.add(splitter);
+        armor = new ArmorView(getTank());
+        setLayout(new BorderLayout());
+        setUpPanels();
+        this.add(masterPanel, BorderLayout.CENTER);
         refresh();
     }
 
-    public JPanel enginePanel() {
-        masterPanel = new JPanel(new SpringLayout());
+    private void setUpPanels() {
+        masterPanel = new JPanel(new GridBagLayout());
+        panInfo = new JPanel(new GridBagLayout());
+        panChassis = new JPanel(new GridBagLayout());
+        panArmor = new JPanel(new GridBagLayout());
+        panMovement = new JPanel(new GridBagLayout());
 
-        Vector<String> cruiseMPs = new Vector<String>(26, 1);
+        GridBagConstraints gbc;
 
-        for (int pos = 0; pos <= 25; pos++) {
-            cruiseMPs.add(Integer.toString(pos));
-        }
+        Dimension spinnerSize = new Dimension(55, 25);
 
-        cruiseMP = new JComboBox(cruiseMPs.toArray());
+        cruiseMP = new JSpinner(new SpinnerNumberModel(1, 1, 25, 1));
+        ((JSpinner.DefaultEditor) cruiseMP.getEditor()).setSize(spinnerSize);
+        ((JSpinner.DefaultEditor) cruiseMP.getEditor())
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) cruiseMP.getEditor())
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) cruiseMP.getEditor())
+                .setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) cruiseMP.getEditor()).getTextField()
+                .setEditable(false);
+        flankMP = new JTextField();
+        flankMP.setEditable(false);
+        setFieldSize(flankMP, spinnerSize);
+        flankMP.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        Vector<String> weightClasses = new Vector<String>(1, 1);
 
-        for (int weight = 1; weight <= maxTonnage; weight++) {
-            weightClasses.add(Integer.toString(weight));
-        }
 
-        weightClass = new JComboBox(weightClasses.toArray());
+        jumpMP = new JSpinner(new SpinnerNumberModel(0, 0, 25, 1));
+        ((JSpinner.DefaultEditor) jumpMP.getEditor()).setSize(spinnerSize);
+        ((JSpinner.DefaultEditor) jumpMP.getEditor())
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) jumpMP.getEditor())
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) jumpMP.getEditor())
+                .setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
+                .setEditable(false);
+
+        disableJump();
+
+        weight = new JSpinner(new SpinnerNumberModel(20, 1, 100, 1));
+        ((JSpinner.DefaultEditor) weight.getEditor()).getTextField()
+                .setEditable(false);
+
+        armorTonnage = new JSpinner(new SpinnerNumberModel(
+                unit.getArmorWeight(), 0.0, 30.5, 0.5));
+        spinnerSize = new Dimension(45, 25);
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor())
+                .setSize(spinnerSize);
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor())
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor())
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor())
+                .setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
+                .setEditable(false);
+
+        updateArmor();
+
         troopStorage = new JSpinner(new SpinnerNumberModel(0, 0, 0, 0.5));
 
-        maxSize.setSize(110, 20);
+        chassis.setText(unit.getChassis());
+        model.setText(unit.getModel());
 
-        masterPanel.add(omniCB);
-        masterPanel.add(superHeavyCB);
+        Dimension labelSize = new Dimension(110, 25);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(0, 0, 1, 2);
+        panInfo.add(createLabel("Chassis:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panInfo.add(chassis, gbc);
 
-        masterPanel.add(createLabel("Turret:", maxSize));
-        masterPanel.add(turretCombo);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panInfo.add(createLabel("Model:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panInfo.add(model, gbc);
 
-        masterPanel.add(createLabel("Year:", maxSize));
-        masterPanel.add(era);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panInfo.add(createLabel("Year:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        panInfo.add(era, gbc);
 
-        masterPanel.add(createLabel("Source/Era:", maxSize));
-        masterPanel.add(source);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panInfo.add(createLabel("Source/Era:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        panInfo.add(source, gbc);
 
-        masterPanel.add(createLabel("Tech:", maxSize));
-        masterPanel.add(techType);
-        masterPanel.add(createLabel("Tech Level:", maxSize));
-        masterPanel.add(techLevel);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panInfo.add(createLabel("Tech:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        panInfo.add(techType, gbc);
 
-        masterPanel.add(createLabel("Engine Type:", maxSize));
-        masterPanel.add(engineType);
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        panInfo.add(createLabel("Tech Level:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        panInfo.add(techLevel, gbc);
 
-        masterPanel.add(createLabel("Movement Type:", maxSize));
-        masterPanel.add(tankMotiveType);
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        panInfo.add(createLabel("Manual BV:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        panInfo.add(manualBV, gbc);
 
-        masterPanel.add(createLabel("Cruise MP:", maxSize));
-        masterPanel.add(cruiseMP);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panChassis.add(createLabel("Tonnage:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panChassis.add(weight, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        panChassis.add(omniCB, gbc);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        panChassis.add(superHeavyCB, gbc);
 
-        masterPanel.add(createLabel("Weight:", maxSize));
-        masterPanel.add(weightClass);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panChassis.add(createLabel("Motive Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 3;
+        panChassis.add(tankMotiveType, gbc);
 
-        masterPanel.add(createLabel("Troop Space:", maxSize));
-        masterPanel.add(troopStorage);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        panChassis.add(createLabel("Turret:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        panChassis.add(turretCombo, gbc);
 
-        masterPanel.add(createLabel("Manual BV:", maxSize));
-        masterPanel.add(manualBV);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        panChassis.add(createLabel("Engine Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        panChassis.add(engineType, gbc);
 
-        setFieldSize(cruiseMP, maxSize);
-        setFieldSize(era, maxSize);
-        setFieldSize(source, maxSize);
-        setFieldSize(manualBV, maxSize);
-        setFieldSize(techType, maxSize);
-        setFieldSize(techLevel, maxSize);
-        setFieldSize(engineType, maxSize);
-        setFieldSize(weightClass, maxSize);
-        setFieldSize(tankMotiveType, maxSize);
-        setFieldSize(troopStorage, maxSize);
-        setFieldSize(turretCombo, maxSize);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 1;
+        panChassis.add(createLabel("Troop Storage:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.gridwidth = 3;
+        panChassis.add(troopStorage, gbc);
 
-        JPanel scrollPanel = new JPanel();
-        scrollPanel.setLayout(new BoxLayout(scrollPanel, BoxLayout.X_AXIS));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        panArmor.add(createLabel("Armor Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        panArmor.add(armorCombo, gbc);
 
-        SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        panArmor.add(createLabel("Armor Tonnage:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panArmor.add(armorTonnage, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        panArmor.add(clanArmor, gbc);
 
-        masterPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        panArmor.add(maximizeArmorButton, gbc);
 
-        return masterPanel;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        panMovement.add(createLabel("Cruise MP:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        panMovement.add(cruiseMP, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panMovement.add(createLabel("Flank MP:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panMovement.add(flankMP, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panMovement.add(createLabel("Jumping MP:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        panMovement.add(jumpMP, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+
+        Dimension comboSize = new Dimension(180, 25);
+
+        setFieldSize(era, comboSize);
+        setFieldSize(manualBV, comboSize);
+        setFieldSize(source, comboSize);
+        setFieldSize(techType, comboSize);
+        setFieldSize(armorCombo, comboSize);
+        setFieldSize(techLevel, comboSize);
+        setFieldSize(turretCombo, comboSize);
+        setFieldSize(engineType, comboSize);
+        setFieldSize(model, comboSize);
+        setFieldSize(chassis, comboSize);
+
+        JPanel leftPanel = new JPanel();
+        JPanel rightPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+
+        leftPanel.add(panInfo);
+        leftPanel.add(panChassis);
+        leftPanel.add(Box.createGlue());
+        rightPanel.add(panArmor);
+        rightPanel.add(panMovement);
+        leftPanel.add(Box.createVerticalGlue());
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        masterPanel.add(leftPanel, gbc);
+        gbc.gridx = 1;
+        masterPanel.add(rightPanel, gbc);
+        gbc.gridx = 2;
+        masterPanel.add(armor, gbc);
+
+        panInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
+        panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
+        panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
+        panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
+        armor.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
 
     public void refresh() {
-        removeAllActionListeners();
+        removeAllListeners();
         omniCB.setSelected(unit.isOmni());
-        superHeavyCB.setSelected(((Tank)unit).isSuperHeavy());
+        superHeavyCB.setSelected(((Tank) unit).isSuperHeavy());
 
         if (!getTank().hasNoDualTurret()) {
             turretCombo.setSelectedIndex(2);
@@ -318,30 +503,61 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             case WIGE:
                 turretCombo.setEnabled(true);
                 tankMotiveType.setSelectedIndex(3);
+                break;
             case VTOL:
                 tankMotiveType.setSelectedIndex(4);
-                turretCombo.setSelectedIndex(0);
-                turretCombo.setEnabled(false);
+                if ((unit.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) ||  (unit.getTechLevel() == TechConstants.T_IS_UNOFFICIAL) || (unit.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL) || (unit.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL)) {
+                    turretCombo.setEnabled(true);
+                    turretCombo.removeAllItems();
+                    turretCombo.addItem("None");
+                    turretCombo.addItem("Chin");
+                    turretCombo.setSelectedIndex(getTank().hasNoTurret()?0:1);
+                } else {
+                    turretCombo.setEnabled(false);
+                }
                 updateTurrets(turretCombo);
                 break;
         }
 
-        populateWeight((int) unit.getWeight());
+        setAvailableWeights((int) unit.getWeight());
 
-        cruiseMP.setSelectedIndex(unit.getWalkMP());
+        cruiseMP.getModel().setValue(unit.getWalkMP());
+        flankMP.setText(getTank().getRunMPasString());
 
         updateEngineTypes(getTank().isClan());
         updateTroopSpaceAllowed();
 
-        engineType.setSelectedIndex(convertEngineType(getTank().getEngine().getEngineType()));
+        engineType.setSelectedIndex(convertEngineType(getTank().getEngine()
+                .getEngineType()));
+        if (unit.hasPatchworkArmor()) {
+            setArmorCombo(EquipmentType.T_ARMOR_PATCHWORK);
+        } else {
+            setArmorCombo(unit.getArmorType(1));
+        }
+        clanArmor.setEnabled(unit.isMixedTech());
+        clanArmor.setSelected(unit.isClanArmor(1) && !unit.hasPatchworkArmor());
+        ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
+                .getMaximumArmorTonnage(unit));
+        if (unit.hasPatchworkArmor()) {
+            TestTank testTank = new TestTank(
+                    getTank(),
+                    new EntityVerifier(new File(
+                            "data/mechfiles/UnitVerifierOptions.xml")).tankOption,
+                    null);
+            clanArmor.setEnabled(false);
+            armorTonnage.setEnabled(false);
+            armorTonnage.getModel()
+                    .setValue(testTank.getWeightAllocatedArmor());
+            unit.setArmorTonnage(testTank.getWeightAllocatedArmor());
+            maximizeArmorButton.setEnabled(false);
+        } else {
+            armorTonnage.setEnabled(true);
+            maximizeArmorButton.setEnabled(true);
+        }
+        armor.updateUnit(unit);
+        armor.refresh();
 
-        critView.updateUnit(unit);
-        critView.refresh();
-
-        unitImage.updateUnit(getTank());
-        unitImage.refresh();
-
-        addAllActionListeners();
+        addAllListeners();
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -363,240 +579,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         if (refresh == null) {
             return;
         }
-
-        if ((e.getSource() instanceof JButton) && e.getSource().equals(browseButton)) {
-            FileDialog fDialog = new FileDialog(new JFrame(), "Image Path", FileDialog.LOAD);
-
-            if (getTank().getFluff().getMMLImagePath().trim().length() > 0) {
-                String fullPath = new File(getTank().getFluff().getMMLImagePath()).getAbsolutePath();
-                String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
-                fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-                fDialog.setDirectory(fullPath);
-                fDialog.setFile(imageName);
-            } else {
-                fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageVehicle + File.separatorChar);
-                fDialog.setFile(getTank().getChassis() + " " + getTank().getModel() + ".png");
-            }
-
-            fDialog.setLocationRelativeTo(this);
-
-            fDialog.setVisible(true);
-
-            if (fDialog.getFile() != null) {
-                String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-                relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
-                getTank().getFluff().setMMLImagePath(relativeFilePath);
-                refresh();
-            }
-            return;
-        }
-
-        if (e.getSource() instanceof JComboBox) {
-            JComboBox combo = (JComboBox) e.getSource();
-            removeAllActionListeners();
-
-            try {
-                // if a Tank is primitive and thus needs a larger engine
-                if (combo.equals(engineType) || combo.equals(cruiseMP) || combo.equals(weightClass)) {
-                    if (combo.equals(engineType)) {
-                        if (combo.getSelectedItem().equals(ENGINENONE)) {
-                            cruiseMP.setSelectedIndex(0);
-                            cruiseMP.setEnabled(false);
-                        } else {
-                            cruiseMP.setEnabled(true);
-                        }
-                    }
-                    // we first need to set the weight, because the tank's suspension factor
-                    // depends on the weight, and is needed for the engine rating
-                    float oldWeight = unit.getWeight();
-                    unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
-                    int rating = Math.max(10, ((cruiseMP.getSelectedIndex()) * Integer.parseInt(weightClass.getSelectedItem().toString())) - ((Tank) unit).getSuspensionFactor());
-                    if (rating > 500) {
-                        // reset the weight if the rating is too high
-                        unit.setWeight(oldWeight);
-                        JOptionPane.showMessageDialog(this, "That speed would create an engine with a rating over 500.", "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        unit.setWeight(Float.parseFloat(weightClass.getSelectedItem().toString()));
-                        ((SpinnerNumberModel) troopStorage.getModel()).setMaximum(Double.parseDouble(weightClass.getSelectedItem().toString()));
-                        unit.autoSetInternal();
-                        int type = convertEngineType(engineType.getSelectedItem().toString());
-                        if (getTank().isClan()) {
-                            getTank().setEngine(new Engine(rating, type, Engine.CLAN_ENGINE | Engine.TANK_ENGINE));
-                        } else {
-                            getTank().setEngine(new Engine(rating, type, Engine.TANK_ENGINE));
-                        }
-                        getTank().setOriginalWalkMP(cruiseMP.getSelectedIndex());
-                    }
-                } else if (combo.equals(techLevel)) {
-                    int unitTechLevel = techLevel.getSelectedIndex();
-
-                    if (unit.isClan()) {
-                        switch (unitTechLevel) {
-                            case 0:
-                                unit.setTechLevel(TechConstants.T_CLAN_TW);
-                                unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
-                                addAllActionListeners();
-                                techType.setSelectedIndex(1);
-                                removeAllActionListeners();
-                                break;
-                            case 1:
-                                unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                                unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
-                                break;
-                            case 2:
-                                unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                                unit.setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                                break;
-                            case 3:
-                                unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
-                                unit.setArmorTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
-                                break;
-                            default:
-                                unit.setTechLevel(TechConstants.T_CLAN_TW);
-                                unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
-                                break;
-                        }
-
-                    } else {
-                        switch (unitTechLevel) {
-                            case 0:
-                                unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
-                                unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
-                                addAllActionListeners();
-                                techType.setSelectedIndex(0);
-                                removeAllActionListeners();
-                                break;
-                            case 1:
-                                unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                                unit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                                addAllActionListeners();
-                                techType.setSelectedIndex(0);
-                                removeAllActionListeners();
-                                break;
-                            case 2:
-                                unit.setTechLevel(TechConstants.T_IS_ADVANCED);
-                                unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
-                                break;
-                            case 3:
-                                unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                                unit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                                break;
-                            default:
-                                unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                                unit.setArmorTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                                break;
-                        }
-
-                    }
-
-                    int engineNumber = engineType.getSelectedIndex();
-                    updateEngineTypes(getTank().isClan());
-
-                    refresh.refreshArmor();
-                    refresh.refreshEquipment();
-                    refresh.refreshWeapons();
-                    addAllActionListeners();
-                    // Reset the engine
-                    if (engineNumber >= engineType.getItemCount()) {
-                        engineType.setSelectedIndex(0);
-                    } else {
-                        engineType.setSelectedIndex(engineNumber);
-                    }
-                    return;
-                } else if (combo.equals(techType)) {
-                    if ((techType.getSelectedIndex() == 1) && (!unit.isClan() || unit.isMixedTech())) {
-                        techLevel.removeAllItems();
-
-                        for (String item : clanTechLevels) {
-                            techLevel.addItem(item);
-                        }
-
-                        if (!((Tank)unit).isSuperHeavy()) {
-                            unit.setTechLevel(TechConstants.T_CLAN_TW);
-                        } else {
-                            if (unit.getTechLevel() == TechConstants.T_IS_ADVANCED) {
-                                unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                            } else if (unit.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) {
-                                unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                            } else if (unit.getTechLevel() == TechConstants.T_IS_UNOFFICIAL) {
-                                unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
-                            }
-                        }
-
-                        unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
-                        unit.setMixedTech(false);
-                    } else if ((techType.getSelectedIndex() == 0) && (unit.isClan() || unit.isMixedTech())) {
-                        techLevel.removeAllItems();
-
-                        for (String item : isTechLevels) {
-                            techLevel.addItem(item);
-                        }
-                        if (!((Tank)unit).isSuperHeavy()) {
-                            unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
-                        } else {
-                            if (unit.getTechLevel() == TechConstants.T_CLAN_ADVANCED) {
-                                unit.setTechLevel(TechConstants.T_IS_ADVANCED);
-                            } else if (unit.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL) {
-                                unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                            } else if (unit.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL) {
-                                unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                            }
-                        }
-                        unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
-                        unit.setMixedTech(false);
-
-                    } else if ((techType.getSelectedIndex() == 2) && (!unit.isMixedTech() || unit.isClan())) {
-                        techLevel.removeAllItems();
-
-                        for (String item : isTechLevels) {
-                            techLevel.addItem(item);
-                        }
-
-                        unit.setTechLevel(TechConstants.T_IS_ADVANCED);
-                        unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
-                        unit.setMixedTech(true);
-
-                    } else if ((techType.getSelectedIndex() == 3) && (!unit.isMixedTech() || !unit.isClan())) {
-                        techLevel.removeAllItems();
-                        for (String item : clanTechLevels) {
-                            techLevel.addItem(item);
-                        }
-
-                        unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                        unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
-                        unit.setMixedTech(true);
-                    } else {
-                        addAllActionListeners();
-                        return;
-                    }
-                    int engineNumber = engineType.getSelectedIndex();
-                    updateEngineTypes(getTank().isClan());
-
-                    refresh.refreshArmor();
-                    refresh.refreshEquipment();
-                    refresh.refreshWeapons();
-                    addAllActionListeners();
-                    // Reset the engine
-                    if (engineNumber >= engineType.getItemCount()) {
-                        engineType.setSelectedIndex(0);
-                    } else {
-                        engineType.setSelectedIndex(engineNumber);
-                    }
-                    removeAllActionListeners();
-                } else if (combo.equals(tankMotiveType)) {
-                    int currentTonnage = weightClass.getSelectedIndex() + 1;
-
-                    populateWeight(currentTonnage);
-                } else if (combo.equals(turretCombo)) {
-                    updateTurrets(combo);
-                }
-                addAllActionListeners();
-                refresh.refreshAll();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                addAllActionListeners();
-            }
-        } else if (e.getSource() instanceof JCheckBox) {
+        removeAllListeners();
+        if (e.getSource() instanceof JCheckBox) {
             JCheckBox check = (JCheckBox) e.getSource();
 
             if (check.equals(omniCB)) {
@@ -608,42 +592,72 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
                 masterPanel.setVisible(false);
                 masterPanel.setVisible(true);
+            } else if (check.equals(clanArmor)) {
+                if (clanArmor.isSelected()) {
+                    if (unit.isClan()) {
+                        unit.setArmorTechLevel(unit.getTechLevel());
+                    } else {
+                        unit.setArmorTechLevel(TechConstants
+                                .getOppositeTechLevel(unit.getTechLevel()));
+                    }
+                } else if (unit.isClan()) {
+                    unit.setArmorTechLevel(TechConstants
+                            .getOppositeTechLevel(unit.getTechLevel()));
+                } else {
+                    unit.setArmorTechLevel(unit.getTechLevel());
+                }
+                setArmorType();
             }
-            refresh.refreshAll();
         }
-
+        else if (e.getSource() instanceof JButton) {
+            if (e.getSource().equals(maximizeArmorButton)) {
+                maximizeArmor();
+            }
+        }
+        addAllListeners();
+        refresh.refreshAll();
     }
 
-    public void removeAllActionListeners() {
-        engineType.removeActionListener(this);
-        weightClass.removeActionListener(this);
-        cruiseMP.removeActionListener(this);
-        techLevel.removeActionListener(this);
-        techType.removeActionListener(this);
+    public void removeAllListeners() {
+        engineType.removeItemListener(this);
+        weight.removeChangeListener(this);
+        cruiseMP.removeChangeListener(this);
+        techLevel.removeItemListener(this);
+        techType.removeItemListener(this);
         era.removeKeyListener(this);
         source.removeKeyListener(this);
         manualBV.removeKeyListener(this);
         omniCB.removeActionListener(this);
         superHeavyCB.removeActionListener(this);
-        turretCombo.removeActionListener(this);
-        tankMotiveType.removeActionListener(this);
-        troopStorage.getModel().removeChangeListener(this);
+        turretCombo.removeItemListener(this);
+        tankMotiveType.removeItemListener(this);
+        troopStorage.removeChangeListener(this);
+        maximizeArmorButton.removeActionListener(this);
+        armorTonnage.removeChangeListener(this);
+        clanArmor.removeActionListener(this);
+        armorCombo.removeItemListener(this);
+        jumpMP.removeChangeListener(this);
     }
 
-    public void addAllActionListeners() {
-        engineType.addActionListener(this);
-        weightClass.addActionListener(this);
-        cruiseMP.addActionListener(this);
-        techLevel.addActionListener(this);
-        techType.addActionListener(this);
+    public void addAllListeners() {
+        engineType.addItemListener(this);
+        weight.addChangeListener(this);
+        cruiseMP.addChangeListener(this);
+        techLevel.addItemListener(this);
+        techType.addItemListener(this);
         era.addKeyListener(this);
         source.addKeyListener(this);
         manualBV.addKeyListener(this);
         omniCB.addActionListener(this);
         superHeavyCB.addActionListener(this);
-        turretCombo.addActionListener(this);
-        tankMotiveType.addActionListener(this);
-        troopStorage.getModel().addChangeListener(this);
+        turretCombo.addItemListener(this);
+        tankMotiveType.addItemListener(this);
+        troopStorage.addChangeListener(this);
+        maximizeArmorButton.addActionListener(this);
+        armorTonnage.addChangeListener(this);
+        clanArmor.addActionListener(this);
+        armorCombo.addItemListener(this);
+        jumpMP.addChangeListener(this);
     }
 
     public void keyPressed(KeyEvent e) {
@@ -677,6 +691,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
+        armor.addRefreshedListener(l);
     }
 
     public boolean hasTurret() {
@@ -694,13 +709,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             unit.removeAllTransporters();
             ((SpinnerNumberModel) troopStorage.getModel()).setValue(0);
         } else {
-            ((SpinnerNumberModel) troopStorage.getModel()).setValue((double) troops);
+            ((SpinnerNumberModel) troopStorage.getModel())
+                    .setValue((double) troops);
         }
 
     }
 
-    private void populateWeight(int currentTonnage) {
-        weightClass.removeAllItems();
+    private void setAvailableWeights(int currentTonnage) {
 
         if (!isSuperHeavy()) {
             switch (tankMotiveType.getSelectedIndex()) {
@@ -719,9 +734,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 case 3:
                     maxTonnage = 80;
                     unit.setMovementMode(EntityMovementMode.WIGE);
+                    break;
                 case 4:
                     maxTonnage = 30;
                     unit.setMovementMode(EntityMovementMode.VTOL);
+                    disableJump();
+                    break;
             }
             minTonnage = 1;
         } else {
@@ -750,18 +768,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     minTonnage = 31;
                     maxTonnage = 60;
                     unit.setMovementMode(EntityMovementMode.VTOL);
+                    disableJump();
+                    break;
             }
         }
 
-        currentTonnage = Math.max(minTonnage,Math.min(currentTonnage, maxTonnage));
+        currentTonnage = Math.max(minTonnage,
+                Math.min(currentTonnage, maxTonnage));
         unit.setWeight(currentTonnage);
-        ((SpinnerNumberModel) troopStorage.getModel()).setMaximum((double) currentTonnage);
-
-        for (int pos = minTonnage; pos <= maxTonnage; pos++) {
-            weightClass.addItem(pos);
-        }
-
-        weightClass.setSelectedIndex((int) unit.getWeight() - minTonnage);
+        ((SpinnerNumberModel) troopStorage.getModel())
+                .setMaximum((double) currentTonnage);
+        ((SpinnerNumberModel) weight.getModel()).setMaximum(maxTonnage);
+        ((SpinnerNumberModel) weight.getModel()).setMinimum(minTonnage);
+        weight.getModel().setValue((int)unit.getWeight());
     }
 
     private int convertEngineType(String engineType) {
@@ -888,15 +907,25 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (e.getSource().equals(troopStorage.getModel())) {
-            removeAllActionListeners();
-            unit.removeAllTransporters();
-            if (((SpinnerNumberModel) troopStorage.getModel()).getNumber().doubleValue() > 0) {
-                unit.addTransporter(new TroopSpace(((SpinnerNumberModel) troopStorage.getModel()).getNumber().doubleValue()));
-            }
-            addAllActionListeners();
-            refresh.refreshAll();
+        removeAllListeners();
+        if (e.getSource().equals(cruiseMP) || e.getSource().equals(weight)) {
+            updateWeightEngineMovement();
         }
+        if (e.getSource().equals(troopStorage)) {
+            unit.removeAllTransporters();
+            if (((SpinnerNumberModel) troopStorage.getModel()).getNumber()
+                    .doubleValue() > 0) {
+                unit.addTransporter(new TroopSpace(
+                        ((SpinnerNumberModel) troopStorage.getModel())
+                                .getNumber().doubleValue()));
+            }
+        } else if (e.getSource().equals(armorTonnage)) {
+            setArmorTonnage();
+        } else if (e.getSource().equals(jumpMP)) {
+            setJumpMP();
+        }
+        addAllListeners();
+        refresh.refreshAll();
     }
 
     public boolean isSuperHeavy() {
@@ -909,14 +938,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
     private void updateTurrets(JComboBox combo) {
         if ((combo.getSelectedIndex() == 0) || (combo.getSelectedIndex() == 1)) {
+            int turretLoc = Tank.LOC_TURRET;
+            if (unit instanceof VTOL) {
+                turretLoc = VTOL.LOC_TURRET;
+            }
             List<Mounted> toRemove = new ArrayList<Mounted>();
             List<Mounted> toRemoveMisc = new ArrayList<Mounted>();
             List<Mounted> toRemoveWeapons = new ArrayList<Mounted>();
             if (!getTank().hasNoDualTurret()) {
-                // remove dual turret and equipment in it
-                getTank().setArmorType(EquipmentType.T_ARMOR_UNKNOWN, Tank.LOC_TURRET_2);
-                getTank().setArmorTechLevel(TechConstants.T_TECH_UNKNOWN, Tank.LOC_TURRET_2);
-                for (int slot = 0; slot < getTank().getNumberOfCriticals(Tank.LOC_TURRET_2); slot++) {
+                for (int slot = 0; slot < getTank().getNumberOfCriticals(
+                        Tank.LOC_TURRET_2); slot++) {
                     getTank().setCritical(Tank.LOC_TURRET_2, slot, null);
                 }
                 for (Mounted mount : getTank().getEquipment()) {
@@ -935,18 +966,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 // add turret
                 getTank().setHasNoTurret(false);
                 getTank().autoSetInternal();
-                getTank().initializeArmor(0, Tank.LOC_TURRET);
-                getTank().setArmorTechLevel(getTank().getArmorTechLevel(Tank.LOC_FRONT), Tank.LOC_TURRET);
-                getTank().setArmorType(getTank().getArmorType(Tank.LOC_FRONT), Tank.LOC_TURRET);
-            } else if (!getTank().hasNoTurret() && (combo.getSelectedIndex() == 0)) {
-                // remove turret and equipment in it
-                getTank().setArmorType(EquipmentType.T_ARMOR_UNKNOWN, Tank.LOC_TURRET);
-                getTank().setArmorTechLevel(TechConstants.T_TECH_UNKNOWN, Tank.LOC_TURRET);
-                for (int slot = 0; slot < getTank().getNumberOfCriticals(Tank.LOC_TURRET); slot++) {
-                    getTank().setCritical(Tank.LOC_TURRET, slot, null);
+                getTank().initializeArmor(0, turretLoc);
+                getTank().setArmorTechLevel(
+                        getTank().getArmorTechLevel(Tank.LOC_FRONT),
+                        turretLoc);
+                getTank().setArmorType(getTank().getArmorType(Tank.LOC_FRONT),
+                        turretLoc);
+            } else if (!getTank().hasNoTurret()
+                    && (combo.getSelectedIndex() == 0)) {
+                for (int slot = 0; slot < getTank().getNumberOfCriticals(
+                        turretLoc); slot++) {
+                    getTank().setCritical(turretLoc, slot, null);
                 }
                 for (Mounted mount : getTank().getEquipment()) {
-                    if (mount.getLocation() == Tank.LOC_TURRET) {
+                    if (mount.getLocation() == turretLoc) {
                         toRemove.add(mount);
                         if (mount.getType() instanceof WeaponType) {
                             toRemoveWeapons.add(mount);
@@ -965,8 +998,535 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             getTank().setHasNoDualTurret(false);
             getTank().autoSetInternal();
             getTank().initializeArmor(0, Tank.LOC_TURRET_2);
-            getTank().setArmorTechLevel(getTank().getArmorTechLevel(Tank.LOC_FRONT), Tank.LOC_TURRET_2);
-            getTank().setArmorType(getTank().getArmorType(Tank.LOC_TURRET), Tank.LOC_TURRET_2);
+            getTank().setArmorTechLevel(
+                    getTank().getArmorTechLevel(Tank.LOC_FRONT),
+                    Tank.LOC_TURRET_2);
+            getTank().setArmorType(getTank().getArmorType(Tank.LOC_TURRET),
+                    Tank.LOC_TURRET_2);
+        }
+        armor.refresh();
+    }
+
+    private void setArmorCombo(int type) {
+        armorCombo.setSelectedIndex(-1);
+        for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
+            if (EquipmentType.armorNames[type].equals(armorNames[pos])) {
+                if (armorCombo.getItemCount() <= pos) {
+                    armorCombo.setSelectedIndex(-1);
+                } else {
+                    armorCombo.setSelectedIndex(pos);
+                }
+                break;
+            }
         }
     }
+
+    private int getArmorType(JComboBox combo) {
+        String armorType = combo.getSelectedItem().toString();
+
+        for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
+            if (armorType.equals(EquipmentType.armorNames[pos])) {
+                return pos;
+            }
+        }
+
+        return EquipmentType.T_ARMOR_STANDARD;
+    }
+
+    private void updateWeightEngineMovement() {
+        if (engineType.getSelectedItem().equals(ENGINENONE)) {
+            cruiseMP.getModel().setValue(0);
+            cruiseMP.setEnabled(false);
+        } else {
+            cruiseMP.setEnabled(true);
+        }
+
+        // we first need to set the weight, because the tank's
+        // suspension factor
+        // depends on the weight, and is needed for the engine
+        // rating
+        float oldWeight = unit.getWeight();
+        unit.setWeight(Float
+                .parseFloat(weight.getModel().getValue().toString()));
+        int rating = Math
+                .max(10,
+                        (Integer.parseInt(cruiseMP.getModel().getValue()
+                                .toString()) * Integer.parseInt(weight
+                                .getModel().getValue().toString()))
+                                - ((Tank) unit).getSuspensionFactor());
+        if (rating > 500) {
+            // if we changed weight, reset the weight if the rating is too high
+            if (oldWeight < unit.getWeight()) {
+                unit.setWeight(oldWeight);
+            } else {
+                // otherwise, set the cruiseMP spinner to the old value
+                cruiseMP.getModel().setValue(unit.getOriginalWalkMP());
+            }
+            JOptionPane
+                    .showMessageDialog(
+                            this,
+                            "That speed/weight combination would create an engine with a rating over 500.",
+                            "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
+            weight.getModel().setValue(Integer.valueOf(Float.toString(oldWeight)));
+        } else {
+            unit.setWeight(Float.parseFloat(weight.getModel().getValue()
+                    .toString()));
+            ((SpinnerNumberModel) troopStorage.getModel()).setMaximum(Double
+                    .parseDouble(weight.getModel().getValue().toString()));
+            unit.autoSetInternal();
+            int type = convertEngineType(engineType.getSelectedItem()
+                    .toString());
+            if (getTank().isClan()) {
+                getTank().setEngine(
+                        new Engine(rating, type, Engine.CLAN_ENGINE
+                                | Engine.TANK_ENGINE));
+            } else {
+                getTank().setEngine(
+                        new Engine(rating, type, Engine.TANK_ENGINE));
+            }
+            getTank().setOriginalWalkMP(
+                    (Integer) cruiseMP.getModel().getValue());
+        }
+    }
+
+    private void maximizeArmor() {
+        double maxArmor = UnitUtil.getMaximumArmorTonnage(unit);
+        armorTonnage.setValue(maxArmor);
+        unit.setArmorTonnage(maxArmor);
+        armor.resetArmorPoints();
+    }
+
+    private void setArmorTonnage() {
+        unit.setArmorTonnage(((Double) armorTonnage.getValue()));
+        armor.resetArmorPoints();
+    }
+
+    private void setArmorType() {
+
+        if (getArmorType(armorCombo) == EquipmentType.T_ARMOR_PATCHWORK) {
+            JComboBox frontArmor = new JComboBox();
+            frontArmor.setName("FR");
+            JComboBox leftArmor = new JComboBox();
+            leftArmor.setName((unit instanceof SuperHeavyTank?"FRLS":"LS"));
+            JComboBox rightArmor = new JComboBox();
+            rightArmor.setName((unit instanceof SuperHeavyTank?"FRRS":"RS"));
+            JComboBox rearArmor = new JComboBox();
+            rearArmor.setName("RR");
+            JComboBox turretArmor = new JComboBox();
+            turretArmor.setName("TU");
+            JComboBox turret2Armor = new JComboBox();
+            turret2Armor.setName("TU2");
+            JComboBox rearLeftArmor = new JComboBox();
+            rearLeftArmor.setName("RRLS");
+            JComboBox rearRightArmor = new JComboBox();
+            rearRightArmor.setName("RRRS");
+            JComboBox rotorArmor = new JComboBox();
+            rotorArmor.setName("RO");
+            for (int index = 0; index < (armorNames.length - 1); index++) {
+                frontArmor.addItem(armorNames[index]);
+                leftArmor.addItem(armorNames[index]);
+                rightArmor.addItem(armorNames[index]);
+                rearArmor.addItem(armorNames[index]);
+                turretArmor.addItem(armorNames[index]);
+                turret2Armor.addItem(armorNames[index]);
+                rearLeftArmor.addItem(armorNames[index]);
+                rearRightArmor.addItem(armorNames[index]);
+                rotorArmor.addItem(armorNames[index]);
+            }
+            setArmorType(frontArmor, unit.getArmorType(Tank.LOC_FRONT), false);
+            setArmorType(leftArmor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT), false);
+            setArmorType(rightArmor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT), false);
+            setArmorType(rearArmor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR), false);
+            if (!getTank().hasNoTurret()) {
+                setArmorType(turretArmor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET), false);
+            }
+            if (!getTank().hasNoDualTurret()) {
+                setArmorType(turret2Armor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2), false);
+            }
+            if (unit instanceof SuperHeavyTank) {
+                setArmorType(rearLeftArmor, unit.getArmorType(SuperHeavyTank.LOC_REARLEFT), false);
+                setArmorType(rearRightArmor, unit.getArmorType(SuperHeavyTank.LOC_REARRIGHT), false);
+            }
+            if (unit instanceof VTOL) {
+                setArmorType(rotorArmor, unit.getArmorType(VTOL.LOC_ROTOR), false);
+            }
+            JCheckBox frontClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox leftClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox rightClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox rearClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox turretClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox turret2Clan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox rearLeftClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox rearRightClan = new JCheckBox("Clan", unit.isClan());
+            JCheckBox rotorClan = new JCheckBox("Clan", unit.isClan());
+            JLabel frontLabel = new JLabel("Front:");
+            JLabel leftLabel = new JLabel(unit instanceof SuperHeavyTank ? "Front Left:"
+                    : "Left:");
+            JLabel righttLabel = new JLabel(unit instanceof SuperHeavyTank ? "Front Right:"
+                    : "Right:");
+            JLabel rearLabel = new JLabel("Rear:");
+            JLabel turretLabel = new JLabel("Turret:");
+            JLabel turret2Label = new JLabel("Front Turret:");
+            JLabel rearLeftLabel = new JLabel("Rear Left:");
+            JLabel rearRightLabel = new JLabel("Rear Right:");
+            JLabel rotorLabel = new JLabel("Rotor:");
+            JPanel panel = new JPanel(new GridBagLayout());
+            panel.add(frontLabel, GBC.std());
+            panel.add(frontClan, GBC.std());
+            panel.add(frontArmor, GBC.eol());
+            panel.add(leftLabel, GBC.std());
+            panel.add(leftClan, GBC.std());
+            panel.add(leftArmor, GBC.eol());
+            panel.add(righttLabel, GBC.std());
+            panel.add(rightClan, GBC.std());
+            panel.add(rightArmor, GBC.eol());
+            panel.add(rearLabel, GBC.std());
+            panel.add(rearClan, GBC.std());
+            panel.add(rearArmor, GBC.eol());
+            if (!getTank().hasNoTurret()) {
+                panel.add(turretLabel, GBC.std());
+                panel.add(turretClan, GBC.std());
+                panel.add(turretArmor, GBC.eol());
+            }
+            if (!getTank().hasNoDualTurret()) {
+                panel.add(turret2Label, GBC.std());
+                panel.add(turret2Clan, GBC.std());
+                panel.add(turret2Armor, GBC.eol());
+            }
+            if (getTank() instanceof SuperHeavyTank) {
+                panel.add(rearLeftLabel, GBC.std());
+                panel.add(rearLeftClan, GBC.std());
+                panel.add(rearLeftArmor, GBC.eol());
+                panel.add(rearRightLabel, GBC.std());
+                panel.add(rearRightClan, GBC.std());
+                panel.add(rearRightArmor, GBC.eol());
+            }
+            if (getTank() instanceof VTOL) {
+                panel.add(rotorLabel, GBC.std());
+                panel.add(rotorClan, GBC.std());
+                panel.add(rotorArmor, GBC.eol());
+            }
+            if (!unit.isMixedTech()) {
+                frontClan.setVisible(false);
+                leftClan.setVisible(false);
+                rightClan.setVisible(false);
+                rearClan.setVisible(false);
+                turretClan.setVisible(false);
+                turret2Clan.setVisible(false);
+                rearLeftClan.setVisible(false);
+                rearRightClan.setVisible(false);
+                rotorClan.setVisible(false);
+            }
+            JOptionPane.showMessageDialog(this, panel,
+                    "Please choose the armor types",
+                    JOptionPane.QUESTION_MESSAGE);
+            unit.setArmorType(getArmorType(frontArmor), Tank.LOC_FRONT);
+            unit.setArmorType(getArmorType(leftArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT);
+            unit.setArmorType(getArmorType(rightArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT);
+            unit.setArmorType(getArmorType(rearArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR);
+            if (!getTank().hasNoTurret()) {
+                unit.setArmorType(getArmorType(turretArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET);
+                setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET, turretClan.isSelected());
+            }
+            if (!getTank().hasNoDualTurret()) {
+                unit.setArmorType(getArmorType(turret2Armor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2);
+                setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2, turret2Clan.isSelected());
+            }
+            if (unit instanceof SuperHeavyTank) {
+                unit.setArmorType(getArmorType(rearLeftArmor), SuperHeavyTank.LOC_REARLEFT);
+                unit.setArmorType(getArmorType(rearRightArmor), SuperHeavyTank.LOC_REARRIGHT);
+                setArmorTechLevel(SuperHeavyTank.LOC_REARLEFT, rearLeftClan.isSelected());
+                setArmorTechLevel(SuperHeavyTank.LOC_REARRIGHT, rearRightClan.isSelected());
+            }
+            if (unit instanceof VTOL) {
+                unit.setArmorType(getArmorType(rotorArmor), VTOL.LOC_ROTOR);
+                setArmorTechLevel(VTOL.LOC_ROTOR, rotorClan.isSelected());
+            }
+
+            setArmorTechLevel(Tank.LOC_FRONT, frontClan.isSelected());
+            setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT, leftClan.isSelected());
+            setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT, rightClan.isSelected());
+            setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR, rearClan.isSelected());
+            if (!unit.hasPatchworkArmor()) {
+                setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD, false);
+            }
+        } else {
+            unit.setArmorType(getArmorType(armorCombo));
+        }
+    }
+
+    private void setArmorType(JComboBox combo, int type, boolean removeListeners) {
+        if (removeListeners) {
+            removeAllListeners();
+        }
+        for (int pos = 0; pos < armorNames.length; pos++) {
+            if (armorNames[type].equals(armorNames[pos])) {
+                combo.setSelectedIndex(pos);
+                break;
+            }
+        }
+        if (removeListeners) {
+            addAllListeners();
+        }
+    }
+
+    private void setArmorTechLevel(int loc, boolean clan) {
+        if (clan) {
+            if (unit.isClan()) {
+                unit.setArmorTechLevel(unit.getTechLevel(), loc);
+            } else {
+                unit.setArmorTechLevel(
+                        TechConstants.getOppositeTechLevel(unit.getTechLevel()),
+                        loc);
+            }
+        } else if (unit.isClan()) {
+            unit.setArmorTechLevel(
+                    TechConstants.getOppositeTechLevel(unit.getTechLevel()),
+                    loc);
+        } else {
+            unit.setArmorTechLevel(unit.getTechLevel(), loc);
+        }
+    }
+
+    public void setArmorType(int type) {
+        setArmorType(armorCombo, type, true);
+    }
+
+    private void updateArmor() {
+
+        /* ARMOR */
+        armorCombo.removeAllItems();
+        int armorCount = armorNames.length;
+
+        switch (getTank().getTechLevel()) {
+            case TechConstants.T_INTRO_BOXSET:
+                armorCount = 1;
+                break;
+            case TechConstants.T_CLAN_TW:
+            case TechConstants.T_IS_TW_NON_BOX:
+            case TechConstants.T_CLAN_ADVANCED:
+            case TechConstants.T_IS_ADVANCED:
+                armorCount = 4;
+                break;
+            case TechConstants.T_CLAN_EXPERIMENTAL:
+            case TechConstants.T_IS_EXPERIMENTAL:
+            case TechConstants.T_CLAN_UNOFFICIAL:
+            case TechConstants.T_IS_UNOFFICIAL:
+                break;
+        }
+
+        for (int index = 0; index < armorCount; index++) {
+            armorCombo.addItem(armorNames[index]);
+        }
+
+    }
+
+    private void setJumpMP() {
+        int jump = Integer.parseInt(jumpMP.getModel().getValue().toString());
+        UnitUtil.removeAllMiscMounteds(unit, MiscType.F_JUMP_JET);
+        unit.setOriginalJumpMP(0);
+        for (int i = 0; i < jump; i++) {
+            try {
+                getTank().addEquipment(EquipmentType.get("JumpJet"), Tank.LOC_BODY);
+            } catch (LocationFullException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void disableJump() {
+        jumpMP.setEnabled(false);
+        jumpMP.getModel().setValue(0);
+        setJumpMP();
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            removeAllListeners();
+            JComboBox combo = (JComboBox) e.getSource();
+
+            try {
+                // if a Tank is primitive and thus needs a larger engine
+                if (combo.equals(engineType)) {
+                    updateWeightEngineMovement();
+                } else if (combo.equals(techLevel)) {
+                    int unitTechLevel = techLevel.getSelectedIndex();
+
+                    if (unit.isClan()) {
+                        switch (unitTechLevel) {
+                            case 0:
+                                unit.setTechLevel(TechConstants.T_CLAN_TW);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
+                                disableJump();
+                                addAllListeners();
+                                techType.setSelectedIndex(1);
+                                removeAllListeners();
+                                break;
+                            case 1:
+                                unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                                disableJump();
+                                break;
+                            case 2:
+                                unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                                jumpMP.setEnabled(true);
+                                break;
+                            case 3:
+                                unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                                jumpMP.setEnabled(true);
+                                break;
+                            default:
+                                unit.setTechLevel(TechConstants.T_CLAN_TW);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
+                                disableJump();
+                                break;
+                        }
+
+                    } else {
+                        switch (unitTechLevel) {
+                            case 0:
+                                unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                                unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                                disableJump();
+                                addAllListeners();
+                                techType.setSelectedIndex(0);
+                                removeAllListeners();
+                                break;
+                            case 1:
+                                unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                                unit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                                disableJump();
+                                addAllListeners();
+                                techType.setSelectedIndex(0);
+                                removeAllListeners();
+                                break;
+                            case 2:
+                                unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                                unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                                disableJump();
+                                break;
+                            case 3:
+                                unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                                unit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                                jumpMP.setEnabled(true);
+                                break;
+                            default:
+                                unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                                unit.setArmorTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                                jumpMP.setEnabled(true);
+                                break;
+                        }
+
+                    }
+
+                    int engineNumber = engineType.getSelectedIndex();
+                    updateEngineTypes(getTank().isClan());
+                    // Reset the engine
+                    if (engineNumber >= engineType.getItemCount()) {
+                        engineType.setSelectedIndex(0);
+                    } else {
+                        engineType.setSelectedIndex(engineNumber);
+                    }
+                    updateArmor();
+                } else if (combo.equals(techType)) {
+                    if ((techType.getSelectedIndex() == 1)
+                            && (!unit.isClan() || unit.isMixedTech())) {
+                        techLevel.removeAllItems();
+
+                        for (String item : clanTechLevels) {
+                            techLevel.addItem(item);
+                        }
+
+                        if (!((Tank) unit).isSuperHeavy()) {
+                            unit.setTechLevel(TechConstants.T_CLAN_TW);
+                        } else {
+                            if (unit.getTechLevel() == TechConstants.T_IS_ADVANCED) {
+                                unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                            } else if (unit.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) {
+                                unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            } else if (unit.getTechLevel() == TechConstants.T_IS_UNOFFICIAL) {
+                                unit.setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                            }
+                        }
+
+                        unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
+                        unit.setMixedTech(false);
+                    } else if ((techType.getSelectedIndex() == 0)
+                            && (unit.isClan() || unit.isMixedTech())) {
+                        techLevel.removeAllItems();
+
+                        for (String item : isTechLevels) {
+                            techLevel.addItem(item);
+                        }
+                        if (!((Tank) unit).isSuperHeavy()) {
+                            unit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+                        } else {
+                            if (unit.getTechLevel() == TechConstants.T_CLAN_ADVANCED) {
+                                unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                            } else if (unit.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL) {
+                                unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            } else if (unit.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL) {
+                                unit.setTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                            }
+                        }
+                        unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                        unit.setMixedTech(false);
+
+                    } else if ((techType.getSelectedIndex() == 2)
+                            && (!unit.isMixedTech() || unit.isClan())) {
+                        techLevel.removeAllItems();
+
+                        for (String item : isTechLevels) {
+                            techLevel.addItem(item);
+                        }
+
+                        unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                        unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                        unit.setMixedTech(true);
+
+                    } else if ((techType.getSelectedIndex() == 3)
+                            && (!unit.isMixedTech() || !unit.isClan())) {
+                        techLevel.removeAllItems();
+                        for (String item : clanTechLevels) {
+                            techLevel.addItem(item);
+                        }
+
+                        unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        unit.setMixedTech(true);
+                    }
+                    int engineNumber = engineType.getSelectedIndex();
+                    updateEngineTypes(getTank().isClan());
+
+                    // Reset the engine
+                    if (engineNumber >= engineType.getItemCount()) {
+                        engineType.setSelectedIndex(0);
+                    } else {
+                        engineType.setSelectedIndex(engineNumber);
+                    }
+                    updateArmor();
+                } else if (combo.equals(tankMotiveType)) {
+                    int currentTonnage = (Integer) weight.getModel()
+                            .getValue();
+
+                    setAvailableWeights(currentTonnage);
+                } else if (combo.equals(turretCombo)) {
+                    updateTurrets(combo);
+                } else if (combo.equals(armorCombo)) {
+                    if (!unit.hasPatchworkArmor()) {
+                        armor.resetArmorPoints();
+                    }
+                    setArmorType();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            addAllListeners();
+            refresh.refreshAll();
+        }
+    }
+
 }

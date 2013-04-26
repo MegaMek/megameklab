@@ -23,6 +23,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -66,7 +68,7 @@ import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements ActionListener, KeyListener,
-        ChangeListener {
+        ChangeListener, ItemListener {
 
     /**
      *
@@ -581,7 +583,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         setEnhancementCombo();
         setStructureCombo();
-        Object test = armorCombo.getActionListeners();
         if (getMech().hasPatchworkArmor()) {
             setArmorCombo(EquipmentType.T_ARMOR_PATCHWORK);
         } else {
@@ -667,13 +668,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .getMaximumArmorTonnage(unit));
         if (unit.hasPatchworkArmor()) {
             TestMech testMech = new TestMech(
-                    (Mech) unit,
+                    getMech(),
                     new EntityVerifier(new File(
                             "data/mechfiles/UnitVerifierOptions.xml")).mechOption,
                     null);
             clanArmor.setEnabled(false);
             armorTonnage.setEnabled(false);
-            float weight = testMech.getWeightAllocatedArmor();
             armorTonnage.getModel()
                     .setValue(testMech.getWeightAllocatedArmor());
             unit.setArmorTonnage(testMech.getWeightAllocatedArmor());
@@ -704,9 +704,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         box.setMinimumSize(maxSize);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        removeAllListeners();
-        if (e.getSource() instanceof JComboBox) {
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            removeAllListeners();
             JComboBox combo = (JComboBox) e.getSource();
 
             // we need to do cockpit also here, because cockpitType
@@ -983,7 +983,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 armor.resetArmorPoints();
                 UnitUtil.checkEquipmentByTechLevel(unit);
             }
-        } else if (e.getSource() instanceof JCheckBox) {
+            addAllListeners();
+            refresh.refreshAll();
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        removeAllListeners();
+        if (e.getSource() instanceof JCheckBox) {
             JCheckBox check = (JCheckBox) e.getSource();
             if (check.equals(omniCB)) {
                 getMech().setOmni(omniCB.isSelected());
@@ -1045,60 +1052,60 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     public void removeAllListeners() {
         maximizeArmorButton.removeActionListener(this);
         clanArmor.removeActionListener(this);
-        armorCombo.removeActionListener(this);
-        gyroType.removeActionListener(this);
-        engineType.removeActionListener(this);
+        armorCombo.removeItemListener(this);
+        gyroType.removeItemListener(this);
+        engineType.removeItemListener(this);
         weightClass.removeChangeListener(this);
-        cockpitType.removeActionListener(this);
+        cockpitType.removeItemListener(this);
         heatSinkNumber.removeChangeListener(this);
-        heatSinkType.removeActionListener(this);
+        heatSinkType.removeItemListener(this);
         walkMP.removeChangeListener(this);
-        techLevel.removeActionListener(this);
-        techType.removeActionListener(this);
+        techLevel.removeItemListener(this);
+        techType.removeItemListener(this);
         era.removeKeyListener(this);
         source.removeKeyListener(this);
         manualBV.removeKeyListener(this);
         omniCB.removeActionListener(this);
-        motiveType.removeActionListener(this);
+        motiveType.removeItemListener(this);
         lamCB.removeActionListener(this);
         fullHeadEjectCB.removeActionListener(this);
-        structureCombo.removeActionListener(this);
+        structureCombo.removeItemListener(this);
         baseChassisHeatSinks.removeChangeListener(this);
         chassis.removeKeyListener(this);
         model.removeKeyListener(this);
         jumpMP.removeChangeListener(this);
-        jjType.removeActionListener(this);
-        enhancement.removeActionListener(this);
+        jjType.removeItemListener(this);
+        enhancement.removeItemListener(this);
         armorTonnage.removeChangeListener(this);
     }
 
     public void addAllListeners() {
         maximizeArmorButton.addActionListener(this);
         clanArmor.addActionListener(this);
-        armorCombo.addActionListener(this);
-        gyroType.addActionListener(this);
-        engineType.addActionListener(this);
+        armorCombo.addItemListener(this);
+        gyroType.addItemListener(this);
+        engineType.addItemListener(this);
         weightClass.addChangeListener(this);
-        cockpitType.addActionListener(this);
+        cockpitType.addItemListener(this);
         heatSinkNumber.addChangeListener(this);
-        heatSinkType.addActionListener(this);
+        heatSinkType.addItemListener(this);
         walkMP.addChangeListener(this);
-        techLevel.addActionListener(this);
-        techType.addActionListener(this);
+        techLevel.addItemListener(this);
+        techType.addItemListener(this);
         era.addKeyListener(this);
         source.addKeyListener(this);
         manualBV.addKeyListener(this);
         omniCB.addActionListener(this);
-        motiveType.addActionListener(this);
+        motiveType.addItemListener(this);
         lamCB.addActionListener(this);
         fullHeadEjectCB.addActionListener(this);
-        structureCombo.addActionListener(this);
+        structureCombo.addItemListener(this);
         baseChassisHeatSinks.addChangeListener(this);
         chassis.addKeyListener(this);
         model.addKeyListener(this);
         jumpMP.addChangeListener(this);
-        jjType.addActionListener(this);
-        enhancement.addActionListener(this);
+        jjType.addItemListener(this);
+        enhancement.addItemListener(this);
         armorTonnage.addChangeListener(this);
 
     }
@@ -1995,9 +2002,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 } else {
                     getMech().setWeight((Integer) weightClass.getValue());
                     getMech().autoSetInternal();
-                    // addAllListeners();
                     engineType.setSelectedIndex(engineType.getSelectedIndex());
-                    // removeAllListeners();
                 }
             } else if (spinner.equals(walkMP)) {
                 int rating = ((Integer) walkMP.getValue())
@@ -2239,7 +2244,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
             }
             if (!unit.hasPatchworkArmor()) {
-                setArmorType(EquipmentType.T_ARMOR_STANDARD);
+                setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD, false);
             }
         } else {
             unit.setArmorType(getArmorType(armorCombo));

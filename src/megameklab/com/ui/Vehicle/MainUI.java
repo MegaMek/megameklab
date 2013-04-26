@@ -35,11 +35,9 @@ import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.VTOL;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Vehicle.tabs.ArmorTab;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
 import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
 import megameklab.com.ui.Vehicle.tabs.StructureTab;
-import megameklab.com.ui.Vehicle.tabs.WeaponTab;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
@@ -50,14 +48,11 @@ public class MainUI extends MegaMekLabMainUI {
      */
     private static final long serialVersionUID = -5836932822468918198L;
 
-    JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
+    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
-    private ArmorTab armorTab;
     private EquipmentTab equipmentTab;
-    private WeaponTab weaponTab;
     private BuildTab buildTab;
-    private Header header;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
@@ -87,7 +82,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         masterPanel.removeAll();
-        ConfigPane.removeAll();
+        configPane.removeAll();
 
         masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
 
@@ -95,30 +90,19 @@ public class MainUI extends MegaMekLabMainUI {
 
         structureTab = new StructureTab(tank);
 
-        armorTab = new ArmorTab(tank);
-        armorTab.setArmorType(entity.getArmorType(0));
-        armorTab.refresh();
 
-        header = new Header(tank);
         statusbar = new StatusBar(tank);
         equipmentTab = new EquipmentTab(tank);
-        weaponTab = new WeaponTab(tank);
-        buildTab = new BuildTab(tank, equipmentTab, weaponTab);
-        header.addRefreshedListener(this);
+        buildTab = new BuildTab(tank, equipmentTab);
         structureTab.addRefreshedListener(this);
-        armorTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
-        weaponTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
 
-        ConfigPane.addTab("Structure", structureTab);
-        ConfigPane.addTab("Armor", armorTab);
-        ConfigPane.addTab("Equipment", equipmentTab);
-        ConfigPane.addTab("Weapons", weaponTab);
-        ConfigPane.addTab("Build", buildTab);
+        configPane.addTab("Structure", structureTab);
+        configPane.addTab("Equipment", equipmentTab);
+        configPane.addTab("Assign Criticals", buildTab);
 
-        masterPanel.add(header);
-        masterPanel.add(ConfigPane);
+        masterPanel.add(configPane);
         masterPanel.add(statusbar);
 
         refreshHeader();
@@ -143,6 +127,8 @@ public class MainUI extends MegaMekLabMainUI {
             String model = entity.getModel();
             String chassis = entity.getChassis();
             createNewUnit(structureTab.isSuperHeavy(), structureTab.isVTOL());
+            entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+            entity.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
             entity.setChassis(chassis);
             entity.setModel(model);
             reloadTabs();
@@ -161,9 +147,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         statusbar.refresh();
         structureTab.refresh();
-        armorTab.refresh();
         equipmentTab.refresh();
-        weaponTab.refresh();
         buildTab.refresh();
         refreshHeader();
         repaint();
@@ -172,7 +156,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshArmor() {
-        armorTab.refresh();
+
     }
 
     @Override
@@ -211,7 +195,6 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshWeapons() {
-        weaponTab.refresh();
     }
 
     @Override
@@ -223,7 +206,7 @@ public class MainUI extends MegaMekLabMainUI {
                 entity.setWeight(31);
                 entity.setTechLevel(TechConstants.T_IS_ADVANCED);
             }
-            entity.setWeight(25);
+            entity.setWeight(20);
             entity.setMovementMode(EntityMovementMode.VTOL);
         } else {
             if (isSuperHeavy) {
@@ -233,7 +216,7 @@ public class MainUI extends MegaMekLabMainUI {
             } else {
                 entity = new Tank();
                 entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
-                entity.setWeight(25);
+                entity.setWeight(20);
             }
             entity.setMovementMode(EntityMovementMode.HOVER);
         }
@@ -242,16 +225,21 @@ public class MainUI extends MegaMekLabMainUI {
 
         entity.setYear(2750);
 
-        tank.setEngine(new Engine(Math.max(10, 25 - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
+        tank.setEngine(new Engine(Math.max(10, (int)entity.getWeight() - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
         entity.setOriginalWalkMP(1);
-        entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
         entity.autoSetInternal();
         for (int loc = 0; loc < entity.locations(); loc++) {
             entity.initializeArmor(0, loc);
         }
 
+        entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        entity.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+        entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+        tank.setHasNoDualTurret(true);
+        if (entity instanceof VTOL) {
+            tank.setHasNoTurret(true);
+        }
         entity.setChassis("New");
         entity.setModel("Tank");
         if (menubarcreator != null) {
@@ -263,7 +251,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshPreview() {
         // TODO Auto-generated method stub
-        
+
     }
 
 }
