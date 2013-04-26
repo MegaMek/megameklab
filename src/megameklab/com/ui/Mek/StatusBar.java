@@ -17,7 +17,6 @@
 package megameklab.com.ui.Mek;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,12 +24,9 @@ import java.awt.Insets;
 import java.io.File;
 import java.text.DecimalFormat;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 
 import megamek.common.AmmoType;
 import megamek.common.BipedMech;
@@ -44,7 +40,6 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
 public class StatusBar extends ITab {
@@ -65,11 +60,11 @@ public class StatusBar extends ITab {
     private TestMech testEntity = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
-    
+
     private RefreshListener refresh;
 
     public StatusBar(Mech unit, MegaMekLabMainUI parent) {
-        this.parentFrame = parent;
+        parentFrame = parent;
         this.unit = unit;
 
         formatter = new DecimalFormat();
@@ -106,21 +101,21 @@ public class StatusBar extends ITab {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-        
+
 
         refresh();
     }
 
     public void refresh() {
 
-        int heat = getMech().getHeatCapacity(false);
+        int heat = getMech().getHeatCapacity();
         float tonnage = getMech().getWeight();
         float currentTonnage;
         int bv = getMech().calculateBattleValue();
         int maxCrits = (getMech() instanceof BipedMech) ? 78 : 66;
         int currentCrits = UnitUtil.countUsedCriticals(getMech());
         int currentCost = (int)Math.round(getMech().getCost(false));
-        
+
         testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);
 
         currentTonnage = testEntity.calculateWeight();
@@ -148,14 +143,14 @@ public class StatusBar extends ITab {
         bvLabel.setToolTipText("BV 2.0");
 
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
-        
+
         crits.setText("Criticals: " +  currentCrits + "/" + maxCrits);
         if(currentCrits > maxCrits) {
             crits.setForeground(Color.red);
         } else {
             crits.setForeground(Color.BLACK);
         }
-        
+
     }
 
     public double calculateTotalHeat() {
@@ -216,7 +211,7 @@ public class StatusBar extends ITab {
         }
         return heat;
     }
-    
+
     private void getFluffImage() {
         //copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
@@ -227,30 +222,30 @@ public class StatusBar extends ITab {
             String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
             String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
             fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-            fDialog.setDirectory(fullPath); 
-            fDialog.setFile(imageName); 
+            fDialog.setDirectory(fullPath);
+            fDialog.setFile(imageName);
         } else {
             fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png"); 
+            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
         }
         */
         fDialog.setLocationRelativeTo(this);
-        
+
         fDialog.setVisible(true);
-        
-        if (fDialog.getFile() != null) { 
+
+        if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
             relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
-            getMech().getFluff().setMMLImagePath(relativeFilePath); 
+            getMech().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
-        return; 
+        return;
     }
-    
+
     private JFrame getParentFrame() {
         return parentFrame;
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
