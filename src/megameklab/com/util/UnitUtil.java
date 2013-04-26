@@ -90,6 +90,7 @@ import megamek.common.weapons.SwarmAttack;
 import megamek.common.weapons.SwarmWeaponAttack;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
+import megamek.common.weapons.VehicleFlamerWeapon;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 
@@ -1253,6 +1254,12 @@ public class UnitUtil {
         }
 
         if (weapon instanceof CLPlasmaCannon) {
+            return false;
+        }
+        if (weapon instanceof VehicleFlamerWeapon) {
+            return false;
+        }
+        if (!(weapon instanceof AmmoWeapon)) {
             return false;
         }
         return true;

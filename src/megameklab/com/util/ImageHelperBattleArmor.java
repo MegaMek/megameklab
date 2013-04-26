@@ -351,7 +351,7 @@ public class ImageHelperBattleArmor {
                     }
                     StringBuilder ammoString = new StringBuilder("Ammo ");
 
-                    if (eqi.isCompactNarc) {
+                    if (eqi.isCompactNarc || eqi.isBAPopUpMine) {
                         for (int baPos = 0; baPos < ba.getNumberActiverTroopers(); baPos++) {
                             for (int ammoCount = 0; ammoCount < eqi.ammoCount; ammoCount++) {
                                 ammoString.append("O ");
