@@ -766,7 +766,6 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeJumpJets(Mech unit, int number) {
-        System.out.println("Removing jump jets.");
         Vector<Mounted> toRemove = new Vector<Mounted>();
         for (Mounted eq : unit.getMisc()) {
             if (UnitUtil.isJumpJet(eq)) {
@@ -779,7 +778,6 @@ public class UnitUtil {
         for (Mounted eq : toRemove) {
             UnitUtil.removeMounted(unit, eq);
         }
-        System.out.println("Jump jet removal finished.");
     }
 
     /**
@@ -831,7 +829,6 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeEnhancements(Mech unit) {
-        System.out.println("Removing enhancements.");
         ConcurrentLinkedQueue<Mounted> equipmentList = new ConcurrentLinkedQueue<Mounted>(
                 unit.getMisc());
         for (Mounted eq : equipmentList) {
@@ -845,7 +842,6 @@ public class UnitUtil {
                 unit.getEquipment().remove(eq);
             }
         }
-        System.out.println("enhancements removal finished.");
     }
 
     public static void updateEnhancements(Mech unit, boolean hasMASC,
@@ -2547,7 +2543,7 @@ public class UnitUtil {
 
     }
 
-    public static void removeAllMounteds(Entity unit, BigInteger flag) {
+    public static void removeAllMiscMounteds(Entity unit, BigInteger flag) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted mount = unit.getEquipment().get(pos);
             if ((mount.getType() instanceof MiscType)
