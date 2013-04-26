@@ -295,7 +295,7 @@ public class StringUtils {
                     info += "S,";
                 }
 
-                if ((weapon instanceof FlamerWeapon) || weapon.hasFlag(WeaponType.F_PLASMA)) {
+                if (weapon.hasFlag(WeaponType.F_FLAMER) || weapon.hasFlag(WeaponType.F_PLASMA)) {
                     info += "H,";
                 }
                 if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
@@ -304,7 +304,8 @@ public class StringUtils {
                         (weapon instanceof ISSmallPulseLaser) ||
                         (weapon instanceof CLSmallPulseLaser) ||
                         (weapon instanceof CLMicroPulseLaser) ||
-                        (weapon instanceof FlamerWeapon)) {
+                        (weapon.hasFlag(WeaponType.F_FLAMER) ||
+                        (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
                     info += "AI,";
                 }
 
