@@ -267,26 +267,12 @@ public class EquipmentView extends IView implements ActionListener {
     private void fireTableRefresh() {
         equipmentList.updateUnit(unit);
         equipmentList.refreshModel();
-        //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 8 / 10));
-        //equipmentScroll.repaint();
-        updateJumpMP();
         if (refresh != null) {
             refresh.refreshStatus();
             refresh.refreshBuild();
         }
     }
 
-    private void updateJumpMP() {
-        int mp = 0;
-        for (Mounted mount : unit.getEquipment()) {
-            if (mount.getType() instanceof MiscType) {
-                if (mount.getType().hasFlag(MiscType.F_JUMP_JET) || mount.getType().hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                    mp++;
-                }
-            }
-        }
-        unit.setOriginalJumpMP(mp);
-    }
 
     public CriticalTableModel getEquipmentList() {
         return equipmentList;
