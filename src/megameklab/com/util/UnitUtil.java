@@ -61,6 +61,7 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megamek.common.verifier.TestTank;
+import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.CLLightTAG;
@@ -74,12 +75,14 @@ import megamek.common.weapons.ISC3M;
 import megamek.common.weapons.ISC3MBS;
 import megamek.common.weapons.ISPlasmaRifle;
 import megamek.common.weapons.ISTAG;
+import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.LegAttack;
 import megamek.common.weapons.MGWeapon;
 import megamek.common.weapons.MPodWeapon;
 import megamek.common.weapons.MRMWeapon;
+import megamek.common.weapons.PPCWeapon;
 import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.SRTWeapon;
@@ -115,13 +118,15 @@ public class UnitUtil {
     public static boolean isFixedLocationSpreadEquipment(EquipmentType eq) {
         return (eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || (eq.hasFlag(MiscType.F_PARTIAL_WING) && eq.hasFlag(MiscType.F_MECH_EQUIPMENT))
+                        || (eq.hasFlag(MiscType.F_PARTIAL_WING) && eq
+                                .hasFlag(MiscType.F_MECH_EQUIPMENT))
                         || eq.hasFlag(MiscType.F_NULLSIG)
                         || eq.hasFlag(MiscType.F_VOIDSIG)
                         || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
                         || eq.hasFlag(MiscType.F_TRACKS)
                         || eq.hasFlag(MiscType.F_TALON)
-                        || (eq.hasFlag(MiscType.F_STEALTH) && eq.hasFlag(MiscType.F_MECH_EQUIPMENT))
+                        || (eq.hasFlag(MiscType.F_STEALTH) && eq
+                                .hasFlag(MiscType.F_MECH_EQUIPMENT))
                         || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) || eq
                             .hasFlag(MiscType.F_BLUE_SHIELD));
     }
@@ -177,7 +182,9 @@ public class UnitUtil {
      * @return
      */
     public static boolean isMASC(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_SUPERCHARGER));
+        return (eq instanceof MiscType)
+                && (eq.hasFlag(MiscType.F_MASC) && !eq
+                        .hasSubType(MiscType.S_SUPERCHARGER));
     }
 
     /**
@@ -421,8 +428,7 @@ public class UnitUtil {
                 && (eq.hasFlag(MiscType.F_HEAT_SINK)
                         || eq.hasFlag(MiscType.F_LASER_HEAT_SINK)
                         || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || (eq
-                            .hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE) &&
-                            !ignoreprototype))) {
+                        .hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE) && !ignoreprototype))) {
             return true;
         }
 
@@ -2051,10 +2057,8 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof CLTAG)
-                || (eq instanceof ISC3MBS)
-                || (eq instanceof ISC3M)
-                || (eq instanceof ISTAG)
+        if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
+                || (eq instanceof ISC3M) || (eq instanceof ISTAG)
                 || eq.equals(EquipmentType.get("IS Coolant Pod"))
                 || eq.equals(EquipmentType.get("Clan Coolant Pod"))
                 || (eq instanceof CLLightTAG)) {
@@ -2194,10 +2198,8 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof CLTAG)
-                || (eq instanceof ISC3MBS)
-                || (eq instanceof ISTAG)
-                || (eq instanceof CLLightTAG)) {
+        if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
+                || (eq instanceof ISTAG) || (eq instanceof CLLightTAG)) {
             return true;
         }
 
@@ -2215,8 +2217,7 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof CLTAG)
-                || (eq instanceof ISTAG)
+        if ((eq instanceof CLTAG) || (eq instanceof ISTAG)
                 || (eq instanceof CLLightTAG)) {
             return true;
         }
@@ -3043,5 +3044,56 @@ public class UnitUtil {
         unit.setSneakECM(false);
         unit.setSneakIR(false);
         unit.setDamageDivisor(1.0);
+    }
+
+    public static void removeOmniArmActuators(Mech mech) {
+        if (mech instanceof BipedMech) {
+            boolean leftACGaussPPC = false;
+            boolean rightACGaussPPC = false;
+            for (Mounted weapon : mech.getWeaponList()) {
+                if ((weapon.getLocation() == Mech.LOC_LARM)
+                        && ((weapon.getType() instanceof ACWeapon)
+                                || (weapon.getType() instanceof GaussWeapon)
+                                || (weapon.getType() instanceof LBXACWeapon)
+                                || (weapon.getType() instanceof UACWeapon)
+                                || (weapon.getType() instanceof PPCWeapon))) {
+                    leftACGaussPPC = true;
+                }
+                if ((weapon.getLocation() == Mech.LOC_RARM)
+                        && ((weapon.getType() instanceof ACWeapon)
+                                || (weapon.getType() instanceof GaussWeapon)
+                                || (weapon.getType() instanceof LBXACWeapon)
+                                || (weapon.getType() instanceof UACWeapon)
+                                || (weapon.getType() instanceof PPCWeapon))) {
+                    rightACGaussPPC = true;
+                }
+            }
+            if (leftACGaussPPC) {
+                removeArm((BipedMech) mech, Mech.LOC_LARM);
+                UnitUtil.compactCriticals(mech, Mech.LOC_LARM);
+            }
+            if (rightACGaussPPC) {
+                removeArm((BipedMech) mech, Mech.LOC_RARM);
+                UnitUtil.compactCriticals(mech, Mech.LOC_RARM);
+            }
+        }
+
+    }
+
+    public static void removeHand(BipedMech mech, int location) {
+        if (mech.hasSystem(Mech.ACTUATOR_HAND, location)) {
+            mech.setCritical(location, 3, null);
+        }
+    }
+
+    public static void removeArm(BipedMech mech, int location) {
+        if (mech.hasSystem(Mech.ACTUATOR_LOWER_ARM, location)) {
+            mech.setCritical(location, 2, null);
+            // Only remove the next slot of it actually is a hand
+            if (mech.hasSystem(Mech.ACTUATOR_HAND, location)) {
+                removeHand(mech, location);
+            }
+        }
+
     }
 }

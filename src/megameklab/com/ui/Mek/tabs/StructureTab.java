@@ -998,12 +998,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     baseChassisHeatSinks.setEnabled(true);
                     getMech().getEngine().setBaseChassisHeatSinks(
                             10 + (Integer) baseChassisHeatSinks.getValue());
+                    UnitUtil.removeOmniArmActuators(getMech());
                 } else {
                     baseChassisHeatSinks.setEnabled(false);
                     getMech().getEngine().setBaseChassisHeatSinks(-1);
                 }
                 UnitUtil.updateAutoSinks(getMech(),
                         (String) heatSinkType.getSelectedItem());
+
             } else if (check.equals(fullHeadEjectCB)) {
                 getMech().setFullHeadEject(fullHeadEjectCB.isSelected());
             } else if (check.equals(clanArmor)) {
