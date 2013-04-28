@@ -22,6 +22,8 @@ V 0.1.22-dev
 + Fixed lots of equipment codes
 + Fixed pop-up mine ammo printing
 + Fixed TAG damage code
++ Automatically remove hand and lower arm actuators for Omni Mechs when mounting
+    PPCs, ACs or Gauss Weapons in Arms
 
 V 0.1.21
 + Bug: stealth armor bug
