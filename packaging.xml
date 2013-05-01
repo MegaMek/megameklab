@@ -79,15 +79,43 @@
 			<arg line="export ${svnroot} ${svndir}" />
 		</exec>
 		<exec executable="svn">
-			<arg line="export ${svnmechdata} ${svndir}/data/mechfiles" />
+			<arg line="export ${svnmechdata} ${svndir}/${datadir}/mechfiles" />
 		</exec>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/battlearmor.zip" basedir="${svndir}/${datadir}/mechfiles/battlearmor"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/convfighter.zip" basedir="${svndir}/${datadir}/mechfiles/convfighter"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/dropships.zip" basedir="${svndir}/${datadir}/mechfiles/dropship"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/fighters.zip" basedir="${svndir}/${datadir}/mechfiles/fighters"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/ge.zip" basedir="${svndir}/${datadir}/mechfiles/ge"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/infantry.zip" basedir="${svndir}/${datadir}/mechfiles/infantry"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/jumpships.zip" basedir="${svndir}/${datadir}/mechfiles/jumpships"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/mechs.zip" basedir="${svndir}/${datadir}/mechfiles/mechs"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/protomechs.zip" basedir="${svndir}/${datadir}/mechfiles/protomechs"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/smallcraft.zip" basedir="${svndir}/${datadir}/mechfiles/smallcraft"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/spacestation.zip" basedir="${svndir}/${datadir}/mechfiles/spacestation"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/unofficial.zip" basedir="${svndir}/${datadir}/mechfiles/unofficial"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/vehicles.zip" basedir="${svndir}/${datadir}/mechfiles/vehicles"/>
+		<zip zipfile="${svndir}/${datadir}/mechfiles/warship.zip" basedir="${svndir}/${datadir}/mechfiles/warship"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/battlearmor"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/convfighter"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/dropship"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/fighters"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/ge"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/infantry"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/jumpships"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/mechs"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/protomechs"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/smallcraft"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/spacestation"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/unofficial"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/vehicles"/>
+		<delete dir="${svndir}/${datadir}/mechfiles/warship"/>
 	</target>
 	
 	<target name="svndev-build" depends="svndev-get" description="compile project from SVN and generate JAR file" >
 		<mkdir dir="${svnbuilddir}" />
 		<!-- compile -->
 		<echo message="MegaMekLab" />
-		<javac debug="true" debuglevel="lines,source" target="1.5" source="1.5" destdir="${svnbuilddir}" srcdir="${svndir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="512m" fork="true">
+		<javac debug="true" debuglevel="lines,source" target="1.5" source="1.5" destdir="${svnbuilddir}" srcdir="${svndir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="1024m" fork="true">
 			<classpath>
 				<pathelement location="${svndir}" />
 				<fileset dir="${svndir}/${libdir}" includes="*.jar" />
