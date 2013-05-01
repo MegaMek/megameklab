@@ -637,6 +637,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         clanArmor.removeActionListener(this);
         armorCombo.removeItemListener(this);
         jumpMP.removeChangeListener(this);
+        chassis.removeKeyListener(this);
+        model.removeKeyListener(this);
     }
 
     public void addAllListeners() {
@@ -658,6 +660,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         clanArmor.addActionListener(this);
         armorCombo.addItemListener(this);
         jumpMP.addChangeListener(this);
+        chassis.addKeyListener(this);
+        model.addKeyListener(this);
     }
 
     public void keyPressed(KeyEvent e) {
@@ -683,6 +687,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 getTank().setUseManualBV(true);
                 getTank().setManualBV(bv);
             }
+        } else if (e.getSource().equals(chassis)) {
+            unit.setChassis(chassis.getText().trim());
+            refresh.refreshPreview();
+            refresh.refreshHeader();
+        } else if (e.getSource().equals(model)) {
+            unit.setModel(model.getText().trim());
+            refresh.refreshPreview();
+            refresh.refreshHeader();
         }
     }
 
