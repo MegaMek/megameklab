@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+V 0.1.23
+
 V 0.1.22
 + Bug: removing multiple equipments at once doesn't work
 + Bug 36: Hang when Building Battlearmor
