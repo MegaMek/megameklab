@@ -20,11 +20,6 @@
 	<!-- Global properties for this build -->
 	<!-- Version and packaging properties -->
 	<property name="project.name" value="megameklab" />
-	<property name="version" value="0.1.22"/>
-	<property name="osxdist" value="${project.name}-${version}-mac" />
-	<property name="windist" value="${project.name}-${version}-windows" />
-	<property name="nixdist" value="${project.name}-${version}" />
-	<property name="srcdist" value="${project.name}-${version}-source" />
 
 	<property name="srcdir" value="src" />
 	<property name="logdir" value="logs" />
@@ -61,8 +56,8 @@
 	</condition>
 	
 	<condition property="isOsMac">
-			<os family="mac" />
-		</condition>
+		<os family="mac" />
+	</condition>
 	
 	<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${util}/launch4j/launch4j.jar:${util}/launch4j/lib/xstream.jar" />
 	<taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" 
@@ -70,7 +65,12 @@
 
 	<target name="svndev-init">
 		<tstamp />
-		<delete dir="${svndir}" />		
+		<delete dir="${svndir}" />
+	    <input message="Please enter version number (eg. 0.1.22):" addproperty="version"/>
+	    <property name="osxdist" value="${project.name}-${version}-mac" />
+	    <property name="windist" value="${project.name}-${version}-windows" />
+	    <property name="nixdist" value="${project.name}-${version}" />
+	    <property name="srcdist" value="${project.name}-${version}-source" />
 	</target>
 	
 	<!-- following svndev-* tasks get, build & package the current version from svn -->
