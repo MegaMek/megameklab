@@ -25,17 +25,17 @@ import java.util.Locale;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
-    public static final String VERSION = "0.1.22-dev";
+    public static final String VERSION = "0.1.22";
 
     public static void main(String[] args) {
     	System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");  
-    	
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name","MegaMekLab");
+
         String logFileName = "./logs/megameklablog.txt";
         Locale.setDefault(Locale.US);
 
         //Taharqa: I am not sure why this is here, so I am commenting it
-        //out for awhile because I suspect it might be responsible for the 
+        //out for awhile because I suspect it might be responsible for the
         //partial unit.cache problem in MHQ.
         //new File("./data/mechfiles/units.cache").delete();
 
