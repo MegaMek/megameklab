@@ -85,6 +85,12 @@ public class ImageHelperBattleArmor {
         if (ba.isFireResistant()) {
             buffer.append(" Fire Resistant");
         }
+        if (ba.isReflective()) {
+            buffer.append(" Reflective");
+        }
+        if (ba.isReactive()) {
+            buffer.append(" Reactive");
+        }
 
         if (buffer.length() > 2) {
             Font font = UnitUtil.deriveFont(true, 9.0f);
@@ -166,7 +172,7 @@ public class ImageHelperBattleArmor {
 
         }
 
-        if (!ba.isFireResistant() && !ba.isStealthActive()) {
+        if (!ba.isFireResistant() && !ba.isStealthActive() && !ba.isReactive() && !ba.isReflective()) {
             maxHeight += lineFeed;
         }
         if (ba.hasCamoSystem()) {
