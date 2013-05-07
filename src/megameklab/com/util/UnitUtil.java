@@ -2910,7 +2910,7 @@ public class UnitUtil {
         int engineHeatSinkCount = UnitUtil.getBaseChassisHeatSinks(unit,
                 unit.hasCompactHeatSinks());
         for (Mounted mount : unit.getMisc()) {
-            if (UnitUtil.isHeatSink(mount)) {
+            if (UnitUtil.isHeatSink(mount) && (mount.getLocation() == Entity.LOC_NONE)) {
                 if (engineHeatSinkCount > 0) {
                     engineHeatSinkCount--;
                     continue;
