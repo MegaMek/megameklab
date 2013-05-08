@@ -85,13 +85,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private static final String ENGINEFUELCELL = "Fuel Cell";
     private static final String ENGINEXXL = "XXL";
     private static final String ENGINEICE = "I.C.E";
-    private static final String ENGINENONE = "None";
 
-    String[] isEngineTypes = { ENGINESTANDARD, ENGINEICE, ENGINENONE, ENGINEXL,
+    String[] isEngineTypes = { ENGINESTANDARD, ENGINEICE, ENGINEXL,
             ENGINELIGHT, ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL,
             ENGINEXXL };
     String[] clanEngineTypes = { ENGINESTANDARD, ENGINEICE, ENGINEXL,
-            ENGINENONE, ENGINEFUELCELL, ENGINEXXL };
+            ENGINEFUELCELL, ENGINEXXL };
 
     private int clanEngineFlag = 0;
 
@@ -169,7 +168,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         Dimension spinnerSize = new Dimension(55, 25);
 
-        cruiseMP = new JSpinner(new SpinnerNumberModel(1, 1, 25, 1));
+        cruiseMP = new JSpinner(new SpinnerNumberModel(3, 0, 25, 1));
         ((JSpinner.DefaultEditor) cruiseMP.getEditor()).setSize(spinnerSize);
         ((JSpinner.DefaultEditor) cruiseMP.getEditor())
                 .setMaximumSize(spinnerSize);
@@ -820,9 +819,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         if (engineType.equals(ENGINELIGHT)) {
             return Engine.LIGHT_ENGINE;
         }
-        if (engineType.equals(ENGINENONE)) {
-            return Engine.NONE;
-        }
 
         return Engine.NORMAL_ENGINE;
     }
@@ -838,14 +834,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             engineList = clanEngineTypes;
             switch (getTank().getTechLevel()) {
                 case TechConstants.T_CLAN_TW:
-                    engineCount = 4;
+                    engineCount = 3;
                     break;
                 case TechConstants.T_CLAN_ADVANCED:
-                    engineCount = 5;
+                    engineCount = 4;
                     break;
                 case TechConstants.T_CLAN_EXPERIMENTAL:
                 case TechConstants.T_CLAN_UNOFFICIAL:
-                    engineCount = 6;
+                    engineCount = 5;
                     break;
             }
         } else {
@@ -853,17 +849,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             engineList = isEngineTypes;
             switch (getTank().getTechLevel()) {
                 case TechConstants.T_INTRO_BOXSET:
-                    engineCount = 3;
+                    engineCount = 2;
                     break;
                 case TechConstants.T_IS_TW_NON_BOX:
-                    engineCount = 6;
+                    engineCount = 5;
                     break;
                 case TechConstants.T_IS_ADVANCED:
-                    engineCount = 8;
+                    engineCount = 7;
                     break;
                 case TechConstants.T_IS_EXPERIMENTAL:
                 case TechConstants.T_IS_UNOFFICIAL:
-                    engineCount = 9;
+                    engineCount = 8;
                     break;
             }
         }
@@ -1046,12 +1042,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void updateWeightEngineMovement() {
-        if (engineType.getSelectedItem().equals(ENGINENONE)) {
-            cruiseMP.getModel().setValue(0);
-            cruiseMP.setEnabled(false);
-        } else {
-            cruiseMP.setEnabled(true);
-        }
 
         // we first need to set the weight, because the tank's
         // suspension factor
@@ -1148,12 +1138,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setArmorType(frontArmor, unit.getArmorType(Tank.LOC_FRONT), false);
             setArmorType(leftArmor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT), false);
             setArmorType(rightArmor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT), false);
-            setArmorType(rearArmor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR), false);
+            setArmorType(rearArmor, unit.getArmorType(unit instanceof SuperHeavyTank?Tank.LOC_REAR:Tank.LOC_REAR), false);
             if (!getTank().hasNoTurret()) {
-                setArmorType(turretArmor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET), false);
+                setArmorType(turretArmor, unit.getArmorType(unit instanceof SuperHeavyTank?Tank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET), false);
             }
             if (!getTank().hasNoDualTurret()) {
-                setArmorType(turret2Armor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2), false);
+                setArmorType(turret2Armor, unit.getArmorType(unit instanceof SuperHeavyTank?Tank.LOC_TURRET_2:Tank.LOC_TURRET_2), false);
             }
             if (unit instanceof SuperHeavyTank) {
                 setArmorType(rearLeftArmor, unit.getArmorType(SuperHeavyTank.LOC_REARLEFT), false);
@@ -1235,14 +1225,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             unit.setArmorType(getArmorType(frontArmor), Tank.LOC_FRONT);
             unit.setArmorType(getArmorType(leftArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT);
             unit.setArmorType(getArmorType(rightArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT);
-            unit.setArmorType(getArmorType(rearArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR);
+            unit.setArmorType(getArmorType(rearArmor), unit instanceof SuperHeavyTank?Tank.LOC_REAR:Tank.LOC_REAR);
             if (!getTank().hasNoTurret()) {
-                unit.setArmorType(getArmorType(turretArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET);
-                setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET, turretClan.isSelected());
+                unit.setArmorType(getArmorType(turretArmor), unit instanceof SuperHeavyTank?Tank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET);
+                setArmorTechLevel(unit instanceof SuperHeavyTank?Tank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET, turretClan.isSelected());
             }
             if (!getTank().hasNoDualTurret()) {
-                unit.setArmorType(getArmorType(turret2Armor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2);
-                setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2, turret2Clan.isSelected());
+                unit.setArmorType(getArmorType(turret2Armor), unit instanceof SuperHeavyTank?Tank.LOC_TURRET_2:Tank.LOC_TURRET_2);
+                setArmorTechLevel(unit instanceof SuperHeavyTank?Tank.LOC_TURRET_2:Tank.LOC_TURRET_2, turret2Clan.isSelected());
             }
             if (unit instanceof SuperHeavyTank) {
                 unit.setArmorType(getArmorType(rearLeftArmor), SuperHeavyTank.LOC_REARLEFT);
@@ -1258,7 +1248,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setArmorTechLevel(Tank.LOC_FRONT, frontClan.isSelected());
             setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT, leftClan.isSelected());
             setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT, rightClan.isSelected());
-            setArmorTechLevel(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR, rearClan.isSelected());
+            setArmorTechLevel(unit instanceof SuperHeavyTank?Tank.LOC_REAR:Tank.LOC_REAR, rearClan.isSelected());
             if (!unit.hasPatchworkArmor()) {
                 setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD, false);
             }
