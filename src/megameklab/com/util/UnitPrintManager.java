@@ -339,7 +339,7 @@ public class UnitPrintManager {
         });
         printMenu.add(item);
 
-        item = new JMenuItem("From File(Single Unit Per RS)");
+        item = new JMenuItem("From File (Single Unit Per RS)");
         item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK + ActionEvent.SHIFT_MASK));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
