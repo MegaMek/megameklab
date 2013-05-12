@@ -793,6 +793,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             } else if (combo.equals(structureCombo)) {
                 UnitUtil.removeISorArmorMounts(getMech(), true);
                 createISMounts();
+                populateChoices(true);
             } else if (combo.equals(gyroType)) {
                 if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE)
                         && (combo.getSelectedIndex() == Mech.GYRO_XL)) {
