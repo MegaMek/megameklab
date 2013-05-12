@@ -44,6 +44,7 @@ import megamek.common.weapons.ISHGaussRifle;
 import megamek.common.weapons.ISLargeVariableSpeedPulseLaser;
 import megamek.common.weapons.ISMediumVariableSpeedPulseLaser;
 import megamek.common.weapons.ISPlasmaRifle;
+import megamek.common.weapons.ISPopUpMineLauncher;
 import megamek.common.weapons.ISSilverBulletGauss;
 import megamek.common.weapons.ISSmallPulseLaser;
 import megamek.common.weapons.ISSmallVariableSpeedPulseLaser;
@@ -261,6 +262,8 @@ public class StringUtils {
                     info += "[M]";
                 } else if (weapon instanceof NarcWeapon) {
                     info = "[M]";
+                } else if (weapon instanceof ISPopUpMineLauncher) {
+                    info = "4";
                 } else {
                     info = Integer.toString(weapon.getRackSize());
                 }
