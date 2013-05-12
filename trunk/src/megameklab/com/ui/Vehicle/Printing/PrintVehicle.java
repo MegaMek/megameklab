@@ -315,11 +315,11 @@ public class PrintVehicle implements Printable {
             g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(tank), 400, 64);
         }
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 7f);
         g2d.setFont(font);
 
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 374f);
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 374f + secondPageMargin);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 374.5f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 374.5f + secondPageMargin);
         if (tank2 != null) {
             printTank2Data(g2d);
         }
@@ -501,7 +501,8 @@ public class PrintVehicle implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank), 463, 48);
+
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank), 457, 48);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
