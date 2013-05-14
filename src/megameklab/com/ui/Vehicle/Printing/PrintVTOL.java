@@ -414,6 +414,9 @@ public class PrintVTOL implements Printable {
                 pipShift[0] *= -1;
                 middleColumn[0] += pipShift[0];
             }
+            if (pos == 28) {
+                middleColumn[0] += pipShift[0];
+            }
         }
     }
 
@@ -540,34 +543,45 @@ public class PrintVTOL implements Printable {
         for (int pos = 0; pos < totalArmor; pos++) {
             ImageHelperVehicle.drawTankArmorPip(g2d, topColumn[0],
                     topColumn[1], fontSize);
-
             switch (pos) {
                 case 0:
-                case 22:
-                case 23:
-                case 24:
-                case 25:
-                case 26:
-                case 27:
                     topColumn[1] += pipShift[1];
                     break;
                 case 2:
-                case 4:
-                case 6:
+                    topColumn[1] += pipShift[1];
+                    topColumn[0] += pipShift[0];
+                    break;
+                case 3:
+                    pipShift[0] *= -1;
+                    topColumn[0] += pipShift[0];
+                    break;
+                case 5:
                 case 8:
-                case 10:
+                case 11:
                 case 14:
-                case 16:
-                case 18:
-                case 20:
+                case 19:
+                case 21:
+                case 23:
+                case 25:
                     topColumn[1] += pipShift[1];
                     pipShift[0] *= -1;
                     break;
-                case 12:
+                case 17:
                     topColumn[1] += pipShift[1] * 3.75;
                     topColumn[0] += pipShift[0] * -2.25;
                     break;
-
+                case 27:
+                    pipShift[0] *= -1;
+                    topColumn[1] += pipShift[1];
+                    break;
+                case 28:
+                    topColumn[0] += pipShift[0];
+                    break;
+                case 29:
+                case 30:
+                case 31:
+                    topColumn[1] += pipShift[1];
+                    break;
                 default:
                     topColumn[0] += pipShift[0];
                     break;
@@ -589,29 +603,42 @@ public class PrintVTOL implements Printable {
 
             switch (pos) {
                 case 0:
-                case 22:
-                case 23:
-                case 24:
-                case 25:
-                case 26:
-                case 27:
                     topColumn[1] += pipShift[1];
                     break;
                 case 2:
-                case 4:
-                case 6:
+                    topColumn[1] += pipShift[1];
+                    topColumn[0] -= pipShift[0];
+                    break;
+                case 3:
+                    pipShift[0] *= -1;
+                    topColumn[0] -= pipShift[0];
+                    break;
+                case 5:
                 case 8:
-                case 10:
+                case 11:
                 case 14:
-                case 16:
-                case 18:
-                case 20:
+                case 19:
+                case 21:
+                case 23:
+                case 25:
                     topColumn[1] += pipShift[1];
                     pipShift[0] *= -1;
                     break;
-                case 12:
+                case 17:
                     topColumn[1] += pipShift[1] * 3.75;
                     topColumn[0] -= pipShift[0] * -2.10;
+                    break;
+                case 27:
+                    pipShift[0] *= -1;
+                    topColumn[1] += pipShift[1];
+                    break;
+                case 28:
+                    topColumn[0] -= pipShift[0];
+                    break;
+                case 29:
+                case 30:
+                case 31:
+                    topColumn[1] += pipShift[1];
                     break;
                 default:
                     topColumn[0] -= pipShift[0];

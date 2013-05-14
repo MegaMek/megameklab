@@ -1234,7 +1234,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unit = tempEntity;
             UnitUtil.updateLoadedMech(unit);
             if (UnitUtil.validateUnit(unit).trim().length() > 0) {
-                JOptionPane.showMessageDialog(parentFrame, "Warning:Invalid unit, it might load incorrectly!");
+                JOptionPane.showMessageDialog(parentFrame, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", UnitUtil.validateUnit(unit)));
             }
 
             CConfig.updateSaveFiles(unitFile.getAbsolutePath());
