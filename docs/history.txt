@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 V 0.1.24-dev
 + Bug: Free crits in statusbar not correct
++ Bug: superheavy VTOLs with too much armor not printing correctly
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
