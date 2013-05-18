@@ -535,6 +535,8 @@ public class EquipmentInfo {
                     longRange = 4;
                 } else if (equipment.hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
                     longRange = 0;
+                } else if (equipment.hasFlag(MiscType.F_ANGEL_ECM)) {
+                    longRange = 2;
                 } else {
                     longRange = 6;
                 }
