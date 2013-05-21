@@ -880,12 +880,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     return 1;
                 case Engine.XL_ENGINE:
                     return 2;
-                case Engine.NONE:
-                    return 3;
                 case Engine.FUEL_CELL:
-                    return 4;
+                    return 3;
                 case Engine.XXL_ENGINE:
-                    return 5;
+                    return 4;
             }
         } else {
             switch (engineType) {
@@ -893,20 +891,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     return 0;
                 case Engine.COMBUSTION_ENGINE:
                     return 1;
-                case Engine.NONE:
-                    return 2;
                 case Engine.XL_ENGINE:
-                    return 3;
+                    return 2;
                 case Engine.LIGHT_ENGINE:
-                    return 4;
+                    return 3;
                 case Engine.COMPACT_ENGINE:
-                    return 5;
+                    return 4;
                 case Engine.FISSION:
-                    return 6;
+                    return 5;
                 case Engine.FUEL_CELL:
-                    return 7;
+                    return 6;
                 case Engine.XXL_ENGINE:
-                    return 8;
+                    return 7;
             }
         }
 
