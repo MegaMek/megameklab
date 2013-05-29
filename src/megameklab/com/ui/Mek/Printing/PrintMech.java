@@ -1011,13 +1011,31 @@ public class PrintMech implements Printable {
         for (Mounted mount:mech.getEquipment()) {
             if ((mount.getLocation() == Mech.LOC_LARM) && (mount.getType() instanceof MiscType)) {
                 if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_LARGE)) {
-                    Shield_L_Large.paint(g2d);
+                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
+                        Shield_L_Large.paint(g2d);
+                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_LARM)) {
+                        Shield_L_Large_No_Hand.paint(g2d);
+                    } else {
+                        Shield_L_Large_No_LA.paint(g2d);
+                    }
                 }
                 if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_MEDIUM)) {
-                    Shield_L_Medium.paint(g2d);
+                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
+                        Shield_L_Medium.paint(g2d);
+                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_LARM)) {
+                        Shield_L_Medium_No_Hand.paint(g2d);
+                    } else {
+                        Shield_L_Medium_No_LA.paint(g2d);
+                    }
                 }
                 if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_SMALL)) {
-                    Shield_L_Small.paint(g2d);
+                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
+                        Shield_L_Small.paint(g2d);
+                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_LARM)) {
+                        Shield_L_Small_No_Hand.paint(g2d);
+                    } else {
+                        Shield_L_Small_No_LA.paint(g2d);
+                    }
                 }
             }
         }
@@ -1027,13 +1045,31 @@ public class PrintMech implements Printable {
         for (Mounted mount:mech.getEquipment()) {
             if ((mount.getLocation() == Mech.LOC_RARM) && (mount.getType() instanceof MiscType)) {
                 if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_LARGE)) {
-                    Shield_R_Large.paint(g2d);
+                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
+                        Shield_R_Large.paint(g2d);
+                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_RARM)) {
+                        Shield_R_Large_No_Hand.paint(g2d);
+                    } else {
+                        Shield_R_Large_No_LA.paint(g2d);
+                    }
                 }
                 if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_MEDIUM)) {
-                    Shield_R_Medium.paint(g2d);
+                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
+                        Shield_R_Medium.paint(g2d);
+                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_RARM)) {
+                        Shield_R_Medium_No_Hand.paint(g2d);
+                    } else {
+                        Shield_R_Medium_No_LA.paint(g2d);
+                    }
                 }
                 if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_SMALL)) {
-                    Shield_R_Small.paint(g2d);
+                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
+                        Shield_R_Small.paint(g2d);
+                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_RARM)) {
+                        Shield_R_Small_No_Hand.paint(g2d);
+                    } else {
+                        Shield_R_Small_No_LA.paint(g2d);
+                    }
                 }
             }
         }
