@@ -274,7 +274,7 @@ public class StringUtils {
                 info = "[AE,OS]";
             } else {
                 if (UnitUtil.isAMS(weapon)) {
-                    info = "-";
+                    info = "[PD]";
                 } else {
                     info = Integer.toString(weapon.getDamage());
                 }
