@@ -168,26 +168,59 @@ public class PrintBattleArmor implements Printable {
             groundMP = groundMP + " [" + Integer.toString(battleArmor.getWalkMP(true, true, false, true, false)) + "]";
         }
         g2d.drawString(groundMP, 78, 131.3f + currentMargin);
-        int secondaryMP = battleArmor.getJumpMP(true, true, true);
-        if (battleArmor.getMovementMode() == EntityMovementMode.INF_UMU) {
-            secondaryMP = battleArmor.getRunMP(true, true, true);
-
-        }
-        if (secondaryMP > 0) {
+        int jumpMP = battleArmor.getJumpMP(true, true, true);
+        int umuMP = battleArmor.getActiveUMUCount();
+        if (jumpMP > 0 && umuMP == 0) {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
-            String movment = String.format("%1$s: ", battleArmor.getMovementModeAsString());
-
-            if (battleArmor.getMovementMode() == EntityMovementMode.INF_LEG) {
-                movment = "Jump:";
-            }
-
+            String movment = "Jump: ";
             g2d.drawString(movment, 143, 131.3f + currentMargin);
 
             float positionX = 143 + ImageHelper.getStringWidth(g2d, movment, font);
             font = UnitUtil.deriveFont(8.0f);
             g2d.setFont(font);
-            String printString = Integer.toString(secondaryMP);
+            String printString = Integer.toString(jumpMP);
+            if (battleArmor.hasDWP() || battleArmor.isBurdened()) {
+                printString = "[" + printString + "]";
+            }
+            g2d.drawString(printString, positionX, 131.3f + currentMargin);
+        } else if (umuMP > 0 && jumpMP == 0) {
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+            String movment = String.format("%1$s: ", battleArmor.getMovementModeAsString());
+            g2d.drawString(movment, 143, 131.3f + currentMargin);
+
+            float positionX = 143 + ImageHelper.getStringWidth(g2d, movment, font);
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+            String printString = Integer.toString(umuMP);
+            if (battleArmor.hasDWP() || battleArmor.isBurdened()) {
+                printString = "[" + printString + "]";
+            }
+            g2d.drawString(printString, positionX, 131.3f + currentMargin);
+        } else if (umuMP > 0 && jumpMP > 0) {
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+            String movment = "Jump: ";
+            g2d.drawString(movment, 110, 131.3f + currentMargin);
+
+            float positionX = 110 + ImageHelper.getStringWidth(g2d, movment, font);
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+            String printString = Integer.toString(jumpMP);
+            if (battleArmor.hasDWP() || battleArmor.isBurdened()) {
+                printString = "[" + printString + "]";
+            }
+            g2d.drawString(printString, positionX, 131.3f + currentMargin);
+            movment = String.format("%1$s: ", battleArmor.getMovementModeAsString());
+            font = UnitUtil.deriveFont(true, 8.0f);
+            g2d.setFont(font);
+            g2d.drawString(movment, 160, 131.3f + currentMargin);
+
+            positionX = 160 + ImageHelper.getStringWidth(g2d, movment, font);
+            font = UnitUtil.deriveFont(8.0f);
+            g2d.setFont(font);
+            printString = Integer.toString(umuMP);
             if (battleArmor.hasDWP() || battleArmor.isBurdened()) {
                 printString = "[" + printString + "]";
             }
