@@ -337,7 +337,7 @@ public class ImageHelper {
             if (eqHash.containsKey(equipmentName)) {
                 EquipmentInfo eqi = eqHash.get(equipmentName);
 
-                if (eq.getType().getTechLevel() != eqi.techLevel) {
+                if (eq.getType().getTechLevel(mech.getTechLevelYear()) != eqi.techLevel) {
                     eqi = new EquipmentInfo(mech, eq);
                 } else {
                     eqi.count++;

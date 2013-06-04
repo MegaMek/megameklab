@@ -118,7 +118,7 @@ public class ImageHelperAero {
             if (eqHash.containsKey(equipmentName)) {
                 EquipmentInfo eqi = eqHash.get(equipmentName);
 
-                if (eq.getType().getTechLevel() != eqi.techLevel) {
+                if (eq.getType().getTechLevel(aero.getTechLevelYear()) != eqi.techLevel) {
                     eqi = new EquipmentInfo(aero, eq);
                 } else {
                     eqi.count++;
