@@ -111,7 +111,7 @@ public class EquipmentInfo {
         }
 
         count = 1;
-        techLevel = mount.getType().getTechLevel();
+        techLevel = mount.getType().getTechLevel(mount.getEntity().getTechLevelYear());
         isDestroyed = mount.isDestroyed();
 
         damage = StringUtils.getEquipmentInfo(aero, mount);
@@ -214,7 +214,7 @@ public class EquipmentInfo {
         damage = StringUtils.getEquipmentInfo(dropship, mount, bay);
 
         count = 1;
-        techLevel = mount.getType().getTechLevel();
+        techLevel = mount.getType().getTechLevel(dropship.getTechLevelYear());
         isDestroyed = mount.isDestroyed();
 
         hasArtemis = hasLinkedEquipment(mount, MiscType.F_ARTEMIS);
@@ -351,7 +351,7 @@ public class EquipmentInfo {
         isSponsonMounted = mount.isSponsonTurretMounted();
         isPintleMounted = mount.isPintleTurretMounted();
         count = 1;
-        techLevel = mount.getType().getTechLevel();
+        techLevel = mount.getType().getTechLevel(unit.getTechLevelYear());
         isDestroyed = mount.isDestroyed();
 
         damage = StringUtils.getEquipmentInfo(unit, mount);
@@ -472,7 +472,7 @@ public class EquipmentInfo {
         }
 
         count = 1;
-        techLevel = mount.getType().getTechLevel();
+        techLevel = mount.getType().getTechLevel(unit.getTechLevelYear());
         isDestroyed = mount.isDestroyed();
 
         damage = StringUtils.getEquipmentInfo(unit, mount);

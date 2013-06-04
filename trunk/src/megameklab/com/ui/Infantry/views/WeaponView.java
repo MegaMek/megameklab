@@ -17,7 +17,6 @@
 package megameklab.com.ui.Infantry.views;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,44 +24,31 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
-import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Infantry;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -82,14 +68,14 @@ public class WeaponView extends IView implements ActionListener {
     private static final int T_WEAPON    =  3;
     private static final int T_NUM       =  4;
 
-    
+
     private RefreshListener refresh;
 
     private JButton addPrimaryButton = new JButton("Add Primary");
     private JButton addSecondaryButton = new JButton("Add Secondary");
     private JComboBox choiceType = new JComboBox();
     private JTextField txtFilter = new JTextField();
-    
+
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
 
@@ -99,7 +85,7 @@ public class WeaponView extends IView implements ActionListener {
     private EquipmentTableModel masterEquipmentList;
     private JTable masterEquipmentTable = new JTable();
     private JScrollPane masterEquipmentScroll = new JScrollPane();
- 
+
     private String ADDP_COMMAND = "ADDPRIMARY";
     private String ADDS_COMMAND = "ADDSECONDARY";
 
@@ -117,10 +103,10 @@ public class WeaponView extends IView implements ActionListener {
             return "?";
         }
     }
-    
+
     public WeaponView(Infantry unit) {
         super(unit);
-        
+
         masterEquipmentList = new EquipmentTableModel(unit);
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -150,7 +136,7 @@ public class WeaponView extends IView implements ActionListener {
                     return;
                 }
                 int selected = masterEquipmentTable.convertRowIndexToModel(view);
-                EquipmentType equip = (EquipmentType) masterEquipmentList.getType(selected);
+                EquipmentType equip = masterEquipmentList.getType(selected);
                 if(equip.hasFlag(WeaponType.F_INF_SUPPORT)) {
                     addPrimaryButton.setEnabled(false);
                 } else {
@@ -160,7 +146,7 @@ public class WeaponView extends IView implements ActionListener {
         });
         masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
         masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
-    
+
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<EquipmentType>();
         while (miscTypes.hasMoreElements()) {
@@ -171,7 +157,7 @@ public class WeaponView extends IView implements ActionListener {
         }
 
         masterEquipmentList.setData(allTypes);
- 
+
         DefaultComboBoxModel typeModel = new DefaultComboBoxModel();
         for (int i = 0; i < T_NUM; i++) {
             typeModel.addElement(getTypeName(i));
@@ -183,7 +169,7 @@ public class WeaponView extends IView implements ActionListener {
                 filterEquipment();
             }
         });
-        
+
         txtFilter.setText("");
         txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
         txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
@@ -198,11 +184,11 @@ public class WeaponView extends IView implements ActionListener {
                 filterEquipment();
             }
         });
-                
+
         ButtonGroup bgroupView = new ButtonGroup();
         bgroupView.add(rbtnStats);
         bgroupView.add(rbtnFluff);
-        
+
         rbtnStats.setSelected(true);
         rbtnStats.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -221,34 +207,34 @@ public class WeaponView extends IView implements ActionListener {
 
         JPanel btnPanel = new JPanel(new GridLayout(0,2));
         btnPanel.add(addPrimaryButton);
-        btnPanel.add(addSecondaryButton);        
-        
+        btnPanel.add(addSecondaryButton);
+
         //layout
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
 
         JPanel databasePanel = new JPanel(new GridBagLayout());
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
         gbc.anchor = GridBagConstraints.WEST;
         databasePanel.add(btnPanel, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         databasePanel.add(choiceType, gbc);
-        
+
         gbc.gridx = 1;
         gbc.gridy = 1;
         databasePanel.add(txtFilter, gbc);
-        
+
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.weightx = 1.0;
         databasePanel.add(viewPanel, gbc);
-        
+
         gbc.insets = new Insets(2,0,0,0);
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -257,9 +243,9 @@ public class WeaponView extends IView implements ActionListener {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         databasePanel.add(masterEquipmentScroll, gbc);
-        
+
         setLayout(new BorderLayout());
-        this.add(databasePanel, BorderLayout.CENTER);        
+        this.add(databasePanel, BorderLayout.CENTER);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -300,7 +286,7 @@ public class WeaponView extends IView implements ActionListener {
                 return;
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
-            EquipmentType equip = (EquipmentType) masterEquipmentList.getType(selected);
+            EquipmentType equip = masterEquipmentList.getType(selected);
             if(equip instanceof InfantryWeapon) {
                 UnitUtil.replaceMainWeapon(getInfantry(), (InfantryWeapon) equip, isSecondary);
             }
@@ -322,19 +308,19 @@ public class WeaponView extends IView implements ActionListener {
                     return false;
                 }
                 InfantryWeapon weapon = (InfantryWeapon)etype;
-                if(!UnitUtil.isLegal(unit, etype.getTechLevel())) {
+                if(!UnitUtil.isLegal(unit, etype.getTechLevel(unit.getTechLevelYear()))) {
                     return false;
                 }
                 if(getInfantry().getSquadSize() < (getInfantry().getSecondaryN() * weapon.getCrew())) {
                     return false;
                 }
-                if(getInfantry().getSecondaryN() <= 0 && etype.hasFlag(WeaponType.F_INF_SUPPORT)) {
+                if((getInfantry().getSecondaryN() <= 0) && etype.hasFlag(WeaponType.F_INF_SUPPORT)) {
                     return false;
                 }
                 if ((nType == T_WEAPON)
-                        || (nType == T_ARCHAIC && etype.hasFlag(WeaponType.F_INF_ARCHAIC))
-                        || (nType == T_PERSONAL && !etype.hasFlag(WeaponType.F_INF_ARCHAIC) && !etype.hasFlag(WeaponType.F_INF_SUPPORT)) 
-                        || (nType == T_SUPPORT && etype.hasFlag(WeaponType.F_INF_SUPPORT))                    
+                        || ((nType == T_ARCHAIC) && etype.hasFlag(WeaponType.F_INF_ARCHAIC))
+                        || ((nType == T_PERSONAL) && !etype.hasFlag(WeaponType.F_INF_ARCHAIC) && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
+                        || ((nType == T_SUPPORT) && etype.hasFlag(WeaponType.F_INF_SUPPORT))
                         ) {
                     if(txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
@@ -342,13 +328,13 @@ public class WeaponView extends IView implements ActionListener {
                     } else {
                         return true;
                     }
-                } 
+                }
                 return false;
             }
         };
         equipmentSorter.setRowFilter(equipmentTypeFilter);
     }
-    
+
     public void setEquipmentView() {
         XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
         if(rbtnStats.isSelected()) {
@@ -395,9 +381,9 @@ public class WeaponView extends IView implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
         }
     }
-    
-    
-    
+
+
+
     /**
      * A comparator for integers written as strings with "-" sorted to the bottom always
      * @author Jay Lawson
@@ -421,7 +407,7 @@ public class WeaponView extends IView implements ActionListener {
             }
         }
     }
-    
+
     public class WeaponDamageSorter implements Comparator<String> {
 
         @Override
@@ -431,14 +417,14 @@ public class WeaponView extends IView implements ActionListener {
             double r0 = parseDamage(s0);
             return ((Comparable<Double>)r1).compareTo(r0);
         }
-        
+
         private double parseDamage(String s) {
             double damage = 0;
             damage = Double.parseDouble(s);
             return damage;
         }
     }
-    
+
     /**
      * A comparator for numbers that have been formatted with DecimalFormat
      * @author Jay Lawson
