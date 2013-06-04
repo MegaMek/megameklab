@@ -200,11 +200,11 @@ public class UnitUtil {
         boolean isMisc = eq instanceof MiscType;
 
         if (isMisc && eq.hasFlag(MiscType.F_PARTIAL_WING)
-                && (eq.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL)) {
+                && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
             return 3;
         }
         if (isMisc && eq.hasFlag(MiscType.F_PARTIAL_WING)
-                && (eq.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL)) {
+                && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
             return 4;
         }
 
@@ -309,7 +309,7 @@ public class UnitUtil {
 
         for (Mounted mount : unit.getMisc()) {
             if (mount.getType().hasFlag(MiscType.F_TARGCOMP)
-                    && (mount.getType().getTechLevel() == TechConstants.T_CLAN_TW)) {
+                    && TechConstants.isClan(mount.getType().getTechLevel(unit.getTechLevelYear()))) {
                 return true;
             }
         }
@@ -1592,20 +1592,6 @@ public class UnitUtil {
         return false;
     }
 
-    public static boolean isClanEquipment(EquipmentType eq, Entity en) {
-        switch (eq.getTechLevel()) {
-            case TechConstants.T_INTRO_BOXSET:
-            case TechConstants.T_IS_TW_NON_BOX:
-            case TechConstants.T_IS_TW_ALL:
-            case TechConstants.T_IS_ADVANCED:
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_IS_UNOFFICIAL:
-                return false;
-            default:
-                return true;
-        }
-    }
-
     public static int getBAAmmoCount(Entity ba, WeaponType weapon, int location) {
         int ammoCount = 0;
 
@@ -1626,14 +1612,14 @@ public class UnitUtil {
 
     public static String getCritName(Entity unit, EquipmentType eq) {
         if (unit.isMixedTech()
-                && (eq.getTechLevel() != TechConstants.T_ALLOWED_ALL)
-                && (eq.getTechLevel() != TechConstants.T_TECH_UNKNOWN)) {
+                && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
+                && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
 
-            if (unit.isClan() && !UnitUtil.isClanEquipment(eq, unit)) {
+            if (unit.isClan() && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
                 return eq.getShortName() + " (IS)";
             }
 
-            if (!unit.isClan() && UnitUtil.isClanEquipment(eq, unit)) {
+            if (!unit.isClan() && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
                 return eq.getShortName() + " (Clan)";
             }
         }
@@ -2971,7 +2957,7 @@ public class UnitUtil {
                     || etype.hasFlag(MiscType.F_MASC)) {
                 continue;
             }
-            if (!UnitUtil.isLegal(unit, etype.getTechLevel())) {
+            if (!UnitUtil.isLegal(unit, etype.getTechLevel(unit.getTechLevelYear()))) {
                 toRemove.add(m);
             }
         }
@@ -2982,14 +2968,14 @@ public class UnitUtil {
             Infantry pbi = (Infantry) unit;
             if ((null != pbi.getPrimaryWeapon())
                     && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon()
-                            .getTechLevel())) {
+                            .getTechLevel(pbi.getTechLevelYear()))) {
                 UnitUtil.replaceMainWeapon((Infantry) unit,
                         (InfantryWeapon) EquipmentType
                                 .get("Infantry Auto Rifle"), false);
             }
             if ((null != pbi.getSecondaryWeapon())
                     && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon()
-                            .getTechLevel())) {
+                            .getTechLevel(pbi.getTechLevelYear()))) {
                 UnitUtil.replaceMainWeapon((Infantry) unit, null, true);
             }
         }

@@ -332,7 +332,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             return type.getAvailabilityName(EquipmentType.ERA_CLAN);
         }
         if (col == COL_TECH) {
-            return TechConstants.isClan(type.getTechLevel()) ? "Clan" : "IS";
+            return TechConstants.isClan(type.getTechLevel(entity.getTechLevelYear())) ? "Clan" : "IS";
         }
         return "?";
     }

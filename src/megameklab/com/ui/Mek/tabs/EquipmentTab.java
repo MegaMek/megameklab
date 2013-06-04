@@ -559,7 +559,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (etype instanceof AmmoType) {
                     atype = (AmmoType)etype;
                 }
-                if (!UnitUtil.isLegal(unit, etype.getTechLevel())) {
+                if (!UnitUtil.isLegal(unit, etype.getTechLevel(unit.getTechLevelYear()))) {
                     return false;
                 }
                 if (UnitUtil.isHeatSink(etype, true) || UnitUtil.isJumpJet(etype)) {

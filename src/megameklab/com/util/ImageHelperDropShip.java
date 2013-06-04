@@ -295,7 +295,7 @@ public class ImageHelperDropShip {
                 for (int weaponIndex : eq.getBayWeapons()) {
                     Mounted weapon = dropship.getEquipment(weaponIndex);
 
-                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase(UnitUtil.getCritName(dropship, weapon.getType())) || (weapon.getType().getTechLevel() != eqi.techLevel)) {
+                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase(UnitUtil.getCritName(dropship, weapon.getType())) || (weapon.getType().getTechLevel(dropship.getTechLevelYear()) != eqi.techLevel)) {
                         if (eqi != null) {
                             eqi = new EquipmentInfo(dropship, weapon, eq);
                             equipmentName = eqi.name;
@@ -315,7 +315,7 @@ public class ImageHelperDropShip {
                 for (int weaponIndex : eq.getBayWeapons()) {
                     Mounted weapon = dropship.getEquipment(weaponIndex);
 
-                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase((UnitUtil.getCritName(dropship, weapon.getType()))) || (weapon.getType().getTechLevel() != eqi.techLevel)) {
+                    if ((eqi == null) || (equipmentName == "") || !equipmentName.equalsIgnoreCase((UnitUtil.getCritName(dropship, weapon.getType()))) || (weapon.getType().getTechLevel(dropship.getTechLevelYear()) != eqi.techLevel)) {
                         if (eqi != null) {
                             eqi = new EquipmentInfo(dropship, weapon, eq);
                             eqi.shouldIndent = true;

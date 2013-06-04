@@ -46,10 +46,10 @@ public class EquipmentListCellRenderer extends DefaultListCellRenderer {
         StringBuffer text = new StringBuffer();
         EquipmentType etype = (EquipmentType) value;
         text.append(etype.getName());
-        if (unit.isClan() && ((etype.getTechLevel() == TechConstants.T_INTRO_BOXSET) || (etype.getTechLevel() == TechConstants.T_IS_TW_NON_BOX) || (etype.getTechLevel() == TechConstants.T_IS_ADVANCED) || (etype.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) || (etype.getTechLevel() == TechConstants.T_IS_UNOFFICIAL))) {
+        if (unit.isClan() && (!TechConstants.isClan(etype.getTechLevel(unit.getTechLevelYear())))) {
             text.append(" (IS)");
         }
-        if (!unit.isClan() && ((etype.getTechLevel() == TechConstants.T_CLAN_TW) || (etype.getTechLevel() == TechConstants.T_CLAN_ADVANCED) || (etype.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL) || (etype.getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL))) {
+        if (!unit.isClan() && (TechConstants.isClan(etype.getTechLevel(unit.getTechLevelYear())))) {
             text.append(" (Clan)");
         }
         label.setText(text.toString());
