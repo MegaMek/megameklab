@@ -428,7 +428,7 @@ public class PrintLargeSupportVehicle implements Printable {
         if (largesupporttank2 instanceof LargeSupportTank) {
             g2d.drawString("LARGE GROUND SUPPORT VEHICLE RECORD SHEET", 60, 90);
         } else {
-            g2d.drawString("SUPER-HEAVY VEHICLE RECORD SHEET", 60, 90);
+            g2d.drawString("SUPER-HEAVY COMBAT VEHICLE RECORD SHEET", 60, 90);
         }
 
         font = UnitUtil.deriveFont(8.0f);
@@ -618,7 +618,7 @@ public class PrintLargeSupportVehicle implements Printable {
         g2d.setFont(font);
         g2d.drawString(
                 ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank),
-                463, 48);
+                457, 48);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
