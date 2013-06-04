@@ -1230,7 +1230,6 @@ public class PrintQuad implements Printable {
             font = UnitUtil.deriveFont(true, 7.0f);
             g2d.setFont(font);
             CriticalSlot cs = mech.getCritical(location, slot);
-
             if (cs == null) {
                 font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
@@ -1242,7 +1241,6 @@ public class PrintQuad implements Printable {
                     if (mech.isPrimitive()) {
                         engineName = "Primitive Fusion Engine";
                     }
-
                     switch (mech.getEngine().getEngineType()) {
                         case Engine.COMBUSTION_ENGINE:
                             engineName = "I.C.E.";
@@ -1264,6 +1262,9 @@ public class PrintQuad implements Printable {
                             break;
                         case Engine.FUEL_CELL:
                             engineName = "Fuel Cell Engine";
+                            if (mech.isPrimitive()) {
+                                engineName = "Primitive Fuel Cell Engine";
+                            }
                             break;
                         case Engine.FISSION:
                             engineName = "Fission Engine";
@@ -1287,9 +1288,15 @@ public class PrintQuad implements Printable {
                     if (critName.indexOf("Standard") > -1) {
                         critName = critName.replace("Standard ", "");
                     }
-
+                    if (mech.isClan() && (cs.getIndex() == Mech.SYSTEM_GYRO) && (mech.getGyroType() > 0)) {
+                        critName = String.format("%1$s (IS)", critName);
+                    }
                     if (cs.isArmored()) {
                         critName = "O " + critName;
+                    }
+
+                    if (((cs.getIndex() >= Mech.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mech.ACTUATOR_HAND)) || ((cs.getIndex() >= Mech.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mech.ACTUATOR_FOOT))) {
+                        critName += " Actuator";
                     }
                     if (cs.isDestroyed()) {
                         font = font.deriveFont(strikeThroughAttr);
@@ -1333,13 +1340,21 @@ public class PrintQuad implements Printable {
                         critName.trimToSize();
                     }
 
+                    // Remove Capable with the name
                     if (critName.indexOf("-capable") > -1) {
                         int startPos = critName.indexOf("-capable");
                         critName.delete(startPos, startPos + "-capable".length());
                         critName.trimToSize();
                     }
+
+                    // Trim trailing spaces.
+                    while (critName.charAt(critName.length() - 1) == ' ') {
+                        critName.setLength(critName.length() - 1);
+                    }
+                    critName.trimToSize();
                     critName.append(") ");
                     critName.append(m.getUsableShotsLeft());
+
                 }
 
                 font = UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 85, 7.0f);
@@ -1354,7 +1369,7 @@ public class PrintQuad implements Printable {
                     ImageHelper.printC3sName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3M)) {
                     ImageHelper.printC3mName(g2d, lineStart, linePoint, font, m.isArmored());
-                } else if ((((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3SBS))))) {
+                } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3SBS))) {
                     ImageHelper.printC3sbName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3MBS)) {
                     ImageHelper.printC3mbName(g2d, lineStart, linePoint, font, m.isArmored());
