@@ -701,7 +701,7 @@ public class PrintMech implements Printable {
                         case Engine.COMBUSTION_ENGINE:
                             engineName = "I.C.E.";
                             if (mech.isPrimitive()) {
-                                engineName = "Primitive I.C.E";
+                                engineName = "Primitive I.C.E.";
                             }
                             break;
                         case Engine.LIGHT_ENGINE:
@@ -744,7 +744,6 @@ public class PrintMech implements Printable {
                     if (critName.indexOf("Standard") > -1) {
                         critName = critName.replace("Standard ", "");
                     }
-
                     if (mech.isClan() && (cs.getIndex() == Mech.SYSTEM_GYRO) && (mech.getGyroType() > 0)) {
                         critName = String.format("%1$s (IS)", critName);
                     }
@@ -822,11 +821,11 @@ public class PrintMech implements Printable {
 
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
                     ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
-                } else if ((((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S))))) {
+                } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S))) {
                     ImageHelper.printC3sName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3M)) {
                     ImageHelper.printC3mName(g2d, lineStart, linePoint, font, m.isArmored());
-                } else if ((((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3SBS))))) {
+                } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3SBS))) {
                     ImageHelper.printC3sbName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3MBS)) {
                     ImageHelper.printC3mbName(g2d, lineStart, linePoint, font, m.isArmored());
