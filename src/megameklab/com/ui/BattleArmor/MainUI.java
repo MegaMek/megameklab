@@ -125,7 +125,7 @@ public class MainUI extends MegaMekLabMainUI {
         entity = new BattleArmor();
         BattleArmor ba = (BattleArmor) entity;
 
-        ba.setYear(2750);
+        ba.setYear(3071);
         ba.setTechLevel(TechConstants.T_INTRO_BOXSET);
         ba.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         ba.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
@@ -212,7 +212,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshPreview() {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

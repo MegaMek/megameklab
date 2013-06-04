@@ -394,21 +394,6 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     }
 
-    /*
-    private void loadHeatSinks() {
-        int engineHeatSinks = UnitUtil.getBaseChassisHeatSinks(getMech(), getMech().hasCompactHeatSinks());
-        for (Mounted mount : unit.getMisc()) {
-
-            if (isHeatSink(mount)) {
-                if (engineHeatSinks-- > 0) {
-                    continue;
-                }
-                equipmentList.addCrit(mount);
-            }
-        }
-
-    }
-    */
 
     private void removeHeatSinks() {
         int location = 0;
@@ -534,8 +519,6 @@ public class EquipmentTab extends ITab implements ActionListener {
             refresh.refreshStatus();
             refresh.refreshBuild();
             refresh.refreshPreview();
-            //FIXME: this is causing some kind of infinite loop
-            //refresh.refreshStructure();
         }
     }
 
