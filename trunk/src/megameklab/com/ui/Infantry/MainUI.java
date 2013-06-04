@@ -106,7 +106,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void createNewUnit(boolean isNew, boolean isAlsoNew) {
         entity = new Infantry();
-        entity.setYear(2750);
+        entity.setYear(3071);
         entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         entity.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
         ((Infantry) entity).setSquadN(4);

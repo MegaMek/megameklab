@@ -223,7 +223,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         Tank tank = (Tank) entity;
 
-        entity.setYear(2750);
+        entity.setYear(3071);
 
         tank.setEngine(new Engine(Math.max(10, (int)entity.getWeight() - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE, Engine.TANK_ENGINE));
         entity.setOriginalWalkMP(1);

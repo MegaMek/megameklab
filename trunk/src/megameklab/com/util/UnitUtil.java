@@ -349,7 +349,7 @@ public class UnitUtil {
      * @return Boolean if the tech level is legal for the passed unit
      */
     public static boolean isLegal(Entity unit, int techLevel) {
-        return TechConstants.isLegal(unit.getTechLevel(), techLevel, true,
+        return TechConstants.isLegal(unit.getTechLevel(), techLevel, false,
                 unit.isMixedTech());
     }
 

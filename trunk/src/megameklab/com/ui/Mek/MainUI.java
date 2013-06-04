@@ -131,7 +131,7 @@ public class MainUI extends MegaMekLabMainUI {
         }
         Mech mech = (Mech) entity;
 
-        entity.setYear(2750);
+        entity.setYear(3071);
         entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         if (isLAM) {
             entity.setTechLevel(TechConstants.T_IS_ADVANCED);
@@ -200,7 +200,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshArmor() {
     }
-    
+
     @Override
     public void refreshBuild() {
         buildTab.refresh();
