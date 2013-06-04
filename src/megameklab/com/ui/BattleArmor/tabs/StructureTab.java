@@ -690,7 +690,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             try {
                 getBattleArmor().setYear(Integer.parseInt(era.getText()));
             } catch (Exception ex) {
-                getBattleArmor().setYear(2075);
+                getBattleArmor().setYear(3071);
             }
         } else if (e.getSource().equals(source)) {
             getBattleArmor().setSource(source.getText());

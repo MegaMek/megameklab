@@ -16,7 +16,6 @@
 
 package megameklab.com.ui.Infantry.tabs;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,7 +24,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -52,10 +50,10 @@ import megameklab.com.util.UnitUtil;
 public class StructureTab extends ITab implements ActionListener, KeyListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7985608549543235815L;
-	
+
     private RefreshListener refresh;
 
     public static final int M_FOOT    = 0;
@@ -65,7 +63,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     public static final int M_TRACKED = 4;
     public static final int M_WHEELED = 5;
 
-    
+
     private String[] techTypes =
         { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
     private JComboBox techType = new JComboBox(techTypes);
@@ -86,19 +84,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private String[] secondaryNArray =
         { "0","1","2"};
     private JComboBox secondaryN = new JComboBox(secondaryNArray);
-    
+
     private JTextField era = new JTextField(3);
     private JTextField source = new JTextField(3);
-    
+
     private JTextField chassis = new JTextField(5);
     private JTextField model = new JTextField(5);
-    
+
     private JTextField txtPrimary = new JTextField("None");
     private JTextField txtSecondary = new JTextField("None");
-    
+
 	private ArmorView armorView;
 	private WeaponView weaponView;
-	
+
 	public StructureTab(Infantry unit) {
         this.unit = unit;
         armorView = new ArmorView(unit);
@@ -106,11 +104,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         setUpPanels();
         refresh();
 	}
-	
+
 	public void setUpPanels() {
 	    JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        
+
         JPanel basicPanel = new JPanel(new GridBagLayout());
         JPanel squadPanel = new JPanel(new GridBagLayout());
         JPanel weaponPanel = new JPanel(new GridBagLayout());
@@ -120,10 +118,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         txtPrimary.setEditable(false);
         txtSecondary.setEditable(false);
-        
+
         chassis.setText(unit.getChassis());
         model.setText(unit.getModel());
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -138,13 +136,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         basicPanel.add(createLabel("Model:", labelSize), gbc);
         gbc.gridx = 1;
         basicPanel.add(model, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 2;
         basicPanel.add(createLabel("Year:", labelSize), gbc);
         gbc.gridx = 1;
         basicPanel.add(era, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 3;
         basicPanel.add(createLabel("Source/Era:", labelSize), gbc);
@@ -162,7 +160,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         gbc.gridx = 1;
         basicPanel.add(techLevel, gbc);
 
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         squadPanel.add(createLabel("Motive Type:", labelSize), gbc);
@@ -178,7 +176,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         squadPanel.add(createLabel("Squad Size:", labelSize), gbc);
         gbc.gridx = 1;
         squadPanel.add(squadSize, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         weaponPanel.add(createLabel("Primary:", labelSize), gbc);
@@ -194,7 +192,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         weaponPanel.add(createLabel("Secondary #:", labelSize), gbc);
         gbc.gridx = 1;
         weaponPanel.add(secondaryN, gbc);
-        
+
         setFieldSize(motiveType, comboSize);
         setFieldSize(squadSize, comboSize);
         setFieldSize(squadN, comboSize);
@@ -204,11 +202,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         setFieldSize(chassis, comboSize);
         setFieldSize(model, comboSize);
         setFieldSize(techType, comboSize);
-        setFieldSize(techLevel, comboSize);        
+        setFieldSize(techLevel, comboSize);
         setFieldSize(txtPrimary, comboSize);
         setFieldSize(txtSecondary, comboSize);
 
-        
+
         basicPanel.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         squadPanel.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
         weaponPanel.setBorder(BorderFactory.createTitledBorder("Current Weapons"));
@@ -216,8 +214,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         weaponView.setBorder(BorderFactory.createTitledBorder("Weapon Selection"));
 
         leftPanel.add(basicPanel);
-        leftPanel.add(squadPanel);     
-        leftPanel.add(weaponPanel);      
+        leftPanel.add(squadPanel);
+        leftPanel.add(weaponPanel);
         leftPanel.add(armorView);
         leftPanel.add(Box.createVerticalGlue());
         setLayout(new GridBagLayout());
@@ -236,7 +234,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         add(weaponView, gbc);
 
     }
-	
+
 	public JLabel createLabel(String text, Dimension maxSize) {
 
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
@@ -244,18 +242,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         setFieldSize(label, maxSize);
         return label;
     }
-    
+
     public void setFieldSize(JComponent box, Dimension maxSize) {
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
     }
-	
+
 	public void refresh() {
 	    removeAllActionListeners();
         era.setText(Integer.toString(getInfantry().getYear()));
         source.setText(getInfantry().getSource());
-        
+
         if (getInfantry().isClan()) {
             techLevel.removeAllItems();
             for (String item : clanTechLevels) {
@@ -267,7 +265,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 techLevel.addItem(item);
             }
         }
- 
+
         switch(getInfantry().getMovementMode()) {
             case INF_JUMP:
                 motiveType.setSelectedIndex(M_JUMP);
@@ -291,7 +289,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         squadN.setSelectedIndex(getInfantry().getSquadN()-1);
         squadSize.setSelectedIndex(getInfantry().getSquadSize()-1);
         secondaryN.setSelectedIndex(getInfantry().getSecondaryN());
-        
+
         if (getInfantry().isMixedTech()) {
             if (getInfantry().isClan()) {
 
@@ -341,7 +339,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 techLevel.setSelectedIndex(0);
             }
         }
-        
+
         if(null != getInfantry().getPrimaryWeapon()) {
             txtPrimary.setText(UnitUtil.trimInfantryWeaponNames(getInfantry().getPrimaryWeapon().getName()));
         } else {
@@ -352,14 +350,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         } else {
             txtSecondary.setText("None");
         }
-        
+
 		armorView.updateUnit(unit);
         armorView.refresh();
         weaponView.updateUnit(unit);
         weaponView.refresh();
         addAllActionListeners();
 	}
-	
+
 	public void addAllActionListeners() {
         motiveType.addActionListener(this);
         squadN.addActionListener(this);
@@ -372,7 +370,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         era.addKeyListener(this);
         source.addKeyListener(this);
     }
-    
+
     public void removeAllActionListeners() {
         motiveType.removeActionListener(this);
         squadN.removeActionListener(this);
@@ -385,20 +383,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         era.removeKeyListener(this);
         source.removeKeyListener(this);
     }
-	
+
 	public void addRefreshedListener(RefreshListener l) {
 	    refresh = l;
 	    armorView.addRefreshedListener(refresh);
 	    weaponView.addRefreshedListener(refresh);
     }
-	
+
 	@Override
     public void actionPerformed(ActionEvent e) {
         removeAllActionListeners();
         if (e.getSource() instanceof JComboBox) {
             JComboBox combo = (JComboBox) e.getSource();
             if (combo.equals(techLevel)) {
-                int unitTechLevel = techLevel.getSelectedIndex();             
+                int unitTechLevel = techLevel.getSelectedIndex();
                 if (getInfantry().isClan()) {
                     switch (unitTechLevel) {
                         case 0:
@@ -587,10 +585,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 getInfantry().setSecondaryN(secondaryN.getSelectedIndex());
                 checkMainWeapon();
             }
-        }   
+        }
         refresh.refreshAll();
     }
-	
+
 	private int getMaxSquadSize() {
         int maxPlatoon = 30;
         int maxSquad = 10;
@@ -614,7 +612,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
         return maxSquad;
     }
-    
+
     private int getMaxSquadNumber() {
         int maxPlatoon = 30;
         switch(motiveType.getSelectedIndex()) {
@@ -635,11 +633,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
         return maxSquadN;
     }
-    
+
     private void checkMainWeapon() {
         Mounted existingInfantryMount = null;
         for(Mounted m : unit.getWeaponList()) {
-            if(m.getType() instanceof InfantryWeapon && m.getLocation() == Infantry.LOC_INFANTRY) {
+            if((m.getType() instanceof InfantryWeapon) && (m.getLocation() == Infantry.LOC_INFANTRY)) {
                 existingInfantryMount = m;
                 break;
             }
@@ -647,7 +645,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         if(null != existingInfantryMount) {
             UnitUtil.removeMounted(unit, existingInfantryMount);
         }
-        
+
         //if there is more than one secondary weapon per squad, then add that
         // to the unit
         // otherwise add the primary weapon
@@ -655,13 +653,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             try {
                 getInfantry().addEquipment(getInfantry().getPrimaryWeapon(), Infantry.LOC_INFANTRY);
             } catch (LocationFullException ex) {
-                
+
             }
         } else {
             try {
                 getInfantry().addEquipment(getInfantry().getSecondaryWeapon(), Infantry.LOC_INFANTRY);
             } catch (LocationFullException ex) {
-                
+
             }
         }
         //also check for zero secondary n
@@ -669,7 +667,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             UnitUtil.replaceMainWeapon(getInfantry(), null, true);
         }
     }
-    
+
     public void keyPressed(KeyEvent e) {
 
     }
@@ -680,7 +678,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             try {
                 getMech().setYear(Integer.parseInt(era.getText()));
             } catch (Exception ex) {
-                getMech().setYear(2075);
+                getMech().setYear(3071);
             }
         } else if (e.getSource().equals(source)) {
             getMech().setSource(source.getText());
@@ -692,13 +690,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             refresh.refreshPreview();
         }
     }
-    
+
     @Override
     public void keyTyped(KeyEvent arg0) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     public void setAsCustomization() {
         chassis.setEditable(false);
         chassis.setEnabled(false);
