@@ -443,9 +443,10 @@ public class PrintVTOL implements Printable {
                 middleColumn[0] += pipShift[0];
             }
         } else  {
-            float[] topColumn = { 473.5f, 60 };
-            float[] middleColumn = { 471.5f, 66.5f };
-            float[] bottomColumn = { 469f, 73};
+            float[] topColumn = { 473.5f, 57.5f };
+            float[] middleColumn = { 471.5f, 64f };
+            float[] midldeColumn2 = { 466f, 70.5f};
+            float[] bottomColumn = { 469.5f, 77f};
             float[] pipShift = { 5.5f, 5.5f };
             int pips = Math.min(5, totalArmor);
             totalArmor -= pips;
@@ -460,6 +461,13 @@ public class PrintVTOL implements Printable {
                 ImageHelperVehicle.drawTankArmorPip(g2d, middleColumn[0],
                         middleColumn[1], 7.0f);
                 middleColumn[0] += pipShift[0];
+            }
+            pips = Math.min(8, totalArmor);
+            totalArmor -= pips;
+            for (int pos = 1; pos <= pips; pos++) {
+                ImageHelperVehicle.drawTankArmorPip(g2d, midldeColumn2[0],
+                        midldeColumn2[1], 7.0f);
+                midldeColumn2[0] += pipShift[0];
             }
             for (int pos = 1; pos <= totalArmor; pos++) {
                 ImageHelperVehicle.drawTankArmorPip(g2d, bottomColumn[0],
@@ -486,7 +494,7 @@ public class PrintVTOL implements Printable {
             pipShift[0] = pipShift[1] = 4.5f;
         }
 
-        if (totalArmor > 16) {
+        if (totalArmor > 15) {
             fontSize = 7;
             float[] firstColStart = new float[] { 481, 256 + turretVTOLOffset };
             float[] firstColEnd = new float[] { 481, 307 + turretVTOLOffset };
