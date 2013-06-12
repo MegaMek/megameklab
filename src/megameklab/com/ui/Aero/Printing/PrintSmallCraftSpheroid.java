@@ -410,7 +410,7 @@ public class PrintSmallCraftSpheroid implements Printable {
 
     private void printLeftArmor(Graphics2D g2d, int totalArmor) {
 
-        float[] topColumn = new float[] { 280, 220 };
+        float[] topColumn = new float[] { 280, 165 };
         float[] pipShift = new float[] { 7, 7 };
         float maxColumns = 8;
 
@@ -436,7 +436,7 @@ public class PrintSmallCraftSpheroid implements Printable {
     }
 
     private void printRightArmor(Graphics2D g2d, int totalArmor) {
-        float[] topColumn = new float[] { 460, 220 };
+        float[] topColumn = new float[] { 460, 165 };
         float[] pipShift = new float[] { 7, 7 };
         float maxColumns = 8;
 

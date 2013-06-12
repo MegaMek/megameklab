@@ -31,6 +31,7 @@ import megamek.common.Entity;
 import megamek.common.FixedWingSupport;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.SmallCraft;
 
 public class ImageHelperAero {
     private static final String[] LOCATION_ABBRS =
@@ -81,14 +82,18 @@ public class ImageHelperAero {
     }
 
     public static void printAeroWeaponsNEquipment(Aero aero, Graphics2D g2d) {
+        int pointShift = 0;
+        if ((aero instanceof SmallCraft) && aero.isSpheroid()) {
+            pointShift = 11;
+        }
         int qtyPoint = 30;
         int typePoint = 42;
-        int locPoint = 115;
-        int heatPoint = 130;
-        int shtPoint = 147;
-        int medPoint = 165;
-        int longPoint = 190;
-        int erPoint = 210;
+        int locPoint = 112 + pointShift;
+        int heatPoint = 130 + pointShift;
+        int shtPoint = 147 + pointShift;
+        int medPoint = 170 + pointShift;
+        int longPoint = 190 + pointShift;
+        int erPoint = 210 + pointShift;
         float linePoint = 204f;
         float maxHeight = 97.0f;
 

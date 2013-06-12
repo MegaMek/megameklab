@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.Mek.Printing;
 
+import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -428,7 +429,7 @@ public class PrintQuad implements Printable {
 
     private void printRACrits(Graphics2D g2d) {
 
-        int lineStart = 292 + leftMargin;
+        int lineStart = 294 + leftMargin;
         float linePoint = 445.5f + topMargin;
         float lineFeed = 8.2f;
 
@@ -482,7 +483,7 @@ public class PrintQuad implements Printable {
 
     private void printRLCrits(Graphics2D g2d) {
 
-        int lineStart = 292 + leftMargin;
+        int lineStart = 294 + leftMargin;
         float linePoint = 696.5f + topMargin;
         float lineFeed = 8.2f;
 
@@ -1217,6 +1218,7 @@ public class PrintQuad implements Printable {
             return;
         }
 
+        g2d.setStroke(new BasicStroke());
         g2d.draw(new Line2D.Float(startx - 1, starty - 6, startx - 4, starty - 6));
         g2d.draw(new Line2D.Float(startx - 4, starty - 6, endx - 4, endy));
         g2d.draw(new Line2D.Float(endx - 1, endy, endx - 4, endy));

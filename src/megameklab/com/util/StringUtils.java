@@ -23,10 +23,12 @@ import megamek.common.AmmoType;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
+import megamek.common.actions.KickAttackAction;
 import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
@@ -336,6 +338,8 @@ public class StringUtils {
             }
         } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
             info = "[PD,OS,AI]";
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TALON)) {
+            info = Integer.toString(KickAttackAction.getDamageFor(unit, Mech.LOC_LLEG, false));
         } else {
             info = "  [E]";
         }
