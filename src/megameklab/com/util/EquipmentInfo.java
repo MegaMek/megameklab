@@ -49,13 +49,13 @@ public class EquipmentInfo {
     public int erRange = 0;
     public int heat = 0;
     public int techLevel = TechConstants.T_INTRO_BOXSET;
-    public int secondaryLocation = Entity.LOC_NONE;
     // the following two are for BA ammo counting
     public int ammoCount = 0;
     public int location = 0;
 
     public String name = "";
     public String damage = "[E]";
+    public String loc = "";
 
     public boolean isWeapon = false;
     public boolean isMML = false;
@@ -109,7 +109,7 @@ public class EquipmentInfo {
         if (mount.isRearMounted()) {
             name += "(R)";
         }
-
+        loc = aero.getLocationAbbr(mount.getLocation());
         count = 1;
         techLevel = mount.getType().getTechLevel(mount.getEntity().getTechLevelYear());
         isDestroyed = mount.isDestroyed();
@@ -175,7 +175,9 @@ public class EquipmentInfo {
                 heat = weapon.getHeat();
             }
 
-            secondaryLocation = mount.getSecondLocation();
+            if (mount.getSecondLocation() != -1) {
+                loc = String.format("%1$s/%2$s", aero.getLocationAbbr(mount.getLocation()), aero.getLocationAbbr(mount.getSecondLocation()));
+            }
 
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
@@ -304,7 +306,9 @@ public class EquipmentInfo {
                 erRange = (int) weapon.extAV + bonus;
             }
             heat = weapon.getHeat();
-            secondaryLocation = mount.getSecondLocation();
+            if (mount.getSecondLocation() != -1) {
+                loc = String.format("%1$s/%2$s", dropship.getLocationAbbr(mount.getLocation()), dropship.getLocationAbbr(mount.getSecondLocation()));
+            }
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
         } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
@@ -345,6 +349,7 @@ public class EquipmentInfo {
     public EquipmentInfo(Entity unit, Mounted mount) {
 
         name = UnitUtil.getCritName(unit, mount.getType());
+        loc = unit.getLocationAbbr(mount.getLocation());
         if (mount.isRearMounted()) {
             name += "(R)";
         }
@@ -403,7 +408,9 @@ public class EquipmentInfo {
             }
 
             heat = weapon.getHeat();
-            secondaryLocation = mount.getSecondLocation();
+            if (mount.getSecondLocation() != -1) {
+                loc = String.format("%1$s/%2$s", unit.getLocationAbbr(mount.getLocation()), unit.getLocationAbbr(mount.getSecondLocation()));
+            }
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
         } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
@@ -444,6 +451,8 @@ public class EquipmentInfo {
             heat = 2;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
             heat = 5;
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TALON)) {
+            loc = "Legs";
         }
 
         isBAMineLayer = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
@@ -458,6 +467,7 @@ public class EquipmentInfo {
     public EquipmentInfo(BattleArmor unit, Mounted mount) {
 
         name = UnitUtil.getCritName(unit, mount.getType());
+        loc = unit.getLocationAbbr(mount.getLocation());
 
         if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
             name = "ECM Suite";
@@ -520,7 +530,6 @@ public class EquipmentInfo {
             }
 
             heat = weapon.getHeat();
-            secondaryLocation = mount.getSecondLocation();
         } else if (mount.getType() instanceof MiscType) {
             MiscType equipment = (MiscType) mount.getType();
 
@@ -580,7 +589,7 @@ public class EquipmentInfo {
         clone.erRange = erRange;
         clone.heat = heat;
         clone.techLevel = techLevel;
-        clone.secondaryLocation = secondaryLocation;
+        clone.loc = loc;
 
         clone.name = name;
         clone.damage = damage;
@@ -601,6 +610,7 @@ public class EquipmentInfo {
         clone.hasArtemisV = hasArtemisV;
 
         clone.ammoCount = ammoCount;
+        clone.location = location;
 
         clone.c3Level = c3Level;
 

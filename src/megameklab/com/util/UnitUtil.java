@@ -892,7 +892,7 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isFixedLocationSpreadEquipment(eq)) {
+        if (UnitUtil.isFixedLocationSpreadEquipment(eq) && !(eq instanceof MiscType) && eq.hasFlag(MiscType.F_TALON)) {
             return false;
         }
 

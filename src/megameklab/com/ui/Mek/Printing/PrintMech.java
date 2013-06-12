@@ -15,6 +15,7 @@
  */
 package megameklab.com.ui.Mek.Printing;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -658,7 +659,7 @@ public class PrintMech implements Printable {
         if (starty == endy) {
             return;
         }
-
+        g2d.setStroke(new BasicStroke());
         g2d.draw(new Line2D.Float(startx - 1, starty - 6, startx - 4, starty - 6));
         g2d.draw(new Line2D.Float(startx - 4, starty - 6, endx - 4, endy));
         g2d.draw(new Line2D.Float(endx - 1, endy, endx - 4, endy));
