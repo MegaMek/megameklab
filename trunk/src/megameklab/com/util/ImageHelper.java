@@ -410,13 +410,7 @@ public class ImageHelper {
                 font = UnitUtil.deriveFont(7.0f);
                 g2d.setFont(font);
 
-                String location = mech.getLocationAbbr(pos);
-
-                if (eqi.secondaryLocation != Entity.LOC_NONE) {
-                    location = String.format("%1$s/%2$s", mech.getLocationAbbr(pos), mech.getLocationAbbr(eqi.secondaryLocation));
-                }
-
-                ImageHelper.printCenterString(g2d, location, font, locPoint, linePoint);
+                ImageHelper.printCenterString(g2d, eqi.loc, font, locPoint, linePoint);
                 if (eqi.isWeapon) {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
 

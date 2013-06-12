@@ -4,6 +4,8 @@ V 0.1.24-dev
 + Bug: Free crits in statusbar not correct
 + Bug: superheavy VTOLs with too much armor not printing correctly
 + Bug: shields get less DA and DC when constructed without hands/LA
++ Bug: Talons not printing in equipment list
++ Aero and smallcraft improvements
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
