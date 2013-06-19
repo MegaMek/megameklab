@@ -1189,6 +1189,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
             if (clanStruct) {
                 structName = String.format("Clan %1$s", structName);
+            } else {
+                structName = String.format("IS %1$s", structName);
             }
         }
 
@@ -2228,7 +2230,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     try {
                         getMech().addEquipment(
                                 new Mounted(unit,
-                                        EquipmentType.get(EquipmentType
+                                        EquipmentType.get(unit.isClan()?"Clan ":"IS "+EquipmentType
                                                 .getArmorTypeName(unit
                                                         .getArmorType(i)))), i,
                                 false);
