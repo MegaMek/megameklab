@@ -70,18 +70,21 @@
 	
 
 	<!-- if we're using a Mac then we'll use the launch4j for Mac OS -->
-	<target name="checkOSMac" if="isOsMac">
-		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${util}/launch4j/launch4j.jar:${util}/launch4j/lib/xstream.jar" />
-	</target>
+    <target name="checkOSMac" if="isOsMac">
+        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${util}/launch4j/launch4j.jar:${util}/launch4j/lib/xstream.jar" />
+    </target>
 
-	<!-- if we're using UNIX or Linux then we'll use the launch4j for Linux -->
-	<target name="checkOSUNIX" if="isOsUnixNotMac">
-		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${util}/linux/launch4j/launch4j.jar:${util}/linux/launch4j/lib/xstream.jar" />
-	</target>
-	<taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" 
-	        classpath="${one-jar.ant.jar}" onerror="report"/>
+    <!-- if we're using Windows then we use the launch4j for Windows -->
+    <target name="checkOSWindows" if="isOsWindows">
+            <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${util}/launch4j/launch4j.jar:${util}/launch4j/lib/xstream.jar" />
+    </target>
 
-	<target name="svndev-init" depends="checkOSMac, checkOSUNIX">
+    <!-- if we're using UNIX or Linux then we'll use the launch4j for Linux -->
+    <target name="checkOSUNIX" if="isOsUnixNotMac">
+        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${util}/linux/launch4j/launch4j.jar:${util}/linux/launch4j/lib/xstream.jar" />
+    </target>
+
+    <target name="svndev-init" depends="checkOSMac, checkOSWindows, checkOSUNIX">
 		<tstamp />
 		<delete dir="${svndir}" />
 	    <input message="Please enter version number (eg. 0.1.22):" addproperty="version"/>
@@ -133,7 +136,7 @@
 		<mkdir dir="${svnbuilddir}" />
 		<!-- compile -->
 		<echo message="MegaMekLab" />
-		<javac debug="true" debuglevel="lines,source" target="1.5" source="1.5" destdir="${svnbuilddir}" srcdir="${svndir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="1024m" fork="true">
+		<javac debug="true" debuglevel="lines,source" target="1.6" source="1.6" destdir="${svnbuilddir}" srcdir="${svndir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="1024m" fork="true">
 			<classpath>
 				<pathelement location="${svndir}" />
 				<fileset dir="${svndir}/${libdir}" includes="*.jar" />
