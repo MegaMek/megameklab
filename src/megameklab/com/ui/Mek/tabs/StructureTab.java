@@ -1169,7 +1169,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private void createISMounts() {
         int isCount = 0;
         int structType = structureCombo.getSelectedIndex();
-        String structName = EquipmentType.getStructureTypeName(structType);
+        String structName = EquipmentType.getStructureTypeName(structType, getMech().isClan());
 
         if (getMech().isMixedTech()) {
             structName = structureCombo.getSelectedItem().toString();
@@ -2230,9 +2230,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     try {
                         getMech().addEquipment(
                                 new Mounted(unit,
-                                        EquipmentType.get(unit.isClan()?"Clan ":"IS "+EquipmentType
+                                        EquipmentType.get(EquipmentType
                                                 .getArmorTypeName(unit
-                                                        .getArmorType(i)))), i,
+                                                        .getArmorType(i), unit.isClan()))), i,
                                 false);
                     } catch (LocationFullException ex) {
                         JOptionPane
