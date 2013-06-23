@@ -7,6 +7,8 @@ V 0.1.24-dev
 + Bug: Talons not printing in equipment list
 + Aero and smallcraft improvements
 + Correctly show available armor types
++ show PPC capacitor heat for aero units
++ show proper locations abbreveations for Small Craft
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
