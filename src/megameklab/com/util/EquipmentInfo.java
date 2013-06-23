@@ -203,6 +203,8 @@ public class EquipmentInfo {
             shtRange = 0;
             medRange = 0;
             longRange = 170;
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
+            heat = 5;
         }
     }
 

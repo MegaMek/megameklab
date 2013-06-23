@@ -36,9 +36,15 @@ import megamek.common.SmallCraft;
 public class ImageHelperAero {
     private static final String[] LOCATION_ABBRS =
         { "N", "LW", "RW", "A", "WG", "BD" };
+    private static String[] LOCATION_ABBRS_SMALLCRAFT =
+        { "NOS", "LS", "RS", "AFT" };
 
     public static String getLocationAbbrs(int pos) {
         return LOCATION_ABBRS[pos];
+    }
+
+    public static String getLocationAbbrsSmallCraft(int pos) {
+        return LOCATION_ABBRS_SMALLCRAFT[pos];
     }
 
     public static void drawAeroArmorPip(Graphics2D g2d, float width, float height) {
@@ -224,6 +230,9 @@ public class ImageHelperAero {
                 g2d.setFont(font);
 
                 String location = ImageHelperAero.getLocationAbbrs(pos);
+                if (aero instanceof SmallCraft) {
+                    location = ImageHelperAero.getLocationAbbrsSmallCraft(pos);
+                }
 
                 g2d.drawString(location, locPoint, linePoint);
                 ImageHelper.printCenterString(g2d, Integer.toString(eqi.heat), font, heatPoint, linePoint);
