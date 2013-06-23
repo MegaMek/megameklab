@@ -280,9 +280,10 @@ public class SummaryView extends IView{
         txtGyroCrit.setText(Integer.toString(getGyroCrits()));
         txtEngineCrit.setText(Integer.toString(getEngineCrits()));
         txtCockpitCrit.setText(Integer.toString(getCockpitCrits()));
-        String structName = EquipmentType.getStructureTypeName(getMech().getStructureType(),getMech().isClan());
+        String structName = EquipmentType.getStructureTypeName(getMech().getStructureType(),TechConstants.isClan(getMech().getStructureTechLevel()));
         txtStructCrit.setText(Integer.toString(EquipmentType.get(structName).getCriticals(getMech())));
-        txtArmorCrit.setText(Integer.toString(EquipmentType.get(EquipmentType.getArmorTypeName(unit.getArmorType(0),TechConstants.isClan(unit.getArmorTechLevel(0)))).getCriticals(unit)));
+        String armorName = EquipmentType.getArmorTypeName(unit.getArmorType(0),TechConstants.isClan(unit.getArmorTechLevel(0)));
+        txtArmorCrit.setText(Integer.toString(EquipmentType.get(armorName).getCriticals(unit)));
 
         runThroughEquipment(testMech);
 

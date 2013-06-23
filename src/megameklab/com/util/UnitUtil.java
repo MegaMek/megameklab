@@ -2317,15 +2317,15 @@ public class UnitUtil {
             boolean internalStructure) {
         ArrayList<String> mountList = new ArrayList<String>();
         if (internalStructure) {
-            mountList.addAll(Arrays.asList(EquipmentType.structureNames));
-            mountList
-                    .add("Clan "
-                            + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL]);
-            mountList
-                    .add("Clan "
-                            + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE]);
+            for (String struc : EquipmentType.structureNames) {
+                mountList.add("IS "+struc);
+                mountList.add("Clan "+struc);
+            }
         } else {
-            mountList.addAll(Arrays.asList(EquipmentType.armorNames));
+            for (String armor : EquipmentType.armorNames) {
+                mountList.add("IS "+armor);
+                mountList.add("Clan "+armor);
+            }
         }
 
         for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
@@ -2361,16 +2361,15 @@ public class UnitUtil {
         UnitUtil.removeISorArmorCrits(unit, internalStructure);
         ArrayList<String> mountList = new ArrayList<String>();
 
+        List<String> names;
         if (internalStructure) {
-            mountList.addAll(Arrays.asList(EquipmentType.structureNames));
-            mountList
-                    .add("Clan "
-                            + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL]);
-            mountList
-                    .add("Clan "
-                            + EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE]);
+            names = Arrays.asList(EquipmentType.structureNames);
         } else {
-            mountList.addAll(Arrays.asList(EquipmentType.armorNames));
+            names = Arrays.asList(EquipmentType.armorNames);
+        }
+        for (String name : names) {
+            mountList.add(String.format("Clan %1s", name));
+            mountList.add(String.format("IS %1s", name));
         }
 
         for (int pos = 0; pos < unit.getEquipment().size();) {
