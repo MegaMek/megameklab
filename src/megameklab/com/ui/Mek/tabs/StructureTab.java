@@ -1058,7 +1058,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     public void keyReleased(KeyEvent e) {
-
+        removeAllListeners();
         if (e.getSource().equals(era)) {
             try {
                 int year = Integer.parseInt(era.getText());
@@ -1088,13 +1088,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             }
         } else if (e.getSource().equals(chassis)) {
             unit.setChassis(chassis.getText().trim());
-            refresh.refreshPreview();
-            refresh.refreshHeader();
         } else if (e.getSource().equals(model)) {
             unit.setModel(model.getText().trim());
-            refresh.refreshPreview();
-            refresh.refreshHeader();
         }
+        addAllListeners();
+        refresh.refreshPreview();
+        refresh.refreshHeader();
     }
 
     public void keyTyped(KeyEvent e) {
