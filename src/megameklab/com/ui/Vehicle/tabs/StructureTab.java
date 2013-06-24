@@ -636,7 +636,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         if (e.getSource().equals(era)) {
             try {
                 int year = Integer.parseInt(era.getText());
-                if (year < 2000) {
+                if (year < 1950) {
                     return;
                 }
                 unit.setYear(Integer.parseInt(era.getText()));
