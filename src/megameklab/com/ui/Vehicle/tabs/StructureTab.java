@@ -643,6 +643,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             } catch (Exception ex) {
                 unit.setYear(3071);
             }
+            removeAllListeners();
+            updateArmor();
+            addAllListeners();
             refresh.refreshEquipment();
         } else if (e.getSource().equals(source)) {
             unit.setSource(source.getText());
