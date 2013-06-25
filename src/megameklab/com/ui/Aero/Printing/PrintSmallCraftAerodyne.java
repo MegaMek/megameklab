@@ -216,9 +216,9 @@ public class PrintSmallCraftAerodyne implements Printable {
         // smallCraft.getCost(true)),
         // 52, 346.2f);
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 745f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 63f, 744.5f);
     }
 
     private void printArmor(Graphics2D g2d) {

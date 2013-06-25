@@ -432,7 +432,7 @@ public class PrintMech implements Printable {
         g2d.setFont(UnitUtil.getNewFont(g2d, techBase, false, 51, 10.0f));
         g2d.drawString(techBase, 177 + leftMargin, topMargin + 145);
 
-        font = new Font("Arial", Font.BOLD, 7);
+        font = UnitUtil.deriveFont(true, 6);
         g2d.setFont(font);
         g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 46f, topMargin + 762.4f);
 

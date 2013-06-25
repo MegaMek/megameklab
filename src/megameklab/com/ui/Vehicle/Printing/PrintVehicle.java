@@ -489,7 +489,7 @@ public class PrintVehicle implements Printable {
             g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(tank2), 400, 64 + secondPageMargin);
         }
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
     }
 
