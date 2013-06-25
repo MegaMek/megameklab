@@ -460,7 +460,7 @@ public class PrintSmallCraftAerodyne implements Printable {
         int width = Math.min(220, img.getWidth(null));
         int height = Math.min(130, img.getHeight(null));
         int drawingX = 18 + ((220 - width) / 2);
-        int drawingY = 370 + ((130 - height) / 2);
+        int drawingY = 365 + ((130 - height) / 2);
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
 
     }
