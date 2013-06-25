@@ -230,7 +230,7 @@ public class PrintConventionalFighter implements Printable {
             g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(convFighter), 245, 120);
         }
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
         g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 745f);
     }

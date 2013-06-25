@@ -109,7 +109,7 @@ public class PrintBattleArmor implements Printable {
             currentMargin += pageMarginBase;
         }
         System.gc();
-        Font font = new Font("Arial", Font.PLAIN, 7);
+        Font font = UnitUtil.deriveFont(true, 6);
         g2d.setFont(font);
         g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 41f, 769.5f);
 

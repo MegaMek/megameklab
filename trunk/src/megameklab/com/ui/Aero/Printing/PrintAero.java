@@ -214,7 +214,7 @@ public class PrintAero implements Printable {
         // g2d.drawString(String.format("%1$,.0f C-bills", aero.getCost(true)),
         // 52, 346.2f);
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
         g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 745f);
     }
