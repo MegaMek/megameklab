@@ -109,7 +109,7 @@ public class PrintProtomech implements Printable {
         System.gc();
         Font font = UnitUtil.deriveFont(true, 6.5f);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 120f, 759.5f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 119f, 759.5f);
         g2d.drawImage(
                 ImageHelper.getFluffImage(protoMech, ImageHelper.imageProto),
                 410, 23, 35, 45, null);

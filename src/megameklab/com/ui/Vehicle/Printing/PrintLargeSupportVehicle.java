@@ -604,7 +604,7 @@ public class PrintLargeSupportVehicle implements Printable {
                     400, 64 + secondPageMargin);
         }
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
     }
 

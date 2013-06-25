@@ -296,7 +296,7 @@ public class PrintDualTurretVehicle implements Printable {
             g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(tank), 400, 64);
         }
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
 
         g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 374f);
@@ -466,7 +466,7 @@ public class PrintDualTurretVehicle implements Printable {
             g2d.drawString("BAR: " + UnitUtil.getLowestBARRating(tank2), 400, 64 + secondPageMargin);
         }
 
-        font = new Font("Arial", Font.PLAIN, 7);
+        font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
         g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 105f, 745.5f);
     }
