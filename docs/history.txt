@@ -8,7 +8,8 @@ V 0.1.24-dev
 + Aero and smallcraft improvements
 + Correctly show available armor types
 + show PPC capacitor heat for aero units
-+ show proper locations abbreveations for Small Craft
++ show proper locations abbreviations for Small Craft
++ Add MegaMekLab icon in png format in a data/images/misc folder for usage by UNIX/Linux folks
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
