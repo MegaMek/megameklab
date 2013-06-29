@@ -566,9 +566,9 @@ public class ImageHelper {
         printVehicleAmmo(vehicle, g2d, offset, 0);
     }
 
-    public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, int yoffset, int xoffset) {
-        int pointY = 341 + yoffset;
-        int pointX = 22 + xoffset;
+    public static void printVehicleAmmo(Entity vehicle, Graphics2D g2d, float yoffset, float xoffset) {
+        float pointY = 341 + yoffset;
+        float pointX = 22 + xoffset;
 
         HashMap<String, Integer> ammoHash = new HashMap<String, Integer>();
 
