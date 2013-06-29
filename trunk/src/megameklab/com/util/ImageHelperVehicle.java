@@ -127,7 +127,7 @@ public class ImageHelperVehicle {
     }
 
     public static void printLargeSupportTankWeaponsNEquipment(Tank tank, Graphics2D g2d) {
-        ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(tank, g2d, 0);
+        ImageHelperVehicle.printLargeSupportTankWeaponsNEquipment(tank, g2d, 0, 0);
     }
 
     public static void printTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float offset) {
@@ -441,17 +441,17 @@ public class ImageHelperVehicle {
         ImageHelper.printVehicleAmmo(tank, g2d, (int) yoffset==0?0:(int)yoffset-8, xoffset);
     }
 
-    public static void printLargeSupportTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float offset) {
-        int qtyPoint = 26;
-        int typePoint = 38;
-        int locPoint = 124;
-        int damagePoint = 150;
-        int minPoint = 166;
-        int shtPoint = 177;
-        int medPoint = 195;
-        int longPoint = 211;
+    public static void printLargeSupportTankWeaponsNEquipment(Tank tank, Graphics2D g2d, float yoffset, float xoffset) {
+        float qtyPoint = 26 + xoffset;
+        float typePoint = 38 + xoffset;
+        float locPoint = 124 + xoffset;
+        float damagePoint = 150 + xoffset;
+        float minPoint = 166 + xoffset;
+        float shtPoint = 179 + xoffset;
+        float medPoint = 195 + xoffset;
+        float longPoint = 211 + xoffset;
         float maxHeight = 130.0f;
-        float linePoint = 212f + offset;
+        float linePoint = 212f + yoffset;
 
         float lineFeed = 6.7f;
 
@@ -696,8 +696,8 @@ public class ImageHelperVehicle {
             g2d.setFont(font);
         }
 
-        ImageHelperVehicle.printLargeVehicleCargo(tank, g2d, (int) linePoint);
-        ImageHelper.printVehicleAmmo(tank, g2d, (int) offset);
+        ImageHelperVehicle.printLargeVehicleCargo(tank, g2d, linePoint);
+        ImageHelper.printVehicleAmmo(tank, g2d,  yoffset, xoffset);
 
     }
 
@@ -1113,7 +1113,7 @@ public class ImageHelperVehicle {
         return returnString.toString();
     }
 
-    public static void printLargeVehicleCargo(Tank tank, Graphics2D g2d, int pointY) {
+    public static void printLargeVehicleCargo(Tank tank, Graphics2D g2d, float pointY) {
 
         float troopspace = tank.getTroopCarryingSpace();
         if ((tank.getTransportBays().size() < 1) && (troopspace == 0)) {

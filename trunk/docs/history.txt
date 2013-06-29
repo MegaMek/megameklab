@@ -10,6 +10,7 @@ V 0.1.24-dev
 + show PPC capacitor heat for aero units
 + show proper locations abbreviations for Small Craft
 + Add MegaMekLab icon in png format in a data/images/misc folder for usage by UNIX/Linux folks
++ Improve superheavy vehicle/large support tank printing
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
