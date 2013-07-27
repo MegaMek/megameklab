@@ -367,6 +367,21 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         chosenEntity = null;
         setVisible(false);
     }
+    
+    private boolean isAcceptableUnitType(String type) {
+        // If they're a perfect match, then we'll just return true now.
+        if (UnitType.getTypeName(unitType).equals(type)) {
+            return true;
+        }
+        
+        // We didn't get a perfect match, so we'll do a few subtypes.
+        if (unitType == UnitType.TANK && UnitType.getTypeName(UnitType.VTOL).equals(type)) { // For now only VTOLs
+            return true; // So far I've only found VTOLs needing special handling.
+        }
+        
+        // If we make it here, nothing matched.
+        return false;
+    }
 
     private void filterUnits() {
         RowFilter<MechTableModel, Integer> unitTypeFilter = null;
@@ -403,7 +418,7 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
                                      || (mech.getType() == TechConstants.T_CLAN_ADVANCED)
                                      || (mech.getType() == TechConstants.T_CLAN_EXPERIMENTAL)
                                      || (mech.getType() == TechConstants.T_CLAN_UNOFFICIAL))))
-                            && ((((unitType != -1) && mech.getUnitType().equals(UnitType.getTypeName(unitType))) || (unitType == -1)))
+                            && ((((unitType != -1) && isAcceptableUnitType(mech.getUnitType())) || (unitType == -1)))
                             /*Advanced Search*/
                             && ((searchFilter==null) || MechSearchFilter.isMatch(mech, searchFilter))) {
                         //yuck, I have to pull up a full Entity to get MechView to search in
