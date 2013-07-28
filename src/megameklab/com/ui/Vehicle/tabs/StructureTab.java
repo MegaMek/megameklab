@@ -1501,8 +1501,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             techLevel.addItem(item);
                         }
 
-                        unit.setTechLevel(TechConstants.T_IS_ADVANCED);
-                        unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                        // Only set the techlevel to experimental if we're not already >= to it.
+                        if (unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) {
+                            unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            unit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        }
                         unit.setMixedTech(true);
 
                     } else if ((techType.getSelectedIndex() == 3)
@@ -1512,8 +1515,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             techLevel.addItem(item);
                         }
 
-                        unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                        unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        // Only set the techlevel to experimental if we're not already >= to it.
+                        if (unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) {
+                            unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            unit.setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        }
                         unit.setMixedTech(true);
                     }
                     int engineNumber = engineType.getSelectedIndex();
