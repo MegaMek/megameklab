@@ -520,10 +520,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                             techLevel.addItem(item);
                         }
                         // only set techlevel and armor techlevel to advanced if
-                        // we're not already experimental or unofficial
-                        if ((getBattleArmor().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (getBattleArmor().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                            getBattleArmor().setTechLevel(TechConstants.T_IS_ADVANCED);
-                            getBattleArmor().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                        // we're not already unofficial
+                        if ((getBattleArmor().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                            getBattleArmor().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            getBattleArmor().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                         }
                         getBattleArmor().setMixedTech(true);
                         masterPanel.remove(umuLabel);
@@ -537,10 +537,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                             techLevel.addItem(item);
                         }
                         // only set techlevel and armor techlevel to advanced if
-                        // we're not already experimental or unofficial
-                        if ((getBattleArmor().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (getBattleArmor().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
-                            getBattleArmor().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                            getBattleArmor().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        // we're not already unofficial
+                        if ((getBattleArmor().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
+                            getBattleArmor().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            getBattleArmor().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                         }
                         getBattleArmor().setMixedTech(true);
                         masterPanel.add(umuLabel);

@@ -485,10 +485,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         techLevel.addItem(item);
                     }
                     // only set techlevel and armor techlevel to advanced if
-                    // we're not already experimental or unofficial
-                    if ((getInfantry().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                        getInfantry().setTechLevel(TechConstants.T_IS_ADVANCED);
-                        getInfantry().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                    // we're not already unofficial
+                    if ((getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                        getInfantry().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        getInfantry().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                     }
                     getInfantry().setMixedTech(true);
                 } else if ((techType.getSelectedIndex() == 3) && (!getInfantry().isMixedTech() || !getInfantry().isClan())) {
@@ -497,10 +497,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         techLevel.addItem(item);
                     }
                     // only set techlevel and armor techlevel to advanced if
-                    // we're not already experimental or unofficial
-                    if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
-                        getInfantry().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                        getInfantry().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                    // we're not already unofficial
+                    if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
+                        getInfantry().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        getInfantry().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                     }
                     getInfantry().setMixedTech(true);
                 } else {
