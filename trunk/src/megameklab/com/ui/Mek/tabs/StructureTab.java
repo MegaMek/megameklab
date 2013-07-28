@@ -906,6 +906,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 } else if ((techType.getSelectedIndex() == 2)
                         && (!getMech().isMixedTech() || getMech().isClan())) {
                     techLevel.removeAllItems();
+                    
                     for (String item : isTechLevels) {
                         techLevel.addItem(item);
                     }
@@ -915,8 +916,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
                         getMech().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                     }
-                    techLevel
-                            .setSelectedIndex(techLevel.getModel().getSize() - 2);
+                    techLevel.setSelectedIndex(techLevel.getModel().getSize() - 2);
                     getMech().setMixedTech(true);
                 } else if ((techType.getSelectedIndex() == 3)
                         && (!getMech().isMixedTech() || !getMech().isClan())) {

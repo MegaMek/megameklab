@@ -13,6 +13,8 @@ V 0.1.24-dev
 + Improve superheavy vehicle/large support tank printing
 + Adjust mmconf/megameklab.properties for a width and height that actually fit the controls
 + Bug: VTOLs cannot be loaded from cache
++ Bug: Tech Level not being set to EXPERIMENTAL for mixed tech units.
+    (This is temporary, this needs to be refactored to use the new tech level by year coding)
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
