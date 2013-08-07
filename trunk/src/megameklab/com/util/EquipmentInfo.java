@@ -455,6 +455,8 @@ public class EquipmentInfo {
             heat = 5;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TALON)) {
             loc = "Legs";
+        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
+            loc = "LT/RT";
         }
 
         isBAMineLayer = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
