@@ -33,6 +33,7 @@ import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.BPodWeapon;
+import megamek.common.weapons.CLBALBX;
 import megamek.common.weapons.CLERSmallPulseLaser;
 import megamek.common.weapons.CLMicroPulseLaser;
 import megamek.common.weapons.CLPlasmaCannon;
@@ -293,7 +294,7 @@ public class StringUtils {
                     info += "DE,";
                 }
 
-                if ((weapon instanceof LBXACWeapon) || (weapon instanceof ISSilverBulletGauss)) {
+                if ((weapon instanceof LBXACWeapon) || (weapon instanceof ISSilverBulletGauss) || (weapon instanceof CLBALBX)) {
                     info += "C/F/";
                 }
 
