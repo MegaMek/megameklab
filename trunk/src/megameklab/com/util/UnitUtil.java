@@ -64,6 +64,7 @@ import megamek.common.verifier.TestTank;
 import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.BPodWeapon;
+import megamek.common.weapons.CLBALBX;
 import megamek.common.weapons.CLLightTAG;
 import megamek.common.weapons.CLPlasmaCannon;
 import megamek.common.weapons.CLTAG;
@@ -1267,6 +1268,9 @@ public class UnitUtil {
             return false;
         }
         if (!(weapon instanceof AmmoWeapon)) {
+            return false;
+        }
+        if (weapon instanceof CLBALBX) {
             return false;
         }
         return true;
