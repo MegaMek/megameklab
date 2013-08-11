@@ -502,7 +502,7 @@ public class PrintVehicle implements Printable {
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
 
-        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank), 457, 48);
+        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(tank), g2d.getFont(), 478, 48);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 
@@ -521,7 +521,8 @@ public class PrintVehicle implements Printable {
         if (tank2 != null) {
             font = UnitUtil.deriveFont(true, 11.0f);
             g2d.setFont(font);
-            g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank2), 463, 48 + secondPageMargin);
+            ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(tank2), g2d.getFont(), 478, 48 + secondPageMargin);
+            //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(tank2), 463, 48 + secondPageMargin);
             font = UnitUtil.deriveFont(true, 9.0f);
             g2d.setFont(font);
 

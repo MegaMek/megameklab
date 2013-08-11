@@ -243,7 +243,8 @@ public class PrintConventionalFighter implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(convFighter), 337, 108);
+        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(convFighter), font, 352, 108);
+        //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(convFighter), 337, 108);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 

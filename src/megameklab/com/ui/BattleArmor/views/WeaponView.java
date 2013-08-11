@@ -734,7 +734,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
                 }
                 Vector<String> equipmentList = new Vector<String>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel(unit.getTechLevelYear())) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR) && !ammo.hasFlag(AmmoType.F_PROTOMECH)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(unit, ammo.getTechLevel(unit.getTechLevelYear())) && !ammo.hasFlag(AmmoType.F_PROTOMECH)) {
                         subBallisticAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }
