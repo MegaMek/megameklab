@@ -170,7 +170,9 @@ public class PrintBattleArmor implements Printable {
             techBase+= " (Experimental)";
             isAdvanced = true;
         }
-        ImageHelper.printCenterString(g2d, techBase, g2d.getFont(), 520, 64);
+        if (squadNumber == 0) {
+            ImageHelper.printCenterString(g2d, techBase, g2d.getFont(), 520, 64);
+        }
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
