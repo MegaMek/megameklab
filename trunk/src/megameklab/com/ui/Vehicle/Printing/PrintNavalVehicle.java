@@ -303,7 +303,8 @@ public class PrintNavalVehicle implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(sub), 463+leftmargin, topmargin+48);
+        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(sub), g2d.getFont(), 478+leftmargin, topmargin+48);
+        //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(sub), 463+leftmargin, topmargin+48);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 

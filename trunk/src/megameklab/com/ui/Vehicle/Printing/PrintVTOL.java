@@ -299,8 +299,9 @@ public class PrintVTOL implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(true, 10.0f);
         g2d.setFont(font);
-        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(vtol), 463,
-                45);
+        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(vtol), g2d.getFont(), 478, 45);
+        //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(vtol), 463,
+                //45);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 

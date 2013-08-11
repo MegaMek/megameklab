@@ -393,9 +393,10 @@ public class PrintLargeSupportVehicle implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        g2d.drawString(
-                ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank),
-                455 + xoffset, 48 + yoffset);
+        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank), g2d.getFont(), 470 + xoffset, 48 + yoffset);
+        //g2d.drawString(
+                //ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank),
+                //455 + xoffset, 48 + yoffset);
         font = UnitUtil.deriveFont(true, 8.0f);
         g2d.setFont(font);
 

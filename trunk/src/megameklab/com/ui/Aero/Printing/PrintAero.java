@@ -227,7 +227,8 @@ public class PrintAero implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(aero), 337, 108);
+        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(aero), font, 360, 180);
+        //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(aero), 345, 108);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 

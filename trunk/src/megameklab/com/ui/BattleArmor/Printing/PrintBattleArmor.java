@@ -32,7 +32,6 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.BattleArmor;
-import megamek.common.EntityMovementMode;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -150,16 +149,28 @@ public class PrintBattleArmor implements Printable {
             g2d.drawString(String.format(" %1$s", battleArmor.getYear()), 161, 107.6f + currentMargin);
         }
 
-        font = UnitUtil.deriveFont(true, 12.0f);
+        font = UnitUtil.deriveFont(true, 10.0f);
         g2d.setFont(font);
+        String techBase = "IS";
+
+        if (battleArmor.isMixedTech()) {
+            if (battleArmor.isClan()) {
+                techBase = "Mixed Clan";
+            } else {
+                techBase = "Mixed IS";
+            }
+        } else if (battleArmor.isClan()) {
+            techBase = "Clan";
+        }
 
         if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_ADVANCED) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_ADVANCED))) {
-            g2d.drawString("(ADVANCED)", 485, 64);
+            techBase += " (Advanced)";
             isAdvanced = true;
         } else if (!isAdvanced && ((battleArmor.getTechLevel() == TechConstants.T_IS_EXPERIMENTAL) || (battleArmor.getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL))) {
-            g2d.drawString("(EXPERIMENTAL)", 473, 64);
+            techBase+= " (Experimental)";
             isAdvanced = true;
         }
+        ImageHelper.printCenterString(g2d, techBase, g2d.getFont(), 520, 64);
 
         font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
@@ -170,7 +181,7 @@ public class PrintBattleArmor implements Printable {
         g2d.drawString(groundMP, 78, 131.3f + currentMargin);
         int jumpMP = battleArmor.getJumpMP(true, true, true);
         int umuMP = battleArmor.getActiveUMUCount();
-        if (jumpMP > 0 && umuMP == 0) {
+        if ((jumpMP > 0) && (umuMP == 0)) {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
             String movment = "Jump: ";
@@ -184,7 +195,7 @@ public class PrintBattleArmor implements Printable {
                 printString = "[" + printString + "]";
             }
             g2d.drawString(printString, positionX, 131.3f + currentMargin);
-        } else if (umuMP > 0 && jumpMP == 0) {
+        } else if ((umuMP > 0) && (jumpMP == 0)) {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
             String movment = String.format("%1$s: ", battleArmor.getMovementModeAsString());
@@ -198,7 +209,7 @@ public class PrintBattleArmor implements Printable {
                 printString = "[" + printString + "]";
             }
             g2d.drawString(printString, positionX, 131.3f + currentMargin);
-        } else if (umuMP > 0 && jumpMP > 0) {
+        } else if ((umuMP > 0) && (jumpMP > 0)) {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
             String movment = "Jump: ";
