@@ -876,8 +876,6 @@ public class PrintMech implements Printable {
         if (!mech.hasCASEII(Mech.LOC_LARM)) {
             //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
-        } else {
-
         }
     }
 
@@ -894,9 +892,8 @@ public class PrintMech implements Printable {
         if (!mech.hasCASEII(Mech.LOC_RARM)) {
             //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
-        } else {
-
         }
+
     }
 
     private void printLLCase(Graphics2D g2d) {
@@ -911,8 +908,6 @@ public class PrintMech implements Printable {
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (!mech.hasCASEII(Mech.LOC_LLEG)) {
             //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
-        } else {
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
@@ -930,8 +925,6 @@ public class PrintMech implements Printable {
         if (!mech.hasCASEII(Mech.LOC_LT)) {
             //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
-        } else {
-            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
 
@@ -947,8 +940,6 @@ public class PrintMech implements Printable {
         g2d.setFont(UnitUtil.deriveFont(7.0f));
         if (!mech.hasCASEII(Mech.LOC_HEAD)) {
             //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
-            g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
-        } else {
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
         }
     }
@@ -966,8 +957,6 @@ public class PrintMech implements Printable {
         if (!mech.hasCASEII(Mech.LOC_RT)) {
             //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
-        } else {
-
         }
     }
 
@@ -984,8 +973,6 @@ public class PrintMech implements Printable {
         if (!mech.hasCASEII(Mech.LOC_RLEG)) {
             //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
-        } else {
-
         }
     }
 
@@ -1002,8 +989,6 @@ public class PrintMech implements Printable {
         if (!mech.hasCASEII(Mech.LOC_CT)) {
             //g2d.drawString("(CASE II)", lineStart + leftMargin, topMargin + linePoint);
             g2d.drawString("(CASE)", lineStart + leftMargin, topMargin + linePoint);
-        } else {
-
         }
     }
 

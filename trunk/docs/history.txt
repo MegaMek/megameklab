@@ -15,7 +15,8 @@ V 0.1.24-dev
 + Bug: VTOLs cannot be loaded from cache
 + Bug: Tech Level not being set to EXPERIMENTAL for mixed tech units.
     (This is temporary, this needs to be refactored to use the new tech level by year coding)
-+ Bug [#77]: "incorrect number of stealth crits in left arm" rears its ugly head, again 
++ Bug [#77]: "incorrect number of stealth crits in left arm" rears its ugly head, again
++ Fix CASE printing for mechs with CASE II 
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
