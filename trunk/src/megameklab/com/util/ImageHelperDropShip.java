@@ -456,6 +456,8 @@ public class ImageHelperDropShip {
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
                     ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
+                } else if (eqi.c3Level == EquipmentInfo.C3EM) {
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
                     ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
