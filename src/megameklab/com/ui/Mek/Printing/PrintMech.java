@@ -822,6 +822,8 @@ public class PrintMech implements Printable {
 
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
                     ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
+                } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3EM))) {
+                    ImageHelper.printC3EmName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S))) {
                     ImageHelper.printC3sName(g2d, lineStart, linePoint, font, m.isArmored());
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3M)) {
