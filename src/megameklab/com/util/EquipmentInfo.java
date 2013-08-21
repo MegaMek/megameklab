@@ -90,6 +90,7 @@ public class EquipmentInfo {
     public static int C3SB = 4;
     public static int C3MB = 5;
     public static int C3REMOTESENSOR = 6;
+    public static int C3EM = 7;
 
     /**
      * base class.
@@ -181,6 +182,8 @@ public class EquipmentInfo {
 
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
+        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3EM)))) {
+            c3Level = C3EM;
         } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
             c3Level = C3S;
         } else if (((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3SBS))) {
@@ -313,6 +316,8 @@ public class EquipmentInfo {
             }
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
+        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3EM)))) {
+            c3Level = C3EM;
         } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
             c3Level = C3S;
         } else if (((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3SBS))) {
@@ -415,6 +420,8 @@ public class EquipmentInfo {
             }
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3I)) {
             c3Level = C3I;
+        } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3EM)))) {
+            c3Level = C3EM;
         } else if (((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_C3S)))) {
             c3Level = C3S;
         } else if (((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_C3SBS))) {
