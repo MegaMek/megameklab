@@ -539,6 +539,9 @@ public class EquipmentInfo {
             if (medRange == longRange) {
                 longRange = -1;
             }
+            if (medRange == shtRange) {
+                medRange = -1;
+            }
 
             heat = weapon.getHeat();
         } else if (mount.getType() instanceof MiscType) {
