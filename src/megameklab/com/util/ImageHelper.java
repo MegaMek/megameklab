@@ -52,6 +52,7 @@ import megamek.common.Protomech;
 import megamek.common.QuadMech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
+import megamek.common.TechConstants;
 import megamek.common.VTOL;
 
 public class ImageHelper {
@@ -393,19 +394,19 @@ public class ImageHelper {
                 g2d.setFont(nameFont);
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
@@ -668,16 +669,16 @@ public class ImageHelper {
         }
     }
 
-    public static void printC3iName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3iName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O Improved C   CPU", lineStart, linePoint);
+            g2d.drawString("O Improved C   CPU"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "O Improved C", c3Font);
         } else {
-            g2d.drawString("Improved C   CPU", lineStart, linePoint);
+            g2d.drawString("Improved C   CPU"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "Improved C", c3Font);
         }
         c3Font = font.deriveFont(attrMap);
@@ -686,17 +687,17 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printC3EmName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3EmName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
 
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O C   Emergency Master", lineStart, linePoint);
+            g2d.drawString("O C   Emergency Master"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
-            g2d.drawString("C   Emergency Master", lineStart, linePoint);
+            g2d.drawString("C   Emergency Master"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 
@@ -709,17 +710,17 @@ public class ImageHelper {
 
     }
 
-    public static void printC3sName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3sName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
 
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O C   Slave", lineStart, linePoint);
+            g2d.drawString("O C   Slave"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
-            g2d.drawString("C   Slave", lineStart, linePoint);
+            g2d.drawString("C   Slave"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 
@@ -732,16 +733,16 @@ public class ImageHelper {
 
     }
 
-    public static void printBC3iName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printBC3iName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O Improved BC", lineStart, linePoint);
+            g2d.drawString("O Improved BC"+(mixed?"   (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "O Improved BC", c3Font);
         } else {
-            g2d.drawString("Improved BC", lineStart, linePoint);
+            g2d.drawString("Improved BC"+(mixed?"   (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "Improved BC", c3Font);
         }
         c3Font = font.deriveFont(attrMap);
@@ -750,16 +751,16 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printBC3Name(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printBC3Name(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O BC", lineStart, linePoint);
+            g2d.drawString("O BC"+(mixed?"   (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "O BC", c3Font);
         } else {
-            g2d.drawString("BC", lineStart, linePoint);
+            g2d.drawString("BC"+(mixed?"   (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "BC", c3Font);
         }
 
@@ -770,16 +771,16 @@ public class ImageHelper {
 
     }
 
-    public static void printC3sbName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3sbName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O C   Boosted Slave", lineStart, linePoint);
+            g2d.drawString("O C   Boosted Slave"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
-            g2d.drawString("C   Boosted Slave", lineStart, linePoint);
+            g2d.drawString("C   Boosted Slave"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 
@@ -789,16 +790,16 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printC3mName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3mName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O C   Master", lineStart, linePoint);
+            g2d.drawString("O C   Master"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
-            g2d.drawString("C   Master", lineStart, linePoint);
+            g2d.drawString("C   Master"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 
@@ -808,16 +809,16 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printC3mbName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3mbName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O C   Boosted Master", lineStart, linePoint);
+            g2d.drawString("O C   Boosted Master"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
-            g2d.drawString("C   Boosted Master", lineStart, linePoint);
+            g2d.drawString("C   Boosted Master"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 
@@ -827,16 +828,16 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
-    public static void printC3RemoteSensorName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored) {
+    public static void printC3RemoteSensorName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
         HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
         attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
         int stringWidth;
         if (isArmored) {
-            g2d.drawString("O C   Remote Sensor Launcher", lineStart, linePoint);
+            g2d.drawString("O C   Remote Sensor Launcher"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "O C", c3Font);
         } else {
-            g2d.drawString("C   Remote Sensor Launcher", lineStart, linePoint);
+            g2d.drawString("C   Remote Sensor Launcher"+(mixed?" (IS)":""), lineStart, linePoint);
             stringWidth = ImageHelper.getStringWidth(g2d, "C", c3Font);
         }
 

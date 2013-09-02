@@ -37,6 +37,7 @@ import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
+import megamek.common.TechConstants;
 import megamek.common.VTOL;
 
 public class ImageHelperVehicle {
@@ -232,19 +233,19 @@ public class ImageHelperVehicle {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 75, font.getSize2D()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {
@@ -551,19 +552,19 @@ public class ImageHelperVehicle {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, 7.0f));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {
@@ -817,19 +818,19 @@ public class ImageHelperVehicle {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 65, font.getSize2D()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, tank.isMixedTech() && TechConstants.isClan(tank.getTechLevel()));
                 } else if (eqi.isMashCore) {
                     ImageHelper.printMashCore(g2d, typePoint, linePoint, font, false, tank);
                 } else if (eqi.isDroneControl) {

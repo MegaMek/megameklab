@@ -32,6 +32,7 @@ import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.TechConstants;
 import megamek.common.weapons.ISCompactNarc;
 
 public class ImageHelperBattleArmor {
@@ -234,9 +235,9 @@ public class ImageHelperBattleArmor {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 88, font.getSize()));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printBC3iName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printBC3iName(g2d, typePoint, linePoint, font, false, ba.isMixedTech() && TechConstants.isClan(ba.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printBC3Name(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printBC3Name(g2d, typePoint, linePoint, font, false, ba.isMixedTech() && TechConstants.isClan(ba.getTechLevel()));
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }

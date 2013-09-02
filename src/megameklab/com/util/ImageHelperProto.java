@@ -32,6 +32,7 @@ import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.Protomech;
+import megamek.common.TechConstants;
 
 public class ImageHelperProto {
     public static void drawProtoISPip(Graphics2D g2d, int width, int height) {
@@ -239,19 +240,19 @@ public class ImageHelperProto {
                 g2d.setFont(UnitUtil.getNewFont(g2d, name, false, 68, 7.0f));
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3iName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3EM) {
-                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3EmName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3S) {
-                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3M) {
-                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3SB) {
-                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3sbName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3MB) {
-                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3mbName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else if (eqi.c3Level == EquipmentInfo.C3REMOTESENSOR) {
-                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false);
+                    ImageHelper.printC3RemoteSensorName(g2d, typePoint, linePoint, font, false, proto.isMixedTech() && TechConstants.isClan(proto.getTechLevel()));
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
