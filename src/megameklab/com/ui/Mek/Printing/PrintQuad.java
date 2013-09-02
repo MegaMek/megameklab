@@ -1366,19 +1366,19 @@ public class PrintQuad implements Printable {
                 g2d.setFont(font);
 
                 if ((m.getType() instanceof MiscType) && m.getType().hasFlag(MiscType.F_C3I)) {
-                    ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored());
+                    ImageHelper.printC3iName(g2d, lineStart, linePoint, font, m.isArmored(), mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3EM))) {
-                    ImageHelper.printC3EmName(g2d, lineStart, linePoint, font, m.isArmored());
+                    ImageHelper.printC3EmName(g2d, lineStart, linePoint, font, m.isArmored(), mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3S))) {
-                    ImageHelper.printC3sName(g2d, lineStart, linePoint, font, m.isArmored());
+                    ImageHelper.printC3sName(g2d, lineStart, linePoint, font, m.isArmored(), mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3M)) {
-                    ImageHelper.printC3mName(g2d, lineStart, linePoint, font, m.isArmored());
+                    ImageHelper.printC3mName(g2d, lineStart, linePoint, font, m.isArmored(), mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if ((m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_C3SBS))) {
-                    ImageHelper.printC3sbName(g2d, lineStart, linePoint, font, m.isArmored());
+                    ImageHelper.printC3sbName(g2d, lineStart, linePoint, font, m.isArmored(), mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if ((m.getType() instanceof WeaponType) && m.getType().hasFlag(WeaponType.F_C3MBS)) {
-                    ImageHelper.printC3mbName(g2d, lineStart, linePoint, font, m.isArmored());
+                    ImageHelper.printC3mbName(g2d, lineStart, linePoint, font, m.isArmored(), mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if ((m.getType() instanceof WeaponType) && (((WeaponType)m.getType()).getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)) {
-                    ImageHelper.printC3RemoteSensorName(g2d, lineStart, linePoint, font, m.isArmored());
+                    ImageHelper.printC3RemoteSensorName(g2d, lineStart, linePoint, font, m.isArmored(), mech.isMixedTech() && TechConstants.isClan(mech.getTechLevel()));
                 } else if ((m.getType() instanceof AmmoType) && (((AmmoType)m.getType()).getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)) {
                     ImageHelper.printC3RemoteSensorAmmoName(g2d, lineStart, linePoint, font);
                 } else {
