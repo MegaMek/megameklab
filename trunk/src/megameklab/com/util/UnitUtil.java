@@ -1615,26 +1615,26 @@ public class UnitUtil {
     }
 
     public static String getCritName(Entity unit, EquipmentType eq) {
+        String name = eq.getName();
+        if ((eq instanceof WeaponType)
+                && (eq.hasFlag(WeaponType.F_C3M) || eq
+                        .hasFlag(WeaponType.F_C3MBS))) {
+            return name = name.substring(0,
+                    eq.getName().indexOf("with TAG") - 1);
+        }
         if (unit.isMixedTech()
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
 
             if (unit.isClan() && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
-                return eq.getShortName() + " (IS)";
+                name = name + " (IS)";
             }
 
             if (!unit.isClan() && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
-                return eq.getShortName() + " (Clan)";
+                name = name + " (Clan)";
             }
         }
-
-        if ((eq instanceof WeaponType)
-                && (eq.hasFlag(WeaponType.F_C3M) || eq
-                        .hasFlag(WeaponType.F_C3MBS))) {
-            return eq.getName().substring(0,
-                    eq.getName().indexOf("with TAG") - 1);
-        }
-        return eq.getName();
+        return name;
     }
 
     public static String getToolTipInfo(Entity unit, Mounted eq) {
