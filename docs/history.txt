@@ -19,6 +19,7 @@ V 0.1.24-dev
 + Fix CASE printing for mechs with CASE II
 + Fix C3 Emergency Master printing 
 + updated MegaMek.jar
++ updates for 3145 equipment and MM changes
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated

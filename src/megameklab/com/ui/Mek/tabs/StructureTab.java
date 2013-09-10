@@ -906,32 +906,49 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 } else if ((techType.getSelectedIndex() == 2)
                         && (!getMech().isMixedTech() || getMech().isClan())) {
                     techLevel.removeAllItems();
-                    
                     for (String item : isTechLevels) {
                         techLevel.addItem(item);
                     }
-                    // only set techlevel and armor techlevel to
-                    // experimental if
-                    // we're not already unofficial
-                    if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                        getMech().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                    if (unit.getYear() < 3090) {
+                        //before 3090, mixed tech is experimental
+                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                            unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        }
+                    } else if (unit.getYear() < 3145) {
+                        // between 3090 and 3145, mixed tech is advanced
+                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
+                            unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                        }
+                    } else {
+                        // from 3145 on, mixed tech is tourney legal
+                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
+                            unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                        }
                     }
-                    techLevel.setSelectedIndex(techLevel.getModel().getSize() - 2);
-                    getMech().setMixedTech(true);
+                    unit.setMixedTech(true);
+
                 } else if ((techType.getSelectedIndex() == 3)
-                        && (!getMech().isMixedTech() || !getMech().isClan())) {
+                        && (!unit.isMixedTech() || !unit.isClan())) {
                     techLevel.removeAllItems();
                     for (String item : clanTechLevels) {
                         techLevel.addItem(item);
                     }
-                    // only set techlevel and armor techlevel to advanced if
-                    // we're not already experimental or unofficial
-                    if (getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) {
-                        getMech().setTechLevel(
-                                TechConstants.T_CLAN_EXPERIMENTAL);
+                    if (unit.getYear() < 3090) {
+                        //before 3090, mixed tech is experimental
+                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
+                            unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        }
+                    } else if (unit.getYear() < 3145) {
+                        // between 3090 and 3145, mixed tech is advanced
+                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
+                            unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        }
+                    } else {
+                        // from 3145 on, mixed tech is tourney legal
+                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_CLAN_TW)) {
+                            unit.setTechLevel(TechConstants.T_CLAN_TW);
+                        }
                     }
-                    techLevel
-                            .setSelectedIndex(techLevel.getModel().getSize() - 2);
                     getMech().setMixedTech(true);
                 }
                 if (!unit.hasPatchworkArmor()) {
