@@ -1501,10 +1501,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             techLevel.addItem(item);
                         }
 
-                        // Only set the techlevel to experimental if we're not already >= to it.
-                        if (unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) {
-                            unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                            unit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        if (unit.getYear() < 3090) {
+                            //before 3090, mixed tech is experimental
+                            if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                                unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            }
+                        } else if (unit.getYear() < 3145) {
+                            // between 3090 and 3145, mixed tech is advanced
+                            if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
+                                unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                            }
+                        } else {
+                            // from 3145 on, mixed tech is tourney legal
+                            if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
+                                unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                            }
                         }
                         unit.setMixedTech(true);
 
@@ -1514,11 +1525,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
                         }
-
-                        // Only set the techlevel to experimental if we're not already >= to it.
-                        if (unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) {
-                            unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                            unit.setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        if (unit.getYear() < 3090) {
+                            //before 3090, mixed tech is experimental
+                            if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
+                                unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            }
+                        } else if (unit.getYear() < 3145) {
+                            // between 3090 and 3145, mixed tech is advanced
+                            if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
+                                unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                            }
+                        } else {
+                            // from 3145 on, mixed tech is tourney legal
+                            if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_CLAN_TW)) {
+                                unit.setTechLevel(TechConstants.T_CLAN_TW);
+                            }
                         }
                         unit.setMixedTech(true);
                     }
