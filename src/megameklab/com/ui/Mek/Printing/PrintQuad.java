@@ -302,7 +302,7 @@ public class PrintQuad implements Printable {
 
         if (isName.trim().length() > 0) {
             g2d.setFont(UnitUtil.getNewFont(g2d, isName, true, 44, 10.0f));
-            g2d.drawString(isName, 444 + leftMargin, topMargin + 556);
+            g2d.drawString(isName, 444 + leftMargin, topMargin + 568);
         }
 
         String armorName = "";
@@ -344,14 +344,12 @@ public class PrintQuad implements Printable {
         g2d.setFont(font);
 
         // Heat Sinks
+        g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity(true, false)) + ")", 502 + leftMargin, topMargin + 595);
         if (mech.hasLaserHeatSinks()) {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks() * 2) + ")", 502 + leftMargin, topMargin + 595);
             g2d.drawString("Laser", 502 + leftMargin, topMargin + 603);
         } else if (mech.hasDoubleHeatSinks()) {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks() * 2) + ")", 502 + leftMargin, topMargin + 595);
             g2d.drawString("Double", 502 + leftMargin, topMargin + 603);
         } else {
-            g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.heatSinks()) + ")", 502 + leftMargin, topMargin + 595);
             g2d.drawString("Single", 502 + leftMargin, topMargin + 603);
         }
 

@@ -519,11 +519,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         for (String item : isTechLevels) {
                             techLevel.addItem(item);
                         }
-                        // only set techlevel and armor techlevel to advanced if
-                        // we're not already unofficial
-                        if ((getBattleArmor().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                            getBattleArmor().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                            getBattleArmor().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        if (unit.getYear() < 3090) {
+                            //before 3090, mixed tech is experimental
+                            if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                                unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                                unit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            }
+                        } else if (unit.getYear() < 3145) {
+                            // between 3090 and 3145, mixed tech is advanced
+                            if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
+                                unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                                unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                            }
+                        } else {
+                            // from 3145 on, mixed tech is tourney legal
+                            if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
+                                unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                                unit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                            }
                         }
                         getBattleArmor().setMixedTech(true);
                         masterPanel.remove(umuLabel);
@@ -536,11 +549,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                         for (String item : clanTechLevels) {
                             techLevel.addItem(item);
                         }
-                        // only set techlevel and armor techlevel to advanced if
-                        // we're not already unofficial
-                        if ((getBattleArmor().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
-                            getBattleArmor().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                            getBattleArmor().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        if (unit.getYear() < 3090) {
+                            //before 3090, mixed tech is experimental
+                            if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
+                                unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            }
+                        } else if (unit.getYear() < 3145) {
+                            // between 3090 and 3145, mixed tech is advanced
+                            if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
+                                unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                            }
+                        } else {
+                            // from 3145 on, mixed tech is tourney legal
+                            if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_CLAN_TW)) {
+                                unit.setTechLevel(TechConstants.T_CLAN_TW);
+                                unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
+                            }
                         }
                         getBattleArmor().setMixedTech(true);
                         masterPanel.add(umuLabel);
@@ -819,3 +845,4 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     }
 }
+
