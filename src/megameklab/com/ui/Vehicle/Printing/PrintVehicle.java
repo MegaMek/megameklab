@@ -41,7 +41,6 @@ import megamek.common.Engine;
 import megamek.common.MiscType;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
-import megameklab.com.ui.Mek.Printing.BipedMechJumping;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
@@ -159,18 +158,24 @@ public class PrintVehicle implements Printable {
 
         g2d.drawString(Integer.toString(tank.getWalkMP()), 79, 144);
         if (!tank.hasWorkingMisc(MiscType.F_MASC, MiscType.S_SUPERCHARGER)) {
-            g2d.drawString(Integer.toString(tank.getRunMP()), 79, 155);
+            g2d.drawString(Integer.toString(tank.getRunMP()), 79, 154);
         } else {
             int mascMP = tank.getRunMP();
-            g2d.drawString(Integer.toString(tank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 155);
+            g2d.drawString(Integer.toString(tank.getRunMPwithoutMASC()) + " [" + mascMP + "]", 79, 154);
         }
 
         if (tank.getJumpMP() > 0){
-            BipedMechJumping.paint(g2d);
-            g2d.drawString(Integer.toString(tank.getJumpMP()), 79, 155f);
+            font = UnitUtil.deriveFont(true, 8f);
+            g2d.setFont(font);
+            g2d.drawString("Jump:", 92, 154f);
+            font = UnitUtil.deriveFont(false, 8f);
+            g2d.setFont(font);
+            g2d.drawString(Integer.toString(tank.getJumpMP()), 120, 154f);
+
+
         }
 
-        g2d.drawString(tank.getMovementModeAsString(), 88, 166);
+        g2d.drawString(tank.getMovementModeAsString(), 88, 165);
 
         String engineName = "Fusion Engine";
 
@@ -203,18 +208,18 @@ public class PrintVehicle implements Printable {
                 break;
         }
 
-        g2d.drawString(engineName, 79, 177);
+        g2d.drawString(engineName, 79, 176);
 
         if (tank.getWeight() >= 5) {
             int tonnage = (int) Math.ceil(tank.getWeight());
 
-            g2d.drawString(Integer.toString(tonnage), 177, 134);
+            g2d.drawString(Integer.toString(tonnage), 177, 133);
         } else {
             DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
             unusualSymbols.setDecimalSeparator('.');
             unusualSymbols.setGroupingSeparator(',');
             DecimalFormat myFormatter = new DecimalFormat("#.###", unusualSymbols);
-            g2d.drawString(myFormatter.format(tank.getWeight()), 177, 134);
+            g2d.drawString(myFormatter.format(tank.getWeight()), 177, 133);
         }
 
         int nextDataLine = 153;
@@ -259,7 +264,7 @@ public class PrintVehicle implements Printable {
         } else if (tank.isClan()) {
             techBase = "Clan";
         }
-        g2d.drawString(techBase, 177, 145);
+        g2d.drawString(techBase, 177, 144);
 
         if ((tank.getSource() != null) && (tank.getSource().trim().length() > 0)) {
             String sourceFluff = "Era: ";
