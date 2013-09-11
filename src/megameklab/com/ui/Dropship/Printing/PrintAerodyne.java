@@ -266,7 +266,7 @@ public class PrintAerodyne implements Printable {
 
         font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 65f, 744.5f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 64f, 744.5f);
     }
 
     private void printArmor(Graphics2D g2d) {
