@@ -20,6 +20,7 @@ V 0.1.24-dev
 + Fix C3 Emergency Master printing 
 + updated MegaMek.jar
 + updates for 3145 equipment and MM changes
++ Dropship print fixes
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
