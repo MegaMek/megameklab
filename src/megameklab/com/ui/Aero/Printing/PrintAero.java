@@ -216,7 +216,7 @@ public class PrintAero implements Printable {
 
         font = UnitUtil.deriveFont(true, 7);
         g2d.setFont(font);
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 745f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 62.5f, 744.5f);
     }
 
     private void printArmor(Graphics2D g2d) {
@@ -227,8 +227,7 @@ public class PrintAero implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(aero), font, 360, 180);
-        //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(aero), 345, 108);
+        g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(aero), 335, 107);
         font = UnitUtil.deriveFont(true, 9.0f);
         g2d.setFont(font);
 

@@ -398,7 +398,7 @@ public class ImageHelperBattleArmor {
             }
         }
         if (ba.isBurdened() && ((ba.getJumpMP(false, true, true) > 0) || UnitUtil.canLegAttack(ba) || UnitUtil.canSwarm(ba))) {
-            String burdenInfo = "must detach missiles before jumping or swarm/leg attacks";
+            String burdenInfo = "Must detach missiles before jumping or swarm/leg attacks.";
             g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
             g2d.drawString(burdenInfo, typePoint, linePoint);
             linePoint += lineFeed;
@@ -414,9 +414,9 @@ public class ImageHelperBattleArmor {
         if (ba.hasDWP()) {
             String burdenInfo;
             if (ba.getJumpMP(true, true, true) > 0) {
-                burdenInfo = "must detach DWP before jumping or moving full ground speed";
+                burdenInfo = "Must detach DWP before jumping or moving full ground speed.";
             } else {
-                burdenInfo = "must detach DWP before moving full ground speed";
+                burdenInfo = "Must detach DWP before moving full ground speed.";
             }
             g2d.setFont(UnitUtil.getNewFont(g2d, burdenInfo, false, 175, 7.0f));
             g2d.drawString(burdenInfo, typePoint, linePoint);
