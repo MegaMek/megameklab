@@ -558,6 +558,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             }
         }
 
+        int type = convertEngineType(getMech().getEngine()
+                .getEngineType());
         engineType.setSelectedIndex(convertEngineType(getMech().getEngine()
                 .getEngineType()));
 
@@ -1868,7 +1870,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             String structName;
             if (getMech().isClan()) {
                 structName = EquipmentType.structureNames[getMech()
-                        .getStructureType()] + " (IS)";
+                        .getStructureType()];
+                if ((getMech().getStructureType() != EquipmentType.T_STRUCTURE_STANDARD) &&
+                        (getMech().getStructureType() != EquipmentType.T_STRUCTURE_INDUSTRIAL)) {
+                    structName = structName + " (IS)";
+                }
                 if (getMech()
                         .hasWorkingMisc(
                                 "Clan "
