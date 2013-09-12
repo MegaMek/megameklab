@@ -29,6 +29,7 @@
 	<property name="docdir" value="docs" />
 	<property name="svndir" value="svndev" />
 	<property name="util" value="packaging_utils" />
+    <property name="confdir" value="mmconf" />
 	
 	<!-- same as builddir but under svn -->
 	<property name="svnbuilddir" value="${svndir}/${builddir}" />
@@ -169,7 +170,8 @@
 				<include name="${jarfile}" />
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
-				<include name="${docdir}/" />
+                <include name="${docdir}/" />
+                <include name="${confdir}/" />
 			</fileset>
 		</copy>
 		<mkdir dir="${osxdist}/MegaMekLab.app" />
@@ -214,6 +216,7 @@
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
 				<include name="${docdir}/" />
+                <include name="${confdir}/" />
 			</fileset>
 		</copy>
 	</target>
@@ -241,6 +244,7 @@
 				<include name="${datadir}/" />
 				<include name="${docdir}/" />
 				<include name="MegaMekLab.exe" />
+                <include name="${confdir}/" />
 			</fileset>
 		</copy>
 		<copy file="${util}/megameklab.l4j.ini" todir="${windist}"/>
