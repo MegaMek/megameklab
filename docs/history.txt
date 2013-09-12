@@ -22,6 +22,7 @@ V 0.1.24-dev
 + updates for 3145 equipment and MM changes
 + Dropship print fixes
 + jumping vehicle MP not printing correctly
++ made both packaging files include the mmconf folder
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
