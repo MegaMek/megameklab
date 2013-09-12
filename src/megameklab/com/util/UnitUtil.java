@@ -200,12 +200,16 @@ public class UnitUtil {
 
         boolean isMisc = eq instanceof MiscType;
 
-        if (isMisc && eq.hasFlag(MiscType.F_PARTIAL_WING)
-                && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
+        if (isMisc
+                && eq.hasFlag(MiscType.F_PARTIAL_WING)
+                && TechConstants
+                        .isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
             return 3;
         }
-        if (isMisc && eq.hasFlag(MiscType.F_PARTIAL_WING)
-                && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
+        if (isMisc
+                && eq.hasFlag(MiscType.F_PARTIAL_WING)
+                && !TechConstants.isClan(eq.getTechLevel(unit
+                        .getTechLevelYear()))) {
             return 4;
         }
 
@@ -310,7 +314,8 @@ public class UnitUtil {
 
         for (Mounted mount : unit.getMisc()) {
             if (mount.getType().hasFlag(MiscType.F_TARGCOMP)
-                    && TechConstants.isClan(mount.getType().getTechLevel(unit.getTechLevelYear()))) {
+                    && TechConstants.isClan(mount.getType().getTechLevel(
+                            unit.getTechLevelYear()))) {
                 return true;
             }
         }
@@ -893,7 +898,8 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isFixedLocationSpreadEquipment(eq) && !(eq instanceof MiscType) && eq.hasFlag(MiscType.F_TALON)) {
+        if (UnitUtil.isFixedLocationSpreadEquipment(eq)
+                && !(eq instanceof MiscType) && eq.hasFlag(MiscType.F_TALON)) {
             return false;
         }
 
@@ -915,8 +921,8 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_MASS)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || eq.hasFlag(MiscType.F_MASH_EXTRA)
-                        || eq.hasFlag(MiscType.F_DRONE_EXTRA)
-                        || eq.hasFlag(MiscType.F_SPONSON_TURRET))) {
+                        || eq.hasFlag(MiscType.F_DRONE_EXTRA) || eq
+                            .hasFlag(MiscType.F_SPONSON_TURRET))) {
             return false;
         }
 
@@ -1296,8 +1302,9 @@ public class UnitUtil {
                     mount = cs.getMount();
                 }
 
-                if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType()) && (UnitUtil.isTSM(mount.getType())
-                        || UnitUtil.isArmorOrStructure(mount.getType()))) {
+                if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
+                        && (UnitUtil.isTSM(mount.getType()) || UnitUtil
+                                .isArmorOrStructure(mount.getType()))) {
                     Mounted newMount = new Mounted(unit, mount.getType());
                     newMount.setLocation(location, mount.isRearMounted());
                     newMount.setArmored(mount.isArmored());
@@ -1626,11 +1633,15 @@ public class UnitUtil {
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
 
-            if (unit.isClan() && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
+            if (unit.isClan()
+                    && !TechConstants.isClan(eq.getTechLevel(unit
+                            .getTechLevelYear()))) {
                 name = name + " (IS)";
             }
 
-            if (!unit.isClan() && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
+            if (!unit.isClan()
+                    && TechConstants.isClan(eq.getTechLevel(unit
+                            .getTechLevelYear()))) {
                 name = name + " (Clan)";
             }
         }
@@ -2322,13 +2333,13 @@ public class UnitUtil {
         ArrayList<String> mountList = new ArrayList<String>();
         if (internalStructure) {
             for (String struc : EquipmentType.structureNames) {
-                mountList.add("IS "+struc);
-                mountList.add("Clan "+struc);
+                mountList.add("IS " + struc);
+                mountList.add("Clan " + struc);
             }
         } else {
             for (String armor : EquipmentType.armorNames) {
-                mountList.add("IS "+armor);
-                mountList.add("Clan "+armor);
+                mountList.add("IS " + armor);
+                mountList.add("Clan " + armor);
             }
         }
 
@@ -2604,8 +2615,8 @@ public class UnitUtil {
             }
 
             if (eq.hasFlag(MiscType.F_HEAD_TURRET)
-                    && (!(unit instanceof BipedMech)
-                            || (location != Mech.LOC_CT) || ((unit instanceof BipedMech) && (((Mech) unit)
+                    && ((location != Mech.LOC_CT)
+                    || ((unit instanceof Mech) && (((Mech) unit)
                             .getCockpitType() != Mech.COCKPIT_TORSO_MOUNTED)))) {
                 return false;
             }
@@ -2900,7 +2911,8 @@ public class UnitUtil {
         int engineHeatSinkCount = UnitUtil.getBaseChassisHeatSinks(unit,
                 unit.hasCompactHeatSinks());
         for (Mounted mount : unit.getMisc()) {
-            if (UnitUtil.isHeatSink(mount) && (mount.getLocation() == Entity.LOC_NONE)) {
+            if (UnitUtil.isHeatSink(mount)
+                    && (mount.getLocation() == Entity.LOC_NONE)) {
                 if (engineHeatSinkCount > 0) {
                     engineHeatSinkCount--;
                     continue;
@@ -2960,7 +2972,8 @@ public class UnitUtil {
                     || etype.hasFlag(MiscType.F_MASC)) {
                 continue;
             }
-            if (!UnitUtil.isLegal(unit, etype.getTechLevel(unit.getTechLevelYear()))) {
+            if (!UnitUtil.isLegal(unit,
+                    etype.getTechLevel(unit.getTechLevelYear()))) {
                 toRemove.add(m);
             }
         }
@@ -3045,16 +3058,16 @@ public class UnitUtil {
                         && ((weapon.getType() instanceof ACWeapon)
                                 || (weapon.getType() instanceof GaussWeapon)
                                 || (weapon.getType() instanceof LBXACWeapon)
-                                || (weapon.getType() instanceof UACWeapon)
-                                || (weapon.getType() instanceof PPCWeapon))) {
+                                || (weapon.getType() instanceof UACWeapon) || (weapon
+                                    .getType() instanceof PPCWeapon))) {
                     leftACGaussPPC = true;
                 }
                 if ((weapon.getLocation() == Mech.LOC_RARM)
                         && ((weapon.getType() instanceof ACWeapon)
                                 || (weapon.getType() instanceof GaussWeapon)
                                 || (weapon.getType() instanceof LBXACWeapon)
-                                || (weapon.getType() instanceof UACWeapon)
-                                || (weapon.getType() instanceof PPCWeapon))) {
+                                || (weapon.getType() instanceof UACWeapon) || (weapon
+                                    .getType() instanceof PPCWeapon))) {
                     rightACGaussPPC = true;
                 }
             }

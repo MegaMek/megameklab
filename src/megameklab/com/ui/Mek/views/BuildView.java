@@ -275,7 +275,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
             if (eq.getType().isSpreadable() || eq.isSplitable()) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMech());
-                if (critSpace[Mech.LOC_RT] >= 1) {
+                if ((critSpace[Mech.LOC_RT] >= 1) && UnitUtil.isValidLocation(unit, eq.getType(), Mech.LOC_RT)) {
                     JMenu rtMenu = new JMenu(locations[Mech.LOC_RT]);
 
                     if (critSpace[Mech.LOC_RT] >= totalCrits) {
@@ -311,7 +311,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     popup.add(rtMenu);
                 }
 
-                if (critSpace[Mech.LOC_RARM] >= totalCrits) {
+                if ((critSpace[Mech.LOC_RARM] >= totalCrits) && UnitUtil.isValidLocation(unit, eq.getType(), Mech.LOC_RARM)) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_RARM]));
                     item.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
@@ -321,7 +321,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     popup.add(item);
                 }
 
-                if (critSpace[Mech.LOC_LT] >= 1) {
+                if ((critSpace[Mech.LOC_LT] >= 1) && UnitUtil.isValidLocation(unit, eq.getType(), Mech.LOC_LT)) {
                     JMenu ltMenu = new JMenu(locations[Mech.LOC_LT]);
 
                     if (critSpace[Mech.LOC_LT] >= totalCrits) {
@@ -358,7 +358,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
                 }
 
-                if (critSpace[Mech.LOC_LARM] >= totalCrits) {
+                if ((critSpace[Mech.LOC_LARM] >= totalCrits)  && UnitUtil.isValidLocation(unit, eq.getType(), Mech.LOC_LARM)) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_LARM]));
                     item.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
@@ -371,7 +371,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             } else {
                 for (int location = 0; location < unit.locations(); location++) {
 
-                    if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
+                    if ((UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits)  && UnitUtil.isValidLocation(unit, eq.getType(), location)) {
                         item = new JMenuItem("Add to " + locations[location]);
 
                         final int loc = location;
