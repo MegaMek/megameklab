@@ -25,6 +25,8 @@ V 0.1.24-dev
 + made both packaging files include the mmconf folder
 + allow head turrets on quad mechs
 + fix issue with IS of mixed tech clan base mechs
++ Updated MM jar file
++ Updated UnitSelectorDialog to be compatible with new MM jar
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
