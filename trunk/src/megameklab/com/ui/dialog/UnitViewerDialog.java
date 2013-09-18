@@ -125,7 +125,7 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         unitModel = new MechTableModel();
         initComponents();
         setLocationRelativeTo(parentFrame);
-        asd = new AdvancedSearchDialog(parentFrame);
+        asd = new AdvancedSearchDialog(parentFrame, 35000);
         populateUnits();
         setVisible(true);
     }
