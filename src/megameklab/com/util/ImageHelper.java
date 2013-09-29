@@ -687,6 +687,25 @@ public class ImageHelper {
         g2d.setFont(font);
     }
 
+    public static void printNavalC3Name(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
+        Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());
+        HashMap<TextAttribute, Integer> attrMap = new HashMap<TextAttribute, Integer>();
+        attrMap.put(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER);
+        int stringWidth;
+        if (isArmored) {
+            g2d.drawString("O Naval C   CPU"+(mixed?" (IS)":""), lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "O Naval C", c3Font);
+        } else {
+            g2d.drawString("Naval C   CPU"+(mixed?" (IS)":""), lineStart, linePoint);
+            stringWidth = ImageHelper.getStringWidth(g2d, "Naval C", c3Font);
+        }
+        c3Font = font.deriveFont(attrMap);
+        g2d.setFont(c3Font);
+        g2d.drawString("3", lineStart + stringWidth, linePoint);
+        g2d.setFont(font);
+    }
+
+
     public static void printC3EmName(Graphics2D g2d, float lineStart, float linePoint, Font font, boolean isArmored, boolean mixed) {
 
         Font c3Font = font.deriveFont(font.getStyle(), font.getSize2D());

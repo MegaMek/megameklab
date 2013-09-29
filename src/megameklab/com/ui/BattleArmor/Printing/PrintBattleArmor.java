@@ -186,7 +186,7 @@ public class PrintBattleArmor implements Printable {
         if ((jumpMP > 0) && (umuMP == 0)) {
             font = UnitUtil.deriveFont(true, 8.0f);
             g2d.setFont(font);
-            String movment = "Jump: ";
+            String movment = String.format("%1$s: ", battleArmor.getMovementModeAsString());
             g2d.drawString(movment, 143, 131.3f + currentMargin);
 
             float positionX = 143 + ImageHelper.getStringWidth(g2d, movment, font);

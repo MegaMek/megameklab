@@ -41,6 +41,7 @@ import megamek.common.weapons.CLSmallPulseLaser;
 import megamek.common.weapons.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
+import megamek.common.weapons.ISBombastLaser;
 import megamek.common.weapons.ISC3M;
 import megamek.common.weapons.ISC3RemoteSensorLauncher;
 import megamek.common.weapons.ISHGaussRifle;
@@ -62,6 +63,7 @@ import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MGWeapon;
 import megamek.common.weapons.MRMWeapon;
+import megamek.common.weapons.MekMortarWeapon;
 import megamek.common.weapons.NarcWeapon;
 import megamek.common.weapons.PPCWeapon;
 import megamek.common.weapons.RLWeapon;
@@ -221,7 +223,7 @@ public class StringUtils {
             } else if (weapon.getDamage() < 0) {
                 if (weapon instanceof StreakSRMWeapon) {
                     info = "2/Msl [M,C]";
-                } else if (weapon instanceof SRMWeapon) {
+                } else if ((weapon instanceof SRMWeapon) || (weapon instanceof MekMortarWeapon)) {
                     info = "2/Msl [M,C,S]";
                 } else if ((weapon instanceof StreakLRMWeapon)) {
                     info = "1/Msl [M,C]";
@@ -231,6 +233,8 @@ public class StringUtils {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
+                } else if (weapon instanceof ISBombastLaser) {
+                    info = "12 [DE,V]";
                 } else if (weapon instanceof ISSmallVariableSpeedPulseLaser) {
                     info = "5/4/3 [P,V]";
                 } else if (weapon instanceof ISMediumVariableSpeedPulseLaser) {
@@ -294,8 +298,11 @@ public class StringUtils {
                     info += "DE,";
                 }
 
-                if ((weapon instanceof LBXACWeapon) || (weapon instanceof ISSilverBulletGauss) || (weapon instanceof CLBALBX)) {
+                if ((weapon instanceof LBXACWeapon) || (weapon instanceof ISSilverBulletGauss)) {
                     info += "C/F/";
+                }
+                if (weapon instanceof CLBALBX) {
+                    info += "C,F,";
                 }
 
                 if (UnitUtil.hasSwitchableAmmo(weapon)) {
@@ -382,11 +389,11 @@ public class StringUtils {
             } else if (weapon.getDamage() < 0) {
                 if (weapon instanceof SRMWeapon) {
                     info = "[M,C]";
-                } else if ((weapon instanceof LRMWeapon)) {
+                } else if ((weapon instanceof LRMWeapon) || (weapon instanceof MekMortarWeapon)) {
                     info = "[M,C,S]";
                 } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
                     info = "[M,C]";
-                } else if (weapon instanceof ISSnubNosePPC) {
+                } else if ((weapon instanceof ISSnubNosePPC) || (weapon instanceof ISBombastLaser)) {
                     info = "[DE,V]";
                 } else if (weapon instanceof ISSmallVariableSpeedPulseLaser) {
                     info = "[P,V]";
