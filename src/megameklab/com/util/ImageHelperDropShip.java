@@ -36,8 +36,10 @@ import megamek.common.TechConstants;
 import megamek.common.weapons.BayWeapon;
 
 public class ImageHelperDropShip {
-    public static final String[] LOCATION_ABBRS = { "N", "LF", "RF", "A", "FL",
+    public static final String[] LOCATION_ABBRS_SPHEROID = { "N", "LF", "RF", "A", "FL",
             "FR", "AL", "AR", "FL/FR", "AL/AR" };
+    public static final String[] LOCATION_ABBRS_AERODYNE = { "N", "LF", "RF", "A", "LW",
+        "RW", "LW(R)", "RW(R)", "LW/RW", "LW(R)/RW(R)" };
     public static final int[] LOCATION_PRINT = { 0, 1, 2, 4, 5, 8, 9, 6, 7, 3 };
     public static final int LOC_FL = 4;
     public static final int LOC_FR = 5;
@@ -238,17 +240,18 @@ public class ImageHelperDropShip {
         boolean newLineNeeded = false;
         boolean hasCapital = false;
         boolean hasSubCapital = false;
+        String[] locAbbr = dropship.isSpheroid()?LOCATION_ABBRS_SPHEROID:LOCATION_ABBRS_AERODYNE;
 
         ArrayList<Vector<EquipmentInfo>> equipmentLocations = new ArrayList<Vector<EquipmentInfo>>(
-                ImageHelperDropShip.LOCATION_ABBRS.length);
+                locAbbr.length);
         ArrayList<Vector<EquipmentInfo>> capitalEquipmentLocations = new ArrayList<Vector<EquipmentInfo>>(
-                ImageHelperDropShip.LOCATION_ABBRS.length);
+                locAbbr.length);
 
         if (dropship.getMovementMode() == EntityMovementMode.AERODYNE) {
             linePoint = 201;
         }
 
-        for (int pos = 0; pos < ImageHelperDropShip.LOCATION_ABBRS.length; pos++) {
+        for (int pos = 0; pos < locAbbr.length; pos++) {
             equipmentLocations.add(pos, new Vector<EquipmentInfo>());
             capitalEquipmentLocations.add(pos, new Vector<EquipmentInfo>());
         }
@@ -473,7 +476,7 @@ public class ImageHelperDropShip {
                 g2d.setFont(font);
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(
+                    ImageHelper.printNavalC3Name(
                             g2d,
                             typePoint,
                             linePoint,
@@ -563,7 +566,7 @@ public class ImageHelperDropShip {
                     nameSize += 10;
                 }
 
-                String location = ImageHelperDropShip.LOCATION_ABBRS[LOCATION_PRINT[pos]];
+                String location = locAbbr[LOCATION_PRINT[pos]];
 
                 ImageHelper.printCenterString(g2d, location, font,
                         locPoint + 5, linePoint);
@@ -793,7 +796,7 @@ public class ImageHelperDropShip {
                 g2d.setFont(font);
 
                 if (eqi.c3Level == EquipmentInfo.C3I) {
-                    ImageHelper.printC3iName(
+                    ImageHelper.printNavalC3Name(
                             g2d,
                             typePoint,
                             linePoint,
@@ -866,7 +869,7 @@ public class ImageHelperDropShip {
                     typePoint -= 5;
                     nameSize += 10;
                 }
-                String location = ImageHelperDropShip.LOCATION_ABBRS[LOCATION_PRINT[pos]];
+                String location = locAbbr[LOCATION_PRINT[pos]];
 
                 ImageHelper.printCenterString(g2d, location, font,
                         locPoint + 5, linePoint);
@@ -996,7 +999,7 @@ public class ImageHelperDropShip {
             }
             if (eqi.c3Level == EquipmentInfo.C3I) {
                 ImageHelper
-                        .printC3iName(
+                        .printNavalC3Name(
                                 g2d,
                                 pointX,
                                 linePoint,

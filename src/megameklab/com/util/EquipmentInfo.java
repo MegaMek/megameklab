@@ -460,10 +460,12 @@ public class EquipmentInfo {
             heat = 2;
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
             heat = 5;
-        } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TALON)) {
+        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_TALON) || (mount.getType().hasFlag(MiscType.F_TRACKS)))) {
             loc = "Legs";
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
             loc = "LT/RT";
+        } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_VOIDSIG) || mount.getType().hasFlag(MiscType.F_CHAMELEON_SHIELD) || mount.getType().hasFlag(MiscType.F_NULLSIG) || mount.getType().hasFlag(MiscType.F_BLUE_SHIELD))) {
+            loc = "*";
         }
 
         isBAMineLayer = (mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_MINE) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT);
