@@ -70,7 +70,7 @@ public class ImageHelperBattleArmor {
 
     public static void printBAArmor(BattleArmor ba, Graphics2D g2d, float lineFeed, float offset) {
         float positionX = 35;
-        float positionY = 187 + offset;
+        float positionY = 190 + offset;
         String armorString = "Armor:";
         StringBuffer buffer = new StringBuffer();
 
