@@ -27,6 +27,17 @@ V 0.1.24-dev
 + fix issue with IS of mixed tech clan base mechs
 + Updated MM jar file
 + Updated UnitSelectorDialog to be compatible with new MM jar
++ Battle Armor with VTOL movement currently prints it out as Jump
++ BA LB-X damage type should be (DB,C,F) 
++ “Mortar” should be “ ’Mech Mortar”, Damage listed is “0 (S)”, should be "2/msl (M,C,S)"?
++ Bombast Laser damage type needs to be (DE,V).
++ Tracks location on 'Mechs should be "Legs"
++ Void Signature System’s location in the stat block should be "*" because of
+    spread across locations, same for null sig, CLPS and blue shield
++ Chem Laser damage type should be (DE) not (DE,S)
++ Naval C3 (in DS / Systemwide tag) is currently printing out as "Improved C3"
++ Aerodyne DropShip now has correct arc descriptions
+ 
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
