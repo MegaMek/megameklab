@@ -139,12 +139,12 @@ public class ImageHelperVehicle {
 
         int qtyPoint = 26+xoffset;
         int typePoint = 38+xoffset;
-        int locPoint = 125+xoffset;
+        int locPoint = 127+xoffset;
         int damagePoint = 150+xoffset;
         int minPoint = 167+xoffset;
-        int shtPoint = 178+xoffset;
-        int medPoint = 199+xoffset;
-        int longPoint = 212+xoffset;
+        int shtPoint = 182+xoffset;
+        int medPoint = 198+xoffset;
+        int longPoint = 213+xoffset;
         float maxHeight = 130.3f;
         float linePoint = 212f + yoffset;
 
