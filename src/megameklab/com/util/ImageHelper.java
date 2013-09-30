@@ -300,7 +300,7 @@ public class ImageHelper {
     public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d, int leftMargin, int topMargin) {
         int qtyPoint = 26 + leftMargin;
         int typePoint = 38 + leftMargin;
-        int locPoint = 105 + leftMargin;
+        int locPoint = 109 + leftMargin;
         int heatPoint = 118 + leftMargin;
         int damagePoint = 145 + leftMargin;
         int minPoint = 167 + leftMargin;
@@ -388,7 +388,7 @@ public class ImageHelper {
                 String name = eqi.name.trim();
 
                 Font nameFont = UnitUtil.getNewFont(g2d, name, false, 60, 7.0f);
-                if(eqi.isDestroyed) {
+                if (eqi.isDestroyed) {
                     nameFont = nameFont.deriveFont(strikeThroughAttr);
                 }
                 g2d.setFont(nameFont);
@@ -410,10 +410,11 @@ public class ImageHelper {
                 } else {
                     g2d.drawString(name, typePoint, linePoint);
                 }
-                font = UnitUtil.deriveFont(7.0f);
-                g2d.setFont(font);
+                Font locFont = UnitUtil.getNewFont(g2d, eqi.loc, false, 15, 7.0f);
+                g2d.setFont(locFont);
 
                 ImageHelper.printCenterString(g2d, eqi.loc, font, locPoint, linePoint);
+                g2d.setFont(UnitUtil.deriveFont(7));
                 if (eqi.isWeapon) {
                     g2d.drawString(Integer.toString(eqi.heat), heatPoint, linePoint);
 
