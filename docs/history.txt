@@ -37,7 +37,8 @@ V 0.1.24-dev
 + Chem Laser damage type should be (DE) not (DE,S)
 + Naval C3 (in DS / Systemwide tag) is currently printing out as "Improved C3"
 + Aerodyne DropShip now has correct arc descriptions
- 
++ fix smallcraft location abbreviations
++ fix offsets in location printing for tanks
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated

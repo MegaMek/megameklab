@@ -233,8 +233,6 @@ public class StringUtils {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
-                } else if (weapon instanceof ISBombastLaser) {
-                    info = "12 [DE,V]";
                 } else if (weapon instanceof ISSmallVariableSpeedPulseLaser) {
                     info = "5/4/3 [P,V]";
                 } else if (weapon instanceof ISMediumVariableSpeedPulseLaser) {
@@ -297,7 +295,9 @@ public class StringUtils {
                 } else if (weapon.hasFlag(WeaponType.F_ENERGY) || weapon.hasFlag(WeaponType.F_PLASMA)) {
                     info += "DE,";
                 }
-
+                if (weapon instanceof ISBombastLaser) {
+                    info += "V,";
+                }
                 if ((weapon instanceof LBXACWeapon) || (weapon instanceof ISSilverBulletGauss)) {
                     info += "C/F/";
                 }

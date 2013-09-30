@@ -38,7 +38,7 @@ public class ImageHelperAero {
     private static final String[] LOCATION_ABBRS =
         { "N", "LW", "RW", "A", "WG", "BD" };
     private static String[] LOCATION_ABBRS_SMALLCRAFT =
-        { "NOS", "LS", "RS", "AFT" };
+        { "N", "LS", "RS", "A" };
 
     public static String getLocationAbbrs(int pos) {
         return LOCATION_ABBRS[pos];
