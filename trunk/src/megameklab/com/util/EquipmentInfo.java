@@ -26,6 +26,7 @@ import megamek.common.FixedWingSupport;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Sensor;
+import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.AR10Weapon;
@@ -359,6 +360,11 @@ public class EquipmentInfo {
         loc = unit.getLocationAbbr(mount.getLocation());
         if (mount.isRearMounted()) {
             name += "(R)";
+        }
+        if ((unit instanceof Tank) && !((Tank)unit).hasNoDualTurret()) {
+            if (loc.equals("TU")) {
+                loc = "RT";
+            }
         }
         isSponsonMounted = mount.isSponsonTurretMounted();
         isPintleMounted = mount.isPintleTurretMounted();
