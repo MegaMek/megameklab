@@ -276,7 +276,6 @@ public class PrintLargeSupportVehicle implements Printable {
         g2d.setFont(font);
         g2d.drawString(techBase, 177 + xoffset, 145 + yoffset);
 
-
         float nextDataLine = 153 + yoffset;
         float startLine = 188 + xoffset;
         float lineFeed = 8;
@@ -393,10 +392,12 @@ public class PrintLargeSupportVehicle implements Printable {
 
         font = UnitUtil.deriveFont(true, 11.0f);
         g2d.setFont(font);
-        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank), g2d.getFont(), 470 + xoffset, 48 + yoffset);
-        //g2d.drawString(
-                //ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank),
-                //455 + xoffset, 48 + yoffset);
+        ImageHelper.printCenterString(g2d,
+                ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank),
+                g2d.getFont(), 470 + xoffset, 48 + yoffset);
+        // g2d.drawString(
+        // ImageHelperVehicle.getVehicleArmorTypeString(largesupporttank),
+        // 455 + xoffset, 48 + yoffset);
         font = UnitUtil.deriveFont(true, 8.0f);
         g2d.setFont(font);
 
@@ -494,33 +495,46 @@ public class PrintLargeSupportVehicle implements Printable {
 
     private void printFrontArmor(Graphics2D g2d, int totalArmor,
             boolean secondImage) {
-        Vector<float[]> pipPlotter = new Vector<float[]>(130, 1);
+        Vector<float[]> pipPlotter = new Vector<float[]>(140, 1);
         if (!largesupporttank.hasNoDualTurret()) {
-            float baseX = 430f;
-            float baseY = 84f;
-            float pointX = baseX;
-            float pointY = baseY;
+            float[] row1Start = { 432f, 84f };
+            float[] row1End = { 538f, 84f };
+            int pipsFirstLine = Math.max(22,
+                    (int) (Math.ceil((double) totalArmor / 5)) + 1);
+            // float shiftX = (row1End[0]-row1Start[0])/pipsFirstLine;
+            float fontSize = 6.5f;
             float shiftX = 5f;
+            if (totalArmor >= 130) {
+                fontSize = 5.5f;
+                shiftX = 4.3f;
+            } else if (totalArmor >= 100) {
+                fontSize = 6f;
+                shiftX = 4.5f;
+            }
             float shiftY = 5f;
-            int pipsPerLine = 22;
-
-            if (secondImage) {
-                baseY += secondPageMargin;
-            }
-
-            for (int lineCount = 0; lineCount < 6; lineCount++) {
-
-                for (int point = 0; point < pipsPerLine; point++) {
-                    pipPlotter.add(new float[] { pointX, pointY });
-                    pointX += shiftX;
-                }
-                pipsPerLine -= 2;
-                baseX += shiftX;
-                pointY += shiftY;
-                pointX = baseX;
-            }
-            printArmorPoints(g2d, pipPlotter, totalArmor, 6.5f);
-
+            float[] row2Start = { row1Start[0] + shiftX, row1Start[1] + shiftY };
+            float[] row2End = { row1End[0] - shiftX, row1Start[1] + shiftY };
+            float[] row3Start = { row2Start[0] + shiftX, row2Start[1] + shiftY };
+            float[] row3End = { row2End[0] - shiftX, row2Start[1] + shiftY };
+            float[] row4Start = { row3Start[0] + shiftX, row3Start[1] + shiftY };
+            float[] row4End = { row3End[0] - shiftX, row3Start[1] + shiftY };
+            float[] row5Start = { row4Start[0] + shiftX, row4Start[1] + shiftY };
+            float[] row5End = { row4End[0] - shiftX, row4Start[1] + shiftY };
+            float[] row6Start = { row5Start[0] + shiftX, row5Start[1] + shiftY };
+            float[] row6End = { row5End[0] - shiftX, row5Start[1] + shiftY };
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row1Start,
+                    row1End, pipsFirstLine));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row2Start,
+                    row2End, pipsFirstLine - 2));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row3Start,
+                    row3End, pipsFirstLine - 4));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row4Start,
+                    row4End, pipsFirstLine - 6));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row5Start,
+                    row5End, pipsFirstLine - 8));
+            pipPlotter.addAll(ImageHelper.getPointsAlongLine(row6Start,
+                    row6End, pipsFirstLine - 10));
+            printArmorPoints(g2d, pipPlotter, totalArmor, fontSize);
         } else {
             float baseX = 435f;
             float baseY = 79f;
@@ -792,35 +806,63 @@ public class PrintLargeSupportVehicle implements Printable {
             boolean secondImage) {
 
         if (!largesupporttank.hasNoDualTurret()) {
-            float baseX = 425.8f;
-            float baseY = 90f;
-            float pointX = baseX;
-            float pointY = baseY;
-            float shiftX = 5.5f;
-            float shiftY = 5.5f;
-            int pipsPerLine = 1;
+            if (totalArmor <= 77) {
+                float baseX = 425.8f;
+                float baseY = 90f;
+                float pointX = baseX;
+                float pointY = baseY;
+                float shiftX = 5.5f;
+                float shiftY = 5.5f;
+                int pipsPerLine = 1;
 
-            Vector<float[]> pipPlotter = new Vector<float[]>(100, 1);
+                Vector<float[]> pipPlotter = new Vector<float[]>(100, 1);
 
-            for (int lineCount = 0; lineCount < 22; lineCount++) {
+                for (int lineCount = 0; lineCount < 22; lineCount++) {
 
-                for (int point = 0; point < pipsPerLine; point++) {
-                    pipPlotter.add(new float[] { pointX, pointY });
-                    pointX += shiftX;
+                    for (int point = 0; point < pipsPerLine; point++) {
+                        pipPlotter.add(new float[] { pointX, pointY });
+                        pointX += shiftX;
+                    }
+                    if (lineCount < 4) {
+                        pipsPerLine++;
+                    }
+                    if ((lineCount == 7) || (lineCount == 12)) {
+                        pipsPerLine--;
+                    }
+                    baseX -= 0.35f;
+                    pointX = baseX;
+                    pointY += shiftY;
                 }
-                if (lineCount < 4) {
-                    pipsPerLine++;
+                printArmorPoints(g2d, pipPlotter, totalArmor, 6.5f);
+            } else {
+                float baseX = 425.8f;
+                float baseY = 88f;
+                float pointX = baseX;
+                float pointY = baseY;
+                float shiftX = 4.5f;
+                float shiftY = 4.5f;
+                int pipsPerLine = 1;
+
+                Vector<float[]> pipPlotter = new Vector<float[]>(127, 1);
+
+                for (int lineCount = 0; lineCount < 28; lineCount++) {
+
+                    for (int point = 0; point < pipsPerLine; point++) {
+                        pipPlotter.add(new float[] { pointX, pointY });
+                        pointX += shiftX;
+                    }
+                    if (lineCount < 5) {
+                        pipsPerLine++;
+                    }
+                    if ((lineCount == 9) || (lineCount == 18)) {
+                        pipsPerLine--;
+                    }
+                    baseX -= 0.35f;
+                    pointX = baseX;
+                    pointY += shiftY;
                 }
-                if ((lineCount == 7) || (lineCount == 12)) {
-                    pipsPerLine--;
-                }
-                baseX -= 0.35f;
-                pointX = baseX;
-                pointY += shiftY;
+                printArmorPoints(g2d, pipPlotter, totalArmor, 5.5f);
             }
-
-            printArmorPoints(g2d, pipPlotter, totalArmor, 6.5f);
-
         } else if (totalArmor <= 54) {
             float baseX = 426.5f;
             float baseY = 114f;
@@ -897,36 +939,67 @@ public class PrintLargeSupportVehicle implements Printable {
             boolean secondImage) {
 
         if (!largesupporttank.hasNoDualTurret()) {
-            float baseX = 416f;
-            float baseY = 217f;
-            float pointX = baseX;
-            float pointY = baseY;
-            float shiftX = 5.5f;
-            float shiftY = 5.5f;
-            int pipsPerLine = 3;
+            if (totalArmor <= 67) {
+                float baseX = 416f;
+                float baseY = 217f;
+                float pointX = baseX;
+                float pointY = baseY;
+                float shiftX = 5.5f;
+                float shiftY = 5.5f;
+                int pipsPerLine = 3;
 
-            Vector<float[]> pipPlotter = new Vector<float[]>(57, 1);
+                Vector<float[]> pipPlotter = new Vector<float[]>(67, 1);
 
-            for (int lineCount = 0; lineCount < 17; lineCount++) {
-                if ((lineCount == 3) || (lineCount == 9)) {
-                    pipsPerLine++;
-                }
-                if (lineCount > 13) {
-                    pipsPerLine--;
-                }
-                if (lineCount > 14) {
-                    pipsPerLine--;
-                }
-                for (int point = 0; point < pipsPerLine; point++) {
-                    pipPlotter.add(new float[] { pointX, pointY });
-                    pointX += shiftX;
+                for (int lineCount = 0; lineCount < 17; lineCount++) {
+                    if ((lineCount == 3) || (lineCount == 9)) {
+                        pipsPerLine++;
+                    }
+                    if (lineCount > 13) {
+                        pipsPerLine--;
+                    }
+                    if (lineCount > 14) {
+                        pipsPerLine--;
+                    }
+                    for (int point = 0; point < pipsPerLine; point++) {
+                        pipPlotter.add(new float[] { pointX, pointY });
+                        pointX += shiftX;
+                    }
+
+                    pointX = baseX;
+                    pointY += shiftY;
                 }
 
-                pointX = baseX;
-                pointY += shiftY;
+                printArmorPoints(g2d, pipPlotter, totalArmor, 6.5f);
+
+            } else {
+                float baseX = 416f;
+                float baseY = 217.5f;
+                float pointX = baseX;
+                float pointY = baseY;
+                float shiftX = 4.5f;
+                float shiftY = 4.5f;
+                int pipsPerLine = 4;
+
+                Vector<float[]> pipPlotter = new Vector<float[]>(96, 1);
+
+                for (int lineCount = 0; lineCount < 23; lineCount++) {
+                    if ((lineCount == 3) || (lineCount == 9)) {
+                        pipsPerLine++;
+                    }
+                    if (lineCount > 16) {
+                        pipsPerLine -= 2;
+                    }
+                    for (int point = 0; point < pipsPerLine; point++) {
+                        pipPlotter.add(new float[] { pointX, pointY });
+                        pointX += shiftX;
+                    }
+
+                    pointX = baseX;
+                    pointY += shiftY;
+                }
+
+                printArmorPoints(g2d, pipPlotter, totalArmor, 5.5f);
             }
-
-            printArmorPoints(g2d, pipPlotter, totalArmor, 6.5f);
         } else if (totalArmor <= 57) {
             float baseX = 419.5f;
             float baseY = 216f;
@@ -997,35 +1070,64 @@ public class PrintLargeSupportVehicle implements Printable {
             boolean secondImage) {
 
         if (!largesupporttank.hasNoDualTurret()) {
-            float baseX = 541.7f;
-            float baseY = 90f;
-            float pointX = baseX;
-            float pointY = baseY;
-            float shiftX = 5.5f;
-            float shiftY = 5.5f;
-            int pipsPerLine = 1;
+            if (totalArmor <= 77) {
+                float baseX = 541.8f;
+                float baseY = 90f;
+                float pointX = baseX;
+                float pointY = baseY;
+                float shiftX = 5.5f;
+                float shiftY = 5.5f;
+                int pipsPerLine = 1;
 
-            Vector<float[]> pipPlotter = new Vector<float[]>(100, 1);
+                Vector<float[]> pipPlotter = new Vector<float[]>(100, 1);
 
-            for (int lineCount = 0; lineCount < 22; lineCount++) {
+                for (int lineCount = 0; lineCount < 22; lineCount++) {
 
-                for (int point = 0; point < pipsPerLine; point++) {
-                    pipPlotter.add(new float[] { pointX, pointY });
-                    pointX -= shiftX;
+                    for (int point = 0; point < pipsPerLine; point++) {
+                        pipPlotter.add(new float[] { pointX, pointY });
+                        pointX -= shiftX;
+                    }
+                    if (lineCount < 4) {
+                        pipsPerLine++;
+                    }
+                    if ((lineCount == 7) || (lineCount == 12)) {
+                        pipsPerLine--;
+                    }
+                    baseX += 0.35f;
+                    pointX = baseX;
+                    pointY += shiftY;
                 }
-                if (lineCount < 4) {
-                    pipsPerLine++;
+
+                printArmorPoints(g2d, pipPlotter, totalArmor, 6.5f);
+            } else {
+                float baseX = 542.5f;
+                float baseY = 88f;
+                float pointX = baseX;
+                float pointY = baseY;
+                float shiftX = 4.5f;
+                float shiftY = 4.5f;
+                int pipsPerLine = 1;
+
+                Vector<float[]> pipPlotter = new Vector<float[]>(127, 1);
+
+                for (int lineCount = 0; lineCount < 28; lineCount++) {
+
+                    for (int point = 0; point < pipsPerLine; point++) {
+                        pipPlotter.add(new float[] { pointX, pointY });
+                        pointX -= shiftX;
+                    }
+                    if (lineCount < 5) {
+                        pipsPerLine++;
+                    }
+                    if ((lineCount == 9) || (lineCount == 18)) {
+                        pipsPerLine--;
+                    }
+                    baseX += 0.35f;
+                    pointX = baseX;
+                    pointY += shiftY;
                 }
-                if ((lineCount == 7) || (lineCount == 12)) {
-                    pipsPerLine--;
-                }
-                baseX += 0.35f;
-                pointX = baseX;
-                pointY += shiftY;
+                printArmorPoints(g2d, pipPlotter, totalArmor, 5.5f);
             }
-
-            printArmorPoints(g2d, pipPlotter, totalArmor, 6.5f);
-
         } else if (totalArmor <= 54) {
             float baseX = 540.5f;
             float baseY = 114f;
@@ -1099,36 +1201,67 @@ public class PrintLargeSupportVehicle implements Printable {
     private void printRearRightArmor(Graphics2D g2d, int totalArmor,
             boolean secondImage) {
         if (!largesupporttank.hasNoDualTurret()) {
-            float baseX = 551f;
-            float baseY = 217f;
-            float pointX = baseX;
-            float pointY = baseY;
-            float shiftX = 5.5f;
-            float shiftY = 5.5f;
-            int pipsPerLine = 3;
+            if (totalArmor <= 67) {
+                float baseX = 551f;
+                float baseY = 217f;
+                float pointX = baseX;
+                float pointY = baseY;
+                float shiftX = 5.5f;
+                float shiftY = 5.5f;
+                int pipsPerLine = 3;
 
-            Vector<float[]> pipPlotter = new Vector<float[]>(57, 1);
+                Vector<float[]> pipPlotter = new Vector<float[]>(67, 1);
 
-            for (int lineCount = 0; lineCount < 17; lineCount++) {
-                if ((lineCount == 3) || (lineCount == 9)) {
-                    pipsPerLine++;
-                }
-                if (lineCount > 13) {
-                    pipsPerLine--;
-                }
-                if (lineCount > 14) {
-                    pipsPerLine--;
-                }
-                for (int point = 0; point < pipsPerLine; point++) {
-                    pipPlotter.add(new float[] { pointX, pointY });
-                    pointX -= shiftX;
+                for (int lineCount = 0; lineCount < 17; lineCount++) {
+                    if ((lineCount == 3) || (lineCount == 9)) {
+                        pipsPerLine++;
+                    }
+                    if (lineCount > 13) {
+                        pipsPerLine--;
+                    }
+                    if (lineCount > 14) {
+                        pipsPerLine--;
+                    }
+                    for (int point = 0; point < pipsPerLine; point++) {
+                        pipPlotter.add(new float[] { pointX, pointY });
+                        pointX -= shiftX;
+                    }
+
+                    pointX = baseX;
+                    pointY += shiftY;
                 }
 
-                pointX = baseX;
-                pointY += shiftY;
+                printArmorPoints(g2d, pipPlotter, totalArmor, 6.5f);
+
+            } else {
+                float baseX = 552f;
+                float baseY = 217.5f;
+                float pointX = baseX;
+                float pointY = baseY;
+                float shiftX = 4.5f;
+                float shiftY = 4.5f;
+                int pipsPerLine = 4;
+
+                Vector<float[]> pipPlotter = new Vector<float[]>(96, 1);
+
+                for (int lineCount = 0; lineCount < 23; lineCount++) {
+                    if ((lineCount == 3) || (lineCount == 9)) {
+                        pipsPerLine++;
+                    }
+                    if (lineCount > 16) {
+                        pipsPerLine -= 2;
+                    }
+                    for (int point = 0; point < pipsPerLine; point++) {
+                        pipPlotter.add(new float[] { pointX, pointY });
+                        pointX -= shiftX;
+                    }
+
+                    pointX = baseX;
+                    pointY += shiftY;
+                }
+
+                printArmorPoints(g2d, pipPlotter, totalArmor, 5.5f);
             }
-
-            printArmorPoints(g2d, pipPlotter, totalArmor, 6.5f);
         } else if (totalArmor <= 57) {
             float baseX = 547.5f;
             float baseY = 216f;

@@ -258,15 +258,6 @@ public class ImageHelperVehicle {
 
                 String location = tank.getLocationAbbr(pos);
 
-                if (location.equalsIgnoreCase("TU")) {
-                    if (!tank.hasNoDualTurret()) {
-                        location = "RT";
-                    } else {
-                        location = "T";
-                    }
-                } else if (location.equalsIgnoreCase("TU2")) {
-                    location = "FT";
-                }
                 // this is hacky, but works, left side and right side abbrevs
                 // are
                 // LS and RS, which results in "LSpo" and "RSpo"
@@ -576,9 +567,6 @@ public class ImageHelperVehicle {
 
                 String location = tank.getLocationAbbr(pos);
 
-                if (location.equalsIgnoreCase("TU")) {
-                    location = "T";
-                }
                 g2d.drawString(location, locPoint, linePoint);
                 if (eqi.isWeapon) {
                     if (eqi.isMML) {
@@ -842,9 +830,6 @@ public class ImageHelperVehicle {
 
                 String location = tank.getLocationAbbr(pos);
 
-                if (location.equalsIgnoreCase("TU")) {
-                    location = "T";
-                }
                 g2d.drawString(location, locPoint, linePoint);
 
                 if (eqi.isWeapon) {
