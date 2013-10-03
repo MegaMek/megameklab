@@ -972,6 +972,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         } else if (combo.getSelectedIndex() == 2) {
             // add second turret
             getTank().setHasNoDualTurret(false);
+            // if no first turret, add that
+            if (getTank().hasNoTurret()) {
+                int turretLoc = Tank.LOC_TURRET;
+                if (unit instanceof VTOL) {
+                    turretLoc = VTOL.LOC_TURRET;
+                }
+                getTank().setHasNoTurret(false);
+                getTank().initializeArmor(0, turretLoc);
+                getTank().setArmorTechLevel(
+                        getTank().getArmorTechLevel(Tank.LOC_FRONT),
+                        turretLoc);
+                getTank().setArmorType(getTank().getArmorType(Tank.LOC_FRONT),
+                        turretLoc);
+            }
             getTank().autoSetInternal();
             getTank().initializeArmor(0, Tank.LOC_TURRET_2);
             getTank().setArmorTechLevel(
