@@ -53,6 +53,7 @@ public class EquipmentView extends IView implements ActionListener {
      */
     private static final long serialVersionUID = 799195356642563937L;
 
+    @SuppressWarnings("unused")
     private RefreshListener refresh;
 
     private JPanel mainPanel = new JPanel();
