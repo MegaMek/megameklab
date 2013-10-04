@@ -27,7 +27,6 @@ import javax.imageio.ImageIO;
  * This class has been automatically generated using <a
  * href="http://englishjavadrinker.blogspot.com/search/label/SVGRoundTrip">SVGRoundTrip</a>.
  */
-@SuppressWarnings("unused")
 public class BipedIS40 {
 	/**
 	 * Paints the transcoded SVG image on the specified graphics context. You
