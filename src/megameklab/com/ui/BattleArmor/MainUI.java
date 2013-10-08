@@ -16,6 +16,7 @@
 
 package megameklab.com.ui.BattleArmor;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
@@ -31,11 +32,10 @@ import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.BattleArmor.tabs.ArmorTab;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.ui.BattleArmor.tabs.EquipmentTab;
 import megameklab.com.ui.BattleArmor.tabs.StructureTab;
-import megameklab.com.ui.BattleArmor.tabs.WeaponTab;
+import megameklab.com.ui.BattleArmor.tabs.PreviewTab;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
@@ -49,11 +49,9 @@ public class MainUI extends MegaMekLabMainUI {
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
-    private ArmorTab armorTab;
-    private EquipmentTab equipmentTab;
-    private WeaponTab weaponTab;
+    private PreviewTab previewTab;
     private BuildTab buildTab;
-    private Header header;
+    private EquipmentTab equipTab;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
@@ -86,35 +84,23 @@ public class MainUI extends MegaMekLabMainUI {
         masterPanel.removeAll();
         ConfigPane.removeAll();
 
-        masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
+        masterPanel.setLayout(new BorderLayout());
         BattleArmor ba = (BattleArmor) entity;
         structureTab = new StructureTab(ba);
+        equipTab = new EquipmentTab(ba);
 
-        armorTab = new ArmorTab(ba);
-        armorTab.setArmorType(ba.getArmorType(0));
-        armorTab.refresh();
-
-        header = new Header(ba);
+        previewTab = new PreviewTab(ba);
         statusbar = new StatusBar(ba);
-        equipmentTab = new EquipmentTab(ba);
-        weaponTab = new WeaponTab(ba);
-        buildTab = new BuildTab(ba, equipmentTab, weaponTab);
-        header.addRefreshedListener(this);
+        buildTab = new BuildTab(ba);
         structureTab.addRefreshedListener(this);
-        armorTab.addRefreshedListener(this);
-        equipmentTab.addRefreshedListener(this);
-        weaponTab.addRefreshedListener(this);
-        buildTab.addRefreshedListener(this);
 
         ConfigPane.addTab("Structure", structureTab);
-        ConfigPane.addTab("Armor", armorTab);
-        ConfigPane.addTab("Equipment", equipmentTab);
-        ConfigPane.addTab("Weapons", weaponTab);
-        ConfigPane.addTab("Build", buildTab);
+        ConfigPane.addTab("Equipment", equipTab);
+        ConfigPane.addTab("Assign Criticals", buildTab);
+        ConfigPane.addTab("Preview", previewTab);
 
-        masterPanel.add(header);
-        masterPanel.add(ConfigPane);
-        masterPanel.add(statusbar);
+        masterPanel.add(ConfigPane, BorderLayout.CENTER);
+        masterPanel.add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
         this.repaint();
@@ -127,10 +113,8 @@ public class MainUI extends MegaMekLabMainUI {
 
         ba.setYear(3071);
         ba.setTechLevel(TechConstants.T_INTRO_BOXSET);
-        ba.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         ba.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
-        ba.setWeightClass(0);
-        entity.setWeight(EntityWeightClass.getClassLimit(0, entity));
+        ba.setWeightClass(EntityWeightClass.WEIGHT_LIGHT);
         ba.setTroopers(4);
         ba.setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
 
@@ -156,16 +140,15 @@ public class MainUI extends MegaMekLabMainUI {
 
         statusbar.refresh();
         structureTab.refresh();
-        armorTab.refresh();
-        equipmentTab.refresh();
-        weaponTab.refresh();
-        buildTab.refresh();
+        refreshEquipment();
+        refreshBuild();
+        refreshPreview();
         refreshHeader();
     }
 
     @Override
     public void refreshArmor() {
-        armorTab.refresh();
+        
     }
 
     @Override
@@ -175,8 +158,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipment() {
-        equipmentTab.refresh();
-
+        equipTab.refresh();
     }
 
     @Override
@@ -206,13 +188,11 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshWeapons() {
-        weaponTab.refresh();
     }
 
     @Override
     public void refreshPreview() {
-        // TODO Auto-generated method stub
-
+        previewTab.refresh();
     }
 
 }

@@ -44,7 +44,6 @@ public class MainUI extends MegaMekLabMainUI {
 
     StructureTab structureTab;
     PreviewTab previewTab;
-    Header header;
     StatusBar statusbar;
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel masterPanel = new JPanel();
@@ -81,7 +80,6 @@ public class MainUI extends MegaMekLabMainUI {
 
         Infantry pbi = (Infantry) entity;
 
-        header = new Header(pbi);
         statusbar = new StatusBar(pbi, this);
         structureTab = new StructureTab(pbi);
         previewTab = new PreviewTab(pbi);

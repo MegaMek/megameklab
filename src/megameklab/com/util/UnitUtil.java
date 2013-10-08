@@ -64,7 +64,6 @@ import megamek.common.verifier.TestTank;
 import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.BPodWeapon;
-import megamek.common.weapons.CLBALBX;
 import megamek.common.weapons.CLChemicalLaserWeapon;
 import megamek.common.weapons.CLLightTAG;
 import megamek.common.weapons.CLPlasmaCannon;
@@ -96,6 +95,7 @@ import megamek.common.weapons.SwarmWeaponAttack;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.VehicleFlamerWeapon;
+import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 
@@ -2647,10 +2647,6 @@ public class UnitUtil {
         }
 
         return true;
-    }
-
-    static public Integer getMaxWeight(BattleArmor ba) {
-        return (int) EntityWeightClass.getClassLimit(ba.getWeightClass(), ba);
     }
 
     public static void showValidation(Entity entity, JFrame frame) {

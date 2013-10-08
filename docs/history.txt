@@ -41,6 +41,7 @@ V 0.1.24-dev
 + fix offsets in location printing for tanks
 + Allow for insane amounts of armor on superheavy dual turret tanks
 + Removed unnecessary warning suppressions
++ new BattleArmor builder, WIP - chassis should be correct, but no manipulators or equipment crit assignment yet
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
