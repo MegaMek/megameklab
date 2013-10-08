@@ -58,7 +58,7 @@ public class BuildTab extends ITab implements ActionListener {
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public BuildTab(BattleArmor unit, EquipmentTab equipment, WeaponTab weapons) {
+    public BuildTab(BattleArmor unit) {
         this.unit = unit;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));

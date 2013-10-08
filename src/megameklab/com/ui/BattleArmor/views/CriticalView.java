@@ -46,9 +46,11 @@ public class CriticalView extends IView {
     private RefreshListener refresh;
 
     private boolean showEmpty = false;
-
+    private CriticalSuit critSuit;
+    
     public CriticalView(BattleArmor unit, boolean showEmpty, RefreshListener refresh) {
         super(unit);
+        critSuit = new CriticalSuit(unit);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
 
@@ -69,15 +71,16 @@ public class CriticalView extends IView {
     }
 
     public void refresh() {
+        critSuit = new CriticalSuit(getBattleArmor());
         squadPanel.removeAll();
 
         synchronized (unit) {
-            for (int location = 0; location < unit.locations(); location++) {
+            for (int location = 0; location < critSuit.locations(); location++) {
                 // JPanel locationPanel = new JPanel();
                 Vector<String> critNames = new Vector<String>(1, 1);
 
-                for (int slot = 0; slot < getBattleArmor().getNumberOfCriticals(location); slot++) {
-                    CriticalSlot cs = getBattleArmor().getCritical(location, slot);
+                for (int slot = 0; slot < critSuit.getNumberOfCriticals(location); slot++) {
+                    CriticalSlot cs = critSuit.getCritical(location, slot);
                     if (cs == null) {
                         if (showEmpty) {
                             critNames.add(MtfFile.EMPTY);
@@ -88,22 +91,22 @@ public class CriticalView extends IView {
                             // Critical didn't get removed. Remove it now.
                             if (m == null) {
 
-                                m = getBattleArmor().getEquipment(cs.getIndex());
+                                //m = getBattleArmor().getEquipment(cs.getIndex());
 
                                 if (m == null) {
-                                    getBattleArmor().setCritical(location, slot, null);
+                                    //getBattleArmor().setCritical(location, slot, null);
                                     if (showEmpty) {
                                         critNames.add(MtfFile.EMPTY);
                                     }
                                     continue;
                                 }
-                                cs.setMount(m);
+                                //cs.setMount(m);
                             }
-
+/*
                             if ((m.getType() instanceof WeaponType) && !UnitUtil.isBattleArmorWeapon(m.getType(), unit)) {
                                 continue;
                             }
-
+*/
                             StringBuffer critName = new StringBuffer(m.getName());
                             if (critName.length() > 25) {
                                 critName.setLength(25);
@@ -132,13 +135,61 @@ public class CriticalView extends IView {
                 criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
                 criticalSlotList.setName(Integer.toString(location));
                 criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
-                switch (location) {
-                    case BattleArmor.LOC_SQUAD:
-                        squadPanel.add(criticalSlotList);
-                        break;
-                }
+                squadPanel.add(criticalSlotList);
             }
             squadPanel.repaint();
         }
+    }
+    
+    /*
+     * This is just temporary - and non-functional - until we get crits proper on BattleArmor
+     */
+    private class CriticalSuit {
+        
+        public static final int LOC_LARM = 0;
+        public static final int LOC_BODY = 1;
+        public static final int LOC_RARM = 2;
+        public static final int LOC_N    = 3;
+        
+        //store critical slots just like an entity
+        protected CriticalSlot[][] crits; // [loc][slot]
+
+        public CriticalSuit(BattleArmor ba) {
+            crits = new CriticalSlot[locations()][];
+            for (int i = 0; i < locations(); i++) {
+                if(i == LOC_BODY) {
+                    crits[i] = new CriticalSlot[ba.getBodyCrits()];
+                } else {
+                    crits[i] = new CriticalSlot[ba.getArmCrits()];
+                }
+            }
+        }
+        
+        public int locations() {
+            return LOC_N;
+        }
+        
+        public String getName(int loc) {
+            switch(loc) {
+            case LOC_LARM:
+                return "Left Arm";
+            case LOC_RARM:
+                return "Right Arm";
+            case LOC_BODY:
+                return "Body";
+            default:
+                return "?";
+            }
+        }
+        
+        public int getNumberOfCriticals(int loc) {
+            return crits[loc].length;
+        }
+        
+        public CriticalSlot getCritical(int loc, int slot) {
+            return crits[loc][slot];
+        }
+        
+        
     }
 }
