@@ -33,7 +33,6 @@ import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.BPodWeapon;
-import megamek.common.weapons.CLBALBX;
 import megamek.common.weapons.CLERSmallPulseLaser;
 import megamek.common.weapons.CLMicroPulseLaser;
 import megamek.common.weapons.CLPlasmaCannon;
@@ -74,6 +73,7 @@ import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.TAGWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
+import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.infantry.InfantryWeapon;
 
 public class StringUtils {

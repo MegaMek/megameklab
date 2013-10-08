@@ -23,7 +23,9 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
 import megamek.common.BattleArmor;
+import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestMech;
 import megameklab.com.util.ITab;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
@@ -86,19 +88,20 @@ public class StatusBar extends ITab {
 
         int walk = getBattleArmor().getOriginalWalkMP();
         int jump = getBattleArmor().getOriginalJumpMP();
-        Integer kilos = UnitUtil.getMaxWeight(getBattleArmor());
-        float currentTonnage;
+        float maxKilos = getBattleArmor().getTrooperWeight();
+        float currentKilos;
         int bv = getBattleArmor().calculateBattleValue();
 
         // testEntity = new TestMech(getBattleArmor(),
         // entityVerifier.BattleArmorOption, null);
 
-        currentTonnage = getBattleArmor().getTrooperWeight() * getBattleArmor().getTroopers();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
+        testEntity = new TestBattleArmor(getBattleArmor(), null, null);
+        currentKilos = testEntity.calculateWeight();
+        currentKilos += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
 
-        tons.setText("Weight: " + currentTonnage + "/" + kilos);
+        tons.setText("Suit Weight: " + currentKilos + "/" + maxKilos);
         tons.setToolTipText("Current Weight/Max Weight");
-        if (currentTonnage > kilos) {
+        if (currentKilos > maxKilos) {
             tons.setForeground(Color.red);
         } else {
             tons.setForeground(Color.black);

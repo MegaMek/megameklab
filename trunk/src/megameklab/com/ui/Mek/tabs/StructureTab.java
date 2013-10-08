@@ -628,8 +628,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         setHeatSinkCombo();
 
-        walkMP.setValue(getMech().getWalkMP(true, false, true));
-        jumpMP.setValue(getMech().getJumpMP());
+        walkMP.setValue(getMech().getOriginalWalkMP());
+        jumpMP.setValue(getMech().getOriginalJumpMP());
         if ((getJumpJetType() == Mech.JUMP_IMPROVED)
                 || (getJumpJetType() == Mech.JUMP_PROTOTYPE)) {
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
@@ -638,7 +638,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(20);
         } else {
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
-                    .getWalkMP(true, false, true));
+                    .getOriginalWalkMP());
         }
         runMP.setText(getMech().getRunMPasString());
 
@@ -810,9 +810,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 if (getJumpJetType() == Mech.JUMP_STANDARD) {
                     // check to make sure we are not over the number of jets
                     // we are allowed
-                    if (((Integer) jumpMP.getValue()) > getMech().getWalkMP(
-                            true, false, true)) {
-                        jumpMP.setValue(getMech().getWalkMP(true, false, true));
+                    if (((Integer) jumpMP.getValue()) > getMech().getOriginalWalkMP()) {
+                        jumpMP.setValue(getMech().getOriginalWalkMP());
                     }
                 } else if ((getJumpJetType() == Mech.JUMP_IMPROVED)
                         || (getJumpJetType() == Mech.JUMP_PROTOTYPE)) {
