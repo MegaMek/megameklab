@@ -80,6 +80,7 @@ public class PrintNavalVehicle implements Printable {
         NavalData.paint(g2d);
         NavalHitTable.paint(g2d);
         NavalMotiveDmgTable.paint(g2d);
+        TankSheetCopyrightInfo.paint(g2d);
 
         printTankData(g2d);
         printArmor(g2d);
@@ -291,7 +292,7 @@ public class PrintNavalVehicle implements Printable {
 
         g2d.setFont(UnitUtil.deriveFont(true, 7.0f));
 
-        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), leftmargin+40, topmargin+767.5f);
+        g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), leftmargin+42, topmargin+770);
 
     }
 

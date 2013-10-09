@@ -42,6 +42,7 @@ V 0.1.24-dev
 + Allow for insane amounts of armor on superheavy dual turret tanks
 + Removed unnecessary warning suppressions
 + new BattleArmor builder, WIP - chassis should be correct, but no manipulators or equipment crit assignment yet
++ more naval unit printing
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
