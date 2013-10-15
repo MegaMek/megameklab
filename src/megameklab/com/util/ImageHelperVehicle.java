@@ -711,7 +711,7 @@ public class ImageHelperVehicle {
 
         boolean newLineNeeded = false;
 
-        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(Tank.LOC_TURRET + 1);
+        ArrayList<Hashtable<String, EquipmentInfo>> equipmentLocations = new ArrayList<Hashtable<String, EquipmentInfo>>(tank.getLocTurret() + 1);
 
         for (int pos = 0; pos <= tank.locations(); pos++) {
             equipmentLocations.add(pos, new Hashtable<String, EquipmentInfo>());
