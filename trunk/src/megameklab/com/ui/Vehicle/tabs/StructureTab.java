@@ -914,20 +914,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private void updateTurrets(JComboBox combo) {
         if ((combo.getSelectedIndex() == 0) || (combo.getSelectedIndex() == 1)) {
-            int turretLoc = Tank.LOC_TURRET;
-            if (unit instanceof VTOL) {
-                turretLoc = VTOL.LOC_TURRET;
-            }
+            int turretLoc = getTank().getLocTurret();
             List<Mounted> toRemove = new ArrayList<Mounted>();
             List<Mounted> toRemoveMisc = new ArrayList<Mounted>();
             List<Mounted> toRemoveWeapons = new ArrayList<Mounted>();
             if (!getTank().hasNoDualTurret()) {
                 for (int slot = 0; slot < getTank().getNumberOfCriticals(
-                        Tank.LOC_TURRET_2); slot++) {
-                    getTank().setCritical(Tank.LOC_TURRET_2, slot, null);
+                        getTank().getLocTurret2()); slot++) {
+                    getTank().setCritical(getTank().getLocTurret2(), slot, null);
                 }
                 for (Mounted mount : getTank().getEquipment()) {
-                    if (mount.getLocation() == Tank.LOC_TURRET_2) {
+                    if (mount.getLocation() == getTank().getLocTurret2()) {
                         toRemove.add(mount);
                         if (mount.getType() instanceof WeaponType) {
                             toRemoveWeapons.add(mount);
@@ -974,10 +971,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             getTank().setHasNoDualTurret(false);
             // if no first turret, add that
             if (getTank().hasNoTurret()) {
-                int turretLoc = Tank.LOC_TURRET;
-                if (unit instanceof VTOL) {
-                    turretLoc = VTOL.LOC_TURRET;
-                }
+                int turretLoc = getTank().getLocTurret2();
                 getTank().setHasNoTurret(false);
                 getTank().initializeArmor(0, turretLoc);
                 getTank().setArmorTechLevel(
@@ -987,12 +981,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         turretLoc);
             }
             getTank().autoSetInternal();
-            getTank().initializeArmor(0, Tank.LOC_TURRET_2);
+            getTank().initializeArmor(0, getTank().getLocTurret2());
             getTank().setArmorTechLevel(
                     getTank().getArmorTechLevel(Tank.LOC_FRONT),
-                    Tank.LOC_TURRET_2);
-            getTank().setArmorType(getTank().getArmorType(Tank.LOC_TURRET),
-                    Tank.LOC_TURRET_2);
+                    getTank().getLocTurret2());
+            getTank().setArmorType(getTank().getArmorType(getTank().getLocTurret()),
+                    getTank().getLocTurret2());
         }
         armor.refresh();
     }
@@ -1191,10 +1185,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setArmorType(rightArmor, unit.getArmorType(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT), false);
             setArmorType(rearArmor, unit.getArmorType(unit instanceof SuperHeavyTank?Tank.LOC_REAR:Tank.LOC_REAR), false);
             if (!getTank().hasNoTurret()) {
-                setArmorType(turretArmor, unit.getArmorType(unit instanceof SuperHeavyTank?Tank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET), false);
+                setArmorType(turretArmor, getTank().getLocTurret(), false);
             }
             if (!getTank().hasNoDualTurret()) {
-                setArmorType(turret2Armor, unit.getArmorType(unit instanceof SuperHeavyTank?Tank.LOC_TURRET_2:Tank.LOC_TURRET_2), false);
+                setArmorType(turret2Armor, unit.getArmorType(getTank().getLocTurret2()), false);
             }
             if (unit instanceof SuperHeavyTank) {
                 setArmorType(rearLeftArmor, unit.getArmorType(SuperHeavyTank.LOC_REARLEFT), false);
@@ -1254,12 +1248,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             unit.setArmorTechLevel(EquipmentType.get(getArmorType(rearArmor)).getTechLevel(unit.getYear()), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR);
             unit.setArmorType(getArmorType(rearArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR);
             if (!getTank().hasNoTurret()) {
-                unit.setArmorTechLevel(EquipmentType.get(getArmorType(turretArmor)).getTechLevel(unit.getYear()), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET);
-                unit.setArmorType(getArmorType(turretArmor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:unit instanceof VTOL?VTOL.LOC_TURRET:Tank.LOC_TURRET);
+                unit.setArmorTechLevel(EquipmentType.get(getArmorType(turretArmor)).getTechLevel(unit.getYear()), getTank().getLocTurret());
+                unit.setArmorType(getArmorType(turretArmor), getTank().getLocTurret());
             }
             if (!getTank().hasNoDualTurret()) {
-                unit.setArmorTechLevel(EquipmentType.get(getArmorType(turret2Armor)).getTechLevel(unit.getYear()), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2);
-                unit.setArmorType(getArmorType(turret2Armor), unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2);
+                unit.setArmorTechLevel(EquipmentType.get(getArmorType(turret2Armor)).getTechLevel(unit.getYear()), getTank().getLocTurret2());
+                unit.setArmorType(getArmorType(turret2Armor), getTank().getLocTurret2());
             }
             if (unit instanceof SuperHeavyTank) {
                 unit.setArmorTechLevel(EquipmentType.get(getArmorType(rearLeftArmor)).getTechLevel(unit.getYear()), SuperHeavyTank.LOC_REARLEFT);

@@ -102,7 +102,7 @@ public class ImageHelper {
             }
         } else if (unit instanceof Tank) {
             if ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL)) {
-                if (unit.getOInternal(Tank.LOC_TURRET) > 0) {
+                if (unit.getOInternal(((Tank)unit).getLocTurret()) > 0) {
                     recordSheet = new ImageIcon(path + "twnaval-turret.png").getImage();
                 } else {
                     recordSheet = new ImageIcon(path + "twnaval.png").getImage();
