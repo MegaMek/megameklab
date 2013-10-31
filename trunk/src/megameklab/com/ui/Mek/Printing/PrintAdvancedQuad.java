@@ -1154,7 +1154,7 @@ public class PrintAdvancedQuad implements Printable {
                 g2d.drawString(mech.getSystemName(cs.getIndex()), lineStart, linePoint);
                 setCritConnection(null, lineStart, linePoint - (lineFeed / 2), lineStart, linePoint - (lineFeed / 2), g2d);
             } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted m = mech.getEquipment(cs.getIndex());
+                Mounted m = cs.getMount();
                 setCritConnection(m, lineStart, linePoint - (lineFeed / 2), lineStart, linePoint - (lineFeed / 2), g2d);
 
                 StringBuffer critName = new StringBuffer(m.getName());

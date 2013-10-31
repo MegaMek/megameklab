@@ -165,7 +165,6 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void compactCrits() {
         UnitUtil.compactCriticals(getMech());
-        UnitUtil.reIndexCrits(getMech());
         refresh.refreshAll();
     }
 

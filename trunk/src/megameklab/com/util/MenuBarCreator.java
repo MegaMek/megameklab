@@ -934,7 +934,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         String unitName = unit.getChassis() + " " + unit.getModel();
         UnitUtil.compactCriticals(unit);
-        UnitUtil.reIndexCrits(unit);
 
         String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_FILE_1);
 
@@ -982,7 +981,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         }
 
         UnitUtil.compactCriticals(unit);
-        UnitUtil.reIndexCrits(unit);
 
         FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
 

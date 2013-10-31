@@ -58,7 +58,7 @@ public class CriticalTransferHandler extends TransferHandler {
             Transferable t = info.getTransferable();
             try {
                 Mounted mount = unit.getEquipment(Integer.parseInt((String) t.getTransferData(DataFlavor.stringFlavor)));
-                if (!unit.addCritical(location, new CriticalSlot(CriticalSlot.TYPE_EQUIPMENT, unit.getEquipmentNum(mount), true, mount))) {
+                if (!unit.addCritical(location, new CriticalSlot(mount))) {
                     JOptionPane.showMessageDialog(null, "Location Full", "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     changeMountStatus(mount, location, false);

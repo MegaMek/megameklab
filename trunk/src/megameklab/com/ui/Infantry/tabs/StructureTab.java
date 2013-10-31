@@ -702,12 +702,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         if (e.getSource().equals(era)) {
             try {
-                getMech().setYear(Integer.parseInt(era.getText()));
+                unit.setYear(Integer.parseInt(era.getText()));
             } catch (Exception ex) {
-                getMech().setYear(3071);
+                unit.setYear(3145);
             }
         } else if (e.getSource().equals(source)) {
-            getMech().setSource(source.getText());
+            unit.setSource(source.getText());
         } else if (e.getSource().equals(chassis)) {
             unit.setChassis(chassis.getText().trim());
             refresh.refreshPreview();

@@ -291,10 +291,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         try {
             if ((crit != null)
                     && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                if (crit.getMount() != null) {
-                    return crit.getMount();
-                }
-                mount = unit.getEquipment(crit.getIndex());
+                return crit.getMount();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -399,7 +396,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         CriticalSlot cs = unit.getCritical(location, 3);
 
         if (cs != null) {
-            Mounted mount = unit.getEquipment(cs.getIndex());
+            Mounted mount = cs.getMount();
             UnitUtil.removeCriticals(unit, mount);
             changeMountStatus(mount, Entity.LOC_NONE, false);
         }
@@ -431,7 +428,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         CriticalSlot cs = unit.getCritical(location, 2);
 
         if (cs != null) {
-            Mounted mount = unit.getEquipment(cs.getIndex());
+            Mounted mount = cs.getMount();
             UnitUtil.removeCriticals(unit, mount);
             changeMountStatus(mount, Entity.LOC_NONE, false);
         }

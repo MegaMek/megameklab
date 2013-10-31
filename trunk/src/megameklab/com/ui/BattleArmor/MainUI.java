@@ -20,7 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -34,8 +33,8 @@ import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.ui.BattleArmor.tabs.EquipmentTab;
-import megameklab.com.ui.BattleArmor.tabs.StructureTab;
 import megameklab.com.ui.BattleArmor.tabs.PreviewTab;
+import megameklab.com.ui.BattleArmor.tabs.StructureTab;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
@@ -111,7 +110,7 @@ public class MainUI extends MegaMekLabMainUI {
         entity = new BattleArmor();
         BattleArmor ba = (BattleArmor) entity;
 
-        ba.setYear(3071);
+        ba.setYear(3145);
         ba.setTechLevel(TechConstants.T_INTRO_BOXSET);
         ba.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
         ba.setWeightClass(EntityWeightClass.WEIGHT_LIGHT);
@@ -148,7 +147,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshArmor() {
-        
+
     }
 
     @Override
