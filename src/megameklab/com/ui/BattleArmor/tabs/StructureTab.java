@@ -45,7 +45,6 @@ import megamek.common.EntityMovementMode;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
-import megameklab.com.ui.BattleArmor.views.EquipmentView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -61,7 +60,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
     private static final String MOVE_UMU = "UMU";
     private static final String MOVE_VTOL = "VTOL";
-    
+
     private String[] techTypes =
         { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
     private JComboBox techType = new JComboBox(techTypes);
@@ -92,7 +91,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     JSpinner jumpMP;
     JSpinner armorPoints;
 
-    
+
 	public StructureTab(BattleArmor unit) {
         this.unit = unit;
         setUpPanels();
@@ -110,8 +109,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         Dimension comboSize = new Dimension(200, 25);
         Dimension labelSize = new Dimension(110, 25);
         Dimension spinnerSize = new Dimension(55, 25);
-        
-        
+
+
         txtPrimary.setEditable(false);
         txtSecondary.setEditable(false);
 
@@ -155,7 +154,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         basicPanel.add(createLabel("Tech Level:", labelSize), gbc);
         gbc.gridx = 1;
         basicPanel.add(techLevel, gbc);
-        
+
         walkMP = new JSpinner(new SpinnerNumberModel(1, getBattleArmor().getMinimumWalkMP(), getBattleArmor().getMaximumWalkMP(), 1));
         ((JSpinner.DefaultEditor) walkMP.getEditor()).setSize(spinnerSize);
         ((JSpinner.DefaultEditor) walkMP.getEditor())
@@ -177,7 +176,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 .setMinimumSize(spinnerSize);
         ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
                 .setEditable(false);
-        
+
         DefaultComboBoxModel modelWeightClass = new DefaultComboBoxModel();
         for(int i = EntityWeightClass.WEIGHT_ULTRA_LIGHT; i <= EntityWeightClass.WEIGHT_ASSAULT; i++) {
             modelWeightClass.addElement(EntityWeightClass.getClassName(i, unit));
@@ -234,7 +233,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         armorPanel.add(createLabel("Amount:", labelSize), gbc);
         gbc.gridx = 1;
         armorPanel.add(armorPoints, gbc);
-        
+
         setFieldSize(chassisType, comboSize);
         setFieldSize(armorType, comboSize);
         setFieldSize(weightClass, comboSize);
@@ -352,7 +351,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 techLevel.setSelectedIndex(0);
             }
         }
-        
+
         chassisType.removeAllItems();
         if(unit.getWeightClass() == EntityWeightClass.WEIGHT_ULTRA_LIGHT) {
             chassisType.addItem(chassisTypeArray[0]);
@@ -363,7 +362,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             }
             chassisType.setSelectedIndex(getBattleArmor().getChassisType());
         }
-        
+
         int selIdx = jumpType.getSelectedIndex();
         jumpType.removeAllItems();
         if(unit.isClan()) {
@@ -375,7 +374,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             jumpType.addItem(jumpTypeArray[0]);
             jumpType.setSelectedIndex(0);
         }
-        
+
         weightClass.setSelectedIndex(unit.getWeightClass());
 
         walkMP.setValue(getBattleArmor().getOriginalWalkMP());
@@ -384,7 +383,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         jumpMP.setValue(getBattleArmor().getOriginalJumpMP());
         ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getBattleArmor().getMaximumJumpMP());
 
-        
+
         armorType.setSelectedIndex(unit.getArmorType(1));
         armorPoints.setValue(getBattleArmor().getOArmor(1));
         ((SpinnerNumberModel) armorPoints.getModel()).setMaximum(getBattleArmor().getMaximumArmorPoints());
@@ -575,17 +574,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             }
             else if (combo.equals(weightClass)) {
                 getBattleArmor().setWeightClass(combo.getSelectedIndex());
-                if(unit.getWeightClass() == EntityWeightClass.WEIGHT_ULTRA_LIGHT
-                        && getBattleArmor().getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
+                if((unit.getWeightClass() == EntityWeightClass.WEIGHT_ULTRA_LIGHT)
+                        && (getBattleArmor().getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD)) {
                     getBattleArmor().setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
                 }
                 resetMovementMinMax();
                 resetArmorMax();
             }
-            else if (combo.equals(jumpType)) {               
+            else if (combo.equals(jumpType)) {
                 resetMovementMode();
             }
-            else if (combo.equals(armorType)) {  
+            else if (combo.equals(armorType)) {
                 //TODO: restrict IS and clan tech
                 //TODO: armor can take up slots
                 getBattleArmor().setArmorType(combo.getSelectedIndex());
@@ -602,12 +601,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         if (e.getSource().equals(era)) {
             try {
-                getMech().setYear(Integer.parseInt(era.getText()));
+                unit.setYear(Integer.parseInt(era.getText()));
             } catch (Exception ex) {
-                getMech().setYear(3071);
+                unit.setYear(3145);
             }
         } else if (e.getSource().equals(source)) {
-            getMech().setSource(source.getText());
+            unit.setSource(source.getText());
         } else if (e.getSource().equals(chassis)) {
             unit.setChassis(chassis.getText().trim());
             refresh.refreshPreview();
@@ -629,7 +628,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         era.setEditable(false);
         era.setEnabled(false);
     }
-    
+
     public void stateChanged(ChangeEvent e) {
         removeAllActionListeners();
 
@@ -649,12 +648,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 }
             }
         }
-        
+
         addAllActionListeners();
 
         refresh.refreshAll();
     }
-    
+
     public void resetMovementMinMax() {
         if(unit.getOriginalWalkMP() > getBattleArmor().getMaximumWalkMP()) {
             unit.setOriginalWalkMP(getBattleArmor().getMaximumWalkMP());
@@ -666,7 +665,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             unit.setOriginalJumpMP(getBattleArmor().getMaximumJumpMP());
         }
     }
-    
+
     public void resetArmorMax() {
         for(int i = 0; i < unit.locations(); i++) {
             if(unit.getOArmor(i) > getBattleArmor().getMaximumArmorPoints()) {
@@ -674,7 +673,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             }
         }
     }
-    
+
     public void resetMovementMode() {
         EntityMovementMode nMotion = EntityMovementMode.INF_LEG;
         if(getBattleArmor().getOriginalJumpMP() > 0) {
@@ -689,7 +688,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             unit.setMovementMode(nMotion);
         }
     }
-    
+
     public void resetJumpType() {
         if(!unit.isClan())  {
             if(unit.getOriginalJumpMP() > 0) {
