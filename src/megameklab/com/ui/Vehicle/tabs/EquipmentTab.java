@@ -480,10 +480,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                     equipmentList.removeCrit(startRow);
                 }
             }
-            UnitUtil.reIndexCrits(unit);
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllEquipment();
-            UnitUtil.reIndexCrits(unit);
         } else {
             return;
         }

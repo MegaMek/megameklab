@@ -45,7 +45,6 @@ import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
-import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.Infantry;
 import megamek.common.LocationFullException;
@@ -989,7 +988,6 @@ public class UnitUtil {
         eq.setLocation(location, rear);
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
-        UnitUtil.reIndexCrits(unit);
     }
 
     public static boolean hasTargComp(Entity unit) {
@@ -1135,20 +1133,6 @@ public class UnitUtil {
         }
         return Math.min((int) Math.floor(armorPerTon * armorTons),
                 UnitUtil.getMaximumArmorPoints(unit, loc));
-    }
-
-    public static void reIndexCrits(Entity unit) {
-
-        for (int location = 0; location < unit.locations(); location++) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                CriticalSlot cs = unit.getCritical(location, slot);
-
-                if ((cs != null)
-                        && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    cs.setIndex(unit.getEquipmentNum(cs.getMount()));
-                }
-            }
-        }
     }
 
     public static void compactCriticals(Entity unit) {
@@ -1300,12 +1284,7 @@ public class UnitUtil {
                 if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                     continue;
                 }
-                Mounted mount;
-                if (cs.getMount() == null) {
-                    mount = unit.getEquipment(cs.getIndex());
-                } else {
-                    mount = cs.getMount();
-                }
+                Mounted mount = cs.getMount();
 
                 if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
                         && (UnitUtil.isTSM(mount.getType()) || UnitUtil
@@ -1319,11 +1298,9 @@ public class UnitUtil {
                     unit.getMisc().remove(mount);
                     unit.getEquipment().add(newMount);
                     unit.getMisc().add(newMount);
-                    cs.setIndex(unit.getEquipmentNum(newMount));
                 }
             }
         }
-        reIndexCrits(unit);
     }
 
     /**
@@ -1420,11 +1397,7 @@ public class UnitUtil {
                             mount = new Mounted(unit, equip);
                         }
                     } else {
-                        CriticalSlot cs = new CriticalSlot(
-                                CriticalSlot.TYPE_EQUIPMENT,
-                                unit.getEquipmentNum(mount), mount.getType()
-                                        .isHittable(), mount.isArmored(), mount);
-                        cs.setIndex(unit.getEquipmentNum(mount));
+                        CriticalSlot cs = new CriticalSlot(mount);
                         if (!unit.addCritical(locations.get(0), cs)) {
                             UnitUtil.removeCriticals(unit, mount);
                             JOptionPane.showMessageDialog(
@@ -1783,7 +1756,7 @@ public class UnitUtil {
              * Mounted originalMount = cs.getMount(); Mounted testMount = null;
              *
              * if (originalMount == null) { originalMount =
-             * unit.getEquipment(cs.getIndex()); }
+             * cs.getMount(); }
              *
              * if (originalMount == null) { return true; }
              *
@@ -1798,7 +1771,7 @@ public class UnitUtil {
              * CriticalSlot.TYPE_EQUIPMENT)) { return false; }
              *
              * if ((testMount = crit.getMount()) == null) { testMount =
-             * unit.getEquipment(crit.getIndex()); }
+             * crit.getMount(); }
              *
              * if (testMount == null) { return false; }
              *
@@ -1821,8 +1794,8 @@ public class UnitUtil {
 
             if ((cs.getMount() != null) && cs.getMount().equals(mount)) {
                 cs.setArmored(mount.isArmored());
-            } else if ((unit.getEquipment(cs.getIndex()) != null)
-                    && unit.getEquipment(cs.getIndex()).equals(mount)) {
+            } else if ((cs.getMount() != null)
+                    && cs.getMount().equals(mount)) {
                 cs.setArmored(mount.isArmored());
             }
 
@@ -1840,8 +1813,8 @@ public class UnitUtil {
 
                 if ((cs.getMount() != null) && cs.getMount().equals(mount)) {
                     cs.setArmored(mount.isArmored());
-                } else if ((unit.getEquipment(cs.getIndex()) != null)
-                        && unit.getEquipment(cs.getIndex()).equals(mount)) {
+                } else if ((cs.getMount() != null)
+                        && cs.getMount().equals(mount)) {
                     cs.setArmored(mount.isArmored());
                 }
 
@@ -2284,7 +2257,7 @@ public class UnitUtil {
 
             if (m == null) {
                 System.err.println("Null Mount index: " + cs.getIndex());
-                m = mech.getEquipment(cs.getIndex());
+                m = cs.getMount();
             }
 
             EquipmentType type = m.getType();
@@ -2312,7 +2285,7 @@ public class UnitUtil {
 
             if (m == null) {
                 System.err.println("Null Mount index: " + cs.getIndex());
-                m = mech.getEquipment(cs.getIndex());
+                m = cs.getMount();
             }
 
             EquipmentType type = m.getType();
@@ -2353,7 +2326,7 @@ public class UnitUtil {
                 CriticalSlot crit = unit.getCritical(location, slot);
                 if ((crit != null)
                         && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    Mounted mount = unit.getEquipment(crit.getIndex());
+                    Mounted mount = crit.getMount();
 
                     if ((mount != null)
                             && (mount.getType() instanceof MiscType)
@@ -2478,8 +2451,8 @@ public class UnitUtil {
             JOptionPane
                     .showMessageDialog(
                             null,
-                            "Armor Overage found on this unit.\n\rMegaMekLab has automatically correct the problem.\n\rIt is suggested you view the armor tab to see the correction.",
-                            "Armor Overage", JOptionPane.WARNING_MESSAGE);
+                            "Too much armor found on this unit.\n\rMegaMekLab has automatically corrected the problem.\n\rIt is suggested you check the armor allocation.",
+                            "Too much armor", JOptionPane.WARNING_MESSAGE);
         }
     }
 

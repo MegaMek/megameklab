@@ -91,7 +91,7 @@ public class CriticalView extends IView {
                             // Critical didn't get removed. Remove it now.
                             if (m == null) {
 
-                                //m = getBattleArmor().getEquipment(cs.getIndex());
+                                //m = getBattleArmor()cs.getMount();
 
                                 if (m == null) {
                                     //getBattleArmor().setCritical(location, slot, null);
