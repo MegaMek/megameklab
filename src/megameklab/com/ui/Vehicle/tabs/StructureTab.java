@@ -517,8 +517,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         } else {
             setArmorCombo(unit.getArmorType(1));
         }
-        ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
-                .getMaximumArmorTonnage(unit));
+        double maxArmorTonnage = UnitUtil.getMaximumArmorTonnage(unit);
+        ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(maxArmorTonnage);
         if (unit.hasPatchworkArmor()) {
             TestTank testTank = new TestTank(
                     getTank(),
@@ -531,6 +531,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             unit.setArmorTonnage(testTank.getWeightAllocatedArmor());
             maximizeArmorButton.setEnabled(false);
         } else {
+            if (Double.parseDouble(armorTonnage.getValue().toString()) > maxArmorTonnage) {
+                armorTonnage.setValue(maxArmorTonnage);
+            }
+            setArmorTonnage();
             armorTonnage.setEnabled(true);
             maximizeArmorButton.setEnabled(true);
         }
