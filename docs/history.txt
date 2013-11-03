@@ -44,6 +44,7 @@ V 0.1.24-dev
 + new BattleArmor builder, WIP - chassis should be correct, but no manipulators or equipment crit assignment yet
 + more naval unit printing
 + updated MM.jar
++ Bug [#57]: Megamek/Megamek lab not accounting for wheeled vehicle tonnage discount
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
