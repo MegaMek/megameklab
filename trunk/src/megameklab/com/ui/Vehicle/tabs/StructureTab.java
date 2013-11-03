@@ -1562,11 +1562,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }
                     updateArmor();
                 } else if (combo.equals(tankMotiveType)) {
-                    int currentTonnage = (Integer) weight.getModel()
-                            .getValue();
-
+                    int currentTonnage = (Integer) weight.getModel().getValue();
                     setAvailableWeights(currentTonnage);
                     updateArmor();
+                    updateWeightEngineMovement();
                 } else if (combo.equals(turretCombo)) {
                     updateTurrets(combo);
                 } else if (combo.equals(armorCombo)) {

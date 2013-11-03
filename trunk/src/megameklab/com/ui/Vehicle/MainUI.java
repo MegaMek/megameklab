@@ -145,10 +145,10 @@ public class MainUI extends MegaMekLabMainUI {
             refreshAll();
         }
 
-        statusbar.refresh();
         structureTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
+        statusbar.refresh();
         refreshHeader();
         repaint();
 
