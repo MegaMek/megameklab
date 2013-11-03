@@ -569,9 +569,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 } else {
                     unit.getEngine().setBaseChassisHeatSinks(-1);
                 }
-                SpringLayoutHelper.setupSpringGrid(masterPanel, 2);
-                masterPanel.setVisible(false);
-                masterPanel.setVisible(true);
             }
         }
         else if (e.getSource() instanceof JButton) {

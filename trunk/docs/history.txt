@@ -45,6 +45,7 @@ V 0.1.24-dev
 + more naval unit printing
 + updated MM.jar
 + Bug [#57]: Megamek/Megamek lab not accounting for wheeled vehicle tonnage discount
++ Bug [#80]: Selecting Omni when building vehicle causes NPE when changing movement speed
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
