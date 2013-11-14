@@ -47,6 +47,7 @@ V 0.1.24-dev
 + Bug [#57]: Megamek/Megamek lab not accounting for wheeled vehicle tonnage discount
 + Bug [#80]: Selecting Omni when building vehicle causes NPE when changing movement speed
 + Bug [#90]: Megamek lab, unable to modify armor tonnage
++ start of tripod mech support
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated

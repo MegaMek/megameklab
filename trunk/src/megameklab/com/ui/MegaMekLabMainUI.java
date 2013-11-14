@@ -88,9 +88,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     public abstract void reloadTabs();
 
-    public abstract void createNewUnit(boolean isNew);
-
-    public abstract void createNewUnit(boolean isNew, boolean isAlsoNew);
+    public abstract void createNewUnit(long entitytype, boolean isSuperHeavy);
 
     public abstract void refreshAll();
 

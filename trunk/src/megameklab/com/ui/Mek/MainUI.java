@@ -27,11 +27,13 @@ import javax.swing.SwingConstants;
 
 import megamek.common.BipedMech;
 import megamek.common.Engine;
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
+import megamek.common.TripodMech;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
@@ -61,7 +63,7 @@ public class MainUI extends MegaMekLabMainUI {
     public MainUI() {
 
         super();
-        createNewUnit(false);
+        createNewUnit(Entity.ETYPE_BIPED_MECH, false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
         menubarcreator = new MenuBarCreator(entity, this);
         setJMenuBar(menubarcreator);
@@ -115,28 +117,25 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(boolean isQuad) {
-        createNewUnit(isQuad, false);
-    }
+    public void createNewUnit(long entityType, boolean isSuperHeavy) {
 
-    @Override
-    public void createNewUnit(boolean isQuad, boolean isLAM) {
-
-        if (isQuad) {
+        if (entityType == Entity.ETYPE_TRIPOD_MECH) {
+            entity = new TripodMech(Mech.GYRO_STANDARD, Mech.COCKPIT_TRIPOD);
+            entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        } else if (entityType == Entity.ETYPE_QUAD_MECH) {
             entity = new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
-        } else if (isLAM) {
+            entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        } else if (entityType == Entity.ETYPE_BIPED_MECH) {
             entity = new LandAirMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
-        } else {
+            entity.setTechLevel(TechConstants.T_IS_ADVANCED);
+            entity.setManualBV(-1);
+        } else { // type == 0
             entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
+            entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         }
         Mech mech = (Mech) entity;
 
         entity.setYear(3145);
-        entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        if (isLAM) {
-            entity.setTechLevel(TechConstants.T_IS_ADVANCED);
-            entity.setManualBV(-1);
-        }
         entity.setWeight(25);
         mech.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
@@ -169,7 +168,7 @@ public class MainUI extends MegaMekLabMainUI {
             String model = entity.getModel();
             String chassis = entity.getChassis();
 
-            createNewUnit(structureTab.isQuad());
+            createNewUnit(structureTab.isQuad()?Entity.ETYPE_QUAD_MECH:structureTab.isLAM()?Entity.ETYPE_LAND_AIR_MECH:structureTab.isTripod()?Entity.ETYPE_TRIPOD_MECH:Entity.ETYPE_BIPED_MECH, false);
 
             entity.setChassis(chassis);
             entity.setModel(model);
@@ -181,8 +180,18 @@ public class MainUI extends MegaMekLabMainUI {
             String model = entity.getModel();
             String chassis = entity.getChassis();
 
-            createNewUnit(false, structureTab.isLAM());
+            createNewUnit(structureTab.isLAM()?Entity.ETYPE_LAND_AIR_MECH:structureTab.isQuad()?Entity.ETYPE_QUAD_MECH:structureTab.isTripod()?Entity.ETYPE_TRIPOD_MECH:Entity.ETYPE_BIPED_MECH, false);
+            entity.setChassis(chassis);
+            entity.setModel(model);
 
+            reloadTabs();
+            repaint();
+            refreshAll();
+        } else if ((structureTab.isTripod() && !(entity instanceof TripodMech)) || (!structureTab.isTripod() && (entity instanceof TripodMech))) {
+            String model = entity.getModel();
+            String chassis = entity.getChassis();
+
+            createNewUnit(structureTab.isTripod()?Entity.ETYPE_TRIPOD_MECH:structureTab.isQuad()?Entity.ETYPE_QUAD_MECH:structureTab.isLAM()?Entity.ETYPE_LAND_AIR_MECH:Entity.ETYPE_BIPED_MECH, false);
             entity.setChassis(chassis);
             entity.setModel(model);
 

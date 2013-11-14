@@ -28,6 +28,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -59,6 +61,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.TechConstants;
+import megamek.common.TripodMech;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
 import megameklab.com.ui.Mek.views.ArmorView;
@@ -103,47 +106,47 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private ArmorView armor;
 
-    JComboBox engineType = new JComboBox(isEngineTypes);
+    JComboBox<String> engineType = new JComboBox<String>(isEngineTypes);
     String[] enhancements = { "None", "MASC", "TSM" };
-    JComboBox enhancement = new JComboBox(enhancements);
+    JComboBox<String> enhancement = new JComboBox<String>(enhancements);
     JSpinner walkMP;
     JTextField runMP;
     JSpinner jumpMP;
-    JComboBox gyroType = new JComboBox(Mech.GYRO_SHORT_STRING);
+    JComboBox<String> gyroType = new JComboBox<String>(Mech.GYRO_SHORT_STRING);
     JSpinner weightClass;
-    JComboBox cockpitType = new JComboBox(Mech.COCKPIT_SHORT_STRING);
+    JComboBox<String> cockpitType = new JComboBox<String>(Mech.COCKPIT_SHORT_STRING);
     String[] clanHeatSinkTypes = { "Single", "Double", "Laser" };
     String[] isHeatSinkTypes = { "Single", "Double", "Compact" };
-    JComboBox heatSinkType = new JComboBox(isHeatSinkTypes);
+    JComboBox<String> heatSinkType = new JComboBox<String>(isHeatSinkTypes);
     JSpinner heatSinkNumber;
     JSpinner baseChassisHeatSinks;
     String[] techTypes = { "Inner Sphere", "Clan", "Mixed Inner Sphere",
             "Mixed Clan" };
-    JComboBox techType = new JComboBox(techTypes);
+    JComboBox<String> techType = new JComboBox<String>(techTypes);
     String[] isTechLevels = { "Introductory", "Standard", "Advanced",
             "Experimental", "Unoffical" };
     String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
             "Unoffical" };
-    String[] motiveTypes = { "Biped", "Quad" };
-    JComboBox motiveType = new JComboBox(motiveTypes);
-    JComboBox techLevel = new JComboBox(isTechLevels);
+    String[] motiveTypes = { "Biped", "Quad", "Tripod" };
+    JComboBox<String> motiveType = new JComboBox<String>(motiveTypes);
+    JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
     String[] jjTypes = { "Standard", "Improved", "Improved Prototype",
             "Mechanical Boosters" };
-    JComboBox jjType = new JComboBox(jjTypes);
+    JComboBox<String> jjType = new JComboBox<String>(jjTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox lamCB = new JCheckBox("LAM");
     JCheckBox fullHeadEjectCB = new JCheckBox("Full Head Ejection");
-    JComboBox structureCombo = new JComboBox(EquipmentType.structureNames);
+    JComboBox<String> structureCombo = new JComboBox<String>(EquipmentType.structureNames);
     JPanel masterPanel;
     JTextField manualBV = new JTextField(3);
     private JTextField chassis = new JTextField(5);
     private JTextField model = new JTextField(5);
     private JLabel lblFreeSinks = new JLabel("");
 
-    private JComboBox armorCombo = new JComboBox();
+    private JComboBox<String> armorCombo = new JComboBox<String>();
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
     private JSpinner armorTonnage;
 
@@ -509,10 +512,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             omniCB.setEnabled(true);
         }
         omniCB.setSelected(getMech().isOmni());
+        if (unit instanceof TripodMech) {
+            motiveType.setSelectedIndex(2);
+        }
         if (unit instanceof QuadMech) {
-            motiveType.setSelectedItem("Quad");
+            motiveType.setSelectedIndex(1);
         } else {
-            motiveType.setSelectedItem("Biped");
+            motiveType.setSelectedItem(0);
         }
         lamCB.setSelected(unit instanceof LandAirMech);
         fullHeadEjectCB.setSelected(getMech().hasFullHeadEject());
@@ -557,9 +563,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 techLevel.addItem(item);
             }
         }
-
-        int type = convertEngineType(getMech().getEngine()
-                .getEngineType());
         engineType.setSelectedIndex(convertEngineType(getMech().getEngine()
                 .getEngineType()));
 
@@ -688,7 +691,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             removeAllListeners();
-            JComboBox combo = (JComboBox) e.getSource();
+            @SuppressWarnings("unchecked")
+            JComboBox<String> combo = (JComboBox<String>) e.getSource();
 
             // we need to do cockpit also here, because cockpitType
             // determines
@@ -1127,6 +1131,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         return motiveType.getSelectedIndex() == 1;
     }
 
+    public boolean isTripod() {
+        return motiveType.getSelectedIndex() == 2;
+    }
+
     public boolean isLAM() {
         return lamCB.isSelected();
     }
@@ -1492,161 +1500,136 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         /* COCKPIT */
         cockpitType.removeAllItems();
-        int structCount = EquipmentType.structureNames.length;
 
-        switch (getMech().getTechLevel()) {
-            case TechConstants.T_INTRO_BOXSET:
-                structCount = 1;
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                break;
-            case TechConstants.T_CLAN_TW:
-                structCount = 3;
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                break;
-            case TechConstants.T_IS_TW_NON_BOX:
-                structCount = 3;
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                break;
-            case TechConstants.T_CLAN_ADVANCED:
-                structCount = 3;
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                break;
-            case TechConstants.T_IS_ADVANCED:
-                structCount = 3;
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                break;
-            case TechConstants.T_CLAN_EXPERIMENTAL:
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
-                break;
-            case TechConstants.T_CLAN_UNOFFICIAL:
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
+        if (getMech().isSuperHeavy()) {
+            if (getMech() instanceof TripodMech) {
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SUPERHEAVY_TRIPOD]);
+            } else {
+                cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SUPERHEAVY]);
+                if (isExperimental || (unit.getTechLevel() == TechConstants.T_CLAN_ADVANCED) || (unit.getTechLevel() == TechConstants.T_IS_ADVANCED)) {
+                    cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                }
+            }
+        } else {
+            switch (getMech().getTechLevel()) {
+                case TechConstants.T_INTRO_BOXSET:
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                    break;
+                case TechConstants.T_CLAN_TW:
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                    break;
+                case TechConstants.T_IS_TW_NON_BOX:
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                    break;
+                case TechConstants.T_CLAN_ADVANCED:
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                    break;
+                case TechConstants.T_IS_ADVANCED:
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                    break;
+                case TechConstants.T_CLAN_EXPERIMENTAL:
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                    break;
+                case TechConstants.T_IS_EXPERIMENTAL:
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                    break;
+                case TechConstants.T_CLAN_UNOFFICIAL:
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
 
-                break;
-            case TechConstants.T_IS_UNOFFICIAL:
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
-                cockpitType
-                        .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
-                break;
+                    break;
+                case TechConstants.T_IS_UNOFFICIAL:
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
+                    break;
+            }
         }
+
+
 
         /* INTERNAL STRUCTURE */
         structureCombo.removeAllItems();
-
-        for (int index = 0; index < structCount; index++) {
-            if (isMixed
-                    && !EquipmentType.structureNames[index]
-                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_STANDARD])
-                    && !EquipmentType.structureNames[index]
-                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_INDUSTRIAL])) {
-                if (isClan) {
-                    structureCombo.addItem(String.format("%1$s (IS)",
-                            EquipmentType.structureNames[index]));
-                    if (EquipmentType.structureNames[index]
-                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
-                        structureCombo
-                                .addItem(EquipmentType.structureNames[index]);
-                    } else if (EquipmentType.structureNames[index]
-                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
-                        structureCombo
-                                .addItem(EquipmentType.structureNames[index]);
-                    }
-                } else {
-                    if (EquipmentType.structureNames[index]
-                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_STEEL])) {
-                        structureCombo.addItem(String.format("%1$s (Clan)",
-                                EquipmentType.structureNames[index]));
-                    } else if (EquipmentType.structureNames[index]
-                            .equals(EquipmentType.structureNames[EquipmentType.T_STRUCTURE_ENDO_COMPOSITE])) {
-                        structureCombo.addItem(String.format("%1$s (Clan)",
-                                EquipmentType.structureNames[index]));
-                    }
-                    structureCombo.addItem(EquipmentType.structureNames[index]);
-                }
-            } else {
-                structureCombo.addItem(EquipmentType.structureNames[index]);
-            }
+        for (String structure : getStructureTypes()) {
+            structureCombo.addItem(structure);
         }
 
         /* HEAT SINKS */
@@ -1821,7 +1804,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             String selItem = Mech.COCKPIT_SHORT_STRING[getMech()
                     .getCockpitType()];
             for (int i = 0; i < cockpitType.getItemCount(); i++) {
-                if (((String) cockpitType.getItemAt(i)).equals(selItem)) {
+                if (cockpitType.getItemAt(i).equals(selItem)) {
                     cockpitType.setSelectedIndex(i);
                     break;
                 }
@@ -1939,7 +1922,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
         enhancement.setSelectedIndex(-1);
         for (int i = 0; i < enhancement.getItemCount(); i++) {
-            if (((String) enhancement.getItemAt(i)).equals(selEnhance)) {
+            if (enhancement.getItemAt(i).equals(selEnhance)) {
                 enhancement.setSelectedIndex(i);
                 break;
             }
@@ -1975,6 +1958,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     getMech().autoSetInternal();
                     engineType.setSelectedIndex(engineType.getSelectedIndex());
                 }
+                populateChoices(true);
             } else if (spinner.equals(walkMP)) {
                 int rating = ((Integer) walkMP.getValue())
                         * ((Integer) weightClass.getValue());
@@ -2048,21 +2032,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private void createArmorMountsAndSetArmorType() {
 
         if (getArmorType(armorCombo) == EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK)) {
-            JComboBox headArmor = new JComboBox();
+            JComboBox<String> headArmor = new JComboBox<String>();
             headArmor.setName("head");
-            JComboBox laArmor = new JComboBox();
+            JComboBox<String> laArmor = new JComboBox<String>();
             laArmor.setName("la");
-            JComboBox ltArmor = new JComboBox();
+            JComboBox<String> ltArmor = new JComboBox<String>();
             ltArmor.setName("lt");
-            JComboBox ctArmor = new JComboBox();
+            JComboBox<String> ctArmor = new JComboBox<String>();
             ctArmor.setName("ct");
-            JComboBox rtArmor = new JComboBox();
+            JComboBox<String> rtArmor = new JComboBox<String>();
             rtArmor.setName("rt");
-            JComboBox raArmor = new JComboBox();
+            JComboBox<String> raArmor = new JComboBox<String>();
             raArmor.setName("ra");
-            JComboBox llArmor = new JComboBox();
+            JComboBox<String> llArmor = new JComboBox<String>();
             llArmor.setName("ll");
-            JComboBox rlArmor = new JComboBox();
+            JComboBox<String> rlArmor = new JComboBox<String>();
             rlArmor.setName("rl");
             boolean isMixed = getMech().isMixedTech();
             boolean isClan = getMech().isClan();
@@ -2265,7 +2249,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         for (int index = 0; index < armorCombo.getItemCount(); index++) {
             if (getMech().isMixedTech()) {
-                String name = EquipmentType.getArmorTypeName(type,TechConstants.isClan(getMech().getArmorTechLevel(0)));
                 if (EquipmentType.getArmorTypeName(type,TechConstants.isClan(getMech().getArmorTechLevel(0))).equals(armorCombo.getItemAt(index))) {
                     armorCombo.setSelectedIndex(index);
                 }
@@ -2281,7 +2264,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         return jjType.getSelectedIndex() + 1;
     }
 
-    private String getArmorType(JComboBox combo) {
+    private String getArmorType(JComboBox<String> combo) {
         String armorType = combo.getSelectedItem().toString();
         if (armorType.equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK))) {
             return armorType;
@@ -2392,7 +2375,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         heatSinkType.setSelectedIndex(selIndex);
     }
 
-    private void setArmorType(JComboBox combo, int type, boolean removeListeners) {
+    private void setArmorType(JComboBox<String> combo, int type, boolean removeListeners) {
         if (removeListeners) {
             removeAllListeners();
         }
@@ -2408,5 +2391,37 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public void setArmorType(int type) {
         setArmorType(armorCombo, type, true);
+    }
+
+    /**
+     * Get a list of the internal structure types legal for this unit
+     * @return a <code>List<String></code> of the legal IS types, for use
+     * in the IS combobox
+     */
+    private List<String> getStructureTypes() {
+        List<String> structures = new ArrayList<String>();
+        for (int i = 0; i < EquipmentType.structureNames.length; i++) {
+            // superheavies are restricted to standard, industrial, endo and
+            // endo-composite
+            if (getMech().isSuperHeavy()) {
+                if ((i != EquipmentType.T_STRUCTURE_STANDARD)
+                        && (i != EquipmentType.T_STRUCTURE_INDUSTRIAL)
+                        && (i != EquipmentType.T_STRUCTURE_ENDO_STEEL)
+                        && (i != EquipmentType.T_STRUCTURE_ENDO_COMPOSITE)) {
+                    continue;
+                }
+            }
+            EquipmentType et = EquipmentType.get(EquipmentType.getStructureTypeName(i, unit.isClan()));
+            if ((et != null) && TechConstants.isLegal(unit.getTechLevel(), et.getTechLevel(unit.getYear()), unit.isMixedTech())) {
+                structures.add(et.getName());
+            }
+            if (unit.isMixedTech()) {
+                et = EquipmentType.get(EquipmentType.getStructureTypeName(i, !unit.isClan()));
+                if ((et != null) && TechConstants.isLegal(unit.getTechLevel(), et.getTechLevel(unit.getYear()), unit.isMixedTech())) {
+                    structures.add(et.getName()+(unit.isClan()?" (IS)":" (Clan)"));
+                }
+            }
+        }
+        return structures;
     }
 }
