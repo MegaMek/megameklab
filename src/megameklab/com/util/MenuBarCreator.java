@@ -916,8 +916,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
         CConfig.updateSaveFiles("Reset Unit");
         CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
-
-        parentFrame.createNewUnit(false);
+        parentFrame.createNewUnit(unit instanceof Tank?Entity.ETYPE_TANK:Entity.ETYPE_BIPED_MECH, false);
         unit = parentFrame.getEntity();
         setVisible(true);
         reload();
