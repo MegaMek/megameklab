@@ -27,6 +27,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import megamek.common.Engine;
+import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
@@ -61,7 +62,7 @@ public class MainUI extends MegaMekLabMainUI {
     public MainUI() {
 
         super();
-        createNewUnit(false);
+        createNewUnit(Entity.ETYPE_TANK, false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
         menubarcreator = new MenuBarCreator(entity, this);
         setJMenuBar(menubarcreator);
@@ -110,11 +111,6 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(boolean isSuperHeavy) {
-        createNewUnit(isSuperHeavy, false);
-    }
-
-    @Override
     public void refreshAll() {
         Tank tank = (Tank)entity;
         if (structureTab.isVTOL() && (entity instanceof VTOL)) {
@@ -126,7 +122,7 @@ public class MainUI extends MegaMekLabMainUI {
         } else if ((structureTab.isVTOL() && !(entity instanceof VTOL)) || (!structureTab.isVTOL() && (entity instanceof VTOL))) {
             String model = entity.getModel();
             String chassis = entity.getChassis();
-            createNewUnit(structureTab.isSuperHeavy(), structureTab.isVTOL());
+            createNewUnit(structureTab.isVTOL()?Entity.ETYPE_VTOL:tank.isSuperHeavy()?Entity.ETYPE_SUPER_HEAVY_TANK:Entity.ETYPE_TANK,tank.isSuperHeavy());
             entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
             entity.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
             entity.setChassis(chassis);
@@ -137,7 +133,7 @@ public class MainUI extends MegaMekLabMainUI {
         } else if ((structureTab.isSuperHeavy() && !(tank.isSuperHeavy())) || (!structureTab.isSuperHeavy() && (tank.isSuperHeavy()))) {
             String model = entity.getModel();
             String chassis = entity.getChassis();
-            createNewUnit(structureTab.isSuperHeavy(), structureTab.isVTOL());
+            createNewUnit(structureTab.isSuperHeavy()?Entity.ETYPE_SUPER_HEAVY_TANK:Entity.ETYPE_TANK, structureTab.isSuperHeavy());
             entity.setChassis(chassis);
             entity.setModel(model);
             reloadTabs();
@@ -198,8 +194,8 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(boolean isSuperHeavy, boolean isVTOL) {
-        if (isVTOL) {
+    public void createNewUnit(long entityType, boolean isSuperHeavy) {
+        if (entityType == Entity.ETYPE_VTOL) {
             entity = new VTOL();
             entity.setTechLevel(TechConstants.T_INTRO_BOXSET);
             if (isSuperHeavy) {
@@ -209,7 +205,7 @@ public class MainUI extends MegaMekLabMainUI {
             entity.setWeight(20);
             entity.setMovementMode(EntityMovementMode.VTOL);
         } else {
-            if (isSuperHeavy) {
+            if (entityType == Entity.ETYPE_SUPER_HEAVY_TANK) {
                 entity = new SuperHeavyTank();
                 entity.setTechLevel(TechConstants.T_IS_ADVANCED);
                 entity.setWeight(51);

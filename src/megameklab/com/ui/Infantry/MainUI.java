@@ -25,6 +25,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Infantry;
 import megamek.common.LocationFullException;
@@ -53,7 +54,7 @@ public class MainUI extends MegaMekLabMainUI {
     public MainUI() {
 
         super();
-        createNewUnit(false);
+        createNewUnit(Entity.ETYPE_INFANTRY, false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
         menubarcreator = new MenuBarCreator(entity, this);
         setJMenuBar(menubarcreator);
@@ -97,12 +98,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(boolean isNew) {
-        createNewUnit(false, false);
-    }
-
-    @Override
-    public void createNewUnit(boolean isNew, boolean isAlsoNew) {
+    public void createNewUnit(long entityType, boolean isSuperHeavy) {
         entity = new Infantry();
         entity.setYear(3145);
         entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);

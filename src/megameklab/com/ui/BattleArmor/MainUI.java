@@ -27,6 +27,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import megamek.common.BattleArmor;
+import megamek.common.Entity;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
@@ -60,7 +61,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         super();
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
-        createNewUnit(false);
+        createNewUnit(Entity.ETYPE_BATTLEARMOR, false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
         menubarcreator = new MenuBarCreator(entity, this);
         setJMenuBar(menubarcreator);
@@ -106,7 +107,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(boolean isNew) {
+    public void createNewUnit(long entityType, boolean isSuperHeavy) {
         entity = new BattleArmor();
         BattleArmor ba = (BattleArmor) entity;
 
@@ -127,11 +128,6 @@ public class MainUI extends MegaMekLabMainUI {
         if (menubarcreator != null) {
             menubarcreator.setUnit(ba);
         }
-    }
-
-    @Override
-    public void createNewUnit(boolean isNew, boolean isAlsoNew) {
-        createNewUnit(isNew);
     }
 
     @Override

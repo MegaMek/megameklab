@@ -43,6 +43,7 @@ import javax.swing.event.ChangeListener;
 
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
+import megamek.common.TripodMech;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -64,6 +65,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     private JPanel ltPanel = new JPanel();
     private JPanel rtPanel = new JPanel();
     private JPanel ctPanel = new JPanel();
+    private JPanel clPanel = new JPanel();
 
     public SpinnerNumberModel laArmorModel = new SpinnerNumberModel();
     public SpinnerNumberModel raArmorModel = new SpinnerNumberModel();
@@ -73,6 +75,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     public SpinnerNumberModel rtArmorModel = new SpinnerNumberModel();
     public SpinnerNumberModel ctArmorModel = new SpinnerNumberModel();
     public SpinnerNumberModel hdArmorModel = new SpinnerNumberModel();
+    public SpinnerNumberModel clArmorModel = new SpinnerNumberModel();
 
     private SpinnerNumberModel rtrArmorModel = new SpinnerNumberModel();
     private SpinnerNumberModel ltrArmorModel = new SpinnerNumberModel();
@@ -86,6 +89,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     private JSpinner rtArmorField = new JSpinner(rtArmorModel);
     private JSpinner ctArmorField = new JSpinner(ctArmorModel);
     private JSpinner hdArmorField = new JSpinner(hdArmorModel);
+    private JSpinner clArmorField = new JSpinner(clArmorModel);
 
     private JSpinner rtrArmorField = new JSpinner(rtrArmorModel);
     private JSpinner ltrArmorField = new JSpinner(ltrArmorModel);
@@ -100,6 +104,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     private JLabel ltArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
     private JLabel rtArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
     private JLabel ctArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
+    private JLabel clArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
 
     private JLabel ltrArmorMaxLabel = new JLabel();
     private JLabel rtrArmorMaxLabel = new JLabel();
@@ -133,6 +138,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             "Unalloc.:", SwingConstants.TRAILING);
     private JLabel unallocatedPointsLabelPatchworkRl = new JLabel(
             "Unalloc.:", SwingConstants.TRAILING);
+    private JLabel unallocatedPointsLabelPatchworkCl = new JLabel(
+            "Unalloc.:", SwingConstants.TRAILING);
     private JLabel unallocatedPointsFieldHead = new JLabel();
     private JLabel unallocatedPointsFieldLa = new JLabel();
     private JLabel unallocatedPointsFieldLt = new JLabel();
@@ -141,6 +148,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     private JLabel unallocatedPointsFieldRa = new JLabel();
     private JLabel unallocatedPointsFieldLl = new JLabel();
     private JLabel unallocatedPointsFieldRl = new JLabel();
+    private JLabel unallocatedPointsFieldCl = new JLabel();
 
     private int armorPoints;
     private int wastedArmorPoints;
@@ -165,6 +173,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         rtPanel.setLayout(new BoxLayout(rtPanel, BoxLayout.Y_AXIS));
         llPanel.setLayout(new BoxLayout(llPanel, BoxLayout.Y_AXIS));
         rlPanel.setLayout(new BoxLayout(rlPanel, BoxLayout.Y_AXIS));
+        clPanel.setLayout(new BoxLayout(clPanel, BoxLayout.Y_AXIS));
 
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
@@ -184,6 +193,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         gbc.gridx = 1;
         gbc.gridy = 2;
         mainPanel.add(llPanel, gbc);
+        gbc.gridx = 2;
+        mainPanel.add(clPanel, gbc);
         gbc.gridx = 3;
         mainPanel.add(rlPanel, gbc);
 
@@ -191,6 +202,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         raArmorField.setName(Integer.toString(Mech.LOC_RARM));
         llArmorField.setName(Integer.toString(Mech.LOC_LLEG));
         rlArmorField.setName(Integer.toString(Mech.LOC_RLEG));
+        clArmorField.setName(Integer.toString(Mech.LOC_CLEG));
         ltArmorField.setName(Integer.toString(Mech.LOC_LT));
         rtArmorField.setName(Integer.toString(Mech.LOC_RT));
         ctArmorField.setName(Integer.toString(Mech.LOC_CT));
@@ -203,6 +215,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         armorFieldList.add(raArmorField);
         armorFieldList.add(llArmorField);
         armorFieldList.add(rlArmorField);
+        armorFieldList.add(clArmorField);
         armorFieldList.add(ltArmorField);
         armorFieldList.add(rtArmorField);
         armorFieldList.add(ctArmorField);
@@ -231,6 +244,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         armorMaxLabelList.add(raArmorMaxLabel);
         armorMaxLabelList.add(llArmorMaxLabel);
         armorMaxLabelList.add(rlArmorMaxLabel);
+        armorMaxLabelList.add(clArmorMaxLabel);
         armorMaxLabelList.add(ltArmorMaxLabel);
         armorMaxLabelList.add(rtArmorMaxLabel);
         armorMaxLabelList.add(ctArmorMaxLabel);
@@ -384,6 +398,21 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                                 null, unit.getLocationAbbr(location),
                                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                         break;
+                    case Mech.LOC_CLEG:
+                        topPanel = new JPanel(new GridLayout(2, 0));
+                        topPanel.add(clArmorField);
+                        topPanel.add(clArmorMaxLabel);
+                        clPanel.add(topPanel);
+
+                        bottomPanel = new JPanel();
+                        bottomPanel.add(unallocatedPointsLabelPatchworkCl);
+                        bottomPanel.add(unallocatedPointsFieldCl);
+                        clPanel.add(bottomPanel);
+
+                        clPanel.setBorder(BorderFactory.createTitledBorder(
+                                null, unit.getLocationAbbr(location),
+                                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        break;
                 }
             }
         }
@@ -470,6 +499,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     public void refresh() {
         removeAllListeners();
+        clPanel.setVisible(unit instanceof TripodMech);
         for (int location = 0; location < unit.locations(); location++) {
 
             int maxArmor = unit.getOInternal(location) * 2;
@@ -629,6 +659,20 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     rlArmorMaxLabel.setText("max: "
                             + Integer.toString(maxArmor));
                     break;
+                case Mech.LOC_CLEG:
+                    clArmorModel.setValue(Math.min(maxArmor,
+                            unit.getArmor(location)));
+                    if (isFullyAllocated()) {
+                        clArmorModel.setMaximum((Integer) clArmorModel
+                                .getValue());
+                    } else {
+                        clArmorModel.setMaximum(maxArmor);
+                    }
+                    clArmorModel.setStepSize(1);
+                    clArmorModel.setMinimum(0);
+                    clArmorMaxLabel.setText("max: "
+                            + Integer.toString(maxArmor));
+                    break;
             }
         }
 
@@ -689,6 +733,13 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     .getArmorPoints(unit, Mech.LOC_RLEG,
                             unit.getArmorWeight(Mech.LOC_RLEG))
                     - unit.getOArmor(Mech.LOC_RLEG)));
+            if (unit instanceof TripodMech) {
+                unallocatedPointsFieldCl.setVisible(true);
+                unallocatedPointsFieldCl.setText(Integer.toString(UnitUtil
+                        .getArmorPoints(unit, Mech.LOC_CLEG,
+                                unit.getArmorWeight(Mech.LOC_CLEG))
+                        - unit.getOArmor(Mech.LOC_CLEG)));
+            }
         } else {
             valueUnallocatedArmor.setVisible(true);
             lblUnallocatedArmor.setVisible(true);
@@ -713,6 +764,10 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             unallocatedPointsFieldRa.setVisible(false);
             unallocatedPointsFieldLl.setVisible(false);
             unallocatedPointsFieldRl.setVisible(false);
+            if (unit instanceof TripodMech) {
+                unallocatedPointsLabelPatchworkCl.setVisible(false);
+                unallocatedPointsFieldCl.setVisible(false);
+            }
         }
         valueAllocatedArmor.setText(Integer.toString(unit.getTotalOArmor()));
         valueUnallocatedArmor.setText(Integer.toString(armorPoints
