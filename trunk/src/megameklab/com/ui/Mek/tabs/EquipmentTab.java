@@ -94,7 +94,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     private JButton addButton = new JButton("Add");
     private JButton removeButton = new JButton("Remove");
     private JButton removeAllButton = new JButton("Remove All");
-    private JComboBox choiceType = new JComboBox();
+    private JComboBox<String> choiceType = new JComboBox<String>();
     private JTextField txtFilter = new JTextField();
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");
@@ -103,7 +103,6 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
 
-    @SuppressWarnings("rawtypes")
     private CriticalTableModel equipmentList;
     private EquipmentTableModel masterEquipmentList;
     private JTable masterEquipmentTable = new JTable();
@@ -216,7 +215,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         loadEquipmentTable();
 
-        DefaultComboBoxModel typeModel = new DefaultComboBoxModel();
+        DefaultComboBoxModel<String> typeModel = new DefaultComboBoxModel<String>();
         for (int i = 0; i < T_NUM; i++) {
             typeModel.addElement(getTypeName(i));
         }
