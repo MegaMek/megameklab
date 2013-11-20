@@ -63,20 +63,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
     private String[] techTypes =
         { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
-    private JComboBox techType = new JComboBox(techTypes);
+    private JComboBox<String> techType = new JComboBox(techTypes);
     private String[] isTechLevels =
         { "Standard", "Advanced", "Experimental", "Unoffical" };
     private String[] clanTechLevels =
         { "Standard", "Advanced", "Experimental", "Unoffical" };
-    private JComboBox techLevel = new JComboBox(isTechLevels);
+    private JComboBox<String> techLevel = new JComboBox(isTechLevels);
     private String[] chassisTypeArray =
         { "Humanoid", "Quad"};
-    private JComboBox chassisType = new JComboBox(chassisTypeArray);
-    private JComboBox weightClass;
+    private JComboBox<String> chassisType = new JComboBox(chassisTypeArray);
+    private JComboBox<String> weightClass;
     private String[] jumpTypeArray =
         { "Jump",MOVE_VTOL,MOVE_UMU};
-    private JComboBox jumpType = new JComboBox(jumpTypeArray);
-    private JComboBox armorType;
+    private JComboBox<String> jumpType = new JComboBox(jumpTypeArray);
+    private JComboBox<String> armorType;
 
     private JTextField era = new JTextField(3);
     private JTextField source = new JTextField(3);
@@ -177,7 +177,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
                 .setEditable(false);
 
-        DefaultComboBoxModel modelWeightClass = new DefaultComboBoxModel();
+        DefaultComboBoxModel<String> modelWeightClass = new DefaultComboBoxModel<String>();
         for(int i = EntityWeightClass.WEIGHT_ULTRA_LIGHT; i <= EntityWeightClass.WEIGHT_ASSAULT; i++) {
             modelWeightClass.addElement(EntityWeightClass.getClassName(i, unit));
         }
@@ -208,7 +208,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         gbc.gridx = 1;
         chassisPanel.add(jumpType, gbc);
 
-        DefaultComboBoxModel modelArmorType = new DefaultComboBoxModel();
+        DefaultComboBoxModel<String> modelArmorType = new DefaultComboBoxModel<String>();
         for(int i = EquipmentType.T_ARMOR_BA_STANDARD; i < EquipmentType.T_ARMOR_BA_NUM; i++) {
             modelArmorType.addElement(EquipmentType.getBaArmorTypeName(i));
         }
@@ -434,7 +434,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     public void actionPerformed(ActionEvent e) {
         removeAllActionListeners();
         if (e.getSource() instanceof JComboBox) {
-            JComboBox combo = (JComboBox) e.getSource();
+            JComboBox<String> combo = (JComboBox) e.getSource();
             if (combo.equals(techLevel)) {
                 int unitTechLevel = techLevel.getSelectedIndex();
                 if (getBattleArmor().isClan()) {

@@ -73,7 +73,7 @@ public class WeaponView extends IView implements ActionListener {
 
     private JButton addPrimaryButton = new JButton("Add Primary");
     private JButton addSecondaryButton = new JButton("Add Secondary");
-    private JComboBox choiceType = new JComboBox();
+    private JComboBox<String> choiceType = new JComboBox<String>();
     private JTextField txtFilter = new JTextField();
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");
@@ -158,7 +158,7 @@ public class WeaponView extends IView implements ActionListener {
 
         masterEquipmentList.setData(allTypes);
 
-        DefaultComboBoxModel typeModel = new DefaultComboBoxModel();
+        DefaultComboBoxModel<String> typeModel = new DefaultComboBoxModel<String>();
         for (int i = 0; i < T_NUM; i++) {
             typeModel.addElement(getTypeName(i));
         }

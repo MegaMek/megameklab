@@ -80,8 +80,8 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
     private JButton btnClose;
     private JButton btnAdvSearch;
     private JButton btnResetSearch;
-    private JComboBox comboType;
-    private JComboBox comboWeight;
+    private JComboBox<String> comboType;
+    private JComboBox<String> comboWeight;
     private JLabel lblFilter;
     private JLabel lblImage;
     private JLabel lblType;
@@ -142,8 +142,8 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         tableUnits.addKeyListener(this);
         panelMekView = new MechViewPanel();
 
-        comboType = new JComboBox();
-        comboWeight = new JComboBox();
+        comboType = new JComboBox<String>();
+        comboWeight = new JComboBox<String>();
         txtFilter = new JTextField();
 
         btnSelect = new JButton();
@@ -219,7 +219,7 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         c.anchor = GridBagConstraints.WEST;
         panelFilterBtns.add(lblType, c);
 
-        DefaultComboBoxModel techModel = new DefaultComboBoxModel();
+        DefaultComboBoxModel<String> techModel = new DefaultComboBoxModel<String>();
         for (int i = 0; i < TechConstants.SIZE; i++) {
             techModel.addElement(TechConstants.getLevelDisplayableName(i));
         }
@@ -240,7 +240,7 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         c.anchor = GridBagConstraints.WEST;
         panelFilterBtns.add(lblWeight, c);
 
-        DefaultComboBoxModel weightModel = new DefaultComboBoxModel();
+        DefaultComboBoxModel<String> weightModel = new DefaultComboBoxModel<String>();
         for (int i = 0; i < EntityWeightClass.SIZE; i++) {
             weightModel.addElement(EntityWeightClass.getClassName(i));
         }

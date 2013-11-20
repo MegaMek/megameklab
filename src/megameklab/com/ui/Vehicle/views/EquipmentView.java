@@ -63,7 +63,7 @@ public class EquipmentView extends IView implements ActionListener {
     private JButton removeButton = new JButton("Remove");
     private JButton removeAllButton = new JButton("Remove All");
 
-    private JComboBox equipmentCombo = new JComboBox();
+    private JComboBox<EquipmentType> equipmentCombo = new JComboBox<EquipmentType>();
     private CriticalTableModel equipmentList;
     private Vector<EquipmentType> masterEquipmentList = new Vector<EquipmentType>(10, 1);
     private JTable equipmentTable = new JTable();
