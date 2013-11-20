@@ -94,7 +94,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private int clanEngineFlag = 0;
 
-    JComboBox engineType = new JComboBox(isEngineTypes);
+    JComboBox<String> engineType = new JComboBox(isEngineTypes);
 
     JSpinner cruiseMP;
     JSpinner jumpMP;
@@ -105,21 +105,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private JTextField chassis = new JTextField(5);
     private JTextField model = new JTextField(5);
     String[] techTypes = { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
-    JComboBox techType = new JComboBox(techTypes);
+    JComboBox<String> techType = new JComboBox(techTypes);
     String[] isTechLevels = { "Intro", "Standard", "Advanced", "Experimental",
             "Unoffical" };
     String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
             "Unoffical" };
-    JComboBox techLevel = new JComboBox(isTechLevels);
+    JComboBox<String> techLevel = new JComboBox(isTechLevels);
     String[] tankMotiveTypes = { "Hover", "Wheeled", "Tracked", "WiGE", "VTOL" };
-    JComboBox tankMotiveType = new JComboBox(tankMotiveTypes);
+    JComboBox<String> tankMotiveType = new JComboBox(tankMotiveTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox superHeavyCB = new JCheckBox("Super-Heavy");
     String[] turretTypes = { "None", "Single", "Dual" };
-    JComboBox turretCombo = new JComboBox(turretTypes);
+    JComboBox<String> turretCombo = new JComboBox(turretTypes);
     Dimension maxSize = new Dimension();
     JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:",
             SwingConstants.TRAILING);
@@ -134,7 +134,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JTextField manualBV = new JTextField(3);
 
     private ArmorView armor;
-    private JComboBox armorCombo = new JComboBox();
+    private JComboBox<String> armorCombo = new JComboBox<String>();
 
     public StructureTab(Tank unit) {
         this.unit = unit;
@@ -913,7 +913,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         return tankMotiveType.getSelectedIndex() == 4;
     }
 
-    private void updateTurrets(JComboBox combo) {
+    private void updateTurrets(JComboBox<String> combo) {
         if ((combo.getSelectedIndex() == 0) || (combo.getSelectedIndex() == 1)) {
             int turretLoc = getTank().getLocTurret();
             List<Mounted> toRemove = new ArrayList<Mounted>();
@@ -1010,7 +1010,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
 
-    private String getArmorType(JComboBox combo) {
+    private String getArmorType(JComboBox<String> combo) {
         String armorType = combo.getSelectedItem().toString();
         if (armorType.equals(EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK))) {
             return armorType;
@@ -1101,23 +1101,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private void setArmorType() {
         UnitUtil.removeISorArmorMounts(unit, false);
         if (getArmorType(armorCombo) == EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK)) {
-            JComboBox frontArmor = new JComboBox();
+            JComboBox<String> frontArmor = new JComboBox<String>();
             frontArmor.setName("FR");
-            JComboBox leftArmor = new JComboBox();
+            JComboBox<String> leftArmor = new JComboBox<String>();
             leftArmor.setName((unit instanceof SuperHeavyTank?"FRLS":"LS"));
-            JComboBox rightArmor = new JComboBox();
+            JComboBox<String> rightArmor = new JComboBox<String>();
             rightArmor.setName((unit instanceof SuperHeavyTank?"FRRS":"RS"));
-            JComboBox rearArmor = new JComboBox();
+            JComboBox<String> rearArmor = new JComboBox<String>();
             rearArmor.setName("RR");
-            JComboBox turretArmor = new JComboBox();
+            JComboBox<String> turretArmor = new JComboBox<String>();
             turretArmor.setName("TU");
-            JComboBox turret2Armor = new JComboBox();
+            JComboBox<String> turret2Armor = new JComboBox<String>();
             turret2Armor.setName("TU2");
-            JComboBox rearLeftArmor = new JComboBox();
+            JComboBox<String> rearLeftArmor = new JComboBox<String>();
             rearLeftArmor.setName("RRLS");
-            JComboBox rearRightArmor = new JComboBox();
+            JComboBox<String> rearRightArmor = new JComboBox<String>();
             rearRightArmor.setName("RRRS");
-            JComboBox rotorArmor = new JComboBox();
+            JComboBox<String> rotorArmor = new JComboBox<String>();
             rotorArmor.setName("RO");
             boolean isMixed = getTank().isMixedTech();
             boolean isClan = getTank().isClan();
@@ -1276,7 +1276,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
     }
 
-    private void setArmorType(JComboBox combo, int type, boolean removeListeners) {
+    private void setArmorType(JComboBox<String> combo, int type, boolean removeListeners) {
         if (removeListeners) {
             removeAllListeners();
         }
@@ -1371,7 +1371,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             removeAllListeners();
-            JComboBox combo = (JComboBox) e.getSource();
+            JComboBox<String> combo = (JComboBox) e.getSource();
 
             try {
                 // if a Tank is primitive and thus needs a larger engine

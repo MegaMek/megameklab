@@ -66,24 +66,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private String[] techTypes =
         { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
-    private JComboBox techType = new JComboBox(techTypes);
+    private JComboBox<String> techType = new JComboBox(techTypes);
     private String[] isTechLevels =
         { "Introductory", "Standard", "Advanced", "Experimental", "Unoffical" };
     private String[] clanTechLevels =
         { "Standard", "Advanced", "Experimental", "Unoffical" };
-    private JComboBox techLevel = new JComboBox(isTechLevels);
+    private JComboBox<String> techLevel = new JComboBox(isTechLevels);
     private String[] motiveTypeArray =
         { "Foot", "Jump", "Motorized", "Mechanized (Hover)", "Mechanized (Tracked)", "Mechanized (Wheeled)"};
-    private JComboBox motiveType = new JComboBox(motiveTypeArray);
+    private JComboBox<String> motiveType = new JComboBox(motiveTypeArray);
     private String[] squadSizeArray =
         { "1","2","3","4", "5", "6","7","8","9","10"};
-    private JComboBox squadSize = new JComboBox(squadSizeArray);
+    private JComboBox<String> squadSize = new JComboBox(squadSizeArray);
     private String[] squadNArray =
         { "1","2","3","4","5"};
-    private JComboBox squadN = new JComboBox(squadNArray);
+    private JComboBox<String> squadN = new JComboBox(squadNArray);
     private String[] secondaryNArray =
         { "0","1","2"};
-    private JComboBox secondaryN = new JComboBox(secondaryNArray);
+    private JComboBox<String> secondaryN = new JComboBox(secondaryNArray);
 
     private JTextField era = new JTextField(3);
     private JTextField source = new JTextField(3);
@@ -394,7 +394,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         removeAllActionListeners();
         if (e.getSource() instanceof JComboBox) {
-            JComboBox combo = (JComboBox) e.getSource();
+            JComboBox<String> combo = (JComboBox) e.getSource();
             if (combo.equals(techLevel)) {
                 int unitTechLevel = techLevel.getSelectedIndex();
                 if (getInfantry().isClan()) {
@@ -560,7 +560,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 int maxSquadSize = getMaxSquadSize();
                 squadSize.removeAllItems();
                 for (int i = 1; i <= maxSquadSize; i++) {
-                    squadSize.addItem(i);
+                    squadSize.addItem(Integer.toString(i));
                 }
                 if(currentSquadSize > maxSquadSize) {
                     getInfantry().setSquadSize(maxSquadSize);
@@ -571,7 +571,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 int maxSquadN = getMaxSquadNumber();
                 squadN.removeAllItems();
                 for (int i = 1; i <= maxSquadN; i++) {
-                    squadN.addItem(i);
+                    squadN.addItem(Integer.toString(i));
                 }
                 if(currentSquadN > maxSquadN) {
                     getInfantry().setSquadN(maxSquadN);
@@ -585,7 +585,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 int maxSquadN = getMaxSquadNumber();
                 squadN.removeAllItems();
                 for (int i = 1; i <= maxSquadN; i++) {
-                    squadN.addItem(i);
+                    squadN.addItem(Integer.toString(i));
                 }
                 if(currentSquadN > maxSquadN) {
                     getInfantry().setSquadN(maxSquadN);
@@ -599,7 +599,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 int maxSquadSize = getMaxSquadSize();
                 squadSize.removeAllItems();
                 for (int i = 1; i <= maxSquadSize; i++) {
-                    squadSize.addItem(i);
+                    squadSize.addItem(Integer.toString(i));
                 }
                 if(currentSquadSize > maxSquadSize) {
                     getInfantry().setSquadSize(maxSquadSize);
