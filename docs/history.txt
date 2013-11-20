@@ -48,6 +48,7 @@ V 0.1.24-dev
 + Bug [#80]: Selecting Omni when building vehicle causes NPE when changing movement speed
 + Bug [#90]: Megamek lab, unable to modify armor tonnage
 + start of tripod mech support
++ Bug: Mek.MainUI.createNewUnit was creating LandAirMech's for BIPED entity types
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
