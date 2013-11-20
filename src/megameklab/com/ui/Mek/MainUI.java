@@ -125,7 +125,7 @@ public class MainUI extends MegaMekLabMainUI {
         } else if (entityType == Entity.ETYPE_QUAD_MECH) {
             entity = new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
             entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        } else if (entityType == Entity.ETYPE_BIPED_MECH) {
+        } else if (entityType == Entity.ETYPE_LAND_AIR_MECH) {
             entity = new LandAirMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
             entity.setTechLevel(TechConstants.T_IS_ADVANCED);
             entity.setManualBV(-1);
