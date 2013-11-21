@@ -42,13 +42,13 @@ public class MainUI extends MegaMekLabMainUI {
 
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -2117599432007026106L;
-    
+
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
-    
+
     private StructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
@@ -62,7 +62,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         super();
         createNewUnit(Entity.ETYPE_AERO, false);
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
+        setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
         menubarcreator = new MenuBarCreator(entity, this);
         setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(
@@ -126,7 +126,7 @@ public class MainUI extends MegaMekLabMainUI {
             System.out.println("Aero.MainUI: Received incorrect entityType!");
             return;
         }
-        
+
         Aero aero = (Aero) entity;
 
         entity.setYear(3145);
@@ -154,7 +154,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
-       
+
 //        String model = entity.getModel();
 //        String chassis = entity.getChassis();
 //
@@ -166,7 +166,7 @@ public class MainUI extends MegaMekLabMainUI {
 //        reloadTabs();
 //        repaint();
 //        refreshAll();
-   
+
         statusbar.refresh();
         structureTab.refresh();
         equipmentTab.refresh();
@@ -198,7 +198,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshHeader() {
 
-        String title = entity.getChassis() + " " + entity.getModel() + ".mtf";
+        String title = entity.getChassis() + " " + entity.getModel() + ".blk";
         setTitle(title);
 
     }

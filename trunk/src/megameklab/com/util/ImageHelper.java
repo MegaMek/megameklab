@@ -300,7 +300,7 @@ public class ImageHelper {
     public static void printMechWeaponsNEquipment(Mech mech, Graphics2D g2d, int leftMargin, int topMargin) {
         int qtyPoint = 26 + leftMargin;
         int typePoint = 38 + leftMargin;
-        int locPoint = 109 + leftMargin;
+        int locPoint = 105 + leftMargin;
         int heatPoint = 118 + leftMargin;
         int damagePoint = 145 + leftMargin;
         int minPoint = 167 + leftMargin;
