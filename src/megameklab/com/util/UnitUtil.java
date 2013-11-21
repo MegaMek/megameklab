@@ -40,6 +40,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
+import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
@@ -1676,7 +1677,7 @@ public class UnitUtil {
         return sb.toString();
     }
 
-    public static int getBaseChassisHeatSinks(Mech unit, boolean compact) {
+    public static int getBaseChassisHeatSinks(Entity unit, boolean compact) {
         int engineHSCapacity = unit.getEngine().integralHeatSinkCapacity(
                 compact);
 
@@ -2030,7 +2031,108 @@ public class UnitUtil {
         }
         return false;
     }
+    
+    public static boolean isAeroWeapon(EquipmentType eq, Aero unit) {
+        if (eq instanceof InfantryWeapon) {
+            return false;
+        }
 
+        if (UnitUtil.isHeatSink(eq) || UnitUtil.isArmorOrStructure(eq)
+                || UnitUtil.isJumpJet(eq)
+                || UnitUtil.isAeroEquipment(eq, unit)) {
+            return false;
+        }
+
+        if (eq instanceof AmmoType) {
+            return false;
+        }
+
+        if (eq instanceof WeaponType) {
+
+            WeaponType weapon = (WeaponType) eq;
+
+            if (!weapon.hasFlag(WeaponType.F_AERO_WEAPON)) {
+                return false;
+            }
+
+            if (weapon.getTonnage(unit) <= 0) {
+                return false;
+            }
+
+            if (weapon.isCapital() || weapon.isSubCapital()) {
+                return false;
+            }
+
+            if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon))
+                    && (weapon.getRackSize() != 5)
+                    && (weapon.getRackSize() != 10)
+                    && (weapon.getRackSize() != 15)
+                    && (weapon.getRackSize() != 20)) {
+                return false;
+            }
+            if (((weapon instanceof SRMWeapon) || (weapon instanceof SRTWeapon))
+                    && (weapon.getRackSize() != 2)
+                    && (weapon.getRackSize() != 4)
+                    && (weapon.getRackSize() != 6)) {
+                return false;
+            }
+            if ((weapon instanceof MRMWeapon) && (weapon.getRackSize() < 10)) {
+                return false;
+            }
+
+            if ((weapon instanceof RLWeapon) && (weapon.getRackSize() < 10)) {
+                return false;
+            }
+
+            if (weapon.hasFlag(WeaponType.F_ENERGY)
+                    || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
+                            .getAmmoType() == AmmoType.T_PLASMA))) {
+
+                if (weapon.hasFlag(WeaponType.F_ENERGY)
+                        && weapon.hasFlag(WeaponType.F_PLASMA)
+                        && (weapon.getAmmoType() == AmmoType.T_NA)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isAeroEquipment(EquipmentType eq, Aero unit) {
+
+        if (UnitUtil.isArmorOrStructure(eq)) {
+            return false;
+        }
+
+        if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
+                || (eq instanceof ISC3M) || (eq instanceof ISTAG)
+                || eq.equals(EquipmentType.get("IS Coolant Pod"))
+                || eq.equals(EquipmentType.get("Clan Coolant Pod"))
+                || (eq instanceof CLLightTAG)) {
+            return true;
+        }
+
+        if ((eq instanceof MiscType)) {
+            if (eq.hasFlag(MiscType.F_QUAD_TURRET)) {
+                return false;
+            }
+
+            if ((eq.hasFlag(MiscType.F_SHOULDER_TURRET))) {
+                return false;
+            }
+
+            if (eq.hasFlag(MiscType.F_AERO_EQUIPMENT)
+                    && !eq.hasFlag(MiscType.F_CLUB)
+                    && !eq.hasFlag(MiscType.F_HAND_WEAPON)
+                    && !eq.hasFlag(MiscType.F_TALON)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     public static boolean isMechEquipment(EquipmentType eq, Mech unit) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {

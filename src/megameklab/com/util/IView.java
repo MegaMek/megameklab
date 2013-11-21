@@ -21,11 +21,8 @@ import javax.swing.JPanel;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.Infantry;
 import megamek.common.Mech;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 
@@ -37,6 +34,10 @@ public class IView extends JPanel {
     private static final long serialVersionUID = -6741722012756653309L;
     public Entity unit;
 
+    public IView(Aero unit) {
+        this.unit = unit;
+    }
+    
     public IView(Mech unit) {
         this.unit = unit;
     }
