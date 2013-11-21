@@ -48,6 +48,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.Infantry;
+import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MechView;
@@ -2031,7 +2032,7 @@ public class UnitUtil {
         }
         return false;
     }
-    
+
     public static boolean isAeroWeapon(EquipmentType eq, Aero unit) {
         if (eq instanceof InfantryWeapon) {
             return false;
@@ -2132,7 +2133,7 @@ public class UnitUtil {
 
         return false;
     }
-    
+
     public static boolean isMechEquipment(EquipmentType eq, Mech unit) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {
@@ -2148,6 +2149,9 @@ public class UnitUtil {
         }
 
         if ((eq instanceof MiscType)) {
+            if (eq.hasFlag(MiscType.F_BOMB_BAY) && !(unit instanceof LandAirMech)) {
+                return false;
+            }
             if (eq.hasFlag(MiscType.F_QUAD_TURRET)
                     && !(unit instanceof QuadMech)) {
                 return false;
