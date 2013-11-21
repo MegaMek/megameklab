@@ -45,6 +45,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.Infantry;
@@ -283,10 +284,26 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item = new JMenuItem();
             item.setText("Mech");
             item.setMnemonic(KeyEvent.VK_M);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, 
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     jMenuLoadMech();
+                }
+
+            });
+            unitMenu.add(item);
+        }
+        
+        if (!(unit instanceof Aero)) {
+            item = new JMenuItem();
+            item.setText("Aero");
+            item.setMnemonic(KeyEvent.VK_W);
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, 
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    jMenuLoadAero();
                 }
 
             });
@@ -297,7 +314,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item = new JMenuItem();
             item.setText("Tank");
             item.setMnemonic(KeyEvent.VK_T);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, 
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     jMenuLoadVehicle();
@@ -311,7 +329,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item = new JMenuItem();
             item.setText("BattleArmor");
             item.setMnemonic(KeyEvent.VK_A);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, 
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     jMenuLoadBattleArmor();
@@ -325,7 +344,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item = new JMenuItem();
             item.setText("Infantry");
             item.setMnemonic(KeyEvent.VK_I);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, 
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     jMenuLoadInfantry();
@@ -343,7 +363,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         item.setText("From Cache");
         item.setMnemonic(KeyEvent.VK_C);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, 
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadEntity_actionPerformed(e);
@@ -354,7 +375,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item = new JMenuItem();
         item.setText("From File");
         item.setMnemonic(KeyEvent.VK_F);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, 
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuLoadEntityFromFile_actionPerformed(e);
@@ -365,7 +387,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         file.add(loadMenu);
 
         item = new JMenuItem(String.format("Current Unit"));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -378,7 +401,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item = new JMenuItem();
         item.setText("Save");
         item.setMnemonic(KeyEvent.VK_S);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuSaveEntity_actionPerformed(e);
@@ -389,7 +413,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item = new JMenuItem();
         item.setText("Save As");
         item.setMnemonic(KeyEvent.VK_A);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, 
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuSaveAsEntity_actionPerformed(e);
@@ -889,6 +914,11 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     private void jMenuLoadMech() {
         new megameklab.com.ui.Mek.MainUI();
+        parentFrame.dispose();
+    }
+    
+    private void jMenuLoadAero() {
+        new megameklab.com.ui.Aero.MainUI();
         parentFrame.dispose();
     }
 
