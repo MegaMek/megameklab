@@ -55,6 +55,7 @@ import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
+import megameklab.com.ui.Aero.AeroConfig;
 import megameklab.com.ui.Aero.views.ArmorView;
 import megameklab.com.ui.Aero.views.SummaryView;
 import megameklab.com.util.ITab;
@@ -93,44 +94,52 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
             "Unoffical" };
 
-    JPanel panInfo;
-    JPanel panChassis;
-    JPanel panArmor;
-    JPanel panMovement;
-    JPanel panHeat;
-    SummaryView panSummary;
-
+    private JPanel masterPanel;
+    private JPanel panInfo;
+    private JPanel panChassis;
+    private JPanel panArmor;
+    private JPanel panMovement;
+    private JPanel panHeat;
+    private SummaryView panSummary;
     private ArmorView armor;
 
     RefreshListener refresh = null;
     
-    JComboBox<String> engineType = new JComboBox<String>(isEngineTypes);
-    JSpinner safeThrust;
-    JTextField maxThrust;   
-    JSpinner weightClass;
-    JComboBox<String> cockpitType = new JComboBox<String>(Aero.COCKPIT_SHORT_STRING);    
-    JComboBox<String> heatSinkType = new JComboBox<String>(isHeatSinkTypes);
-    JSpinner heatSinkNumber;
-    JSpinner baseChassisHeatSinks;
-    
-    JComboBox<String> techType = new JComboBox<String>(techTypes);   
-    JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
-    
-    JTextField era = new JTextField(3);
-    JTextField source = new JTextField(3);
-    
-    JCheckBox omniCB = new JCheckBox("Omni");
-    
-    JComboBox<String> structureCombo = new JComboBox<String>(EquipmentType.structureNames);
-    JPanel masterPanel;
-    JTextField manualBV = new JTextField(3);
+    // Basic Info Panel
     private JTextField chassis = new JTextField(5);
-    private JTextField model = new JTextField(5);
-    private JLabel lblFreeSinks = new JLabel("");
+    private JTextField model = new JTextField(5);    
+    private JTextField era = new JTextField(3);
+    private JTextField source = new JTextField(3);
+    private JComboBox<String> techType = new JComboBox<String>(techTypes);   
+    private JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
+    private JTextField manualBV = new JTextField(3);
+        
+    // Chassis Panel
+    private JSpinner weightClass;
+    private JComboBox<String> structureCombo = 
+            new JComboBox<String>(EquipmentType.structureNames);
+    private JComboBox<String> engineType = new JComboBox<String>(isEngineTypes);   
+    private JComboBox<String> cockpitType = 
+            new JComboBox<String>(Aero.COCKPIT_SHORT_STRING);
+    private JCheckBox omniCB = new JCheckBox("Omni");
+    
+    // Movement Panel 
+    private JSpinner fuel;
+    private JSpinner safeThrust;
+    private JTextField maxThrust;
+    
+    
+    // Heat Sinks Panel
+    private JComboBox<String> heatSinkType = 
+            new JComboBox<String>(isHeatSinkTypes);
+    private JSpinner heatSinkNumber;
+    private JSpinner baseChassisHeatSinks;
 
+    // Armor Panel
     private JComboBox<String> armorCombo = new JComboBox<String>();
-    private JButton maximizeArmorButton = new JButton("Maximize Armor");
     private JSpinner armorTonnage;
+    private JButton maximizeArmorButton = new JButton("Maximize Armor");
+    
 
     public StructureTab(Aero unit) {
         this.unit = unit;
@@ -154,7 +163,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         GridBagConstraints gbc;
 
         Dimension spinnerSize = new Dimension(55, 25);
-
+        
         safeThrust = new JSpinner(new SpinnerNumberModel(1, 1, 25, 1));
         ((JSpinner.DefaultEditor) safeThrust.getEditor()).setSize(spinnerSize);
         ((JSpinner.DefaultEditor) safeThrust.getEditor())
@@ -173,6 +182,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         weightClass = new JSpinner(new SpinnerNumberModel(20, 10, 100, 5));
         ((JSpinner.DefaultEditor) weightClass.getEditor()).getTextField()
                 .setEditable(false);
+        
+        fuel = new JSpinner(new SpinnerNumberModel(1, 1, 
+                ((Integer)weightClass.getValue()).intValue(), 1));
+        ((JSpinner.DefaultEditor) fuel.getEditor()).setSize(spinnerSize);
+        ((JSpinner.DefaultEditor) fuel.getEditor())
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) fuel.getEditor())
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) fuel.getEditor())
+                .setMinimumSize(spinnerSize);
 
         heatSinkNumber = new JSpinner(new SpinnerNumberModel(0, 0, 50, 1));
         spinnerSize = new Dimension(40, 25);
@@ -279,10 +298,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridx = 1;
         gbc.gridy = 0;
         panChassis.add(weightClass, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panChassis.add(omniCB, gbc);
         
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
         panChassis.add(createLabel("Structure Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
@@ -337,16 +361,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        panMovement.add(createLabel("Safe Thrust:", labelSize), gbc);
+        panMovement.add(createLabel("Fuel:", labelSize), gbc);  
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.NONE;
-        panMovement.add(safeThrust, gbc);
+        panMovement.add(fuel, gbc);        
         gbc.gridx = 0;
         gbc.gridy = 1;
-        panMovement.add(createLabel("Max Thrust:", labelSize), gbc);
+        gbc.gridwidth = 1;
+        panMovement.add(createLabel("Safe Thrust:", labelSize), gbc);        
         gbc.gridx = 1;
         gbc.gridy = 1;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        panMovement.add(safeThrust, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panMovement.add(createLabel("Max Thrust:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         panMovement.add(maxThrust, gbc);
         
 
@@ -367,9 +399,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridy = 1;
         gbc.fill = java.awt.GridBagConstraints.NONE;
         panHeat.add(heatSinkNumber, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        panHeat.add(lblFreeSinks, gbc);
         gbc.gridx = 0;
         gbc.gridy = 2;
         panHeat.add(createLabel("Base (Omni):", labelSize), gbc);
@@ -464,9 +493,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             baseChassisHeatSinks.setEnabled(false);
             getAero().getEngine().setBaseChassisHeatSinks(-1);
         }
-
-        lblFreeSinks.setText("Engine Free: "
-                + UnitUtil.getBaseChassisHeatSinks(getAero(), false));
 
         if (getAero().isClan()) {
             techLevel.removeAllItems();
@@ -596,22 +622,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }                    
                     armor.resetArmorPoints();
                 }
-                int rating = ((Integer) safeThrust.getValue())
-                        * ((Integer) weightClass.getValue());
-                if (getAero().isPrimitive()) {
-                    double dRating = ((Integer) safeThrust.getValue())
-                            * ((Integer) weightClass.getValue());
-                    dRating *= 1.2;
-                    if ((dRating % 5) != 0) {
-                        dRating = (dRating - (dRating % 5)) + 5;
-                    }
-                    rating = (int) dRating;
-                }
-                if (rating > 500) {
+                int rating = AeroConfig.calculateEngineRating(
+                        getAero(), 
+                        (Integer) weightClass.getValue(), 
+                        (Integer) safeThrust.getValue());                
+                if (rating > AeroConfig.MAX_ENGINE_RATING) {
                     JOptionPane
                             .showMessageDialog(
                                     this,
-                                    "That speed would create an engine with a rating over 500.",
+                                    "That speed would create an engine " +
+                                    "with a rating over the max rating, " + 
+                                     AeroConfig.MAX_ENGINE_RATING + ".",
                                     "Bad Engine Rating",
                                     JOptionPane.ERROR_MESSAGE);
                 } else {
@@ -619,20 +640,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             .getSelectedItem().toString()));
                 }
             } else if (combo.equals(armorCombo)) {
-                if (!unit.hasPatchworkArmor()) {
-                    UnitUtil.removeISorArmorMounts(unit, false);
-                }
+                UnitUtil.removeISorArmorMounts(unit, false);
                 createArmorMountsAndSetArmorType();
-                if (!unit.hasPatchworkArmor()) {
-                    armor.resetArmorPoints();
-                }
+                armor.resetArmorPoints();
             } else if (combo.equals(structureCombo)) {
-                UnitUtil.removeISorArmorMounts(getAero(), true);
+                UnitUtil.removeISorArmorMounts(unit, true);
                 createISMounts();
                 populateChoices(true);
             } else if (combo.equals(heatSinkType)) {
-                getAero().setHeatSinks((Integer) heatSinkNumber
-                        .getValue());
+                getAero().setHeatSinks((Integer) heatSinkNumber.getValue());
             } else if (combo.equals(techLevel)) {
                 int unitTechLevel = techLevel.getSelectedIndex();
 
@@ -1421,6 +1437,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             heatSinkType.addItem(heatSinkList[index]);
         }
 
+        ((SpinnerNumberModel)fuel.getModel()).setMaximum(
+                (Integer)weightClass.getValue());
  
         /* UNIT UPDATING */
         if (updateUnit) {
@@ -1532,23 +1550,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             JSpinner spinner = (JSpinner) e.getSource();
             removeAllListeners();
             if (spinner.equals(weightClass)) {
-                int rating = ((Integer) safeThrust.getValue())
-                        * ((Integer) weightClass.getValue());
-                if (getAero().isPrimitive()) {
-                    double dRating = ((Integer) safeThrust.getValue())
-                            * ((Integer) weightClass.getValue());
-                    dRating *= 1.2;
-                    if ((dRating % 5) != 0) {
-                        dRating = (dRating - (dRating % 5)) + 5;
-                    }
-                    rating = (int) dRating;
-                }
-                if (rating > 500) {
+                int rating = AeroConfig.calculateEngineRating(
+                        getAero(), 
+                        (Integer) weightClass.getValue(), 
+                        (Integer) safeThrust.getValue());                
+                if (rating > AeroConfig.MAX_ENGINE_RATING) {
                     JOptionPane
                             .showMessageDialog(
                                     this,
                                     "That speed would create an engine " +
-                                    "with a rating over 500.",
+                                    "with a rating over the max rating, " + 
+                                     AeroConfig.MAX_ENGINE_RATING + ".",
                                     "Bad Engine Rating",
                                     JOptionPane.ERROR_MESSAGE);
                 } else {
@@ -1558,22 +1570,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 populateChoices(true);
             } else if (spinner.equals(safeThrust)) {
-                int rating = ((Integer) safeThrust.getValue())
-                        * ((Integer) weightClass.getValue());
-                if (getAero().isPrimitive()) {
-                    double dRating = ((Integer) safeThrust.getValue())
-                            * ((Integer) weightClass.getValue());
-                    dRating *= 1.2;
-                    if ((dRating % 5) != 0) {
-                        dRating = (dRating - (dRating % 5)) + 5;
-                    }
-                    rating = (int) dRating;
-                }               
-                if (rating > 500) {
+                int rating = AeroConfig.calculateEngineRating(
+                        getAero(), 
+                        (Integer) weightClass.getValue(), 
+                        (Integer) safeThrust.getValue());                
+                if (rating > AeroConfig.MAX_ENGINE_RATING) {
                     JOptionPane
                             .showMessageDialog(
                                     this,
-                                    "That speed would create an engine with a rating over 500.",
+                                    "That speed would create an engine " +
+                                    "with a rating over the max rating, " + 
+                                     AeroConfig.MAX_ENGINE_RATING + ".",
                                     "Bad Engine Rating",
                                     JOptionPane.ERROR_MESSAGE);
                 } else {
@@ -1583,6 +1590,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                     .getSelectedItem().toString()),
                                     clanEngineFlag));
                 }
+            } else if (spinner.equals(fuel)) {
+                getAero().setFuel((Integer)fuel.getValue());
             } else if (spinner.equals(armorTonnage)) {
                 setArmorTonnage();
             } else if (spinner.equals(heatSinkNumber)) {

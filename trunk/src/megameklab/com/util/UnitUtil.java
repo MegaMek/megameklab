@@ -99,6 +99,7 @@ import megamek.common.weapons.VehicleFlamerWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.ui.Aero.AeroConfig;
 
 public class UnitUtil {
 
@@ -1099,6 +1100,12 @@ public class UnitUtil {
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         } else if (unit instanceof BattleArmor) {
             armorWeight = (unit.getWeightClass() * 4) + 2;
+        }
+        if (unit instanceof Aero){
+            double points = 
+                    AeroConfig.maxArmorPoints(unit.getEntityType(), 
+                                              unit.getWeight());
+            armorWeight = points / armorPerTon;
         }
         return armorWeight;
     }
