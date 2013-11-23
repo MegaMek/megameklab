@@ -44,6 +44,7 @@ import javax.swing.event.ChangeListener;
 
 import megamek.common.Aero;
 import megamek.common.EquipmentType;
+import megameklab.com.ui.Aero.AeroConfig;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
@@ -157,7 +158,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         armorMaxLabelList.add(rwArmorMaxLabel);
         armorMaxLabelList.add(aftArmorMaxLabel);
 
-        Dimension labelSize = new Dimension(40, 20);
+        Dimension labelSize = new Dimension(80, 20);
         for (JLabel label : armorMaxLabelList) {
             label.setSize(labelSize);
             label.setMaximumSize(labelSize);
@@ -301,7 +302,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         removeAllListeners();
         for (int location = 0; location < unit.locations(); location++) {
 
-            int maxArmor = unit.getOInternal(location) * 2;
+            int maxArmor = AeroConfig.maxArmorPoints(
+                    unit.getEntityType(), unit.getWeight());
             switch (location) {
                 case Aero.LOC_NOSE:
                     noseArmorModel.setValue(
@@ -357,25 +359,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     break;
             }
         }
-
-        // unallocated armorpoints
-        if (unit.hasPatchworkArmor()) {
-            valueUnallocatedArmor.setVisible(false);
-            lblUnallocatedArmor.setVisible(false);
-            valueAllocatedArmor.setVisible(false);
-            lblAllocatedArmor.setVisible(false);
-            valueWastedArmor.setVisible(false);
-            lblWastedArmor.setVisible(false);
-            allocateArmorButton.setVisible(false);            
-        } else {
-            valueUnallocatedArmor.setVisible(true);
-            lblUnallocatedArmor.setVisible(true);
-            valueAllocatedArmor.setVisible(true);
-            lblAllocatedArmor.setVisible(true);
-            allocateArmorButton.setVisible(true);
-            valueWastedArmor.setVisible(true);
-            lblWastedArmor.setVisible(true);            
-        }
+       
+        
         valueAllocatedArmor.setText(Integer.toString(unit.getTotalOArmor()));
         valueUnallocatedArmor.setText(Integer.toString(armorPoints
                 - unit.getTotalOArmor()));
@@ -387,10 +372,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             lblUnallocatedArmor.setForeground(Color.BLACK);
         }
         valueCurrentArmor.setText(Integer.toString(armorPoints));
-        // Total Possible armor is Internal*2 +3 for the extra 3 armor the head
-        // can support.
-        valueMaxArmor
-                .setText(Integer.toString((unit.getTotalOInternal() * 2) + 3));
+        valueMaxArmor.setText("" + AeroConfig.maxArmorPoints(
+                    unit.getEntityType(), unit.getWeight()));
         valueWastedArmor.setText(Integer.toString(wastedArmorPoints));
 
         addAllListeners();
@@ -402,7 +385,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     public void allocateArmor() {
         double pointsToAllocate = armorPoints;
-        double totalArmor = (unit.getTotalOInternal() * 2) + 3;
+        double totalArmor = AeroConfig.maxArmorPoints(
+                unit.getEntityType(), unit.getWeight());
         if (pointsToAllocate > totalArmor) {
             pointsToAllocate = totalArmor;
         }
@@ -459,7 +443,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     }
 
     public void setArmorPoints(int points) {
-        int maxArmor = (unit.getTotalOInternal() * 2) + 3;
+        int maxArmor = AeroConfig.maxArmorPoints(
+                unit.getEntityType(), unit.getWeight());
         wastedArmorPoints = Math.max(points - maxArmor, 0);
         armorPoints = Math.min(maxArmor, points);
     }
