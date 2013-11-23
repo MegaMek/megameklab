@@ -16,8 +16,6 @@
 
 package megameklab.com.ui.Aero;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import megamek.common.Aero;
 import megamek.common.Entity;

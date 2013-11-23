@@ -1152,6 +1152,22 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             } else {
                 CConfig.updateSaveFiles(viewer.getChosenMechSummary().getSourceFile().getAbsolutePath());
             }
+        } else if (unit instanceof Aero) {
+            UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
+            unitLoadingDialog.setVisible(true);
+            UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.AERO);
+
+            unit = viewer.getChosenEntity();
+            viewer.setVisible(false);
+            viewer.dispose();
+
+            if(null == unit) {
+                return;
+            }
+
+            if (!(unit instanceof Aero)) {
+                return;
+            }
         } else if (unit instanceof Tank) {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
             unitLoadingDialog.setVisible(true);
@@ -1258,15 +1274,27 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
 
+            if (tempEntity.getEntityType() != unit.getEntityType()){
+                JOptionPane.showMessageDialog(parentFrame, String.format(
+                        "Selected file does not match the current unit type!" +
+                        "\n Got %1$s expected %2$s",
+                        Entity.getEntityMajorTypeName(tempEntity.getEntityType()),
+                        Entity.getEntityMajorTypeName(unit.getEntityType())));
+                return;
+            }
             unit = tempEntity;
             UnitUtil.updateLoadedMech(unit);
             if (UnitUtil.validateUnit(unit).trim().length() > 0) {
-                JOptionPane.showMessageDialog(parentFrame, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", UnitUtil.validateUnit(unit)));
+                JOptionPane.showMessageDialog(parentFrame, String.format(
+                        "Warning:Invalid unit, it might load incorrectly!\n%1$s", 
+                        		UnitUtil.validateUnit(unit)));
             }
 
             CConfig.updateSaveFiles(unitFile.getAbsolutePath());
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(parentFrame, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+            JOptionPane.showMessageDialog(parentFrame, String.format(
+                    "Warning:Invalid unit, it might load incorrectly!\n%1$s", 
+                    ex.getMessage()));
         }
         parentFrame.setEntity(unit);
         reload();
