@@ -59,6 +59,7 @@ import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megamek.common.verifier.TestTank;
@@ -2638,6 +2639,20 @@ public class UnitUtil {
             testEntity = new TestTank((Tank) unit, entityVerifier.tankOption,
                     null);
             testEntity.correctEntity(sb, true);
+        } else if (unit.getEntityType() == Entity.ETYPE_AERO
+                && unit.getEntityType() != 
+                Entity.ETYPE_DROPSHIP
+                && unit.getEntityType() != 
+                        Entity.ETYPE_SMALL_CRAFT
+                && unit.getEntityType() != 
+                        Entity.ETYPE_FIGHTER_SQUADRON
+                && unit.getEntityType() != 
+                        Entity.ETYPE_JUMPSHIP
+                && unit.getEntityType() != 
+                        Entity.ETYPE_SPACE_STATION) {
+            testEntity = 
+                    new TestAero((Aero)unit,entityVerifier.aeroOption,null);
+            testEntity.correctEntity(sb,true);
         }
 
         return sb.toString();
