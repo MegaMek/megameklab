@@ -571,6 +571,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         setHeatSinkCombo();
 
+        fuel.setValue(getAero().getFuelTonnage());
         safeThrust.setValue(getAero().getOriginalWalkMP());                
         maxThrust.setText(getAero().getRunMPasString());
 
@@ -1591,7 +1592,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                     clanEngineFlag));
                 }
             } else if (spinner.equals(fuel)) {
-                getAero().setFuel((Integer)fuel.getValue());
+                getAero().setFuelTonnage((Integer)fuel.getValue());
             } else if (spinner.equals(armorTonnage)) {
                 setArmorTonnage();
             } else if (spinner.equals(heatSinkNumber)) {
