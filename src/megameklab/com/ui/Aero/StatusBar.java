@@ -34,6 +34,8 @@ import megamek.common.Engine;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
+import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestAero;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
@@ -53,8 +55,8 @@ public class StatusBar extends ITab {
     private JLabel tons = new JLabel();
     private JLabel heatSink = new JLabel();
     private JLabel cost = new JLabel();
-    //private EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
-    //private TestAero testAero = null;
+    private EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private TestAero testAero = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
 
@@ -65,7 +67,7 @@ public class StatusBar extends ITab {
         this.unit = unit;
 
         formatter = new DecimalFormat();
-        //testAero = new TestAero(getAero(), entityVerifier.aeroOption, null);
+        testAero = new TestAero(getAero(), entityVerifier.aeroOption, null);
         btnValidate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UnitUtil.showValidation(getAero(), getParentFrame());
@@ -109,9 +111,9 @@ public class StatusBar extends ITab {
         int bv = getAero().calculateBattleValue();
         int currentCost = (int)Math.round(getAero().getCost(false));
 
-        //testAero = new TestAero(getAero(), entityVerifier.aeroOption, null);
+        testAero = new TestAero(getAero(), entityVerifier.aeroOption, null);
 
-        currentTonnage = 0;//testAero.calculateWeight();
+        currentTonnage = testAero.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getAero());
 
         double totalHeat = calculateTotalHeat();
