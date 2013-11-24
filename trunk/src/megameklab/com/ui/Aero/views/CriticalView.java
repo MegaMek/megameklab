@@ -97,10 +97,13 @@ public class CriticalView extends IView {
         aftPanel.removeAll();
 
         synchronized (unit) {
-            for (int location = 0; location < unit.locations(); location++) {
+            // Aeros have 5 locs, the 5th is "wings" which should be ignored
+            int numLocs = unit.locations() - 1;
+            for (int location = 0; location < numLocs; location++) {
                 Vector<String> critNames = new Vector<String>(1, 1);
 
-                for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+                for (int slot = 0; slot < unit.getNumberOfCriticals(location); 
+                        slot++) {
                     CriticalSlot cs = unit.getCritical(location, slot);
                     if (cs == null) {
                         continue;
@@ -120,7 +123,12 @@ public class CriticalView extends IView {
                                 }
                                 cs.setMount(m);
                             }
-                            StringBuffer critName = new StringBuffer(m.getName());
+                            // Ignore weapon groups
+                            if (m.isWeaponGroup()){
+                                continue;
+                            }
+                            StringBuffer critName = 
+                                    new StringBuffer(m.getName());
                             if (critName.length() > 25) {
                                 critName.setLength(25);
                                 critName.append("...");
