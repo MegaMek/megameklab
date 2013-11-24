@@ -55,7 +55,7 @@ import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
-import megameklab.com.ui.Aero.AeroConfig;
+import megamek.common.verifier.TestAero;
 import megameklab.com.ui.Aero.views.ArmorView;
 import megameklab.com.ui.Aero.views.SummaryView;
 import megameklab.com.util.ITab;
@@ -623,17 +623,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }                    
                     armor.resetArmorPoints();
                 }
-                int rating = AeroConfig.calculateEngineRating(
+                int rating = TestAero.calculateEngineRating(
                         getAero(), 
                         (Integer) weightClass.getValue(), 
                         (Integer) safeThrust.getValue());                
-                if (rating > AeroConfig.MAX_ENGINE_RATING) {
+                if (rating > TestAero.MAX_ENGINE_RATING) {
                     JOptionPane
                             .showMessageDialog(
                                     this,
                                     "That speed would create an engine " +
                                     "with a rating over the max rating, " + 
-                                     AeroConfig.MAX_ENGINE_RATING + ".",
+                                    TestAero.MAX_ENGINE_RATING + ".",
                                     "Bad Engine Rating",
                                     JOptionPane.ERROR_MESSAGE);
                 } else {
@@ -1551,17 +1551,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             JSpinner spinner = (JSpinner) e.getSource();
             removeAllListeners();
             if (spinner.equals(weightClass)) {
-                int rating = AeroConfig.calculateEngineRating(
+                int rating = TestAero.calculateEngineRating(
                         getAero(), 
                         (Integer) weightClass.getValue(), 
                         (Integer) safeThrust.getValue());                
-                if (rating > AeroConfig.MAX_ENGINE_RATING) {
+                if (rating > TestAero.MAX_ENGINE_RATING) {
                     JOptionPane
                             .showMessageDialog(
                                     this,
                                     "That speed would create an engine " +
                                     "with a rating over the max rating, " + 
-                                     AeroConfig.MAX_ENGINE_RATING + ".",
+                                    TestAero.MAX_ENGINE_RATING + ".",
                                     "Bad Engine Rating",
                                     JOptionPane.ERROR_MESSAGE);
                 } else {
@@ -1571,17 +1571,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 populateChoices(true);
             } else if (spinner.equals(safeThrust)) {
-                int rating = AeroConfig.calculateEngineRating(
+                int rating = TestAero.calculateEngineRating(
                         getAero(), 
                         (Integer) weightClass.getValue(), 
                         (Integer) safeThrust.getValue());                
-                if (rating > AeroConfig.MAX_ENGINE_RATING) {
+                if (rating > TestAero.MAX_ENGINE_RATING) {
                     JOptionPane
                             .showMessageDialog(
                                     this,
                                     "That speed would create an engine " +
                                     "with a rating over the max rating, " + 
-                                     AeroConfig.MAX_ENGINE_RATING + ".",
+                                    TestAero.MAX_ENGINE_RATING + ".",
                                     "Bad Engine Rating",
                                     JOptionPane.ERROR_MESSAGE);
                 } else {
