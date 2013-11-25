@@ -94,7 +94,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         setLayout(new BorderLayout());
         this.add(equipmentScroll, BorderLayout.CENTER);
-        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Unallocated Equipment", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Unallocated Equipment", 
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -103,9 +105,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        //engineHeatSinkCount = UnitUtil.getBaseChassisHeatSinks(getAero(), getAero().hasCompactHeatSinks());
         for (Mounted mount : unit.getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getType().getCriticals(unit) == 0)) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && 
+                    !isEngineHeatSink(mount) && 
+                    !(mount.getType().getCriticals(unit) == 0)) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -115,7 +118,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
         }
         for (Mounted mount : unit.getAmmo()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && ((mount.getUsableShotsLeft() > 1) || (((AmmoType)mount.getType()).getAmmoType() == AmmoType.T_COOLANT_POD))) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && 
+                    ((mount.getUsableShotsLeft() > 1) || 
+                            (((AmmoType)mount.getType()).getAmmoType() == 
+                                AmmoType.T_COOLANT_POD))) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -144,7 +150,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         // weapons and ammo
         Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || 
+                    (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -157,7 +164,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && !UnitUtil.isArmor(masterEquipmentList.get(pos).getType()) && !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && 
+                    !UnitUtil.isArmor(masterEquipmentList.get(pos).getType()) && 
+                    !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -199,8 +208,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private boolean isEngineHeatSink(Mounted mount) {
-        if ((mount.getLocation() == Entity.LOC_NONE) && UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)) {
-            if(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+        if ((mount.getLocation() == Entity.LOC_NONE) && 
+                UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)) {
+            if(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) && 
+                    mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                 //only single compact HS should be used for engine sinks
                 return false;
             }
