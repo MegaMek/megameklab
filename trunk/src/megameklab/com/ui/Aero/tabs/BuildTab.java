@@ -49,11 +49,9 @@ public class BuildTab extends ITab implements ActionListener {
 
     private JButton autoFillButton = new JButton("Auto Fill");
     private JButton resetButton = new JButton("Reset");
-    private JButton compactButton = new JButton("Compact");
 
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
-    private String COMPACTCOMMAND = "compactbuttoncommand";
 
     public BuildTab(Aero unit, EquipmentTab equipment) {
         this.unit = unit;
@@ -69,12 +67,9 @@ public class BuildTab extends ITab implements ActionListener {
         autoFillButton.setMnemonic('A');
         autoFillButton.setActionCommand(AUTOFILLCOMMAND);
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);
-        compactButton.setMnemonic('C');
-        compactButton.setActionCommand(COMPACTCOMMAND);
+        resetButton.setActionCommand(RESETCOMMAND);        
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
-        buttonPanel.add(compactButton);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -106,48 +101,34 @@ public class BuildTab extends ITab implements ActionListener {
             autoFillCrits();
         } else if (e.getActionCommand().equals(RESETCOMMAND)) {
             resetCrits();
-        } else if (e.getActionCommand().equals(COMPACTCOMMAND)) {
-            compactCrits();
         }
     }
 
     private void autoFillCrits() {
+        for (Mounted mount : buildView.getTableModel().getCrits()) {
+            for (int loc = Aero.LOC_NOSE; loc <= Aero.LOC_AFT; loc++) {
 
-/*        for (Mounted mount : buildView.getTableModel().getCrits()) {
-            int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(getAero(), getAero().hasCompactHeatSinks());
-            for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
-
-                if (!UnitUtil.isValidLocation(unit, mount.getType(), location)) {
+                if (!UnitUtil.isValidLocation(unit, mount.getType(), loc)) {
                     continue;
                 }
 
-                int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
+                int continuousNumberOfCrits = 
+                        UnitUtil.getHighestContinuousNumberOfCrits(unit, loc);
                 int critsUsed = UnitUtil.getCritsUsed(unit, mount.getType());
                 if (continuousNumberOfCrits < critsUsed) {
                     continue;
                 }
-                if ((mount.getLocation() == Entity.LOC_NONE)) {
-                    if (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0)) {
-                        continue;
-                    }
-                }
 
                 try {
-                    if (mount.getType().isSpreadable() || (mount.isSplitable() && (critsUsed > 1))) {
-                        for (int count = 0; count < critsUsed; count++) {
-                            getAero().addEquipment(mount, location, false);
-                        }
-                    } else {
-                        getAero().addEquipment(mount, location, false);
-                    }
-                    UnitUtil.changeMountStatus(unit, mount, location, Entity.LOC_NONE, false);
+                    getAero().addEquipment(mount, loc, false);
+                    UnitUtil.changeMountStatus(
+                            unit, mount, loc, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-
             }
-        }*/
+        }
         refresh.refreshAll();
 
     }
@@ -163,21 +144,15 @@ public class BuildTab extends ITab implements ActionListener {
         refresh.refreshAll();
     }
 
-    private void compactCrits() {
-        UnitUtil.compactCriticals(getAero());
-        refresh.refreshAll();
-    }
 
     public void removeAllActionListeners() {
         autoFillButton.removeActionListener(this);
         resetButton.removeActionListener(this);
-        compactButton.removeActionListener(this);
     }
 
     public void addAllActionListeners() {
         autoFillButton.addActionListener(this);
         resetButton.addActionListener(this);
-        compactButton.addActionListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
