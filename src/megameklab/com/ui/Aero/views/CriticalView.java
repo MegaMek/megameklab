@@ -21,14 +21,19 @@ import java.awt.Font;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
 
 import megamek.common.Aero;
 import megamek.common.CriticalSlot;
 import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.loaders.MtfFile;
+import megamek.common.verifier.TestAero;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.Mech.DropTargetCriticalList;
@@ -44,6 +49,11 @@ public class CriticalView extends IView {
     private JPanel rightPanel = new JPanel();
     private JPanel nosePanel = new JPanel();
     private JPanel aftPanel = new JPanel();
+    
+    private JLabel noseSpace = new JLabel("",JLabel.LEFT);
+    private JLabel leftSpace = new JLabel("",JLabel.LEFT);
+    private JLabel rightSpace = new JLabel("",JLabel.LEFT);
+    private JLabel aftSpace = new JLabel("",JLabel.LEFT);
     
 
     private JPanel topPanel = new JPanel();
@@ -67,18 +77,33 @@ public class CriticalView extends IView {
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));       
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
         
+        leftSpace.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        rightSpace.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        noseSpace.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        aftSpace.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        
 
         topPanel.add(nosePanel);
-        topPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Nose"));
+        topPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Nose", TitledBorder.TOP,
+                TitledBorder.DEFAULT_POSITION));
+        nosePanel.setLayout(new BoxLayout(nosePanel, BoxLayout.Y_AXIS));
         mainPanel.add(topPanel);
 
         middlePanel.add(leftPanel);
-        leftPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Wing"));        
+        leftPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Left Wing"));  
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         middlePanel.add(rightPanel);
-        rightPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Wing"));
+        rightPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Right Wing"));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         mainPanel.add(middlePanel);
         
-        aftPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Aft"));
+        aftPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Aft", TitledBorder.TOP,
+                TitledBorder.DEFAULT_POSITION));
+        aftPanel.setLayout(new BoxLayout(aftPanel, BoxLayout.Y_AXIS));
         bottomPanel.add(aftPanel);
         mainPanel.add(bottomPanel);
 
@@ -94,14 +119,16 @@ public class CriticalView extends IView {
         leftPanel.removeAll();
         rightPanel.removeAll();
         nosePanel.removeAll();
-        aftPanel.removeAll();
+        aftPanel.removeAll();                        
+        
+        int[] availSpace = TestAero.availableSpace(getAero());
 
         synchronized (unit) {
             // Aeros have 5 locs, the 5th is "wings" which should be ignored
             int numLocs = unit.locations() - 1;
             for (int location = 0; location < numLocs; location++) {
                 Vector<String> critNames = new Vector<String>(1, 1);
-
+                int numWeapons = 0;
                 for (int slot = 0; slot < unit.getNumberOfCriticals(location); 
                         slot++) {
                     CriticalSlot cs = unit.getCritical(location, slot);
@@ -126,6 +153,9 @@ public class CriticalView extends IView {
                             // Ignore weapon groups
                             if (m.isWeaponGroup()){
                                 continue;
+                            }
+                            if (m.getType() instanceof WeaponType){
+                                numWeapons++;
                             }
                             StringBuffer critName = 
                                     new StringBuffer(m.getName());
@@ -153,32 +183,54 @@ public class CriticalView extends IView {
                 if (critNames.size() == 0) {
                     critNames.add(MtfFile.EMPTY);
                 }
-                DropTargetCriticalList criticalSlotList = null;
+                DropTargetCriticalList criticalSlotList = null;                
 
-                criticalSlotList = new DropTargetCriticalList(critNames, getAero(), refresh, showEmpty);
+                criticalSlotList = new DropTargetCriticalList(
+                        critNames, getAero(), refresh, showEmpty);
+                criticalSlotList.setAlignmentX(JLabel.CENTER_ALIGNMENT);
                 criticalSlotList.setVisibleRowCount(critNames.size());
-                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                criticalSlotList.setSelectionMode(
+                        ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
                 criticalSlotList.setName(Integer.toString(location));
-                criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
+                criticalSlotList.setBorder(BorderFactory.createEtchedBorder(
+                        Color.WHITE.brighter(), Color.BLACK.darker()));
                 
                 switch (location) {
                     case Aero.LOC_NOSE:
                         nosePanel.add(criticalSlotList);
+                        noseSpace.setText("Weapons: " + 
+                                numWeapons + "/" + availSpace[location]);
                         break;
                     case Aero.LOC_LWING:
                         leftPanel.add(criticalSlotList);
+                        leftSpace.setText("Weapons: " + 
+                                numWeapons + "/" + availSpace[location]);
                         break;
                     case Aero.LOC_RWING:
                         rightPanel.add(criticalSlotList);
+                        rightSpace.setText("Weapons: " + 
+                                numWeapons + "/" + availSpace[location]);
                         break;
                     case Aero.LOC_AFT:
                         aftPanel.add(criticalSlotList);
+                        aftSpace.setText("Weapons: " + 
+                                numWeapons + "/" + availSpace[location]);
                         break;
                 }
                     
                 
             }
+            
+            leftPanel.add(leftSpace);
+            leftPanel.add(Box.createVerticalStrut(8));
+            rightPanel.add(rightSpace);
+            rightPanel.add(Box.createVerticalStrut(8));
+            nosePanel.add(noseSpace);
+            nosePanel.add(Box.createVerticalStrut(8));
+            aftPanel.add(aftSpace);
+            aftPanel.add(Box.createVerticalStrut(8));
+            
             nosePanel.repaint();
             leftPanel.repaint();
             rightPanel.repaint();
