@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
+import megamek.common.Aero;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.LocationFullException;
@@ -37,6 +38,7 @@ import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.common.verifier.TestAero;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -111,20 +113,230 @@ public class CriticalTransferHandler extends TransferHandler {
             refresh.refreshBuild();
         }
     }
+    
+    /**
+     * 
+     * @param mech
+     * @param eq
+     * @return
+     */
+    private boolean addEquipmentMech(Mech mech, Mounted eq) 
+            throws LocationFullException{
+        int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
+        if ((eq.getType().isSpreadable() || eq.isSplitable()) && 
+                (totalCrits > 1)) {
+            int critsUsed = 0;
+            int primaryLocation = location;
+            int nextLocation = unit.getTransferLocation(location);
+            int emptyCrits = unit.getEmptyCriticals(location);
 
+            if (eq.getType().getCriticals(unit) > unit.getEmptyCriticals(location)) {
+                if (location == Mech.LOC_RT) {
+                    String[] locations =
+                        { "Center Torso", "Right Leg", "Right Arm" };
+                    JComboBox<String> combo = new JComboBox(locations);
+                    JOptionPane jop = new JOptionPane(combo, 
+                            JOptionPane.QUESTION_MESSAGE, 
+                            JOptionPane.OK_CANCEL_OPTION);
+
+                    JDialog dlg = jop.createDialog("Select secondary location.");
+                    combo.grabFocus();
+                    combo.getEditor().selectAll();
+
+                    dlg.setVisible(true);
+
+                    int value = ((Integer) jop.getValue()).intValue();
+
+                    if (value == JOptionPane.CANCEL_OPTION) {
+                        return false;
+                    }
+
+                    if (combo.getSelectedIndex() == 1) {
+                        nextLocation = Mech.LOC_RLEG;
+                    } else if (combo.getSelectedIndex() == 2) {
+                        nextLocation = Mech.LOC_RARM;
+                    }
+
+                } else if (location == Mech.LOC_LT) {
+                    String[] locations =
+                        { "Center Torso", "Left Leg", "Leg Arm" };
+                    JComboBox<String> combo = new JComboBox(locations);
+                    JOptionPane jop = new JOptionPane(combo, 
+                            JOptionPane.QUESTION_MESSAGE, 
+                            JOptionPane.OK_CANCEL_OPTION);
+
+                    JDialog dlg = jop.createDialog("Select secondary location.");
+                    combo.grabFocus();
+                    combo.getEditor().selectAll();
+
+                    dlg.setVisible(true);
+
+                    int value = ((Integer) jop.getValue()).intValue();
+
+                    if (value == JOptionPane.CANCEL_OPTION) {
+                        return false;
+                    }
+
+                    if (combo.getSelectedIndex() == 1) {
+                        nextLocation = Mech.LOC_LLEG;
+                    } else if (combo.getSelectedIndex() == 2) {
+                        nextLocation = Mech.LOC_LARM;
+                    }
+
+                } else if (location == Mech.LOC_CT) {
+                    String[] locations =
+                        { "Left Torso", "Right Torso" };
+                    JComboBox<String> combo = new JComboBox(locations);
+                    JOptionPane jop = new JOptionPane(combo, 
+                            JOptionPane.QUESTION_MESSAGE, 
+                            JOptionPane.OK_CANCEL_OPTION);
+
+                    JDialog dlg = jop.createDialog(null, 
+                            "Select secondary location.");
+                    combo.grabFocus();
+                    combo.getEditor().selectAll();
+
+                    dlg.setVisible(true);
+
+                    int value = ((Integer) jop.getValue()).intValue();
+
+                    if (value == JOptionPane.CANCEL_OPTION) {
+                        return false;
+                    }
+
+                    if (combo.getSelectedIndex() == 1) {
+                        nextLocation = Mech.LOC_RT;
+                    } else {
+                        nextLocation = Mech.LOC_LT;
+                    }
+                }
+            }
+            // No big splitables in the head!
+            if ((emptyCrits < totalCrits) && 
+                    ((nextLocation == Entity.LOC_DESTROYED) || 
+                            ((unit.getEmptyCriticals(location) + 
+                                    unit.getEmptyCriticals(nextLocation)) < totalCrits))) {
+                throw new LocationFullException(eq.getName() + 
+                        " does not fit in " + unit.getLocationAbbr(location) + 
+                        " on " + unit.getDisplayName());
+            }
+
+            for (; critsUsed < totalCrits; critsUsed++) {
+                unit.addEquipment(eq, location, false);
+                if (unit.getEmptyCriticals(location) == 0) {
+                    location = nextLocation;
+                    totalCrits -= critsUsed;
+                    critsUsed = 0;
+                }
+            }
+            changeMountStatus(eq, primaryLocation, nextLocation, false);
+        } else if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
+            if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
+                if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
+                    String[] facings;
+                    if (location == Mech.LOC_LT) {
+                        facings = new String[4];
+                        facings[0] = "Front";
+                        facings[1] = "Front-Left";
+                        facings[2] = "Rear-Left";
+                        facings[3] = "Rear";
+                    } else if (location == Mech.LOC_RT) {
+                        facings = new String[4];
+                        facings[0] = "Front";
+                        facings[1] = "Front-Right";
+                        facings[2] = "Rear-Right";
+                        facings[3] = "Rear";
+                    } else if (location == Mech.LOC_CT) {
+                        facings = new String[2];
+                        facings[0] = "Front";
+                        facings[1] = "Rear";
+                    }  else {
+                        JOptionPane.showMessageDialog(null, 
+                                "VGL must be placed in torso location!", 
+                                "Invalid location", 
+                                JOptionPane.WARNING_MESSAGE);
+                        return false;
+                    }
+                    String facing = (String)JOptionPane.showInputDialog(null, 
+                            "Please choose the facing of the VGL", 
+                            "Choose Facing", JOptionPane.QUESTION_MESSAGE, 
+                            null, facings, facings[0]);
+                    if (facing == null) {
+                        return false;
+                    }
+                    unit.addEquipment(eq, location, false);
+                    if (facing.equals("Front-Left")) {
+                        eq.setFacing(5);
+                    } else if (facing.equals("Front-Right")) {
+                        eq.setFacing(1);
+                    } else if (facing.equals("Rear-Right")) {
+                        eq.setFacing(2);
+                    } else if (facing.equals("Rear-Left")) {
+                        eq.setFacing(4);
+                    } else if (facing.equals("Rear")) {
+                        eq.setFacing(3);
+                        UnitUtil.changeMountStatus(unit, eq, location, -1, true);
+                    }
+                }
+            } else {
+                unit.addEquipment(eq, location, false);
+            }
+            changeMountStatus(eq, location, false);
+        } else {
+            throw new LocationFullException(eq.getName() + 
+                    " does not fit in " + unit.getLocationAbbr(location) + 
+                    " on " + unit.getDisplayName());
+        }
+        return true;
+    }
+    
+    /**
+     * 
+     * @param aero
+     * @return
+     */
+    private boolean addEquipmentAero(Aero aero, Mounted eq) 
+            throws LocationFullException{
+        if (eq.getType() instanceof WeaponType){
+            int[] availSpace = TestAero.availableSpace(aero);
+            int[] weapCount = new int[aero.locations() - 1]; 
+            for (Mounted m : aero.getWeaponList()){
+                if (m.getLocation() != Aero.LOC_NONE){
+                    weapCount[m.getLocation()]++;
+                }
+            }
+            if ((weapCount[location] +1) >= availSpace[location]){
+                throw new LocationFullException(eq.getName() + 
+                        " does not fit in " + unit.getLocationAbbr(location) + 
+                        " on " + unit.getDisplayName());
+            } else {
+                unit.addEquipment(eq, location, false);
+            }            
+        } else {
+            unit.addEquipment(eq, location, false);
+        }
+        changeMountStatus(eq, location, false);
+        return true;
+    }
+    
+    
+    /**
+     * 
+     */
     @Override
     public boolean importData(TransferSupport info) {
-        if (!info.isDrop() || !(unit instanceof Mech)) {
+        if (!info.isDrop() || !(unit instanceof Mech || unit instanceof Aero)) {
             return false;
         }
 
-        Mech mech = (Mech) unit;
         if (info.getComponent() instanceof DropTargetCriticalList) {
-            DropTargetCriticalList list = (DropTargetCriticalList) info.getComponent();
+            DropTargetCriticalList list = 
+                    (DropTargetCriticalList) info.getComponent();
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
-                Mounted eq = unit.getEquipment(Integer.parseInt((String) t.getTransferData(DataFlavor.stringFlavor)));
+                Mounted eq = unit.getEquipment(Integer.parseInt(
+                        (String) t.getTransferData(DataFlavor.stringFlavor)));
                 if (location == eq.getLocation()) {
                     return false;
                 }
@@ -133,154 +345,20 @@ public class CriticalTransferHandler extends TransferHandler {
                 }*/
 
                 if (!UnitUtil.isValidLocation(unit, eq.getType(), location)) {
-                    JOptionPane.showMessageDialog(null, eq.getName() + " can't be placed in " + unit.getLocationName(location) + "!", "Invalid Location", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, eq.getName() + 
+                            " can't be placed in " + 
+                            unit.getLocationName(location) + "!", 
+                            "Invalid Location", 
+                            JOptionPane.INFORMATION_MESSAGE);
                     return false;
                 }
-
-                int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
-                if ((eq.getType().isSpreadable() || eq.isSplitable()) && (totalCrits > 1)) {
-                    int critsUsed = 0;
-                    int primaryLocation = location;
-                    int nextLocation = unit.getTransferLocation(location);
-                    int emptyCrits = unit.getEmptyCriticals(location);
-
-                    if (eq.getType().getCriticals(unit) > unit.getEmptyCriticals(location)) {
-                        if (location == Mech.LOC_RT) {
-                            String[] locations =
-                                { "Center Torso", "Right Leg", "Right Arm" };
-                            JComboBox<String> combo = new JComboBox(locations);
-                            JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-
-                            JDialog dlg = jop.createDialog("Select secondary location.");
-                            combo.grabFocus();
-                            combo.getEditor().selectAll();
-
-                            dlg.setVisible(true);
-
-                            int value = ((Integer) jop.getValue()).intValue();
-
-                            if (value == JOptionPane.CANCEL_OPTION) {
-                                return false;
-                            }
-
-                            if (combo.getSelectedIndex() == 1) {
-                                nextLocation = Mech.LOC_RLEG;
-                            } else if (combo.getSelectedIndex() == 2) {
-                                nextLocation = Mech.LOC_RARM;
-                            }
-
-                        } else if (location == Mech.LOC_LT) {
-                            String[] locations =
-                                { "Center Torso", "Left Leg", "Leg Arm" };
-                            JComboBox<String> combo = new JComboBox(locations);
-                            JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-
-                            JDialog dlg = jop.createDialog("Select secondary location.");
-                            combo.grabFocus();
-                            combo.getEditor().selectAll();
-
-                            dlg.setVisible(true);
-
-                            int value = ((Integer) jop.getValue()).intValue();
-
-                            if (value == JOptionPane.CANCEL_OPTION) {
-                                return false;
-                            }
-
-                            if (combo.getSelectedIndex() == 1) {
-                                nextLocation = Mech.LOC_LLEG;
-                            } else if (combo.getSelectedIndex() == 2) {
-                                nextLocation = Mech.LOC_LARM;
-                            }
-
-                        } else if (location == Mech.LOC_CT) {
-                            String[] locations =
-                                { "Left Torso", "Right Torso" };
-                            JComboBox<String> combo = new JComboBox(locations);
-                            JOptionPane jop = new JOptionPane(combo, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-
-                            JDialog dlg = jop.createDialog(null, "Select secondary location.");
-                            combo.grabFocus();
-                            combo.getEditor().selectAll();
-
-                            dlg.setVisible(true);
-
-                            int value = ((Integer) jop.getValue()).intValue();
-
-                            if (value == JOptionPane.CANCEL_OPTION) {
-                                return false;
-                            }
-
-                            if (combo.getSelectedIndex() == 1) {
-                                nextLocation = Mech.LOC_RT;
-                            } else {
-                                nextLocation = Mech.LOC_LT;
-                            }
-                        }
-                    }
-                    // No big splitables in the head!
-                    if ((emptyCrits < totalCrits) && ((nextLocation == Entity.LOC_DESTROYED) || ((unit.getEmptyCriticals(location) + unit.getEmptyCriticals(nextLocation)) < totalCrits))) {
-                        throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());
-                    }
-
-                    for (; critsUsed < totalCrits; critsUsed++) {
-                        mech.addEquipment(eq, location, false);
-                        if (unit.getEmptyCriticals(location) == 0) {
-                            location = nextLocation;
-                            totalCrits -= critsUsed;
-                            critsUsed = 0;
-                        }
-                    }
-                    changeMountStatus(eq, primaryLocation, nextLocation, false);
-                } else if (UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits) {
-                    if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
-                        if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
-                            String[] facings;
-                            if (location == Mech.LOC_LT) {
-                                facings = new String[4];
-                                facings[0] = "Front";
-                                facings[1] = "Front-Left";
-                                facings[2] = "Rear-Left";
-                                facings[3] = "Rear";
-                            } else if (location == Mech.LOC_RT) {
-                                facings = new String[4];
-                                facings[0] = "Front";
-                                facings[1] = "Front-Right";
-                                facings[2] = "Rear-Right";
-                                facings[3] = "Rear";
-                            } else if (location == Mech.LOC_CT) {
-                                facings = new String[2];
-                                facings[0] = "Front";
-                                facings[1] = "Rear";
-                            }  else {
-                                JOptionPane.showMessageDialog(null, "VGL must be placed in torso location!", "Invalid location", JOptionPane.WARNING_MESSAGE);
-                                return false;
-                            }
-                            String facing = (String)JOptionPane.showInputDialog(null, "Please choose the facing of the VGL", "Choose Facing", JOptionPane.QUESTION_MESSAGE, null, facings, facings[0]);
-                            if (facing == null) {
-                                return false;
-                            }
-                            mech.addEquipment(eq, location, false);
-                            if (facing.equals("Front-Left")) {
-                                eq.setFacing(5);
-                            } else if (facing.equals("Front-Right")) {
-                                eq.setFacing(1);
-                            } else if (facing.equals("Rear-Right")) {
-                                eq.setFacing(2);
-                            } else if (facing.equals("Rear-Left")) {
-                                eq.setFacing(4);
-                            } else if (facing.equals("Rear")) {
-                                eq.setFacing(3);
-                                UnitUtil.changeMountStatus(unit, eq, location, -1, true);
-                            }
-                        }
-                    } else {
-                        mech.addEquipment(eq, location, false);
-                    }
-                    changeMountStatus(eq, location, false);
+                if (unit instanceof Aero){
+                    return addEquipmentAero((Aero)unit, eq);
                 } else {
-                    throw new LocationFullException(eq.getName() + " does not fit in " + unit.getLocationAbbr(location) + " on " + unit.getDisplayName());
+                    return addEquipmentMech((Mech)unit, eq); 
                 }
+
+                
             } catch (LocationFullException lfe) {
                 JOptionPane.showMessageDialog(null, lfe.getMessage(), "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 return false;
