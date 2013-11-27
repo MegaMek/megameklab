@@ -360,25 +360,22 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
-        panMovement.add(createLabel("Fuel:", labelSize), gbc);  
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        panMovement.add(fuel, gbc);        
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
         panMovement.add(createLabel("Safe Thrust:", labelSize), gbc);        
         gbc.gridx = 1;
-        gbc.gridy = 1;
         gbc.fill = java.awt.GridBagConstraints.NONE;
         panMovement.add(safeThrust, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy++;
         panMovement.add(createLabel("Max Thrust:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 2;
         panMovement.add(maxThrust, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        panMovement.add(createLabel("Fuel:", labelSize), gbc);  
+        gbc.gridx = 1;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        panMovement.add(fuel, gbc);                
         
 
         gbc.gridx = 0;

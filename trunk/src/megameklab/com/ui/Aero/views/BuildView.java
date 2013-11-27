@@ -22,10 +22,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -37,7 +40,10 @@ import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.WeaponType;
+import megamek.common.verifier.TestAero;
 import megamek.common.weapons.Weapon;
+import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -265,7 +271,60 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     public void mousePressed(MouseEvent e) {
+        // On right-click, we want to generate menu items to add to specific 
+        //  locations, but only if those locations are make sense
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            JPopupMenu popup = new JPopupMenu();
+            JMenuItem item;
 
+            final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
+            Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
+                    selectedRow, CriticalTableModel.EQUIPMENT);
+
+            String[] locNames = unit.getLocationNames();
+            // A list of the valid locations we can add the selected eq to
+            ArrayList<Integer> validLocs = new ArrayList<Integer>();
+            // The number of possible locations, Aeros' have LOC_WINGS, which we
+            //  want ot ignore, hence -1
+            int numLocs = unit.locations() - 1;
+            // If it's a weapon, there are restrictions
+            if (eq.getType() instanceof WeaponType){
+                int[] availSpace = TestAero.availableSpace(getAero()); 
+                int numWeapons[] = new int[availSpace.length];
+                
+                for (Mounted m : unit.getWeaponList()){
+                    if (m.getLocation() != Aero.LOC_NONE){
+                        numWeapons[m.getLocation()]++;
+                    }
+                }
+                for (int loc = 0; loc < numLocs; loc++){
+                    if ((numWeapons[loc]+1) < availSpace[loc]){
+                        validLocs.add(loc);
+                    }
+                }
+            // If it's not a weapon there are no space requirements
+            } else {
+                for (int loc = 0; loc < numLocs; loc++){                    
+                        validLocs.add(loc);
+                } 
+            }
+            
+            // Add a menu item for each potential location
+            for (Integer location: validLocs) {
+                if (UnitUtil.isValidLocation(unit, eq.getType(), location)) {
+                    item = new JMenuItem("Add to " + locNames[location]);
+
+                    final int loc = location;
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            jMenuLoadComponent_actionPerformed(loc, selectedRow);
+                        }
+                    });
+                    popup.add(item);
+                }
+            }
+            popup.show(this, e.getX(), e.getY());
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -273,52 +332,22 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     
-
-/*    private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
-        Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+    /**
+     * When the user right-clicks on the equipment table, a context menu is
+     * generated that his menu items for each possible location that is clicked.
+     * When the location is clicked, this is the method that adds the selected
+     * equipment to the desired location.
+     * 
+     * @param location
+     * @param selectedRow
+     */
+    private void jMenuLoadComponent_actionPerformed(int location, 
+            int selectedRow) {
+        Mounted eq = (Mounted) 
+                equipmentTable.getModel().getValueAt(selectedRow, 
+                        CriticalTableModel.EQUIPMENT);
         try {
-            if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
-                String[] facings;
-                if (location == Mech.LOC_LT) {
-                    facings = new String[4];
-                    facings[0] = "Front";
-                    facings[1] = "Front-Left";
-                    facings[2] = "Rear-Left";
-                    facings[3] = "Rear";
-                } else if (location == Mech.LOC_RT) {
-                    facings = new String[4];
-                    facings[0] = "Front";
-                    facings[1] = "Front-Right";
-                    facings[2] = "Rear-Right";
-                    facings[3] = "Rear";
-                } else if (location == Mech.LOC_CT) {
-                    facings = new String[2];
-                    facings[0] = "Front";
-                    facings[1] = "Rear";
-                } else {
-                    JOptionPane.showMessageDialog(this, "VGL must be placed in torso location!", "Invalid location", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                String facing = (String)JOptionPane.showInputDialog(this, "Please choose the facing of the VGL", "Choose Facing", JOptionPane.QUESTION_MESSAGE, null, facings, facings[0]);
-                if (facing == null) {
-                    return;
-                }
-                getAero().addEquipment(eq, location, false);
-                if (facing.equals("Front-Left")) {
-                    eq.setFacing(5);
-                } else if (facing.equals("Front-Right")) {
-                    eq.setFacing(1);
-                } else if (facing.equals("Rear-Right")) {
-                    eq.setFacing(2);
-                } else if (facing.equals("Rear-Left")) {
-                    eq.setFacing(4);
-                } else if (facing.equals("Rear")) {
-                    eq.setFacing(3);
-                    UnitUtil.changeMountStatus(unit, eq, location, -1, true);
-                }
-            } else {
-                getAero().addEquipment(eq, location, false);
-            }
+            getAero().addEquipment(eq, location, false);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -326,5 +355,5 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // go back up to grandparent build tab and fire a full refresh.
         ((BuildTab) getParent().getParent()).refreshAll();
-    }*/
+    }
 }
