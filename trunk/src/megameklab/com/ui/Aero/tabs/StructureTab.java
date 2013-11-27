@@ -52,7 +52,6 @@ import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestAero;
@@ -754,7 +753,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         }
                     }
                     unit.setMixedTech(true);
-
                 } else if ((techType.getSelectedIndex() == 3)
                         && (!unit.isMixedTech() || !unit.isClan())) {
                     techLevel.removeAllItems();
@@ -1151,25 +1149,36 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 || (getAero().getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL);
 
         /* ARMOR */
-        armorCombo.removeAllItems();
-        for (int index = 0; index < (EquipmentType.armorNames.length); index++) {
+        armorCombo.removeAllItems();        
+        for (TestAero.AeroArmor armor : TestAero.AeroArmor.values()) {
+            int type = armor.type;
             EquipmentType et;
             if (!isMixed) {
-                et = EquipmentType.get(EquipmentType.getArmorTypeName(index, isClan));
-                if (((index == EquipmentType.T_ARMOR_PATCHWORK) && isExperimental) || ((et != null) && et.hasFlag(MiscType.F_MECH_EQUIPMENT) && (TechConstants.isLegal(getAero().getTechLevel(), et.getTechLevel(getAero().getYear()), isMixed)))) {
-                    armorCombo.addItem(EquipmentType.armorNames[index]);
+                boolean techMatch = (armor.isClan && unit.isClan()) || 
+                        (!armor.isClan && !unit.isClan());
+                et = EquipmentType.get(
+                        EquipmentType.getArmorTypeName(type, armor.isClan));
+                boolean isPatchwork = type == EquipmentType.T_ARMOR_PATCHWORK;
+                boolean legalTechLvl = (et != null) &&  
+                        (TechConstants.isLegal(getAero().getTechLevel(), 
+                                et.getTechLevel(getAero().getYear()), 
+                                isMixed));
+                if (techMatch && ((isPatchwork && isExperimental) || 
+                        legalTechLvl)) {
+                   
+                    armorCombo.addItem(EquipmentType.armorNames[type]);
                 }
             } else {
-                et = EquipmentType.get(EquipmentType.getArmorTypeName(index, true));
+                et = EquipmentType.get(EquipmentType.getArmorTypeName(type, true));
                 if (et != null) {
-                    armorCombo.addItem(EquipmentType.getArmorTypeName(index, true));
+                    armorCombo.addItem(EquipmentType.getArmorTypeName(type, true));
                 }
-                et = EquipmentType.get(EquipmentType.getArmorTypeName(index, false));
+                et = EquipmentType.get(EquipmentType.getArmorTypeName(type, false));
                 if (et != null) {
-                    armorCombo.addItem(EquipmentType.getArmorTypeName(index, false));
+                    armorCombo.addItem(EquipmentType.getArmorTypeName(type, false));
                 }
-                if (index == EquipmentType.T_ARMOR_PATCHWORK) {
-                    armorCombo.addItem(EquipmentType.getArmorTypeName(index));
+                if (type == EquipmentType.T_ARMOR_PATCHWORK) {
+                    armorCombo.addItem(EquipmentType.getArmorTypeName(type));
                 }
             }
         }
@@ -1187,7 +1196,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 int clanPos = 0;
                 int enginePos = 0;
                 for (String isEngine : isEngineTypes) {
-                    if (clanEngineTypes[clanPos].equals(isEngine)) {
+                    if (clanPos < clanEngineTypes.length && 
+                            clanEngineTypes[clanPos].equals(isEngine)) {
                         engineList[enginePos] = clanEngineTypes[clanPos];
                         clanPos++;
                         enginePos++;
@@ -1204,7 +1214,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 for (String isEngine : isEngineTypes) {
                     engineList[enginePos] = isEngine;
                     enginePos++;
-                    if (clanEngineTypes[clanPos].equals(isEngine)) {
+                    if (clanPos < clanEngineTypes.length &&  
+                            clanEngineTypes[clanPos].equals(isEngine)) {
                         engineList[enginePos] = String.format("(Clan) %1$s",
                                 clanEngineTypes[clanPos]);
                         clanPos++;
@@ -1225,19 +1236,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             engineCount = 1;
                             break;
                         case TechConstants.T_CLAN_TW:
+                        case TechConstants.T_CLAN_ADVANCED:
+                        case TechConstants.T_CLAN_EXPERIMENTAL:
+                        case TechConstants.T_CLAN_UNOFFICIAL:
+                            engineCount = 2;
+                            break;
                         case TechConstants.T_IS_TW_NON_BOX:
                             engineCount = 2;
                             break;
-                        case TechConstants.T_CLAN_ADVANCED:
                         case TechConstants.T_IS_ADVANCED:
-                            engineCount = 3;
-                            break;
-                        case TechConstants.T_CLAN_EXPERIMENTAL:
                         case TechConstants.T_IS_EXPERIMENTAL:
-                            engineCount = 4;
-                            break;
-                        case TechConstants.T_CLAN_UNOFFICIAL:
-                        case TechConstants.T_IS_UNOFFICIAL:
+                        case TechConstants.T_IS_UNOFFICIAL:                       
                             engineCount = 4;
                             break;
                     }
@@ -1250,25 +1259,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 } else {
                     engineList = isEngineTypes;
                     switch (getAero().getTechLevel()) {
-                        case TechConstants.T_INTRO_BOXSET:
-                            engineCount = 1;
-                            break;
-                        case TechConstants.T_CLAN_TW:
-                        case TechConstants.T_IS_TW_NON_BOX:
-                            engineCount = 4;
-                            break;
-                        case TechConstants.T_CLAN_ADVANCED:
-                        case TechConstants.T_IS_ADVANCED:
-                            engineCount = 6;
-                            break;
-                        case TechConstants.T_CLAN_EXPERIMENTAL:
-                        case TechConstants.T_IS_EXPERIMENTAL:
-                            engineCount = 7;
-                            break;
-                        case TechConstants.T_CLAN_UNOFFICIAL:
-                        case TechConstants.T_IS_UNOFFICIAL:
-                            engineCount = 7;
-                            break;
+                    case TechConstants.T_INTRO_BOXSET:
+                        engineCount = 1;
+                        break;
+                    case TechConstants.T_CLAN_TW:
+                    case TechConstants.T_CLAN_ADVANCED:
+                    case TechConstants.T_CLAN_EXPERIMENTAL:
+                    case TechConstants.T_CLAN_UNOFFICIAL:
+                        engineCount = 2;
+                        break;
+                    case TechConstants.T_IS_TW_NON_BOX:
+                        engineCount = 2;
+                        break;
+                    case TechConstants.T_IS_ADVANCED:
+                    case TechConstants.T_IS_EXPERIMENTAL:
+                    case TechConstants.T_IS_UNOFFICIAL:                       
+                        engineCount = 4;
+                        break;
                     }
                 }
             }
@@ -1408,12 +1415,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
                 switch (getAero().getTechLevel()) {
                     case TechConstants.T_CLAN_TW:
-                        heatSinkCount = 2;
-                        break;
                     case TechConstants.T_CLAN_ADVANCED:
                     case TechConstants.T_CLAN_EXPERIMENTAL:
                     case TechConstants.T_CLAN_UNOFFICIAL:
-                        heatSinkCount = 3;
+                        heatSinkCount = 2;
                         break;
                 }
             } else {
@@ -1424,11 +1429,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         break;
                     case TechConstants.T_IS_TW_NON_BOX:
                     case TechConstants.T_IS_ADVANCED:
-                        heatSinkCount = 2;
-                        break;
                     case TechConstants.T_IS_EXPERIMENTAL:
                     case TechConstants.T_IS_UNOFFICIAL:
-                        heatSinkCount = 3;
+                        heatSinkCount = 2;
                         break;
                 }
             }
