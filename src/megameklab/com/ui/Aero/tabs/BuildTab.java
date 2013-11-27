@@ -47,10 +47,8 @@ public class BuildTab extends ITab implements ActionListener {
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
 
-    private JButton autoFillButton = new JButton("Auto Fill");
     private JButton resetButton = new JButton("Reset");
 
-    private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
     public BuildTab(Aero unit, EquipmentTab equipment) {
@@ -64,11 +62,8 @@ public class BuildTab extends ITab implements ActionListener {
         critView = new CriticalView(getAero(), true, refresh);
         buildView = new BuildView(getAero());
 
-        autoFillButton.setMnemonic('A');
-        autoFillButton.setActionCommand(AUTOFILLCOMMAND);
         resetButton.setMnemonic('R');
         resetButton.setActionCommand(RESETCOMMAND);        
-        buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
 
         gbc.gridx = 0;
@@ -97,41 +92,11 @@ public class BuildTab extends ITab implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(AUTOFILLCOMMAND)) {
-            autoFillCrits();
-        } else if (e.getActionCommand().equals(RESETCOMMAND)) {
+        if (e.getActionCommand().equals(RESETCOMMAND)) {
             resetCrits();
         }
     }
 
-    private void autoFillCrits() {
-        for (Mounted mount : buildView.getTableModel().getCrits()) {
-            for (int loc = Aero.LOC_NOSE; loc <= Aero.LOC_AFT; loc++) {
-
-                if (!UnitUtil.isValidLocation(unit, mount.getType(), loc)) {
-                    continue;
-                }
-
-                int continuousNumberOfCrits = 
-                        UnitUtil.getHighestContinuousNumberOfCrits(unit, loc);
-                int critsUsed = UnitUtil.getCritsUsed(unit, mount.getType());
-                if (continuousNumberOfCrits < critsUsed) {
-                    continue;
-                }
-
-                try {
-                    getAero().addEquipment(mount, loc, false);
-                    UnitUtil.changeMountStatus(
-                            unit, mount, loc, Entity.LOC_NONE, false);
-                    break;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-        refresh.refreshAll();
-
-    }
 
     private void resetCrits() {
         for (Mounted mount : unit.getEquipment()) {
@@ -146,12 +111,10 @@ public class BuildTab extends ITab implements ActionListener {
 
 
     public void removeAllActionListeners() {
-        autoFillButton.removeActionListener(this);
         resetButton.removeActionListener(this);
     }
 
     public void addAllActionListeners() {
-        autoFillButton.addActionListener(this);
         resetButton.addActionListener(this);
     }
 
