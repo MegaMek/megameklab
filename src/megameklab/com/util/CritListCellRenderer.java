@@ -34,7 +34,6 @@ import megamek.common.WeaponType;
 public class CritListCellRenderer extends DefaultListCellRenderer {
 
     private JList list = null;
-    private int index = -1;
     private Entity unit = null;
     private boolean useColor = false;
 
@@ -52,13 +51,20 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
         JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
-        this.index = index;
 
         setPreferredSize(new Dimension(110,15));
         setMaximumSize(new Dimension(110,15));
         setMinimumSize(new Dimension(110,15));
 
-        CriticalSlot cs = getCrit();
+        String[] split = ((String)value).split(":");
+        label.setText(split[0]);
+        
+        CriticalSlot cs; 
+        if (split.length > 1){
+            cs = getCrit(Integer.parseInt(split[1]));
+        } else {
+            cs = getCrit(index);
+        }
 
         if (cs != null) {
 
@@ -121,8 +127,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         return label;
     }
 
-    private CriticalSlot getCrit() {
-        int slot = index;
+    private CriticalSlot getCrit(int slot) {
         int location = getCritLocation();
         CriticalSlot crit = null;
         if ((slot >= 0) && (slot < unit.getNumberOfCriticals(location))) {
