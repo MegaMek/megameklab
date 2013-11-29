@@ -84,7 +84,7 @@ public class CriticalView extends IView {
         
 
         topPanel.add(nosePanel);
-        topPanel.setBorder(BorderFactory.createTitledBorder(
+        nosePanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Nose", TitledBorder.TOP,
                 TitledBorder.DEFAULT_POSITION));
         nosePanel.setLayout(new BoxLayout(nosePanel, BoxLayout.Y_AXIS));
@@ -122,6 +122,13 @@ public class CriticalView extends IView {
         aftPanel.removeAll();                        
         
         int[] availSpace = TestAero.availableSpace(getAero());
+        
+        if (availSpace == null){
+            // Shouldn't happen, since we only allow valid armor types to be
+            //  selected...
+            System.err.println("Error in CriticalView: Invalid armor type!");
+            return;
+        }
 
         synchronized (unit) {
             // Aeros have 5 locs, the 5th is "wings" which should be ignored
@@ -172,6 +179,7 @@ public class CriticalView extends IView {
                             if (m.isPintleTurretMounted()) {
                                 critName.append(" (PT)");
                             }
+                            critName.append(":" + slot);
                             critNames.add(critName.toString());
 
                         } catch (Exception ex) {
