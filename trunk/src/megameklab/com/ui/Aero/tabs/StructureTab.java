@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -98,9 +99,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private JPanel panChassis;
     private JPanel panArmor;
     private JPanel panMovement;
+    private JPanel panFuel;
+    private JPanel panMisc;
     private JPanel panHeat;
     private SummaryView panSummary;
-    private ArmorView armor;
+    private ArmorView armorView;
 
     RefreshListener refresh = null;
     
@@ -123,9 +126,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private JCheckBox omniCB = new JCheckBox("Omni");
     
     // Movement Panel 
-    private JSpinner fuel;
     private JSpinner safeThrust;
     private JTextField maxThrust;
+    
+    // Fuel Panel
+    private JSpinner fuel;
+    private JLabel fuelPoints;
+    private JLabel turnsAtSafe;
+    private JLabel turnsAtMax;
+    //private JLabel burnDays1G;
+    //private JLabel burnDaysMax;
     
     
     // Heat Sinks Panel
@@ -142,7 +152,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public StructureTab(Aero unit) {
         this.unit = unit;
-        armor = new ArmorView(getAero());
+        armorView = new ArmorView(getAero());
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
@@ -156,6 +166,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panChassis = new JPanel(new GridBagLayout());
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
+        panFuel = new JPanel(new GridBagLayout());
+        panMisc = new JPanel(new GridBagLayout());
         panHeat = new JPanel(new GridBagLayout());        
         panSummary = new SummaryView(getAero());
 
@@ -182,8 +194,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         ((JSpinner.DefaultEditor) weightClass.getEditor()).getTextField()
                 .setEditable(false);
         
-        fuel = new JSpinner(new SpinnerNumberModel(1, 1, 
-                ((Integer)weightClass.getValue()).intValue(), 1));
+        fuel = new JSpinner(new SpinnerNumberModel(1.0, 0.0, 
+                ((Integer)weightClass.getValue()).doubleValue(), 0.5));
         ((JSpinner.DefaultEditor) fuel.getEditor()).setSize(spinnerSize);
         ((JSpinner.DefaultEditor) fuel.getEditor())
                 .setMaximumSize(spinnerSize);
@@ -191,6 +203,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) fuel.getEditor())
                 .setMinimumSize(spinnerSize);
+        
+        fuelPoints = new JLabel("0");
+        turnsAtSafe = new JLabel("0", JLabel.CENTER);
+        turnsAtMax = new JLabel("0", JLabel.CENTER);
+        //burnDays1G = new JLabel("0", JLabel.CENTER);
+        //burnDaysMax = new JLabel("0", JLabel.CENTER);
 
         heatSinkNumber = new JSpinner(new SpinnerNumberModel(0, 0, 50, 1));
         spinnerSize = new Dimension(40, 25);
@@ -231,8 +249,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
                 .setEditable(false);
 
-        // lblFreeSinks.setFont(new Font(lblFreeSinks.getName(), Font.PLAIN,
-        // 10));
 
         chassis.setText(unit.getChassis());
         model.setText(unit.getModel());
@@ -369,17 +385,64 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panMovement.add(createLabel("Max Thrust:", labelSize), gbc);
         gbc.gridx = 1;
         panMovement.add(maxThrust, gbc);
+        
+        
+        gbc.insets = new Insets(0,0,0,0);
         gbc.gridx = 0;
-        gbc.gridy++;
+        gbc.gridy = 0;
         gbc.gridwidth = 1;
-        panMovement.add(createLabel("Fuel:", labelSize), gbc);  
+        panFuel.add(createLabel("Fuel Tons:", labelSize), gbc);  
         gbc.gridx = 1;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        panMovement.add(fuel, gbc);                
+        gbc.fill = GridBagConstraints.NONE;
+        panFuel.add(fuel, gbc); 
+        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        panFuel.add(createLabel("Fuel Points:", labelSize), gbc);
+        gbc.gridx = 3;
+        fuelPoints.setSize(labelSize);
+        gbc.insets = new Insets(0,10,0,20);
+        panFuel.add(fuelPoints, gbc);
+        gbc.insets = new Insets(0,0,0,0);
+        
+        
+        JPanel fuelInfoPanel = new JPanel(new GridLayout(0,2));
+        
+        JLabel lblTurnsAtSafe = 
+                new JLabel("Turns at Safe", JLabel.CENTER);
+        JLabel lblTurnsAtMax = 
+                new JLabel("Turns at Max", JLabel.CENTER);
+        fuelInfoPanel.add(lblTurnsAtSafe);
+        fuelInfoPanel.add(lblTurnsAtMax);
+
+        fuelInfoPanel.add(turnsAtSafe);
+        fuelInfoPanel.add(turnsAtMax);
+        
+        /*
+        JLabel lbl1GBurnDays = 
+                new JLabel("1G Burn Days", JLabel.CENTER);
+        JLabel lblMaxBurnDays = 
+                new JLabel("Max Burn Days", JLabel.CENTER);
+        fuelInfoPanel.add(lbl1GBurnDays);
+        fuelInfoPanel.add(lblMaxBurnDays);
+        
+        fuelInfoPanel.add(burnDays1G);
+        fuelInfoPanel.add(burnDaysMax);
+        */
+        
+        
+        gbc.gridx = 0;
+        gbc.gridwidth = 4;
+        gbc.gridy = 1;
+        gbc.fill = java.awt.GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10,10,10,10);
+        panFuel.add(fuelInfoPanel, gbc);
+        
         
 
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.insets = new Insets(0,0,0,0);
+        gbc.fill = java.awt.GridBagConstraints.NONE;
         panHeat.add(createLabel("Sink Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -418,18 +481,28 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setFieldSize(chassis, comboSize);
 
         JPanel leftPanel = new JPanel();
+        JPanel midPanel = new JPanel();
         JPanel rightPanel = new JPanel();
+        
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panInfo);
         leftPanel.add(panChassis);
         leftPanel.add(panHeat);
-        leftPanel.add(Box.createGlue());
+        leftPanel.add(panMisc);
+        //leftPanel.add(Box.createGlue());
+        //leftPanel.add(Box.createVerticalGlue());
+        
+        midPanel.add(panMovement);
+        midPanel.add(panFuel);
+        midPanel.add(panSummary);
+        midPanel.add(Box.createHorizontalStrut(300));
+        
         rightPanel.add(panArmor);
-        rightPanel.add(panMovement);
-        rightPanel.add(panSummary);
-        leftPanel.add(Box.createVerticalGlue());
+        rightPanel.add(armorView);
+        
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -440,17 +513,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.anchor = GridBagConstraints.NORTHWEST;
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
-        masterPanel.add(rightPanel, gbc);
+        masterPanel.add(midPanel, gbc);
         gbc.gridx = 2;
-        masterPanel.add(armor, gbc);
+        masterPanel.add(rightPanel, gbc);
 
         panInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
+        panFuel.setBorder(BorderFactory.createTitledBorder("Fuel"));
+        panMisc.setBorder(BorderFactory.createTitledBorder("Misc"));
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
-        armor.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
+        armorView.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
 
     }
 
@@ -463,6 +538,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             omniCB.setEnabled(true);
         }
         omniCB.setSelected(getAero().isOmni());
+        
+        fuelPoints.setText(getAero().getFuel()+"");
+        turnsAtSafe.setText(String.format(
+                "%1$.2f", TestAero.calculateMaxTurnsAtSafe(getAero())));
+        turnsAtMax.setText(String.format(
+                "%1$.2f", TestAero.calculateMaxTurnsAtMax(getAero())));
         
         era.setText(Integer.toString(getAero().getYear()));
         source.setText(getAero().getSource());
@@ -567,7 +648,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         setHeatSinkCombo();
 
-        fuel.setValue(getAero().getFuelTonnage());
+        fuel.setValue((double)getAero().getFuelTonnage());
         safeThrust.setValue(getAero().getOriginalWalkMP());                
         maxThrust.setText(getAero().getRunMPasString());
 
@@ -580,8 +661,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         armorTonnage.setEnabled(true);
         maximizeArmorButton.setEnabled(true);
         
-        armor.updateUnit(unit);
-        armor.refresh();
+        armorView.updateUnit(unit);
+        armorView.refresh();
         panSummary.updateUnit(unit);
         panSummary.refresh();
         addAllListeners();
@@ -617,7 +698,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     if (getAero().getCockpitType() == Aero.COCKPIT_PRIMITIVE){
                         getAero().setArmorType(EquipmentType.T_ARMOR_PRIMITIVE);
                     }                    
-                    armor.resetArmorPoints();
+                    armorView.resetArmorPoints();
                 }
                 int rating = TestAero.calculateEngineRating(
                         getAero(), 
@@ -639,7 +720,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             } else if (combo.equals(armorCombo)) {
                 UnitUtil.removeISorArmorMounts(unit, false);
                 createArmorMountsAndSetArmorType();
-                armor.resetArmorPoints();
+                armorView.resetArmorPoints();
             } else if (combo.equals(structureCombo)) {
                 UnitUtil.removeISorArmorMounts(unit, true);
                 createISMounts();
@@ -698,7 +779,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }
                 }
                 populateChoices(true);
-                armor.resetArmorPoints();
+                armorView.resetArmorPoints();
                 UnitUtil.checkEquipmentByTechLevel(unit);
             } else if (combo.equals(techType)) {
                 if ((techType.getSelectedIndex() == 1)
@@ -779,7 +860,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 createArmorMountsAndSetArmorType();
                 populateChoices(true);
-                armor.resetArmorPoints();
+                armorView.resetArmorPoints();
                 UnitUtil.checkEquipmentByTechLevel(unit);
             }
             addAllListeners();
@@ -838,6 +919,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         heatSinkNumber.removeChangeListener(this);
         heatSinkType.removeItemListener(this);
         safeThrust.removeChangeListener(this);
+        fuel.removeChangeListener(this);
         techLevel.removeItemListener(this);
         techType.removeItemListener(this);
         era.removeKeyListener(this);
@@ -860,6 +942,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         heatSinkNumber.addChangeListener(this);
         heatSinkType.addItemListener(this);
         safeThrust.addChangeListener(this);
+        fuel.addChangeListener(this);
         techLevel.addItemListener(this);
         techType.addItemListener(this);
         era.addKeyListener(this);
@@ -892,7 +975,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             }
             refresh.refreshEquipment();
             populateChoices(true);
-            armor.resetArmorPoints();
+            armorView.resetArmorPoints();
             UnitUtil.checkEquipmentByTechLevel(unit);
         } else if (e.getSource().equals(source)) {
             getAero().setSource(source.getText());
@@ -922,7 +1005,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        armor.addRefreshedListener(l);
+        armorView.addRefreshedListener(l);
     }
 
     private void createISMounts() {
@@ -1439,7 +1522,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
 
         ((SpinnerNumberModel)fuel.getModel()).setMaximum(
-                (Integer)weightClass.getValue());
+                ((Integer)weightClass.getValue()).doubleValue());
  
         /* UNIT UPDATING */
         if (updateUnit) {
@@ -1448,7 +1531,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 armorCombo.setSelectedIndex(0);
                 UnitUtil.removeISorArmorMounts(unit, false);
                 createArmorMountsAndSetArmorType();
-                armor.resetArmorPoints();
+                armorView.resetArmorPoints();
             }
             int selEngine = convertEngineType(getAero().getEngine()
                     .getEngineType());
@@ -1592,7 +1675,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                     clanEngineFlag));
                 }
             } else if (spinner.equals(fuel)) {
-                getAero().setFuelTonnage((Integer)fuel.getValue());
+                getAero().setFuelTonnage(((Double)fuel.getValue()).floatValue());
             } else if (spinner.equals(armorTonnage)) {
                 setArmorTonnage();
             } else if (spinner.equals(heatSinkNumber)) {
@@ -1611,7 +1694,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         double maxArmor = UnitUtil.getMaximumArmorTonnage(unit);
         armorTonnage.setValue(maxArmor);
         unit.setArmorTonnage(maxArmor);
-        armor.resetArmorPoints();
+        armorView.resetArmorPoints();
     }
 
     private void createArmorMountsAndSetArmorType() {
@@ -1682,7 +1765,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private void setArmorTonnage() {
         unit.setArmorTonnage(((Double) armorTonnage.getValue()));
-        armor.resetArmorPoints();
+        armorView.resetArmorPoints();
     }
 
 
