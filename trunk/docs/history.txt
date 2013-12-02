@@ -50,6 +50,8 @@ V 0.1.24-dev
 + start of tripod mech support
 + Bug: Mek.MainUI.createNewUnit was creating LandAirMech's for BIPED entity types
 + show Bomb Bays only for LAMs
++ Feature: Added ability to create and edit Aerospace Fighters (but not 
+    conventional fighers or additional space craft)
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
