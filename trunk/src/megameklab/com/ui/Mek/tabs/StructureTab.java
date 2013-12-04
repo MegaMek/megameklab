@@ -229,7 +229,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .getTextField().setEditable(false);
 
         armorTonnage = new JSpinner(new SpinnerNumberModel(
-                unit.getArmorWeight(), 0.0, 30.5, 0.5));
+                unit.getArmorWeight(), 0.0, UnitUtil
+                .getMaximumArmorTonnage(unit), 0.5));
         spinnerSize = new Dimension(45, 25);
         ((JSpinner.DefaultEditor) armorTonnage.getEditor())
                 .setSize(spinnerSize);

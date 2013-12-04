@@ -52,6 +52,8 @@ V 0.1.24-dev
 + show Bomb Bays only for LAMs
 + Feature: Added ability to create and edit Aerospace Fighters (but not 
     conventional fighers or additional space craft)
++ Bug: Armor spinner for 'mechs was defaulting to an arbitrary maximum, 
+    which could case errors on some units
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
