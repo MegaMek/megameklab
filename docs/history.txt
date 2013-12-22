@@ -55,6 +55,7 @@ V 0.1.24-dev
 + Bug: Armor spinner for 'mechs was defaulting to an arbitrary maximum, 
     which could case errors on some units
 + Bug: Aeros could not change to DHS
++ New MM.jar (trunk rev. 10231)
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
