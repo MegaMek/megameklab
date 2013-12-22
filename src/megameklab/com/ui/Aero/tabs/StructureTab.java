@@ -741,7 +741,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 createArmorMountsAndSetArmorType();
                 armorView.resetArmorPoints();
             } else if (combo.equals(heatSinkType)) {
-                getAero().setHeatSinks((Integer) heatSinkNumber.getValue());
+                getAero().setHeatType((Integer) heatSinkType.getSelectedIndex());
             } else if (combo.equals(techLevel)) {
                 int unitTechLevel = techLevel.getSelectedIndex();
 
