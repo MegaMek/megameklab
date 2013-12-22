@@ -362,11 +362,13 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         setVisible(false);
     }
 
+/*    
     private void cancel() {
         chosenMechSummary = null;
         chosenEntity = null;
         setVisible(false);
     }
+*/    
     
     private boolean isAcceptableUnitType(String type) {
         // If they're a perfect match, then we'll just return true now.
@@ -421,8 +423,6 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
                             && ((((unitType != -1) && isAcceptableUnitType(mech.getUnitType())) || (unitType == -1)))
                             /*Advanced Search*/
                             && ((searchFilter==null) || MechSearchFilter.isMatch(mech, searchFilter))) {
-                        //yuck, I have to pull up a full Entity to get MechView to search in
-                        //TODO: why not put mechview into the mech summary itself?
                         if(txtFilter.getText().length() > 0) {
                             String text = txtFilter.getText();
                             return mech.getName().toLowerCase().contains(text.toLowerCase());
@@ -510,7 +510,7 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
          mechs = MechSummaryCache.getInstance().getAllMechs();
 
          // break out if there are no units to filter
-         if (mechs == null) {
+         if (mechs == null || mechs.length == 0) {
              System.err.println("No units to filter!");
          } else {
              unitModel.setData(mechs);
