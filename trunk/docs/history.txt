@@ -54,6 +54,7 @@ V 0.1.24-dev
     conventional fighers or additional space craft)
 + Bug: Armor spinner for 'mechs was defaulting to an arbitrary maximum, 
     which could case errors on some units
++ Bug: Aeros could not change to DHS
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
