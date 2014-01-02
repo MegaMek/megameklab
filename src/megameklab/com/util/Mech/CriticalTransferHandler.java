@@ -305,7 +305,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     weapCount[m.getLocation()]++;
                 }
             }
-            if ((weapCount[location] +1) >= availSpace[location]){
+            if ((weapCount[location] +1) > availSpace[location]){
                 throw new LocationFullException(eq.getName() + 
                         " does not fit in " + unit.getLocationAbbr(location) + 
                         " on " + unit.getDisplayName());
