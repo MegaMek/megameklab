@@ -58,6 +58,7 @@ V 0.1.24-dev
 + New MM.jar (trunk rev. 10231)
 + Fix missing launch4j files
 + Bug: >= instead of a > when checking for space limits on Aeros
++ New MM.jar (trunk rev. 10303) and compatibility adjustments for it
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
