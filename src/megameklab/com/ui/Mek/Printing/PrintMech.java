@@ -447,7 +447,7 @@ public class PrintMech implements Printable {
         g2d.setFont(font);
 
         // Heat Sinks
-        g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity(true, false)) + ")", 507 + leftMargin, topMargin + 600);
+        g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity(true)) + ")", 507 + leftMargin, topMargin + 600);
         if (mech.hasLaserHeatSinks()) {
             g2d.drawString("Laser", 507 + leftMargin, topMargin + 608);
         } else if (mech.hasDoubleHeatSinks()) {
