@@ -344,7 +344,7 @@ public class PrintQuad implements Printable {
         g2d.setFont(font);
 
         // Heat Sinks
-        g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity(true)) + ")", 502 + leftMargin, topMargin + 595);
+        g2d.drawString(Integer.toString(mech.heatSinks()) + " (" + Integer.toString(mech.getHeatCapacity(true,false)) + ")", 502 + leftMargin, topMargin + 595);
         if (mech.hasLaserHeatSinks()) {
             g2d.drawString("Laser", 502 + leftMargin, topMargin + 603);
         } else if (mech.hasDoubleHeatSinks()) {
