@@ -45,6 +45,7 @@ import megamek.common.EntityMovementMode;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
+import megamek.common.verifier.TestBattleArmor;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -209,8 +210,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         chassisPanel.add(jumpType, gbc);
 
         DefaultComboBoxModel<String> modelArmorType = new DefaultComboBoxModel<String>();
-        for(int i = EquipmentType.T_ARMOR_BA_STANDARD; i < EquipmentType.T_ARMOR_BA_NUM; i++) {
-            modelArmorType.addElement(EquipmentType.getBaArmorTypeName(i));
+        for (TestBattleArmor.BAArmor armorType : TestBattleArmor.BAArmor.values()){
+            modelArmorType.addElement(EquipmentType.getBaArmorTypeName(armorType.type));
         }
         armorType = new JComboBox(modelArmorType);
         armorPoints = new JSpinner(new SpinnerNumberModel(0, 0, getBattleArmor().getMaximumArmorPoints(), 1));
