@@ -385,8 +385,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getBattleArmor().getMaximumJumpMP());
 
 
-        armorType.setSelectedIndex(unit.getArmorType(1));
-        armorPoints.setValue(getBattleArmor().getOArmor(1));
+        armorType.setSelectedItem(EquipmentType.getArmorTypeName(unit.getArmorType(BattleArmor.LOC_SQUAD)));
+        // We have to use a LOC_TROOPER as getOArmor has a special case for LOC_SQUAD...
+        armorPoints.setValue(getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
         ((SpinnerNumberModel) armorPoints.getModel()).setMaximum(getBattleArmor().getMaximumArmorPoints());
 
        // weaponView.updateUnit(unit);
@@ -588,7 +589,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             else if (combo.equals(armorType)) {
                 //TODO: restrict IS and clan tech
                 //TODO: armor can take up slots
-                getBattleArmor().setArmorType(combo.getSelectedIndex());
+                getBattleArmor().setArmorType((String)combo.getSelectedItem());
             }
         }
         refresh.refreshAll();

@@ -28,11 +28,9 @@ import javax.swing.ListSelectionModel;
 import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Mounted;
-import megamek.common.WeaponType;
 import megamek.common.loaders.MtfFile;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
 import megameklab.com.util.Mech.DropTargetCriticalList;
 
 public class CriticalView extends IView {
