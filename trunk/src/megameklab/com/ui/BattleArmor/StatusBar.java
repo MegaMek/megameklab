@@ -25,7 +25,6 @@ import javax.swing.SpringLayout;
 import megamek.common.BattleArmor;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestMech;
 import megameklab.com.util.ITab;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
@@ -99,7 +98,8 @@ public class StatusBar extends ITab {
         currentKilos = testEntity.calculateWeight();
         currentKilos += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
 
-        tons.setText("Suit Weight: " + currentKilos + "/" + maxKilos);
+        tons.setText("Suit Weight: " + String.format("%1$.6f",currentKilos) + 
+                "/" + maxKilos);
         tons.setToolTipText("Current Weight/Max Weight");
         if (currentKilos > maxKilos) {
             tons.setForeground(Color.red);
