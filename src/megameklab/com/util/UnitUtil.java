@@ -1102,7 +1102,7 @@ public class UnitUtil {
             armorWeight = (unit.getWeightClass() * 4) + 2;
         }
         if (unit instanceof Aero){
-            double points = 
+            double points =
                     TestAero.maxArmorPoints(unit, unit.getWeight());
             armorWeight = points / armorPerTon;
         }
@@ -1153,7 +1153,7 @@ public class UnitUtil {
         }
     }
 
-    private static void compactCriticals(Entity unit, int loc) {
+    public static void compactCriticals(Entity unit, int loc) {
         int firstEmpty = -1;
         for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
             CriticalSlot cs = unit.getCritical(loc, slot);
@@ -2637,18 +2637,18 @@ public class UnitUtil {
             testEntity = new TestTank((Tank) unit, entityVerifier.tankOption,
                     null);
             testEntity.correctEntity(sb, true);
-        } else if (unit.getEntityType() == Entity.ETYPE_AERO
-                && unit.getEntityType() != 
-                Entity.ETYPE_DROPSHIP
-                && unit.getEntityType() != 
-                        Entity.ETYPE_SMALL_CRAFT
-                && unit.getEntityType() != 
-                        Entity.ETYPE_FIGHTER_SQUADRON
-                && unit.getEntityType() != 
-                        Entity.ETYPE_JUMPSHIP
-                && unit.getEntityType() != 
-                        Entity.ETYPE_SPACE_STATION) {
-            testEntity = 
+        } else if ((unit.getEntityType() == Entity.ETYPE_AERO)
+                && (unit.getEntityType() !=
+                Entity.ETYPE_DROPSHIP)
+                && (unit.getEntityType() !=
+                        Entity.ETYPE_SMALL_CRAFT)
+                && (unit.getEntityType() !=
+                        Entity.ETYPE_FIGHTER_SQUADRON)
+                && (unit.getEntityType() !=
+                        Entity.ETYPE_JUMPSHIP)
+                && (unit.getEntityType() !=
+                        Entity.ETYPE_SPACE_STATION)) {
+            testEntity =
                     new TestAero((Aero)unit,entityVerifier.aeroOption,null);
             testEntity.correctEntity(sb,true);
         }
