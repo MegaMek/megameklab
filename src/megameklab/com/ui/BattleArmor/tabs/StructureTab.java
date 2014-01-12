@@ -375,7 +375,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             // Quad's can't use any form of jump MP
             jumpType.setEnabled(false);
             jumpType.setSelectedIndex(0);
+            jumpMP.setEnabled(false);
+            jumpMP.getModel().setValue(0);
         } else {
+            jumpType.setEnabled(true);
+            jumpMP.setEnabled(true);
             int selIdx = jumpType.getSelectedIndex();
             jumpType.removeAllItems();
             if(unit.isClan()) {
@@ -410,7 +414,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         (TechConstants.isLegal(getBattleArmor().getTechLevel(), 
                                 et.getTechLevel(getBattleArmor().getYear()), 
                                 isMixed));
-                System.out.println((techMatch && (isExperimental || legalTechLvl)) + " Armor: " + EquipmentType.getArmorTypeName(type, armor.isClan) + " legalTechLvl: " + legalTechLvl + " BA TL: " + getBattleArmor().getTechLevel() + " ET TL: " + (et != null ? et.getTechLevel(getBattleArmor().getYear()) : ""));
                 if (techMatch && (isExperimental || legalTechLvl)) {
                     armorType.addItem(EquipmentType.armorNames[type]);
                 }

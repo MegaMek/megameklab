@@ -32,7 +32,6 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.com.ui.BattleArmor.views.BuildView;
 import megameklab.com.ui.BattleArmor.views.CriticalView;
-import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
@@ -47,7 +46,6 @@ public class BuildTab extends ITab implements ActionListener {
 
     private RefreshListener refresh = null;
     private CriticalView critView = null;
-    private CriticalTableModel critList;
     private BuildView buildView = null;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
@@ -149,9 +147,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void resetCrits() {
         for (Mounted mount : unit.getEquipment()) {
-            UnitUtil.removeCriticals(getBattleArmor(), mount);
-        }
-        for (Mounted mount : unit.getEquipment()) {
+            mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
             UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         refresh.refreshAll();
@@ -171,10 +167,6 @@ public class BuildTab extends ITab implements ActionListener {
         refresh = l;
         critView.updateRefresh(refresh);
 
-    }
-
-    public void addCrit(Mounted mount) {
-        critList.addCrit(mount);
     }
 
     public void refreshAll() {
