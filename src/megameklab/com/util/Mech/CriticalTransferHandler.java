@@ -30,6 +30,7 @@ import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
 import megamek.common.Aero;
+import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.LocationFullException;
@@ -39,6 +40,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestBattleArmor;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -292,6 +294,22 @@ public class CriticalTransferHandler extends TransferHandler {
     
     /**
      * 
+     * @param ba
+     * @param m
+     * @return
+     */
+    private boolean addEquipmentBA(BattleArmor ba, Mounted newMount){
+        if (TestBattleArmor.isMountLegal(ba, newMount, location)){
+            newMount.setBaMountLoc(location);
+            changeMountStatus(newMount, BattleArmor.LOC_SQUAD, false);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * 
      * @param aero
      * @return
      */
@@ -325,7 +343,8 @@ public class CriticalTransferHandler extends TransferHandler {
      */
     @Override
     public boolean importData(TransferSupport info) {
-        if (!info.isDrop() || !(unit instanceof Mech || unit instanceof Aero)) {
+        if (!info.isDrop() || !(unit instanceof Mech || unit instanceof Aero || 
+                unit instanceof BattleArmor)) {
             return false;
         }
 
@@ -354,8 +373,10 @@ public class CriticalTransferHandler extends TransferHandler {
                 }
                 if (unit instanceof Aero){
                     return addEquipmentAero((Aero)unit, eq);
-                } else {
+                } else if (unit instanceof Mech){
                     return addEquipmentMech((Mech)unit, eq); 
+                } else if (unit instanceof BattleArmor){
+                    return addEquipmentBA((BattleArmor)unit, eq);
                 }
 
                 

@@ -446,12 +446,10 @@ public class EquipmentTab extends ITab implements ActionListener {
                 mount = UnitUtil.updateTC(getBattleArmor(), equip);
                 success = mount != null;
             }
-        } /*else if (isMisc && UnitUtil.isFixedLocationSpreadEquipment(equip)) {
-            mount = UnitUtil.createSpreadMounts(getBattleArmor(), equip);
-            success = mount != null;
-        } */else {
+        } else {
             try {
                 mount = new Mounted(unit, equip);
+                mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                 getBattleArmor().addEquipment(mount, Entity.LOC_NONE, false);
                 success = true;
             } catch (LocationFullException lfe) {
