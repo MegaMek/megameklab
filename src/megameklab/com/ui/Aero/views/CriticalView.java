@@ -142,7 +142,8 @@ public class CriticalView extends IView {
                     if (cs == null) {
                         continue;
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                        critNames.add(getMech().getSystemName(cs.getIndex()));
+                        // Aeros shouldn't have system types
+                        continue;
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         try {
                             Mounted m = cs.getMount();
