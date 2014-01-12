@@ -20,21 +20,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
-import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.Weapon;
+import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.CriticalTransferHandler;
 import megameklab.com.util.IView;
@@ -95,17 +99,18 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
         for (Mounted mount : unit.getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE)) {
+            if ((mount.getLocation() == BattleArmor.MOUNT_LOC_NONE)) {
                 masterEquipmentList.add(mount);
             }
         }
         for (Mounted mount : unit.getWeaponList()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && UnitUtil.isBattleArmorWeapon(mount.getType(), unit)) {
+            if ((mount.getLocation() == BattleArmor.MOUNT_LOC_NONE) 
+                    && UnitUtil.isBattleArmorWeapon(mount.getType(), unit)) {
                 masterEquipmentList.add(mount);
             }
         }
         for (Mounted mount : unit.getAmmo()) {
-            if (mount.getLocation() == Entity.LOC_NONE) {
+            if (mount.getLocation() == BattleArmor.MOUNT_LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -124,7 +129,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         // weapons and ammo
         Vector<Mounted> weaponsNAmmoList = new Vector<Mounted>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon)
+                    || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -137,7 +143,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && !UnitUtil.isArmor(masterEquipmentList.get(pos).getType()) && !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType)
+                    && !UnitUtil
+                            .isArmor(masterEquipmentList.get(pos).getType())
+                    && !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -195,36 +204,84 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
     public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
     public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
     public void mousePressed(MouseEvent e) {
+        // On right-click, we want to generate menu items to add to specific 
+        //  locations, but only if those locations are make sense
         if (e.getButton() == MouseEvent.BUTTON3) {
-            // JPopupMenu popup = new JPopupMenu();
-            // JMenuItem item;
+            JPopupMenu popup = new JPopupMenu();
+            JMenuItem item;
 
-            // final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-            // Mounted eq = UnitUtil.getMounted(unit, ((EquipmentType)
-            // equipmentTable.getModel().getValueAt(selectedRow,
-            // CriticalTableModel.EQUIPMENT)).getInternalName());
+            final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
+            Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
+                    selectedRow, CriticalTableModel.EQUIPMENT);
 
+            final String[] locNames = BattleArmor.MOUNT_LOC_NAMES;
+            // A list of the valid locations we can add the selected eq to
+            ArrayList<Integer> validLocs = new ArrayList<Integer>();
+            int numLocs = BattleArmor.MOUNT_NUM_LOCS;
+            for (int loc = 0; loc < numLocs; loc++){                    
+                if (TestBattleArmor.isMountLegal(getBattleArmor(), eq, loc)){
+                    validLocs.add(loc);
+                }
+            } 
+            
+            // Add a menu item for each potential location
+            for (Integer location: validLocs) {
+                if (UnitUtil.isValidLocation(unit, eq.getType(), location)) {
+                    item = new JMenuItem("Add to " + locNames[location]);
+
+                    final int loc = location;
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            jMenuLoadComponent_actionPerformed(loc, selectedRow);
+                        }
+                    });
+                    popup.add(item);
+                }
+            }
+            popup.show(this, e.getX(), e.getY());
         }
     }
 
     public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
 
+    }
+
+    
+    /**
+     * When the user right-clicks on the equipment table, a context menu is
+     * generated that his menu items for each possible location that is clicked.
+     * When the location is clicked, this is the method that adds the selected
+     * equipment to the desired location.
+     * 
+     * @param location
+     * @param selectedRow
+     */
+    private void jMenuLoadComponent_actionPerformed(int location, 
+            int selectedRow) {
+        Mounted eq = (Mounted) 
+                equipmentTable.getModel().getValueAt(selectedRow, 
+                        CriticalTableModel.EQUIPMENT);
+        try {
+            eq.setBaMountLoc(location);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        UnitUtil.changeMountStatus(unit, eq, BattleArmor.LOC_SQUAD, -1, false);
+
+        // go back up to grandparent build tab and fire a full refresh.
+        ((BuildTab) getParent().getParent()).refreshAll();
     }
 
 }

@@ -98,7 +98,7 @@ public class StatusBar extends ITab {
         currentKilos = testEntity.calculateWeight();
         currentKilos += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
 
-        tons.setText("Suit Weight: " + String.format("%1$.6f",currentKilos) + 
+        tons.setText("Suit Weight: " + String.format("%1$.3f",currentKilos) + 
                 "/" + maxKilos);
         tons.setToolTipText("Current Weight/Max Weight");
         if (currentKilos > maxKilos) {
