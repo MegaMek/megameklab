@@ -714,6 +714,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         case Mech.COCKPIT_SMALL:
                             getMech().addSmallCockpit();
                             break;
+                        case Mech.COCKPIT_INTERFACE:
+                            getMech().addInterfaceCockpit();
+                            break;
                         case Mech.COCKPIT_TORSO_MOUNTED:
                             removeSystemCrits(Mech.SYSTEM_ENGINE);
                             getMech().addEngineCrits();
@@ -738,6 +741,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             getMech().addCockpit();
                     }
                     armor.resetArmorPoints();
+                    populateChoices(true);
                 }
                 int rating = ((Integer) walkMP.getValue())
                         * ((Integer) weightClass.getValue());
@@ -803,6 +807,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             break;
                         case Mech.GYRO_XL:
                             getMech().addXLGyro();
+                            break;
+                        case Mech.GYRO_NONE:
+                            UnitUtil.compactCriticals(unit, Mech.LOC_CT);
                             break;
                         default:
                             getMech().addGyro();
@@ -1584,6 +1591,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INTERFACE]);
                     break;
                 case TechConstants.T_CLAN_UNOFFICIAL:
                     cockpitType
@@ -1619,6 +1628,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                    cockpitType
+                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INTERFACE]);
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
                     break;
@@ -1757,6 +1768,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             gyroList[0] = Mech.GYRO_SHORT_STRING[0];
         }
         for (String gyro : gyroList) {
+            if (gyro.equals(Mech.GYRO_SHORT_STRING[Mech.GYRO_NONE]) && !(getMech().getCockpitType() == Mech.COCKPIT_INTERFACE)) {
+                continue;
+            }
             gyroType.addItem(gyro);
         }
 

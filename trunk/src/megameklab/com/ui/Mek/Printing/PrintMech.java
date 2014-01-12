@@ -538,7 +538,7 @@ public class PrintMech implements Printable {
     private void printLTCrits(Graphics2D g2d) {
 
         float lineStart = 56;
-        float linePoint = 556.5f;
+        float linePoint = 555.7f;
         float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_LT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
@@ -547,7 +547,7 @@ public class PrintMech implements Printable {
     private void printRTCrits(Graphics2D g2d) {
 
         float lineStart = 294;
-        float linePoint = 556.5f;
+        float linePoint = 555.7f;
         float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_RT, lineStart + leftMargin, topMargin + linePoint, lineFeed);
@@ -565,7 +565,7 @@ public class PrintMech implements Printable {
     private void printLLCrits(Graphics2D g2d) {
 
         float lineStart = 56;
-        float linePoint = 696.1f;
+        float linePoint = 696.5f;
         float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_LLEG, lineStart + leftMargin, topMargin + linePoint, lineFeed);
@@ -574,7 +574,7 @@ public class PrintMech implements Printable {
     private void printRLCrits(Graphics2D g2d) {
 
         float lineStart = 294;
-        float linePoint = 696.1f;
+        float linePoint = 696.5f;
         float lineFeed = 8.2f;
 
         printLocationCriticals(g2d, Mech.LOC_RLEG, lineStart + leftMargin, topMargin + linePoint, lineFeed);
