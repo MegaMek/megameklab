@@ -61,6 +61,7 @@ V 0.1.24-dev
 + New MM.jar (trunk rev. 10303) and compatibility adjustments for it
 + BA armor combo now filters based on tech level/type
 + Added option to add interface cockpit and gyro none
++ Fix .exe file creation for local builds
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
