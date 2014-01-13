@@ -60,8 +60,13 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         label.setText(split[0]);
         
         CriticalSlot cs; 
-        if (split.length > 1){
+        if (split.length > 2){
+            int eqId = Integer.parseInt(split[2]);
+            cs = new CriticalSlot(unit.getEquipment(eqId));
+        } else if (split.length > 1){
             cs = getCrit(Integer.parseInt(split[1]));
+        } else if (((String)value).equals("-Empty-")){
+            cs = null;
         } else {
             cs = getCrit(index);
         }

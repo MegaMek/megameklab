@@ -142,7 +142,8 @@ public class CriticalView extends IView {
                             if (m.isMechTurretMounted()) {
                                 critName.append(" (T)");
                             }
-                            critName.append(":" + slot);
+                            critName.append(":" + slot + ":"
+                                    + unit.getEquipmentNum(m));
                             critNames.add(critName.toString());
                         } catch (Exception ex) {
                             ex.printStackTrace();
