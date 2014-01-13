@@ -27,6 +27,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
@@ -106,7 +107,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
 
                 CriticalSlot cs = getCrit();
 
-                Mounted mount = getMounted();
+                final Mounted mount = getMounted();
                 if ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) {
                     changeWeaponFacing(!mount.isRearMounted());
                     return;
@@ -171,10 +172,11 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                             }
                         }
 
-                        if ((mount.getType() instanceof WeaponType)
-                                || ((mount.getType() instanceof MiscType) && mount
+                        if (!(unit instanceof BattleArmor)
+                                && ((mount.getType() instanceof WeaponType) || ((mount
+                                        .getType() instanceof MiscType) && mount
                                         .getType()
-                                        .hasFlag(MiscType.F_LIFTHOIST))) {
+                                        .hasFlag(MiscType.F_LIFTHOIST)))) {
                             if (!mount.isRearMounted()) {
                                 info = new JMenuItem("Make " + mount.getName()
                                         + " Rear Facing");
@@ -247,6 +249,35 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                         popup.add(info);
                     }
                 }
+                
+                if ((unit instanceof BattleArmor) && !mount.isDWPMounted()
+                        && ((BattleArmor)unit).canMountDWP()){
+                    JMenuItem info = new JMenuItem("Make detachable");
+                    info.setActionCommand(Integer.toString(location));
+                    info.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            mount.setDWPMounted(true);
+                            if (refresh != null) {
+                                refresh.refreshAll();
+                            }
+                        }
+                    });
+                    popup.add(info);
+                }
+                
+                if (unit instanceof BattleArmor && mount.isDWPMounted()){
+                    JMenuItem info = new JMenuItem("Make built-in");
+                    info.setActionCommand(Integer.toString(location));
+                    info.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            mount.setDWPMounted(false);
+                            if (refresh != null) {
+                                refresh.refreshAll();
+                            }
+                        }
+                    });
+                    popup.add(info);
+                }
 
                 if (UnitUtil.isArmorable(cs)
                         && ((UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL) || (UnitUtil
@@ -286,6 +317,17 @@ public class DropTargetCriticalList extends JList implements MouseListener {
     }
 
     public Mounted getMounted() {
+        // BattleArmor doesn't have a proper critical system like other units
+        //  so they are handled specially
+        if (unit instanceof BattleArmor){
+            // The names for this list should be of the form <eq>:<slot>:<eqId>
+            String[] split = ((String)this.getSelectedValue()).split(":");
+            if (split.length > 2){
+                int eqId = Integer.parseInt(split[2]);
+                return unit.getEquipment(eqId);
+            }
+            return null;
+        }
         CriticalSlot crit = getCrit();
         Mounted mount = null;
         try {
