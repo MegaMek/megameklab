@@ -202,33 +202,31 @@ public class UnitUtil {
     public static int getCritsUsed(Entity unit, EquipmentType eq) {
 
         boolean isMisc = eq instanceof MiscType;
+        double toReturn = eq.getCriticals(unit);
 
         if (isMisc
                 && eq.hasFlag(MiscType.F_PARTIAL_WING)
                 && TechConstants
                         .isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
-            return 3;
-        }
-        if (isMisc
+            toReturn = 3;
+        } else if (isMisc
                 && eq.hasFlag(MiscType.F_PARTIAL_WING)
                 && !TechConstants.isClan(eq.getTechLevel(unit
                         .getTechLevelYear()))) {
-            return 4;
-        }
-
-        if (isMisc
+            toReturn = 4;
+        } else  if (isMisc
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
                         || eq.hasFlag(MiscType.F_TALON) || eq
                             .hasFlag(MiscType.F_STEALTH))) {
-            return 2;
-        }
-
-        if (UnitUtil.isFixedLocationSpreadEquipment(eq) || UnitUtil.isTSM(eq)
+            toReturn = 2;
+        } else  if (UnitUtil.isFixedLocationSpreadEquipment(eq) || UnitUtil.isTSM(eq)
                 || UnitUtil.isArmorOrStructure(eq)) {
-            return 1;
+            toReturn = 1;
         }
-
-        return eq.getCriticals(unit);
+        if ((unit instanceof Mech) && ((Mech) unit).isSuperHeavy()) {
+            toReturn = Math.ceil(toReturn/2.0);
+        }
+        return (int)toReturn;
     }
 
     public static void removeMounted(Entity unit, Mounted mount) {
