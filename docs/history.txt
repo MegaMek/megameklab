@@ -62,6 +62,7 @@ V 0.1.24-dev
 + BA armor combo now filters based on tech level/type
 + Added option to add interface cockpit and gyro none
 + Fix .exe file creation for local builds
++ Iniial support for superheavy mechs
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
