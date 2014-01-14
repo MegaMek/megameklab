@@ -298,10 +298,14 @@ public class CriticalTransferHandler extends TransferHandler {
      * @param m
      * @return
      */
-    private boolean addEquipmentBA(BattleArmor ba, Mounted newMount){
+    private boolean addEquipmentBA(BattleArmor ba, Mounted newMount, int trooper) {
         if (TestBattleArmor.isMountLegal(ba, newMount, location)){
             newMount.setBaMountLoc(location);
-            changeMountStatus(newMount, BattleArmor.LOC_SQUAD, false);
+            if (newMount.getLocation() == BattleArmor.LOC_SQUAD){
+                changeMountStatus(newMount, newMount.getLocation(), false);
+            } else {
+                changeMountStatus(newMount, trooper, false);
+            }
             return true;
         } else {
             return false;
@@ -348,15 +352,29 @@ public class CriticalTransferHandler extends TransferHandler {
             return false;
         }
 
+        int trooper = 0;
         if (info.getComponent() instanceof DropTargetCriticalList) {
             DropTargetCriticalList list =
                     (DropTargetCriticalList) info.getComponent();
-            location = Integer.parseInt(list.getName());
+            if (unit instanceof BattleArmor){
+                String[] split = list.getName().split(":");
+                if (split.length != 2){
+                    return false;
+                }
+                location = Integer.parseInt(split[0]);
+                trooper = Integer.parseInt(split[1]);
+            } else {
+                location = Integer.parseInt(list.getName());
+            }
             Transferable t = info.getTransferable();
             try {
                 Mounted eq = unit.getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
-                if (location == eq.getLocation()) {
+                if (unit instanceof BattleArmor){
+                    if (location == eq.getBaMountLoc()){
+                        return false;
+                    }
+                } else if (location == eq.getLocation()) {
                     return false;
                 }
                 /*if (UnitUtil.isFixedLocationSpreadEquipment(eq.getType())) {
@@ -376,7 +394,7 @@ public class CriticalTransferHandler extends TransferHandler {
                 } else if (unit instanceof Mech){
                     return addEquipmentMech((Mech)unit, eq);
                 } else if (unit instanceof BattleArmor){
-                    return addEquipmentBA((BattleArmor)unit, eq);
+                    return addEquipmentBA((BattleArmor)unit, eq, trooper);
                 }
 
 
@@ -424,7 +442,13 @@ public class CriticalTransferHandler extends TransferHandler {
             return false;
         }
         // no transfer in the same location
-        if (Integer.parseInt(info.getComponent().getName()) == mounted.getLocation()) {
+        if (unit instanceof BattleArmor){
+            String[] split = info.getComponent().getName().split(":");
+            if (Integer.parseInt(split[0]) == mounted.getBaMountLoc()) {
+                return false;
+            }
+        } else if (Integer.parseInt(info.getComponent().getName()) == mounted
+                .getLocation()) {
             return false;
         }
         return true;

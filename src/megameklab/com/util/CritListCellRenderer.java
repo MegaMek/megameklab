@@ -26,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 
 import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.Mounted;
@@ -143,7 +144,12 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     }
 
     private int getCritLocation() {
-        return Integer.parseInt(list.getName());
+        if (unit instanceof BattleArmor){
+            String[] split = list.getName().split(":");
+            return Integer.parseInt(split[0]);
+        } else {
+            return Integer.parseInt(list.getName());
+        }
     }
 
 }

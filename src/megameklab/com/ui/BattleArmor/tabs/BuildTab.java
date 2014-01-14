@@ -19,13 +19,13 @@ package megameklab.com.ui.BattleArmor.tabs;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
 
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
@@ -37,6 +37,15 @@ import megameklab.com.util.RefreshListener;
 import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
+/**
+ * A component that creates a table for building the criticals of a unit.  This
+ * tab shows a table of the un-allocated equipment and displays criticals for 
+ * the whole <code>BattleArmor</code> squad.
+ * 
+ * @author Taharqa
+ * @author arlith
+ *
+ */
 public class BuildTab extends ITab implements ActionListener {
 
     /**
@@ -45,9 +54,23 @@ public class BuildTab extends ITab implements ActionListener {
     private static final long serialVersionUID = -6756011847500605874L;
 
     private RefreshListener refresh = null;
-    private CriticalView critView = null;
+    private ArrayList<CriticalView> critViews = new ArrayList<CriticalView>();
     private BuildView buildView = null;
+    
+    private JScrollPane critScrollPanel;
+    
+    /**
+     * Panel for displaying the critical trees for each trooper in the squad.
+     */
+    private JPanel critPanel = new JPanel();
+    /**
+     * Panel that displays autoFill and reset buttons.
+     */
+    
     private JPanel buttonPanel = new JPanel();
+    /**
+     * Panel that holds the <code>BuildView</code> and buttonPanel
+     */
     private JPanel mainPanel = new JPanel();
 
     private JButton autoFillButton = new JButton("Auto Fill");
@@ -61,8 +84,14 @@ public class BuildTab extends ITab implements ActionListener {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-
-        critView = new CriticalView(getBattleArmor(), true, refresh);
+        critPanel.setLayout(new BoxLayout(critPanel, BoxLayout.Y_AXIS));
+        critScrollPanel = new JScrollPane(critPanel);
+        
+        for (int i = 0; i < unit.getTroopers(); i++){
+            critViews.add(new CriticalView(getBattleArmor(), i + 1, true,
+                    refresh));
+            critPanel.add(critViews.get(i));
+        }
         buildView = new BuildView(getBattleArmor());
 
         mainPanel.add(buildView);
@@ -76,7 +105,7 @@ public class BuildTab extends ITab implements ActionListener {
 
         mainPanel.add(buttonPanel);
 
-        this.add(critView);
+        this.add(critScrollPanel);
         this.add(mainPanel);
         refresh();
     }
@@ -97,22 +126,15 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        critView.updateUnit(unit);
+        for (CriticalView critView : critViews){
+            critView.updateUnit(unit);
+            critView.refresh();
+        }
+        
         buildView.updateUnit(unit);
-        critView.refresh();
         buildView.refresh();
+        
         addAllActionListeners();
-    }
-
-    public JLabel createLabel(String text, Dimension maxSize) {
-
-        JLabel label = new JLabel(text, SwingConstants.TRAILING);
-
-        label.setMaximumSize(maxSize);
-        label.setMinimumSize(maxSize);
-        label.setPreferredSize(maxSize);
-
-        return label;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -148,7 +170,8 @@ public class BuildTab extends ITab implements ActionListener {
     private void resetCrits() {
         for (Mounted mount : unit.getEquipment()) {
             mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
-            UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE,
+                    Entity.LOC_NONE, false);
         }
         refresh.refreshAll();
     }
@@ -165,8 +188,9 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        critView.updateRefresh(refresh);
-
+        for (CriticalView critView : critViews){
+            critView.updateRefresh(refresh);
+        }
     }
 
     public void refreshAll() {

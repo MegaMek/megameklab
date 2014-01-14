@@ -27,6 +27,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
@@ -67,8 +68,10 @@ public class CriticalTableModel extends AbstractTableModel {
         this.tableType = tableType;
 
         if (tableType == WEAPONTABLE) {
-            longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXX" };
-            columnNames = new String[] { "Name", "Tons", "Crits", "Heat", "Loc"};
+            longValues = new String[] { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX",
+                    "XXXXXXXXX", "XXX" };
+            columnNames = new String[] { "Name", "Tons", "Crits", "Heat", 
+                    "Loc" };
         }
         this.unit = unit;
     }
@@ -94,7 +97,9 @@ public class CriticalTableModel extends AbstractTableModel {
         CriticalTableModel model = this;
         for (int i = 0; i < getColumnCount(); i++) {
             column = table.getColumnModel().getColumn(i);
-            comp = table.getDefaultRenderer(model.getColumnClass(i)).getTableCellRendererComponent(table, longValues[i], false, false, 0, i);
+            comp = table.getDefaultRenderer(model.getColumnClass(i))
+                    .getTableCellRendererComponent(table, longValues[i], false,
+                            false, 0, i);
             cellWidth = comp.getPreferredSize().width;
             column.setPreferredWidth(Math.max(headerWidth, cellWidth));
         }
@@ -160,10 +165,13 @@ public class CriticalTableModel extends AbstractTableModel {
         private static final long serialVersionUID = 149542030113164984L;
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            //Component d = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus, int row,
+                int column) {
 
-            JLabel c = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);;
+            JLabel c = (JLabel) super.getTableCellRendererComponent(table,
+                    value, isSelected, hasFocus, row, column);
+            
             c.setOpaque(true);
             if ((crits.size() < row) || (row < 0)) {
                 return c;
@@ -173,6 +181,15 @@ public class CriticalTableModel extends AbstractTableModel {
             }
 
             Mounted mount = sortedEquipment[row];
+            if (unit instanceof BattleArmor && column == NAME){
+                String modifier;
+                if ( mount.getLocation() != BattleArmor.LOC_SQUAD) {
+                    modifier = " (Personal)";
+                } else {
+                    modifier = " (Squad)";
+                }
+                c.setText(c.getText() + modifier);
+            }
             c.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
             c.setHorizontalAlignment(getAlignment(column));
 
@@ -206,7 +223,8 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public void removeMounted(int row) {
-        UnitUtil.removeMounted(unit, (Mounted) getValueAt(row, CriticalTableModel.EQUIPMENT));
+        UnitUtil.removeMounted(unit,
+                (Mounted) getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
 
     public Vector<Mounted> getCrits() {

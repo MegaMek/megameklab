@@ -46,6 +46,14 @@ import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
 
+/**
+ * A component that display a table listing all of the unallocated equipment
+ * for the squad and allows dragging of the equipment to criticals to mount it.
+ * 
+ * @author Taharqa
+ * @author arlith
+ *
+ */
 public class BuildView extends IView implements ActionListener, MouseListener {
 
     /**
@@ -64,7 +72,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         super(unit);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(this.unit,
+                CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
@@ -74,7 +83,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentList.initColumnSizes(equipmentTable);
 
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
-            equipmentTable.getColumnModel().getColumn(i).setCellRenderer(equipmentList.getRenderer());
+            equipmentTable.getColumnModel().getColumn(i)
+                    .setCellRenderer(equipmentList.getRenderer());
         }
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -99,18 +109,18 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
         for (Mounted mount : unit.getMisc()) {
-            if ((mount.getLocation() == BattleArmor.MOUNT_LOC_NONE)) {
+            if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
                 masterEquipmentList.add(mount);
             }
         }
         for (Mounted mount : unit.getWeaponList()) {
-            if ((mount.getLocation() == BattleArmor.MOUNT_LOC_NONE) 
+            if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) 
                     && UnitUtil.isBattleArmorWeapon(mount.getType(), unit)) {
                 masterEquipmentList.add(mount);
             }
         }
         for (Mounted mount : unit.getAmmo()) {
-            if (mount.getLocation() == BattleArmor.MOUNT_LOC_NONE) {
+            if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -223,7 +233,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             JMenuItem item;
 
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-            Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
+            final Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
                     selectedRow, CriticalTableModel.EQUIPMENT);
 
             final String[] locNames = BattleArmor.MOUNT_LOC_NAMES;
@@ -236,19 +246,40 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 }
             } 
             
-            // Add a menu item for each potential location
-            for (Integer location: validLocs) {
-                if (UnitUtil.isValidLocation(unit, eq.getType(), location)) {
-                    item = new JMenuItem("Add to " + locNames[location]);
-
-                    final int loc = location;
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            jMenuLoadComponent_actionPerformed(loc, selectedRow);
-                        }
-                    });
-                    popup.add(item);
+            if (eq.getLocation() == BattleArmor.LOC_SQUAD){
+                // Add a menu item for each potential location
+                for (Integer location: validLocs) {
+                    if (UnitUtil.isValidLocation(unit, eq.getType(), location)) {
+                        item = new JMenuItem("Add to " + locNames[location]);
+    
+                        final int loc = location;
+                        item.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                mountEquipmentInLocation(loc, selectedRow);
+                            }
+                        });
+                        popup.add(item);
+                    }
                 }
+            
+            
+                item = new JMenuItem("Make individual weapon");
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        eq.setLocation(BattleArmor.LOC_TROOPER_1);
+                        ((BuildTab) getParent().getParent()).refreshAll();
+                    }
+                });
+                popup.add(item);
+            } else {
+                item = new JMenuItem("Make squad weapon");
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        eq.setLocation(BattleArmor.LOC_SQUAD);
+                        ((BuildTab) getParent().getParent()).refreshAll();
+                    }
+                });
+                popup.add(item);
             }
             popup.show(this, e.getX(), e.getY());
         }
@@ -268,8 +299,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
      * @param location
      * @param selectedRow
      */
-    private void jMenuLoadComponent_actionPerformed(int location, 
-            int selectedRow) {
+    private void mountEquipmentInLocation(int location, int selectedRow) {
         Mounted eq = (Mounted) 
                 equipmentTable.getModel().getValueAt(selectedRow, 
                         CriticalTableModel.EQUIPMENT);
@@ -278,6 +308,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        
         UnitUtil.changeMountStatus(unit, eq, BattleArmor.LOC_SQUAD, -1, false);
 
         // go back up to grandparent build tab and fire a full refresh.
