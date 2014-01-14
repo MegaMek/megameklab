@@ -145,7 +145,12 @@ public class CriticalTableModel extends AbstractTableModel {
             }
             return new Integer(0);
         case LOCATION:
-            return unit.getLocationAbbr(crit.getLocation());
+            if (unit instanceof BattleArmor){
+                return ((BattleArmor) unit).getBaMountLocAbbr(crit
+                        .getBaMountLoc());
+            } else {
+                return unit.getLocationAbbr(crit.getLocation());
+            }
         }
         return "";
     }
