@@ -67,7 +67,7 @@ public class BuildTab extends ITab implements ActionListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         critView = new CriticalView(unit, true, refresh);
-        buildView = new BuildView(unit);
+        buildView = new BuildView(unit, refresh);
 
         mainPanel.add(buildView);
 
@@ -175,6 +175,7 @@ public class BuildTab extends ITab implements ActionListener {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
         critView.updateRefresh(refresh);
+        buildView.addRefreshedListener(refresh);
     }
 
     public void addCrit(Mounted mount) {

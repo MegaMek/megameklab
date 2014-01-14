@@ -64,7 +64,7 @@ public class BuildTab extends ITab implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
 
         critView = new CriticalView(getMech(), true, refresh);
-        buildView = new BuildView(getMech());
+        buildView = new BuildView(getMech(), refresh);
 
         autoFillButton.setMnemonic('A');
         autoFillButton.setActionCommand(AUTOFILLCOMMAND);
@@ -183,7 +183,7 @@ public class BuildTab extends ITab implements ActionListener {
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
         critView.updateRefresh(refresh);
-
+        buildView.addRefreshedListener(refresh);
     }
 
     public void refreshAll() {
