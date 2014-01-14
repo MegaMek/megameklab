@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -31,6 +32,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
 
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -81,10 +84,13 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentTable.setTransferHandler(cth);
 
         equipmentList.initColumnSizes(equipmentTable);
-
+        TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
-            equipmentTable.getColumnModel().getColumn(i)
-                    .setCellRenderer(equipmentList.getRenderer());
+            column = equipmentTable.getColumnModel().getColumn(i);
+            if(i == 0) {
+                column.setPreferredWidth(350);
+            }
+            column.setCellRenderer(equipmentList.getRenderer());
         }
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -93,13 +99,17 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         // getHeight()));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
+        equipmentScroll.setMinimumSize(new java.awt.Dimension(450, 450));
+        equipmentScroll.setPreferredSize(new java.awt.Dimension(450, 450));
 
         mainPanel.add(equipmentScroll);
         equipmentTable.addMouseListener(this);
 
         this.add(mainPanel);
         // loadEquipmentTable();
-
+        setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Unallocated Equipment", 
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
