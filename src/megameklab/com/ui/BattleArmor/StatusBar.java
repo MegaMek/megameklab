@@ -17,16 +17,25 @@
 package megameklab.com.ui.BattleArmor;
 
 import java.awt.Color;
+import java.awt.FileDialog;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.io.File;
+import java.text.DecimalFormat;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 
 import megamek.common.BattleArmor;
+import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestBattleArmor;
-import megamek.common.verifier.TestEntity;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
-import megameklab.com.util.SpringLayoutHelper;
+import megameklab.com.util.ImageHelper;
+import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class StatusBar extends ITab {
@@ -36,27 +45,66 @@ public class StatusBar extends ITab {
      */
     private static final long serialVersionUID = -6754327753693500675L;
 
+    private JButton btnValidate = new JButton("Validate Unit");
+    private JButton btnFluffImage = new JButton("Set Fluff Image");
+    
     private JPanel tonnagePanel = new JPanel();
     private JPanel movementPanel = new JPanel();
     private JPanel bvPanel = new JPanel();
+    
     private JLabel move = new JLabel();
     private JLabel bvLabel = new JLabel();
     private JLabel tons = new JLabel();
-    // private EntityVerifier entityVerifier = new EntityVerifier(new
-    // File("data/BattleArmorfiles/UnitVerifierOptions.xml"));
-    private TestEntity testEntity = null;
+    private JLabel cost = new JLabel();
+    
+    private EntityVerifier entityVerifier = new EntityVerifier(new File(
+            "data/BattleArmorfiles/UnitVerifierOptions.xml"));
+    
+    private TestBattleArmor testBA = null;
+    private DecimalFormat formatter;
+    private JFrame parentFrame;
 
-    public StatusBar(BattleArmor unit) {
+    private RefreshListener refresh;
+    public StatusBar(BattleArmor unit, MegaMekLabMainUI parent) {
         this.unit = unit;
+        
+        formatter = new DecimalFormat();
+        btnValidate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UnitUtil.showValidation(getBattleArmor(), getParentFrame());
+            }
+        });
+        btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                getFluffImage();
+            }
+        });
+        
 
-        // testEntity = new TestBattleArmor(getBattleArmor(),
-        // entityVerifier.BattleArmorOption, null);
-        setLayout(new SpringLayout());
+        setLayout(new GridBagLayout());
         this.add(movementPanel());
         this.add(bvPanel());
         this.add(tonnagePanel());
 
-        SpringLayoutHelper.setupSpringGrid(this, 4);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(5,2,2,30);
+        gbc.anchor = GridBagConstraints.WEST;
+        this.add(btnValidate, gbc);
+        gbc.gridx = 1;
+        this.add(btnFluffImage, gbc);
+        gbc.gridx = 2;
+        this.add(movementPanel, gbc);
+        gbc.gridx = 3;
+        this.add(bvPanel, gbc);
+        gbc.gridx = 4;
+        this.add(tonnagePanel, gbc);
+        gbc.gridx = 5;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        this.add(cost, gbc);
+        
         refresh();
     }
 
@@ -90,17 +138,17 @@ public class StatusBar extends ITab {
         float maxKilos = getBattleArmor().getTrooperWeight();
         float currentKilos;
         int bv = getBattleArmor().calculateBattleValue();
+        int currentCost = (int)Math.round(getBattleArmor().getCost(false));
 
-        // testEntity = new TestMech(getBattleArmor(),
-        // entityVerifier.BattleArmorOption, null);
-
-        testEntity = new TestBattleArmor(getBattleArmor(), null, null);
-        currentKilos = testEntity.calculateWeight();
+        testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption,
+                null);
+        currentKilos = testBA.calculateWeight(BattleArmor.LOC_SQUAD);
         currentKilos += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
 
         tons.setText("Suit Weight: " + String.format("%1$.3f",currentKilos) + 
                 "/" + maxKilos);
-        tons.setToolTipText("Current Weight/Max Weight");
+        tons.setToolTipText("This represents the weight of all squad-level " +
+                "equipment, it does not count individual equipment");
         if (currentKilos > maxKilos) {
             tons.setForeground(Color.red);
         } else {
@@ -113,6 +161,40 @@ public class StatusBar extends ITab {
         move.setText("Movement: " + walk + "/" + jump);
         move.setToolTipText("Walk/Jump MP");
 
+        cost.setText("Squad Cost: " + formatter.format(currentCost) + " C-bills");
+    }
+    
+    private void getFluffImage() {
+        // copied from structureTab
+        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
+                FileDialog.LOAD);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath()
+                + File.separatorChar + ImageHelper.imageMech
+                + File.separatorChar);
+        fDialog.setLocationRelativeTo(this);
+
+        fDialog.setVisible(true);
+
+        if (fDialog.getFile() != null) {
+            String relativeFilePath = new File(fDialog.getDirectory()
+                    + fDialog.getFile()).getAbsolutePath();
+            relativeFilePath = "."
+                    + File.separatorChar
+                    + relativeFilePath
+                            .substring(new File(System.getProperty("user.dir")
+                                    .toString()).getAbsolutePath().length() + 1);
+            getAero().getFluff().setMMLImagePath(relativeFilePath);
+        }
+        refresh.refreshPreview();
+        return;
+    }
+
+    private JFrame getParentFrame() {
+        return parentFrame;
+    }
+    
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
     }
 
 }

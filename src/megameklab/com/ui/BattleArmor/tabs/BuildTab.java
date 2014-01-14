@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -143,6 +144,7 @@ public class BuildTab extends ITab implements ActionListener {
             critViews.add(new CriticalView(getBattleArmor(), i + 1, true,
                     refresh));
             critPanel.add(critViews.get(i));
+            critPanel.add(Box.createVerticalStrut(20));
         }
     }
 
