@@ -245,6 +245,11 @@ public class CriticalView extends IView {
             leftPanel.repaint();
             rightPanel.repaint();
             aftPanel.repaint();
+            
+            nosePanel.invalidate();
+            leftPanel.invalidate();
+            rightPanel.invalidate();
+            aftPanel.invalidate();
         }
     }
 
