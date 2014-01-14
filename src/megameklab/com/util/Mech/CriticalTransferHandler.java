@@ -75,7 +75,8 @@ public class CriticalTransferHandler extends TransferHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if ((source instanceof DropTargetCriticalList) && (mounted.getLocation() != Entity.LOC_NONE)) {
+        if ((source instanceof DropTargetCriticalList) 
+                && (mounted.getLocation() != Entity.LOC_NONE)) {
             DropTargetCriticalList list = (DropTargetCriticalList)source;
             int loc;
             if (unit instanceof BattleArmor){

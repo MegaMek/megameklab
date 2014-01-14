@@ -49,7 +49,7 @@ import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
-import megameklab.com.util.Mech.CriticalTransferHandler;
+import megameklab.com.util.CriticalTransferHandler;
 
 /**
  * This IView shows all the equipment that's not yet been assigned a location
@@ -69,15 +69,17 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
     private int engineHeatSinkCount = 0;
+    
+    CriticalTransferHandler cth;
 
-    public BuildView(Aero unit) {
+    public BuildView(Aero unit, RefreshListener refresh) {
         super(unit);
 
         equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        CriticalTransferHandler cth = new CriticalTransferHandler(unit, null);
+        cth = new CriticalTransferHandler(unit, refresh);
         equipmentTable.setTransferHandler(cth);
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
@@ -95,6 +97,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new java.awt.Dimension(400, 400));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(400, 400));
+        equipmentScroll.setTransferHandler(cth);
 
         equipmentTable.addMouseListener(this);
 
@@ -106,6 +109,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     public void addRefreshedListener(RefreshListener l) {
+        cth.addRefreshListener(l);
     }
 
     private void loadEquipmentTable() {

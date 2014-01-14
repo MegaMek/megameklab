@@ -221,6 +221,7 @@ public class BuildTab extends ITab implements ActionListener {
         for (CriticalView critView : critViews){
             critView.updateRefresh(refresh);
         }
+        buildView.addRefreshedListener(refresh);
     }
 
     public void refreshAll() {

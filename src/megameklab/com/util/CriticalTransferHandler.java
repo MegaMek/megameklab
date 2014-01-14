@@ -83,11 +83,13 @@ public class CriticalTransferHandler extends TransferHandler {
             if (unit instanceof BattleArmor){
                 mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
             } else {
+                UnitUtil.removeCriticals(unit, mount);
                 changeMountStatus(mount, Entity.LOC_NONE, false);
             }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            return true;
         }
         return false;
     }
@@ -112,7 +114,7 @@ public class CriticalTransferHandler extends TransferHandler {
     public int getSourceActions(JComponent c) {
         return TransferHandler.LINK;
     }
-
+    
     private void changeMountStatus(Mounted eq, int location, boolean rear) {
         changeMountStatus(eq, location, -1, rear);
     }
@@ -134,6 +136,10 @@ public class CriticalTransferHandler extends TransferHandler {
         if (refresh != null) {
             refresh.refreshAll();
         }
+    }
+    
+    public void addRefreshListener(RefreshListener r){
+        refresh = r;
     }
 
 }
