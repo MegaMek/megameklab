@@ -65,6 +65,7 @@ V 0.1.24-dev
 + Iniial support for superheavy mechs
 + Adjusted layout of Vehicle construction, to make the status bar more 
     consistent with other views
++ Adjusted spacing in Aero Build and Equipment Tabs
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
