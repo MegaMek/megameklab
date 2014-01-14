@@ -305,7 +305,7 @@ public class CriticalTransferHandler extends TransferHandler {
      * @return
      */
     private boolean addEquipmentBA(BattleArmor ba, Mounted newMount, int trooper) {
-        if (TestBattleArmor.isMountLegal(ba, newMount, location)){
+        if (TestBattleArmor.isMountLegal(ba, newMount, location, trooper)){
             newMount.setBaMountLoc(location);
             if (newMount.getLocation() == BattleArmor.LOC_SQUAD){
                 changeMountStatus(newMount, newMount.getLocation(), false);
@@ -377,7 +377,8 @@ public class CriticalTransferHandler extends TransferHandler {
                 Mounted eq = unit.getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
                 if (unit instanceof BattleArmor){
-                    if (location == eq.getBaMountLoc()){
+                    if (location == eq.getBaMountLoc() 
+                            && trooper == eq.getLocation()){
                         return false;
                     }
                 } else if (location == eq.getLocation()) {

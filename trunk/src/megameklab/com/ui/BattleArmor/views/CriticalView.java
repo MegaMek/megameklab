@@ -217,6 +217,10 @@ public class CriticalView extends IView {
             rightPanel.add(Box.createVerticalStrut(8));
             bodyPanel.add(Box.createVerticalStrut(8));
             
+            leftPanel.invalidate();
+            leftPanel.invalidate();
+            rightPanel.invalidate();
+            
             bodyPanel.repaint();
             leftPanel.repaint();
             rightPanel.repaint();
