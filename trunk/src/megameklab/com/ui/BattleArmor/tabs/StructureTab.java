@@ -88,9 +88,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private JTextField txtPrimary = new JTextField("None");
     private JTextField txtSecondary = new JTextField("None");
 
-    JSpinner walkMP;
-    JSpinner jumpMP;
-    JSpinner armorPoints;
+    private JSpinner walkMP;
+    private JSpinner jumpMP;
+    private JSpinner numTroopers; 
+    private JSpinner armorPoints;
 
 
 	public StructureTab(BattleArmor unit) {
@@ -111,7 +112,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         Dimension labelSize = new Dimension(110, 25);
         Dimension spinnerSize = new Dimension(55, 25);
 
-
+        // General IS BA squads are sized 4, Clan 5, and some IS squads 6 (WOB)
+        //  I found no rules for min or max sizes, so I'm going to allow 
+        //  selection of 4, 5 and 6
+        numTroopers = new JSpinner(new SpinnerNumberModel(4, 4, 6, 1));
+        ((JSpinner.DefaultEditor) numTroopers.getEditor()).setSize(spinnerSize);
+        ((JSpinner.DefaultEditor) numTroopers.getEditor())
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) numTroopers.getEditor())
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) numTroopers.getEditor())
+                .setMinimumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) numTroopers.getEditor()).getTextField()
+                .setEditable(false);
+        
         txtPrimary.setEditable(false);
         txtSecondary.setEditable(false);
 
@@ -155,6 +169,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         basicPanel.add(createLabel("Tech Level:", labelSize), gbc);
         gbc.gridx = 1;
         basicPanel.add(techLevel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        basicPanel.add(createLabel("Squad Size:", labelSize), gbc);
+        gbc.gridx = 1;
+        basicPanel.add(numTroopers, gbc);
 
         walkMP = new JSpinner(new SpinnerNumberModel(1, getBattleArmor().getMinimumWalkMP(), getBattleArmor().getMaximumWalkMP(), 1));
         ((JSpinner.DefaultEditor) walkMP.getEditor()).setSize(spinnerSize);
@@ -452,6 +471,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         source.addKeyListener(this);
         walkMP.addChangeListener(this);
         jumpMP.addChangeListener(this);
+        numTroopers.addChangeListener(this);
         armorPoints.addChangeListener(this);
     }
 
@@ -468,6 +488,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         source.removeKeyListener(this);
         walkMP.removeChangeListener(this);
         jumpMP.removeChangeListener(this);
+        numTroopers.removeChangeListener(this);
         armorPoints.removeChangeListener(this);
     }
 
@@ -542,6 +563,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         int level = TechConstants.getOppositeTechLevel(getBattleArmor().getTechLevel());
                         getBattleArmor().setTechLevel(level);
                         getBattleArmor().setArmorTechLevel(level);
+                        getBattleArmor().setTroopers(5);
+                        numTroopers.setValue(5);
                     }
                     getBattleArmor().setMixedTech(false);
                 } else if ((techType.getSelectedIndex() == 0) && (getBattleArmor().isClan() || getBattleArmor().isMixedTech())) {
@@ -555,6 +578,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         int level = TechConstants.getOppositeTechLevel(getInfantry().getTechLevel());
                         getBattleArmor().setTechLevel(level);
                         getBattleArmor().setArmorTechLevel(level);
+                        getBattleArmor().setTroopers(4);
+                        numTroopers.setValue(4);
                     }
                     getBattleArmor().setMixedTech(false);
                 } else if ((techType.getSelectedIndex() == 2) && (!getBattleArmor().isMixedTech() || getBattleArmor().isClan())) {
@@ -581,6 +606,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                             unit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
                         }
                     }
+                    getBattleArmor().setTroopers(4);
+                    numTroopers.setValue(4);
                     getBattleArmor().setMixedTech(true);
                 } else if ((techType.getSelectedIndex() == 3) && (!getBattleArmor().isMixedTech() || !getBattleArmor().isClan())) {
                     techLevel.removeAllItems();
@@ -606,6 +633,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                             unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
                         }
                     }
+                    getBattleArmor().setTroopers(5);
+                    numTroopers.setValue(5);
                     getBattleArmor().setMixedTech(true);
                 } else {
                     addAllActionListeners();
@@ -662,7 +691,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
     @Override
     public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -689,6 +717,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 int value = (Integer) armorPoints.getValue();
                 for(int i = 0; i < unit.locations(); i++) {
                     unit.initializeArmor(value, i);
+                }
+            } else if (spinner.equals(numTroopers)){
+                int value = (Integer) numTroopers.getValue();
+                if (value != getBattleArmor().getTroopers()){
+                    getBattleArmor().setTroopers(value);
                 }
             }
         }

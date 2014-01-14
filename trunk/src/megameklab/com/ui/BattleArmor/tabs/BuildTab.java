@@ -21,10 +21,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 
 import megamek.common.BattleArmor;
@@ -86,12 +88,15 @@ public class BuildTab extends ITab implements ActionListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         critPanel.setLayout(new BoxLayout(critPanel, BoxLayout.Y_AXIS));
         critScrollPanel = new JScrollPane(critPanel);
+        critScrollPanel.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        critScrollPanel.setBorder(BorderFactory.createEmptyBorder());
+        critScrollPanel.setMinimumSize(new java.awt.Dimension(400, 500));
+        critScrollPanel.setPreferredSize(new java.awt.Dimension(400, 500));
+        critScrollPanel.getVerticalScrollBar().setUnitIncrement(20);
         
-        for (int i = 0; i < unit.getTroopers(); i++){
-            critViews.add(new CriticalView(getBattleArmor(), i + 1, true,
-                    refresh));
-            critPanel.add(critViews.get(i));
-        }
+        createCriticalViews();
+        
         buildView = new BuildView(getBattleArmor());
 
         mainPanel.add(buildView);
@@ -123,9 +128,33 @@ public class BuildTab extends ITab implements ActionListener {
         masterPanel.setMaximumSize(maxSize);
         return masterPanel;
     }
+    
+    /**
+     * Unlike other units, BattleArmor have multiple suits in the squad that
+     * have crits that can be assigned.  Different types of BattleArmor squads
+     * have different numbers of troops, so instead of one 
+     * <code>CriticalView</code> we have several.  If the squad size changes,
+     * we will need to adjust the number of <code>CriticalView</code>s.  This
+     * method will create the proper number of <code>CriticalView</code>s.
+     */
+    private void createCriticalViews(){
+        critViews.clear();
+        for (int i = 0; i < ((BattleArmor)unit).getTroopers(); i++){
+            critViews.add(new CriticalView(getBattleArmor(), i + 1, true,
+                    refresh));
+            critPanel.add(critViews.get(i));
+        }
+    }
 
     public void refresh() {
         removeAllActionListeners();
+        
+        // We need to have a CritView for each trooper
+        if (critViews.size() != ((BattleArmor)unit).getTroopers()){
+            critPanel.removeAll();
+            createCriticalViews();
+        }
+        
         for (CriticalView critView : critViews){
             critView.updateUnit(unit);
             critView.refresh();
