@@ -90,6 +90,7 @@ public class BuildTab extends ITab implements ActionListener {
         critView.updateUnit(unit);
         buildView.updateUnit(unit);
         critView.refresh();
+        critView.validate();
         buildView.refresh();
         addAllActionListeners();
     }
