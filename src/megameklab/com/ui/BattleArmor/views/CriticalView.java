@@ -115,21 +115,24 @@ public class CriticalView extends IView {
         gbc.gridwidth = gbc.gridheight = 1;
         leftPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(),
-                BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_LARM]));
+                BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_LARM],
+                TitledBorder.CENTER, TitledBorder.TOP));
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         suitPanel.add(leftPanel,gbc);
 
         gbc.gridx++;
         bodyPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(),
-                BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_BODY]));
+                BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_BODY],
+                TitledBorder.CENTER, TitledBorder.TOP));
         bodyPanel.setLayout(new BoxLayout(bodyPanel, BoxLayout.Y_AXIS));
         suitPanel.add(bodyPanel,gbc);
         
         gbc.gridx++;
         rightPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(),
-                BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_RARM]));
+                BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_RARM],
+                TitledBorder.CENTER, TitledBorder.TOP));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         suitPanel.add(rightPanel,gbc);
         
