@@ -21,6 +21,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -77,7 +78,9 @@ public class BuildTab extends ITab implements ActionListener {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weighty = 0.0;
         mainPanel.add(buttonPanel, gbc);
+        this.add(Box.createHorizontalStrut(100));
         this.add(critView);
+        this.add(Box.createHorizontalStrut(200));
         this.add(mainPanel);
         refresh();
     }

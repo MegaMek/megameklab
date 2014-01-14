@@ -73,6 +73,8 @@ public class CriticalView extends IView {
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
+        mainPanel.add(Box.createVerticalStrut(50));
+        
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));       
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
@@ -108,7 +110,6 @@ public class CriticalView extends IView {
         mainPanel.add(bottomPanel);
 
         this.add(mainPanel);
-
     }
 
     public void updateRefresh(RefreshListener refresh) {
