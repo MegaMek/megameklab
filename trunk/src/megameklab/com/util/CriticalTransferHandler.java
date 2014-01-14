@@ -22,9 +22,11 @@ import java.awt.datatransfer.Transferable;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
+import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
@@ -57,9 +59,11 @@ public class CriticalTransferHandler extends TransferHandler {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
-                Mounted mount = unit.getEquipment(Integer.parseInt((String) t.getTransferData(DataFlavor.stringFlavor)));
+                Mounted mount = unit.getEquipment(Integer.parseInt((String) t
+                        .getTransferData(DataFlavor.stringFlavor)));
                 if (!unit.addCritical(location, new CriticalSlot(mount))) {
-                    JOptionPane.showMessageDialog(null, "Location Full", "Location Full", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Location Full",
+                            "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     changeMountStatus(mount, location, false);
                 }
@@ -68,6 +72,22 @@ public class CriticalTransferHandler extends TransferHandler {
             }
 
             return true;
+        }
+        if ((info.getComponent() instanceof JTable)
+                || (info.getComponent() instanceof JScrollPane)) {
+            try {
+            Transferable t = info.getTransferable();
+            Mounted mount = unit.getEquipment(Integer.parseInt((String) t
+                    .getTransferData(DataFlavor.stringFlavor)));
+            
+            if (unit instanceof BattleArmor){
+                mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
+            } else {
+                changeMountStatus(mount, Entity.LOC_NONE, false);
+            }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         return false;
     }

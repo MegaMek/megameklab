@@ -101,7 +101,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new java.awt.Dimension(450, 450));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(450, 450));
-
+        equipmentScroll.setTransferHandler(cth);
+        
         mainPanel.add(equipmentScroll);
         equipmentTable.addMouseListener(this);
 
