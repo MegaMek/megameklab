@@ -39,23 +39,47 @@ import megameklab.com.util.Mech.DropTargetCriticalList;
 public class CriticalView extends IView {
 
     /**
-     *
+     *  Component for displaying information related to criticals on a suit of
+     *  <code>BattleArmor</code>.  This will display a list of criticals for
+     *  each location and what equipment is currently located there.  There 
+     *  should be a <code>CriticalView</code> for each trooper in the squad.
      */
     private static final long serialVersionUID = -6960975031034494605L;
 
-    private JPanel squadPanel = new JPanel();
+    /**
+     * JPanel that holds all the components
+     */
+    private JPanel suitPanel = new JPanel();
     
+    /**
+     * JPanel for all of the left arm components
+     */
     private JPanel leftPanel = new JPanel();
+    /**
+     * JPanel for all of hte right arm components
+     */
     private JPanel rightPanel = new JPanel();
+    /**
+     * JPanel for all of the body components
+     */
     private JPanel bodyPanel = new JPanel();
     
     private RefreshListener refresh;
 
     private boolean showEmpty = false;
+    
     private CriticalSuit critSuit;
     
-    public CriticalView(BattleArmor unit, boolean showEmpty, RefreshListener refresh) {
+    /**
+     * Keeps track of which trooper in the squad this <code>CriticalView</code>
+     * is for.
+     */
+    int trooper;
+    
+    public CriticalView(BattleArmor unit, int t, boolean showEmpty,
+            RefreshListener refresh) {
         super(unit);
+        trooper = t;
         critSuit = new CriticalSuit(unit);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
@@ -63,32 +87,32 @@ public class CriticalView extends IView {
         JPanel mainPanel = new JPanel();
 
         mainPanel.setOpaque(false);
-        squadPanel.setOpaque(false);
+        suitPanel.setOpaque(false);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        squadPanel.setLayout(new BoxLayout(squadPanel, BoxLayout.X_AXIS));
-        squadPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Trooper", TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+        suitPanel.setLayout(new BoxLayout(suitPanel, BoxLayout.X_AXIS));
+        suitPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Trooper " + trooper,
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
 
         leftPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(),
                 BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_LARM]));
-        squadPanel.add(leftPanel);
+        suitPanel.add(leftPanel);
 
         bodyPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(),
                 BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_BODY]));
-        squadPanel.add(bodyPanel);
+        suitPanel.add(bodyPanel);
         
         rightPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(),
                 BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_RARM]));
-        squadPanel.add(rightPanel);
+        suitPanel.add(rightPanel);
         
         
-        mainPanel.add(squadPanel);
+        mainPanel.add(suitPanel);
         this.add(mainPanel);
     }
 
@@ -103,6 +127,8 @@ public class CriticalView extends IView {
         bodyPanel.removeAll();
         
         for (Mounted m : unit.getEquipment()){
+            if (m.getLocation() == BattleArmor.LOC_SQUAD 
+                    || m.getLocation() == trooper)
             critSuit.addMounted(m.getBaMountLoc(), m);
         }
 
@@ -132,8 +158,8 @@ public class CriticalView extends IView {
                             }
                             StringBuffer critName = 
                                     new StringBuffer(m.getName());
-                            if (critName.length() > 25) {
-                                critName.setLength(25);
+                            if (critName.length() > 45) {
+                                critName.setLength(45);
                                 critName.append("...");
                             }
                             if (m.isDWPMounted()) {
@@ -160,7 +186,7 @@ public class CriticalView extends IView {
                 criticalSlotList.setSelectionMode(
                         ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
-                criticalSlotList.setName(Integer.toString(location));
+                criticalSlotList.setName(location + ":" + trooper);
                 criticalSlotList.setBorder(BorderFactory.createEtchedBorder(
                         Color.WHITE.brighter(), Color.BLACK.darker()));
                 
@@ -175,8 +201,6 @@ public class CriticalView extends IView {
                         bodyPanel.add(criticalSlotList);
                         break;
                 }
-                    
-                
             }
             
             // Hide the arm panels if we are a quad
@@ -199,10 +223,10 @@ public class CriticalView extends IView {
         }
     }
     
-    /*
+    /**
      * Since BattleArmor is setup in a squad, the standard CriticalSlot system
      * isn't used.  For construction purposes, we keep track of criticals.
-     */
+     **/
     private class CriticalSuit {
         
         //store critical slots just like an entity

@@ -70,7 +70,12 @@ public class DropTargetCriticalList extends JList implements MouseListener {
     private void changeMountStatus(Mounted eq, int location,
             int secondaryLocation, boolean rear) {
 
-        UnitUtil.changeMountStatus(unit, eq, location, secondaryLocation, rear);
+        if (unit instanceof BattleArmor){
+            eq.setBaMountLoc(location);
+        } else {
+            UnitUtil.changeMountStatus(unit, eq, location, secondaryLocation,
+                    rear);
+        }
 
         if (refresh != null) {
             refresh.refreshAll();
@@ -395,6 +400,13 @@ public class DropTargetCriticalList extends JList implements MouseListener {
         if (mounted == null) {
             return;
         }
+        
+        // BattleArmor doens't use the crit system, we we can just remove the
+        //  mounted and be done
+        if (unit instanceof BattleArmor){
+            changeMountStatus(mounted, BattleArmor.MOUNT_LOC_NONE, false);
+            return;
+        }
 
         UnitUtil.removeCriticals(unit, mounted);
 
@@ -431,7 +443,12 @@ public class DropTargetCriticalList extends JList implements MouseListener {
     }
 
     private int getCritLocation() {
-        return Integer.parseInt(getName());
+        if (unit instanceof BattleArmor){
+            String[] split = getName().split(":");
+            return Integer.parseInt(split[0]);
+        } else {
+            return Integer.parseInt(getName());
+        }
     }
 
     private void addHand(int location) {
