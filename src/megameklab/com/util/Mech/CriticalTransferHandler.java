@@ -77,7 +77,13 @@ public class CriticalTransferHandler extends TransferHandler {
         }
         if ((source instanceof DropTargetCriticalList) && (mounted.getLocation() != Entity.LOC_NONE)) {
             DropTargetCriticalList list = (DropTargetCriticalList)source;
-            int loc = Integer.parseInt(list.getName());
+            int loc;
+            if (unit instanceof BattleArmor){
+                String[] split = list.getName().split(":");
+                loc = Integer.parseInt(split[0]);
+            } else {
+                loc = Integer.parseInt(list.getName());
+            }
             if (loc == mounted.getLocation()) {
                 return;
             }
@@ -444,7 +450,11 @@ public class CriticalTransferHandler extends TransferHandler {
         // no transfer in the same location
         if (unit instanceof BattleArmor){
             String[] split = info.getComponent().getName().split(":");
-            if (Integer.parseInt(split[0]) == mounted.getBaMountLoc()) {
+            if (split.length != 2){
+                return false;
+            }
+            if (Integer.parseInt(split[0]) == mounted.getBaMountLoc() 
+                    && Integer.parseInt(split[1]) == mounted.getLocation()) {
                 return false;
             }
         } else if (Integer.parseInt(info.getComponent().getName()) == mounted
