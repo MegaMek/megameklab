@@ -67,6 +67,9 @@ V 0.1.24-dev
     consistent with other views
 + Adjusted spacing in Aero Build and Equipment Tabs
 + Bug: Aero criticals in the Assign Criticals tab would occassionally disappear
++ Feature: You can now drag assigned criticals from the critical view to the 
+    unallocated equipment table to unassign the item (works for Meks, Aeros, 
+    BA, but not Tanks yet)
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated

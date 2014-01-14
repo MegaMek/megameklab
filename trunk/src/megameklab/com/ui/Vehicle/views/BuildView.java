@@ -58,8 +58,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
+    
+    CriticalTransferHandler cth;
 
-    public BuildView(Tank unit) {
+    public BuildView(Tank unit, RefreshListener refresh) {
         super(unit);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -67,7 +69,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        CriticalTransferHandler cth = new CriticalTransferHandler(unit, null);
+        cth = new CriticalTransferHandler(unit, refresh);
         equipmentTable.setTransferHandler(cth);
 
         equipmentList.initColumnSizes(equipmentTable);
@@ -81,6 +83,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         //equipmentScroll.setPreferredSize(new Dimension(getWidth(), getHeight()));
         equipmentTable.setDoubleBuffered(true);
         equipmentScroll.setViewportView(equipmentTable);
+        equipmentScroll.setTransferHandler(cth);
 
         mainPanel.add(equipmentScroll);
         equipmentTable.addMouseListener(this);
@@ -91,6 +94,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     public void addRefreshedListener(RefreshListener l) {
+        cth.addRefreshListener(l);
     }
 
     private void loadEquipmentTable() {
