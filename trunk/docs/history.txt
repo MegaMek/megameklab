@@ -63,6 +63,8 @@ V 0.1.24-dev
 + Added option to add interface cockpit and gyro none
 + Fix .exe file creation for local builds
 + Iniial support for superheavy mechs
++ Adjusted layout of Vehicle construction, to make the status bar more 
+    consistent with other views
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated

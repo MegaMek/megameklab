@@ -16,10 +16,10 @@
 
 package megameklab.com.ui.Vehicle;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -85,7 +85,7 @@ public class MainUI extends MegaMekLabMainUI {
         masterPanel.removeAll();
         configPane.removeAll();
 
-        masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
+        masterPanel.setLayout(new BorderLayout());
 
         Tank tank = (Tank) entity;
 
@@ -103,8 +103,8 @@ public class MainUI extends MegaMekLabMainUI {
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", buildTab);
 
-        masterPanel.add(configPane);
-        masterPanel.add(statusbar);
+        masterPanel.add(configPane, BorderLayout.CENTER);
+        masterPanel.add(statusbar, BorderLayout.SOUTH);
 
         refreshHeader();
         this.repaint();
@@ -246,7 +246,6 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshPreview() {
-        // TODO Auto-generated method stub
 
     }
 
