@@ -62,7 +62,7 @@ V 0.1.24-dev
 + BA armor combo now filters based on tech level/type
 + Added option to add interface cockpit and gyro none
 + Fix .exe file creation for local builds
-+ Iniial support for superheavy mechs
++ Initial support for superheavy mechs
 + Adjusted layout of Vehicle construction, to make the status bar more 
     consistent with other views
 + Adjusted spacing in Aero Build and Equipment Tabs
@@ -70,6 +70,7 @@ V 0.1.24-dev
 + Feature: You can now drag assigned criticals from the critical view to the 
     unallocated equipment table to unassign the item (works for Meks, Aeros, 
     BA, but not Tanks yet)
++ superheavy mechs have head max armor of 12
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated

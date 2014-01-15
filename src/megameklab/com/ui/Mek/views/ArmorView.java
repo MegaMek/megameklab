@@ -503,18 +503,22 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         for (int location = 0; location < unit.locations(); location++) {
 
             int maxArmor = unit.getOInternal(location) * 2;
+            int headMaxArmor = 9;
+            if (getMech().isSuperHeavy()) {
+                headMaxArmor = 12;
+            }
             switch (location) {
                 case Mech.LOC_HEAD:
-                    hdArmorModel.setValue(Math.min(9, unit.getArmor(location)));
+                    hdArmorModel.setValue(Math.min(headMaxArmor, unit.getArmor(location)));
                     if (isFullyAllocated()) {
                         hdArmorModel.setMaximum((Integer) hdArmorModel
                                 .getValue());
                     } else {
-                        hdArmorModel.setMaximum(9);
+                        hdArmorModel.setMaximum(headMaxArmor);
                     }
                     hdArmorModel.setStepSize(1);
                     hdArmorModel.setMinimum(0);
-                    hdArmorMaxLabel.setText("max: 9");
+                    hdArmorMaxLabel.setText("max: "+headMaxArmor);
                     break;
                 case Mech.LOC_LARM:
                     laArmorModel.setValue(Math.min(maxArmor,
@@ -800,8 +804,12 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             pointsToAllocate = totalArmor;
         }
         double percent = pointsToAllocate / totalArmor;
+        int headMaxArmor = 9;
+        if (getMech().isSuperHeavy()) {
+            headMaxArmor = 12;
+        }
         // put 5 times the percentage of total possible armor into the head
-        int headArmor = (int) Math.min(Math.floor(percent * 9 * 5), 9);
+        int headArmor = (int) Math.min(Math.floor(percent * headMaxArmor * 5), headMaxArmor);
         unit.initializeArmor(headArmor, Mech.LOC_HEAD);
         pointsToAllocate -= headArmor;
         for (int location = 0; location < unit.locations(); location++) {
@@ -840,6 +848,10 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
      *            the amount of points left over
      */
     private void allocateLeftoverPoints(double points) {
+        int headMaxArmor = 9;
+        if (getMech().isSuperHeavy()) {
+            headMaxArmor = 12;
+        }
         while (points >= 1) {
             // if two or more are left, add armor to symmetrical locations,
             // to torso, legs, arms, in that order
@@ -875,7 +887,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                 }
                 // otherwise, first add to the head, and then even out uneven
                 // allocation
-            } else if (unit.getOArmor(Mech.LOC_HEAD) < 9) {
+            } else if (unit.getOArmor(Mech.LOC_HEAD) < headMaxArmor) {
                 unit.initializeArmor(unit.getOArmor(Mech.LOC_HEAD) + 1,
                         Mech.LOC_HEAD);
                 points--;
@@ -920,7 +932,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             // so symmetric locations can get extra, unless they are already at
             // max
             if (points == 1) {
-                if ((unit.getOArmor(Mech.LOC_HEAD) == 9)
+                if ((unit.getOArmor(Mech.LOC_HEAD) == headMaxArmor)
                         && ((unit.getOArmor(Mech.LOC_CT) + unit.getOArmor(
                                 Mech.LOC_CT, true)) == (unit
                                 .getOInternal(Mech.LOC_CT) * 2))) {
