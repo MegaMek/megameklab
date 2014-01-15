@@ -292,6 +292,29 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 });
                 popup.add(item);
             }
+            
+            if ((unit instanceof BattleArmor) && !eq.isDWPMounted()
+                    && ((BattleArmor)unit).canMountDWP()){
+                item = new JMenuItem("Make detachable");
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        eq.setDWPMounted(true);
+                        ((BuildTab) getParent().getParent()).refreshAll();
+                    }
+                });
+                popup.add(item);
+            }
+            
+            if (unit instanceof BattleArmor && eq.isDWPMounted()){
+                item = new JMenuItem("Make built-in");
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        eq.setDWPMounted(false);
+                        ((BuildTab) getParent().getParent()).refreshAll();
+                    }
+                });
+                popup.add(item);
+            }
             popup.show(this, e.getX(), e.getY());
         }
     }
