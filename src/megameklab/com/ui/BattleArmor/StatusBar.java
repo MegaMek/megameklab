@@ -58,7 +58,7 @@ public class StatusBar extends ITab {
     private JLabel cost = new JLabel();
     
     private EntityVerifier entityVerifier = new EntityVerifier(new File(
-            "data/BattleArmorfiles/UnitVerifierOptions.xml"));
+            "data/mechfiles/UnitVerifierOptions.xml"));
     
     private TestBattleArmor testBA = null;
     private DecimalFormat formatter;

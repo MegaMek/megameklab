@@ -200,16 +200,7 @@ public class CriticalView extends IView {
                             }
                             StringBuffer critName = 
                                     new StringBuffer(m.getName());
-                            if (critName.length() > 45) {
-                                critName.setLength(45);
-                                critName.append("...");
-                            }
-                            if (m.isDWPMounted()) {
-                                critName.append(" (DWP)");
-                            }
-                            if (m.isMechTurretMounted()) {
-                                critName.append(" (T)");
-                            }
+
                             critName.append(":" + slot + ":"
                                     + unit.getEquipmentNum(m));
                             critNames.add(critName.toString());
@@ -301,7 +292,7 @@ public class CriticalView extends IView {
             }
             
             EntityVerifier entityVerifier = new EntityVerifier(new File(
-                    "data/BattleArmorfiles/UnitVerifierOptions.xml"));
+                    "data/mechfiles/UnitVerifierOptions.xml"));
             TestBattleArmor testBA = new TestBattleArmor(getBattleArmor(),
                     entityVerifier.baOption, null);
             

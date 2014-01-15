@@ -187,11 +187,14 @@ public class CriticalTableModel extends AbstractTableModel {
 
             Mounted mount = sortedEquipment[row];
             if (unit instanceof BattleArmor && column == NAME){
-                String modifier;
-                if ( mount.getLocation() != BattleArmor.LOC_SQUAD) {
+                String modifier = "";
+                if (mount.getLocation() != BattleArmor.LOC_SQUAD) {
                     modifier = " (Personal)";
                 } else {
                     modifier = " (Squad)";
+                }
+                if (mount.isDWPMounted()){
+                    modifier += " (DWP)"; 
                 }
                 c.setText(c.getText() + modifier);
             }
