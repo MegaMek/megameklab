@@ -34,12 +34,12 @@ import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.ISCenturionWeaponSystem;
-import megamek.common.weapons.ISCompactNarc;
 import megamek.common.weapons.ISPopUpMineLauncher;
 import megamek.common.weapons.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MMLWeapon;
 import megamek.common.weapons.SRMWeapon;
+import megamek.common.weapons.battlearmor.ISBACompactNarc;
 
 public class EquipmentInfo {
     public int count = 0;
@@ -392,7 +392,7 @@ public class EquipmentInfo {
 
             isMML = weapon instanceof MMLWeapon;
             isATM = weapon instanceof ATMWeapon;
-            isCompactNarc = weapon instanceof ISCompactNarc;
+            isCompactNarc = weapon instanceof ISBACompactNarc;
             isAMS = weapon.hasFlag(WeaponType.F_AMS);
             isCenturion = weapon instanceof ISCenturionWeaponSystem;
 
@@ -516,7 +516,7 @@ public class EquipmentInfo {
 
             WeaponType weapon = (WeaponType) mount.getType();
 
-            isCompactNarc = weapon instanceof ISCompactNarc;
+            isCompactNarc = weapon instanceof ISBACompactNarc;
             isBAPopUpMine = weapon instanceof ISPopUpMineLauncher;
 
 

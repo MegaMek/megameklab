@@ -33,7 +33,7 @@ import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
-import megamek.common.weapons.ISCompactNarc;
+import megamek.common.weapons.battlearmor.ISBACompactNarc;
 
 public class ImageHelperBattleArmor {
     public static void drawBAArmorPip(Graphics2D g2d, float width, float height) {
@@ -146,9 +146,9 @@ public class ImageHelperBattleArmor {
                 continue;
             }
 
-            if (!hasNarcCompact && (eq.getType() instanceof ISCompactNarc)) {
+            if (!hasNarcCompact && (eq.getType() instanceof ISBACompactNarc)) {
                 hasNarcCompact = true;
-            } else if (hasNarcCompact && (eq.getType() instanceof ISCompactNarc)) {
+            } else if (hasNarcCompact && (eq.getType() instanceof ISBACompactNarc)) {
                 continue;
             }
             if (!hasMineLayer && eq.getType().hasFlag(MiscType.F_MINE) && eq.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
