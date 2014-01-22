@@ -354,7 +354,9 @@ public class EquipmentTab extends ITab implements ActionListener {
     private void loadEquipmentTable() {
 
         for (Mounted mount : unit.getWeaponList()) {
-            equipmentList.addCrit(mount);
+            if (UnitUtil.isBattleArmorWeapon(mount.getType(), unit)){
+                equipmentList.addCrit(mount);
+            }
         }
 
         for (Mounted mount : unit.getAmmo()) {
