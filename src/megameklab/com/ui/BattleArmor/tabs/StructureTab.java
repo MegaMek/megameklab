@@ -289,6 +289,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         gbc.insets = new Insets(0,30,0,30);
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.NORTH;
         gbc.fill = java.awt.GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0;
