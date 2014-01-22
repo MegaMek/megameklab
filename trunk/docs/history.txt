@@ -71,6 +71,8 @@ V 0.1.24-dev
     unallocated equipment table to unassign the item (works for Meks, Aeros, 
     BA, but not Tanks yet)
 + superheavy mechs have head max armor of 12
++ Bug: Not selecting a unit in the MechSelectorDialog when loading a unit from 
+    cache could result in a crash
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated

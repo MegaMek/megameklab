@@ -1133,13 +1133,14 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
 
-            unit = viewer.getChosenEntity();
+            Entity newUnit = viewer.getChosenEntity();
             viewer.setVisible(false);
             viewer.dispose();
 
-            if(null == unit) {
+            if(null == newUnit || !(newUnit instanceof Mech)) {
                 return;
             }
+            unit = newUnit;
 
             CConfig.updateSaveFiles("");
             UnitUtil.updateLoadedMech(unit);
@@ -1157,67 +1158,55 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.AERO);
 
-            unit = viewer.getChosenEntity();
+            Entity newUnit = viewer.getChosenEntity();
             viewer.setVisible(false);
             viewer.dispose();
 
-            if(null == unit) {
+            if(null == newUnit || !(newUnit instanceof Aero)) {
                 return;
             }
-
-            if (!(unit instanceof Aero)) {
-                return;
-            }
+            unit = newUnit;
         } else if (unit instanceof Tank) {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.TANK);
 
-            unit = viewer.getChosenEntity();
+            Entity newUnit = viewer.getChosenEntity();
             viewer.setVisible(false);
             viewer.dispose();
 
-            if(null == unit) {
+            if(null == newUnit || !(newUnit instanceof Tank)) {
                 return;
             }
-
-            if (!(unit instanceof Tank)) {
-                return;
-            }
+            unit = newUnit;
         } else if (unit instanceof BattleArmor) {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.BATTLE_ARMOR);
 
-            unit = viewer.getChosenEntity();
+            Entity newUnit = viewer.getChosenEntity();
 
             viewer.setVisible(false);
             viewer.dispose();
 
-            if(null == unit) {
+            if(null == newUnit || !(unit instanceof BattleArmor)) {
                 return;
             }
-
-            if (!(unit instanceof BattleArmor)) {
-                return;
-            }
+            unit = newUnit;
         }
         else if (unit instanceof Infantry) {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
             unitLoadingDialog.setVisible(true);
             UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.INFANTRY);
 
-            unit = viewer.getChosenEntity();
+            Entity newUnit = viewer.getChosenEntity();
             viewer.setVisible(false);
             viewer.dispose();
 
-            if(null == unit) {
+            if(null == newUnit || !(newUnit instanceof Infantry)) {
                 return;
             }
-
-            if (!(unit instanceof Infantry)) {
-                return;
-            }
+            unit = newUnit;
         }
         parentFrame.setEntity(unit);
         reload();
