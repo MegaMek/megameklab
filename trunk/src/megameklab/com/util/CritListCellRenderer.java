@@ -59,8 +59,8 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
         String[] split = ((String)value).split(":");
         label.setText(split[0]);
-        
-        CriticalSlot cs; 
+
+        CriticalSlot cs;
         if (split.length > 2){
             int eqId = Integer.parseInt(split[2]);
             cs = new CriticalSlot(unit.getEquipment(eqId));
@@ -87,27 +87,6 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 Mounted mount = cs.getMount();
 
                 if (useColor) {
-                    String name = UnitUtil.getCritName(unit, mount.getType());
-
-                    if (mount.isRearMounted()) {
-                        name += " (R)";
-                    }
-                    if (mount.isArmored()) {
-                        name += " (A)";
-                    }
-                    if (mount.isMechTurretMounted()) {
-                        name += " (T)";
-                    }
-                    if (mount.isSponsonTurretMounted()) {
-                        name += " (ST)";
-                    }
-                    if (mount.isPintleTurretMounted()) {
-                        name += " (PT)";
-                    }
-                    if (mount.isDWPMounted()) {
-                        name += " (DWP)";
-                    }
-                    label.setText(name);
 
                     if (mount.getType() instanceof WeaponType) {
                         label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
@@ -120,7 +99,33 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                         label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
                     }
                 }
-                label.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));
+                String name = UnitUtil.getCritName(unit, mount.getType());
+
+                if (mount.isRearMounted()) {
+                    name += " (R)";
+                }
+                if (mount.isArmored()) {
+                    name += " (A)";
+                }
+                if (mount.isMechTurretMounted()) {
+                    name += " (T)";
+                }
+                if (mount.isSponsonTurretMounted()) {
+                    name += " (ST)";
+                }
+                if (mount.isPintleTurretMounted()) {
+                    name += " (PT)";
+                }
+                if (mount.isDWPMounted()) {
+                    name += " (DWP)";
+                }
+                String toolTipText = UnitUtil.getToolTipInfo(unit, mount);
+                if (cs.getMount2() != null) {
+                    mount = cs.getMount2();
+                    name += " | "+ UnitUtil.getCritName(unit, mount.getType());
+                }
+                label.setText(name);
+                label.setToolTipText(toolTipText);
             }
         } else if (useColor) {
             label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EMPTY));

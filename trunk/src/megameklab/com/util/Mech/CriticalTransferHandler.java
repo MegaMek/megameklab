@@ -30,12 +30,15 @@ import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
 import megamek.common.Aero;
+import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
+import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
@@ -75,7 +78,7 @@ public class CriticalTransferHandler extends TransferHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if ((source instanceof DropTargetCriticalList) 
+        if ((source instanceof DropTargetCriticalList)
                 && (mounted.getLocation() != Entity.LOC_NONE)) {
             DropTargetCriticalList list = (DropTargetCriticalList)source;
             int loc;
@@ -378,8 +381,8 @@ public class CriticalTransferHandler extends TransferHandler {
                 Mounted eq = unit.getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
                 if (unit instanceof BattleArmor){
-                    if (location == eq.getBaMountLoc() 
-                            && trooper == eq.getLocation()){
+                    if ((location == eq.getBaMountLoc())
+                            && (trooper == eq.getLocation())){
                         return false;
                     }
                 } else if (location == eq.getLocation()) {
@@ -399,7 +402,28 @@ public class CriticalTransferHandler extends TransferHandler {
                 }
                 if (unit instanceof Aero){
                     return addEquipmentAero((Aero)unit, eq);
-                } else if (unit instanceof Mech){
+                } else if (unit instanceof Mech) {
+                    // superheavies can put 2 ammobins or heatsinks in one crit
+                    if ((unit instanceof Mech) && ((Mech)unit).isSuperHeavy()) {
+                        int indexToCrit = list.locationToIndex(info.getDropLocation().getDropPoint());
+                        CriticalSlot cs = unit.getCritical(location, indexToCrit);
+                        if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount2() == null)) {
+                            EquipmentType etype = cs.getMount().getType();
+                            EquipmentType etype2 = eq.getType();
+                            if ((etype instanceof AmmoType)) {
+                                if (!(etype2 instanceof AmmoType) || (((AmmoType)etype).getAmmoType() != ((AmmoType)etype2).getAmmoType())) {
+                                    return addEquipmentMech((Mech)unit, eq);
+                                }
+                            } else {
+                                if (!(etype.equals(etype2)) || ((etype instanceof MiscType) && (!etype.hasFlag(MiscType.F_HEAT_SINK) && !etype.hasFlag(MiscType.F_DOUBLE_HEAT_SINK ))) || !((etype instanceof MiscType))) {
+                                    return addEquipmentMech((Mech)unit, eq);
+                                }
+                            }
+                            cs.setMount2(eq);
+                            changeMountStatus(eq, location, false);
+                            return true;
+                        }
+                    }
                     return addEquipmentMech((Mech)unit, eq);
                 } else if (unit instanceof BattleArmor){
                     return addEquipmentBA((BattleArmor)unit, eq, trooper);
@@ -455,8 +479,8 @@ public class CriticalTransferHandler extends TransferHandler {
             if (split.length != 2){
                 return false;
             }
-            if (Integer.parseInt(split[0]) == mounted.getBaMountLoc() 
-                    && Integer.parseInt(split[1]) == mounted.getLocation()) {
+            if ((Integer.parseInt(split[0]) == mounted.getBaMountLoc())
+                    && (Integer.parseInt(split[1]) == mounted.getLocation())) {
                 return false;
             }
         } else if (Integer.parseInt(info.getComponent().getName()) == mounted
