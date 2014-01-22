@@ -75,6 +75,8 @@ V 0.1.24-dev
     cache could result in a crash
 + Feature: Added ability to select XXL engines for Aeros
 + Bug: Fixed issues with engine type selection for Aeros
++ Changed hotkeys: Ctrl-A now switches to Aeros and Ctrl-B switches to 
+    BattleArmor (changed from Ctrl-A for BA and Ctrl-W for Aero)
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
