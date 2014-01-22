@@ -34,7 +34,6 @@ import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.ui.BattleArmor.tabs.EquipmentTab;
-import megameklab.com.ui.BattleArmor.tabs.PreviewTab;
 import megameklab.com.ui.BattleArmor.tabs.StructureTab;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
@@ -49,7 +48,6 @@ public class MainUI extends MegaMekLabMainUI {
     JTabbedPane ConfigPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
     private StructureTab structureTab;
-    private PreviewTab previewTab;
     private BuildTab buildTab;
     private EquipmentTab equipTab;
     private StatusBar statusbar;
@@ -89,7 +87,6 @@ public class MainUI extends MegaMekLabMainUI {
         structureTab = new StructureTab(ba);
         equipTab = new EquipmentTab(ba);
 
-        previewTab = new PreviewTab(ba);
         statusbar = new StatusBar(ba,this);
         buildTab = new BuildTab(ba);
         structureTab.addRefreshedListener(this);
@@ -99,7 +96,6 @@ public class MainUI extends MegaMekLabMainUI {
         ConfigPane.addTab("Structure", structureTab);
         ConfigPane.addTab("Equipment", equipTab);
         ConfigPane.addTab("Assign Criticals", buildTab);
-        ConfigPane.addTab("Preview", previewTab);
 
         masterPanel.add(ConfigPane, BorderLayout.CENTER);
         masterPanel.add(statusbar, BorderLayout.SOUTH);
@@ -189,7 +185,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshPreview() {
-        previewTab.refresh();
+        structureTab.refreshPreview();
     }
 
 }
