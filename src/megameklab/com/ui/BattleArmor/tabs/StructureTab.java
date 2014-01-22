@@ -40,10 +40,12 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.client.ui.swing.MechViewPanel;
 import megamek.common.BattleArmor;
 import megamek.common.EntityMovementMode;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
+import megamek.common.MechView;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestBattleArmor;
 import megameklab.com.util.ITab;
@@ -92,7 +94,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private JSpinner jumpMP;
     private JSpinner numTroopers; 
     private JSpinner armorPoints;
-
+    
+    private MechViewPanel panelMekView;
 
 	public StructureTab(BattleArmor unit) {
         this.unit = unit;
@@ -101,6 +104,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 	}
 
 	public void setUpPanels() {
+	    JPanel previewPanel = new JPanel();
+	    previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
+	    panelMekView = new MechViewPanel(450, 550,false);
+	    //mekViewScrollPane.setMinimumSize(new java.awt.Dimension(450, 550));
+	    //mekViewScrollPane.setMaximumSize(new java.awt.Dimension(450, 550));
+	    //mekViewScrollPane.setPreferredSize(new java.awt.Dimension(450, 550));
+	    previewPanel.add(panelMekView);
+	    
 	    JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
@@ -275,17 +286,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         leftPanel.add(Box.createVerticalGlue());
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0,30,0,30);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.NONE;
         gbc.weightx = 0.0;
-        gbc.weighty = 1.0;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.weighty = 0;
         add(leftPanel, gbc);
         gbc.gridx = 1;
-        gbc.fill = java.awt.GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        //gbc.weightx = 1.0;
+        //gbc.weighty = 1.0;
+        add(previewPanel, gbc);
         //add(weaponView, gbc);
 
         getBattleArmor().setTechLevel(TechConstants.T_IS_ADVANCED);
@@ -455,6 +467,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
        // weaponView.updateUnit(unit);
         //weaponView.refresh();
+        refreshPreview();
+        
         addAllActionListeners();
 	}
 
@@ -564,6 +578,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         getBattleArmor().setTechLevel(level);
                         getBattleArmor().setArmorTechLevel(level);
                         getBattleArmor().setTroopers(5);
+                        getBattleArmor().autoSetInternal();
                         numTroopers.setValue(5);
                     }
                     getBattleArmor().setMixedTech(false);
@@ -579,6 +594,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         getBattleArmor().setTechLevel(level);
                         getBattleArmor().setArmorTechLevel(level);
                         getBattleArmor().setTroopers(4);
+                        getBattleArmor().autoSetInternal();
                         numTroopers.setValue(4);
                     }
                     getBattleArmor().setMixedTech(false);
@@ -607,6 +623,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         }
                     }
                     getBattleArmor().setTroopers(4);
+                    getBattleArmor().autoSetInternal();
                     numTroopers.setValue(4);
                     getBattleArmor().setMixedTech(true);
                 } else if ((techType.getSelectedIndex() == 3) && (!getBattleArmor().isMixedTech() || !getBattleArmor().isClan())) {
@@ -634,6 +651,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         }
                     }
                     getBattleArmor().setTroopers(5);
+                    getBattleArmor().autoSetInternal();
                     numTroopers.setValue(5);
                     getBattleArmor().setMixedTech(true);
                 } else {
@@ -671,7 +689,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     }
 
     public void keyReleased(KeyEvent e) {
-
         if (e.getSource().equals(era)) {
             try {
                 unit.setYear(Integer.parseInt(era.getText()));
@@ -682,11 +699,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             unit.setSource(source.getText());
         } else if (e.getSource().equals(chassis)) {
             unit.setChassis(chassis.getText().trim());
-            refresh.refreshPreview();
         } else if (e.getSource().equals(model)) {
             unit.setModel(model.getText().trim());
-            refresh.refreshPreview();
         }
+        refresh.refreshPreview();
+        refresh.refreshHeader();
     }
 
     @Override
@@ -722,6 +739,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 int value = (Integer) numTroopers.getValue();
                 if (value != getBattleArmor().getTroopers()){
                     getBattleArmor().setTroopers(value);
+                    getBattleArmor().autoSetInternal();
                 }
             }
         }
@@ -776,4 +794,22 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             resetMovementMinMax();
         }
     }
+    
+    public void refreshPreview(){
+        boolean populateTextFields = true;
+        MechView mechView = null;
+        try {
+            mechView = new MechView(unit, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // error unit didn't load right. this is bad news.
+            populateTextFields = false;
+        }
+        if (populateTextFields && (mechView != null)) {
+            panelMekView.setMech(unit);
+        } else {
+            panelMekView.reset();
+        }
+    }
+    
 }

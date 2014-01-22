@@ -78,6 +78,10 @@ V 0.1.24-dev
 + Changed hotkeys: Ctrl-A now switches to Aeros and Ctrl-B switches to 
     BattleArmor (changed from Ctrl-A for BA and Ctrl-W for Aero)
 + Bug: Equipment tab equipment table would display things like start/stop swarm
++ Removed the BattleArmor Preview tab, instead the preview is now displayed in 
+    the Structure tab
++ Bug: BA internals weren't properly being set when the number of troopers was 
+    changed
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
