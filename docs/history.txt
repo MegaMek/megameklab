@@ -84,6 +84,7 @@ V 0.1.24-dev
     changed
 + Bug: BA weapons were being counted multiple times for purposes of crit limits
 + Allow for heatsinks and ammobins to be crit-shared for super heavy mechs
++ Bug: Loaded BattleArmor always default to IS Tech type
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
