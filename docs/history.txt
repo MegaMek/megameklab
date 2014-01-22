@@ -73,6 +73,8 @@ V 0.1.24-dev
 + superheavy mechs have head max armor of 12
 + Bug: Not selecting a unit in the MechSelectorDialog when loading a unit from 
     cache could result in a crash
++ Feature: Added ability to select XXL engines for Aeros
++ Bug: Fixed issues with engine type selection for Aeros
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
