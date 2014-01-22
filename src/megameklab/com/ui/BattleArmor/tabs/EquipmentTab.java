@@ -57,7 +57,6 @@ import javax.swing.table.TableRowSorter;
 
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
-import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.MiscType;
@@ -450,7 +449,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             try {
                 mount = new Mounted(unit, equip);
                 mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
-                getBattleArmor().addEquipment(mount, Entity.LOC_NONE, false);
+                getBattleArmor().addEquipment(mount, BattleArmor.LOC_SQUAD, false);
                 success = true;
             } catch (LocationFullException lfe) {
                 // this can't happen, we add to Entity.LOC_NONE
