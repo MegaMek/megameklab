@@ -162,8 +162,17 @@ public class CriticalView extends IView {
          
         for (Mounted m : unit.getEquipment()){
             if (m.getLocation() == BattleArmor.LOC_SQUAD 
-                    || m.getLocation() == trooper)
-            critSuit.addMounted(m.getBaMountLoc(), m);
+                    || m.getLocation() == trooper){
+                critSuit.addMounted(m.getBaMountLoc(), m);
+                if (m.getType() instanceof WeaponType 
+                        && m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE){
+                    if (m.getType().hasFlag(WeaponType.F_INFANTRY)){
+                        numAPWeapons[m.getBaMountLoc()]++;
+                    } else {
+                        numAMWeapons[m.getBaMountLoc()]++;
+                    }
+                }
+            }            
         }
 
         synchronized (unit) {
@@ -191,13 +200,6 @@ public class CriticalView extends IView {
                                 continue;
                             }
                             
-                            if (m.getType() instanceof WeaponType){
-                                if (m.getType().hasFlag(WeaponType.F_INFANTRY)){
-                                    numAPWeapons[location]++;
-                                } else {
-                                    numAMWeapons[location]++;
-                                }
-                            }
                             StringBuffer critName = 
                                     new StringBuffer(m.getName());
 
