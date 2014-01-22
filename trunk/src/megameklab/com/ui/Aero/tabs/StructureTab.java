@@ -70,14 +70,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private static final String ENGINESTANDARD = "Standard";
     private static final String ENGINEXL = "XL";
+    private static final String ENGINEXXL = "XXL";
     private static final String ENGINELIGHT = "Light";
     private static final String ENGINECOMPACT = "Compact";
 
 
-    String[] isEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINELIGHT,
+    String[] isEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINEXXL, ENGINELIGHT,
             ENGINECOMPACT};
     String[] isIndustrialEngineTypes = { ENGINESTANDARD};
-    String[] clanEngineTypes = { ENGINESTANDARD, ENGINEXL};
+    String[] clanEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINEXXL};
     String[] clanIndustrialEngineTypes = { ENGINESTANDARD};
     private int clanEngineFlag = 0;
     
@@ -1035,10 +1036,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         return 0;
                     case Engine.XL_ENGINE:
                         return 2;
-                    case Engine.FUEL_CELL:
-                        return 7;
                     case Engine.XXL_ENGINE:
-                        return 9;
+                        return 4;
                 }
             }// Clan Chassis with IS Engine
             else if (getAero().isClan()
@@ -1049,15 +1048,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     case Engine.XL_ENGINE:
                         return 3;
                     case Engine.LIGHT_ENGINE:
-                        return 4;
-                    case Engine.COMPACT_ENGINE:
-                        return 5;
-                    case Engine.FISSION:
                         return 6;
-                    case Engine.FUEL_CELL:
-                        return 8;
+                    case Engine.COMPACT_ENGINE:
+                        return 7;
                     case Engine.XXL_ENGINE:
-                        return 10;
+                        return 5;
                 }
             }// IS Chassis with Clan Engine
             else if (!getAero().isClan()
@@ -1067,10 +1062,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         return 1;
                     case Engine.XL_ENGINE:
                         return 3;
-                    case Engine.FUEL_CELL:
-                        return 8;
                     case Engine.XXL_ENGINE:
-                        return 10;
+                        return 5;   
                 }
             }// IS Chassis with IS Engine
             else {
@@ -1080,15 +1073,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     case Engine.XL_ENGINE:
                         return 2;
                     case Engine.LIGHT_ENGINE:
-                        return 4;
-                    case Engine.COMPACT_ENGINE:
-                        return 5;
-                    case Engine.FISSION:
                         return 6;
-                    case Engine.FUEL_CELL:
+                    case Engine.COMPACT_ENGINE:
                         return 7;
                     case Engine.XXL_ENGINE:
-                        return 9;
+                        return 4;
                 }
 
             }
@@ -1097,12 +1086,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 switch (engineType) {
                     case Engine.NORMAL_ENGINE:
                         return 0;
-                    case Engine.COMBUSTION_ENGINE:
-                        return 1;
-                    case Engine.FUEL_CELL:
-                        return 2;
-                    case Engine.FISSION:
-                        return 3;
                 }
             } else {
                 switch (engineType) {
@@ -1110,10 +1093,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         return 0;
                     case Engine.XL_ENGINE:
                         return 1;
-                    case Engine.FUEL_CELL:
-                        return 2;
                     case Engine.XXL_ENGINE:
-                        return 3;
+                        return 2;
                 }
             }
         } else {
@@ -1121,12 +1102,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 switch (engineType) {
                     case Engine.NORMAL_ENGINE:
                         return 0;
-                    case Engine.COMBUSTION_ENGINE:
-                        return 1;
-                    case Engine.FUEL_CELL:
-                        return 2;
-                    case Engine.FISSION:
-                        return 3;
                 }
             } else {
                 switch (engineType) {
@@ -1135,19 +1110,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     case Engine.XL_ENGINE:
                         return 1;
                     case Engine.LIGHT_ENGINE:
-                        return 2;
-                    case Engine.COMPACT_ENGINE:
                         return 3;
-                    case Engine.FISSION:
+                    case Engine.COMPACT_ENGINE:
                         return 4;
-                    case Engine.FUEL_CELL:
-                        return 5;
                     case Engine.XXL_ENGINE:
-                        return 6;
+                        return 2;
                 }
             }
         }
-
         return 0;
     }
 
@@ -1183,6 +1153,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
         if (engineType.equals(ENGINELIGHT)) {
             return Engine.LIGHT_ENGINE;
+        }
+        if (engineType.equals(ENGINEXXL)) {
+            return Engine.XXL_ENGINE;
         }
 
         return Engine.NORMAL_ENGINE;
@@ -1307,7 +1280,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         case TechConstants.T_IS_ADVANCED:
                         case TechConstants.T_IS_EXPERIMENTAL:
                         case TechConstants.T_IS_UNOFFICIAL:                       
-                            engineCount = 4;
+                            engineCount = 3;
                             break;
                     }
                 }
@@ -1334,7 +1307,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     case TechConstants.T_IS_ADVANCED:
                     case TechConstants.T_IS_EXPERIMENTAL:
                     case TechConstants.T_IS_UNOFFICIAL:                       
-                        engineCount = 4;
+                        engineCount = 5;
                         break;
                     }
                 }
