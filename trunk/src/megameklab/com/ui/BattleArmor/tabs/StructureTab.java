@@ -301,7 +301,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         add(previewPanel, gbc);
         //add(weaponView, gbc);
 
-        getBattleArmor().setTechLevel(TechConstants.T_IS_ADVANCED);
         refresh();
     }
 
