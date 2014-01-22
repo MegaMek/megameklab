@@ -82,6 +82,7 @@ V 0.1.24-dev
     the Structure tab
 + Bug: BA internals weren't properly being set when the number of troopers was 
     changed
++ Bug: BA weapons were being counted multiple times for purposes of crit limits
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
