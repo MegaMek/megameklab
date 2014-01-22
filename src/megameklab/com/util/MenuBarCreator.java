@@ -298,8 +298,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!(unit instanceof Aero)) {
             item = new JMenuItem();
             item.setText("Aero");
-            item.setMnemonic(KeyEvent.VK_W);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, 
+            item.setMnemonic(KeyEvent.VK_A);
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, 
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -328,8 +328,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!(unit instanceof BattleArmor)) {
             item = new JMenuItem();
             item.setText("BattleArmor");
-            item.setMnemonic(KeyEvent.VK_A);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, 
+            item.setMnemonic(KeyEvent.VK_B);
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, 
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
