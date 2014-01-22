@@ -1357,6 +1357,36 @@ public class PrintQuad implements Printable {
 
                 }
 
+                if (cs.getMount2() != null) {
+                    critName.append(" | ");
+                    if (!(cs.getMount2().getType() instanceof AmmoType)) {
+                        critName.append(UnitUtil.getCritName(mech, cs.getMount2().getType()));
+                    } else {
+                        AmmoType ammo = (AmmoType)cs.getMount2().getType();
+                        critName.append(ammo.getShortName().replace('(', '.').replace(')', '.').replaceAll(".Clan.", "").trim());
+                        // Remove any additional Ammo text.
+                        if (critName.toString().endsWith("Ammo")) {
+                            critName.setLength(critName.length() - 5);
+                            critName.trimToSize();
+                        }
+
+                        // Remove Capable with the name
+                        if (critName.indexOf("-capable") > -1) {
+                            int startPos = critName.indexOf("-capable");
+                            critName.delete(startPos, startPos + "-capable".length());
+                            critName.trimToSize();
+                        }
+
+                        // Trim trailing spaces.
+                        while (critName.charAt(critName.length() - 1) == ' ') {
+                            critName.setLength(critName.length() - 1);
+                        }
+                        critName.trimToSize();
+                        critName.append(") ");
+                        critName.append(m.getUsableShotsLeft());
+                    }
+                }
+
                 font = UnitUtil.getNewFont(g2d, critName.toString(), m.getType().isHittable(), 85, 7.0f);
                 if (cs.isDestroyed()) {
                     font = font.deriveFont(strikeThroughAttr);
