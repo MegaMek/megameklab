@@ -98,6 +98,8 @@ import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.VehicleFlamerWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
+import megamek.common.weapons.battlearmor.CLBALightTAG;
+import megamek.common.weapons.battlearmor.ISBALightTAG;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 
@@ -2307,8 +2309,7 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof CLTAG) || (eq instanceof ISTAG)
-                || (eq instanceof CLLightTAG)) {
+        if ((eq instanceof CLBALightTAG) || (eq instanceof ISBALightTAG)) {
             return true;
         }
 
