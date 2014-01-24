@@ -119,6 +119,12 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 if (mount.isDWPMounted()) {
                     name += " (DWP)";
                 }
+                // If we are editing BA, we need to inform the user about how
+                //  many shots are in this Critical
+                if ((unit instanceof BattleArmor) 
+                        && (mount.getType() instanceof AmmoType)){
+                    name += " (" + mount.getBaseShotsLeft() + ")";
+                }
                 String toolTipText = UnitUtil.getToolTipInfo(unit, mount);
                 if (cs.getMount2() != null) {
                     mount = cs.getMount2();

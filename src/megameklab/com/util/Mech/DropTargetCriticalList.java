@@ -27,6 +27,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
@@ -201,6 +202,27 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                                 });
                                 popup.add(info);
                             }
+                        }
+                    }
+                    
+                    // Allow number of shots selection
+                    if ((unit instanceof BattleArmor) 
+                            && mount.getType() instanceof AmmoType){
+                        for (int i = 1; i <= 4; i++){
+                            if (i == mount.getBaseShotsLeft()){
+                                continue;
+                            }
+                            info = new JMenuItem("Set Shots: " + i);
+                            final int shots = i;
+                            info.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    mount.setShotsLeft(shots);
+                                    if (refresh != null) {
+                                        refresh.refreshAll();
+                                    }
+                                }
+                            });
+                            popup.add(info);
                         }
                     }
                 }

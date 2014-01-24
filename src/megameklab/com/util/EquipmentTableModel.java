@@ -26,6 +26,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
@@ -165,7 +166,7 @@ public class EquipmentTableModel extends AbstractTableModel {
     }
 
     public String getTooltip(int row, int col) {
-        EquipmentType type = data.get(row);
+        //EquipmentType type = data.get(row);
         switch (col) {
             default:
                 return null;
@@ -199,7 +200,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         EquipmentType type;
         WeaponType wtype = null;
         AmmoType atype = null;
-        MiscType mtype = null;
+        //MiscType mtype = null;
         if (data.isEmpty()) {
             return "";
         } else {
@@ -212,7 +213,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             atype = (AmmoType) type;
         }
         if (type instanceof MiscType) {
-            mtype = (MiscType) type;
+            //mtype = (MiscType) type;
         }
         DecimalFormat formatter = new DecimalFormat();
 
@@ -296,7 +297,11 @@ public class EquipmentTableModel extends AbstractTableModel {
             }
         }
         if (col == COL_TON) {
-            return type.getTonnage(entity);
+            if ((entity instanceof BattleArmor) && (atype != null)){
+                return (atype.getKgPerShot() * atype.getShots())/1000;
+            } else {
+                return type.getTonnage(entity);
+            }
         }
         if (col == COL_CRIT) {
             return type.getCriticals(entity);
