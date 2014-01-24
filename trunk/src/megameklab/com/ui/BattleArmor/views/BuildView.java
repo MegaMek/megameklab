@@ -293,6 +293,25 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 popup.add(item);
             }
             
+            // Allow number of shots selection
+            if ((unit instanceof BattleArmor) 
+                    && eq.getType() instanceof AmmoType){
+                for (int i = 1; i <= 4; i++){
+                    if (i == eq.getBaseShotsLeft()){
+                        continue;
+                    }
+                    item = new JMenuItem("Set Shots: " + i);
+                    final int shots = i;
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            eq.setShotsLeft(shots);
+                            ((BuildTab) getParent().getParent()).refreshAll();
+                        }
+                    });
+                    popup.add(item);
+                }
+            }
+            
             if ((unit instanceof BattleArmor) && !eq.isDWPMounted()
                     && ((BattleArmor)unit).canMountDWP()){
                 item = new JMenuItem("Make detachable");

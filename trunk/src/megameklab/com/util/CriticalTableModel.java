@@ -131,7 +131,13 @@ public class CriticalTableModel extends AbstractTableModel {
         case NAME:
             return UnitUtil.getCritName(unit, crit.getType());
         case TONNAGE:
-            return crit.getType().getTonnage(unit);
+            if ((unit instanceof BattleArmor) 
+                    && (crit.getType() instanceof AmmoType)){
+                return ((AmmoType)crit.getType()).getKgPerShot() * 
+                        crit.getBaseShotsLeft() / 1000;
+            } else {
+                return crit.getType().getTonnage(unit);
+            }
         case CRITS:
             if (tableType == BUILDTABLE) {
                 return UnitUtil.getCritsUsed(unit, crit.getType());
@@ -188,10 +194,13 @@ public class CriticalTableModel extends AbstractTableModel {
             Mounted mount = sortedEquipment[row];
             if (unit instanceof BattleArmor && column == NAME){
                 String modifier = "";
+                if (mount.getType() instanceof AmmoType){
+                    modifier += " (" + mount.getBaseShotsLeft() + ")";
+                }
                 if (mount.getLocation() != BattleArmor.LOC_SQUAD) {
-                    modifier = " (Personal)";
+                    modifier += " (Personal)";
                 } else {
-                    modifier = " (Squad)";
+                    modifier += " (Squad)";
                 }
                 if (mount.isDWPMounted()){
                     modifier += " (DWP)"; 
