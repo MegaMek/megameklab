@@ -80,7 +80,7 @@ public class CriticalView extends IView {
     
     private CriticalSuit critSuit;
     
-    private Dimension labelSize = new Dimension(100, 25);
+    private Dimension lblSz = new Dimension(100, 25);
     
     /**
      * Keeps track of which trooper in the squad this <code>CriticalView</code>
@@ -238,50 +238,36 @@ public class CriticalView extends IView {
                 }
             }
             
-            leftPanel.add(createLabel(
-                    "AM Wpn: "
-                            + numAMWeapons[BattleArmor.MOUNT_LOC_LARM]
-                            + "/"
-                            + getBattleArmor().getNumAllowedAntiMechWeapons(
-                                    BattleArmor.MOUNT_LOC_LARM), labelSize));
-            leftPanel.add(createLabel(
-                    "AP Wpn: "
-                            + numAPWeapons[BattleArmor.MOUNT_LOC_LARM]
-                            + "/"
-                            + getBattleArmor()
-                                    .getNumAllowedAntiPersonnelWeapons(
-                                            BattleArmor.MOUNT_LOC_LARM, trooper),
-                    labelSize));
+            String amTxt[] = new String[BattleArmor.MOUNT_NUM_LOCS];
+            String apTxt[] = new String[BattleArmor.MOUNT_NUM_LOCS];
+            for (int loc = 0; loc < BattleArmor.MOUNT_NUM_LOCS; loc++){
+                amTxt[loc] = "AM Wpn: " + numAMWeapons[loc] + "/"
+                        + getBattleArmor().getNumAllowedAntiMechWeapons(loc);
+                apTxt[loc] = "AP Wpn: " + numAPWeapons[loc] + "/"
+                        + getBattleArmor().getNumAllowedAntiPersonnelWeapons(
+                                loc, trooper);
+                if (numAMWeapons[loc] 
+                        > getBattleArmor().getNumAllowedAntiMechWeapons(loc)){
+                    amTxt[loc] = "<html><font color='C00000'>" + amTxt[loc] 
+                            + "</font></html>";  
+                }
+                if (numAPWeapons[loc]
+                        > getBattleArmor().getNumAllowedAntiMechWeapons(loc)){
+                    apTxt[loc] = "<html><font color='C00000'>" + apTxt[loc] 
+                            + "</font></html>";
+                }
+            }
+                    
 
-            rightPanel.add(createLabel(
-                    "AM Wpn: "
-                            + numAMWeapons[BattleArmor.MOUNT_LOC_RARM]
-                            + "/"
-                            + getBattleArmor().getNumAllowedAntiMechWeapons(
-                                    BattleArmor.MOUNT_LOC_RARM), labelSize));
-            rightPanel.add(createLabel(
-                    "AP Wpn: "
-                            + numAPWeapons[BattleArmor.MOUNT_LOC_RARM]
-                            + "/"
-                            + getBattleArmor()
-                                    .getNumAllowedAntiPersonnelWeapons(
-                                            BattleArmor.MOUNT_LOC_RARM, trooper),
-                    labelSize));
+            leftPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_LARM], lblSz));
+            leftPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_LARM], lblSz));
+            
+            rightPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_RARM], lblSz));
+            rightPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_RARM], lblSz));
+            
+            bodyPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_BODY], lblSz));
+            bodyPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_BODY], lblSz));
 
-            bodyPanel.add(createLabel(
-                    "AM Wpn: "
-                            + numAMWeapons[BattleArmor.MOUNT_LOC_BODY]
-                            + "/"
-                            + getBattleArmor().getNumAllowedAntiMechWeapons(
-                                    BattleArmor.MOUNT_LOC_BODY), labelSize));
-            bodyPanel.add(createLabel(
-                    "AP Wpn: "
-                            + numAPWeapons[BattleArmor.MOUNT_LOC_BODY]
-                            + "/"
-                            + getBattleArmor()
-                                    .getNumAllowedAntiPersonnelWeapons(
-                                            BattleArmor.MOUNT_LOC_BODY, trooper),
-                    labelSize));
 
             // Hide the arm panels if we are a quad
             if (getBattleArmor().getChassisType() == 
@@ -300,7 +286,13 @@ public class CriticalView extends IView {
             
             String weightTxt = "Weight: "
                     + String.format("%1$.3f", testBA.calculateWeight(trooper))
-                    + "/" + getBattleArmor().getTrooperWeight();;
+                    + "/" + getBattleArmor().getTrooperWeight();
+            if (testBA.calculateWeight(trooper) 
+                    > getBattleArmor().getTrooperWeight()){
+                weightTxt = "<html><font color='C00000'>" + weightTxt 
+                        + "</font></html>";
+            }
+                    
             weightLabel.setText(weightTxt);
              
             leftPanel.add(Box.createVerticalStrut(8));
@@ -317,7 +309,7 @@ public class CriticalView extends IView {
         }
     }
     
-    private JLabel createLabel(String text, Dimension maxSize) {
+    private JLabel makeLabel(String text, Dimension maxSize) {
 
         JLabel label = new JLabel(text, JLabel.CENTER);
         label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
