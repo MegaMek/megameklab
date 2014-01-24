@@ -2979,6 +2979,10 @@ public class UnitUtil {
 
     public static boolean canUseAmmo(Entity unit, AmmoType atype) {
         boolean match = false;
+        if ((unit instanceof BattleArmor) 
+                && !atype.hasFlag(AmmoType.F_BATTLEARMOR)){
+            return false;
+        }
         for (Mounted m : unit.getWeaponList()) {
             if (m.getType() instanceof AmmoWeapon) {
                 WeaponType wtype = (WeaponType) m.getType();
