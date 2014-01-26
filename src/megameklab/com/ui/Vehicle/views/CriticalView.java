@@ -24,6 +24,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Mounted;
@@ -78,27 +79,41 @@ public class CriticalView extends IView {
         fullTurretPanel.setLayout(new BoxLayout(fullTurretPanel, BoxLayout.Y_AXIS));
 
         topPanel.add(frontPanel);
-        topPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front"));
+        topPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Front", TitledBorder.TOP,
+                TitledBorder.DEFAULT_POSITION));
         mainPanel.add(topPanel);
 
         middlePanel.add(leftPanel);
-        leftPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Left Side"));
+        leftPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Left Side",
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         middlePanel.add(bodyPanel);
-        bodyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Body"));
+        bodyPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Body", TitledBorder.TOP,
+                TitledBorder.DEFAULT_POSITION));
         middlePanel.add(rightPanel);
-        rightPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Right Side"));
+        rightPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Right Side",
+                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         mainPanel.add(middlePanel);
 
         if (unit.isSuperHeavy() && !(unit instanceof VTOL)) {
             middlePanel2.add(rearLeftPanel);
-            rearLeftPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Left Side"));
+            rearLeftPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEmptyBorder(), "Rear Left Side",
+                    TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
             middlePanel2.add(new JPanel());
             middlePanel2.add(rearRightPanel);
-            rearRightPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Right Side"));
+            rearRightPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEmptyBorder(), "Rear Right Side",
+                    TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
             mainPanel.add(middlePanel2);
         }
 
-        rearPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear"));
+        rearPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Rear", TitledBorder.TOP,
+                TitledBorder.DEFAULT_POSITION));
         bottomPanel.add(rearPanel);
         mainPanel.add(bottomPanel);
 
@@ -124,17 +139,25 @@ public class CriticalView extends IView {
         this.remove(fullTurretPanel);
 
         if (!getTank().hasNoDualTurret()) {
-            dualTurretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Front Turret"));
+            dualTurretPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEmptyBorder(), "Front Turret",
+                    TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
             fullTurretPanel.add(dualTurretPanel);
-            turretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rear Turret"));
+            turretPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEmptyBorder(), "Rear Turret",
+                    TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
             fullTurretPanel.add(turretPanel);
             this.add(fullTurretPanel);
         } else if (!getTank().hasNoTurret()) {
-            turretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Turret"));
+            turretPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEmptyBorder(), "Turret",
+                    TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
             fullTurretPanel.add(turretPanel);
             this.add(fullTurretPanel);
         } else if (unit instanceof VTOL) {
-            turretPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Rotor"));
+            turretPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEmptyBorder(), "Rotor",
+                    TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
             fullTurretPanel.add(turretPanel);
             this.add(fullTurretPanel);
         }
