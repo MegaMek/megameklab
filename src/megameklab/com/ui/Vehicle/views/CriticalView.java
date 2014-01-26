@@ -138,7 +138,25 @@ public class CriticalView extends IView {
         rearRightPanel.removeAll();
         this.remove(fullTurretPanel);
 
-        if (!getTank().hasNoDualTurret()) {
+        if (unit instanceof VTOL) {
+            if (getTank().hasNoTurret()){
+                turretPanel.setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createEmptyBorder(), "Rotor",
+                        TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                fullTurretPanel.add(turretPanel);
+                this.add(fullTurretPanel);
+            } else {
+                dualTurretPanel.setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createEmptyBorder(), "Turret",
+                        TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                fullTurretPanel.add(dualTurretPanel);
+                turretPanel.setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createEmptyBorder(), "Rotor",
+                        TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                fullTurretPanel.add(turretPanel);
+                this.add(fullTurretPanel); 
+            }
+        } else if (!getTank().hasNoDualTurret()) {
             dualTurretPanel.setBorder(BorderFactory.createTitledBorder(
                     BorderFactory.createEmptyBorder(), "Front Turret",
                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
@@ -151,12 +169,6 @@ public class CriticalView extends IView {
         } else if (!getTank().hasNoTurret()) {
             turretPanel.setBorder(BorderFactory.createTitledBorder(
                     BorderFactory.createEmptyBorder(), "Turret",
-                    TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-            fullTurretPanel.add(turretPanel);
-            this.add(fullTurretPanel);
-        } else if (unit instanceof VTOL) {
-            turretPanel.setBorder(BorderFactory.createTitledBorder(
-                    BorderFactory.createEmptyBorder(), "Rotor",
                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
             fullTurretPanel.add(turretPanel);
             this.add(fullTurretPanel);
