@@ -85,6 +85,9 @@ V 0.1.24-dev
 + Bug: BA weapons were being counted multiple times for purposes of crit limits
 + Allow for heatsinks and ammobins to be crit-shared for super heavy mechs
 + Bug: Loaded BattleArmor always default to IS Tech type
++ Bug: VTOL turrets weren't handled properly: the critical panel would replace 
+    the rotor section with turret, and all equipment mounted there would be 
+    considered mounted in the rotor.
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
