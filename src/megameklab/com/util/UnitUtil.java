@@ -1047,9 +1047,12 @@ public class UnitUtil {
         double tonnage = 0;
 
         for (Mounted mount : unit.getAmmo()) {
+            int ammoType = ((AmmoType)mount.getType()).getAmmoType();
             // don't add ammo with just one shot, that's OS ammo
+            //  Unless it's a single shot ammo type, like Cruise Missiles
             if ((mount.getLocation() == Entity.LOC_NONE)
-                    && (mount.getUsableShotsLeft() > 1)) {
+                    && (mount.getUsableShotsLeft() > 1
+                            || ammoType == AmmoType.T_CRUISE_MISSILE)) {
                 tonnage += mount.getType().getTonnage(unit);
             }
         }
