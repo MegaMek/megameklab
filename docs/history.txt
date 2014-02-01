@@ -89,6 +89,7 @@ V 0.1.24-dev
     the rotor section with turret, and all equipment mounted there would be 
     considered mounted in the rotor.
 + Bug [#108]: Mek Lab - Cruise Missile Ammo, not assigned
++ Bug [#106]: Aerospace: Unallocated equipment
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
