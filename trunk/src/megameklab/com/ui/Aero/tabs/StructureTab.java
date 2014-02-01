@@ -49,9 +49,7 @@ import javax.swing.event.ChangeListener;
 import megamek.common.Aero;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
-import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestAero;
 import megameklab.com.ui.Aero.views.ArmorView;
@@ -1587,24 +1585,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         unit.setArmorTechLevel(EquipmentType.get(
                 getArmorType(armorCombo)).getTechLevel(getAero().getYear()));
         unit.setArmorType(getArmorType(armorCombo));
-        int armorCount = 0;
-
-        armorCount = EquipmentType.get(getArmorType(armorCombo))
-                .getCriticals(unit);
-
-        if (armorCount < 1) {
-            return;
-        }
-
-        for (; armorCount > 0; armorCount--) {
-            try {
-                getAero().addEquipment(
-                        new Mounted(unit,
-                                EquipmentType.get(getArmorType(armorCombo))),
-                        Entity.LOC_NONE, false);
-            } catch (Exception ex) {
-            }
-        }
     }
 
     private void setArmorCombo(int type) {
