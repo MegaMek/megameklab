@@ -88,6 +88,7 @@ V 0.1.24-dev
 + Bug: VTOL turrets weren't handled properly: the critical panel would replace 
     the rotor section with turret, and all equipment mounted there would be 
     considered mounted in the rotor.
++ Bug [#108]: Mek Lab - Cruise Missile Ammo, not assigned
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
