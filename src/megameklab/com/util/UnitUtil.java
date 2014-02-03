@@ -2242,6 +2242,18 @@ public class UnitUtil {
         }
         return false;
     }
+    public static boolean isBattleArmorAPWeapon(EquipmentType etype){
+        InfantryWeapon infWeap = null;
+        if ((etype == null) || !(etype instanceof InfantryWeapon)){
+            return false;
+        } else {
+            infWeap = (InfantryWeapon)etype;
+        }
+        return  infWeap.hasFlag(WeaponType.F_INFANTRY)
+                && !infWeap.hasFlag(WeaponType.F_INF_POINT_BLANK)
+                && !infWeap.hasFlag(WeaponType.F_INF_ARCHAIC)
+                && (infWeap.getCrew() < 2);
+    }
 
     public static boolean isBattleArmorWeapon(EquipmentType eq, Entity unit) {
 
