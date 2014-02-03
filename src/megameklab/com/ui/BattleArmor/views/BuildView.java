@@ -126,7 +126,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
         for (Mounted mount : unit.getWeaponList()) {
             if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) 
-                    && UnitUtil.isBattleArmorWeapon(mount.getType(), unit)) {
+                    && (UnitUtil.isBattleArmorWeapon(mount.getType(), unit)
+                            || UnitUtil.isBattleArmorAPWeapon(mount.getType()))) {
                 masterEquipmentList.add(mount);
             }
         }

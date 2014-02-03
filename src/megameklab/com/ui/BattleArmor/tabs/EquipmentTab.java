@@ -84,7 +84,8 @@ public class EquipmentTab extends ITab implements ActionListener {
     private static final int T_WEAPON    =  4;
     private static final int T_AMMO      =  5;
     private static final int T_OTHER     =  6;
-    private static final int T_NUM       =  7;
+    private static final int T_AP       =  7;
+    private static final int T_NUM       =  8;
 
 
     private RefreshListener refresh;
@@ -128,6 +129,8 @@ public class EquipmentTab extends ITab implements ActionListener {
             return "Ammunition";
         case T_OTHER:
             return "Other Equipment";
+        case T_AP:
+            return "Anti-personnel";
         default:
             return "?";
         }
@@ -556,7 +559,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                                     && (wtype.getAmmoType() != AmmoType.T_NA)) || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
                         || ((nType == T_ARTILLERY) && UnitUtil.isUnitWeapon(etype, unit)
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
-                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(unit, atype))) {
+                        || (((nType == T_AMMO) && (atype != null)) && UnitUtil.canUseAmmo(unit, atype))
+                        || ((nType == T_AP) && UnitUtil.isBattleArmorAPWeapon(etype))) {
                     if (txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());
