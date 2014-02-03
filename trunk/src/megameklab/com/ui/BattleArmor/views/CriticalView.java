@@ -362,7 +362,12 @@ public class CriticalView extends IView {
                 return;
             }
             
-            int critsToAdd = m.getType().getCriticals(ba);
+            int critsToAdd;
+            if (m.getType().isSpreadable()){
+                critsToAdd = 1;
+            } else {
+                critsToAdd = m.getType().getCriticals(ba);
+            }
             for (int slot = 0; slot < getNumCriticals(loc); slot++){
                 if (crits[loc][slot] == null){
                     crits[loc][slot] = new CriticalSlot(m);

@@ -166,8 +166,6 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof MiscType)
-                    && !UnitUtil
-                            .isArmor(masterEquipmentList.get(pos).getType())
                     && !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
@@ -274,24 +272,27 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     }
                 }
             
-            
-                item = new JMenuItem("Make individual weapon");
-                item.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        eq.setLocation(BattleArmor.LOC_TROOPER_1);
-                        ((BuildTab) getParent().getParent()).refreshAll();
-                    }
-                });
-                popup.add(item);
+                if (!UnitUtil.isArmor(eq.getType())) {
+                    item = new JMenuItem("Make individual weapon");
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            eq.setLocation(BattleArmor.LOC_TROOPER_1);
+                            ((BuildTab) getParent().getParent()).refreshAll();
+                        }
+                    });
+                    popup.add(item);
+                }
             } else {
-                item = new JMenuItem("Make squad weapon");
-                item.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        eq.setLocation(BattleArmor.LOC_SQUAD);
-                        ((BuildTab) getParent().getParent()).refreshAll();
-                    }
-                });
-                popup.add(item);
+                if (!UnitUtil.isArmor(eq.getType())) {
+                    item = new JMenuItem("Make squad weapon");
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            eq.setLocation(BattleArmor.LOC_SQUAD);
+                            ((BuildTab) getParent().getParent()).refreshAll();
+                        }
+                    });
+                    popup.add(item);
+                }
             }
             
             // Allow number of shots selection
