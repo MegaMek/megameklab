@@ -448,23 +448,35 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                     armorType.addItem(EquipmentType.armorNames[type]);
                 }
             } else {
-                et = EquipmentType.get(EquipmentType.getArmorTypeName(type, true));
+                String armorName = 
+                        EquipmentType.getArmorTypeName(type, armor.isClan);
+                et = EquipmentType.get(armorName);
                 if (et != null) {
-                    armorType.addItem(EquipmentType.getArmorTypeName(type, true));
-                }
-                et = EquipmentType.get(EquipmentType.getArmorTypeName(type, false));
-                if (et != null) {
-                    armorType.addItem(EquipmentType.getArmorTypeName(type, false));
+                    armorType.addItem(armorName);
                 }
             }
         }           
         
-        armorType.setSelectedItem(EquipmentType.getArmorTypeName(unit.getArmorType(BattleArmor.LOC_SQUAD)));
+        String armorName = "";
+        if (isMixed){
+            boolean isClanArmor = TechConstants.isClan(
+                    unit.getArmorTechLevel(BattleArmor.LOC_SQUAD));
+            if (isClanArmor){
+                armorName = "Clan ";
+            } else {
+                armorName = "IS ";
+            }
+        }
+        armorName += EquipmentType.getArmorTypeName(
+                unit.getArmorType(BattleArmor.LOC_SQUAD));
+        armorType.setSelectedItem(armorName);
+        
         // We have to use a LOC_TROOPER as getOArmor has a special case for LOC_SQUAD...
         armorPoints.setValue(getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
         ((SpinnerNumberModel) armorPoints.getModel()).setMaximum(getBattleArmor().getMaximumArmorPoints());
 
-       // weaponView.updateUnit(unit);
+        this.numTroopers.setValue(getBattleArmor().getTroopers());
+        //weaponView.updateUnit(unit);
         //weaponView.refresh();
         refreshPreview();
         
