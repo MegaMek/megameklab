@@ -301,8 +301,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         //gbc.weighty = 1.0;
         add(previewPanel, gbc);
         //add(weaponView, gbc);
-
-        refresh();
     }
 
 	public JLabel createLabel(String text, Dimension maxSize) {
