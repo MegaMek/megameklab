@@ -110,7 +110,7 @@ public class MainUI extends MegaMekLabMainUI {
         BattleArmor ba = (BattleArmor) entity;
 
         ba.setYear(3145);
-        ba.setTechLevel(TechConstants.T_INTRO_BOXSET);
+        ba.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         ba.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
         ba.setWeightClass(EntityWeightClass.WEIGHT_LIGHT);
         ba.setTroopers(4);
