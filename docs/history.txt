@@ -94,6 +94,8 @@ V 0.1.24-dev
 + Bug: Armor critical assignment should now work for BA
 + Bug: New BA were starting out with the wrong tech level, which lead to armor 
     combo issues
++ Bug: For mixed tech BA, armor names were listed twice
++ Bug: Armor selector wasn't set properly when loading mixed tech BA
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
