@@ -46,6 +46,7 @@ import megamek.common.EntityMovementMode;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.MechView;
+import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestBattleArmor;
 import megameklab.com.util.ITab;
@@ -679,6 +680,30 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             }
             else if (combo.equals(armorType)) {
                 getBattleArmor().setArmorType((String)combo.getSelectedItem());
+                UnitUtil.removeISorArmorMounts(unit, false);
+                String armorName;
+                if (unit.isMixedTech()){
+                    armorName = (String)armorType.getSelectedItem();
+                } else if (unit.isClan()){
+                    armorName = "Clan " + (String)armorType.getSelectedItem();
+                } else {
+                    armorName = "IS " + (String)armorType.getSelectedItem();
+                }
+                EquipmentType aType = EquipmentType.get(armorName);
+                int armorCount = aType.getCriticals(unit);
+
+                if (armorCount < 1) {
+                    return;
+                }
+
+                for (; armorCount > 0; armorCount--) {
+                    try {
+                        getBattleArmor().addEquipment(new Mounted(unit, aType),
+                                BattleArmor.LOC_SQUAD, false);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
         }
         refresh.refreshAll();

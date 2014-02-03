@@ -87,9 +87,9 @@ public class CriticalTransferHandler extends TransferHandler {
                 loc = Integer.parseInt(split[0]);
             } else {
                 loc = Integer.parseInt(list.getName());
-            }
-            if (loc == mounted.getLocation()) {
-                return;
+                if (loc == mounted.getLocation()) {
+                    return;
+                }
             }
             int slot = list.getSelectedIndex();
             int startSlot = slot;
