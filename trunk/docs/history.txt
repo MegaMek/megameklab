@@ -96,6 +96,8 @@ V 0.1.24-dev
     combo issues
 + Bug: For mixed tech BA, armor names were listed twice
 + Bug: Armor selector wasn't set properly when loading mixed tech BA
++ Feature: UnitViewerDialog (used to select a unit from cache) now defaults to 
+    Tech Type: All
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
