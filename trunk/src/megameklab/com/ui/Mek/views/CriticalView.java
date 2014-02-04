@@ -22,6 +22,7 @@ import java.awt.Font;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
@@ -51,8 +52,6 @@ public class CriticalView extends IView {
     private JPanel rtPanel = new JPanel();
     private JPanel ctPanel = new JPanel();
     private JPanel headPanel = new JPanel();
-    private JPanel torsoPanel = new JPanel();
-    private JPanel legPanel = new JPanel();
     private RefreshListener refresh;
 
     private boolean showEmpty = false;
@@ -63,11 +62,14 @@ public class CriticalView extends IView {
         this.refresh = refresh;
 
         JPanel mainPanel = new JPanel();
+        JPanel laAlignPanel = new JPanel();
+        JPanel leftAlignPanel = new JPanel();
+        JPanel centerAlignPanel = new JPanel();
+        JPanel rightAlignPanel = new JPanel();
+        JPanel raAlignPanel = new JPanel();
 
         mainPanel.setOpaque(false);
         headPanel.setOpaque(false);
-        torsoPanel.setOpaque(false);
-        legPanel.setOpaque(false);
         ltPanel.setOpaque(false);
         rtPanel.setOpaque(false);
         ctPanel.setOpaque(false);
@@ -76,36 +78,59 @@ public class CriticalView extends IView {
         rlPanel.setOpaque(false);
         llPanel.setOpaque(false);
 
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        // Set panel layouts
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        laAlignPanel.setLayout(
+                new BoxLayout(laAlignPanel, BoxLayout.Y_AXIS));
+        leftAlignPanel.setLayout(
+                new BoxLayout(leftAlignPanel, BoxLayout.Y_AXIS));
+        centerAlignPanel.setLayout(
+                new BoxLayout(centerAlignPanel, BoxLayout.Y_AXIS));
+        rightAlignPanel.setLayout(
+                new BoxLayout(rightAlignPanel, BoxLayout.Y_AXIS));
+        raAlignPanel.setLayout(
+                new BoxLayout(raAlignPanel, BoxLayout.Y_AXIS));
 
-        headPanel.setLayout(new BoxLayout(headPanel, BoxLayout.X_AXIS));
-        torsoPanel.setLayout(new BoxLayout(torsoPanel, BoxLayout.X_AXIS));
-        legPanel.setLayout(new BoxLayout(legPanel, BoxLayout.X_AXIS));
 
+        // Set Borders, used for titles
         headPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Head", TitledBorder.TOP,
                 TitledBorder.DEFAULT_POSITION));
-        mainPanel.add(headPanel);
-
-        torsoPanel.add(laPanel);
         ltPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Left Torso",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-        torsoPanel.add(ltPanel);
         ctPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Center Torso",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-        torsoPanel.add(ctPanel);
         rtPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Right Torso",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
-        torsoPanel.add(rtPanel);
-        torsoPanel.add(raPanel);
-        mainPanel.add(torsoPanel);
-
-        legPanel.add(llPanel);
-        legPanel.add(rlPanel);
-        mainPanel.add(legPanel);
+        
+        laAlignPanel.add(Box.createVerticalStrut(100));
+        laAlignPanel.add(laPanel);
+        
+        leftAlignPanel.add(Box.createVerticalStrut(50));
+        leftAlignPanel.add(ltPanel);
+        leftAlignPanel.add(Box.createVerticalStrut(50));
+        leftAlignPanel.add(llPanel);
+        
+        centerAlignPanel.add(headPanel);
+        centerAlignPanel.add(ctPanel);
+        centerAlignPanel.add(Box.createVerticalStrut(75));
+        
+        rightAlignPanel.add(Box.createVerticalStrut(50));
+        rightAlignPanel.add(rtPanel);
+        rightAlignPanel.add(Box.createVerticalStrut(50));
+        rightAlignPanel.add(rlPanel);
+        
+        raAlignPanel.add(Box.createVerticalStrut(100));
+        raAlignPanel.add(raPanel);
+        
+        mainPanel.add(laAlignPanel);
+        mainPanel.add(leftAlignPanel);
+        mainPanel.add(centerAlignPanel);
+        mainPanel.add(rightAlignPanel);
+        mainPanel.add(raAlignPanel);
 
         this.add(mainPanel);
     }
