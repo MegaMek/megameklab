@@ -98,6 +98,8 @@ V 0.1.24-dev
 + Bug: Armor selector wasn't set properly when loading mixed tech BA
 + Feature: UnitViewerDialog (used to select a unit from cache) now defaults to 
     Tech Type: All
++ Feature: Adjusted layout of critical view for 'mechs, to give the mech a more 
+    humanoid appearance
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
