@@ -223,7 +223,8 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         for (int i = 0; i < TechConstants.SIZE; i++) {
             techModel.addElement(TechConstants.getLevelDisplayableName(i));
         }
-        techModel.setSelectedItem(TechConstants.getLevelDisplayableName(0));
+        techModel.setSelectedItem(
+                TechConstants.getLevelDisplayableName(TechConstants.SIZE - 1));
         comboType.setModel(techModel);
         comboType.setMinimumSize(new java.awt.Dimension(200, 27));
         comboType.setPreferredSize(new java.awt.Dimension(200, 27));
