@@ -319,6 +319,16 @@ public class CriticalView extends IView {
                         break;
                 }
             }
+            
+            ctPanel.invalidate();
+            raPanel.invalidate();
+            headPanel.invalidate();
+            laPanel.invalidate();
+            ltPanel.invalidate();
+            rtPanel.invalidate();
+            llPanel.invalidate();
+            rlPanel.invalidate();
+            
             ctPanel.repaint();
             raPanel.repaint();
             headPanel.repaint();
