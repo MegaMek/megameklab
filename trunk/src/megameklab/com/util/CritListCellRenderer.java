@@ -138,11 +138,21 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
             label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EMPTY));
         }
 
-        if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, getCritLocation()) && UnitUtil.isPreviousCritEmpty(unit, cs, index, getCritLocation())) {
-            label.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, new Color(0, 0, 0)));
-        } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, getCritLocation())) {
-            label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0, 0, 0)));
-        }
+        int loc = getCritLocation();
+        if ((cs != null) 
+                && UnitUtil.isLastCrit(unit, cs, index, loc) 
+                && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
+            label.setBorder(
+                    BorderFactory.createMatteBorder(1, 0, 1, 0, Color.black));
+        } else if ((cs != null) 
+                && UnitUtil.isLastCrit(unit, cs, index, loc)) {
+            label.setBorder(
+                    BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
+        } else if ((cs != null) 
+                && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)){
+            label.setBorder(
+                    BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+        } 
 
         return label;
     }
