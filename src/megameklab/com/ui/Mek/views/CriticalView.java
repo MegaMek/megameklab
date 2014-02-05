@@ -230,17 +230,18 @@ public class CriticalView extends IView {
                                     BorderFactory.createEmptyBorder(),
                                     "Front Left Leg", TitledBorder.TOP,
                                     TitledBorder.DEFAULT_POSITION));
+                            criticalSlotList.setSize(legSize);
+                            criticalSlotList.setPreferredSize(legSize);
+                            criticalSlotList.setMaximumSize(legSize);
                         } else {
                             laPanel.setBorder(BorderFactory.createTitledBorder(
                                     BorderFactory.createEmptyBorder(),
                                     "Left Arm", TitledBorder.TOP,
                                     TitledBorder.DEFAULT_POSITION));
-                            // ((TitledBorder)
-                            // laPanel.getBorder()).setTitleColor(Color.BLUE);
+                            criticalSlotList.setSize(size);
+                            criticalSlotList.setPreferredSize(size);
+                            criticalSlotList.setMaximumSize(size);
                         }
-                        criticalSlotList.setSize(size);
-                        criticalSlotList.setPreferredSize(size);
-                        criticalSlotList.setMaximumSize(size);
                         laPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_RARM:
@@ -249,15 +250,19 @@ public class CriticalView extends IView {
                                     BorderFactory.createEmptyBorder(),
                                     "Front Right Leg", TitledBorder.TOP,
                                     TitledBorder.DEFAULT_POSITION));
+                            criticalSlotList.setSize(legSize);
+                            criticalSlotList.setPreferredSize(legSize);
+                            criticalSlotList.setMaximumSize(legSize);
                         } else {
                             raPanel.setBorder(BorderFactory.createTitledBorder(
                                     BorderFactory.createEmptyBorder(),
                                     "Right Arm", TitledBorder.TOP,
                                     TitledBorder.DEFAULT_POSITION));
+                            criticalSlotList.setSize(size);
+                            criticalSlotList.setPreferredSize(size);
+                            criticalSlotList.setMaximumSize(size);
                         }
-                        criticalSlotList.setSize(size);
-                        criticalSlotList.setPreferredSize(size);
-                        criticalSlotList.setMaximumSize(size);
+                        
                         raPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_CT:

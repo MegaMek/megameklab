@@ -100,6 +100,7 @@ V 0.1.24-dev
     Tech Type: All
 + Feature: Adjusted layout of critical view for 'mechs, to give the mech a more 
     humanoid appearance
++ Bug: DropTargetCriticalList for Quad front legs was too tall
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
