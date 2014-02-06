@@ -35,6 +35,7 @@ import javax.swing.border.TitledBorder;
 
 import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.loaders.MtfFile;
@@ -161,6 +162,10 @@ public class CriticalView extends IView {
         int [] numAMWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
          
         for (Mounted m : unit.getEquipment()){
+            // Manipulators don't take up slots in BA
+            if (m.getType().hasFlag(MiscType.F_BA_MANIPULATOR)){
+                continue;
+            }
             if (m.getLocation() == BattleArmor.LOC_SQUAD 
                     || m.getLocation() == trooper){
                 critSuit.addMounted(m.getBaMountLoc(), m);
