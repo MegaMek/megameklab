@@ -29,6 +29,7 @@ import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 
@@ -118,6 +119,10 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 }
                 if (mount.isDWPMounted()) {
                     name += " (DWP)";
+                }
+                if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
+                        && mount.getLinked() != null){
+                    name += " (attached " + mount.getLinked().getName() + ")";
                 }
                 // If we are editing BA, we need to inform the user about how
                 //  many shots are in this Critical

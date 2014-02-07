@@ -113,7 +113,7 @@ public class CriticalTransferHandler extends TransferHandler {
                 }
             }
             Mounted linkedBy = mounted.getLinkedBy();
-            if (linkedBy != null) {
+            if (linkedBy != null && !(unit instanceof BattleArmor)) {
                 UnitUtil.removeCriticals(unit, linkedBy);
                 try {
                     unit.addEquipment(linkedBy, mounted.getLocation(), linkedBy.isRearMounted());
