@@ -19,6 +19,8 @@ package megameklab.com.util;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -98,6 +100,27 @@ public class CriticalTransferHandler extends TransferHandler {
     public boolean canImport(TransferSupport info) {
         // Check for String flavor
         if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            return false;
+        }
+        // check if the dragged mounted should be transferrable
+        Mounted mounted = null;
+        try {
+            mounted = unit.getEquipment(Integer
+                    .parseInt((String) info.getTransferable().getTransferData(
+                            DataFlavor.stringFlavor)));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (UnsupportedFlavorException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // not actually dragged a Mounted? not transferable
+        if (mounted == null) {
+            return false;
+        }
+        // stuff that has a fixed location is also not transferable
+        if (UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
             return false;
         }
         return true;

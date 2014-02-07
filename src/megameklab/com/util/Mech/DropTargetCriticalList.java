@@ -139,7 +139,11 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                             removeMount();
                         }
                     });
-                    popup.add(info);
+                    if (!((unit instanceof BattleArmor) 
+                            && UnitUtil.isFixedLocationSpreadEquipment(mount
+                                    .getType()))){
+                        popup.add(info);
+                    }
 
                     if ((mount.getLocation() != Mech.LOC_LARM)
                             && (mount.getLocation() != Mech.LOC_RARM)) {
