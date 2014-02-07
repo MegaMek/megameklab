@@ -479,7 +479,9 @@ public class CriticalTransferHandler extends TransferHandler {
         // check if the dragged mounted should be transferrable
         Mounted mounted = null;
         try {
-            mounted = unit.getEquipment(Integer.parseInt((String)info.getTransferable().getTransferData(DataFlavor.stringFlavor)));
+            mounted = unit.getEquipment(Integer
+                    .parseInt((String) info.getTransferable().getTransferData(
+                            DataFlavor.stringFlavor)));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (UnsupportedFlavorException e) {
