@@ -363,6 +363,11 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
 
         for (Mounted mount : unit.getAmmo()) {
+            // Ignore ammo for one-shot launchers
+            if (mount.getLinkedBy() != null 
+                    && mount.getLinkedBy().isOneShot()){
+                continue;
+            }
             equipmentList.addCrit(mount);
         }
 

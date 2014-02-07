@@ -134,6 +134,11 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
         }
         for (Mounted mount : unit.getAmmo()) {
+            // Ignore ammo for one-shot launchers
+            if (mount.getLinkedBy() != null 
+                    && mount.getLinkedBy().isOneShot()){
+                continue;
+            }
             if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
