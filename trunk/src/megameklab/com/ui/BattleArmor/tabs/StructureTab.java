@@ -26,8 +26,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -46,6 +48,7 @@ import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.MechView;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestBattleArmor;
@@ -105,6 +108,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     // Manipulator Panel
     private JComboBox<String> leftManipSelect = new JComboBox<String>();
     private JComboBox<String> rightManipSelect = new JComboBox<String>();
+    
+    // Enhancement Panel
+    Dimension enhanceLabelSz = new Dimension(200,25);
+    private JLabel lblJumpBooster = 
+            createLabel("Jump Booster:",enhanceLabelSz);
+    private JLabel lblMechJumpBooster = 
+            createLabel("Mechanical Jump Booster:",enhanceLabelSz);
+    private JLabel lblMyomerBooster = 
+            createLabel("Myomer Booster:",enhanceLabelSz);
+    private JLabel lblPartialWing = 
+            createLabel("Partial Wing:",enhanceLabelSz);
+    private JCheckBox chkJumpBooster = new JCheckBox();
+    private JCheckBox chkMechJumpBooster = new JCheckBox();
+    private JCheckBox chkMyomerBooster = new JCheckBox();
+    private JCheckBox chkPartialWing = new JCheckBox();
 
     
     private JTextField txtPrimary = new JTextField("None");
@@ -118,10 +136,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         refresh();
 	}
 
-	public void setUpPanels() {
+	public void setUpPanels() {	    
 	    JPanel previewPanel = new JPanel();
 	    previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
-	    panelMekView = new MechViewPanel(450, 550,false);
+	    panelMekView = new MechViewPanel(450, 447,false);
 	    //mekViewScrollPane.setMinimumSize(new java.awt.Dimension(450, 550));
 	    //mekViewScrollPane.setMaximumSize(new java.awt.Dimension(450, 550));
 	    //mekViewScrollPane.setPreferredSize(new java.awt.Dimension(450, 550));
@@ -129,11 +147,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 	    
 	    JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         JPanel basicPanel = new JPanel(new GridBagLayout());
         JPanel chassisPanel = new JPanel(new GridBagLayout());
         JPanel armorPanel = new JPanel(new GridBagLayout());
         JPanel manipPanel = new JPanel(new GridBagLayout());
+        JPanel enhancePanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         Dimension comboSize = new Dimension(250, 25);
         Dimension labelSize = new Dimension(110, 25);
@@ -291,6 +313,34 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         gbc.gridy = 1;
         manipPanel.add(rightManipSelect, gbc);
         
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        enhancePanel.add(lblPartialWing,gbc);
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        enhancePanel.add(chkPartialWing,gbc);
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        enhancePanel.add(lblJumpBooster,gbc);
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        enhancePanel.add(chkJumpBooster,gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        enhancePanel.add(lblMechJumpBooster,gbc);
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        enhancePanel.add(chkMechJumpBooster,gbc);
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        enhancePanel.add(lblMyomerBooster,gbc);
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        enhancePanel.add(chkMyomerBooster,gbc);
+        
 
         setFieldSize(chassisType, comboSize);
         setFieldSize(armorType, comboSize);
@@ -313,12 +363,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         armorPanel.setBorder(BorderFactory.createTitledBorder("Armor"));
         //weaponView.setBorder(BorderFactory.createTitledBorder("Weapon Selection"));
         manipPanel.setBorder(BorderFactory.createTitledBorder("Manipulators"));
+        enhancePanel.setBorder(BorderFactory.createTitledBorder("Enhancements"));
 
         leftPanel.add(basicPanel);
         leftPanel.add(chassisPanel);
         leftPanel.add(armorPanel);
         leftPanel.add(manipPanel);
         //leftPanel.add(Box.createVerticalGlue());
+        
+        rightPanel.add(Box.createVerticalStrut(5));
+        rightPanel.add(previewPanel);
+        rightPanel.add(enhancePanel);
+        
+        
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.insets = new Insets(0,30,0,30);
@@ -330,13 +387,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         gbc.weighty = 0;
         add(leftPanel, gbc);
         gbc.gridx = 1;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        //gbc.weightx = 1.0;
-        //gbc.weighty = 1.0;
-        add(previewPanel, gbc);
-        //add(weaponView, gbc);
+        add(rightPanel,gbc);
+
     }
 
+   public JLabel createLeftLabel(String text, Dimension maxSize) {
+
+        JLabel label = new JLabel(text, SwingConstants.LEFT);
+
+        setFieldSize(label, maxSize);
+        return label;
+    }
+	
 	public JLabel createLabel(String text, Dimension maxSize) {
 
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
@@ -511,6 +573,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 
         numTroopers.setValue(getBattleArmor().getTroopers());
 
+        // Manipulators
         leftManipSelect.removeAllItems();
         rightManipSelect.removeAllItems();
         leftManipSelect.addItem(BattleArmor.MANIPULATOR_TYPE_STRINGS[BattleArmor.MANIPULATOR_NONE]);
@@ -536,6 +599,74 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 BattleArmor.MANIPULATOR_NAME_STRINGS[manipType]);
         
         
+        // Enhancements
+        EquipmentType eType;
+        boolean legalTech;
+        // Jump Booster
+        if (isClan){
+            eType = EquipmentType.get("CLBAJumpBooster");
+        } else {
+            eType = EquipmentType.get("ISBAJumpBooster");
+        }
+        legalTech = TechConstants.isLegal(getBattleArmor().getTechLevel(), 
+                eType.getTechLevel(getBattleArmor().getYear()), 
+                isMixed);
+        if (legalTech && unit.getMovementMode() == EntityMovementMode.INF_JUMP
+                && unit.getJumpMP() > 0 
+                && !unit.hasWorkingMisc(MiscType.F_PARTIAL_WING)){
+            chkJumpBooster.setEnabled(true);
+            lblJumpBooster.setEnabled(true);
+        } else {
+            chkJumpBooster.setEnabled(false);
+            lblJumpBooster.setEnabled(false);
+        }
+        // Partial Wing
+        eType = EquipmentType.get("BAPartialWing");
+        legalTech = TechConstants.isLegal(getBattleArmor().getTechLevel(), 
+                eType.getTechLevel(getBattleArmor().getYear()), 
+                isMixed);
+        if (legalTech && unit.getMovementMode() == EntityMovementMode.INF_JUMP
+                && unit.getJumpMP() > 0 
+                && !unit.hasWorkingMisc(MiscType.F_JUMP_BOOSTER)){
+            chkPartialWing.setEnabled(true);
+            lblPartialWing.setEnabled(true);
+        } else {
+            chkPartialWing.setEnabled(false);
+            lblPartialWing.setEnabled(false);
+        }
+        
+        // Myomer Booster
+        eType = EquipmentType.get("CLBAMyomerBooster");
+        legalTech = TechConstants.isLegal(getBattleArmor().getTechLevel(), 
+                eType.getTechLevel(getBattleArmor().getYear()), 
+                isMixed) && isClan;
+        if (legalTech && !unit.hasWorkingMisc(MiscType.F_STEALTH)
+                && !unit.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER)
+                && unit.getWeightClass() != EntityWeightClass.WEIGHT_ULTRA_LIGHT){
+            chkMyomerBooster.setEnabled(true);
+            lblMyomerBooster.setEnabled(true);
+        } else {
+            chkMyomerBooster.setEnabled(false);
+            lblMyomerBooster.setEnabled(false);
+        }
+        
+        // Mechanical Jump Booster
+        if (isClan){
+            eType = EquipmentType.get("CLMechanicalJumpBooster");
+        } else {
+            eType = EquipmentType.get("ISMechanicalJumpBooster");
+        }
+        legalTech = TechConstants.isLegal(getBattleArmor().getTechLevel(), 
+                eType.getTechLevel(getBattleArmor().getYear()), 
+                isMixed);
+        if (legalTech && !unit.hasWorkingMisc(MiscType.F_MASC)){
+            chkMechJumpBooster.setEnabled(true);
+            lblMechJumpBooster.setEnabled(true);
+        } else {
+            chkMechJumpBooster.setEnabled(false);
+            lblMechJumpBooster.setEnabled(false);
+        }        
+        
         refreshPreview();
 
         addAllActionListeners();
@@ -550,6 +681,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         techType.addActionListener(this);
         leftManipSelect.addActionListener(this);
         rightManipSelect.addActionListener(this);
+        chkJumpBooster.addActionListener(this);
+        chkMechJumpBooster.addActionListener(this);
+        chkMyomerBooster.addActionListener(this);
+        chkPartialWing.addActionListener(this);
         
         chassis.addKeyListener(this);
         model.addKeyListener(this);
@@ -572,6 +707,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         techType.removeActionListener(this);
         leftManipSelect.removeActionListener(this);
         rightManipSelect.removeActionListener(this);
+        chkJumpBooster.removeActionListener(this);
+        chkMechJumpBooster.removeActionListener(this);
+        chkMyomerBooster.removeActionListener(this);
+        chkPartialWing.removeActionListener(this);
         
         chassis.removeKeyListener(this);
         model.removeKeyListener(this);
@@ -876,6 +1015,71 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                         // This shouldn't happen
                         ex.printStackTrace();
                     }
+                }
+            }
+        } else if (e.getSource() instanceof JCheckBox){
+            JCheckBox chkBox = (JCheckBox) e.getSource();
+            if (chkBox.isSelected()){
+                EquipmentType eType;
+                Mounted newMount = null;                
+                if (chkBox.equals(chkJumpBooster)){
+                    if (unit.isClan()){
+                        eType = EquipmentType.get("CLBAJumpBooster");
+                    } else {
+                        eType = EquipmentType.get("ISBAJumpBooster");
+                    }
+                    newMount = new Mounted(unit, eType);
+                    newMount.setBaMountLoc(BattleArmor.MOUNT_LOC_BODY);
+                } else if (chkBox.equals(chkMechJumpBooster)){
+                    if (unit.isClan()){
+                        eType = EquipmentType.get("CLMechanicalJumpBooster");
+                    } else {
+                        eType = EquipmentType.get("ISMechanicalJumpBooster");
+                    }
+                    newMount = new Mounted(unit, eType);
+                    newMount.setBaMountLoc(BattleArmor.MOUNT_LOC_BODY);
+                } else if (chkBox.equals(chkMyomerBooster)){
+                    eType = EquipmentType.get("CLBAMyomerBooster");
+                    newMount = new Mounted(unit, eType);
+                    newMount.setBaMountLoc(BattleArmor.MOUNT_LOC_BODY);
+                } else if (chkBox.equals(chkPartialWing)){
+                        eType = EquipmentType.get("BAPartialWing");
+                    newMount = new Mounted(unit, eType);
+                    newMount.setBaMountLoc(BattleArmor.MOUNT_LOC_BODY);
+                }
+                try {
+                    if (newMount != null){
+                        getBattleArmor().addEquipment(newMount, 
+                                BattleArmor.LOC_SQUAD, false);
+                    }
+                } catch (LocationFullException exc){
+                    // Shouldn't happen with BA
+                    exc.printStackTrace();
+                }
+            } else {
+                Mounted mount = null;
+                for (Mounted m : unit.getMisc()){
+                    if (chkBox.equals(chkJumpBooster) 
+                            && m.getType().hasFlag(MiscType.F_JUMP_BOOSTER)){
+                        mount = m;
+                        break;
+                    } else if (chkBox.equals(chkMechJumpBooster) 
+                            && m.getType().hasFlag(
+                                    MiscType.F_MECHANICAL_JUMP_BOOSTER)){
+                        mount = m;
+                        break;
+                    } else if (chkBox.equals(chkMyomerBooster) 
+                            && m.getType().hasFlag(MiscType.F_MASC)){
+                        mount = m;
+                        break;
+                    } else if (chkBox.equals(chkPartialWing) 
+                            && m.getType().hasFlag(MiscType.F_PARTIAL_WING)){
+                        mount = m;
+                        break;
+                    }
+                }
+                if (mount != null){
+                    UnitUtil.removeMounted(unit, mount);
                 }
             }
         }

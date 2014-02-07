@@ -373,6 +373,9 @@ public class CriticalView extends IView {
             } else {
                 critsToAdd = m.getType().getCriticals(ba);
             }
+            if (critsToAdd == 0){
+                return;
+            }
             for (int slot = 0; slot < getNumCriticals(loc); slot++){
                 if (crits[loc][slot] == null){
                     crits[loc][slot] = new CriticalSlot(m);
