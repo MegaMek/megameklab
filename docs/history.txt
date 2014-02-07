@@ -107,6 +107,7 @@ V 0.1.24-dev
 + Bug: BA Clan Reflective/Reactive armor armor selection was bugged
 + Bug: Selecting Standard armor adds a critical of BA Standard Armor to assign 
     in the critical view
++ Bug: BA Manipulators could show up in equipment and unallocated tables
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
