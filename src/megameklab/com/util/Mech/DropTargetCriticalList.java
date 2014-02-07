@@ -38,6 +38,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
+import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -142,6 +143,26 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     if (!((unit instanceof BattleArmor) 
                             && UnitUtil.isFixedLocationSpreadEquipment(mount
                                     .getType()))){
+                        popup.add(info);
+                    }
+                    
+                    // Right-clicked on a DWP that has an attached weapon
+                    if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) 
+                            && mount.getLinked() != null){
+                        info = new JMenuItem("Remove attached weapon");
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                Mounted attached = mount.getLinked();
+                                attached.setDWPMounted(false);
+                                mount.setLinked(null);
+                                mount.setLinkedBy(null);
+                                attached.setLinked(null);
+                                attached.setLinkedBy(null);
+                                if (refresh != null) {
+                                    refresh.refreshAll();
+                                }
+                            }
+                        });
                         popup.add(info);
                     }
 

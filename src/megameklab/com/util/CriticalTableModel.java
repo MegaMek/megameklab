@@ -29,6 +29,7 @@ import javax.swing.table.TableColumn;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
+import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 
@@ -135,6 +136,9 @@ public class CriticalTableModel extends AbstractTableModel {
                     && (crit.getType() instanceof AmmoType)){
                 return ((AmmoType)crit.getType()).getKgPerShot() * 
                         crit.getBaseShotsLeft() / 1000;
+            } else if (crit.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
+                    && crit.getLinked() != null){
+                return crit.getLinked().getType().getTonnage(unit) * 0.75;
             } else {
                 return crit.getType().getTonnage(unit);
             }
@@ -204,6 +208,11 @@ public class CriticalTableModel extends AbstractTableModel {
                 }
                 if (mount.isDWPMounted()){
                     modifier += " (DWP)"; 
+                }
+                if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
+                        && mount.getLinked() != null){
+                    modifier += " (attached " + mount.getLinked().getName() 
+                            + ")";
                 }
                 c.setText(c.getText() + modifier);
             }
