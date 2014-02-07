@@ -105,6 +105,8 @@ V 0.1.24-dev
 + Feature: Added ability to select manipulators for BA
 + Bug: Selecting BA Standard armor wouldn't add the change listeners back
 + Bug: BA Clan Reflective/Reactive armor armor selection was bugged
++ Bug: Selecting Standard armor adds a critical of BA Standard Armor to assign 
+    in the critical view
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
