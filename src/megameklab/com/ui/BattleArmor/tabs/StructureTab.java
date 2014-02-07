@@ -756,7 +756,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 resetMovementMode();
             }
             else if (combo.equals(armorType)) {
-                getBattleArmor().setArmorType((String)combo.getSelectedItem());
                 UnitUtil.removeISorArmorMounts(unit, false);
                 String armorName;
                 if (unit.isMixedTech()){
@@ -768,10 +767,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 }
                 EquipmentType aType = EquipmentType.get(armorName);
                 int armorCount = aType.getCriticals(unit);
-
-                if (armorCount < 1) {
-                    return;
-                }
+                getBattleArmor().setArmorType(armorName);
 
                 for (; armorCount > 0; armorCount--) {
                     try {
