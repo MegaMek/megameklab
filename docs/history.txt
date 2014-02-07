@@ -103,6 +103,8 @@ V 0.1.24-dev
 + Bug: DropTargetCriticalList for Quad front legs was too tall
 + Feature: Added ability to drag/drop equipment into specific crits on Meks
 + Feature: Added ability to select manipulators for BA
++ Bug: Selecting BA Standard armor wouldn't add the change listeners back
++ Bug: BA Clan Reflective/Reactive armor armor selection was bugged
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
