@@ -109,6 +109,7 @@ V 0.1.24-dev
     in the critical view
 + Bug: BA Manipulators could show up in equipment and unallocated tables
 + Adjustments for the Popup mine moving to the BA Weapons folder.
++ Added BA Partial wing and BA Myomer boosters to the list of fixed location eq
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
