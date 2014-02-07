@@ -47,7 +47,6 @@ import megamek.common.weapons.ISHGaussRifle;
 import megamek.common.weapons.ISLargeVariableSpeedPulseLaser;
 import megamek.common.weapons.ISMediumVariableSpeedPulseLaser;
 import megamek.common.weapons.ISPlasmaRifle;
-import megamek.common.weapons.ISPopUpMineLauncher;
 import megamek.common.weapons.ISSilverBulletGauss;
 import megamek.common.weapons.ISSmallPulseLaser;
 import megamek.common.weapons.ISSmallVariableSpeedPulseLaser;
@@ -74,6 +73,7 @@ import megamek.common.weapons.TAGWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
+import megamek.common.weapons.battlearmor.ISPopUpMineLauncher;
 import megamek.common.weapons.infantry.InfantryWeapon;
 
 public class StringUtils {
