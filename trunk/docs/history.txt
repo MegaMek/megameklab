@@ -118,6 +118,8 @@ V 0.1.24-dev
 + Bug: 0 Critical equipment for BA could be assigned a critical to assign
 + Bug: Reset button in BA BuildTab would remove fixed location equipment
 + Bug: Ammo for OS launchers was showing in Equipment and Build tabs for BA
++ Bug: Dragging multi-slot equipment from crit view to unallocated eq table 
+    didn't work for BA
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
