@@ -29,10 +29,10 @@ V 0.1.24-dev
 + Updated UnitSelectorDialog to be compatible with new MM jar
 + Battle Armor with VTOL movement currently prints it out as Jump
 + BA LB-X damage type should be (DB,C,F) 
-+ “Mortar” should be “ ’Mech Mortar”, Damage listed is “0 (S)”, should be "2/msl (M,C,S)"?
++ â€œMortarâ€� should be â€œ â€™Mech Mortarâ€�, Damage listed is â€œ0 (S)â€�, should be "2/msl (M,C,S)"?
 + Bombast Laser damage type needs to be (DE,V).
 + Tracks location on 'Mechs should be "Legs"
-+ Void Signature System’s location in the stat block should be "*" because of
++ Void Signature Systemâ€™s location in the stat block should be "*" because of
     spread across locations, same for null sig, CLPS and blue shield
 + Chem Laser damage type should be (DE) not (DE,S)
 + Naval C3 (in DS / Systemwide tag) is currently printing out as "Improved C3"
@@ -108,6 +108,7 @@ V 0.1.24-dev
 + Bug: Selecting Standard armor adds a critical of BA Standard Armor to assign 
     in the critical view
 + Bug: BA Manipulators could show up in equipment and unallocated tables
++ Adjustments for the Popup mine moving to the BA Weapons folder.
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
