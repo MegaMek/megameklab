@@ -116,6 +116,7 @@ V 0.1.24-dev
 + Feature: Added enhancement panel for BA, where things like jump boosters, 
     mechanical jump boosters, myomer boosters, and partial wings can't be added
 + Bug: 0 Critical equipment for BA could be assigned a critical to assign
++ Bug: Reset button in BA BuildTab would remove fixed location equipment
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
