@@ -107,8 +107,10 @@ public class CriticalTransferHandler extends TransferHandler {
                     startSlot = slot;
                 }
             }
-            for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(unit, mounted.getType())); i++) {
-                unit.setCritical(loc, i, null);
+            if (!(unit instanceof BattleArmor)){
+                for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(unit, mounted.getType())); i++) {
+                    unit.setCritical(loc, i, null);
+                }
             }
             Mounted linkedBy = mounted.getLinkedBy();
             if (linkedBy != null) {
