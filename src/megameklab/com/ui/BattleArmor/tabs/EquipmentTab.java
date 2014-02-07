@@ -550,7 +550,17 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (UnitUtil.isHeatSink(etype, true) || UnitUtil.isJumpJet(etype)) {
                     return false;
                 }
-                if ((etype instanceof MiscType) && (etype.hasFlag(MiscType.F_TSM) || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER)))) {
+                if ((etype instanceof MiscType)
+                        && (etype.hasFlag(MiscType.F_TSM)
+                                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) 
+                                || (etype.hasFlag(MiscType.F_MASC) 
+                                        && !etype.hasSubType(
+                                                MiscType.S_SUPERCHARGER)))) {
+                    return false;
+                }
+                
+                if (etype.hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
+                        && !getBattleArmor().canMountDWP()){
                     return false;
                 }
                 if (((nType == T_OTHER) && UnitUtil.isUnitEquipment(etype, unit))

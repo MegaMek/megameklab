@@ -120,6 +120,9 @@ V 0.1.24-dev
 + Bug: Ammo for OS launchers was showing in Equipment and Build tabs for BA
 + Bug: Dragging multi-slot equipment from crit view to unallocated eq table 
     didn't work for BA
++ Updated support for Detachable Weapon Packs on BA.  To use a DWP, one adds the
+    equipment, then in the BuildTab they can right click on weapons to attach
+    them in the DWP.  The DWP can be right-clicked to dettach the weapon
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated

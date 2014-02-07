@@ -39,6 +39,7 @@ import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.Weapon;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
@@ -127,6 +128,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
         }
         for (Mounted mount : unit.getWeaponList()) {
+            // Don't display weapons mounted in a detachable weapon pack
+            if (mount.isDWPMounted()){
+                continue;
+            }
             if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) 
                     && (UnitUtil.isBattleArmorWeapon(mount.getType(), unit)
                             || UnitUtil.isBattleArmorAPWeapon(mount.getType()))) {
@@ -321,23 +326,54 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 }
             }
             
-            if ((unit instanceof BattleArmor) && !eq.isDWPMounted()
+            // See if we should allow linking this to a DWP
+            if (unit.hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
+                    && !eq.getType().hasFlag(WeaponType.F_MISSILE)
+                    && !eq.isDWPMounted()
                     && ((BattleArmor)unit).canMountDWP()){
-                item = new JMenuItem("Make detachable");
-                item.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        eq.setDWPMounted(true);
-                        ((BuildTab) getParent().getParent()).refreshAll();
+                for (Mounted m : unit.getMisc()){
+                    // If this isn't a DWP or it's a full DWP, skip
+                    if (!m.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
+                            || m.getLinked() != null){
+                        continue;
                     }
-                });
-                popup.add(item);
+                
+                    String locName;
+                    if (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE){
+                        locName = "None";
+                    } else {
+                        locName = 
+                                BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
+                    }
+                    item = new JMenuItem("Mount in " + m.getName() 
+                            + " (" 
+                            + locName
+                            + ")");
+                    final Mounted dwp = m;
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            eq.setLinked(dwp);
+                            dwp.setLinked(eq);
+                            eq.setDWPMounted(true);
+                            ((BuildTab) getParent().getParent()).refreshAll();
+                        }
+                    });
+                    popup.add(item);
+                }
             }
             
-            if (unit instanceof BattleArmor && eq.isDWPMounted()){
-                item = new JMenuItem("Make built-in");
+            // Right-clicked on a DWP that has an attached weapon
+            if (eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) 
+                    && eq.getLinked() != null){
+                item = new JMenuItem("Remove attached weapon");
                 item.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        eq.setDWPMounted(false);
+                        Mounted attached = eq.getLinked();
+                        attached.setDWPMounted(false);
+                        eq.setLinked(null);
+                        eq.setLinkedBy(null);
+                        attached.setLinked(null);
+                        attached.setLinkedBy(null);
                         ((BuildTab) getParent().getParent()).refreshAll();
                     }
                 });
