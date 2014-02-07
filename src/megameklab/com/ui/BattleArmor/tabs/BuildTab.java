@@ -201,6 +201,9 @@ public class BuildTab extends ITab implements ActionListener {
 
     private void resetCrits() {
         for (Mounted mount : unit.getEquipment()) {
+            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())){
+                continue;
+            }
             mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
             UnitUtil.changeMountStatus(unit, mount, mount.getLocation(),
                     Entity.LOC_NONE, false);
