@@ -908,6 +908,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 EquipmentType aType = EquipmentType.get(armorName);
                 int armorCount = aType.getCriticals(unit);
                 getBattleArmor().setArmorType(armorName);
+                getBattleArmor().setArmorTechLevel(
+                        aType.getTechLevel(unit.getYear()));
 
                 for (; armorCount > 0; armorCount--) {
                     try {

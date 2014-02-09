@@ -124,6 +124,11 @@ V 0.1.24-dev
     equipment, then in the BuildTab they can right click on weapons to attach
     them in the DWP.  The DWP can be right-clicked to dettach the weapon
 + Bug: Detachable Weapon packs could be attached to other DWPs
++ Updated TestBattleArmor to not include the slots for AP weapons mounted in AP
+    mounts
++ Bug: ArmorTechType was not being updated when BattleArmor armor type was 
+    changed, this lead to an issue where the mixed-tech armor selection was 
+    bugged
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
