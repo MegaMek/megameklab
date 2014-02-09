@@ -367,6 +367,12 @@ public class CriticalView extends IView {
                 return;
             }
             
+            // AP Weapons that are mounted in an AP Mount don't take up slots
+            if (m.isAPMMounted() && m.getLinkedBy() != null 
+                    && m.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)){
+                return;
+            }
+            
             int critsToAdd;
             if (m.getType().isSpreadable()){
                 critsToAdd = 1;
