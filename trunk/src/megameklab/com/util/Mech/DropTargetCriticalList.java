@@ -300,35 +300,6 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                         popup.add(info);
                     }
                 }
-                
-                if ((unit instanceof BattleArmor) && !mount.isDWPMounted()
-                        && ((BattleArmor)unit).canMountDWP()){
-                    JMenuItem info = new JMenuItem("Make detachable");
-                    info.setActionCommand(Integer.toString(location));
-                    info.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            mount.setDWPMounted(true);
-                            if (refresh != null) {
-                                refresh.refreshAll();
-                            }
-                        }
-                    });
-                    popup.add(info);
-                }
-                
-                if (unit instanceof BattleArmor && mount.isDWPMounted()){
-                    JMenuItem info = new JMenuItem("Make built-in");
-                    info.setActionCommand(Integer.toString(location));
-                    info.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            mount.setDWPMounted(false);
-                            if (refresh != null) {
-                                refresh.refreshAll();
-                            }
-                        }
-                    });
-                    popup.add(info);
-                }
 
                 if (UnitUtil.isArmorable(cs)
                         && ((UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL) || (UnitUtil
