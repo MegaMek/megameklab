@@ -92,9 +92,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     String[] clanEngineTypes = { ENGINESTANDARD, ENGINEICE, ENGINEXL,
             ENGINEFUELCELL, ENGINEXXL };
 
-    private int clanEngineFlag = 0;
-
-    JComboBox<String> engineType = new JComboBox(isEngineTypes);
+    JComboBox<String> engineType = new JComboBox<String>(isEngineTypes);
 
     JSpinner cruiseMP;
     JSpinner jumpMP;
@@ -105,21 +103,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private JTextField chassis = new JTextField(5);
     private JTextField model = new JTextField(5);
     String[] techTypes = { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
-    JComboBox<String> techType = new JComboBox(techTypes);
+    JComboBox<String> techType = new JComboBox<String>(techTypes);
     String[] isTechLevels = { "Intro", "Standard", "Advanced", "Experimental",
             "Unoffical" };
     String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
             "Unoffical" };
-    JComboBox<String> techLevel = new JComboBox(isTechLevels);
+    JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
     String[] tankMotiveTypes = { "Hover", "Wheeled", "Tracked", "WiGE", "VTOL" };
-    JComboBox<String> tankMotiveType = new JComboBox(tankMotiveTypes);
+    JComboBox<String> tankMotiveType = new JComboBox<String>(tankMotiveTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox superHeavyCB = new JCheckBox("Super-Heavy");
     String[] turretTypes = { "None", "Single", "Dual" };
-    JComboBox<String> turretCombo = new JComboBox(turretTypes);
+    JComboBox<String> turretCombo = new JComboBox<String>(turretTypes);
     Dimension maxSize = new Dimension();
     JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:",
             SwingConstants.TRAILING);
@@ -499,6 +497,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     turretCombo.setEnabled(false);
                 }
                 updateTurrets(turretCombo);
+                break;
+            default:
                 break;
         }
 
@@ -997,7 +997,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         for (int index = 0; index < armorCombo.getItemCount(); index++) {
             if (unit.isMixedTech()) {
-                String name = EquipmentType.getArmorTypeName(type,TechConstants.isClan(unit.getArmorTechLevel(0)));
                 if (EquipmentType.getArmorTypeName(type,TechConstants.isClan(unit.getArmorTechLevel(0))).equals(armorCombo.getItemAt(index))) {
                     armorCombo.setSelectedIndex(index);
                 }
@@ -1371,7 +1370,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             removeAllListeners();
-            JComboBox<String> combo = (JComboBox) e.getSource();
+            @SuppressWarnings("unchecked")
+            JComboBox<String> combo = (JComboBox<String>) e.getSource();
 
             try {
                 // if a Tank is primitive and thus needs a larger engine

@@ -66,24 +66,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private String[] techTypes =
         { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
-    private JComboBox<String> techType = new JComboBox(techTypes);
+    private JComboBox<String> techType = new JComboBox<String>(techTypes);
     private String[] isTechLevels =
         { "Introductory", "Standard", "Advanced", "Experimental", "Unoffical" };
     private String[] clanTechLevels =
         { "Standard", "Advanced", "Experimental", "Unoffical" };
-    private JComboBox<String> techLevel = new JComboBox(isTechLevels);
+    private JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
     private String[] motiveTypeArray =
         { "Foot", "Jump", "Motorized", "Mechanized (Hover)", "Mechanized (Tracked)", "Mechanized (Wheeled)"};
-    private JComboBox<String> motiveType = new JComboBox(motiveTypeArray);
+    private JComboBox<String> motiveType = new JComboBox<String>(motiveTypeArray);
     private String[] squadSizeArray =
         { "1","2","3","4", "5", "6","7","8","9","10"};
-    private JComboBox<String> squadSize = new JComboBox(squadSizeArray);
+    private JComboBox<String> squadSize = new JComboBox<String>(squadSizeArray);
     private String[] squadNArray =
         { "1","2","3","4","5"};
-    private JComboBox<String> squadN = new JComboBox(squadNArray);
+    private JComboBox<String> squadN = new JComboBox<String>(squadNArray);
     private String[] secondaryNArray =
         { "0","1","2"};
-    private JComboBox<String> secondaryN = new JComboBox(secondaryNArray);
+    private JComboBox<String> secondaryN = new JComboBox<String>(secondaryNArray);
 
     private JTextField era = new JTextField(3);
     private JTextField source = new JTextField(3);
@@ -394,7 +394,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         removeAllActionListeners();
         if (e.getSource() instanceof JComboBox) {
-            JComboBox<String> combo = (JComboBox) e.getSource();
+            @SuppressWarnings("unchecked")
+            JComboBox<String> combo = (JComboBox<String>) e.getSource();
             if (combo.equals(techLevel)) {
                 int unitTechLevel = techLevel.getSelectedIndex();
                 if (getInfantry().isClan()) {

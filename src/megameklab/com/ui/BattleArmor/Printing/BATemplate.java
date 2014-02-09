@@ -45894,7 +45894,6 @@ public class BATemplate {
             Shape clip__0_1398, AffineTransform defaultTransform__0_1398) {
         Shape shape;
         Paint paint;
-        Area clip;
         float origAlpha;
         // _0_1398 is ShapeNode
         paint = new Color(0, 0, 0, 255);
@@ -49967,11 +49966,8 @@ public class BATemplate {
         origAlpha = alpha__0_1534;
         g.setTransform(defaultTransform__0_1534);
         g.setClip(clip__0_1534);
-        float alpha__0_1535 = origAlpha;
         origAlpha = origAlpha * 1.0f;
         g.setComposite(AlphaComposite.getInstance(3, origAlpha));
-        Shape clip__0_1535 = g.getClip();
-        AffineTransform defaultTransform__0_1535 = g.getTransform();
         g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
         // _0_1535 is ShapeNode
         paint = new Color(198, 200, 202, 255);

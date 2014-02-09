@@ -18,7 +18,6 @@ public class VTOLTurretTemplate2 {
             Shape clip__0_1087, AffineTransform defaultTransform__0_1087) {
         Shape shape;
         Paint paint;
-        Stroke stroke;
         float origAlpha;
         // _0_1087 is ShapeNode
         paint = new Color(35, 31, 32, 255);

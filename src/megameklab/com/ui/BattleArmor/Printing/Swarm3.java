@@ -39,7 +39,6 @@ public class Swarm3 {
     public static void paint(Graphics2D g) {
         Shape shape = null;
         Paint paint = null;
-        Stroke stroke = null;
         Area clip = null;
         
         float origAlpha = 1.0f;
