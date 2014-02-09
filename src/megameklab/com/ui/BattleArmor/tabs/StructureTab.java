@@ -86,19 +86,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private JTextField era = new JTextField(3);
     private JTextField source = new JTextField(3);
     
-    private JComboBox<String> techType = new JComboBox(techTypes);
-    private JComboBox<String> techLevel = new JComboBox(isTechLevels);
+    private JComboBox<String> techType = new JComboBox<String>(techTypes);
+    private JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
     
     private JSpinner numTroopers;
     
     // Chassis Panel
-    private JComboBox<String> chassisType = new JComboBox(chassisTypeArray);
+    private JComboBox<String> chassisType = new JComboBox<String>(chassisTypeArray);
     private JComboBox<String> weightClass;
     
     private JSpinner walkMP;
     private JSpinner jumpMP;
     
-    private JComboBox<String> jumpType = new JComboBox(jumpTypeArray);
+    private JComboBox<String> jumpType = new JComboBox<String>(jumpTypeArray);
     
     // Armor Panel
     private JComboBox<String> armorType;
@@ -250,7 +250,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         for(int i = EntityWeightClass.WEIGHT_ULTRA_LIGHT; i <= EntityWeightClass.WEIGHT_ASSAULT; i++) {
             modelWeightClass.addElement(EntityWeightClass.getClassName(i, unit));
         }
-        weightClass = new JComboBox(modelWeightClass);
+        weightClass = new JComboBox<String>(modelWeightClass);
         gbc.gridx = 0;
         gbc.gridy = 0;
         chassisPanel.add(createLabel("Body Type:", labelSize), gbc);
@@ -277,7 +277,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         gbc.gridx = 1;
         chassisPanel.add(jumpType, gbc);
  
-        armorType = new JComboBox();
+        armorType = new JComboBox<String>();
         armorPoints = new JSpinner(new SpinnerNumberModel(0, 0, getBattleArmor().getMaximumArmorPoints(), 1));
         ((JSpinner.DefaultEditor) armorPoints.getEditor()).setSize(spinnerSize);
         ((JSpinner.DefaultEditor) armorPoints.getEditor())
@@ -732,7 +732,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     public void actionPerformed(ActionEvent e) {
         removeAllActionListeners();
         if (e.getSource() instanceof JComboBox) {
-            JComboBox<String> combo = (JComboBox) e.getSource();
+            @SuppressWarnings("unchecked")
+            JComboBox<String> combo = (JComboBox<String>) e.getSource();
             if (combo.equals(techLevel)) {
                 int unitTechLevel = techLevel.getSelectedIndex();
                 if (getBattleArmor().isClan()) {

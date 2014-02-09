@@ -78,9 +78,6 @@ public class PrintBattleArmor implements Printable {
 
         isAdvanced = false;
         currentMargin = 0;
-        //Image baSquad = ImageHelperBattleArmor.getBASquad();
-        int x = 18;
-        int y = 78;
         BATemplate.paint(g2d);
         //g2d.drawImage(ImageHelper.getRecordSheet(battleArmor, false), 18, 18, 558, 738, null);
         g2d.drawImage(ImageHelper.getFluffImage(battleArmor, ImageHelper.imageBattleArmor), 420, 20, 25, 45, null);
@@ -104,7 +101,6 @@ public class PrintBattleArmor implements Printable {
             }
             printWeaponsNEquipment(g2d);
 
-            y += pageMarginBase;
             currentMargin += pageMarginBase;
         }
         System.gc();

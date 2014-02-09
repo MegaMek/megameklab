@@ -569,6 +569,7 @@ public class PrintDualTurretVehicle implements Printable {
         }
     }
 
+    @SuppressWarnings("unused")
     private void printExtraFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         float[] topColumn =
             { 442, 90 };
@@ -736,6 +737,7 @@ public class PrintDualTurretVehicle implements Printable {
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
+    @SuppressWarnings("unused")
     private void printExtraRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
         int[] topColumn = new int[]
             { 420, 291 };
@@ -855,6 +857,7 @@ public class PrintDualTurretVehicle implements Printable {
         printArmorPoints(g2d, pipPlotter, totalArmor);
     }
 
+    @SuppressWarnings("unused")
     private void printExtraTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         if (totalArmor < 1) {

@@ -23960,11 +23960,8 @@ public class VTOLCommonTemplate {
         origAlpha = alpha__0_0_0_677;
         g.setTransform(defaultTransform__0_0_0_677);
         g.setClip(clip__0_0_0_677);
-        float alpha__0_0_0_678 = origAlpha;
         origAlpha = origAlpha * 1.0f;
         g.setComposite(AlphaComposite.getInstance(3, origAlpha));
-        Shape clip__0_0_0_678 = g.getClip();
-        AffineTransform defaultTransform__0_0_0_678 = g.getTransform();
         g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
         // _0_0_0_679 is ShapeNode
         paint = new Color(199, 200, 202, 255);
