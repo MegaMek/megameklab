@@ -328,6 +328,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             
             // See if we should allow linking this to a DWP
             if (unit.hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
+                    && !eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && !eq.getType().hasFlag(WeaponType.F_MISSILE)
                     && !eq.isDWPMounted()
                     && ((BattleArmor)unit).canMountDWP()){
