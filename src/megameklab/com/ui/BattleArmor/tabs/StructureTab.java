@@ -224,7 +224,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         gbc.gridx = 1;
         basicPanel.add(numTroopers, gbc);
 
-        walkMP = new JSpinner(new SpinnerNumberModel(1, getBattleArmor().getMinimumWalkMP(), getBattleArmor().getMaximumWalkMP(), 1));
+        walkMP = new JSpinner(new SpinnerNumberModel(
+                getBattleArmor().getMinimumWalkMP(), 
+                getBattleArmor().getMinimumWalkMP(), 
+                getBattleArmor().getMaximumWalkMP(), 1));
         ((JSpinner.DefaultEditor) walkMP.getEditor()).setSize(spinnerSize);
         ((JSpinner.DefaultEditor) walkMP.getEditor())
                 .setMaximumSize(spinnerSize);
