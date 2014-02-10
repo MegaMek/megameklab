@@ -129,6 +129,12 @@ V 0.1.24-dev
 + Bug: ArmorTechType was not being updated when BattleArmor armor type was 
     changed, this lead to an issue where the mixed-tech armor selection was 
     bugged
++ Bug: TestBattleArmor was using chasis tech type instead of armor tech type
+    when determining whether armor is clan or IS
++ Bug: Loading quad BA could fail because the walk MP spinner has a min of 
+    BattleArmor.getMinimumWalkMP() and a max of BattleArmor.getMaximumWalkMP(),
+    however the spinner is set to a value of 1 and Quad's have a min walk MP 
+    of 2.
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
