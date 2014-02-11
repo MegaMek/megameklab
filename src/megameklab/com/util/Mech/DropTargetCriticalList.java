@@ -164,6 +164,26 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                         });
                         popup.add(info);
                     }
+                    
+                    // Right-clicked on a AP Mount that has an attached weapon
+                    if (mount.getType().hasFlag(MiscType.F_AP_MOUNT) 
+                            && mount.getLinked() != null){
+                        info = new JMenuItem("Remove attached weapon");
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                Mounted attached = mount.getLinked();
+                                attached.setAPMMounted(false);
+                                mount.setLinked(null);
+                                mount.setLinkedBy(null);
+                                attached.setLinked(null);
+                                attached.setLinkedBy(null);
+                                if (refresh != null) {
+                                    refresh.refreshAll();
+                                }
+                            }
+                        });
+                        popup.add(info);
+                    }
 
                     if ((mount.getLocation() != Mech.LOC_LARM)
                             && (mount.getLocation() != Mech.LOC_RARM)) {

@@ -11,6 +11,9 @@ v0.1.25-dev (SVN)
     the Equipment tab could cause weirdness
 + Bug: Fixed issues sorting damage and range for AP weapons for BA
 + Bug [#110]: Shift>Remove equipment subtracts weight wrong 0.1.24
++ Feature: Infantry weapons can now be attached to AP Mounts and armored gloves
++ Bug: Infantry weapons were being removed from the equipment list in the 
+    equipment tab (they weren't being considered as BA weapons)
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct

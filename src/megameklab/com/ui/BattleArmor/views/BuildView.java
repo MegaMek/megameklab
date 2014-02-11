@@ -129,7 +129,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
         for (Mounted mount : unit.getWeaponList()) {
             // Don't display weapons mounted in a detachable weapon pack
-            if (mount.isDWPMounted()){
+            if (mount.isDWPMounted() || mount.isAPMMounted()){
                 continue;
             }
             if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) 
@@ -371,6 +371,59 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     public void actionPerformed(ActionEvent e) {
                         Mounted attached = eq.getLinked();
                         attached.setDWPMounted(false);
+                        eq.setLinked(null);
+                        eq.setLinkedBy(null);
+                        attached.setLinked(null);
+                        attached.setLinkedBy(null);
+                        ((BuildTab) getParent().getParent()).refreshAll();
+                    }
+                });
+                popup.add(item);
+            }
+            
+            // See if we should allow linking this to an AP Mount
+            if (unit.hasWorkingMisc(MiscType.F_AP_MOUNT)
+                    && eq.getType().hasFlag(WeaponType.F_INFANTRY)
+                    && !eq.isAPMMounted()){
+                for (Mounted m : unit.getMisc()){
+                    // If this isn't a AP Mount or it's a full AP Mount, skip
+                    if (!m.getType().hasFlag(MiscType.F_AP_MOUNT)
+                            || m.getLinked() != null){
+                        continue;
+                    }
+                
+                    String locName;
+                    if (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE){
+                        locName = "None";
+                    } else {
+                        locName = 
+                                BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
+                    }
+                    item = new JMenuItem("Mount in " + m.getName() 
+                            + " (" 
+                            + locName
+                            + ")");
+                    final Mounted apm = m;
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            eq.setLinked(apm);
+                            apm.setLinked(eq);
+                            eq.setAPMMounted(true);
+                            ((BuildTab) getParent().getParent()).refreshAll();
+                        }
+                    });
+                    popup.add(item);
+                }
+            }
+            
+            // Right-clicked on a AP Mount that has an attached weapon
+            if (eq.getType().hasFlag(MiscType.F_AP_MOUNT) 
+                    && eq.getLinked() != null){
+                item = new JMenuItem("Remove attached weapon");
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        Mounted attached = eq.getLinked();
+                        attached.setAPMMounted(false);
                         eq.setLinked(null);
                         eq.setLinkedBy(null);
                         attached.setLinked(null);

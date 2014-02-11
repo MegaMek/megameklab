@@ -256,6 +256,24 @@ public class UnitUtil {
                 dwp.setLinked(null);
                 dwp.setLinkedBy(null);
             }
+            // If we're removing an APM and it has an attached weapon, we need
+            //  to detach the weapon
+            if (mount.getType().hasFlag(MiscType.F_AP_MOUNT)
+                    && mount.getLinked() != null){
+                Mounted link = mount.getLinked();
+                link.setAPMMounted(false);
+                link.setLinked(null);
+                link.setLinkedBy(null);
+            }
+            // If we are removing a weapon that is mounted in an APM, we need
+            //  to clear the mounted status of the AP Mount
+            if (mount.getLinkedBy() != null 
+                    && mount.getLinkedBy().getType().hasFlag(
+                            MiscType.F_AP_MOUNT)){
+                Mounted apm = mount.getLinkedBy();
+                apm.setLinked(null);
+                apm.setLinkedBy(null);
+            }
         }
         unit.getEquipment().remove(mount);
         if (mount.getType() instanceof MiscType) {
@@ -2313,11 +2331,13 @@ public class UnitUtil {
 
             WeaponType weapon = (WeaponType) eq;
 
-            if (!weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
+            if (!weapon.hasFlag(WeaponType.F_BA_WEAPON)
+                    && !weapon.hasFlag(WeaponType.F_INFANTRY)) {
                 return false;
             }
 
-            if (weapon.getTonnage(unit) <= 0) {
+            if (weapon.getTonnage(unit) <= 0
+                    && !weapon.hasFlag(WeaponType.F_INFANTRY)) {
                 return false;
             }
 
