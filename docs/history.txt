@@ -18,6 +18,10 @@ v0.1.25-dev (SVN)
     they must be mounted via an AP Mount.  This wasn't enforced before and is 
     now.  To make it clear, unallocated AP weapons now display an * and the 
     tooltip explains how to mount AP weapons
++ BA Manipulators now show in the critical view, largely so you can detach AP
+    weapons attached to Armored Gloves
++ BA Manipulators are no considered fixed location equipment so they can't be
+    removed or deleted
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
