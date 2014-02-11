@@ -709,6 +709,11 @@ public class EquipmentTab extends ITab implements ActionListener {
             } else if(s1.equals("-")) {
                 return -1;
             } else {
+                if (s0.indexOf("/") == -1 && s1.indexOf("/") == -1){
+                    int range0 = Integer.parseInt(s0);
+                    int range1 = Integer.parseInt(s1);
+                    return ((Comparable<Integer>)range0).compareTo(range1);                    
+                }
                 //get the numbers associated with each string
                 int short0 = Integer.parseInt(s0.split("/")[0]);
                 int short1 = Integer.parseInt(s1.split("/")[0]);
@@ -774,9 +779,9 @@ public class EquipmentTab extends ITab implements ActionListener {
         private int parseDamage(String s) {
             int damage = 0;
             if(s.contains("/")) {
-                damage = Integer.parseInt(s.split("/")[0]);
+                damage = (int)Float.parseFloat(s.split("/")[0]);
             } else {
-                damage = Integer.parseInt(s);
+                damage = (int)Float.parseFloat(s);
             }
             return damage;
         }
