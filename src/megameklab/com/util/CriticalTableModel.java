@@ -215,6 +215,10 @@ public class CriticalTableModel extends AbstractTableModel {
                     modifier += " (attached " + mount.getLinked().getName() 
                             + ")";
                 }
+                if (mount.getType().hasFlag(WeaponType.F_INFANTRY) &&
+                        mount.getLinkedBy() == null){
+                    modifier += "*";
+                }
                 c.setText(c.getText() + modifier);
             }
             c.setToolTipText(UnitUtil.getToolTipInfo(unit, mount));

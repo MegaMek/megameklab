@@ -1752,6 +1752,10 @@ public class UnitUtil {
         if (eq.isArmored()) {
             sb.append("<br>Armored");
         }
+        if ((unit instanceof BattleArmor) 
+                && eq.getType().hasFlag(WeaponType.F_INFANTRY)){
+           sb.append("<br>* Infantry weapons must be mounted in AP Mounts"); 
+        }
         sb.append("</html>");
         return sb.toString();
     }
