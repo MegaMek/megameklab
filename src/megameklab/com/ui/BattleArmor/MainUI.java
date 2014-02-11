@@ -157,7 +157,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshHeader() {
 
-        String title = entity.getChassis() + " " + entity.getModel() + ".mtf";
+        String title = entity.getChassis() + " " + entity.getModel() + ".blk";
 
         if (UnitUtil.validateUnit(entity).length() > 0) {
             title += "  (Invalid)";
