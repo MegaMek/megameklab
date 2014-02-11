@@ -44,6 +44,7 @@ import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
+import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -501,6 +502,11 @@ public class CriticalTransferHandler extends TransferHandler {
         }
         // no transfer in the same location
         if (unit instanceof BattleArmor){
+            // Infantry weapons cannot be mounted directly, but must instead
+            //  be mounted in an AP Mount
+            if (mounted.getType() instanceof InfantryWeapon){
+                return false;
+            }
             String[] split = info.getComponent().getName().split(":");
             if (split.length != 2){
                 return false;
