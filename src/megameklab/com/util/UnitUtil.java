@@ -2281,6 +2281,7 @@ public class UnitUtil {
         return  infWeap.hasFlag(WeaponType.F_INFANTRY)
                 && !infWeap.hasFlag(WeaponType.F_INF_POINT_BLANK)
                 && !infWeap.hasFlag(WeaponType.F_INF_ARCHAIC)
+                && !infWeap.hasFlag(WeaponType.F_INF_SUPPORT)
                 && (infWeap.getCrew() < 2);
     }
 
@@ -2310,15 +2311,24 @@ public class UnitUtil {
             if (weapon.hasFlag(WeaponType.F_ENERGY)
                     || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
                             .getAmmoType() == AmmoType.T_PLASMA))) {
-
-                if (weapon.hasFlag(WeaponType.F_ENERGY)
+            	return true;
+            }
+            	
+            if (weapon.hasFlag(WeaponType.F_ENERGY) && (weapon.hasFlag(WeaponType.F_PLASMA))
+            		&& (weapon.hasFlag(WeaponType.F_BA_WEAPON)))  {
+            	return true;
+            }
+                        
+            if (weapon.hasFlag(WeaponType.F_ENERGY)
                         && weapon.hasFlag(WeaponType.F_PLASMA)
-                        && (weapon.getAmmoType() == AmmoType.T_NA)) {
+                        && (weapon.getAmmoType() == AmmoType.T_NA))
+                		{
                     return false;
                 }
-            }
+            
             return true;
         }
+		
         return false;
     }
 
