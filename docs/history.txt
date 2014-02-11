@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.25-dev (SVN)
+
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
 + Bug: superheavy VTOLs with too much armor not printing correctly
