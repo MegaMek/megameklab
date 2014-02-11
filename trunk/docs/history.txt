@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-V 0.1.24-dev
+v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
 + Bug: superheavy VTOLs with too much armor not printing correctly
 + Bug: shields get less DA and DC when constructed without hands/LA
@@ -135,6 +135,7 @@ V 0.1.24-dev
     BattleArmor.getMinimumWalkMP() and a max of BattleArmor.getMaximumWalkMP(),
     however the spinner is set to a value of 1 and Quad's have a min walk MP 
     of 2.
++ Updated MegaMek.jar to the 0.37.7 snapshot
 
 V 0.1.23
 + Bug: tank chassis and model not getting updated
