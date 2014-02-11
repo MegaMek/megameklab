@@ -277,7 +277,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         if (col == COL_RANGE) {
             if (null != wtype) {
                 if (wtype instanceof InfantryWeapon) {
-                    return ((InfantryWeapon) wtype).getInfantryRange();
+                    return ((InfantryWeapon) wtype).getInfantryRange() + "";
                 }
                 return wtype.getShortRange() + "/" + wtype.getMediumRange()
                         + "/" + wtype.getLongRange();
