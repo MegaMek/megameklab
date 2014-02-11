@@ -7,6 +7,8 @@ v0.1.25-dev (SVN)
 + Bug: Enhancement check boxes weren't being checked when loading BA with those 
     enhnacements
 + Filter out Support Weapons for BA use on AP Mounts. Fix Header to blk not mtf.
++ Bug: Removing DWP's and weapons mounted in DWPs via the "Remove" button in 
+    the Equipment tab could cause weirdness
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct

@@ -235,6 +235,28 @@ public class UnitUtil {
 
     public static void removeMounted(Entity unit, Mounted mount) {
         UnitUtil.removeCriticals(unit, mount);
+        
+        // Some special checks for BA
+        if (unit instanceof BattleArmor){
+            // If we're removing a DWP and it has an attached weapon, we need
+            //  to detach the weapon
+            if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
+                    && mount.getLinked() != null){
+                Mounted link = mount.getLinked();
+                link.setDWPMounted(false);
+                link.setLinked(null);
+                link.setLinkedBy(null);
+            }
+            // If we are removing a weapon that is mounted in an DWP, we need
+            //  to clear the mounted status of the DWP
+            if (mount.getLinkedBy() != null 
+                    && mount.getLinkedBy().getType().hasFlag(
+                            MiscType.F_DETACHABLE_WEAPON_PACK)){
+                Mounted dwp = mount.getLinkedBy();
+                dwp.setLinked(null);
+                dwp.setLinkedBy(null);
+            }
+        }
         unit.getEquipment().remove(mount);
         if (mount.getType() instanceof MiscType) {
             unit.getMisc().remove(mount);
