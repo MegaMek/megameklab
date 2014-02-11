@@ -66,7 +66,6 @@ import megamek.common.verifier.TestTank;
 import megameklab.com.ui.Vehicle.views.ArmorView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.SpringLayoutHelper;
 import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements ActionListener, KeyListener,

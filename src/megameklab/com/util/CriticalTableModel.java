@@ -243,6 +243,19 @@ public class CriticalTableModel extends AbstractTableModel {
     public void removeCrit(int location) {
         crits.removeElementAt(location);
     }
+    
+    /**
+     * Remove a collection of crits specified by the given list of indices.
+     * 
+     * @param locs  An array of indices that specifies the crits to remove
+     */
+    public void removeCrits(int locs[]) {
+        Vector<Mounted> mounts = new Vector<Mounted>(locs.length);
+        for (Integer l : locs){
+            mounts.add(crits.elementAt(l));
+        }
+        crits.removeAll(mounts);
+    }
 
     public void removeAllCrits() {
         crits.removeAllElements();

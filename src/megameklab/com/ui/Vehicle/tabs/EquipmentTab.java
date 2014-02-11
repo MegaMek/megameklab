@@ -141,7 +141,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentTable.setModel(equipmentList);
         equipmentTable.setIntercellSpacing(new Dimension(0, 0));
         equipmentTable.setShowGrid(false);
-        equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        equipmentTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
@@ -470,15 +470,11 @@ public class EquipmentTab extends ITab implements ActionListener {
             EquipmentType equip = masterEquipmentList.getType(selected);
             addEquipment(equip);
         } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
-            int startRow = equipmentTable.getSelectedRow();
-            int count = equipmentTable.getSelectedRowCount();
-
-            for (int i = 0; i < count; i++) {
-                if (startRow > -1) {
-                    equipmentList.removeMounted(startRow);
-                    equipmentList.removeCrit(startRow);
-                }
+            int selectedRows[] = equipmentTable.getSelectedRows();
+            for (Integer row : selectedRows){
+                equipmentList.removeMounted(row);
             }
+            equipmentList.removeCrits(selectedRows);
         } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
             removeAllEquipment();
         } else {
