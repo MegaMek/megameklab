@@ -533,7 +533,8 @@ public class EquipmentTab extends ITab implements ActionListener {
         final int nType = choiceType.getSelectedIndex();
         equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
             @Override
-            public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
+            public boolean include(Entry<? extends EquipmentTableModel, 
+                    ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
                 WeaponType wtype = null;
@@ -544,18 +545,26 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (etype instanceof AmmoType) {
                     atype = (AmmoType)etype;
                 }
-                if (!UnitUtil.isLegal(unit, etype.getTechLevel(unit.getTechLevelYear()))) {
+                if (!UnitUtil.isLegal(unit, 
+                        etype.getTechLevel(unit.getTechLevelYear()))) {
                     return false;
                 }
-                if (UnitUtil.isHeatSink(etype, true) || UnitUtil.isJumpJet(etype)) {
-                    return false;
-                }
+
                 if ((etype instanceof MiscType)
                         && (etype.hasFlag(MiscType.F_TSM)
                                 || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) 
                                 || (etype.hasFlag(MiscType.F_MASC) 
                                         && !etype.hasSubType(
                                                 MiscType.S_SUPERCHARGER)))) {
+                    return false;
+                }
+                
+                // Don't show equipment that is added via the StructureTab
+                if (etype.hasFlag(MiscType.F_BA_MANIPULATOR) 
+                        || etype.hasFlag(MiscType.F_PARTIAL_WING)
+                        || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
+                        || etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
+                        || etype.hasFlag(MiscType.F_MASC)){
                     return false;
                 }
                 
@@ -567,12 +576,14 @@ public class EquipmentTab extends ITab implements ActionListener {
                         || (((nType == T_WEAPON) && (UnitUtil.isUnitWeapon(etype, unit))))
                         || ((nType == T_ENERGY) && UnitUtil.isUnitWeapon(etype, unit)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
-                            || (wtype.hasFlag(WeaponType.F_PLASMA) && (wtype.getAmmoType() == AmmoType.T_PLASMA))))
+                            || (wtype.hasFlag(WeaponType.F_PLASMA) 
+                                    && (wtype.getAmmoType() == AmmoType.T_PLASMA))))
                         || ((nType == T_BALLISTIC) && UnitUtil.isUnitWeapon(etype, unit)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_BALLISTIC)))
                         || ((nType == T_MISSILE) && UnitUtil.isUnitWeapon(etype, unit)
                             && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
-                                    && (wtype.getAmmoType() != AmmoType.T_NA)) || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
+                                    && (wtype.getAmmoType() != AmmoType.T_NA)) 
+                                    || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
                         || ((nType == T_ARTILLERY) && UnitUtil.isUnitWeapon(etype, unit)
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
                         || (((nType == T_AMMO) && (atype != null)) && UnitUtil.canUseAmmo(unit, atype))

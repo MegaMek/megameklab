@@ -1,6 +1,9 @@
 VERSION HISTORY:
 ----------------
 v0.1.25-dev (SVN)
++ Filtered out equipment in the equipment table that gets added via the 
+    StructureTab (jump boosters, partial wing, manipulators, etc).  Also removed
+    some filtering that was intended for 'mechs and vees and isn't applicable
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
