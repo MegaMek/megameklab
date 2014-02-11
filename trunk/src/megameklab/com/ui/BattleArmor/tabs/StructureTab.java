@@ -623,6 +623,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             chkJumpBooster.setEnabled(false);
             lblJumpBooster.setEnabled(false);
         }
+        if (unit.hasWorkingMisc(MiscType.F_JUMP_BOOSTER)){
+            chkJumpBooster.setSelected(true);
+        }
+        
         // Partial Wing
         eType = EquipmentType.get("BAPartialWing");
         legalTech = TechConstants.isLegal(getBattleArmor().getTechLevel(), 
@@ -636,6 +640,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         } else {
             chkPartialWing.setEnabled(false);
             lblPartialWing.setEnabled(false);
+        }
+        if (unit.hasWorkingMisc(MiscType.F_PARTIAL_WING)){
+            chkPartialWing.setSelected(true);
         }
         
         // Myomer Booster
@@ -651,6 +658,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         } else {
             chkMyomerBooster.setEnabled(false);
             lblMyomerBooster.setEnabled(false);
+        }
+        if (unit.hasWorkingMisc(MiscType.F_MASC)){
+            chkMyomerBooster.setSelected(true);
         }
         
         // Mechanical Jump Booster
@@ -668,7 +678,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         } else {
             chkMechJumpBooster.setEnabled(false);
             lblMechJumpBooster.setEnabled(false);
-        }        
+        }
+        if (unit.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER)){
+            chkMechJumpBooster.setSelected(true);
+        }
         
         refreshPreview();
 
