@@ -14,6 +14,10 @@ v0.1.25-dev (SVN)
 + Feature: Infantry weapons can now be attached to AP Mounts and armored gloves
 + Bug: Infantry weapons were being removed from the equipment list in the 
     equipment tab (they weren't being considered as BA weapons)
++ Bug: Anti-personnel weapons cannot be mounted directly on BattleArmor, instead
+    they must be mounted via an AP Mount.  This wasn't enforced before and is 
+    now.  To make it clear, unallocated AP weapons now display an * and the 
+    tooltip explains how to mount AP weapons
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
