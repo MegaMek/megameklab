@@ -1714,6 +1714,12 @@ public class UnitUtil {
         DecimalFormat myFormatter = new DecimalFormat("#,##0", unusualSymbols);
         StringBuilder sb = new StringBuilder("<HTML>");
         sb.append(eq.getName());
+        if ((eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
+                || eq.getType().hasFlag(MiscType.F_AP_MOUNT))
+                && eq.getLinked() != null){
+            sb.append(" (attached " + eq.getLinked().getName() 
+                    + ")");
+        }
         if (eq.getType() instanceof InfantryWeapon) {
             sb.append("<br>Damage/Trooper: ");
             double infDamage = ((InfantryWeapon) eq.getType())
@@ -2336,13 +2342,11 @@ public class UnitUtil {
 
             WeaponType weapon = (WeaponType) eq;
 
-            if (!weapon.hasFlag(WeaponType.F_BA_WEAPON)
-                    && !weapon.hasFlag(WeaponType.F_INFANTRY)) {
+            if (!weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
                 return false;
             }
 
-            if (weapon.getTonnage(unit) <= 0
-                    && !weapon.hasFlag(WeaponType.F_INFANTRY)) {
+            if (weapon.getTonnage(unit) <= 0) {
                 return false;
             }
 
