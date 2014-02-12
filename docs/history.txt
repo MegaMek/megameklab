@@ -22,6 +22,9 @@ v0.1.25-dev (SVN)
     weapons attached to Armored Gloves
 + BA Manipulators are no considered fixed location equipment so they can't be
     removed or deleted
++ Bug: AP weapons on BA could be assigned a location via right clicking 
++ Bug: Critical View now counts AP Mounts instead of infantry weapons
++ Bug: AP weapons where showing up in the ballisics list of weapons
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct

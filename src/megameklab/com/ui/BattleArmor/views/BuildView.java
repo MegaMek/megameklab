@@ -42,6 +42,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.Weapon;
+import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.CriticalTransferHandler;
@@ -268,7 +269,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 }
             } 
             
-            if (eq.getLocation() == BattleArmor.LOC_SQUAD){
+            if (eq.getLocation() == BattleArmor.LOC_SQUAD 
+                    && !(eq.getType() instanceof InfantryWeapon)){
                 // Add a menu item for each potential location
                 for (Integer location: validLocs) {
                     if (UnitUtil.isValidLocation(unit, eq.getType(), location)) {

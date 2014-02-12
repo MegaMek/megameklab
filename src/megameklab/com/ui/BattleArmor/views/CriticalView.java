@@ -41,6 +41,7 @@ import megamek.common.WeaponType;
 import megamek.common.loaders.MtfFile;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestBattleArmor;
+import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.Mech.DropTargetCriticalList;
@@ -165,12 +166,13 @@ public class CriticalView extends IView {
             if (m.getLocation() == BattleArmor.LOC_SQUAD 
                     || m.getLocation() == trooper){
                 critSuit.addMounted(m.getBaMountLoc(), m);
-                if (m.getType() instanceof WeaponType 
-                        && m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE){
-                    if (m.getType().hasFlag(WeaponType.F_INFANTRY)){
-                        numAPWeapons[m.getBaMountLoc()]++;
-                    } else {
+                if (m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE){
+                    if ((m.getType() instanceof WeaponType) 
+                            && !(m.getType() instanceof InfantryWeapon)){
                         numAMWeapons[m.getBaMountLoc()]++;
+                    }
+                    if (m.getType().hasFlag(MiscType.F_AP_MOUNT)){
+                        numAPWeapons[m.getBaMountLoc()]++;  
                     }
                 }
             }            
