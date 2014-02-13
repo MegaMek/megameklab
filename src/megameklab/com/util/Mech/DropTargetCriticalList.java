@@ -321,9 +321,11 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     }
                 }
 
-                if (UnitUtil.isArmorable(cs)
-                        && ((UnitUtil.getUnitTechType(unit) == UnitUtil.TECH_EXPERIMENTAL) || (UnitUtil
-                                .getUnitTechType(unit) == UnitUtil.TECH_UNOFFICAL))) {
+                if (UnitUtil.isArmorable(cs) && !(unit instanceof BattleArmor)
+                        && ((UnitUtil.getUnitTechType(unit) == 
+                                UnitUtil.TECH_EXPERIMENTAL) 
+                            || (UnitUtil.getUnitTechType(unit) == 
+                                UnitUtil.TECH_UNOFFICAL))) {
                     popup.addSeparator();
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");
