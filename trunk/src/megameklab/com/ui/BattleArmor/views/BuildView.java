@@ -291,7 +291,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     }
                 }
             
-                if (!UnitUtil.isArmor(eq.getType())) {
+                if (!UnitUtil.isArmor(eq.getType()) 
+                        && !eq.isSquadSupportWeapon()) {
                     item = new JMenuItem("Make individual weapon");
                     item.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
@@ -331,6 +332,64 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     });
                     popup.add(item);
                 }
+            }
+            
+            // Allow making this a squad support weapon
+            if ((eq.getType() instanceof WeaponType)
+                    && !eq.getType().hasFlag(WeaponType.F_MISSILE)
+                    && !eq.isSquadSupportWeapon()
+                    && eq.getLocation() == BattleArmor.LOC_SQUAD){
+                item = new JMenuItem("Mount as squad support weapon");
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        eq.setSquadSupportWeapon(true);
+                        ((BuildTab) getParent().getParent()).refreshAll();
+                    }
+                });
+                popup.add(item);
+            }
+            
+            // Adding ammo as a squad support mount is slightly different
+            if ((eq.getType() instanceof AmmoType)
+                    && !eq.getType().hasFlag(WeaponType.F_MISSILE)
+                    && !eq.isSquadSupportWeapon()
+                    && eq.getLocation() == BattleArmor.LOC_SQUAD){
+                boolean enabled = false;
+                for (Mounted weapon : unit.getWeaponList()){
+                    WeaponType wtype = (WeaponType)weapon.getType();
+                    if (weapon.isSquadSupportWeapon() 
+                            && AmmoType.isAmmoValid(eq, wtype)){
+                        enabled = true;
+                    }
+                }
+                item = new JMenuItem("Mount as squad support weapon");
+                item.setEnabled(enabled);
+                item.setToolTipText("Ammo can only be squad mounted along " +
+                		"with a weapon that uses it");
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        eq.setSquadSupportWeapon(true);
+                        ((BuildTab) getParent().getParent()).refreshAll();
+                    }
+                });
+                popup.add(item);
+            }
+            
+            // Allow removing squad support weapon
+            if (eq.isSquadSupportWeapon()){
+                item = new JMenuItem("Remove squad support weapon mount");
+                item.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        eq.setSquadSupportWeapon(false);
+                        // Can't have squad support weapon ammo with no 
+                        // squad support weapon
+                        for (Mounted ammo : unit.getAmmo()){
+                            ammo.setSquadSupportWeapon(false);
+                        }
+                        ((BuildTab) getParent().getParent()).refreshAll();
+                    }
+                });
+                popup.add(item);
             }
             
             // See if we should allow linking this to a DWP

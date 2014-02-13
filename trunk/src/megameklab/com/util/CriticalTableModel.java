@@ -209,6 +209,9 @@ public class CriticalTableModel extends AbstractTableModel {
                 if (mount.isDWPMounted()){
                     modifier += " (DWP)"; 
                 }
+                if (mount.isSquadSupportWeapon()){
+                    modifier += " (Squad Support Weapon)"; 
+                }
                 if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                         || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
                         && mount.getLinked() != null){
