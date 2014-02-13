@@ -1720,6 +1720,9 @@ public class UnitUtil {
             sb.append(" (attached " + eq.getLinked().getName() 
                     + ")");
         }
+        if (eq.isSquadSupportWeapon()){
+            sb.append(" (squad support weapon)");
+        }
         if (eq.getType() instanceof InfantryWeapon) {
             sb.append("<br>Damage/Trooper: ");
             double infDamage = ((InfantryWeapon) eq.getType())
