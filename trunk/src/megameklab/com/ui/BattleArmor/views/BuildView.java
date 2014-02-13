@@ -37,6 +37,7 @@ import javax.swing.table.TableColumn;
 
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
+import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
@@ -143,6 +144,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             // Ignore ammo for one-shot launchers
             if (mount.getLinkedBy() != null 
                     && mount.getLinkedBy().isOneShot()){
+                continue;
+            }
+            // Ignore DWP-mounted ammo
+            if (mount.isDWPMounted()){
                 continue;
             }
             if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) {
@@ -332,6 +337,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             if (unit.hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && !eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && !eq.getType().hasFlag(WeaponType.F_MISSILE)
+                    && !(eq.getType() instanceof AmmoType)
                     && !eq.isDWPMounted()
                     && ((BattleArmor)unit).canMountDWP()){
                 for (Mounted m : unit.getMisc()){
@@ -365,6 +371,54 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 }
             }
             
+            // Should we allow mounting Ammo in a DWP?
+            if ((eq.getType() instanceof AmmoType)
+                    && unit.hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
+                    && !eq.isDWPMounted()
+                    && ((BattleArmor)unit).canMountDWP()){
+                for (final Mounted m : unit.getMisc()){
+                    // If this isn't a DWP, skip
+                    if (!m.getType().hasFlag(
+                            MiscType.F_DETACHABLE_WEAPON_PACK)){
+                        continue;
+                    }
+                    // We only want to enable the menu item if the DWP has a
+                    //  mounted weapon and we clicked on a valid ammo type
+                    boolean enabled = false;
+                    if (m.getLinked() != null){
+                        EquipmentType etype = m.getLinked().getType();
+                        if (etype instanceof WeaponType){
+                            WeaponType wtype = (WeaponType)etype;
+                            if (AmmoType.isAmmoValid(eq, wtype)){
+                                enabled = true;
+                            }
+                        }
+                    }
+                    String locName;
+                    if (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE){
+                        locName = "None";
+                    } else {
+                        locName = 
+                                BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
+                    }
+                    item = new JMenuItem("Mount in " + m.getName() 
+                            + " (" 
+                            + locName
+                            + ")");
+                    item.setToolTipText("Ammo can only be mounted in a DWP " +
+                    		"with a valid weapon.");
+                    item.setEnabled(enabled);
+                    item.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            m.getLinked().setLinked(eq);
+                            eq.setDWPMounted(true);
+                            ((BuildTab) getParent().getParent()).refreshAll();
+                        }
+                    });
+                    popup.add(item);
+                }
+            }
+            
             // Right-clicked on a DWP that has an attached weapon
             if (eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) 
                     && eq.getLinked() != null){
@@ -377,6 +431,14 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                         eq.setLinkedBy(null);
                         attached.setLinked(null);
                         attached.setLinkedBy(null);
+                        // Remove any attached ammo
+                        for (Mounted ammo : unit.getAmmo()){
+                            if (attached.equals(ammo.getLinkedBy())){
+                                ammo.setDWPMounted(false);
+                                ammo.setLinked(null);
+                                ammo.setLinkedBy(null);
+                            }
+                        }
                         ((BuildTab) getParent().getParent()).refreshAll();
                     }
                 });
