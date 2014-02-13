@@ -25,6 +25,7 @@ v0.1.25-dev (SVN)
 + Bug: AP weapons on BA could be assigned a location via right clicking 
 + Bug: Critical View now counts AP Mounts instead of infantry weapons
 + Bug: AP weapons where showing up in the ballisics list of weapons
++ Bug: BA could armor components
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
