@@ -145,6 +145,70 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                         popup.add(info);
                     }
                     
+                    // Allow making this a sort weapon
+                    if ((mount.getType() instanceof WeaponType)
+                            && !mount.getType().hasFlag(WeaponType.F_MISSILE)
+                            && !mount.isSquadSupportWeapon()
+                            && mount.getLocation() == BattleArmor.LOC_SQUAD){
+                        info = new JMenuItem("Mount as squad support weapon");
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                mount.setSquadSupportWeapon(true);
+                                if (refresh != null) {
+                                    refresh.refreshAll();
+                                }
+                            }
+                        });
+                        popup.add(info);
+                    }
+                    
+                    // Adding ammo as a squad support mount is slightly different
+                    if ((mount.getType() instanceof AmmoType)
+                            && !mount.getType().hasFlag(WeaponType.F_MISSILE)
+                            && !mount.isSquadSupportWeapon()
+                            && mount.getLocation() == BattleArmor.LOC_SQUAD){
+                        boolean enabled = false;
+                        for (Mounted weapon : unit.getWeaponList()){
+                            WeaponType wtype = (WeaponType)weapon.getType();
+                            if (weapon.isSquadSupportWeapon() 
+                                    && AmmoType.isAmmoValid(mount, wtype)){
+                                enabled = true;
+                            }
+                        }
+                        info = new JMenuItem("Mount as squad support weapon");
+                        info.setEnabled(enabled);
+                        info.setToolTipText("Ammo can only be squad mounted along " +
+                                "with a weapon that uses it");
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                mount.setSquadSupportWeapon(true);
+                                if (refresh != null) {
+                                    refresh.refreshAll();
+                                }
+                            }
+                        });
+                        popup.add(info);
+                    }
+                    
+                    // Allow removing squad support weapon
+                    if (mount.isSquadSupportWeapon()){
+                        info = new JMenuItem("Remove squad support weapon mount");
+                        info.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                mount.setSquadSupportWeapon(false);
+                                // Can't have squad support weapon ammo with no 
+                                // squad support weapon
+                                for (Mounted ammo : unit.getAmmo()){
+                                    ammo.setSquadSupportWeapon(false);
+                                }
+                                if (refresh != null) {
+                                    refresh.refreshAll();
+                                }
+                            }
+                        });
+                        popup.add(info);
+                    }
+                    
                     // Right-clicked on a DWP that has an attached weapon
                     if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) 
                             && mount.getLinked() != null){

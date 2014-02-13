@@ -27,6 +27,10 @@ v0.1.25-dev (SVN)
 + Bug: AP weapons where showing up in the ballisics list of weapons
 + Bug: BA could armor components
 + Feature: Added the ability to mount ammo in DWPs
++ Added ability to mount weapons/ammo as squad support weapons: valid weapons
+    can be right clicked in the unallocated equipment table.  Once a weapon
+    has been squad support mounted, valid ammo for that weapon can be squad
+    support mounted as well
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
