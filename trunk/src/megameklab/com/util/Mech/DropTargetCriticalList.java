@@ -149,7 +149,10 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     if ((mount.getType() instanceof WeaponType)
                             && !mount.getType().hasFlag(WeaponType.F_MISSILE)
                             && !mount.isSquadSupportWeapon()
-                            && mount.getLocation() == BattleArmor.LOC_SQUAD){
+                            && mount.getLocation() == BattleArmor.LOC_SQUAD
+                            && (unit instanceof BattleArmor)
+                            && ((BattleArmor)unit).getChassisType() != 
+                                BattleArmor.CHASSIS_TYPE_QUAD){
                         info = new JMenuItem("Mount as squad support weapon");
                         info.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
@@ -166,7 +169,10 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     if ((mount.getType() instanceof AmmoType)
                             && !mount.getType().hasFlag(WeaponType.F_MISSILE)
                             && !mount.isSquadSupportWeapon()
-                            && mount.getLocation() == BattleArmor.LOC_SQUAD){
+                            && mount.getLocation() == BattleArmor.LOC_SQUAD
+                            && (unit instanceof BattleArmor)
+                            && ((BattleArmor)unit).getChassisType() != 
+                                BattleArmor.CHASSIS_TYPE_QUAD){
                         boolean enabled = false;
                         for (Mounted weapon : unit.getWeaponList()){
                             WeaponType wtype = (WeaponType)weapon.getType();
