@@ -2759,10 +2759,11 @@ public class UnitUtil {
             testEntity = new TestBattleArmor((BattleArmor) unit, 
                     entityVerifier.baOption, null);
         }
-        testEntity.correctEntity(sb, true);
+        if (testEntity != null){
+            testEntity.correctEntity(sb, true);
+        }
 
         return sb.toString();
-
     }
 
     public static void removeAllMiscMounteds(Entity unit, BigInteger flag) {

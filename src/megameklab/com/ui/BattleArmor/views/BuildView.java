@@ -338,7 +338,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             if ((eq.getType() instanceof WeaponType)
                     && !eq.getType().hasFlag(WeaponType.F_MISSILE)
                     && !eq.isSquadSupportWeapon()
-                    && eq.getLocation() == BattleArmor.LOC_SQUAD){
+                    && eq.getLocation() == BattleArmor.LOC_SQUAD
+                    && getBattleArmor().getChassisType() != 
+                        BattleArmor.CHASSIS_TYPE_QUAD){
                 item = new JMenuItem("Mount as squad support weapon");
                 item.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -353,7 +355,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             if ((eq.getType() instanceof AmmoType)
                     && !eq.getType().hasFlag(WeaponType.F_MISSILE)
                     && !eq.isSquadSupportWeapon()
-                    && eq.getLocation() == BattleArmor.LOC_SQUAD){
+                    && eq.getLocation() == BattleArmor.LOC_SQUAD
+                    && getBattleArmor().getChassisType() != 
+                        BattleArmor.CHASSIS_TYPE_QUAD){
                 boolean enabled = false;
                 for (Mounted weapon : unit.getWeaponList()){
                     WeaponType wtype = (WeaponType)weapon.getType();
