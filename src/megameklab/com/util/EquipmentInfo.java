@@ -39,7 +39,7 @@ import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.MMLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.battlearmor.ISBACompactNarc;
-import megamek.common.weapons.battlearmor.ISPopUpMineLauncher;
+import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
 
 public class EquipmentInfo {
     public int count = 0;
@@ -517,7 +517,7 @@ public class EquipmentInfo {
             WeaponType weapon = (WeaponType) mount.getType();
 
             isCompactNarc = weapon instanceof ISBACompactNarc;
-            isBAPopUpMine = weapon instanceof ISPopUpMineLauncher;
+            isBAPopUpMine = weapon instanceof ISBAPopUpMineLauncher;
 
 
             if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
