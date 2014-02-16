@@ -35,6 +35,8 @@ v0.1.25-dev (SVN)
 + Bug [#113]: Conventional Infantry will not load or save
 + Bug: Partial Wing equipment was being displayed in the Equipment Tab current
     loadout table, and could be removed there
++ Bug: BA Compact Narc ammo was not appearing when compact Narcs were added,
+    in fact, anything with the F_BURDENING flag wasn't appearing
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
