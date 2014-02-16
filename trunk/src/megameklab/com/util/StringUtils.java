@@ -73,7 +73,7 @@ import megamek.common.weapons.TAGWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
-import megamek.common.weapons.battlearmor.ISPopUpMineLauncher;
+import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
 import megamek.common.weapons.infantry.InfantryWeapon;
 
 public class StringUtils {
@@ -267,7 +267,7 @@ public class StringUtils {
                     info += "[M]";
                 } else if (weapon instanceof NarcWeapon) {
                     info = "[M]";
-                } else if (weapon instanceof ISPopUpMineLauncher) {
+                } else if (weapon instanceof ISBAPopUpMineLauncher) {
                     info = "4";
                 } else {
                     info = Integer.toString(weapon.getRackSize());
