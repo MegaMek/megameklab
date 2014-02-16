@@ -558,11 +558,12 @@ public class EquipmentTab extends ITab implements ActionListener {
                 }
                 
                 // Don't show equipment that is added via the StructureTab
-                if (etype.hasFlag(MiscType.F_BA_MANIPULATOR) 
-                        || etype.hasFlag(MiscType.F_PARTIAL_WING)
-                        || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
-                        || etype.hasFlag(MiscType.F_MASC)){
+                if ((etype instanceof MiscType ) 
+                        && (etype.hasFlag(MiscType.F_BA_MANIPULATOR) 
+                            || etype.hasFlag(MiscType.F_PARTIAL_WING)
+                            || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
+                            || etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
+                            || etype.hasFlag(MiscType.F_MASC))){
                     return false;
                 }
                 
