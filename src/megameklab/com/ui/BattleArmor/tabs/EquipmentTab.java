@@ -382,6 +382,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || mount.getType().hasFlag(MiscType.F_TSM)
                     || mount.getType().hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || mount.getType().hasFlag(MiscType.F_MASC)
+                    || mount.getType().hasFlag(MiscType.F_PARTIAL_WING)
                     || mount.getType().hasFlag(MiscType.F_BA_MANIPULATOR)
                     || UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
