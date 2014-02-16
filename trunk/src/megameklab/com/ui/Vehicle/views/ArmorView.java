@@ -46,6 +46,7 @@ import megamek.common.Mech;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.VTOL;
+import megamek.common.verifier.TestTank;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -710,7 +711,12 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     case Tank.LOC_TURRET:
                         turretArmorModel.setValue(Math.min(maxArmor,
                                 unit.getArmor(location)));
-                        turretArmorModel.setMaximum(maxArmor);
+                        if (unit instanceof VTOL){
+                        turretArmorModel
+                                .setMaximum(TestTank.VTOL_MAX_ROTOR_ARMOR);
+                        } else {
+                            turretArmorModel.setMaximum(maxArmor);
+                        }
                         turretArmorModel.setStepSize(1);
                         turretArmorModel.setMinimum(0);
                         turretArmorMaxLabel.setText("max: "
