@@ -38,6 +38,7 @@ v0.1.25-dev (SVN)
 + Bug: BA Compact Narc ammo was not appearing when compact Narcs were added,
     in fact, anything with the F_BURDENING flag wasn't appearing
 + New MegaMek.jar and changes to work with new BA names.
++ Bug [#87]: Megamek lab vehicle tonnage
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
@@ -505,6 +506,7 @@ V 0.1.17 Dev (Closed 9-29-2010)
 + TSM fix
 + better switching between mek and tank ui
 + Fixed issues with HarJel not being armored
+
 + Added more flexible Method for finding units Equipment and Weapons
 + Tanks now list new combat chassis in UI
 + New MM.Jar
