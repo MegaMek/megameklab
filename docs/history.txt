@@ -37,6 +37,7 @@ v0.1.25-dev (SVN)
     loadout table, and could be removed there
 + Bug: BA Compact Narc ammo was not appearing when compact Narcs were added,
     in fact, anything with the F_BURDENING flag wasn't appearing
++ New MegaMek.jar and changes to work with new BA names.
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
