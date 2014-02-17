@@ -507,6 +507,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             if (getMech().isSuperHeavy()) {
                 headMaxArmor = 12;
             }
+            int rearArmor;
             switch (location) {
                 case Mech.LOC_HEAD:
                     hdArmorModel.setValue(Math.min(headMaxArmor, unit.getArmor(location)));
@@ -559,9 +560,11 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     }
                     ctArmorModel.setStepSize(1);
                     ctArmorModel.setMinimum(0);
-                    ctrArmorModel.setValue(Math.min(
+                    rearArmor = Math.min(
                             unit.getArmor(location, true),
-                            maxArmor - unit.getArmor(location)));
+                            maxArmor - unit.getArmor(location));
+                    ctrArmorModel.setValue(rearArmor);
+                    getMech().initializeRearArmor(rearArmor, location);
                     if (isFullyAllocated()) {
                         ctrArmorModel.setMaximum((Integer) ctrArmorModel
                                 .getValue());
@@ -588,9 +591,11 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     }
                     ltArmorModel.setStepSize(1);
                     ltArmorModel.setMinimum(0);
-                    ltrArmorModel.setValue(Math.min(
+                    rearArmor = Math.min(
                             unit.getArmor(location, true),
-                            maxArmor - unit.getArmor(location)));
+                            maxArmor - unit.getArmor(location));
+                    ltrArmorModel.setValue(rearArmor);
+                    getMech().initializeRearArmor(rearArmor, location);
                     if (isFullyAllocated()) {
                         ltrArmorModel.setMaximum((Integer) ltrArmorModel
                                 .getValue());
@@ -617,9 +622,11 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     }
                     rtArmorModel.setStepSize(1);
                     rtArmorModel.setMinimum(0);
-                    rtrArmorModel.setValue(Math.min(
+                    rearArmor = Math.min(
                             unit.getArmor(location, true),
-                            maxArmor - unit.getArmor(location)));
+                            maxArmor - unit.getArmor(location));
+                    rtrArmorModel.setValue(rearArmor);
+                    getMech().initializeRearArmor(rearArmor, location);
                     if (isFullyAllocated()) {
                         rtrArmorModel.setMaximum((Integer) rtrArmorModel
                                 .getValue());
