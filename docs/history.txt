@@ -40,6 +40,7 @@ v0.1.25-dev (SVN)
 + New MegaMek.jar and changes to work with new BA names.
 + Bug [#87]: Megamek lab vehicle tonnage
 + Bug [#92]: VTOLs have incorrect max rotor armor.
++ Bug [#85]: Can't reduce number of Laser Heat Sinks
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
