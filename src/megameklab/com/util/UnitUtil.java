@@ -703,7 +703,7 @@ public class UnitUtil {
             } else if (type.equals("Double")) {
                 heatSinkType = "CLDoubleHeatSink";
             } else {
-                heatSinkType = "CLLaser Heat Sink";
+                heatSinkType = "Laser Heat Sink";
             }
         } else {
             if (type.equals("Single")) {
@@ -728,7 +728,8 @@ public class UnitUtil {
                 return true;
             }
             if (mounted.getType().hasFlag(MiscType.F_HEAT_SINK)
-                    || mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
+                    || mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
+                    || mounted.getType().hasFlag(MiscType.F_LASER_HEAT_SINK)) {
                 return mounted.getType().getInternalName().equals(heatSinkType);
             }
         }
