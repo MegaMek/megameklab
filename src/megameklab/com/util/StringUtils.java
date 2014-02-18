@@ -72,8 +72,14 @@ import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.TAGWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
+import megamek.common.weapons.battlearmor.CLBAERSmallPulseLaser;
 import megamek.common.weapons.battlearmor.CLBALBX;
+import megamek.common.weapons.battlearmor.CLBAMicroPulseLaser;
+import megamek.common.weapons.battlearmor.CLBASmallPulseLaser;
+import megamek.common.weapons.battlearmor.ISBAMediumVariableSpeedPulseLaser;
 import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
+import megamek.common.weapons.battlearmor.ISBASmallPulseLaser;
+import megamek.common.weapons.battlearmor.ISBASmallVariableSpeedPulseLaser;
 import megamek.common.weapons.infantry.InfantryWeapon;
 
 public class StringUtils {
@@ -233,9 +239,9 @@ public class StringUtils {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
-                } else if (weapon instanceof ISSmallVariableSpeedPulseLaser) {
+                } else if ((weapon instanceof ISSmallVariableSpeedPulseLaser) || (weapon instanceof ISBASmallVariableSpeedPulseLaser)) {
                     info = "5/4/3 [P,V]";
-                } else if (weapon instanceof ISMediumVariableSpeedPulseLaser) {
+                } else if ((weapon instanceof ISMediumVariableSpeedPulseLaser) || (weapon instanceof ISBAMediumVariableSpeedPulseLaser)) {
                     info = "9/7/5 [P,V]";
                 } else if (weapon instanceof ISLargeVariableSpeedPulseLaser) {
                     info = "11/9/7 [P,V]";
@@ -314,10 +320,14 @@ public class StringUtils {
                 }
                 if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
                         (weapon instanceof CLERSmallPulseLaser) ||
+                        (weapon instanceof CLBAERSmallPulseLaser) ||
                         (weapon instanceof ISSmallXPulseLaser) ||
                         (weapon instanceof ISSmallPulseLaser) ||
+                        (weapon instanceof ISBASmallPulseLaser) ||
                         (weapon instanceof CLSmallPulseLaser) ||
+                        (weapon instanceof CLBASmallPulseLaser) ||
                         (weapon instanceof CLMicroPulseLaser) ||
+                        (weapon instanceof CLBAMicroPulseLaser) ||
                         (weapon.hasFlag(WeaponType.F_FLAMER) ||
                         (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
                     info += "AI,";
