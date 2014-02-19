@@ -509,13 +509,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         } else {
             jumpType.setEnabled(true);
             jumpMP.setEnabled(true);
-            int selIdx = jumpType.getSelectedIndex();
             jumpType.removeAllItems();
             if(unit.isClan()) {
                 for(String j : jumpTypeArray) {
                     jumpType.addItem(j);
                 }
-                jumpType.setSelectedIndex(selIdx);
+                if (unit.getMovementMode() == EntityMovementMode.INF_UMU){
+                    jumpType.setSelectedItem(MOVE_UMU);
+                } else if (unit.getMovementMode() == EntityMovementMode.HOVER){
+                    jumpType.setSelectedItem(MOVE_VTOL);
+                } else {
+                    jumpType.setSelectedItem("Jump");
+                }
             } else {
                 jumpType.addItem(jumpTypeArray[0]);
                 jumpType.setSelectedIndex(0);
