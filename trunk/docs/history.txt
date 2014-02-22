@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.1.25-dev (SVN)
+v0.1.25 (2014-02-22 23:21 UTC)
 + Filtered out equipment in the equipment table that gets added via the 
     StructureTab (jump boosters, partial wing, manipulators, etc).  Also removed
     some filtering that was intended for 'mechs and vees and isn't applicable
