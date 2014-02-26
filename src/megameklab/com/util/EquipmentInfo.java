@@ -488,6 +488,10 @@ public class EquipmentInfo {
         name = UnitUtil.getCritName(unit, mount.getType());
         loc = unit.getLocationAbbr(mount.getLocation());
 
+        if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_BA_SEARCHLIGHT)) {
+            name = "Searchlight";
+        }
+
         if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
             name = "ECM Suite";
         }
@@ -584,7 +588,6 @@ public class EquipmentInfo {
                     longRange = 2;
                 }
             } else if (equipment.hasFlag(MiscType.F_BA_SEARCHLIGHT)) {
-                name = "Searchlight";
                 shtRange = 0;
                 medRange = 0;
                 longRange = 9;
