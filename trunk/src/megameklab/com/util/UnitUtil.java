@@ -125,8 +125,8 @@ public class UnitUtil {
     public static boolean isFixedLocationSpreadEquipment(EquipmentType eq) {
         return (eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || eq.hasFlag(MiscType.F_BA_MANIPULATOR) 
-                        || (eq.hasFlag(MiscType.F_MASC) 
+                        || eq.hasFlag(MiscType.F_BA_MANIPULATOR)
+                        || (eq.hasFlag(MiscType.F_MASC)
                                 && eq.hasFlag(MiscType.F_BA_EQUIPMENT))
                         || eq.hasFlag(MiscType.F_PARTIAL_WING)
                         || eq.hasFlag(MiscType.F_NULLSIG)
@@ -236,13 +236,13 @@ public class UnitUtil {
 
     public static void removeMounted(Entity unit, Mounted mount) {
         UnitUtil.removeCriticals(unit, mount);
-        
+
         // Some special checks for BA
         if (unit instanceof BattleArmor){
             // If we're removing a DWP and it has an attached weapon, we need
             //  to detach the weapon
             if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                    && mount.getLinked() != null){
+                    && (mount.getLinked() != null)){
                 Mounted link = mount.getLinked();
                 link.setDWPMounted(false);
                 link.setLinked(null);
@@ -250,7 +250,7 @@ public class UnitUtil {
             }
             // If we are removing a weapon that is mounted in an DWP, we need
             //  to clear the mounted status of the DWP
-            if (mount.getLinkedBy() != null 
+            if ((mount.getLinkedBy() != null)
                     && mount.getLinkedBy().getType().hasFlag(
                             MiscType.F_DETACHABLE_WEAPON_PACK)){
                 Mounted dwp = mount.getLinkedBy();
@@ -260,7 +260,7 @@ public class UnitUtil {
             // If we're removing an APM and it has an attached weapon, we need
             //  to detach the weapon
             if (mount.getType().hasFlag(MiscType.F_AP_MOUNT)
-                    && mount.getLinked() != null){
+                    && (mount.getLinked() != null)){
                 Mounted link = mount.getLinked();
                 link.setAPMMounted(false);
                 link.setLinked(null);
@@ -268,7 +268,7 @@ public class UnitUtil {
             }
             // If we are removing a weapon that is mounted in an APM, we need
             //  to clear the mounted status of the AP Mount
-            if (mount.getLinkedBy() != null 
+            if ((mount.getLinkedBy() != null)
                     && mount.getLinkedBy().getType().hasFlag(
                             MiscType.F_AP_MOUNT)){
                 Mounted apm = mount.getLinkedBy();
@@ -1003,15 +1003,15 @@ public class UnitUtil {
         }
 
         if ((eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_AP_MOUNT)
+                && ((eq.hasFlag(MiscType.F_AP_MOUNT) && !eq.hasFlag(MiscType.F_BA_MANIPULATOR))
                         || eq.hasFlag(MiscType.F_FIRE_RESISTANT)
                         || eq.hasFlag(MiscType.F_STEALTH)
                         || eq.hasFlag(MiscType.F_ARTEMIS)
                         || eq.hasFlag(MiscType.F_ARTEMIS_V)
                         || eq.hasFlag(MiscType.F_APOLLO)
                         || eq.hasFlag(MiscType.F_HARJEL)
-                        || eq.hasFlag(MiscType.F_MASS) || eq
-                            .hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK))) {
+                        || eq.hasFlag(MiscType.F_MASS)
+                        || eq.hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK))) {
             return false;
         }
 
@@ -1069,22 +1069,22 @@ public class UnitUtil {
         return critSpaces;
     }
 
-    
+
     /**
      * This method will return the number of contiguous criticals in the given
      * location, starting at the given critical slot
-     * 
+     *
      * @param unit          Unit to check critical slots on
      * @param location      The location on the unit to check slots on
      * @param startingSlot  The critical slot to start at
      * @return
      */
-    public static int getContiguousNumberOfCrits(Entity unit, int location, 
+    public static int getContiguousNumberOfCrits(Entity unit, int location,
             int startingSlot){
-        
+
         int numCritSlots = unit.getNumberOfCriticals(location);
         int contiguousCrits = 0;
-        
+
         for (int slot = startingSlot; slot < numCritSlots; slot++) {
             if (unit.getCritical(location, slot) == null) {
                 contiguousCrits++;
@@ -1094,8 +1094,8 @@ public class UnitUtil {
         }
         return contiguousCrits;
     }
-    
-    
+
+
     public static int getHighestContinuousNumberOfCrits(Entity unit,
             int location) {
         int highestNumberOfCrits = 0;
@@ -1122,8 +1122,8 @@ public class UnitUtil {
             // don't add ammo with just one shot, that's OS ammo
             //  Unless it's a single shot ammo type, like Cruise Missiles
             if ((mount.getLocation() == Entity.LOC_NONE)
-                    && (mount.getUsableShotsLeft() > 1
-                            || ammoType == AmmoType.T_CRUISE_MISSILE)) {
+                    && ((mount.getUsableShotsLeft() > 1)
+                            || (ammoType == AmmoType.T_CRUISE_MISSILE))) {
                 tonnage += mount.getType().getTonnage(unit);
             }
         }
@@ -1717,8 +1717,8 @@ public class UnitUtil {
         sb.append(eq.getName());
         if ((eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                 || eq.getType().hasFlag(MiscType.F_AP_MOUNT))
-                && eq.getLinked() != null){
-            sb.append(" (attached " + eq.getLinked().getName() 
+                && (eq.getLinked() != null)){
+            sb.append(" (attached " + eq.getLinked().getName()
                     + ")");
         }
         if (eq.isSquadSupportWeapon()){
@@ -1763,9 +1763,9 @@ public class UnitUtil {
         if (eq.isArmored()) {
             sb.append("<br>Armored");
         }
-        if ((unit instanceof BattleArmor) 
+        if ((unit instanceof BattleArmor)
                 && eq.getType().hasFlag(WeaponType.F_INFANTRY)){
-           sb.append("<br>* Infantry weapons must be mounted in AP Mounts"); 
+           sb.append("<br>* Infantry weapons must be mounted in AP Mounts");
         }
         sb.append("</html>");
         return sb.toString();
@@ -2368,22 +2368,22 @@ public class UnitUtil {
                             .getAmmoType() == AmmoType.T_PLASMA))) {
             	return true;
             }
-            	
+
             if (weapon.hasFlag(WeaponType.F_ENERGY) && (weapon.hasFlag(WeaponType.F_PLASMA))
             		&& (weapon.hasFlag(WeaponType.F_BA_WEAPON)))  {
             	return true;
             }
-                        
+
             if (weapon.hasFlag(WeaponType.F_ENERGY)
                         && weapon.hasFlag(WeaponType.F_PLASMA)
                         && (weapon.getAmmoType() == AmmoType.T_NA))
                 		{
                     return false;
                 }
-            
+
             return true;
         }
-		
+
         return false;
     }
 
@@ -2757,7 +2757,7 @@ public class UnitUtil {
             testEntity =
                     new TestAero((Aero)unit,entityVerifier.aeroOption,null);
         } else if (unit instanceof BattleArmor){
-            testEntity = new TestBattleArmor((BattleArmor) unit, 
+            testEntity = new TestBattleArmor((BattleArmor) unit,
                     entityVerifier.baOption, null);
         }
         if (testEntity != null){
@@ -3091,7 +3091,7 @@ public class UnitUtil {
 
     public static boolean canUseAmmo(Entity unit, AmmoType atype) {
         boolean match = false;
-        if ((unit instanceof BattleArmor) 
+        if ((unit instanceof BattleArmor)
                 && !atype.hasFlag(AmmoType.F_BATTLEARMOR)){
             return false;
         }
