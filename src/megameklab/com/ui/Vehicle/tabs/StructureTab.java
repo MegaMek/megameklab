@@ -107,7 +107,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             "Unoffical" };
     String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
             "Unoffical" };
-    JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
+    JComboBox<String> techLevel;
     String[] tankMotiveTypes = { "Hover", "Wheeled", "Tracked", "WiGE", "VTOL" };
     JComboBox<String> tankMotiveType = new JComboBox<String>(tankMotiveTypes);
     JTextField era = new JTextField(3);
@@ -148,6 +148,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panChassis = new JPanel(new GridBagLayout());
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
+        
+        if (unit.isClan()){
+            techLevel = new JComboBox<String>(clanTechLevels);
+        } else {
+            techLevel = new JComboBox<String>(isTechLevels);
+        }
 
         GridBagConstraints gbc;
 
