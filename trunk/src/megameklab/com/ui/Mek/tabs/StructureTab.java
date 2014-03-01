@@ -1161,9 +1161,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private void createISMounts() {
         int isCount = 0;
-        int structType = structureCombo.getSelectedIndex();
-        String structName = EquipmentType.getStructureTypeName(structType,
-                getMech().isClan());
+        String structName = (String)structureCombo.getSelectedItem();
 
         if (getMech().isMixedTech()) {
             structName = structureCombo.getSelectedItem().toString();
@@ -1175,6 +1173,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     .replace(" (IS)", "").replace(" (Clan)", "");
 
             if (clanStruct) {
+                structName = String.format("Clan %1$s", structName);
+            } else {
+                structName = String.format("IS %1$s", structName);
+            }
+        } else {
+            if (unit.isClan()) {
                 structName = String.format("Clan %1$s", structName);
             } else {
                 structName = String.format("IS %1$s", structName);
@@ -1991,18 +1995,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
             }
             structureCombo.setSelectedIndex(-1);
-            for (int pos = 0; pos < structureCombo.getItemCount(); pos++) {
-                if (structureCombo.getItemAt(pos).equals(structName)) {
-                    structureCombo.setSelectedIndex(pos);
-                    break;
-                }
-            }
+            structureCombo.setSelectedItem(structName);
         } else {
-            int selIndex = getMech().getStructureType();
-            if (structureCombo.getItemCount() <= selIndex) {
-                selIndex = -1;
-            }
-            structureCombo.setSelectedIndex(selIndex);
+            int structType = getMech().getStructureType();
+            String structTypeName = 
+                    EquipmentType.getStructureTypeName(structType);
+            structureCombo.setSelectedItem(structTypeName);
         }
     }
 
