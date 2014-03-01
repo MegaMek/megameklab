@@ -80,6 +80,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private String[] jumpTypeArray =
         { "Jump",MOVE_VTOL,MOVE_UMU};
     
+    Dimension labelSize = new Dimension(110, 25);
+    Dimension enhanceLabelSz = new Dimension(200,25);
+    
     // Basic Info Panel
     private JTextField chassis = new JTextField(5);
     private JTextField model = new JTextField(5);
@@ -94,6 +97,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     // Chassis Panel
     private JComboBox<String> chassisType = new JComboBox<String>(chassisTypeArray);
     private JComboBox<String> weightClass;
+    private JLabel lblExoskeleton = 
+            createLabel("Exoskeleton:", labelSize);;
+    private JCheckBox chkExoskeleton = new JCheckBox();
     
     private JSpinner walkMP;
     private JSpinner jumpMP;
@@ -110,7 +116,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     private JComboBox<String> rightManipSelect = new JComboBox<String>();
     
     // Enhancement Panel
-    Dimension enhanceLabelSz = new Dimension(200,25);
     private JLabel lblJumpBooster = 
             createLabel("Jump Booster:",enhanceLabelSz);
     private JLabel lblMechJumpBooster = 
@@ -139,7 +144,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 	public void setUpPanels() {	    
 	    JPanel previewPanel = new JPanel();
 	    previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
-	    panelMekView = new MechViewPanel(450, 447,false);
+	    panelMekView = new MechViewPanel(450, 470,false);
 	    //mekViewScrollPane.setMinimumSize(new java.awt.Dimension(450, 550));
 	    //mekViewScrollPane.setMaximumSize(new java.awt.Dimension(450, 550));
 	    //mekViewScrollPane.setPreferredSize(new java.awt.Dimension(450, 550));
@@ -158,7 +163,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         JPanel enhancePanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         Dimension comboSize = new Dimension(250, 25);
-        Dimension labelSize = new Dimension(110, 25);
+       
         Dimension spinnerSize = new Dimension(55, 25);
 
         // General IS BA squads are sized 4, Clan 5, and some IS squads 6 (WOB)
@@ -260,22 +265,27 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         gbc.gridx = 1;
         chassisPanel.add(chassisType, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 1;
-        chassisPanel.add(createLabel("Weight Class", labelSize), gbc);
+        gbc.gridy++;
+        chassisPanel.add(createLabel("Weight Class:", labelSize), gbc);
         gbc.gridx = 1;
         chassisPanel.add(weightClass, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy++;
+        chassisPanel.add(lblExoskeleton, gbc);
+        gbc.gridx = 1;
+        chassisPanel.add(chkExoskeleton, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
         chassisPanel.add(createLabel("Ground MP:", labelSize), gbc);
         gbc.gridx = 1;
         chassisPanel.add(walkMP, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy++;
         chassisPanel.add(createLabel("Jump MP:", labelSize), gbc);
         gbc.gridx = 1;
         chassisPanel.add(jumpMP, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy++;
         chassisPanel.add(createLabel("Move Mode:", labelSize), gbc);
         gbc.gridx = 1;
         chassisPanel.add(jumpType, gbc);
@@ -516,7 +526,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 }
                 if (unit.getMovementMode() == EntityMovementMode.INF_UMU){
                     jumpType.setSelectedItem(MOVE_UMU);
-                } else if (unit.getMovementMode() == EntityMovementMode.HOVER){
+                } else if (unit.getMovementMode() == EntityMovementMode.VTOL){
                     jumpType.setSelectedItem(MOVE_VTOL);
                 } else {
                     jumpType.setSelectedItem("Jump");
@@ -528,6 +538,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         }
 
         weightClass.setSelectedIndex(unit.getWeightClass());
+        if (unit.getWeightClass() != EntityWeightClass.WEIGHT_ULTRA_LIGHT){
+            chkExoskeleton.setEnabled(false);
+            lblExoskeleton.setEnabled(false);
+            chkExoskeleton.setSelected(false);
+            getBattleArmor().setIsExoskeleton(false);
+        } else {
+            chkExoskeleton.setEnabled(true);
+            lblExoskeleton.setEnabled(true);
+            getBattleArmor().setIsExoskeleton(chkExoskeleton.isSelected());
+        }
 
         walkMP.setValue(getBattleArmor().getOriginalWalkMP());
         ((SpinnerNumberModel) walkMP.getModel()).setMinimum(getBattleArmor().getMinimumWalkMP());
@@ -704,6 +724,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         rightManipSelect.addActionListener(this);
         chkJumpBooster.addActionListener(this);
         chkMechJumpBooster.addActionListener(this);
+        chkExoskeleton.addActionListener(this);
         chkMyomerBooster.addActionListener(this);
         chkPartialWing.addActionListener(this);
         
@@ -732,6 +753,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         chkMechJumpBooster.removeActionListener(this);
         chkMyomerBooster.removeActionListener(this);
         chkPartialWing.removeActionListener(this);
+        chkExoskeleton.removeActionListener(this);
         
         chassis.removeKeyListener(this);
         model.removeKeyListener(this);
