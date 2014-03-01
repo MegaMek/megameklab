@@ -97,9 +97,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     // Chassis Panel
     private JComboBox<String> chassisType = new JComboBox<String>(chassisTypeArray);
     private JComboBox<String> weightClass;
-    private JLabel lblExoskeleton = 
-            createLabel("Exoskeleton:", labelSize);;
+    private JLabel lblExoskeleton = createLabel("Exoskeleton:", labelSize);
     private JCheckBox chkExoskeleton = new JCheckBox();
+    private JLabel lblClanHarjel = createLabel("Harjel:", labelSize);
+    private JCheckBox chkClanHarjel = new JCheckBox();
     
     private JSpinner walkMP;
     private JSpinner jumpMP;
@@ -144,7 +145,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
 	public void setUpPanels() {	    
 	    JPanel previewPanel = new JPanel();
 	    previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
-	    panelMekView = new MechViewPanel(450, 470,false);
+	    panelMekView = new MechViewPanel(450, 480,false);
 	    //mekViewScrollPane.setMinimumSize(new java.awt.Dimension(450, 550));
 	    //mekViewScrollPane.setMaximumSize(new java.awt.Dimension(450, 550));
 	    //mekViewScrollPane.setPreferredSize(new java.awt.Dimension(450, 550));
@@ -259,6 +260,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             modelWeightClass.addElement(EntityWeightClass.getClassName(i, unit));
         }
         weightClass = new JComboBox<String>(modelWeightClass);
+        
+        JPanel chassisOptions = new JPanel();
+        chassisOptions.add(lblExoskeleton);
+        chassisOptions.add(chkExoskeleton);
+        chassisOptions.add(lblClanHarjel);
+        chassisOptions.add(chkClanHarjel);
+        
         gbc.gridx = 0;
         gbc.gridy = 0;
         chassisPanel.add(createLabel("Body Type:", labelSize), gbc);
@@ -271,9 +279,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         chassisPanel.add(weightClass, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
-        chassisPanel.add(lblExoskeleton, gbc);
-        gbc.gridx = 1;
-        chassisPanel.add(chkExoskeleton, gbc);
+        gbc.gridwidth = 2;
+        chassisPanel.add(chassisOptions, gbc);
+        gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy++;
         chassisPanel.add(createLabel("Ground MP:", labelSize), gbc);
@@ -548,6 +556,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
             lblExoskeleton.setEnabled(true);
             getBattleArmor().setIsExoskeleton(chkExoskeleton.isSelected());
         }
+        
+        if (unit.isClan()){
+            if (unit.isClan() && chkExoskeleton.isSelected()){
+                lblClanHarjel.setEnabled(true);
+                chkClanHarjel.setEnabled(true);
+                getBattleArmor().setClanExoWithoutHarjel(
+                        chkClanHarjel.isSelected());
+            } else {
+                // Clan BA have Harjel by default
+                chkClanHarjel.setSelected(true);
+                // Only industrial exoskeletons can't have Harjel
+                lblClanHarjel.setEnabled(false);
+                chkClanHarjel.setEnabled(false);
+                getBattleArmor().setClanExoWithoutHarjel(false);
+            }
+        } else {
+            lblClanHarjel.setEnabled(false);
+            chkClanHarjel.setEnabled(false);                
+            chkClanHarjel.setSelected(false);
+            getBattleArmor().setClanExoWithoutHarjel(false);
+        }
+        
+        
 
         walkMP.setValue(getBattleArmor().getOriginalWalkMP());
         ((SpinnerNumberModel) walkMP.getModel()).setMinimum(getBattleArmor().getMinimumWalkMP());
@@ -725,6 +756,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         chkJumpBooster.addActionListener(this);
         chkMechJumpBooster.addActionListener(this);
         chkExoskeleton.addActionListener(this);
+        chkClanHarjel.addActionListener(this);
         chkMyomerBooster.addActionListener(this);
         chkPartialWing.addActionListener(this);
         
@@ -754,6 +786,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         chkMyomerBooster.removeActionListener(this);
         chkPartialWing.removeActionListener(this);
         chkExoskeleton.removeActionListener(this);
+        chkClanHarjel.removeActionListener(this);
         
         chassis.removeKeyListener(this);
         model.removeKeyListener(this);
