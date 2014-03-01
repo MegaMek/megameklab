@@ -53,6 +53,7 @@ v0.1.25 (2014-02-22 23:21 UTC)
     have the wrong stats
 + Bug [#81]: Selecting Quad Chassis for Mech erases Year/Source/resets tech
     level
++ Bug [#79]: Selecting VTOL resets Year and Source/Era Fields
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct

@@ -119,23 +119,46 @@ public class MainUI extends MegaMekLabMainUI {
             } else if (!structureTab.isSuperHeavy() && tank.isSuperHeavy()){
                 tank.setWeight(30);
             }
-        } else if ((structureTab.isVTOL() && !(entity instanceof VTOL)) || (!structureTab.isVTOL() && (entity instanceof VTOL))) {
+        } else if ((structureTab.isVTOL() && !(entity instanceof VTOL))
+                || (!structureTab.isVTOL() && (entity instanceof VTOL))) {
             String model = entity.getModel();
             String chassis = entity.getChassis();
-            createNewUnit(structureTab.isVTOL()?Entity.ETYPE_VTOL:tank.isSuperHeavy()?Entity.ETYPE_SUPER_HEAVY_TANK:Entity.ETYPE_TANK,tank.isSuperHeavy());
+            String source = entity.getSource();
+            int year = entity.getYear();            
+            int techLevel = entity.getTechLevel(); 
+            int mBV = entity.getManualBV();
+            createNewUnit(
+                    structureTab.isVTOL() ? Entity.ETYPE_VTOL
+                            : tank.isSuperHeavy() ? Entity.ETYPE_SUPER_HEAVY_TANK
+                                    : Entity.ETYPE_TANK, tank.isSuperHeavy());
             entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
             entity.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
             entity.setChassis(chassis);
             entity.setModel(model);
+            entity.setSource(source);
+            entity.setYear(year);
+            entity.setTechLevel(techLevel);
+            entity.setManualBV(mBV);
             reloadTabs();
             repaint();
             refreshAll();
-        } else if ((structureTab.isSuperHeavy() && !(tank.isSuperHeavy())) || (!structureTab.isSuperHeavy() && (tank.isSuperHeavy()))) {
+        } else if ((structureTab.isSuperHeavy() && !(tank.isSuperHeavy()))
+                || (!structureTab.isSuperHeavy() && (tank.isSuperHeavy()))) {
             String model = entity.getModel();
             String chassis = entity.getChassis();
-            createNewUnit(structureTab.isSuperHeavy()?Entity.ETYPE_SUPER_HEAVY_TANK:Entity.ETYPE_TANK, structureTab.isSuperHeavy());
+            String source = entity.getSource();
+            int year = entity.getYear();            
+            int techLevel = entity.getTechLevel(); 
+            int mBV = entity.getManualBV();
+            createNewUnit(
+                    structureTab.isSuperHeavy() ? Entity.ETYPE_SUPER_HEAVY_TANK
+                            : Entity.ETYPE_TANK, structureTab.isSuperHeavy());
             entity.setChassis(chassis);
             entity.setModel(model);
+            entity.setSource(source);
+            entity.setYear(year);
+            entity.setTechLevel(techLevel);
+            entity.setManualBV(mBV);
             reloadTabs();
             repaint();
             refreshAll();
