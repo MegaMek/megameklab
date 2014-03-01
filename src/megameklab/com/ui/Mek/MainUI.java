@@ -164,36 +164,44 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshAll() {
 
-        if ((structureTab.isQuad() && !(entity instanceof QuadMech)) || (!structureTab.isQuad() && (entity instanceof QuadMech))) {
+        boolean isQuad = entity instanceof QuadMech;
+        boolean isLAM = entity instanceof LandAirMech;
+        boolean isTripod = entity instanceof TripodMech;
+        
+        // Check to see if the current entity type matches the selected type
+        if (((structureTab.isQuad() && !isQuad) 
+                    || (!structureTab.isQuad() && isQuad))
+                || ((structureTab.isLAM() && !isLAM) 
+                        || (!structureTab.isLAM() && isLAM))
+                || ((structureTab.isTripod() && !isTripod) 
+                        || (!structureTab.isTripod() && isTripod))) {
+            // If no match, create a new entity of the right type
             String model = entity.getModel();
             String chassis = entity.getChassis();
-
-            createNewUnit(structureTab.isQuad()?Entity.ETYPE_QUAD_MECH:structureTab.isLAM()?Entity.ETYPE_LAND_AIR_MECH:structureTab.isTripod()?Entity.ETYPE_TRIPOD_MECH:Entity.ETYPE_BIPED_MECH, false);
+            String source = entity.getSource();
+            int year = entity.getYear();            
+            int techLevel = entity.getTechLevel(); 
+            int mBV = entity.getManualBV();
+            
+            long eType;
+            if (structureTab.isQuad()){
+                eType = Entity.ETYPE_QUAD_MECH;
+            } else if (structureTab.isLAM()){
+                eType = Entity.ETYPE_LAND_AIR_MECH;
+            } else if (structureTab.isTripod()){
+                eType = Entity.ETYPE_TRIPOD_MECH;
+            } else {
+                eType = Entity.ETYPE_BIPED_MECH;
+            }
+            
+            createNewUnit(eType, false);
 
             entity.setChassis(chassis);
             entity.setModel(model);
-
-            reloadTabs();
-            repaint();
-            refreshAll();
-        } else if ((structureTab.isLAM() && !(entity instanceof LandAirMech)) || (!structureTab.isLAM() && (entity instanceof LandAirMech))) {
-            String model = entity.getModel();
-            String chassis = entity.getChassis();
-
-            createNewUnit(structureTab.isLAM()?Entity.ETYPE_LAND_AIR_MECH:structureTab.isQuad()?Entity.ETYPE_QUAD_MECH:structureTab.isTripod()?Entity.ETYPE_TRIPOD_MECH:Entity.ETYPE_BIPED_MECH, false);
-            entity.setChassis(chassis);
-            entity.setModel(model);
-
-            reloadTabs();
-            repaint();
-            refreshAll();
-        } else if ((structureTab.isTripod() && !(entity instanceof TripodMech)) || (!structureTab.isTripod() && (entity instanceof TripodMech))) {
-            String model = entity.getModel();
-            String chassis = entity.getChassis();
-
-            createNewUnit(structureTab.isTripod()?Entity.ETYPE_TRIPOD_MECH:structureTab.isQuad()?Entity.ETYPE_QUAD_MECH:structureTab.isLAM()?Entity.ETYPE_LAND_AIR_MECH:Entity.ETYPE_BIPED_MECH, false);
-            entity.setChassis(chassis);
-            entity.setModel(model);
+            entity.setSource(source);
+            entity.setYear(year);
+            entity.setTechLevel(techLevel);
+            entity.setManualBV(mBV);
 
             reloadTabs();
             repaint();
