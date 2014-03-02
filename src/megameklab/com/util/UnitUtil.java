@@ -57,6 +57,7 @@ import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
+import megamek.common.TripodMech;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAero;
@@ -1423,6 +1424,11 @@ public class UnitUtil {
                 locations.add(Mech.LOC_LT);
                 locations.add(Mech.LOC_RT);
                 blocks = 6;
+                // Need to account for the center leg
+                if (unit instanceof TripodMech){
+                    locations.add(Mech.LOC_CLEG);
+                    blocks++;
+                }                
             } else if ((equip.hasFlag(MiscType.F_TRACKS)
                     || equip.hasFlag(MiscType.F_TALON) || equip
                         .hasFlag(MiscType.F_JUMP_BOOSTER))) {
@@ -1434,6 +1440,11 @@ public class UnitUtil {
                     locations.add(Mech.LOC_RARM);
                 }
                 blocks = (unit instanceof BipedMech ? 2 : 4);
+                // Need to account for the center leg
+                if (unit instanceof TripodMech){
+                    locations.add(Mech.LOC_CLEG);
+                    blocks++;
+                }
             } else if (equip.hasFlag(MiscType.F_PARTIAL_WING)) {
                 // one block in each side torso
                 locations.add(Mech.LOC_LT);
@@ -1442,11 +1453,19 @@ public class UnitUtil {
             } else if ((equip.hasFlag(MiscType.F_VOIDSIG)
                     || equip.hasFlag(MiscType.F_NULLSIG) || equip
                         .hasFlag(MiscType.F_BLUE_SHIELD))) {
+                // Need to account for the center leg
+                if (unit instanceof TripodMech){
+                    blocks++;
+                }
                 // 1 crit in each location, except the head
                 for (int i = Mech.LOC_CT; i < unit.locations(); i++) {
                     locations.add(i);
                 }
             } else if (equip.hasFlag(MiscType.F_CHAMELEON_SHIELD)) {
+                // Need to account for the center leg
+                if (unit instanceof TripodMech){
+                    blocks++;
+                }
                 // 1 crit in each location except head and CT
                 for (int i = Mech.LOC_RT; i < unit.locations(); i++) {
                     locations.add(i);
