@@ -48,6 +48,7 @@ public class CriticalView extends IView {
     private JPanel raPanel = new JPanel();
     private JPanel llPanel = new JPanel();
     private JPanel rlPanel = new JPanel();
+    private JPanel clPanel = new JPanel();
     private JPanel ltPanel = new JPanel();
     private JPanel rtPanel = new JPanel();
     private JPanel ctPanel = new JPanel();
@@ -76,6 +77,7 @@ public class CriticalView extends IView {
         raPanel.setOpaque(false);
         laPanel.setOpaque(false);
         rlPanel.setOpaque(false);
+        clPanel.setOpaque(false);
         llPanel.setOpaque(false);
 
         // Set panel layouts
@@ -116,6 +118,7 @@ public class CriticalView extends IView {
         
         centerAlignPanel.add(headPanel);
         centerAlignPanel.add(ctPanel);
+        centerAlignPanel.add(clPanel);
         centerAlignPanel.add(Box.createVerticalStrut(75));
         
         rightAlignPanel.add(Box.createVerticalStrut(50));
@@ -144,10 +147,15 @@ public class CriticalView extends IView {
         raPanel.removeAll();
         llPanel.removeAll();
         rlPanel.removeAll();
+        clPanel.removeAll();
         ltPanel.removeAll();
         rtPanel.removeAll();
         ctPanel.removeAll();
         headPanel.removeAll();
+        clPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(),
+                "", TitledBorder.TOP,
+                TitledBorder.DEFAULT_POSITION));
 
         // the CritListCellRenderer has a default size of 110x15 and
         // the border has a width of 1 so this should make each one the right
@@ -317,6 +325,16 @@ public class CriticalView extends IView {
                         criticalSlotList.setMaximumSize(legSize);
                         rlPanel.add(criticalSlotList);
                         break;
+                    case Mech.LOC_CLEG:
+                        clPanel.setBorder(BorderFactory.createTitledBorder(
+                                BorderFactory.createEmptyBorder(),
+                                "Center Leg", TitledBorder.TOP,
+                                TitledBorder.DEFAULT_POSITION));
+                        criticalSlotList.setSize(legSize);
+                        criticalSlotList.setPreferredSize(legSize);
+                        criticalSlotList.setMaximumSize(legSize);
+                        clPanel.add(criticalSlotList);
+                        break;
                 }
             }
             
@@ -328,6 +346,7 @@ public class CriticalView extends IView {
             rtPanel.invalidate();
             llPanel.invalidate();
             rlPanel.invalidate();
+            clPanel.invalidate();
             
             ctPanel.repaint();
             raPanel.repaint();
@@ -337,6 +356,7 @@ public class CriticalView extends IView {
             rtPanel.repaint();
             llPanel.repaint();
             rlPanel.repaint();
+            clPanel.invalidate();
         }
     }
 

@@ -1,6 +1,17 @@
 VERSION HISTORY:
 ----------------
 v0.1.26-dev (SVN)
++ Feature: For BA, when the PA(L)/Exoskeleton class is selected, users can now
+    distinguish between PA(L) and Exoskeleton
++ Feature: Added ability to remove harjel for clan exoskeletons
++ Bug [#118]: Composite, endo-composite, and reinforced internal structure types
+    have the wrong stats
++ Bug [#81]: Selecting Quad Chassis for Mech erases Year/Source/resets tech
+    level
++ Bug [#79]: Selecting VTOL resets Year and Source/Era Fields
++ Feature: Tripods now display crits for the center leg in the critical view
++ Bug: spread mounts on tripods now function properly (things like blue shield,
+    stealth armor, etc)
 
 v0.1.25 (2014-02-22 23:21 UTC)
 + Filtered out equipment in the equipment table that gets added via the 
@@ -46,14 +57,6 @@ v0.1.25 (2014-02-22 23:21 UTC)
 + Bug [#78]: Armor points allocation in the Mek Lab in MekHQ and the MegaMeklab
     program itself
 + Bug [#115]: movement type dropdown not set to UMU when loading a UMU BA
-+ Feature: For BA, when the PA(L)/Exoskeleton class is selected, users can now
-    distinguish between PA(L) and Exoskeleton
-+ Feature: Added ability to remove harjel for clan exoskeletons
-+ Bug [#118]: Composite, endo-composite, and reinforced internal structure types
-    have the wrong stats
-+ Bug [#81]: Selecting Quad Chassis for Mech erases Year/Source/resets tech
-    level
-+ Bug [#79]: Selecting VTOL resets Year and Source/Era Fields
 
 v0.1.24 (2014-02-11 03:43 UTC) 
 + Bug: Free crits in statusbar not correct
