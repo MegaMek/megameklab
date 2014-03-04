@@ -39,6 +39,7 @@ import javax.print.attribute.standard.PrintQuality;
 import megamek.common.Crew;
 import megamek.common.Engine;
 import megamek.common.MiscType;
+import megamek.common.SupportTank;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
@@ -196,7 +197,11 @@ public class PrintVehicle implements Printable {
                 engineName = "Compact Fusion Engine";
                 break;
             case Engine.FUEL_CELL:
-                engineName = "Electric (Fuel Cell) Engine";
+                if (tank instanceof SupportTank) {
+                    engineName = "Electric (Fuel Cell) Engine";
+                } else {
+                    engineName = "Fuel Cell Engine";
+                }
                 break;
             case Engine.FISSION:
                 engineName = "Fission Engine";
