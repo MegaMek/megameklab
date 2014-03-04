@@ -196,10 +196,22 @@ public class PrintVehicle implements Printable {
                 engineName = "Compact Fusion Engine";
                 break;
             case Engine.FUEL_CELL:
-                engineName = "Fuel Cell Engine";
+                engineName = "Electric (Fuel Cell) Engine";
                 break;
             case Engine.FISSION:
                 engineName = "Fission Engine";
+                break;
+            case Engine.SOLAR:
+                engineName = "Electric (Solar) Engine";
+                break;
+            case Engine.BATTERY:
+                engineName = "Electric (Batteries) Engine";
+                break;
+            case Engine.STEAM:
+                engineName = "Steam Engine";
+                break;
+            case Engine.MAGLEV:
+                engineName = "MagLev Engine";
                 break;
             case Engine.NONE:
                 engineName = "None";
