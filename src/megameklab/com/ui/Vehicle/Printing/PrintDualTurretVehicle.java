@@ -197,7 +197,7 @@ public class PrintDualTurretVehicle implements Printable {
             // unusualSymbols.setGroupingSeparator(',');
             // DecimalFormat myFormatter = new DecimalFormat("#.###",
             // unusualSymbols);
-            g2d.drawString(String.format("%1$,d", tank.getWeight()), 177, 134);
+            g2d.drawString(String.format("%1$,.1f", tank.getWeight()), 177, 134);
         }
 
         int nextDataLine = 153;
