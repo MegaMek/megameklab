@@ -292,7 +292,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 }
             
                 if (!UnitUtil.isArmor(eq.getType()) 
-                        && !eq.isSquadSupportWeapon()) {
+                        && !eq.isSquadSupportWeapon()
+                        && !eq.getType().hasFlag(WeaponType.F_MISSILE)) {
                     item = new JMenuItem("Make individual weapon");
                     item.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
