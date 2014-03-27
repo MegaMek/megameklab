@@ -13,7 +13,6 @@ v0.1.26-dev (SVN)
 + Bug: spread mounts on tripods now function properly (things like blue shield,
     stealth armor, etc)
 + Pulled in the latest MegaMek.jar to get the Modular Equipment Adaptor MiscType
-+ Made it so BA can only mount missile weapons at the squad level
 
 v0.1.25 (2014-02-22 23:21 UTC)
 + Filtered out equipment in the equipment table that gets added via the 
