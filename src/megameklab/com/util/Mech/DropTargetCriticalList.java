@@ -147,7 +147,6 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     
                     // Allow making this a sort weapon
                     if ((mount.getType() instanceof WeaponType)
-                            && !mount.getType().hasFlag(WeaponType.F_MISSILE)
                             && !mount.isSquadSupportWeapon()
                             && mount.getLocation() == BattleArmor.LOC_SQUAD
                             && (unit instanceof BattleArmor)

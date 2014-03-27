@@ -336,7 +336,6 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             
             // Allow making this a squad support weapon
             if ((eq.getType() instanceof WeaponType)
-                    && !eq.getType().hasFlag(WeaponType.F_MISSILE)
                     && !eq.isSquadSupportWeapon()
                     && eq.getLocation() == BattleArmor.LOC_SQUAD
                     && getBattleArmor().getChassisType() != 
