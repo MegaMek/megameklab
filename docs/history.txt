@@ -1,5 +1,8 @@
 VERSION HISTORY:
 ----------------
+v0.1.27-dev (SVN)
+
+
 v0.1.26 (2014-03-29 15:10 UTC)
 + Feature: For BA, when the PA(L)/Exoskeleton class is selected, users can now
     distinguish between PA(L) and Exoskeleton
