@@ -450,26 +450,42 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void addEquipment(EquipmentType equip) {
-        boolean success = false;
         Mounted mount = null;
         boolean isMisc = equip instanceof MiscType;
+        boolean multiMount = false;
+        if ((equip instanceof WeaponType) 
+                && (equip.hasFlag(WeaponType.F_TASER) 
+                        || ((WeaponType)equip).getAmmoType() 
+                            == AmmoType.T_NARC)){
+            multiMount = true;
+        }
+        
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(unit)) {
                 mount = UnitUtil.updateTC(getBattleArmor(), equip);
-                success = mount != null;
+                if (mount != null){
+                    equipmentList.addCrit(mount);
+                }
             }
         } else {
             try {
-                mount = new Mounted(unit, equip);
-                mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
-                getBattleArmor().addEquipment(mount, BattleArmor.LOC_SQUAD, false);
-                success = true;
+                if (multiMount){
+                    for (int t = 1; t <= getBattleArmor().getTroopers(); t++){
+                        mount = new Mounted(unit, equip);
+                        mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
+                        getBattleArmor().addEquipment(mount, t, false);
+                        equipmentList.addCrit(mount);
+                    }
+                } else {
+                    mount = new Mounted(unit, equip);
+                    mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
+                    getBattleArmor().addEquipment(mount, BattleArmor.LOC_SQUAD,
+                            false);
+                    equipmentList.addCrit(mount);
+                }
             } catch (LocationFullException lfe) {
                 // this can't happen, we add to Entity.LOC_NONE
             }
-        }
-        if (success) {
-            equipmentList.addCrit(mount);
         }
     }
 
