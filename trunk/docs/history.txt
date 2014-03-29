@@ -14,6 +14,11 @@ v0.1.26-dev (SVN)
     stealth armor, etc)
 + Pulled in the latest MegaMek.jar to get the Modular Equipment Adaptor MiscType
 + Bug: Missile weapons could not be squad support weapon mounted on BattleArmor
++ BA Compact Narc and BA Tasers were changed in MM to assume that a squad has
+    a series of individual mounts so that targeting for these weapons works
+    properly.  MML has now been updated so the construction reflects this:
+    adding a BA NARC or Taser will add an individual mount for each suit in the
+    squad and they cannot be changed to squad equipment.
 
 v0.1.25 (2014-02-22 23:21 UTC)
 + Filtered out equipment in the equipment table that gets added via the 
