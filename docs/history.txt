@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.1.26-dev (SVN)
+v0.1.26 (2014-03-29 15:10 UTC)
 + Feature: For BA, when the PA(L)/Exoskeleton class is selected, users can now
     distinguish between PA(L) and Exoskeleton
 + Feature: Added ability to remove harjel for clan exoskeletons
@@ -19,6 +19,7 @@ v0.1.26-dev (SVN)
     properly.  MML has now been updated so the construction reflects this:
     adding a BA NARC or Taser will add an individual mount for each suit in the
     squad and they cannot be changed to squad equipment.
++ New MegaMek.jar 0.37.9 (0.38.0 RC1)
 
 v0.1.25 (2014-02-22 23:21 UTC)
 + Filtered out equipment in the equipment table that gets added via the 
