@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 v0.1.27-dev (SVN)
 + New MegaMek.jar r10732
++ Bug: IndexOutOfBoundsException when selecting jump jet type on Tripod Mechs
 
 v0.1.26 (2014-03-29 15:10 UTC)
 + Feature: For BA, when the PA(L)/Exoskeleton class is selected, users can now
