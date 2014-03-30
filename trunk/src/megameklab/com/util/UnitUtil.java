@@ -1443,7 +1443,7 @@ public class UnitUtil {
                 // Need to account for the center leg
                 if (unit instanceof TripodMech){
                     locations.add(Mech.LOC_CLEG);
-                    blocks++;
+                    blocks = 3;
                 }
             } else if (equip.hasFlag(MiscType.F_PARTIAL_WING)) {
                 // one block in each side torso
