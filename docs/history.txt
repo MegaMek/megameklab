@@ -24,6 +24,7 @@ v0.1.26 (2014-03-29 15:10 UTC)
     adding a BA NARC or Taser will add an individual mount for each suit in the
     squad and they cannot be changed to squad equipment.
 + New MegaMek.jar 0.37.9 (0.38.0 RC1)
++ New MegaMek.jar 0.37.10-dev-r10759
 
 v0.1.25 (2014-02-22 23:21 UTC)
 + Filtered out equipment in the equipment table that gets added via the 
