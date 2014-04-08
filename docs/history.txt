@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.28-dev (SVN)
+
 v0.1.27 (2014-04-08 03:03)
 + New MegaMek.jar r10732
 + Bug: IndexOutOfBoundsException when selecting jump jet type on Tripod Mechs
