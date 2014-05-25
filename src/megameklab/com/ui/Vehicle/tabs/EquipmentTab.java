@@ -61,6 +61,8 @@ import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.SupportTank;
+import megamek.common.SupportVTOL;
 import megamek.common.Tank;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ArtilleryWeapon;
@@ -536,6 +538,15 @@ public class EquipmentTab extends ITab implements ActionListener {
                     return false;
                 }
                 if ((etype instanceof MiscType) && (etype.hasFlag(MiscType.F_TSM) || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) || etype.hasFlag(MiscType.F_MASC))) {
+                    return false;
+                }
+                boolean isSupportTankEquipment = false;
+                if (etype.hasFlag(MiscType.F_ARMORED_CHASSIS)) {
+                    isSupportTankEquipment = true;
+                }
+                if (isSupportTankEquipment
+                        && !((unit instanceof SupportTank) 
+                                || (unit instanceof SupportVTOL))) {
                     return false;
                 }
                 if (((nType == T_OTHER) && UnitUtil.isTankEquipment(etype))
