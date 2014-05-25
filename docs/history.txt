@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.29-dev (SVN)
++ Bug [#124]:  Non-support vehicles could mount armored chassis
 
 v0.1.28 (2014-05-05 17:23 UTC)
 + New MegaMek.jar 0.37.11
