@@ -368,22 +368,25 @@ public class EquipmentTab extends ITab implements ActionListener {
         List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
 
         for (Mounted mount : unit.getMisc()) {
-
+            
+            EquipmentType etype = mount.getType();
             if (UnitUtil.isHeatSink(mount)
-                    || mount.getType().hasFlag(MiscType.F_JUMP_JET)
-                    || mount.getType().hasFlag(MiscType.F_JUMP_BOOSTER)
-                    || mount.getType().hasFlag(MiscType.F_TSM)
-                    || mount.getType().hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || mount.getType().hasFlag(MiscType.F_MASC)
-                    || UnitUtil.isArmorOrStructure(mount.getType())) {
+                    || etype.hasFlag(MiscType.F_JUMP_JET)
+                    || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
+                    || etype.hasFlag(MiscType.F_TSM)
+                    || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                    || (etype.hasFlag(MiscType.F_MASC) 
+                            && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+                    || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
             //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType()) && !spreadAlreadyAdded.contains(mount.getType())) {
+                if (UnitUtil.isFixedLocationSpreadEquipment(etype) 
+                        && !spreadAlreadyAdded.contains(etype)) {
                     equipmentList.addCrit(mount);
                     // keep track of spreadable equipment here, so it doesn't
                     // show up multiple times in the table
-                    spreadAlreadyAdded.add(mount.getType());
+                    spreadAlreadyAdded.add(etype);
                 } else {
                     equipmentList.addCrit(mount);
                 }
