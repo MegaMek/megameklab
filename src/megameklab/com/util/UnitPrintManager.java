@@ -50,6 +50,7 @@ import megamek.common.Protomech;
 import megamek.common.QuadMech;
 import megamek.common.SmallCraft;
 import megamek.common.Tank;
+import megamek.common.TripodMech;
 import megamek.common.VTOL;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
@@ -128,6 +129,7 @@ public class UnitPrintManager {
     public static boolean printAllUnits(Vector<Entity> loadedUnits, boolean singlePrint) {
         ArrayList<Mech> quadList = new ArrayList<Mech>();
         ArrayList<Mech> bipedList = new ArrayList<Mech>();
+        ArrayList<Mech> tripodList = new ArrayList<Mech>();
         ArrayList<Tank> tankList = new ArrayList<Tank>();
         ArrayList<Tank> wigeList = new ArrayList<Tank>();
         ArrayList<Tank> dualTurretList = new ArrayList<Tank>();
@@ -155,6 +157,11 @@ public class UnitPrintManager {
                 UnitUtil.expandUnitMounts((Mech) unit);
 
                 bipedList.add((Mech) unit);
+            } else if (unit instanceof TripodMech) {
+                UnitUtil.removeOneShotAmmo(unit);
+                UnitUtil.expandUnitMounts((Mech) unit);
+                
+                tripodList.add((Mech) unit);
             } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank)unit).isSuperHeavy())) {
                 largeSupportTankList.add((Tank)unit);
             } else if (unit instanceof VTOL) {
@@ -214,7 +221,10 @@ public class UnitPrintManager {
 
             printQuad.print();
         }
-
+        
+        // TODO: Implement a PrintTripod class so we can do something with
+        // tripodList here as well.
+        
         if (tankList.size() > 0) {
             PrintVehicle printTank = new PrintVehicle(tankList, singlePrint, masterPrintJob);
 
