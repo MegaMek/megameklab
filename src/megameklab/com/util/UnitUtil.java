@@ -995,10 +995,6 @@ public class UnitUtil {
             return false;
         }
 
-        if (UnitUtil.isFixedLocationSpreadEquipment(eq)) {
-            return false;
-        }
-
         if (UnitUtil.isJumpJet(eq)) {
             return false;
         }
@@ -1428,7 +1424,7 @@ public class UnitUtil {
                 if (unit instanceof TripodMech){
                     locations.add(Mech.LOC_CLEG);
                     blocks++;
-                }                
+                }
             } else if ((equip.hasFlag(MiscType.F_TRACKS)
                     || equip.hasFlag(MiscType.F_TALON) || equip
                         .hasFlag(MiscType.F_JUMP_BOOSTER))) {
@@ -2269,7 +2265,7 @@ public class UnitUtil {
                 return false;
             }
 
-            if (!(unit instanceof BipedMech || unit instanceof TripodMech)
+            if (!((unit instanceof BipedMech) || (unit instanceof TripodMech))
                     && (eq.hasFlag(MiscType.F_SHOULDER_TURRET))) {
                 return false;
             }
@@ -2860,7 +2856,7 @@ public class UnitUtil {
             }
 
             if (eq.hasFlag(MiscType.F_SHOULDER_TURRET)
-                    && (!(unit instanceof BipedMech || unit instanceof TripodMech)
+                    && (!((unit instanceof BipedMech) || (unit instanceof TripodMech))
                         || ((location != Mech.LOC_RT) && (location != Mech.LOC_LT)))) {
                 return false;
             }
@@ -3284,7 +3280,7 @@ public class UnitUtil {
     }
 
     public static void removeOmniArmActuators(Mech mech) {
-        if (mech instanceof BipedMech || mech instanceof TripodMech) {
+        if ((mech instanceof BipedMech) || (mech instanceof TripodMech)) {
             boolean leftACGaussPPC = false;
             boolean rightACGaussPPC = false;
             for (Mounted weapon : mech.getWeaponList()) {
