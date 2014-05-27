@@ -2269,7 +2269,7 @@ public class UnitUtil {
                 return false;
             }
 
-            if (!(unit instanceof BipedMech)
+            if (!(unit instanceof BipedMech || unit instanceof TripodMech)
                     && (eq.hasFlag(MiscType.F_SHOULDER_TURRET))) {
                 return false;
             }
@@ -2860,7 +2860,8 @@ public class UnitUtil {
             }
 
             if (eq.hasFlag(MiscType.F_SHOULDER_TURRET)
-                    && (!(unit instanceof BipedMech) || ((location != Mech.LOC_RT) && (location != Mech.LOC_LT)))) {
+                    && (!(unit instanceof BipedMech || unit instanceof TripodMech)
+                        || ((location != Mech.LOC_RT) && (location != Mech.LOC_LT)))) {
                 return false;
             }
 
@@ -3283,7 +3284,7 @@ public class UnitUtil {
     }
 
     public static void removeOmniArmActuators(Mech mech) {
-        if (mech instanceof BipedMech) {
+        if (mech instanceof BipedMech || mech instanceof TripodMech) {
             boolean leftACGaussPPC = false;
             boolean rightACGaussPPC = false;
             for (Mounted weapon : mech.getWeaponList()) {
@@ -3305,24 +3306,24 @@ public class UnitUtil {
                 }
             }
             if (leftACGaussPPC) {
-                removeArm((BipedMech) mech, Mech.LOC_LARM);
+                removeArm(mech, Mech.LOC_LARM);
                 UnitUtil.compactCriticals(mech, Mech.LOC_LARM);
             }
             if (rightACGaussPPC) {
-                removeArm((BipedMech) mech, Mech.LOC_RARM);
+                removeArm(mech, Mech.LOC_RARM);
                 UnitUtil.compactCriticals(mech, Mech.LOC_RARM);
             }
         }
 
     }
 
-    public static void removeHand(BipedMech mech, int location) {
+    public static void removeHand(Mech mech, int location) {
         if (mech.hasSystem(Mech.ACTUATOR_HAND, location)) {
             mech.setCritical(location, 3, null);
         }
     }
 
-    public static void removeArm(BipedMech mech, int location) {
+    public static void removeArm(Mech mech, int location) {
         if (mech.hasSystem(Mech.ACTUATOR_LOWER_ARM, location)) {
             mech.setCritical(location, 2, null);
             // Only remove the next slot of it actually is a hand

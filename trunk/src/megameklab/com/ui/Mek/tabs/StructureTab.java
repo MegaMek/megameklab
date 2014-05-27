@@ -2235,18 +2235,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setArmorType(llArmor, unit.getArmorType(Mech.LOC_LLEG), false);
             setArmorType(rlArmor, unit.getArmorType(Mech.LOC_RLEG), false);
             JLabel headLabel = new JLabel("Head:");
-            JLabel laLabel = new JLabel(unit instanceof BipedMech ? "Left Arm:"
-                    : "Front Left Leg");
+            JLabel laLabel = new JLabel(unit instanceof QuadMech ?
+                "Front Left Leg:" : "Left Arm:");
             JLabel ltLabel = new JLabel("Left Torso:");
             JLabel ctLabel = new JLabel("Center Torso:");
             JLabel rtLabel = new JLabel("Right Torso:");
-            JLabel raLabel = new JLabel(
-                    unit instanceof BipedMech ? "Right Arm:"
-                            : "Front Right Leg");
-            JLabel llLabel = new JLabel(unit instanceof BipedMech ? "Left Leg:"
-                    : "Rear Left Leg");
-            JLabel rlLabel = new JLabel(
-                    unit instanceof BipedMech ? "Right Leg:" : "Rear Right Leg");
+            JLabel raLabel = new JLabel(unit instanceof QuadMech ?
+                "Front Right Leg:" : "Right Arm:");
+            JLabel llLabel = new JLabel(unit instanceof QuadMech ?
+                "Rear Left Leg:" : "Left Leg:");
+            JLabel rlLabel = new JLabel(unit instanceof QuadMech ?
+                "Rear Right Leg:" : "Right Leg:");
             JPanel panel = new JPanel(new GridBagLayout());
             panel.add(headLabel, GBC.std());
             panel.add(headArmor, GBC.eol());

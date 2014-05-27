@@ -36,6 +36,7 @@ import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.TripodMech;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.com.util.CritListCellRenderer;
@@ -340,7 +341,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
                     }
                 }
 
-                if ((unit instanceof BipedMech)
+                if ((unit instanceof BipedMech || unit instanceof TripodMech)
                         && ((location == Mech.LOC_LARM) || (location == Mech.LOC_RARM))) {
                     popup.addSeparator();
                     popup.setAutoscrolls(true);
@@ -573,8 +574,8 @@ public class DropTargetCriticalList extends JList implements MouseListener {
     }
 
     private void removeHand(int location) {
-        if (unit instanceof BipedMech) {
-            UnitUtil.removeHand((BipedMech)unit, location);
+        if (unit instanceof BipedMech || unit instanceof TripodMech) {
+            UnitUtil.removeHand((Mech) unit, location);
             if (refresh != null) {
                 refresh.refreshAll();
             }
@@ -583,8 +584,8 @@ public class DropTargetCriticalList extends JList implements MouseListener {
     }
 
     private void removeArm(int location) {
-        if (unit instanceof BipedMech) {
-            UnitUtil.removeArm((BipedMech)unit,location);
+        if (unit instanceof BipedMech || unit instanceof TripodMech) {
+            UnitUtil.removeArm((Mech)unit,location);
             if (refresh != null) {
                 refresh.refreshAll();
             }

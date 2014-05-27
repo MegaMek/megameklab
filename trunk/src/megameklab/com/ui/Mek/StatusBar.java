@@ -29,10 +29,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import megamek.common.AmmoType;
-import megamek.common.BipedMech;
 import megamek.common.Engine;
 import megamek.common.Mech;
 import megamek.common.Mounted;
+import megamek.common.QuadMech;
+import megamek.common.TripodMech;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
@@ -112,7 +113,14 @@ public class StatusBar extends ITab {
         float tonnage = getMech().getWeight();
         float currentTonnage;
         int bv = getMech().calculateBattleValue();
-        int maxCrits = (getMech() instanceof BipedMech) ? 78 : 66;
+        int maxCrits;
+        if (getMech() instanceof TripodMech) {
+            maxCrits = 84;
+        } else if (getMech() instanceof QuadMech) {
+            maxCrits = 66;
+        } else {
+            maxCrits = 78;
+        }
         int currentCrits = UnitUtil.countUsedCriticals(getMech());
         int currentCost = (int)Math.round(getMech().getCost(false));
 
