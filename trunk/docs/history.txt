@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.30-dev (SVN)
+
 v0.1.29 (2014-07-04 14:18 UTC)
 + Bug [#124]:  Non-support vehicles could mount armored chassis
 + Bug: Supercharger couldn't be added to vehicles
