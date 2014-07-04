@@ -1,11 +1,12 @@
 VERSION HISTORY:
 ----------------
-v0.1.29-dev (SVN)
+v0.1.29 (2014-07-04 14:18 UTC)
 + Bug [#124]:  Non-support vehicles could mount armored chassis
 + Bug: Supercharger couldn't be added to vehicles
 + Bug [#83]: Supercharger not removed from Assign Critical Tab
 + Bug [#126]: Unable to remove arm actuators on tripod 'Mechs
 + Bug: BA manipulators not printing
++ New MegaMek.jar 0.38.0
 
 v0.1.28 (2014-05-05 17:23 UTC)
 + New MegaMek.jar 0.37.11
