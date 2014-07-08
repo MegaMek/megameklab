@@ -43,7 +43,7 @@ import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class DropTargetCriticalList extends JList implements MouseListener {
+public class DropTargetCriticalList<E> extends JList<E> implements MouseListener {
 
     /**
      *
@@ -53,7 +53,7 @@ public class DropTargetCriticalList extends JList implements MouseListener {
     private RefreshListener refresh;
     private boolean buildView = false;
 
-    public DropTargetCriticalList(Vector<String> vector, Entity unit,
+    public DropTargetCriticalList(Vector<E> vector, Entity unit,
             RefreshListener refresh, boolean buildView) {
         super(vector);
         setDragEnabled(true);

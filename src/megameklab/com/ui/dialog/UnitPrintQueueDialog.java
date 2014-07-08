@@ -53,7 +53,7 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
      */
     private static final long serialVersionUID = 4812586858732825464L;
 
-    JList unitList = new JList();
+    JList<String> unitList = new JList<String>();
     JScrollPane listScrollPane;
 
     private JButton bCancel = new JButton("Close");

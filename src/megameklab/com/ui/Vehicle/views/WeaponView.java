@@ -102,14 +102,14 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     private JPanel artilleryPane = new JPanel();
     private JPanel artilleryAmmoPane = new JPanel();
 
-    private JList laserWeaponCombo = new JList();
-    private JList laserAmmoCombo = new JList();
-    private JList missileWeaponCombo = new JList();
-    private JList missileAmmoCombo = new JList();
-    private JList ballisticWeaponCombo = new JList();
-    private JList ballisticAmmoCombo = new JList();
-    private JList artilleryWeaponCombo = new JList();
-    private JList artilleryAmmoCombo = new JList();
+    private JList<String> laserWeaponCombo = new JList<String>();
+    private JList<String> laserAmmoCombo = new JList<String>();
+    private JList<String> missileWeaponCombo = new JList<String>();
+    private JList<String> missileAmmoCombo = new JList<String>();
+    private JList<String> ballisticWeaponCombo = new JList<String>();
+    private JList<String> ballisticAmmoCombo = new JList<String>();
+    private JList<String> artilleryWeaponCombo = new JList<String>();
+    private JList<String> artilleryAmmoCombo = new JList<String>();
 
     private CriticalTableModel weaponList;
     private Vector<EquipmentType> masterLaserWeaponList = new Vector<EquipmentType>(10, 1);
