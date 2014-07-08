@@ -195,8 +195,9 @@ public class CriticalView extends IView {
                 }
                 DropTargetCriticalList criticalSlotList = null;                
 
-                criticalSlotList = new DropTargetCriticalList(
+                DropTargetCriticalList<String> dropTargetCriticalList = new DropTargetCriticalList<String>(
                         critNames, getAero(), refresh, showEmpty);
+                criticalSlotList = dropTargetCriticalList;
                 criticalSlotList.setAlignmentX(JLabel.CENTER_ALIGNMENT);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(

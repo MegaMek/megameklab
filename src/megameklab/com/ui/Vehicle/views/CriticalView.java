@@ -226,7 +226,8 @@ public class CriticalView extends IView {
                 }
                 DropTargetCriticalList criticalSlotList = null;
 
-                criticalSlotList = new DropTargetCriticalList(critNames, getTank(), refresh, showEmpty);
+                DropTargetCriticalList<String> dropTargetCriticalList = new DropTargetCriticalList<String>(critNames, getTank(), refresh, showEmpty);
+                criticalSlotList = dropTargetCriticalList;
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
