@@ -430,6 +430,7 @@ public class PrintNavalVehicle implements Printable {
         ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
+    @SuppressWarnings("unused")
     private void printFrontArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
         float[] topColumn =
             { 444, 90 };
@@ -499,6 +500,7 @@ public class PrintNavalVehicle implements Printable {
         ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
+    @SuppressWarnings("unused")
     private void printRearArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
 
         if (totalArmor > 51) {
@@ -581,6 +583,7 @@ public class PrintNavalVehicle implements Printable {
 
     }
 
+    @SuppressWarnings("unused")
     private void printTurretArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
 
         if (totalArmor < 1) {
@@ -618,6 +621,7 @@ public class PrintNavalVehicle implements Printable {
         ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
+    @SuppressWarnings("unused")
     private void printLeftArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
         float[] topColumn = new float[]
             { 418.5f, 92.5f };
@@ -705,6 +709,7 @@ public class PrintNavalVehicle implements Printable {
         ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
+    @SuppressWarnings("unused")
     private void printRightArmor(Graphics2D g2d, int totalArmor, boolean secondImage, boolean hasModularArmor) {
         float[] topColumn = new float[]
             { 530f, 92 };
@@ -782,6 +787,7 @@ public class PrintNavalVehicle implements Printable {
         ImageHelperVehicle.printArmorPoints(g2d, pipPlotter, totalArmor, hasModularArmor);
     }
 
+    @SuppressWarnings("unused")
     private void printFrontStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         int[] topColumn = new int[]
             { 462, 148 };
@@ -806,6 +812,7 @@ public class PrintNavalVehicle implements Printable {
         }
     }
 
+    @SuppressWarnings("unused")
     private void printTurretStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
 
         float[] leftStart = new float[]
@@ -850,6 +857,7 @@ public class PrintNavalVehicle implements Printable {
         }
     }
 
+    @SuppressWarnings("unused")
     private void printLeftStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         int[] column = new int[]
             { 444, 164 };
@@ -863,6 +871,7 @@ public class PrintNavalVehicle implements Printable {
         }
     }
 
+    @SuppressWarnings("unused")
     private void printRightStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         int[] column = new int[]
             { 505, 164 };
@@ -876,6 +885,7 @@ public class PrintNavalVehicle implements Printable {
         }
     }
 
+    @SuppressWarnings("unused")
     private void printRearStruct(Graphics2D g2d, int totalArmor, boolean secondImage) {
         int[] column = new int[]
             { 445, 275 };
