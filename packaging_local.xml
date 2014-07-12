@@ -131,6 +131,7 @@
 			
 	<target name="localdev-clean" description="remove the local source build directory">
 		<delete dir="${localbuilddir}" />
+        <delete dir="${localdir}" />
 	</target>
 	
 	<target name="mac-bundle" description="Bundle the project built from local source into an Mac OSX distribution">
@@ -242,6 +243,7 @@
 		</copy>
 		<tar destfile="${srcdist}.tar.gz" basedir="${srcdist}" compression="gzip"  longfile="gnu">
 		</tar>
+        <delete dir="${srcdist}" />
 	</target>
 	
 	<target name="release" depends="localdev-build, mac-package, nix-package, win-package, source-package, localdev-clean" description="Build the project from local source and package it as Windows, Mac, Unix, and source-only" />
