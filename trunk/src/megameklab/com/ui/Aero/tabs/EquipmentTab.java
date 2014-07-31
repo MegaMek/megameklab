@@ -103,7 +103,6 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
 
-    @SuppressWarnings("rawtypes")
     private CriticalTableModel equipmentList;
     private EquipmentTableModel masterEquipmentList;
     private JTable masterEquipmentTable = new JTable();
