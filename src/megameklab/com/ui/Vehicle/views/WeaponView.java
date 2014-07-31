@@ -643,7 +643,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     private void loadAmmo(Component o) {
 
         if (o instanceof JList) {
-            JList list = (JList) o;
+            JList<?> list = (JList<?>) o;
             if (list.equals(laserWeaponCombo)) {
                 subLaserAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subLaserWeaponList.elementAt(list.getSelectedIndex());

@@ -81,7 +81,6 @@ public class WeaponView extends IView implements ActionListener {
 
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
 
-    @SuppressWarnings("rawtypes")
     private EquipmentTableModel masterEquipmentList;
     private JTable masterEquipmentTable = new JTable();
     private JScrollPane masterEquipmentScroll = new JScrollPane();

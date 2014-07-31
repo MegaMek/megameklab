@@ -57,7 +57,7 @@ public class CriticalTransferHandler extends TransferHandler {
         }
 
         if (info.getComponent() instanceof DropTargetCriticalList) {
-            DropTargetCriticalList list = (DropTargetCriticalList) info.getComponent();
+            DropTargetCriticalList<?> list = (DropTargetCriticalList<?>) info.getComponent();
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
