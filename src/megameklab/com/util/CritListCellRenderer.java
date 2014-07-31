@@ -35,7 +35,7 @@ import megamek.common.WeaponType;
 
 public class CritListCellRenderer extends DefaultListCellRenderer {
 
-    private JList list = null;
+    private JList<?> list = null;
     private Entity unit = null;
     private boolean useColor = false;
 
@@ -50,7 +50,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     }
 
     @Override
-    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
         JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
 

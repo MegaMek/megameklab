@@ -81,7 +81,7 @@ public class CriticalTransferHandler extends TransferHandler {
         }
         if ((source instanceof DropTargetCriticalList)
                 && (mounted.getLocation() != Entity.LOC_NONE)) {
-            DropTargetCriticalList list = (DropTargetCriticalList)source;
+            DropTargetCriticalList<?> list = (DropTargetCriticalList<?>)source;
             int loc;
             if (unit instanceof BattleArmor){
                 String[] split = list.getName().split(":");
@@ -380,8 +380,7 @@ public class CriticalTransferHandler extends TransferHandler {
 
         int trooper = 0;
         if (info.getComponent() instanceof DropTargetCriticalList) {
-            DropTargetCriticalList list =
-                    (DropTargetCriticalList) info.getComponent();
+            DropTargetCriticalList<?> list = (DropTargetCriticalList<?>) info.getComponent();
             if (unit instanceof BattleArmor){
                 String[] split = list.getName().split(":");
                 if (split.length != 2){
@@ -526,7 +525,7 @@ public class CriticalTransferHandler extends TransferHandler {
             Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
             return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));
         } else if (c instanceof DropTargetCriticalList) {
-            DropTargetCriticalList list = (DropTargetCriticalList)c;
+            DropTargetCriticalList<?> list = (DropTargetCriticalList<?>)c;
             Mounted mount = list.getMounted();
             if (mount != null) {
                 return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));

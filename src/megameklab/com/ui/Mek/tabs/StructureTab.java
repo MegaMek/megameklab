@@ -49,7 +49,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.client.ui.GBC;
-import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;

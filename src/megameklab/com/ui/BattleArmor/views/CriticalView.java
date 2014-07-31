@@ -215,7 +215,7 @@ public class CriticalView extends IView {
                     }
                 }
 
-                DropTargetCriticalList criticalSlotList = null;                
+                DropTargetCriticalList<String> criticalSlotList = null;                
 
                 criticalSlotList = new DropTargetCriticalList<String>(
                         critNames, getBattleArmor(), refresh, showEmpty);

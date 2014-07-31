@@ -224,7 +224,7 @@ public class CriticalView extends IView {
                 if (critNames.size() == 0) {
                     critNames.add(MtfFile.EMPTY);
                 }
-                DropTargetCriticalList criticalSlotList = null;
+                DropTargetCriticalList<String> criticalSlotList = null;
 
                 DropTargetCriticalList<String> dropTargetCriticalList = new DropTargetCriticalList<String>(critNames, getTank(), refresh, showEmpty);
                 criticalSlotList = dropTargetCriticalList;

@@ -16,12 +16,19 @@
 
 package megameklab.com.ui.BattleArmor.Printing;
 
-import java.awt.*;
-import java.awt.geom.*;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * This class has been automatically generated using <a
