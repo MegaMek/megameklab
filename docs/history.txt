@@ -3,6 +3,7 @@ VERSION HISTORY:
 v0.1.30-dev (SVN)
 + Warning Fix: Suppressed several warnings related to unused private methods for printing
 + Warning Fix: Typed everything that was untyped for JDK7+ compatibility
++ Bug: BattleArmor Weapon Sorter was using int when it needed float
 
 v0.1.29 (2014-07-04 14:18 UTC)
 + Bug [#124]:  Non-support vehicles could mount armored chassis
