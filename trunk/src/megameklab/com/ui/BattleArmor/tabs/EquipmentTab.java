@@ -84,7 +84,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     private static final int T_WEAPON    =  4;
     private static final int T_AMMO      =  5;
     private static final int T_OTHER     =  6;
-    private static final int T_AP       =  7;
+    private static final int T_AP        =  7;
     private static final int T_NUM       =  8;
 
 
@@ -786,18 +786,18 @@ public class EquipmentTab extends ITab implements ActionListener {
                 return -1;
             } else {
                 //get the numbers associated with each string
-                int r1 = parseDamage(s1);
-                int r0 = parseDamage(s0);
-                return ((Comparable<Integer>)r1).compareTo(r0);
+                float r1 = parseDamage(s1);
+                float r0 = parseDamage(s0);
+                return ((Comparable<Float>)r1).compareTo(r0);
             }
         }
 
-        private int parseDamage(String s) {
-            int damage = 0;
+        private float parseDamage(String s) {
+            float damage = 0;
             if(s.contains("/")) {
-                damage = (int)Float.parseFloat(s.split("/")[0]);
+                damage = Float.parseFloat(s.split("/")[0]);
             } else {
-                damage = (int)Float.parseFloat(s);
+                damage = Float.parseFloat(s);
             }
             return damage;
         }
