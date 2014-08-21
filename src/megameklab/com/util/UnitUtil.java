@@ -2217,6 +2217,7 @@ public class UnitUtil {
         if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
                 || (eq instanceof ISC3M) || (eq instanceof ISTAG)
                 || eq.equals(EquipmentType.get("IS Coolant Pod"))
+                || eq.equals(EquipmentType.get("Clan Coolant Pod"))
                 || (eq instanceof CLLightTAG)
                 || eq.hasFlag(WeaponType.F_AMS)) {
             return true;
@@ -2251,6 +2252,7 @@ public class UnitUtil {
         if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
                 || (eq instanceof ISC3M) || (eq instanceof ISTAG)
                 || eq.equals(EquipmentType.get("IS Coolant Pod"))
+                || eq.equals(EquipmentType.get("Clan Coolant Pod"))
                 || (eq instanceof CLLightTAG)
                 || eq.hasFlag(WeaponType.F_AMS)) {
             return true;
