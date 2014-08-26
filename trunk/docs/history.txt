@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.1.30-dev (SVN)
+v0.1.30 (2014-08-26 15:43 UTC)
 + Warning Fix: Suppressed several warnings related to unused private methods for printing
 + Warning Fix: Typed everything that was untyped for JDK7+ compatibility
 + Bug: BattleArmor Weapon Sorter was using int when it needed float
