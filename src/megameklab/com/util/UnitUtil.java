@@ -2647,7 +2647,10 @@ public class UnitUtil {
             if (location == Mech.LOC_HEAD) {
                 int armor = mech.getArmor(location);
 
-                if (armor > 9) {
+                if (armor > 9 && !mech.isSuperHeavy()) {
+                    foundError = true;
+                    mech.initializeArmor(9, location);
+                } else if (armor > 12) {
                     foundError = true;
                     mech.initializeArmor(9, location);
                 }
