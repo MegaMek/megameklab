@@ -1779,9 +1779,14 @@ public class UnitUtil {
             sb.append("<br>Armored");
         }
         if ((unit instanceof BattleArmor)
+                && eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)){
+           sb.append("<br>* Infantry support weapons must be held in an " +
+                "Armored Glove");
+        } else if ((unit instanceof BattleArmor)
                 && eq.getType().hasFlag(WeaponType.F_INFANTRY)){
            sb.append("<br>* Infantry weapons must be mounted in AP Mounts");
         }
+        
         sb.append("</html>");
         return sb.toString();
     }
@@ -2353,7 +2358,6 @@ public class UnitUtil {
         return  infWeap.hasFlag(WeaponType.F_INFANTRY)
                 && !infWeap.hasFlag(WeaponType.F_INF_POINT_BLANK)
                 && !infWeap.hasFlag(WeaponType.F_INF_ARCHAIC)
-                && !infWeap.hasFlag(WeaponType.F_INF_SUPPORT)
                 && (infWeap.getCrew() < 2);
     }
 
