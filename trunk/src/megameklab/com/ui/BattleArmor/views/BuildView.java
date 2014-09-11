@@ -304,6 +304,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 }
             } else {
                 if (!UnitUtil.isArmor(eq.getType()) 
+                        && !(eq.getType() instanceof InfantryWeapon)
                         && !((eq.getType() instanceof WeaponType) 
                                 && (eq.getType().hasFlag(WeaponType.F_TASER) 
                                     || ((WeaponType)eq.getType()).getAmmoType() 
@@ -341,6 +342,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             // Allow making this a squad support weapon
             if ((eq.getType() instanceof WeaponType)
                     && !eq.isSquadSupportWeapon()
+                    && !eq.getType().hasFlag(WeaponType.F_INFANTRY)
                     && eq.getLocation() == BattleArmor.LOC_SQUAD
                     && getBattleArmor().getChassisType() != 
                         BattleArmor.CHASSIS_TYPE_QUAD){
@@ -516,9 +518,30 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     && eq.getType().hasFlag(WeaponType.F_INFANTRY)
                     && !eq.isAPMMounted()){
                 for (Mounted m : unit.getMisc()){
-                    // If this isn't a AP Mount or it's a full AP Mount, skip
+                    // If this isn't an AP Mount or it's a full AP Mount, skip
                     if (!m.getType().hasFlag(MiscType.F_AP_MOUNT)
                             || m.getLinked() != null){
+                        continue;
+                    }
+                    
+                    // Armored gloves can only carry 1 additional weapon,
+                    // regardless of the number of gloves
+                    if (m.getType().hasFlag(MiscType.F_ARMORED_GLOVE)) {
+                        boolean hasUsedGlove = false;
+                        for (Mounted m2 : unit.getMisc()){
+                            if (m2.getType().hasFlag(MiscType.F_ARMORED_GLOVE)
+                                    && (m2.getLinked() != null)) {
+                                hasUsedGlove = true;
+                            }
+                        }
+                        if (hasUsedGlove) {
+                            continue;
+                        }
+                    }
+                    
+                    // Only armored gloves can carry infantry support weapons
+                    if (!m.getType().hasFlag(MiscType.F_ARMORED_GLOVE)
+                            && eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)) {
                         continue;
                     }
                 
