@@ -8,6 +8,7 @@ v0.1.30 (2014-08-26 15:43 UTC)
 + Bug: BattleArmor Weapon Sorter was using int when it needed float
 + Patch [#5]: Bug: AMS not showing up in equipment tab.
 + Bug [#132]: Error when loading super heavy 'mech that has >9 head armor
++ Bug [#131]: Issues with BA and Inf support weapons, AP Mounts, Armored Gloves
 
 v0.1.29 (2014-07-04 14:18 UTC)
 + Bug [#124]:  Non-support vehicles could mount armored chassis
