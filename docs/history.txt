@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.31-dev (SVN)
++ Updated MegaMek.jar to r11273
 
 v0.1.30 (2014-08-26 15:43 UTC)
 + Warning Fix: Suppressed several warnings related to unused private methods for printing
@@ -49,28 +50,28 @@ v0.1.26 (2014-03-29 15:10 UTC)
 + New MegaMek.jar 0.37.10-dev-r10759
 
 v0.1.25 (2014-02-22 23:21 UTC)
-+ Filtered out equipment in the equipment table that gets added via the 
++ Filtered out equipment in the equipment table that gets added via the
     StructureTab (jump boosters, partial wing, manipulators, etc).  Also removed
     some filtering that was intended for 'mechs and vees and isn't applicable
-+ Bug: Enhancement check boxes weren't being checked when loading BA with those 
++ Bug: Enhancement check boxes weren't being checked when loading BA with those
     enhnacements
 + Filter out Support Weapons for BA use on AP Mounts. Fix Header to blk not mtf.
-+ Bug: Removing DWP's and weapons mounted in DWPs via the "Remove" button in 
++ Bug: Removing DWP's and weapons mounted in DWPs via the "Remove" button in
     the Equipment tab could cause weirdness
 + Bug: Fixed issues sorting damage and range for AP weapons for BA
 + Bug [#110]: Shift>Remove equipment subtracts weight wrong 0.1.24
 + Feature: Infantry weapons can now be attached to AP Mounts and armored gloves
-+ Bug: Infantry weapons were being removed from the equipment list in the 
++ Bug: Infantry weapons were being removed from the equipment list in the
     equipment tab (they weren't being considered as BA weapons)
 + Bug: Anti-personnel weapons cannot be mounted directly on BattleArmor, instead
-    they must be mounted via an AP Mount.  This wasn't enforced before and is 
-    now.  To make it clear, unallocated AP weapons now display an * and the 
+    they must be mounted via an AP Mount.  This wasn't enforced before and is
+    now.  To make it clear, unallocated AP weapons now display an * and the
     tooltip explains how to mount AP weapons
 + BA Manipulators now show in the critical view, largely so you can detach AP
     weapons attached to Armored Gloves
 + BA Manipulators are no considered fixed location equipment so they can't be
     removed or deleted
-+ Bug: AP weapons on BA could be assigned a location via right clicking 
++ Bug: AP weapons on BA could be assigned a location via right clicking
 + Bug: Critical View now counts AP Mounts instead of infantry weapons
 + Bug: AP weapons where showing up in the ballisics list of weapons
 + Bug: BA could armor components
@@ -93,7 +94,7 @@ v0.1.25 (2014-02-22 23:21 UTC)
     program itself
 + Bug [#115]: movement type dropdown not set to UMU when loading a UMU BA
 
-v0.1.24 (2014-02-11 03:43 UTC) 
+v0.1.24 (2014-02-11 03:43 UTC)
 + Bug: Free crits in statusbar not correct
 + Bug: superheavy VTOLs with too much armor not printing correctly
 + Bug: shields get less DA and DC when constructed without hands/LA
@@ -110,7 +111,7 @@ v0.1.24 (2014-02-11 03:43 UTC)
     (This is temporary, this needs to be refactored to use the new tech level by year coding)
 + Bug [#77]: "incorrect number of stealth crits in left arm" rears its ugly head, again
 + Fix CASE printing for mechs with CASE II
-+ Fix C3 Emergency Master printing 
++ Fix C3 Emergency Master printing
 + updated MegaMek.jar
 + updates for 3145 equipment and MM changes
 + Dropship print fixes
@@ -121,7 +122,7 @@ v0.1.24 (2014-02-11 03:43 UTC)
 + Updated MM jar file
 + Updated UnitSelectorDialog to be compatible with new MM jar
 + Battle Armor with VTOL movement currently prints it out as Jump
-+ BA LB-X damage type should be (DB,C,F) 
++ BA LB-X damage type should be (DB,C,F)
 + â€œMortarâ€� should be â€œ â€™Mech Mortarâ€�, Damage listed is â€œ0 (S)â€�, should be "2/msl (M,C,S)"?
 + Bombast Laser damage type needs to be (DE,V).
 + Tracks location on 'Mechs should be "Legs"
@@ -143,9 +144,9 @@ v0.1.24 (2014-02-11 03:43 UTC)
 + start of tripod mech support
 + Bug: Mek.MainUI.createNewUnit was creating LandAirMech's for BIPED entity types
 + show Bomb Bays only for LAMs
-+ Feature: Added ability to create and edit Aerospace Fighters (but not 
++ Feature: Added ability to create and edit Aerospace Fighters (but not
     conventional fighers or additional space craft)
-+ Bug: Armor spinner for 'mechs was defaulting to an arbitrary maximum, 
++ Bug: Armor spinner for 'mechs was defaulting to an arbitrary maximum,
     which could case errors on some units
 + Bug: Aeros could not change to DHS
 + New MM.jar (trunk rev. 10231)
@@ -156,49 +157,49 @@ v0.1.24 (2014-02-11 03:43 UTC)
 + Added option to add interface cockpit and gyro none
 + Fix .exe file creation for local builds
 + Initial support for superheavy mechs
-+ Adjusted layout of Vehicle construction, to make the status bar more 
++ Adjusted layout of Vehicle construction, to make the status bar more
     consistent with other views
 + Adjusted spacing in Aero Build and Equipment Tabs
 + Bug: Aero criticals in the Assign Criticals tab would occassionally disappear
-+ Feature: You can now drag assigned criticals from the critical view to the 
-    unallocated equipment table to unassign the item (works for Meks, Aeros, 
++ Feature: You can now drag assigned criticals from the critical view to the
+    unallocated equipment table to unassign the item (works for Meks, Aeros,
     BA, but not Tanks yet)
 + superheavy mechs have head max armor of 12
-+ Bug: Not selecting a unit in the MechSelectorDialog when loading a unit from 
++ Bug: Not selecting a unit in the MechSelectorDialog when loading a unit from
     cache could result in a crash
 + Feature: Added ability to select XXL engines for Aeros
 + Bug: Fixed issues with engine type selection for Aeros
-+ Changed hotkeys: Ctrl-A now switches to Aeros and Ctrl-B switches to 
++ Changed hotkeys: Ctrl-A now switches to Aeros and Ctrl-B switches to
     BattleArmor (changed from Ctrl-A for BA and Ctrl-W for Aero)
 + Bug: Equipment tab equipment table would display things like start/stop swarm
-+ Removed the BattleArmor Preview tab, instead the preview is now displayed in 
++ Removed the BattleArmor Preview tab, instead the preview is now displayed in
     the Structure tab
-+ Bug: BA internals weren't properly being set when the number of troopers was 
++ Bug: BA internals weren't properly being set when the number of troopers was
     changed
 + Bug: BA weapons were being counted multiple times for purposes of crit limits
 + Allow for heatsinks and ammobins to be crit-shared for super heavy mechs
 + Bug: Loaded BattleArmor always default to IS Tech type
-+ Bug: VTOL turrets weren't handled properly: the critical panel would replace 
-    the rotor section with turret, and all equipment mounted there would be 
++ Bug: VTOL turrets weren't handled properly: the critical panel would replace
+    the rotor section with turret, and all equipment mounted there would be
     considered mounted in the rotor.
 + Bug [#108]: Mek Lab - Cruise Missile Ammo, not assigned
 + Bug [#106]: Aerospace: Unallocated equipment
 + Feature: BA can now select and mount Anti-personnel weapons
 + Bug: Armor critical assignment should now work for BA
-+ Bug: New BA were starting out with the wrong tech level, which lead to armor 
++ Bug: New BA were starting out with the wrong tech level, which lead to armor
     combo issues
 + Bug: For mixed tech BA, armor names were listed twice
 + Bug: Armor selector wasn't set properly when loading mixed tech BA
-+ Feature: UnitViewerDialog (used to select a unit from cache) now defaults to 
++ Feature: UnitViewerDialog (used to select a unit from cache) now defaults to
     Tech Type: All
-+ Feature: Adjusted layout of critical view for 'mechs, to give the mech a more 
++ Feature: Adjusted layout of critical view for 'mechs, to give the mech a more
     humanoid appearance
 + Bug: DropTargetCriticalList for Quad front legs was too tall
 + Feature: Added ability to drag/drop equipment into specific crits on Meks
 + Feature: Added ability to select manipulators for BA
 + Bug: Selecting BA Standard armor wouldn't add the change listeners back
 + Bug: BA Clan Reflective/Reactive armor armor selection was bugged
-+ Bug: Selecting Standard armor adds a critical of BA Standard Armor to assign 
++ Bug: Selecting Standard armor adds a critical of BA Standard Armor to assign
     in the critical view
 + Bug: BA Manipulators could show up in equipment and unallocated tables
 + Adjustments for the Popup mine moving to the BA Weapons folder.
@@ -206,12 +207,12 @@ v0.1.24 (2014-02-11 03:43 UTC)
 + Updates so that fixed location equipment can't be deleted for BA, and made it
     so fixed location equipment can't be dragged from the critical view to the
     unallocated equipment table
-+ Feature: Added enhancement panel for BA, where things like jump boosters, 
++ Feature: Added enhancement panel for BA, where things like jump boosters,
     mechanical jump boosters, myomer boosters, and partial wings can't be added
 + Bug: 0 Critical equipment for BA could be assigned a critical to assign
 + Bug: Reset button in BA BuildTab would remove fixed location equipment
 + Bug: Ammo for OS launchers was showing in Equipment and Build tabs for BA
-+ Bug: Dragging multi-slot equipment from crit view to unallocated eq table 
++ Bug: Dragging multi-slot equipment from crit view to unallocated eq table
     didn't work for BA
 + Updated support for Detachable Weapon Packs on BA.  To use a DWP, one adds the
     equipment, then in the BuildTab they can right click on weapons to attach
@@ -219,14 +220,14 @@ v0.1.24 (2014-02-11 03:43 UTC)
 + Bug: Detachable Weapon packs could be attached to other DWPs
 + Updated TestBattleArmor to not include the slots for AP weapons mounted in AP
     mounts
-+ Bug: ArmorTechType was not being updated when BattleArmor armor type was 
-    changed, this lead to an issue where the mixed-tech armor selection was 
++ Bug: ArmorTechType was not being updated when BattleArmor armor type was
+    changed, this lead to an issue where the mixed-tech armor selection was
     bugged
 + Bug: TestBattleArmor was using chasis tech type instead of armor tech type
     when determining whether armor is clan or IS
-+ Bug: Loading quad BA could fail because the walk MP spinner has a min of 
++ Bug: Loading quad BA could fail because the walk MP spinner has a min of
     BattleArmor.getMinimumWalkMP() and a max of BattleArmor.getMaximumWalkMP(),
-    however the spinner is set to a value of 1 and Quad's have a min walk MP 
+    however the spinner is set to a value of 1 and Quad's have a min walk MP
     of 2.
 + Updated MegaMek.jar to the 0.37.7 snapshot
 
@@ -236,7 +237,7 @@ V 0.1.23
 V 0.1.22
 + Bug: removing multiple equipments at once doesn't work
 + Bug 36: Hang when Building Battlearmor
-+ Bug: extra crits when loading unit with crit-using IS or armor and using 
++ Bug: extra crits when loading unit with crit-using IS or armor and using
     reset button in build tab
 + Bug 50: fixed location equipment can't be added correctly and shouldn't be removed on reset
 + Drag and Drop for moving stuff from location to location in mech build view
@@ -277,10 +278,10 @@ V 0.1.21
 + Mech print update
 + DS printing update
 + Compact HS bugfix
-+ Fixes for newer MM 
++ Fixes for newer MM
 + vectorized ProtoMech printing
 + Infantry lab (still needs field gun/artillery options)
-+ Added IS Prototype Double Heatsink as per the rules in "Era Report 3052" and 
++ Added IS Prototype Double Heatsink as per the rules in "Era Report 3052" and
    "Starterbook: Sword & Dragon".
 + vectorized BA sheet printing
 + vectorized Naval sheet printing, currently only the Mauna Kea will print
@@ -492,7 +493,7 @@ V 0.1.18 Dev
 + Vibroblade heat/damage fix
 + New MM jar
 + Fix for Aero IS
-+ Fix for BA 
++ Fix for BA
 + Fix to Aero RS now no longer displays damage
 + New MM jar
 + Removed code for BOLD pips
@@ -624,7 +625,7 @@ V 0.1.16 (01/30/2010 17:43 UTC-8)
 + Bug: removing endo steel and armor on the build tab not working
 + Minor Tweeks to interface.
 + Bug: Tanks not adding engine shielding mass.
-+ Bug: Tank initial engine setting 
++ Bug: Tank initial engine setting
 + Added more Tank armor printing pips for tanks with massive amounts of armor in Rear and Turret.
 + Started ProtoMech Printing.
 + Bug: VSP not printing damage correctly.
@@ -656,7 +657,7 @@ V 0.1.15 (09/12/2009 20:06 UTC-8)
 + Bug: Claws showing as Tonnage/5 instead of Tonnage/7 for damage.
 + Added Tank UI
 + Added splash screens
-+ RFE 2780128: Add delete to right click menu on build tab 
++ RFE 2780128: Add delete to right click menu on build tab
 + Added new diamond image for Shield.
 + Updated code to use new MegaMek Equipment Flags
 + New MegaMek.jar
@@ -733,7 +734,7 @@ V 0.1.12 (02/18/2009 8:40 UTC-8)
 + Bug: HarJel showing in the Weapons & Equipment Section
 + Bug: UMU's showing in the Weapons & Equipment Section
 + Bug: Armor showing in the Weapons & Equipment Section
-+ Bug: Endo Steel showing in the Weapons & Equipment Section 
++ Bug: Endo Steel showing in the Weapons & Equipment Section
 + Bug: Claws now showing damage in the Weapons & Equipment Section
 + New MegaMek.jar
 + Added Help on how to add images to Record Sheets.
@@ -865,12 +866,12 @@ V 0.1.9
 + Bug: wrong mounts being printed.
 + New MegaMek.jar
 + Bug: would not load new unit after saving or printing
-+ Bug: Atm ammo not printing out correctly 
++ Bug: Atm ammo not printing out correctly
 + Improved leg armor printing
 + Bug: Total heat not calculating correctly for IJJ's
 + changed how armor pips are calculated for printing
 + Bug: Plasma Rifle not printing correct weapons data.
-+ RFE: added case label to crit locations for Clan mek. 
++ RFE: added case label to crit locations for Clan mek.
 + New MegaMek.jar
 + Bug: Could not place splitable weapons in CT even if they fit.
 + Bug: Plasma Rifle still not printing correctly.
@@ -903,7 +904,7 @@ V 0.1.8 (12/08/08 10:00:00 PST)
 + Created new ImageHelper Methods drawArmorPips, drawISPips, and drawHeakSinkPips
 + Updated quad record sheet
 + New MegaMek.jar
-+ Bug: Selecting All for weight class displayed nothing 
++ Bug: Selecting All for weight class displayed nothing
 + Bug: Multi-Crit Armor and TSM can not be edited when loading unit from file
 + Bug: Shields not loading correctly.
 
@@ -941,7 +942,7 @@ v 0.1.6 (10/27/08 08:43 PST)
 + Task 151466: Add Add All and Clear buttons to Build tab
 + Task 151464: Redesign Armor Tab
 + Task 151465: MegaMek: Fix adding Compact and Laser HS to Engines
-+ New MegaMek.jar (0.33.34-MW102208-6067) with Laser and Compact HS 
++ New MegaMek.jar (0.33.34-MW102208-6067) with Laser and Compact HS
 	compatiblity for engines
 + Added Connecting lines for Multi Crit Mounts
 + RFE 2165204: RFE showing total armor
@@ -956,12 +957,12 @@ v 0.1.5 (10/12/08)
 + Bug: Heat Sinks not loading and unloading correctly
 + Bug: Splitable weapons not loading and unloading correctly
 + Bug: SRM ammo showing up in Ballistic ammo list
-+ Bug: Mech reseting when Engine/Cockpit/TechLevel/Gyro/Heatsinks changed 
++ Bug: Mech reseting when Engine/Cockpit/TechLevel/Gyro/Heatsinks changed
 + RFE 2033474: Print outs
 
 v 0.1.4 (10/2/08)
 + Bug: Wrong Targeting computer getting set.
-+ Bug: Tech Levels not completely separating Equipment/Weapons 
++ Bug: Tech Levels not completely separating Equipment/Weapons
 + Added separate lists for Clan/Is TechLevel
 + Added separate lists for Clan/Is Engine Types
 + Added separate lists for Clan/Is HeatSinks
@@ -978,8 +979,8 @@ V 0.1.2 (6/9/08)
 
 V 0.1.1 (06/09/2008)
 + Added History File
-+ Added popup menu's to DropTargetCriticalList to allow the removal of added 
-	equipment/weapons and set weapons to rear facing. 
++ Added popup menu's to DropTargetCriticalList to allow the removal of added
+	equipment/weapons and set weapons to rear facing.
 + Bug: not all weapons getting placed in crit slots
 + Added code to add individual crits/mounts for FF and Endo Steel
 + Added new utility file UnitUtil.java
