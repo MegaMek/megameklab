@@ -28,6 +28,7 @@ import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Bay;
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
 import megamek.common.FixedWingSupport;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -233,7 +234,7 @@ public class ImageHelperAero {
                 g2d.setFont(font);
 
                 String location = ImageHelperAero.getLocationAbbrs(pos);
-                if (aero instanceof SmallCraft) {
+                if ((aero instanceof SmallCraft) && (aero.getMovementMode() == EntityMovementMode.SPHEROID)) {
                     location = ImageHelperAero.getLocationAbbrsSmallCraft(pos);
                 }
 
