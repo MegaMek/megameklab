@@ -3121,6 +3121,11 @@ public class UnitUtil {
                 && !atype.hasFlag(AmmoType.F_BATTLEARMOR)){
             return false;
         }
+        if (!(unit instanceof BattleArmor)
+                && atype.hasFlag(AmmoType.F_BATTLEARMOR)){
+            return false;
+        }       
+        
         for (Mounted m : unit.getWeaponList()) {
             if (m.getType() instanceof AmmoWeapon) {
                 WeaponType wtype = (WeaponType) m.getType();
