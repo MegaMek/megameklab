@@ -3,6 +3,7 @@ VERSION HISTORY:
 v0.1.32-dev (SVN)
 + Print RW and LW instead of RS and LS on aerodyne smallcraft
 + Bug: BA Ammo showing up for non-BA weapons
++ Bug [#129]: criticals remaining display bug
 
 v0.1.31 (2014-09-27 23:51 UTC)
 + Updated MegaMek.jar to r11273
