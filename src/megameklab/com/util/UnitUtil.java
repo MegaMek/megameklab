@@ -210,6 +210,12 @@ public class UnitUtil {
         boolean isMisc = eq instanceof MiscType;
         double toReturn = eq.getCriticals(unit);
 
+        //if it's 0, we can return now (e.g. standard armor or IS, we don't
+        //want that to count as 1 later on
+        if (toReturn == 0) {
+            return 0;
+        }
+
         if (isMisc
                 && eq.hasFlag(MiscType.F_PARTIAL_WING)
                 && TechConstants
@@ -1786,7 +1792,7 @@ public class UnitUtil {
                 && eq.getType().hasFlag(WeaponType.F_INFANTRY)){
            sb.append("<br>* Infantry weapons must be mounted in AP Mounts");
         }
-        
+
         sb.append("</html>");
         return sb.toString();
     }
@@ -2605,6 +2611,7 @@ public class UnitUtil {
         for (String name : names) {
             mountList.add(String.format("Clan %1s", name));
             mountList.add(String.format("IS %1s", name));
+            mountList.add(name);
         }
 
         for (int pos = 0; pos < unit.getEquipment().size();) {
@@ -2651,7 +2658,7 @@ public class UnitUtil {
             if (location == Mech.LOC_HEAD) {
                 int armor = mech.getArmor(location);
 
-                if (armor > 9 && !mech.isSuperHeavy()) {
+                if ((armor > 9) && !mech.isSuperHeavy()) {
                     foundError = true;
                     mech.initializeArmor(9, location);
                 } else if (armor > 12) {
@@ -3124,8 +3131,8 @@ public class UnitUtil {
         if (!(unit instanceof BattleArmor)
                 && atype.hasFlag(AmmoType.F_BATTLEARMOR)){
             return false;
-        }       
-        
+        }
+
         for (Mounted m : unit.getWeaponList()) {
             if (m.getType() instanceof AmmoWeapon) {
                 WeaponType wtype = (WeaponType) m.getType();
