@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.33-dev (SVN)
+
 v0.1.32 (2014-12-05 2:50 UTC)
 + Print RW and LW instead of RS and LS on aerodyne smallcraft
 + Bug: BA Ammo showing up for non-BA weapons
