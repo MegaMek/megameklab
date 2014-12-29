@@ -1,6 +1,9 @@
 VERSION HISTORY:
 ----------------
 v0.1.35-dev (SVN)
++ Bug: SpinnerNumberModel IllegalArgumentException for ASF on loading when armor
+    tonnage was set very high
+
 v0.1.34 (2014-12-25 15:20 UTC)
 + Update MegaMek.jar to 0.39.5
 
