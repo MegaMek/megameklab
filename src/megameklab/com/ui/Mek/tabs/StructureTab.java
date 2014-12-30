@@ -87,11 +87,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private static final String ENGINEICE = "I.C.E";
 
     String[] isEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINELIGHT,
-            ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL };
+            ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL, ENGINEICE };
     String[] isIndustrialEngineTypes = { ENGINESTANDARD, ENGINEICE,
             ENGINEFUELCELL, ENGINEFISSION };
     String[] clanEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINEFUELCELL,
-            ENGINEXXL };
+            ENGINEXXL, ENGINEICE };
     String[] clanIndustrialEngineTypes = { ENGINESTANDARD, ENGINEICE,
             ENGINEFUELCELL, ENGINEFISSION };
     String[] isSuperHeavyEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINELIGHT,
@@ -1521,11 +1521,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             break;
                         case TechConstants.T_CLAN_EXPERIMENTAL:
                         case TechConstants.T_IS_EXPERIMENTAL:
-                            engineCount = 4;
+                            engineCount = 5;
                             break;
                         case TechConstants.T_CLAN_UNOFFICIAL:
                         case TechConstants.T_IS_UNOFFICIAL:
-                            engineCount = 4;
+                            engineCount = 5;
                             break;
                     }
                 }
@@ -1566,11 +1566,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                 break;
                             case TechConstants.T_CLAN_EXPERIMENTAL:
                             case TechConstants.T_IS_EXPERIMENTAL:
-                                engineCount = 7;
+                                engineCount = 8;
                                 break;
                             case TechConstants.T_CLAN_UNOFFICIAL:
                             case TechConstants.T_IS_UNOFFICIAL:
-                                engineCount = 7;
+                                engineCount = 8;
                                 break;
                         }
                     }
