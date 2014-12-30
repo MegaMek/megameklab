@@ -1997,7 +1997,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             structureCombo.setSelectedItem(structName);
         } else {
             int structType = getMech().getStructureType();
-            String structTypeName = 
+            String structTypeName =
                     EquipmentType.getStructureTypeName(structType);
             structureCombo.setSelectedItem(structTypeName);
         }
@@ -2069,6 +2069,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     getMech().setWeight((Integer) weightClass.getValue());
                     getMech().autoSetInternal();
                     engineType.setSelectedIndex(engineType.getSelectedIndex());
+                    resetEngine(rating);
                 }
                 populateChoices(true);
             } else if (spinner.equals(walkMP)) {
@@ -2098,21 +2099,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                     "Bad Engine Rating",
                                     JOptionPane.ERROR_MESSAGE);
                 } else {
-                    System.out.println("Clearning engine crits.");
-                    getMech().clearEngineCrits();
-                    System.out.println("Setting new engine rating.");
-                    getMech().setEngine(
-                            new Engine(rating, convertEngineType(engineType
-                                    .getSelectedItem().toString()),
-                                    clanEngineFlag));
-                    getMech().addEngineCrits();
-                    System.out.println("Adding engine crits.");
-                    int autoSinks = getMech().getEngine()
-                            .getWeightFreeEngineHeatSinks();
-                    System.out.println("Updating # engine heat sinks to "
-                            + autoSinks);
-                    UnitUtil.updateAutoSinks(getMech(),
-                            (String) heatSinkType.getSelectedItem());
+                    resetEngine(rating);
                 }
             } else if (spinner.equals(jumpMP)) {
                 UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(),
@@ -2132,6 +2119,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
             refresh.refreshAll();
         }
+    }
+
+    private void resetEngine(int rating) {
+        System.out.println("Clearning engine crits.");
+        getMech().clearEngineCrits();
+        System.out.println("Setting new engine rating.");
+        getMech().setEngine(
+                new Engine(rating, convertEngineType(engineType
+                        .getSelectedItem().toString()),
+                        clanEngineFlag));
+        getMech().addEngineCrits();
+        System.out.println("Adding engine crits.");
+        int autoSinks = getMech().getEngine()
+                .getWeightFreeEngineHeatSinks();
+        System.out.println("Updating # engine heat sinks to "
+                + autoSinks);
+        UnitUtil.updateAutoSinks(getMech(),
+                (String) heatSinkType.getSelectedItem());
     }
 
     private void maximizeArmor() {
