@@ -80,8 +80,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     String[] clanIndustrialEngineTypes = { ENGINESTANDARD};
     private int clanEngineFlag = 0;
 
-    String[] clanHeatSinkTypes = { "Single", "Double"};
-    String[] isHeatSinkTypes = { "Single", "Double"};
+    String[] heatSinkTypes = { "Single", "Double"};
 
     String[] techTypes = { "Inner Sphere", "Clan", "Mixed Inner Sphere",
     "Mixed Clan" };
@@ -140,7 +139,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     // Heat Sinks Panel
     private JComboBox<String> heatSinkType =
-            new JComboBox<String>(isHeatSinkTypes);
+            new JComboBox<String>(heatSinkTypes);
     private JSpinner heatSinkNumber;
     private JSpinner baseChassisHeatSinks;
 
@@ -1396,72 +1395,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
 
         /* HEAT SINKS */
-        int heatSinkCount = 0;
-        String[] heatSinkList;
         heatSinkType.removeAllItems();
-
-        if (isMixed) {
-            heatSinkCount = (clanHeatSinkTypes.length + isHeatSinkTypes.length) - 1;
-            heatSinkList = new String[heatSinkCount];
-            int clanPos = 1;
-            int heatSinkPos = 0;
-            if (isClan) {
-                clanPos = 0;
-                for (String isHeatSink : isHeatSinkTypes) {
-                    heatSinkList[heatSinkPos] = clanHeatSinkTypes[clanPos];
-                    heatSinkPos++;
-                    clanPos++;
-                    if (isHeatSink.equals("Single")) {
-                        continue;
-                    }
-                    heatSinkList[heatSinkPos] = String.format("(IS) %1$s",
-                            isHeatSink);
-                    heatSinkPos++;
-                }
-            } else {
-                for (String isHeatSink : isHeatSinkTypes) {
-                    heatSinkList[heatSinkPos] = isHeatSink;
-                    heatSinkPos++;
-                    if (clanPos < clanHeatSinkTypes.length) {
-                        heatSinkList[heatSinkPos] = String.format(
-                                "(Clan) %1$s", clanHeatSinkTypes[clanPos]);
-                    }
-                    clanPos++;
-                    heatSinkPos++;
-                }
-            }
-        } else {
-            if (isClan) {
-
-                heatSinkCount = clanHeatSinkTypes.length;
-                heatSinkList = clanHeatSinkTypes;
-
-                switch (getAero().getTechLevel()) {
-                    case TechConstants.T_CLAN_TW:
-                    case TechConstants.T_CLAN_ADVANCED:
-                    case TechConstants.T_CLAN_EXPERIMENTAL:
-                    case TechConstants.T_CLAN_UNOFFICIAL:
-                        heatSinkCount = 2;
-                        break;
-                }
-            } else {
-                heatSinkList = isHeatSinkTypes;
-                switch (getAero().getTechLevel()) {
-                    case TechConstants.T_INTRO_BOXSET:
-                        heatSinkCount = 1;
-                        break;
-                    case TechConstants.T_IS_TW_NON_BOX:
-                    case TechConstants.T_IS_ADVANCED:
-                    case TechConstants.T_IS_EXPERIMENTAL:
-                    case TechConstants.T_IS_UNOFFICIAL:
-                        heatSinkCount = 2;
-                        break;
-                }
-            }
-        }
-
-        for (int index = 0; index < heatSinkCount; index++) {
-            heatSinkType.addItem(heatSinkList[index]);
+        for (int index = 0; index < heatSinkTypes.length; index++) {
+            heatSinkType.addItem(heatSinkTypes[index]);
         }
 
         ((SpinnerNumberModel)fuel.getModel()).setMaximum(
