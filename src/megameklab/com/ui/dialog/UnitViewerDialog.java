@@ -363,25 +363,25 @@ public class UnitViewerDialog extends JDialog implements KeyListener, ActionList
         setVisible(false);
     }
 
-/*    
+/*
     private void cancel() {
         chosenMechSummary = null;
         chosenEntity = null;
         setVisible(false);
     }
-*/    
-    
+*/
+
     private boolean isAcceptableUnitType(String type) {
         // If they're a perfect match, then we'll just return true now.
         if (UnitType.getTypeName(unitType).equals(type)) {
             return true;
         }
-        
+
         // We didn't get a perfect match, so we'll do a few subtypes.
         if (unitType == UnitType.TANK && UnitType.getTypeName(UnitType.VTOL).equals(type)) { // For now only VTOLs
             return true; // So far I've only found VTOLs needing special handling.
         }
-        
+
         // If we make it here, nothing matched.
         return false;
     }

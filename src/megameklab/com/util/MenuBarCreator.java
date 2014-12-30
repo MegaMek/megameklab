@@ -284,7 +284,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item = new JMenuItem();
             item.setText("Mech");
             item.setMnemonic(KeyEvent.VK_M);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, 
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -294,12 +294,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             });
             unitMenu.add(item);
         }
-        
+
         if (!(unit instanceof Aero)) {
             item = new JMenuItem();
             item.setText("Aero");
             item.setMnemonic(KeyEvent.VK_A);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, 
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -314,7 +314,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item = new JMenuItem();
             item.setText("Tank");
             item.setMnemonic(KeyEvent.VK_T);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, 
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -329,7 +329,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item = new JMenuItem();
             item.setText("BattleArmor");
             item.setMnemonic(KeyEvent.VK_B);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, 
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -344,7 +344,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item = new JMenuItem();
             item.setText("Infantry");
             item.setMnemonic(KeyEvent.VK_I);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, 
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -363,7 +363,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         item.setText("From Cache");
         item.setMnemonic(KeyEvent.VK_C);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, 
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -375,7 +375,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item = new JMenuItem();
         item.setText("From File");
         item.setMnemonic(KeyEvent.VK_F);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, 
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -387,7 +387,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         file.add(loadMenu);
 
         item = new JMenuItem(String.format("Current Unit"));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.setMnemonic(KeyEvent.VK_C);
         item.addActionListener(new ActionListener() {
@@ -401,7 +401,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item = new JMenuItem();
         item.setText("Save");
         item.setMnemonic(KeyEvent.VK_S);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -413,7 +413,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item = new JMenuItem();
         item.setText("Save As");
         item.setMnemonic(KeyEvent.VK_A);
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, 
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -916,7 +916,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         new megameklab.com.ui.Mek.MainUI();
         parentFrame.dispose();
     }
-    
+
     private void jMenuLoadAero() {
         new megameklab.com.ui.Aero.MainUI();
         parentFrame.dispose();
@@ -1260,29 +1260,55 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitFile = f.getSelectedFile();
         }
 
+        loadUnitFromFile(unitFile);
+    }
+
+    private void loadUnitFromFile(File unitFile) {
         try {
             Entity tempEntity = new MechFileParser(unitFile).getEntity();
 
-            if (tempEntity.getEntityType() != unit.getEntityType()){
-                JOptionPane.showMessageDialog(parentFrame, String.format(
-                        "Selected file does not match the current unit type!" +
-                        "\n Got %1$s expected %2$s",
-                        Entity.getEntityMajorTypeName(tempEntity.getEntityType()),
-                        Entity.getEntityMajorTypeName(unit.getEntityType())));
+
+            if (null == tempEntity) {
+                return;
+            }
+
+            if (tempEntity.getEntityType() != unit.getEntityType()) {
+                MegaMekLabMainUI newUI = null;
+                if (tempEntity instanceof Aero) {
+                    newUI = new megameklab.com.ui.Aero.MainUI();
+                } else if (tempEntity instanceof BattleArmor) {
+                    newUI = new megameklab.com.ui.BattleArmor.MainUI();
+                } else if (tempEntity instanceof Infantry) {
+                    newUI = new megameklab.com.ui.Infantry.MainUI();
+                } else if (tempEntity instanceof Mech) {
+                    newUI = new megameklab.com.ui.Mek.MainUI();
+                } else if (tempEntity instanceof Tank) {
+                    newUI = new megameklab.com.ui.Vehicle.MainUI();
+                }
+                if (null == newUI) {
+                    JOptionPane.showMessageDialog(parentFrame,
+                            "Warning: Could not create new UI, aborting unit load!");
+                    return;
+                }
+                parentFrame.dispose();
+                newUI.setEntity(tempEntity);
+                newUI.reloadTabs();
+                newUI.repaint();
+                newUI.refreshAll();
                 return;
             }
             unit = tempEntity;
             UnitUtil.updateLoadedMech(unit);
             if (UnitUtil.validateUnit(unit).trim().length() > 0) {
                 JOptionPane.showMessageDialog(parentFrame, String.format(
-                        "Warning:Invalid unit, it might load incorrectly!\n%1$s", 
-                        		UnitUtil.validateUnit(unit)));
+                        "Warning:Invalid unit, it might load incorrectly!\n%1$s",
+                                UnitUtil.validateUnit(unit)));
             }
 
             CConfig.updateSaveFiles(unitFile.getAbsolutePath());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(parentFrame, String.format(
-                    "Warning:Invalid unit, it might load incorrectly!\n%1$s", 
+                    "Warning:Invalid unit, it might load incorrectly!\n%1$s",
                     ex.getMessage()));
         }
         parentFrame.setEntity(unit);
