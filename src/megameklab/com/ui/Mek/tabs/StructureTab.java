@@ -709,48 +709,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             // if a mech is primitive and thus needs a larger engine
             if (combo.equals(engineType) || combo.equals(cockpitType)) {
                 if (combo.equals(cockpitType)) {
-                    getMech().setCockpitType(
-                            Mech.getCockpitTypeForString(combo
-                                    .getSelectedItem().toString()));
-                    getMech().clearCockpitCrits();
-                    switch (getMech().getCockpitType()) {
-                        case Mech.COCKPIT_COMMAND_CONSOLE:
-                            getMech().addCommandConsole();
-                            break;
-                        case Mech.COCKPIT_DUAL:
-                            getMech().addDualCockpit();
-                            break;
-                        case Mech.COCKPIT_SMALL:
-                            getMech().addSmallCockpit();
-                            break;
-                        case Mech.COCKPIT_INTERFACE:
-                            getMech().addInterfaceCockpit();
-                            break;
-                        case Mech.COCKPIT_TORSO_MOUNTED:
-                            removeSystemCrits(Mech.SYSTEM_ENGINE);
-                            getMech().addEngineCrits();
-                            getMech().addTorsoMountedCockpit();
-                            break;
-                        case Mech.COCKPIT_INDUSTRIAL:
-                            getMech().addIndustrialCockpit();
-                            getMech().setArmorType(
-                                    EquipmentType.T_ARMOR_INDUSTRIAL);
-                            break;
-                        case Mech.COCKPIT_PRIMITIVE:
-                            getMech().addPrimitiveCockpit();
-                            getMech().setArmorType(
-                                    EquipmentType.T_ARMOR_PRIMITIVE);
-                            break;
-                        case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
-                            getMech().addIndustrialPrimitiveCockpit();
-                            getMech().setArmorType(
-                                    EquipmentType.T_ARMOR_COMMERCIAL);
-                            break;
-                        default:
-                            getMech().addCockpit();
-                    }
-                    armor.resetArmorPoints();
-                    populateChoices(true);
+                    refreshCockpitType();
                 }
                 int rating = ((Integer) walkMP.getValue())
                         * ((Integer) weightClass.getValue());
@@ -897,6 +856,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }
                 }
                 populateChoices(true);
+                refreshCockpitType();
                 armor.resetArmorPoints();
                 UnitUtil.checkEquipmentByTechLevel(unit);
             } else if (combo.equals(techType)) {
@@ -991,6 +951,51 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             addAllListeners();
             refresh.refreshAll();
         }
+    }
+
+    public void refreshCockpitType() {
+        getMech().setCockpitType(
+                Mech.getCockpitTypeForString(cockpitType
+                        .getSelectedItem().toString()));
+        getMech().clearCockpitCrits();
+        switch (getMech().getCockpitType()) {
+            case Mech.COCKPIT_COMMAND_CONSOLE:
+                getMech().addCommandConsole();
+                break;
+            case Mech.COCKPIT_DUAL:
+                getMech().addDualCockpit();
+                break;
+            case Mech.COCKPIT_SMALL:
+                getMech().addSmallCockpit();
+                break;
+            case Mech.COCKPIT_INTERFACE:
+                getMech().addInterfaceCockpit();
+                break;
+            case Mech.COCKPIT_TORSO_MOUNTED:
+                removeSystemCrits(Mech.SYSTEM_ENGINE);
+                getMech().addEngineCrits();
+                getMech().addTorsoMountedCockpit();
+                break;
+            case Mech.COCKPIT_INDUSTRIAL:
+                getMech().addIndustrialCockpit();
+                getMech().setArmorType(
+                        EquipmentType.T_ARMOR_INDUSTRIAL);
+                break;
+            case Mech.COCKPIT_PRIMITIVE:
+                getMech().addPrimitiveCockpit();
+                getMech().setArmorType(
+                        EquipmentType.T_ARMOR_PRIMITIVE);
+                break;
+            case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
+                getMech().addIndustrialPrimitiveCockpit();
+                getMech().setArmorType(
+                        EquipmentType.T_ARMOR_COMMERCIAL);
+                break;
+            default:
+                getMech().addCockpit();
+        }
+        armor.resetArmorPoints();
+        populateChoices(true);
     }
 
     public void actionPerformed(ActionEvent e) {
