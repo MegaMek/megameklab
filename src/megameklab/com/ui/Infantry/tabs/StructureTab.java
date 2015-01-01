@@ -99,6 +99,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
 	public StructureTab(Infantry unit) {
         this.unit = unit;
+        unit.setAntiMek(!unit.isMechanized());
         armorView = new ArmorView(unit);
         weaponView = new WeaponView(unit);
         setUpPanels();
@@ -289,6 +290,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         squadN.setSelectedIndex(getInfantry().getSquadN()-1);
         squadSize.setSelectedIndex(getInfantry().getSquadSize()-1);
         secondaryN.setSelectedIndex(getInfantry().getSecondaryN());
+        getInfantry().setAntiMek(!getInfantry().isMechanized());
 
         if (getInfantry().isMixedTech()) {
             if (getInfantry().isClan()) {
