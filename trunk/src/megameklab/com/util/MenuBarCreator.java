@@ -45,20 +45,23 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
+import megamek.common.ConvFighter;
 import megamek.common.Entity;
+import megamek.common.GunEmplacement;
 import megamek.common.Infantry;
+import megamek.common.Jumpship;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MechTextView;
 import megamek.common.MechView;
+import megamek.common.SmallCraft;
 import megamek.common.Tank;
-import megamek.common.UnitType;
 import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.dialog.UnitViewerDialog;
 
 public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
@@ -555,7 +558,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitBVFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
+        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
 
         Entity tempEntity = viewer.getChosenEntity();
         if(null == tempEntity) {
@@ -569,7 +572,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitValidationFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
+        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
 
         Entity tempEntity = viewer.getChosenEntity();
         if(null == tempEntity) {
@@ -582,7 +585,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitSpecsFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
+        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
 
         Entity tempEntity = viewer.getChosenEntity();
         if(null == tempEntity) {
@@ -595,7 +598,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
         unitLoadingDialog.setVisible(true);
-        UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
+        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
 
         Entity tempEntity = viewer.getChosenEntity();
         if(null == tempEntity) {
@@ -1127,86 +1130,67 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void loadUnit() {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
+        unitLoadingDialog.setVisible(true);
+        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
 
-        if (unit instanceof Mech) {
-            UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
-            unitLoadingDialog.setVisible(true);
-            UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.MEK);
+        Entity newUnit = viewer.getChosenEntity();
+        viewer.setVisible(false);
+        viewer.dispose();
 
-            Entity newUnit = viewer.getChosenEntity();
-            viewer.setVisible(false);
-            viewer.dispose();
-
-            if(null == newUnit || !(newUnit instanceof Mech)) {
-                return;
-            }
-            unit = newUnit;
-
-            CConfig.updateSaveFiles("");
-            UnitUtil.updateLoadedMech(unit);
-
-            if (viewer.getChosenMechSummary().getSourceFile().getName().endsWith(".zip")) {
-                String fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
-                fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
-                fileName = fileName + viewer.getChosenMechSummary().getName() + ".mtf";
-                CConfig.updateSaveFiles(fileName);
-            } else {
-                CConfig.updateSaveFiles(viewer.getChosenMechSummary().getSourceFile().getAbsolutePath());
-            }
-        } else if (unit instanceof Aero) {
-            UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
-            unitLoadingDialog.setVisible(true);
-            UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.AERO);
-
-            Entity newUnit = viewer.getChosenEntity();
-            viewer.setVisible(false);
-            viewer.dispose();
-
-            if(null == newUnit || !(newUnit instanceof Aero)) {
-                return;
-            }
-            unit = newUnit;
-        } else if (unit instanceof Tank) {
-            UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
-            unitLoadingDialog.setVisible(true);
-            UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.TANK);
-
-            Entity newUnit = viewer.getChosenEntity();
-            viewer.setVisible(false);
-            viewer.dispose();
-
-            if(null == newUnit || !(newUnit instanceof Tank)) {
-                return;
-            }
-            unit = newUnit;
-        } else if (unit instanceof BattleArmor) {
-            UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
-            unitLoadingDialog.setVisible(true);
-            UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.BATTLE_ARMOR);
-
-            Entity newUnit = viewer.getChosenEntity();
-
-            viewer.setVisible(false);
-            viewer.dispose();
-
-            if(null == newUnit || !(unit instanceof BattleArmor)) {
-                return;
-            }
-            unit = newUnit;
+        if(null == newUnit) {
+            return;
         }
-        else if (unit instanceof Infantry) {
-            UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
-            unitLoadingDialog.setVisible(true);
-            UnitViewerDialog viewer = new UnitViewerDialog(parentFrame, unitLoadingDialog, UnitType.INFANTRY);
 
-            Entity newUnit = viewer.getChosenEntity();
-            viewer.setVisible(false);
-            viewer.dispose();
+        if (UnitUtil.validateUnit(newUnit).trim().length() > 0) {
+            JOptionPane.showMessageDialog(parentFrame, String.format(
+                    "Warning:Invalid unit, it might load incorrectly!\n%1$s",
+                            UnitUtil.validateUnit(unit)));
+        }
 
-            if(null == newUnit || !(newUnit instanceof Infantry)) {
+        if (newUnit.getEntityType() != unit.getEntityType()) {
+            MegaMekLabMainUI newUI = null;
+            if (newUnit instanceof Aero
+                    && !(newUnit instanceof SmallCraft
+                    || newUnit instanceof Jumpship
+                    || newUnit instanceof ConvFighter)) {
+                newUI = new megameklab.com.ui.Aero.MainUI();
+            } else if (newUnit instanceof BattleArmor) {
+                newUI = new megameklab.com.ui.BattleArmor.MainUI();
+            } else if (newUnit instanceof Infantry) {
+                newUI = new megameklab.com.ui.Infantry.MainUI();
+            } else if (newUnit instanceof Mech) {
+                newUI = new megameklab.com.ui.Mek.MainUI();
+            } else if (newUnit instanceof Tank && !(newUnit instanceof GunEmplacement)) {
+                newUI = new megameklab.com.ui.Vehicle.MainUI();
+            }
+            if (null == newUI) {
+                JOptionPane.showMessageDialog(parentFrame,
+                        "Warning: Could not create new UI, aborting unit load!"
+                        +System.lineSeparator()
+                        +"Probable cause: Unsupported unit type.");
                 return;
             }
-            unit = newUnit;
+            parentFrame.dispose();
+            UnitUtil.updateLoadedMech(newUnit);
+            newUI.setEntity(newUnit);
+            newUI.reloadTabs();
+            newUI.repaint();
+            newUI.refreshAll();
+            return;
+        }
+        unit = newUnit;
+
+        CConfig.updateSaveFiles("");
+        UnitUtil.updateLoadedMech(unit);
+
+        if (viewer.getChosenMechSummary().getSourceFile().getName().endsWith(".zip")) {
+            String fileName = viewer.getChosenMechSummary().getSourceFile().getAbsolutePath();
+            fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
+            fileName = fileName + viewer.getChosenMechSummary().getName() + ".mtf";
+            CConfig.updateSaveFiles(fileName);
+        } else {
+            CConfig.updateSaveFiles(viewer.getChosenMechSummary().getSourceFile().getAbsolutePath());
         }
         parentFrame.setEntity(unit);
         reload();
@@ -1272,9 +1256,18 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 return;
             }
 
+            if (UnitUtil.validateUnit(tempEntity).trim().length() > 0) {
+                JOptionPane.showMessageDialog(parentFrame, String.format(
+                        "Warning:Invalid unit, it might load incorrectly!\n%1$s",
+                                UnitUtil.validateUnit(unit)));
+            }
+
             if (tempEntity.getEntityType() != unit.getEntityType()) {
                 MegaMekLabMainUI newUI = null;
-                if (tempEntity instanceof Aero) {
+                if (tempEntity instanceof Aero
+                        && !(tempEntity instanceof SmallCraft
+                        || tempEntity instanceof Jumpship
+                        || tempEntity instanceof ConvFighter)) {
                     newUI = new megameklab.com.ui.Aero.MainUI();
                 } else if (tempEntity instanceof BattleArmor) {
                     newUI = new megameklab.com.ui.BattleArmor.MainUI();
@@ -1282,7 +1275,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                     newUI = new megameklab.com.ui.Infantry.MainUI();
                 } else if (tempEntity instanceof Mech) {
                     newUI = new megameklab.com.ui.Mek.MainUI();
-                } else if (tempEntity instanceof Tank) {
+                } else if (tempEntity instanceof Tank
+                        && !(tempEntity instanceof GunEmplacement)) {
                     newUI = new megameklab.com.ui.Vehicle.MainUI();
                 }
                 if (null == newUI) {
@@ -1291,6 +1285,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                     return;
                 }
                 parentFrame.dispose();
+                UnitUtil.updateLoadedMech(tempEntity);
                 newUI.setEntity(tempEntity);
                 newUI.reloadTabs();
                 newUI.repaint();
@@ -1299,11 +1294,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             }
             unit = tempEntity;
             UnitUtil.updateLoadedMech(unit);
-            if (UnitUtil.validateUnit(unit).trim().length() > 0) {
-                JOptionPane.showMessageDialog(parentFrame, String.format(
-                        "Warning:Invalid unit, it might load incorrectly!\n%1$s",
-                                UnitUtil.validateUnit(unit)));
-            }
 
             CConfig.updateSaveFiles(unitFile.getAbsolutePath());
         } catch (Exception ex) {

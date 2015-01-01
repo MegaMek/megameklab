@@ -12,6 +12,7 @@ v0.1.35-dev (SVN)
 + Bug [#116]: Changing Cockpit Type doesn't refresh weight
 + Bug [#139]: Incorrect space calculation for VTOLs
 + Bug [#95]: Infantry Created In MML Do Not Have Anti-Mech Attacks in MM
++ Bug [#70]: Can't load different types of units from Selector
 
 v0.1.34 (2014-12-25 15:20 UTC)
 + Update MegaMek.jar to 0.39.5
