@@ -2047,25 +2047,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             JSpinner spinner = (JSpinner) e.getSource();
             removeAllListeners();
             if (spinner.equals(weightClass)) {
-                int rating = ((Integer) walkMP.getValue())
-                        * ((Integer) weightClass.getValue());
-                if (getMech().isPrimitive()) {
-                    double dRating = ((Integer) walkMP.getValue())
-                            * ((Integer) weightClass.getValue());
-                    dRating *= 1.2;
-                    if ((dRating % 5) != 0) {
-                        dRating = (dRating - (dRating % 5)) + 5;
-                    }
-                    rating = (int) dRating;
-                }
-                if (rating > 500) {
-                    JOptionPane
-                            .showMessageDialog(
-                                    this,
-                                    "That speed would create an engine with a rating over 500.",
-                                    "Bad Engine Rating",
-                                    JOptionPane.ERROR_MESSAGE);
-                } else {
+                if (resetEngine()) {
                     if ((getMech().isSuperHeavy() && ((Integer)weightClass.getValue() <= 100)) || (!getMech().isSuperHeavy() && ((Integer)weightClass.getValue() > 100))) {
                         // if we switch from being superheavy to not being superheavy,
                         // remove crits
@@ -2079,38 +2061,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     getMech().setWeight((Integer) weightClass.getValue());
                     getMech().autoSetInternal();
                     engineType.setSelectedIndex(engineType.getSelectedIndex());
-                    resetEngine(rating);
                 }
                 populateChoices(true);
             } else if (spinner.equals(walkMP)) {
-                int rating = ((Integer) walkMP.getValue())
-                        * ((Integer) weightClass.getValue());
-                if (getMech().isPrimitive()) {
-                    double dRating = ((Integer) walkMP.getValue())
-                            * ((Integer) weightClass.getValue());
-                    dRating *= 1.2;
-                    if ((dRating % 5) != 0) {
-                        dRating = (dRating - (dRating % 5)) + 5;
-                    }
-                    rating = (int) dRating;
-                }
-                if ((rating > 400) && (getMech().getGyroType() == Mech.GYRO_XL)) {
-                    JOptionPane
-                            .showMessageDialog(
-                                    this,
-                                    "That speed would require a large engine, which doesn't fit",
-                                    "Bad Engine", JOptionPane.ERROR_MESSAGE);
-                }
-                if (rating > 500) {
-                    JOptionPane
-                            .showMessageDialog(
-                                    this,
-                                    "That speed would create an engine with a rating over 500.",
-                                    "Bad Engine Rating",
-                                    JOptionPane.ERROR_MESSAGE);
-                } else {
-                    resetEngine(rating);
-                }
+                resetEngine();
             } else if (spinner.equals(jumpMP)) {
                 UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(),
                         getJumpJetType());
@@ -2131,22 +2085,52 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
     }
 
-    private void resetEngine(int rating) {
-        System.out.println("Clearning engine crits.");
-        getMech().clearEngineCrits();
-        System.out.println("Setting new engine rating.");
-        getMech().setEngine(
-                new Engine(rating, convertEngineType(engineType
-                        .getSelectedItem().toString()),
-                        clanEngineFlag));
-        getMech().addEngineCrits();
-        System.out.println("Adding engine crits.");
-        int autoSinks = getMech().getEngine()
-                .getWeightFreeEngineHeatSinks();
-        System.out.println("Updating # engine heat sinks to "
-                + autoSinks);
-        UnitUtil.updateAutoSinks(getMech(),
-                (String) heatSinkType.getSelectedItem());
+    private boolean resetEngine() {
+        boolean retVal = false;
+        int rating = ((Integer) walkMP.getValue())
+                * ((Integer) weightClass.getValue());
+        if (getMech().isPrimitive()) {
+            double dRating = ((Integer) walkMP.getValue())
+                    * ((Integer) weightClass.getValue());
+            dRating *= 1.2;
+            if ((dRating % 5) != 0) {
+                dRating = (dRating - (dRating % 5)) + 5;
+            }
+            rating = (int) dRating;
+        }
+        if ((rating > 400) && (getMech().getGyroType() == Mech.GYRO_XL)) {
+            JOptionPane
+                    .showMessageDialog(
+                            this,
+                            "That speed would require a large engine, which doesn't fit",
+                            "Bad Engine", JOptionPane.ERROR_MESSAGE);
+        }
+        if (rating > 500) {
+            JOptionPane
+                    .showMessageDialog(
+                            this,
+                            "That speed would create an engine with a rating over 500.",
+                            "Bad Engine Rating",
+                            JOptionPane.ERROR_MESSAGE);
+        } else {
+            System.out.println("Clearning engine crits.");
+            getMech().clearEngineCrits();
+            System.out.println("Setting new engine rating.");
+            getMech().setEngine(
+                    new Engine(rating, convertEngineType(engineType
+                            .getSelectedItem().toString()),
+                            clanEngineFlag));
+            getMech().addEngineCrits();
+            System.out.println("Adding engine crits.");
+            int autoSinks = getMech().getEngine()
+                    .getWeightFreeEngineHeatSinks();
+            System.out.println("Updating # engine heat sinks to "
+                    + autoSinks);
+            UnitUtil.updateAutoSinks(getMech(),
+                    (String) heatSinkType.getSelectedItem());
+            retVal = true;
+        }
+        return retVal;
     }
 
     private void maximizeArmor() {
