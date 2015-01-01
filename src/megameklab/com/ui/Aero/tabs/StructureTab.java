@@ -1471,29 +1471,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     getAero().autoSetInternal();
                     engineType.setSelectedIndex(engineType.getSelectedIndex());
                 }
+                refreshEngine();
                 populateChoices(true);
             } else if (spinner.equals(safeThrust)) {
                 setAeroStructuralIntegrity();
-                int rating = TestAero.calculateEngineRating(
-                        getAero(),
-                        (Integer) weightClass.getValue(),
-                        (Integer) safeThrust.getValue());
-                if (rating > TestAero.MAX_ENGINE_RATING) {
-                    JOptionPane
-                            .showMessageDialog(
-                                    this,
-                                    "That speed would create an engine " +
-                                    "with a rating over the max rating, " +
-                                    TestAero.MAX_ENGINE_RATING + ".",
-                                    "Bad Engine Rating",
-                                    JOptionPane.ERROR_MESSAGE);
-                } else {
-                    System.out.println("Setting new engine rating.");
-                    getAero().setEngine(
-                            new Engine(rating, convertEngineType(engineType
-                                    .getSelectedItem().toString()),
-                                    clanEngineFlag));
-                }
+                refreshEngine();
             } else if (spinner.equals(fuel)) {
                 getAero().setFuelTonnage(((Double)fuel.getValue()).floatValue());
             } else if (spinner.equals(armorTonnage)) {
@@ -1507,6 +1489,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             addAllListeners();
 
             refresh.refreshAll();
+        }
+    }
+
+    private void refreshEngine() {
+        int rating = TestAero.calculateEngineRating(
+                getAero(),
+                (Integer) weightClass.getValue(),
+                (Integer) safeThrust.getValue());
+        if (rating > TestAero.MAX_ENGINE_RATING) {
+            JOptionPane
+                    .showMessageDialog(
+                            this,
+                            "That speed would create an engine " +
+                            "with a rating over the max rating, " +
+                            TestAero.MAX_ENGINE_RATING + ".",
+                            "Bad Engine Rating",
+                            JOptionPane.ERROR_MESSAGE);
+        } else {
+            System.out.println("Setting new engine rating.");
+            getAero().setEngine(
+                    new Engine(rating, convertEngineType(engineType
+                            .getSelectedItem().toString()),
+                            clanEngineFlag));
         }
     }
 
