@@ -58,7 +58,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private Vector<Mounted> masterEquipmentList = new Vector<Mounted>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
-    
+
     CriticalTransferHandler cth;
 
     public BuildView(Tank unit, RefreshListener refresh) {
@@ -101,7 +101,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
         for (Mounted mount : unit.getMisc()) {
-            if (mount.getLocation() == Entity.LOC_NONE) {
+            if (mount.getLocation() == Entity.LOC_NONE && !(mount.getType().getCriticals(unit) == 0)) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -112,7 +112,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         }
         for (Mounted mount : unit.getAmmo()) {
             int ammoType = ((AmmoType)mount.getType()).getAmmoType();
-            if ((mount.getLocation() == Entity.LOC_NONE) && 
+            if ((mount.getLocation() == Entity.LOC_NONE) &&
                     (mount.getUsableShotsLeft() > 1
                             || ammoType == AmmoType.T_CRUISE_MISSILE )) {
                 masterEquipmentList.add(mount);

@@ -88,13 +88,10 @@ public class MainUI extends MegaMekLabMainUI {
         masterPanel.setLayout(new BorderLayout());
 
         Tank tank = (Tank) entity;
-
-        structureTab = new StructureTab(tank);
-
-
         statusbar = new StatusBar(tank);
         equipmentTab = new EquipmentTab(tank);
         buildTab = new BuildTab(tank, equipmentTab);
+        structureTab = new StructureTab(tank);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
@@ -124,8 +121,8 @@ public class MainUI extends MegaMekLabMainUI {
             String model = entity.getModel();
             String chassis = entity.getChassis();
             String source = entity.getSource();
-            int year = entity.getYear();            
-            int techLevel = entity.getTechLevel(); 
+            int year = entity.getYear();
+            int techLevel = entity.getTechLevel();
             int mBV = entity.getManualBV();
             createNewUnit(
                     structureTab.isVTOL() ? Entity.ETYPE_VTOL
@@ -147,8 +144,8 @@ public class MainUI extends MegaMekLabMainUI {
             String model = entity.getModel();
             String chassis = entity.getChassis();
             String source = entity.getSource();
-            int year = entity.getYear();            
-            int techLevel = entity.getTechLevel(); 
+            int year = entity.getYear();
+            int techLevel = entity.getTechLevel();
             int mBV = entity.getManualBV();
             createNewUnit(
                     structureTab.isSuperHeavy() ? Entity.ETYPE_SUPER_HEAVY_TANK

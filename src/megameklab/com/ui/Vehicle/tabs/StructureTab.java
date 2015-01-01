@@ -129,7 +129,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     int maxTonnage = 50;
     int minTonnage = 1;
     JTextField manualBV = new JTextField(3);
-
     private ArmorView armor;
     private JComboBox<String> armorCombo = new JComboBox<String>();
 
@@ -148,7 +147,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panChassis = new JPanel(new GridBagLayout());
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
-        
+
         if (unit.isClan()){
             techLevel = new JComboBox<String>(clanTechLevels);
         } else {
@@ -1018,7 +1017,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             return armorType;
         }
         if (!unit.isMixedTech()) {
-            String prefix = unit.isClan()?"Clan ":"IS ";
+            String prefix = unit.isClan() ? "Clan " : "IS ";
             for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
                 if (armorType.equals(EquipmentType.armorNames[pos])) {
                     return prefix+armorType;
@@ -1278,6 +1277,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
     }
 
+    @SuppressWarnings("unused")
+    private void TEMP() {
+        int oldIndex = armorCombo.getSelectedIndex();
+        setArmorCombo(oldIndex);
+    }
+
     private void setArmorType(JComboBox<String> combo, int type, boolean removeListeners) {
         if (removeListeners) {
             removeAllListeners();
@@ -1297,7 +1302,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void updateArmor() {
-
         boolean isClan = getTank().isClan();
         boolean isMixed = getTank().isMixedTech();
         boolean isExperimental = (getTank().getTechLevel() == TechConstants.T_IS_EXPERIMENTAL)
@@ -1347,7 +1351,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
             }
         }
-
     }
 
     private void setJumpMP() {
