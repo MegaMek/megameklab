@@ -34,6 +34,7 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
@@ -70,7 +71,6 @@ import megameklab.com.ui.Vehicle.Printing.PrintVTOL;
 import megameklab.com.ui.Vehicle.Printing.PrintVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintWiGE;
 import megameklab.com.ui.dialog.UnitPrintQueueDialog;
-import megameklab.com.ui.dialog.UnitViewerDialog;
 
 public class UnitPrintManager {
 
@@ -83,9 +83,9 @@ public class UnitPrintManager {
         return printAllUnits(unitList, false);
     }
 
-    public static void selectUnitToPrint(int unitType, JFrame parent) {
+    public static void selectUnitToPrint(JFrame parent) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
-        UnitViewerDialog viewer = new UnitViewerDialog(parent, unitLoadingDialog, unitType);
+        UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
 
         Entity entity = null;
 
@@ -160,7 +160,7 @@ public class UnitPrintManager {
             } else if (unit instanceof TripodMech) {
                 UnitUtil.removeOneShotAmmo(unit);
                 UnitUtil.expandUnitMounts((Mech) unit);
-                
+
                 tripodList.add((Mech) unit);
             } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank)unit).isSuperHeavy())) {
                 largeSupportTankList.add((Tank)unit);
@@ -221,10 +221,10 @@ public class UnitPrintManager {
 
             printQuad.print();
         }
-        
+
         // TODO: Implement a PrintTripod class so we can do something with
         // tripodList here as well.
-        
+
         if (tankList.size() > 0) {
             PrintVehicle printTank = new PrintVehicle(tankList, singlePrint, masterPrintJob);
 
@@ -384,7 +384,7 @@ public class UnitPrintManager {
     public static void printSelectedUnit(JFrame parent) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
-        UnitViewerDialog viewer = new UnitViewerDialog(parent, unitLoadingDialog, -1);
+        UnitSelectorDialog viewer = new UnitSelectorDialog(parent, unitLoadingDialog, true);
 
         viewer.setVisible(false);
         Entity entity = viewer.getChosenEntity();
