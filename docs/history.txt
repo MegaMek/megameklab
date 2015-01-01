@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.1.35-dev (SVN)
+v0.1.35 (2015-01-01 21:05 UTC)
 + Bug: SpinnerNumberModel IllegalArgumentException for ASF on loading when armor
     tonnage was set very high
 + Bug: Mixed tech Aeros could select IS or Clan DHS
@@ -14,6 +14,7 @@ v0.1.35-dev (SVN)
 + Bug [#95]: Infantry Created In MML Do Not Have Anti-Mech Attacks in MM
 + Bug [#70]: Can't load different types of units from Selector
 + Bug [#154]: Changing aero weight does not change engine weight
++ Update MegaMek.jar to 0.40.0
 
 v0.1.34 (2014-12-25 15:20 UTC)
 + Update MegaMek.jar to 0.39.5
