@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.36-dev (SVN)
+
 v0.1.35 (2015-01-01 21:05 UTC)
 + Bug: SpinnerNumberModel IllegalArgumentException for ASF on loading when armor
     tonnage was set very high
