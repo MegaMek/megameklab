@@ -1453,25 +1453,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             removeAllListeners();
             if (spinner.equals(weightClass)) {
                 setAeroStructuralIntegrity();
-                int rating = TestAero.calculateEngineRating(
-                        getAero(),
-                        (Integer) weightClass.getValue(),
-                        (Integer) safeThrust.getValue());
-                if (rating > TestAero.MAX_ENGINE_RATING) {
-                    JOptionPane
-                            .showMessageDialog(
-                                    this,
-                                    "That speed would create an engine " +
-                                    "with a rating over the max rating, " +
-                                    TestAero.MAX_ENGINE_RATING + ".",
-                                    "Bad Engine Rating",
-                                    JOptionPane.ERROR_MESSAGE);
-                } else {
+                if (refreshEngine()) {
                     getAero().setWeight((Integer) weightClass.getValue());
                     getAero().autoSetInternal();
                     engineType.setSelectedIndex(engineType.getSelectedIndex());
                 }
-                refreshEngine();
                 populateChoices(true);
             } else if (spinner.equals(safeThrust)) {
                 setAeroStructuralIntegrity();
@@ -1492,7 +1478,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
     }
 
-    private void refreshEngine() {
+    private boolean refreshEngine() {
+        boolean retVal = false;
         int rating = TestAero.calculateEngineRating(
                 getAero(),
                 (Integer) weightClass.getValue(),
@@ -1512,7 +1499,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     new Engine(rating, convertEngineType(engineType
                             .getSelectedItem().toString()),
                             clanEngineFlag));
+            retVal = true;
         }
+        return retVal;
     }
 
     private void maximizeArmor() {
