@@ -39,6 +39,7 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megameklab.com.util.UnitPrintManager;
@@ -49,7 +50,7 @@ import megameklab.com.util.UnitPrintManager;
 public class UnitPrintQueueDialog extends JDialog implements ActionListener, KeyListener {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 4812586858732825464L;
 
@@ -98,10 +99,10 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
         /*
          * bSelectFile.setSize(newSize); bRemove.setSize(newSize);
          * bCancel.setSize(newSize); bPrint.setSize(newSize);
-         * 
+         *
          * bSelectFile.setMinimumSize(newSize); bRemove.setMinimumSize(newSize);
          * bCancel.setMinimumSize(newSize); bPrint.setMinimumSize(newSize);
-         * 
+         *
          * bSelectFile.setPreferredSize(newSize);
          * bRemove.setPreferredSize(newSize); bCancel.setPreferredSize(newSize);
          * bPrint.setPreferredSize(newSize);
@@ -155,7 +156,7 @@ public class UnitPrintQueueDialog extends JDialog implements ActionListener, Key
         if (ae.getSource().equals(bSelectCache)) {
             UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(clientgui);
             unitLoadingDialog.setVisible(true);
-            UnitViewerDialog viewer = new UnitViewerDialog(clientgui, unitLoadingDialog, -1);
+            UnitSelectorDialog viewer = new UnitSelectorDialog(clientgui, unitLoadingDialog, true);
 
             viewer.setVisible(false);
             Entity entity = viewer.getChosenEntity();
