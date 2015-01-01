@@ -148,13 +148,7 @@ public class UnitUtil {
      * @return
      */
     public static boolean isArmor(EquipmentType eq) {
-        for (String armor : EquipmentType.armorNames) {
-            if (eq.getName().equals(armor)) {
-                return true;
-            }
-        }
-
-        return false;
+        return Arrays.asList(EquipmentType.armorNames).contains(eq.getName());
     }
 
     /**
@@ -2546,7 +2540,7 @@ public class UnitUtil {
     }
 
     /**
-     * remove all CriticalSlots on the passed unit that are internal structur or
+     * remove all CriticalSlots on the passed unit that are internal structure or
      * armor
      *
      * @param unit
@@ -2589,7 +2583,7 @@ public class UnitUtil {
     }
 
     /**
-     * remove all Mounteds on the passed unit that are internal structur or
+     * remove all Mounted on the passed unit that are internal structure or
      * armor
      *
      * @param unit
@@ -2601,6 +2595,8 @@ public class UnitUtil {
             boolean internalStructure) {
         UnitUtil.removeISorArmorCrits(unit, internalStructure);
         ArrayList<String> mountList = new ArrayList<String>();
+
+        mountList.add("Standard");
 
         List<String> names;
         if (internalStructure) {
@@ -2616,7 +2612,7 @@ public class UnitUtil {
 
         for (int pos = 0; pos < unit.getEquipment().size();) {
             Mounted mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType)
+            if (mount.getType() instanceof EquipmentType
                     && mountList.contains(mount.getType().getInternalName())) {
                 unit.getEquipment().remove(pos);
             } else {
