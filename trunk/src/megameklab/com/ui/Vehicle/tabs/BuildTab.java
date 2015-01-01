@@ -62,6 +62,7 @@ public class BuildTab extends ITab implements ActionListener {
 
     public BuildTab(Tank unit, EquipmentTab equipment) {
         this.unit = unit;
+        this.critList = equipment.getEquipmentList();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -186,6 +187,13 @@ public class BuildTab extends ITab implements ActionListener {
         if (refresh != null) {
             refresh.refreshAll();
         }
+    }
+
+    /**
+     * @return the critList
+     */
+    public CriticalTableModel getCritList() {
+        return critList;
     }
 
 }

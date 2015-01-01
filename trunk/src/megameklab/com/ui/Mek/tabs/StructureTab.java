@@ -2396,11 +2396,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             } else {
                 for (; armorCount > 0; armorCount--) {
                     try {
-                        getMech()
-                                .addEquipment(
-                                        new Mounted(unit, EquipmentType
-                                                .get(getArmorType(armorCombo))),
-                                        Entity.LOC_NONE, false);
+                        getMech().addEquipment(new Mounted(unit,
+                                EquipmentType.get(getArmorType(armorCombo))),
+                                Entity.LOC_NONE, false);
                     } catch (Exception ex) {
                     }
                 }
