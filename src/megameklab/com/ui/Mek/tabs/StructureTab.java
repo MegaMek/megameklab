@@ -651,7 +651,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             jump = (Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum();
         }
         jumpMP.setValue(jump);
-        UnitUtil.updateJumpJets(getMech(), jump, Mech.JUMP_IMPROVED);
+        UnitUtil.updateJumpJets(getMech(), jump, getMech().getJumpType());
         runMP.setText(getMech().getRunMPasString());
 
         setJumpJetCombo();
