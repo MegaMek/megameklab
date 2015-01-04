@@ -17,17 +17,25 @@
 package megameklab.com.ui.Vehicle;
 
 import java.awt.Color;
+import java.awt.FileDialog;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.File;
+import java.text.DecimalFormat;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 
 import megamek.common.Tank;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestTank;
+import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
-import megameklab.com.util.SpringLayoutHelper;
+import megameklab.com.util.ImageHelper;
+import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class StatusBar extends ITab {
@@ -37,51 +45,83 @@ public class StatusBar extends ITab {
      */
     private static final long serialVersionUID = -6754327753693500675L;
 
-    private JPanel tonnagePanel = new JPanel();
-    private JPanel movementPanel = new JPanel();
-    private JPanel bvPanel = new JPanel();
+    private JButton btnValidate = new JButton("Validate Unit");
+    private JButton btnFluffImage = new JButton("Set Fluff Image");
     private JPanel slotsPanel = new JPanel();
     private JLabel move = new JLabel();
     private JLabel bvLabel = new JLabel();
     private JLabel tons = new JLabel();
     private JLabel slots = new JLabel();
+    private JLabel cost = new JLabel();
     private EntityVerifier entityVerifier = new EntityVerifier(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
     private TestTank testEntity = null;
+    private DecimalFormat formatter;
+    private JFrame parentFrame;
 
-    public StatusBar(Tank unit) {
+    private RefreshListener refresh;
+
+    public StatusBar(Tank unit, MegaMekLabMainUI parent) {
+        parentFrame = parent;
         this.unit = unit;
 
+        formatter = new DecimalFormat();
         testEntity = new TestTank(unit, entityVerifier.mechOption, null);
-        setLayout(new SpringLayout());
-        this.add(movementPanel());
-        this.add(bvPanel());
-        this.add(tonnagePanel());
+        btnValidate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UnitUtil.showValidation(getTank(), getParentFrame());
+            }
+        });
+        btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                getFluffImage();
+            }
+        });
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(5,2,2,20);
+        gbc.anchor = GridBagConstraints.WEST;
+        this.add(btnValidate, gbc);
+        gbc.gridx = 1;
+        this.add(btnFluffImage, gbc);
+        gbc.gridx = 2;
+        this.add(tons, gbc);
+        gbc.gridx = 3;
+        this.add(movementLabel(), gbc);
+        gbc.gridx = 4;
+        this.add(bvLabel(), gbc);
+        gbc.gridx = 5;
+        this.add(bvLabel, gbc);
+        gbc.gridx = 6;
+        this.add(tonnageLabel());
+        gbc.gridx = 7;
         this.add(slotsPanel());
-
-        SpringLayoutHelper.setupSpringGrid(this, 4);
+        gbc.gridx = 8;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        this.add(cost, gbc);
         refresh();
     }
 
-    public JPanel movementPanel() {
+    public JLabel movementLabel() {
         int walk = unit.getOriginalWalkMP();
         int run = unit.getRunMP(false, true, false);
         int jump = unit.getOriginalJumpMP();
 
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
-        movementPanel.add(move);
-        return movementPanel;
+        return move;
     }
 
-    public JPanel bvPanel() {
+    public JLabel bvLabel() {
         int bv = unit.calculateBattleValue();
         bvLabel.setText("BV: " + bv);
-        bvPanel.add(bvLabel);
 
-        return bvPanel;
+        return bvLabel;
     }
 
-    public JPanel tonnagePanel() {
+    public JLabel tonnageLabel() {
         float tonnage = unit.getWeight();
         float currentTonnage;
 
@@ -89,8 +129,7 @@ public class StatusBar extends ITab {
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
-        tonnagePanel.add(tons);
-        return tonnagePanel;
+        return tons;
     }
 
     public JPanel slotsPanel() {
@@ -115,6 +154,7 @@ public class StatusBar extends ITab {
         currentTonnage = testEntity.calculateWeight();
 
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
+        int currentCost = (int)Math.round(getTank().getCost(false));
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tons.setToolTipText("Current Tonnage/Max Tonnage");
@@ -135,8 +175,44 @@ public class StatusBar extends ITab {
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("BV 2.0");
 
+        cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
+
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
         move.setToolTipText("Walk/Run/Jump MP");
 
+    }
+
+    private void getFluffImage() {
+        //copied from structureTab
+        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        /*
+         //This does not seem to be working
+        if (getMech().getFluff().getMMLImagePath().trim().length() > 0) {
+            String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
+            String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
+            fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
+            fDialog.setDirectory(fullPath);
+            fDialog.setFile(imageName);
+        } else {
+            fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
+        }
+        */
+        fDialog.setLocationRelativeTo(this);
+
+        fDialog.setVisible(true);
+
+        if (fDialog.getFile() != null) {
+            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
+            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            getMech().getFluff().setMMLImagePath(relativeFilePath);
+        }
+        refresh.refreshPreview();
+        return;
+    }
+
+    private JFrame getParentFrame() {
+        return parentFrame;
     }
 }

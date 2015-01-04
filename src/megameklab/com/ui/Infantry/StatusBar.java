@@ -50,7 +50,7 @@ public class StatusBar extends ITab {
     private JLabel cost = new JLabel();
     private DecimalFormat formatter;
     private JFrame parentFrame;
-    
+
     private RefreshListener refresh;
 
     public StatusBar(Infantry unit, MegaMekLabMainUI parent) {
@@ -63,14 +63,12 @@ public class StatusBar extends ITab {
                 UnitUtil.showValidation(getInfantry(), getParentFrame());
             }
         });
-        btnValidate.setEnabled(false);
         btnFluffImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 getFluffImage();
             }
         });
-        btnFluffImage.setEnabled(false);
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -92,7 +90,7 @@ public class StatusBar extends ITab {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         this.add(cost, gbc);
-        
+
 
         refresh();
     }
@@ -103,11 +101,11 @@ public class StatusBar extends ITab {
         float currentTonnage;
         int bv = getInfantry().calculateBattleValue();
         int currentCost = (int)Math.round(getInfantry().getCost(false));
-     
+
         currentTonnage = getInfantry().getWeight();
 
         move.setText("Movement: " + getInfantry().getWalkMP() + "/" + getInfantry().getJumpMP());
-        
+
         damage.setText("Damage/Trooper: " + roundFormat.format(getInfantry().getDamagePerTrooper()));
 
         tons.setText("Tons: " + currentTonnage);
@@ -116,9 +114,9 @@ public class StatusBar extends ITab {
         bvLabel.setToolTipText("BV 2.0");
 
         cost.setText("Cost: " + formatter.format(currentCost) + " C-bills");
-        
+
     }
-    
+
     private void getFluffImage() {
         //copied from structureTab
         FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
@@ -129,30 +127,30 @@ public class StatusBar extends ITab {
             String fullPath = new File(getMech().getFluff().getMMLImagePath()).getAbsolutePath();
             String imageName = fullPath.substring(fullPath.lastIndexOf(File.separatorChar) + 1);
             fullPath = fullPath.substring(0, fullPath.lastIndexOf(File.separatorChar) + 1);
-            fDialog.setDirectory(fullPath); 
-            fDialog.setFile(imageName); 
+            fDialog.setDirectory(fullPath);
+            fDialog.setFile(imageName);
         } else {
             fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
-            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png"); 
+            fDialog.setFile(getMech().getChassis() + " " + getMech().getModel() + ".png");
         }
         */
         fDialog.setLocationRelativeTo(this);
-        
+
         fDialog.setVisible(true);
-        
-        if (fDialog.getFile() != null) { 
+
+        if (fDialog.getFile() != null) {
             String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
             relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
-            getInfantry().getFluff().setMMLImagePath(relativeFilePath); 
+            getInfantry().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
-        return; 
+        return;
     }
-    
+
     private JFrame getParentFrame() {
         return parentFrame;
     }
-    
+
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
     }
