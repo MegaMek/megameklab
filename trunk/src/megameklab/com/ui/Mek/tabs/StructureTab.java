@@ -132,8 +132,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     String[] motiveTypes = { "Biped", "Quad", "Tripod" };
     JComboBox<String> motiveType = new JComboBox<String>(motiveTypes);
     JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
-    String[] jjTypes = { "Standard", "Improved", "Improved Prototype",
-            "Mechanical Boosters" };
+    String[] jjTypes = { "Standard", "Improved", "Prototype",
+            "Mechanical Boosters", "Improved Prototype" };
     JComboBox<String> jjType = new JComboBox<String>(jjTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
@@ -637,7 +637,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         walkMP.setValue(getMech().getOriginalWalkMP());
         if ((getJumpJetType() == Mech.JUMP_IMPROVED)
-                || (getJumpJetType() == Mech.JUMP_PROTOTYPE)) {
+                || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
                     .getRunMP());
         } else if (getJumpJetType() == Mech.JUMP_BOOSTER) {
@@ -793,7 +793,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         jumpMP.setValue(getMech().getOriginalWalkMP());
                     }
                 } else if ((getJumpJetType() == Mech.JUMP_IMPROVED)
-                        || (getJumpJetType() == Mech.JUMP_PROTOTYPE)) {
+                        || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
                     if (((Integer) jumpMP.getValue()) > getMech().getRunMP()) {
                         jumpMP.setValue(getMech().getRunMP());
                     }
@@ -2013,6 +2013,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private void setJumpJetCombo() {
         int selIndex = Math.max(0, getMech().getJumpType() - 1);
+        // Hack because of hidden disposable jump packs
+        if (selIndex == 5) {
+            selIndex--;
+        }
         if (jjType.getItemCount() <= selIndex) {
             selIndex = -1;
         }
@@ -2408,7 +2412,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private int getJumpJetType() {
-        return jjType.getSelectedIndex() + 1;
+        int retVal = jjType.getSelectedIndex() + 1;
+        // Hack to hide Disposable Jump Packs
+        if (retVal == jjTypes.length) {
+            retVal++;
+        }
+        return retVal;
     }
 
     private String getArmorType(JComboBox<String> combo) {

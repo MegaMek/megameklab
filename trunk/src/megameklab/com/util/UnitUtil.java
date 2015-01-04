@@ -817,6 +817,8 @@ public class UnitUtil {
             return "ISPrototypeJumpJet";
         } else if (type == Mech.JUMP_BOOSTER) {
             return "Jump Booster";
+        } else if (type == Mech.JUMP_PROTOTYPE_IMPROVED) {
+            return "ISPrototypeImprovedJumpJet";
         }
         return "JumpJet";
     }
