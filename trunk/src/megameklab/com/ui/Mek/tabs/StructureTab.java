@@ -636,7 +636,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setHeatSinkCombo();
 
         walkMP.setValue(getMech().getOriginalWalkMP());
-        int jump = getMech().getOriginalJumpMP();
         if ((getJumpJetType() == Mech.JUMP_IMPROVED)
                 || (getJumpJetType() == Mech.JUMP_PROTOTYPE)) {
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
@@ -647,11 +646,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
                     .getOriginalWalkMP());
         }
-        if (jump > (Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum()) {
-            jump = (Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum();
+        if ((Integer) jumpMP.getValue() > (Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum()) {
+            jumpMP.setValue((Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum());
+            UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(), getJumpJetType());
         }
-        jumpMP.setValue(jump);
-        UnitUtil.updateJumpJets(getMech(), jump, getMech().getJumpType());
         runMP.setText(getMech().getRunMPasString());
 
         setJumpJetCombo();
