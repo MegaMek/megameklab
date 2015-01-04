@@ -7,6 +7,7 @@ v0.1.36-dev (SVN)
 + Bug [#152]: Right-click to add equipment not working
 + Bug [#128]: Prototype Jump Jets incorrectly labeled as Prototype Improved Jump Jets
 + Bug [#99]: Missing equipment in list
++ Bug: Fixed equipment being removed by the reset button for vehicles
 
 v0.1.35 (2015-01-01 21:05 UTC)
 + Bug: SpinnerNumberModel IllegalArgumentException for ASF on loading when armor
