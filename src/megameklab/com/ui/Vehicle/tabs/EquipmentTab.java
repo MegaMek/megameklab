@@ -64,6 +64,7 @@ import megamek.common.Mounted;
 import megamek.common.SupportTank;
 import megamek.common.SupportVTOL;
 import megamek.common.Tank;
+import megamek.common.VTOL;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ArtilleryWeapon;
 import megameklab.com.util.CriticalTableModel;
@@ -374,13 +375,13 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                     || etype.hasFlag(MiscType.F_TSM)
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || (etype.hasFlag(MiscType.F_MASC) 
+                    || (etype.hasFlag(MiscType.F_MASC)
                             && !etype.hasSubType(MiscType.S_SUPERCHARGER))
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
             //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype) 
+                if (UnitUtil.isFixedLocationSpreadEquipment(etype)
                         && !spreadAlreadyAdded.contains(etype)) {
                     equipmentList.addCrit(mount);
                     // keep track of spreadable equipment here, so it doesn't
@@ -452,7 +453,11 @@ public class EquipmentTab extends ITab implements ActionListener {
         } else {
             try {
                 mount = new Mounted(unit, equip);
-                getTank().addEquipment(mount, Entity.LOC_NONE, false);
+                int loc = Entity.LOC_NONE;
+                if (isMisc && equip.hasFlag(MiscType.F_MAST_MOUNT)) {
+                    loc = VTOL.LOC_ROTOR;
+                }
+                getTank().addEquipment(mount, loc, false);
                 success = true;
             } catch (LocationFullException lfe) {
                 // this can't happen, we add to Entity.LOC_NONE
@@ -548,11 +553,11 @@ public class EquipmentTab extends ITab implements ActionListener {
                     isSupportTankEquipment = true;
                 }
                 if (isSupportTankEquipment
-                        && !((unit instanceof SupportTank) 
+                        && !((unit instanceof SupportTank)
                                 || (unit instanceof SupportVTOL))) {
                     return false;
                 }
-                if (((nType == T_OTHER) && UnitUtil.isTankEquipment(etype))
+                if (((nType == T_OTHER) && UnitUtil.isTankEquipment(etype, unit instanceof VTOL))
                         || (((nType == T_WEAPON) && (UnitUtil.isTankWeapon(etype, unit))))
                         || ((nType == T_ENERGY) && UnitUtil.isTankWeapon(etype, unit)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
