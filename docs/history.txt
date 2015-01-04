@@ -4,6 +4,7 @@ v0.1.36-dev (SVN)
 + Bug: JumpJet type stuck on Improved JJ
 + Bug: JumpJets were generating extra invalid criticals
 + Feature: Added Validation and Fluff Image buttons to Vehicle editor, and enabled them for Infantry
++ Bug [#152]: Right-click to add equipment not working
 
 v0.1.35 (2015-01-01 21:05 UTC)
 + Bug: SpinnerNumberModel IllegalArgumentException for ASF on loading when armor

@@ -154,7 +154,7 @@ public class CriticalView extends IView {
                         BorderFactory.createEmptyBorder(), "Rotor",
                         TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                 fullTurretPanel.add(turretPanel);
-                this.add(fullTurretPanel); 
+                this.add(fullTurretPanel);
             }
         } else if (!getTank().hasNoDualTurret()) {
             dualTurretPanel.setBorder(BorderFactory.createTitledBorder(
