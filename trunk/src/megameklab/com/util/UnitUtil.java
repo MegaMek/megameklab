@@ -58,6 +58,7 @@ import megamek.common.QuadMech;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
+import megamek.common.VTOL;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAero;
@@ -2071,7 +2072,7 @@ public class UnitUtil {
 
     public static boolean isUnitEquipment(EquipmentType eq, Entity unit) {
         if (unit instanceof Tank) {
-            return UnitUtil.isTankEquipment(eq);
+            return UnitUtil.isTankEquipment(eq, unit instanceof VTOL);
         }
 
         if (unit instanceof BattleArmor) {
@@ -2416,7 +2417,7 @@ public class UnitUtil {
         return eq instanceof InfantryWeapon;
     }
 
-    public static boolean isTankEquipment(EquipmentType eq) {
+    public static boolean isTankEquipment(EquipmentType eq, boolean isVTOL) {
 
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
@@ -2430,7 +2431,11 @@ public class UnitUtil {
 
         if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_TANK_EQUIPMENT)) {
             return true;
+        }
 
+        if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_VTOL_EQUIPMENT)
+                && isVTOL) { // Mast Mount!
+            return true;
         }
 
         return false;
