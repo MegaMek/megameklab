@@ -259,6 +259,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
             return;
         }
 
+        // Cannot remove a mast mount
+        if (mounted.getType().hasFlag(MiscType.F_MAST_MOUNT)) {
+            return;
+        }
+
         UnitUtil.removeCriticals(unit, mounted);
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
