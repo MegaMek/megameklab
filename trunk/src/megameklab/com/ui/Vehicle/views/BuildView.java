@@ -271,6 +271,12 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         UnitUtil.changeMountStatus(unit, eq, location, -1, false);
 
+        try {
+            getTank().addEquipment(eq, location, false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         // go back up to grandparent build tab and fire a full refresh.
         ((BuildTab) getParent().getParent()).refreshAll();
     }

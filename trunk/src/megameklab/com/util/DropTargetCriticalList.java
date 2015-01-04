@@ -95,9 +95,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     public void mousePressed(MouseEvent e) {
-
         if (buildView) {
-
             if (e.getButton() == MouseEvent.BUTTON2) {
                 setSelectedIndex(locationToIndex(e.getPoint()));
                 removeCrit();
@@ -220,7 +218,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 if (popup.getComponentCount() > 0) {
                     popup.show(this, e.getX(), e.getY());
                 }
-
             }
         }
     }
