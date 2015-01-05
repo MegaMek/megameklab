@@ -1028,14 +1028,27 @@ public class UnitUtil {
         }
 
         return true;
+    }
 
+    public static boolean isBAMultiMount(EquipmentType equip) {
+        if ((equip instanceof WeaponType)
+                && (equip.hasFlag(WeaponType.F_TASER)
+                        || ((WeaponType)equip).getAmmoType()
+                            == AmmoType.T_NARC)){
+            return true;
+        }
+        return false;
     }
 
     public static void changeMountStatus(Entity unit, Mounted eq, int location,
             int secondaryLocation, boolean rear) {
-        eq.setLocation(location, rear);
-        eq.setSecondLocation(secondaryLocation, rear);
-        eq.setSplit(secondaryLocation > -1);
+        if (unit instanceof BattleArmor) {
+            eq.setBaMountLoc(location);
+        } else {
+            eq.setLocation(location, rear);
+            eq.setSecondLocation(secondaryLocation, rear);
+            eq.setSplit(secondaryLocation > -1);
+        }
     }
 
     public static boolean hasTargComp(Entity unit) {

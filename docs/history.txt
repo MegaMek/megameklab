@@ -8,6 +8,7 @@ v0.1.36-dev (SVN)
 + Bug [#128]: Prototype Jump Jets incorrectly labeled as Prototype Improved Jump Jets
 + Bug [#99]: Missing equipment in list
 + Bug: Fixed equipment being removed by the reset button for vehicles
++ Bug [#145]: Auto fill BA armor slots doubles the number of armor slots instead
 
 v0.1.35 (2015-01-01 21:05 UTC)
 + Bug: SpinnerNumberModel IllegalArgumentException for ASF on loading when armor
