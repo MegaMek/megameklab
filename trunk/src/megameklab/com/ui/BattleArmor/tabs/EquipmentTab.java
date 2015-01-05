@@ -357,7 +357,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     private void loadEquipmentTable() {
 
         for (Mounted mount : unit.getWeaponList()) {
-            if (UnitUtil.isBattleArmorWeapon(mount.getType(), unit) 
+            if (UnitUtil.isBattleArmorWeapon(mount.getType(), unit)
                     || UnitUtil.isBattleArmorAPWeapon(mount.getType())){
                 equipmentList.addCrit(mount);
             }
@@ -365,7 +365,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         for (Mounted mount : unit.getAmmo()) {
             // Ignore ammo for one-shot launchers
-            if (mount.getLinkedBy() != null 
+            if (mount.getLinkedBy() != null
                     && mount.getLinkedBy().isOneShot()){
                 continue;
             }
@@ -382,13 +382,13 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                     || etype.hasFlag(MiscType.F_TSM)
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || (etype.hasFlag(MiscType.F_MASC) 
+                    || (etype.hasFlag(MiscType.F_MASC)
                             && !etype.hasSubType(MiscType.S_SUPERCHARGER))
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
             //if (UnitUtil.isUnitEquipment(mount.getType(), unit) || UnitUtil.isUn) {
-                if (UnitUtil.isFixedLocationSpreadEquipment(etype) 
+                if (UnitUtil.isFixedLocationSpreadEquipment(etype)
                         && !spreadAlreadyAdded.contains(etype)) {
                     equipmentList.addCrit(mount);
                     // keep track of spreadable equipment here, so it doesn't
@@ -453,14 +453,8 @@ public class EquipmentTab extends ITab implements ActionListener {
     private void addEquipment(EquipmentType equip) {
         Mounted mount = null;
         boolean isMisc = equip instanceof MiscType;
-        boolean multiMount = false;
-        if ((equip instanceof WeaponType) 
-                && (equip.hasFlag(WeaponType.F_TASER) 
-                        || ((WeaponType)equip).getAmmoType() 
-                            == AmmoType.T_NARC)){
-            multiMount = true;
-        }
-        
+        boolean multiMount = UnitUtil.isBAMultiMount(equip);
+
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(unit)) {
                 mount = UnitUtil.updateTC(getBattleArmor(), equip);
@@ -470,7 +464,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             }
         } else {
             try {
-                if (multiMount){
+                if (multiMount) {
                     for (int t = 1; t <= getBattleArmor().getTroopers(); t++){
                         mount = new Mounted(unit, equip);
                         mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
@@ -548,7 +542,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         final int nType = choiceType.getSelectedIndex();
         equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
             @Override
-            public boolean include(Entry<? extends EquipmentTableModel, 
+            public boolean include(Entry<? extends EquipmentTableModel,
                     ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
@@ -560,30 +554,30 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (etype instanceof AmmoType) {
                     atype = (AmmoType)etype;
                 }
-                if (!UnitUtil.isLegal(unit, 
+                if (!UnitUtil.isLegal(unit,
                         etype.getTechLevel(unit.getTechLevelYear()))) {
                     return false;
                 }
 
                 if ((etype instanceof MiscType)
                         && (etype.hasFlag(MiscType.F_TSM)
-                                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) 
-                                || (etype.hasFlag(MiscType.F_MASC) 
+                                || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                                || (etype.hasFlag(MiscType.F_MASC)
                                         && !etype.hasSubType(
                                                 MiscType.S_SUPERCHARGER)))) {
                     return false;
                 }
-                
+
                 // Don't show equipment that is added via the StructureTab
-                if ((etype instanceof MiscType ) 
-                        && (etype.hasFlag(MiscType.F_BA_MANIPULATOR) 
+                if ((etype instanceof MiscType )
+                        && (etype.hasFlag(MiscType.F_BA_MANIPULATOR)
                             || etype.hasFlag(MiscType.F_PARTIAL_WING)
                             || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                             || etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
                             || etype.hasFlag(MiscType.F_MASC))){
                     return false;
                 }
-                
+
                 if (etype.hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                         && !getBattleArmor().canMountDWP()){
                     return false;
@@ -592,13 +586,13 @@ public class EquipmentTab extends ITab implements ActionListener {
                         || (((nType == T_WEAPON) && (UnitUtil.isUnitWeapon(etype, unit))))
                         || ((nType == T_ENERGY) && UnitUtil.isUnitWeapon(etype, unit)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
-                            || (wtype.hasFlag(WeaponType.F_PLASMA) 
+                            || (wtype.hasFlag(WeaponType.F_PLASMA)
                                     && (wtype.getAmmoType() == AmmoType.T_PLASMA))))
                         || ((nType == T_BALLISTIC) && UnitUtil.isUnitWeapon(etype, unit)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_BALLISTIC)))
                         || ((nType == T_MISSILE) && UnitUtil.isUnitWeapon(etype, unit)
                             && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
-                                    && (wtype.getAmmoType() != AmmoType.T_NA)) 
+                                    && (wtype.getAmmoType() != AmmoType.T_NA))
                                     || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
                         || ((nType == T_ARTILLERY) && UnitUtil.isUnitWeapon(etype, unit)
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
@@ -728,7 +722,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (s0.indexOf("/") == -1 && s1.indexOf("/") == -1){
                     int range0 = Integer.parseInt(s0);
                     int range1 = Integer.parseInt(s1);
-                    return ((Comparable<Integer>)range0).compareTo(range1);                    
+                    return ((Comparable<Integer>)range0).compareTo(range1);
                 }
                 //get the numbers associated with each string
                 int short0 = Integer.parseInt(s0.split("/")[0]);
