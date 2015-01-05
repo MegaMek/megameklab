@@ -42,9 +42,9 @@ import megameklab.com.util.UnitUtil;
 
 /**
  * A component that creates a table for building the criticals of a unit.  This
- * tab shows a table of the un-allocated equipment and displays criticals for 
+ * tab shows a table of the un-allocated equipment and displays criticals for
  * the whole <code>BattleArmor</code> squad.
- * 
+ *
  * @author Taharqa
  * @author arlith
  *
@@ -59,9 +59,9 @@ public class BuildTab extends ITab implements ActionListener {
     private RefreshListener refresh = null;
     private ArrayList<CriticalView> critViews = new ArrayList<CriticalView>();
     private BuildView buildView = null;
-    
+
     private JScrollPane critScrollPanel;
-    
+
     /**
      * Panel for displaying the critical trees for each trooper in the squad.
      */
@@ -69,7 +69,7 @@ public class BuildTab extends ITab implements ActionListener {
     /**
      * Panel that displays autoFill and reset buttons.
      */
-    
+
     private JPanel buttonPanel = new JPanel();
     /**
      * Panel that holds the <code>BuildView</code> and buttonPanel
@@ -95,9 +95,9 @@ public class BuildTab extends ITab implements ActionListener {
         critScrollPanel.setMinimumSize(new java.awt.Dimension(400, 500));
         critScrollPanel.setPreferredSize(new java.awt.Dimension(400, 500));
         critScrollPanel.getVerticalScrollBar().setUnitIncrement(20);
-        
+
         createCriticalViews();
-        
+
         buildView = new BuildView(getBattleArmor());
 
         mainPanel.add(buildView);
@@ -129,11 +129,11 @@ public class BuildTab extends ITab implements ActionListener {
         masterPanel.setMaximumSize(maxSize);
         return masterPanel;
     }
-    
+
     /**
      * Unlike other units, BattleArmor have multiple suits in the squad that
      * have crits that can be assigned.  Different types of BattleArmor squads
-     * have different numbers of troops, so instead of one 
+     * have different numbers of troops, so instead of one
      * <code>CriticalView</code> we have several.  If the squad size changes,
      * we will need to adjust the number of <code>CriticalView</code>s.  This
      * method will create the proper number of <code>CriticalView</code>s.
@@ -150,22 +150,22 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        
+
         // We need to have a CritView for each trooper
         if (critViews.size() != ((BattleArmor)unit).getTroopers()){
             critPanel.removeAll();
             createCriticalViews();
         }
-        
+
         for (CriticalView critView : critViews){
             critView.updateUnit(unit);
             critView.refresh();
         }
         critPanel.validate();
-        
+
         buildView.updateUnit(unit);
         buildView.refresh();
-        
+
         addAllActionListeners();
     }
 
@@ -178,16 +178,13 @@ public class BuildTab extends ITab implements ActionListener {
     }
 
     private void autoFillCrits() {
-
         for (Mounted mount : buildView.getTableModel().getCrits()) {
-            for (int location = BattleArmor.LOC_SQUAD; location < unit.locations(); location++) {
-
+            for (int location = BattleArmor.MOUNT_LOC_BODY; location < unit.locations(); location++) {
                 if (!UnitUtil.isValidLocation(unit, mount.getType(), location)) {
                     continue;
                 }
 
                 try {
-                    getBattleArmor().addEquipment(mount.getType(), location, false);
                     UnitUtil.changeMountStatus(unit, mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
@@ -196,7 +193,6 @@ public class BuildTab extends ITab implements ActionListener {
             }
         }
         refresh.refreshAll();
-
     }
 
     private void resetCrits() {
@@ -204,8 +200,7 @@ public class BuildTab extends ITab implements ActionListener {
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())){
                 continue;
             }
-            mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
-            UnitUtil.changeMountStatus(unit, mount, mount.getLocation(),
+            UnitUtil.changeMountStatus(unit, mount, BattleArmor.MOUNT_LOC_NONE,
                     Entity.LOC_NONE, false);
         }
         refresh.refreshAll();
