@@ -635,21 +635,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         setHeatSinkCombo();
 
-        walkMP.setValue(getMech().getOriginalWalkMP());
-        if ((getJumpJetType() == Mech.JUMP_IMPROVED)
-                || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
-            ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
-                    .getRunMP());
-        } else if (getJumpJetType() == Mech.JUMP_BOOSTER) {
-            ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(20);
-        } else {
-            ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
-                    .getOriginalWalkMP());
-        }
-        if ((Integer) jumpMP.getValue() > (Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum()) {
-            jumpMP.setValue((Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum());
-            UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(), getJumpJetType());
-        }
+        walkMP.setValue(Math.max(1, getMech().getOriginalWalkMP()));
+        refreshJumpMP();
         runMP.setText(getMech().getRunMPasString());
 
         setJumpJetCombo();
@@ -709,35 +696,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 if (combo.equals(cockpitType)) {
                     refreshCockpitType();
                 }
-                int rating = ((Integer) walkMP.getValue())
-                        * ((Integer) weightClass.getValue());
-                if (getMech().isPrimitive()) {
-                    double dRating = ((Integer) walkMP.getValue())
-                            * ((Integer) weightClass.getValue());
-                    dRating *= 1.2;
-                    if ((dRating % 5) != 0) {
-                        dRating = (dRating - (dRating % 5)) + 5;
-                    }
-                    rating = (int) dRating;
-                }
-                if ((rating > 400) && (getMech().getGyroType() == Mech.GYRO_XL)) {
-                    JOptionPane
-                            .showMessageDialog(
-                                    this,
-                                    "That speed would require a large engine, which doesn't fit",
-                                    "Bad Engine", JOptionPane.ERROR_MESSAGE);
-                }
-                if (rating > 500) {
-                    JOptionPane
-                            .showMessageDialog(
-                                    this,
-                                    "That speed would create an engine with a rating over 500.",
-                                    "Bad Engine Rating",
-                                    JOptionPane.ERROR_MESSAGE);
-                } else {
-                    setNewEngine(rating, convertEngineType(engineType
-                            .getSelectedItem().toString()));
-                }
+                resetEngine();
             } else if (combo.equals(armorCombo)) {
                 if (!unit.hasPatchworkArmor()) {
                     UnitUtil.removeISorArmorMounts(unit, false);
@@ -785,21 +744,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 UnitUtil.updateHeatSinks(getMech(), (Integer) heatSinkNumber
                         .getValue(), heatSinkType.getSelectedItem().toString());
             } else if (combo.equals(jjType)) {
-                if (getJumpJetType() == Mech.JUMP_STANDARD) {
-                    // check to make sure we are not over the number of jets
-                    // we are allowed
-                    if (((Integer) jumpMP.getValue()) > getMech()
-                            .getOriginalWalkMP()) {
-                        jumpMP.setValue(getMech().getOriginalWalkMP());
-                    }
-                } else if ((getJumpJetType() == Mech.JUMP_IMPROVED)
-                        || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
-                    if (((Integer) jumpMP.getValue()) > getMech().getRunMP()) {
-                        jumpMP.setValue(getMech().getRunMP());
-                    }
-                }
-                UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(),
-                        getJumpJetType());
+                refreshJumpMP();
             } else if (combo.equals(enhancement)) {
                 UnitUtil.updateEnhancements(getMech(), hasMASC(), hasTSM());
             } else if (combo.equals(techLevel)) {
@@ -949,6 +894,25 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             addAllListeners();
             refresh.refreshAll();
         }
+    }
+
+    public void refreshJumpMP() {
+        // check to make sure we are not over the number of jets
+        // we are allowed
+        if ((getJumpJetType() == Mech.JUMP_IMPROVED)
+                || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
+            ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
+                    .getRunMP());
+        } else if (getJumpJetType() == Mech.JUMP_BOOSTER) {
+            ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(20);
+        } else {
+            ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
+                    .getOriginalWalkMP());
+        }
+        if ((Integer) jumpMP.getValue() > (Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum()) {
+            jumpMP.setValue((Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum());
+        }
+        UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(), getJumpJetType());
     }
 
     public void refreshCockpitType() {
@@ -1906,9 +1870,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             engineType.setSelectedIndex(selEngine);
             if (engineType.getSelectedIndex() == -1) {
                 engineType.setSelectedIndex(0);
-                setNewEngine(getMech().getEngine().getRating(),
-                        convertEngineType(engineType.getSelectedItem()
-                                .toString()));
+                resetEngine();
             }
             setStructureCombo();
             if (structureCombo.getSelectedIndex() == -1) {
@@ -2049,21 +2011,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             JSpinner spinner = (JSpinner) e.getSource();
             removeAllListeners();
             if (spinner.equals(weightClass)) {
-                if (resetEngine()) {
-                    if ((getMech().isSuperHeavy() && ((Integer)weightClass.getValue() <= 100)) || (!getMech().isSuperHeavy() && ((Integer)weightClass.getValue() > 100))) {
-                        // if we switch from being superheavy to not being superheavy,
-                        // remove crits
-                        for (Mounted mount : unit.getEquipment()) {
-                            if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                                UnitUtil.removeCriticals(getMech(), mount);
-                                UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-                            }
+                if ((getMech().isSuperHeavy() && ((Integer)weightClass.getValue() <= 100)) || (!getMech().isSuperHeavy() && ((Integer)weightClass.getValue() > 100))) {
+                    // if we switch from being superheavy to not being superheavy,
+                    // remove crits
+                    for (Mounted mount : unit.getEquipment()) {
+                        if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+                            UnitUtil.removeCriticals(getMech(), mount);
+                            UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                         }
                     }
-                    getMech().setWeight((Integer) weightClass.getValue());
-                    getMech().autoSetInternal();
-                    engineType.setSelectedIndex(engineType.getSelectedIndex());
                 }
+                getMech().setWeight((Integer) weightClass.getValue());
+                getMech().autoSetInternal();
+                resetEngine();
                 populateChoices(true);
             } else if (spinner.equals(walkMP)) {
                 resetEngine();
@@ -2089,49 +2049,56 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private boolean resetEngine() {
         boolean retVal = false;
-        int rating = ((Integer) walkMP.getValue())
-                * ((Integer) weightClass.getValue());
-        if (getMech().isPrimitive()) {
-            double dRating = ((Integer) walkMP.getValue())
+        //do {
+            int rating = ((Integer) walkMP.getValue())
                     * ((Integer) weightClass.getValue());
-            dRating *= 1.2;
-            if ((dRating % 5) != 0) {
-                dRating = (dRating - (dRating % 5)) + 5;
+            if (getMech().isPrimitive()) {
+                double dRating = ((Integer) walkMP.getValue())
+                        * ((Integer) weightClass.getValue());
+                dRating *= 1.2;
+                if ((dRating % 5) != 0) {
+                    dRating = (dRating - (dRating % 5)) + 5;
+                }
+                rating = (int) dRating;
             }
-            rating = (int) dRating;
-        }
-        if ((rating > 400) && (getMech().getGyroType() == Mech.GYRO_XL)) {
-            JOptionPane
-                    .showMessageDialog(
-                            this,
-                            "That speed would require a large engine, which doesn't fit",
-                            "Bad Engine", JOptionPane.ERROR_MESSAGE);
-        }
-        if (rating > 500) {
-            JOptionPane
-                    .showMessageDialog(
-                            this,
-                            "That speed would create an engine with a rating over 500.",
-                            "Bad Engine Rating",
-                            JOptionPane.ERROR_MESSAGE);
-        } else {
-            System.out.println("Clearning engine crits.");
-            getMech().clearEngineCrits();
-            System.out.println("Setting new engine rating.");
-            getMech().setEngine(
-                    new Engine(rating, convertEngineType(engineType
-                            .getSelectedItem().toString()),
-                            clanEngineFlag));
-            getMech().addEngineCrits();
-            System.out.println("Adding engine crits.");
-            int autoSinks = getMech().getEngine()
-                    .getWeightFreeEngineHeatSinks();
-            System.out.println("Updating # engine heat sinks to "
-                    + autoSinks);
-            UnitUtil.updateAutoSinks(getMech(),
-                    (String) heatSinkType.getSelectedItem());
-            retVal = true;
-        }
+            if ((rating > 400) && (getMech().getGyroType() == Mech.GYRO_XL)) {
+                JOptionPane
+                .showMessageDialog(
+                        this,
+                        "That speed would require a large engine, which doesn't fit",
+                        "Bad Engine", JOptionPane.ERROR_MESSAGE);
+            }
+            if (rating > 500) {
+                JOptionPane
+                .showMessageDialog(
+                        this,
+                        "That speed would create an engine with a rating over 500.",
+                        "Bad Engine Rating",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                System.out.println("Clearning engine crits.");
+                getMech().clearEngineCrits();
+                System.out.println("Setting new engine rating.");
+                getMech().setEngine(new Engine(rating,
+                        convertEngineType(engineType.getSelectedItem().toString()),
+                        clanEngineFlag));
+                System.out.println("Adding engine crits.");
+                getMech().addEngineCrits();
+                int autoSinks = getMech().getEngine()
+                        .getWeightFreeEngineHeatSinks();
+                System.out.println("Updating # engine heat sinks to "
+                        + autoSinks);
+                UnitUtil.updateAutoSinks(getMech(),
+                        (String) heatSinkType.getSelectedItem());
+                retVal = true;
+            }
+            // We need a minimum of 1 here...
+            // most useful when we lower tonnage from the default 25 w/out changing settings
+            // as that can return a bad engine
+            /*if (getMech().getOriginalWalkMP() < 1) {
+                walkMP.setValue(((Integer) walkMP.getValue()) + 1);
+            }
+        } while (getMech().getOriginalWalkMP() < 1);*/
         return retVal;
     }
 
@@ -2469,14 +2436,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         era.setEditable(false);
         era.setEnabled(false);
         motiveType.setEnabled(false);
-    }
-
-    private void setNewEngine(int rating, int type) {
-        getMech().clearEngineCrits();
-        getMech().setEngine(new Engine(rating, type, clanEngineFlag));
-        getMech().addEngineCrits();
-        UnitUtil.updateAutoSinks(getMech(),
-                (String) heatSinkType.getSelectedItem());
     }
 
     private void setHeatSinkCombo() {
