@@ -1040,15 +1040,24 @@ public class UnitUtil {
         return false;
     }
 
+    /**
+     * Changes the location for a Mounted instance.  Note: for BattleArmor, this 
+     * effects which suit the equipment is placed on (as that is what 
+     * Mounted.location means for BA), but not where on the suit
+     * it's located (ie, BAMountLocation isn't effected).  BattleArmor should 
+     * change this outside of this method.
+     * 
+     * @param unit
+     * @param eq
+     * @param location
+     * @param secondaryLocation
+     * @param rear
+     */
     public static void changeMountStatus(Entity unit, Mounted eq, int location,
             int secondaryLocation, boolean rear) {
-        if (unit instanceof BattleArmor) {
-            eq.setBaMountLoc(location);
-        } else {
-            eq.setLocation(location, rear);
-            eq.setSecondLocation(secondaryLocation, rear);
-            eq.setSplit(secondaryLocation > -1);
-        }
+        eq.setLocation(location, rear);
+        eq.setSecondLocation(secondaryLocation, rear);
+        eq.setSplit(secondaryLocation > -1);
     }
 
     public static boolean hasTargComp(Entity unit) {

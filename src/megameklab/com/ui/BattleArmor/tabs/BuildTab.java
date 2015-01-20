@@ -31,8 +31,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 
 import megamek.common.BattleArmor;
-import megamek.common.Entity;
 import megamek.common.Mounted;
+import megameklab.com.ui.BattleArmor.CriticalSuit;
 import megameklab.com.ui.BattleArmor.views.BuildView;
 import megameklab.com.ui.BattleArmor.views.CriticalView;
 import megameklab.com.util.ITab;
@@ -178,17 +178,24 @@ public class BuildTab extends ITab implements ActionListener {
     }
 
     private void autoFillCrits() {
+        // BattleArmor doesn't track crits implicitly, so they need to be
+        // tracked explicitly
+        CriticalSuit crits = new CriticalSuit(getBattleArmor());
         for (Mounted mount : buildView.getTableModel().getCrits()) {
-            for (int location = BattleArmor.MOUNT_LOC_BODY; location < unit.locations(); location++) {
+            for (int location = BattleArmor.MOUNT_LOC_BODY; 
+                    location < BattleArmor.MOUNT_NUM_LOCS; location++) {
                 if (!UnitUtil.isValidLocation(unit, mount.getType(), location)) {
                     continue;
                 }
-
-                try {
-                    UnitUtil.changeMountStatus(unit, mount, location, Entity.LOC_NONE, false);
+                // Don't assign change equipment that's already placed
+                if (mount.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE) {
+                    continue;
+                }
+                if (crits.canAddMounted(location, mount)) {
+                    mount.setBaMountLoc(location);
+                    // Just added for record keeping
+                    crits.addMounted(location, mount);
                     break;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
             }
         }
@@ -200,8 +207,7 @@ public class BuildTab extends ITab implements ActionListener {
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())){
                 continue;
             }
-            UnitUtil.changeMountStatus(unit, mount, BattleArmor.MOUNT_LOC_NONE,
-                    Entity.LOC_NONE, false);
+            mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
         }
         refresh.refreshAll();
     }
