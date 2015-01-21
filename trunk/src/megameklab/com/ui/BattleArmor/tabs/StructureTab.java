@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -1099,65 +1100,68 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         } else if (e.getSource() instanceof JCheckBox){
             JCheckBox chkBox = (JCheckBox) e.getSource();
             if (chkBox.isSelected()){
-                EquipmentType eType;
-                Mounted newMount = null;                
+                EquipmentType eType = null;
+                int baMountLoc = BattleArmor.MOUNT_LOC_NONE;
+                
                 if (chkBox.equals(chkJumpBooster)){
                     if (unit.isClan()){
                         eType = EquipmentType.get("CLBAJumpBooster");
                     } else {
                         eType = EquipmentType.get("ISBAJumpBooster");
                     }
-                    newMount = new Mounted(unit, eType);
-                    newMount.setBaMountLoc(BattleArmor.MOUNT_LOC_BODY);
+                    baMountLoc = BattleArmor.MOUNT_LOC_BODY;
                 } else if (chkBox.equals(chkMechJumpBooster)){
                     if (unit.isClan()){
                         eType = EquipmentType.get("CLMechanicalJumpBooster");
                     } else {
                         eType = EquipmentType.get("ISMechanicalJumpBooster");
                     }
-                    newMount = new Mounted(unit, eType);
-                    newMount.setBaMountLoc(BattleArmor.MOUNT_LOC_BODY);
+                    baMountLoc = BattleArmor.MOUNT_LOC_BODY;
                 } else if (chkBox.equals(chkMyomerBooster)){
                     eType = EquipmentType.get("CLBAMyomerBooster");
-                    newMount = new Mounted(unit, eType);
-                    newMount.setBaMountLoc(BattleArmor.MOUNT_LOC_BODY);
+                    baMountLoc = BattleArmor.MOUNT_LOC_NONE;
                 } else if (chkBox.equals(chkPartialWing)){
-                        eType = EquipmentType.get("BAPartialWing");
-                    newMount = new Mounted(unit, eType);
-                    newMount.setBaMountLoc(BattleArmor.MOUNT_LOC_BODY);
+                    eType = EquipmentType.get("BAPartialWing");
+                    baMountLoc = BattleArmor.MOUNT_LOC_BODY;
                 }
                 try {
-                    if (newMount != null){
-                        getBattleArmor().addEquipment(newMount, 
-                                BattleArmor.LOC_SQUAD, false);
+                    if (eType != null){
+                        int numTimesToAdd = 1;
+                        // Spreadable equipment needs to have a Mounted entry
+                        // for each critical
+                        if (eType.isSpreadable()) {
+                            numTimesToAdd = eType.getCriticals(unit);
+                        } 
+                        for (int i = 0; i < numTimesToAdd; i++) {
+                            Mounted newMount = new Mounted(unit, eType);
+                            newMount.setBaMountLoc(baMountLoc);
+                            getBattleArmor().addEquipment(newMount,
+                                    BattleArmor.LOC_SQUAD, false);
+                        }
                     }
                 } catch (LocationFullException exc){
                     // Shouldn't happen with BA
                     exc.printStackTrace();
                 }
             } else {
-                Mounted mount = null;
+                ArrayList<Mounted> mounts = new ArrayList<Mounted>();
                 for (Mounted m : unit.getMisc()){
                     if (chkBox.equals(chkJumpBooster) 
                             && m.getType().hasFlag(MiscType.F_JUMP_BOOSTER)){
-                        mount = m;
-                        break;
+                        mounts.add(m);
                     } else if (chkBox.equals(chkMechJumpBooster) 
                             && m.getType().hasFlag(
                                     MiscType.F_MECHANICAL_JUMP_BOOSTER)){
-                        mount = m;
-                        break;
+                        mounts.add(m);
                     } else if (chkBox.equals(chkMyomerBooster) 
                             && m.getType().hasFlag(MiscType.F_MASC)){
-                        mount = m;
-                        break;
+                        mounts.add(m);
                     } else if (chkBox.equals(chkPartialWing) 
                             && m.getType().hasFlag(MiscType.F_PARTIAL_WING)){
-                        mount = m;
-                        break;
+                        mounts.add(m);
                     }
                 }
-                if (mount != null){
+                for (Mounted mount : mounts) {
                     UnitUtil.removeMounted(unit, mount);
                 }
             }
