@@ -11,6 +11,7 @@ v0.1.36-dev (SVN)
 + Bug [#145]: Auto fill BA armor slots doubles the number of armor slots instead
 + Bug [#155]: Movement spinner not working when tonnage changed
 + Bug [#160]: MML can no longer add equipment to the arms of Battle Armor
++ Updates to handle BA Myomer boosters being spreadable equipment
 
 v0.1.35 (2015-01-01 21:05 UTC)
 + Bug: SpinnerNumberModel IllegalArgumentException for ASF on loading when armor

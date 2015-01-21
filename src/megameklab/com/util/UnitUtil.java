@@ -128,8 +128,6 @@ public class UnitUtil {
         return (eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
                         || eq.hasFlag(MiscType.F_BA_MANIPULATOR)
-                        || (eq.hasFlag(MiscType.F_MASC)
-                                && eq.hasFlag(MiscType.F_BA_EQUIPMENT))
                         || eq.hasFlag(MiscType.F_PARTIAL_WING)
                         || eq.hasFlag(MiscType.F_NULLSIG)
                         || eq.hasFlag(MiscType.F_VOIDSIG)
