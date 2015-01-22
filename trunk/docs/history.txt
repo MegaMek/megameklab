@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.37-dev (SVN)
+
 v0.1.36 (2015-01-22 21:40 UTC)
 + Bug: JumpJet type stuck on Improved JJ
 + Bug: JumpJets were generating extra invalid criticals
