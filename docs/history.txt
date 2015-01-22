@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.1.36-dev (SVN)
+v0.1.36 (2015-01-22 21:40 UTC)
 + Bug: JumpJet type stuck on Improved JJ
 + Bug: JumpJets were generating extra invalid criticals
 + Feature: Added Validation and Fluff Image buttons to Vehicle editor, and enabled them for Infantry
