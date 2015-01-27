@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.37-dev (SVN)
++ Bug [#162]: Standard Jump Jets not being read or added correctly
 
 v0.1.36 (2015-01-22 21:40 UTC)
 + Bug: JumpJet type stuck on Improved JJ

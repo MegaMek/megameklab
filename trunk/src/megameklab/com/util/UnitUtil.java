@@ -830,7 +830,8 @@ public class UnitUtil {
      */
     public static void removeJumpJets(Mech unit, int number) {
         Vector<Mounted> toRemove = new Vector<Mounted>();
-        for (Mounted eq : unit.getMisc()) {
+        ArrayList<Mounted> misceq = unit.getMisc();
+        for (Mounted eq : misceq) {
             if (UnitUtil.isJumpJet(eq)) {
                 toRemove.add(eq);
                 if (toRemove.size() >= number) {
@@ -852,13 +853,16 @@ public class UnitUtil {
      */
     public static void updateJumpJets(Mech unit, int jjAmount, int jjType) {
         unit.setOriginalJumpMP(jjAmount);
-        if (jjType == unit.getJumpType()) {
+        int ctype = unit.getJumpType();
+        if (jjType == ctype) {
             int currentJJ = unit.getJumpMP();
             if (jjAmount < currentJJ) {
                 UnitUtil.removeJumpJets(unit, currentJJ - jjAmount);
                 return;
             } else if (jjAmount > currentJJ) {
                 jjAmount = jjAmount - currentJJ;
+            } else {
+                return; // No change, get the fuck outta here!
             }
         } else {
             UnitUtil.removeJumpJets(unit, unit.getJumpMP());
@@ -1039,12 +1043,12 @@ public class UnitUtil {
     }
 
     /**
-     * Changes the location for a Mounted instance.  Note: for BattleArmor, this 
-     * effects which suit the equipment is placed on (as that is what 
+     * Changes the location for a Mounted instance.  Note: for BattleArmor, this
+     * effects which suit the equipment is placed on (as that is what
      * Mounted.location means for BA), but not where on the suit
-     * it's located (ie, BAMountLocation isn't effected).  BattleArmor should 
+     * it's located (ie, BAMountLocation isn't effected).  BattleArmor should
      * change this outside of this method.
-     * 
+     *
      * @param unit
      * @param eq
      * @param location

@@ -899,6 +899,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     public void refreshJumpMP() {
         // check to make sure we are not over the number of jets
         // we are allowed
+        jumpMP.setValue(getMech().getOriginalJumpMP());
         if ((getJumpJetType() == Mech.JUMP_IMPROVED)
                 || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
             ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getMech()
