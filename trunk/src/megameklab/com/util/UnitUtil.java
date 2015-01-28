@@ -1035,8 +1035,8 @@ public class UnitUtil {
     public static boolean isBAMultiMount(EquipmentType equip) {
         if ((equip instanceof WeaponType)
                 && (equip.hasFlag(WeaponType.F_TASER)
-                        || ((WeaponType)equip).getAmmoType()
-                            == AmmoType.T_NARC)){
+                        || (((WeaponType)equip).getAmmoType()
+                            == AmmoType.T_NARC))){
             return true;
         }
         return false;
@@ -1046,7 +1046,7 @@ public class UnitUtil {
      * Changes the location for a Mounted instance.  Note: for BattleArmor, this
      * effects which suit the equipment is placed on (as that is what
      * Mounted.location means for BA), but not where on the suit
-     * it's located (ie, BAMountLocation isn't effected).  BattleArmor should
+     * it's located (ie, BAMountLocation isn't affected).  BattleArmor should
      * change this outside of this method.
      *
      * @param unit
@@ -2644,7 +2644,7 @@ public class UnitUtil {
 
         for (int pos = 0; pos < unit.getEquipment().size();) {
             Mounted mount = unit.getEquipment().get(pos);
-            if (mount.getType() instanceof EquipmentType
+            if ((mount.getType() instanceof EquipmentType)
                     && mountList.contains(mount.getType().getInternalName())) {
                 unit.getEquipment().remove(pos);
             } else {
