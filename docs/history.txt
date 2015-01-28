@@ -1,7 +1,8 @@
 VERSION HISTORY:
 ----------------
-v0.1.37-dev (SVN)
+v0.1.37 (2015-01-28 17:45 UTC)
 + Bug [#162]: Standard Jump Jets not being read or added correctly
++ Updated the MegaMek.jar to 0.41.1
 
 v0.1.36 (2015-01-22 21:40 UTC)
 + Bug: JumpJet type stuck on Improved JJ
