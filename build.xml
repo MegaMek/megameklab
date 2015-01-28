@@ -79,8 +79,8 @@
 			deprecation="true"
 			destdir="${build}"
 			srcdir="${src}"
-			target="1.6"
-			source="1.6"
+			target="1.7"
+			source="1.7"
             fork="true"
             memoryinitialsize="256m"
             memorymaximumsize="1024m"
@@ -152,9 +152,9 @@
 			jarfile="${megameklab}"
 			manifest="manifest.txt"
 		>
-			
+
 	          <fileset dir="${splashdir}" includes="**/*.gif **/*.jpg" />
 		</jar>
 	</target>
-	
+
 </project>
