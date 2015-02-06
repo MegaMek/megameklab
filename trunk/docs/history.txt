@@ -18,6 +18,7 @@ v0.1.36 (2015-01-22 21:40 UTC)
 + Bug [#155]: Movement spinner not working when tonnage changed
 + Bug [#160]: MML can no longer add equipment to the arms of Battle Armor
 + Updates to handle BA Myomer boosters being spreadable equipment
++ Bug [#164]: ASF creator has a bug with speeds
 
 v0.1.35 (2015-01-01 21:05 UTC)
 + Bug: SpinnerNumberModel IllegalArgumentException for ASF on loading when armor
