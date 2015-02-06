@@ -1453,15 +1453,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             removeAllListeners();
             if (spinner.equals(weightClass)) {
                 setAeroStructuralIntegrity();
-                if (refreshEngine()) {
+                if (refreshEngine(false)) {
                     getAero().setWeight((Integer) weightClass.getValue());
                     getAero().autoSetInternal();
+                    refreshEngine(true);
                     engineType.setSelectedIndex(engineType.getSelectedIndex());
                 }
                 populateChoices(true);
             } else if (spinner.equals(safeThrust)) {
                 setAeroStructuralIntegrity();
-                refreshEngine();
+                refreshEngine(true);
             } else if (spinner.equals(fuel)) {
                 getAero().setFuelTonnage(((Double)fuel.getValue()).floatValue());
             } else if (spinner.equals(armorTonnage)) {
@@ -1478,8 +1479,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
     }
 
-    private boolean refreshEngine() {
-        boolean retVal = false;
+    /**
+     * Calculate the engine rating for the currently selected weight and safe
+     * thrust value and return whether that engine is valid.  If the setEngine
+     * flag is turned on, it will also set the engine for the unit.
+     * 
+     * @param setEngine  Determines whether the new engine is set or not.
+     * @return
+     */
+    private boolean refreshEngine(boolean setEngine) {
+        boolean retVal = true;
         int rating = TestAero.calculateEngineRating(
                 getAero(),
                 (Integer) weightClass.getValue(),
@@ -1493,13 +1502,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             TestAero.MAX_ENGINE_RATING + ".",
                             "Bad Engine Rating",
                             JOptionPane.ERROR_MESSAGE);
-        } else {
+            retVal = false;
+        } else if (setEngine){
             System.out.println("Setting new engine rating.");
             getAero().setEngine(
                     new Engine(rating, convertEngineType(engineType
                             .getSelectedItem().toString()),
                             clanEngineFlag));
-            retVal = true;
         }
         return retVal;
     }
