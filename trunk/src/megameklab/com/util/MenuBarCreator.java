@@ -949,7 +949,20 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
         CConfig.updateSaveFiles("Reset Unit");
         CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
-        parentFrame.createNewUnit(unit instanceof Tank?Entity.ETYPE_TANK:Entity.ETYPE_BIPED_MECH, false);
+        if (unit instanceof Tank) {
+            parentFrame.createNewUnit(Entity.ETYPE_TANK, false);
+        } else if (unit instanceof Mech) {
+            parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, false);
+        } else if (unit instanceof Aero) {
+            parentFrame.createNewUnit(Entity.ETYPE_AERO, false);
+        } else if (unit instanceof BattleArmor) {
+            parentFrame.createNewUnit(Entity.ETYPE_BATTLEARMOR, false);
+        } else if (unit instanceof Infantry) {
+            parentFrame.createNewUnit(Entity.ETYPE_INFANTRY, false);
+        } else {
+            System.out.println("util.MenuBarCreatoer: " +
+            		"Received unknown entityType!");
+        }
         unit = parentFrame.getEntity();
         setVisible(true);
         reload();
