@@ -65,6 +65,7 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
+import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
 import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.AmmoWeapon;
@@ -2801,8 +2802,13 @@ public class UnitUtil {
             testEntity = new TestMech((Mech) unit, entityVerifier.mechOption,
                     null);
         } else if (unit instanceof Tank) {
-            testEntity = new TestTank((Tank) unit, entityVerifier.tankOption,
-                    null);
+            if (unit.isSupportVehicle()) {
+                testEntity = new TestSupportVehicle((Tank) unit,
+                        entityVerifier.tankOption, null);
+            } else {
+                testEntity = new TestTank((Tank) unit,
+                        entityVerifier.tankOption, null);
+            }
         } else if ((unit.getEntityType() == Entity.ETYPE_AERO)
                 && (unit.getEntityType() !=
                 Entity.ETYPE_DROPSHIP)
