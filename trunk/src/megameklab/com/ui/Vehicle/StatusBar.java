@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 
 import megamek.common.Tank;
 import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
@@ -66,7 +67,13 @@ public class StatusBar extends ITab {
         this.unit = unit;
 
         formatter = new DecimalFormat();
-        testEntity = new TestTank(unit, entityVerifier.mechOption, null);
+        if (unit.isSupportVehicle()) {
+            testEntity = new TestSupportVehicle((Tank) unit,
+                    entityVerifier.tankOption, null);
+        } else {
+            testEntity = new TestTank((Tank) unit, entityVerifier.tankOption,
+                    null);
+        }
         btnValidate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UnitUtil.showValidation(getTank(), getParentFrame());
@@ -149,7 +156,13 @@ public class StatusBar extends ITab {
         float currentTonnage;
         int bv = unit.calculateBattleValue();
 
-        testEntity = new TestTank((Tank) unit, entityVerifier.mechOption, null);
+        if (unit.isSupportVehicle()) {
+            testEntity = new TestSupportVehicle((Tank) unit,
+                    entityVerifier.tankOption, null);
+        } else {
+            testEntity = new TestTank((Tank) unit, entityVerifier.tankOption,
+                    null);
+        }
 
         currentTonnage = testEntity.calculateWeight();
 
