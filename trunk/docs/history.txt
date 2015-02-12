@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.39-dev (SVN)
+
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
 + Bug: Reset Current Unit menu item only works for Tanks and Mechs
