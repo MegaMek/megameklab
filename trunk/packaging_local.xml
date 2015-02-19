@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <!-- Author: Jay Lawson -->
 <!-- This is a packaging build file for MegaMekLab that will package      -->
-<!-- the following OS-specific releases.                                  -->       
+<!-- the following OS-specific releases.                                  -->
 <!--     a) An OS X bundled release					                      -->
 <!--     b) A Windows release with the EXE file using launch4j            -->
 <!--     c) A "unix" release containing only jars                         -->
-<!--     d) A source-file only release to comply with GPL                 --> 
+<!--     d) A source-file only release to comply with GPL                 -->
 <!-- Unlike the packaging routine for MHQ, we will not package a separate -->
 <!-- executable MegaMek copy in the OSX and Windows version, but rather   -->
 <!-- "bundle" it (and TinyXML.jar) into the MML.jar. This is              -->
 <!-- to discourage users from trying to "update" their MM.jar which       -->
 <!-- can cause problems. So The MML executable can still be put into a    -->
 <!-- megamek directory to take advantage of existing mechfiles, fluff     -->
-<!-- images and the like, but it will not utilize the MM.jar that is      --> 
+<!-- images and the like, but it will not utilize the MM.jar that is      -->
 <!-- contained in that directory.                                         -->
 
 <project default="release" name="MegaMekLab" basedir=".">
@@ -30,7 +30,7 @@
 	<property name="localdir" value="localdev" />
 	<property name="util" value="packaging_utils" />
     <property name="confdir" value="mmconf" />
-	
+
 	<!-- same as builddir but under svn -->
 	<property name="localbuilddir" value="${localdir}/${builddir}" />
 
@@ -47,7 +47,7 @@
 
 	<!-- This is the relative path to the 'data' directory -->
 	<property name="dataclasspath" value="." />
-	
+
 	<condition property="isOsUnixLike">
 		<os family="unix" />
 	</condition>
@@ -55,7 +55,7 @@
 	<condition property="isOsWindows">
 		<os family="windows" />
 	</condition>
-	
+
 	<condition property="isOsUnixNotMac">
 		<and>
 			<os family="unix" />
@@ -64,7 +64,7 @@
 			</not>
 		</and>
 	</condition>
-	
+
 	<condition property="isOsMac">
 		<os family="mac" />
 	</condition>
@@ -93,16 +93,16 @@
 	    <property name="nixdist" value="${project.name}-${version}" />
 	    <property name="srcdist" value="${project.name}-${version}-source" />
 	</target>
-	
+
 	<!-- following localdev-* tasks get, build & package the current version from local sources -->
 	<target name="localdev-get" depends="localdev-init" description="get the local source">
-		<copy todir="${localdir}" >  
+		<copy todir="${localdir}" >
 			<fileset dir="${basedir}">
 				<exclude name="${localdir}" />
 			</fileset>
 		</copy>
 	</target>
-	
+
 	<target name="localdev-build" depends="localdev-get" description="compile project from local source and generate JAR file" >
 		<mkdir dir="${localbuilddir}" />
 		<!-- compile -->
@@ -120,20 +120,20 @@
 		    <zipgroupfileset dir="${localdir}/${libdir}" includes="*.jar"/>
 		    <zipgroupfileset dir="${localdir}" includes="MegaMek.jar"/>
 		    <manifest>
-		    	<attribute name="Main-Class" value="megameklab.com.MegaMekLab"/> 
+		    	<attribute name="Main-Class" value="megameklab.com.MegaMekLab"/>
 		    </manifest>
 		</jar>
-		
+
 		<!-- Ensure that the log directory exists. -->
 		<mkdir dir="${localdir}/${logdir}" />
-		<touch file="${localdir}/${timestampfile}" />	
+		<touch file="${localdir}/${timestampfile}" />
 	</target>
-			
+
 	<target name="localdev-clean" description="remove the local source build directory">
 		<delete dir="${localbuilddir}" />
         <delete dir="${localdir}" />
 	</target>
-	
+
 	<target name="mac-bundle" description="Bundle the project built from local source into an Mac OSX distribution">
 		<mkdir dir="${osxdist}" />
 		<copy todir="${osxdist}">
@@ -154,30 +154,30 @@
 		<copy file="${util}/JavaApplicationStub" todir="${osxdist}/MegaMekLab.app/Contents/MacOS/"/>
 		<move file="${osxdist}/MegaMekLab.jar" todir="${osxdist}/MegaMekLab.app/Contents/Resources/Java/" />
 	</target>
-	
+
 	<!-- Replace actual stubs with symlinks on mac systems -->
 	<target name="mac-stub" if="isOsMac" description="Create a dmg file from the OS X distribution (NOTE: only works on OSX)">
-		<delete file="${osxdist}/MegaMekLab.app/Contents/MacOS/JavaApplicationStub" />
+		<!-- <delete file="${osxdist}/MegaMekLab.app/Contents/MacOS/JavaApplicationStub" />
 		<exec executable="ln">
 			<arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub" />
 			<arg value="${osxdist}/MegaMekLab.app/Contents/MacOS/JavaApplicationStub" />
-		</exec>
+		</exec> -->
 	</target>
-			
+
 	<target name="mac-zip">
 	    <tar destfile="${osxdist}.tar.bz2" compression="bzip2" longfile="gnu">
 	    	<tarfileset dir="${osxdist}" mode="755" />
 	    </tar>
 	</target>
-	
+
 	<target name="mac-tar" depends="mac-stub,mac-zip" description="Create a compressed tar file of the OS X distribution"/>
-	
+
 	<target name="mac-clean">
 		<delete dir="${osxdist}" />
 	</target>
-	
+
 	<target name="mac-package" depends="mac-bundle, mac-tar, mac-clean" description="Package a Mac OS X distribution of the project built from local source" />
-	
+
 	<target name="nix-bundle" description="Bundle the project built from local source into a unix distribution">
 		<mkdir dir="${nixdist}" />
 		<mkdir dir="${nixdist}/${nixdist}" />
@@ -191,22 +191,22 @@
 			</fileset>
 		</copy>
 	</target>
-	
+
 	<target name="nix-tar" description="Create a compressed tar file of the unix distribution">
 		<tar destfile="${nixdist}.tar.gz" basedir="${nixdist}" compression="gzip" longfile="gnu" />
 	</target>
-	
+
 	<target name="nix-clean">
 		<delete dir="${nixdist}" />
 	</target>
-		
+
 	<target name="nix-package" depends="nix-bundle, nix-tar, nix-clean" description="Package a Unix distribution of the project built from local source"/>
-	
+
 	<!-- Produce an EXE file -->
 	<target name="exe" description="Generate an EXE wrappers for MegaMekLab.jar">
 		<launch4j configFile="${util}/megameklab.4j_local.xml" />
 	</target>
-	
+
 	<target name="win-bundle" depends="exe" description="Bundle the project built from local source into a Windows distribution">
 		<mkdir dir="${windist}" />
 		<copy todir="${windist}">
@@ -220,17 +220,17 @@
 		</copy>
 		<copy file="${util}/megameklab.l4j.ini" todir="${windist}"/>
 	</target>
-	
+
 	<target name="win-zip" description="Create a zipfile of the Windows distribution">
 		<zip zipfile="${basedir}/${windist}.zip" basedir="${windist}"  />
 	</target>
-		
+
 	<target name="win-clean">
 		<delete dir="${windist}" />
 	</target>
-			
+
 	<target name="win-package" depends="win-bundle, win-zip, win-clean" description="Package a Windows distribution of the project built from local source"/>
-	
+
 	<target name="source-package" description="Package a source-only distribution of the project built from local source">
 		<mkdir dir="${srcdist}" />
 		<mkdir dir="${srcdist}/${srcdist}" />
@@ -245,7 +245,15 @@
 		</tar>
         <delete dir="${srcdist}" />
 	</target>
-	
+
 	<target name="release" depends="localdev-build, mac-package, nix-package, win-package, source-package, localdev-clean" description="Build the project from local source and package it as Windows, Mac, Unix, and source-only" />
-	
+
+    <target name="mac-release" depends="localdev-build, mac-package, localdev-clean" description="Build the project from local source and package it as Mac" />
+
+    <target name="win-release" depends="localdev-build, win-package, localdev-clean" description="Build the project from local source and package it as Windows" />
+
+    <target name="nix-release" depends="localdev-build, nix-package, localdev-clean" description="Build the project from local source and package it as Unix" />
+
+    <target name="src-release" depends="localdev-build, source-package, localdev-clean" description="Build the project from local source and package it as source-only" />
+
 </project>
