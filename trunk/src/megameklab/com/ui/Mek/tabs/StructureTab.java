@@ -97,6 +97,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     String[] isSuperHeavyEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINELIGHT,
             ENGINECOMPACT, ENGINEXXL };
     private int clanEngineFlag = 0;
+    private int superHeavyEngineFlag = 0;
 
     JPanel panInfo;
     JPanel panChassis;
@@ -911,7 +912,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     .getOriginalWalkMP());
         }
         if ((Integer) jumpMP.getValue() > (Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum()) {
-            jumpMP.setValue((Integer)((SpinnerNumberModel) jumpMP.getModel()).getMaximum());
+            jumpMP.setValue(((SpinnerNumberModel) jumpMP.getModel()).getMaximum());
         }
         UnitUtil.updateJumpJets(getMech(), (Integer) jumpMP.getValue(), getJumpJetType());
     }
@@ -1509,11 +1510,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     engineCount = isIndustrialEngineTypes.length;
                     if (getMech().isSuperHeavy()) {
                         engineCount = 1;
+                        superHeavyEngineFlag = Engine.SUPERHEAVY_ENGINE;
+                    } else {
+                        superHeavyEngineFlag = 0;
                     }
                 } else {
                     if (getMech().isSuperHeavy()) {
                         engineList = isSuperHeavyEngineTypes;
                         engineCount = isSuperHeavyEngineTypes.length;
+                        superHeavyEngineFlag = Engine.SUPERHEAVY_ENGINE;
                         switch (getMech().getTechLevel()) {
                             case TechConstants.T_IS_ADVANCED:
                                 engineCount = isSuperHeavyEngineTypes.length - 1;
@@ -1524,6 +1529,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                 break;
                         }
                     } else {
+                        superHeavyEngineFlag = 0;
                         engineList = isEngineTypes;
                         switch (getMech().getTechLevel()) {
                             case TechConstants.T_INTRO_BOXSET:
@@ -2082,7 +2088,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 System.out.println("Setting new engine rating.");
                 getMech().setEngine(new Engine(rating,
                         convertEngineType(engineType.getSelectedItem().toString()),
-                        clanEngineFlag));
+                        clanEngineFlag|superHeavyEngineFlag));
                 System.out.println("Adding engine crits.");
                 getMech().addEngineCrits();
                 int autoSinks = getMech().getEngine()
