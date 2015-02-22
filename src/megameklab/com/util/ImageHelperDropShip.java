@@ -147,11 +147,7 @@ public class ImageHelperDropShip {
 
             hasSubCapital = true;
 
-            for (EquipmentInfo eqi : eqVector) {
-
-                weaponCount+=2;
-
-            }
+            weaponCount += (2*eqVector.size());
         }
 
         for (int pos = Aero.LOC_NOSE; pos <= Aero.LOC_WINGS; pos++) {
