@@ -118,9 +118,9 @@ public class ImageHelperDropShip {
         g2d.drawString("O", width, height);
     }
 
-    public static void drawDropshipISPip(Graphics2D g2d, int width, int height) {
-        Dimension circle = new Dimension(7, 7);
-        Dimension fillCircle = new Dimension(5, 5);
+    public static void drawDropshipISPip(Graphics2D g2d, int width, int height, int circleSize, int fillCircleSize) {
+        Dimension circle = new Dimension(circleSize, circleSize);
+        Dimension fillCircle = new Dimension(fillCircleSize, fillCircleSize);
         g2d.setColor(Color.black);
         g2d.fillOval(width, height, circle.width, circle.height);
         g2d.setColor(Color.white);
@@ -149,24 +149,8 @@ public class ImageHelperDropShip {
 
             for (EquipmentInfo eqi : eqVector) {
 
-                weaponCount++;
-                if (eqi.isWeapon) {
-                    if (eqi.isMML) {
-                        weaponCount++;
-                    } else if (eqi.isATM) {
-                        weaponCount++;
-                    } else if (eqi.hasArtemis || eqi.hasArtemisV) {
-                        weaponCount++;
-                    }
-                    /*
-                     * else { if (ImageHelper.getStringWidth(g2d,
-                     * eqi.damage.trim(), font) > 22) { weaponCount++; } }
-                     */
+                weaponCount+=2;
 
-                    if (eqi.hasAmmo) {
-                        weaponCount++;
-                    }
-                }
             }
         }
 
@@ -181,25 +165,15 @@ public class ImageHelperDropShip {
 
             for (EquipmentInfo eqi : eqVector) {
 
-                weaponCount++;
+                weaponCount+=2;
                 if (eqi.isWeapon) {
-                    if (eqi.isMML) {
-                        weaponCount++;
-                    } else if (eqi.isATM) {
-                        weaponCount++;
-                    } else if (eqi.hasArtemis || eqi.hasArtemisV) {
-                        weaponCount++;
-                    } else if (eqi.isAR10) {
+                    if (eqi.isAR10) {
                         weaponCount += eqi.ar10AmmoTypes;
                     }
                     /*
                      * else { if (ImageHelper.getStringWidth(g2d,
                      * eqi.damage.trim(), font) > 22) { weaponCount++; } }
                      */
-
-                    if (eqi.hasAmmo) {
-                        weaponCount++;
-                    }
                 }
             }
         }
@@ -234,7 +208,7 @@ public class ImageHelperDropShip {
         int nameSize = 65;
         float linePoint = 210f;
         float lineFeed = 6.7f;
-        float maxHeight = 155f;
+        float maxHeight = 140f;
         float stringHeight = 0;
         float fontSize = 7.0f;
         boolean newLineNeeded = false;
@@ -1104,14 +1078,14 @@ public class ImageHelperDropShip {
     }
 
     static public void printISPoints(Graphics2D g2d,
-            Vector<float[]> pipPlotter, float totalArmor) {
+            Vector<float[]> pipPlotter, float totalArmor, int circleSize, int fillCircleSize) {
         pipPlotter.trimToSize();
         float pipSpace = 1;
         for (float pos = 0; pos < pipPlotter.size(); pos += pipSpace) {
             int currentPip = (int) pos;
             ImageHelperDropShip.drawDropshipISPip(g2d,
                     (int) pipPlotter.get(currentPip)[0],
-                    (int) pipPlotter.get(currentPip)[1]);
+                    (int) pipPlotter.get(currentPip)[1], circleSize, fillCircleSize);
             if (--totalArmor <= 0) {
                 return;
             }

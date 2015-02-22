@@ -552,7 +552,7 @@ public class PrintAerodyne implements Printable {
 
         for (int pos = 0; pos < totalArmor; pos++) {
             ImageHelperDropShip.drawDropshipISPip(g2d, pipPlotter.get(pos)[0],
-                    pipPlotter.get(pos)[1]);
+                    pipPlotter.get(pos)[1], 7, 5);
         }
     }
 
