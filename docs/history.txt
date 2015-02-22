@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 v0.1.39-dev (SVN)
 + Bug: Superheavy mech engines are not reduced in size
++ Fix problems with pocket warship printing
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds

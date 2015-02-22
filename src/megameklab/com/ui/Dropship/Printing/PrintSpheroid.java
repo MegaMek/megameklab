@@ -400,7 +400,7 @@ public class PrintSpheroid implements Printable {
 
             if (lineCount == 36) {
                 pipsPerLine = 15;
-                baseX -= shiftX * 7.5f;
+                baseX += shiftX * 7.5f;
             }
             pointY -= shiftY;
             pointX = baseX;
@@ -508,10 +508,24 @@ public class PrintSpheroid implements Printable {
         float shiftX = 7f;
         float shiftY = 7f;
         int pipsPerLine = 15;
+        int lines = 7;
+        int circleSize = 7;
+        int fillCircleSize = 5;
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(105, 1);
+        if (totalArmor > 105) {
+            baseX = 353;
+            pointX = baseX;
+            pipsPerLine = 19;
+            lines = 8;
+            shiftX = 6f;
+            shiftY = 6f;
+            circleSize = 6;
+            fillCircleSize = 4;
+        }
 
-        for (int lineCount = 1; lineCount <= 6; lineCount++) {
+        Vector<float[]> pipPlotter = new Vector<float[]>(150, 1);
+
+        for (int lineCount = 0; lineCount < lines; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
                 pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
@@ -520,7 +534,7 @@ public class PrintSpheroid implements Printable {
             pointX = baseX;
         }
 
-        ImageHelperDropShip.printISPoints(g2d, pipPlotter, totalArmor);
+        ImageHelperDropShip.printISPoints(g2d, pipPlotter, totalArmor, circleSize, fillCircleSize);
     }
 
     private void printDropshipImage(Graphics2D g2d, Image img) {

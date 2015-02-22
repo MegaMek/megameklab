@@ -369,7 +369,7 @@ public class UnitPrintManager {
         });
         printMenu.add(item);
 
-        item = new JMenuItem("From MUL(Single Unit Per RS)");
+        item = new JMenuItem("From MUL (Single Unit Per RS)");
         item.setMnemonic(KeyEvent.VK_R);
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
