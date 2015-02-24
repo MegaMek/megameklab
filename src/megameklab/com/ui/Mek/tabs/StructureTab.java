@@ -637,10 +637,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setHeatSinkCombo();
 
         walkMP.setValue(Math.max(1, getMech().getOriginalWalkMP()));
+        setJumpJetCombo();
         refreshJumpMP();
         runMP.setText(getMech().getRunMPasString());
-
-        setJumpJetCombo();
 
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
                 .getMaximumArmorTonnage(unit));
