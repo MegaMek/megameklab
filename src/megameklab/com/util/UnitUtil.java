@@ -1160,7 +1160,11 @@ public class UnitUtil {
     public static int getMaximumArmorPoints(Entity unit) {
         int points = 0;
         if (unit instanceof Mech) {
-            points = (unit.getTotalInternal() * 2) + 3;
+            int headPoints = 3;
+            if (((Mech)unit).isSuperHeavy()) {
+                headPoints = 4;
+            }
+            points = (unit.getTotalInternal() * 2) + headPoints;
         } else if (unit instanceof Tank) {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit instanceof BattleArmor) {
@@ -1171,7 +1175,11 @@ public class UnitUtil {
 
     public static int getMaximumArmorPoints(Entity unit, int loc) {
         if ((unit instanceof Mech) && (loc == Mech.LOC_HEAD)) {
-            return 9;
+            if (((Mech) unit).isSuperHeavy()) {
+                return 12;
+            } else {
+                return 9;
+            }
         } else if (unit instanceof Mech) {
             return unit.getInternal(loc) * 2;
         } else if (unit instanceof Tank) {
@@ -1191,7 +1199,13 @@ public class UnitUtil {
             armorPerTon = 8.0;
         }
         if (unit instanceof Mech) {
-            double points = (unit.getTotalInternal() * 2) + 3;
+            double points = (unit.getTotalInternal() * 2);
+            // Add in extra armor points for head
+            if (((Mech) unit).isSuperHeavy()) {
+                points += 4;
+            } else {
+                points += 3;
+            }
             armorWeight = points / armorPerTon;
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         } else if (unit instanceof Tank) {

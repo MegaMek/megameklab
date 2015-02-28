@@ -4,6 +4,7 @@ v0.1.39-dev (SVN)
 + Bug: Superheavy mech engines are not reduced in size
 + Fix problems with pocket warship printing
 + Bug: Problem with loading units with non-standard jump jets
++ Bug [#172]: Super Heavy Mech Armor Allocation error
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
