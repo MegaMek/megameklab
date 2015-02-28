@@ -793,8 +793,12 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         valueCurrentArmor.setText(Integer.toString(armorPoints));
         // Total Possible armor is Internal*2 +3 for the extra 3 armor the head
         // can support.
-        valueMaxArmor
-                .setText(Integer.toString((unit.getTotalOInternal() * 2) + 3));
+        int headArmor = 3;
+        if (getMech().isSuperHeavy()) {
+            headArmor = 4;
+        }
+        valueMaxArmor.setText(Integer.toString((unit.getTotalOInternal() * 2)
+                + headArmor));
         valueWastedArmor.setText(Integer.toString(wastedArmorPoints));
 
         addAllListeners();
@@ -806,7 +810,11 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     public void allocateArmor() {
         double pointsToAllocate = armorPoints;
-        double totalArmor = (unit.getTotalOInternal() * 2) + 3;
+        int headPoints = 3;
+        if (getMech().isSuperHeavy()) {
+            headPoints = 4;
+        }
+        double totalArmor = (unit.getTotalOInternal() * 2) + headPoints;
         if (pointsToAllocate > totalArmor) {
             pointsToAllocate = totalArmor;
         }
@@ -954,7 +962,11 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                 double is = (unit.getInternal(location) * 2);
                 switch (location) {
                     case Mech.LOC_HEAD:
-                        if ((is + 3) > unit.getOArmor(location)) {
+                        int headPoints = 3;
+                        if (getMech().isSuperHeavy()) {
+                            headPoints = 4;
+                        }
+                        if ((is + headPoints) > unit.getOArmor(location)) {
                             toReturn = false;
                         }
                         break;
@@ -1023,7 +1035,11 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     }
 
     public void setArmorPoints(int points) {
-        int maxArmor = (unit.getTotalOInternal() * 2) + 3;
+        int headPoints = 3;
+        if (getMech().isSuperHeavy()) {
+            headPoints = 4;
+        }
+        int maxArmor = (unit.getTotalOInternal() * 2) + headPoints;
         wastedArmorPoints = Math.max(points - maxArmor, 0);
         armorPoints = Math.min(maxArmor, points);
     }
