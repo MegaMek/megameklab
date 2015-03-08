@@ -187,6 +187,22 @@ public class PrintVTOL implements Printable {
         float startLine = 200;
         int lineFeed = 8;
 
+        String techBase = "Inner Sphere";
+
+        if (vtol.isMixedTech()) {
+            if (vtol.isClan()) {
+                techBase = "Mixed Tech (Clan)";
+            } else {
+                techBase = "Mixed Tech (I.S.)";
+            }
+        } else if (vtol.isClan()) {
+            techBase = "Clan";
+        }
+
+        font = UnitUtil.getNewFont(g2d, techBase, false, 52, 8);
+        g2d.setFont(font);
+        g2d.drawString(techBase, 183, 144.5f);
+
         switch (vtol.getTechLevel()) {
 
             case TechConstants.T_INTRO_BOXSET:
@@ -218,18 +234,9 @@ public class PrintVTOL implements Printable {
                 break;
         }
 
-        String techBase = "Inner Sphere";
 
-        if (vtol.isMixedTech()) {
-            if (vtol.isClan()) {
-                techBase = "Mixed Tech (Clan)";
-            } else {
-                techBase = "Mixed Tech (I.S.)";
-            }
-        } else if (vtol.isClan()) {
-            techBase = "Clan";
-        }
-        g2d.drawString(techBase, 183, 144.5f);
+        font = UnitUtil.deriveFont(8.0f);
+        g2d.setFont(font);
 
         if ((vtol.getSource() != null)
                 && (vtol.getSource().trim().length() > 0)) {
@@ -299,7 +306,7 @@ public class PrintVTOL implements Printable {
         // Armor
         Font font = UnitUtil.deriveFont(true, 10.0f);
         g2d.setFont(font);
-        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(vtol), g2d.getFont(), 478, 45);
+        ImageHelper.printCenterString(g2d, ImageHelperVehicle.getVehicleArmorTypeString(vtol), g2d.getFont(), 438, 45);
         //g2d.drawString(ImageHelperVehicle.getVehicleArmorTypeString(vtol), 463,
                 //45);
         font = UnitUtil.deriveFont(true, 9.0f);

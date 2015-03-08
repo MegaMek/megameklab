@@ -567,7 +567,17 @@ public class ImageHelperVehicle {
 
                 String location = tank.getLocationAbbr(pos);
 
+                if (eqi.isSponsonMounted) {
+                    location += "po";
+                }
+                if (eqi.isPintleMounted) {
+                    location = location.substring(1)+"Pi";
+                }
+
+                g2d.setFont(UnitUtil.getNewFont(g2d, location, false, 18, 7));
+
                 g2d.drawString(location, locPoint, linePoint);
+                g2d.setFont(UnitUtil.deriveFont(7));
                 if (eqi.isWeapon) {
                     if (eqi.isMML) {
                         ImageHelper.printCenterString(g2d, "[M,S,C]", font, damagePoint, linePoint);
@@ -689,8 +699,8 @@ public class ImageHelperVehicle {
             g2d.setFont(font);
         }
 
-        ImageHelperVehicle.printLargeVehicleCargo(tank, g2d, linePoint);
-        ImageHelper.printVehicleAmmo(tank, g2d,  yoffset, xoffset);
+        ImageHelperVehicle.printLargeVehicleCargo(tank, g2d, linePoint, xoffset, 0);
+        ImageHelper.printVehicleAmmo(tank, g2d, yoffset, xoffset);
 
     }
 
@@ -1105,7 +1115,7 @@ public class ImageHelperVehicle {
         return returnString.toString();
     }
 
-    public static void printLargeVehicleCargo(Tank tank, Graphics2D g2d, float pointY) {
+    public static void printLargeVehicleCargo(Tank tank, Graphics2D g2d, float pointY, float xoffset, float yoffset) {
 
         float troopspace = tank.getTroopCarryingSpace();
         if ((tank.getTransportBays().size() < 1) && (troopspace == 0)) {
@@ -1118,8 +1128,7 @@ public class ImageHelperVehicle {
         Font font = UnitUtil.deriveFont(true, g2d.getFont().getSize2D());
 
         g2d.setFont(font);
-        pointY += lineFeed;
-        g2d.drawString("Cargo: ", pointX, pointY);
+        g2d.drawString("Cargo: ", pointX+xoffset, pointY+yoffset);
 
         pointY += lineFeed;
 
@@ -1138,12 +1147,12 @@ public class ImageHelperVehicle {
             } else {
                 troopString += " tons)";
             }
-            g2d.drawString(troopString, pointX, pointY);
+            g2d.drawString(troopString, pointX+xoffset, pointY+yoffset);
             pointY += lineFeed;
         }
 
         for (Bay bay : tank.getTransportBays()) {
-            g2d.drawString(ImageHelperVehicle.getBayString(bay), pointX, pointY);
+            g2d.drawString(ImageHelperVehicle.getBayString(bay), pointX+xoffset, pointY+yoffset);
             pointY += lineFeed;
         }
 
