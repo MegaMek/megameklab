@@ -284,9 +284,7 @@ public class StringUtils {
             } else if ((weapon instanceof ISVehicularGrenadeLauncher) || (weapon instanceof CLVehicularGrenadeLauncher)) {
                 info = "[AE,OS]";
             } else {
-                if (UnitUtil.isAMS(weapon)) {
-                    info = "[PD]";
-                } else {
+                if (!UnitUtil.isAMS(weapon)) {
                     info = Integer.toString(weapon.getDamage());
                 }
                 info += " [";
