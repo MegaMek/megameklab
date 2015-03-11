@@ -1914,8 +1914,8 @@ public class PrintLargeSupportVehicle implements Printable {
                 ImageHelper.imageVehicle);
         int width = Math.min(148, img.getWidth(null));
         int height = Math.min(99, img.getHeight(null));
-        int drawingX = 235 + ((148 - width) / 2);
-        int drawingY = 270 + ((99 - height) / 2);
+        int drawingX = (int) (235 + xoffset + ((148 - width) / 2));
+        int drawingY = (int) (270 + yoffset + ((99 - height) / 2));
         g2d.drawImage(img, drawingX, drawingY, width, height, Color.BLACK, null);
     }
 
