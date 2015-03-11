@@ -7,6 +7,9 @@ v0.1.39-dev (SVN)
 + Bug [#172]: Super Heavy Mech Armor Allocation error
 + Bug: Fix problems with sponson turret printing and some alignment stuff on 
     superheavy tanks
++ Bug: large support tank/super heavy tank fluff image printing location wrong
++ Removed Entity instance variable from MenuBarCreator to make sure that always
+    the current MainUI's Entity is used
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds

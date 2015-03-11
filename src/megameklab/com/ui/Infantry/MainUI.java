@@ -56,7 +56,7 @@ public class MainUI extends MegaMekLabMainUI {
         super();
         createNewUnit(Entity.ETYPE_INFANTRY, false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
-        menubarcreator = new MenuBarCreator(entity, this);
+        menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
