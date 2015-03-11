@@ -41,7 +41,6 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     protected Entity entity = null;
 
-
     public MegaMekLabMainUI() {
 
         EquipmentType.initializeTypes();

@@ -63,7 +63,7 @@ public class MainUI extends MegaMekLabMainUI {
         super();
         createNewUnit(Entity.ETYPE_AERO, false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
-        menubarcreator = new MenuBarCreator(entity, this);
+        menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -146,10 +146,6 @@ public class MainUI extends MegaMekLabMainUI {
 
         entity.setChassis("New");
         entity.setModel("Aero");
-        if (menubarcreator != null) {
-            menubarcreator.setUnit(entity);
-        }
-
     }
 
     @Override

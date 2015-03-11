@@ -61,7 +61,7 @@ public class MainUI extends MegaMekLabMainUI {
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewUnit(Entity.ETYPE_BATTLEARMOR, false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
-        menubarcreator = new MenuBarCreator(entity, this);
+        menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -123,9 +123,6 @@ public class MainUI extends MegaMekLabMainUI {
 
         ba.setChassis("New");
         ba.setModel("BattleArmor");
-        if (menubarcreator != null) {
-            menubarcreator.setUnit(ba);
-        }
     }
 
     @Override

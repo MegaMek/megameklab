@@ -65,7 +65,7 @@ public class MainUI extends MegaMekLabMainUI {
         super();
         createNewUnit(Entity.ETYPE_BIPED_MECH, false);
         setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
-        menubarcreator = new MenuBarCreator(entity, this);
+        menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -155,9 +155,6 @@ public class MainUI extends MegaMekLabMainUI {
 
         entity.setChassis("New");
         entity.setModel("Mek");
-        if (menubarcreator != null) {
-            menubarcreator.setUnit(entity);
-        }
 
     }
 
@@ -167,22 +164,22 @@ public class MainUI extends MegaMekLabMainUI {
         boolean isQuad = entity instanceof QuadMech;
         boolean isLAM = entity instanceof LandAirMech;
         boolean isTripod = entity instanceof TripodMech;
-        
+
         // Check to see if the current entity type matches the selected type
-        if (((structureTab.isQuad() && !isQuad) 
+        if (((structureTab.isQuad() && !isQuad)
                     || (!structureTab.isQuad() && isQuad))
-                || ((structureTab.isLAM() && !isLAM) 
+                || ((structureTab.isLAM() && !isLAM)
                         || (!structureTab.isLAM() && isLAM))
-                || ((structureTab.isTripod() && !isTripod) 
+                || ((structureTab.isTripod() && !isTripod)
                         || (!structureTab.isTripod() && isTripod))) {
             // If no match, create a new entity of the right type
             String model = entity.getModel();
             String chassis = entity.getChassis();
             String source = entity.getSource();
-            int year = entity.getYear();            
-            int techLevel = entity.getTechLevel(); 
+            int year = entity.getYear();
+            int techLevel = entity.getTechLevel();
             int mBV = entity.getManualBV();
-            
+
             long eType;
             if (structureTab.isQuad()){
                 eType = Entity.ETYPE_QUAD_MECH;
@@ -193,7 +190,7 @@ public class MainUI extends MegaMekLabMainUI {
             } else {
                 eType = Entity.ETYPE_BIPED_MECH;
             }
-            
+
             createNewUnit(eType, false);
 
             entity.setChassis(chassis);
