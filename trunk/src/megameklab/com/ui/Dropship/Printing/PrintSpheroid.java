@@ -280,7 +280,7 @@ public class PrintSpheroid implements Printable {
                 dropship.getArmor(Aero.LOC_NOSE)), g2d.getFont(), 410, 66);
         ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)",
                 dropship.getThresh(Aero.LOC_RWING),
-                dropship.getArmor(Aero.LOC_RWING)), g2d.getFont(), 550, 225);
+                dropship.getArmor(Aero.LOC_RWING)), g2d.getFont(), 555, 225);
         ImageHelper.printCenterString(g2d, String.format("%1$S (%2$s)",
                 dropship.getThresh(Aero.LOC_LWING),
                 dropship.getArmor(Aero.LOC_LWING)), g2d.getFont(), 260, 223);
@@ -389,18 +389,26 @@ public class PrintSpheroid implements Printable {
         float shiftX = 4f;
         float shiftY = 4f;
         int pipsPerLine = 30;
+        int maxLinesTotal = 46;
+        int maxLinesFullWidth = 36;
+        int pipsPerLineSmallWidth = 15;
+        Vector<float[]> pipPlotter = new Vector<float[]>(totalArmor, 1);
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(105, 1);
-
-        for (int lineCount = 1; lineCount <= 46; lineCount++) {
+        if (totalArmor > 1230) {
+            pipsPerLine = 31;
+            baseX -= 4;
+            pointX -= 4;
+            pipsPerLineSmallWidth = 21;
+        }
+        for (int lineCount = 1; lineCount <= maxLinesTotal; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
                 pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
             }
 
-            if (lineCount == 36) {
-                pipsPerLine = 15;
-                baseX += shiftX * 7.5f;
+            if (lineCount == maxLinesFullWidth) {
+                baseX += shiftX * (pipsPerLine-pipsPerLineSmallWidth)/2f;
+                pipsPerLine = pipsPerLineSmallWidth;
             }
             pointY -= shiftY;
             pointX = baseX;
@@ -410,17 +418,17 @@ public class PrintSpheroid implements Printable {
     }
 
     private void printRearArmor(Graphics2D g2d, int totalArmor) {
-        float baseX = 350f;
+        float baseX = 346f;
         float baseY = 354f;
         float pointX = baseX;
         float pointY = baseY;
         float shiftX = 4f;
         float shiftY = 4f;
-        int pipsPerLine = 30;
+        int pipsPerLine = 31;
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(105, 1);
+        Vector<float[]> pipPlotter = new Vector<float[]>(1085, 1);
 
-        for (int lineCount = 1; lineCount <= 32; lineCount++) {
+        for (int lineCount = 1; lineCount <= 35; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
                 pipPlotter.add(new float[] { pointX, pointY });
                 pointX += shiftX;
@@ -436,28 +444,52 @@ public class PrintSpheroid implements Printable {
     private void printLeftArmor(Graphics2D g2d, int totalArmor) {
 
         float baseX = 339f;
-        float baseY = 178f;
+        float baseY = 166f;
         float pointX = baseX;
         float pointY = baseY;
         float shiftX = 4f;
         float shiftY = 4f;
-        int pipsPerLine = 75;
+        int pipsPerLine = 80;
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(105, 1);
+        Vector<float[]> pipPlotter = new Vector<float[]>(1160, 1);
 
-        for (int lineCount = 1; lineCount <= 13; lineCount++) {
+        for (int lineCount = 1; lineCount <= 18; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
                 pipPlotter.add(new float[] { pointX, pointY });
                 pointY += shiftY;
             }
 
             if ((lineCount == 5)) {
-                pipsPerLine -= 2;
-                baseY += shiftY;
-            } else if ((lineCount == 7) || (lineCount == 9)
-                    || (lineCount == 11) || (lineCount == 13)) {
+                pipsPerLine -= 4;
+                baseY += 3 * shiftY;
+            } else if (lineCount == 6) {
+                pipsPerLine -= 1;
+            } else if (lineCount == 7) {
+                pipsPerLine -= 3;
+                baseY += shiftY * 2;
+            } else if (lineCount == 8) {
+                pipsPerLine -= 1;
+            } else if (lineCount == 9) {
+                pipsPerLine -= 1;
+            } else if (lineCount == 10) {
+                pipsPerLine -= 1;
+            } else if (lineCount == 11) {
+                pipsPerLine -= 5;
+                baseY += shiftY * 4;
+            } else if (lineCount == 12) {
+                baseY += shiftY * 6;
                 pipsPerLine -= 10;
-                baseY += shiftY * 5;
+            } else if (lineCount == 13) {
+                baseY += shiftY * 3;
+                pipsPerLine -= 4;
+            } else if (lineCount == 14) {
+                baseY += shiftY * 2;
+                pipsPerLine -= 3;
+            } else if (lineCount == 15) {
+                pipsPerLine -= 8;
+                baseY += shiftY * 4;
+            } else if ((lineCount == 17)) {
+                pipsPerLine -= 5;
             }
 
             pointX -= shiftX;
@@ -470,29 +502,55 @@ public class PrintSpheroid implements Printable {
 
     private void printRightArmor(Graphics2D g2d, int totalArmor) {
         float baseX = 474f;
-        float baseY = 178;
+        float baseY = 166;
         float pointX = baseX;
         float pointY = baseY;
         float shiftX = 4f;
         float shiftY = 4f;
-        int pipsPerLine = 75;
+        int pipsPerLine = 80;
 
-        Vector<float[]> pipPlotter = new Vector<float[]>(105, 1);
+        Vector<float[]> pipPlotter = new Vector<float[]>(1160, 1);
 
-        for (int lineCount = 1; lineCount <= 13; lineCount++) {
+        for (int lineCount = 1; lineCount <= 18; lineCount++) {
             for (int point = 0; point < pipsPerLine; point++) {
                 pipPlotter.add(new float[] { pointX, pointY });
                 pointY += shiftY;
             }
 
             if ((lineCount == 5)) {
-                pipsPerLine -= 2;
-                baseY += shiftY;
-            } else if ((lineCount == 7) || (lineCount == 9)
-                    || (lineCount == 11) || (lineCount == 13)) {
+                pipsPerLine -= 4;
+                baseY += 3 * shiftY;
+            } else if (lineCount == 6) {
+                pipsPerLine -= 1;
+            } else if (lineCount == 7) {
+                pipsPerLine -= 3;
+                baseY += shiftY * 2;
+            } else if (lineCount == 8) {
+                pipsPerLine -= 1;
+            } else if (lineCount == 9) {
+                pipsPerLine -= 1;
+            } else if (lineCount == 10) {
+                pipsPerLine -= 5;
+                baseY += shiftY * 4;
+            } else if (lineCount == 11) {
+                pipsPerLine -= 3;
+                baseY += shiftY * 2;
+            } else if (lineCount == 12) {
+                pipsPerLine -= 4;
+                baseY += shiftY * 2;
+            } else if (lineCount == 13) {
+                pipsPerLine -= 4;
+                baseY += shiftY * 2;
+            } else if (lineCount == 14) {
+                baseY += shiftY * 3;
+                pipsPerLine -= 3;
+            } else if (lineCount == 15) {
                 pipsPerLine -= 10;
-                baseY += shiftY * 5;
+                baseY += shiftY * 6;
+            } else if ((lineCount == 17)) {
+                pipsPerLine -= 5;
             }
+
 
             pointX += shiftX;
             pointY = baseY;
