@@ -10,6 +10,8 @@ v0.1.39-dev (SVN)
 + Bug: large support tank/super heavy tank fluff image printing location wrong
 + Removed Entity instance variable from MenuBarCreator to make sure that always
     the current MainUI's Entity is used
++ Bug: spheroid dropships with humungous amounts of armor didn't print right,
+   now support up to 1060 armor per side, 1085 rear, 1140 front 
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
