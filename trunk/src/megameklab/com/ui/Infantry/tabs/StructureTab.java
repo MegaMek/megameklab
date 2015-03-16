@@ -28,6 +28,7 @@ import java.awt.event.KeyListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -84,6 +85,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private String[] secondaryNArray =
         { "0","1","2"};
     private JComboBox<String> secondaryN = new JComboBox<String>(secondaryNArray);
+    private JCheckBox antiMekTraining = new JCheckBox("Anti-mek Training");
 
     private JTextField era = new JTextField(3);
     private JTextField source = new JTextField(3);
@@ -99,7 +101,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
 	public StructureTab(Infantry unit) {
         this.unit = unit;
-        unit.setAntiMek(!unit.isMechanized());
         armorView = new ArmorView(unit);
         weaponView = new WeaponView(unit);
         setUpPanels();
@@ -193,6 +194,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         weaponPanel.add(createLabel("Secondary #:", labelSize), gbc);
         gbc.gridx = 1;
         weaponPanel.add(secondaryN, gbc);
+        antiMekTraining.setHorizontalTextPosition(SwingConstants.LEFT);
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.gridy++;
+        weaponPanel.add(antiMekTraining, gbc);
 
         setFieldSize(motiveType, comboSize);
         setFieldSize(squadSize, comboSize);
@@ -290,7 +296,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         squadN.setSelectedIndex(getInfantry().getSquadN()-1);
         squadSize.setSelectedIndex(getInfantry().getSquadSize()-1);
         secondaryN.setSelectedIndex(getInfantry().getSecondaryN());
-        getInfantry().setAntiMek(!getInfantry().isMechanized());
+        getInfantry().setAntiMekSkill(antiMekTraining.isSelected());
 
         if (getInfantry().isMixedTech()) {
             if (getInfantry().isClan()) {
@@ -371,6 +377,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         model.addKeyListener(this);
         era.addKeyListener(this);
         source.addKeyListener(this);
+        antiMekTraining.addActionListener(this);
     }
 
     public void removeAllActionListeners() {
@@ -384,6 +391,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         model.removeKeyListener(this);
         era.removeKeyListener(this);
         source.removeKeyListener(this);
+        antiMekTraining.removeActionListener(this);
     }
 
 	public void addRefreshedListener(RefreshListener l) {
@@ -580,6 +588,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     getInfantry().setSquadN(maxSquadN);
                     squadN.setSelectedIndex(maxSquadN-1);
                 }
+                if (getInfantry().isMechanized()) {
+                    antiMekTraining.setSelected(false);
+                    antiMekTraining.setEnabled(false);
+                } else {
+                    antiMekTraining.setEnabled(true);
+                }
             }
             else if (combo.equals(squadSize)) {
                 getInfantry().setSquadSize(squadSize.getSelectedIndex() + 1);
@@ -614,6 +628,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 getInfantry().setSecondaryN(secondaryN.getSelectedIndex());
                 checkMainWeapon();
             }
+        } else if (e.getSource().equals(antiMekTraining)) {
+            getInfantry().setAntiMekSkill(antiMekTraining.isSelected());
         }
         refresh.refreshAll();
     }
