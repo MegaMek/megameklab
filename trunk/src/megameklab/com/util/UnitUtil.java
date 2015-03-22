@@ -2659,8 +2659,7 @@ public class UnitUtil {
 
         for (int pos = 0; pos < unit.getEquipment().size();) {
             Mounted mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof EquipmentType)
-                    && mountList.contains(mount.getType().getInternalName())) {
+            if (mountList.contains(mount.getType().getInternalName())) {
                 unit.getEquipment().remove(pos);
             } else {
                 pos++;
