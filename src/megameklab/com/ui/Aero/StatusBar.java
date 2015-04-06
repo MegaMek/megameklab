@@ -30,8 +30,6 @@ import javax.swing.JLabel;
 
 import megamek.common.Aero;
 import megamek.common.AmmoType;
-import megamek.common.Engine;
-import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
@@ -55,7 +53,8 @@ public class StatusBar extends ITab {
     private JLabel tons = new JLabel();
     private JLabel heatSink = new JLabel();
     private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = new EntityVerifier(new File(
+            "data/mechfiles/UnitVerifierOptions.xml"));
     private TestAero testAero = null;
     private DecimalFormat formatter;
     private JFrame parentFrame;
@@ -143,38 +142,25 @@ public class StatusBar extends ITab {
     public double calculateTotalHeat() {
         double heat = 0;
 
-        if (getAero().getOriginalJumpMP() > 0) {
-            if (getAero().getJumpType() == Mech.JUMP_IMPROVED) {
-                heat += Math.max(3, Math.ceil(getAero().getOriginalJumpMP() / 2.0f));
-            } else if (getAero().getJumpType() != Mech.JUMP_BOOSTER) {
-                heat += Math.max(3, getAero().getOriginalJumpMP());
-            }
-            if (getAero().getEngine().getEngineType() == Engine.XXL_ENGINE) {
-                heat *= 2;
-            }
-        } else if (getAero().getEngine().getEngineType() == Engine.XXL_ENGINE) {
-            heat += 6;
-        } else {
-            heat += 2;
-        }
-
-
         for (Mounted mounted : getAero().getWeaponList()) {
             WeaponType wtype = (WeaponType) mounted.getType();
             double weaponHeat = wtype.getHeat();
 
             // only count non-damaged equipment
-            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed() || mounted.isBreached()) {
+            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed()
+                    || mounted.isBreached()) {
                 continue;
             }
 
             // one shot weapons count 1/4
-            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER) || wtype.hasFlag(WeaponType.F_ONESHOT)) {
+            if ((wtype.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER)
+                    || wtype.hasFlag(WeaponType.F_ONESHOT)) {
                 weaponHeat *= 0.25;
             }
 
             // double heat for ultras
-            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA) || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+            if ((wtype.getAmmoType() == AmmoType.T_AC_ULTRA)
+                    || (wtype.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
                 weaponHeat *= 2;
             }
 
@@ -184,7 +170,9 @@ public class StatusBar extends ITab {
             }
 
             // half heat for streaks
-            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK) || (wtype.getAmmoType() == AmmoType.T_MRM_STREAK) || (wtype.getAmmoType() == AmmoType.T_LRM_STREAK)) {
+            if ((wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
+                    || (wtype.getAmmoType() == AmmoType.T_MRM_STREAK)
+                    || (wtype.getAmmoType() == AmmoType.T_LRM_STREAK)) {
                 weaponHeat *= 0.5;
             }
             heat += weaponHeat;
@@ -194,15 +182,23 @@ public class StatusBar extends ITab {
 
     private void getFluffImage() {
         //copied from structureTab
-        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path", FileDialog.LOAD);
-        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath() + File.separatorChar + ImageHelper.imageMech + File.separatorChar);
+        FileDialog fDialog = new FileDialog(getParentFrame(), "Image Path",
+                FileDialog.LOAD);
+        fDialog.setDirectory(new File(ImageHelper.fluffPath).getAbsolutePath()
+                + File.separatorChar + ImageHelper.imageMech
+                + File.separatorChar);
         fDialog.setLocationRelativeTo(this);
 
         fDialog.setVisible(true);
 
         if (fDialog.getFile() != null) {
-            String relativeFilePath = new File(fDialog.getDirectory() + fDialog.getFile()).getAbsolutePath();
-            relativeFilePath = "." + File.separatorChar + relativeFilePath.substring(new File(System.getProperty("user.dir").toString()).getAbsolutePath().length() + 1);
+            String relativeFilePath = new File(fDialog.getDirectory()
+                    + fDialog.getFile()).getAbsolutePath();
+            relativeFilePath = "."
+                    + File.separatorChar
+                    + relativeFilePath
+                            .substring(new File(System.getProperty("user.dir")
+                                    .toString()).getAbsolutePath().length() + 1);
             getAero().getFluff().setMMLImagePath(relativeFilePath);
         }
         refresh.refreshPreview();
