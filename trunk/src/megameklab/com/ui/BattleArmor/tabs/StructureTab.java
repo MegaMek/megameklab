@@ -245,7 +245,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
                 .setEditable(false);
 
-        jumpMP = new JSpinner(new SpinnerNumberModel(0, 0, getBattleArmor().getMaximumJumpMP(), 1));
+        jumpMP = new JSpinner(new SpinnerNumberModel(0, 0, getBattleArmor().getMaximumJumpMP(true), 1));
         ((JSpinner.DefaultEditor) jumpMP.getEditor()).setSize(spinnerSize);
         ((JSpinner.DefaultEditor) jumpMP.getEditor())
                 .setMaximumSize(spinnerSize);
@@ -585,7 +585,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         ((SpinnerNumberModel) walkMP.getModel()).setMinimum(getBattleArmor().getMinimumWalkMP());
         ((SpinnerNumberModel) walkMP.getModel()).setMaximum(getBattleArmor().getMaximumWalkMP());
         jumpMP.setValue(getBattleArmor().getOriginalJumpMP());
-        ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getBattleArmor().getMaximumJumpMP());
+        ((SpinnerNumberModel) jumpMP.getModel()).setMaximum(getBattleArmor().getMaximumJumpMP(true));
         
         armorType.removeAllItems();
         for (TestBattleArmor.BAArmor armor : TestBattleArmor.BAArmor.values()){
@@ -1241,8 +1241,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
         else if(unit.getOriginalWalkMP() < getBattleArmor().getMinimumWalkMP()) {
             unit.setOriginalWalkMP(getBattleArmor().getMinimumWalkMP());
         }
-        if(unit.getOriginalJumpMP() > getBattleArmor().getMaximumJumpMP()) {
-            unit.setOriginalJumpMP(getBattleArmor().getMaximumJumpMP());
+        if(unit.getOriginalJumpMP() > getBattleArmor().getMaximumJumpMP(true)) {
+            unit.setOriginalJumpMP(getBattleArmor().getMaximumJumpMP(true));
         }
     }
 
