@@ -286,6 +286,16 @@ public class UnitUtil {
         } else {
             unit.getWeaponList().remove(mount);
         }
+        // It's possible that the equipment we are removing was linked to
+        // something else, and so the linkedBy state may be set.  We should
+        // remove it.  Using getLinked could be unreliable, so we'll brute force
+        // it
+        // An example of this would be removing a linked Artemis IV FCS
+        for (Mounted m : unit.getEquipment()) {
+            if (mount.equals(m.getLinkedBy())) {
+                m.setLinkedBy(null);
+            }
+        }
     }
 
     /**
