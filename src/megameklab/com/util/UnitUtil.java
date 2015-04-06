@@ -324,8 +324,15 @@ public class UnitUtil {
                 if ((cs != null)
                         && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)
                         && (cs.getMount().equals(eq))) {
-                    cs = null;
-                    unit.setCritical(loc, slot, cs);
+                    // If there are two pieces of equipment in this slot, remove
+                    // the first one, and replace it with the second
+                    if (cs.getMount2() != null) {
+                        cs.setMount(cs.getMount2());
+                        cs.setMount2(null);
+                    } else { // If it's the only Mounted, clear the slot 
+                        cs = null;
+                        unit.setCritical(loc, slot, cs);
+                    }
                 }
             }
         }
