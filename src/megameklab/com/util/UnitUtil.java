@@ -278,6 +278,15 @@ public class UnitUtil {
                 apm.setLinkedBy(null);
             }
         }
+        // Some special checks for Aeros
+        if (unit instanceof Aero) {
+            if (mount.getType() instanceof WeaponType) {
+                // Aeros have additional weapon lists that need to be cleared
+                ((Aero)unit).getTotalWeaponList().remove(mount);
+                ((Aero)unit).getWeaponBayList().remove(mount);
+                ((Aero)unit).getWeaponGroupList().remove(mount);
+            }
+        }
         unit.getEquipment().remove(mount);
         if (mount.getType() instanceof MiscType) {
             unit.getMisc().remove(mount);
@@ -1832,6 +1841,7 @@ public class UnitUtil {
             sb.append("<br>Armored");
         }
         if ((unit instanceof BattleArmor)
+
                 && eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)){
            sb.append("<br>* Infantry support weapons must be held in an " +
                 "Armored Glove");
