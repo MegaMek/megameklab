@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.BattleArmor;
@@ -294,13 +293,12 @@ public class PrintBattleArmor implements Printable {
         ImageHelperBattleArmor.printBattleArmorWeaponsNEquipment(battleArmor, g2d, currentMargin);
     }
 
-    public void print() {
+    public void print(HashPrintRequestAttributeSet aset) {
 
         try {
             for (; currentPosition < battleArmorList.size(); currentPosition += 5) {
                 PrinterJob pj = PrinterJob.getPrinterJob();
                 pj.setPrintService(masterPrintJob.getPrintService());
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
                 aset.add(PrintQuality.HIGH);
 

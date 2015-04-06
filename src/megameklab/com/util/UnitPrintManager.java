@@ -25,6 +25,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.standard.MediaPrintableArea;
+import javax.print.attribute.standard.MediaSizeName;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -205,21 +208,24 @@ public class UnitPrintManager {
             }
         }
 
+        HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        aset.add(MediaSizeName.NA_LETTER);
+        aset.add(new MediaPrintableArea(0, 0, 8.5f, 11, MediaPrintableArea.INCH));
         PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
-        if (!masterPrintJob.printDialog()) {
+        if (!masterPrintJob.printDialog(aset)) {
             return true;
         }
 
         if (bipedList.size() > 0) {
             PrintMech printMech = new PrintMech(bipedList, masterPrintJob);
 
-            printMech.print();
+            printMech.print(aset);
         }
 
         if (quadList.size() > 0) {
             PrintQuad printQuad = new PrintQuad(quadList, masterPrintJob);
 
-            printQuad.print();
+            printQuad.print(aset);
         }
 
         // TODO: Implement a PrintTripod class so we can do something with
@@ -228,25 +234,25 @@ public class UnitPrintManager {
         if (tankList.size() > 0) {
             PrintVehicle printTank = new PrintVehicle(tankList, singlePrint, masterPrintJob);
 
-            printTank.print();
+            printTank.print(aset);
         }
 
         if (wigeList.size() > 0) {
             PrintWiGE printWiGE = new PrintWiGE(wigeList, singlePrint, masterPrintJob);
 
-            printWiGE.print();
+            printWiGE.print(aset);
         }
 
         if (navalList.size() > 0) {
             PrintNavalVehicle printNaval = new PrintNavalVehicle(navalList, masterPrintJob);
 
-            printNaval.print();
+            printNaval.print(aset);
         }
 
         if (dualTurretList.size() > 0) {
             PrintDualTurretVehicle printDualTurret = new PrintDualTurretVehicle(dualTurretList, singlePrint, masterPrintJob);
 
-            printDualTurret.print();
+            printDualTurret.print(aset);
         }
 
         if (aeroList.size() > 0) {
@@ -256,55 +262,55 @@ public class UnitPrintManager {
 
         if (fixedWingSupportList.size() > 0) {
             PrintFixedWingSupport printFixedWingSupport = new PrintFixedWingSupport(fixedWingSupportList, masterPrintJob);
-            printFixedWingSupport.print();
+            printFixedWingSupport.print(aset);
         }
 
         if (convFighterList.size() > 0) {
             PrintConventionalFighter printConventionalFighter = new PrintConventionalFighter(convFighterList, masterPrintJob);
-            printConventionalFighter.print();
+            printConventionalFighter.print(aset);
         }
 
         if (aerodyneList.size() > 0) {
             PrintAerodyne printAerodyne = new PrintAerodyne(aerodyneList, masterPrintJob);
-            printAerodyne.print();
+            printAerodyne.print(aset);
         }
 
         if (spheroidList.size() > 0) {
             PrintSpheroid printSpheroid = new PrintSpheroid(spheroidList, masterPrintJob);
-            printSpheroid.print();
+            printSpheroid.print(aset);
         }
 
         if (VTOLList.size() > 0) {
             PrintVTOL printVTOL = new PrintVTOL(VTOLList, masterPrintJob);
 
-            printVTOL.print();
+            printVTOL.print(aset);
         }
 
         if (baList.size() > 0) {
             PrintBattleArmor printBA = new PrintBattleArmor(baList, masterPrintJob);
 
-            printBA.print();
+            printBA.print(aset);
         }
 
         if (protoList.size() > 0) {
             PrintProtomech printProto = new PrintProtomech(protoList, masterPrintJob);
 
-            printProto.print();
+            printProto.print(aset);
         }
 
         if (largeSupportTankList.size() > 0) {
             PrintLargeSupportVehicle sp = new PrintLargeSupportVehicle(largeSupportTankList, singlePrint, masterPrintJob);
-            sp.print();
+            sp.print(aset);
         }
 
         if (smallCraftAerodyneList.size() > 0) {
             PrintSmallCraftAerodyne sp = new PrintSmallCraftAerodyne(smallCraftAerodyneList, masterPrintJob);
-            sp.print();
+            sp.print(aset);
         }
 
         if (smallCraftSpheroidList.size() > 0) {
             PrintSmallCraftSpheroid sp = new PrintSmallCraftSpheroid(smallCraftSpheroidList, masterPrintJob);
-            sp.print();
+            sp.print(aset);
         }
 
         return true;

@@ -18,6 +18,7 @@ v0.1.39-dev (SVN)
 + Bug [#170]: Issues moving/removing dual-loaded crits in superheavy mechs
 + Bug [#143]: MMlab assumes ASFs generate heat via movement
 + Bug [#146]: BA jump booster allows you to make jump 5 BA
++ Bug [#177]: Print to File option does not work
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
