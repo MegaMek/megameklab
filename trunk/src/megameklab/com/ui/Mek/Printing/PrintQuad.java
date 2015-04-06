@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.AmmoType;
@@ -493,14 +492,13 @@ public class PrintQuad implements Printable {
         ImageHelper.printMechWeaponsNEquipment(mech, g2d, leftMargin, topMargin);
     }
 
-    public void print() {
+    public void print(HashPrintRequestAttributeSet aset) {
 
         try {
 
             for (Mech currentMech : mechList) {
                 PrinterJob pj = PrinterJob.getPrinterJob();
                 pj.setPrintService(masterPrintJob.getPrintService());
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
                 aset.add(PrintQuality.HIGH);
 

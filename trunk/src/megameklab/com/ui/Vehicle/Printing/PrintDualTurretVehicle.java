@@ -31,7 +31,6 @@ import java.util.Calendar;
 import java.util.Vector;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Crew;
@@ -527,14 +526,13 @@ public class PrintDualTurretVehicle implements Printable {
 
     }
 
-    public void print() {
+    public void print(HashPrintRequestAttributeSet aset) {
 
         try {
             for (int pos = 0; pos < tankList.size(); pos++) {
                 PrinterJob pj = PrinterJob.getPrinterJob();
 
                 pj.setPrintService(masterPrintJob.getPrintService());
-                PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 
                 aset.add(PrintQuality.HIGH);
 
