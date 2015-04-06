@@ -14,6 +14,7 @@ v0.1.39-dev (SVN)
    now support up to 1060 armor per side, 1085 rear, 1140 front 
 + Feature: Added a checkbox for anti-mek training for Infantry
 + Bug: Mounted.linkedBy not cleared when equipment is removed
++ Bug [#174]: Not clearing equipment data when equipment is removed from an Aero
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
