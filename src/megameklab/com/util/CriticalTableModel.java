@@ -31,6 +31,7 @@ import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Tank;
 import megamek.common.WeaponType;
 
 public class CriticalTableModel extends AbstractTableModel {
@@ -74,6 +75,11 @@ public class CriticalTableModel extends AbstractTableModel {
             columnNames = new String[] { "Name", "Tons", "Crits", "Heat", 
                     "Loc" };
         }
+        
+        if (unit instanceof Tank) {
+            columnNames[CRITS] = "Slots";
+        }
+        
         this.unit = unit;
     }
 
@@ -143,6 +149,9 @@ public class CriticalTableModel extends AbstractTableModel {
                 return crit.getType().getTonnage(unit);
             }
         case CRITS:
+            if (unit instanceof Tank) {
+                return crit.getType().getTankslots(unit);
+            }
             if (tableType == BUILDTABLE) {
                 return UnitUtil.getCritsUsed(unit, crit.getType());
             }

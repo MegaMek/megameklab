@@ -33,6 +33,7 @@ import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.RangeType;
+import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
@@ -110,6 +111,9 @@ public class EquipmentTableModel extends AbstractTableModel {
             case COL_TON:
                 return "Ton";
             case COL_CRIT:
+                if (entity instanceof Tank) {
+                    return "Slots";
+                }
                 return "Crit";
             case COL_CREW:
                 return "Crew";
@@ -334,6 +338,9 @@ public class EquipmentTableModel extends AbstractTableModel {
             }
         }
         if (col == COL_CRIT) {
+            if (entity instanceof Tank) {
+                return type.getTankslots(entity);
+            }
             return type.getCriticals(entity);
         }
         if (col == COL_TRATING) {
