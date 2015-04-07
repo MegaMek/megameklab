@@ -63,6 +63,7 @@ import megamek.common.VTOL;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestTank;
+import megameklab.com.ui.Vehicle.views.SummaryView;
 import megameklab.com.ui.Vehicle.views.ArmorView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -125,6 +126,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JPanel panChassis;
     JPanel panArmor;
     JPanel panMovement;
+    SummaryView panSummary;
+    
     JSpinner troopStorage = null;
     int maxTonnage = 50;
     int minTonnage = 1;
@@ -147,6 +150,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panChassis = new JPanel(new GridBagLayout());
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
+        panSummary = new SummaryView(getTank());
 
         if (unit.isClan()){
             techLevel = new JComboBox<String>(clanTechLevels);
@@ -378,8 +382,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         leftPanel.add(panInfo);
         leftPanel.add(panChassis);
         leftPanel.add(Box.createGlue());
+        leftPanel.add(panMovement);
         rightPanel.add(panArmor);
-        rightPanel.add(panMovement);
+        rightPanel.add(Box.createVerticalStrut(14));
+        rightPanel.add(panSummary);
         leftPanel.add(Box.createVerticalGlue());
 
         gbc = new GridBagConstraints();
@@ -399,6 +405,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
+        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         armor.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
 
@@ -542,6 +549,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
         armor.updateUnit(unit);
         armor.refresh();
+        panSummary.updateUnit(unit);
+        panSummary.refresh();
 
         addAllListeners();
     }
