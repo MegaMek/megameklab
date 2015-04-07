@@ -2019,7 +2019,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             JSpinner spinner = (JSpinner) e.getSource();
             removeAllListeners();
             if (spinner.equals(weightClass)) {
-                if ((getMech().isSuperHeavy() && ((Integer)weightClass.getValue() <= 100)) || (!getMech().isSuperHeavy() && ((Integer)weightClass.getValue() > 100))) {
+                boolean changedSuperHeavyStatus = false;
+                if ((getMech().isSuperHeavy() 
+                        && ((Integer) weightClass.getValue() <= 100))
+                        || (!getMech().isSuperHeavy() 
+                                && ((Integer) weightClass.getValue() > 100))) {
                     // if we switch from being superheavy to not being superheavy,
                     // remove crits
                     for (Mounted mount : unit.getEquipment()) {
@@ -2028,10 +2032,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                         }
                     }
+                    changedSuperHeavyStatus = true;
                 }
                 getMech().setWeight((Integer) weightClass.getValue());
                 getMech().autoSetInternal();
                 resetEngine();
+                if (changedSuperHeavyStatus) {
+                    // Interal structure crits may change
+                    UnitUtil.removeISorArmorMounts(getMech(), true);
+                    createISMounts();
+                }
                 populateChoices(true);
             } else if (spinner.equals(walkMP)) {
                 resetEngine();

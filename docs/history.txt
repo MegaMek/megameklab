@@ -28,6 +28,7 @@ v0.1.39-dev (SVN)
 + Feature: Equipment table now properly reflects Aero AV and ranges
 + Bug [#135]: Tank/Aero: crit slot 0 equipment doesn't show up in critical tab
 + Bug: Equipment tables for Tanks displays crits instead of slots
++ Bug [#173]: Super Heavy Mech Endo Steel/Endo Composite Errors
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
