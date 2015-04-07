@@ -25,11 +25,14 @@ import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.RangeType;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
@@ -229,7 +232,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if (col == COL_DAMAGE) {
             if (null != wtype) {
-                return getDamageString(wtype);
+                return getDamageString(wtype, entity instanceof Aero);
             } else {
                 return "-";
             }
@@ -269,7 +272,12 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if (col == COL_HEAT) {
             if (null != wtype) {
-                return Integer.toString(wtype.getHeat());
+                if (entity instanceof Aero) {
+                    return wtype.getHeat()
+                            * Mounted.getNumShots(wtype, null, true);
+                } else {
+                    return Integer.toString(wtype.getHeat());
+                }
             } else {
                 return "-";
             }
@@ -283,6 +291,18 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if (col == COL_RANGE) {
             if (null != wtype) {
+                if (entity instanceof Aero) {
+                    switch (wtype.maxRange) {
+                        case RangeType.RANGE_SHORT:
+                            return "Short";
+                        case RangeType.RANGE_MEDIUM:
+                            return "Medium";
+                        case RangeType.RANGE_LONG:
+                            return "Long";
+                        case RangeType.RANGE_EXTREME:
+                            return "Extreme";
+                    };
+                }
                 if (wtype instanceof InfantryWeapon) {
                     return ((InfantryWeapon) wtype).getInfantryRange() + "";
                 }
@@ -294,6 +314,9 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if (col == COL_MRANGE) {
             if (null != wtype) {
+                if (entity instanceof Aero) {
+                    return "-";
+                }
                 int minRange = wtype.getMinimumRange();
                 if (minRange < 0) {
                     minRange = 0;
@@ -349,11 +372,35 @@ public class EquipmentTableModel extends AbstractTableModel {
         return "?";
     }
 
-    private static String getDamageString(WeaponType wtype) {
+    private static String getDamageString(WeaponType wtype, boolean isAero) {
+        // Aeros should print AV instead
+        if (isAero) {
+            int attackValue[] = new int[RangeType.RANGE_EXTREME + 1];
+            attackValue[RangeType.RANGE_SHORT] = (int)wtype.getShortAV();
+            attackValue[RangeType.RANGE_MEDIUM] = (int)wtype.getMedAV();
+            attackValue[RangeType.RANGE_LONG] = (int)wtype.getLongAV();
+            attackValue[RangeType.RANGE_EXTREME] = (int)wtype.getExtAV();
+            boolean allEq = true;
+            for (int i = 2; i <= wtype.maxRange && allEq; i++) {
+                if (attackValue[i - 1] != attackValue[i]) {
+                    allEq = false;
+                }                    
+            }
+            StringBuffer avString = new StringBuffer();
+            avString.append(attackValue[RangeType.RANGE_SHORT]);
+            if (!allEq) {
+                for (int i = 2; i <= wtype.maxRange && allEq; i++) {
+                    avString.append('/').append(attackValue[i]);
+                }
+            }
+            return avString.toString();
+        }
+        // Damage for non-Aeros
         if (wtype instanceof InfantryWeapon) {
             return Double
                     .toString(((InfantryWeapon) wtype).getInfantryDamage());
         }
+
         if (wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
             return wtype.getDamage(wtype.getShortRange()) + "/"
                     + wtype.getDamage(wtype.getMediumRange()) + "/"
