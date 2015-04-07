@@ -2824,18 +2824,16 @@ public class UnitUtil {
 
         return numberOfEq;
     }
-
+    
     /**
-     * check that the unit is vaild
-     *
+     * Returns a TestEntity instance for the supplied Entity.
+     * 
      * @param unit
      * @return
      */
-    public static String validateUnit(Entity unit) {
-
+    public static TestEntity getEntityVerifier(Entity unit) {
         EntityVerifier entityVerifier = new EntityVerifier(new File(
                 "data/mechfiles/UnitVerifierOptions.xml"));
-        StringBuffer sb = new StringBuffer();
         TestEntity testEntity = null;
 
         if (unit instanceof Mech) {
@@ -2866,6 +2864,20 @@ public class UnitUtil {
             testEntity = new TestBattleArmor((BattleArmor) unit,
                     entityVerifier.baOption, null);
         }
+        return testEntity;
+    }
+    
+
+    /**
+     * check that the unit is vaild
+     *
+     * @param unit
+     * @return
+     */
+    public static String validateUnit(Entity unit) {
+        StringBuffer sb = new StringBuffer();
+        TestEntity testEntity =  getEntityVerifier(unit);
+
         if (testEntity != null){
             testEntity.correctEntity(sb, true);
         }
@@ -3084,6 +3096,12 @@ public class UnitUtil {
         } catch (Exception ex) {
         }
     }
+    
+    public static void showUnitWeightBreakDown(Entity unit, JFrame frame) {
+        TestEntity testEntity = getEntityVerifier(unit);
+        JOptionPane.showMessageDialog(frame, testEntity.printEntity(),
+                "Unit Breakdown", JOptionPane.NO_OPTION);
+    }    
 
     public static void showBVCalculations(String bvText, JFrame frame) {
         HTMLEditorKit kit = new HTMLEditorKit();

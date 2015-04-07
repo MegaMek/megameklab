@@ -117,6 +117,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         validate.add(loadSpecsMenuOptions());
 
         validate.add(loadUnitCostBreakdownMenuOptions());
+        
+        validate.add(loadUnitWeightBreakdownMenuOptions());
 
         this.add(file);
         this.add(validate);
@@ -220,6 +222,37 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 jMenuGetUnitBreakdownFromCache_actionPerformed();
+            }
+        });
+        entityBreakdown.add(item);
+        return entityBreakdown;
+    }
+    
+    private JMenu loadUnitWeightBreakdownMenuOptions() {
+        JMenu entityBreakdown = new JMenu("Unit Weight Breakdown");
+        JMenuItem item = new JMenuItem();
+        item.setText("Breakdown Current Unit");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuUnitWeightBreakdown_actionPerformed();
+            }
+        });
+        entityBreakdown.add(item);
+
+        item = new JMenuItem();
+        item.setText("Unit Breakdown From File");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitWeightBreakdownFromFile_actionPerformed();
+            }
+        });
+        entityBreakdown.add(item);
+
+        item = new JMenuItem();
+        item.setText("Unit Breakdown From Cache");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                jMenuGetUnitWeightBreakdownFromCache_actionPerformed();
             }
         });
         entityBreakdown.add(item);
@@ -604,6 +637,19 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
 
     }
+    
+    private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parentFrame);
+        unitLoadingDialog.setVisible(true);
+        UnitSelectorDialog viewer = new UnitSelectorDialog(parentFrame, unitLoadingDialog, true);
+
+        Entity tempEntity = viewer.getChosenEntity();
+        if(null == tempEntity) {
+            return;
+        }
+        UnitUtil.showUnitWeightBreakDown(tempEntity, parentFrame);
+
+    }
 
     private void jMenuGetUnitBVFromFile_actionPerformed() {
 
@@ -702,6 +748,38 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             UnitUtil.showUnitCostBreakDown(tempEntity, parentFrame);
         }
     }
+    
+    private void jMenuGetUnitWeightBreakdownFromFile_actionPerformed() {
+
+        Entity tempEntity = null;
+        String filePathName = System.getProperty("user.dir").toString() + "/data/mechfiles/";
+        File unitFile = new File(filePathName);
+        JFileChooser f = new JFileChooser(filePathName);
+        f.setLocation(parentFrame.getLocation().x + 150, parentFrame.getLocation().y + 100);
+        f.setDialogTitle("Choose Unit");
+        f.setDialogType(JFileChooser.OPEN_DIALOG);
+        f.setMultiSelectionEnabled(false);
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "hmp");
+
+        // Add a filter for mul files
+        f.setFileFilter(filter);
+
+        int returnVal = f.showOpenDialog(parentFrame);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
+            // I want a file, y'know!
+            return;
+        }
+        unitFile = f.getSelectedFile();
+
+        try {
+            tempEntity = new MechFileParser(unitFile).getEntity();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(parentFrame, String.format("Warning:Invalid unit, it might load incorrectly!\n%1$s", ex.getMessage()));
+        } finally {
+            UnitUtil.showUnitWeightBreakDown(tempEntity, parentFrame);
+        }
+    }    
 
     private void jMenuGetUnitSpecsFromFile_actionPerformed() {
 
@@ -803,6 +881,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     public void jMenuUnitCostBreakdown_actionPerformed() {
         UnitUtil.showUnitCostBreakDown(parentFrame.getEntity(), parentFrame);
+    }
+    
+    public void jMenuUnitWeightBreakdown_actionPerformed() {
+        UnitUtil.showUnitWeightBreakDown(parentFrame.getEntity(), parentFrame);
     }
 
     public void jMenuUnitSpecs_actionPerformed() {
