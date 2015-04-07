@@ -21,6 +21,7 @@ v0.1.39-dev (SVN)
 + Bug [#177]: Print to File option does not work
 + Feature: Added a summary panel to Tank structure tab (similar to meks)
 + Columns in Mek structure tab adjusted so that they line up on the bottom
++ Added a Preview tab to Tanks, similar to Meks and Aeros
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
