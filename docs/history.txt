@@ -19,6 +19,7 @@ v0.1.39-dev (SVN)
 + Bug [#143]: MMlab assumes ASFs generate heat via movement
 + Bug [#146]: BA jump booster allows you to make jump 5 BA
 + Bug [#177]: Print to File option does not work
++ Feature: Added a summary panel to Tank structure tab (similar to meks)
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
