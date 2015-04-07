@@ -839,28 +839,50 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         for (int location = 0; location < unit.locations(); location++) {
             unit.initializeArmor(0, location);
         }
+        
+        // Make sure that the VTOL rotor has the 2 armor it should have
         if (unit instanceof VTOL) {
             unit.initializeArmor(Math.min(pointsToAllocate, 2), VTOL.LOC_ROTOR);
             pointsToAllocate -= 2;
         }
-
-        while (pointsToAllocate > 0) {
-            for (int location = 1; location < unit.locations(); location++) {
-                if ((unit instanceof VTOL) && (location == VTOL.LOC_ROTOR)) {
-                    continue;
-                }
-                int points = unit.getOArmor(location);
-                if ((location == Tank.LOC_FRONT) && (pointsToAllocate >= 2)) {
-                    unit.initializeArmor(++points, location);
-                    pointsToAllocate--;
-                }
-                unit.initializeArmor(++points, location);
-                if (--pointsToAllocate < 1) {
-                    break;
-                }
-            }
-
+        
+        int numLocations = unit.locations();
+        // Discount rotor for VTOLs
+        if (unit instanceof VTOL) {
+            numLocations--;
         }
+        // Discount body, as it's not armored
+        numLocations--;
+        
+        // Determine the percentage of total armor each location should get
+        double otherPercent = 1.0 / numLocations;
+        double remainingPercent = 1.0 - (otherPercent * (numLocations - 2));
+        // Front should be slightly more armored and rear slightly less
+        double frontPercent = remainingPercent * 0.6;
+        double rearPercent = remainingPercent * 0.4;
+        
+        // With the percentage of total for each location, assign armor
+        int allocatedPoints = 0;
+        for (int location = 1; location < unit.locations(); location++) {
+            if ((unit instanceof VTOL) && (location == VTOL.LOC_ROTOR)) {
+                continue;
+            }
+            int armorToAllocate = 0;
+            if (location == Tank.LOC_FRONT) {
+                armorToAllocate = (int)(pointsToAllocate * frontPercent);
+            } else if (location == Tank.LOC_REAR) {
+                armorToAllocate = (int)(pointsToAllocate * rearPercent);
+            } else {
+                armorToAllocate = (int)(pointsToAllocate * otherPercent);
+            }
+            unit.initializeArmor(armorToAllocate, location);
+            allocatedPoints += armorToAllocate;
+        }
+        
+        // Because of rounding, may have leftover armor: allocate it to front
+        int unallocated = pointsToAllocate - allocatedPoints;
+        int currentFrontArmor = unit.getOArmor(Tank.LOC_FRONT);
+        unit.initializeArmor(currentFrontArmor + unallocated, Tank.LOC_FRONT);
     }
 
     public void stateChanged(ChangeEvent e) {

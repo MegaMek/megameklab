@@ -30,6 +30,7 @@ v0.1.39-dev (SVN)
 + Bug: Equipment tables for Tanks displays crits instead of slots
 + Bug [#173]: Super Heavy Mech Endo Steel/Endo Composite Errors
 + Infantry Weapon table now sorts by name by default
++ Feature [#14]: Make vehicle armor allocator more intelligent
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
