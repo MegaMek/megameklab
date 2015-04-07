@@ -117,8 +117,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         masterEquipmentList.clear();
         for (Mounted mount : unit.getMisc()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && 
-                    !isEngineHeatSink(mount) && 
-                    !(mount.getType().getCriticals(unit) == 0)) {
+                    !isEngineHeatSink(mount)) {
                 masterEquipmentList.add(mount);
             }
         }
