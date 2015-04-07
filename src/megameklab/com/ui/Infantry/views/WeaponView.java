@@ -40,6 +40,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
@@ -113,6 +115,9 @@ public class WeaponView extends IView implements ActionListener {
         equipmentSorter.setComparator(EquipmentTableModel.COL_DAMAGE, new WeaponDamageSorter());
         equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new FormattedNumberSorter());
         masterEquipmentTable.setRowSorter(equipmentSorter);
+        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+        sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
+        equipmentSorter.setSortKeys(sortKeys);
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         masterEquipmentTable.setColumnModel(equipColumnModel);
         masterEquipmentTable.createDefaultColumnsFromModel();
@@ -439,14 +444,12 @@ public class WeaponView extends IView implements ActionListener {
             try {
                 l0 = format.parse(s0).intValue();
             } catch (java.text.ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             int l1 = 0;
             try {
                 l1 = format.parse(s1).intValue();
             } catch (java.text.ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return ((Comparable<Integer>)l0).compareTo(l1);
