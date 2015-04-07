@@ -93,7 +93,7 @@ public class MainUI extends MegaMekLabMainUI {
         equipTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
 
-        ConfigPane.addTab("Structure", structureTab);
+        ConfigPane.addTab("Structure/Armor", structureTab);
         ConfigPane.addTab("Equipment", equipTab);
         ConfigPane.addTab("Assign Criticals", buildTab);
 

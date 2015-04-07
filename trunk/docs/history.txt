@@ -22,6 +22,7 @@ v0.1.39-dev (SVN)
 + Feature: Added a summary panel to Tank structure tab (similar to meks)
 + Columns in Mek structure tab adjusted so that they line up on the bottom
 + Added a Preview tab to Tanks, similar to Meks and Aeros
++ Updated Structure/Armor tab name for BA and Tanks to match Aeros/Meks
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds

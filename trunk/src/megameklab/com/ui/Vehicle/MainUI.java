@@ -100,7 +100,7 @@ public class MainUI extends MegaMekLabMainUI {
         
         previewTab = new PreviewTab(tank);
 
-        configPane.addTab("Structure", structureTab);
+        configPane.addTab("Structure/Armor", structureTab);
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", buildTab);
         configPane.addTab("Preview", previewTab);
