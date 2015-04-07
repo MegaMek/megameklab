@@ -32,6 +32,13 @@ import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
+import megamek.common.weapons.ATMWeapon;
+import megamek.common.weapons.HAGWeapon;
+import megamek.common.weapons.MekMortarWeapon;
+import megamek.common.weapons.MissileWeapon;
+import megamek.common.weapons.RACWeapon;
+import megamek.common.weapons.ThunderBoltWeapon;
+import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 
 /**
@@ -352,7 +359,40 @@ public class EquipmentTableModel extends AbstractTableModel {
                     + wtype.getDamage(wtype.getMediumRange()) + "/"
                     + wtype.getDamage(wtype.getLongRange());
         } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+            if (wtype instanceof HAGWeapon) {
+                return wtype.getRackSize() + ""; 
+            } else if (wtype instanceof MekMortarWeapon) {
+                return "Special";
+            } else if (wtype instanceof MissileWeapon) {
+                int dmg;
+                if (wtype instanceof ThunderBoltWeapon) {
+                    switch (wtype.getAmmoType()) {
+                        case AmmoType.T_TBOLT_5:
+                            return "5";
+                        case AmmoType.T_TBOLT_10:
+                            return "10";
+                        case AmmoType.T_TBOLT_15:
+                            return "15";
+                        case AmmoType.T_TBOLT_20:
+                            return "20";
+                        default :
+                            return "0";
+                    }
+                } else if ((wtype instanceof ATMWeapon) 
+                        ||(wtype.getAmmoType() == AmmoType.T_SRM)  
+                        || (wtype.getAmmoType() == AmmoType.T_SRM_STREAK)) {
+                    dmg = 2;
+                } else {
+                    dmg = 1;
+                }
+                return dmg + "/msl";
+            }            
             return "Cluster";
+        } else if (wtype.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
+            return wtype.getRackSize() + "A";
+        } else if ((wtype instanceof RACWeapon) 
+                || (wtype instanceof UACWeapon)) {
+            return wtype.getDamage() + "/Shot";            
         } else if (wtype.getDamage() < 0) {
             return "Special";
         } else {
