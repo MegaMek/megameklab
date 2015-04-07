@@ -36,6 +36,7 @@ import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.VTOL;
 import megameklab.com.ui.MegaMekLabMainUI;
+import megameklab.com.ui.Vehicle.tabs.PreviewTab;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
 import megameklab.com.ui.Vehicle.tabs.EquipmentTab;
 import megameklab.com.ui.Vehicle.tabs.StructureTab;
@@ -53,6 +54,7 @@ public class MainUI extends MegaMekLabMainUI {
     JPanel contentPane;
     private StructureTab structureTab;
     private EquipmentTab equipmentTab;
+    private PreviewTab previewTab;
     private BuildTab buildTab;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
@@ -95,10 +97,13 @@ public class MainUI extends MegaMekLabMainUI {
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
+        
+        previewTab = new PreviewTab(tank);
 
         configPane.addTab("Structure", structureTab);
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", buildTab);
+        configPane.addTab("Preview", previewTab);
 
         masterPanel.add(configPane, BorderLayout.CENTER);
         masterPanel.add(statusbar, BorderLayout.SOUTH);
@@ -165,9 +170,9 @@ public class MainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         statusbar.refresh();
+        previewTab.refresh();
         refreshHeader();
         repaint();
-
     }
 
     @Override
@@ -263,7 +268,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshPreview() {
-
+        previewTab.refresh();
     }
 
 }
