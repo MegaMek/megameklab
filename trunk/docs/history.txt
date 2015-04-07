@@ -27,6 +27,7 @@ v0.1.39-dev (SVN)
 + Feature [#18]: Please show damage for missles/artillery weapons
 + Feature: Equipment table now properly reflects Aero AV and ranges
 + Bug [#135]: Tank/Aero: crit slot 0 equipment doesn't show up in critical tab
++ Bug: Equipment tables for Tanks displays crits instead of slots
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
