@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -548,6 +549,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 2;
+        totalArmorPanel.add(Box.createVerticalStrut(15), gbc);
+        gbc.gridy = 6;
         gbc.anchor = GridBagConstraints.CENTER;
         totalArmorPanel.add(allocateArmorButton, gbc);
 
