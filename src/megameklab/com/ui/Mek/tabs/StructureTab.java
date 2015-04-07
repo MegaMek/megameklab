@@ -481,7 +481,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         leftPanel.add(panHeat);
         leftPanel.add(Box.createGlue());
         rightPanel.add(panArmor);
+        rightPanel.add(Box.createVerticalStrut(2));
         rightPanel.add(panMovement);
+        rightPanel.add(Box.createVerticalStrut(2));
         rightPanel.add(panSummary);
         leftPanel.add(Box.createVerticalGlue());
 
