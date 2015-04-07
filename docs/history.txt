@@ -25,6 +25,7 @@ v0.1.39-dev (SVN)
 + Updated Structure/Armor tab name for BA and Tanks to match Aeros/Meks
 + Feature [#17]: Add Unit Weight Breakdown for Units
 + Feature [#18]: Please show damage for missles/artillery weapons
++ Feature: Equipment table now properly reflects Aero AV and ranges
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
