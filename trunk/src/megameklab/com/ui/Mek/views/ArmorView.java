@@ -106,10 +106,6 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     private JLabel rtArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
     private JLabel ctArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
     private JLabel clArmorMaxLabel = new JLabel("", SwingConstants.CENTER);
-
-    private JLabel ltrArmorMaxLabel = new JLabel();
-    private JLabel rtrArmorMaxLabel = new JLabel();
-    private JLabel ctrArmorMaxLabel = new JLabel();
     private List<JLabel> armorMaxLabelList = new ArrayList<JLabel>();
 
     private JLabel lblAllocatedArmor = new JLabel("Allocated Armor Points:");
@@ -249,9 +245,6 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         armorMaxLabelList.add(ltArmorMaxLabel);
         armorMaxLabelList.add(rtArmorMaxLabel);
         armorMaxLabelList.add(ctArmorMaxLabel);
-        armorMaxLabelList.add(ltrArmorMaxLabel);
-        armorMaxLabelList.add(ctrArmorMaxLabel);
-        armorMaxLabelList.add(rtrArmorMaxLabel);
 
         Dimension labelSize = new Dimension(40, 20);
         for (JLabel label : armorMaxLabelList) {
@@ -287,6 +280,9 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                                         null, unit.getLocationAbbr(location),
                                         TitledBorder.TOP,
                                         TitledBorder.DEFAULT_POSITION));
+                        
+                        hdArmorModel.setStepSize(1);
+                        hdArmorModel.setMinimum(0);
                         break;
                     case Mech.LOC_LARM:
                         topPanel = new JPanel(new GridLayout(2, 0));
@@ -302,6 +298,9 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         laPanel.setBorder(BorderFactory.createTitledBorder(
                                 null, unit.getLocationAbbr(location),
                                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        
+                        laArmorModel.setStepSize(1);
+                        laArmorModel.setMinimum(0);
                         break;
                     case Mech.LOC_RARM:
                         topPanel = new JPanel(new GridLayout(2, 0));
@@ -317,6 +316,9 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         raPanel.setBorder(BorderFactory.createTitledBorder(
                                 null, unit.getLocationAbbr(location),
                                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        
+                        raArmorModel.setStepSize(1);
+                        raArmorModel.setMinimum(0);
                         break;
                     case Mech.LOC_CT:
                         topPanel = new JPanel(new GridLayout(4, 0));
@@ -334,6 +336,10 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         bottomPanel.add(unallocatedPointsFieldCt);
                         ctPanel.add(bottomPanel);
 
+                        ctArmorModel.setStepSize(1);
+                        ctArmorModel.setMinimum(0);
+                        ctrArmorModel.setStepSize(1);
+                        ctrArmorModel.setMinimum(0);
                         break;
                     case Mech.LOC_LT:
                         topPanel = new JPanel(new GridLayout(4, 0));
@@ -351,6 +357,10 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         bottomPanel.add(unallocatedPointsFieldLt);
                         ltPanel.add(bottomPanel);
 
+                        ltArmorModel.setStepSize(1);
+                        ltArmorModel.setMinimum(0);
+                        ltrArmorModel.setStepSize(1);
+                        ltrArmorModel.setMinimum(0);
                         break;
                     case Mech.LOC_RT:
                         topPanel = new JPanel(new GridLayout(4, 0));
@@ -368,6 +378,10 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         bottomPanel.add(unallocatedPointsFieldRt);
                         rtPanel.add(bottomPanel);
 
+                        rtArmorModel.setStepSize(1);
+                        rtArmorModel.setMinimum(0);
+                        rtrArmorModel.setStepSize(1);
+                        rtrArmorModel.setMinimum(0);
                         break;
                     case Mech.LOC_LLEG:
                         topPanel = new JPanel(new GridLayout(2, 0));
@@ -383,6 +397,9 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         llPanel.setBorder(BorderFactory.createTitledBorder(
                                 null, unit.getLocationAbbr(location),
                                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        
+                        llArmorModel.setStepSize(1);
+                        llArmorModel.setMinimum(0);
                         break;
                     case Mech.LOC_RLEG:
                         topPanel = new JPanel(new GridLayout(2, 0));
@@ -398,6 +415,9 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         rlPanel.setBorder(BorderFactory.createTitledBorder(
                                 null, unit.getLocationAbbr(location),
                                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        
+                        rlArmorModel.setStepSize(1);
+                        rlArmorModel.setMinimum(0);
                         break;
                     case Mech.LOC_CLEG:
                         topPanel = new JPanel(new GridLayout(2, 0));
@@ -413,6 +433,9 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         clPanel.setBorder(BorderFactory.createTitledBorder(
                                 null, unit.getLocationAbbr(location),
                                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+                        
+                        clArmorModel.setStepSize(1);
+                        clArmorModel.setMinimum(0);
                         break;
                 }
             }
@@ -506,7 +529,6 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         removeAllListeners();
         clPanel.setVisible(unit instanceof TripodMech);
         for (int location = 0; location < unit.locations(); location++) {
-
             int maxArmor = unit.getOInternal(location) * 2;
             int headMaxArmor = 9;
             if (getMech().isSuperHeavy()) {
@@ -516,176 +538,82 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             switch (location) {
                 case Mech.LOC_HEAD:
                     hdArmorModel.setValue(Math.min(headMaxArmor, unit.getArmor(location)));
-                    if (isFullyAllocated()) {
-                        hdArmorModel.setMaximum((Integer) hdArmorModel
-                                .getValue());
-                    } else {
-                        hdArmorModel.setMaximum(headMaxArmor);
-                    }
-                    hdArmorModel.setStepSize(1);
-                    hdArmorModel.setMinimum(0);
+                    hdArmorModel.setMaximum(headMaxArmor);                   
                     hdArmorMaxLabel.setText("max: "+headMaxArmor);
                     break;
                 case Mech.LOC_LARM:
                     laArmorModel.setValue(Math.min(maxArmor,
                             unit.getArmor(location)));
-                    if (isFullyAllocated()) {
-                        laArmorModel.setMaximum((Integer) laArmorModel
-                                .getValue());
-                    } else {
-                        laArmorModel.setMaximum(maxArmor);
-                    }
-                    laArmorModel.setStepSize(1);
-                    laArmorModel.setMinimum(0);
+                    laArmorModel.setMaximum(maxArmor);                   
                     laArmorMaxLabel.setText("max: "
                             + Integer.toString(maxArmor));
                     break;
                 case Mech.LOC_RARM:
                     raArmorModel.setValue(Math.min(maxArmor,
                             unit.getArmor(location)));
-                    if (isFullyAllocated()) {
-                        raArmorModel.setMaximum((Integer) raArmorModel
-                                .getValue());
-                    } else {
-                        raArmorModel.setMaximum(maxArmor);
-                    }
-                    raArmorModel.setStepSize(1);
-                    raArmorModel.setMinimum(0);
+                    raArmorModel.setMaximum(maxArmor);
                     raArmorMaxLabel.setText("max: "
                             + Integer.toString(maxArmor));
                     break;
                 case Mech.LOC_CT:
                     ctArmorModel.setValue(Math.min(maxArmor,
                             unit.getArmor(location)));
-                    if (isFullyAllocated()) {
-                        ctArmorModel.setMaximum((Integer) ctArmorModel
-                                .getValue());
-                    } else {
-                        ctArmorModel.setMaximum(maxArmor);
-                    }
-                    ctArmorModel.setStepSize(1);
-                    ctArmorModel.setMinimum(0);
-                    rearArmor = Math.min(
-                            unit.getArmor(location, true),
+                    ctArmorModel.setMaximum(maxArmor);
+                    ctrArmorModel.setMaximum(maxArmor);
+                    rearArmor = Math.min(unit.getArmor(location, true),
                             maxArmor - unit.getArmor(location));
                     ctrArmorModel.setValue(rearArmor);
                     getMech().initializeRearArmor(rearArmor, location);
-                    if (isFullyAllocated()) {
-                        ctrArmorModel.setMaximum((Integer) ctrArmorModel
-                                .getValue());
-                    } else {
-                        ctrArmorModel.setMaximum(maxArmor
-                                - unit.getArmor(location));
-                    }
-                    ctrArmorModel.setStepSize(1);
-                    ctrArmorModel.setMinimum(0);
+                                        
                     ctArmorMaxLabel.setText("max: "
                             + Integer.toString(maxArmor));
-                    ctrArmorMaxLabel.setText("max: "
-                            + Integer.toString(maxArmor
-                                    - unit.getArmor(location)));
                     break;
                 case Mech.LOC_LT:
                     ltArmorModel.setValue(Math.min(maxArmor,
                             unit.getArmor(location)));
-                    if (isFullyAllocated()) {
-                        ltArmorModel.setMaximum((Integer) ltArmorModel
-                                .getValue());
-                    } else {
-                        ltArmorModel.setMaximum(maxArmor);
-                    }
-                    ltArmorModel.setStepSize(1);
-                    ltArmorModel.setMinimum(0);
-                    rearArmor = Math.min(
-                            unit.getArmor(location, true),
+
+                    ltArmorModel.setMaximum(maxArmor);
+                    ltrArmorModel.setMaximum(maxArmor);
+                    rearArmor = Math.min(unit.getArmor(location, true),
                             maxArmor - unit.getArmor(location));
                     ltrArmorModel.setValue(rearArmor);
                     getMech().initializeRearArmor(rearArmor, location);
-                    if (isFullyAllocated()) {
-                        ltrArmorModel.setMaximum((Integer) ltrArmorModel
-                                .getValue());
-                    } else {
-                        ltrArmorModel.setMaximum(maxArmor
-                                - unit.getArmor(location));
-                    }
-                    ltrArmorModel.setStepSize(1);
-                    ltrArmorModel.setMinimum(0);
+                    
                     ltArmorMaxLabel.setText("max: "
                             + Integer.toString(maxArmor));
-                    ltrArmorMaxLabel.setText("max: "
-                            + Integer.toString(maxArmor
-                                    - unit.getArmor(location)));
                     break;
                 case Mech.LOC_RT:
                     rtArmorModel.setValue(Math.min(maxArmor,
                             unit.getArmor(location)));
-                    if (isFullyAllocated()) {
-                        rtArmorModel.setMaximum((Integer) rtArmorModel
-                                .getValue());
-                    } else {
-                        rtArmorModel.setMaximum(maxArmor);
-                    }
-                    rtArmorModel.setStepSize(1);
-                    rtArmorModel.setMinimum(0);
-                    rearArmor = Math.min(
-                            unit.getArmor(location, true),
+
+                    rtArmorModel.setMaximum(maxArmor);
+                    rtrArmorModel.setMaximum(maxArmor);
+                    rearArmor = Math.min(unit.getArmor(location, true),
                             maxArmor - unit.getArmor(location));
                     rtrArmorModel.setValue(rearArmor);
                     getMech().initializeRearArmor(rearArmor, location);
-                    if (isFullyAllocated()) {
-                        rtrArmorModel.setMaximum((Integer) rtrArmorModel
-                                .getValue());
-                    } else {
-                        rtrArmorModel.setMaximum(maxArmor
-                                - unit.getArmor(location));
-                    }
-                    rtrArmorModel.setStepSize(1);
-                    rtrArmorModel.setMinimum(0);
+                    
                     rtArmorMaxLabel.setText("max: "
                             + Integer.toString(maxArmor));
-                    rtrArmorMaxLabel.setText("max: "
-                            + Integer.toString(maxArmor
-                                    - unit.getArmor(location)));
                     break;
                 case Mech.LOC_LLEG:
                     llArmorModel.setValue(Math.min(maxArmor,
                             unit.getArmor(location)));
-                    if (isFullyAllocated()) {
-                        llArmorModel.setMaximum((Integer) llArmorModel
-                                .getValue());
-                    } else {
-                        llArmorModel.setMaximum(maxArmor);
-                    }
-                    llArmorModel.setStepSize(1);
-                    llArmorModel.setMinimum(0);
+                    llArmorModel.setMaximum(maxArmor);
                     llArmorMaxLabel.setText("max: "
                             + Integer.toString(maxArmor));
                     break;
                 case Mech.LOC_RLEG:
                     rlArmorModel.setValue(Math.min(maxArmor,
                             unit.getArmor(location)));
-                    if (isFullyAllocated()) {
-                        rlArmorModel.setMaximum((Integer) rlArmorModel
-                                .getValue());
-                    } else {
-                        rlArmorModel.setMaximum(maxArmor);
-                    }
-                    rlArmorModel.setStepSize(1);
-                    rlArmorModel.setMinimum(0);
+                    rlArmorModel.setMaximum(maxArmor);
                     rlArmorMaxLabel.setText("max: "
                             + Integer.toString(maxArmor));
                     break;
                 case Mech.LOC_CLEG:
                     clArmorModel.setValue(Math.min(maxArmor,
                             unit.getArmor(location)));
-                    if (isFullyAllocated()) {
-                        clArmorModel.setMaximum((Integer) clArmorModel
-                                .getValue());
-                    } else {
-                        clArmorModel.setMaximum(maxArmor);
-                    }
-                    clArmorModel.setStepSize(1);
-                    clArmorModel.setMinimum(0);
+                    clArmorModel.setMaximum(maxArmor);
                     clArmorMaxLabel.setText("max: "
                             + Integer.toString(maxArmor));
                     break;
@@ -998,29 +926,68 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     public void stateChanged(ChangeEvent e) {
         removeAllListeners();
+        
         JSpinner field = (JSpinner) e.getSource();
+        boolean isRear = field.equals(ctrArmorField)
+                || field.equals(ltrArmorField) || field.equals(rtrArmorField);
         int location = Integer.parseInt(field.getName());
-        int value = (Integer) field.getModel().getValue();
+        int maxArmor = unit.getOInternal(location) * 2;
+        int value = (Integer) field.getModel().getValue();        
+
+        // How much armor do we have without the value that was just changed
+        int totalArmor = 0;
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            if (loc != location) {
+                totalArmor += unit.getOArmor(loc);
+                if (unit.hasRearArmor(loc)) {
+                    totalArmor += unit.getOArmor(loc, true);
+                }
+            } else if ((loc == location) && unit.hasRearArmor(loc)) {
+                totalArmor += unit.getOArmor(loc, !isRear);
+            }
+        }
+        
+        // Do we have enough armor points to make this change?
+        if ((armorPoints - (totalArmor + value)) < 0) {
+            // See if we can pull armor from the opposite location
+            if (unit.hasRearArmor(location) 
+                    && unit.getOArmor(location,!isRear) > 0) {
+                stealArmorFromOppositeSide(location, isRear);
+            } else { // If we can't pull armor, just revert the change and end
+                field.setValue(value - 1);
+                addAllListeners();
+                return;
+            }
+        }
+        
+        // If this change would put us over the per-location total, may have to
+        // steal a point from the other side
+        if (unit.hasRearArmor(location) 
+                && ((value + unit.getOArmor(location, !isRear)) > maxArmor)) {
+            stealArmorFromOppositeSide(location, isRear);
+        }
+        
+        // Update armor in the changed location
         switch (location) {
             case Mech.LOC_CT:
-                if (field.equals(ctrArmorField)) {
+                if (isRear) {
                     getMech().initializeRearArmor(value, location);
                 } else {
-                    unit.initializeArmor(value, location);
+                    getMech().initializeArmor(value, location);
                 }
                 break;
             case Mech.LOC_RT:
-                if (field.equals(rtrArmorField)) {
+                if (isRear) {
                     getMech().initializeRearArmor(value, location);
                 } else {
-                    unit.initializeArmor(value, location);
+                    getMech().initializeArmor(value, location);
                 }
                 break;
             case Mech.LOC_LT:
-                if (field.equals(ltrArmorField)) {
+                if (isRear) {
                     getMech().initializeRearArmor(value, location);
                 } else {
-                    unit.initializeArmor(value, location);
+                    getMech().initializeArmor(value, location);
                 }
                 break;
             default:
@@ -1038,6 +1005,67 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         }
         addAllListeners();
     }
+    
+    /**
+     * Given a location and whether it's rear or not, take a point of armor from
+     * the opposite side.  That is, given a rear CT location, reduce the front
+     * CT by 1 point of armor.
+     * 
+     * @param location
+     * @param isRear
+     */
+    private void stealArmorFromOppositeSide(int location, boolean isRear) {
+        JSpinner opposite = getOppositeSpinner(location, isRear);
+        int oppositeValue = (Integer)opposite.getValue();
+        // "Steal" armor from the opposite side
+        oppositeValue--;
+        opposite.setValue(oppositeValue);
+        // Make sure the Unit reflects the armor update
+        if (!isRear) {
+            getMech().initializeRearArmor(oppositeValue, location);
+        } else {
+            getMech().initializeArmor(oppositeValue, location);
+        }
+    }
+    
+    /**
+     * For swapping armor between front and rear locations, we need to get the
+     * JSpinner that correspondes to the opposite side of a location.  Ie, if
+     * we are given the front CT, return the rear CT JSpinner.
+     * 
+     * @param location
+     * @param isRear
+     * @return
+     */
+    private JSpinner getOppositeSpinner(int location, boolean isRear) {
+        JSpinner opposite;
+        switch (location) {
+            case Mech.LOC_CT:
+                if (isRear) {
+                    opposite = ctArmorField;
+                } else {
+                    opposite = ctrArmorField;
+                }
+                break;
+            case Mech.LOC_LT:
+                if (isRear) {
+                    opposite = ltArmorField;
+                } else {
+                    opposite = ltrArmorField;
+                }
+                break;
+            case Mech.LOC_RT:
+                if (isRear) {
+                    opposite = rtArmorField;
+                } else {
+                    opposite = rtrArmorField;
+                }
+                break;
+            default :
+                opposite = null;
+        }
+        return opposite;
+    }
 
     public void setArmorPoints(int points) {
         int headPoints = 3;
@@ -1047,13 +1075,6 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         int maxArmor = (unit.getTotalOInternal() * 2) + headPoints;
         wastedArmorPoints = Math.max(points - maxArmor, 0);
         armorPoints = Math.min(maxArmor, points);
-    }
-
-    private boolean isFullyAllocated() {
-        if (!unit.hasPatchworkArmor()) {
-            return armorPoints == unit.getTotalOArmor();
-        }
-        return false;
     }
 
     @Override
