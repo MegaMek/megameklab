@@ -29,9 +29,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import megamek.common.Aero;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAero;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 
 public class SummaryView extends IView{
@@ -54,8 +54,8 @@ public class SummaryView extends IView{
     private EntityVerifier entityVerifier = new EntityVerifier(
             new File("data/mechfiles/UnitVerifierOptions.xml"));
 
-    public SummaryView(Aero unit) {
-        super(unit);
+    public SummaryView(EntitySource eSource) {
+        super(eSource);
 
         Vector<JTextField> valueFields = new Vector<JTextField>();
 

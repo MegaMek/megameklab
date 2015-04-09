@@ -42,6 +42,7 @@ import megamek.common.loaders.MtfFile;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.BattleArmor.CriticalSuit;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -91,11 +92,11 @@ public class CriticalView extends IView {
      */
     int trooper;
     
-    public CriticalView(BattleArmor unit, int t, boolean showEmpty,
+    public CriticalView(EntitySource eSource, int t, boolean showEmpty,
             RefreshListener refresh) {
-        super(unit);
+        super(eSource);
         trooper = t;
-        critSuit = new CriticalSuit(unit);
+        critSuit = new CriticalSuit(getBattleArmor());
         this.showEmpty = showEmpty;
         this.refresh = refresh;
 
@@ -219,7 +220,7 @@ public class CriticalView extends IView {
                 DropTargetCriticalList<String> criticalSlotList = null;                
 
                 criticalSlotList = new DropTargetCriticalList<String>(
-                        critNames, getBattleArmor(), refresh, showEmpty);
+                        critNames, eSource, refresh, showEmpty);
                 criticalSlotList.setAlignmentX(JLabel.CENTER_ALIGNMENT);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(

@@ -32,6 +32,7 @@ import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.loaders.MtfFile;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.DropTargetCriticalList;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -63,8 +64,8 @@ public class CriticalView extends IView {
 
     private boolean showEmpty = false;
 
-    public CriticalView(Tank unit, boolean showEmpty, RefreshListener refresh) {
-        super(unit);
+    public CriticalView(EntitySource eSource, boolean showEmpty, RefreshListener refresh) {
+        super(eSource);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
 
@@ -98,7 +99,7 @@ public class CriticalView extends IView {
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         mainPanel.add(middlePanel);
 
-        if (unit.isSuperHeavy() && !(unit instanceof VTOL)) {
+        if (getTank().isSuperHeavy() && !(getTank() instanceof VTOL)) {
             middlePanel2.add(rearLeftPanel);
             rearLeftPanel.setBorder(BorderFactory.createTitledBorder(
                     BorderFactory.createEmptyBorder(), "Rear Left Side",
@@ -226,7 +227,7 @@ public class CriticalView extends IView {
                 }
                 DropTargetCriticalList<String> criticalSlotList = null;
 
-                DropTargetCriticalList<String> dropTargetCriticalList = new DropTargetCriticalList<String>(critNames, getTank(), refresh, showEmpty);
+                DropTargetCriticalList<String> dropTargetCriticalList = new DropTargetCriticalList<String>(critNames, eSource, refresh, showEmpty);
                 criticalSlotList = dropTargetCriticalList;
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

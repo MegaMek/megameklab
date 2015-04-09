@@ -37,7 +37,7 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.Tank;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentListCellKeySelectionManager;
 import megameklab.com.util.EquipmentListCellRenderer;
@@ -74,14 +74,14 @@ public class EquipmentView extends IView implements ActionListener {
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
-    public EquipmentView(Tank unit) {
-        super(unit);
+    public EquipmentView(EntitySource eSource) {
+        super(eSource);
         setLayout(new BorderLayout());
 
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        equipmentList = new CriticalTableModel(unit, CriticalTableModel.EQUIPMENT);
+        equipmentList = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.EQUIPMENT);
 
         equipmentTable.setModel(equipmentList);
         equipmentList.initColumnSizes(equipmentTable);
@@ -109,7 +109,7 @@ public class EquipmentView extends IView implements ActionListener {
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
 
-            if (UnitUtil.isUnitEquipment(eq, unit)) {
+            if (UnitUtil.isUnitEquipment(eq, eSource.getEntity())) {
                 masterEquipmentList.add(eq);
             }
         }

@@ -34,8 +34,8 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Infantry;
 import megamek.common.TechConstants;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
@@ -57,8 +57,8 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     private Dimension maxSize = new Dimension();
 
     
-    public ArmorView(Infantry unit) {
-        super(unit);
+    public ArmorView(EntitySource eSource) {
+        super(eSource);
         setUpPanels();
         refresh();
     }

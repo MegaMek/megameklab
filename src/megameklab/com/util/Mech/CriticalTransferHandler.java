@@ -45,6 +45,7 @@ import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -55,12 +56,12 @@ public class CriticalTransferHandler extends TransferHandler {
      *
      */
     private static final long serialVersionUID = -5215375829853683877L;
-    private Entity unit;
+    private EntitySource eSource;
     private int location = -1;
     private RefreshListener refresh;
 
-    public CriticalTransferHandler(Entity unit, RefreshListener refresh) {
-        this.unit = unit;
+    public CriticalTransferHandler(EntitySource eSource, RefreshListener refresh) {
+        this.eSource = eSource;
         this.refresh = refresh;
     }
 
@@ -563,7 +564,7 @@ public class CriticalTransferHandler extends TransferHandler {
     }
 
     public Entity getUnit() {
-        return unit;
+        return eSource.getEntity();
     }
 
 }

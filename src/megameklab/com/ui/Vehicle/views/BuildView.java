@@ -35,8 +35,8 @@ import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.Tank;
 import megamek.common.weapons.Weapon;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Vehicle.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.CriticalTransferHandler;
@@ -61,15 +61,15 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
     CriticalTransferHandler cth;
 
-    public BuildView(Tank unit, RefreshListener refresh) {
-        super(unit);
+    public BuildView(EntitySource eSource, RefreshListener refresh) {
+        super(eSource);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         equipmentList = new CriticalTableModel(getTank(), CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        cth = new CriticalTransferHandler(unit, refresh);
+        cth = new CriticalTransferHandler(eSource, refresh);
         equipmentTable.setTransferHandler(cth);
 
         equipmentList.initColumnSizes(equipmentTable);

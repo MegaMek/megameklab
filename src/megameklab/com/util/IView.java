@@ -20,11 +20,11 @@ import javax.swing.JPanel;
 
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
-import megamek.common.Entity;
 import megamek.common.Infantry;
 import megamek.common.Mech;
 import megamek.common.Tank;
 import megamek.common.VTOL;
+import megameklab.com.ui.EntitySource;
 
 public class IView extends JPanel {
 
@@ -32,53 +32,33 @@ public class IView extends JPanel {
      *
      */
     private static final long serialVersionUID = -6741722012756653309L;
-    private Entity unit;
+    protected EntitySource eSource;
 
-    public IView(Aero unit) {
-        this.unit = unit;
-    }
-    
-    public IView(Mech unit) {
-        this.unit = unit;
-    }
-
-    public IView(Tank unit) {
-        this.unit = unit;
-    }
-
-    public IView(BattleArmor unit) {
-        this.unit = unit;
-    }
-
-    public IView(Infantry unit) {
-        this.unit = unit;
-    }
-
-    public void updateUnit(Entity unit) {
-        this.unit = unit;
+    public IView(EntitySource eSource) {
+        this.eSource = eSource;
     }
 
     public Mech getMech() {
-        return (Mech) unit;
+        return (Mech) eSource.getEntity();
     }
 
     public Tank getTank() {
-        return (Tank) unit;
+        return (Tank) eSource.getEntity();
     }
 
     public VTOL getVTOL() {
-        return (VTOL) unit;
+        return (VTOL) eSource.getEntity();
     }
 
     public Aero getAero() {
-        return (Aero) unit;
+        return (Aero) eSource.getEntity();
     }
 
     public BattleArmor getBattleArmor() {
-        return (BattleArmor) unit;
+        return (BattleArmor) eSource.getEntity();
     }
 
     public Infantry getInfantry() {
-    	return (Infantry) unit;
+    	return (Infantry) eSource.getEntity();
     }
 }

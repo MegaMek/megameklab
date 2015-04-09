@@ -54,6 +54,7 @@ import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -137,8 +138,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
     
     private MechViewPanel panelMekView;
     
-	public StructureTab(BattleArmor unit) {
-	    super(unit);
+	public StructureTab(EntitySource eSource) {
+	    super(eSource);
         setUpPanels();
         refresh();
 	}
