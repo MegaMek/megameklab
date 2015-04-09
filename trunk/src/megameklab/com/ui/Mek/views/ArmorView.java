@@ -45,6 +45,7 @@ import javax.swing.event.ChangeListener;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.TripodMech;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -154,8 +155,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     private RefreshListener refresh;
 
-    public ArmorView(Mech unit) {
-        super(unit);
+    public ArmorView(EntitySource eSource) {
+        super(eSource);
 
         setLayout(new GridLayout(1, 1));
 
@@ -259,7 +260,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         JPanel topPanel;
         JPanel bottomPanel;
 
-        synchronized (unit) {
+        synchronized (getMech()) {
             for (int location = 0; location < getMech().locations(); location++) {
 
                 switch (location) {

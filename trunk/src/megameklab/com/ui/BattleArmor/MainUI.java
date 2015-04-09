@@ -83,12 +83,11 @@ public class MainUI extends MegaMekLabMainUI {
         ConfigPane.removeAll();
 
         masterPanel.setLayout(new BorderLayout());
-        BattleArmor ba = (BattleArmor) getEntity();
-        structureTab = new StructureTab(ba);
-        equipTab = new EquipmentTab(ba);
+        structureTab = new StructureTab(this);
+        equipTab = new EquipmentTab(this);
 
-        statusbar = new StatusBar(ba,this);
-        buildTab = new BuildTab(ba);
+        statusbar = new StatusBar(this);
+        buildTab = new BuildTab(this);
         structureTab.addRefreshedListener(this);
         equipTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);

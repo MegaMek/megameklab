@@ -49,9 +49,9 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.Tank;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ArtilleryWeapon;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -141,8 +141,8 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
 
-    public WeaponView(Tank unit) {
-        super(unit);
+    public WeaponView(EntitySource eSource) {
+        super(eSource);
 
         mainPanel.setLayout(new SpringLayout());
         rightPanel.setLayout(new SpringLayout());
@@ -151,7 +151,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         leftPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        weaponList = new CriticalTableModel(unit, CriticalTableModel.WEAPONTABLE);
+        weaponList = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.WEAPONTABLE);
 
         equipmentTable.setModel(weaponList);
         weaponList.initColumnSizes(equipmentTable);
@@ -203,38 +203,38 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         laserPane.add(laserWeaponCombo);
         laserWeaponCombo.setFixedCellWidth(155);
         laserWeaponCombo.setFont(listFont);
-        laserWeaponCombo.setCellRenderer(new WeaponListCellRenderer(unit));
+        laserWeaponCombo.setCellRenderer(new WeaponListCellRenderer(getTank()));
         laserAmmoPane.add(laserAmmoCombo);
         laserAmmoCombo.setFixedCellWidth(155);
         laserAmmoCombo.setFont(listFont);
-        laserAmmoCombo.setCellRenderer(new WeaponListCellRenderer(unit));
+        laserAmmoCombo.setCellRenderer(new WeaponListCellRenderer(getTank()));
 
         missilePane.add(missileWeaponCombo);
         missileWeaponCombo.setFixedCellWidth(155);
         missileWeaponCombo.setFont(listFont);
-        missileWeaponCombo.setCellRenderer(new WeaponListCellRenderer(unit));
+        missileWeaponCombo.setCellRenderer(new WeaponListCellRenderer(getTank()));
         missileAmmoPane.add(missileAmmoCombo);
         missileAmmoCombo.setFixedCellWidth(155);
         missileAmmoCombo.setFont(listFont);
-        missileAmmoCombo.setCellRenderer(new WeaponListCellRenderer(unit));
+        missileAmmoCombo.setCellRenderer(new WeaponListCellRenderer(getTank()));
 
         ballisticPane.add(ballisticWeaponCombo);
         ballisticWeaponCombo.setFixedCellWidth(155);
         ballisticWeaponCombo.setFont(listFont);
-        ballisticWeaponCombo.setCellRenderer(new WeaponListCellRenderer(unit));
+        ballisticWeaponCombo.setCellRenderer(new WeaponListCellRenderer(getTank()));
         ballisticAmmoPane.add(ballisticAmmoCombo);
         ballisticAmmoCombo.setFixedCellWidth(155);
         ballisticAmmoCombo.setFont(listFont);
-        ballisticAmmoCombo.setCellRenderer(new WeaponListCellRenderer(unit));
+        ballisticAmmoCombo.setCellRenderer(new WeaponListCellRenderer(getTank()));
 
         artilleryPane.add(artilleryWeaponCombo);
         artilleryWeaponCombo.setFixedCellWidth(155);
         artilleryWeaponCombo.setFont(listFont);
-        artilleryWeaponCombo.setCellRenderer(new WeaponListCellRenderer(unit));
+        artilleryWeaponCombo.setCellRenderer(new WeaponListCellRenderer(getTank()));
         artilleryAmmoPane.add(artilleryAmmoCombo);
         artilleryAmmoCombo.setFixedCellWidth(155);
         artilleryAmmoCombo.setFont(listFont);
-        artilleryAmmoCombo.setCellRenderer(new WeaponListCellRenderer(unit));
+        artilleryAmmoCombo.setCellRenderer(new WeaponListCellRenderer(getTank()));
 
         JPanel tab = new JPanel();
         tab.setLayout(new SpringLayout());
@@ -291,7 +291,7 @@ public class WeaponView extends IView implements ActionListener, MouseListener, 
         while (weaponTypes.hasMoreElements()) {
             EquipmentType eq = weaponTypes.nextElement();
 
-            if (!UnitUtil.isUnitWeapon(eq, unit)) {
+            if (!UnitUtil.isUnitWeapon(eq, getTank())) {
                 continue;
             }
 

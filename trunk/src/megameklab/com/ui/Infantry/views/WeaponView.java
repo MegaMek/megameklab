@@ -48,9 +48,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import megamek.common.EquipmentType;
-import megamek.common.Infantry;
 import megamek.common.WeaponType;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
@@ -105,10 +105,10 @@ public class WeaponView extends IView implements ActionListener {
         }
     }
 
-    public WeaponView(Infantry unit) {
-        super(unit);
+    public WeaponView(EntitySource eSource) {
+        super(eSource);
 
-        masterEquipmentList = new EquipmentTableModel(unit);
+        masterEquipmentList = new EquipmentTableModel(eSource.getEntity());
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);

@@ -43,6 +43,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestAero;
 import megamek.common.weapons.Weapon;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.IView;
@@ -72,14 +73,14 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     
     CriticalTransferHandler cth;
 
-    public BuildView(Aero unit, RefreshListener refresh) {
-        super(unit);
+    public BuildView(EntitySource eSource, RefreshListener refresh) {
+        super(eSource);
 
         equipmentList = new CriticalTableModel(getAero(), CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        cth = new CriticalTransferHandler(unit, refresh);
+        cth = new CriticalTransferHandler(eSource, refresh);
         equipmentTable.setTransferHandler(cth);
         TableColumn column = null;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {

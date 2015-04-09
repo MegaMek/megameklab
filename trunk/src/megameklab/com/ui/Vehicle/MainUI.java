@@ -89,16 +89,15 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        Tank tank = (Tank) getEntity();
-        statusbar = new StatusBar(tank, this);
-        equipmentTab = new EquipmentTab(tank);
-        buildTab = new BuildTab(tank, equipmentTab);
-        structureTab = new StructureTab(tank);
+        statusbar = new StatusBar(this);
+        equipmentTab = new EquipmentTab(this);
+        buildTab = new BuildTab(this, equipmentTab);
+        structureTab = new StructureTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         
-        previewTab = new PreviewTab(tank);
+        previewTab = new PreviewTab(this);
 
         configPane.addTab("Structure/Armor", structureTab);
         configPane.addTab("Equipment", equipmentTab);

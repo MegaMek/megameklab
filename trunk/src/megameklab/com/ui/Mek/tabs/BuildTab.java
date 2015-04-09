@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import megamek.common.Entity;
 import megamek.common.Mech;
 import megamek.common.Mounted;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.BuildView;
 import megameklab.com.ui.Mek.views.CriticalView;
 import megameklab.com.util.ITab;
@@ -55,16 +56,16 @@ public class BuildTab extends ITab implements ActionListener {
     private String RESETCOMMAND = "resetbuttoncommand";
     private String COMPACTCOMMAND = "compactbuttoncommand";
 
-    public BuildTab(Mech unit, EquipmentTab equipment) {
-        super(unit);
+    public BuildTab(EntitySource eSource, EquipmentTab equipment) {
+        super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new GridBagLayout());
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        critView = new CriticalView(getMech(), true, refresh);
-        buildView = new BuildView(getMech(), refresh);
+        critView = new CriticalView(eSource, true, refresh);
+        buildView = new BuildView(eSource, refresh);
 
         autoFillButton.setMnemonic('A');
         autoFillButton.setActionCommand(AUTOFILLCOMMAND);
@@ -94,8 +95,6 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        critView.updateUnit(getMech());
-        buildView.updateUnit(getMech());
         critView.refresh();
         buildView.refresh();
         addAllActionListeners();

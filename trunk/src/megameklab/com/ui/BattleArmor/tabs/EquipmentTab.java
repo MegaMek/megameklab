@@ -63,6 +63,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ArtilleryWeapon;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.ITab;
@@ -136,10 +137,10 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
-    public EquipmentTab(BattleArmor unit) {
-        super(unit);
+    public EquipmentTab(EntitySource eSource) {
+        super(eSource);
 
-        equipmentList = new CriticalTableModel(unit, CriticalTableModel.WEAPONTABLE);
+        equipmentList = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.WEAPONTABLE);
         equipmentTable.setModel(equipmentList);
         equipmentTable.setIntercellSpacing(new Dimension(0, 0));
         equipmentTable.setShowGrid(false);
@@ -158,7 +159,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentScroll.setMinimumSize(new java.awt.Dimension(300, 200));
         equipmentScroll.setPreferredSize(new java.awt.Dimension(300, 200));
 
-        masterEquipmentList = new EquipmentTableModel(unit);
+        masterEquipmentList = new EquipmentTableModel(eSource.getEntity());
         masterEquipmentTable.setModel(masterEquipmentList);
         masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);

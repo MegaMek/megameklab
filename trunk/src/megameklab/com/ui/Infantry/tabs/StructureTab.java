@@ -42,6 +42,7 @@ import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Infantry.views.ArmorView;
 import megameklab.com.ui.Infantry.views.WeaponView;
 import megameklab.com.util.ITab;
@@ -99,10 +100,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 	private ArmorView armorView;
 	private WeaponView weaponView;
 
-	public StructureTab(Infantry unit) {
-	    super(unit);
-        armorView = new ArmorView(unit);
-        weaponView = new WeaponView(unit);
+	public StructureTab(EntitySource eSource) {
+	    super(eSource);
+        armorView = new ArmorView(eSource);
+        weaponView = new WeaponView(eSource);
         setUpPanels();
         refresh();
 	}
@@ -359,9 +360,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             txtSecondary.setText("None");
         }
 
-		armorView.updateUnit(getInfantry());
         armorView.refresh();
-        weaponView.updateUnit(getInfantry());
         weaponView.refresh();
         addAllActionListeners();
 	}

@@ -26,9 +26,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.Mounted;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.views.BuildView;
 import megameklab.com.ui.Aero.views.CriticalView;
 import megameklab.com.util.ITab;
@@ -52,16 +52,16 @@ public class BuildTab extends ITab implements ActionListener {
 
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public BuildTab(Aero unit, EquipmentTab equipment) {
-        super(unit);
+    public BuildTab(EntitySource eSource, EquipmentTab equipment) {
+        super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new GridBagLayout());
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        critView = new CriticalView(getAero(), true, refresh);
-        buildView = new BuildView(getAero(),refresh);
+        critView = new CriticalView(eSource, true, refresh);
+        buildView = new BuildView(eSource,refresh);
 
         resetButton.setMnemonic('R');
         resetButton.setActionCommand(RESETCOMMAND);        
@@ -87,8 +87,6 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        critView.updateUnit(getAero());
-        buildView.updateUnit(getAero());
         critView.refresh();
         critView.validate();
         buildView.refresh();

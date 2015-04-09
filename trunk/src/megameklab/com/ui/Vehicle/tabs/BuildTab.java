@@ -30,8 +30,8 @@ import javax.swing.SwingConstants;
 import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
-import megamek.common.Tank;
 import megamek.common.loaders.EntityLoadingException;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Vehicle.views.BuildView;
 import megameklab.com.ui.Vehicle.views.CriticalView;
 import megameklab.com.util.CriticalTableModel;
@@ -60,15 +60,15 @@ public class BuildTab extends ITab implements ActionListener {
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public BuildTab(Tank unit, EquipmentTab equipment) {
-        super(unit);
+    public BuildTab(EntitySource eSource, EquipmentTab equipment) {
+        super(eSource);
         this.critList = equipment.getEquipmentList();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        critView = new CriticalView(unit, true, refresh);
-        buildView = new BuildView(unit, refresh);
+        critView = new CriticalView(eSource, true, refresh);
+        buildView = new BuildView(eSource, refresh);
 
         mainPanel.add(buildView);
 
@@ -102,8 +102,6 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        critView.updateUnit(getTank());
-        buildView.updateUnit(getTank());
         critView.refresh();
         buildView.refresh();
         addAllActionListeners();

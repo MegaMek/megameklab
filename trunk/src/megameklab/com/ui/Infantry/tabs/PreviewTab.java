@@ -21,10 +21,9 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 import megamek.client.ui.swing.MechViewPanel;
-import megamek.common.Infantry;
 import megamek.common.MechView;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
 
 public class PreviewTab extends ITab implements ActionListener {
@@ -36,8 +35,8 @@ public class PreviewTab extends ITab implements ActionListener {
 
     private MechViewPanel panelMekView;
 
-    public PreviewTab(Infantry unit) {
-        super(unit);
+    public PreviewTab(EntitySource eSource) {
+        super(eSource);
         this.setLayout(new BorderLayout());
         panelMekView = new MechViewPanel(350, 500);
         add(panelMekView, BorderLayout.CENTER);

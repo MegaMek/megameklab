@@ -62,16 +62,16 @@ public class StatusBar extends ITab {
 
     private RefreshListener refresh;
 
-    public StatusBar(Tank unit, MegaMekLabMainUI parent) {
-        super(unit);
+    public StatusBar(MegaMekLabMainUI parent) {
+        super(parent);
         parentFrame = parent;
 
         formatter = new DecimalFormat();
-        if (unit.isSupportVehicle()) {
-            testEntity = new TestSupportVehicle((Tank) unit,
+        if (parent.getEntity().isSupportVehicle()) {
+            testEntity = new TestSupportVehicle((Tank) parent.getEntity(),
                     entityVerifier.tankOption, null);
         } else {
-            testEntity = new TestTank((Tank) unit, entityVerifier.tankOption,
+            testEntity = new TestTank((Tank) parent.getEntity(), entityVerifier.tankOption,
                     null);
         }
         btnValidate.addActionListener(new java.awt.event.ActionListener() {

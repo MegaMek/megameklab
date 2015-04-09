@@ -52,6 +52,7 @@ import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestAero;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.views.ArmorView;
 import megameklab.com.ui.Aero.views.SummaryView;
 import megameklab.com.util.ITab;
@@ -149,9 +150,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
 
 
-    public StructureTab(Aero unit) {
-        super(unit);
-        armorView = new ArmorView(getAero());
+    public StructureTab(EntitySource eSource) {
+        super(eSource);
+        armorView = new ArmorView(eSource);
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
@@ -167,7 +168,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panMovement = new JPanel(new GridBagLayout());
         panFuel = new JPanel(new GridBagLayout());
         panHeat = new JPanel(new GridBagLayout());
-        panSummary = new SummaryView(getAero());
+        panSummary = new SummaryView(eSource);
 
         GridBagConstraints gbc;
 
@@ -678,9 +679,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         armorTonnage.setEnabled(true);
         maximizeArmorButton.setEnabled(true);
 
-        armorView.updateUnit(getAero());
         armorView.refresh();
-        panSummary.updateUnit(getAero());
         panSummary.refresh();
         addAllListeners();
 

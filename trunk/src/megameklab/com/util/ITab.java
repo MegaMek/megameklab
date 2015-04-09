@@ -19,11 +19,11 @@ import javax.swing.JPanel;
 
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
-import megamek.common.Entity;
 import megamek.common.Infantry;
 import megamek.common.Mech;
 import megamek.common.Tank;
 import megamek.common.VTOL;
+import megameklab.com.ui.EntitySource;
 
 public class ITab extends JPanel {
 
@@ -31,38 +31,34 @@ public class ITab extends JPanel {
      * 
      */
     private static final long serialVersionUID = -5771036622436158024L;
-    private Entity unit;
+    protected EntitySource eSource;
 
-    public ITab(Entity unit) {
-        this.unit = unit;
-    }
-
-    public void updateUnit(Entity unit) {
-        this.unit = unit;
+    public ITab(EntitySource eSource) {
+        this.eSource = eSource;
     }
 
     public Mech getMech() {
-        return (Mech) unit;
+        return (Mech) eSource.getEntity();
     }
 
     public Tank getTank() {
-        return (Tank) unit;
+        return (Tank) eSource.getEntity();
     }
 
     public VTOL getVTOL() {
-        return (VTOL) unit;
+        return (VTOL) eSource.getEntity();
     }
 
     public Aero getAero() {
-        return (Aero) unit;
+        return (Aero) eSource.getEntity();
     }
 
     public BattleArmor getBattleArmor() {
-        return (BattleArmor) unit;
+        return (BattleArmor) eSource.getEntity();
     }
     
     public Infantry getInfantry() {
-    	return (Infantry) unit;
+    	return (Infantry) eSource.getEntity();
     }
 
 }

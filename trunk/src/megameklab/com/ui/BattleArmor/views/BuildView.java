@@ -44,6 +44,7 @@ import megamek.common.WeaponType;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.Weapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.CriticalTransferHandler;
@@ -74,8 +75,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 
-    public BuildView(BattleArmor unit) {
-        super(unit);
+    public BuildView(EntitySource eSource) {
+        super(eSource);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         equipmentList = new CriticalTableModel(getBattleArmor(),
@@ -83,7 +84,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        CriticalTransferHandler cth = new CriticalTransferHandler(unit, null);
+        CriticalTransferHandler cth = new CriticalTransferHandler(eSource, null);
         equipmentTable.setTransferHandler(cth);
 
         equipmentList.initColumnSizes(equipmentTable);
