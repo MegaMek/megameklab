@@ -150,7 +150,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
 
     public StructureTab(Aero unit) {
-        this.unit = unit;
+        super(unit);
         armorView = new ArmorView(getAero());
         setLayout(new BorderLayout());
         setUpPanels();
@@ -243,7 +243,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .getTextField().setEditable(false);
 
         armorTonnage = new JSpinner(new SpinnerNumberModel(
-                unit.getArmorWeight(), 0.0, UnitUtil.getMaximumArmorTonnage(getAero()), 0.5));
+                getAero().getArmorWeight(), 0.0, UnitUtil.getMaximumArmorTonnage(getAero()), 0.5));
         spinnerSize = new Dimension(45, 25);
         ((JSpinner.DefaultEditor) armorTonnage.getEditor())
                 .setSize(spinnerSize);
@@ -257,8 +257,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setEditable(false);
 
 
-        chassis.setText(unit.getChassis());
-        model.setText(unit.getModel());
+        chassis.setText(getAero().getChassis());
+        model.setText(getAero().getModel());
 
         Dimension labelSize = new Dimension(110, 25);
         gbc = new GridBagConstraints();
@@ -671,16 +671,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setAeroStructuralIntegrity();
 
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
-                .getMaximumArmorTonnage(unit));
+                .getMaximumArmorTonnage(getAero()));
         ((SpinnerNumberModel) armorTonnage.getModel()).setValue(Math.min(UnitUtil
-                .getMaximumArmorTonnage(unit), unit.getLabArmorTonnage()));
+                .getMaximumArmorTonnage(getAero()), getAero().getLabArmorTonnage()));
 
         armorTonnage.setEnabled(true);
         maximizeArmorButton.setEnabled(true);
 
-        armorView.updateUnit(unit);
+        armorView.updateUnit(getAero());
         armorView.refresh();
-        panSummary.updateUnit(unit);
+        panSummary.updateUnit(getAero());
         panSummary.refresh();
         addAllListeners();
 
@@ -735,7 +735,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             .getSelectedItem().toString()));
                 }
             } else if (combo.equals(armorCombo)) {
-                UnitUtil.removeISorArmorMounts(unit, false);
+                UnitUtil.removeISorArmorMounts(getAero(), false);
                 createArmorMountsAndSetArmorType();
                 armorView.resetArmorPoints();
             } else if (combo.equals(heatSinkType)) {
@@ -793,7 +793,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 populateChoices(true);
                 armorView.resetArmorPoints();
-                UnitUtil.checkEquipmentByTechLevel(unit);
+                UnitUtil.checkEquipmentByTechLevel(getAero());
             } else if (combo.equals(techType)) {
                 if ((techType.getSelectedIndex() == 1)
                         && (!getAero().isClan() || getAero().isMixedTech())) {
@@ -827,54 +827,54 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     for (String item : isTechLevels) {
                         techLevel.addItem(item);
                     }
-                    if (unit.getYear() < 3090) {
+                    if (getAero().getYear() < 3090) {
                         //before 3090, mixed tech is experimental
-                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                            unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        if ((getAero().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                            getAero().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                         }
-                    } else if (unit.getYear() < 3145) {
+                    } else if (getAero().getYear() < 3145) {
                         // between 3090 and 3145, mixed tech is advanced
-                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
-                            unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                        if ((getAero().getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (getAero().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
+                            getAero().setTechLevel(TechConstants.T_IS_ADVANCED);
                         }
                     } else {
                         // from 3145 on, mixed tech is tourney legal
-                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
-                            unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                        if ((getAero().getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (getAero().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (getAero().getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
+                            getAero().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
                         }
                     }
-                    unit.setMixedTech(true);
+                    getAero().setMixedTech(true);
                 } else if ((techType.getSelectedIndex() == 3)
-                        && (!unit.isMixedTech() || !unit.isClan())) {
+                        && (!getAero().isMixedTech() || !getAero().isClan())) {
                     techLevel.removeAllItems();
                     for (String item : clanTechLevels) {
                         techLevel.addItem(item);
                     }
-                    if (unit.getYear() < 3090) {
+                    if (getAero().getYear() < 3090) {
                         //before 3090, mixed tech is experimental
-                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
-                            unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        if ((getAero().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
+                            getAero().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                         }
-                    } else if (unit.getYear() < 3145) {
+                    } else if (getAero().getYear() < 3145) {
                         // between 3090 and 3145, mixed tech is advanced
-                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
-                            unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        if ((getAero().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (getAero().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
+                            getAero().setTechLevel(TechConstants.T_CLAN_ADVANCED);
                         }
                     } else {
                         // from 3145 on, mixed tech is tourney legal
-                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_CLAN_TW)) {
-                            unit.setTechLevel(TechConstants.T_CLAN_TW);
+                        if ((getAero().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (getAero().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (getAero().getTechLevel() != TechConstants.T_CLAN_TW)) {
+                            getAero().setTechLevel(TechConstants.T_CLAN_TW);
                         }
                     }
                     getAero().setMixedTech(true);
                 }
-                if (!unit.hasPatchworkArmor()) {
-                    UnitUtil.removeISorArmorMounts(unit, false);
+                if (!getAero().hasPatchworkArmor()) {
+                    UnitUtil.removeISorArmorMounts(getAero(), false);
                 }
                 createArmorMountsAndSetArmorType();
                 populateChoices(true);
                 armorView.resetArmorPoints();
-                UnitUtil.checkEquipmentByTechLevel(unit);
+                UnitUtil.checkEquipmentByTechLevel(getAero());
             }
             addAllListeners();
             refresh.refreshAll();
@@ -989,7 +989,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             refresh.refreshEquipment();
             populateChoices(true);
             armorView.resetArmorPoints();
-            UnitUtil.checkEquipmentByTechLevel(unit);
+            UnitUtil.checkEquipmentByTechLevel(getAero());
         } else if (e.getSource().equals(source)) {
             getAero().setSource(source.getText());
         } else if (e.getSource().equals(manualBV)) {
@@ -1004,9 +1004,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
             }
         } else if (e.getSource().equals(chassis)) {
-            unit.setChassis(chassis.getText().trim());
+            getAero().setChassis(chassis.getText().trim());
         } else if (e.getSource().equals(model)) {
-            unit.setModel(model.getText().trim());
+            getAero().setModel(model.getText().trim());
         }
         addAllListeners();
         refresh.refreshPreview();
@@ -1184,8 +1184,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             int type = armor.type;
             EquipmentType et;
             if (!isMixed) {
-                boolean techMatch = (armor.isClan && unit.isClan()) ||
-                        (!armor.isClan && !unit.isClan());
+                boolean techMatch = (armor.isClan && getAero().isClan()) ||
+                        (!armor.isClan && !getAero().isClan());
                 et = EquipmentType.get(
                         EquipmentType.getArmorTypeName(type, armor.isClan));
                 boolean isPatchwork = type == EquipmentType.T_ARMOR_PATCHWORK;
@@ -1408,7 +1408,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setArmorCombo(getAero().getArmorType(0));
             if (armorCombo.getSelectedIndex() == -1) {
                 armorCombo.setSelectedIndex(0);
-                UnitUtil.removeISorArmorMounts(unit, false);
+                UnitUtil.removeISorArmorMounts(getAero(), false);
                 createArmorMountsAndSetArmorType();
                 armorView.resetArmorPoints();
             }
@@ -1514,16 +1514,16 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void maximizeArmor() {
-        double maxArmor = UnitUtil.getMaximumArmorTonnage(unit);
+        double maxArmor = UnitUtil.getMaximumArmorTonnage(getAero());
         armorTonnage.setValue(maxArmor);
-        unit.setArmorTonnage(maxArmor);
+        getAero().setArmorTonnage(maxArmor);
         armorView.resetArmorPoints();
     }
 
     private void createArmorMountsAndSetArmorType() {
-        unit.setArmorTechLevel(EquipmentType.get(
+        getAero().setArmorTechLevel(EquipmentType.get(
                 getArmorType(armorCombo)).getTechLevel(getAero().getYear()));
-        unit.setArmorType(getArmorType(armorCombo));
+        getAero().setArmorType(getArmorType(armorCombo));
     }
 
     private void setArmorCombo(int type) {
@@ -1569,7 +1569,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void setArmorTonnage() {
-        unit.setArmorTonnage(((Double) armorTonnage.getValue()));
+        getAero().setArmorTonnage(((Double) armorTonnage.getValue()));
         armorView.resetArmorPoints();
     }
 

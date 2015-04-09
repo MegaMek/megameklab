@@ -269,7 +269,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         JPanel bottomPanel;
 
         synchronized (unit) {
-            for (int location = 1; location <= unit.locations(); location++) {
+            for (int location = 1; location <= getTank().locations(); location++) {
 
                 if (unit instanceof SuperHeavyTank) {
                     switch (location) {
@@ -287,7 +287,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
                             frontPanel
                                     .setBorder(BorderFactory.createTitledBorder(
-                                            null, unit.getLocationAbbr(location),
+                                            null, getTank().getLocationAbbr(location),
                                             TitledBorder.TOP,
                                             TitledBorder.DEFAULT_POSITION));
                             break;
@@ -303,7 +303,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             leftPanel.add(bottomPanel);
 
                             leftPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             break;
                         case SuperHeavyTank.LOC_FRONTRIGHT:
@@ -318,7 +318,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             rightPanel.add(bottomPanel);
 
                             rightPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             break;
                         case SuperHeavyTank.LOC_REARRIGHT:
@@ -326,7 +326,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             topPanel.add(rearRightArmorField);
                             topPanel.add(rearRightArmorMaxLabel);
                             rearRightPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             rearRightPanel.add(topPanel);
 
@@ -341,7 +341,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             topPanel.add(turret2ArmorField);
                             topPanel.add(turret2ArmorMaxLabel);
                             turret2Panel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             turret2Panel.add(topPanel);
 
@@ -356,7 +356,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             topPanel.add(rearLeftArmorField);
                             topPanel.add(rearLeftArmorMaxLabel);
                             rearLeftPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             rearLeftPanel.add(topPanel);
 
@@ -378,7 +378,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             rearPanel.add(bottomPanel);
 
                             rearPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             break;
                         case SuperHeavyTank.LOC_TURRET:
@@ -393,7 +393,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             turretPanel.add(bottomPanel);
 
                             turretPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             break;
                     }
@@ -413,7 +413,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
                             frontPanel
                                     .setBorder(BorderFactory.createTitledBorder(
-                                            null, unit.getLocationAbbr(location),
+                                            null, getTank().getLocationAbbr(location),
                                             TitledBorder.TOP,
                                             TitledBorder.DEFAULT_POSITION));
                             break;
@@ -429,7 +429,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             leftPanel.add(bottomPanel);
 
                             leftPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             break;
                         case Tank.LOC_RIGHT:
@@ -444,7 +444,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             rightPanel.add(bottomPanel);
 
                             rightPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             break;
                         case Tank.LOC_TURRET_2:
@@ -452,7 +452,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             topPanel.add(turret2ArmorField);
                             topPanel.add(turret2ArmorMaxLabel);
                             turret2Panel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             turret2Panel.add(topPanel);
 
@@ -474,7 +474,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             rearPanel.add(bottomPanel);
 
                             rearPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             break;
                         case Tank.LOC_TURRET:
@@ -489,7 +489,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                             turretPanel.add(bottomPanel);
 
                             turretPanel.setBorder(BorderFactory.createTitledBorder(
-                                    null, unit.getLocationAbbr(location),
+                                    null, getTank().getLocationAbbr(location),
                                     TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
                             break;
                     }
@@ -581,19 +581,19 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     }
 
     public void refresh() {
-        turretPanel.setVisible(!getTank().hasNoTurret()||(unit instanceof VTOL));
-        turret2Panel.setVisible(!getTank().hasNoDualTurret()|| ((unit instanceof VTOL) && !getTank().hasNoTurret()));
+        turretPanel.setVisible(!getTank().hasNoTurret()||(getTank() instanceof VTOL));
+        turret2Panel.setVisible(!getTank().hasNoDualTurret()|| ((getTank() instanceof VTOL) && !getTank().hasNoTurret()));
         removeAllListeners();
         int maxArmor = armorPoints;
-        if (unit.hasPatchworkArmor()) {
-            maxArmor = (int)Math.floor((unit.getWeight() * 3.5) + 40);
+        if (getTank().hasPatchworkArmor()) {
+            maxArmor = (int)Math.floor((getTank().getWeight() * 3.5) + 40);
         }
-        for (int location = 0; location < unit.locations(); location++) {
+        for (int location = 0; location < getTank().locations(); location++) {
 
-            if (unit instanceof SuperHeavyTank) {
+            if (getTank() instanceof SuperHeavyTank) {
                 switch (location) {
                     case Tank.LOC_FRONT:
-                        frontArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                        frontArmorModel.setValue(Math.min(maxArmor, getTank().getArmor(location)));
                         frontArmorModel.setMaximum(maxArmor);
                         frontArmorModel.setStepSize(1);
                         frontArmorModel.setMinimum(0);
@@ -602,7 +602,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case SuperHeavyTank.LOC_FRONTLEFT:
                         leftArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         leftArmorModel.setMaximum(maxArmor);
                         leftArmorModel.setStepSize(1);
                         leftArmorModel.setMinimum(0);
@@ -611,7 +611,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case SuperHeavyTank.LOC_FRONTRIGHT:
                         rightArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         rightArmorModel.setMaximum(maxArmor);
                         rightArmorModel.setStepSize(1);
                         rightArmorModel.setMinimum(0);
@@ -620,7 +620,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case SuperHeavyTank.LOC_REARRIGHT:
                         rearRightArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         rearRightArmorModel.setMaximum(maxArmor);
                         rearRightArmorModel.setStepSize(1);
                         rearRightArmorModel.setMinimum(0);
@@ -629,7 +629,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case SuperHeavyTank.LOC_TURRET_2:
                         turret2ArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         turret2ArmorModel.setMaximum(maxArmor);
                         turret2ArmorModel.setStepSize(1);
                         turret2ArmorModel.setMinimum(0);
@@ -638,7 +638,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case SuperHeavyTank.LOC_REARLEFT:
                         rearLeftArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         rearLeftArmorModel.setMaximum(maxArmor);
                         rearLeftArmorModel.setStepSize(1);
                         rearLeftArmorModel.setMinimum(0);
@@ -648,7 +648,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case SuperHeavyTank.LOC_REAR:
                         rearArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         rearArmorModel.setMaximum(maxArmor);
                         rearArmorModel.setStepSize(1);
                         rearArmorModel.setMinimum(0);
@@ -657,7 +657,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case SuperHeavyTank.LOC_TURRET:
                         turretArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         turretArmorModel.setMaximum(maxArmor);
                         turretArmorModel.setStepSize(1);
                         turretArmorModel.setMinimum(0);
@@ -668,7 +668,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             } else {
                 switch (location) {
                     case Tank.LOC_FRONT:
-                        frontArmorModel.setValue(Math.min(maxArmor, unit.getArmor(location)));
+                        frontArmorModel.setValue(Math.min(maxArmor, getTank().getArmor(location)));
                         frontArmorModel.setMaximum(maxArmor);
                         frontArmorModel.setStepSize(1);
                         frontArmorModel.setMinimum(0);
@@ -677,7 +677,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case Tank.LOC_LEFT:
                         leftArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         leftArmorModel.setMaximum(maxArmor);
                         leftArmorModel.setStepSize(1);
                         leftArmorModel.setMinimum(0);
@@ -686,7 +686,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case Tank.LOC_RIGHT:
                         rightArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         rightArmorModel.setMaximum(maxArmor);
                         rightArmorModel.setStepSize(1);
                         rightArmorModel.setMinimum(0);
@@ -695,7 +695,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case Tank.LOC_TURRET_2:
                         turret2ArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         turret2ArmorModel.setMaximum(maxArmor);
                         turret2ArmorModel.setStepSize(1);
                         turret2ArmorModel.setMinimum(0);
@@ -704,7 +704,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case Tank.LOC_REAR:
                         rearArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
+                                getTank().getArmor(location)));
                         rearArmorModel.setMaximum(maxArmor);
                         rearArmorModel.setStepSize(1);
                         rearArmorModel.setMinimum(0);
@@ -713,8 +713,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         break;
                     case Tank.LOC_TURRET:
                         turretArmorModel.setValue(Math.min(maxArmor,
-                                unit.getArmor(location)));
-                        if (unit instanceof VTOL){
+                                getTank().getArmor(location)));
+                        if (getTank() instanceof VTOL){
                         turretArmorModel
                                 .setMaximum(TestTank.VTOL_MAX_ROTOR_ARMOR);
                         } else {
@@ -730,7 +730,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         }
 
         // unallocated armorpoints
-        if (unit.hasPatchworkArmor()) {
+        if (getTank().hasPatchworkArmor()) {
             valueUnallocatedArmor.setVisible(false);
             lblUnallocatedArmor.setVisible(false);
             valueAllocatedArmor.setVisible(false);
@@ -755,37 +755,37 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             unallocatedPointsFieldRear.setVisible(true);
             unallocatedPointsFieldTurret.setVisible(true);
             unallocatedPointsFieldFront.setText(Integer.toString(UnitUtil
-                    .getArmorPoints(unit, Tank.LOC_FRONT,
-                            unit.getArmorWeight(Tank.LOC_FRONT))
-                    - unit.getOArmor(Mech.LOC_HEAD)));
+                    .getArmorPoints(getTank(), Tank.LOC_FRONT,
+                            getTank().getArmorWeight(Tank.LOC_FRONT))
+                    - getTank().getOArmor(Mech.LOC_HEAD)));
             unallocatedPointsFieldLeft.setText(Integer.toString(UnitUtil
-                    .getArmorPoints(unit, unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT,
-                            unit.getArmorWeight(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT))
-                    - unit.getOArmor(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT)));
+                    .getArmorPoints(getTank(), getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT,
+                            getTank().getArmorWeight(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT))
+                    - getTank().getOArmor(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTLEFT:Tank.LOC_LEFT)));
             unallocatedPointsFieldTurret2.setText(Integer.toString(UnitUtil
-                    .getArmorPoints(unit, unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2,
-                            unit.getArmorWeight(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2))
-                    - unit.getOArmor(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2)));
+                    .getArmorPoints(getTank(), getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2,
+                            getTank().getArmorWeight(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2))
+                    - getTank().getOArmor(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET_2:Tank.LOC_TURRET_2)));
             unallocatedPointsFieldRearRight.setText(Integer.toString(UnitUtil
-                    .getArmorPoints(unit, SuperHeavyTank.LOC_REARRIGHT,
-                            unit.getArmorWeight(SuperHeavyTank.LOC_REARRIGHT))
-                    - unit.getOArmor(SuperHeavyTank.LOC_REARRIGHT)));
+                    .getArmorPoints(getTank(), SuperHeavyTank.LOC_REARRIGHT,
+                            getTank().getArmorWeight(SuperHeavyTank.LOC_REARRIGHT))
+                    - getTank().getOArmor(SuperHeavyTank.LOC_REARRIGHT)));
             unallocatedPointsFieldRearLeft.setText(Integer.toString(UnitUtil
-                    .getArmorPoints(unit, SuperHeavyTank.LOC_REARLEFT,
-                            unit.getArmorWeight(SuperHeavyTank.LOC_REARLEFT))
-                    - unit.getOArmor(SuperHeavyTank.LOC_REARLEFT)));
+                    .getArmorPoints(getTank(), SuperHeavyTank.LOC_REARLEFT,
+                            getTank().getArmorWeight(SuperHeavyTank.LOC_REARLEFT))
+                    - getTank().getOArmor(SuperHeavyTank.LOC_REARLEFT)));
             unallocatedPointsFieldRight.setText(Integer.toString(UnitUtil
-                    .getArmorPoints(unit, unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT,
-                            unit.getArmorWeight(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT))
-                    - unit.getOArmor(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT)));
+                    .getArmorPoints(getTank(), getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT,
+                            getTank().getArmorWeight(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT))
+                    - getTank().getOArmor(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_FRONTRIGHT:Tank.LOC_RIGHT)));
             unallocatedPointsFieldRear.setText(Integer.toString(UnitUtil
-                    .getArmorPoints(unit, unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR,
-                            unit.getArmorWeight(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR))
-                    - unit.getOArmor(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR)));
+                    .getArmorPoints(getTank(), getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR,
+                            getTank().getArmorWeight(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR))
+                    - getTank().getOArmor(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_REAR:Tank.LOC_REAR)));
             unallocatedPointsFieldTurret.setText(Integer.toString(UnitUtil
-                    .getArmorPoints(unit, unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:Tank.LOC_TURRET,
-                            unit.getArmorWeight(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:Tank.LOC_TURRET))
-                    - unit.getOArmor(unit instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:Tank.LOC_TURRET)));
+                    .getArmorPoints(getTank(), getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:Tank.LOC_TURRET,
+                            getTank().getArmorWeight(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:Tank.LOC_TURRET))
+                    - getTank().getOArmor(getTank() instanceof SuperHeavyTank?SuperHeavyTank.LOC_TURRET:Tank.LOC_TURRET)));
         } else {
             valueUnallocatedArmor.setVisible(true);
             lblUnallocatedArmor.setVisible(true);
@@ -811,10 +811,10 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             unallocatedPointsFieldRear.setVisible(false);
             unallocatedPointsFieldTurret.setVisible(false);
         }
-        valueAllocatedArmor.setText(Integer.toString(unit.getTotalOArmor()));
+        valueAllocatedArmor.setText(Integer.toString(getTank().getTotalOArmor()));
         valueUnallocatedArmor.setText(Integer.toString(armorPoints
-                - unit.getTotalOArmor()));
-        if (armorPoints != unit.getTotalOArmor()) {
+                - getTank().getTotalOArmor()));
+        if (armorPoints != getTank().getTotalOArmor()) {
             valueUnallocatedArmor.setForeground(Color.RED);
             lblUnallocatedArmor.setForeground(Color.RED);
         } else {
@@ -836,19 +836,19 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     public void allocateArmor() {
         int pointsToAllocate = armorPoints;
 
-        for (int location = 0; location < unit.locations(); location++) {
-            unit.initializeArmor(0, location);
+        for (int location = 0; location < getTank().locations(); location++) {
+            getTank().initializeArmor(0, location);
         }
         
         // Make sure that the VTOL rotor has the 2 armor it should have
-        if (unit instanceof VTOL) {
-            unit.initializeArmor(Math.min(pointsToAllocate, 2), VTOL.LOC_ROTOR);
+        if (getTank() instanceof VTOL) {
+            getTank().initializeArmor(Math.min(pointsToAllocate, 2), VTOL.LOC_ROTOR);
             pointsToAllocate -= 2;
         }
         
-        int numLocations = unit.locations();
+        int numLocations = getTank().locations();
         // Discount rotor for VTOLs
-        if (unit instanceof VTOL) {
+        if (getTank() instanceof VTOL) {
             numLocations--;
         }
         // Discount body, as it's not armored
@@ -863,8 +863,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         
         // With the percentage of total for each location, assign armor
         int allocatedPoints = 0;
-        for (int location = 1; location < unit.locations(); location++) {
-            if ((unit instanceof VTOL) && (location == VTOL.LOC_ROTOR)) {
+        for (int location = 1; location < getTank().locations(); location++) {
+            if ((getTank() instanceof VTOL) && (location == VTOL.LOC_ROTOR)) {
                 continue;
             }
             int armorToAllocate = 0;
@@ -875,14 +875,14 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             } else {
                 armorToAllocate = (int)(pointsToAllocate * otherPercent);
             }
-            unit.initializeArmor(armorToAllocate, location);
+            getTank().initializeArmor(armorToAllocate, location);
             allocatedPoints += armorToAllocate;
         }
         
         // Because of rounding, may have leftover armor: allocate it to front
         int unallocated = pointsToAllocate - allocatedPoints;
-        int currentFrontArmor = unit.getOArmor(Tank.LOC_FRONT);
-        unit.initializeArmor(currentFrontArmor + unallocated, Tank.LOC_FRONT);
+        int currentFrontArmor = getTank().getOArmor(Tank.LOC_FRONT);
+        getTank().initializeArmor(currentFrontArmor + unallocated, Tank.LOC_FRONT);
     }
 
     public void stateChanged(ChangeEvent e) {
@@ -890,8 +890,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         JSpinner field = (JSpinner) e.getSource();
         int location = Integer.parseInt(field.getName());
         int value = (Integer) field.getModel().getValue();
-        unit.initializeArmor(value, location);
-        if (unit.hasPatchworkArmor()) {
+        getTank().initializeArmor(value, location);
+        if (getTank().hasPatchworkArmor()) {
             setArmorPoints(getTank().getTotalArmor());
         }
         if (refresh != null) {
@@ -904,7 +904,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     }
 
     public void setArmorPoints(int points) {
-        int maxArmor = (int) Math.floor((unit.getWeight() * 3.5) +40);
+        int maxArmor = (int) Math.floor((getTank().getWeight() * 3.5) +40);
         wastedArmorPoints = Math.max(points - maxArmor, 0);
         armorPoints = Math.min(maxArmor, points);
     }
@@ -921,8 +921,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     public void resetArmorPoints() {
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
-                unit.getArmorType(0), unit.getArmorTechLevel(0));
+                getTank().getArmorType(0), getTank().getArmorTechLevel(0));
         setArmorPoints((int) Math
-                .floor(unit.getLabArmorTonnage() * armorPerTon));
+                .floor(getTank().getLabArmorTonnage() * armorPerTon));
     }
 }

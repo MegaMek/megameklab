@@ -138,7 +138,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     public EquipmentTab(Aero unit) {
-        this.unit = unit;
+        super(unit);
 
         equipmentList = new CriticalTableModel(unit, CriticalTableModel.WEAPONTABLE);
         equipmentTable.setModel(equipmentList);
@@ -357,17 +357,17 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private void loadEquipmentTable() {
 
-        for (Mounted mount : unit.getWeaponList()) {
+        for (Mounted mount : getAero().getWeaponList()) {
             equipmentList.addCrit(mount);
         }
 
-        for (Mounted mount : unit.getAmmo()) {
+        for (Mounted mount : getAero().getAmmo()) {
             equipmentList.addCrit(mount);
         }
 
         List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
 
-        for (Mounted mount : unit.getMisc()) {
+        for (Mounted mount : getAero().getMisc()) {
 
             EquipmentType etype = mount.getType();
             if (UnitUtil.isHeatSink(mount)
@@ -448,13 +448,13 @@ public class EquipmentTab extends ITab implements ActionListener {
         Mounted mount = null;
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-            if (!UnitUtil.hasTargComp(unit)) {
+            if (!UnitUtil.hasTargComp(getAero())) {
                 mount = UnitUtil.updateTC(getAero(), equip);
                 success = mount != null;
             }        
         } else {
             try {
-                mount = new Mounted(unit, equip);
+                mount = new Mounted(getAero(), equip);
                 getAero().addEquipment(mount, Entity.LOC_NONE, false);
                 success = true;
             } catch (LocationFullException lfe) {
@@ -506,7 +506,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(unit);
+        equipmentList.updateUnit(getAero());
         equipmentList.refreshModel();
         if (refresh != null) {
             refresh.refreshStatus();
@@ -535,7 +535,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (etype instanceof AmmoType) {
                     atype = (AmmoType)etype;
                 }
-                if (!UnitUtil.isLegal(unit, etype.getTechLevel(unit.getTechLevelYear()))) {
+                if (!UnitUtil.isLegal(getAero(), etype.getTechLevel(getAero().getTechLevelYear()))) {
                     return false;
                 }
                 if (UnitUtil.isHeatSink(etype, true) || UnitUtil.isJumpJet(etype)) {
@@ -544,20 +544,21 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if ((etype instanceof MiscType) && (etype.hasFlag(MiscType.F_TSM) || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER)))) {
                     return false;
                 }
-                if (((nType == T_OTHER) && UnitUtil.isAeroEquipment(etype, (Aero)unit))
-                        || (((nType == T_WEAPON) && (UnitUtil.isAeroWeapon(etype, (Aero)unit) || UnitUtil.isPhysicalWeapon(etype))))
-                        || ((nType == T_ENERGY) && UnitUtil.isAeroWeapon(etype, (Aero)unit)
+                Aero aero = getAero();
+                if (((nType == T_OTHER) && UnitUtil.isAeroEquipment(etype, getAero()))
+                        || (((nType == T_WEAPON) && (UnitUtil.isAeroWeapon(etype, aero) || UnitUtil.isPhysicalWeapon(etype))))
+                        || ((nType == T_ENERGY) && UnitUtil.isAeroWeapon(etype, aero)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
                             || (wtype.hasFlag(WeaponType.F_PLASMA) && (wtype.getAmmoType() == AmmoType.T_PLASMA))))
-                        || ((nType == T_BALLISTIC) && UnitUtil.isAeroWeapon(etype, (Aero)unit)
+                        || ((nType == T_BALLISTIC) && UnitUtil.isAeroWeapon(etype, aero)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_BALLISTIC)
                                     && (wtype.getAmmoType() != AmmoType.T_NA)))
-                        || ((nType == T_MISSILE) && UnitUtil.isAeroWeapon(etype, (Aero)unit)
+                        || ((nType == T_MISSILE) && UnitUtil.isAeroWeapon(etype, aero)
                             && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
                                     && (wtype.getAmmoType() != AmmoType.T_NA)) || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
-                        || ((nType == T_ARTILLERY) && UnitUtil.isAeroWeapon(etype, (Aero)unit)
+                        || ((nType == T_ARTILLERY) && UnitUtil.isAeroWeapon(etype, aero)
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
-                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(unit, atype))) {
+                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(aero, atype))) {
                     if (txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());

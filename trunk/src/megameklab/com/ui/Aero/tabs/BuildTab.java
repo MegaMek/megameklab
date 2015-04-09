@@ -53,7 +53,7 @@ public class BuildTab extends ITab implements ActionListener {
     private String RESETCOMMAND = "resetbuttoncommand";
 
     public BuildTab(Aero unit, EquipmentTab equipment) {
-        this.unit = unit;
+        super(unit);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new GridBagLayout());
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -87,8 +87,8 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        critView.updateUnit(unit);
-        buildView.updateUnit(unit);
+        critView.updateUnit(getAero());
+        buildView.updateUnit(getAero());
         critView.refresh();
         critView.validate();
         buildView.refresh();
@@ -103,10 +103,10 @@ public class BuildTab extends ITab implements ActionListener {
 
 
     private void resetCrits() {
-        for (Mounted mount : unit.getEquipment()) {
+        for (Mounted mount : getAero().getEquipment()) {
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 UnitUtil.removeCriticals(getAero(), mount);
-                UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                UnitUtil.changeMountStatus(getAero(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
 

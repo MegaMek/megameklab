@@ -83,7 +83,7 @@ public class BuildTab extends ITab implements ActionListener {
     private String RESETCOMMAND = "resetbuttoncommand";
 
     public BuildTab(BattleArmor unit) {
-        this.unit = unit;
+        super(unit);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -140,7 +140,7 @@ public class BuildTab extends ITab implements ActionListener {
      */
     private void createCriticalViews(){
         critViews.clear();
-        for (int i = 0; i < ((BattleArmor)unit).getTroopers(); i++){
+        for (int i = 0; i < (getBattleArmor()).getTroopers(); i++){
             critViews.add(new CriticalView(getBattleArmor(), i + 1, true,
                     refresh));
             critPanel.add(critViews.get(i));
@@ -152,18 +152,18 @@ public class BuildTab extends ITab implements ActionListener {
         removeAllActionListeners();
 
         // We need to have a CritView for each trooper
-        if (critViews.size() != ((BattleArmor)unit).getTroopers()){
+        if (critViews.size() != (getBattleArmor()).getTroopers()){
             critPanel.removeAll();
             createCriticalViews();
         }
 
         for (CriticalView critView : critViews){
-            critView.updateUnit(unit);
+            critView.updateUnit(getBattleArmor());
             critView.refresh();
         }
         critPanel.validate();
 
-        buildView.updateUnit(unit);
+        buildView.updateUnit(getBattleArmor());
         buildView.refresh();
 
         addAllActionListeners();
@@ -184,7 +184,7 @@ public class BuildTab extends ITab implements ActionListener {
         for (Mounted mount : buildView.getTableModel().getCrits()) {
             for (int location = BattleArmor.MOUNT_LOC_BODY; 
                     location < BattleArmor.MOUNT_NUM_LOCS; location++) {
-                if (!UnitUtil.isValidLocation(unit, mount.getType(), location)) {
+                if (!UnitUtil.isValidLocation(getBattleArmor(), mount.getType(), location)) {
                     continue;
                 }
                 // Don't assign change equipment that's already placed
@@ -203,7 +203,7 @@ public class BuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : unit.getEquipment()) {
+        for (Mounted mount : getBattleArmor().getEquipment()) {
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())){
                 continue;
             }

@@ -131,15 +131,15 @@ public class CriticalView extends IView {
             return;
         }
 
-        synchronized (unit) {
+        synchronized (getAero()) {
             // Aeros have 5 locs, the 5th is "wings" which should be ignored
-            int numLocs = unit.locations() - 1;
+            int numLocs = getAero().locations() - 1;
             for (int location = 0; location < numLocs; location++) {
                 Vector<String> critNames = new Vector<String>(1, 1);
                 int numWeapons = 0;
-                for (int slot = 0; slot < unit.getNumberOfCriticals(location); 
+                for (int slot = 0; slot < getAero().getNumberOfCriticals(location); 
                         slot++) {
-                    CriticalSlot cs = unit.getCritical(location, slot);
+                    CriticalSlot cs = getAero().getCritical(location, slot);
                     if (cs == null) {
                         continue;
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -154,7 +154,7 @@ public class CriticalView extends IView {
                                 m = cs.getMount();
 
                                 if (m == null) {
-                                    unit.setCritical(location, slot, null);
+                                    getAero().setCritical(location, slot, null);
                                     continue;
                                 }
                                 cs.setMount(m);

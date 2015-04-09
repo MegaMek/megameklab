@@ -78,7 +78,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         super(unit);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        equipmentList = new CriticalTableModel(this.unit,
+        equipmentList = new CriticalTableModel(getBattleArmor(),
                 CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
@@ -122,25 +122,25 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        for (Mounted mount : unit.getMisc()) {
+        for (Mounted mount : getBattleArmor().getMisc()) {
             if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE
                     && !mount.getType().hasFlag(MiscType.F_BA_MANIPULATOR)
                     && !mount.getName().contains("BA Standard"))) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : unit.getWeaponList()) {
+        for (Mounted mount : getBattleArmor().getWeaponList()) {
             // Don't display weapons mounted in a detachable weapon pack
             if (mount.isDWPMounted() || mount.isAPMMounted()){
                 continue;
             }
             if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) 
-                    && (UnitUtil.isBattleArmorWeapon(mount.getType(), unit)
+                    && (UnitUtil.isBattleArmorWeapon(mount.getType(), getBattleArmor())
                             || UnitUtil.isBattleArmorAPWeapon(mount.getType()))) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : unit.getAmmo()) {
+        for (Mounted mount : getBattleArmor().getAmmo()) {
             // Ignore ammo for one-shot launchers
             if (mount.getLinkedBy() != null 
                     && mount.getLinkedBy().isOneShot()){
@@ -225,7 +225,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(unit);
+        equipmentList.updateUnit(getBattleArmor());
         equipmentList.refreshModel();
         // equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100,
         // getHeight() * 90 / 100));
@@ -278,7 +278,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     && !(eq.getType() instanceof InfantryWeapon)){
                 // Add a menu item for each potential location
                 for (Integer location: validLocs) {
-                    if (UnitUtil.isValidLocation(unit, eq.getType(), location)) {
+                    if (UnitUtil.isValidLocation(getBattleArmor(), eq.getType(), location)) {
                         item = new JMenuItem("Add to " + locNames[location]);
     
                         final int loc = location;
@@ -321,7 +321,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
             
             // Allow number of shots selection
-            if ((unit instanceof BattleArmor) 
+            if ((getBattleArmor() instanceof BattleArmor) 
                     && eq.getType() instanceof AmmoType){
                 for (int i = 1; i <= 4; i++){
                     if (i == eq.getBaseShotsLeft()){
@@ -364,7 +364,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     && getBattleArmor().getChassisType() != 
                         BattleArmor.CHASSIS_TYPE_QUAD){
                 boolean enabled = false;
-                for (Mounted weapon : unit.getWeaponList()){
+                for (Mounted weapon : getBattleArmor().getWeaponList()){
                     WeaponType wtype = (WeaponType)weapon.getType();
                     if (weapon.isSquadSupportWeapon() 
                             && AmmoType.isAmmoValid(eq, wtype)){
@@ -392,7 +392,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                         eq.setSquadSupportWeapon(false);
                         // Can't have squad support weapon ammo with no 
                         // squad support weapon
-                        for (Mounted ammo : unit.getAmmo()){
+                        for (Mounted ammo : getBattleArmor().getAmmo()){
                             ammo.setSquadSupportWeapon(false);
                         }
                         ((BuildTab) getParent().getParent()).refreshAll();
@@ -402,13 +402,13 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
             
             // See if we should allow linking this to a DWP
-            if (unit.hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
+            if (getBattleArmor().hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && !eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && !eq.getType().hasFlag(WeaponType.F_MISSILE)
                     && !(eq.getType() instanceof AmmoType)
                     && !eq.isDWPMounted()
-                    && ((BattleArmor)unit).canMountDWP()){
-                for (Mounted m : unit.getMisc()){
+                    && (getBattleArmor()).canMountDWP()){
+                for (Mounted m : getBattleArmor().getMisc()){
                     // If this isn't a DWP or it's a full DWP, skip
                     if (!m.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                             || m.getLinked() != null){
@@ -441,10 +441,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             
             // Should we allow mounting Ammo in a DWP?
             if ((eq.getType() instanceof AmmoType)
-                    && unit.hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
+                    && getBattleArmor().hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && !eq.isDWPMounted()
-                    && ((BattleArmor)unit).canMountDWP()){
-                for (final Mounted m : unit.getMisc()){
+                    && (getBattleArmor()).canMountDWP()){
+                for (final Mounted m : getBattleArmor().getMisc()){
                     // If this isn't a DWP, skip
                     if (!m.getType().hasFlag(
                             MiscType.F_DETACHABLE_WEAPON_PACK)){
@@ -500,7 +500,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                         attached.setLinked(null);
                         attached.setLinkedBy(null);
                         // Remove any attached ammo
-                        for (Mounted ammo : unit.getAmmo()){
+                        for (Mounted ammo : getBattleArmor().getAmmo()){
                             if (attached.equals(ammo.getLinkedBy())){
                                 ammo.setDWPMounted(false);
                                 ammo.setLinked(null);
@@ -514,10 +514,10 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
             
             // See if we should allow linking this to an AP Mount
-            if (unit.hasWorkingMisc(MiscType.F_AP_MOUNT)
+            if (getBattleArmor().hasWorkingMisc(MiscType.F_AP_MOUNT)
                     && eq.getType().hasFlag(WeaponType.F_INFANTRY)
                     && !eq.isAPMMounted()){
-                for (Mounted m : unit.getMisc()){
+                for (Mounted m : getBattleArmor().getMisc()){
                     // If this isn't an AP Mount or it's a full AP Mount, skip
                     if (!m.getType().hasFlag(MiscType.F_AP_MOUNT)
                             || m.getLinked() != null){
@@ -528,7 +528,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     // regardless of the number of gloves
                     if (m.getType().hasFlag(MiscType.F_ARMORED_GLOVE)) {
                         boolean hasUsedGlove = false;
-                        for (Mounted m2 : unit.getMisc()){
+                        for (Mounted m2 : getBattleArmor().getMisc()){
                             if (m2.getType().hasFlag(MiscType.F_ARMORED_GLOVE)
                                     && (m2.getLinked() != null)) {
                                 hasUsedGlove = true;
@@ -614,7 +614,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             ex.printStackTrace();
         }
         
-        UnitUtil.changeMountStatus(unit, eq, BattleArmor.LOC_SQUAD, -1, false);
+        UnitUtil.changeMountStatus(getBattleArmor(), eq, BattleArmor.LOC_SQUAD, -1, false);
 
         // go back up to grandparent build tab and fire a full refresh.
         ((BuildTab) getParent().getParent()).refreshAll();

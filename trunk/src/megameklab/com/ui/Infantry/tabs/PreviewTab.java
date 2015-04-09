@@ -37,7 +37,7 @@ public class PreviewTab extends ITab implements ActionListener {
     private MechViewPanel panelMekView;
 
     public PreviewTab(Infantry unit) {
-        this.unit = unit;
+        super(unit);
         this.setLayout(new BorderLayout());
         panelMekView = new MechViewPanel(350, 500);
         add(panelMekView, BorderLayout.CENTER);
@@ -49,14 +49,14 @@ public class PreviewTab extends ITab implements ActionListener {
         boolean populateTextFields = true;
         MechView mechView = null;
         try {
-            mechView = new MechView(unit, false);
+            mechView = new MechView(getInfantry(), false);
         } catch (Exception e) {
             e.printStackTrace();
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
         if (populateTextFields && (mechView != null)) {
-            panelMekView.setMech(unit);
+            panelMekView.setMech(getInfantry());
         } else {
             panelMekView.reset();
         }
@@ -64,7 +64,6 @@ public class PreviewTab extends ITab implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        // TODO Auto-generated method stub
         
     }
     
