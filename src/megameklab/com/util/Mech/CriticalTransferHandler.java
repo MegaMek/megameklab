@@ -71,7 +71,7 @@ public class CriticalTransferHandler extends TransferHandler {
         }
         Mounted mounted = null;
         try {
-            mounted = unit.getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
+            mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (UnsupportedFlavorException e) {
@@ -83,7 +83,7 @@ public class CriticalTransferHandler extends TransferHandler {
                 && (mounted.getLocation() != Entity.LOC_NONE)) {
             DropTargetCriticalList<?> list = (DropTargetCriticalList<?>)source;
             int loc;
-            if (unit instanceof BattleArmor){
+            if (getUnit() instanceof BattleArmor){
                 String[] split = list.getName().split(":");
                 loc = Integer.parseInt(split[0]);
             } else {
@@ -103,23 +103,23 @@ public class CriticalTransferHandler extends TransferHandler {
             }
             while (slot > 0) {
                 slot--;
-                CriticalSlot cs = unit.getCritical(loc, slot);
+                CriticalSlot cs = getUnit().getCritical(loc, slot);
                 if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && cs.getMount().equals(mounted)) {
                     startSlot = slot;
                 }
             }
-            if (!(unit instanceof BattleArmor)){
-                for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(unit, mounted.getType())); i++) {
-                    unit.setCritical(loc, i, null);
+            if (!(getUnit() instanceof BattleArmor)){
+                for (int i = startSlot; i < (startSlot+UnitUtil.getCritsUsed(getUnit(), mounted.getType())); i++) {
+                    getUnit().setCritical(loc, i, null);
                 }
             }
             Mounted linkedBy = mounted.getLinkedBy();
-            if (linkedBy != null && !(unit instanceof BattleArmor)) {
-                UnitUtil.removeCriticals(unit, linkedBy);
+            if (linkedBy != null && !(getUnit() instanceof BattleArmor)) {
+                UnitUtil.removeCriticals(getUnit(), linkedBy);
                 try {
-                    unit.addEquipment(linkedBy, mounted.getLocation(), linkedBy.isRearMounted());
+                    getUnit().addEquipment(linkedBy, mounted.getLocation(), linkedBy.isRearMounted());
                 } catch (LocationFullException e) {
-                    UnitUtil.changeMountStatus(unit, linkedBy, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                    UnitUtil.changeMountStatus(getUnit(), linkedBy, Entity.LOC_NONE, Entity.LOC_NONE, false);
                     linkedBy.setLinked(null);
                     mounted.setLinkedBy(null);
                 }
@@ -137,19 +137,19 @@ public class CriticalTransferHandler extends TransferHandler {
      */
     private boolean addEquipmentMech(Mech mech, Mounted eq, int slotNumber)
             throws LocationFullException{
-        int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
+        int totalCrits = UnitUtil.getCritsUsed(getUnit(), eq.getType());
         // How much space we have in the selected location
         int primaryLocSpace = 
-                UnitUtil.getContiguousNumberOfCrits(unit, location, slotNumber);
+                UnitUtil.getContiguousNumberOfCrits(getUnit(), location, slotNumber);
         
         if ((eq.getType().isSpreadable() || eq.isSplitable()) &&
                 (totalCrits > 1)) {
             int critsUsed = 0;
             int primaryLocation = location;
-            int nextLocation = unit.getTransferLocation(location);
+            int nextLocation = getUnit().getTransferLocation(location);
             
             // Determine if we should spread equipment over multiple locations
-            if (eq.getType().getCriticals(unit) > primaryLocSpace) {
+            if (eq.getType().getCriticals(getUnit()) > primaryLocSpace) {
                 if (location == Mech.LOC_RT) {
                     String[] locations =
                         { "Center Torso", "Right Leg", "Right Arm" };
@@ -234,7 +234,7 @@ public class CriticalTransferHandler extends TransferHandler {
             
             // Determine how much usable space we have in both locations            
             int secondarySpace = UnitUtil.getHighestContinuousNumberOfCrits(
-                    unit, nextLocation);
+                    getUnit(), nextLocation);
             
             // Check for available space
             if ((primaryLocSpace < totalCrits) &&
@@ -242,8 +242,8 @@ public class CriticalTransferHandler extends TransferHandler {
                         || ((primaryLocSpace + secondarySpace) < totalCrits))) {
                 throw new LocationFullException(eq.getName() +
                         " does not fit there in " 
-                        + unit.getLocationAbbr(location) 
-                        + " on " + unit.getDisplayName());
+                        + getUnit().getLocationAbbr(location) 
+                        + " on " + getUnit().getDisplayName());
             }
 
             for (; critsUsed < totalCrits; critsUsed++) {
@@ -304,7 +304,7 @@ public class CriticalTransferHandler extends TransferHandler {
                         eq.setFacing(4);
                     } else if (facing.equals("Rear")) {
                         eq.setFacing(3);
-                        UnitUtil.changeMountStatus(unit, eq, location, -1, true);
+                        UnitUtil.changeMountStatus(getUnit(), eq, location, -1, true);
                     }
             } else {
                 mech.addEquipment(eq, location, false, slotNumber);
@@ -312,8 +312,8 @@ public class CriticalTransferHandler extends TransferHandler {
             changeMountStatus(eq, location, false);
         } else {
             throw new LocationFullException(eq.getName() +
-                    " does not fit there in " + unit.getLocationAbbr(location) +
-                    " on " + unit.getDisplayName());
+                    " does not fit there in " + getUnit().getLocationAbbr(location) +
+                    " on " + getUnit().getDisplayName());
         }
         return true;
     }
@@ -355,13 +355,13 @@ public class CriticalTransferHandler extends TransferHandler {
             }
             if ((weapCount[location] +1) > availSpace[location]){
                 throw new LocationFullException(eq.getName() +
-                        " does not fit in " + unit.getLocationAbbr(location) +
-                        " on " + unit.getDisplayName());
+                        " does not fit in " + getUnit().getLocationAbbr(location) +
+                        " on " + getUnit().getDisplayName());
             } else {
-                unit.addEquipment(eq, location, false);
+                getUnit().addEquipment(eq, location, false);
             }
         } else {
-            unit.addEquipment(eq, location, false);
+            getUnit().addEquipment(eq, location, false);
         }
         changeMountStatus(eq, location, false);
         return true;
@@ -373,15 +373,15 @@ public class CriticalTransferHandler extends TransferHandler {
      */
     @Override
     public boolean importData(TransferSupport info) {
-        if (!info.isDrop() || !((unit instanceof Mech) || (unit instanceof Aero) ||
-                (unit instanceof BattleArmor))) {
+        if (!info.isDrop() || !((getUnit() instanceof Mech) || (getUnit() instanceof Aero) ||
+                (getUnit() instanceof BattleArmor))) {
             return false;
         }
 
         int trooper = 0;
         if (info.getComponent() instanceof DropTargetCriticalList) {
             DropTargetCriticalList<?> list = (DropTargetCriticalList<?>) info.getComponent();
-            if (unit instanceof BattleArmor){
+            if (getUnit() instanceof BattleArmor){
                 String[] split = list.getName().split(":");
                 if (split.length != 2){
                     return false;
@@ -395,9 +395,9 @@ public class CriticalTransferHandler extends TransferHandler {
             int slotNumber = list.getDropLocation().getIndex();
             
             try {
-                Mounted eq = unit.getEquipment(Integer.parseInt(
+                Mounted eq = getUnit().getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
-                if (unit instanceof BattleArmor){
+                if (getUnit() instanceof BattleArmor){
                     if ((location == eq.getBaMountLoc())
                             && (trooper == eq.getLocation())){
                         return false;
@@ -407,7 +407,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     //  the criticals its mounted in
                     if (eq.getLocation() != Entity.LOC_NONE 
                             || eq.getSecondLocation() != Entity.LOC_NONE){
-                        UnitUtil.removeCriticals(unit, eq);
+                        UnitUtil.removeCriticals(getUnit(), eq);
                         changeMountStatus(eq,Entity.LOC_NONE,false);
                     }
                 }
@@ -415,31 +415,31 @@ public class CriticalTransferHandler extends TransferHandler {
                     return false;
                 }*/
 
-                if (!UnitUtil.isValidLocation(unit, eq.getType(), location)) {
+                if (!UnitUtil.isValidLocation(getUnit(), eq.getType(), location)) {
                     JOptionPane.showMessageDialog(null, eq.getName() +
                             " can't be placed in " +
-                            unit.getLocationName(location) + "!",
+                            getUnit().getLocationName(location) + "!",
                             "Invalid Location",
                             JOptionPane.INFORMATION_MESSAGE);
                     return false;
                 }
                 
-                if (unit instanceof Aero){
-                    return addEquipmentAero((Aero)unit, eq);
-                } else if (unit instanceof Mech) {
+                if (getUnit() instanceof Aero){
+                    return addEquipmentAero((Aero)getUnit(), eq);
+                } else if (getUnit() instanceof Mech) {
                     // superheavies can put 2 ammobins or heatsinks in one crit
-                    if ((unit instanceof Mech) && ((Mech)unit).isSuperHeavy()) {
-                        CriticalSlot cs = unit.getCritical(location, slotNumber);
+                    if ((getUnit() instanceof Mech) && ((Mech)getUnit()).isSuperHeavy()) {
+                        CriticalSlot cs = getUnit().getCritical(location, slotNumber);
                         if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount2() == null)) {
                             EquipmentType etype = cs.getMount().getType();
                             EquipmentType etype2 = eq.getType();
                             if ((etype instanceof AmmoType)) {
                                 if (!(etype2 instanceof AmmoType) || (((AmmoType)etype).getAmmoType() != ((AmmoType)etype2).getAmmoType())) {
-                                    return addEquipmentMech((Mech)unit, eq, slotNumber);
+                                    return addEquipmentMech((Mech)getUnit(), eq, slotNumber);
                                 }
                             } else {
                                 if (!(etype.equals(etype2)) || ((etype instanceof MiscType) && (!etype.hasFlag(MiscType.F_HEAT_SINK) && !etype.hasFlag(MiscType.F_DOUBLE_HEAT_SINK ))) || !((etype instanceof MiscType))) {
-                                    return addEquipmentMech((Mech)unit, eq, slotNumber);
+                                    return addEquipmentMech((Mech)getUnit(), eq, slotNumber);
                                 }
                             }
                             cs.setMount2(eq);
@@ -447,9 +447,9 @@ public class CriticalTransferHandler extends TransferHandler {
                             return true;
                         }
                     }
-                    return addEquipmentMech((Mech)unit, eq, slotNumber);
-                } else if (unit instanceof BattleArmor){
-                    return addEquipmentBA((BattleArmor)unit, eq, trooper);
+                    return addEquipmentMech((Mech)getUnit(), eq, slotNumber);
+                } else if (getUnit() instanceof BattleArmor){
+                    return addEquipmentBA((BattleArmor)getUnit(), eq, trooper);
                 }
 
 
@@ -481,7 +481,7 @@ public class CriticalTransferHandler extends TransferHandler {
         // check if the dragged mounted should be transferrable
         Mounted mounted = null;
         try {
-            mounted = unit.getEquipment(Integer
+            mounted = getUnit().getEquipment(Integer
                     .parseInt((String) info.getTransferable().getTransferData(
                             DataFlavor.stringFlavor)));
         } catch (NumberFormatException e) {
@@ -500,7 +500,7 @@ public class CriticalTransferHandler extends TransferHandler {
             return false;
         }
         // no transfer in the same location
-        if (unit instanceof BattleArmor){
+        if (getUnit() instanceof BattleArmor){
             // Infantry weapons cannot be mounted directly, but must instead
             //  be mounted in an AP Mount
             if (mounted.getType() instanceof InfantryWeapon){
@@ -523,12 +523,12 @@ public class CriticalTransferHandler extends TransferHandler {
         if (c instanceof JTable) {
             JTable table = (JTable) c;
             Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-            return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));
+            return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (c instanceof DropTargetCriticalList) {
             DropTargetCriticalList<?> list = (DropTargetCriticalList<?>)c;
             Mounted mount = list.getMounted();
             if (mount != null) {
-                return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));
+                return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
             }
         }
         return null;
@@ -545,11 +545,11 @@ public class CriticalTransferHandler extends TransferHandler {
 
     private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
 
-        UnitUtil.changeMountStatus(unit, eq, location, secondaryLocation, rear);
+        UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, rear);
 
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(unit);
+            MechFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
@@ -560,6 +560,10 @@ public class CriticalTransferHandler extends TransferHandler {
         if (refresh != null) {
             refresh.refreshAll();
         }
+    }
+
+    public Entity getUnit() {
+        return unit;
     }
 
 }

@@ -61,9 +61,9 @@ public class CriticalTransferHandler extends TransferHandler {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
-                Mounted mount = unit.getEquipment(Integer.parseInt((String) t
+                Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
                         .getTransferData(DataFlavor.stringFlavor)));
-                if (!unit.addCritical(location, new CriticalSlot(mount))) {
+                if (!getUnit().addCritical(location, new CriticalSlot(mount))) {
                     JOptionPane.showMessageDialog(null, "Location Full",
                             "Location Full", JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -79,13 +79,13 @@ public class CriticalTransferHandler extends TransferHandler {
                 || (info.getComponent() instanceof JScrollPane)) {
             try {
             Transferable t = info.getTransferable();
-            Mounted mount = unit.getEquipment(Integer.parseInt((String) t
+            Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
                     .getTransferData(DataFlavor.stringFlavor)));
             
-            if (unit instanceof BattleArmor){
+            if (getUnit() instanceof BattleArmor){
                 mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
             } else {
-                UnitUtil.removeCriticals(unit, mount);
+                UnitUtil.removeCriticals(getUnit(), mount);
                 changeMountStatus(mount, Entity.LOC_NONE, false);
             }
             } catch (Exception ex) {
@@ -105,7 +105,7 @@ public class CriticalTransferHandler extends TransferHandler {
         // check if the dragged mounted should be transferrable
         Mounted mounted = null;
         try {
-            mounted = unit.getEquipment(Integer
+            mounted = getUnit().getEquipment(Integer
                     .parseInt((String) info.getTransferable().getTransferData(
                             DataFlavor.stringFlavor)));
         } catch (NumberFormatException e) {
@@ -130,7 +130,7 @@ public class CriticalTransferHandler extends TransferHandler {
     protected Transferable createTransferable(JComponent c) {
         JTable table = (JTable) c;
         Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-        return new StringSelection(Integer.toString(unit.getEquipmentNum(mount)));
+        return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
     }
 
     @Override
@@ -144,11 +144,11 @@ public class CriticalTransferHandler extends TransferHandler {
 
     private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
 
-        UnitUtil.changeMountStatus(unit, eq, location, secondaryLocation, rear);
+        UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, rear);
 
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(unit);
+            MechFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
@@ -163,6 +163,10 @@ public class CriticalTransferHandler extends TransferHandler {
     
     public void addRefreshListener(RefreshListener r){
         refresh = r;
+    }
+
+    public Entity getUnit() {
+        return unit;
     }
 
 }
