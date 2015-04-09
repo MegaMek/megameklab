@@ -65,7 +65,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         super(unit);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(getTank(), CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
@@ -100,17 +100,17 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        for (Mounted mount : unit.getMisc()) {
+        for (Mounted mount : getTank().getMisc()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : unit.getWeaponList()) {
+        for (Mounted mount : getTank().getWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : unit.getAmmo()) {
+        for (Mounted mount : getTank().getAmmo()) {
             int ammoType = ((AmmoType)mount.getType()).getAmmoType();
             if ((mount.getLocation() == Entity.LOC_NONE) &&
                     (mount.getUsableShotsLeft() > 1
@@ -206,7 +206,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(unit);
+        equipmentList.updateUnit(getTank());
         equipmentList.refreshModel();
         //equipmentScroll.setPreferredSize(new Dimension(getWidth() * 90 / 100, getHeight() * 90 / 100));
         //equipmentScroll.repaint();
@@ -221,17 +221,14 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
     public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
     public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -243,7 +240,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
             String[] locations;
 
-            locations = unit.getLocationNames();
+            locations = getTank().getLocationNames();
 
             for (int location = 0; location < getTank().locations(); location++) {
 
@@ -263,13 +260,12 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
         Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
-        UnitUtil.changeMountStatus(unit, eq, location, -1, false);
+        UnitUtil.changeMountStatus(getTank(), eq, location, -1, false);
 
         try {
             getTank().addEquipment(eq, location, false);

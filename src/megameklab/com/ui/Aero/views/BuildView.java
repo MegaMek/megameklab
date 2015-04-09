@@ -75,7 +75,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     public BuildView(Aero unit, RefreshListener refresh) {
         super(unit);
 
-        equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(getAero(), CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
@@ -115,18 +115,18 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        for (Mounted mount : unit.getMisc()) {
+        for (Mounted mount : getAero().getMisc()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && 
                     !isEngineHeatSink(mount)) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : unit.getWeaponList()) {
+        for (Mounted mount : getAero().getWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : unit.getAmmo()) {
+        for (Mounted mount : getAero().getAmmo()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && 
                     ((mount.getUsableShotsLeft() > 1) || 
                             (((AmmoType)mount.getType()).getAmmoType() == 
@@ -249,7 +249,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(unit);
+        equipmentList.updateUnit(getAero());
         equipmentList.refreshModel();
     }
 
@@ -284,18 +284,18 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(
                     selectedRow, CriticalTableModel.EQUIPMENT);
 
-            String[] locNames = unit.getLocationNames();
+            String[] locNames = getAero().getLocationNames();
             // A list of the valid locations we can add the selected eq to
             ArrayList<Integer> validLocs = new ArrayList<Integer>();
             // The number of possible locations, Aeros' have LOC_WINGS, which we
             //  want ot ignore, hence -1
-            int numLocs = unit.locations() - 1;
+            int numLocs = getAero().locations() - 1;
             // If it's a weapon, there are restrictions
             if (eq.getType() instanceof WeaponType){
                 int[] availSpace = TestAero.availableSpace(getAero()); 
                 int numWeapons[] = new int[availSpace.length];
                 
-                for (Mounted m : unit.getWeaponList()){
+                for (Mounted m : getAero().getWeaponList()){
                     if (m.getLocation() != Aero.LOC_NONE){
                         numWeapons[m.getLocation()]++;
                     }
@@ -314,7 +314,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             
             // Add a menu item for each potential location
             for (Integer location: validLocs) {
-                if (UnitUtil.isValidLocation(unit, eq.getType(), location)) {
+                if (UnitUtil.isValidLocation(getAero(), eq.getType(), location)) {
                     item = new JMenuItem("Add to " + locNames[location]);
 
                     final int loc = location;
@@ -354,7 +354,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        UnitUtil.changeMountStatus(unit, eq, location, -1, false);
+        UnitUtil.changeMountStatus(getAero(), eq, location, -1, false);
 
         // go back up to grandparent build tab and fire a full refresh.
         ((BuildTab) getParent().getParent()).refreshAll();

@@ -300,13 +300,13 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     public void refresh() {
         removeAllListeners();
-        for (int location = 0; location < unit.locations(); location++) {
+        for (int location = 0; location < getAero().locations(); location++) {
 
-            int maxArmor = TestAero.maxArmorPoints(unit, unit.getWeight());
+            int maxArmor = TestAero.maxArmorPoints(getAero(), getAero().getWeight());
             switch (location) {
                 case Aero.LOC_NOSE:
                     noseArmorModel.setValue(
-                            Math.min(maxArmor, unit.getArmor(location)));
+                            Math.min(maxArmor, getAero().getArmor(location)));
                     if (isFullyAllocated()) {
                         noseArmorModel.setMaximum(
                                 (Integer) noseArmorModel.getValue());
@@ -319,7 +319,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     break;
                 case Aero.LOC_LWING:
                     lwArmorModel.setValue(
-                            Math.min(maxArmor, unit.getArmor(location)));
+                            Math.min(maxArmor, getAero().getArmor(location)));
                     if (isFullyAllocated()) {
                         lwArmorModel.setMaximum(
                                 (Integer) lwArmorModel.getValue());
@@ -332,7 +332,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     break;
                 case Aero.LOC_RWING:
                     rwArmorModel.setValue(
-                            Math.min(maxArmor, unit.getArmor(location)));
+                            Math.min(maxArmor, getAero().getArmor(location)));
                     if (isFullyAllocated()) {
                         rwArmorModel.setMaximum(
                                 (Integer) rwArmorModel.getValue());
@@ -345,7 +345,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                     break;
                 case Aero.LOC_AFT:
                     aftArmorModel.setValue(
-                            Math.min(maxArmor, unit.getArmor(location)));
+                            Math.min(maxArmor, getAero().getArmor(location)));
                     if (isFullyAllocated()) {
                         aftArmorModel.setMaximum(
                                 (Integer) aftArmorModel.getValue());
@@ -360,10 +360,10 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         }
        
         
-        valueAllocatedArmor.setText(Integer.toString(unit.getTotalOArmor()));
+        valueAllocatedArmor.setText(Integer.toString(getAero().getTotalOArmor()));
         valueUnallocatedArmor.setText(Integer.toString(armorPoints
-                - unit.getTotalOArmor()));
-        if (armorPoints != unit.getTotalOArmor()) {
+                - getAero().getTotalOArmor()));
+        if (armorPoints != getAero().getTotalOArmor()) {
             valueUnallocatedArmor.setForeground(Color.RED);
             lblUnallocatedArmor.setForeground(Color.RED);
         } else {
@@ -372,7 +372,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         }
         valueCurrentArmor.setText(Integer.toString(armorPoints));
         valueMaxArmor.setText("" + TestAero.maxArmorPoints(
-                    unit, unit.getWeight()));
+                getAero(), getAero().getWeight()));
         valueWastedArmor.setText(Integer.toString(wastedArmorPoints));
 
         addAllListeners();
@@ -385,16 +385,16 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     public void allocateArmor() {
         double pointsToAllocate = armorPoints;
         double totalArmor = TestAero.maxArmorPoints(
-                unit, unit.getWeight());
+                getAero(), getAero().getWeight());
         if (pointsToAllocate > totalArmor) {
             pointsToAllocate = totalArmor;
         }
         double percent = pointsToAllocate / totalArmor;
         // put 5 times the percentage of total possible armor into the head
-        for (int location = 0; location < unit.locations(); location++) {
-            double IS = (unit.getInternal(location) * 2);
+        for (int location = 0; location < getAero().locations(); location++) {
+            double IS = (getAero().getInternal(location) * 2);
             double allocate = Math.min(IS * percent, pointsToAllocate);
-            unit.initializeArmor((int) allocate, location);
+            getAero().initializeArmor((int) allocate, location);
             pointsToAllocate -= (int) allocate;
         }
         allocateLeftoverPoints(pointsToAllocate);
@@ -416,8 +416,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         
         int locIdx = 0;
         while (points > 0){
-            int armor = unit.getArmor(locs[locIdx]) + 1;
-            unit.initializeArmor(armor, locs[locIdx]);
+            int armor = getAero().getArmor(locs[locIdx]) + 1;
+            getAero().initializeArmor(armor, locs[locIdx]);
             points--;
             locIdx = (locIdx + 1) % locs.length;            
         }
@@ -428,8 +428,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         JSpinner field = (JSpinner) e.getSource();
         int location = Integer.parseInt(field.getName());
         int value = (Integer) field.getModel().getValue();
-        unit.initializeArmor(value, location);
-        if (unit.hasPatchworkArmor()) {
+        getAero().initializeArmor(value, location);
+        if (getAero().hasPatchworkArmor()) {
             setArmorPoints(getMech().getTotalArmor());
         }
         if (refresh != null) {
@@ -442,14 +442,14 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
     }
 
     public void setArmorPoints(int points) {
-        int maxArmor = TestAero.maxArmorPoints(unit, unit.getWeight());
+        int maxArmor = TestAero.maxArmorPoints(getAero(), getAero().getWeight());
         wastedArmorPoints = Math.max(points - maxArmor, 0);
         armorPoints = Math.min(maxArmor, points);
     }
 
     private boolean isFullyAllocated() {
-        if (!unit.hasPatchworkArmor()) {
-            return armorPoints == unit.getTotalOArmor();
+        if (!getAero().hasPatchworkArmor()) {
+            return armorPoints == getAero().getTotalOArmor();
         }
         return false;
     }
@@ -466,8 +466,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     public void resetArmorPoints() {
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
-                unit.getArmorType(0), unit.getArmorTechLevel(0));
+                getAero().getArmorType(0), getAero().getArmorTechLevel(0));
         setArmorPoints((int) Math
-                .floor(unit.getLabArmorTonnage() * armorPerTon));
+                .floor(getAero().getLabArmorTonnage() * armorPerTon));
     }
 }

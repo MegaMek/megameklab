@@ -74,7 +74,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     public BuildView(Mech unit, RefreshListener refresh) {
         super(unit);
 
-        equipmentList = new CriticalTableModel(this.unit, CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(getMech(), CriticalTableModel.BUILDTABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
@@ -113,17 +113,17 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
         engineHeatSinkCount = UnitUtil.getBaseChassisHeatSinks(getMech(), getMech().hasCompactHeatSinks());
-        for (Mounted mount : unit.getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getType().getCriticals(unit) == 0)) {
+        for (Mounted mount : getMech().getMisc()) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getType().getCriticals(getMech()) == 0)) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : unit.getWeaponList()) {
+        for (Mounted mount : getMech().getWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : unit.getAmmo()) {
+        for (Mounted mount : getMech().getAmmo()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && ((mount.getUsableShotsLeft() > 1) || (((AmmoType)mount.getType()).getAmmoType() == AmmoType.T_COOLANT_POD))) {
                 masterEquipmentList.add(mount);
             }
@@ -238,7 +238,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(unit);
+        equipmentList.updateUnit(getMech());
         equipmentList.refreshModel();
     }
 
@@ -251,17 +251,14 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
     public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
     public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -273,13 +270,13 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
             Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
-            final int totalCrits = UnitUtil.getCritsUsed(unit, eq.getType());
-            String[] locations = unit.getLocationNames();
-            String[] abbrLocations = unit.getLocationAbbrs();
+            final int totalCrits = UnitUtil.getCritsUsed(getMech(), eq.getType());
+            String[] locations = getMech().getLocationNames();
+            String[] abbrLocations = getMech().getLocationAbbrs();
 
             if (eq.getType().isSpreadable() || eq.isSplitable()) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMech());
-                if ((critSpace[Mech.LOC_RT] >= 1) && UnitUtil.isValidLocation(unit, eq.getType(), Mech.LOC_RT)) {
+                if ((critSpace[Mech.LOC_RT] >= 1) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_RT)) {
                     JMenu rtMenu = new JMenu(locations[Mech.LOC_RT]);
 
                     if (critSpace[Mech.LOC_RT] >= totalCrits) {
@@ -315,7 +312,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     popup.add(rtMenu);
                 }
 
-                if ((critSpace[Mech.LOC_RARM] >= totalCrits) && UnitUtil.isValidLocation(unit, eq.getType(), Mech.LOC_RARM)) {
+                if ((critSpace[Mech.LOC_RARM] >= totalCrits) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_RARM)) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_RARM]));
                     item.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
@@ -325,7 +322,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     popup.add(item);
                 }
 
-                if ((critSpace[Mech.LOC_LT] >= 1) && UnitUtil.isValidLocation(unit, eq.getType(), Mech.LOC_LT)) {
+                if ((critSpace[Mech.LOC_LT] >= 1) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_LT)) {
                     JMenu ltMenu = new JMenu(locations[Mech.LOC_LT]);
 
                     if (critSpace[Mech.LOC_LT] >= totalCrits) {
@@ -362,7 +359,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
                 }
 
-                if ((critSpace[Mech.LOC_LARM] >= totalCrits)  && UnitUtil.isValidLocation(unit, eq.getType(), Mech.LOC_LARM)) {
+                if ((critSpace[Mech.LOC_LARM] >= totalCrits)  && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_LARM)) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mech.LOC_LARM]));
                     item.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
@@ -373,9 +370,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 }
 
             } else {
-                for (int location = 0; location < unit.locations(); location++) {
+                for (int location = 0; location < getMech().locations(); location++) {
 
-                    if ((UnitUtil.getHighestContinuousNumberOfCrits(unit, location) >= totalCrits)  && UnitUtil.isValidLocation(unit, eq.getType(), location)) {
+                    if ((UnitUtil.getHighestContinuousNumberOfCrits(getMech(), location) >= totalCrits)  && UnitUtil.isValidLocation(getMech(), eq.getType(), location)) {
                         item = new JMenuItem("Add to " + locations[location]);
 
                         final int loc = location;
@@ -393,14 +390,13 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     }
 
     public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
 
     }
 
     private void jMenuLoadSplitComponent_actionPerformed(int location, int secondaryLocation, int primarySlots, int selectedRow) {
         Mounted eq = (Mounted)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
-        int crits = UnitUtil.getCritsUsed(unit, eq.getType());
-        int openSlots = Math.min(primarySlots, UnitUtil.getHighestContinuousNumberOfCrits(unit, location));
+        int crits = UnitUtil.getCritsUsed(getMech(), eq.getType());
+        int openSlots = Math.min(primarySlots, UnitUtil.getHighestContinuousNumberOfCrits(getMech(), location));
         eq.setSecondLocation(secondaryLocation);
 
         for (int slot = 0; slot < openSlots; slot++) {
@@ -420,7 +416,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             }
         }
 
-        UnitUtil.changeMountStatus(unit, eq, location, secondaryLocation, false);
+        UnitUtil.changeMountStatus(getMech(), eq, location, secondaryLocation, false);
 
         // go back up to grandparent build tab and fire a full refresh.
         ((BuildTab) getParent().getParent()).refreshAll();
@@ -467,7 +463,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     eq.setFacing(4);
                 } else if (facing.equals("Rear")) {
                     eq.setFacing(3);
-                    UnitUtil.changeMountStatus(unit, eq, location, -1, true);
+                    UnitUtil.changeMountStatus(getMech(), eq, location, -1, true);
                 }
             } else {
                 getMech().addEquipment(eq, location, false);
@@ -475,7 +471,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        UnitUtil.changeMountStatus(unit, eq, location, -1, false);
+        UnitUtil.changeMountStatus(getMech(), eq, location, -1, false);
 
         // go back up to grandparent build tab and fire a full refresh.
         ((BuildTab) getParent().getParent()).refreshAll();

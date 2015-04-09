@@ -127,13 +127,13 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentCombo() {
-        equipmentCombo.setRenderer(new EquipmentListCellRenderer(unit));
+        equipmentCombo.setRenderer(new EquipmentListCellRenderer(getTank()));
         equipmentCombo.setKeySelectionManager(new EquipmentListCellKeySelectionManager());
         equipmentCombo.removeAllItems();
         equipmentTypes = new Vector<EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
-            if (UnitUtil.isLegal(unit, eq.getTechLevel(unit.getTechLevelYear()))) {
+            if (UnitUtil.isLegal(getTank(), eq.getTechLevel(getTank().getTechLevelYear()))) {
                 equipmentTypes.add(eq);
                 equipmentCombo.addItem(eq);
             }
@@ -141,12 +141,12 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentTable() {
-        for (Mounted mount : unit.getMisc()) {
+        for (Mounted mount : getTank().getMisc()) {
 
             if (UnitUtil.isHeatSink(mount) || UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
-            if (UnitUtil.isUnitEquipment(mount.getType(), unit)) {
+            if (UnitUtil.isUnitEquipment(mount.getType(), getTank())) {
                 equipmentList.addCrit(mount);
             }
         }
@@ -154,7 +154,7 @@ public class EquipmentView extends IView implements ActionListener {
 
     private void loadHeatSinks() {
         int engineHeatSinks = 10;// UnitUtil.getBaseChassisHeatSinks(unit);
-        for (Mounted mount : unit.getMisc()) {
+        for (Mounted mount : getTank().getMisc()) {
             if (UnitUtil.isHeatSink(mount)) {
                 if (engineHeatSinks-- > 0) {
                     continue;
@@ -225,12 +225,12 @@ public class EquipmentView extends IView implements ActionListener {
             Mounted mount = null;
             boolean isMisc = equip instanceof MiscType;
             if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-                if (!UnitUtil.hasTargComp(unit)) {
-                    mount = UnitUtil.updateTC(unit, equip);
+                if (!UnitUtil.hasTargComp(getTank())) {
+                    mount = UnitUtil.updateTC(getTank(), equip);
                 }
             } else {
                 try {
-                    mount = unit.addEquipment(equip, Entity.LOC_NONE, false);
+                    mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -265,7 +265,7 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(unit);
+        equipmentList.updateUnit(getTank());
         equipmentList.refreshModel();
         if (refresh != null) {
             refresh.refreshStatus();

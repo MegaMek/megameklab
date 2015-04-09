@@ -163,7 +163,7 @@ public class CriticalView extends IView {
         int [] numAPWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
         int [] numAMWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
          
-        for (Mounted m : unit.getEquipment()){
+        for (Mounted m : getBattleArmor().getEquipment()){
             if (m.getLocation() == BattleArmor.LOC_SQUAD 
                     || m.getLocation() == trooper){
                 critSuit.addMounted(m.getBaMountLoc(), m);
@@ -179,7 +179,7 @@ public class CriticalView extends IView {
             }            
         }
 
-        synchronized (unit) {
+        synchronized (getBattleArmor()) {
             for (int location = 0; location < critSuit.locations(); location++) {
                 Vector<String> critNames = new Vector<String>(1, 1);
                 for (int slot = 0; slot < critSuit.getNumCriticals(location); 
@@ -208,7 +208,7 @@ public class CriticalView extends IView {
                                     new StringBuffer(m.getName());
 
                             critName.append(":" + slot + ":"
-                                    + unit.getEquipmentNum(m));
+                                    + getBattleArmor().getEquipmentNum(m));
                             critNames.add(critName.toString());
                         } catch (Exception ex) {
                             ex.printStackTrace();

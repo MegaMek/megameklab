@@ -138,7 +138,7 @@ public class CriticalView extends IView {
         rearRightPanel.removeAll();
         this.remove(fullTurretPanel);
 
-        if (unit instanceof VTOL) {
+        if (getTank() instanceof VTOL) {
             if (getTank().hasNoTurret()){
                 turretPanel.setBorder(BorderFactory.createTitledBorder(
                         BorderFactory.createEmptyBorder(), "Rotor",
@@ -174,13 +174,13 @@ public class CriticalView extends IView {
             this.add(fullTurretPanel);
         }
 
-        synchronized (unit) {
-            for (int location = 0; location < unit.locations(); location++) {
+        synchronized (getTank()) {
+            for (int location = 0; location < getTank().locations(); location++) {
                 // JPanel locationPanel = new JPanel();
                 Vector<String> critNames = new Vector<String>(1, 1);
 
-                for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                    CriticalSlot cs = unit.getCritical(location, slot);
+                for (int slot = 0; slot < getTank().getNumberOfCriticals(location); slot++) {
+                    CriticalSlot cs = getTank().getCritical(location, slot);
                     if (cs == null) {
                         continue;
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
@@ -194,7 +194,7 @@ public class CriticalView extends IView {
                                 m = cs.getMount();
 
                                 if (m == null) {
-                                    unit.setCritical(location, slot, null);
+                                    getTank().setCritical(location, slot, null);
                                     continue;
                                 }
                                 cs.setMount(m);
@@ -233,7 +233,7 @@ public class CriticalView extends IView {
                 criticalSlotList.setFont(new Font("Arial", Font.PLAIN, 10));
                 criticalSlotList.setName(Integer.toString(location));
                 criticalSlotList.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.BLACK.darker()));
-                if (!((Tank)unit).isSuperHeavy()) {
+                if (!(getTank()).isSuperHeavy()) {
                     switch (location) {
                         case Tank.LOC_FRONT:
                             frontPanel.add(criticalSlotList);
@@ -257,7 +257,7 @@ public class CriticalView extends IView {
                             dualTurretPanel.add(criticalSlotList);
                             break;
                     }
-                } else if (unit instanceof VTOL) {
+                } else if (getTank() instanceof VTOL) {
                     switch (location) {
                         case Tank.LOC_FRONT:
                             frontPanel.add(criticalSlotList);

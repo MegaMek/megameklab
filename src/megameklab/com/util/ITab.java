@@ -31,10 +31,10 @@ public class ITab extends JPanel {
      * 
      */
     private static final long serialVersionUID = -5771036622436158024L;
-    public Entity unit;
+    private Entity unit;
 
-    public ITab() {
-
+    public ITab(Entity unit) {
+        this.unit = unit;
     }
 
     public void updateUnit(Entity unit) {

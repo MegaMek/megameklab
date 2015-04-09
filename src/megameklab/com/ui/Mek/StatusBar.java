@@ -65,8 +65,8 @@ public class StatusBar extends ITab {
     private RefreshListener refresh;
 
     public StatusBar(Mech unit, MegaMekLabMainUI parent) {
+        super(unit);
         parentFrame = parent;
-        this.unit = unit;
 
         formatter = new DecimalFormat();
         testEntity = new TestMech(getMech(), entityVerifier.mechOption, null);

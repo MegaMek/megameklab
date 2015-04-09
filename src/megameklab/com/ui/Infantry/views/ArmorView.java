@@ -115,7 +115,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         chSneakCamo.setSelected(getInfantry().hasSneakCamo());
         chSneakIR.setSelected(getInfantry().hasSneakIR());
         chSneakECM.setSelected(getInfantry().hasSneakECM());
-        if(unit.getTechLevel() < TechConstants.T_TW_ALL) {
+        if(getInfantry().getTechLevel() < TechConstants.T_TW_ALL) {
             armorValue.setEnabled(false);
             chEncumber.setEnabled(false);
             chSpaceSuit.setEnabled(false);

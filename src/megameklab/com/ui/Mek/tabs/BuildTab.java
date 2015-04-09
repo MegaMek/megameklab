@@ -56,7 +56,7 @@ public class BuildTab extends ITab implements ActionListener {
     private String COMPACTCOMMAND = "compactbuttoncommand";
 
     public BuildTab(Mech unit, EquipmentTab equipment) {
-        this.unit = unit;
+        super(unit);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new GridBagLayout());
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -94,8 +94,8 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        critView.updateUnit(unit);
-        buildView.updateUnit(unit);
+        critView.updateUnit(getMech());
+        buildView.updateUnit(getMech());
         critView.refresh();
         buildView.refresh();
         addAllActionListeners();
@@ -115,14 +115,14 @@ public class BuildTab extends ITab implements ActionListener {
 
         for (Mounted mount : buildView.getTableModel().getCrits()) {
             int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(getMech(), getMech().hasCompactHeatSinks());
-            for (int location = Mech.LOC_HEAD; location < unit.locations(); location++) {
+            for (int location = Mech.LOC_HEAD; location < getMech().locations(); location++) {
 
-                if (!UnitUtil.isValidLocation(unit, mount.getType(), location)) {
+                if (!UnitUtil.isValidLocation(getMech(), mount.getType(), location)) {
                     continue;
                 }
 
-                int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(unit, location);
-                int critsUsed = UnitUtil.getCritsUsed(unit, mount.getType());
+                int continuousNumberOfCrits = UnitUtil.getHighestContinuousNumberOfCrits(getMech(), location);
+                int critsUsed = UnitUtil.getCritsUsed(getMech(), mount.getType());
                 if (continuousNumberOfCrits < critsUsed) {
                     continue;
                 }
@@ -140,7 +140,7 @@ public class BuildTab extends ITab implements ActionListener {
                     } else {
                         getMech().addEquipment(mount, location, false);
                     }
-                    UnitUtil.changeMountStatus(unit, mount, location, Entity.LOC_NONE, false);
+                    UnitUtil.changeMountStatus(getMech(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -153,10 +153,10 @@ public class BuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : unit.getEquipment()) {
+        for (Mounted mount : getMech().getEquipment()) {
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 UnitUtil.removeCriticals(getMech(), mount);
-                UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                UnitUtil.changeMountStatus(getMech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
 

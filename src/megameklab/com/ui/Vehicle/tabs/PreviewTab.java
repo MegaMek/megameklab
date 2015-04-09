@@ -34,7 +34,7 @@ public class PreviewTab extends ITab {
     private MechViewPanel panelMekView;
 
 	public PreviewTab(Tank unit) {
-		this.unit = unit;
+	    super(unit);
 		this.setLayout(new BorderLayout());
         panelMekView = new MechViewPanel(350, 500);
         add(panelMekView, BorderLayout.CENTER);
@@ -46,14 +46,14 @@ public class PreviewTab extends ITab {
 		boolean populateTextFields = true;
 		MechView mechView = null;
         try {
-            mechView = new MechView(unit, false);
+            mechView = new MechView(getTank(), false);
         } catch (Exception e) {
             e.printStackTrace();
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
         if (populateTextFields && (mechView != null)) {
-            panelMekView.setMech(unit);
+            panelMekView.setMech(getTank());
         } else {
             panelMekView.reset();
         }

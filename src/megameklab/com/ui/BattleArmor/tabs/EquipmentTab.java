@@ -137,7 +137,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     public EquipmentTab(BattleArmor unit) {
-        this.unit = unit;
+        super(unit);
 
         equipmentList = new CriticalTableModel(unit, CriticalTableModel.WEAPONTABLE);
         equipmentTable.setModel(equipmentList);
@@ -356,14 +356,14 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private void loadEquipmentTable() {
 
-        for (Mounted mount : unit.getWeaponList()) {
-            if (UnitUtil.isBattleArmorWeapon(mount.getType(), unit)
+        for (Mounted mount : getBattleArmor().getWeaponList()) {
+            if (UnitUtil.isBattleArmorWeapon(mount.getType(), getBattleArmor())
                     || UnitUtil.isBattleArmorAPWeapon(mount.getType())){
                 equipmentList.addCrit(mount);
             }
         }
 
-        for (Mounted mount : unit.getAmmo()) {
+        for (Mounted mount : getBattleArmor().getAmmo()) {
             // Ignore ammo for one-shot launchers
             if (mount.getLinkedBy() != null
                     && mount.getLinkedBy().isOneShot()){
@@ -374,7 +374,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
 
-        for (Mounted mount : unit.getMisc()) {
+        for (Mounted mount : getBattleArmor().getMisc()) {
 
             EquipmentType etype = mount.getType();
             if (UnitUtil.isHeatSink(mount)
@@ -456,7 +456,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         boolean multiMount = UnitUtil.isBAMultiMount(equip);
 
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-            if (!UnitUtil.hasTargComp(unit)) {
+            if (!UnitUtil.hasTargComp(getBattleArmor())) {
                 mount = UnitUtil.updateTC(getBattleArmor(), equip);
                 if (mount != null){
                     equipmentList.addCrit(mount);
@@ -466,13 +466,13 @@ public class EquipmentTab extends ITab implements ActionListener {
             try {
                 if (multiMount) {
                     for (int t = 1; t <= getBattleArmor().getTroopers(); t++){
-                        mount = new Mounted(unit, equip);
+                        mount = new Mounted(getBattleArmor(), equip);
                         mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                         getBattleArmor().addEquipment(mount, t, false);
                         equipmentList.addCrit(mount);
                     }
                 } else {
-                    mount = new Mounted(unit, equip);
+                    mount = new Mounted(getBattleArmor(), equip);
                     mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                     getBattleArmor().addEquipment(mount, BattleArmor.LOC_SQUAD,
                             false);
@@ -524,7 +524,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(unit);
+        equipmentList.updateUnit(getBattleArmor());
         equipmentList.refreshModel();
         if (refresh != null) {
             refresh.refreshStatus();
@@ -554,8 +554,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (etype instanceof AmmoType) {
                     atype = (AmmoType)etype;
                 }
-                if (!UnitUtil.isLegal(unit,
-                        etype.getTechLevel(unit.getTechLevelYear()))) {
+                if (!UnitUtil.isLegal(getBattleArmor(),
+                        etype.getTechLevel(getBattleArmor().getTechLevelYear()))) {
                     return false;
                 }
 
@@ -582,21 +582,22 @@ public class EquipmentTab extends ITab implements ActionListener {
                         && !getBattleArmor().canMountDWP()){
                     return false;
                 }
-                if (((nType == T_OTHER) && UnitUtil.isUnitEquipment(etype, unit))
-                        || (((nType == T_WEAPON) && (UnitUtil.isUnitWeapon(etype, unit))))
-                        || ((nType == T_ENERGY) && UnitUtil.isUnitWeapon(etype, unit)
+                BattleArmor ba = getBattleArmor();
+                if (((nType == T_OTHER) && UnitUtil.isUnitEquipment(etype, ba))
+                        || (((nType == T_WEAPON) && (UnitUtil.isUnitWeapon(etype, ba))))
+                        || ((nType == T_ENERGY) && UnitUtil.isUnitWeapon(etype, ba)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
                             || (wtype.hasFlag(WeaponType.F_PLASMA)
                                     && (wtype.getAmmoType() == AmmoType.T_PLASMA))))
-                        || ((nType == T_BALLISTIC) && UnitUtil.isUnitWeapon(etype, unit)
+                        || ((nType == T_BALLISTIC) && UnitUtil.isUnitWeapon(etype, ba)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_BALLISTIC)))
-                        || ((nType == T_MISSILE) && UnitUtil.isUnitWeapon(etype, unit)
+                        || ((nType == T_MISSILE) && UnitUtil.isUnitWeapon(etype, ba)
                             && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
                                     && (wtype.getAmmoType() != AmmoType.T_NA))
                                     || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
-                        || ((nType == T_ARTILLERY) && UnitUtil.isUnitWeapon(etype, unit)
+                        || ((nType == T_ARTILLERY) && UnitUtil.isUnitWeapon(etype, ba)
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
-                        || (((nType == T_AMMO) && (atype != null)) && UnitUtil.canUseAmmo(unit, atype))
+                        || (((nType == T_AMMO) && (atype != null)) && UnitUtil.canUseAmmo(ba, atype))
                         || ((nType == T_AP) && UnitUtil.isBattleArmorAPWeapon(etype))) {
                     if (txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
@@ -812,14 +813,12 @@ public class EquipmentTab extends ITab implements ActionListener {
             try {
                 l0 = format.parse(s0).intValue();
             } catch (java.text.ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             int l1 = 0;
             try {
                 l1 = format.parse(s1).intValue();
             } catch (java.text.ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return ((Comparable<Integer>)l0).compareTo(l1);
