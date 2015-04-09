@@ -39,6 +39,7 @@ import megamek.common.Mounted;
 import megamek.common.TripodMech;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -49,20 +50,20 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
      *
      */
     private static final long serialVersionUID = 6847511182922982125L;
-    private Entity unit;
+    private EntitySource eSource;
     private RefreshListener refresh;
     private boolean buildView = false;
 
-    public DropTargetCriticalList(Vector<E> vector, Entity unit,
+    public DropTargetCriticalList(Vector<E> vector, EntitySource eSource,
             RefreshListener refresh, boolean buildView) {
         super(vector);
         setDragEnabled(true);
-        this.unit = unit;
+        this.eSource = eSource;
         this.refresh = refresh;
         this.buildView = buildView;
-        setCellRenderer(new CritListCellRenderer(unit, buildView));
+        setCellRenderer(new CritListCellRenderer(eSource.getEntity(), buildView));
         addMouseListener(this);
-        setTransferHandler(new CriticalTransferHandler(unit, refresh));
+        setTransferHandler(new CriticalTransferHandler(eSource, refresh));
     }
 
     private void changeMountStatus(Mounted eq, int location, boolean rear) {
@@ -638,7 +639,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
     
     public Entity getUnit() {
-        return unit;
+        return eSource.getEntity();
     }
 
 }

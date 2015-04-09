@@ -45,6 +45,7 @@ import javax.swing.event.ChangeListener;
 import megamek.common.Aero;
 import megamek.common.EquipmentType;
 import megamek.common.verifier.TestAero;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 
@@ -100,8 +101,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     private RefreshListener refresh;
 
-    public ArmorView(Aero unit) {
-        super(unit);
+    public ArmorView(EntitySource eSource) {
+        super(eSource);
 
         setLayout(new GridLayout(1, 1));
 
@@ -170,8 +171,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
         JPanel topPanel;
 
-        synchronized (unit) {
-            for (int location = 0; location < unit.locations(); location++) {
+        synchronized (getAero()) {
+            for (int location = 0; location < getAero().locations(); location++) {
 
                 switch (location) {
                     case Aero.LOC_NOSE:
@@ -180,7 +181,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         topPanel.add(noseArmorMaxLabel);
                         nosePanel.add(topPanel);
                         nosePanel.setBorder(BorderFactory.createTitledBorder(
-                                null, unit.getLocationAbbr(location),
+                                null, getAero().getLocationAbbr(location),
                                 TitledBorder.TOP,
                                 TitledBorder.DEFAULT_POSITION));
                         break;
@@ -190,7 +191,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         topPanel.add(lwArmorMaxLabel);
                         lWingPanel.add(topPanel);
                         lWingPanel.setBorder(BorderFactory.createTitledBorder(
-                                null, unit.getLocationAbbr(location),
+                                null, getAero().getLocationAbbr(location),
                                 TitledBorder.TOP, 
                                 TitledBorder.DEFAULT_POSITION));
                         break;
@@ -200,7 +201,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         topPanel.add(rwArmorMaxLabel);
                         rWingPanel.add(topPanel);
                         rWingPanel.setBorder(BorderFactory.createTitledBorder(
-                                null, unit.getLocationAbbr(location),
+                                null, getAero().getLocationAbbr(location),
                                 TitledBorder.TOP, 
                                 TitledBorder.DEFAULT_POSITION));
                         break;
@@ -210,7 +211,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
                         topPanel.add(aftArmorMaxLabel);
                         aftPanel.add(topPanel);
                         aftPanel.setBorder(BorderFactory.createTitledBorder(
-                                null, unit.getLocationAbbr(location),
+                                null, getAero().getLocationAbbr(location),
                                 TitledBorder.TOP, 
                                 TitledBorder.DEFAULT_POSITION));                        
                         break;                   

@@ -32,6 +32,7 @@ import javax.swing.SpringLayout;
 
 import megamek.common.BattleArmor;
 import megamek.common.Mounted;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.BattleArmor.CriticalSuit;
 import megameklab.com.ui.BattleArmor.views.BuildView;
 import megameklab.com.ui.BattleArmor.views.CriticalView;
@@ -82,8 +83,8 @@ public class BuildTab extends ITab implements ActionListener {
     private String AUTOFILLCOMMAND = "autofillbuttoncommand";
     private String RESETCOMMAND = "resetbuttoncommand";
 
-    public BuildTab(BattleArmor unit) {
-        super(unit);
+    public BuildTab(EntitySource eSource) {
+        super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -98,7 +99,7 @@ public class BuildTab extends ITab implements ActionListener {
 
         createCriticalViews();
 
-        buildView = new BuildView(getBattleArmor());
+        buildView = new BuildView(eSource);
 
         mainPanel.add(buildView);
 
@@ -141,7 +142,7 @@ public class BuildTab extends ITab implements ActionListener {
     private void createCriticalViews(){
         critViews.clear();
         for (int i = 0; i < (getBattleArmor()).getTroopers(); i++){
-            critViews.add(new CriticalView(getBattleArmor(), i + 1, true,
+            critViews.add(new CriticalView(eSource, i + 1, true,
                     refresh));
             critPanel.add(critViews.get(i));
             critPanel.add(Box.createVerticalStrut(20));
@@ -158,12 +159,10 @@ public class BuildTab extends ITab implements ActionListener {
         }
 
         for (CriticalView critView : critViews){
-            critView.updateUnit(getBattleArmor());
             critView.refresh();
         }
         critPanel.validate();
 
-        buildView.updateUnit(getBattleArmor());
         buildView.refresh();
 
         addAllActionListeners();

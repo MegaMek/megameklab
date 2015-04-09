@@ -34,10 +34,10 @@ import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestTank;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.UnitUtil;
 
@@ -83,8 +83,8 @@ public class SummaryView extends IView{
 
     private EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
 
-    public SummaryView(Tank unit) {
-        super(unit);
+    public SummaryView(EntitySource eSource) {
+        super(eSource);
 
         Vector<JTextField> valueFields = new Vector<JTextField>();
 

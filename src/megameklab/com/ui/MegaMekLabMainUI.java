@@ -32,7 +32,8 @@ import megameklab.com.util.CConfig;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener {
+public abstract class MegaMekLabMainUI extends JFrame implements
+        RefreshListener, EntitySource {
 
     /**
      *

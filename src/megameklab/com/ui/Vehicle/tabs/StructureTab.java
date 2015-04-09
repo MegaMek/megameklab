@@ -63,6 +63,7 @@ import megamek.common.VTOL;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestTank;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Vehicle.views.SummaryView;
 import megameklab.com.ui.Vehicle.views.ArmorView;
 import megameklab.com.util.ITab;
@@ -135,9 +136,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private ArmorView armor;
     private JComboBox<String> armorCombo = new JComboBox<String>();
 
-    public StructureTab(Tank unit) {
-        super(unit);
-        armor = new ArmorView(getTank());
+    public StructureTab(EntitySource eSource) {
+        super(eSource);
+        armor = new ArmorView(eSource);
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
@@ -150,7 +151,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panChassis = new JPanel(new GridBagLayout());
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
-        panSummary = new SummaryView(getTank());
+        panSummary = new SummaryView(eSource);
 
         if (getTank().isClan()){
             techLevel = new JComboBox<String>(clanTechLevels);
@@ -547,9 +548,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             armorTonnage.setEnabled(true);
             maximizeArmorButton.setEnabled(true);
         }
-        armor.updateUnit(getTank());
         armor.refresh();
-        panSummary.updateUnit(getTank());
         panSummary.refresh();
 
         addAllListeners();

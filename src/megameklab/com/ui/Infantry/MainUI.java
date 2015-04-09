@@ -79,11 +79,9 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        Infantry pbi = (Infantry) getEntity();
-
-        statusbar = new StatusBar(pbi, this);
-        structureTab = new StructureTab(pbi);
-        previewTab = new PreviewTab(pbi);
+        statusbar = new StatusBar(this);
+        structureTab = new StructureTab(this);
+        previewTab = new PreviewTab(this);
 
         structureTab.addRefreshedListener(this);
 

@@ -20,8 +20,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import megamek.client.ui.swing.MechViewPanel;
-import megamek.common.Mech;
 import megamek.common.MechView;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.ITab;
 
 public class PreviewTab extends ITab {
@@ -33,8 +33,8 @@ public class PreviewTab extends ITab {
 
     private MechViewPanel panelMekView;
 
-	public PreviewTab(Mech unit) {
-	    super(unit);
+	public PreviewTab(EntitySource eSource) {
+	    super(eSource);
 		this.setLayout(new BorderLayout());
         panelMekView = new MechViewPanel(350, 500);
         add(panelMekView, BorderLayout.CENTER);

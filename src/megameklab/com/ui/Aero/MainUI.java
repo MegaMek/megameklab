@@ -87,15 +87,13 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        Aero aero = (Aero) getEntity();
+        structureTab = new StructureTab(this);
 
-        structureTab = new StructureTab(aero);
+        previewTab = new PreviewTab(this);
 
-        previewTab = new PreviewTab(aero);
-
-        statusbar = new StatusBar(aero, this);
-        equipmentTab = new EquipmentTab(aero);
-        buildTab = new BuildTab(aero, equipmentTab);
+        statusbar = new StatusBar(this);
+        equipmentTab = new EquipmentTab(this);
+        buildTab = new BuildTab(this, equipmentTab);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);

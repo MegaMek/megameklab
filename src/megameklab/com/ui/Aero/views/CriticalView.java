@@ -34,6 +34,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.loaders.MtfFile;
 import megamek.common.verifier.TestAero;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.Mech.DropTargetCriticalList;
@@ -64,8 +65,8 @@ public class CriticalView extends IView {
 
     private boolean showEmpty = false;
 
-    public CriticalView(Aero unit, boolean showEmpty, RefreshListener refresh) {
-        super(unit);
+    public CriticalView(EntitySource eSource, boolean showEmpty, RefreshListener refresh) {
+        super(eSource);
         this.showEmpty = showEmpty;
         this.refresh = refresh;
 
@@ -196,7 +197,7 @@ public class CriticalView extends IView {
                 DropTargetCriticalList<String> criticalSlotList = null;                
 
                 DropTargetCriticalList<String> dropTargetCriticalList = new DropTargetCriticalList<String>(
-                        critNames, getAero(), refresh, showEmpty);
+                        critNames, eSource, refresh, showEmpty);
                 criticalSlotList = dropTargetCriticalList;
                 criticalSlotList.setAlignmentX(JLabel.CENTER_ALIGNMENT);
                 criticalSlotList.setVisibleRowCount(critNames.size());

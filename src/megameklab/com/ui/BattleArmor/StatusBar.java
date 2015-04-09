@@ -65,8 +65,8 @@ public class StatusBar extends ITab {
     private JFrame parentFrame;
 
     private RefreshListener refresh;
-    public StatusBar(BattleArmor unit, MegaMekLabMainUI parent) {
-        super(unit);
+    public StatusBar(MegaMekLabMainUI parent) {
+        super(parent);
         
         formatter = new DecimalFormat();
         btnValidate.addActionListener(new java.awt.event.ActionListener() {

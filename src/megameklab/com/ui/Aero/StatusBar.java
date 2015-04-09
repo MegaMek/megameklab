@@ -28,7 +28,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
@@ -61,8 +60,8 @@ public class StatusBar extends ITab {
 
     private RefreshListener refresh;
 
-    public StatusBar(Aero unit, MegaMekLabMainUI parent) {
-        super(unit);
+    public StatusBar(MegaMekLabMainUI parent) {
+        super(parent);
         parentFrame = parent;
 
         formatter = new DecimalFormat();

@@ -27,7 +27,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import megamek.common.Infantry;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.util.ITab;
 import megameklab.com.util.ImageHelper;
@@ -53,8 +52,8 @@ public class StatusBar extends ITab {
 
     private RefreshListener refresh;
 
-    public StatusBar(Infantry unit, MegaMekLabMainUI parent) {
-        super(unit);
+    public StatusBar(MegaMekLabMainUI parent) {
+        super(parent);
         this.parentFrame = parent;
 
         formatter = new DecimalFormat();

@@ -48,6 +48,7 @@ import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.verifier.TestTank;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -144,8 +145,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     private RefreshListener refresh;
 
-    public ArmorView(Tank unit) {
-        super(unit);
+    public ArmorView(EntitySource eSource) {
+        super(eSource);
 
         setLayout(new GridLayout(1, 1));
 
@@ -162,7 +163,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         turretPanel.setLayout(new BoxLayout(turretPanel, BoxLayout.Y_AXIS));
 
 
-        if (unit instanceof SuperHeavyTank) {
+        if (getTank() instanceof SuperHeavyTank) {
             gbc = new GridBagConstraints();
             gbc.gridx = 1;
             gbc.gridy = 0;
@@ -268,10 +269,10 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         JPanel topPanel;
         JPanel bottomPanel;
 
-        synchronized (unit) {
+        synchronized (getTank()) {
             for (int location = 1; location <= getTank().locations(); location++) {
 
-                if (unit instanceof SuperHeavyTank) {
+                if (getTank() instanceof SuperHeavyTank) {
                     switch (location) {
                         case Tank.LOC_FRONT:
                             topPanel = new JPanel(new GridLayout(2, 0));

@@ -34,6 +34,7 @@ import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megameklab.com.ui.EntitySource;
 
 public class CriticalTransferHandler extends TransferHandler {
 
@@ -41,12 +42,12 @@ public class CriticalTransferHandler extends TransferHandler {
      *
      */
     private static final long serialVersionUID = -5215375829853683877L;
-    private Entity unit;
+    private EntitySource eSource;
     private int location;
     private RefreshListener refresh;
 
-    public CriticalTransferHandler(Entity unit, RefreshListener refresh) {
-        this.unit = unit;
+    public CriticalTransferHandler(EntitySource eSource, RefreshListener refresh) {
+        this.eSource = eSource;
         this.refresh = refresh;
     }
 
@@ -166,7 +167,7 @@ public class CriticalTransferHandler extends TransferHandler {
     }
 
     public Entity getUnit() {
-        return unit;
+        return eSource.getEntity();
     }
 
 }

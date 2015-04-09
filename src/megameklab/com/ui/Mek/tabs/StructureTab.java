@@ -63,6 +63,7 @@ import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestMech;
+import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.util.ITab;
@@ -154,9 +155,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
     private JSpinner armorTonnage;
 
-    public StructureTab(Mech unit) {
-        super(unit);
-        armor = new ArmorView(getMech());
+    public StructureTab(EntitySource eSource) {
+        super(eSource);
+        armor = new ArmorView(eSource);
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
@@ -171,7 +172,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
         panHeat = new JPanel(new GridBagLayout());
-        panSummary = new SummaryView(getMech());
+        panSummary = new SummaryView(eSource);
 
         GridBagConstraints gbc;
 
@@ -663,9 +664,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             armorTonnage.setEnabled(true);
             maximizeArmorButton.setEnabled(true);
         }
-        armor.updateUnit(getMech());
         armor.refresh();
-        panSummary.updateUnit(getMech());
         panSummary.refresh();
         addAllListeners();
 
