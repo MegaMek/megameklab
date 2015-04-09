@@ -62,7 +62,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         super();
         createNewUnit(Entity.ETYPE_AERO, false);
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
+        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(
@@ -87,7 +87,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        Aero aero = (Aero) entity;
+        Aero aero = (Aero) getEntity();
 
         structureTab = new StructureTab(aero);
 
@@ -117,47 +117,47 @@ public class MainUI extends MegaMekLabMainUI {
     public void createNewUnit(long entityType, boolean isSuperHeavy) {
 
         if (entityType == Entity.ETYPE_AERO) {
-            entity = new Aero();
-            entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            setEntity(new Aero());
+            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_CONV_FIGHTER) {
-            entity = new ConvFighter();
-            entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            setEntity(new ConvFighter());
+            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
             System.out.println("Aero.MainUI: Received incorrect entityType!");
             return;
         }
 
-        Aero aero = (Aero) entity;
+        Aero aero = (Aero) getEntity();
 
-        entity.setYear(3145);
-        entity.setWeight(25);
+        getEntity().setYear(3145);
+        getEntity().setWeight(25);
         aero.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
-        entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        entity.setArmorTechLevel(entity.getTechLevel());
-        entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+        getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        getEntity().setArmorTechLevel(getEntity().getTechLevel());
+        getEntity().setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
         aero.setHeatSinks(10);
         aero.setHeatType(Aero.HEAT_SINGLE);
 
-        entity.autoSetInternal();
-        for (int loc = 0; loc < entity.locations(); loc++) {
+        getEntity().autoSetInternal();
+        for (int loc = 0; loc < getEntity().locations(); loc++) {
             aero.initializeArmor(0, loc);
         }
 
-        entity.setChassis("New");
-        entity.setModel("Aero");
+        getEntity().setChassis("New");
+        getEntity().setModel("Aero");
     }
 
     @Override
     public void refreshAll() {
 
-//        String model = entity.getModel();
-//        String chassis = entity.getChassis();
+//        String model = getEntity().getModel();
+//        String chassis = getEntity().getChassis();
 //
 //        createNewUnit(Entity.ETYPE_AERO, false);
 //
-//        entity.setChassis(chassis);
-//        entity.setModel(model);
+//        getEntity().setChassis(chassis);
+//        getEntity().setModel(model);
 //
 //        reloadTabs();
 //        repaint();
@@ -194,7 +194,7 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshHeader() {
 
-        String title = entity.getChassis() + " " + entity.getModel() + ".blk";
+        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
         setTitle(title);
 
     }

@@ -136,13 +136,13 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentCombo() {
-        equipmentCombo.setRenderer(new EquipmentListCellRenderer(unit));
+        equipmentCombo.setRenderer(new EquipmentListCellRenderer(getBattleArmor()));
         equipmentCombo.setKeySelectionManager(new EquipmentListCellKeySelectionManager());
         equipmentCombo.removeAllItems();
         equipmentTypes = new Vector<EquipmentType>();
 
         for (EquipmentType eq : masterEquipmentList) {
-            if (UnitUtil.isLegal(unit, eq.getTechLevel(unit.getTechLevelYear()))) {
+            if (UnitUtil.isLegal(getBattleArmor(), eq.getTechLevel(getBattleArmor().getTechLevelYear()))) {
                 equipmentTypes.add(eq);
                 equipmentCombo.addItem(eq);
             }
@@ -151,12 +151,12 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentTable() {
-        for (Mounted mount : unit.getMisc()) {
+        for (Mounted mount : getBattleArmor().getMisc()) {
 
             if (UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
-            if (UnitUtil.isUnitEquipment(mount.getType(), unit)) {
+            if (UnitUtil.isUnitEquipment(mount.getType(), getBattleArmor())) {
                 equipmentList.addCrit(mount);
             }
         }
@@ -233,7 +233,7 @@ public class EquipmentView extends IView implements ActionListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(unit);
+        equipmentList.updateUnit(getBattleArmor());
         equipmentList.refreshModel();
         equipmentScroll.setPreferredSize(new Dimension((getWidth() * 90) / 100, (getHeight() * 8) / 10));
         equipmentScroll.repaint();

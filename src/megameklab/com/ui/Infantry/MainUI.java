@@ -55,7 +55,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         super();
         createNewUnit(Entity.ETYPE_INFANTRY, false);
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
+        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -79,7 +79,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        Infantry pbi = (Infantry) entity;
+        Infantry pbi = (Infantry) getEntity();
 
         statusbar = new StatusBar(pbi, this);
         structureTab = new StructureTab(pbi);
@@ -99,22 +99,22 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isSuperHeavy) {
-        entity = new Infantry();
-        entity.setYear(3145);
-        entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        entity.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        ((Infantry) entity).setSquadN(4);
-        ((Infantry) entity).setSquadSize(7);
-        ((Infantry) entity).setPrimaryWeapon((InfantryWeapon) EquipmentType
+        setEntity(new Infantry());
+        getEntity().setYear(3145);
+        getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        getEntity().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        ((Infantry) getEntity()).setSquadN(4);
+        ((Infantry) getEntity()).setSquadSize(7);
+        ((Infantry) getEntity()).setPrimaryWeapon((InfantryWeapon) EquipmentType
                 .get("InfantryAssaultRifle"));
         try {
-            entity.addEquipment(EquipmentType.get("InfantryAssaultRifle"),
+            getEntity().addEquipment(EquipmentType.get("InfantryAssaultRifle"),
                     Infantry.LOC_INFANTRY);
         } catch (LocationFullException ex) {
         }
-        entity.autoSetInternal();
-        entity.setChassis("New");
-        entity.setModel("Infantry");
+        getEntity().autoSetInternal();
+        getEntity().setChassis("New");
+        getEntity().setModel("Infantry");
     }
 
     @Override

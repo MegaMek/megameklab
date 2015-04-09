@@ -138,7 +138,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     public EquipmentTab(Mech unit) {
-        this.unit = unit;
+        super(unit);
 
         equipmentList = new CriticalTableModel(unit, CriticalTableModel.WEAPONTABLE);
         equipmentTable.setModel(equipmentList);
@@ -357,17 +357,17 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private void loadEquipmentTable() {
 
-        for (Mounted mount : unit.getWeaponList()) {
+        for (Mounted mount : getMech().getWeaponList()) {
             equipmentList.addCrit(mount);
         }
 
-        for (Mounted mount : unit.getAmmo()) {
+        for (Mounted mount : getMech().getAmmo()) {
             equipmentList.addCrit(mount);
         }
 
         List<EquipmentType> spreadAlreadyAdded = new ArrayList<EquipmentType>();
 
-        for (Mounted mount : unit.getMisc()) {
+        for (Mounted mount : getMech().getMisc()) {
             
             EquipmentType etype = mount.getType();
             if (UnitUtil.isHeatSink(mount)
@@ -448,7 +448,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         Mounted mount = null;
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-            if (!UnitUtil.hasTargComp(unit)) {
+            if (!UnitUtil.hasTargComp(getMech())) {
                 mount = UnitUtil.updateTC(getMech(), equip);
                 success = mount != null;
             }
@@ -457,7 +457,7 @@ public class EquipmentTab extends ITab implements ActionListener {
             success = mount != null;
         } else {
             try {
-                mount = new Mounted(unit, equip);
+                mount = new Mounted(getMech(), equip);
                 getMech().addEquipment(mount, Entity.LOC_NONE, false);
                 success = true;
             } catch (LocationFullException lfe) {
@@ -509,7 +509,7 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void fireTableRefresh() {
-        equipmentList.updateUnit(unit);
+        equipmentList.updateUnit(getMech());
         equipmentList.refreshModel();
         if (refresh != null) {
             refresh.refreshStatus();
@@ -528,6 +528,7 @@ public class EquipmentTab extends ITab implements ActionListener {
         equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
+                Mech mech = getMech();
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
                 WeaponType wtype = null;
@@ -538,7 +539,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (etype instanceof AmmoType) {
                     atype = (AmmoType)etype;
                 }
-                if (!UnitUtil.isLegal(unit, etype.getTechLevel(unit.getTechLevelYear()))) {
+                if (!UnitUtil.isLegal(mech, etype.getTechLevel(mech.getTechLevelYear()))) {
                     return false;
                 }
                 if (UnitUtil.isHeatSink(etype, true) || UnitUtil.isJumpJet(etype)) {
@@ -547,21 +548,21 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if ((etype instanceof MiscType) && (etype.hasFlag(MiscType.F_TSM) || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER)))) {
                     return false;
                 }
-                if (((nType == T_OTHER) && UnitUtil.isMechEquipment(etype, (Mech)unit))
-                        || (((nType == T_WEAPON) && (UnitUtil.isMechWeapon(etype, unit) || UnitUtil.isPhysicalWeapon(etype))))
-                        || ((nType == T_ENERGY) && UnitUtil.isMechWeapon(etype, unit)
+                if (((nType == T_OTHER) && UnitUtil.isMechEquipment(etype, mech))
+                        || (((nType == T_WEAPON) && (UnitUtil.isMechWeapon(etype, mech) || UnitUtil.isPhysicalWeapon(etype))))
+                        || ((nType == T_ENERGY) && UnitUtil.isMechWeapon(etype, mech)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_ENERGY)
                             || (wtype.hasFlag(WeaponType.F_PLASMA) && (wtype.getAmmoType() == AmmoType.T_PLASMA))))
-                        || ((nType == T_BALLISTIC) && UnitUtil.isMechWeapon(etype, unit)
+                        || ((nType == T_BALLISTIC) && UnitUtil.isMechWeapon(etype, mech)
                             && (wtype != null) && (wtype.hasFlag(WeaponType.F_BALLISTIC)
                                     && (wtype.getAmmoType() != AmmoType.T_NA)))
-                        || ((nType == T_MISSILE) && UnitUtil.isMechWeapon(etype, unit)
+                        || ((nType == T_MISSILE) && UnitUtil.isMechWeapon(etype, mech)
                             && (wtype != null) && ((wtype.hasFlag(WeaponType.F_MISSILE)
                                     && (wtype.getAmmoType() != AmmoType.T_NA)) || (wtype.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR)))
-                        || ((nType == T_ARTILLERY) && UnitUtil.isMechWeapon(etype, unit)
+                        || ((nType == T_ARTILLERY) && UnitUtil.isMechWeapon(etype, mech)
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
                         || ((nType == T_PHYSICAL) && UnitUtil.isPhysicalWeapon(etype))
-                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(unit, atype))) {
+                        || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(mech, atype))) {
                     if (txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());
@@ -771,14 +772,12 @@ public class EquipmentTab extends ITab implements ActionListener {
             try {
                 l0 = format.parse(s0).intValue();
             } catch (java.text.ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             int l1 = 0;
             try {
                 l1 = format.parse(s1).intValue();
             } catch (java.text.ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return ((Comparable<Integer>)l0).compareTo(l1);

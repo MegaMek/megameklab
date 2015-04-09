@@ -62,8 +62,8 @@ public class StatusBar extends ITab {
     private RefreshListener refresh;
 
     public StatusBar(Aero unit, MegaMekLabMainUI parent) {
+        super(unit);
         parentFrame = parent;
-        this.unit = unit;
 
         formatter = new DecimalFormat();
         testAero = new TestAero(getAero(), entityVerifier.aeroOption, null);

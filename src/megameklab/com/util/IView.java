@@ -32,7 +32,7 @@ public class IView extends JPanel {
      *
      */
     private static final long serialVersionUID = -6741722012756653309L;
-    public Entity unit;
+    private Entity unit;
 
     public IView(Aero unit) {
         this.unit = unit;

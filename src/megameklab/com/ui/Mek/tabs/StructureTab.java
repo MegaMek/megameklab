@@ -155,7 +155,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private JSpinner armorTonnage;
 
     public StructureTab(Mech unit) {
-        this.unit = unit;
+        super(unit);
         armor = new ArmorView(getMech());
         setLayout(new BorderLayout());
         setUpPanels();
@@ -233,8 +233,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .getTextField().setEditable(false);
 
         armorTonnage = new JSpinner(new SpinnerNumberModel(
-                unit.getArmorWeight(), 0.0,
-                UnitUtil.getMaximumArmorTonnage(unit), 0.5));
+                getMech().getArmorWeight(), 0.0,
+                UnitUtil.getMaximumArmorTonnage(getMech()), 0.5));
         spinnerSize = new Dimension(45, 25);
         ((JSpinner.DefaultEditor) armorTonnage.getEditor())
                 .setSize(spinnerSize);
@@ -250,8 +250,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         // lblFreeSinks.setFont(new Font(lblFreeSinks.getName(), Font.PLAIN,
         // 10));
 
-        chassis.setText(unit.getChassis());
-        model.setText(unit.getModel());
+        chassis.setText(getMech().getChassis());
+        model.setText(getMech().getModel());
 
         Dimension labelSize = new Dimension(110, 25);
         gbc = new GridBagConstraints();
@@ -519,15 +519,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             omniCB.setEnabled(true);
         }
         omniCB.setSelected(getMech().isOmni());
-        if (unit instanceof TripodMech) {
+        if (getMech() instanceof TripodMech) {
             motiveType.setSelectedIndex(2);
         }
-        if (unit instanceof QuadMech) {
+        if (getMech() instanceof QuadMech) {
             motiveType.setSelectedIndex(1);
         } else {
             motiveType.setSelectedItem(0);
         }
-        lamCB.setSelected(unit instanceof LandAirMech);
+        lamCB.setSelected(getMech() instanceof LandAirMech);
         fullHeadEjectCB.setSelected(getMech().hasFullHeadEject());
         era.setText(Integer.toString(getMech().getYear()));
         source.setText(getMech().getSource());
@@ -644,11 +644,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         runMP.setText(getMech().getRunMPasString());
 
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
-                .getMaximumArmorTonnage(unit));
+                .getMaximumArmorTonnage(getMech()));
         ((SpinnerNumberModel) armorTonnage.getModel()).setValue(Math.min(
-                UnitUtil.getMaximumArmorTonnage(unit),
-                unit.getLabArmorTonnage()));
-        if (unit.hasPatchworkArmor()) {
+                UnitUtil.getMaximumArmorTonnage(getMech()),
+                getMech().getLabArmorTonnage()));
+        if (getMech().hasPatchworkArmor()) {
             TestMech testMech = new TestMech(
                     getMech(),
                     new EntityVerifier(new File(
@@ -657,15 +657,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             armorTonnage.setEnabled(false);
             armorTonnage.getModel()
                     .setValue(testMech.getWeightAllocatedArmor());
-            unit.setArmorTonnage(testMech.getWeightAllocatedArmor());
+            getMech().setArmorTonnage(testMech.getWeightAllocatedArmor());
             maximizeArmorButton.setEnabled(false);
         } else {
             armorTonnage.setEnabled(true);
             maximizeArmorButton.setEnabled(true);
         }
-        armor.updateUnit(unit);
+        armor.updateUnit(getMech());
         armor.refresh();
-        panSummary.updateUnit(unit);
+        panSummary.updateUnit(getMech());
         panSummary.refresh();
         addAllListeners();
 
@@ -700,11 +700,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 resetEngine();
             } else if (combo.equals(armorCombo)) {
-                if (!unit.hasPatchworkArmor()) {
-                    UnitUtil.removeISorArmorMounts(unit, false);
+                if (!getMech().hasPatchworkArmor()) {
+                    UnitUtil.removeISorArmorMounts(getMech(), false);
                 }
                 createArmorMountsAndSetArmorType();
-                if (!unit.hasPatchworkArmor()) {
+                if (!getMech().hasPatchworkArmor()) {
                     armor.resetArmorPoints();
                 }
             } else if (combo.equals(structureCombo)) {
@@ -736,7 +736,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             getMech().addXLGyro();
                             break;
                         case Mech.GYRO_NONE:
-                            UnitUtil.compactCriticals(unit, Mech.LOC_CT);
+                            UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
                             break;
                         default:
                             getMech().addGyro();
@@ -803,7 +803,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 populateChoices(true);
                 refreshCockpitType();
                 armor.resetArmorPoints();
-                UnitUtil.checkEquipmentByTechLevel(unit);
+                UnitUtil.checkEquipmentByTechLevel(getMech());
             } else if (combo.equals(techType)) {
                 if ((techType.getSelectedIndex() == 1)
                         && (!getMech().isClan() || getMech().isMixedTech())) {
@@ -837,61 +837,61 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     for (String item : isTechLevels) {
                         techLevel.addItem(item);
                     }
-                    if (unit.getYear() < 3090) {
+                    if (getMech().getYear() < 3090) {
                         // before 3090, mixed tech is experimental
-                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                            unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                            getMech().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                         }
-                    } else if (unit.getYear() < 3145) {
+                    } else if (getMech().getYear() < 3145) {
                         // between 3090 and 3145, mixed tech is advanced
-                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL)
-                                && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
-                            unit.setTechLevel(TechConstants.T_IS_ADVANCED);
+                        if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)
+                                && (getMech().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
+                            getMech().setTechLevel(TechConstants.T_IS_ADVANCED);
                         }
                     } else {
                         // from 3145 on, mixed tech is tourney legal
-                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL)
-                                && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)
-                                && (unit.getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
-                            unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                        if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)
+                                && (getMech().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)
+                                && (getMech().getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
+                            getMech().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
                         }
                     }
-                    unit.setMixedTech(true);
+                    getMech().setMixedTech(true);
 
                 } else if ((techType.getSelectedIndex() == 3)
-                        && (!unit.isMixedTech() || !unit.isClan())) {
+                        && (!getMech().isMixedTech() || !getMech().isClan())) {
                     techLevel.removeAllItems();
                     for (String item : clanTechLevels) {
                         techLevel.addItem(item);
                     }
-                    if (unit.getYear() < 3090) {
+                    if (getMech().getYear() < 3090) {
                         // before 3090, mixed tech is experimental
-                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
-                            unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        if ((getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
+                            getMech().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                         }
-                    } else if (unit.getYear() < 3145) {
+                    } else if (getMech().getYear() < 3145) {
                         // between 3090 and 3145, mixed tech is advanced
-                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)
-                                && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
-                            unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        if ((getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)
+                                && (getMech().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
+                            getMech().setTechLevel(TechConstants.T_CLAN_ADVANCED);
                         }
                     } else {
                         // from 3145 on, mixed tech is tourney legal
-                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)
-                                && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)
-                                && (unit.getTechLevel() != TechConstants.T_CLAN_TW)) {
-                            unit.setTechLevel(TechConstants.T_CLAN_TW);
+                        if ((getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)
+                                && (getMech().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)
+                                && (getMech().getTechLevel() != TechConstants.T_CLAN_TW)) {
+                            getMech().setTechLevel(TechConstants.T_CLAN_TW);
                         }
                     }
                     getMech().setMixedTech(true);
                 }
-                if (!unit.hasPatchworkArmor()) {
-                    UnitUtil.removeISorArmorMounts(unit, false);
+                if (!getMech().hasPatchworkArmor()) {
+                    UnitUtil.removeISorArmorMounts(getMech(), false);
                 }
                 createArmorMountsAndSetArmorType();
                 populateChoices(true);
                 armor.resetArmorPoints();
-                UnitUtil.checkEquipmentByTechLevel(unit);
+                UnitUtil.checkEquipmentByTechLevel(getMech());
             }
             addAllListeners();
             refresh.refreshAll();
@@ -1089,7 +1089,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             refresh.refreshEquipment();
             populateChoices(true);
             armor.resetArmorPoints();
-            UnitUtil.checkEquipmentByTechLevel(unit);
+            UnitUtil.checkEquipmentByTechLevel(getMech());
         } else if (e.getSource().equals(source)) {
             getMech().setSource(source.getText());
         } else if (e.getSource().equals(manualBV)) {
@@ -1104,9 +1104,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
             }
         } else if (e.getSource().equals(chassis)) {
-            unit.setChassis(chassis.getText().trim());
+            getMech().setChassis(chassis.getText().trim());
         } else if (e.getSource().equals(model)) {
-            unit.setModel(model.getText().trim());
+            getMech().setModel(model.getText().trim());
         }
         addAllListeners();
         refresh.refreshPreview();
@@ -1152,7 +1152,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 structName = String.format("IS %1$s", structName);
             }
         } else {
-            if (unit.isClan()) {
+            if (getMech().isClan()) {
                 structName = String.format("Clan %1$s", structName);
             } else {
                 structName = String.format("IS %1$s", structName);
@@ -1573,8 +1573,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 cockpitType
                         .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SUPERHEAVY]);
                 if (isExperimental
-                        || (unit.getTechLevel() == TechConstants.T_CLAN_ADVANCED)
-                        || (unit.getTechLevel() == TechConstants.T_IS_ADVANCED)) {
+                        || (getMech().getTechLevel() == TechConstants.T_CLAN_ADVANCED)
+                        || (getMech().getTechLevel() == TechConstants.T_IS_ADVANCED)) {
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
                 }
@@ -1852,12 +1852,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         if (updateUnit) {
             // if we're ultra-light, and not at least advanced any more, revert
             // to 20 tons
-            if (!isAdvanced && (unit.getWeight() < 20)) {
-                unit.setWeight(20);
+            if (!isAdvanced && (getMech().getWeight() < 20)) {
+                getMech().setWeight(20);
             }
             // if we're clan or not at least advanced, and super heavy, revert
             // to 100 tons
-            if ((isClan || !isAdvanced) && (unit.getWeight() > 100)) {
+            if ((isClan || !isAdvanced) && (getMech().getWeight() > 100)) {
                 getMech().setWeight(100);
                 getMech().clearCockpitCrits();
                 getMech().addCockpit();
@@ -1866,7 +1866,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setArmorCombo(getMech().getArmorType(0));
             if (armorCombo.getSelectedIndex() == -1) {
                 armorCombo.setSelectedIndex(0);
-                UnitUtil.removeISorArmorMounts(unit, false);
+                UnitUtil.removeISorArmorMounts(getMech(), false);
                 createArmorMountsAndSetArmorType();
                 armor.resetArmorPoints();
             }
@@ -2026,10 +2026,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                 && ((Integer) weightClass.getValue() > 100))) {
                     // if we switch from being superheavy to not being superheavy,
                     // remove crits
-                    for (Mounted mount : unit.getEquipment()) {
+                    for (Mounted mount : getMech().getEquipment()) {
                         if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                             UnitUtil.removeCriticals(getMech(), mount);
-                            UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                            UnitUtil.changeMountStatus(getMech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                         }
                     }
                     changedSuperHeavyStatus = true;
@@ -2121,9 +2121,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void maximizeArmor() {
-        double maxArmor = UnitUtil.getMaximumArmorTonnage(unit);
+        double maxArmor = UnitUtil.getMaximumArmorTonnage(getMech());
         armorTonnage.setValue(maxArmor);
-        unit.setArmorTonnage(maxArmor);
+        getMech().setArmorTonnage(maxArmor);
         armor.resetArmorPoints();
     }
 
@@ -2211,25 +2211,25 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }
                 }
             }
-            setArmorType(headArmor, unit.getArmorType(Mech.LOC_HEAD), false);
-            setArmorType(laArmor, unit.getArmorType(Mech.LOC_LARM), false);
-            setArmorType(ltArmor, unit.getArmorType(Mech.LOC_LT), false);
-            setArmorType(ctArmor, unit.getArmorType(Mech.LOC_CT), false);
-            setArmorType(rtArmor, unit.getArmorType(Mech.LOC_RT), false);
-            setArmorType(raArmor, unit.getArmorType(Mech.LOC_RARM), false);
-            setArmorType(llArmor, unit.getArmorType(Mech.LOC_LLEG), false);
-            setArmorType(rlArmor, unit.getArmorType(Mech.LOC_RLEG), false);
+            setArmorType(headArmor, getMech().getArmorType(Mech.LOC_HEAD), false);
+            setArmorType(laArmor, getMech().getArmorType(Mech.LOC_LARM), false);
+            setArmorType(ltArmor, getMech().getArmorType(Mech.LOC_LT), false);
+            setArmorType(ctArmor, getMech().getArmorType(Mech.LOC_CT), false);
+            setArmorType(rtArmor, getMech().getArmorType(Mech.LOC_RT), false);
+            setArmorType(raArmor, getMech().getArmorType(Mech.LOC_RARM), false);
+            setArmorType(llArmor, getMech().getArmorType(Mech.LOC_LLEG), false);
+            setArmorType(rlArmor, getMech().getArmorType(Mech.LOC_RLEG), false);
             JLabel headLabel = new JLabel("Head:");
-            JLabel laLabel = new JLabel(unit instanceof QuadMech ?
+            JLabel laLabel = new JLabel(getMech() instanceof QuadMech ?
                 "Front Left Leg:" : "Left Arm:");
             JLabel ltLabel = new JLabel("Left Torso:");
             JLabel ctLabel = new JLabel("Center Torso:");
             JLabel rtLabel = new JLabel("Right Torso:");
-            JLabel raLabel = new JLabel(unit instanceof QuadMech ?
+            JLabel raLabel = new JLabel(getMech() instanceof QuadMech ?
                 "Front Right Leg:" : "Right Arm:");
-            JLabel llLabel = new JLabel(unit instanceof QuadMech ?
+            JLabel llLabel = new JLabel(getMech() instanceof QuadMech ?
                 "Rear Left Leg:" : "Left Leg:");
-            JLabel rlLabel = new JLabel(unit instanceof QuadMech ?
+            JLabel rlLabel = new JLabel(getMech() instanceof QuadMech ?
                 "Rear Right Leg:" : "Right Leg:");
             JPanel panel = new JPanel(new GridBagLayout());
             panel.add(headLabel, GBC.std());
@@ -2251,33 +2251,33 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             JOptionPane.showMessageDialog(this, panel,
                     "Please choose the armor types",
                     JOptionPane.QUESTION_MESSAGE);
-            unit.setArmorTechLevel(EquipmentType.get(getArmorType(headArmor))
+            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(headArmor))
                     .getTechLevel(getMech().getYear()), Mech.LOC_HEAD);
-            unit.setArmorTechLevel(EquipmentType.get(getArmorType(laArmor))
+            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(laArmor))
                     .getTechLevel(getMech().getYear()), Mech.LOC_LARM);
-            unit.setArmorTechLevel(EquipmentType.get(getArmorType(ltArmor))
+            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(ltArmor))
                     .getTechLevel(getMech().getYear()), Mech.LOC_LT);
-            unit.setArmorTechLevel(EquipmentType.get(getArmorType(ctArmor))
+            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(ctArmor))
                     .getTechLevel(getMech().getYear()), Mech.LOC_CT);
-            unit.setArmorTechLevel(EquipmentType.get(getArmorType(rtArmor))
+            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(rtArmor))
                     .getTechLevel(getMech().getYear()), Mech.LOC_RT);
-            unit.setArmorTechLevel(EquipmentType.get(getArmorType(raArmor))
+            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(raArmor))
                     .getTechLevel(getMech().getYear()), Mech.LOC_RARM);
-            unit.setArmorTechLevel(EquipmentType.get(getArmorType(llArmor))
+            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(llArmor))
                     .getTechLevel(getMech().getYear()), Mech.LOC_LLEG);
-            unit.setArmorTechLevel(EquipmentType.get(getArmorType(rlArmor))
+            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(rlArmor))
                     .getTechLevel(getMech().getYear()), Mech.LOC_RLEG);
-            unit.setArmorType(getArmorType(headArmor), Mech.LOC_HEAD);
-            unit.setArmorType(getArmorType(laArmor), Mech.LOC_LARM);
-            unit.setArmorType(getArmorType(ltArmor), Mech.LOC_LT);
-            unit.setArmorType(getArmorType(ctArmor), Mech.LOC_CT);
-            unit.setArmorType(getArmorType(rtArmor), Mech.LOC_RT);
-            unit.setArmorType(getArmorType(raArmor), Mech.LOC_RARM);
-            unit.setArmorType(getArmorType(llArmor), Mech.LOC_LLEG);
-            unit.setArmorType(getArmorType(rlArmor), Mech.LOC_RLEG);
-            for (int i = 0; i < unit.locations(); i++) {
+            getMech().setArmorType(getArmorType(headArmor), Mech.LOC_HEAD);
+            getMech().setArmorType(getArmorType(laArmor), Mech.LOC_LARM);
+            getMech().setArmorType(getArmorType(ltArmor), Mech.LOC_LT);
+            getMech().setArmorType(getArmorType(ctArmor), Mech.LOC_CT);
+            getMech().setArmorType(getArmorType(rtArmor), Mech.LOC_RT);
+            getMech().setArmorType(getArmorType(raArmor), Mech.LOC_RARM);
+            getMech().setArmorType(getArmorType(llArmor), Mech.LOC_LLEG);
+            getMech().setArmorType(getArmorType(rlArmor), Mech.LOC_RLEG);
+            for (int i = 0; i < getMech().locations(); i++) {
                 int armorCount = 0;
-                switch (unit.getArmorType(i)) {
+                switch (getMech().getArmorType(i)) {
                     case EquipmentType.T_ARMOR_STANDARD:
                     case EquipmentType.T_ARMOR_HARDENED:
                     case EquipmentType.T_ARMOR_INDUSTRIAL:
@@ -2295,7 +2295,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     case EquipmentType.T_ARMOR_FERRO_FIBROUS:
                     case EquipmentType.T_ARMOR_REFLECTIVE:
                     case EquipmentType.T_ARMOR_REACTIVE:
-                        if (TechConstants.isClan(unit.getArmorTechLevel(i))) {
+                        if (TechConstants.isClan(getMech().getArmorTechLevel(i))) {
                             armorCount = 1;
                         } else {
                             armorCount = 2;
@@ -2311,63 +2311,63 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 for (; armorCount > 0; armorCount--) {
                     try {
                         getMech().addEquipment(
-                                new Mounted(unit,
+                                new Mounted(getMech(),
                                         EquipmentType.get(EquipmentType
                                                 .getArmorTypeName(
-                                                        unit.getArmorType(i),
-                                                        unit.isClan()))), i,
+                                                        getMech().getArmorType(i),
+                                                        getMech().isClan()))), i,
                                 false);
                     } catch (LocationFullException ex) {
                         JOptionPane
                                 .showMessageDialog(
                                         null,
-                                        EquipmentType.getArmorTypeName(unit
+                                        EquipmentType.getArmorTypeName(getMech()
                                                 .getArmorType(i))
                                                 + " does not fit in location "
-                                                + unit.getLocationName(i)
+                                                + getMech().getLocationName(i)
                                                 + ". Resetting to Standard Armor in this location.",
                                         "Error",
                                         JOptionPane.INFORMATION_MESSAGE);
-                        unit.setArmorType(EquipmentType.T_ARMOR_STANDARD, i);
+                        getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD, i);
                     }
                 }
             }
-            if (!unit.hasPatchworkArmor()) {
+            if (!getMech().hasPatchworkArmor()) {
                 setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD, false);
             }
         } else {
-            unit.setArmorTechLevel(EquipmentType.get(getArmorType(armorCombo))
+            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(armorCombo))
                     .getTechLevel(getMech().getYear()));
-            unit.setArmorType(getArmorType(armorCombo));
+            getMech().setArmorType(getArmorType(armorCombo));
             int armorCount = 0;
 
             armorCount = EquipmentType.get(getArmorType(armorCombo))
-                    .getCriticals(unit);
+                    .getCriticals(getMech());
 
             if (armorCount < 1) {
                 return;
             }
             // auto-place stealth crits
-            if (unit.getArmorType(0) == EquipmentType.T_ARMOR_STEALTH) {
+            if (getMech().getArmorType(0) == EquipmentType.T_ARMOR_STEALTH) {
                 Mounted mount = UnitUtil.createSpreadMounts(
                         getMech(),
                         EquipmentType.get(EquipmentType.getArmorTypeName(
-                                unit.getArmorType(0), false)));
+                                getMech().getArmorType(0), false)));
                 if (mount == null) {
                     JOptionPane.showMessageDialog(null,
                             "Stealth Armor does not fit in location.",
                             "Resetting to Standard Armor",
                             JOptionPane.INFORMATION_MESSAGE);
                     setArmorCombo(EquipmentType.T_ARMOR_STANDARD);
-                    unit.setArmorTechLevel(EquipmentType.get(
+                    getMech().setArmorTechLevel(EquipmentType.get(
                             getArmorType(armorCombo)).getTechLevel(
                             getMech().getYear()));
-                    unit.setArmorType(getArmorType(armorCombo));
+                    getMech().setArmorType(getArmorType(armorCombo));
                 }
             } else {
                 for (; armorCount > 0; armorCount--) {
                     try {
-                        getMech().addEquipment(new Mounted(unit,
+                        getMech().addEquipment(new Mounted(getMech(),
                                 EquipmentType.get(getArmorType(armorCombo))),
                                 Entity.LOC_NONE, false);
                     } catch (Exception ex) {
@@ -2435,7 +2435,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void setArmorTonnage() {
-        unit.setArmorTonnage(((Double) armorTonnage.getValue()));
+        getMech().setArmorTonnage(((Double) armorTonnage.getValue()));
         armor.resetArmorPoints();
     }
 
@@ -2551,23 +2551,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
             }
             EquipmentType et = EquipmentType.get(EquipmentType
-                    .getStructureTypeName(i, unit.isClan()));
+                    .getStructureTypeName(i, getMech().isClan()));
             if ((et != null)
                     && TechConstants
-                            .isLegal(unit.getTechLevel(),
-                                    et.getTechLevel(unit.getYear()),
-                                    unit.isMixedTech())) {
+                            .isLegal(getMech().getTechLevel(),
+                                    et.getTechLevel(getMech().getYear()),
+                                    getMech().isMixedTech())) {
                 structures.add(et.getName());
             }
-            if (unit.isMixedTech()) {
+            if (getMech().isMixedTech()) {
                 et = EquipmentType.get(EquipmentType.getStructureTypeName(i,
-                        !unit.isClan()));
+                        !getMech().isClan()));
                 if ((et != null)
-                        && TechConstants.isLegal(unit.getTechLevel(),
-                                et.getTechLevel(unit.getYear()),
-                                unit.isMixedTech())) {
+                        && TechConstants.isLegal(getMech().getTechLevel(),
+                                et.getTechLevel(getMech().getYear()),
+                                getMech().isMixedTech())) {
                     structures.add(et.getName()
-                            + (unit.isClan() ? " (IS)" : " (Clan)"));
+                            + (getMech().isClan() ? " (IS)" : " (Clan)"));
                 }
             }
         }

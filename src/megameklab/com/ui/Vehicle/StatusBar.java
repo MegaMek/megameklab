@@ -63,8 +63,8 @@ public class StatusBar extends ITab {
     private RefreshListener refresh;
 
     public StatusBar(Tank unit, MegaMekLabMainUI parent) {
+        super(unit);
         parentFrame = parent;
-        this.unit = unit;
 
         formatter = new DecimalFormat();
         if (unit.isSupportVehicle()) {
@@ -113,34 +113,34 @@ public class StatusBar extends ITab {
     }
 
     public JLabel movementLabel() {
-        int walk = unit.getOriginalWalkMP();
-        int run = unit.getRunMP(false, true, false);
-        int jump = unit.getOriginalJumpMP();
+        int walk = getTank().getOriginalWalkMP();
+        int run = getTank().getRunMP(false, true, false);
+        int jump = getTank().getOriginalJumpMP();
 
         move.setText("Movement: " + walk + "/" + run + "/" + jump);
         return move;
     }
 
     public JLabel bvLabel() {
-        int bv = unit.calculateBattleValue();
+        int bv = getTank().calculateBattleValue();
         bvLabel.setText("BV: " + bv);
 
         return bvLabel;
     }
 
     public JLabel tonnageLabel() {
-        float tonnage = unit.getWeight();
+        float tonnage = getTank().getWeight();
         float currentTonnage;
 
         currentTonnage = testEntity.calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         return tons;
     }
 
     public JPanel slotsPanel() {
-        Tank tank = (Tank)unit;
+        Tank tank = getTank();
         int currentSlots = tank.getTotalSlots() - tank.getFreeSlots();
         slots.setText("Slots: "+currentSlots+"/"+tank.getTotalSlots());
         slotsPanel.add(slots);
@@ -149,24 +149,24 @@ public class StatusBar extends ITab {
 
     public void refresh() {
 
-        int walk = unit.getOriginalWalkMP();
-        int run = unit.getRunMP(true, true, false);
-        int jump = unit.getOriginalJumpMP();
-        float tonnage = unit.getWeight();
+        int walk = getTank().getOriginalWalkMP();
+        int run = getTank().getRunMP(true, true, false);
+        int jump = getTank().getOriginalJumpMP();
+        float tonnage = getTank().getWeight();
         float currentTonnage;
-        int bv = unit.calculateBattleValue();
+        int bv = getTank().calculateBattleValue();
 
-        if (unit.isSupportVehicle()) {
-            testEntity = new TestSupportVehicle((Tank) unit,
+        if (getTank().isSupportVehicle()) {
+            testEntity = new TestSupportVehicle(getTank(),
                     entityVerifier.tankOption, null);
         } else {
-            testEntity = new TestTank((Tank) unit, entityVerifier.tankOption,
+            testEntity = new TestTank((Tank) getTank(), entityVerifier.tankOption,
                     null);
         }
 
         currentTonnage = testEntity.calculateWeight();
 
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(unit);
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
         int currentCost = (int)Math.round(getTank().getCost(false));
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
@@ -176,7 +176,7 @@ public class StatusBar extends ITab {
         } else {
             tons.setForeground(Color.black);
         }
-        Tank tank = (Tank)unit;
+        Tank tank = getTank();
         int currentSlots = tank.getTotalSlots() - tank.getFreeSlots();
         slots.setText("Slots: "+currentSlots+"/"+tank.getTotalSlots());
         if (currentSlots > tank.getTotalSlots()) {

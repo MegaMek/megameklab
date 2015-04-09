@@ -61,7 +61,7 @@ public class BuildTab extends ITab implements ActionListener {
     private String RESETCOMMAND = "resetbuttoncommand";
 
     public BuildTab(Tank unit, EquipmentTab equipment) {
-        this.unit = unit;
+        super(unit);
         this.critList = equipment.getEquipmentList();
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -102,8 +102,8 @@ public class BuildTab extends ITab implements ActionListener {
 
     public void refresh() {
         removeAllActionListeners();
-        critView.updateUnit(unit);
-        buildView.updateUnit(unit);
+        critView.updateUnit(getTank());
+        buildView.updateUnit(getTank());
         critView.refresh();
         buildView.refresh();
         addAllActionListeners();
@@ -133,8 +133,8 @@ public class BuildTab extends ITab implements ActionListener {
         for (Mounted mount : buildView.getTableModel().getCrits()) {
             for (int location = 0; location < getTank().locations(); location++) {
                 try {
-                    unit.addEquipment(mount, location, false);
-                    UnitUtil.changeMountStatus(unit, mount, location, Entity.LOC_NONE, false);
+                    getTank().addEquipment(mount, location, false);
+                    UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -146,17 +146,17 @@ public class BuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : unit.getEquipment()) {
+        for (Mounted mount : getTank().getEquipment()) {
             // Fixed shouldn't be removed
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 continue;
             }
-            UnitUtil.removeCriticals(unit, mount);
-            UnitUtil.changeMountStatus(unit, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            UnitUtil.removeCriticals(getTank(), mount);
+            UnitUtil.changeMountStatus(getTank(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(unit);
+            MechFileParser.postLoadInit(getTank());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {

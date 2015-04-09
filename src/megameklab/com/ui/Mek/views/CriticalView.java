@@ -163,13 +163,13 @@ public class CriticalView extends IView {
         Dimension size = new Dimension(112, 182);
         Dimension legSize = new Dimension(112, 92);
 
-        synchronized (unit) {
-            for (int location = 0; location < unit.locations(); location++) {
+        synchronized (getMech()) {
+            for (int location = 0; location < getMech().locations(); location++) {
                 // JPanel locationPanel = new JPanel();
                 Vector<String> critNames = new Vector<String>(1, 1);
 
-                for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                    CriticalSlot cs = unit.getCritical(location, slot);
+                for (int slot = 0; slot < getMech().getNumberOfCriticals(location); slot++) {
+                    CriticalSlot cs = getMech().getCritical(location, slot);
                     if (cs == null) {
                         if (showEmpty) {
                             critNames.add(MtfFile.EMPTY);
@@ -185,7 +185,7 @@ public class CriticalView extends IView {
                                 m = cs.getMount();
 
                                 if (m == null) {
-                                    unit.setCritical(location, slot, null);
+                                    getMech().setCritical(location, slot, null);
                                     if (showEmpty) {
                                         critNames.add(MtfFile.EMPTY);
                                     }
@@ -233,7 +233,7 @@ public class CriticalView extends IView {
                         headPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_LARM:
-                        if (unit instanceof QuadMech) {
+                        if (getMech() instanceof QuadMech) {
                             laPanel.setBorder(BorderFactory.createTitledBorder(
                                     BorderFactory.createEmptyBorder(),
                                     "Front Left Leg", TitledBorder.TOP,
@@ -253,7 +253,7 @@ public class CriticalView extends IView {
                         laPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_RARM:
-                        if (unit instanceof QuadMech) {
+                        if (getMech() instanceof QuadMech) {
                             raPanel.setBorder(BorderFactory.createTitledBorder(
                                     BorderFactory.createEmptyBorder(),
                                     "Front Right Leg", TitledBorder.TOP,
@@ -292,7 +292,7 @@ public class CriticalView extends IView {
                         rtPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_LLEG:
-                        if (unit instanceof QuadMech) {
+                        if (getMech() instanceof QuadMech) {
                             llPanel.setBorder(BorderFactory.createTitledBorder(
                                     BorderFactory.createEmptyBorder(),
                                     "Rear Left Leg", TitledBorder.TOP,
@@ -309,7 +309,7 @@ public class CriticalView extends IView {
                         llPanel.add(criticalSlotList);
                         break;
                     case Mech.LOC_RLEG:
-                        if (unit instanceof QuadMech) {
+                        if (getMech() instanceof QuadMech) {
                             rlPanel.setBorder(BorderFactory.createTitledBorder(
                                     BorderFactory.createEmptyBorder(),
                                     "Rear Right Leg", TitledBorder.TOP,

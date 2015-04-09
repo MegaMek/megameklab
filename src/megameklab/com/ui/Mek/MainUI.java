@@ -64,7 +64,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         super();
         createNewUnit(Entity.ETYPE_BIPED_MECH, false);
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".mtf");
+        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -87,7 +87,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        Mech mech = (Mech) entity;
+        Mech mech = (Mech) getEntity();
 
         structureTab = new StructureTab(mech);
 
@@ -120,50 +120,50 @@ public class MainUI extends MegaMekLabMainUI {
     public void createNewUnit(long entityType, boolean isSuperHeavy) {
 
         if (entityType == Entity.ETYPE_TRIPOD_MECH) {
-            entity = new TripodMech(Mech.GYRO_STANDARD, Mech.COCKPIT_TRIPOD);
-            entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            setEntity(new TripodMech(Mech.GYRO_STANDARD, Mech.COCKPIT_TRIPOD));
+            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_QUAD_MECH) {
-            entity = new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
-            entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            setEntity(new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD));
+            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_LAND_AIR_MECH) {
-            entity = new LandAirMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
-            entity.setTechLevel(TechConstants.T_IS_ADVANCED);
-            entity.setManualBV(-1);
+            setEntity(new LandAirMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD));
+            getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);
+            getEntity().setManualBV(-1);
         } else { // type == 0
-            entity = new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD);
-            entity.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            setEntity(new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD));
+            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         }
-        Mech mech = (Mech) entity;
+        Mech mech = (Mech) getEntity();
 
-        entity.setYear(3145);
-        entity.setWeight(25);
+        getEntity().setYear(3145);
+        getEntity().setWeight(25);
         mech.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
-        entity.setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        entity.setArmorTechLevel(entity.getTechLevel());
-        entity.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+        getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        getEntity().setArmorTechLevel(getEntity().getTechLevel());
+        getEntity().setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
         mech.addGyro();
         mech.addEngineCrits();
         mech.addCockpit();
         UnitUtil.updateHeatSinks(mech, 10, "Single");
 
-        entity.autoSetInternal();
-        for (int loc = 0; loc < entity.locations(); loc++) {
+        getEntity().autoSetInternal();
+        for (int loc = 0; loc < getEntity().locations(); loc++) {
             mech.initializeArmor(0, loc);
             mech.initializeRearArmor(0, loc);
         }
 
-        entity.setChassis("New");
-        entity.setModel("Mek");
+        getEntity().setChassis("New");
+        getEntity().setModel("Mek");
 
     }
 
     @Override
     public void refreshAll() {
 
-        boolean isQuad = entity instanceof QuadMech;
-        boolean isLAM = entity instanceof LandAirMech;
-        boolean isTripod = entity instanceof TripodMech;
+        boolean isQuad = getEntity() instanceof QuadMech;
+        boolean isLAM = getEntity() instanceof LandAirMech;
+        boolean isTripod = getEntity() instanceof TripodMech;
 
         // Check to see if the current entity type matches the selected type
         if (((structureTab.isQuad() && !isQuad)
@@ -173,12 +173,12 @@ public class MainUI extends MegaMekLabMainUI {
                 || ((structureTab.isTripod() && !isTripod)
                         || (!structureTab.isTripod() && isTripod))) {
             // If no match, create a new entity of the right type
-            String model = entity.getModel();
-            String chassis = entity.getChassis();
-            String source = entity.getSource();
-            int year = entity.getYear();
-            int techLevel = entity.getTechLevel();
-            int mBV = entity.getManualBV();
+            String model = getEntity().getModel();
+            String chassis = getEntity().getChassis();
+            String source = getEntity().getSource();
+            int year = getEntity().getYear();
+            int techLevel = getEntity().getTechLevel();
+            int mBV = getEntity().getManualBV();
 
             long eType;
             if (structureTab.isQuad()){
@@ -193,12 +193,12 @@ public class MainUI extends MegaMekLabMainUI {
 
             createNewUnit(eType, false);
 
-            entity.setChassis(chassis);
-            entity.setModel(model);
-            entity.setSource(source);
-            entity.setYear(year);
-            entity.setTechLevel(techLevel);
-            entity.setManualBV(mBV);
+            getEntity().setChassis(chassis);
+            getEntity().setModel(model);
+            getEntity().setSource(source);
+            getEntity().setYear(year);
+            getEntity().setTechLevel(techLevel);
+            getEntity().setManualBV(mBV);
 
             reloadTabs();
             repaint();
@@ -235,8 +235,9 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshHeader() {
 
-        String title = entity.getChassis() + " " + entity.getModel() + ".mtf";
-/*
+        String title = getEntity().getChassis() + " " + getEntity().getModel()
+                + ".mtf";
+        /*  
         if (UnitUtil.validateUnit(entity).length() > 0) {
             title += "  (Invalid)";
             setForeground(Color.red);

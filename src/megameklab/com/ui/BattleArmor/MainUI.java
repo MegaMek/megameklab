@@ -60,7 +60,7 @@ public class MainUI extends MegaMekLabMainUI {
         super();
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
         createNewUnit(Entity.ETYPE_BATTLEARMOR, false);
-        setTitle(entity.getChassis() + " " + entity.getModel() + ".blk");
+        setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -83,7 +83,7 @@ public class MainUI extends MegaMekLabMainUI {
         ConfigPane.removeAll();
 
         masterPanel.setLayout(new BorderLayout());
-        BattleArmor ba = (BattleArmor) entity;
+        BattleArmor ba = (BattleArmor) getEntity();
         structureTab = new StructureTab(ba);
         equipTab = new EquipmentTab(ba);
 
@@ -106,8 +106,8 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isSuperHeavy) {
-        entity = new BattleArmor();
-        BattleArmor ba = (BattleArmor) entity;
+        setEntity(new BattleArmor());
+        BattleArmor ba = (BattleArmor) getEntity();
 
         ba.setYear(3145);
         ba.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
@@ -154,9 +154,9 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshHeader() {
 
-        String title = entity.getChassis() + " " + entity.getModel() + ".blk";
+        String title = getEntity().getChassis() + " " + getEntity().getModel() + ".blk";
 
-        if (UnitUtil.validateUnit(entity).length() > 0) {
+        if (UnitUtil.validateUnit(getEntity()).length() > 0) {
             title += "  (Invalid)";
             setForeground(Color.red);
         } else {

@@ -39,7 +39,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
      */
     private static final long serialVersionUID = 3971760390511127766L;
 
-    protected Entity entity = null;
+    private Entity entity = null;
 
     public MegaMekLabMainUI() {
 

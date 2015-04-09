@@ -100,7 +100,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 	private WeaponView weaponView;
 
 	public StructureTab(Infantry unit) {
-        this.unit = unit;
+	    super(unit);
         armorView = new ArmorView(unit);
         weaponView = new WeaponView(unit);
         setUpPanels();
@@ -121,8 +121,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         txtPrimary.setEditable(false);
         txtSecondary.setEditable(false);
 
-        chassis.setText(unit.getChassis());
-        model.setText(unit.getModel());
+        chassis.setText(getInfantry().getChassis());
+        model.setText(getInfantry().getModel());
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -359,9 +359,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             txtSecondary.setText("None");
         }
 
-		armorView.updateUnit(unit);
+		armorView.updateUnit(getInfantry());
         armorView.refresh();
-        weaponView.updateUnit(unit);
+        weaponView.updateUnit(getInfantry());
         weaponView.refresh();
         addAllActionListeners();
 	}
@@ -463,7 +463,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     }
 
                 }
-                UnitUtil.checkEquipmentByTechLevel(unit);
+                UnitUtil.checkEquipmentByTechLevel(getInfantry());
             }
             else if (combo.equals(techType)) {
                 if ((techType.getSelectedIndex() == 1) && (!getInfantry().isClan() || getInfantry().isMixedTech())) {
@@ -495,23 +495,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     for (String item : isTechLevels) {
                         techLevel.addItem(item);
                     }
-                    if (unit.getYear() < 3090) {
+                    if (getInfantry().getYear() < 3090) {
                         //before 3090, mixed tech is experimental
-                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                            unit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                            unit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        if ((getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
+                            getInfantry().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                            getInfantry().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                         }
-                    } else if (unit.getYear() < 3145) {
+                    } else if (getInfantry().getYear() < 3145) {
                         // between 3090 and 3145, mixed tech is advanced
-                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
-                            unit.setTechLevel(TechConstants.T_IS_ADVANCED);
-                            unit.setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                        if ((getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (getInfantry().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
+                            getInfantry().setTechLevel(TechConstants.T_IS_ADVANCED);
+                            getInfantry().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
                         }
                     } else {
                         // from 3145 on, mixed tech is tourney legal
-                        if ((unit.getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
-                            unit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                            unit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                        if ((getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (getInfantry().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (getInfantry().getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
+                            getInfantry().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                            getInfantry().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
                         }
                     }
                     getInfantry().setMixedTech(true);
@@ -520,23 +520,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     for (String item : clanTechLevels) {
                         techLevel.addItem(item);
                     }
-                    if (unit.getYear() < 3090) {
+                    if (getInfantry().getYear() < 3090) {
                         //before 3090, mixed tech is experimental
-                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
-                            unit.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                            unit.setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
+                            getInfantry().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                            getInfantry().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                         }
-                    } else if (unit.getYear() < 3145) {
+                    } else if (getInfantry().getYear() < 3145) {
                         // between 3090 and 3145, mixed tech is advanced
-                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
-                            unit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                            unit.setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (getInfantry().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
+                            getInfantry().setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                            getInfantry().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
                         }
                     } else {
                         // from 3145 on, mixed tech is tourney legal
-                        if ((unit.getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (unit.getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (unit.getTechLevel() != TechConstants.T_CLAN_TW)) {
-                            unit.setTechLevel(TechConstants.T_CLAN_TW);
-                            unit.setArmorTechLevel(TechConstants.T_CLAN_TW);
+                        if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (getInfantry().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (getInfantry().getTechLevel() != TechConstants.T_CLAN_TW)) {
+                            getInfantry().setTechLevel(TechConstants.T_CLAN_TW);
+                            getInfantry().setArmorTechLevel(TechConstants.T_CLAN_TW);
                         }
                     }
                     getInfantry().setMixedTech(true);
@@ -544,7 +544,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     addAllActionListeners();
                     return;
                 }
-                UnitUtil.checkEquipmentByTechLevel(unit);
+                UnitUtil.checkEquipmentByTechLevel(getInfantry());
             }
             else if (combo.equals(motiveType)) {
                 switch(motiveType.getSelectedIndex()) {
@@ -681,14 +681,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private void checkMainWeapon() {
         Mounted existingInfantryMount = null;
-        for(Mounted m : unit.getWeaponList()) {
+        for(Mounted m : getInfantry().getWeaponList()) {
             if((m.getType() instanceof InfantryWeapon) && (m.getLocation() == Infantry.LOC_INFANTRY)) {
                 existingInfantryMount = m;
                 break;
             }
         }
         if(null != existingInfantryMount) {
-            UnitUtil.removeMounted(unit, existingInfantryMount);
+            UnitUtil.removeMounted(getInfantry(), existingInfantryMount);
         }
 
         //if there is more than one secondary weapon per squad, then add that
@@ -721,24 +721,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         if (e.getSource().equals(era)) {
             try {
-                unit.setYear(Integer.parseInt(era.getText()));
+                getInfantry().setYear(Integer.parseInt(era.getText()));
             } catch (Exception ex) {
-                unit.setYear(3145);
+                getInfantry().setYear(3145);
             }
         } else if (e.getSource().equals(source)) {
-            unit.setSource(source.getText());
+            getInfantry().setSource(source.getText());
         } else if (e.getSource().equals(chassis)) {
-            unit.setChassis(chassis.getText().trim());
+            getInfantry().setChassis(chassis.getText().trim());
             refresh.refreshPreview();
         } else if (e.getSource().equals(model)) {
-            unit.setModel(model.getText().trim());
+            getInfantry().setModel(model.getText().trim());
             refresh.refreshPreview();
         }
     }
 
     @Override
     public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
 
     }
 
