@@ -255,8 +255,6 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
             label.setMinimumSize(labelSize);
         }
 
-        addAllListeners();
-
         JPanel topPanel;
         JPanel bottomPanel;
 
@@ -510,6 +508,8 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         this.add(mainPanel);
 
         resetArmorPoints();
+        
+        addAllListeners();
     }
 
     private void addAllListeners() {
