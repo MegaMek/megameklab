@@ -59,6 +59,8 @@ public class CConfig {
     public static final String CONFIG_SYSTEMS_BACKGROUND = "Systems-Background";
     public static final String CONFIG_EMPTY_FOREGROUND = "Empty-Foreground";
     public static final String CONFIG_EMPTY_BACKGROUND = "Empty-Background";
+    
+    public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
 
     private static Properties config;// config. player values.
 
@@ -93,6 +95,9 @@ public class CConfig {
         defaults.setProperty("WINDOWWIDTH", "800");
         defaults.setProperty("WINDOWLEFT", "0");
         defaults.setProperty("WINDOWTOP", "0");
+        defaults.setProperty(CONFIG_SAVE_LOC,
+                new File(System.getProperty("user.dir").toString()
+                        + "/data/mechfiles/").getAbsolutePath());
 
         return defaults;
     }

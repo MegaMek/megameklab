@@ -1069,7 +1069,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if ((filePathName.trim().length() < 1) || !filePathName.contains(unitName)) {
             FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
 
-            filePathName = new File(System.getProperty("user.dir").toString() + "/data/mechfiles/").getAbsolutePath();
+            filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
 
             fDialog.setDirectory(filePathName);
             fDialog.setFile(unitName + (parentFrame.getEntity() instanceof Mech?".mtf":".blk"));
@@ -1079,6 +1079,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
             if (fDialog.getFile() != null) {
                 filePathName = fDialog.getDirectory() + fDialog.getFile();
+                CConfig.setParam(CConfig.CONFIG_SAVE_LOC, fDialog.getDirectory());
             } else {
                 return;
             }
@@ -1113,7 +1114,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         FileDialog fDialog = new FileDialog(parentFrame, "Save As", FileDialog.SAVE);
 
-        String filePathName = new File(System.getProperty("user.dir").toString() + "/data/mechfiles/").getAbsolutePath();
+        String filePathName = CConfig.getParam(CConfig.CONFIG_SAVE_LOC);
 
         fDialog.setDirectory(filePathName);
         fDialog.setFile(parentFrame.getEntity().getChassis() + " " + parentFrame.getEntity().getModel() + (parentFrame.getEntity() instanceof Mech?".mtf":".blk"));
@@ -1123,6 +1124,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         if (fDialog.getFile() != null) {
             filePathName = fDialog.getDirectory() + fDialog.getFile();
+            CConfig.setParam(CConfig.CONFIG_SAVE_LOC, fDialog.getDirectory());
         } else {
             return;
         }
