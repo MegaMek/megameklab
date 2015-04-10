@@ -173,12 +173,15 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         rlPanel.setLayout(new BoxLayout(rlPanel, BoxLayout.Y_AXIS));
         clPanel.setLayout(new BoxLayout(clPanel, BoxLayout.Y_AXIS));
 
+        int mainPanelGridY;
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 0;
+        mainPanel.add(Box.createVerticalStrut(13), gbc);
+        gbc.gridy++;
         mainPanel.add(headPanel, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy++;
         mainPanel.add(laPanel, gbc);
         gbc.gridx = 1;
         mainPanel.add(ltPanel, gbc);
@@ -189,12 +192,13 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         gbc.gridx = 4;
         mainPanel.add(raPanel, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 2;
+        gbc.gridy++;
         mainPanel.add(llPanel, gbc);
         gbc.gridx = 2;
         mainPanel.add(clPanel, gbc);
         gbc.gridx = 3;
         mainPanel.add(rlPanel, gbc);
+        mainPanelGridY = gbc.gridy + 1;
 
         laArmorField.setName(Integer.toString(Mech.LOC_LARM));
         raArmorField.setName(Integer.toString(Mech.LOC_RARM));
@@ -465,7 +469,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         gbc.gridy = 0;
         gbc.insets = new Insets(2, 2, 2, 2);
         gbc.anchor = GridBagConstraints.WEST;
-        totalArmorPanel.add(Box.createVerticalStrut(12), gbc);
+        totalArmorPanel.add(Box.createVerticalStrut(18), gbc);
         gbc.gridy++;
         totalArmorPanel.add(lblUnallocatedArmor, gbc);
         gbc.gridx = 1;
@@ -494,13 +498,13 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        totalArmorPanel.add(Box.createVerticalStrut(15), gbc);
+        totalArmorPanel.add(Box.createVerticalStrut(18), gbc);
         gbc.gridy++;
         totalArmorPanel.add(allocateArmorButton, gbc);
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = mainPanelGridY;
         gbc.gridwidth = 5;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
