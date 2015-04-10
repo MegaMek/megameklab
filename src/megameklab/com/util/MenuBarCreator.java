@@ -981,7 +981,13 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     public void jMenuExit_actionPerformed(ActionEvent event) {
-        System.exit(0);
+        String quitMsg = "Do you really want to quit MegaMekLab?"; 
+        int response = JOptionPane.showConfirmDialog(null, quitMsg,
+                "Quit?", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE); 
+        if (response == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }
 
     private void jMenuLoadVehicle() {
@@ -1406,7 +1412,6 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
     @Override
     public void lostOwnership(Clipboard arg0, Transferable arg1) {
-        // TODO Auto-generated method stub
 
     }
 

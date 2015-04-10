@@ -32,6 +32,7 @@ v0.1.39-dev (SVN)
 + Infantry Weapon table now sorts by name by default
 + Feature [#14]: Make vehicle armor allocator more intelligent
 + Feature [#19]: 'Mech Torso Front/Rear Armor Shifting
++ Feature [#15]: "Are you sure?" on close
 
 v0.1.38 (2015-02-12 15:30 UTC)
 + Bug [#164]: ASF creator has a bug with speeds
@@ -670,6 +671,7 @@ V 0.1.17 Dev (Closed 9-29-2010)
 + Changes to Loading from Cache
 + Bug: Heavy VTOL's not printing
 + Added code for new C3Booster
+
 + RFE: WiGE printing now available
 + RFE: Can Not Print Spheroid Drop Ships
 + RFE: Conventional Fighter Record Sheets
