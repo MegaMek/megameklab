@@ -931,7 +931,10 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
 
     public void stateChanged(ChangeEvent e) {
         removeAllListeners();
-        
+        int allowedArmorPoints = armorPoints;
+        if (getMech().hasPatchworkArmor()) {
+            allowedArmorPoints = UnitUtil.getMaximumArmorPoints(getMech());
+        }
         JSpinner field = (JSpinner) e.getSource();
         boolean isRear = field.equals(ctrArmorField)
                 || field.equals(ltrArmorField) || field.equals(rtrArmorField);
@@ -953,7 +956,7 @@ public class ArmorView extends IView implements ChangeListener, ActionListener {
         }
         
         // Do we have enough armor points to make this change?
-        if ((armorPoints - (totalArmor + value)) < 0) {
+        if ((allowedArmorPoints - (totalArmor + value)) < 0) {
             // See if we can pull armor from the opposite location
             if (getMech().hasRearArmor(location) 
                     && getMech().getOArmor(location,!isRear) > 0) {
