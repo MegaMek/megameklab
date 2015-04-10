@@ -52,6 +52,7 @@ import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.views.ArmorView;
 import megameklab.com.ui.Aero.views.SummaryView;
@@ -148,6 +149,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private JComboBox<String> armorCombo = new JComboBox<String>();
     private JSpinner armorTonnage;
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
+    private JButton unusedTonnageArmorButton = new JButton("Use Remaining Tonnage");
 
 
     public StructureTab(EntitySource eSource) {
@@ -392,6 +394,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         panArmor.add(maximizeArmorButton, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        panArmor.add(unusedTonnageArmorButton, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -678,6 +685,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         armorTonnage.setEnabled(true);
         maximizeArmorButton.setEnabled(true);
+        unusedTonnageArmorButton.setEnabled(true);
 
         armorView.refresh();
         panSummary.refresh();
@@ -899,6 +907,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         } else if (e.getSource() instanceof JButton) {
             if (e.getSource().equals(maximizeArmorButton)) {
                 maximizeArmor();
+            } else if (e.getSource().equals(unusedTonnageArmorButton)) {
+                useRemainingTonnageArmor();
             }
         }
         addAllListeners();
@@ -924,6 +934,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public void removeAllListeners() {
         maximizeArmorButton.removeActionListener(this);
+        unusedTonnageArmorButton.removeActionListener(this);
         armorCombo.removeItemListener(this);
         engineType.removeItemListener(this);
         unitType.removeItemListener(this);
@@ -947,6 +958,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public void addAllListeners() {
         maximizeArmorButton.addActionListener(this);
+        unusedTonnageArmorButton.addActionListener(this);
         armorCombo.addItemListener(this);
         engineType.addItemListener(this);
         unitType.addItemListener(this);
@@ -1518,6 +1530,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         getAero().setArmorTonnage(maxArmor);
         armorView.resetArmorPoints();
     }
+    
+    private void useRemainingTonnageArmor() {
+        float currentTonnage = UnitUtil.getEntityVerifier(getAero())
+                .calculateWeight();
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getAero());
+        float totalTonnage = getAero().getWeight();
+        float remainingTonnage = TestEntity.floor(
+                totalTonnage - currentTonnage, TestEntity.CEIL_HALFTON);
+        
+        double maxArmor = Math.min(remainingTonnage,
+                UnitUtil.getMaximumArmorTonnage(getAero()));
+        armorTonnage.setValue(maxArmor);
+        getAero().setArmorTonnage(maxArmor);
+        armorView.resetArmorPoints();        
+    } 
 
     private void createArmorMountsAndSetArmorType() {
         getAero().setArmorTechLevel(EquipmentType.get(

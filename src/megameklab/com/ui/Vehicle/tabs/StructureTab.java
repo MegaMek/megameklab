@@ -62,6 +62,7 @@ import megamek.common.TroopSpace;
 import megamek.common.VTOL;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestTank;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Vehicle.views.SummaryView;
@@ -101,6 +102,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JSpinner weight;
     JSpinner armorTonnage;
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
+    private JButton unusedTonnageArmorButton = new JButton("Use Remaining Tonnage");
     private JTextField chassis = new JTextField(5);
     private JTextField model = new JTextField(5);
     String[] techTypes = { "I.S.", "Clan", "Mixed I.S.", "Mixed Clan" };
@@ -338,6 +340,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         panArmor.add(maximizeArmorButton, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        panArmor.add(unusedTonnageArmorButton, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -381,13 +387,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panInfo);
+        leftPanel.add(Box.createVerticalStrut(6));
         leftPanel.add(panChassis);
-        leftPanel.add(Box.createGlue());
+        leftPanel.add(Box.createVerticalStrut(6));
         leftPanel.add(panMovement);
+        leftPanel.add(Box.createGlue());
+        
         rightPanel.add(panArmor);
-        rightPanel.add(Box.createVerticalStrut(14));
         rightPanel.add(panSummary);
-        leftPanel.add(Box.createVerticalGlue());
+        rightPanel.add(Box.createVerticalGlue());
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -540,6 +548,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     .setValue(testTank.getWeightAllocatedArmor());
             getTank().setArmorTonnage(testTank.getWeightAllocatedArmor());
             maximizeArmorButton.setEnabled(false);
+            unusedTonnageArmorButton.setEnabled(false);
         } else {
             if (Double.parseDouble(armorTonnage.getValue().toString()) > maxArmorTonnage) {
                 armorTonnage.setValue(maxArmorTonnage);
@@ -547,6 +556,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setArmorTonnage();
             armorTonnage.setEnabled(true);
             maximizeArmorButton.setEnabled(true);
+            unusedTonnageArmorButton.setEnabled(true);
         }
         armor.refresh();
         panSummary.refresh();
@@ -588,6 +598,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         else if (e.getSource() instanceof JButton) {
             if (e.getSource().equals(maximizeArmorButton)) {
                 maximizeArmor();
+            } else if (e.getSource().equals(unusedTonnageArmorButton)) {
+                useRemainingTonnageArmor();
             }
         }
         addAllListeners();
@@ -609,6 +621,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         tankMotiveType.removeItemListener(this);
         troopStorage.removeChangeListener(this);
         maximizeArmorButton.removeActionListener(this);
+        unusedTonnageArmorButton.removeActionListener(this);
         armorTonnage.removeChangeListener(this);
         armorCombo.removeItemListener(this);
         jumpMP.removeChangeListener(this);
@@ -631,6 +644,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         tankMotiveType.addItemListener(this);
         troopStorage.addChangeListener(this);
         maximizeArmorButton.addActionListener(this);
+        unusedTonnageArmorButton.addActionListener(this);
         armorTonnage.addChangeListener(this);
         armorCombo.addItemListener(this);
         jumpMP.addChangeListener(this);
@@ -1101,6 +1115,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         getTank().setArmorTonnage(maxArmor);
         armor.resetArmorPoints();
     }
+    
+    private void useRemainingTonnageArmor() {
+        float currentTonnage = UnitUtil.getEntityVerifier(getTank())
+                .calculateWeight();
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
+        float totalTonnage = getTank().getWeight();
+        float remainingTonnage = TestEntity.floor(
+                totalTonnage - currentTonnage, TestEntity.CEIL_HALFTON);
+        
+        double maxArmor = Math.min(remainingTonnage,
+                UnitUtil.getMaximumArmorTonnage(getTank()));
+        armorTonnage.setValue(maxArmor);
+        getTank().setArmorTonnage(maxArmor);
+        armor.resetArmorPoints();        
+    }    
 
     private void setArmorTonnage() {
         getTank().setArmorTonnage(((Double) armorTonnage.getValue()));

@@ -62,6 +62,7 @@ import megamek.common.QuadMech;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.ArmorView;
@@ -153,6 +154,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private JComboBox<String> armorCombo = new JComboBox<String>();
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
+    private JButton unusedTonnageArmorButton = new JButton("Use Remaining Tonnage");
     private JSpinner armorTonnage;
 
     public StructureTab(EntitySource eSource) {
@@ -398,6 +400,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         panArmor.add(maximizeArmorButton, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        panArmor.add(unusedTonnageArmorButton, gbc);
+        
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -478,13 +486,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panInfo);
+        leftPanel.add(Box.createVerticalStrut(11));
         leftPanel.add(panChassis);
+        leftPanel.add(Box.createVerticalStrut(11));
         leftPanel.add(panHeat);
         leftPanel.add(Box.createGlue());
+        
         rightPanel.add(panArmor);
-        rightPanel.add(Box.createVerticalStrut(2));
-        rightPanel.add(panMovement);
-        rightPanel.add(Box.createVerticalStrut(2));
+        rightPanel.add(panMovement);       
         rightPanel.add(panSummary);
         leftPanel.add(Box.createVerticalGlue());
 
@@ -660,9 +669,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     .setValue(testMech.getWeightAllocatedArmor());
             getMech().setArmorTonnage(testMech.getWeightAllocatedArmor());
             maximizeArmorButton.setEnabled(false);
+            unusedTonnageArmorButton.setEnabled(false);
         } else {
             armorTonnage.setEnabled(true);
             maximizeArmorButton.setEnabled(true);
+            unusedTonnageArmorButton.setEnabled(true);
         }
         armor.refresh();
         panSummary.refresh();
@@ -986,6 +997,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         } else if (e.getSource() instanceof JButton) {
             if (e.getSource().equals(maximizeArmorButton)) {
                 maximizeArmor();
+            } else if (e.getSource().equals(unusedTonnageArmorButton)) {
+                useRemainingTonnageArmor();
             }
         }
         addAllListeners();
@@ -1011,6 +1024,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public void removeAllListeners() {
         maximizeArmorButton.removeActionListener(this);
+        unusedTonnageArmorButton.removeActionListener(this);
         armorCombo.removeItemListener(this);
         gyroType.removeItemListener(this);
         engineType.removeItemListener(this);
@@ -1040,6 +1054,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public void addAllListeners() {
         maximizeArmorButton.addActionListener(this);
+        unusedTonnageArmorButton.addActionListener(this);
         armorCombo.addItemListener(this);
         gyroType.addItemListener(this);
         engineType.addItemListener(this);
@@ -2124,6 +2139,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         armorTonnage.setValue(maxArmor);
         getMech().setArmorTonnage(maxArmor);
         armor.resetArmorPoints();
+    }
+    
+    private void useRemainingTonnageArmor() {
+        float currentTonnage = UnitUtil.getEntityVerifier(getMech())
+                .calculateWeight();
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
+        float totalTonnage = getMech().getWeight();
+        float remainingTonnage = TestEntity.floor(
+                totalTonnage - currentTonnage, TestEntity.CEIL_HALFTON);
+        
+        double maxArmor = Math.min(remainingTonnage,
+                UnitUtil.getMaximumArmorTonnage(getMech()));
+        armorTonnage.setValue(maxArmor);
+        getMech().setArmorTonnage(maxArmor);
+        armor.resetArmorPoints();        
     }
 
     private void createArmorMountsAndSetArmorType() {
