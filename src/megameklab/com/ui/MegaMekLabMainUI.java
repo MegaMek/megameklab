@@ -22,6 +22,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import megamek.common.Entity;
@@ -59,6 +60,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements
         }
 
         setLocation(getLocation().x + 10, getLocation().y);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
@@ -72,7 +74,13 @@ public abstract class MegaMekLabMainUI extends JFrame implements
                 }
                 CConfig.saveConfig();
 
-                System.exit(0);
+                String quitMsg = "Do you really want to quit MegaMekLab?"; 
+                int response = JOptionPane.showConfirmDialog(null, quitMsg,
+                        "Quit?", JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE); 
+                if (response == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
             }
         });
 
