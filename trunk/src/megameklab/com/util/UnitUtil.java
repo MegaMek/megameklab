@@ -883,6 +883,15 @@ public class UnitUtil {
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
             int currentJJ = unit.getJumpMP();
+            // Remove Partial Wing bonus, if present
+            if (currentJJ > 0) {
+                for (Mounted mount : unit.getMisc()) {
+                    if (mount.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
+                        currentJJ -= unit.getPartialWingJumpBonus(mount);
+                        break;
+                    }
+                }
+            }
             if (jjAmount < currentJJ) {
                 UnitUtil.removeJumpJets(unit, currentJJ - jjAmount);
                 return;
