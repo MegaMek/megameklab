@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.1.39-dev (SVN)
+v0.1.39 (2014-04-18, 12:52 UTC+2)
 + Bug: Superheavy mech engines are not reduced in size
 + Fix problems with pocket warship printing
 + Bug: Problem with loading units with non-standard jump jets
