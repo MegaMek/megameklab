@@ -674,30 +674,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         @Override
         public int compare(String s0, String s1) {
-            if(s0.equals("-") && s1.equals("-")) {
-                return 0;
-            } else if(s0.equals("-")) {
-                return 1;
-            } else if(s1.equals("-")) {
-                return -1;
-            } else {
-                //get the numbers associated with each string
-                int short0 = Integer.parseInt(s0.split("/")[0]);
-                int short1 = Integer.parseInt(s1.split("/")[0]);
-                int med0 = Integer.parseInt(s0.split("/")[1]);
-                int med1 = Integer.parseInt(s1.split("/")[1]);
-                int long0 = Integer.parseInt(s0.split("/")[2]);
-                int long1 = Integer.parseInt(s1.split("/")[2]);
-                int compare = ((Comparable<Integer>)short1).compareTo(short0);
-                if(compare != 0) {
-                    return compare;
-                }
-                compare = ((Comparable<Integer>)med1).compareTo(med0);
-                if(compare != 0) {
-                    return compare;
-                }
-                return ((Comparable<Integer>)long1).compareTo(long0);
-            }
+            return s0.compareTo(s1);
         }
     }
 

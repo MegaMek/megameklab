@@ -277,8 +277,8 @@ public class EquipmentTableModel extends AbstractTableModel {
         if (col == COL_HEAT) {
             if (null != wtype) {
                 if (entity instanceof Aero) {
-                    return wtype.getHeat()
-                            * Mounted.getNumShots(wtype, null, true);
+                    return Integer.toString(wtype.getHeat()
+                            * Mounted.getNumShots(wtype, null, true));
                 } else {
                     return Integer.toString(wtype.getHeat());
                 }
