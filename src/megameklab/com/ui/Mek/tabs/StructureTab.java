@@ -1208,8 +1208,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 getMech().setYear(Integer.parseInt(era.getText()));
             } catch (Exception ex) {
                 getMech().setYear(3145);
-            }
-            refresh.refreshEquipment();
+            }            
             populateChoices(true);
             armor.resetArmorPoints();
             UnitUtil.checkEquipmentByTechLevel(getMech());
@@ -1232,6 +1231,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             getMech().setModel(model.getText().trim());
         }
         addAllListeners();
+        refresh.refreshEquipment();
         refresh.refreshPreview();
         refresh.refreshHeader();
     }
