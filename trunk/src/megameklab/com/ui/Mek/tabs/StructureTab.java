@@ -2191,9 +2191,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private boolean resetEngine() {
         boolean retVal = false;
         //do {
+            Mech mech = getMech();
             int rating = ((Integer) walkMP.getValue())
                     * ((Integer) weightClass.getValue());
-            if (getMech().isPrimitive()) {
+            if (mech.isPrimitive()) {
                 double dRating = ((Integer) walkMP.getValue())
                         * ((Integer) weightClass.getValue());
                 dRating *= 1.2;
@@ -2202,7 +2203,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 rating = (int) dRating;
             }
-            if ((rating > 400) && (getMech().getGyroType() == Mech.GYRO_XL)) {
+            if ((rating > 400) && (mech.getGyroType() == Mech.GYRO_XL)) {
                 JOptionPane
                 .showMessageDialog(
                         this,
@@ -2218,18 +2219,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         JOptionPane.ERROR_MESSAGE);
             } else {
                 System.out.println("Clearning engine crits.");
-                getMech().clearEngineCrits();
+                mech.clearEngineCrits();
                 System.out.println("Setting new engine rating.");
-                getMech().setEngine(new Engine(rating,
-                        convertEngineType(engineType.getSelectedItem().toString()),
-                        clanEngineFlag|superHeavyEngineFlag));
+                // Create new engine
+                Engine newEngine = new Engine(rating, convertEngineType(engineType
+                        .getSelectedItem().toString()), clanEngineFlag
+                        | superHeavyEngineFlag);
+                // Make sure we keep same number of base heat sinks for omnis
+                newEngine.setBaseChassisHeatSinks(mech.getEngine()
+                        .getBaseChassisHeatSinks(mech.hasCompactHeatSinks()));
+                // Add new engine
+                mech.setEngine(newEngine);
                 System.out.println("Adding engine crits.");
-                getMech().addEngineCrits();
-                int autoSinks = getMech().getEngine()
+                mech.addEngineCrits();
+                int autoSinks = mech.getEngine()
                         .getWeightFreeEngineHeatSinks();
                 System.out.println("Updating # engine heat sinks to "
                         + autoSinks);
-                UnitUtil.updateAutoSinks(getMech(),
+                UnitUtil.updateAutoSinks(mech,
                         (String) heatSinkType.getSelectedItem());
                 retVal = true;
             }

@@ -3,6 +3,7 @@ VERSION HISTORY:
 v0.1.40-dev (SVN)
 + Bug [#178]: Problems with Changing year field in MML
 + Bug [#180]: Aero Weapons sort
++ Bug [#179]: Issues with engine changes and base number of heatsinks
 
 v0.1.39 (2014-04-18, 12:52 UTC+2)
 + Bug: Superheavy mech engines are not reduced in size
