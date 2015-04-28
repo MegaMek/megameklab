@@ -184,16 +184,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) safeThrust.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) safeThrust.getEditor()).getTextField()
-                .setEditable(false);
+
         maxThrust = new JTextField();
         maxThrust.setEditable(false);
         setFieldSize(maxThrust, spinnerSize);
         maxThrust.setHorizontalAlignment(SwingConstants.RIGHT);
 
         weightClass = new JSpinner(new SpinnerNumberModel(20, 10, 100, 5));
-        ((JSpinner.DefaultEditor) weightClass.getEditor()).getTextField()
-                .setEditable(false);
 
         structuralIntegrity = new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
         ((JSpinner.DefaultEditor) structuralIntegrity.getEditor())
@@ -230,8 +227,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor()).getTextField()
-                .setEditable(false);
 
         baseChassisHeatSinks = new JSpinner(new SpinnerNumberModel(0, 0, 50, 1));
         ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
@@ -242,8 +237,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
-                .getTextField().setEditable(false);
 
         armorTonnage = new JSpinner(new SpinnerNumberModel(
                 getAero().getArmorWeight(), 0.0, UnitUtil.getMaximumArmorTonnage(getAero()), 0.5));
@@ -256,8 +249,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) armorTonnage.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
-                .setEditable(false);
 
 
         chassis.setText(getAero().getChassis());
@@ -1475,7 +1466,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 setAeroStructuralIntegrity();
                 refreshEngine(true);
             } else if (spinner.equals(fuel)) {
-                getAero().setFuelTonnage(((Double)fuel.getValue()).floatValue());
+                double fuelTons = Math.round(((Double) fuel.getValue()) * 2) / 2.0;
+                getAero().setFuelTonnage((float)fuelTons);
             } else if (spinner.equals(armorTonnage)) {
                 setArmorTonnage();
             } else if (spinner.equals(heatSinkNumber)) {
@@ -1595,17 +1587,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void setArmorTonnage() {
-        getAero().setArmorTonnage(((Double) armorTonnage.getValue()));
+        double armorTons = Math.round(((Double) armorTonnage.getValue()) * 2) / 2.0;
+        getAero().setArmorTonnage(armorTons);
         armorView.resetArmorPoints();
-    }
-
-
-    public void setAsCustomization() {
-        chassis.setEditable(false);
-        chassis.setEnabled(false);
-        weightClass.setEnabled(false);
-        era.setEditable(false);
-        era.setEnabled(false);
     }
 
     private void setNewEngine(int rating, int type) {
