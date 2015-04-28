@@ -173,8 +173,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) cruiseMP.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) cruiseMP.getEditor()).getTextField()
-                .setEditable(false);
+
         flankMP = new JTextField();
         flankMP.setEditable(false);
         setFieldSize(flankMP, spinnerSize);
@@ -190,8 +189,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) jumpMP.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) jumpMP.getEditor()).getTextField()
-                .setEditable(false);
 
         disableJump();
 
@@ -208,8 +205,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) armorTonnage.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
-                .setEditable(false);
 
         updateArmor();
 
@@ -537,6 +532,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
         double maxArmorTonnage = UnitUtil.getMaximumArmorTonnage(getTank());
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(maxArmorTonnage);
+        ((SpinnerNumberModel) armorTonnage.getModel()).setValue(Math.min(
+                UnitUtil.getMaximumArmorTonnage(getTank()),
+                getTank().getLabArmorTonnage()));
         if (getTank().hasPatchworkArmor()) {
             TestTank testTank = new TestTank(
                     getTank(),
@@ -916,9 +914,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             getTank().removeAllTransporters();
             if (((SpinnerNumberModel) troopStorage.getModel()).getNumber()
                     .doubleValue() > 0) {
-                getTank().addTransporter(new TroopSpace(
-                        ((SpinnerNumberModel) troopStorage.getModel())
-                                .getNumber().doubleValue()));
+                double troopTons = Math
+                        .round(((Double) troopStorage.getValue()) * 2) / 2.0;
+                getTank().addTransporter(new TroopSpace(troopTons));
             }
         } else if (e.getSource().equals(armorTonnage)) {
             setArmorTonnage();
@@ -1132,7 +1130,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }    
 
     private void setArmorTonnage() {
-        getTank().setArmorTonnage(((Double) armorTonnage.getValue()));
+        double armorTons = Math.round(((Double) armorTonnage.getValue()) * 2) / 2.0;
+        getTank().setArmorTonnage(armorTons);
         armor.resetArmorPoints();
     }
 
