@@ -299,8 +299,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) walkMP.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) walkMP.getEditor()).getTextField()
-                .setEditable(false);
         runMP = new JTextField();
         runMP.setEditable(false);
         setFieldSize(runMP, new Dimension(60, 25));
@@ -314,11 +312,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         jumpEditor.setMaximumSize(spinnerSize);
         jumpEditor.setPreferredSize(spinnerSize);
         jumpEditor.setMinimumSize(spinnerSize);
-        jumpEditor.getTextField().setEditable(false);
 
         weightClass = new JSpinner(new SpinnerNumberModel(20, 10, 100, 5));
-        ((JSpinner.DefaultEditor) weightClass.getEditor()).getTextField()
-                .setEditable(false);
 
         heatSinkNumber = new JSpinner(new SpinnerNumberModel(0, 0, 50, 1));
         spinnerSize = new Dimension(40, 25);
@@ -330,8 +325,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor()).getTextField()
-                .setEditable(false);
 
         baseChassisHeatSinks = new JSpinner(new SpinnerNumberModel(0, 0, 50, 1));
         ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
@@ -342,8 +335,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
-                .getTextField().setEditable(false);
 
         armorTonnage = new JSpinner(new SpinnerNumberModel(
                 getMech().getArmorWeight(), 0.0,
@@ -357,8 +348,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) armorTonnage.getEditor())
                 .setMinimumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor()).getTextField()
-                .setEditable(false);
 
         // lblFreeSinks.setFont(new Font(lblFreeSinks.getName(), Font.PLAIN,
         // 10));
@@ -2580,7 +2569,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void setArmorTonnage() {
-        getMech().setArmorTonnage(((Double) armorTonnage.getValue()));
+        double armorTons = Math.round(((Double) armorTonnage.getValue()) * 2) / 2.0;
+        getMech().setArmorTonnage(armorTons);
         armor.resetArmorPoints();
     }
 
