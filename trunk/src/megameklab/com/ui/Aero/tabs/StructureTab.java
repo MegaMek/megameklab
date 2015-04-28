@@ -1585,6 +1585,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         return EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_STANDARD, getAero().isClan());
     }
+    
+    public void setAsCustomization() {
+        chassis.setEditable(false);
+        chassis.setEnabled(false);
+        weightClass.setEnabled(false);
+        era.setEditable(false);
+        era.setEnabled(false);
+    }
 
     private void setArmorTonnage() {
         double armorTons = Math.round(((Double) armorTonnage.getValue()) * 2) / 2.0;
