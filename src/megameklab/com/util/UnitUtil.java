@@ -2505,7 +2505,8 @@ public class UnitUtil {
             return false;
         }
 
-        if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
+        if ((eq instanceof CLTAG) || (eq instanceof ISC3M)
+                || (eq instanceof ISC3MBS)
                 || (eq instanceof ISTAG) || (eq instanceof CLLightTAG)
                 || eq.hasFlag(WeaponType.F_AMS)) {
             return true;
