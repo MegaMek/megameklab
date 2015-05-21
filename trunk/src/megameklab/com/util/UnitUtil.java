@@ -2501,9 +2501,9 @@ public class UnitUtil {
         
         // Chassis modifications should be ignored, as they will be added
         // via checkboxes, and not shown as equipment
-        if (eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
-            return false;
-        }
+        //if (eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
+        //    return false;
+        //}
 
         if ((eq instanceof CLTAG) || (eq instanceof ISC3M)
                 || (eq instanceof ISC3MBS)
