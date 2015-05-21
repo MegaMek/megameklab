@@ -8,6 +8,7 @@ v0.1.40-dev (SVN)
 + Feature: Spinners in Tank mode are now editable
 + Feature: Spinners in Aero mode are now editable
 + Bug [#182]: C3 Master not available to tanks
++ Bug [#183]: Support Vehicle chassis mods not showing up in equipment list
 
 v0.1.39 (2014-04-18, 12:52 UTC+2)
 + Bug: Superheavy mech engines are not reduced in size
