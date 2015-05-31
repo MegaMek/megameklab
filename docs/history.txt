@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.1.40-dev (SVN)
+v0.1.40 (2015-05-31 17:45 UTC)
 + Bug [#178]: Problems with Changing year field in MML
 + Bug [#180]: Aero Weapons sort
 + Bug [#179]: Issues with engine changes and base number of heatsinks
@@ -10,18 +10,18 @@ v0.1.40-dev (SVN)
 + Bug [#182]: C3 Master not available to tanks
 + Bug [#183]: Support Vehicle chassis mods not showing up in equipment list
 
-v0.1.39 (2014-04-18, 12:52 UTC+2)
+v0.1.39 (2015-04-18, 12:52 UTC+2)
 + Bug: Superheavy mech engines are not reduced in size
 + Fix problems with pocket warship printing
 + Bug: Problem with loading units with non-standard jump jets
 + Bug [#172]: Super Heavy Mech Armor Allocation error
-+ Bug: Fix problems with sponson turret printing and some alignment stuff on 
++ Bug: Fix problems with sponson turret printing and some alignment stuff on
     superheavy tanks
 + Bug: large support tank/super heavy tank fluff image printing location wrong
 + Removed Entity instance variable from MenuBarCreator to make sure that always
     the current MainUI's Entity is used
 + Bug: spheroid dropships with humungous amounts of armor didn't print right,
-   now support up to 1060 armor per side, 1085 rear, 1140 front 
+   now support up to 1060 armor per side, 1085 rear, 1140 front
 + Feature: Added a checkbox for anti-mek training for Infantry
 + Bug: Mounted.linkedBy not cleared when equipment is removed
 + Bug [#174]: Not clearing equipment data when equipment is removed from an Aero
