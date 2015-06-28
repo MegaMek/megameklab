@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.41-dev (SVN)
++ Bug: Mechs with 48 or 49 CT armor not printing armor correctly
 
 v0.1.40 (2015-05-31 17:45 UTC)
 + Bug [#178]: Problems with Changing year field in MML
