@@ -257,7 +257,7 @@ public class UnitPrintManager {
 
         if (aeroList.size() > 0) {
             PrintAero printAero = new PrintAero(aeroList, masterPrintJob);
-            printAero.print();
+            printAero.print(aset);
         }
 
         if (fixedWingSupportList.size() > 0) {
