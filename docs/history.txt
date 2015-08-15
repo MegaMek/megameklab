@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
-v0.1.42-dev (SVN)
+v0.1.42 (2015-08-15 19:40 UTC)
++ MegaMek.jar updated to 0.41.6
 
 v0.1.41 (2015-08-04 10:40 UTC)
 + Bug: Mechs with 48 or 49 CT armor not printing armor correctly
