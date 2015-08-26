@@ -27,16 +27,17 @@
 	<property name="libdir" value="lib" />
 	<property name="datadir" value="data" />
 	<property name="docdir" value="docs" />
-	<property name="svndir" value="svndev" />
+	<property name="pkgdir" value="pkgdir" />
+    <property name="mm-pkgdir" value="mm-pkgdir" />
 	<property name="util" value="packaging_utils" />
     <property name="confdir" value="mmconf" />
 
-	<!-- same as builddir but under svn -->
-	<property name="svnbuilddir" value="${svndir}/${builddir}" />
+	<!-- same as builddir but under git -->
+	<property name="pkgbuilddir" value="${pkgdir}/${builddir}" />
 
-	<!-- svnroot used for svn authentification -->
-	<property name="svnroot" value="svn://svn.code.sf.net/p/megameklab/code/trunk" />
-	<property name="svnmechdata" value="svn://svn.code.sf.net/p/megamek/code/trunk/megamek/data/mechfiles" />
+	<!-- gitroot used for git authentification -->
+	<property name="gitroot" value="http://git.code.sf.net/p/megameklab/git" />
+    <property name="mm-gitroot" value="http://git.code.sf.net/p/megamek/git" />
 
 	<property name="timestampfile" value="${logdir}/timestamp" />
 	<property name="TinyXMLsrc" value="TinyXML07-src.zip" />
@@ -85,9 +86,11 @@
         <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${util}/linux/launch4j/launch4j.jar:${util}/linux/launch4j/lib/xstream.jar" />
     </target>
 
-    <target name="svndev-init" depends="checkOSMac, checkOSWindows, checkOSUNIX">
+    <target name="pkgdir-init" depends="checkOSMac, checkOSWindows, checkOSUNIX">
 		<tstamp />
-		<delete dir="${svndir}" />
+		<delete dir="${pkgdir}" />
+        <delete dir="${mm-pkgdir}" />
+        <delete dir="${mml-pkgdir}" />
 	    <input message="Please enter version number (eg. 0.1.22):" addproperty="version"/>
 	    <property name="osxdist" value="${project.name}-${version}-mac" />
 	    <property name="windist" value="${project.name}-${version}-windows" />
@@ -95,79 +98,85 @@
 	    <property name="srcdist" value="${project.name}-${version}-source" />
 	</target>
 
-	<!-- following svndev-* tasks get, build & package the current version from svn -->
-	<target name="svndev-get" depends="svndev-init" description="get the latest source from SVN">
-		<exec executable="svn">
-			<arg line="export ${svnroot} ${svndir}" />
+	<!-- following pkgdir-* tasks get, build & package the current version from git -->
+	<target name="pkgdir-get" depends="pkgdir-init" description="get the latest source from git">
+		<exec executable="git">
+			<arg line="clone ${gitroot} ${pkgdir}" />
 		</exec>
-		<exec executable="svn">
-			<arg line="export ${svnmechdata} ${svndir}/${datadir}/mechfiles" />
+		<exec executable="git">
+			<arg line="clone ${mm-gitroot} ${mm-pkgdir}" />
 		</exec>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/battlearmor.zip" basedir="${svndir}/${datadir}/mechfiles/battlearmor"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/convfighter.zip" basedir="${svndir}/${datadir}/mechfiles/convfighter"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/dropships.zip" basedir="${svndir}/${datadir}/mechfiles/dropships"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/fighters.zip" basedir="${svndir}/${datadir}/mechfiles/fighters"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/ge.zip" basedir="${svndir}/${datadir}/mechfiles/ge"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/infantry.zip" basedir="${svndir}/${datadir}/mechfiles/infantry"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/jumpships.zip" basedir="${svndir}/${datadir}/mechfiles/jumpships"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/mechs.zip" basedir="${svndir}/${datadir}/mechfiles/mechs"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/protomechs.zip" basedir="${svndir}/${datadir}/mechfiles/protomechs"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/smallcraft.zip" basedir="${svndir}/${datadir}/mechfiles/smallcraft"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/spacestation.zip" basedir="${svndir}/${datadir}/mechfiles/spacestation"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/unofficial.zip" basedir="${svndir}/${datadir}/mechfiles/unofficial"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/vehicles.zip" basedir="${svndir}/${datadir}/mechfiles/vehicles"/>
-		<zip zipfile="${svndir}/${datadir}/mechfiles/warship.zip" basedir="${svndir}/${datadir}/mechfiles/warship"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/battlearmor"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/convfighter"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/dropship"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/fighters"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/ge"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/infantry"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/jumpships"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/mechs"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/protomechs"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/smallcraft"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/spacestation"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/unofficial"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/vehicles"/>
-		<delete dir="${svndir}/${datadir}/mechfiles/warship"/>
+		<copy todir="${pkgdir}/${datadir}/">
+			<fileset dir="${mm-pkgdir}/megamek/data">
+				<include name="mechfiles/" />
+			</fileset>
+		</copy>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/battlearmor.zip" basedir="${pkgdir}/${datadir}/mechfiles/battlearmor"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/convfighter.zip" basedir="${pkgdir}/${datadir}/mechfiles/convfighter"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/dropships.zip" basedir="${pkgdir}/${datadir}/mechfiles/dropships"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/fighters.zip" basedir="${pkgdir}/${datadir}/mechfiles/fighters"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/ge.zip" basedir="${pkgdir}/${datadir}/mechfiles/ge"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/infantry.zip" basedir="${pkgdir}/${datadir}/mechfiles/infantry"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/jumpships.zip" basedir="${pkgdir}/${datadir}/mechfiles/jumpships"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/mechs.zip" basedir="${pkgdir}/${datadir}/mechfiles/mechs"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/protomechs.zip" basedir="${pkgdir}/${datadir}/mechfiles/protomechs"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/smallcraft.zip" basedir="${pkgdir}/${datadir}/mechfiles/smallcraft"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/spacestation.zip" basedir="${pkgdir}/${datadir}/mechfiles/spacestation"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/unofficial.zip" basedir="${pkgdir}/${datadir}/mechfiles/unofficial"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/vehicles.zip" basedir="${pkgdir}/${datadir}/mechfiles/vehicles"/>
+		<zip zipfile="${pkgdir}/${datadir}/mechfiles/warship.zip" basedir="${pkgdir}/${datadir}/mechfiles/warship"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/battlearmor"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/convfighter"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/dropship"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/fighters"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/ge"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/infantry"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/jumpships"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/mechs"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/protomechs"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/smallcraft"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/spacestation"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/unofficial"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/vehicles"/>
+		<delete dir="${pkgdir}/${datadir}/mechfiles/warship"/>
 	</target>
 
-	<target name="svndev-build" depends="svndev-get" description="compile project from SVN and generate JAR file" >
-		<mkdir dir="${svnbuilddir}" />
+	<target name="pkgdir-build" depends="pkgdir-get" description="compile project from git and generate JAR file" >
+		<mkdir dir="${pkgbuilddir}" />
 		<!-- compile -->
 		<echo message="MegaMekLab" />
-		<javac debug="true" debuglevel="lines,source" target="1.7" source="1.7" destdir="${svnbuilddir}" srcdir="${svndir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="1024m" fork="true">
+		<javac debug="true" debuglevel="lines,source" target="1.7" source="1.7" destdir="${pkgbuilddir}" srcdir="${pkgdir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="1024m" fork="true">
 			<classpath>
-				<pathelement location="${svndir}" />
-				<fileset dir="${svndir}/${libdir}" includes="*.jar" />
-				<fileset dir="${svndir}" includes="MegaMek.jar" />
+				<pathelement location="${pkgdir}" />
+				<fileset dir="${pkgdir}/${libdir}" includes="*.jar" />
+				<fileset dir="${pkgdir}" includes="MegaMek.jar" />
 			</classpath>
 		</javac>
 
-		<jar destfile="${svndir}/${jarfile}" basedir="${svnbuilddir}">
-			<fileset dir="${svndir}/${srcdir}" includes="**/*.properties"/>
-		    <zipgroupfileset dir="${svndir}/${libdir}" includes="*.jar"/>
-		    <zipgroupfileset dir="${svndir}" includes="MegaMek.jar"/>
+		<jar destfile="${pkgdir}/${jarfile}" basedir="${pkgbuilddir}">
+			<fileset dir="${pkgdir}/${srcdir}" includes="**/*.properties"/>
+		    <zipgroupfileset dir="${pkgdir}/${libdir}" includes="*.jar"/>
+		    <zipgroupfileset dir="${pkgdir}" includes="MegaMek.jar"/>
 		    <manifest>
 		    	<attribute name="Main-Class" value="megameklab.com.MegaMekLab"/>
 		    </manifest>
 		</jar>
 
 		<!-- Ensure that the log directory exists. -->
-		<mkdir dir="${svndir}/${logdir}" />
-		<touch file="${svndir}/${timestampfile}" />
+		<mkdir dir="${pkgdir}/${logdir}" />
+		<touch file="${pkgdir}/${timestampfile}" />
 	</target>
 
-	<target name="svndev-clean" description="remove the SVN build directory">
-		<delete dir="${svnbuilddir}" />
-        <delete dir="${svndir}" />
+	<target name="pkgdir-clean" description="remove the git build directory">
+		<delete dir="${pkgbuilddir}" />
+        <delete dir="${pkgdir}" />
+        <delete dir="${mm-pkgdir}" />
 	</target>
 
-	<target name="mac-bundle" description="Bundle the project built from SVN into an Mac OSX distribution">
+	<target name="mac-bundle" description="Bundle the project built from git into an Mac OSX distribution">
 		<mkdir dir="${osxdist}" />
 		<copy todir="${osxdist}">
-			<fileset dir="${svndir}" >
+			<fileset dir="${pkgdir}" >
 				<include name="${jarfile}" />
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
@@ -206,13 +215,13 @@
 		<delete dir="${osxdist}" />
 	</target>
 
-	<target name="mac-package" depends="mac-bundle, mac-tar, mac-clean" description="Package a Mac OS X distribution of the project built from SVN" />
+	<target name="mac-package" depends="mac-bundle, mac-tar, mac-clean" description="Package a Mac OS X distribution of the project built from git" />
 
-	<target name="nix-bundle" description="Bundle the project built from SVN into a unix distribution">
+	<target name="nix-bundle" description="Bundle the project built from git into a unix distribution">
 		<mkdir dir="${nixdist}" />
 		<mkdir dir="${nixdist}/${nixdist}" />
 		<copy todir="${nixdist}/${nixdist}">
-			<fileset dir="${svndir}" >
+			<fileset dir="${pkgdir}" >
 				<include name="${jarfile}" />
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
@@ -230,17 +239,17 @@
 		<delete dir="${nixdist}" />
 	</target>
 
-	<target name="nix-package" depends="nix-bundle, nix-tar, nix-clean" description="Package a Unix distribution of the project built from SVN"/>
+	<target name="nix-package" depends="nix-bundle, nix-tar, nix-clean" description="Package a Unix distribution of the project built from git"/>
 
 	<!-- Produce an EXE file -->
 	<target name="exe" description="Generate an EXE wrappers for MegaMekLab.jar">
 		<launch4j configFile="${util}/megameklab.4j.xml" />
 	</target>
 
-	<target name="win-bundle" depends="exe" description="Bundle the project built from SVN into a Windows distribution">
+	<target name="win-bundle" depends="exe" description="Bundle the project built from git into a Windows distribution">
 		<mkdir dir="${windist}" />
 		<copy todir="${windist}">
-			<fileset dir="${svndir}" >
+			<fileset dir="${pkgdir}" >
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
 				<include name="${docdir}/" />
@@ -259,13 +268,13 @@
 		<delete dir="${windist}" />
 	</target>
 
-	<target name="win-package" depends="win-bundle, win-zip, win-clean" description="Package a Windows distribution of the project built from SVN"/>
+	<target name="win-package" depends="win-bundle, win-zip, win-clean" description="Package a Windows distribution of the project built from git"/>
 
-	<target name="source-package" description="Package a source-only distribution of the project built from SVN">
+	<target name="source-package" description="Package a source-only distribution of the project built from git">
 		<mkdir dir="${srcdist}" />
 		<mkdir dir="${srcdist}/${srcdist}" />
 		<copy todir="${srcdist}/${srcdist}">
-			<fileset dir="${svndir}" >
+			<fileset dir="${pkgdir}" >
 				<exclude name="${builddir}/**"/>
 				<exclude name="MegaMekLab.jar"/>
 				<exclude name="MegaMekLab.exe"/>
@@ -276,14 +285,14 @@
         <delete dir="${srcdist}" />
 	</target>
 
-	<target name="release" depends="svndev-build, mac-package, nix-package, win-package, source-package, svndev-clean" description="Build the project from SVN and package it as Windows, Mac, Unix, and source-only" />
+	<target name="release" depends="pkgdir-build, mac-package, nix-package, win-package, source-package, pkgdir-clean" description="Build the project from git and package it as Windows, Mac, Unix, and source-only" />
 
-    <target name="mac-release" depends="svndev-build, mac-package, svndev-clean" description="Build the project from local source and package it as Mac" />
+    <target name="mac-release" depends="pkgdir-build, mac-package, pkgdir-clean" description="Build the project from local source and package it as Mac" />
 
-    <target name="win-release" depends="svndev-build, win-package, svndev-clean" description="Build the project from local source and package it as Windows" />
+    <target name="win-release" depends="pkgdir-build, win-package, pkgdir-clean" description="Build the project from local source and package it as Windows" />
 
-    <target name="nix-release" depends="svndev-build, nix-package, svndev-clean" description="Build the project from local source and package it as Unix" />
+    <target name="nix-release" depends="pkgdir-build, nix-package, pkgdir-clean" description="Build the project from local source and package it as Unix" />
 
-    <target name="src-release" depends="svndev-build, source-package, svndev-clean" description="Build the project from local source and package it as source-only" />
+    <target name="src-release" depends="pkgdir-build, source-package, pkgdir-clean" description="Build the project from local source and package it as source-only" />
 
 </project>
