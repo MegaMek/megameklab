@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
-v0.1.43-dev (SVN)
+v0.1.43 (2015-08-26 21:30 UTC)
++ Updated MegaMek.jar to 0.41.7
 
 v0.1.42 (2015-08-15 19:40 UTC)
 + MegaMek.jar updated to 0.41.6
