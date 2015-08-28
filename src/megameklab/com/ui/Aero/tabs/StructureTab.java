@@ -1271,7 +1271,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         case TechConstants.T_CLAN_ADVANCED:
                         case TechConstants.T_CLAN_EXPERIMENTAL:
                         case TechConstants.T_CLAN_UNOFFICIAL:
-                            engineCount = 2;
+                            engineCount = 3;
                             break;
                         case TechConstants.T_IS_TW_NON_BOX:
                             engineCount = 2;
@@ -1298,7 +1298,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     case TechConstants.T_CLAN_ADVANCED:
                     case TechConstants.T_CLAN_EXPERIMENTAL:
                     case TechConstants.T_CLAN_UNOFFICIAL:
-                        engineCount = 2;
+                        engineCount = 3;
                         break;
                     case TechConstants.T_IS_TW_NON_BOX:
                         engineCount = 2;
