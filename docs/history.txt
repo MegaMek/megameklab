@@ -1,8 +1,9 @@
 VERSION HISTORY:
 ----------------
-v0.1.44-dev (SVN)
+v0.1.44 (2015-08-30 16:10 UTC)
 + Bug [#189]: No XXL Fusion Engine for Clan Aeros
 + Bug: Splittable multi-crit equipment failing to be placed in CT/HD
++ Updated MegaMek.jar to 0.41.8
 
 v0.1.43 (2015-08-26 21:30 UTC)
 + Updated MegaMek.jar to 0.41.7
