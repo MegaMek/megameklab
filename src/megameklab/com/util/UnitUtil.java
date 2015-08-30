@@ -1161,6 +1161,12 @@ public class UnitUtil {
             int location) {
         int highestNumberOfCrits = 0;
         int currentCritCount = 0;
+        
+        // Handle locations without crits
+        if ((location == Entity.LOC_DESTROYED) 
+                || (location == Entity.LOC_NONE)) {
+            return 0;
+        }
 
         for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
             if (unit.getCritical(location, slot) == null) {
