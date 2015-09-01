@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.45 (git)
+
 v0.1.44 (2015-09-01 12:10 UTC)
 + Bug [#189]: No XXL Fusion Engine for Clan Aeros
 + Bug: Splittable multi-crit equipment failing to be placed in CT/HD
