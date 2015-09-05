@@ -26,6 +26,7 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
@@ -40,6 +41,8 @@ import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
+
+import com.kitfox.svg.SVGException;
 
 public class PrintNavalVehicle implements Printable {
 
@@ -74,12 +77,17 @@ public class PrintNavalVehicle implements Printable {
         System.gc();
 
         //g2d.drawImage(ImageHelper.getRecordSheet(sub, false), 18, 18, 558, 736, null);
-        NavalArmorDiagram.paint(g2d);
-        NavalCritTable.paint(g2d);
-        NavalData.paint(g2d);
-        NavalHitTable.paint(g2d);
-        NavalMotiveDmgTable.paint(g2d);
-        TankSheetCopyrightInfo.paint(g2d);
+        try {
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/NavalArmorDiagram.svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/NavalCritTable.svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/NavalData.svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/NavalHitTable.svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/NavalMotiveDmgTable.svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/TankSheetCopyrightInfo.svg")).render(g2d);
+        } catch (SVGException e) {
+            e.printStackTrace();
+        }
+
 
         printTankData(g2d);
         printArmor(g2d);
@@ -87,19 +95,20 @@ public class PrintNavalVehicle implements Printable {
 
         // Armor/IS Pips
         try {
-            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Left_Armor_"+sub.getArmor(Tank.LOC_LEFT)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Left_Armor_"+sub.getArmor(Tank.LOC_LEFT)), g2d);
-            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Rear_Armor_"+sub.getArmor(Tank.LOC_REAR)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Rear_Armor_"+sub.getArmor(Tank.LOC_REAR)), g2d);
-            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Front_Armor_"+sub.getArmor(Tank.LOC_FRONT)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Front_Armor_"+sub.getArmor(Tank.LOC_FRONT)), g2d);
-            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Right_Armor_"+sub.getArmor(Tank.LOC_RIGHT)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Right_Armor_"+sub.getArmor(Tank.LOC_RIGHT)), g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Naval_Left_Armor_"+sub.getArmor(Tank.LOC_LEFT)+".svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Naval_Rear_Armor_"+sub.getArmor(Tank.LOC_REAR)+".svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Naval_Front_Armor_"+sub.getArmor(Tank.LOC_FRONT)+".svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Naval_Right_Armor_"+sub.getArmor(Tank.LOC_RIGHT)+".svg")).render(g2d);
             if (!sub.hasNoTurret()) {
-                Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Turret_Armor_"+sub.getArmor(Tank.LOC_TURRET)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Turret_Armor_"+sub.getArmor(Tank.LOC_TURRET)), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Naval_Turret_Armor_"+sub.getArmor(Tank.LOC_TURRET)+".svg")).render(g2d);
             }
-            Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_IS_"+sub.getInternal(Tank.LOC_LEFT)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_IS_"+sub.getInternal(Tank.LOC_LEFT)), g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Naval_IS_"+sub.getInternal(Tank.LOC_LEFT)+".svg")).render(g2d);
+
             if (!sub.hasNoTurret()) {
-                Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Turret_IS_"+sub.getInternal(Tank.LOC_TURRET)).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Vehicle.Printing.Naval_Turret_IS_"+sub.getInternal(Tank.LOC_TURRET)), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Naval_TURRET_IS_"+sub.getInternal(Tank.LOC_TURRET)+".svg")).render(g2d);
             }
 
-        } catch (Exception e) {
+        } catch (SVGException e) {
             e.printStackTrace();
         }
         /*

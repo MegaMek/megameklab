@@ -29,6 +29,7 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -48,6 +49,8 @@ import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
+
+import com.kitfox.svg.SVGException;
 
 public class PrintQuad implements Printable {
 
@@ -94,7 +97,11 @@ public class PrintQuad implements Printable {
         // g2d.drawImage(image, 2, 0, (int)pageFormat.getImageableWidth(),
         // (int)pageFormat.getImageableHeight(), null);
         //g2d.drawImage(image, 18, 18, 558, 738, null);
-        QuadMechTemplate.paint(g2d);
+        try {
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/QuadMechTemplate.svg")).render(g2d);
+        } catch (SVGException e) {
+            e.printStackTrace();
+        }
         printMekImage(g2d, hud);
 
         printMechData(g2d);
@@ -177,11 +184,19 @@ public class PrintQuad implements Printable {
         }
 
         if (mech.hasUMU()) {
-            BipedMechUnderwater.paint(g2d);
+            try {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedMechUnderwater.svg")).render(g2d);
+            } catch (SVGException e) {
+                e.printStackTrace();
+            }
             //g2d.drawImage(ImageHelper.getUMImage(), 31 + leftMargin, 156 + topMargin, 40, 15, null);
             g2d.drawString(Integer.toString(mech.getAllUMUCount()), 79 + leftMargin, topMargin + 166);
         } else if (mech.getJumpMP() > 0) {
-            BipedMechJumping.paint(g2d);
+            try {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedMechJumping.svg")).render(g2d);
+            } catch (SVGException e) {
+                e.printStackTrace();
+            }
             g2d.drawString(Integer.toString(mech.getJumpMP()), 79 + leftMargin, topMargin + 166);
         }
 
@@ -332,7 +347,11 @@ public class PrintQuad implements Printable {
 
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
-            QuadMech3rdGyro.paint(g2d);
+            try {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/QuadMech3rdGyro.svg")).render(g2d);
+            } catch (SVGException e) {
+                e.printStackTrace();
+            }
             //g2d.drawImage(ImageHelper.getGyroPipImage(), 235 + leftMargin, topMargin + 588, 9, 8, null);
         }
 
