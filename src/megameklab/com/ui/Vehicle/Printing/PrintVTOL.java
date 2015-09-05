@@ -27,6 +27,7 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
@@ -44,6 +45,8 @@ import megamek.common.VTOL;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
+
+import com.kitfox.svg.SVGException;
 
 public class PrintVTOL implements Printable {
 
@@ -75,14 +78,17 @@ public class PrintVTOL implements Printable {
 
         System.gc();
 
-        VTOLCommonTemplate.paint(g2d);
-        if (vtol.hasNoTurret()) {
-            VTOLNoTurretTemplate.paint(g2d);
-        } else {
-            VTOLTurretTemplate.paint(g2d);
+        try {
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/VTOLCommonTemplate.svg")).render(g2d);
+            if (vtol.hasNoTurret()) {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/VTOLNoTurretTemplate.svg")).render(g2d);
+            } else {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/VTOLTurretTemplate.svg")).render(g2d);
+            }
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/VTOLCatalystLogo.svg")).render(g2d);
+        } catch (SVGException e) {
+            e.printStackTrace();
         }
-        VTOLCatalystLogo.paint(g2d);
-        g2d.setColor(Color.black);
 
         printVTOLData(g2d);
         printArmor(g2d);

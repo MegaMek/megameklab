@@ -25,6 +25,7 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -37,6 +38,8 @@ import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperBattleArmor;
 import megameklab.com.util.ImageHelperProto;
 import megameklab.com.util.UnitUtil;
+
+import com.kitfox.svg.SVGException;
 
 public class PrintProtomech implements Printable {
 
@@ -87,14 +90,9 @@ public class PrintProtomech implements Printable {
             protoMech = protoMechList.get((pos + currentPosition) - 1);
 
             try {
-                Class.forName(
-                        "megameklab.com.ui.ProtoMek.Printing.ProtomechTemplate"
-                                + pos)
-                        .getDeclaredMethod("paint", Graphics2D.class)
-                        .invoke(Class.forName("megameklab.com.ui.ProtoMek.Printing.ProtomechTemplate"
-                                + pos), g2d);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/ProtomechTemplate"+pos+".svg")).render(g2d);
+            } catch (SVGException e) {
+                e.printStackTrace();
             }
 
             g2d.setColor(Color.BLACK);

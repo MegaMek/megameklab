@@ -26,6 +26,7 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
@@ -43,6 +44,8 @@ import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
+
+import com.kitfox.svg.SVGException;
 
 public class PrintLargeSupportVehicle implements Printable {
 
@@ -84,33 +87,33 @@ public class PrintLargeSupportVehicle implements Printable {
         }
 
         System.gc();
+        try {
+            if (largesupporttank instanceof SuperHeavyTank) {
+                try {
+                    ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyTankCritTable.svg")).render(g2d);
+                } catch (SVGException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/LargeSupportTankCritTable.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/LargeSupportTankHitTable.svg")).render(g2d);            }
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/TankMotiveDmgTable.svg")).render(g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/TankSheetCopyrightInfo.svg")).render(g2d);
 
-        if (largesupporttank instanceof SuperHeavyTank) {
-            SuperHeavyTankCritTable.paint(g2d);
-            g2d.setColor(Color.BLACK);
-            SuperHeavyTankHitTable.paint(g2d);
-        } else {
-            LargeSupportTankCritTable.paint(g2d);
-            g2d.setColor(Color.BLACK);
-            LargeSupportTankHitTable.paint(g2d);
-        }
-        g2d.setColor(Color.BLACK);
-        TankMotiveDmgTable.paint(g2d);
-        g2d.setColor(Color.BLACK);
-        TankSheetCopyrightInfo.paint(g2d);
-        g2d.setColor(Color.BLACK);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyBaseTemplate.svg")).render(g2d);
 
-        SuperHeavyBaseTemplate.paint(g2d);
-        g2d.setColor(Color.BLACK);
-        if (largesupporttank.hasNoTurret()) {
-            SuperHeavyNoTurretTemplate.paint(g2d);
-            g2d.setColor(Color.BLACK);
-        } else if (largesupporttank.hasNoDualTurret()) {
-            SuperHeavySingleTurretTemplate.paint(g2d);
-            g2d.setColor(Color.BLACK);
-        } else {
-            SuperHeavyDualTurretTemplate.paint(g2d);
-            g2d.setColor(Color.BLACK);
+
+
+            if (largesupporttank.hasNoTurret()) {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyNoTurretTemplate.svg")).render(g2d);
+            } else if (largesupporttank.hasNoDualTurret()) {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavySingleTurretTemplate.svg")).render(g2d);
+            } else {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/SuperHeavyDualTurretTemplate.svg")).render(g2d);
+            }
+
+        } catch (SVGException e) {
+            e.printStackTrace();
         }
 
         printLargeSupportTankData(g2d);

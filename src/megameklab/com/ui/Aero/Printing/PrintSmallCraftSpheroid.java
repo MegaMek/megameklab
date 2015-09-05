@@ -27,6 +27,7 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
@@ -40,6 +41,8 @@ import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperAero;
 import megameklab.com.util.UnitUtil;
+
+import com.kitfox.svg.SVGException;
 
 public class PrintSmallCraftSpheroid implements Printable {
 
@@ -75,7 +78,11 @@ public class PrintSmallCraftSpheroid implements Printable {
 
         // g2d.drawImage(ImageHelper.getRecordSheet(smallCraft), 18, 18, 558,
         // 738, Color.BLACK, null);
-        SpheroidSmallCraftTemplate.paint(g2d);
+        try {
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/SpheroidSmallScraftTemplate.svg")).render(g2d);
+        } catch (SVGException e) {
+            e.printStackTrace();
+        }
         g2d.setColor(Color.BLACK);
         printSmallCraftSpheroidImage(g2d,
                 ImageHelper.getFluffImage(smallCraft, ImageHelper.imageAero));

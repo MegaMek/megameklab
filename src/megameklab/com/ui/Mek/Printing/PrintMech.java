@@ -28,6 +28,7 @@ import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -48,6 +49,8 @@ import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.UnitUtil;
+
+import com.kitfox.svg.SVGException;
 
 public class PrintMech implements Printable {
 
@@ -82,7 +85,11 @@ public class PrintMech implements Printable {
 
         Graphics2D g2d = (Graphics2D) graphics;
         // f.setPaper(this.paper);
-        BipedMechTemplate.paint(g2d);
+        try {
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedMechTemplate.svg")).render(g2d);
+        } catch (SVGException e) {
+            e.printStackTrace();
+        }
         printImage(g2d, awtHud, pageFormat);
         return Printable.PAGE_EXISTS;
     }
@@ -94,24 +101,43 @@ public class PrintMech implements Printable {
         }
 
         System.gc();
-        //ProtomechTemplate1.paint(g2d);
-        BipedMechTemplate.paint(g2d);
+        try {
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedMechTemplate.svg")).render(g2d);
+        } catch (SVGException e) {
+            e.printStackTrace();
+        }
         printMekImage(g2d, hud);
 
         if (mech.hasShield()) {
             if ((UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) && (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0)) {
-                BipedBothShields.paint(g2d);
+                try {
+                    ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedBothShields.svg")).render(g2d);
+                } catch (SVGException e) {
+                    e.printStackTrace();
+                }
             } else if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) {
-                BipedRightShield.paint(g2d);
+                try {
+                    ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedRightShields.svg")).render(g2d);
+                } catch (SVGException e) {
+                    e.printStackTrace();
+                }
             } else {
-                BipedLeftShield.paint(g2d);
+                try {
+                    ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedLeftShields.svg")).render(g2d);
+                } catch (SVGException e) {
+                    e.printStackTrace();
+                }
             }
             g2d.setColor(Color.BLACK);
             printLeftShield(g2d);
             printRightShield(g2d);
         } else {
             g2d.setColor(Color.BLACK);
-            BipedNoShields.paint(g2d);
+            try {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedNoShields.svg")).render(g2d);
+            } catch (SVGException e) {
+                e.printStackTrace();
+            }
         }
 
         g2d.setColor(Color.BLACK);
@@ -141,85 +167,47 @@ public class PrintMech implements Printable {
             printRLCase(g2d);
         }
 
-        // Armor Pips
         try {
+            // Armor Pips
             if (mech.getArmor(Mech.LOC_CT) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_CT_"+mech.getArmor(Mech.LOC_CT)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_CT_"+mech.getArmor(Mech.LOC_CT)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_CT_"+mech.getArmor(Mech.LOC_CT)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_LT) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_LT_"+mech.getArmor(Mech.LOC_LT)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_LT_"+mech.getArmor(Mech.LOC_LT)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_LT_"+mech.getArmor(Mech.LOC_LT)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_RT) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_RT_"+mech.getArmor(Mech.LOC_RT)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_RT_"+mech.getArmor(Mech.LOC_RT)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RT_"+mech.getArmor(Mech.LOC_RT)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_LLEG) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_LLeg_"+mech.getArmor(Mech.LOC_LLEG)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_LLeg_"+mech.getArmor(Mech.LOC_LLEG)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_LLEG_"+mech.getArmor(Mech.LOC_LLEG)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_RLEG) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_RLeg_"+mech.getArmor(Mech.LOC_RLEG)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_RLeg_"+mech.getArmor(Mech.LOC_RLEG)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RLEG_"+mech.getArmor(Mech.LOC_RLEG)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_LARM) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_LArm_"+mech.getArmor(Mech.LOC_LARM)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_LArm_"+mech.getArmor(Mech.LOC_LARM)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_LARM_"+mech.getArmor(Mech.LOC_LARM)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_RARM) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_RArm_"+mech.getArmor(Mech.LOC_RARM)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_RArm_"+mech.getArmor(Mech.LOC_RARM)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RARM_"+mech.getArmor(Mech.LOC_RARM)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_HEAD, true) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_Head_"+mech.getArmor(Mech.LOC_HEAD)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_Head_"+mech.getArmor(Mech.LOC_HEAD)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_HEAD_"+mech.getArmor(Mech.LOC_HEAD)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_CT, true) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_CT_R_"+mech.getArmor(Mech.LOC_CT, true)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_CT_R_"+mech.getArmor(Mech.LOC_CT, true)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_CT_R_"+mech.getArmor(Mech.LOC_CT, true)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_LT, true) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_LT_R_"+mech.getArmor(Mech.LOC_LT, true)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_LT_R_"+mech.getArmor(Mech.LOC_LT, true)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_LT_R_"+mech.getArmor(Mech.LOC_LT, true)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_RT, true) > 0) {
-                Class.forName("megameklab.com.ui.Mek.Printing.Armor_RT_R_"+mech.getArmor(Mech.LOC_RT, true)+"_Humanoid").getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Armor_RT_R_"+mech.getArmor(Mech.LOC_RT, true)+"_Humanoid"), g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RT_R_"+mech.getArmor(Mech.LOC_RT, true)+"_Humanoid.svg")).render(g2d);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            // Internal Pips
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedIS"+(int)mech.getWeight()+".svg")).render(g2d);
+        } catch (SVGException e1) {
+            e1.printStackTrace();
         }
 
-        // Internal Pips
-        if (mech.getWeight() == 100) {
-            BipedIS100.paint(g2d);
-        } else if (mech.getWeight() == 95) {
-            BipedIS95.paint(g2d);
-        } else if (mech.getWeight() == 90) {
-            BipedIS90.paint(g2d);
-        } else if (mech.getWeight() == 85) {
-            BipedIS85.paint(g2d);
-        } else if (mech.getWeight() == 80) {
-            BipedIS80.paint(g2d);
-        } else if (mech.getWeight() == 75) {
-            BipedIS75.paint(g2d);
-        } else if (mech.getWeight() == 70) {
-            BipedIS70.paint(g2d);
-        } else if (mech.getWeight() == 65) {
-            BipedIS65.paint(g2d);
-        } else if (mech.getWeight() == 60) {
-            BipedIS60.paint(g2d);
-        } else if (mech.getWeight() == 55) {
-            BipedIS55.paint(g2d);
-        } else if (mech.getWeight() == 50) {
-            BipedIS50.paint(g2d);
-        } else if (mech.getWeight() == 45) {
-            BipedIS45.paint(g2d);
-        } else if (mech.getWeight() == 40) {
-            BipedIS40.paint(g2d);
-        } else if (mech.getWeight() == 35) {
-            BipedIS35.paint(g2d);
-        } else if (mech.getWeight() == 30) {
-            BipedIS30.paint(g2d);
-        } else if (mech.getWeight() == 25) {
-            BipedIS25.paint(g2d);
-        } else if (mech.getWeight() == 20) {
-            BipedIS20.paint(g2d);
-        } else if (mech.getWeight() == 15) {
-            BipedIS15.paint(g2d);
-        } else if (mech.getWeight() == 10) {
-            BipedIS10.paint(g2d);
-        }
         printHeatSinks(g2d);
         // g2d.translate(pageFormat.getImageableX(),
         // pageFormat.getImageableY());
@@ -278,10 +266,18 @@ public class PrintMech implements Printable {
             g2d.drawString(Integer.toString(mech.getRunMP()), 83 + leftMargin, topMargin + 154.3f);
         }
         if (mech.hasUMU()) {
-            BipedMechUnderwater.paint(g2d);
+            try {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedMechUnderwater.svg")).render(g2d);
+            } catch (SVGException e) {
+                e.printStackTrace();
+            }
             g2d.drawString(Integer.toString(mech.getActiveUMUCount()), 83 + leftMargin, topMargin + 164.4f);
         } else if (mech.getJumpMP() > 0){
-            BipedMechJumping.paint(g2d);
+            try {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedMechJumping.svg")).render(g2d);
+            } catch (SVGException e) {
+                e.printStackTrace();
+            }
             g2d.drawString(Integer.toString(mech.getJumpMP()), 83 + leftMargin, topMargin + 164.4f);
         }
 
@@ -436,7 +432,11 @@ public class PrintMech implements Printable {
         g2d.drawString(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)), 46f, topMargin + 762.4f);
 
         if (mech.getGyroType() == Mech.GYRO_HEAVY_DUTY) {
-            BipedMech3rdGyro.paint(g2d);
+            try {
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedMech3rdGyro.svg")).render(g2d);
+            } catch (SVGException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -455,8 +455,9 @@ public class PrintMech implements Printable {
             g2d.drawString("Single", 507 + leftMargin, topMargin + 608);
         }
 
+
         try {
-            Class.forName("megameklab.com.ui.Mek.Printing.Heat_Sinks_"+mech.heatSinks()).getDeclaredMethod("paint", Graphics2D.class).invoke(Class.forName("megameklab.com.ui.Mek.Printing.Heat_Sinks_"+mech.heatSinks()), g2d);
+            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Heat_Sinks_"+mech.heatSinks()+".svg")).render(g2d);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1019,70 +1020,78 @@ public class PrintMech implements Printable {
     }
 
     private void printLeftShield(Graphics2D g2d) {
-        for (Mounted mount:mech.getEquipment()) {
-            if ((mount.getLocation() == Mech.LOC_LARM) && (mount.getType() instanceof MiscType)) {
-                if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_LARGE)) {
-                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
-                        Shield_L_Large.paint(g2d);
-                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_LARM)) {
-                        Shield_L_Large_No_Hand.paint(g2d);
-                    } else {
-                        Shield_L_Large_No_LA.paint(g2d);
+        try {
+            for (Mounted mount:mech.getEquipment()) {
+                if ((mount.getLocation() == Mech.LOC_LARM) && (mount.getType() instanceof MiscType)) {
+                    if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_LARGE)) {
+                        if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_L_Large.svg")).render(g2d);
+                        } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_LARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_L_Large_No_Hand.svg")).render(g2d);
+                        } else {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_L_Large_No_LA.svg")).render(g2d);
+                        }
                     }
-                }
-                if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_MEDIUM)) {
-                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
-                        Shield_L_Medium.paint(g2d);
-                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_LARM)) {
-                        Shield_L_Medium_No_Hand.paint(g2d);
-                    } else {
-                        Shield_L_Medium_No_LA.paint(g2d);
+                    if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_MEDIUM)) {
+                        if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_L_Medium.svg")).render(g2d);
+                        } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_LARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_L_Medium_No_Hand.svg")).render(g2d);
+                        } else {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_L_Medium_No_LA.svg")).render(g2d);
+                        }
                     }
-                }
-                if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_SMALL)) {
-                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
-                        Shield_L_Small.paint(g2d);
-                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_LARM)) {
-                        Shield_L_Small_No_Hand.paint(g2d);
-                    } else {
-                        Shield_L_Small_No_LA.paint(g2d);
+                    if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_SMALL)) {
+                        if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_LARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_L_Small.svg")).render(g2d);
+                        } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_LARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_L_Small_No_Hand.svg")).render(g2d);
+                        } else {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_L_Small_No_LA.svg")).render(g2d);
+                        }
                     }
                 }
             }
+        } catch (SVGException e) {
+            e.printStackTrace();
         }
     }
 
     private void printRightShield(Graphics2D g2d) {
-        for (Mounted mount:mech.getEquipment()) {
-            if ((mount.getLocation() == Mech.LOC_RARM) && (mount.getType() instanceof MiscType)) {
-                if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_LARGE)) {
-                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
-                        Shield_R_Large.paint(g2d);
-                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_RARM)) {
-                        Shield_R_Large_No_Hand.paint(g2d);
-                    } else {
-                        Shield_R_Large_No_LA.paint(g2d);
+        try {
+            for (Mounted mount:mech.getEquipment()) {
+                if ((mount.getLocation() == Mech.LOC_RARM) && (mount.getType() instanceof MiscType)) {
+                    if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_LARGE)) {
+                        if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_R_Large.svg")).render(g2d);
+                        } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_RARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_R_Large_No_Hand.svg")).render(g2d);
+                        } else {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_R_Large_No_LA.svg")).render(g2d);
+                        }
                     }
-                }
-                if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_MEDIUM)) {
-                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
-                        Shield_R_Medium.paint(g2d);
-                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_RARM)) {
-                        Shield_R_Medium_No_Hand.paint(g2d);
-                    } else {
-                        Shield_R_Medium_No_LA.paint(g2d);
+                    if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_MEDIUM)) {
+                        if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_R_Medium.svg")).render(g2d);
+                        } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_RARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_R_Medium_No_Hand.svg")).render(g2d);
+                        } else {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_R_Medium_No_LA.svg")).render(g2d);
+                        }
                     }
-                }
-                if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_SMALL)) {
-                    if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
-                        Shield_R_Small.paint(g2d);
-                    } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_RARM)) {
-                        Shield_R_Small_No_Hand.paint(g2d);
-                    } else {
-                        Shield_R_Small_No_LA.paint(g2d);
+                    if (mount.getType().hasFlag(MiscType.F_CLUB) && mount.getType().hasSubType(MiscType.S_SHIELD_SMALL)) {
+                        if (mech.hasWorkingSystem(Mech.ACTUATOR_HAND, Mech.LOC_RARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_R_Small.svg")).render(g2d);
+                        } else if (mech.hasWorkingSystem(Mech.ACTUATOR_LOWER_ARM, Mech.LOC_RARM)) {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_R_Small_No_Hand.svg")).render(g2d);
+                        } else {
+                            ImageHelper.loadSVGImage(new File("data/images/recordsheets/Shield_R_Small_No_LA.svg")).render(g2d);
+                        }
                     }
                 }
             }
+        } catch (SVGException e) {
+            e.printStackTrace();
         }
     }
 

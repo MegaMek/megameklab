@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.45 (git)
++ Print templates directly from SVG files
 
 v0.1.44 (2015-09-01 12:10 UTC)
 + Bug [#189]: No XXL Fusion Engine for Clan Aeros
