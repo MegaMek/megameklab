@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.46 (git)
+
 v0.1.45 (2014-09-14 01:25 UTC)
 + Print templates directly from SVG files
 + Updated MegaMek.jar to 0.41.9
