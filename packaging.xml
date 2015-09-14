@@ -153,13 +153,9 @@
 			</classpath>
 		</javac>
 
-		<jar destfile="${pkgdir}/${jarfile}" basedir="${pkgbuilddir}">
+		<jar basedir="${pkgbuilddir}" jarfile="${pkgdir}/${jarfile}" manifest="manifest.txt">
 			<fileset dir="${pkgdir}/${srcdir}" includes="**/*.properties"/>
-		    <zipgroupfileset dir="${pkgdir}/${libdir}" includes="*.jar"/>
 		    <zipgroupfileset dir="${pkgdir}" includes="MegaMek.jar"/>
-		    <manifest>
-		    	<attribute name="Main-Class" value="megameklab.com.MegaMekLab"/>
-		    </manifest>
 		</jar>
 
 		<!-- Ensure that the log directory exists. -->
@@ -191,7 +187,12 @@
 			</fileset>
 		</copy>
 		<copy file="${util}/JavaApplicationStub" todir="${osxdist}/MegaMekLab.app/Contents/MacOS/"/>
-		<move file="${osxdist}/MegaMekLab.jar" todir="${osxdist}/MegaMekLab.app/Contents/Resources/Java/" />
+		<copy todir="${osxdist}/MegaMekLab.app/Contents/Resources/Java/">
+            <fileset dir="${pkgdir}" >
+                <include name="${libdir}/*.jar" />
+                <include name="${jarfile}" />
+            </fileset>
+	    </copy>
 	</target>
 
 	<!-- Replace actual stubs with symlinks on mac systems -->
@@ -223,10 +224,12 @@
 		<copy todir="${nixdist}/${nixdist}">
 			<fileset dir="${pkgdir}" >
 				<include name="${jarfile}" />
+                <include name="${libdir}/*.jar" />
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
 				<include name="${docdir}/" />
                 <include name="${confdir}/" />
+                <include name="*.sh" />
 			</fileset>
 		</copy>
 	</target>
@@ -250,6 +253,7 @@
 		<mkdir dir="${windist}" />
 		<copy todir="${windist}">
 			<fileset dir="${pkgdir}" >
+                <include name="${libdir}/*.jar" />
 				<include name="${logdir}/" />
 				<include name="${datadir}/" />
 				<include name="${docdir}/" />
