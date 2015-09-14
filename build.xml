@@ -1,58 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This is an ant build file. See: "http://jakarta.apache.org/ant"-->
 <project
-	default="compile"
-	name="MegaMekLab"
->
+	default="jar"
+	name="MegaMekLab">
 	<!-- Global properties for this build -->
-	<property
-		name="src"
-		value="src"
-	>
-	</property>
-	<property
-		name="build"
-		value="${basedir}/classes"
-	>
-	</property>
-	<property
-		name="timestampfile"
-		value="timestamp"
-	>
-	</property>
+	<property name="src" value="src" />
+	<property name="build" value="${basedir}/classes" />
+	<property name="timestampfile" value="timestamp" />
+	<property name="megameklab" value="MegaMekLab.jar" />
+	<property name="jarmanifest" value="manifest.txt" />
+     <property name="splashdir" value="${basedir}/data/images/splash" />
 
-	<property
-			name="megameklab"
-			value="MegaMekLab.jar"
-	>
-	</property>
-
-	<property
-		name="jarmanifest"
-		value="manifest.txt"
-	>
-	</property>
-     <property
-          name="splashdir"
-          value="${basedir}/data/images/splash"
-     >
-     </property>
-
-	<path
-		id="project.classpath"
-	>
-		<pathelement
-			path="${build}"
-		>
+	<path id="project.classpath" >
+		<pathelement path="${build}" >
 		</pathelement>
-		<fileset
-			dir="${basedir}"
-		>
-			<include
-				name="MegaMek.jar"
-			>
+		<fileset dir="${basedir}" >
+            <include
+                name="MegaMek.jar" >
 			</include>
 		</fileset>
+		<fileset dir="lib" includes="*.jar" />
 	</path>
 	<target
 		description="Initialize system before build"
@@ -137,7 +104,7 @@
 	<target
 		depends="compile"
 		description="Create application jar file"
-		name="megameklab-jar"
+		name="jar"
 	>
 		<delete
 			file="${megameklab}"
