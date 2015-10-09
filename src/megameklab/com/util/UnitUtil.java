@@ -70,7 +70,9 @@ import megamek.common.verifier.TestTank;
 import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.BPodWeapon;
+import megamek.common.weapons.CLAMS;
 import megamek.common.weapons.CLChemicalLaserWeapon;
+import megamek.common.weapons.CLLaserAMS;
 import megamek.common.weapons.CLLightTAG;
 import megamek.common.weapons.CLPlasmaCannon;
 import megamek.common.weapons.CLTAG;
@@ -78,8 +80,11 @@ import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.HVACWeapon;
+import megamek.common.weapons.ISAMS;
+import megamek.common.weapons.ISAPDS;
 import megamek.common.weapons.ISC3M;
 import megamek.common.weapons.ISC3MBS;
+import megamek.common.weapons.ISLaserAMS;
 import megamek.common.weapons.ISPlasmaRifle;
 import megamek.common.weapons.ISTAG;
 import megamek.common.weapons.LBXACWeapon;
@@ -139,7 +144,8 @@ public class UnitUtil {
                                 .hasFlag(MiscType.F_MECH_EQUIPMENT))
                         || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
-                        || eq.hasFlag(MiscType.F_MAST_MOUNT));
+                        || eq.hasFlag(MiscType.F_MAST_MOUNT)
+                        || eq.hasFlag(MiscType.F_SCM));
     }
 
     /**
@@ -329,7 +335,7 @@ public class UnitUtil {
                     if (cs.getMount2() != null) {
                         cs.setMount(cs.getMount2());
                         cs.setMount2(null);
-                    } else { // If it's the only Mounted, clear the slot 
+                    } else { // If it's the only Mounted, clear the slot
                         cs = null;
                         unit.setCritical(loc, slot, cs);
                     }
@@ -1161,9 +1167,9 @@ public class UnitUtil {
             int location) {
         int highestNumberOfCrits = 0;
         int currentCritCount = 0;
-        
+
         // Handle locations without crits
-        if ((location == Entity.LOC_DESTROYED) 
+        if ((location == Entity.LOC_DESTROYED)
                 || (location == Entity.LOC_NONE)) {
             return 0;
         }
@@ -1509,6 +1515,15 @@ public class UnitUtil {
                     locations.add(Mech.LOC_CLEG);
                     blocks++;
                 }
+            } else if (equip.hasFlag(MiscType.F_SCM)) {
+                // 1 in arms, legs, side torsos
+                locations.add(Mech.LOC_LLEG);
+                locations.add(Mech.LOC_RLEG);
+                locations.add(Mech.LOC_LARM);
+                locations.add(Mech.LOC_RARM);
+                locations.add(Mech.LOC_LT);
+                locations.add(Mech.LOC_RT);
+                blocks = 6;
             } else if ((equip.hasFlag(MiscType.F_TRACKS)
                     || equip.hasFlag(MiscType.F_TALON) || equip
                         .hasFlag(MiscType.F_JUMP_BOOSTER))) {
@@ -2344,7 +2359,11 @@ public class UnitUtil {
                 || eq.equals(EquipmentType.get("IS Coolant Pod"))
                 || eq.equals(EquipmentType.get("Clan Coolant Pod"))
                 || (eq instanceof CLLightTAG)
-                || eq.hasFlag(WeaponType.F_AMS)) {
+                || (eq instanceof ISAMS)
+                || (eq instanceof CLAMS)
+                || (eq instanceof ISLaserAMS)
+                || (eq instanceof CLLaserAMS)
+                || (eq instanceof ISAPDS )) {
             return true;
         }
 
@@ -2504,7 +2523,7 @@ public class UnitUtil {
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
-        
+
         // Chassis modifications should be ignored, as they will be added
         // via checkboxes, and not shown as equipment
         //if (eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
@@ -2846,10 +2865,10 @@ public class UnitUtil {
 
         return numberOfEq;
     }
-    
+
     /**
      * Returns a TestEntity instance for the supplied Entity.
-     * 
+     *
      * @param unit
      * @return
      */
@@ -2888,7 +2907,7 @@ public class UnitUtil {
         }
         return testEntity;
     }
-    
+
 
     /**
      * check that the unit is vaild
@@ -3118,12 +3137,12 @@ public class UnitUtil {
         } catch (Exception ex) {
         }
     }
-    
+
     public static void showUnitWeightBreakDown(Entity unit, JFrame frame) {
         TestEntity testEntity = getEntityVerifier(unit);
         JOptionPane.showMessageDialog(frame, testEntity.printEntity(),
                 "Unit Breakdown", JOptionPane.NO_OPTION);
-    }    
+    }
 
     public static void showBVCalculations(String bvText, JFrame frame) {
         HTMLEditorKit kit = new HTMLEditorKit();
