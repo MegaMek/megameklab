@@ -2901,7 +2901,7 @@ public class UnitUtil {
         TestEntity testEntity =  getEntityVerifier(unit);
 
         if (testEntity != null){
-            testEntity.correctEntity(sb, true);
+            testEntity.correctEntity(sb, unit.getTechLevel());
         }
 
         return sb.toString();
