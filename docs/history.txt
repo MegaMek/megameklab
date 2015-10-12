@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.47-git
+
 v0.1.46 (2015-10-12 00:11 UTC)
 + Added UI elements to adjust base chassis turret weight for omni combat vees
 + Updated MegaMek.jar to 0.41.10
