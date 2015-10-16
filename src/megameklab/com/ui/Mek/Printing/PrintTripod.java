@@ -164,7 +164,9 @@ public class PrintTripod implements Printable {
             printRLCase(g2d);
         }
 
+        /*
         try {
+
             // Armor Pips
             if (mech.getArmor(Mech.LOC_CT) > 0) {
                 ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_CT_"+mech.getArmor(Mech.LOC_CT)+"_Humanoid.svg")).render(g2d);
@@ -201,6 +203,7 @@ public class PrintTripod implements Printable {
             }
             // Internal Pips
             //ImageHelper.loadSVGImage(new File("data/images/recordsheets/TripodIS"+(int)mech.getWeight()+".svg")).render(g2d);
+
         } catch (SVGException e1) {
             e1.printStackTrace();
         }
@@ -215,6 +218,7 @@ public class PrintTripod implements Printable {
         printLLStruct(g2d);
         printRLStruct(g2d);
         printCLStruct(g2d);
+        */
 
         printHeatSinks(g2d);
         // g2d.translate(pageFormat.getImageableX(),
@@ -473,20 +477,21 @@ public class PrintTripod implements Printable {
 
     private void printArmor(Graphics2D g2d) {
         // Armor
-        Font font = UnitUtil.deriveFont(7.0f);
+        Font font = UnitUtil.deriveFont(6.0f);
         g2d.setFont(font);
         g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_HEAD)) + ")", 485 + leftMargin, topMargin + 42);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 436 + leftMargin, topMargin + 60);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT)) + ")", 514 + leftMargin, topMargin + 60);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT)) + ")", 474 + leftMargin, topMargin + 222);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LARM)) + ")", 400 + leftMargin, topMargin + 217);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RARM)) + ")", 550 + leftMargin, topMargin + 217);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LLEG)) + ")", 388 + leftMargin, topMargin + 273);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RLEG)) + ")", 554 + leftMargin, topMargin + 273);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT)) + ")", 456 + leftMargin, topMargin + 42);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT)) + ")", 538 + leftMargin, topMargin + 42);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT)) + ")", 448 + leftMargin, topMargin + 222);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LARM)) + ")", 389 + leftMargin, topMargin + 190);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RARM)) + ")", 557 + leftMargin, topMargin + 190);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LLEG)) + ")", 380 + leftMargin, topMargin + 270);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RLEG)) + ")", 569 + leftMargin, topMargin + 270);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CLEG)) + ")", 502 + leftMargin, topMargin + 288);
         // Rear
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT, true)) + ")", 403 + leftMargin, topMargin + 363);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT, true)) + ")", 480 + leftMargin, topMargin + 282);
-        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT, true)) + ")", 546 + leftMargin, topMargin + 363);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_LT, true)) + ")", 410 + leftMargin, topMargin + 360);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_CT, true)) + ")", 506 + leftMargin, topMargin + 372);
+        g2d.drawString("(" + Integer.toString(mech.getArmor(Mech.LOC_RT, true)) + ")", 550 + leftMargin, topMargin + 360);
         // patchwork armor info
         if (mech.hasPatchworkArmor()) {
             font = UnitUtil.deriveFont(5.5f);
@@ -507,13 +512,15 @@ public class PrintTripod implements Printable {
             g2d.setFont(font);
         }
         // Internal
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_HEAD)) + ")", 460 + leftMargin, topMargin + 400);
         g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LT)) + ")", 427 + leftMargin, topMargin + 409);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RT)) + ")", 527 + leftMargin, topMargin + 409);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RT)) + ")", 528 + leftMargin, topMargin + 409);
         g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LARM)) + ")", 390 + leftMargin, topMargin + 486);
         g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RARM)) + ")", 533 + leftMargin, topMargin + 486);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_CT)) + ")", 462 + leftMargin, topMargin + 516);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_CT)) + ")", 482 + leftMargin, topMargin + 540);
         g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_LLEG)) + ")", 403 + leftMargin, topMargin + 547);
-        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RLEG)) + ")", 520 + leftMargin, topMargin + 547);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_RLEG)) + ")", 522 + leftMargin, topMargin + 547);
+        g2d.drawString("(" + Integer.toString(mech.getInternal(Mech.LOC_CLEG)) + ")", 440 + leftMargin, topMargin + 547);
     }
 
     private void printLACrits(Graphics2D g2d) {
