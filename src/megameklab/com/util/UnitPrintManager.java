@@ -66,6 +66,7 @@ import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
 import megameklab.com.ui.Mek.Printing.PrintMech;
 import megameklab.com.ui.Mek.Printing.PrintQuad;
+import megameklab.com.ui.Mek.Printing.PrintTripod;
 import megameklab.com.ui.ProtoMek.Printing.PrintProtomech;
 import megameklab.com.ui.Vehicle.Printing.PrintDualTurretVehicle;
 import megameklab.com.ui.Vehicle.Printing.PrintLargeSupportVehicle;
@@ -228,8 +229,12 @@ public class UnitPrintManager {
             printQuad.print(aset);
         }
 
-        // TODO: Implement a PrintTripod class so we can do something with
-        // tripodList here as well.
+        if (tripodList.size() > 0) {
+            PrintTripod printTripod = new PrintTripod(tripodList, masterPrintJob);
+
+            printTripod.print(aset);
+        }
+
 
         if (tankList.size() > 0) {
             PrintVehicle printTank = new PrintVehicle(tankList, singlePrint, masterPrintJob);
