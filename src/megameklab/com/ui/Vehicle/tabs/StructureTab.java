@@ -121,6 +121,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JCheckBox superHeavyCB = new JCheckBox("Super-Heavy");
     String[] turretTypes = { "None", "Single", "Dual" };
     JComboBox<String> turretCombo = new JComboBox<String>(turretTypes);
+    JSpinner baseChassisTurretWeight;
+    JSpinner baseChassisTurret2Weight;
     Dimension maxSize = new Dimension();
     JLabel baseChassisHeatSinksLabel = new JLabel("Base Heat Sinks:",
             SwingConstants.TRAILING);
@@ -204,6 +206,30 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         ((JSpinner.DefaultEditor) armorTonnage.getEditor())
                 .setPreferredSize(spinnerSize);
         ((JSpinner.DefaultEditor) armorTonnage.getEditor())
+                .setMinimumSize(spinnerSize);
+
+        baseChassisTurretWeight = new JSpinner(new SpinnerNumberModel(0, 0.0,
+                getTank().getWeight(), 0.5));
+        spinnerSize = new Dimension(45, 25);
+        ((JSpinner.DefaultEditor) baseChassisTurretWeight.getEditor())
+                .setSize(spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisTurretWeight.getEditor())
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisTurretWeight.getEditor())
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisTurretWeight.getEditor())
+                .setMinimumSize(spinnerSize);
+
+        baseChassisTurret2Weight = new JSpinner(new SpinnerNumberModel(0, 0.0,
+                getTank().getWeight(), 0.5));
+        spinnerSize = new Dimension(45, 25);
+        ((JSpinner.DefaultEditor) baseChassisTurret2Weight.getEditor())
+                .setSize(spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisTurret2Weight.getEditor())
+                .setMaximumSize(spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisTurret2Weight.getEditor())
+                .setPreferredSize(spinnerSize);
+        ((JSpinner.DefaultEditor) baseChassisTurret2Weight.getEditor())
                 .setMinimumSize(spinnerSize);
 
         updateArmor();
@@ -291,27 +317,45 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        panChassis.add(createLabel("Turret:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.gridwidth = 3;
-        panChassis.add(turretCombo, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 1;
         panChassis.add(createLabel("Engine Type:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         gbc.gridwidth = 3;
         panChassis.add(engineType, gbc);
 
         gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        panChassis.add(createLabel("Turret:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 3;
+        panChassis.add(turretCombo, gbc);
+        
+        gbc.gridx = 0;
         gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        panChassis.add(createLabel("Base Chassis Turret Weight:", labelSize), gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        panChassis.add(baseChassisTurretWeight, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        panChassis.add(createLabel("Base Chassis Second Turret Weight:", labelSize), gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        panChassis.add(baseChassisTurret2Weight, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 6;
         gbc.gridwidth = 1;
         panChassis.add(createLabel("Troop Storage:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 4;
+        gbc.gridy = 6;
         gbc.gridwidth = 3;
         panChassis.add(troopStorage, gbc);
 
@@ -559,7 +603,43 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         armor.refresh();
         panSummary.refresh();
 
+        updateBCTurretWeightSpinners();
+        
         addAllListeners();
+    }
+    
+    private void updateBCTurretWeightSpinners() {
+        if (getTank().isOmni() && hasDualTurret()) {
+            baseChassisTurretWeight.setEnabled(true);
+            if (getTank().getBaseChassisTurretWeight() >= 0) {
+                baseChassisTurretWeight.setValue((double)getTank()
+                        .getBaseChassisTurretWeight());
+            } else {
+                baseChassisTurretWeight.setValue(0);
+            }
+            baseChassisTurret2Weight.setEnabled(true);
+            if (getTank().getBaseChassisTurret2Weight() >= 0) {
+                baseChassisTurret2Weight.setValue((double)getTank()
+                        .getBaseChassisTurret2Weight());
+            } else {
+                baseChassisTurret2Weight.setValue(0);
+            }
+        } else if (getTank().isOmni() && hasTurret()) {
+            baseChassisTurretWeight.setEnabled(true);
+            if (getTank().getBaseChassisTurretWeight() >= 0) {
+                baseChassisTurretWeight.setValue((double)getTank()
+                        .getBaseChassisTurretWeight());
+            } else {
+                baseChassisTurretWeight.setValue(0);
+            }
+            baseChassisTurret2Weight.setEnabled(false);
+            baseChassisTurret2Weight.setValue(0);
+        } else {
+            baseChassisTurretWeight.setEnabled(false);
+            baseChassisTurret2Weight.setEnabled(false);
+            baseChassisTurretWeight.setValue(0);
+            baseChassisTurret2Weight.setValue(0);
+        }
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -621,6 +701,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         maximizeArmorButton.removeActionListener(this);
         unusedTonnageArmorButton.removeActionListener(this);
         armorTonnage.removeChangeListener(this);
+        baseChassisTurretWeight.removeChangeListener(this);
+        baseChassisTurret2Weight.removeChangeListener(this);
         armorCombo.removeItemListener(this);
         jumpMP.removeChangeListener(this);
         chassis.removeKeyListener(this);
@@ -644,6 +726,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         maximizeArmorButton.addActionListener(this);
         unusedTonnageArmorButton.addActionListener(this);
         armorTonnage.addChangeListener(this);
+        baseChassisTurretWeight.addChangeListener(this);
+        baseChassisTurret2Weight.addChangeListener(this);
         armorCombo.addItemListener(this);
         jumpMP.addChangeListener(this);
         chassis.addKeyListener(this);
@@ -922,6 +1006,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setArmorTonnage();
         } else if (e.getSource().equals(jumpMP)) {
             setJumpMP();
+        } else if (e.getSource().equals(baseChassisTurretWeight)) {
+            getTank().setBaseChassisTurretWeight(
+                    ((Double) baseChassisTurretWeight.getValue()).floatValue());
+        } else if (e.getSource().equals(baseChassisTurret2Weight)) {
+            getTank()
+                    .setBaseChassisTurret2Weight(
+                            ((Double) baseChassisTurret2Weight.getValue())
+                                    .floatValue());
         }
         addAllListeners();
         refresh.refreshAll();
@@ -957,6 +1049,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }
                 }
                 getTank().setHasNoDualTurret(true);
+                getTank().setBaseChassisTurret2Weight(-1);
             }
             if (getTank().hasNoTurret() && (combo.getSelectedIndex() == 1)) {
                 // add turret
@@ -985,6 +1078,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }
                 }
                 getTank().setHasNoTurret(true);
+                getTank().setBaseChassisTurretWeight(-1);
             }
             getTank().getEquipment().removeAll(toRemove);
             getTank().getMisc().removeAll(toRemoveMisc);
