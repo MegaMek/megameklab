@@ -217,7 +217,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         //burnDays1G = new JLabel("0", JLabel.CENTER);
         //burnDaysMax = new JLabel("0", JLabel.CENTER);
 
-        heatSinkNumber = new JSpinner(new SpinnerNumberModel(0, 0, 50, 1));
+        heatSinkNumber = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         spinnerSize = new Dimension(40, 25);
         ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
                 .setSize(spinnerSize);

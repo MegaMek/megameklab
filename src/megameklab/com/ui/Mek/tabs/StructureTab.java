@@ -315,7 +315,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         weightClass = new JSpinner(new SpinnerNumberModel(20, 10, 100, 5));
 
-        heatSinkNumber = new JSpinner(new SpinnerNumberModel(0, 0, 50, 1));
+        heatSinkNumber = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         spinnerSize = new Dimension(40, 25);
         ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
                 .setSize(spinnerSize);
@@ -326,7 +326,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
                 .setMinimumSize(spinnerSize);
 
-        baseChassisHeatSinks = new JSpinner(new SpinnerNumberModel(0, 0, 50, 1));
+        baseChassisHeatSinks = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
                 .setSize(spinnerSize);
         ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
