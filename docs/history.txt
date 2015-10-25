@@ -3,6 +3,7 @@ VERSION HISTORY:
 v0.1.47-git
 + Started on tripod printing
 + Feature [#25]: Increase heat sink cap to 100 or more
++ Bug [#199]: BA APDS shows for Vee's
 
 v0.1.46 (2015-10-12 00:11 UTC)
 + Added UI elements to adjust base chassis turret weight for omni combat vees
