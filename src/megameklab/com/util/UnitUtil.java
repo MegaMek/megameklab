@@ -2530,10 +2530,15 @@ public class UnitUtil {
         //    return false;
         //}
 
+        // Display AMS as equipment (even though it's a weapon)
+        if (eq.hasFlag(WeaponType.F_AMS)
+                && eq.hasFlag(WeaponType.F_TANK_WEAPON)) {
+            return true;
+        }
+
         if ((eq instanceof CLTAG) || (eq instanceof ISC3M)
                 || (eq instanceof ISC3MBS)
-                || (eq instanceof ISTAG) || (eq instanceof CLLightTAG)
-                || eq.hasFlag(WeaponType.F_AMS)) {
+                || (eq instanceof ISTAG) || (eq instanceof CLLightTAG)) {
             return true;
         }
 
