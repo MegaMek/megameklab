@@ -39,7 +39,9 @@ import megamek.common.Mounted;
 import megamek.common.TripodMech;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.common.verifier.TestBattleArmor;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -323,7 +325,14 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     // Allow number of shots selection
                     if ((getUnit() instanceof BattleArmor) 
                             && mount.getType() instanceof AmmoType){
-                        for (int i = 1; i <= 4; i++){
+                        AmmoType at = (AmmoType) mount.getType();
+                        int maxNumShots = TestBattleArmor.NUM_SHOTS_PER_CRIT;
+                        int stepSize = 1;
+                        if (at.getAmmoType() == AmmoType.T_BA_TUBE) {
+                            maxNumShots = TestBattleArmor.NUM_SHOTS_PER_CRIT_TA;
+                            stepSize = 2;
+                        }
+                        for (int i = at.getShots(); i <= maxNumShots; i += stepSize){
                             if (i == mount.getBaseShotsLeft()){
                                 continue;
                             }
@@ -332,9 +341,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             info.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     mount.setShotsLeft(shots);
-                                    if (refresh != null) {
-                                        refresh.refreshAll();
-                                    }
+                                    ((BuildTab) getParent().getParent()).refreshAll();
                                 }
                             });
                             popup.add(info);

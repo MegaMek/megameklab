@@ -324,7 +324,14 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             // Allow number of shots selection
             if ((getBattleArmor() instanceof BattleArmor) 
                     && eq.getType() instanceof AmmoType){
-                for (int i = 1; i <= 4; i++){
+                AmmoType at = (AmmoType) eq.getType();
+                int maxNumShots = 4;
+                int stepSize = 1;
+                if (at.getAmmoType() == AmmoType.T_BA_TUBE) {
+                    maxNumShots = 8;
+                    stepSize = 2;
+                }
+                for (int i = at.getShots(); i <= maxNumShots; i += stepSize){
                     if (i == eq.getBaseShotsLeft()){
                         continue;
                     }
