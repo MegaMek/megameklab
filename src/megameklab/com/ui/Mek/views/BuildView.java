@@ -275,7 +275,8 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             String[] locations = getMech().getLocationNames();
             String[] abbrLocations = getMech().getLocationAbbrs();
 
-            if (eq.getType().isSpreadable() || eq.isSplitable()) {
+            if ((eq.getType().isSpreadable() || eq.isSplitable())
+                    && (totalCrits > 1)) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMech());
                 if ((critSpace[Mech.LOC_RT] >= 1) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_RT)) {
                     JMenu rtMenu = new JMenu(locations[Mech.LOC_RT]);
