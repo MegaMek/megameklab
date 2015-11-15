@@ -1,12 +1,13 @@
 VERSION HISTORY:
 ----------------
-v0.1.47-git
+v0.1.47 (2015-11-15 16:50 UTC)
 + Started on tripod printing
 + Feature [#25]: Increase heat sink cap to 100 or more
 + Bug [#199]: BA APDS shows for Vee's
 + Bug [#201]: BA Tube Artillery incorrect ammunition slot usage
 + Bug [#202]: Single-crit 'splittable' equipment has incorrect context menu in
     build view
++ Updated MegaMek.jar to 0.41.11
 
 v0.1.46 (2015-10-12 00:11 UTC)
 + Added UI elements to adjust base chassis turret weight for omni combat vees
