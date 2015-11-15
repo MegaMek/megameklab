@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.48-git
+
 v0.1.47 (2015-11-15 16:50 UTC)
 + Started on tripod printing
 + Feature [#25]: Increase heat sink cap to 100 or more
