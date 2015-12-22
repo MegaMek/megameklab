@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.48-git
++ Suppressed warnings on tripod printing with a TODO remove the suppression when implemented
 
 v0.1.47 (2015-11-15 16:50 UTC)
 + Started on tripod printing
