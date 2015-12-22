@@ -53,6 +53,8 @@ import megameklab.com.util.UnitUtil;
 
 import com.kitfox.svg.SVGException;
 
+// TODO Remove this when implemented
+@SuppressWarnings("unused")
 public class PrintTripod implements Printable {
 
     protected Image awtHud = null;
