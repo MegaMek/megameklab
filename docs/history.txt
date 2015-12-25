@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.49-git
+
 v0.1.48 (2015-12-24 22:52 UTC)
 + Suppressed warnings on tripod printing with a TODO remove the suppression when implemented
 + Updated MegaMek.jar to 0.41.12
