@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.49-git
++ Bug: Loading invalid unit displays validation failure message for current unit
 
 v0.1.48 (2015-12-24 22:52 UTC)
 + Suppressed warnings on tripod printing with a TODO remove the suppression when implemented
@@ -478,6 +479,7 @@ V 0.1.21
 + export to text and clipboard options
 + updated MM.jar
 + packaging.xml and packaging_utils
+
 + bug: no maximum size for main frame
 + fixes to packaging.xml
 + print correct amount of IS for ProtoMechs
