@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.50-git
++ Changing keyboard shortcut for Vehicles back to CTRL-T
 
 v0.1.49 (2016-01-01 03:35 UTC)
 + Bug: Loading invalid unit displays validation failure message for current unit
