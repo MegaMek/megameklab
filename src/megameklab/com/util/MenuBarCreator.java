@@ -346,8 +346,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (!(parentFrame.getEntity() instanceof Tank)) {
             item = new JMenuItem();
             item.setText("Combat Vehicle");
-            item.setMnemonic(KeyEvent.VK_E);
-            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+            item.setMnemonic(KeyEvent.VK_T);
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
