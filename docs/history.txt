@@ -1,7 +1,8 @@
 VERSION HISTORY:
 ----------------
-v0.1.50-git
+v0.1.50 (2016-02-02 13:10 UTC)
 + Changing keyboard shortcut for Vehicles back to CTRL-T
++ Updated MegaMek.jar to 0.41.14
 
 v0.1.49 (2016-01-01 03:35 UTC)
 + Bug: Loading invalid unit displays validation failure message for current unit
