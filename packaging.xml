@@ -101,7 +101,7 @@
 	<!-- following pkgdir-* tasks get, build & package the current version from git -->
 	<target name="pkgdir-get" depends="pkgdir-init" description="get the latest source from git">
 		<exec executable="git">
-			<arg line="clone ${gitroot} ${pkgdir}" />
+			<arg line="clone --single-branch ${gitroot} ${pkgdir}" />
 		</exec>
 		<exec executable="git">
 			<arg line="clone ${mm-gitroot} ${mm-pkgdir}" />
