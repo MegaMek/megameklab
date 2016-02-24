@@ -1,0 +1,7 @@
+Current Maintainer:
+    MegaMek GitHub Organization <https://github.com/MegaMek>
+
+Lead Developers:
+    Dylan Myers <https://github.com/Dylan-M>
+    Sebastian Brocks <beerockxs@users.sourceforge.net>
+    Nicholas Walczak <arlith@users.sourceforge.net>
