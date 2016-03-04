@@ -760,7 +760,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         if (getMech().hasPatchworkArmor()) {
             TestMech testMech = new TestMech(
                     getMech(),
-                    new EntityVerifier(new File(
+                    EntityVerifier.getInstance(new File(
                             "data/mechfiles/UnitVerifierOptions.xml")).mechOption,
                     null);
             armorTonnage.setEnabled(false);

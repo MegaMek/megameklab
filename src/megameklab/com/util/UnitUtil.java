@@ -2878,7 +2878,7 @@ public class UnitUtil {
      * @return
      */
     public static TestEntity getEntityVerifier(Entity unit) {
-        EntityVerifier entityVerifier = new EntityVerifier(new File(
+        EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
                 "data/mechfiles/UnitVerifierOptions.xml"));
         TestEntity testEntity = null;
 
