@@ -284,7 +284,7 @@ public class CriticalView extends IView {
                 rightPanel.setVisible(true);
             }
             
-            EntityVerifier entityVerifier = new EntityVerifier(new File(
+            EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
                     "data/mechfiles/UnitVerifierOptions.xml"));
             TestBattleArmor testBA = new TestBattleArmor(getBattleArmor(),
                     entityVerifier.baOption, null);
