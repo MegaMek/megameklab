@@ -54,7 +54,7 @@ public class StatusBar extends ITab {
     private JLabel tons = new JLabel();
     private JLabel slots = new JLabel();
     private JLabel cost = new JLabel();
-    private EntityVerifier entityVerifier = new EntityVerifier(new File(
+    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
             "data/mechfiles/UnitVerifierOptions.xml"));
     private TestTank testEntity = null;
     private DecimalFormat formatter;

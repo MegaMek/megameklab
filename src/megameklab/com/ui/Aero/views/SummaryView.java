@@ -51,7 +51,7 @@ public class SummaryView extends IView{
     private JTextField txtWeapTon = new JTextField("?");
     private JTextField txtOtherTon = new JTextField("?");
 
-    private EntityVerifier entityVerifier = new EntityVerifier(
+    private EntityVerifier entityVerifier = EntityVerifier.getInstance(
             new File("data/mechfiles/UnitVerifierOptions.xml"));
 
     public SummaryView(EntitySource eSource) {
