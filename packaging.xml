@@ -2,7 +2,7 @@
 <!-- Author: Jay Lawson -->
 <!-- This is a packaging build file for MegaMekLab that will package      -->
 <!-- the following OS-specific releases.                                  -->
-<!--     a) An OS X bundled release				          -->
+<!--     a) An OS X bundled release                                       -->
 <!--     b) A Windows release with the EXE file using launch4j            -->
 <!--     c) A "unix" release containing only jars                         -->
 <!--     d) A source-file only release to comply with GPL                 -->
