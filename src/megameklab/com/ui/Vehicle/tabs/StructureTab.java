@@ -582,7 +582,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         if (getTank().hasPatchworkArmor()) {
             TestTank testTank = new TestTank(
                     getTank(),
-                    new EntityVerifier(new File(
+                    EntityVerifier.getInstance(new File(
                             "data/mechfiles/UnitVerifierOptions.xml")).tankOption,
                     null);
             armorTonnage.setEnabled(false);

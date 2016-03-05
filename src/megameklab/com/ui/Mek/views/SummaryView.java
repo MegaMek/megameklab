@@ -80,7 +80,7 @@ public class SummaryView extends IView{
     private JTextField txtEquipAvail = new JTextField("?");
     private JTextField txtOtherAvail = new JTextField("?");
 
-    private EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
 
     public SummaryView(EntitySource eSource) {
         super(eSource);

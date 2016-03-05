@@ -81,7 +81,7 @@ public class SummaryView extends IView{
     
     
 
-    private EntityVerifier entityVerifier = new EntityVerifier(new File("data/mechfiles/UnitVerifierOptions.xml"));
+    private EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mechfiles/UnitVerifierOptions.xml"));
 
     public SummaryView(EntitySource eSource) {
         super(eSource);
