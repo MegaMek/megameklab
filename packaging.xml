@@ -2,13 +2,13 @@
 <!-- Author: Jay Lawson -->
 <!-- This is a packaging build file for MegaMekLab that will package      -->
 <!-- the following OS-specific releases.                                  -->
-<!--     a) An OS X bundled release					                      -->
+<!--     a) An OS X bundled release                                       -->
 <!--     b) A Windows release with the EXE file using launch4j            -->
 <!--     c) A "unix" release containing only jars                         -->
 <!--     d) A source-file only release to comply with GPL                 -->
 <!-- Unlike the packaging routine for MHQ, we will not package a separate -->
 <!-- executable MegaMek copy in the OSX and Windows version, but rather   -->
-<!-- "bundle" it (and TinyXML.jar) into the MML.jar. This is              -->
+<!-- "bundle" it into the MML.jar. This is                                -->
 <!-- to discourage users from trying to "update" their MM.jar which       -->
 <!-- can cause problems. So The MML executable can still be put into a    -->
 <!-- megamek directory to take advantage of existing mechfiles, fluff     -->
@@ -28,19 +28,18 @@
 	<property name="datadir" value="data" />
 	<property name="docdir" value="docs" />
 	<property name="pkgdir" value="pkgdir" />
-    <property name="mm-pkgdir" value="mm-pkgdir" />
+	<property name="mm-pkgdir" value="mm-pkgdir" />
 	<property name="util" value="packaging_utils" />
-    <property name="confdir" value="mmconf" />
+	<property name="confdir" value="mmconf" />
 
 	<!-- same as builddir but under git -->
 	<property name="pkgbuilddir" value="${pkgdir}/${builddir}" />
 
 	<!-- gitroot used for git authentification -->
 	<property name="gitroot" value="https://github.com/MegaMek/megameklab.git" />
-    <property name="mm-gitroot" value="https://github.com/MegaMek/megamek.git" />
+	<property name="mm-gitroot" value="https://github.com/MegaMek/megamek.git" />
 
 	<property name="timestampfile" value="${logdir}/timestamp" />
-	<property name="TinyXMLsrc" value="TinyXML07-src.zip" />
 
 	<!-- Name of the target jarfile and the class containing the main-Method -->
 	<property name="jarfile" value="MegaMekLab.jar" />
