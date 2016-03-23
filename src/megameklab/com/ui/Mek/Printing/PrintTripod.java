@@ -248,9 +248,9 @@ public class PrintTripod implements Printable {
 
         if ((mech.getCrew() != null) && !mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = mech.getCrew();
-            g2d.drawString("Austin"/*pilot.getName()*/, 264 + leftMargin, topMargin + 119);
-            g2d.drawString("5"/*String.valueOf(pilot.getGunnery())*/, 295 + leftMargin, topMargin + 132);
-            g2d.drawString("5"/*String.valueOf(pilot.getPiloting())*/, 365 + leftMargin, topMargin + 132);
+            g2d.drawString(pilot.getName(), 264 + leftMargin, topMargin + 119);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
         }
         
         //TODO: Need to add code for getting and displaying gunner also.
