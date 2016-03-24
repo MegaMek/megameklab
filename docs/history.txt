@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.52-git
++ PR #8: Adjust position of printed pilot names for Meks
 
 v0.1.51 (2016-02-21 14:15 UTC)
 + Updated MegaMek.jar to 0.41.15
