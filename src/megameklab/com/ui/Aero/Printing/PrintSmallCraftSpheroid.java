@@ -37,6 +37,8 @@ import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.Aero;
 import megamek.common.SmallCraft;
+//TODO: uncomment when print issue is fixed and pilot data is ready to position
+//import megamek.common.Crew;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperAero;
@@ -49,6 +51,9 @@ public class PrintSmallCraftSpheroid implements Printable {
     private SmallCraft smallCraft = null;
     private ArrayList<SmallCraft> smallCraftList;
     PrinterJob masterPrintJob;
+    // TODO: uncomment when print issue is fixed and pilot data is ready to position
+    // private int topMargin = 6;
+    // private int leftMargin = 11;
 
     public PrintSmallCraftSpheroid(ArrayList<SmallCraft> list,
             PrinterJob masterPrintJob) {
@@ -116,13 +121,17 @@ public class PrintSmallCraftSpheroid implements Printable {
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
 
-        /*
-         * if ((smallCraft.getCrew() != null) &&
-         * !smallCraft.getCrew().getName().equalsIgnoreCase("unnamed")) { Crew
-         * pilot = smallCraft.getCrew(); g2d.drawString(pilot.getName(), 270,
-         * 120); g2d.drawString(String.valueOf(pilot.getGunnery()), 295, 132);
-         * g2d.drawString(String.valueOf(pilot.getPiloting()), 365, 132); }
-         */
+        //TODO: Pilot Data: Fix coords. Below coords are pasted from Mech code.
+        //if ((aero.getCrew() != null) && !aero.getCrew().getName().equalsIgnoreCase("unnamed")) {
+        //	Crew pilot = aero.getCrew();		
+		//	g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 119);
+		//	g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
+		//  g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
+        //}
+        // Test strings
+		//    g2d.drawString("Test Pilot", 270 + leftMargin, topMargin + 119);
+		//	g2d.drawString("5", 295 + leftMargin, topMargin + 132);
+		//    g2d.drawString("5", 365 + leftMargin, topMargin + 132);
 
         g2d.drawString(Integer.toString(smallCraft.getWalkMP()), 102, 142);
         g2d.drawString(Integer.toString(smallCraft.getRunMP()), 102, 152.5f);
