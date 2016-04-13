@@ -151,7 +151,7 @@
 		</copy>
 		<copy file="${util}/JavaApplicationStub" todir="${osxdist}/MegaMekLab.app/Contents/MacOS/"/>
         <copy todir="${osxdist}/MegaMekLab.app/Contents/Resources/Java/">
-            <fileset dir="${pkgdir}" >
+            <fileset dir="${localdir}" >
                 <include name="${libdir}/*.jar" />
                 <include name="${jarfile}" />
             </fileset>
