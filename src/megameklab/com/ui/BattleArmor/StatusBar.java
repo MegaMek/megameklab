@@ -135,8 +135,8 @@ public class StatusBar extends ITab {
 
         int walk = getBattleArmor().getOriginalWalkMP();
         int jump = getBattleArmor().getOriginalJumpMP();
-        float maxKilos = getBattleArmor().getTrooperWeight();
-        float currentKilos;
+        double maxKilos = getBattleArmor().getTrooperWeight();
+        double currentKilos;
         int bv = getBattleArmor().calculateBattleValue();
         int currentCost = (int)Math.round(getBattleArmor().getCost(false));
 

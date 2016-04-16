@@ -294,16 +294,16 @@ public class SummaryView extends IView{
 
         TestTank testTank = new TestTank(getTank(), entityVerifier.mechOption, null);
 
-        txtStructTon.setText(Float.toString(testTank.getWeightStructure()));
-        txtEngineTon.setText(Float.toString(testTank.getWeightEngine()));        
-        txtLiftTon.setText(Float.toString(testTank.getTankWeightLifting()));
-        txtControlsTon.setText(Float.toString(testTank.getWeightControls()));
-        txtHeatTon.setText(Float.toString(testTank.getWeightHeatSinks()));
-        txtArmorTon.setText(Float.toString(testTank.getWeightArmor()));
-        txtTurretTon.setText(Float.toString(testTank.getTankWeightTurret()));
-        txtRearTurretTon.setText(Float.toString(testTank.getTankWeightDualTurret()));
+        txtStructTon.setText(Double.toString(testTank.getWeightStructure()));
+        txtEngineTon.setText(Double.toString(testTank.getWeightEngine()));        
+        txtLiftTon.setText(Double.toString(testTank.getTankWeightLifting()));
+        txtControlsTon.setText(Double.toString(testTank.getWeightControls()));
+        txtHeatTon.setText(Double.toString(testTank.getWeightHeatSinks()));
+        txtArmorTon.setText(Double.toString(testTank.getWeightArmor()));
+        txtTurretTon.setText(Double.toString(testTank.getTankWeightTurret()));
+        txtRearTurretTon.setText(Double.toString(testTank.getTankWeightDualTurret()));
         // Sponsons?
-        txtPowerAmpTon.setText(Float.toString(testTank.getWeightPowerAmp()));
+        txtPowerAmpTon.setText(Double.toString(testTank.getWeightPowerAmp()));
 
 
         txtEngineCrit.setText(Integer.toString(getEngineCrits()));
@@ -315,9 +315,9 @@ public class SummaryView extends IView{
     }
 
     private void runThroughEquipment(TestTank testTank) {
-        float weightJJ = 0.0f;
-        float weightEquip = 0.0f;
-        float weightSponson = 0.0f;
+    	double weightJJ = 0.0f;
+    	double weightEquip = 0.0f;
+    	double weightSponson = 0.0f;
 
         for (Mounted m : getTank().getMisc()) {
             MiscType mt = (MiscType) m.getType();
@@ -344,9 +344,9 @@ public class SummaryView extends IView{
             EquipmentType et = m.getType();
             weightEquip += et.getTonnage(getTank());
         }
-        txtJumpTon.setText(Float.toString(weightJJ));
-        txtEquipTon.setText(Float.toString(weightEquip));
-        txtSponsonTon.setText(Float.toString(weightSponson));
+        txtJumpTon.setText(Double.toString(weightJJ));
+        txtEquipTon.setText(Double.toString(weightEquip));
+        txtSponsonTon.setText(Double.toString(weightSponson));
         
         if (weightJJ > 0) {
             txtJumpCrit.setText(Integer.toString(1)); 

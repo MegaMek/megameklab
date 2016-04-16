@@ -367,7 +367,7 @@ public class ImageHelperAero {
         font = UnitUtil.deriveFont(g2d.getFont().getSize2D());
         g2d.setFont(font);
 
-        float troopspace = aero.getTroopCarryingSpace();
+        double troopspace = aero.getTroopCarryingSpace();
         if (troopspace > 0) {
             pointY += lineFeed;
             String troopString = "Infantry Compartment (";
