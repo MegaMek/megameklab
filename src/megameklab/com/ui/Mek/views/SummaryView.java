@@ -269,13 +269,13 @@ public class SummaryView extends IView{
 
         TestMech testMech = new TestMech(getMech(), entityVerifier.mechOption, null);
 
-        txtGyroTon.setText(Float.toString(testMech.getWeightGyro()));
-        txtEngineTon.setText(Float.toString(testMech.getWeightEngine()));
-        txtCockpitTon.setText(Float.toString(testMech.getWeightCockpit()));
-        txtHeatTon.setText(Float.toString(testMech.getWeightHeatSinks()));
-        txtStructTon.setText(Float.toString(testMech.getWeightStructure()));
-        txtArmorTon.setText(Float.toString(testMech.getWeightArmor()));
-        txtOtherTon.setText(Float.toString(testMech.getWeightPowerAmp() + testMech.getWeightCarryingSpace() + testMech.getWeightMisc()));
+        txtGyroTon.setText(Double.toString(testMech.getWeightGyro()));
+        txtEngineTon.setText(Double.toString(testMech.getWeightEngine()));
+        txtCockpitTon.setText(Double.toString(testMech.getWeightCockpit()));
+        txtHeatTon.setText(Double.toString(testMech.getWeightHeatSinks()));
+        txtStructTon.setText(Double.toString(testMech.getWeightStructure()));
+        txtArmorTon.setText(Double.toString(testMech.getWeightArmor()));
+        txtOtherTon.setText(Double.toString(testMech.getWeightPowerAmp() + testMech.getWeightCarryingSpace() + testMech.getWeightMisc()));
 
 
         txtGyroCrit.setText(Integer.toString(getGyroCrits()));
@@ -306,9 +306,9 @@ public class SummaryView extends IView{
     }
 
     private void runThroughEquipment(TestMech testMech) {
-        float weightJJ = 0.0f;
-        float weightEnhance = 0.0f;
-        float weightEquip = 0.0f;
+        double weightJJ = 0.0f;
+        double weightEnhance = 0.0f;
+        double weightEquip = 0.0f;
         int critJJ = 0;
         int critEquip = 0;
         int critEnhance = 0;
@@ -348,9 +348,9 @@ public class SummaryView extends IView{
             weightEquip += et.getTonnage(getMech());
             critEquip += et.getCriticals(getMech());
         }
-        txtJumpTon.setText(Float.toString(weightJJ));
-        txtEnhanceTon.setText(Float.toString(weightEnhance));
-        txtEquipTon.setText(Float.toString(weightEquip));
+        txtJumpTon.setText(Double.toString(weightJJ));
+        txtEnhanceTon.setText(Double.toString(weightEnhance));
+        txtEquipTon.setText(Double.toString(weightEquip));
 
         txtJumpCrit.setText(Integer.toString(critJJ));
         txtEnhanceCrit.setText(Integer.toString(critEnhance));

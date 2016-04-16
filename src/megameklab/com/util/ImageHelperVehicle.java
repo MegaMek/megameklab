@@ -398,7 +398,7 @@ public class ImageHelperVehicle {
                 }
             }
         }
-        float troopspace = tank.getTroopCarryingSpace();
+        double troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             linePoint += lineFeed;
             String troopString = "Infantry Compartment (";
@@ -939,7 +939,7 @@ public class ImageHelperVehicle {
                 }
             }
         }
-        float troopspace = tank.getTroopCarryingSpace();
+        double troopspace = tank.getTroopCarryingSpace();
         if (troopspace > 0) {
             linePoint += lineFeed;
             String troopString = "Infantry Compartment(";
@@ -1117,7 +1117,7 @@ public class ImageHelperVehicle {
 
     public static void printLargeVehicleCargo(Tank tank, Graphics2D g2d, float pointY, float xoffset, float yoffset) {
 
-        float troopspace = tank.getTroopCarryingSpace();
+    	double troopspace = tank.getTroopCarryingSpace();
         if ((tank.getTransportBays().size() < 1) && (troopspace == 0)) {
             return;
         }

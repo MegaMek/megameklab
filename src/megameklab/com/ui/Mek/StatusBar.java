@@ -110,8 +110,8 @@ public class StatusBar extends ITab {
     public void refresh() {
 
         int heat = getMech().getHeatCapacity();
-        float tonnage = getMech().getWeight();
-        float currentTonnage;
+        double tonnage = getMech().getWeight();
+        double currentTonnage;
         int bv = getMech().calculateBattleValue();
         int maxCrits;
         if (getMech() instanceof TripodMech) {

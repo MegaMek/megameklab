@@ -129,8 +129,8 @@ public class StatusBar extends ITab {
     }
 
     public JLabel tonnageLabel() {
-        float tonnage = getTank().getWeight();
-        float currentTonnage;
+        double tonnage = getTank().getWeight();
+        double currentTonnage;
 
         currentTonnage = testEntity.calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
@@ -152,8 +152,8 @@ public class StatusBar extends ITab {
         int walk = getTank().getOriginalWalkMP();
         int run = getTank().getRunMP(true, true, false);
         int jump = getTank().getOriginalJumpMP();
-        float tonnage = getTank().getWeight();
-        float currentTonnage;
+        double tonnage = getTank().getWeight();
+        double currentTonnage;
         int bv = getTank().calculateBattleValue();
 
         if (getTank().isSupportVehicle()) {
