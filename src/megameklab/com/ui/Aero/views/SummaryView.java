@@ -167,15 +167,15 @@ public class SummaryView extends IView{
         TestAero testAero = 
                 new TestAero(getAero(), entityVerifier.aeroOption, null);
        
-        txtStructTon.setText(Float.toString(testAero.getWeightStructure()));
-        txtEngineTon.setText(Float.toString(testAero.getWeightEngine()));
-        txtFuelTon.setText(Float.toString(testAero.getWeightFuel()));
-        txtCockpitTon.setText(Float.toString(testAero.getWeightControls()));
-        txtHeatTon.setText(Float.toString(testAero.getWeightHeatSinks()));        
-        txtArmorTon.setText(Float.toString(testAero.getWeightArmor()));
-        txtEnhancementsTon.setText(Float.toString(testAero.getWeightMisc()));
-        txtWeapTon.setText(Float.toString(testAero.getWeightWeapon()));
-        txtOtherTon.setText(Float.toString(testAero.getWeightPowerAmp() + 
+        txtStructTon.setText(Double.toString(testAero.getWeightStructure()));
+        txtEngineTon.setText(Double.toString(testAero.getWeightEngine()));
+        txtFuelTon.setText(Double.toString(testAero.getWeightFuel()));
+        txtCockpitTon.setText(Double.toString(testAero.getWeightControls()));
+        txtHeatTon.setText(Double.toString(testAero.getWeightHeatSinks()));        
+        txtArmorTon.setText(Double.toString(testAero.getWeightArmor()));
+        txtEnhancementsTon.setText(Double.toString(testAero.getWeightMisc()));
+        txtWeapTon.setText(Double.toString(testAero.getWeightWeapon()));
+        txtOtherTon.setText(Double.toString(testAero.getWeightPowerAmp() + 
                 testAero.getWeightCarryingSpace() + testAero.getWeightMisc()));
         
         

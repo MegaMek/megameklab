@@ -104,8 +104,8 @@ public class StatusBar extends ITab {
     public void refresh() {
 
         int heat = getAero().getHeatCapacity();
-        float tonnage = getAero().getWeight();
-        float currentTonnage;
+        double tonnage = getAero().getWeight();
+        double currentTonnage;
         int bv = getAero().calculateBattleValue();
         int currentCost = (int)Math.round(getAero().getCost(false));
 
