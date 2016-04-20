@@ -2247,12 +2247,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
     
     private void useRemainingTonnageArmor() {
-        float currentTonnage = UnitUtil.getEntityVerifier(getMech())
+    	double currentTonnage = UnitUtil.getEntityVerifier(getMech())
                 .calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
-        float totalTonnage = getMech().getWeight();
-        float remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.CEIL_HALFTON);
+        double totalTonnage = getMech().getWeight();
+        double remainingTonnage = TestEntity.floor(
+                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
         
         double maxArmor = Math.min(remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getMech()));

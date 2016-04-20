@@ -793,7 +793,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     private void updateTroopSpaceAllowed() {
-        float troops = getTank().getTroopCarryingSpace();
+    	double troops = getTank().getTroopCarryingSpace();
 
         if (troops > (int) getTank().getWeight()) {
             getTank().removeAllTransporters();
@@ -1157,9 +1157,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         // suspension factor
         // depends on the weight, and is needed for the engine
         // rating
-        float oldWeight = getTank().getWeight();
-        getTank().setWeight(Float
-                .parseFloat(weight.getModel().getValue().toString()));
+    	double oldWeight = getTank().getWeight();
+        getTank().setWeight(Double.parseDouble(weight.getModel().getValue().toString()));
         int rating = Math
                 .max(10,
                         (Integer.parseInt(cruiseMP.getModel().getValue()
@@ -1179,10 +1178,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             this,
                             "That speed/weight combination would create an engine with a rating over 500.",
                             "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
-            weight.getModel().setValue(Integer.valueOf(Float.toString(oldWeight)));
+            weight.getModel().setValue(Integer.valueOf(Double.toString(oldWeight)));
         } else {
-            getTank().setWeight(Float.parseFloat(weight.getModel().getValue()
-                    .toString()));
+            getTank().setWeight(Double.parseDouble(weight.getModel().getValue().toString()));
             ((SpinnerNumberModel) troopStorage.getModel()).setMaximum(Double
                     .parseDouble(weight.getModel().getValue().toString()));
             getTank().autoSetInternal();
@@ -1209,12 +1207,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
     
     private void useRemainingTonnageArmor() {
-        float currentTonnage = UnitUtil.getEntityVerifier(getTank())
+        double currentTonnage = UnitUtil.getEntityVerifier(getTank())
                 .calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
-        float totalTonnage = getTank().getWeight();
-        float remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.CEIL_HALFTON);
+        double totalTonnage = getTank().getWeight();
+        double remainingTonnage = TestEntity.floor(
+                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
         
         double maxArmor = Math.min(remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getTank()));

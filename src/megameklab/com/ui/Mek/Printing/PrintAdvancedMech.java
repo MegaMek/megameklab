@@ -135,7 +135,7 @@ public class PrintAdvancedMech implements Printable {
         g2d.drawString(Integer.toString(mech.getRunMP()), 79, 154);
         g2d.drawString(Integer.toString(mech.getWalkMP() * 2), 79, 164);
         g2d.drawString(Integer.toString(mech.getJumpMP()), 79, 174);
-        g2d.drawString(Float.toString(mech.getWeight()), 173, 134);
+        g2d.drawString(Double.toString(mech.getWeight()), 173, 134);
 
         switch (mech.getCockpitType()) {
             case Mech.COCKPIT_STANDARD:
