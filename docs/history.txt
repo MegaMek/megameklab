@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
-v0.1.55-git
+v0.1.55 (2016-06-05 22:40 UTC)
++ Updated MegaMek.jar to 0.41.19
 
 v0.1.54 (2016-04-16 19:30 UTC)
 + Updated MegaMek.jar to 0.41.18
