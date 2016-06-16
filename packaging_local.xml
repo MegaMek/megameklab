@@ -34,10 +34,6 @@
 	<!-- same as builddir but under svn -->
 	<property name="localbuilddir" value="${localdir}/${builddir}" />
 
-	<!-- svnroot used for svn authentification -->
-	<property name="svnroot" value="svn://svn.code.sf.net/p/megameklab/code/trunk" />
-	<property name="svnmechdata" value="svn://svn.code.sf.net/p/megamek/code/trunk/megamek/data/mechfiles" />
-
 	<property name="timestampfile" value="${logdir}/timestamp" />
 
 	<!-- Name of the target jarfile and the class containing the main-Method -->
@@ -114,12 +110,9 @@
 			</classpath>
 		</javac>
 
-		<jar destfile="${localdir}/${jarfile}" basedir="${localbuilddir}">
+		<jar destfile="${localdir}/${jarfile}" basedir="${localbuilddir}" manifest="manifest.txt">
 			<fileset dir="${localdir}/${srcdir}" includes="**/*.properties"/>
 		    <zipgroupfileset dir="${localdir}" includes="MegaMek.jar"/>
-		    <manifest>
-		    	<attribute name="Main-Class" value="megameklab.com.MegaMekLab"/>
-		    </manifest>
 		</jar>
 
 		<!-- Ensure that the log directory exists. -->
