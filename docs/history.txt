@@ -1,7 +1,8 @@
 VERSION HISTORY:
 ----------------
-v0.1.56-git
+v0.1.56
 + Issue #16: Program Breaking issue with 1.55 Equipment Panel
++ Updated MegaMek.jar to 0.41.20
 
 v0.1.55 (2016-06-05 22:40 UTC)
 + Updated MegaMek.jar to 0.41.19
