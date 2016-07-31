@@ -248,10 +248,20 @@ public class PrintTripod implements Printable {
 
         if ((mech.getCrew() != null) && !mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = mech.getCrew();
-            g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 121);
+            g2d.drawString(pilot.getName(), 264 + leftMargin, topMargin + 119);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
         }
+        
+        //TODO: Need to add code for getting and displaying gunner also.
+        // I assume the code would be similar to the above, but substitute gunner?
+        // **The below coordinates are the correct alignment.**
+        //  if ((mech.getCrew() != null) && !mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
+        //      Crew gunner = mech.getCrew();
+        //    g2d.drawString(gunner.getName(), 276 + leftMargin, topMargin + 180);
+        //    g2d.drawString(String.valueOf(gunner.getGunnery()), 295 + leftMargin, topMargin + 193);
+        //    g2d.drawString(String.valueOf(gunner.getPiloting()), 365 + leftMargin, topMargin + 193);
+        //  }
 
         if (mech.hasTSM() && (mech.getSuperCharger() == null)) {
             int walkTSM = mech.getWalkMP() + 1;
