@@ -41,7 +41,6 @@ import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestBattleArmor;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
