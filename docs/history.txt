@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.1.58-git
+
 v0.1.57 (2016-07-31 10:00 UTC)
 + PR #8: Adjust position of printed pilot names for Meks
 + Issue #1: Auto-fill would try to mount infantry weapons on BA
