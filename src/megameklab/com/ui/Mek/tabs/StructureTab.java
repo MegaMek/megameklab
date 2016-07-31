@@ -29,6 +29,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractSpinnerModel;
@@ -692,7 +693,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         cockpitType.setSelectedItem(Mech.COCKPIT_SHORT_STRING[getMech()
                 .getCockpitType()]);
-        gyroType.setSelectedIndex(getMech().getGyroType());
+
+        String gyroName = Mech.GYRO_SHORT_STRING[getMech().getGyroType()];
+        gyroType.setSelectedItem(gyroName);
 
         if (getMech().isMixedTech()) {
             if (getMech().isClan()) {
@@ -829,7 +832,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                     "A XL gyro does not fit with a large engine installed",
                                     "Bad Gyro", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    getMech().setGyroType(combo.getSelectedIndex());
+                    int gyroType = Arrays.asList(Mech.GYRO_SHORT_STRING)
+                            .indexOf(combo.getSelectedItem());
+                    getMech().setGyroType(gyroType);
                     getMech().clearGyroCrits();
 
                     switch (getMech().getGyroType()) {
@@ -1910,8 +1915,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         /* GYRO */
         String[] gyroList = new String[0];
         gyroType.removeAllItems();
-
-        if (isMixed) {
+        if (getMech().isSuperHeavy()) {
+            gyroList = new String[1];
+            gyroList[0] = Mech.GYRO_SHORT_STRING[Mech.GYRO_SUPERHEAVY];
+        } else if (isMixed) {
             if (isClan) {
                 int gyroPos = 0;
                 gyroList = new String[Mech.GYRO_SHORT_STRING.length];
@@ -1941,6 +1948,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         for (String gyro : gyroList) {
             if (gyro.equals(Mech.GYRO_SHORT_STRING[Mech.GYRO_NONE])
                     && !(getMech().getCockpitType() == Mech.COCKPIT_INTERFACE)) {
+                continue;
+            }
+            if (gyro.equals(Mech.GYRO_SHORT_STRING[Mech.GYRO_SUPERHEAVY])
+                    && !getMech().isSuperHeavy()) {
                 continue;
             }
             gyroType.addItem(gyro);
@@ -2025,16 +2036,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         .getWalkMP(true, false, true));
                 UnitUtil.updateJumpJets(getMech(), jump, Mech.JUMP_STANDARD);
             }
-            int selGyro = getMech().getGyroType();
-            if (gyroType.getItemCount() <= selGyro) {
-                selGyro = -1;
-            }
-            gyroType.setSelectedIndex(selGyro);
+            String gyroName = Mech.GYRO_SHORT_STRING[getMech().getGyroType()];
+            gyroType.setSelectedItem(gyroName);
             if (gyroType.getSelectedIndex() == -1) {
-                gyroType.setSelectedIndex(0);
                 getMech().clearGyroCrits();
                 getMech().addGyro();
             }
+
             setEnhancementCombo();
             if (enhancement.getSelectedIndex() == -1) {
                 enhancement.setSelectedIndex(0);
@@ -2148,13 +2156,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 getMech().setWeight((Integer) weightClass.getValue());
                 getMech().autoSetInternal();
-                resetEngine();
+                populateChoices(true);
                 if (changedSuperHeavyStatus) {
                     // Interal structure crits may change
                     UnitUtil.removeISorArmorMounts(getMech(), true);
                     createISMounts();
+                    getMech().clearGyroCrits();
+                    getMech().addGyro();
                 }
-                populateChoices(true);
+                resetEngine();
             } else if (spinner.equals(walkMP)) {
                 resetEngine();
             } else if (spinner.equals(jumpMP)) {
