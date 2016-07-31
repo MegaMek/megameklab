@@ -341,7 +341,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             info.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     mount.setShotsLeft(shots);
-                                    ((BuildTab) getParent().getParent()).refreshAll();
+                                    if (refresh != null) {
+                                        refresh.refreshAll();
+                                    }
                                 }
                             });
                             popup.add(info);
