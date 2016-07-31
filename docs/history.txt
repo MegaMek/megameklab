@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.1.57-git
++ PR #8: Adjust position of printed pilot names for Meks
 
 v0.1.56
 + Issue #16: Program Breaking issue with 1.55 Equipment Panel
