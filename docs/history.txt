@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.1.57-git
+v0.1.57 (2016-07-31 10:00 UTC)
 + PR #8: Adjust position of printed pilot names for Meks
 + Issue #1: Auto-fill would try to mount infantry weapons on BA
 + Issue #11: Bug with changing number of shots for BA SRM ammo
@@ -10,7 +10,7 @@ v0.1.57-git
 + Issue #17: Adding MP also adds heatsinks up to max free
 + Issue #21: Engines/Gyros not always refreshed switching between superheavy
 
-v0.1.56
+v0.1.56 (2016-06-27 02:00 UTC)
 + Issue #16: Program Breaking issue with 1.55 Equipment Panel
 + Updated MegaMek.jar to 0.41.20
 
