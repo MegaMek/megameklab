@@ -604,7 +604,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     private void addArm(int location) {
         CriticalSlot cs = getUnit().getCritical(location, 2);
 
-        if (cs != null) {
+        if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
             Mounted mount = cs.getMount();
             UnitUtil.removeCriticals(getUnit(), mount);
             changeMountStatus(mount, Entity.LOC_NONE, false);
