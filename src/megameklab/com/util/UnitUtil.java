@@ -328,16 +328,20 @@ public class UnitUtil {
             for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = unit.getCritical(loc, slot);
                 if ((cs != null)
-                        && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                        && (cs.getMount().equals(eq))) {
-                    // If there are two pieces of equipment in this slot, remove
-                    // the first one, and replace it with the second
-                    if (cs.getMount2() != null) {
-                        cs.setMount(cs.getMount2());
+                        && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    if (cs.getMount().equals(eq)) {
+                        // If there are two pieces of equipment in this slot,
+                        // remove first one, and replace it with the second
+                        if (cs.getMount2() != null) {
+                            cs.setMount(cs.getMount2());
+                            cs.setMount2(null);
+                        } else { // If it's the only Mounted, clear the slot
+                            cs = null;
+                            unit.setCritical(loc, slot, cs);
+                        }
+                    } else if ((cs.getMount2() != null)
+                            && cs.getMount2().equals(eq)) {
                         cs.setMount2(null);
-                    } else { // If it's the only Mounted, clear the slot
-                        cs = null;
-                        unit.setCritical(loc, slot, cs);
                     }
                 }
             }
