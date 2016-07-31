@@ -234,7 +234,7 @@ public class PrintMech implements Printable {
 
         if ((mech.getCrew() != null) && !mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
             Crew pilot = mech.getCrew();
-            g2d.drawString(pilot.getName(), 270 + leftMargin, topMargin + 121);
+            g2d.drawString(pilot.getName(), 271 + leftMargin, topMargin + 119);
             g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
             g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
         }

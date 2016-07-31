@@ -39,6 +39,7 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
 import megamek.common.AmmoType;
+import megamek.common.Crew;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.EquipmentType;
@@ -164,6 +165,13 @@ public class PrintQuad implements Printable {
 
         Font font = UnitUtil.deriveFont(8.0f);
         g2d.setFont(font);
+        
+        if ((mech.getCrew() != null) && !mech.getCrew().getName().equalsIgnoreCase("unnamed")) {
+            Crew pilot = mech.getCrew();
+            g2d.drawString(pilot.getName(), 271 + leftMargin, topMargin + 119);
+            g2d.drawString(String.valueOf(pilot.getGunnery()), 295 + leftMargin, topMargin + 132);
+            g2d.drawString(String.valueOf(pilot.getPiloting()), 365 + leftMargin, topMargin + 132);
+        }
 
         if (mech.hasTSM()) {
             int walkTSM = mech.getWalkMP() + 1;
