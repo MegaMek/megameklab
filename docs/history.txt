@@ -11,6 +11,7 @@ v0.1.57 (2016-07-31 10:00 UTC)
 + Bug: Potential issue with Superheavy double-crits and Build Tab Reset button
 + Issue #17: Adding MP also adds heatsinks up to max free
 + Issue #21: Engines/Gyros not always refreshed switching between superheavy
++ Updated MegaMek.jar to 0.41.21
 
 v0.1.56 (2016-06-27 02:00 UTC)
 + Issue #16: Program Breaking issue with 1.55 Equipment Panel
