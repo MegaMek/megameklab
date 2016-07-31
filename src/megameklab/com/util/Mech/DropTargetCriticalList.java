@@ -40,6 +40,11 @@ import megamek.common.TripodMech;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestBattleArmor;
+import megamek.common.weapons.ACWeapon;
+import megamek.common.weapons.GaussWeapon;
+import megamek.common.weapons.LBXACWeapon;
+import megamek.common.weapons.PPCWeapon;
+import megamek.common.weapons.UACWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CritListCellRenderer;
 import megameklab.com.util.RefreshListener;
@@ -352,10 +357,35 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                 if ((getUnit() instanceof BipedMech || getUnit() instanceof TripodMech)
                         && ((location == Mech.LOC_LARM) || (location == Mech.LOC_RARM))) {
+
+                    boolean canHaveLowerArm = true;
+                    if (getUnit().isOmni()) {
+                        int numCrits = getUnit().getNumberOfCriticals(location);
+                        for (int slot = 0; slot < numCrits; slot++) {
+                            CriticalSlot crit = getUnit().getCritical(location,
+                                    slot);
+                            if (crit == null) {
+                                continue;
+                            }
+                            if (crit.getType() == CriticalSlot.TYPE_SYSTEM) {
+                                continue;
+                            }
+                            Mounted m = crit.getMount();
+                            if ((m.getType() instanceof GaussWeapon)
+                                    || (m.getType() instanceof ACWeapon)
+                                    || (m.getType() instanceof UACWeapon)
+                                    || (m.getType() instanceof LBXACWeapon)
+                                    || (m.getType() instanceof PPCWeapon)) {
+                                canHaveLowerArm = false;
+                            }
+                        }
+                    }
+
                     popup.addSeparator();
                     popup.setAutoscrolls(true);
-                    if ((getUnit().getCritical(location, 3) == null)
-                            || (getUnit().getCritical(location, 3).getType() != CriticalSlot.TYPE_SYSTEM)) {
+                    if (canHaveLowerArm
+                            && ((getUnit().getCritical(location, 3) == null) || (getUnit()
+                                    .getCritical(location, 3).getType() != CriticalSlot.TYPE_SYSTEM))) {
                         JMenuItem info = new JMenuItem("Add Hand");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
@@ -377,8 +407,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         popup.add(info);
                     }
 
-                    if ((getUnit().getCritical(location, 2) == null)
-                            || (getUnit().getCritical(location, 2).getType() != CriticalSlot.TYPE_SYSTEM)) {
+                    if (canHaveLowerArm
+                            && ((getUnit().getCritical(location, 2) == null) || (getUnit()
+                                    .getCritical(location, 2).getType() != CriticalSlot.TYPE_SYSTEM))) {
                         JMenuItem info = new JMenuItem("Add Lower Arm");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {
