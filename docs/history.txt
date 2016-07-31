@@ -2,6 +2,7 @@ VERSION HISTORY:
 ----------------
 v0.1.57-git
 + PR #8: Adjust position of printed pilot names for Meks
++ Issue #1: Auto-fill would try to mount infantry weapons on BA
 
 v0.1.56
 + Issue #16: Program Breaking issue with 1.55 Equipment Panel
@@ -685,6 +686,7 @@ V 0.1.17 Dev (Closed 9-29-2010)
 + Bug: Protomech missile ammo not printing correct amount of shots
 + added new Atremis/Apollo text to Mechs and Tanks weapons loadout
 + Bug: MML allowing armor overage.
+
 + Bug: Extra turret armor hard coded to 79
 + Bug: Mixed tech armor not working correctly
 + Added Blue Shield Particle Field Damper

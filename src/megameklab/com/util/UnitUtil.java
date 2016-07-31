@@ -2963,6 +2963,13 @@ public class UnitUtil {
 
     public static boolean isValidLocation(Entity unit, EquipmentType eq,
             int location) {
+        if (unit instanceof BattleArmor) {
+            // Infantry weapons can only be mounted in armored gloves/APMs
+            if (eq.hasFlag(WeaponType.F_INFANTRY)) {
+                return false;
+            }
+            return true;
+        }
         if ((eq instanceof MiscType)) {
             if (((eq.hasFlag(MiscType.F_CLUB) || eq
                     .hasFlag(MiscType.F_HAND_WEAPON)))) {
