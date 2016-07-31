@@ -825,17 +825,14 @@ public class UnitUtil {
         }
         for (Mounted m : assigned) {
             if (needed <= 0) {
-                break;
+                return;
             }
             UnitUtil.removeCriticals(unit, m);
             m.setLocation(Entity.LOC_NONE);
             needed--;
         }
-        // if for some reason we still didn't find enough heat sinks then make
-        // some more
-        if (needed > 0) {
-            UnitUtil.addHeatSinkMounts(unit, needed, hsType);
-        }
+        // There may be more crit-free heatsinks, but if the 'mech doesn't
+        // have that many heatsinks, the additional space is unused.
     }
 
     public static boolean isJumpJet(Mounted m) {

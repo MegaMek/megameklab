@@ -7,6 +7,7 @@ v0.1.57-git
 + Bug: NPE when adding hand with lower arm already present
 + Issue #12: Omnis allowed to add hand/lower armor with Gauss/AC already in arm
 + Bug: Potential issue with Superheavy double-crits and Build Tab Reset button
++ Issue #17: Adding MP also adds heatsinks up to max free
 
 v0.1.56
 + Issue #16: Program Breaking issue with 1.55 Equipment Panel
