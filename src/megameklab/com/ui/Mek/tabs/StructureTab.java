@@ -665,7 +665,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
 
         lblFreeSinks.setText("Engine Free: "
-                + UnitUtil.getBaseChassisHeatSinks(getMech(), getMech()
+                + UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech()
                         .hasCompactHeatSinks()));
 
         if (getMech().isClan()) {

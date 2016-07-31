@@ -113,7 +113,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        engineHeatSinkCount = UnitUtil.getBaseChassisHeatSinks(getMech(), getMech().hasCompactHeatSinks());
+        engineHeatSinkCount = UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks());
         for (Mounted mount : getMech().getMisc()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getType().getCriticals(getMech()) == 0)) {
                 masterEquipmentList.add(mount);

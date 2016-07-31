@@ -289,7 +289,7 @@ public class SummaryView extends IView{
         runThroughEquipment(testMech);
 
         int numberSinks = UnitUtil.countActualHeatSinks(getMech());
-        numberSinks = Math.max(0, numberSinks - UnitUtil.getBaseChassisHeatSinks(getMech(), getMech().hasCompactHeatSinks()));
+        numberSinks = Math.max(0, numberSinks - UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks()));
         int critSinks = numberSinks;
         if(UnitUtil.hasClanDoubleHeatSinks(getMech())) {
             critSinks = numberSinks * 2;

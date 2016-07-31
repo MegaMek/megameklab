@@ -113,7 +113,7 @@ public class BuildTab extends ITab implements ActionListener {
     private void autoFillCrits() {
 
         for (Mounted mount : buildView.getTableModel().getCrits()) {
-            int externalEngineHS = UnitUtil.getBaseChassisHeatSinks(getMech(), getMech().hasCompactHeatSinks());
+            int externalEngineHS = UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech().hasCompactHeatSinks());
             for (int location = Mech.LOC_HEAD; location < getMech().locations(); location++) {
 
                 if (!UnitUtil.isValidLocation(getMech(), mount.getType(), location)) {

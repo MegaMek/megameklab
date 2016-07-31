@@ -557,7 +557,7 @@ public class UnitUtil {
      */
     public static void removeHeatSinks(Mech unit, int number) {
         Vector<Mounted> toRemove = new Vector<Mounted>();
-        int base = UnitUtil.getBaseChassisHeatSinks(unit,
+        int base = UnitUtil.getCriticalFreeHeatSinks(unit,
                 unit.hasCompactHeatSinks());
         boolean splitCompact = false;
         if (unit.hasCompactHeatSinks()) {
@@ -661,7 +661,7 @@ public class UnitUtil {
         // for the engine, if any
         int currentSinks = UnitUtil.countActualHeatSinks(unit);
         int engineCompacts = Math.min(hsAmount,
-                UnitUtil.getBaseChassisHeatSinks(unit, true));
+                UnitUtil.getCriticalFreeHeatSinks(unit, true));
         int engineToAdd = Math.max(0, engineCompacts - currentSinks);
         unit.addEngineSinks("IS1 Compact Heat Sink", engineToAdd);
         int restHS = hsAmount - engineToAdd;
@@ -710,7 +710,7 @@ public class UnitUtil {
      * @param unit
      */
     public static Mounted getSingleCompactHeatSink(Mech unit) {
-        int base = UnitUtil.getBaseChassisHeatSinks(unit, true);
+        int base = UnitUtil.getCriticalFreeHeatSinks(unit, true);
         for (Mounted m : unit.getMisc()) {
             if (m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
                     && m.getType().hasFlag(MiscType.F_HEAT_SINK)) {
@@ -806,7 +806,7 @@ public class UnitUtil {
      * @param unit
      */
     public static void updateAutoSinks(Mech unit, String hsType) {
-        int base = UnitUtil.getBaseChassisHeatSinks(unit,
+        int base = UnitUtil.getCriticalFreeHeatSinks(unit,
                 hsType.equals("Compact"));
         Vector<Mounted> unassigned = new Vector<Mounted>();
         Vector<Mounted> assigned = new Vector<Mounted>();
@@ -1895,7 +1895,17 @@ public class UnitUtil {
         return sb.toString();
     }
 
-    public static int getBaseChassisHeatSinks(Entity unit, boolean compact) {
+    /**
+     * Return the number of critical-space free heatsinks that the given entity
+     * can have.
+     * 
+     * @param unit
+     *            The unit mounting the heatsinks
+     * @param compact
+     *            Whether the heatsinks are compact or not
+     * @return T he number of critical-free heat sinks.
+     */
+    public static int getCriticalFreeHeatSinks(Entity unit, boolean compact) {
         int engineHSCapacity = unit.getEngine().integralHeatSinkCapacity(
                 compact);
 
@@ -3309,7 +3319,7 @@ public class UnitUtil {
 
     public static int countUnallocatedCriticals(Mech unit) {
         int nCrits = 0;
-        int engineHeatSinkCount = UnitUtil.getBaseChassisHeatSinks(unit,
+        int engineHeatSinkCount = UnitUtil.getCriticalFreeHeatSinks(unit,
                 unit.hasCompactHeatSinks());
         for (Mounted mount : unit.getMisc()) {
             if (UnitUtil.isHeatSink(mount)
