@@ -3005,7 +3005,9 @@ public class UnitUtil {
             if (eq.hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)) {
                 if ((location != Mech.LOC_RARM) && (location != Mech.LOC_LARM)
                         && (location != Mech.LOC_LLEG)
-                        && (location != Mech.LOC_RLEG)) {
+                        && (location != Mech.LOC_RLEG)
+                        && ((unit instanceof TripodMech) 
+                                && location != Mech.LOC_CLEG)) {
                     return false;
                 }
             }
