@@ -1696,6 +1696,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
                 }
             }
+        } else if (getMech() instanceof TripodMech) {
+            cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TRIPOD]);
         } else {
             switch (getMech().getTechLevel()) {
                 case TechConstants.T_INTRO_BOXSET:
