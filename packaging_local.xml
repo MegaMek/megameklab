@@ -91,7 +91,7 @@
 
 	<!-- following localdev-* tasks get, build & package the current version from local sources -->
 	<target name="localdev-get" depends="localdev-init" description="get the local source">
-		<copy todir="${localdir}" >
+		<copy todir="${localdir}"  encoding="UTF-8">
 			<fileset dir="${basedir}">
 				<exclude name="${localdir}" />
 			</fileset>
@@ -102,7 +102,7 @@
 		<mkdir dir="${localbuilddir}" />
 		<!-- compile -->
 		<echo message="MegaMekLab" />
-		<javac debug="true" debuglevel="lines,source" target="1.7" source="1.7" destdir="${localbuilddir}" srcdir="${localdir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="1024m" fork="true">
+		<javac debug="true" debuglevel="lines,source" target="1.7" source="1.7" destdir="${localbuilddir}" srcdir="${localdir}/${srcdir}" memoryInitialSize="512m" memoryMaximumSize="1024m" fork="true" encoding="UTF-8">
 			<classpath>
 				<pathelement location="${localdir}" />
 				<fileset dir="${localdir}/${libdir}" includes="*.jar" />
@@ -127,7 +127,7 @@
 
 	<target name="mac-bundle" description="Bundle the project built from local source into an Mac OSX distribution">
 		<mkdir dir="${osxdist}" />
-		<copy todir="${osxdist}">
+		<copy todir="${osxdist}" encoding="UTF-8">
 			<fileset dir="${localdir}" >
 				<include name="${jarfile}" />
 				<include name="${logdir}/" />
@@ -137,13 +137,13 @@
 			</fileset>
 		</copy>
 		<mkdir dir="${osxdist}/MegaMekLab.app" />
-		<copy todir="${osxdist}/MegaMekLab.app">
+		<copy todir="${osxdist}/MegaMekLab.app" encoding="UTF-8">
 			<fileset dir="${util}/MegaMekLab.app" >
 				<include name="**/*"/>
 			</fileset>
 		</copy>
-		<copy file="${util}/JavaApplicationStub" todir="${osxdist}/MegaMekLab.app/Contents/MacOS/"/>
-        <copy todir="${osxdist}/MegaMekLab.app/Contents/Resources/Java/">
+		<copy file="${util}/JavaApplicationStub" todir="${osxdist}/MegaMekLab.app/Contents/MacOS/" encoding="UTF-8"/>
+	        <copy todir="${osxdist}/MegaMekLab.app/Contents/Resources/Java/" encoding="UTF-8">
             <fileset dir="${localdir}" >
                 <include name="${libdir}/*.jar" />
                 <include name="${jarfile}" />
@@ -177,7 +177,7 @@
 	<target name="nix-bundle" description="Bundle the project built from local source into a unix distribution">
 		<mkdir dir="${nixdist}" />
 		<mkdir dir="${nixdist}/${nixdist}" />
-		<copy todir="${nixdist}/${nixdist}">
+		<copy todir="${nixdist}/${nixdist}" encoding="UTF-8">
 			<fileset dir="${localdir}" >
                 <include name="${libdir}/*.jar" />
 				<include name="${jarfile}" />
@@ -206,7 +206,7 @@
 
 	<target name="win-bundle" depends="exe" description="Bundle the project built from local source into a Windows distribution">
 		<mkdir dir="${windist}" />
-		<copy todir="${windist}">
+		<copy todir="${windist}" encoding="UTF-8">
 			<fileset dir="${localdir}" >
                 <include name="${libdir}/*.jar" />
 				<include name="${logdir}/" />
@@ -216,7 +216,7 @@
                 <include name="${confdir}/" />
 			</fileset>
 		</copy>
-		<copy file="${util}/megameklab.l4j.ini" todir="${windist}"/>
+		<copy file="${util}/megameklab.l4j.ini" todir="${windist}" encoding="UTF-8"/>
 	</target>
 
 	<target name="win-zip" description="Create a zipfile of the Windows distribution">
@@ -232,7 +232,7 @@
 	<target name="source-package" description="Package a source-only distribution of the project built from local source">
 		<mkdir dir="${srcdist}" />
 		<mkdir dir="${srcdist}/${srcdist}" />
-		<copy todir="${srcdist}/${srcdist}">
+		<copy todir="${srcdist}/${srcdist}" encoding="UTF-8">
 			<fileset dir="${localdir}" >
 				<exclude name="${builddir}/**"/>
 				<exclude name="MegaMekLab.jar"/>

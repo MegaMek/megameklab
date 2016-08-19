@@ -48,7 +48,8 @@
 			srcdir="${src}"
 			target="1.7"
 			source="1.7"
-            fork="true"
+			encoding="UTF-8"
+			fork="true"
             memoryinitialsize="256m"
             memorymaximumsize="1024m"
 		>
