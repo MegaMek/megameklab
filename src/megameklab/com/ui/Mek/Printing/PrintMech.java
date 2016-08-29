@@ -886,6 +886,7 @@ public class PrintMech implements Printable {
         int height = Math.min(200, img.getHeight(null));
         int drawingX = 237 + ((148 - width) / 2);
         int drawingY = 172 + ((200 - height) / 2);
+        g2d.setColor(Color.BLACK);
         g2d.drawImage(img, drawingX + leftMargin, topMargin + drawingY, width, height, null);
 
     }

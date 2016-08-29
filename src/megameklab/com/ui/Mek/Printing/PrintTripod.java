@@ -922,6 +922,7 @@ public class PrintTripod implements Printable {
         int height = Math.min(145, img.getHeight(null));
         int drawingX = 245 + ((116 - width) / 2);
         int drawingY = 233 + ((145 - height) / 2);
+        g2d.setColor(Color.BLACK);
         g2d.drawImage(img, drawingX + leftMargin, topMargin + drawingY, width, height, null);
 
     }
