@@ -29,8 +29,7 @@
       <string>1.8+</string>
       <key>ClassPath</key>
       <array>
-        <string>$JAVAROOT/../../../../MekHQ.app/Contents/Resources/Java/MegaMekLab.jar</string>
-        <string>$JAVAROOT/../../../../MekHQ.app/Contents/Resources/Java/MegaMek.jar</string>
+        <string>$JAVAROOT/MegaMekLab.jar</string>
       </array>
       <key>VMOptions</key>
       <string>-Xmx512m</string>
