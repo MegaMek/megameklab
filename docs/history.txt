@@ -1,9 +1,10 @@
 VERSION HISTORY:
 ----------------
-v0.41.24-git
+v0.41.24 (2016-10-06 03:15 UTC)
 + Version matched to MegaMek
 + Fixes #23: Several Issue with the Mac Version
     Fixed Mac OSX Packaging (Hopefully for good this time!)
++ Updated MegaMek.jar to 0.41.24
 
 v0.1.59 (2016-09-20 00:07 UTC)
 + Updated MegaMek.jar to 0.41.23
