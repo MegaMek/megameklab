@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.41.25-git
+
 v0.41.24 (2016-10-06 03:15 UTC)
 + Version matched to MegaMek
 + Fixes #23: Several Issue with the Mac Version
