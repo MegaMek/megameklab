@@ -179,19 +179,19 @@ public class PrintMech implements Printable {
                 ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RT_"+mech.getArmor(Mech.LOC_RT)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_LLEG) > 0) {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_LLEG_"+mech.getArmor(Mech.LOC_LLEG)+"_Humanoid.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_LLeg_"+mech.getArmor(Mech.LOC_LLEG)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_RLEG) > 0) {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RLEG_"+mech.getArmor(Mech.LOC_RLEG)+"_Humanoid.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RLeg_"+mech.getArmor(Mech.LOC_RLEG)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_LARM) > 0) {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_LARM_"+mech.getArmor(Mech.LOC_LARM)+"_Humanoid.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_LArm_"+mech.getArmor(Mech.LOC_LARM)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_RARM) > 0) {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RARM_"+mech.getArmor(Mech.LOC_RARM)+"_Humanoid.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RArm_"+mech.getArmor(Mech.LOC_RARM)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_HEAD, true) > 0) {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_HEAD_"+mech.getArmor(Mech.LOC_HEAD)+"_Humanoid.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_Head_"+mech.getArmor(Mech.LOC_HEAD)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_CT, true) > 0) {
                 ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_CT_R_"+mech.getArmor(Mech.LOC_CT, true)+"_Humanoid.svg")).render(g2d);
