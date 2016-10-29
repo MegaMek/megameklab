@@ -191,7 +191,7 @@ public class PrintMech implements Printable {
                 ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_RArm_"+mech.getArmor(Mech.LOC_RARM)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_HEAD, true) > 0) {
-                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_HEAD_"+mech.getArmor(Mech.LOC_HEAD)+"_Humanoid.svg")).render(g2d);
+                ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_Head_"+mech.getArmor(Mech.LOC_HEAD)+"_Humanoid.svg")).render(g2d);
             }
             if (mech.getArmor(Mech.LOC_CT, true) > 0) {
                 ImageHelper.loadSVGImage(new File("data/images/recordsheets/Armor_CT_R_"+mech.getArmor(Mech.LOC_CT, true)+"_Humanoid.svg")).render(g2d);
