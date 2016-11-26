@@ -1401,6 +1401,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD, false);
             }
         } else {
+            getTank().setArmorTechLevel(EquipmentType.get(getArmorType(armorCombo))
+                    .getTechLevel(getTank().getYear()));
             getTank().setArmorType(getArmorType(armorCombo));
         }
     }
