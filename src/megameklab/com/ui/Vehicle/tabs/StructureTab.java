@@ -1457,7 +1457,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
             } else {
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index, true));
-                if (et != null) {
+                if (et != null && et.hasFlag(MiscType.F_TANK_EQUIPMENT) && TechConstants
+                        .isLegal(getTank().getTechLevel(), et
+                                .getTechLevel(getTank().getYear()),
+                                isMixed)) {
                     if (et.hasFlag(MiscType.F_HARDENED_ARMOR)
                             && ((getTank().getMovementMode() == EntityMovementMode.HOVER)
                             || (getTank().getMovementMode() == EntityMovementMode.WIGE)
@@ -1467,7 +1470,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     armorCombo.addItem(EquipmentType.getArmorTypeName(index, true));
                 }
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index, false));
-                if (et != null) {
+                if (et != null && et.hasFlag(MiscType.F_TANK_EQUIPMENT) && TechConstants
+                        .isLegal(getTank().getTechLevel(), et
+                                .getTechLevel(getTank().getYear()),
+                                isMixed)) {
                     if (et.hasFlag(MiscType.F_HARDENED_ARMOR)
                             && ((getTank().getMovementMode() == EntityMovementMode.HOVER)
                             || (getTank().getMovementMode() == EntityMovementMode.WIGE)

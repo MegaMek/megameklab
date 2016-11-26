@@ -1202,11 +1202,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
             } else {
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(type, true));
-                if (et != null) {
+                if (et != null && TechConstants.isLegal(getAero().getTechLevel(), et
+                                .getTechLevel(getAero().getYear()),
+                                true)) {
                     armorCombo.addItem(EquipmentType.getArmorTypeName(type, true));
                 }
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(type, false));
-                if (et != null) {
+                if (et != null && TechConstants.isLegal(getAero().getTechLevel(), et
+                                .getTechLevel(getAero().getYear()),
+                                true)) {
                     armorCombo.addItem(EquipmentType.getArmorTypeName(type, false));
                 }
                 if (type == EquipmentType.T_ARMOR_PATCHWORK) {

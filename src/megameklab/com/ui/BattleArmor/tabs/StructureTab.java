@@ -608,7 +608,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener, C
                 String armorName = 
                         EquipmentType.getArmorTypeName(type, armor.isClan);
                 et = EquipmentType.get(armorName);
-                if (et != null) {
+                if (et != null && TechConstants.isLegal(getBattleArmor().getTechLevel(), 
+                                et.getTechLevel(getBattleArmor().getYear()), 
+                                isMixed)) {
                     armorType.addItem(armorName);
                 }
             }
