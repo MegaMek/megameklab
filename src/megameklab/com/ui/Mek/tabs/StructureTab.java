@@ -1904,6 +1904,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 jjCount = 1;
                 break;
             case TechConstants.T_IS_EXPERIMENTAL:
+            case TechConstants.T_IS_UNOFFICIAL:
                 jjCount = jjTypes.length;
                 break;
             default:
