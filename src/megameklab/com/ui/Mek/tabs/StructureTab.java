@@ -833,7 +833,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                     "Bad Gyro", JOptionPane.ERROR_MESSAGE);
                 } else {
                     int gyroType = Arrays.asList(Mech.GYRO_SHORT_STRING)
-                            .indexOf(combo.getSelectedItem());
+                            .indexOf(((String)combo.getSelectedItem()).replace("(IS) ", ""));
                     getMech().setGyroType(gyroType);
                     getMech().clearGyroCrits();
 
