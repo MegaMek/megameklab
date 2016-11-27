@@ -888,6 +888,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     getTank().setMovementMode(EntityMovementMode.VTOL);
                     disableJump();
                     break;
+                case 5:
+                    minTonnage = 301;
+                    maxTonnage = 555;
+                    getTank().setMovementMode(EntityMovementMode.NAVAL);
+                    disableJump();
+                    break;
+                case 7:
+                    minTonnage = 301;
+                    maxTonnage = 555;
+                    getTank().setMovementMode(EntityMovementMode.SUBMARINE);
+                    disableJump();
+                    break;
             }
         }
 
