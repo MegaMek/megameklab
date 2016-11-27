@@ -1169,6 +1169,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             // if we changed weight, reset the weight if the rating is too high
             if (oldWeight < getTank().getWeight()) {
                 getTank().setWeight(oldWeight);
+                weight.getModel().setValue((int)oldWeight);
             } else {
                 // otherwise, set the cruiseMP spinner to the old value
                 cruiseMP.getModel().setValue(getTank().getOriginalWalkMP());
@@ -1178,7 +1179,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             this,
                             "That speed/weight combination would create an engine with a rating over 500.",
                             "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
-            weight.getModel().setValue(Integer.valueOf(Double.toString(oldWeight)));
         } else {
             getTank().setWeight(Double.parseDouble(weight.getModel().getValue().toString()));
             ((SpinnerNumberModel) troopStorage.getModel()).setMaximum(Double
