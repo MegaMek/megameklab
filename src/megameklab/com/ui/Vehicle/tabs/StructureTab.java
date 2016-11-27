@@ -615,14 +615,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 baseChassisTurretWeight.setValue((double)getTank()
                         .getBaseChassisTurretWeight());
             } else {
-                baseChassisTurretWeight.setValue(0);
+                baseChassisTurretWeight.setValue(0.0);
             }
             baseChassisTurret2Weight.setEnabled(true);
             if (getTank().getBaseChassisTurret2Weight() >= 0) {
                 baseChassisTurret2Weight.setValue((double)getTank()
                         .getBaseChassisTurret2Weight());
             } else {
-                baseChassisTurret2Weight.setValue(0);
+                baseChassisTurret2Weight.setValue(0.0);
             }
         } else if (getTank().isOmni() && hasTurret()) {
             baseChassisTurretWeight.setEnabled(true);
@@ -630,15 +630,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 baseChassisTurretWeight.setValue((double)getTank()
                         .getBaseChassisTurretWeight());
             } else {
-                baseChassisTurretWeight.setValue(0);
+                baseChassisTurretWeight.setValue(0.0);
             }
             baseChassisTurret2Weight.setEnabled(false);
-            baseChassisTurret2Weight.setValue(0);
+            baseChassisTurret2Weight.setValue(0.0);
         } else {
             baseChassisTurretWeight.setEnabled(false);
             baseChassisTurret2Weight.setEnabled(false);
-            baseChassisTurretWeight.setValue(0);
-            baseChassisTurret2Weight.setValue(0);
+            baseChassisTurretWeight.setValue(0.0);
+            baseChassisTurret2Weight.setValue(0.0);
         }
     }
 
