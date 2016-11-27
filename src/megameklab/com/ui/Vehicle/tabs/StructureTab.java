@@ -112,7 +112,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
             "Unoffical" };
     JComboBox<String> techLevel;
-    String[] tankMotiveTypes = { "Hover", "Wheeled", "Tracked", "WiGE", "VTOL" };
+    String[] tankMotiveTypes = { "Hover", "Wheeled", "Tracked", "WiGE", "VTOL",
+    		"Naval (Displacement)", "Hydrofoil", "Submarine"};
     JComboBox<String> tankMotiveType = new JComboBox<String>(tankMotiveTypes);
     JTextField era = new JTextField(3);
     JTextField source = new JTextField(3);
@@ -555,6 +556,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 updateTurrets(turretCombo);
                 break;
+            case NAVAL:
+                turretCombo.setEnabled(true);
+                tankMotiveType.setSelectedIndex(5);
+                break;
+            case HYDROFOIL:
+                turretCombo.setEnabled(true);
+                tankMotiveType.setSelectedIndex(6);
+                break;
+            case SUBMARINE:
+                turretCombo.setEnabled(true);
+                tankMotiveType.setSelectedIndex(7);
+                break;
             default:
                 break;
         }
@@ -828,6 +841,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 case 4:
                     maxTonnage = 30;
                     getTank().setMovementMode(EntityMovementMode.VTOL);
+                    disableJump();
+                    break;
+                case 5:
+                    maxTonnage = 300;
+                    getTank().setMovementMode(EntityMovementMode.NAVAL);
+                    disableJump();
+                    break;
+                case 6:
+                    maxTonnage = 100;
+                    getTank().setMovementMode(EntityMovementMode.HYDROFOIL);
+                    disableJump();
+                    break;
+                case 7:
+                    maxTonnage = 300;
+                    getTank().setMovementMode(EntityMovementMode.SUBMARINE);
                     disableJump();
                     break;
             }
