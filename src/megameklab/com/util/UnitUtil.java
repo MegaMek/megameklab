@@ -889,7 +889,7 @@ public class UnitUtil {
         unit.setOriginalJumpMP(jjAmount);
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
-            int currentJJ = unit.getJumpMP();
+            int currentJJ = unit.getJumpMP(true, true);
             // Remove Partial Wing bonus, if present
             if (currentJJ > 0) {
                 for (Mounted mount : unit.getMisc()) {
