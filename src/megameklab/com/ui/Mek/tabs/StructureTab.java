@@ -722,7 +722,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
         walkMPFinal.setToolTipText(walkTooltip.length() > 0? walkTooltip.toString() : null);
         runMPFinal.setToolTipText(runTooltip.length() > 0? runTooltip.toString() : null);
-        jumpMPFinal.setToolTipText(jumpTooltip.length() > 0? jumpTooltip.toString() : null);
+        jumpMPFinal.setToolTipText(jumpTooltip.length() > 0 && getMech().getOriginalJumpMP(true) > 0?
+        		jumpTooltip.toString() : null);
 
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
                 .getMaximumArmorTonnage(getMech()));
