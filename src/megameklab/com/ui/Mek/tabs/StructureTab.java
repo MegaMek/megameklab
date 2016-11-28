@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.AbstractSpinnerModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -75,116 +74,6 @@ import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements ActionListener, KeyListener,
         ChangeListener, ItemListener {
-
-    /**
-     * There are certain cases where the number we want to display in a JSpinner
-     * for jump MP doesn't necessarily reflect the actual value. For instance,
-     * partial wings are similar to MASC in that they add additional Jump MP
-     * beyond the number of jump jets. We need a way to convey this information
-     * to the user, so we want a model that can return a value different from
-     * the actually underlying number of jump jets.
-     * 
-     * @author arlith
-     *
-     */
-    private class JumpSpinnerModel extends AbstractSpinnerModel {
-        
-        /**
-         * 
-         */
-        private static final long serialVersionUID = -7105656717682056365L;
-        
-        Mech mech;
-        int numJets;
-        int maxJets;
-        
-        public JumpSpinnerModel(Mech mech) {
-            super();
-            this.mech = mech;
-            maxJets = 25;            
-        }
-
-        @Override
-        public Object getNextValue() {
-            int newJets = Math.min(maxJets, numJets + 1);
-            Mounted pWingMount = null;
-            for (Mounted m : mech.getMisc()) {
-                if (m.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                    pWingMount = m;
-                }
-            }
-            if ((pWingMount != null) && (newJets > 0)) {
-                int totalJumpMP = numJets
-                        + mech.getPartialWingJumpBonus(pWingMount);
-                return "(" + newJets + ") " + totalJumpMP;
-            }
-            return newJets + "";
-        }
-
-        @Override
-        public Object getPreviousValue() {
-            int newJets = Math.max(0, numJets - 1);
-            Mounted pWingMount = null;
-            for (Mounted m : mech.getMisc()) {
-                if (m.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                    pWingMount = m;
-                }
-            }
-            if ((pWingMount != null) && (newJets > 0)) {
-                int totalJumpMP = numJets
-                        + mech.getPartialWingJumpBonus(pWingMount);
-                return "(" + newJets + ") " + totalJumpMP;
-            }
-            return newJets + "";
-        }
-
-        @Override
-        public Object getValue() {
-            Mounted pWingMount = null;
-            for (Mounted m : mech.getMisc()) {
-                if (m.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                    pWingMount = m;
-                }
-            }
-            if ((pWingMount != null) && (numJets > 0)) {
-                int totalJumpMP = numJets
-                        + mech.getPartialWingJumpBonus(pWingMount);
-                return "(" + numJets + ") " + totalJumpMP;
-            }
-            return numJets + "";
-        }
-
-        @Override
-        public void setValue(Object v) {
-            if (v instanceof Integer) {
-                numJets = (Integer)v;
-            } else if (v instanceof String) {
-                String s = (String) v;
-                int parenIdxLeft = s.indexOf('(');
-                int parenIdxRight = s.indexOf(')');
-                if (parenIdxLeft == -1) {
-                    numJets = Integer.parseInt(s);
-                } else {
-                    numJets = Integer.parseInt(s.substring(parenIdxLeft + 1, parenIdxRight));
-                }
-            } else {
-            }
-            fireStateChanged();
-        }
-
-        public int getNumJets() {
-            return numJets;
-        }
-
-        public void setMaximum(int max) {
-            maxJets = max;
-        }
-        
-        public int getMaximum() {
-            return maxJets;
-        }
-        
-    }
     /**
      *
      */
@@ -230,7 +119,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JTextField walkMPFinal;
     JTextField runMPFinal;
     JTextField jumpMPFinal;
-    JumpSpinnerModel jumpModel;
+    SpinnerNumberModel jumpModel;
     JComboBox<String> gyroType = new JComboBox<String>(Mech.GYRO_SHORT_STRING);
     JSpinner weightClass;
     JComboBox<String> cockpitType = new JComboBox<String>(
@@ -308,7 +197,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setFieldSize(runMPBase, new Dimension(60, 25));
         runMPBase.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        jumpModel = new JumpSpinnerModel(getMech());
+        jumpModel = new SpinnerNumberModel(0, 0, 25, 1);
         jumpMPBase = new JSpinner(jumpModel);
         JSpinner.DefaultEditor jumpEditor = ((JSpinner.DefaultEditor) jumpMPBase
                 .getEditor());
@@ -1068,10 +957,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         } else {
             jumpModel.setMaximum(getMech().getOriginalWalkMP());
         }
-        if (jumpModel.getNumJets() > (Integer) jumpModel.getMaximum()) {
+        if ((Integer) jumpModel.getValue() > (Integer) jumpModel.getMaximum()) {
             jumpMPBase.setValue(jumpModel.getMaximum());
         }
-        UnitUtil.updateJumpJets(getMech(), jumpModel.getNumJets(),
+        UnitUtil.updateJumpJets(getMech(), (Integer) jumpModel.getValue(),
                 getJumpJetType());
     }
 
@@ -2085,7 +1974,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setJumpJetCombo();
             if (jjType.getSelectedIndex() == -1) {
                 jjType.setSelectedIndex(0);
-                int jump = Math.min(jumpModel.getNumJets(), getMech()
+                int jump = Math.min((Integer) jumpModel.getValue(), getMech()
                         .getWalkMP(true, false, true));
                 UnitUtil.updateJumpJets(getMech(), jump, Mech.JUMP_STANDARD);
             }
@@ -2221,7 +2110,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             } else if (spinner.equals(walkMPBase)) {
                 resetEngine();
             } else if (spinner.equals(jumpMPBase)) {
-                UnitUtil.updateJumpJets(getMech(), jumpModel.getNumJets(),
+                UnitUtil.updateJumpJets(getMech(), (Integer) jumpModel.getValue(),
                         getJumpJetType());
             } else if (spinner.equals(armorTonnage)) {
                 setArmorTonnage();
