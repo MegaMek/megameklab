@@ -31,6 +31,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.StringJoiner;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -686,6 +688,41 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         refreshJumpMP();
         runMPBase.setText(String.valueOf(getMech().getRunMPwithoutMASC(true, true, true)));
         runMPFinal.setText(getMech().getRunMPasString());
+        
+        StringJoiner walkTooltip = new StringJoiner(", ");
+        StringJoiner runTooltip = new StringJoiner(", ");
+        StringJoiner jumpTooltip = new StringJoiner(", ");
+        
+        if (getMech().hasModularArmor()) {
+        	walkTooltip.add("-1 (Modular armor)");
+        	jumpTooltip.add("-1 (Modular armor)");
+        }
+        if (getMech().hasMPReducingHardenedArmor()) {
+        	runTooltip.add("-1 (Hardened armor)");
+        }
+        if (getMech().hasArmedMASC()) {
+        	runTooltip.add("MASC");
+        }
+        if (getMech().hasArmedMASCAndSuperCharger()) {
+        	runTooltip.add("Supercharger");
+        }
+        Optional<Mounted> partialWing = getMech().getMisc().stream()
+        		.filter(m -> m.getType().hasFlag(MiscType.F_PARTIAL_WING)).findAny();
+        if (partialWing.isPresent()) {
+        	jumpTooltip.add(String.format("+%d (Partial wing)",
+        			getMech().getPartialWingJumpBonus(partialWing.get())));
+        }
+        int medShields = getMech().getNumberOfShields(MiscType.S_SHIELD_MEDIUM);
+        int lgShields = getMech().getNumberOfShields(MiscType.S_SHIELD_LARGE);
+        if (lgShields + medShields > 0) {
+        	walkTooltip.add(String.format("-%d (Shield)", lgShields + medShields));
+        }
+        if (lgShields > 0) {
+        	jumpTooltip.add("No Jump (Large Shield)");
+        }
+        walkMPFinal.setToolTipText(walkTooltip.length() > 0? walkTooltip.toString() : null);
+        runMPFinal.setToolTipText(runTooltip.length() > 0? runTooltip.toString() : null);
+        jumpMPFinal.setToolTipText(jumpTooltip.length() > 0? jumpTooltip.toString() : null);
 
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
                 .getMaximumArmorTonnage(getMech()));
