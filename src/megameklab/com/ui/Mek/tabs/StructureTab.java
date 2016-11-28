@@ -686,7 +686,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         walkMPFinal.setText(String.valueOf(getMech().getWalkMP()));
         setJumpJetCombo();
         refreshJumpMP();
-        runMPBase.setText(String.valueOf(getMech().getRunMPwithoutMASC(true, true, true)));
+        runMPBase.setText(String.valueOf((int)Math.ceil((int)walkMPBase.getValue() * 1.5)));
         runMPFinal.setText(getMech().getRunMPasString());
         
         StringJoiner walkTooltip = new StringJoiner(", ");
