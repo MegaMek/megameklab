@@ -686,6 +686,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         walkMPFinal.setText(String.valueOf(getMech().getWalkMP()));
         setJumpJetCombo();
         refreshJumpMP();
+        //getOriginalRunMPWithoutMASC() still subtracts for hardened armor, so we just do the calculation here
         runMPBase.setText(String.valueOf((int)Math.ceil((int)walkMPBase.getValue() * 1.5)));
         runMPFinal.setText(getMech().getRunMPasString());
         
@@ -989,7 +990,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         jumpMPFinal.setText(String.valueOf(getMech().getJumpMP()));
         if ((getJumpJetType() == Mech.JUMP_IMPROVED)
                 || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
-            jumpModel.setMaximum(getMech().getRunMP(true, true, true));
+            jumpModel.setMaximum((int)Math.ceil(getMech().getOriginalWalkMP() * 1.5));
         } else if (getJumpJetType() == Mech.JUMP_BOOSTER) {
             jumpModel.setMaximum(20);
         } else {
