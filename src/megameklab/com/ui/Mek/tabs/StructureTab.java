@@ -31,8 +31,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.StringJoiner;
 
-import javax.swing.AbstractSpinnerModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -75,116 +76,6 @@ import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements ActionListener, KeyListener,
         ChangeListener, ItemListener {
-
-    /**
-     * There are certain cases where the number we want to display in a JSpinner
-     * for jump MP doesn't necessarily reflect the actual value. For instance,
-     * partial wings are similar to MASC in that they add additional Jump MP
-     * beyond the number of jump jets. We need a way to convey this information
-     * to the user, so we want a model that can return a value different from
-     * the actually underlying number of jump jets.
-     * 
-     * @author arlith
-     *
-     */
-    private class JumpSpinnerModel extends AbstractSpinnerModel {
-        
-        /**
-         * 
-         */
-        private static final long serialVersionUID = -7105656717682056365L;
-        
-        Mech mech;
-        int numJets;
-        int maxJets;
-        
-        public JumpSpinnerModel(Mech mech) {
-            super();
-            this.mech = mech;
-            maxJets = 25;            
-        }
-
-        @Override
-        public Object getNextValue() {
-            int newJets = Math.min(maxJets, numJets + 1);
-            Mounted pWingMount = null;
-            for (Mounted m : mech.getMisc()) {
-                if (m.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                    pWingMount = m;
-                }
-            }
-            if ((pWingMount != null) && (newJets > 0)) {
-                int totalJumpMP = numJets
-                        + mech.getPartialWingJumpBonus(pWingMount);
-                return "(" + newJets + ") " + totalJumpMP;
-            }
-            return newJets + "";
-        }
-
-        @Override
-        public Object getPreviousValue() {
-            int newJets = Math.max(0, numJets - 1);
-            Mounted pWingMount = null;
-            for (Mounted m : mech.getMisc()) {
-                if (m.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                    pWingMount = m;
-                }
-            }
-            if ((pWingMount != null) && (newJets > 0)) {
-                int totalJumpMP = numJets
-                        + mech.getPartialWingJumpBonus(pWingMount);
-                return "(" + newJets + ") " + totalJumpMP;
-            }
-            return newJets + "";
-        }
-
-        @Override
-        public Object getValue() {
-            Mounted pWingMount = null;
-            for (Mounted m : mech.getMisc()) {
-                if (m.getType().hasFlag(MiscType.F_PARTIAL_WING)) {
-                    pWingMount = m;
-                }
-            }
-            if ((pWingMount != null) && (numJets > 0)) {
-                int totalJumpMP = numJets
-                        + mech.getPartialWingJumpBonus(pWingMount);
-                return "(" + numJets + ") " + totalJumpMP;
-            }
-            return numJets + "";
-        }
-
-        @Override
-        public void setValue(Object v) {
-            if (v instanceof Integer) {
-                numJets = (Integer)v;
-            } else if (v instanceof String) {
-                String s = (String) v;
-                int parenIdxLeft = s.indexOf('(');
-                int parenIdxRight = s.indexOf(')');
-                if (parenIdxLeft == -1) {
-                    numJets = Integer.parseInt(s);
-                } else {
-                    numJets = Integer.parseInt(s.substring(parenIdxLeft + 1, parenIdxRight));
-                }
-            } else {
-            }
-            fireStateChanged();
-        }
-
-        public int getNumJets() {
-            return numJets;
-        }
-
-        public void setMaximum(int max) {
-            maxJets = max;
-        }
-        
-        public int getMaximum() {
-            return maxJets;
-        }
-        
-    }
     /**
      *
      */
@@ -224,10 +115,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JComboBox<String> engineType = new JComboBox<String>(isEngineTypes);
     String[] enhancements = { "None", "MASC", "TSM" };
     JComboBox<String> enhancement = new JComboBox<String>(enhancements);
-    JSpinner walkMP;
-    JTextField runMP;
-    JSpinner jumpMP;
-    JumpSpinnerModel jumpModel;
+    JSpinner walkMPBase;
+    JTextField runMPBase;
+    JSpinner jumpMPBase;
+    JTextField walkMPFinal;
+    JTextField runMPFinal;
+    JTextField jumpMPFinal;
+    SpinnerNumberModel jumpModel;
     JComboBox<String> gyroType = new JComboBox<String>(Mech.GYRO_SHORT_STRING);
     JSpinner weightClass;
     JComboBox<String> cockpitType = new JComboBox<String>(
@@ -292,27 +186,42 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         Dimension spinnerSize = new Dimension(55, 25);
 
-        walkMP = new JSpinner(new SpinnerNumberModel(1, 1, 25, 1));
-        ((JSpinner.DefaultEditor) walkMP.getEditor()).setSize(spinnerSize);
-        ((JSpinner.DefaultEditor) walkMP.getEditor())
+        walkMPBase = new JSpinner(new SpinnerNumberModel(1, 1, 25, 1));
+        ((JSpinner.DefaultEditor) walkMPBase.getEditor()).setSize(spinnerSize);
+        ((JSpinner.DefaultEditor) walkMPBase.getEditor())
                 .setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) walkMP.getEditor())
+        ((JSpinner.DefaultEditor) walkMPBase.getEditor())
                 .setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor) walkMP.getEditor())
+        ((JSpinner.DefaultEditor) walkMPBase.getEditor())
                 .setMinimumSize(spinnerSize);
-        runMP = new JTextField();
-        runMP.setEditable(false);
-        setFieldSize(runMP, new Dimension(60, 25));
-        runMP.setHorizontalAlignment(SwingConstants.RIGHT);
+        runMPBase = new JTextField();
+        runMPBase.setEditable(false);
+        setFieldSize(runMPBase, new Dimension(60, 25));
+        runMPBase.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        jumpModel = new JumpSpinnerModel(getMech());
-        jumpMP = new JSpinner(jumpModel);
-        JSpinner.DefaultEditor jumpEditor = ((JSpinner.DefaultEditor) jumpMP
+        jumpModel = new SpinnerNumberModel(0, 0, 25, 1);
+        jumpMPBase = new JSpinner(jumpModel);
+        JSpinner.DefaultEditor jumpEditor = ((JSpinner.DefaultEditor) jumpMPBase
                 .getEditor());
         jumpEditor.setSize(spinnerSize);
         jumpEditor.setMaximumSize(spinnerSize);
         jumpEditor.setPreferredSize(spinnerSize);
         jumpEditor.setMinimumSize(spinnerSize);
+
+        walkMPFinal = new JTextField();
+        walkMPFinal.setEditable(false);
+        setFieldSize(walkMPFinal, new Dimension(60, 25));
+        walkMPFinal.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        runMPFinal = new JTextField();
+        runMPFinal.setEditable(false);
+        setFieldSize(runMPFinal, new Dimension(60, 25));
+        runMPFinal.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        jumpMPFinal = new JTextField();
+        jumpMPFinal.setEditable(false);
+        setFieldSize(jumpMPFinal, new Dimension(60, 25));
+        jumpMPFinal.setHorizontalAlignment(SwingConstants.RIGHT);
 
         weightClass = new JSpinner(new SpinnerNumberModel(20, 10, 100, 5));
 
@@ -506,37 +415,60 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridwidth = 3;
         panArmor.add(unusedTonnageArmorButton, gbc);
         
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        panMovement.add(new JLabel("Base"), gbc);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        panMovement.add(new JLabel("Final"), gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.gridwidth = 1;
         panMovement.add(createLabel("Walking MP:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        panMovement.add(walkMP, gbc);
-        gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        panMovement.add(walkMPBase, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        panMovement.add(walkMPFinal, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         panMovement.add(createLabel("Running MP:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 1;
-        panMovement.add(runMP, gbc);
-        gbc.gridx = 0;
         gbc.gridy = 2;
+        panMovement.add(runMPBase, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        panMovement.add(runMPFinal, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         panMovement.add(createLabel("Jumping MP:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 2;
-        panMovement.add(jumpMP, gbc);
-        gbc.gridx = 0;
         gbc.gridy = 3;
+        panMovement.add(jumpMPBase, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 3;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        panMovement.add(jumpMPFinal, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
         panMovement.add(createLabel("Jump Jet Type:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 2;
         panMovement.add(jjType, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 1;
         panHeat.add(createLabel("Sink Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -750,10 +682,48 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         setHeatSinkCombo();
 
-        walkMP.setValue(Math.max(1, getMech().getOriginalWalkMP()));
+        walkMPBase.setValue(Math.max(1, getMech().getOriginalWalkMP()));
+        walkMPFinal.setText(String.valueOf(getMech().getWalkMP()));
         setJumpJetCombo();
         refreshJumpMP();
-        runMP.setText(getMech().getRunMPasString());
+        runMPBase.setText(String.valueOf((int)Math.ceil((int)walkMPBase.getValue() * 1.5)));
+        runMPFinal.setText(getMech().getRunMPasString());
+        
+        StringJoiner walkTooltip = new StringJoiner(", ");
+        StringJoiner runTooltip = new StringJoiner(", ");
+        StringJoiner jumpTooltip = new StringJoiner(", ");
+        
+        if (getMech().hasModularArmor()) {
+        	walkTooltip.add("-1 (Modular armor)");
+        	jumpTooltip.add("-1 (Modular armor)");
+        }
+        if (getMech().hasMPReducingHardenedArmor()) {
+        	runTooltip.add("-1 (Hardened armor)");
+        }
+        if (getMech().hasArmedMASC()) {
+        	runTooltip.add("MASC");
+        }
+        if (getMech().hasArmedMASCAndSuperCharger()) {
+        	runTooltip.add("Supercharger");
+        }
+        Optional<Mounted> partialWing = getMech().getMisc().stream()
+        		.filter(m -> m.getType().hasFlag(MiscType.F_PARTIAL_WING)).findAny();
+        if (partialWing.isPresent()) {
+        	jumpTooltip.add(String.format("+%d (Partial wing)",
+        			getMech().getPartialWingJumpBonus(partialWing.get())));
+        }
+        int medShields = getMech().getNumberOfShields(MiscType.S_SHIELD_MEDIUM);
+        int lgShields = getMech().getNumberOfShields(MiscType.S_SHIELD_LARGE);
+        if (lgShields + medShields > 0) {
+        	walkTooltip.add(String.format("-%d (Shield)", lgShields + medShields));
+        }
+        if (lgShields > 0) {
+        	jumpTooltip.add("No Jump (Large Shield)");
+        }
+        walkMPFinal.setToolTipText(walkTooltip.length() > 0? walkTooltip.toString() : null);
+        runMPFinal.setToolTipText(runTooltip.length() > 0? runTooltip.toString() : null);
+        jumpMPFinal.setToolTipText(jumpTooltip.length() > 0 && getMech().getOriginalJumpMP(true) > 0?
+        		jumpTooltip.toString() : null);
 
         ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
                 .getMaximumArmorTonnage(getMech()));
@@ -1015,19 +985,20 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     public void refreshJumpMP() {
         // check to make sure we are not over the number of jets
         // we are allowed
-        jumpMP.setValue(getMech().getOriginalJumpMP());
+        jumpMPBase.setValue(getMech().getOriginalJumpMP(true));
+        jumpMPFinal.setText(String.valueOf(getMech().getJumpMP()));
         if ((getJumpJetType() == Mech.JUMP_IMPROVED)
                 || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
-            jumpModel.setMaximum(getMech().getRunMP());
+            jumpModel.setMaximum(getMech().getRunMP(true, true, true));
         } else if (getJumpJetType() == Mech.JUMP_BOOSTER) {
             jumpModel.setMaximum(20);
         } else {
             jumpModel.setMaximum(getMech().getOriginalWalkMP());
         }
-        if (jumpModel.getNumJets() > (Integer) jumpModel.getMaximum()) {
-            jumpMP.setValue(jumpModel.getMaximum());
+        if ((Integer) jumpModel.getValue() > (Integer) jumpModel.getMaximum()) {
+            jumpMPBase.setValue(jumpModel.getMaximum());
         }
-        UnitUtil.updateJumpJets(getMech(), jumpModel.getNumJets(),
+        UnitUtil.updateJumpJets(getMech(), (Integer) jumpModel.getValue(),
                 getJumpJetType());
     }
 
@@ -1135,7 +1106,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         cockpitType.removeItemListener(this);
         heatSinkNumber.removeChangeListener(this);
         heatSinkType.removeItemListener(this);
-        walkMP.removeChangeListener(this);
+        walkMPBase.removeChangeListener(this);
         techLevel.removeItemListener(this);
         techType.removeItemListener(this);
         era.removeKeyListener(this);
@@ -1149,7 +1120,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         baseChassisHeatSinks.removeChangeListener(this);
         chassis.removeKeyListener(this);
         model.removeKeyListener(this);
-        jumpMP.removeChangeListener(this);
+        jumpMPBase.removeChangeListener(this);
         jjType.removeItemListener(this);
         enhancement.removeItemListener(this);
         armorTonnage.removeChangeListener(this);
@@ -1165,7 +1136,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         cockpitType.addItemListener(this);
         heatSinkNumber.addChangeListener(this);
         heatSinkType.addItemListener(this);
-        walkMP.addChangeListener(this);
+        walkMPBase.addChangeListener(this);
         techLevel.addItemListener(this);
         techType.addItemListener(this);
         era.addKeyListener(this);
@@ -1179,7 +1150,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         baseChassisHeatSinks.addChangeListener(this);
         chassis.addKeyListener(this);
         model.addKeyListener(this);
-        jumpMP.addChangeListener(this);
+        jumpMPBase.addChangeListener(this);
         jjType.addItemListener(this);
         enhancement.addItemListener(this);
         armorTonnage.addChangeListener(this);
@@ -2041,7 +2012,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             setJumpJetCombo();
             if (jjType.getSelectedIndex() == -1) {
                 jjType.setSelectedIndex(0);
-                int jump = Math.min(jumpModel.getNumJets(), getMech()
+                int jump = Math.min((Integer) jumpModel.getValue(), getMech()
                         .getWalkMP(true, false, true));
                 UnitUtil.updateJumpJets(getMech(), jump, Mech.JUMP_STANDARD);
             }
@@ -2174,10 +2145,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     getMech().addGyro();
                 }
                 resetEngine();
-            } else if (spinner.equals(walkMP)) {
+            } else if (spinner.equals(walkMPBase)) {
                 resetEngine();
-            } else if (spinner.equals(jumpMP)) {
-                UnitUtil.updateJumpJets(getMech(), jumpModel.getNumJets(),
+            } else if (spinner.equals(jumpMPBase)) {
+                UnitUtil.updateJumpJets(getMech(), (Integer) jumpModel.getValue(),
                         getJumpJetType());
             } else if (spinner.equals(armorTonnage)) {
                 setArmorTonnage();
@@ -2200,10 +2171,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         boolean retVal = false;
         //do {
             Mech mech = getMech();
-            int rating = ((Integer) walkMP.getValue())
+            int rating = ((Integer) walkMPBase.getValue())
                     * ((Integer) weightClass.getValue());
             if (mech.isPrimitive()) {
-                double dRating = ((Integer) walkMP.getValue())
+                double dRating = ((Integer) walkMPBase.getValue())
                         * ((Integer) weightClass.getValue());
                 dRating *= 1.2;
                 if ((dRating % 5) != 0) {
