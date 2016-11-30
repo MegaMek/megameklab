@@ -3022,6 +3022,30 @@ public class UnitUtil {
                         || ((location != Mech.LOC_RT) && (location != Mech.LOC_LT)))) {
                 return false;
             }
+            
+            //vehicular jump jets are auto-assigned to the body
+            if (eq.hasFlag(MiscType.F_JUMP_JET) && unit instanceof Mech) {
+            	if (location == Mech.LOC_HEAD) {
+            		return false;
+            	}
+            	if (!(unit instanceof QuadMech)
+            			&& (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
+            		return false;
+            	}
+            }
+            
+            if (eq.hasFlag(MiscType.F_MODULAR_ARMOR)
+            		&& unit instanceof Mech && location == Mech.LOC_HEAD) {
+            	return false;
+            }
+            
+            if (eq.hasFlag(MiscType.F_CASE)
+            		&& unit instanceof Mech
+            		&& location != Mech.LOC_LT
+            		&& location != Mech.LOC_RT
+            		&& location != Mech.LOC_CT) {
+            	return false;
+            }
 
         } else if (eq instanceof WeaponType) {
             if (eq.hasFlag(WeaponType.F_VGL)) {
