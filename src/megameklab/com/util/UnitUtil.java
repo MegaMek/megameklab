@@ -3034,7 +3034,7 @@ public class UnitUtil {
             	}
             }
             
-            if (eq.hasFlag(MiscType.F_AP_POD)) {
+            if (eq.hasFlag(MiscType.F_AP_POD) && unit instanceof Mech) {
             	if (!(unit instanceof QuadMech)
             			&& (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
             		return false;
@@ -3111,8 +3111,16 @@ public class UnitUtil {
                     return false;
                 }
             }
-            if (unit instanceof Tank && location == Tank.LOC_BODY) {
-            	return false;
+            if (unit instanceof Tank) {
+            	if (location == Tank.LOC_BODY) {
+            		return false;
+            	}
+            	if (eq.hasFlag(WeaponType.F_B_POD)
+            			//Must be mounted in side or turret
+            			&& (location == Tank.LOC_FRONT
+            			|| location == Tank.LOC_REAR)) {
+            		return false;
+            	}
             }
             if (unit instanceof VTOL && location == VTOL.LOC_ROTOR) {
             	return false;
