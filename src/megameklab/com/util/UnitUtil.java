@@ -3034,19 +3034,67 @@ public class UnitUtil {
             	}
             }
             
-            if (eq.hasFlag(MiscType.F_MODULAR_ARMOR)
-            		&& unit instanceof Mech && location == Mech.LOC_HEAD) {
-            	return false;
+            if (eq.hasFlag(MiscType.F_MODULAR_ARMOR)) {
+            	if (unit instanceof Mech && location == Mech.LOC_HEAD) {
+            		return false;
+            	}
+            	if (unit instanceof VTOL && location == VTOL.LOC_ROTOR) {
+            		return false;
+            	}
             }
             
-            if (eq.hasFlag(MiscType.F_CASE)
-            		&& unit instanceof Mech
-            		&& location != Mech.LOC_LT
-            		&& location != Mech.LOC_RT
-            		&& location != Mech.LOC_CT) {
-            	return false;
+            if (eq.hasFlag(MiscType.F_CASE)) {
+            	if (unit instanceof Mech
+            			&& location != Mech.LOC_LT
+            			&& location != Mech.LOC_RT
+            			&& location != Mech.LOC_CT) {
+            		return false;
+            	}
+            	if (unit instanceof Tank && location != Tank.LOC_BODY) {
+            		return false;
+            	}
             }
-
+            
+            if (unit instanceof Tank) {
+            	if (location == Tank.LOC_BODY) {
+            		//Equipment which cannot be installed in the body
+            		if (eq.hasFlag(MiscType.F_HARJEL)
+            				|| eq.hasFlag(MiscType.F_HARJEL_II)
+            				|| eq.hasFlag(MiscType.F_HARJEL_III)
+            				|| eq.hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM)) {
+            			return false;
+            		}
+            	} else {
+            		//Equipment which must be installed in the body
+            		if (eq.hasFlag(MiscType.F_CASE)) {
+            			return false;
+            		}
+            	}
+            	if (eq.hasFlag(MiscType.F_BULLDOZER) && location != Tank.LOC_FRONT) {
+            		return false;
+            	}
+            	
+            	if (unit instanceof VTOL) {
+            		/* Per Tech Manual, no equipment can be installed in the rotor, but TacOps
+            		 * allows some. This is equipment which is specifically disallowed. 
+            		 */
+            		if (location == VTOL.LOC_ROTOR) {
+            			if (eq.hasFlag(MiscType.F_HARJEL)
+                				|| eq.hasFlag(MiscType.F_HARJEL_II)
+                				|| eq.hasFlag(MiscType.F_HARJEL_III)
+            					|| eq.hasFlag(MiscType.F_MODULAR_ARMOR)
+            					|| eq.hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM)) {
+            				return false;
+            			}
+            		} else {
+            			//Equipment which must be installed in the rotor.
+            			if (eq.hasFlag(MiscType.F_MAST_MOUNT)) {
+            				return false;
+            			}
+            		}
+            	}
+            }
+            
         } else if (eq instanceof WeaponType) {
             if (eq.hasFlag(WeaponType.F_VGL)) {
                 if ((unit instanceof Mech)
@@ -3054,6 +3102,12 @@ public class UnitUtil {
                                 && (location != Mech.LOC_RT) && (location != Mech.LOC_LT))) {
                     return false;
                 }
+            }
+            if (unit instanceof Tank && location == Tank.LOC_BODY) {
+            	return false;
+            }
+            if (unit instanceof VTOL && location == VTOL.LOC_ROTOR) {
+            	return false;
             }
         }
 
