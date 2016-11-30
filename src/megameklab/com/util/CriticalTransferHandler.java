@@ -64,6 +64,16 @@ public class CriticalTransferHandler extends TransferHandler {
             try {
                 Mounted mount = getUnit().getEquipment(Integer.parseInt((String) t
                         .getTransferData(DataFlavor.stringFlavor)));
+                
+                if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
+                    JOptionPane.showMessageDialog(null, mount.getName() +
+                            " can't be placed in " +
+                            getUnit().getLocationName(location) + "!",
+                            "Invalid Location",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    return false;
+                }
+                
                 if (!getUnit().addCritical(location, new CriticalSlot(mount))) {
                     JOptionPane.showMessageDialog(null, "Location Full",
                             "Location Full", JOptionPane.INFORMATION_MESSAGE);
