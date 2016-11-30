@@ -3034,6 +3034,18 @@ public class UnitUtil {
             	}
             }
             
+            if (eq.hasFlag(MiscType.F_AP_POD)) {
+            	if (!(unit instanceof QuadMech)
+            			&& (location == Mech.LOC_LARM || location == Mech.LOC_RARM)) {
+            		return false;
+            	}
+            	if (location != Mech.LOC_LLEG
+            			&& location != Mech.LOC_RLEG
+            			&& location != Mech.LOC_CLEG) {
+            		return false;
+            	}
+            }
+            
             if (eq.hasFlag(MiscType.F_MODULAR_ARMOR)) {
             	if (unit instanceof Mech && location == Mech.LOC_HEAD) {
             		return false;
@@ -3059,8 +3071,6 @@ public class UnitUtil {
             	if (location == Tank.LOC_BODY) {
             		//Equipment which cannot be installed in the body
             		if (eq.hasFlag(MiscType.F_HARJEL)
-            				|| eq.hasFlag(MiscType.F_HARJEL_II)
-            				|| eq.hasFlag(MiscType.F_HARJEL_III)
             				|| eq.hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM)) {
             			return false;
             		}
@@ -3080,8 +3090,6 @@ public class UnitUtil {
             		 */
             		if (location == VTOL.LOC_ROTOR) {
             			if (eq.hasFlag(MiscType.F_HARJEL)
-                				|| eq.hasFlag(MiscType.F_HARJEL_II)
-                				|| eq.hasFlag(MiscType.F_HARJEL_III)
             					|| eq.hasFlag(MiscType.F_MODULAR_ARMOR)
             					|| eq.hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM)) {
             				return false;
