@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.41.28
+
 v0.41.27
 + Fixes #14: Mixtech does not allow you to select mixtech armor
 + Fixes #31: ProtoType Jump Jets Missing from Dropdown
