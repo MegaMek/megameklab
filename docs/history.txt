@@ -1,6 +1,6 @@
 VERSION HISTORY:
 ----------------
-v0.41.27-git
+v0.41.27
 + Fixes #14: Mixtech does not allow you to select mixtech armor
 + Fixes #31: ProtoType Jump Jets Missing from Dropdown
 + Fixes #34: Mixed tech units display ALL armor types
@@ -8,6 +8,7 @@ v0.41.27-git
 + Added naval movement modes for combat vehicles.
 + Fixes #33: Large shield messing with jump jets
 + Fixes #29: Jump Jet issue with modular armor
++ Updated MegaMek.jar to 0.41.27
 
 v0.41.26 (2016-11-02 02:00 UTC)
 + Fix #35 by normalizing references to files to use the names of the data files
