@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
-v0.41.28
+v0.41.28 (2016-12-18 17:35 UTC)
++ Updated MegaMek.jar to 0.41.28
 
 v0.41.27 (2016-12-07 03:00 UTC)
 + Fixes #14: Mixtech does not allow you to select mixtech armor
