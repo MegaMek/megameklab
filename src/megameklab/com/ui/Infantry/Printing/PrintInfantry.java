@@ -109,10 +109,10 @@ public class PrintInfantry implements Printable {
     				txtElem = (Text)diagram.getElement(ID_DAMAGE + j);
     				tspan = new Tspan();
         			if (j > infantry.getShootingStrength()) {
-//        				diagram.getElement(ID_SOLDIER + j)
-//        					.addAttribute("display", AnimationElement.AT_XML, "none");
-//        				diagram.getElement(ID_NO_SOLDIER + j)
-//    						.removeAttribute("display", AnimationElement.AT_XML);
+        				diagram.getElement(ID_SOLDIER + j)
+        					.addAttribute("display", AnimationElement.AT_XML, "none");
+        				diagram.getElement(ID_NO_SOLDIER + j)
+    						.removeAttribute("display", AnimationElement.AT_XML);
         				tspan.setText("—");
         			} else {
         				tspan.setText(String.valueOf((int)Math.round(infantry.getDamagePerTrooper()
@@ -121,6 +121,7 @@ public class PrintInfantry implements Printable {
     				txtElem.loaderAddChild(null, tspan);
             		txtElem.rebuild();
         		}
+        		diagram.updateTime(0);
         		InfantryWeapon rangeWeapon = infantry.getPrimaryWeapon();
         		if (infantry.getSecondaryWeapon() != null && infantry.getSecondaryN() > 1) {
         			rangeWeapon = infantry.getSecondaryWeapon();
