@@ -39,8 +39,8 @@
              inkscape:connector-curvature="0" /></g>
                           
         <text transform="matrix(0.99809,0,0,-1,36.0804,691.7402)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="platoon_name"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none">
+           <tspan id="platoon_name"></tspan></text>
      
      <g id="stats">        
         <text
@@ -787,254 +787,197 @@
          inkscape:connector-curvature="0" /></g>
 
     <text transform="matrix(0.99805556,0,0,-1,354.9785,686.0712)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="text_armor_kit">None</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+           <tspan id="text_armor_kit">None</tspan></text>
     <text transform="matrix(0.99805556,0,0,-1,550.9535,686.0712)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="text_armor_divisor">1</text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+           <tspan id="text_armor_divisor">1</tspan></text>
+           
     <text transform="matrix(1,0,0,-1,566.0486,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_1"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_1">—</tspan></text>
     <text transform="matrix(1,0,0,-1,551.6492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_2"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_2">—</tspan></text>
     <text transform="matrix(1,0,0,-1,537.2477,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_3"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_3">—</tspan></text>
     <text transform="matrix(1,0,0,-1,522.8492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_4"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_4">—</tspan></text>
     <text transform="matrix(1,0,0,-1,508.4469,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_5"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_5">—</tspan></text>
     <text transform="matrix(1,0,0,-1,494.0492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_6"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_6">—</tspan></text>
     <text transform="matrix(1,0,0,-1,479.6492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_7"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_7">—</tspan></text>
     <text transform="matrix(1,0,0,-1,465.2478,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_8"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_8">—</tspan></text>
     <text transform="matrix(1,0,0,-1,450.8492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_9"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_9">—</tspan></text>
     <text transform="matrix(1,0,0,-1,436.4469,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_10"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_10">—</tspan></text>
     <text transform="matrix(1,0,0,-1,422.0492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_11"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_11">—</tspan></text>
     <text transform="matrix(1,0,0,-1,407.6482,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_12"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_12">—</tspan></text>
     <text transform="matrix(1,0,0,-1,393.2478,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_13"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_13">—</tspan></text>
     <text transform="matrix(1,0,0,-1,378.8492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_14"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_14">—</tspan></text>
     <text transform="matrix(1,0,0,-1,364.4469,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_15"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_15">—</tspan></text>
     <text transform="matrix(1,0,0,-1,350.0492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_16"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_16">—</tspan></text>
     <text transform="matrix(1,0,0,-1,335.6482,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_17"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_17">—</tspan></text>
     <text transform="matrix(1,0,0,-1,321.2478,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_18"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_18">—</tspan></text>
     <text transform="matrix(1,0,0,-1,306.8473,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_19"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_19">—</tspan></text>
     <text transform="matrix(1,0,0,-1,292.4474,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_20"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_20">—</tspan></text>
     <text transform="matrix(1,0,0,-1,278.0492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_21"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_21">—</tspan></text>
     <text transform="matrix(1,0,0,-1,263.6471,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_22"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_22">—</tspan></text>
     <text transform="matrix(1,0,0,-1,249.2492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_23"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_23">—</tspan></text>
     <text transform="matrix(1,0,0,-1,234.8473,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_24"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_24">—</tspan></text>
     <text transform="matrix(1,0,0,-1,220.4475,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_25"></text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_25">—</tspan></text>
     <text transform="matrix(1,0,0,-1,206.0492,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_26"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_26">—</tspan></text>
     <text transform="matrix(1,0,0,-1,191.6471,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_27"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_27">—</tspan></text>
     <text transform="matrix(1,0,0,-1,177.249,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_28"></text>
-
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_28">—</tspan></text>
     <text transform="matrix(1,0,0,-1,162.847,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_29"></text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_29">—</tspan></text>
     <text transform="matrix(1,0,0,-1,148.16,639.2993)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="damage_30"></text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_30">—</tspan></text>
 
     <text transform="matrix(1,0,0,-1,203.21792,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_0"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_0">—</tspan></text>
 
     <text transform="matrix(1,0,0,-1,221.0559,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_1"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_1">—</tspan></text>
            
     <text transform="matrix(1,0,0,-1,238.09592,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_2"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_2">—</tspan></text>
            
     <text transform="matrix(1,0,0,-1,255.1359,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_3"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_3">—</tspan></text>
            
     <text transform="matrix(1,0,0,-1,270.4239,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_4"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_4">—</tspan></text>
 
     <text transform="matrix(1,0,0,-1,287.46392,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_5"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_5">—</tspan></text>
 
     <text transform="matrix(1,0,0,-1,304.50392,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_6"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_6">—</tspan></text>
     <text transform="matrix(1,0,0,-1,321.54392,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_7"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_7">—</tspan></text>
     <text transform="matrix(1,0,0,-1,338.58392,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_8"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_8">—</tspan></text>
     <text transform="matrix(1,0,0,-1,355.62393,610.9526)"
-           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_9"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_9">—</tspan></text>
     <text transform="matrix(1,0,0,-1,372.707,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_10"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_10">—</tspan></text>
     <text transform="matrix(1,0,0,-1,389.7147,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_11"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_11">—</tspan></text>
     <text transform="matrix(1,0,0,-1,406.7226,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_12"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_12">—</tspan></text>
     <text transform="matrix(1,0,0,-1,423.7305,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_13"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_13">—</tspan></text>
     <text transform="matrix(1,0,0,-1,440.7385,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_14"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_14">—</tspan></text>
     <text transform="matrix(1,0,0,-1,457.7462,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_15"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_15">—</tspan></text>
     <text transform="matrix(1,0,0,-1,474.7541,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_16"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_16">—</tspan></text>
     <text transform="matrix(1,0,0,-1,491.762,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_17"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_17">—</tspan></text>
     <text transform="matrix(1,0,0,-1,508.7699,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_18"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_18">—</tspan></text>
     <text transform="matrix(1,0,0,-1,525.7778,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_19"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_19">—</tspan></text>
     <text transform="matrix(1,0,0,-1,542.7856,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_20"></text>
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_20">—</tspan></text>
     <text transform="matrix(1,0,0,-1,558.7396,610.9526)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"
-           id="range_mod_21"></text>               
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
+           <tspan id="range_mod_21">—</tspan></text>
     
     <text transform="matrix(0.99808333,0,0,-1,199.07959,597.4267)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="field_gun">N/A</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="field_gun">N/A</tspan></text>
     <text transform="matrix(0.99808333,0,0,-1,333.546,597.4267)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="field_gun_ammo">N/A</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="field_gun_ammo">N/A</tspan></text>
 
     <text transform="matrix(0.99808333,0,0,-1,424.4276,597.4267)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="disposable_weapon_1">N/A</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="disposable_weapon_1">N/A</tspan></text>
     <text transform="matrix(0.99808333,0,0,-1,550.8116,597.4267)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="disposable_weapon_ammo_1">N/A</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="disposable_weapon_ammo_1">N/A</tspan></text>
 
     <text transform="matrix(0.99808333,0,0,-1,211.07959,586.4287)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="disposable_weapon_2">N/A</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="disposable_weapon_2">N/A</tspan></text>
     <text transform="matrix(0.99808333,0,0,-1,333.546,586.4287)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="disposable_weapon_ammo_2">N/A</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="disposable_weapon_ammo_2">N/A</tspan></text>
 
     <text transform="matrix(0.99808333,0,0,-1,424.4276,586.4287)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="disposable_weapon_3">N/A</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="disposable_weapon_3">N/A</tspan></text>
     <text transform="matrix(0.99808333,0,0,-1,550.8116,586.4287)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="disposable_weapon_ammo_3">N/A</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="disposable_weapon_ammo_3">N/A</tspan></text>
 
     <text transform="matrix(0.99805556,0,0,-1,384.742,569.8505)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="mp_1"></text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="mp_1"></tspan></text>
     <text transform="matrix(0.99805556,0,0,-1,441.55,569.8505)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="movement_mode_1"></text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="movement_mode_1"></tspan></text>
     <text transform="matrix(0.99805556,0,0,-1,384.742,558.3845)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="mp_2"></text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="mp_2">N/A</tspan></text>
     <text transform="matrix(0.99805556,0,0,-1,441.55,558.3845)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="movement_mode_2"></text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="movement_mode_2">N/A</tspan></text>
 
     <text transform="matrix(0.99805556,0,0,-1,159.3875,569.8505)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="bv"></text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="bv"></tspan></text>
 
     <text transform="matrix(0.99805556,0,0,-1,267.3155,569.8505)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="transport_wt"></text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="transport_wt"></tspan></text>
 
     <text transform="matrix(0.99805,0,0,-1,37.4979,613.7875)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="notes">None</text>
+           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
+            <tspan id="notes">None</tspan></text>
     </g></g>
 </svg>
