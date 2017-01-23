@@ -34,9 +34,12 @@ import com.kitfox.svg.Text;
 import com.kitfox.svg.Tspan;
 import com.kitfox.svg.animation.AnimationElement;
 
+import megamek.common.AmmoType;
 import megamek.common.Compute;
 import megamek.common.Infantry;
+import megamek.common.Mounted;
 import megamek.common.TargetRollModifier;
+import megamek.common.WeaponType;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.util.ImageHelper;
 
@@ -55,6 +58,8 @@ public class PrintInfantry implements Printable {
 	private final static String ID_NO_SOLDIER = "no_soldier_";
 	private final static String ID_DAMAGE = "damage_";
 	private final static String ID_RANGE_MOD = "range_mod_";
+	private final static String ID_FIELD_GUN = "field_gun";
+	private final static String ID_FIELD_GUN_AMMO = "field_gun_ammo";
 	private final static String ID_MP_1 = "mp_1";
 	private final static String ID_MODE_1 = "movement_mode_1";
 	private final static String ID_MP_2 = "mp_2";
@@ -163,6 +168,31 @@ public class PrintInfantry implements Printable {
         				tspan.setText(String.format("%+d", mod));
         				((Text)tspan.getParent()).rebuild();
         			}
+        		}
+        		
+        		int numGuns = 0;
+        		int numShots = 0;
+        		String gunType = null;
+        		for (Mounted m : infantry.getEquipment()) {
+        			if (m.getLocation() == Infantry.LOC_FIELD_GUNS) {
+        				if (m.getType() instanceof WeaponType) {
+        					gunType = m.getName();
+        					numGuns++;
+        				} else if (m.getType() instanceof AmmoType) {
+        					numShots += ((AmmoType)m.getType()).getShots();
+        				}
+        			}
+        		}
+        		if (gunType != null) {
+        			if (numGuns > 1) {
+        				gunType += " x " + numGuns;
+        			}
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN);
+					tspan.setText(gunType);
+					((Text)tspan.getParent()).rebuild();
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_AMMO);
+					tspan.setText(Integer.toString(numShots));
+					((Text)tspan.getParent()).rebuild();
         		}
         		
         		Tspan mp1 = (Tspan)diagram.getElement(ID_MP_1);
