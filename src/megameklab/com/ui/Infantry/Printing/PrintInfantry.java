@@ -54,6 +54,10 @@ public class PrintInfantry implements Printable {
 	private final static String ID_NO_SOLDIER = "no_soldier_";
 	private final static String ID_DAMAGE = "damage_";
 	private final static String ID_RANGE_MOD = "range_mod_";
+	private final static String ID_MP_1 = "mp_1";
+	private final static String ID_MODE_1 = "movement_mode_1";
+	private final static String ID_MP_2 = "mp_2";
+	private final static String ID_MODE_2 = "movement_mode_2";
 
     private Infantry infantry = null;
     private ArrayList<Infantry> infantryList;
@@ -130,6 +134,61 @@ public class PrintInfantry implements Printable {
         				((Text)tspan.getParent()).rebuild();
         			}
         		}
+        		
+        		Tspan mp1 = (Tspan)diagram.getElement(ID_MP_1);
+        		Tspan mode1 = (Tspan)diagram.getElement(ID_MODE_1);
+        		Tspan mp2 = (Tspan)diagram.getElement(ID_MP_2);
+        		Tspan mode2 = (Tspan)diagram.getElement(ID_MODE_2);
+        		switch(infantry.getMovementMode()) {
+				case INF_JUMP:
+					mp1.setText(Integer.toString(infantry.getJumpMP(false)));
+					mode1.setText("Jump");
+					mp2.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
+					mode2.setText("Ground");
+					((Text)mp2.getParent()).rebuild();
+					((Text)mode2.getParent()).rebuild();
+					break;
+				case INF_UMU:
+					mp1.setText(Integer.toString(infantry.getJumpMP(false)));
+					mode1.setText("UMU");
+					mp2.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
+					mode2.setText("Ground");
+					((Text)mp2.getParent()).rebuild();
+					((Text)mode2.getParent()).rebuild();
+					break;
+				case HOVER:
+					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
+					mode1.setText("Hover");
+					break;
+				case TRACKED:
+					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
+					mode1.setText("Tracked");
+					break;
+				case WHEELED:
+					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
+					mode1.setText("Wheeled");
+					break;
+				case VTOL:
+					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
+					mode1.setText("VTOL");
+					break;
+				case INF_MOTORIZED:
+					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
+					mode1.setText("Motorized");
+					break;
+				case INF_LEG:
+				default:
+					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
+					mode1.setText("Ground");
+					break;
+        		}
+        		if (mp1.getText().equals("0")) {
+        			mp1.setText("0*");
+        		}
+				((Text)mp1.getParent()).rebuild();
+				((Text)mode1.getParent()).rebuild();
+        		diagram.updateTime(0);
+        		
             	diagram.render(g2d);
         	}
         } catch (SVGException ex) {
