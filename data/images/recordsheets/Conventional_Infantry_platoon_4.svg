@@ -788,10 +788,10 @@
 
     <text transform="matrix(0.99805556,0,0,-1,354.9785,686.0712)"
            style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-           <tspan id="text_armor_kit">None</tspan></text>
+           <tspan id="armor_kit">None</tspan></text>
     <text transform="matrix(0.99805556,0,0,-1,550.9535,686.0712)"
            style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-           <tspan id="text_armor_divisor">1</tspan></text>
+           <tspan id="armor_divisor">1</tspan></text>
            
     <text transform="matrix(1,0,0,-1,566.0486,639.2993)"
            style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="damage_1">—</tspan></text>
