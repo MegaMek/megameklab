@@ -15,7 +15,6 @@ package megameklab.com.ui.Infantry.Printing;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
@@ -24,11 +23,11 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.StringJoiner;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
-import com.kitfox.svg.Group;
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGException;
 import com.kitfox.svg.Text;
@@ -50,6 +49,8 @@ public class PrintInfantry implements Printable {
 	/* Id tags of elements in the SVG file */
 	private final static String ID_FLUFF_IMAGE = "imageFluff";
 	private final static String ID_PLATOON_NAME = "platoon_name";
+	private final static String ID_ARMOR_KIT = "armor_kit";
+	private final static String ID_ARMOR_DIVISOR = "armor_divisor";
 	private final static String ID_SOLDIER = "soldier_";
 	private final static String ID_NO_SOLDIER = "no_soldier_";
 	private final static String ID_DAMAGE = "damage_";
@@ -105,6 +106,35 @@ public class PrintInfantry implements Printable {
         		infantry = infantryList.get(pos + currentPosition);
         		tspan = (Tspan)diagram.getElement(ID_PLATOON_NAME);
         		tspan.setText(infantry.getShortName());
+        		((Text)tspan.getParent()).rebuild();
+        		
+        		tspan = (Tspan)diagram.getElement(ID_ARMOR_KIT);
+        		StringJoiner sj = new StringJoiner("/");
+        		if (infantry.hasSpaceSuit()) {
+        			sj.add("Space Suit");
+        		}
+        		if (infantry.hasDEST()) {
+        			sj.add("DEST");
+        		}
+        		if (infantry.hasSneakCamo()) {
+        			sj.add("Sneak (Camo)");
+        		}
+        		if (infantry.hasSneakIR()) {
+        			sj.add("Sneak (IR)");
+        		}
+        		if (infantry.hasSneakECM()) {
+        			sj.add("Sneak (ECM)");
+        		}
+        		if (infantry.isArmorEncumbering()) {
+        			sj.add("Encumbering");
+        		}
+        		if (sj.length() == 0) {
+        			sj.add("None");
+        		}
+        		tspan.setText(sj.toString());
+        		((Text)tspan.getParent()).rebuild();
+        		tspan = (Tspan)diagram.getElement(ID_ARMOR_DIVISOR);
+        		tspan.setText(String.valueOf(infantry.getDamageDivisor()));
         		((Text)tspan.getParent()).rebuild();
 
         		for (int j = 1; j <= 30; j++) {
