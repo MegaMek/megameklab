@@ -49,7 +49,6 @@ public class PrintInfantry implements Printable {
 	
 	/* Id tags of elements in the SVG file */
 	private final static String ID_FLUFF_IMAGE = "imageFluff";
-	private final static String ID_PLATOON = "platoon";
 	private final static String ID_PLATOON_NAME = "platoon_name";
 	private final static String ID_SOLDIER = "soldier_";
 	private final static String ID_NO_SOLDIER = "no_soldier_";
@@ -93,29 +92,26 @@ public class PrintInfantry implements Printable {
         	Tspan tspan = (Tspan)diagram.getElement("tspan_year");
         	tspan.setText(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
         	((Text)tspan.getParent()).rebuild();
+            diagram.render(g2d);
 
             int stop = Math.min(4, infantryList.size() - currentPosition);
-            for (int pos = 0; pos < 4; pos++) {
-            	String infId = "_" + (pos + 1);
-            	if (pos >= infantryList.size() - currentPosition) {
-            		diagram.getElement(ID_PLATOON + infId).addAttribute("display",
-            				AnimationElement.AT_XML, "none");
-            		continue;
-            	}
+            for (int pos = 0; pos < stop; pos++) {
+                diagram = ImageHelper.loadSVGImage(new File("data/images/recordsheets/Conventional_Infantry_platoon_"
+                		+ (pos + 1) + ".svg"));
         		infantry = infantryList.get(pos + currentPosition);
-        		Text txtElem = (Text)diagram.getElement(ID_PLATOON_NAME + infId);
+        		Text txtElem = (Text)diagram.getElement(ID_PLATOON_NAME);
         		tspan = new Tspan();
-        		tspan.setText(infantry.getShortName() + " " + (pos + 1));
+        		tspan.setText(infantry.getShortName());
         		txtElem.loaderAddChild(null, tspan);
         		txtElem.rebuild();
 
         		for (int j = 1; j <= 30; j++) {
-    				txtElem = (Text)diagram.getElement(ID_DAMAGE + j + infId);
+    				txtElem = (Text)diagram.getElement(ID_DAMAGE + j);
     				tspan = new Tspan();
         			if (j > infantry.getShootingStrength()) {
-//        				diagram.getElement(ID_SOLDIER + j + infId)
+//        				diagram.getElement(ID_SOLDIER + j)
 //        					.addAttribute("display", AnimationElement.AT_XML, "none");
-//        				diagram.getElement(ID_NO_SOLDIER + j + infId)
+//        				diagram.getElement(ID_NO_SOLDIER + j)
 //    						.removeAttribute("display", AnimationElement.AT_XML);
         				tspan.setText("—");
         			} else {
@@ -130,7 +126,7 @@ public class PrintInfantry implements Printable {
         			rangeWeapon = infantry.getSecondaryWeapon();
         		}
         		for (int j = 0; j <= 21; j++) {
-    				txtElem = (Text)diagram.getElement(ID_RANGE_MOD + j + infId);
+    				txtElem = (Text)diagram.getElement(ID_RANGE_MOD + j);
     				tspan = new Tspan();
         			if (rangeWeapon.getInfantryRange() * 3 < j) {
         				tspan.setText("—");
@@ -142,8 +138,8 @@ public class PrintInfantry implements Printable {
         			txtElem.loaderAddChild(null, tspan);
             		txtElem.rebuild();
         		}
+            	diagram.render(g2d);
         	}
-            diagram.render(g2d);
         } catch (SVGException ex) {
         	ex.printStackTrace();
         }
