@@ -99,27 +99,22 @@ public class PrintInfantry implements Printable {
                 diagram = ImageHelper.loadSVGImage(new File("data/images/recordsheets/Conventional_Infantry_platoon_"
                 		+ (pos + 1) + ".svg"));
         		infantry = infantryList.get(pos + currentPosition);
-        		Text txtElem = (Text)diagram.getElement(ID_PLATOON_NAME);
-        		tspan = new Tspan();
+        		tspan = (Tspan)diagram.getElement(ID_PLATOON_NAME);
         		tspan.setText(infantry.getShortName());
-        		txtElem.loaderAddChild(null, tspan);
-        		txtElem.rebuild();
+        		((Text)tspan.getParent()).rebuild();
 
         		for (int j = 1; j <= 30; j++) {
-    				txtElem = (Text)diagram.getElement(ID_DAMAGE + j);
-    				tspan = new Tspan();
         			if (j > infantry.getShootingStrength()) {
         				diagram.getElement(ID_SOLDIER + j)
         					.addAttribute("display", AnimationElement.AT_XML, "none");
         				diagram.getElement(ID_NO_SOLDIER + j)
     						.removeAttribute("display", AnimationElement.AT_XML);
-        				tspan.setText("—");
         			} else {
+        				tspan = (Tspan)diagram.getElement(ID_DAMAGE + j);
         				tspan.setText(String.valueOf((int)Math.round(infantry.getDamagePerTrooper()
                 				* j)));
+        				((Text)tspan.getParent()).rebuild();
         			}
-    				txtElem.loaderAddChild(null, tspan);
-            		txtElem.rebuild();
         		}
         		diagram.updateTime(0);
         		InfantryWeapon rangeWeapon = infantry.getPrimaryWeapon();
@@ -127,17 +122,13 @@ public class PrintInfantry implements Printable {
         			rangeWeapon = infantry.getSecondaryWeapon();
         		}
         		for (int j = 0; j <= 21; j++) {
-    				txtElem = (Text)diagram.getElement(ID_RANGE_MOD + j);
-    				tspan = new Tspan();
-        			if (rangeWeapon.getInfantryRange() * 3 < j) {
-        				tspan.setText("—");
-        			} else {
+        			if (rangeWeapon.getInfantryRange() * 3 >= j) {
 	        			int mod = Compute.getInfantryRangeMods(j, rangeWeapon)
 	        					.getModifiers().stream().mapToInt(TargetRollModifier::getValue).sum();
+	    				tspan = (Tspan)diagram.getElement(ID_RANGE_MOD + j);
         				tspan.setText(String.format("%+d", mod));
+        				((Text)tspan.getParent()).rebuild();
         			}
-        			txtElem.loaderAddChild(null, tspan);
-            		txtElem.rebuild();
         		}
             	diagram.render(g2d);
         	}
