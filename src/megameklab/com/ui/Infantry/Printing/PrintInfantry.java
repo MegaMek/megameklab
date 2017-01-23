@@ -60,6 +60,8 @@ public class PrintInfantry implements Printable {
 	private final static String ID_RANGE_MOD = "range_mod_";
 	private final static String ID_FIELD_GUN = "field_gun";
 	private final static String ID_FIELD_GUN_AMMO = "field_gun_ammo";
+	private final static String ID_BV = "bv";
+	private final static String ID_TRANSPORT_WT = "transport_wt";
 	private final static String ID_MP_1 = "mp_1";
 	private final static String ID_MODE_1 = "movement_mode_1";
 	private final static String ID_MP_2 = "mp_2";
@@ -194,6 +196,13 @@ public class PrintInfantry implements Printable {
 					tspan.setText(Integer.toString(numShots));
 					((Text)tspan.getParent()).rebuild();
         		}
+        		
+        		tspan = (Tspan)diagram.getElement(ID_BV);
+        		tspan.setText(Integer.toString(infantry.calculateBattleValue()));
+        		((Text)tspan.getParent()).rebuild();
+        		tspan = (Tspan)diagram.getElement(ID_TRANSPORT_WT);
+        		tspan.setText(String.format("%.1f tons", infantry.getWeight()));
+        		((Text)tspan.getParent()).rebuild();
         		
         		Tspan mp1 = (Tspan)diagram.getElement(ID_MP_1);
         		Tspan mode1 = (Tspan)diagram.getElement(ID_MODE_1);
