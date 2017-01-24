@@ -1129,31 +1129,32 @@
              style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              id="path10269"
              inkscape:connector-curvature="0" /></g></g>
-<!--             
         <g
          id="gfluffImage"
          clip-path="url(#clipPath13245)"><g
              id="g13251"
-             transform="matrix(42.852783,0,0,49.16188,411.34045,716.27702)"><image
-               width="1"
-               height="1"
-               preserveAspectRatio="none"
-               transform="matrix(1,0,0,-1,0,1)" id="imageFluff" /></g></g>
--->
+             transform="matrix(27.42576,0,0,49.16188,411.34045,716.27702)"><image
+             width="1"
+             height="1"
+             preserveAspectRatio="none"
+             transform="matrix(1,0,0,-1,0,1)"
+             xlink:href="data:image/png;base64,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"
+             id="imageFluff" /></g></g>
+
     <g id="g11177"
          clip-path="url(#clipPath11179)">
         <text
-           transform="matrix(1,0,0,-1,459.0273,748.6689)"
+           transform="matrix(1,0,0,-1,501.0273,748.6689)"
            style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="text11193">CONVENTIONAL</text>
+text-anchor="middle">CONVENTIONAL</text>
         <text
-           transform="matrix(1,0,0,-1,459.0273,736.6689)"
+           transform="matrix(1,0,0,-1,501.0273,736.6689)"
            style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="text11193">INFANTRY RECORD</text>
+text-anchor="middle">INFANTRY RECORD</text>
         <text
-           transform="matrix(1,0,0,-1,459.0273,722.6689)"
+           transform="matrix(1,0,0,-1,501.0273,724.6689)"
            style="font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Bold;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="text11193">SHEET</text></g>
+text-anchor="middle">SHEET</text></g>
     
 </g></g>
 </svg>
