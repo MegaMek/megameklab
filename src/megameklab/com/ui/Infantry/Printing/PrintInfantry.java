@@ -97,16 +97,21 @@ public class PrintInfantry implements Printable {
             return;
         }
         
-        SVGDiagram diagram = ImageHelper.loadSVGImage(new File("data/images/recordsheets/Conventional_Infantry_template.svg"));
+        SVGDiagram diagram;
         
-        
+        int stop = Math.min(4, infantryList.size() - currentPosition);
+    	if (stop > 3) {
+    		diagram = ImageHelper.loadSVGImage(new File("data/images/recordsheets/Conventional_Infantry_no_tables.svg"));
+    	} else {
+    		diagram = ImageHelper.loadSVGImage(new File("data/images/recordsheets/Conventional_Infantry_tables.svg"));
+    	}
+
         try {
-        	Tspan tspan = (Tspan)diagram.getElement("tspan_year");
-        	tspan.setText(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
+        	Tspan tspan = (Tspan)diagram.getElement("text_copyright");
+        	tspan.setText(String.format(tspan.getText(), Calendar.getInstance().get(Calendar.YEAR)));
         	((Text)tspan.getParent()).rebuild();
             diagram.render(g2d);
 
-            int stop = Math.min(4, infantryList.size() - currentPosition);
             for (int pos = 0; pos < stop; pos++) {
                 diagram = ImageHelper.loadSVGImage(new File("data/images/recordsheets/Conventional_Infantry_platoon_"
                 		+ (pos + 1) + ".svg"));
