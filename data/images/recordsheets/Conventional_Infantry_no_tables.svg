@@ -938,14 +938,7 @@
            id="text10119"><tspan
              x="0"
              y="0"
-             id="tspan10117">©</tspan><tspan
-                x="6.854064"
-                y="0"
-                id="tspan_year"></tspan><tspan
-             x="21.18"
-             y="0"
-             sodipodi:role="line"
-             id="tspan10121">The Topps Company, Inc. Classic BattleTech, BattleTech, ’Mech and BattleMech are trademarks of The Topps Company, Inc. All rights reserved. Catalyst Game Labs and the </tspan><tspan
+             id="text_copyright">© %d The Topps Company, Inc. Classic BattleTech, BattleTech, ’Mech and BattleMech are trademarks of The Topps Company, Inc. All rights reserved. Catalyst Game Labs and the </tspan><tspan
              x="89.753998"
              y="7.1999998"
              sodipodi:role="line"
@@ -1130,7 +1123,6 @@
              id="path10269"
              inkscape:connector-curvature="0" /></g></g>
         <g
-         id="gfluffImage"
          clip-path="url(#clipPath13245)"><g
              id="g13251"
              transform="matrix(27.42576,0,0,49.16188,411.34045,716.27702)"><image

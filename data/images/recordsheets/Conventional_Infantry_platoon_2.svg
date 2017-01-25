@@ -10,12 +10,8 @@
    height="783"
    viewBox="0 0 603 783">
 
-    <g id="platoon" transform="matrix(1,0,0,-1,0,783)"><g transform="translate(0,-165.14)">
+    <g id="platoon" transform="matrix(1,0,0,-1,0,783)"><g transform="translate(0,-157.375)">
         <g id="frame">
-        <path transform="translate(291.2119,522.4882)"
-             d="m 0,0 -253.998,0 -5.385,8.08 5.372,8.078 253.998,0 L 5.373,8.08 0,0 Z"
-             style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             inkscape:connector-curvature="0" />
              
         <path transform="translate(584.5892,558.5095)"
              d="m 0,0 -5.67,-8.505 -272.133,0 -5.661,8.505 -260.793,0 -5.67,8.505 0,126.144 5.67,8.505 256.536,0 5.67,-8.505 274.959,0 L 0,126.144 0,0 Z"
