@@ -732,30 +732,49 @@
              sodipodi:role="line">Range Modifer</tspan><tspan
              x="-54.683998"
              y="12.642"> </tspan><tspan
-             x="-54.683998"
-             y="19.841999"
-             sodipodi:role="line">Field Gun Type:</tspan><tspan
-             x="110.928"
-             y="19.841999"
-             sodipodi:role="line">Ammo:</tspan><tspan
              x="162.582"
              y="19.841999"
-             sodipodi:role="line">Disposable Weapon:</tspan><tspan
-             x="328.194"
-             y="19.841999"
-             sodipodi:role="line">Ammo:</tspan><tspan
-             x="162.582"
-             y="31.181999"
-             sodipodi:role="line">Disposable Weapon:</tspan><tspan
-             x="328.194"
-             y="31.181999"
-             sodipodi:role="line">Ammo:</tspan><tspan
-             x="-54.683998"
-             y="31.181999"
-             sodipodi:role="line">Disposable Weapon:</tspan><tspan
-             x="110.928"
-             y="31.181999"
-             sodipodi:role="line">Ammo:</tspan></text>
+             sodipodi:role="line">Disposable Weapon:</tspan></text>
+             
+        <g id="field_gun_columns">
+           <text  transform="matrix(1,0,0,-1,152,598.084)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">Qty</text>
+           <text  transform="matrix(1,0,0,-1,163.403,598.084)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="left">Field Gun Type</text>
+           <text  transform="matrix(1,0,0,-1,230.13,598.084)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">Dmg</text>
+           <text  transform="matrix(1,0,0,-1,264.38,598.084)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">Min</text>
+           <text  transform="matrix(1,0,0,-1,276.96,598.084)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">S</text>
+           <text  transform="matrix(1,0,0,-1,289.55,598.084)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">M</text>
+           <text  transform="matrix(1,0,0,-1,302.13,598.084)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">L</text>
+           <text  transform="matrix(1,0,0,-1,321.54392,598.084)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">Ammo</text>
+           <text  transform="matrix(1,0,0,-1,340,598.084)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">Crew</text>
+        </g>
+             
+           <text  transform="matrix(1,0,0,-1,152,591)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="field_gun_qty" /></text>
+           <text  transform="matrix(1,0,0,-1,163.403,591)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="left"><tspan id="field_gun_type" /></text>
+           <text  transform="matrix(1,0,0,-1,230.13,591)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="field_gun_dmg" /></text>
+           <text  transform="matrix(1,0,0,-1,264.38,591)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="field_gun_min_range" /></text>
+           <text  transform="matrix(1,0,0,-1,276.96,591)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="field_gun_short" /></text>
+           <text  transform="matrix(1,0,0,-1,289.55,591)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="field_gun_med" /></text>
+           <text  transform="matrix(1,0,0,-1,302.13,591)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="field_gun_long" /></text>
+           <text  transform="matrix(1,0,0,-1,321.54392,591)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="field_gun_ammo" /></text>
+           <text  transform="matrix(1,0,0,-1,340,591)"
+               style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle"><tspan id="field_gun_crew" /></text>
              
     <text transform="matrix(1,0,0,-1,203.21792,617.9259)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
@@ -1007,34 +1026,17 @@
     <text transform="matrix(1,0,0,-1,558.7396,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
            <tspan id="range_mod_21">—</tspan></text>
-    
+<!--    
     <text transform="matrix(0.99808333,0,0,-1,199.07959,598.083901)"
            style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
             <tspan id="field_gun">N/A</tspan></text>
     <text transform="matrix(0.99808333,0,0,-1,333.546,598.083901)"
            style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
             <tspan id="field_gun_ammo">N/A</tspan></text>
-
+-->
     <text transform="matrix(0.99808333,0,0,-1,424.4276,598.083901)"
            style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-            <tspan id="disposable_weapon_1">N/A</tspan></text>
-    <text transform="matrix(0.99808333,0,0,-1,550.8116,598.083901)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-            <tspan id="disposable_weapon_ammo_1">N/A</tspan></text>
-
-    <text transform="matrix(0.99808333,0,0,-1,211.07959,586.743901)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-            <tspan id="disposable_weapon_2">N/A</tspan></text>
-    <text transform="matrix(0.99808333,0,0,-1,333.546,586.743901)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-            <tspan id="disposable_weapon_ammo_2">N/A</tspan></text>
-
-    <text transform="matrix(0.99808333,0,0,-1,424.4276,586.743901)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-            <tspan id="disposable_weapon_3">N/A</tspan></text>
-    <text transform="matrix(0.99808333,0,0,-1,550.8116,586.743901)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-            <tspan id="disposable_weapon_ammo_3">N/A</tspan></text>
+            <tspan id="disposable_weapon">N/A</tspan></text>
 
     <text transform="matrix(0.99805556,0,0,-1,384.742,569.8505)"
            style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
