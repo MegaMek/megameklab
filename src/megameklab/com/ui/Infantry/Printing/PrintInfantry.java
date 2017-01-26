@@ -40,6 +40,7 @@ import megamek.common.Infantry;
 import megamek.common.Mounted;
 import megamek.common.TargetRollModifier;
 import megamek.common.WeaponType;
+import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.util.ImageHelper;
 
@@ -58,8 +59,16 @@ public class PrintInfantry implements Printable {
 	private final static String ID_NO_SOLDIER = "no_soldier_";
 	private final static String ID_DAMAGE = "damage_";
 	private final static String ID_RANGE_MOD = "range_mod_";
-	private final static String ID_FIELD_GUN = "field_gun";
+	private final static String ID_FIELD_GUN_COLUMNS = "field_gun_columns";
+	private final static String ID_FIELD_GUN_QTY = "field_gun_qty";
+	private final static String ID_FIELD_GUN_TYPE = "field_gun_type";
+	private final static String ID_FIELD_GUN_DMG = "field_gun_dmg";
+	private final static String ID_FIELD_GUN_MIN_RANGE = "field_gun_min_range";
+	private final static String ID_FIELD_GUN_SHORT = "field_gun_short";
+	private final static String ID_FIELD_GUN_MED = "field_gun_med";
+	private final static String ID_FIELD_GUN_LONG = "field_gun_long";
 	private final static String ID_FIELD_GUN_AMMO = "field_gun_ammo";
+	private final static String ID_FIELD_GUN_CREW = "field_gun_crew";
 	private final static String ID_BV = "bv";
 	private final static String ID_TRANSPORT_WT = "transport_wt";
 	private final static String ID_MP_1 = "mp_1";
@@ -179,26 +188,68 @@ public class PrintInfantry implements Printable {
         		
         		int numGuns = 0;
         		int numShots = 0;
-        		String gunType = null;
+        		WeaponType gun = null;
         		for (Mounted m : infantry.getEquipment()) {
         			if (m.getLocation() == Infantry.LOC_FIELD_GUNS) {
         				if (m.getType() instanceof WeaponType) {
-        					gunType = m.getName();
+        					gun = (WeaponType)m.getType();
         					numGuns++;
         				} else if (m.getType() instanceof AmmoType) {
         					numShots += ((AmmoType)m.getType()).getShots();
         				}
         			}
         		}
-        		if (gunType != null) {
-        			if (numGuns > 1) {
-        				gunType += " x " + numGuns;
-        			}
-					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN);
-					tspan.setText(gunType);
+        		if (gun == null) {
+        			diagram.getElement(ID_FIELD_GUN_COLUMNS).addAttribute("display",
+        					AnimationElement.AT_XML, "none");
+        		} else {
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_QTY);
+					tspan.setText(Integer.toString(numGuns));
+					((Text)tspan.getParent()).rebuild();
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_TYPE);
+					tspan.setText(gun.getName());
+					((Text)tspan.getParent()).rebuild();
+					/* We don't use StringUnits.getEquipmentInfo() to format the damage
+					 * string because switchable ammo and gauss explosion flags do not apply.
+					 */
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_DMG);
+					if (gun instanceof ArtilleryWeapon) {
+	                    tspan.setText(gun.getRackSize() + " [AE,S,F]");
+					} else {
+						StringBuilder sb = new StringBuilder(Integer.toString(gun.getDamage()));
+						if (gun.getAmmoType() == AmmoType.T_AC_ULTRA) {
+							sb.append("/Sht, R2 [DB,R/C]");
+						} else if (gun.getAmmoType() == AmmoType.T_AC_ROTARY) {
+							sb.append("/Sht, R6 [DB,R/C]");
+						} else if (gun.getAmmoType() == AmmoType.T_AC_LBX) {
+							sb.append(" [DB,C,F]");
+						} else {
+							sb.append(" [DB]");
+						}
+						tspan.setText(sb.toString());
+					}
+					((Text)tspan.getParent()).rebuild();
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_MIN_RANGE);
+					if (gun.getMinimumRange() > 0) {
+						tspan.setText(Integer.toString(gun.getMinimumRange()));
+					} else {
+						tspan.setText("—");
+					}
+					((Text)tspan.getParent()).rebuild();
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_SHORT);
+					tspan.setText(Integer.toString(gun.getShortRange()));
+					((Text)tspan.getParent()).rebuild();
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_MED);
+					tspan.setText(Integer.toString(gun.getMediumRange()));
+					((Text)tspan.getParent()).rebuild();
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_LONG);
+					tspan.setText(Integer.toString(gun.getLongRange()));
 					((Text)tspan.getParent()).rebuild();
 					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_AMMO);
 					tspan.setText(Integer.toString(numShots));
+					((Text)tspan.getParent()).rebuild();
+					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_CREW);
+					tspan.setText(Integer.toString((int)Math.ceil(gun.getTonnage(infantry))));
 					((Text)tspan.getParent()).rebuild();
         		}
         		
