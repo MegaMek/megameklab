@@ -23,6 +23,7 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.StringJoiner;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -130,30 +131,25 @@ public class PrintInfantry implements Printable {
         		((Text)tspan.getParent()).rebuild();
         		
         		tspan = (Tspan)diagram.getElement(ID_ARMOR_KIT);
-        		StringJoiner sj = new StringJoiner("/");
-        		if (infantry.hasSpaceSuit()) {
-        			sj.add("Space Suit");
-        		}
         		if (infantry.hasDEST()) {
-        			sj.add("DEST");
+        			tspan.setText("DEST");
+            		((Text)tspan.getParent()).rebuild();
+        		} else {
+            		StringJoiner sj = new StringJoiner("/");
+            		if (infantry.hasSneakCamo()) {
+            			sj.add("Camo");
+            		}
+            		if (infantry.hasSneakIR()) {
+            			sj.add("IR");
+            		}
+            		if (infantry.hasSneakECM()) {
+            			sj.add("ECM");
+            		}
+            		if (sj.length() > 0) {
+            			tspan.setText("Sneak(" + sj.toString() + ")");
+                		((Text)tspan.getParent()).rebuild();
+            		}
         		}
-        		if (infantry.hasSneakCamo()) {
-        			sj.add("Sneak (Camo)");
-        		}
-        		if (infantry.hasSneakIR()) {
-        			sj.add("Sneak (IR)");
-        		}
-        		if (infantry.hasSneakECM()) {
-        			sj.add("Sneak (ECM)");
-        		}
-        		if (infantry.isArmorEncumbering()) {
-        			sj.add("Encumbering");
-        		}
-        		if (sj.length() == 0) {
-        			sj.add("None");
-        		}
-        		tspan.setText(sj.toString());
-        		((Text)tspan.getParent()).rebuild();
         		tspan = (Tspan)diagram.getElement(ID_ARMOR_DIVISOR);
         		tspan.setText(String.valueOf(infantry.getDamageDivisor()));
         		((Text)tspan.getParent()).rebuild();
@@ -275,7 +271,7 @@ public class PrintInfantry implements Printable {
 					break;
 				case INF_UMU:
 					mp1.setText(Integer.toString(infantry.getJumpMP(false)));
-					mode1.setText("UMU");
+					mode1.setText("SCUBA");
 					mp2.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
 					mode2.setText("Ground");
 					((Text)mp2.getParent()).rebuild();
@@ -283,19 +279,19 @@ public class PrintInfantry implements Printable {
 					break;
 				case HOVER:
 					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
-					mode1.setText("Hover");
+					mode1.setText("Mechanized Hover");
 					break;
 				case TRACKED:
 					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
-					mode1.setText("Tracked");
+					mode1.setText("Mechanized Tracked");
 					break;
 				case WHEELED:
 					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
-					mode1.setText("Wheeled");
+					mode1.setText("Mechanized Wheeled");
 					break;
 				case VTOL:
 					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
-					mode1.setText("VTOL");
+					mode1.setText("Mechanized VTOL");
 					break;
 				case INF_MOTORIZED:
 					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
@@ -312,6 +308,15 @@ public class PrintInfantry implements Printable {
         		}
 				((Text)mp1.getParent()).rebuild();
 				((Text)mode1.getParent()).rebuild();
+				
+        		List<String> notes = new ArrayList<>();
+        		if (infantry.isMechanized() || infantry.isArmorEncumbering()) {
+        			notes.add("Cannot make anti-'Mech attacks.");
+        		}
+        		if (infantry.hasSpaceSuit()) {
+        			notes.add("Can operate in vacuum.");
+        		}
+        		
         		diagram.updateTime(0);
         		
             	diagram.render(g2d);
