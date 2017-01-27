@@ -725,7 +725,8 @@
              x="0"
              y="0"
              sodipodi:role="line">Range</tspan></text>
-<text
+             
+    <text
            transform="matrix(0.99808333,0,0,-1,201.81439,617.9259)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"><tspan
              x="-54.683998"
@@ -736,6 +737,13 @@
              x="162.582"
              y="19.841999"
              sodipodi:role="line">Disposable Weapon:</tspan></text>
+
+    <text display="none" id="uw_range_modifier"
+           transform="matrix(0.99808333,0,0,-1,201.81439,610.9259)"
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"><tspan
+             x="-54.683998"
+             y="7.1999998"
+             sodipodi:role="line">Underwater</tspan></text>
              
         <g id="field_gun_columns">
            <text  transform="matrix(1,0,0,-1,152,598.084)"
@@ -963,78 +971,93 @@
 
     <text transform="matrix(1,0,0,-1,203.21792,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_0">—</tspan></text>
+           <tspan id="range_mod_0"></tspan>
+           <tspan id="uw_range_mod_0" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,221.0559,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_1">—</tspan></text>           
+           <tspan id="range_mod_1"></tspan>
+           <tspan id="uw_range_mod_1" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,238.09592,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_2">—</tspan></text>           
+           <tspan id="range_mod_2"></tspan>
+           <tspan id="uw_range_mod_2" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,255.1359,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_3">—</tspan></text>           
+           <tspan id="range_mod_3"></tspan>
+           <tspan id="uw_range_mod_3" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,270.4239,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_4">—</tspan></text>
+           <tspan id="range_mod_4"></tspan>
+           <tspan id="uw_range_mod_4" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,287.46392,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_5">—</tspan></text>
+           <tspan id="range_mod_5"></tspan>
+           <tspan id="uw_range_mod_5" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,304.50392,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_6">—</tspan></text>
+           <tspan id="range_mod_6"></tspan>
+           <tspan id="uw_range_mod_6" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,321.54392,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_7">—</tspan></text>
+           <tspan id="range_mod_7"></tspan>
+           <tspan id="uw_range_mod_7" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,338.58392,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_8">—</tspan></text>
+           <tspan id="range_mod_8"></tspan>
+           <tspan id="uw_range_mod_8" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,355.62393,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_9">—</tspan></text>
+           <tspan id="range_mod_9"></tspan>
+           <tspan id="uw_range_mod_9" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,372.707,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_10">—</tspan></text>
+           <tspan id="range_mod_10"></tspan>
+           <tspan id="uw_range_mod_10" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,389.7147,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_11">—</tspan></text>
+           <tspan id="range_mod_11"></tspan>
+           <tspan id="uw_range_mod_11" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,406.7226,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_12">—</tspan></text>
+           <tspan id="range_mod_12"></tspan>
+           <tspan id="uw_range_mod_12" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,423.7305,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_13">—</tspan></text>
+           <tspan id="range_mod_13"></tspan>
+           <tspan id="uw_range_mod_13" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,440.7385,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_14">—</tspan></text>
+           <tspan id="range_mod_14"></tspan>
+           <tspan id="uw_range_mod_14" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,457.7462,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_15">—</tspan></text>
+           <tspan id="range_mod_15"></tspan>
+           <tspan id="uw_range_mod_15" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,474.7541,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_16">—</tspan></text>
+           <tspan id="range_mod_16"></tspan>
+           <tspan id="uw_range_mod_16" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,491.762,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_17">—</tspan></text>
+           <tspan id="range_mod_17"></tspan>
+           <tspan id="uw_range_mod_17" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,508.7699,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_18">—</tspan></text>
+           <tspan id="range_mod_18"></tspan>
+           <tspan id="uw_range_mod_18" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,525.7778,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_19">—</tspan></text>
+           <tspan id="range_mod_19"></tspan>
+           <tspan id="uw_range_mod_19" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,542.7856,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_20">—</tspan></text>
+           <tspan id="range_mod_20"></tspan>
+           <tspan id="uw_range_mod_20" x="0" y="7"></tspan></text>
     <text transform="matrix(1,0,0,-1,558.7396,610.9526)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
-           <tspan id="range_mod_21">—</tspan></text>
-<!--    
-    <text transform="matrix(0.99808333,0,0,-1,199.07959,598.083901)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-            <tspan id="field_gun">N/A</tspan></text>
-    <text transform="matrix(0.99808333,0,0,-1,333.546,598.083901)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-            <tspan id="field_gun_ammo">N/A</tspan></text>
--->
+           <tspan id="range_mod_21"></tspan>
+           <tspan id="uw_range_mod_21" x="0" y="7"></tspan></text>
+
     <text transform="matrix(0.99808333,0,0,-1,424.4276,598.083901)"
            style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
             <tspan id="disposable_weapon">N/A</tspan></text>
