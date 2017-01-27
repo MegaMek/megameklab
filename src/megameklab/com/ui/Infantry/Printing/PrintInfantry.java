@@ -76,6 +76,8 @@ public class PrintInfantry implements Printable {
 	private final static String ID_MODE_1 = "movement_mode_1";
 	private final static String ID_MP_2 = "mp_2";
 	private final static String ID_MODE_2 = "movement_mode_2";
+	private final static String ID_NOTES = "notes";
+	private final static String ID_NOTE_LINE = "note_line_";
 
     private Infantry infantry = null;
     private ArrayList<Infantry> infantryList;
@@ -316,6 +318,30 @@ public class PrintInfantry implements Printable {
         		if (infantry.hasSpaceSuit()) {
         			notes.add("Can operate in vacuum.");
         		}
+        		if (rangeWeapon.hasFlag(WeaponType.F_INF_BURST)) {
+        			notes.add("+1D6 damage vs. conventional infantry.");
+        		}
+        		if (rangeWeapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
+        			notes.add("Can only damage conventional infantry.");
+        		}
+        		if (rangeWeapon.hasFlag(WeaponType.F_INFERNO)) {
+    				notes.add("Flame-based weapon.");        			
+        		} else {
+	        		for (int i = 0; i < rangeWeapon.getModesCount(); i++) {
+	        			if (rangeWeapon.getMode(i).equals("Heat")) {
+	        				notes.add("Flame-based weapon.");
+	        			}
+	        		}
+        		}
+        		if (rangeWeapon.hasFlag(WeaponType.F_INF_AA)) {
+        			notes.add("Can attack airborn units.");
+        		}
+        		
+        		for (int i = 0; i < Math.min(8, notes.size()); i++) {
+        			tspan = (Tspan)diagram.getElement(ID_NOTE_LINE + i);
+        			tspan.setText(notes.get(i));
+        		}
+    			((Text)diagram.getElement(ID_NOTES)).rebuild();
         		
         		diagram.updateTime(0);
         		
