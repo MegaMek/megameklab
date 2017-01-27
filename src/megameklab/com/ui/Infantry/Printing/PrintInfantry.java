@@ -71,6 +71,9 @@ public class PrintInfantry implements Printable {
 	private final static String ID_FIELD_GUN_LONG = "field_gun_long";
 	private final static String ID_FIELD_GUN_AMMO = "field_gun_ammo";
 	private final static String ID_FIELD_GUN_CREW = "field_gun_crew";
+	private final static String ID_DEST_MODS = "dest_mods";
+	private final static String ID_SNEAK_CAMO_MODS = "sneak_camo_mods";
+	private final static String ID_SNEAK_IR_MODS = "sneak_ir_mods";	
 	private final static String ID_BV = "bv";
 	private final static String ID_TRANSPORT_WT = "transport_wt";
 	private final static String ID_MP_1 = "mp_1";
@@ -259,6 +262,16 @@ public class PrintInfantry implements Printable {
 					((Text)tspan.getParent()).rebuild();
         		}
         		
+        		if (infantry.hasDEST()) {
+        			diagram.getElement(ID_DEST_MODS).removeAttribute("display", AnimationElement.AT_XML);
+        			diagram.getElement(ID_SNEAK_IR_MODS).removeAttribute("display", AnimationElement.AT_XML);
+        		} else if (infantry.hasSneakCamo()) {
+        			diagram.getElement(ID_SNEAK_CAMO_MODS).removeAttribute("display", AnimationElement.AT_XML);        			
+        		}
+        		if (infantry.hasSneakIR()) {
+        			diagram.getElement(ID_SNEAK_IR_MODS).removeAttribute("display", AnimationElement.AT_XML);
+        		}
+        		
         		tspan = (Tspan)diagram.getElement(ID_BV);
         		tspan.setText(Integer.toString(infantry.calculateBattleValue()));
         		((Text)tspan.getParent()).rebuild();
@@ -376,6 +389,9 @@ public class PrintInfantry implements Printable {
         		}
         		if (infantry.hasSpecialization(Infantry.TAG_TROOPS)) {
         			notes.add("Equipped with TAG");
+        		}
+        		if (infantry.hasSneakECM()) {
+        			notes.add("Invisible to standard/light active probes.");
         		}
         		
         		for (int i = 0; i < Math.min(8, notes.size()); i++) {
