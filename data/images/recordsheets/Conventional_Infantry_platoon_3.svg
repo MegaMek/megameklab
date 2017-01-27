@@ -730,13 +730,54 @@
            transform="matrix(0.99808333,0,0,-1,201.81439,617.9259)"
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"><tspan
              x="-54.683998"
-             y="7.1999998"
-             sodipodi:role="line">Range Modifer</tspan><tspan
-             x="-54.683998"
-             y="12.642"> </tspan><tspan
+             y="7.1999998">Range Modifer</tspan></text>
+             
+    <text id="dest_mods" display="none"
+           transform="matrix(0.99808333,0,0,-1,201.81439,617.9259)"
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"><tspan
+             x="162.582"
+             y="19.841999">+1 to-hit modifier to attackers</tspan><tspan
+             x="164"
+             y="26.841999">if unit does not move.</tspan></text>
+
+    <text id="sneak_camo_mods" display="none"
+           transform="matrix(0.99808333,0,0,-1,173.81439,617.9259)"
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"><tspan
+             x="188.582"
+             y="19.841999"
+             sodipodi:role="line">MPs Used:</tspan><tspan
+                x="232.7" y="19.841999">0</tspan><tspan
+                x="247.7" y="19.841999">1</tspan><tspan
+                x="262.7" y="19.841999">2</tspan><tspan
+                x="274" y="19.841999">3+</tspan><tspan
+                 x="188.582"
+                 y="26.841999">To-Hit Modifier:</tspan><tspan
+                 x="188.582"
+                 y="33.841999">(All Attackers)</tspan>
+             <tspan
+                x="229" y="26.841999">+3</tspan><tspan
+                x="244" y="26.841999">+2</tspan><tspan
+                x="259" y="26.841999">+1</tspan><tspan
+                x="275.8" y="26.841999">0</tspan></text>
+
+    <text id="sneak_ir_mods" display="none"
+           transform="matrix(0.99808333,0,0,-1,302.4,617.9259)"
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"><tspan
              x="162.582"
              y="19.841999"
-             sodipodi:role="line">Disposable Weapon:</tspan></text>
+             sodipodi:role="line">Range Category:</tspan><tspan
+                x="232.7" y="19.841999">S</tspan><tspan
+                x="247.7" y="19.841999">M</tspan><tspan
+                x="262.7" y="19.841999">L</tspan><tspan
+             x="162.582"
+             y="26.841999"
+             sodipodi:role="line">To-Hit Modifier:</tspan><tspan
+                 x="162.582"
+                 y="33.841999">(Non-infantry Attackers)</tspan>
+             <tspan
+                x="229" y="26.841999">+1</tspan><tspan
+                x="244" y="26.841999">+1</tspan><tspan
+                x="259" y="26.841999">+2</tspan></text>
 
     <text display="none" id="uw_range_modifier"
            transform="matrix(0.99808333,0,0,-1,201.81439,610.9259)"
@@ -1057,10 +1098,6 @@
            style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none" text-anchor="middle">
            <tspan id="range_mod_21"></tspan>
            <tspan id="uw_range_mod_21" x="0" y="7"></tspan></text>
-
-    <text transform="matrix(0.99808333,0,0,-1,424.4276,598.083901)"
-           style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
-            <tspan id="disposable_weapon">N/A</tspan></text>
 
     <text transform="matrix(0.99805556,0,0,-1,384.742,569.8505)"
            style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;font-family:'JPPFG Z +Eurostile LT Std';-inkscape-font-specification:EurostileLTStd;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none">
