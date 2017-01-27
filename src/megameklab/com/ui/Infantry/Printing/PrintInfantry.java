@@ -36,10 +36,9 @@ import com.kitfox.svg.Tspan;
 import com.kitfox.svg.animation.AnimationElement;
 
 import megamek.common.AmmoType;
-import megamek.common.Compute;
+import megamek.common.EntityMovementMode;
 import megamek.common.Infantry;
 import megamek.common.Mounted;
-import megamek.common.TargetRollModifier;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -60,6 +59,8 @@ public class PrintInfantry implements Printable {
 	private final static String ID_NO_SOLDIER = "no_soldier_";
 	private final static String ID_DAMAGE = "damage_";
 	private final static String ID_RANGE_MOD = "range_mod_";
+	private final static String ID_UW_LABEL = "uw_range_modifier";
+	private final static String ID_UW_RANGE_MOD = "uw_range_mod_";
 	private final static String ID_FIELD_GUN_COLUMNS = "field_gun_columns";
 	private final static String ID_FIELD_GUN_QTY = "field_gun_qty";
 	private final static String ID_FIELD_GUN_TYPE = "field_gun_type";
@@ -174,14 +175,21 @@ public class PrintInfantry implements Printable {
         		if (infantry.getSecondaryWeapon() != null && infantry.getSecondaryN() > 1) {
         			rangeWeapon = infantry.getSecondaryWeapon();
         		}
+        		boolean scuba = infantry.getMovementMode() == EntityMovementMode.INF_UMU
+        				|| infantry.getMovementMode() == EntityMovementMode.SUBMARINE;
+        		if (scuba) {
+	        		diagram.getElement(ID_UW_LABEL).removeAttribute("display",
+	        				AnimationElement.AT_XML);
+        		}
+        		InfantryWeapon singleSecondary = (infantry.getSecondaryN() == 1)? infantry.getSecondaryWeapon() : null;
         		for (int j = 0; j <= 21; j++) {
-        			if (rangeWeapon.getInfantryRange() * 3 >= j) {
-	        			int mod = Compute.getInfantryRangeMods(j, rangeWeapon)
-	        					.getModifiers().stream().mapToInt(TargetRollModifier::getValue).sum();
-	    				tspan = (Tspan)diagram.getElement(ID_RANGE_MOD + j);
-        				tspan.setText(String.format("%+d", mod));
-        				((Text)tspan.getParent()).rebuild();
-        			}
+    				tspan = (Tspan)diagram.getElement(ID_RANGE_MOD + j);
+    				tspan.setText(rangeMod(j, rangeWeapon, singleSecondary, false));
+    				if (scuba) {
+	    				tspan = (Tspan)diagram.getElement(ID_UW_RANGE_MOD + j);
+	    				tspan.setText(rangeMod(j, rangeWeapon, singleSecondary, true));
+    				}
+    				((Text)tspan.getParent()).rebuild();
         		}
         		
         		int numGuns = 0;
@@ -336,6 +344,39 @@ public class PrintInfantry implements Printable {
         		if (rangeWeapon.hasFlag(WeaponType.F_INF_AA)) {
         			notes.add("Can attack airborn units.");
         		}
+        		if (infantry.hasSpecialization(Infantry.BRIDGE_ENGINEERS)) {
+        			notes.add("Bridge-building equipment");
+        		}
+        		if (infantry.hasSpecialization(Infantry.DEMO_ENGINEERS)) {
+        			notes.add("Equipped with demolition gear");
+        		}
+        		if (infantry.hasSpecialization(Infantry.FIRE_ENGINEERS)) {
+        			notes.add("Firefighting equipment");
+        		}
+        		if (infantry.hasSpecialization(Infantry.MINE_ENGINEERS)) {
+        			notes.add("Minesweeper equipment");
+        		}
+        		if (infantry.hasSpecialization(Infantry.TRENCH_ENGINEERS)) {
+        			notes.add("Trench/Fieldwork equipment");
+        		}
+        		if (infantry.hasSpecialization(Infantry.MARINES)) {
+        			notes.add("No penalties for vacuum or zero-G");
+        		}
+        		if (infantry.hasSpecialization(Infantry.MOUNTAIN_TROOPS)) {
+        			notes.add("Mountain climbing equipment");
+        		}
+        		if (infantry.hasSpecialization(Infantry.PARAMEDICS)) {
+        			notes.add("Paramedic equipment.");
+        		}
+        		if (infantry.hasSpecialization(Infantry.PARATROOPS)) {
+        			notes.add("Can make atmospheric drops.");
+        		}
+        		if (infantry.hasSpecialization(Infantry.SENSOR_ENGINEERS)) {
+        			notes.add("Surveillance and communication equipment");
+        		}
+        		if (infantry.hasSpecialization(Infantry.TAG_TROOPS)) {
+        			notes.add("Equipped with TAG");
+        		}
         		
         		for (int i = 0; i < Math.min(8, notes.size()); i++) {
         			tspan = (Tspan)diagram.getElement(ID_NOTE_LINE + i);
@@ -353,8 +394,58 @@ public class PrintInfantry implements Printable {
 
         g2d.scale(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
     }
-    
-    public void print(HashPrintRequestAttributeSet aset) {
+
+	private static final int[][] RANGE_MODS = {
+			{0},
+			{-2, 0, 2, 4},
+			{-2, 0, 0, 2, 2, 4, 4},
+			{-2, 0, 0, 0, 2, 2, 2, 4, 4, 4},
+			{-2, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4},
+			{-1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4},
+			{-1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5},
+			{-1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 6, 6, 6, 6}
+	};
+	
+	/**
+	 * Calculate range mod as a string value.
+	 * @param range - the range to the target.
+	 * @param weapon - the primary weapon if there are no more than one secondary, otherwise secondary
+	 * @param singleSecondary - secondary weapon if there is exactly one, otherwise null. This is used
+	 * 							to account for point blank or encumbering penalties when the secondary
+	 * 							weapon is not the basis for range mods.
+	 * @param underwater - whether the base range should be halved for underwater use by SCUBA platoons.
+	 * @return - the range mod as a formatted String.
+	 */
+	private String rangeMod(int range, InfantryWeapon weapon, InfantryWeapon otherWeapon, boolean underwater) {
+		int[] mods = RANGE_MODS[weapon.getInfantryRange()];
+		if (underwater) {
+			mods = RANGE_MODS[weapon.getInfantryRange() / 2];
+		}
+		
+		if (range >= mods.length) {
+			return "—";
+		}
+		int mod = mods[range];
+		if (range == 0) {
+			if (weapon.hasFlag(WeaponType.F_INF_BURST)) {
+				mod--;
+			}
+			if (weapon.hasFlag(WeaponType.F_INF_POINT_BLANK)
+					|| (otherWeapon != null && otherWeapon.hasFlag(WeaponType.F_INF_POINT_BLANK))) {
+				mod++;
+			}
+			if (weapon.hasFlag(WeaponType.F_INF_ENCUMBER)
+					|| (otherWeapon != null && otherWeapon.hasFlag(WeaponType.F_INF_ENCUMBER))) {
+				mod++;
+			}
+		}
+		if (mod > 0) {
+			return "+" + mod;
+		}
+		return Integer.toString(mod);
+	}
+
+	public void print(HashPrintRequestAttributeSet aset) {
 
         try {
             for (; currentPosition < infantryList.size(); currentPosition += 4) {
