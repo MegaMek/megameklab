@@ -175,7 +175,7 @@ public class UnitPrintManager {
                 VTOLList.add((VTOL) unit);
             } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
                 wigeList.add((Tank) unit);
-            } else if ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL)) {
+            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
                 navalList.add((Tank) unit);
             } else if (unit instanceof Tank) {
                 if (!((Tank) unit).hasNoDualTurret()) {
