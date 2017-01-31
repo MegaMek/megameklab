@@ -37,6 +37,7 @@ import com.kitfox.svg.animation.AnimationElement;
 
 import megamek.common.AmmoType;
 import megamek.common.EntityMovementMode;
+import megamek.common.EquipmentType;
 import megamek.common.Infantry;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
@@ -137,7 +138,11 @@ public class PrintInfantry implements Printable {
         		((Text)tspan.getParent()).rebuild();
         		
         		tspan = (Tspan)diagram.getElement(ID_ARMOR_KIT);
-        		if (infantry.hasDEST()) {
+        		EquipmentType armor = infantry.getArmorKit();
+        		if (armor != null) {
+        			tspan.setText(armor.getName());
+            		((Text)tspan.getParent()).rebuild();
+        		} else if (infantry.hasDEST()) {
         			tspan.setText("DEST");
             		((Text)tspan.getParent()).rebuild();
         		} else {
@@ -157,7 +162,8 @@ public class PrintInfantry implements Printable {
             		}
         		}
         		tspan = (Tspan)diagram.getElement(ID_ARMOR_DIVISOR);
-        		tspan.setText(String.valueOf(infantry.getDamageDivisor()));
+        		tspan.setText(String.valueOf(infantry.getDamageDivisor()
+        				+ (infantry.isArmorEncumbering()? "E" : "")));
         		((Text)tspan.getParent()).rebuild();
 
         		for (int j = 1; j <= 30; j++) {
