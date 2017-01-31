@@ -1,6 +1,7 @@
 VERSION HISTORY:
 ----------------
 v0.43.0-git
++ Printing for conventional infantry record sheets.
 
 v0.42.0 (2017-01-01 14:00 UTC)
 + Updated MegaMek.jar to 0.41.28
