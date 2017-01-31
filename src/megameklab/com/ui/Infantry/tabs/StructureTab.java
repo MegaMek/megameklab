@@ -33,6 +33,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -74,6 +75,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     public static final int M_NUM = 11;
     public static final int M_ADVANCED = 6; // index of first advanced-level
                                             // motive type
+    
+    public static final int T_INFANTRY_WEAPONS = 0;
+    public static final int T_FIELD_GUNS       = 1;
+    public static final int T_ARMOR_KIT        = 2;
+    public static final int T_AUGMENTATION     = 3;
 
     private String[] techTypes = { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
     private JComboBox<String> techType = new JComboBox<String>(techTypes);
@@ -91,6 +97,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private String[] secondaryNArray = { "0", "1", "2" };
     private JComboBox<String> secondaryN = new JComboBox<String>(secondaryNArray);
     private JCheckBox antiMekTraining = new JCheckBox("Anti-mek Training");
+    private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Augmentation"};
 
     private JTextField era = new JTextField(3);
     private JTextField source = new JTextField(3);
@@ -101,6 +108,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private JTextField txtPrimary = new JTextField("None");
     private JTextField txtSecondary = new JTextField("None");
 
+    private JTabbedPane equipmentPane;
+    
     private ArmorView armorView;
     private WeaponView weaponView;
 
@@ -220,13 +229,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         basicPanel.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         squadPanel.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
         weaponPanel.setBorder(BorderFactory.createTitledBorder("Current Weapons"));
-        armorView.setBorder(BorderFactory.createTitledBorder("Armor"));
-        weaponView.setBorder(BorderFactory.createTitledBorder("Weapon Selection"));
+        
+        equipmentPane = new JTabbedPane();
+        equipmentPane.addTab(tabNames[T_INFANTRY_WEAPONS], weaponView);
+        equipmentPane.addTab(tabNames[T_FIELD_GUNS], new JPanel());
+        equipmentPane.addTab(tabNames[T_ARMOR_KIT], armorView);
+        equipmentPane.addTab(tabNames[T_AUGMENTATION], new JPanel());
 
         leftPanel.add(basicPanel);
         leftPanel.add(squadPanel);
         leftPanel.add(weaponPanel);
-        leftPanel.add(armorView);
+        //TODO: Add specializations
         leftPanel.add(Box.createVerticalGlue());
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -241,7 +254,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         gbc.fill = java.awt.GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        add(weaponView, gbc);
+        add(equipmentPane, gbc);
 
     }
 
@@ -428,6 +441,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         armorView.refresh();
         weaponView.refresh();
+        
+        equipmentPane.setEnabledAt(T_FIELD_GUNS, techLevel.getSelectedIndex() > 1);
+        equipmentPane.setEnabledAt(T_ARMOR_KIT, techLevel.getSelectedIndex() > 1);
+        equipmentPane.setEnabledAt(T_AUGMENTATION, techLevel.getSelectedIndex() > 1);
+        if (!equipmentPane.isEnabledAt(equipmentPane.getSelectedIndex())) {
+            equipmentPane.setSelectedIndex(T_INFANTRY_WEAPONS);
+        }
         addAllActionListeners();
     }
 
