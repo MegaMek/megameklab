@@ -51,40 +51,42 @@ import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements ActionListener, KeyListener {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -7985608549543235815L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7985608549543235815L;
 
     private RefreshListener refresh;
 
-    public static final int M_FOOT    = 0;
-    public static final int M_JUMP    = 1;
-    public static final int M_MOTOR   = 2;
-    public static final int M_HOVER   = 3;
+    public static final int M_FOOT = 0;
+    public static final int M_JUMP = 1;
+    public static final int M_MOTOR = 2;
+    public static final int M_HOVER = 3;
     public static final int M_TRACKED = 4;
     public static final int M_WHEELED = 5;
+    public static final int M_VTOL = 6;
+    public static final int M_MICROLITE = 7;
+    public static final int M_UMU = 8;
+    public static final int M_UMU_MOTORIZED = 9;
+    public static final int M_SUBMARINE = 10;
+    public static final int M_NUM = 11;
+    public static final int M_ADVANCED = 6; // index of first advanced-level
+                                            // motive type
 
-
-    private String[] techTypes =
-        { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
+    private String[] techTypes = { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
     private JComboBox<String> techType = new JComboBox<String>(techTypes);
-    private String[] isTechLevels =
-        { "Introductory", "Standard", "Advanced", "Experimental", "Unoffical" };
-    private String[] clanTechLevels =
-        { "Standard", "Advanced", "Experimental", "Unoffical" };
+    private String[] isTechLevels = { "Introductory", "Standard", "Advanced", "Experimental", "Unoffical" };
+    private String[] clanTechLevels = { "Standard", "Advanced", "Experimental", "Unoffical" };
     private JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
-    private String[] motiveTypeArray =
-        { "Foot", "Jump", "Motorized", "Mechanized (Hover)", "Mechanized (Tracked)", "Mechanized (Wheeled)"};
+    private String[] motiveTypeArray = { "Foot", "Jump", "Motorized", "Mechanized (Hover)", "Mechanized (Tracked)",
+            "Mechanized (Wheeled)", "VTOL (Micro-copter)", "VTOL (Microlite)",
+            "SCUBA (Foot)", "SCUBA (Motorized)", "SCUBA (Mechanized)"};
     private JComboBox<String> motiveType = new JComboBox<String>(motiveTypeArray);
-    private String[] squadSizeArray =
-        { "1","2","3","4", "5", "6","7","8","9","10"};
+    private String[] squadSizeArray = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
     private JComboBox<String> squadSize = new JComboBox<String>(squadSizeArray);
-    private String[] squadNArray =
-        { "1","2","3","4","5"};
+    private String[] squadNArray = { "1", "2", "3", "4", "5" };
     private JComboBox<String> squadN = new JComboBox<String>(squadNArray);
-    private String[] secondaryNArray =
-        { "0","1","2"};
+    private String[] secondaryNArray = { "0", "1", "2" };
     private JComboBox<String> secondaryN = new JComboBox<String>(secondaryNArray);
     private JCheckBox antiMekTraining = new JCheckBox("Anti-mek Training");
 
@@ -97,19 +99,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private JTextField txtPrimary = new JTextField("None");
     private JTextField txtSecondary = new JTextField("None");
 
-	private ArmorView armorView;
-	private WeaponView weaponView;
+    private ArmorView armorView;
+    private WeaponView weaponView;
 
-	public StructureTab(EntitySource eSource) {
-	    super(eSource);
+    public StructureTab(EntitySource eSource) {
+        super(eSource);
         armorView = new ArmorView(eSource);
         weaponView = new WeaponView(eSource);
         setUpPanels();
         refresh();
-	}
+    }
 
-	public void setUpPanels() {
-	    JPanel leftPanel = new JPanel();
+    public void setUpPanels() {
+        JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
         JPanel basicPanel = new JPanel(new GridBagLayout());
@@ -129,7 +131,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         gbc.gridy = 0;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(0,0,1,2);
+        gbc.insets = new Insets(0, 0, 1, 2);
         basicPanel.add(createLabel("Chassis:", labelSize), gbc);
         gbc.gridx = 1;
         basicPanel.add(chassis, gbc);
@@ -162,7 +164,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         basicPanel.add(createLabel("Tech Level:", labelSize), gbc);
         gbc.gridx = 1;
         basicPanel.add(techLevel, gbc);
-
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -214,7 +215,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         setFieldSize(txtPrimary, comboSize);
         setFieldSize(txtSecondary, comboSize);
 
-
         basicPanel.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         squadPanel.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
         weaponPanel.setBorder(BorderFactory.createTitledBorder("Current Weapons"));
@@ -243,7 +243,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     }
 
-	public JLabel createLabel(String text, Dimension maxSize) {
+    public JLabel createLabel(String text, Dimension maxSize) {
 
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
 
@@ -257,8 +257,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         box.setMinimumSize(maxSize);
     }
 
-	public void refresh() {
-	    removeAllActionListeners();
+    public void refresh() {
+        removeAllActionListeners();
         era.setText(Integer.toString(getInfantry().getYear()));
         source.setText(getInfantry().getSource());
 
@@ -274,28 +274,42 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             }
         }
 
-        switch(getInfantry().getMovementMode()) {
-            case INF_JUMP:
-                motiveType.setSelectedIndex(M_JUMP);
-                break;
-            case INF_MOTORIZED:
-                motiveType.setSelectedIndex(M_MOTOR);
-                break;
-            case HOVER:
-                motiveType.setSelectedIndex(M_HOVER);
-                break;
-            case TRACKED:
-                motiveType.setSelectedIndex(M_TRACKED);
-                break;
-            case WHEELED:
-                motiveType.setSelectedIndex(M_WHEELED);
-                break;
-            default:
-                motiveType.setSelectedIndex(M_FOOT);
-                break;
+        switch (getInfantry().getMovementMode()) {
+        case INF_JUMP:
+            motiveType.setSelectedIndex(M_JUMP);
+            break;
+        case INF_MOTORIZED:
+            motiveType.setSelectedIndex(M_MOTOR);
+            break;
+        case HOVER:
+            motiveType.setSelectedIndex(M_HOVER);
+            break;
+        case TRACKED:
+            motiveType.setSelectedIndex(M_TRACKED);
+            break;
+        case VTOL:
+            if (getInfantry().hasMicrolite()) {
+                motiveType.setSelectedIndex(M_MICROLITE);
+            } else {
+                motiveType.setSelectedIndex(M_VTOL);
+            }
+            break;
+        case INF_UMU:
+            if (getInfantry().getOriginalJumpMP() > 1) {
+                motiveType.setSelectedIndex(M_UMU_MOTORIZED);
+            } else {
+                motiveType.setSelectedIndex(M_UMU);
+            }
+            break;
+        case SUBMARINE:
+            motiveType.setSelectedIndex(M_SUBMARINE);
+            break;
+        default:
+            motiveType.setSelectedIndex(M_FOOT);
+            break;
         }
-        squadN.setSelectedIndex(getInfantry().getSquadN()-1);
-        squadSize.setSelectedIndex(getInfantry().getSquadSize()-1);
+        squadN.setSelectedIndex(getInfantry().getSquadN() - 1);
+        squadSize.setSelectedIndex(getInfantry().getSquadSize() - 1);
         secondaryN.setSelectedIndex(getInfantry().getSecondaryN());
         getInfantry().setAntiMekSkill(antiMekTraining.isSelected());
 
@@ -348,13 +362,28 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 techLevel.setSelectedIndex(0);
             }
         }
+        
+        int limit = (techLevel.getSelectedIndex() < 2)? M_ADVANCED : M_NUM;
+        if (motiveType.getModel().getSize() != limit) {
+            int current = motiveType.getSelectedIndex();
+            motiveType.removeAllItems();
+            for (int i = 0; i < limit; i++) {
+                motiveType.addItem(motiveTypeArray[i]);
+            }
+            if (current >= limit) {
+                motiveType.setSelectedIndex(0);
+                getInfantry().setMovementMode(EntityMovementMode.INF_LEG);
+            } else {
+                motiveType.setSelectedIndex(current);
+            }
+        }
 
-        if(null != getInfantry().getPrimaryWeapon()) {
+        if (null != getInfantry().getPrimaryWeapon()) {
             txtPrimary.setText(UnitUtil.trimInfantryWeaponNames(getInfantry().getPrimaryWeapon().getName()));
         } else {
             txtPrimary.setText("None");
         }
-        if(null != getInfantry().getSecondaryWeapon()) {
+        if (null != getInfantry().getSecondaryWeapon()) {
             txtSecondary.setText(UnitUtil.trimInfantryWeaponNames(getInfantry().getSecondaryWeapon().getName()));
         } else {
             txtSecondary.setText("None");
@@ -363,9 +392,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         armorView.refresh();
         weaponView.refresh();
         addAllActionListeners();
-	}
+    }
 
-	public void addAllActionListeners() {
+    public void addAllActionListeners() {
         motiveType.addActionListener(this);
         squadN.addActionListener(this);
         squadSize.addActionListener(this);
@@ -393,13 +422,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         antiMekTraining.removeActionListener(this);
     }
 
-	public void addRefreshedListener(RefreshListener l) {
-	    refresh = l;
-	    armorView.addRefreshedListener(refresh);
-	    weaponView.addRefreshedListener(refresh);
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
+        armorView.addRefreshedListener(refresh);
+        weaponView.addRefreshedListener(refresh);
     }
 
-	@Override
+    @Override
     public void actionPerformed(ActionEvent e) {
         removeAllActionListeners();
         if (e.getSource() instanceof JComboBox) {
@@ -409,131 +438,139 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 int unitTechLevel = techLevel.getSelectedIndex();
                 if (getInfantry().isClan()) {
                     switch (unitTechLevel) {
-                        case 0:
-                            getInfantry().setTechLevel(TechConstants.T_CLAN_TW);
-                            getInfantry().setArmorTechLevel(TechConstants.T_CLAN_TW);
-                            techType.setSelectedIndex(1);
-                            UnitUtil.resetInfantryArmor(getInfantry());
-                            break;
-                        case 1:
-                            getInfantry().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                            getInfantry().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
-                            break;
-                        case 2:
-                            getInfantry().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                            getInfantry().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                            break;
-                        case 3:
-                            getInfantry().setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
-                            getInfantry().setArmorTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
-                            break;
-                        default:
-                            getInfantry().setTechLevel(TechConstants.T_CLAN_TW);
-                            getInfantry().setArmorTechLevel(TechConstants.T_CLAN_TW);
-                            break;
+                    case 0:
+                        getInfantry().setTechLevel(TechConstants.T_CLAN_TW);
+                        getInfantry().setArmorTechLevel(TechConstants.T_CLAN_TW);
+                        techType.setSelectedIndex(1);
+                        UnitUtil.resetInfantryArmor(getInfantry());
+                        break;
+                    case 1:
+                        getInfantry().setTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        getInfantry().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
+                        break;
+                    case 2:
+                        getInfantry().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        getInfantry().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+                        break;
+                    case 3:
+                        getInfantry().setTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                        getInfantry().setArmorTechLevel(TechConstants.T_CLAN_UNOFFICIAL);
+                        break;
+                    default:
+                        getInfantry().setTechLevel(TechConstants.T_CLAN_TW);
+                        getInfantry().setArmorTechLevel(TechConstants.T_CLAN_TW);
+                        break;
                     }
 
                 } else {
                     switch (unitTechLevel) {
-                        case 0:
-                            getInfantry().setTechLevel(TechConstants.T_INTRO_BOXSET);
-                            getInfantry().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
-                            techType.setSelectedIndex(0);
-                            UnitUtil.resetInfantryArmor(getInfantry());
-                            break;
-                        case 1:
-                            getInfantry().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                            getInfantry().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                            techType.setSelectedIndex(0);
-                            UnitUtil.resetInfantryArmor(getInfantry());
-                            break;
-                        case 2:
-                            getInfantry().setTechLevel(TechConstants.T_IS_ADVANCED);
-                            getInfantry().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
-                            break;
-                        case 3:
-                            getInfantry().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                            getInfantry().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                            break;
-                        default:
-                            getInfantry().setTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                            getInfantry().setArmorTechLevel(TechConstants.T_IS_UNOFFICIAL);
-                            break;
+                    case 0:
+                        getInfantry().setTechLevel(TechConstants.T_INTRO_BOXSET);
+                        getInfantry().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                        techType.setSelectedIndex(0);
+                        UnitUtil.resetInfantryArmor(getInfantry());
+                        break;
+                    case 1:
+                        getInfantry().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                        getInfantry().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+                        techType.setSelectedIndex(0);
+                        UnitUtil.resetInfantryArmor(getInfantry());
+                        break;
+                    case 2:
+                        getInfantry().setTechLevel(TechConstants.T_IS_ADVANCED);
+                        getInfantry().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
+                        break;
+                    case 3:
+                        getInfantry().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        getInfantry().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+                        break;
+                    default:
+                        getInfantry().setTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                        getInfantry().setArmorTechLevel(TechConstants.T_IS_UNOFFICIAL);
+                        break;
                     }
 
                 }
                 UnitUtil.checkEquipmentByTechLevel(getInfantry());
-            }
-            else if (combo.equals(techType)) {
+            } else if (combo.equals(techType)) {
                 if ((techType.getSelectedIndex() == 1) && (!getInfantry().isClan() || getInfantry().isMixedTech())) {
                     techLevel.removeAllItems();
                     for (String item : clanTechLevels) {
                         techLevel.addItem(item);
                     }
-                    if(!getInfantry().isClan()) {
+                    if (!getInfantry().isClan()) {
                         int level = TechConstants.getOppositeTechLevel(getInfantry().getTechLevel());
                         getInfantry().setTechLevel(level);
                         getInfantry().setArmorTechLevel(level);
                     }
                     getInfantry().setMixedTech(false);
-                } else if ((techType.getSelectedIndex() == 0) && (getInfantry().isClan() || getInfantry().isMixedTech())) {
+                } else if ((techType.getSelectedIndex() == 0)
+                        && (getInfantry().isClan() || getInfantry().isMixedTech())) {
                     techLevel.removeAllItems();
 
                     for (String item : isTechLevels) {
                         techLevel.addItem(item);
                     }
 
-                    if(getInfantry().isClan()) {
+                    if (getInfantry().isClan()) {
                         int level = TechConstants.getOppositeTechLevel(getInfantry().getTechLevel());
                         getInfantry().setTechLevel(level);
                         getInfantry().setArmorTechLevel(level);
                     }
                     getInfantry().setMixedTech(false);
-                } else if ((techType.getSelectedIndex() == 2) && (!getInfantry().isMixedTech() || getInfantry().isClan())) {
+                } else if ((techType.getSelectedIndex() == 2)
+                        && (!getInfantry().isMixedTech() || getInfantry().isClan())) {
                     techLevel.removeAllItems();
                     for (String item : isTechLevels) {
                         techLevel.addItem(item);
                     }
                     if (getInfantry().getYear() < 3090) {
-                        //before 3090, mixed tech is experimental
+                        // before 3090, mixed tech is experimental
                         if ((getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
                             getInfantry().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                             getInfantry().setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
                         }
                     } else if (getInfantry().getYear() < 3145) {
                         // between 3090 and 3145, mixed tech is advanced
-                        if ((getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (getInfantry().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
+                        if ((getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)
+                                && (getInfantry().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
                             getInfantry().setTechLevel(TechConstants.T_IS_ADVANCED);
                             getInfantry().setArmorTechLevel(TechConstants.T_IS_ADVANCED);
                         }
                     } else {
                         // from 3145 on, mixed tech is tourney legal
-                        if ((getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL) && (getInfantry().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL) && (getInfantry().getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
+                        if ((getInfantry().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)
+                                && (getInfantry().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)
+                                && (getInfantry().getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
                             getInfantry().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
                             getInfantry().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
                         }
                     }
                     getInfantry().setMixedTech(true);
-                } else if ((techType.getSelectedIndex() == 3) && (!getInfantry().isMixedTech() || !getInfantry().isClan())) {
+                } else if ((techType.getSelectedIndex() == 3)
+                        && (!getInfantry().isMixedTech() || !getInfantry().isClan())) {
                     techLevel.removeAllItems();
                     for (String item : clanTechLevels) {
                         techLevel.addItem(item);
                     }
                     if (getInfantry().getYear() < 3090) {
-                        //before 3090, mixed tech is experimental
+                        // before 3090, mixed tech is experimental
                         if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
                             getInfantry().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                             getInfantry().setArmorTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
                         }
                     } else if (getInfantry().getYear() < 3145) {
                         // between 3090 and 3145, mixed tech is advanced
-                        if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (getInfantry().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
+                        if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)
+                                && (getInfantry().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
                             getInfantry().setTechLevel(TechConstants.T_CLAN_ADVANCED);
                             getInfantry().setArmorTechLevel(TechConstants.T_CLAN_ADVANCED);
                         }
                     } else {
                         // from 3145 on, mixed tech is tourney legal
-                        if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL) && (getInfantry().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL) && (getInfantry().getTechLevel() != TechConstants.T_CLAN_TW)) {
+                        if ((getInfantry().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)
+                                && (getInfantry().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)
+                                && (getInfantry().getTechLevel() != TechConstants.T_CLAN_TW)) {
                             getInfantry().setTechLevel(TechConstants.T_CLAN_TW);
                             getInfantry().setArmorTechLevel(TechConstants.T_CLAN_TW);
                         }
@@ -544,9 +581,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     return;
                 }
                 UnitUtil.checkEquipmentByTechLevel(getInfantry());
-            }
-            else if (combo.equals(motiveType)) {
-                switch(motiveType.getSelectedIndex()) {
+            } else if (combo.equals(motiveType)) {
+                getInfantry().setMicrolite(false);
+                switch (motiveType.getSelectedIndex()) {
                 case M_JUMP:
                     getInfantry().setMovementMode(EntityMovementMode.INF_JUMP);
                     break;
@@ -562,30 +599,45 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 case M_WHEELED:
                     getInfantry().setMovementMode(EntityMovementMode.WHEELED);
                     break;
+                case M_MICROLITE:
+                    getInfantry().setMicrolite(true);
+                    /* fall through */
+                case M_VTOL:
+                    getInfantry().setMovementMode(EntityMovementMode.VTOL);
+                    break;
+                case M_UMU:
+                    getInfantry().setMovementMode(EntityMovementMode.INF_UMU);
+                    break;
+                case M_UMU_MOTORIZED:
+                    getInfantry().setMotorizedScuba();
+                    break;
+                case M_SUBMARINE:
+                    getInfantry().setMovementMode(EntityMovementMode.SUBMARINE);
+                    break;
                 default:
                     getInfantry().setMovementMode(EntityMovementMode.INF_LEG);
                 }
-                //first adjust max squad size if necessary
-                int currentSquadSize = squadSize.getSelectedIndex()+1;
+                // first adjust max squad size if necessary
+                int currentSquadSize = squadSize.getSelectedIndex() + 1;
                 int maxSquadSize = getMaxSquadSize();
                 squadSize.removeAllItems();
                 for (int i = 1; i <= maxSquadSize; i++) {
                     squadSize.addItem(Integer.toString(i));
                 }
-                if(currentSquadSize > maxSquadSize) {
+                if (currentSquadSize > maxSquadSize) {
                     getInfantry().setSquadSize(maxSquadSize);
-                    squadSize.setSelectedIndex(maxSquadSize-1);
+                    squadSize.setSelectedIndex(maxSquadSize - 1);
                 }
-                //now adjust squad number if necessary
-                int currentSquadN = squadN.getSelectedIndex()+1;
+                // now adjust squad number if necessary
+                int currentSquadN = squadN.getSelectedIndex() + 1;
                 int maxSquadN = getMaxSquadNumber();
                 squadN.removeAllItems();
                 for (int i = 1; i <= maxSquadN; i++) {
                     squadN.addItem(Integer.toString(i));
                 }
-                if(currentSquadN > maxSquadN) {
+                if (currentSquadN > maxSquadN) {
                     getInfantry().setSquadN(maxSquadN);
-                    squadN.setSelectedIndex(maxSquadN-1);
+                    squadN.setSelectedIndex(maxSquadN - 1);
                 }
                 if (getInfantry().isMechanized()) {
                     antiMekTraining.setSelected(false);
@@ -593,37 +645,34 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 } else {
                     antiMekTraining.setEnabled(true);
                 }
-            }
-            else if (combo.equals(squadSize)) {
+            } else if (combo.equals(squadSize)) {
                 getInfantry().setSquadSize(squadSize.getSelectedIndex() + 1);
                 getInfantry().autoSetInternal();
-                int currentSquadN = squadN.getSelectedIndex()+1;
+                int currentSquadN = squadN.getSelectedIndex() + 1;
                 int maxSquadN = getMaxSquadNumber();
                 squadN.removeAllItems();
                 for (int i = 1; i <= maxSquadN; i++) {
                     squadN.addItem(Integer.toString(i));
                 }
-                if(currentSquadN > maxSquadN) {
+                if (currentSquadN > maxSquadN) {
                     getInfantry().setSquadN(maxSquadN);
-                    squadN.setSelectedIndex(maxSquadN-1);
+                    squadN.setSelectedIndex(maxSquadN - 1);
                 }
-            }
-            else if (combo.equals(squadN)) {
+            } else if (combo.equals(squadN)) {
                 getInfantry().setSquadN(squadN.getSelectedIndex() + 1);
                 getInfantry().autoSetInternal();
-                int currentSquadSize = squadSize.getSelectedIndex()+1;
+                int currentSquadSize = squadSize.getSelectedIndex() + 1;
                 int maxSquadSize = getMaxSquadSize();
                 squadSize.removeAllItems();
                 for (int i = 1; i <= maxSquadSize; i++) {
                     squadSize.addItem(Integer.toString(i));
                 }
-                if(currentSquadSize > maxSquadSize) {
+                if (currentSquadSize > maxSquadSize) {
                     getInfantry().setSquadSize(maxSquadSize);
-                    squadSize.setSelectedIndex(maxSquadSize-1);
+                    squadSize.setSelectedIndex(maxSquadSize - 1);
                 }
 
-            }
-            else if (combo.equals(secondaryN)) {
+            } else if (combo.equals(secondaryN)) {
                 getInfantry().setSecondaryN(secondaryN.getSelectedIndex());
                 checkMainWeapon();
             }
@@ -633,10 +682,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         refresh.refreshAll();
     }
 
-	private int getMaxSquadSize() {
+    private int getMaxSquadSize() {
         int maxPlatoon = 30;
         int maxSquad = 10;
-        switch(motiveType.getSelectedIndex()) {
+        switch (motiveType.getSelectedIndex()) {
         case M_HOVER:
             maxPlatoon = 20;
             maxSquad = 5;
@@ -650,8 +699,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             maxSquad = 6;
             break;
         }
-        int currentSquadN = squadN.getSelectedIndex()+1;
-        if((maxPlatoon / currentSquadN) < maxSquad) {
+        int currentSquadN = squadN.getSelectedIndex() + 1;
+        if ((maxPlatoon / currentSquadN) < maxSquad) {
             maxSquad = (maxPlatoon / currentSquadN);
         }
         return maxSquad;
@@ -659,7 +708,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private int getMaxSquadNumber() {
         int maxPlatoon = 30;
-        switch(motiveType.getSelectedIndex()) {
+        switch (motiveType.getSelectedIndex()) {
         case M_HOVER:
             maxPlatoon = 20;
             break;
@@ -671,8 +720,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             break;
         }
         int maxSquadN = maxPlatoon;
-        int currentSquadSize = squadSize.getSelectedIndex()+1;
-        if((maxPlatoon / currentSquadSize) < maxSquadN) {
+        int currentSquadSize = squadSize.getSelectedIndex() + 1;
+        if ((maxPlatoon / currentSquadSize) < maxSquadN) {
             maxSquadN = (maxPlatoon / currentSquadSize);
         }
         return maxSquadN;
@@ -680,17 +729,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private void checkMainWeapon() {
         Mounted existingInfantryMount = null;
-        for(Mounted m : getInfantry().getWeaponList()) {
-            if((m.getType() instanceof InfantryWeapon) && (m.getLocation() == Infantry.LOC_INFANTRY)) {
+        for (Mounted m : getInfantry().getWeaponList()) {
+            if ((m.getType() instanceof InfantryWeapon) && (m.getLocation() == Infantry.LOC_INFANTRY)) {
                 existingInfantryMount = m;
                 break;
             }
         }
-        if(null != existingInfantryMount) {
+        if (null != existingInfantryMount) {
             UnitUtil.removeMounted(getInfantry(), existingInfantryMount);
         }
 
-        //if there is more than one secondary weapon per squad, then add that
+        // if there is more than one secondary weapon per squad, then add that
         // to the unit
         // otherwise add the primary weapon
         if ((getInfantry().getSecondaryN() < 2) || (null == getInfantry().getSecondaryWeapon())) {
@@ -706,16 +755,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
             }
         }
-        //also check for zero secondary n
-        if(getInfantry().getSecondaryN() <= 0) {
+        // also check for zero secondary n
+        if (getInfantry().getSecondaryN() <= 0) {
             UnitUtil.replaceMainWeapon(getInfantry(), null, true);
         }
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
 
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
 
         if (e.getSource().equals(era)) {
