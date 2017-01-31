@@ -41,6 +41,8 @@ import megamek.common.Infantry;
 import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
+import megamek.common.WeaponType;
+import megamek.common.options.OptionsConstants;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Infantry.views.ArmorView;
@@ -274,6 +276,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             }
         }
 
+        int maxSecondaryN = 2;
+
         switch (getInfantry().getMovementMode()) {
         case INF_JUMP:
             motiveType.setSelectedIndex(M_JUMP);
@@ -290,15 +294,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         case VTOL:
             if (getInfantry().hasMicrolite()) {
                 motiveType.setSelectedIndex(M_MICROLITE);
+                maxSecondaryN = 0;
             } else {
                 motiveType.setSelectedIndex(M_VTOL);
+                maxSecondaryN = 1;
             }
             break;
         case INF_UMU:
             if (getInfantry().getOriginalJumpMP() > 1) {
                 motiveType.setSelectedIndex(M_UMU_MOTORIZED);
+                maxSecondaryN = 1;
             } else {
                 motiveType.setSelectedIndex(M_UMU);
+                maxSecondaryN = 0;
             }
             break;
         case SUBMARINE:
@@ -308,9 +316,38 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             motiveType.setSelectedIndex(M_FOOT);
             break;
         }
+
+        if (getInfantry().hasSpecialization(Infantry.MOUNTAIN_TROOPS | Infantry.PARATROOPS)) {
+            maxSecondaryN = 1;
+        }
+        if (getInfantry().hasSpecialization(Infantry.COMBAT_ENGINEERS)) {
+            maxSecondaryN = 0;
+        }
+        if (getInfantry().getSecondaryWeapon() != null) {
+            int crewReq = getInfantry().getSecondaryWeapon().getCrew();
+            if (getInfantry().getCrew().getOptions().booleanOption(OptionsConstants.MD_DERMAL_ARMOR)) {
+                crewReq--;
+            }
+            if (getInfantry().getCrew().getOptions().booleanOption(OptionsConstants.MD_TSM_IMPLANT)) {
+                crewReq--;
+            }
+            maxSecondaryN = Math.min(maxSecondaryN, getInfantry().getSquadSize() / (Math.max(1, crewReq)));
+        }
+        secondaryN.removeAllItems();
+        if (getInfantry().getSecondaryWeapon() != null
+                && getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
+            getInfantry().setSecondaryN(2);
+            secondaryN.addItem("0");
+            secondaryN.addItem("2");
+            secondaryN.setSelectedIndex(1);
+        } else {
+            for (int i = 0; i <= maxSecondaryN; i++) {
+                secondaryN.addItem(Integer.toString(i));
+            }
+            secondaryN.setSelectedIndex(Math.min(maxSecondaryN, getInfantry().getSecondaryN()));
+        }
         squadN.setSelectedIndex(getInfantry().getSquadN() - 1);
         squadSize.setSelectedIndex(getInfantry().getSquadSize() - 1);
-        secondaryN.setSelectedIndex(getInfantry().getSecondaryN());
         getInfantry().setAntiMekSkill(antiMekTraining.isSelected());
 
         if (getInfantry().isMixedTech()) {
