@@ -52,7 +52,7 @@ import megameklab.com.util.ImageHelper;
 public class PrintInfantry implements Printable {
 	
 	/* Id tags of elements in the SVG file */
-	private final static String ID_FLUFF_IMAGE = "imageFluff";
+//	private final static String ID_FLUFF_IMAGE = "imageFluff";
 	private final static String ID_PLATOON_NAME = "platoon_name";
 	private final static String ID_ARMOR_KIT = "armor_kit";
 	private final static String ID_ARMOR_DIVISOR = "armor_divisor";
@@ -134,7 +134,11 @@ public class PrintInfantry implements Printable {
                 		+ (pos + 1) + ".svg"));
         		infantry = infantryList.get(pos + currentPosition);
         		tspan = (Tspan)diagram.getElement(ID_PLATOON_NAME);
-        		tspan.setText(infantry.getShortName());
+        		if (infantry.getShortName().length() > 48) {
+        			tspan.setText(infantry.getChassis());
+        		} else {
+            		tspan.setText(infantry.getShortName());
+        		}
         		((Text)tspan.getParent()).rebuild();
         		
         		tspan = (Tspan)diagram.getElement(ID_ARMOR_KIT);
