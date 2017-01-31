@@ -47,6 +47,7 @@ import megamek.common.Entity;
 import megamek.common.EntityListFile;
 import megamek.common.EntityMovementMode;
 import megamek.common.FixedWingSupport;
+import megamek.common.Infantry;
 import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
@@ -64,6 +65,7 @@ import megameklab.com.ui.Aero.Printing.PrintSmallCraftSpheroid;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
+import megameklab.com.ui.Infantry.Printing.PrintInfantry;
 import megameklab.com.ui.Mek.Printing.PrintMech;
 import megameklab.com.ui.Mek.Printing.PrintQuad;
 import megameklab.com.ui.Mek.Printing.PrintTripod;
@@ -144,6 +146,7 @@ public class UnitPrintManager {
         ArrayList<FixedWingSupport> fixedWingSupportList = new ArrayList<FixedWingSupport>();
         ArrayList<Dropship> aerodyneList = new ArrayList<Dropship>();
         ArrayList<Dropship> spheroidList = new ArrayList<Dropship>();
+        ArrayList<Infantry> infList = new ArrayList<Infantry>();
         ArrayList<BattleArmor> baList = new ArrayList<BattleArmor>();
         ArrayList<Protomech> protoList = new ArrayList<Protomech>();
         ArrayList<Tank> largeSupportTankList = new ArrayList<Tank>();
@@ -172,7 +175,7 @@ public class UnitPrintManager {
                 VTOLList.add((VTOL) unit);
             } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
                 wigeList.add((Tank) unit);
-            } else if ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL)) {
+            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
                 navalList.add((Tank) unit);
             } else if (unit instanceof Tank) {
                 if (!((Tank) unit).hasNoDualTurret()) {
@@ -202,6 +205,8 @@ public class UnitPrintManager {
                 }
             } else if (unit instanceof BattleArmor) {
                 baList.add((BattleArmor) unit);
+            } else if (unit instanceof Infantry) {
+            	infList.add((Infantry) unit);
             } else if (unit instanceof Protomech) {
                 protoList.add((Protomech) unit);
             } else {
@@ -295,6 +300,12 @@ public class UnitPrintManager {
             PrintBattleArmor printBA = new PrintBattleArmor(baList, masterPrintJob);
 
             printBA.print(aset);
+        }
+        
+        if (infList.size() > 0) {
+        	PrintInfantry printInf = new PrintInfantry(infList, masterPrintJob);
+        	
+        	printInf.print(aset);
         }
 
         if (protoList.size() > 0) {
