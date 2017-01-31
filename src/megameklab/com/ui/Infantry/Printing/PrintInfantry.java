@@ -181,7 +181,8 @@ public class PrintInfantry implements Printable {
         		}
         		diagram.updateTime(0);
         		InfantryWeapon rangeWeapon = infantry.getPrimaryWeapon();
-        		if (infantry.getSecondaryWeapon() != null && infantry.getSecondaryN() > 1) {
+        		if (infantry.getSecondaryWeapon() != null && infantry.getSecondaryN() > 1
+        				&& !infantry.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
         			rangeWeapon = infantry.getSecondaryWeapon();
         		}
         		boolean scuba = infantry.getMovementMode() == EntityMovementMode.INF_UMU
@@ -363,16 +364,28 @@ public class PrintInfantry implements Printable {
         		if (rangeWeapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
         			notes.add("Can only damage conventional infantry.");
         		}
-        		if (rangeWeapon.hasFlag(WeaponType.F_INFERNO)) {
+        		if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INFERNO)
+        				|| (infantry.getSecondaryWeapon() != null 
+        					&& infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INFERNO))) {
     				notes.add("Flame-based weapon.");        			
         		} else {
-	        		for (int i = 0; i < rangeWeapon.getModesCount(); i++) {
-	        			if (rangeWeapon.getMode(i).equals("Heat")) {
+	        		for (int i = 0; i < infantry.getPrimaryWeapon().getModesCount(); i++) {
+	        			if (infantry.getPrimaryWeapon().getMode(i).equals("Heat")) {
 	        				notes.add("Flame-based weapon.");
+	        				break;
 	        			}
 	        		}
+	        		if (infantry.getSecondaryWeapon() != null) {
+		        		for (int i = 0; i < infantry.getSecondaryWeapon().getModesCount(); i++) {
+		        			if (infantry.getSecondaryWeapon().getMode(i).equals("Heat")) {
+		        				notes.add("Flame-based weapon.");
+		        			}
+		        		}
+	        		}
         		}
-        		if (rangeWeapon.hasFlag(WeaponType.F_INF_AA)) {
+        		if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INF_AA)
+        				|| (infantry.getSecondaryWeapon() != null
+        						&& infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INF_AA))) {
         			notes.add("Can attack airborn units.");
         		}
         		if (infantry.hasSpecialization(Infantry.BRIDGE_ENGINEERS)) {
@@ -406,7 +419,7 @@ public class PrintInfantry implements Printable {
         			notes.add("Surveillance and communication equipment");
         		}
         		if (infantry.hasSpecialization(Infantry.TAG_TROOPS)) {
-        			notes.add("Equipped with TAG");
+        			notes.add("Equipped with TAG (Range 3/6/9)");
         		}
         		if (infantry.hasSneakECM()) {
         			notes.add("Invisible to standard/light active probes.");
