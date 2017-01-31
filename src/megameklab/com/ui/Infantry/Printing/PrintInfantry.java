@@ -299,8 +299,12 @@ public class PrintInfantry implements Printable {
 					((Text)mode2.getParent()).rebuild();
 					break;
 				case INF_UMU:
-					mp1.setText(Integer.toString(infantry.getJumpMP(false)));
-					mode1.setText("SCUBA");
+					mp1.setText(Integer.toString(infantry.getActiveUMUCount()));
+					if (infantry.getOriginalJumpMP() > 1) {
+						mode1.setText("SCUBA (Motorized)");
+					} else {
+						mode1.setText("SCUBA");
+					}
 					mp2.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
 					mode2.setText("Ground");
 					((Text)mp2.getParent()).rebuild();
@@ -319,8 +323,16 @@ public class PrintInfantry implements Printable {
 					mode1.setText("Mechanized Wheeled");
 					break;
 				case VTOL:
-					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
-					mode1.setText("Mechanized VTOL");
+					mp1.setText(Integer.toString(infantry.getJumpMP(false)));
+					if (infantry.hasMicrolite()) {
+						mode1.setText("VTOL (Microlite)");
+					} else {
+						mode1.setText("VTOL (Micro-copter)");
+					}
+					break;
+				case SUBMARINE:
+					mp1.setText(Integer.toString(infantry.getActiveUMUCount()));
+					mode1.setText("Mechanized SCUBA");
 					break;
 				case INF_MOTORIZED:
 					mp1.setText(Integer.toString(infantry.getWalkMP(true, true, false)));
