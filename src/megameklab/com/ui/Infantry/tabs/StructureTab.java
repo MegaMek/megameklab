@@ -38,6 +38,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import megamek.common.EntityMovementMode;
+import megamek.common.EquipmentType;
 import megamek.common.Infantry;
 import megamek.common.LocationFullException;
 import megamek.common.Mounted;
@@ -107,6 +108,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private JTextField txtPrimary = new JTextField("None");
     private JTextField txtSecondary = new JTextField("None");
+    private JTextField txtArmor = new JTextField("None");
 
     private JTabbedPane equipmentPane;
     
@@ -134,6 +136,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         txtPrimary.setEditable(false);
         txtSecondary.setEditable(false);
+        txtArmor.setEditable(false);
 
         chassis.setText(getInfantry().getChassis());
         model.setText(getInfantry().getModel());
@@ -212,6 +215,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         gbc.gridwidth = 2;
         gbc.gridy++;
         weaponPanel.add(antiMekTraining, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        weaponPanel.add(createLabel("Armor:", labelSize), gbc);
+        gbc.gridx = 1;
+        weaponPanel.add(txtArmor, gbc);
 
         setFieldSize(motiveType, comboSize);
         setFieldSize(squadSize, comboSize);
@@ -225,6 +234,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         setFieldSize(techLevel, comboSize);
         setFieldSize(txtPrimary, comboSize);
         setFieldSize(txtSecondary, comboSize);
+        setFieldSize(txtArmor, comboSize);
 
         basicPanel.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         squadPanel.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
@@ -437,6 +447,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             txtSecondary.setText(UnitUtil.trimInfantryWeaponNames(getInfantry().getSecondaryWeapon().getName()));
         } else {
             txtSecondary.setText("None");
+        }
+        EquipmentType armor = getInfantry().getArmorKit();
+        if (null != armor) {
+            txtArmor.setText(armor.getName());
+        } else {
+            txtArmor.setText("None");
         }
 
         armorView.refresh();

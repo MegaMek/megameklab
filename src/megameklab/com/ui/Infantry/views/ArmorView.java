@@ -19,25 +19,50 @@ package megameklab.com.ui.Infantry.views;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Enumeration;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
+import megameklab.com.util.XTableColumnModel;
 
 public class ArmorView extends IView implements ActionListener, ChangeListener {
 
@@ -47,6 +72,16 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     private static final long serialVersionUID = -7235362583437251408L;
 
     private RefreshListener refresh = null;
+    
+    private JButton btnSetArmor = new JButton("Set Armor");    
+    private JTextField txtFilter = new JTextField();
+    private JRadioButton rbtnStats = new JRadioButton("Stats");
+    private JRadioButton rbtnFluff = new JRadioButton("Fluff");
+    private TableRowSorter<EquipmentTableModel> equipmentSorter;
+    private EquipmentTableModel masterEquipmentList;
+    private JTable masterEquipmentTable = new JTable();
+    private JScrollPane masterEquipmentScroll = new JScrollPane();
+
     JCheckBox chEncumber = new JCheckBox();
     JCheckBox chSpaceSuit = new JCheckBox();
     JCheckBox chDEST = new JCheckBox();
@@ -59,11 +94,128 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     
     public ArmorView(EntitySource eSource) {
         super(eSource);
+        masterEquipmentList = new EquipmentTableModel(eSource.getEntity());
+        masterEquipmentTable.setModel(masterEquipmentList);
+        masterEquipmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        equipmentSorter = new TableRowSorter<EquipmentTableModel>(masterEquipmentList);
+        equipmentSorter.setComparator(EquipmentTableModel.COL_DIVISOR, new DamageDivisorSorter());
+        equipmentSorter.setComparator(EquipmentTableModel.COL_COST, new WeaponView.FormattedNumberSorter());
+        masterEquipmentTable.setRowSorter(equipmentSorter);
+        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+        sortKeys.add(new RowSorter.SortKey(EquipmentTableModel.COL_NAME, SortOrder.ASCENDING));
+        equipmentSorter.setSortKeys(sortKeys);
+        XTableColumnModel equipColumnModel = new XTableColumnModel();
+        masterEquipmentTable.setColumnModel(equipColumnModel);
+        masterEquipmentTable.createDefaultColumnsFromModel();
+        TableColumn column = null;
+        for (int i = 0; i < EquipmentTableModel.N_COL; i++) {
+            column = masterEquipmentTable.getColumnModel().getColumn(i);
+            column.setPreferredWidth(masterEquipmentList.getColumnWidth(i));
+            column.setCellRenderer(masterEquipmentList.getRenderer());
+        }
+        masterEquipmentTable.setIntercellSpacing(new Dimension(0, 0));
+        masterEquipmentTable.setShowGrid(false);
+        masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        masterEquipmentTable.setDoubleBuffered(true);
+        masterEquipmentScroll.setViewportView(masterEquipmentTable);
+        masterEquipmentTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                int view = masterEquipmentTable.getSelectedRow();
+                if(view < 0) {
+                    //selection got filtered away
+                    return;
+                }
+                int selected = masterEquipmentTable.convertRowIndexToModel(view);
+                EquipmentType equip = masterEquipmentList.getType(selected);
+                btnSetArmor.setEnabled(equip.hasFlag(MiscType.F_ARMOR_KIT));
+            }
+        });
+        masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
+        masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
+
+        Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
+        ArrayList<EquipmentType> allTypes = new ArrayList<EquipmentType>();
+        while (miscTypes.hasMoreElements()) {
+            EquipmentType eq = miscTypes.nextElement();
+            if(eq.hasFlag(MiscType.F_ARMOR_KIT)) {
+                allTypes.add(eq);
+            }
+        }
+
+        masterEquipmentList.setData(allTypes);
+
+        txtFilter.setText("");
+        txtFilter.setMinimumSize(new java.awt.Dimension(200, 28));
+        txtFilter.setPreferredSize(new java.awt.Dimension(200, 28));
+        txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                filterEquipment();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                filterEquipment();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                filterEquipment();
+            }
+        });
+
+        ButtonGroup bgroupView = new ButtonGroup();
+        bgroupView.add(rbtnStats);
+        bgroupView.add(rbtnFluff);
+
+        rbtnStats.setSelected(true);
+        rbtnStats.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setEquipmentView();
+            }
+        });
+        rbtnFluff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setEquipmentView();
+            }
+        });
+        
         setUpPanels();
+        rbtnStats.setSelected(true);
+        setEquipmentView();
         refresh();
     }
     
     private void setUpPanels() {
+        JPanel databasePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        databasePanel.add(btnSetArmor, gbc);
+        btnSetArmor.addActionListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        databasePanel.add(txtFilter, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        databasePanel.add(rbtnStats, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        databasePanel.add(rbtnFluff, gbc);
+
+        gbc.insets = new Insets(2,0,0,0);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        databasePanel.add(masterEquipmentScroll, gbc);
+
+        setLayout(new BorderLayout());
+        this.add(databasePanel, BorderLayout.CENTER);
+        
         JPanel divisorPanel = new JPanel();
         JPanel choicePanel = new JPanel(new GridLayout(3,2));
         maxSize.setSize(110, 20);
@@ -87,9 +239,10 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         choicePanel.add(chSneakIR);
         choicePanel.add(chSneakECM);
 
-        setLayout(new BorderLayout());
-        add(divisorPanel, BorderLayout.NORTH);
-        add(choicePanel, BorderLayout.CENTER);
+        JPanel customPanel = new JPanel();
+        customPanel.setLayout(new BorderLayout());
+        customPanel.add(divisorPanel, BorderLayout.NORTH);
+        customPanel.add(choicePanel, BorderLayout.CENTER);
     }
     
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -132,6 +285,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             chSneakIR.setEnabled(true);
             chSneakECM.setEnabled(true);
         }
+        filterEquipment();
         addAllListeners();
     }
 
@@ -141,6 +295,19 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
 
     public void actionPerformed(ActionEvent arg0) {
         removeAllListeners();
+        if (arg0.getSource().equals(btnSetArmor)) {
+            int view = masterEquipmentTable.getSelectedRow();
+            if(view < 0) {
+                //selection got filtered away
+                return;
+            }
+            int selected = masterEquipmentTable.convertRowIndexToModel(view);
+            EquipmentType equip = masterEquipmentList.getType(selected);
+            if(equip.hasFlag(MiscType.F_ARMOR_KIT)) {
+                getInfantry().setArmorKit(equip);
+            }
+            refresh.refreshStructure();
+        }
         if (arg0.getSource().equals(chEncumber)) {
             getInfantry().setArmorEncumbering(chEncumber.isSelected());
         } 
@@ -165,8 +332,6 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             refresh.refreshPreview();
         }
     }
-
-    
 
     private void addAllListeners() {
         chEncumber.addActionListener(this);
@@ -196,5 +361,121 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             refresh.refreshStatus();
         }
         refresh();
+    }
+    
+    private void filterEquipment() {
+        RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = null;
+        equipmentTypeFilter = new RowFilter<EquipmentTableModel,Integer>() {
+            @Override
+            public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
+                EquipmentTableModel equipModel = entry.getModel();
+                EquipmentType etype = equipModel.getType(entry.getIdentifier());
+                if(!(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
+                    return false;
+                }
+                if(!UnitUtil.isLegal(getInfantry(), etype.getTechLevel(getInfantry().getTechLevelYear()))) {
+                    return false;
+                }
+                if (!etype.isAvailableIn(getInfantry().getTechLevelYear())) {
+                    return false;
+                }
+                if (txtFilter.getText().length() > 0) {
+                    return etype.getName().toLowerCase().contains(txtFilter.getText().toLowerCase());
+                }
+                return true;
+            }
+        };
+        equipmentSorter.setRowFilter(equipmentTypeFilter);
+    }
+
+    public void setEquipmentView() {
+        XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
+        if(rbtnStats.isSelected()) {
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MRANGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSL), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSW), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVCL), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DINTRO), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
+        } else {
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MRANGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSL), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSW), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVCL), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DINTRO), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
+        }
+    }
+    
+    /**
+     * A comparator for damage divisor that sorts by numeric value first, then considers an appended
+     * "E" (indicating encumbering).
+     * 
+     * @author Neoancient
+     *
+     */
+    public static class DamageDivisorSorter implements Comparator<String> {
+
+        @Override
+        public int compare(String s1, String s2) {
+            double d1 = 0;
+            try {
+                if (s1.endsWith("E")) {
+                    d1 = Double.parseDouble(s1.replace("E", "")) - 0.1;
+                } else {
+                    d1 = Double.parseDouble(s1.replace("E", ""));
+                }
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
+            }
+            double d2 = 0;
+            try {
+                if (s2.endsWith("E")) {
+                    d2 = Double.parseDouble(s2.replace("E", "")) - 0.1;
+                } else {
+                    d2 = Double.parseDouble(s2.replace("E", ""));
+                }
+            } catch (NumberFormatException ex) {
+                ex.printStackTrace();
+            }
+            if (d1 > d2) {
+                return -1;
+            } else if (d1 < d2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
     }
 }
