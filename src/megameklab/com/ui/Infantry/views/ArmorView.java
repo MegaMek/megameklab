@@ -17,11 +17,11 @@
 package megameklab.com.ui.Infantry.views;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -73,15 +73,21 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
 
     private RefreshListener refresh = null;
     
+    private final static String CARD_TABLE = "table";
+    private final static String CARD_CUSTOM = "custom";
+    
     private JButton btnSetArmor = new JButton("Set Armor");    
     private JButton btnRemoveArmor = new JButton("Remove Armor");    
     private JTextField txtFilter = new JTextField();
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
+    private JRadioButton rbtnCustom = new JRadioButton("Custom");
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
     private EquipmentTableModel masterEquipmentList;
     private JTable masterEquipmentTable = new JTable();
     private JScrollPane masterEquipmentScroll = new JScrollPane();
+    private JPanel equipmentView = new JPanel();
+    private CardLayout equipmentLayout = new CardLayout();
 
     JCheckBox chEncumber = new JCheckBox();
     JCheckBox chSpaceSuit = new JCheckBox();
@@ -90,8 +96,6 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     JCheckBox chSneakIR = new JCheckBox();
     JCheckBox chSneakECM = new JCheckBox();
     private JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 1.0, 2.0, 1));
-    private Dimension maxSize = new Dimension();
-
     
     public ArmorView(EntitySource eSource) {
         super(eSource);
@@ -163,6 +167,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         ButtonGroup bgroupView = new ButtonGroup();
         bgroupView.add(rbtnStats);
         bgroupView.add(rbtnFluff);
+        bgroupView.add(rbtnCustom);
 
         rbtnStats.setSelected(true);
         rbtnStats.addActionListener(new java.awt.event.ActionListener() {
@@ -171,6 +176,11 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             }
         });
         rbtnFluff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setEquipmentView();
+            }
+        });
+        rbtnCustom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setEquipmentView();
             }
@@ -196,18 +206,16 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         databasePanel.add(btnRemoveArmor, gbc);
         btnRemoveArmor.addActionListener(this);
 
+        JPanel btnPanel = new JPanel();
+        btnPanel.add(rbtnStats);
+        btnPanel.add(rbtnFluff);
+        btnPanel.add(rbtnCustom);
         gbc.gridx = 0;
         gbc.gridy = 1;
-        databasePanel.add(txtFilter, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        databasePanel.add(rbtnStats, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        databasePanel.add(rbtnFluff, gbc);
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        databasePanel.add(btnPanel, gbc);
+        
+        equipmentView.setLayout(equipmentLayout);
 
         gbc.insets = new Insets(2,0,0,0);
         gbc.gridx = 0;
@@ -216,38 +224,79 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        databasePanel.add(masterEquipmentScroll, gbc);
+        databasePanel.add(equipmentView, gbc);
 
         setLayout(new BorderLayout());
         this.add(databasePanel, BorderLayout.CENTER);
         
-        JPanel divisorPanel = new JPanel();
-        JPanel choicePanel = new JPanel(new GridLayout(3,2));
-        maxSize.setSize(110, 20);
+        JPanel tableView = new JPanel(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        tableView.add(new JLabel("Filter:"), gbc);
+        
+        gbc.gridx = 1;
+        tableView.add(txtFilter, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        tableView.add(masterEquipmentScroll, gbc);
+        
+        equipmentView.add(tableView, CARD_TABLE);
 
-        divisorPanel.add(createLabel("Damage Divisor:", maxSize));
-        divisorPanel.add(armorValue);
+        JPanel customView = new JPanel(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        customView.add(new JLabel("Damage Divisor:"), gbc);
+        gbc.gridx = 1;
+        customView.add(armorValue, gbc);
         JFormattedTextField tf = ((JSpinner.DefaultEditor)armorValue.getEditor()).getTextField();
         tf.setEditable(false);
         tf.setBackground(Color.white);
+        
         chEncumber.setText("Encumbering");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        customView.add(chEncumber, gbc);
+        
         chSpaceSuit.setText("Space Suit");
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        customView.add(chSpaceSuit, gbc);
+
         chDEST.setText("DEST");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        customView.add(chDEST, gbc);
+
         chSneakCamo.setText("Sneak (CAMO)");
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        customView.add(chSneakCamo, gbc);
+
         chSneakIR.setText("Sneak (IR)");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        customView.add(chSneakIR, gbc);
+
         chSneakECM.setText("Sneak (ECM)");
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        customView.add(chSneakECM, gbc);
 
-        choicePanel.add(chEncumber);
-        choicePanel.add(chSpaceSuit);
-        choicePanel.add(chDEST);
-        choicePanel.add(chSneakCamo);
-        choicePanel.add(chSneakIR);
-        choicePanel.add(chSneakECM);
-
-        JPanel customPanel = new JPanel();
-        customPanel.setLayout(new BorderLayout());
-        customPanel.add(divisorPanel, BorderLayout.NORTH);
-        customPanel.add(choicePanel, BorderLayout.CENTER);
+        equipmentView.add(customView, CARD_CUSTOM);        
     }
     
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -398,6 +447,11 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     }
 
     public void setEquipmentView() {
+        if (rbtnCustom.isSelected()) {
+            equipmentLayout.show(equipmentView, CARD_CUSTOM);
+            return;
+        }
+        equipmentLayout.show(equipmentView, CARD_TABLE);
         XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
         if(rbtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
