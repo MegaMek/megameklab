@@ -74,6 +74,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     private RefreshListener refresh = null;
     
     private JButton btnSetArmor = new JButton("Set Armor");    
+    private JButton btnRemoveArmor = new JButton("Remove Armor");    
     private JTextField txtFilter = new JTextField();
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
@@ -191,6 +192,10 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         databasePanel.add(btnSetArmor, gbc);
         btnSetArmor.addActionListener(this);
 
+        gbc.gridx = 1;
+        databasePanel.add(btnRemoveArmor, gbc);
+        btnRemoveArmor.addActionListener(this);
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         databasePanel.add(txtFilter, gbc);
@@ -286,6 +291,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             chSneakECM.setEnabled(true);
         }
         filterEquipment();
+        btnRemoveArmor.setEnabled(getInfantry().getArmorKit() != null);
         addAllListeners();
     }
 
@@ -306,6 +312,9 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             if(equip.hasFlag(MiscType.F_ARMOR_KIT)) {
                 getInfantry().setArmorKit(equip);
             }
+            refresh.refreshStructure();
+        } else if (arg0.getSource().equals(btnRemoveArmor)) {
+            getInfantry().setArmorKit(null);
             refresh.refreshStructure();
         }
         if (arg0.getSource().equals(chEncumber)) {
