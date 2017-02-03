@@ -246,7 +246,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if (col == COL_DIVISOR) {
             if (mtype != null && mtype.hasFlag(MiscType.F_ARMOR_KIT)){
-                if ((mtype.getSubType() & MiscType.S_ENCUMBERING) != 0) {
+                if ((mtype.getSubType() & MiscType.S_ENCUMBERING) == 0) {
                     return String.valueOf(mtype.getDamageDivisor());
                 } else {
                     return mtype.getDamageDivisor() + "E";

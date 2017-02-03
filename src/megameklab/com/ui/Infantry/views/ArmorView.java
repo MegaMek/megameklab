@@ -427,6 +427,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         if (refresh != null) {
             refresh.refreshStructure();
             refresh.refreshStatus();
+            refresh.refreshPreview();
         }
         refresh();
     }
