@@ -95,7 +95,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     JCheckBox chSneakCamo = new JCheckBox();
     JCheckBox chSneakIR = new JCheckBox();
     JCheckBox chSneakECM = new JCheckBox();
-    private JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 1.0, 2.0, 1));
+    private JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 0.5, 3.0, 0.5));
     
     public ArmorView(EntitySource eSource) {
         super(eSource);
@@ -340,7 +340,8 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             chSneakECM.setEnabled(true);
         }
         filterEquipment();
-        btnRemoveArmor.setEnabled(getInfantry().getArmorKit() != null);
+        btnRemoveArmor.setEnabled(hasArmor());
+        rbtnCustom.setEnabled(getInfantry().getArmorKit() == null);
         addAllListeners();
     }
 
@@ -360,11 +361,18 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             EquipmentType equip = masterEquipmentList.getType(selected);
             if(equip.hasFlag(MiscType.F_ARMOR_KIT)) {
                 getInfantry().setArmorKit(equip);
+                rbtnCustom.setEnabled(false);
             }
-            refresh.refreshStructure();
         } else if (arg0.getSource().equals(btnRemoveArmor)) {
             getInfantry().setArmorKit(null);
-            refresh.refreshStructure();
+            getInfantry().setDamageDivisor(1.0);
+            getInfantry().setArmorEncumbering(false);
+            getInfantry().setSpaceSuit(false);
+            getInfantry().setDEST(false);
+            getInfantry().setSneakCamo(false);
+            getInfantry().setSneakIR(false);
+            getInfantry().setSneakECM(false);
+            rbtnCustom.setEnabled(true);
         }
         if (arg0.getSource().equals(chEncumber)) {
             getInfantry().setArmorEncumbering(chEncumber.isSelected());
@@ -386,6 +394,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         } 
         addAllListeners();
         if (refresh != null) {
+            refresh.refreshStructure();
             refresh.refreshStatus();
             refresh.refreshPreview();
         }
@@ -416,6 +425,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
         double value = (Double) field.getModel().getValue();      
         getInfantry().setDamageDivisor(value);
         if (refresh != null) {
+            refresh.refreshStructure();
             refresh.refreshStatus();
         }
         refresh();
@@ -449,9 +459,11 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
     public void setEquipmentView() {
         if (rbtnCustom.isSelected()) {
             equipmentLayout.show(equipmentView, CARD_CUSTOM);
+            btnSetArmor.setEnabled(false);
             return;
         }
         equipmentLayout.show(equipmentView, CARD_TABLE);
+        btnSetArmor.setEnabled(true);
         XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
         if(rbtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
@@ -498,6 +510,11 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
         }
+    }
+    
+    private boolean hasArmor() {
+        return getInfantry().getArmorKit() != null
+                || !getInfantry().getArmorDesc().equals("1.0");
     }
     
     /**
