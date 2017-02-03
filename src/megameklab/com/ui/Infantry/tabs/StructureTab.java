@@ -452,7 +452,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         if (null != armor) {
             txtArmor.setText(armor.getName());
         } else {
-            txtArmor.setText("None");
+            String desc = getInfantry().getArmorDesc();
+            if (desc.equals("1.0")) {
+                txtArmor.setText("None");
+            } else {
+                txtArmor.setText(desc);
+            }
         }
 
         armorView.refresh();
