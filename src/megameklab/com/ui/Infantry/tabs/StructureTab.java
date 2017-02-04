@@ -24,6 +24,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -45,9 +48,12 @@ import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
 import megamek.common.options.OptionsConstants;
+import megamek.common.weapons.ArtilleryCannonWeapon;
+import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Infantry.views.ArmorView;
+import megameklab.com.ui.Infantry.views.FieldGunView;
 import megameklab.com.ui.Infantry.views.WeaponView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -97,6 +103,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private JComboBox<String> squadN = new JComboBox<String>(squadNArray);
     private String[] secondaryNArray = { "0", "1", "2" };
     private JComboBox<String> secondaryN = new JComboBox<String>(secondaryNArray);
+    private JComboBox<String> cbFieldGunN = new JComboBox<String>();
     private JCheckBox antiMekTraining = new JCheckBox("Anti-mek Training");
     private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Augmentation"};
 
@@ -108,17 +115,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     private JTextField txtPrimary = new JTextField("None");
     private JTextField txtSecondary = new JTextField("None");
+    
+    private JTextField txtFieldGun = new JTextField("None");
     private JTextField txtArmor = new JTextField("None");
 
     private JTabbedPane equipmentPane;
     
-    private ArmorView armorView;
     private WeaponView weaponView;
+    private FieldGunView fieldGunView;
+    private ArmorView armorView;
 
     public StructureTab(EntitySource eSource) {
         super(eSource);
-        armorView = new ArmorView(eSource);
         weaponView = new WeaponView(eSource);
+        fieldGunView = new FieldGunView(eSource);
+        armorView = new ArmorView(eSource);
         setUpPanels();
         refresh();
     }
@@ -137,6 +148,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         txtPrimary.setEditable(false);
         txtSecondary.setEditable(false);
         txtArmor.setEditable(false);
+        txtFieldGun.setEditable(false);
 
         chassis.setText(getInfantry().getChassis());
         model.setText(getInfantry().getModel());
@@ -221,6 +233,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         weaponPanel.add(createLabel("Armor:", labelSize), gbc);
         gbc.gridx = 1;
         weaponPanel.add(txtArmor, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        weaponPanel.add(createLabel("Field Gun:", labelSize), gbc);
+        gbc.gridx = 1;
+        weaponPanel.add(txtFieldGun, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        weaponPanel.add(createLabel("Field Gun #:", labelSize), gbc);
+        gbc.gridx = 1;
+        weaponPanel.add(cbFieldGunN, gbc);
 
         setFieldSize(motiveType, comboSize);
         setFieldSize(squadSize, comboSize);
@@ -234,6 +258,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         setFieldSize(techLevel, comboSize);
         setFieldSize(txtPrimary, comboSize);
         setFieldSize(txtSecondary, comboSize);
+        setFieldSize(txtFieldGun, comboSize);
         setFieldSize(txtArmor, comboSize);
 
         basicPanel.setBorder(BorderFactory.createTitledBorder("Basic Information"));
@@ -242,7 +267,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         
         equipmentPane = new JTabbedPane();
         equipmentPane.addTab(tabNames[T_INFANTRY_WEAPONS], weaponView);
-        equipmentPane.addTab(tabNames[T_FIELD_GUNS], new JPanel());
+        equipmentPane.addTab(tabNames[T_FIELD_GUNS], fieldGunView);
         equipmentPane.addTab(tabNames[T_ARMOR_KIT], armorView);
         equipmentPane.addTab(tabNames[T_AUGMENTATION], new JPanel());
 
@@ -448,6 +473,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         } else {
             txtSecondary.setText("None");
         }
+        
+        List<EquipmentType> fieldGuns = getInfantry().getWeaponList().stream()
+                .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
+                .map(m -> m.getType()).filter(et -> et instanceof WeaponType)
+                .collect(Collectors.toList());
+        if (fieldGuns.isEmpty()) {
+            cbFieldGunN.setEnabled(false);
+            txtFieldGun.setText("None");
+        } else {
+            cbFieldGunN.setEnabled(true);
+            int maxNum = 1;
+            if (!(fieldGuns.get(0) instanceof ArtilleryWeapon
+                    || fieldGuns.get(0) instanceof ArtilleryCannonWeapon)) {
+                int crewReq = Math.max(2, (int)Math.ceil(fieldGuns.get(0).getTonnage(getInfantry())));
+                maxNum = getInfantry().getShootingStrength() / crewReq;                
+            }
+            cbFieldGunN.removeAllItems();
+            for (int i = 0; i <= maxNum; i++) {
+                cbFieldGunN.addItem(Integer.toString(i));
+            }
+            cbFieldGunN.setSelectedIndex(Math.min(fieldGuns.size(), maxNum));
+            txtFieldGun.setText(fieldGuns.get(0).getName());
+        }
         EquipmentType armor = getInfantry().getArmorKit();
         if (null != armor) {
             txtArmor.setText(armor.getName());
@@ -460,12 +508,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             }
         }
 
-        armorView.refresh();
         weaponView.refresh();
+        fieldGunView.refresh();
+        armorView.refresh();
         
-        equipmentPane.setEnabledAt(T_FIELD_GUNS, techLevel.getSelectedIndex() > 1);
-        equipmentPane.setEnabledAt(T_ARMOR_KIT, techLevel.getSelectedIndex() > 1);
-        equipmentPane.setEnabledAt(T_AUGMENTATION, techLevel.getSelectedIndex() > 1);
+        if (techLevel.getSelectedIndex() > 1) {
+            txtArmor.setEnabled(true);
+            txtFieldGun.setEnabled(true);
+            equipmentPane.setEnabledAt(T_FIELD_GUNS, true);
+            equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
+            equipmentPane.setEnabledAt(T_AUGMENTATION, true);            
+        } else {
+            txtArmor.setEnabled(false);
+            txtFieldGun.setEnabled(false);
+            equipmentPane.setEnabledAt(T_FIELD_GUNS, false);
+            equipmentPane.setEnabledAt(T_ARMOR_KIT, false);
+            equipmentPane.setEnabledAt(T_AUGMENTATION, false);            
+        }
         if (!equipmentPane.isEnabledAt(equipmentPane.getSelectedIndex())) {
             equipmentPane.setSelectedIndex(T_INFANTRY_WEAPONS);
         }
@@ -477,6 +536,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         squadN.addActionListener(this);
         squadSize.addActionListener(this);
         secondaryN.addActionListener(this);
+        cbFieldGunN.addActionListener(this);
         techLevel.addActionListener(this);
         techType.addActionListener(this);
         chassis.addKeyListener(this);
@@ -491,6 +551,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         squadN.removeActionListener(this);
         squadSize.removeActionListener(this);
         secondaryN.removeActionListener(this);
+        cbFieldGunN.removeActionListener(this);
         techLevel.removeActionListener(this);
         techType.removeActionListener(this);
         chassis.removeKeyListener(this);
@@ -502,8 +563,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        armorView.addRefreshedListener(refresh);
         weaponView.addRefreshedListener(refresh);
+        fieldGunView.addRefreshedListener(refresh);
+        armorView.addRefreshedListener(refresh);
     }
 
     @Override
@@ -753,6 +815,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             } else if (combo.equals(secondaryN)) {
                 getInfantry().setSecondaryN(secondaryN.getSelectedIndex());
                 checkMainWeapon();
+            } else if (combo.equals(cbFieldGunN)) {
+                Optional<EquipmentType> fieldGun = getInfantry().getWeaponList()
+                        .stream().filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
+                        .map(m -> m.getType()).filter(eq -> eq instanceof WeaponType)
+                        .findAny();
+                UnitUtil.replaceFieldGun(getInfantry(), (WeaponType)fieldGun.get(),
+                        cbFieldGunN.getSelectedIndex());
             }
         } else if (e.getSource().equals(antiMekTraining)) {
             getInfantry().setAntiMekSkill(antiMekTraining.isSelected());
