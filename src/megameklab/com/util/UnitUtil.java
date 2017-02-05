@@ -28,8 +28,10 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -3513,9 +3515,18 @@ public class UnitUtil {
             unit.setPrimaryWeapon(weapon);
         }
         // if there is more than one secondary weapon per squad, then add that
-        // to the unit
-        // otherwise add the primary weapon
-        if ((unit.getSecondaryN() < 2) || (null == unit.getSecondaryWeapon())) {
+        // to the unit otherwise add the primary weapon (unless the secondary
+        // is TAG, in which case both are added.
+        if (unit.getSecondaryWeapon() != null && unit.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
+            try {
+                unit.addEquipment(unit.getPrimaryWeapon(),
+                        Infantry.LOC_INFANTRY);
+                unit.addEquipment(unit.getSecondaryWeapon(),
+                        Infantry.LOC_INFANTRY);
+            } catch (LocationFullException ex) {
+
+            }            
+        } else if ((unit.getSecondaryN() < 2) || (null == unit.getSecondaryWeapon())) {
             try {
                 unit.addEquipment(unit.getPrimaryWeapon(),
                         Infantry.LOC_INFANTRY);
@@ -3529,6 +3540,36 @@ public class UnitUtil {
             } catch (LocationFullException ex) {
 
             }
+        }
+    }
+    
+    public static void replaceFieldGun(Infantry unit, WeaponType fieldGun, int num) {
+        List<Mounted> toRemove = unit.getEquipment().stream()
+                .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
+                .collect(Collectors.toList());
+        unit.getEquipment().removeAll(toRemove);
+        unit.getWeaponList().removeAll(toRemove);
+        unit.getAmmo().removeAll(toRemove);
+        if (fieldGun != null && num > 0) {
+            Optional<AmmoType> ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType())
+                    .stream().filter(eq -> ((AmmoType)eq).getMunitionType() == AmmoType.M_STANDARD)
+                    .findFirst();
+            if (!ammo.isPresent()) {
+                ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType())
+                        .stream().findFirst();
+            }
+            for (int i = 0; i < num; i++) {
+                try {
+                    unit.addEquipment(fieldGun, Infantry.LOC_FIELD_GUNS);
+                    if (ammo.isPresent()) {
+                        unit.addEquipment(ammo.get(), Infantry.LOC_FIELD_GUNS);
+                    } else {
+                        System.err.println("Could not find ammo for field gun " + fieldGun.getName());
+                    }
+                } catch (LocationFullException ex) {
+                    ex.printStackTrace();
+                }
+            }                
         }
     }
 
