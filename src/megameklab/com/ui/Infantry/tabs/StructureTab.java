@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
@@ -38,6 +39,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 
 import megamek.common.EntityMovementMode;
@@ -105,8 +107,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private JComboBox<String> squadN = new JComboBox<String>(squadNArray);
     private String[] secondaryNArray = { "0", "1", "2" };
     private JComboBox<String> secondaryN = new JComboBox<String>(secondaryNArray);
-    private JComboBox<String> cbFieldGunN = new JComboBox<String>();
     private JCheckBox antiMekTraining = new JCheckBox("Anti-mek Training");
+    private JComboBox<String> cbFieldGunN = new JComboBox<String>();
     private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Specializations", "Augmentation"};
 
     private JTextField era = new JTextField(3);
@@ -120,6 +122,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     
     private JTextField txtFieldGun = new JTextField("None");
     private JTextField txtArmor = new JTextField("None");
+    private JTextPane txtSpecializations = new JTextPane();
 
     private JTabbedPane equipmentPane;
     
@@ -152,8 +155,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
 
         txtPrimary.setEditable(false);
         txtSecondary.setEditable(false);
-        txtArmor.setEditable(false);
         txtFieldGun.setEditable(false);
+        txtArmor.setEditable(false);
+        txtSpecializations.setEditable(false);
+        txtSpecializations.setContentType("text/html");
 
         chassis.setText(getInfantry().getChassis());
         model.setText(getInfantry().getModel());
@@ -251,6 +256,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         advancedPanel.add(createLabel("Armor:", labelSize), gbc);
         gbc.gridx = 1;
         advancedPanel.add(txtArmor, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        advancedPanel.add(createLabel("Specializations:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridheight = 2;
+        advancedPanel.add(txtSpecializations, gbc);
 
         setFieldSize(motiveType, comboSize);
         setFieldSize(squadSize, comboSize);
@@ -520,6 +532,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 txtArmor.setText(desc);
             }
         }
+        if (getInfantry().getSpecializations() == 0) {
+            txtSpecializations.setText("None");
+        } else {
+            StringJoiner sj = new StringJoiner("<br/>");
+            for (int i = 0; i < Infantry.NUM_SPECIALIZATIONS; i++) {
+                if (getInfantry().hasSpecialization(1 << i)) {
+                    sj.add(Infantry.getSpecializationName(1 << i));
+                }
+            }
+            txtSpecializations.setText(sj.toString());
+        }
 
         weaponView.refresh();
         fieldGunView.refresh();
@@ -529,6 +552,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         if (techLevel.getSelectedIndex() > 1) {
             txtArmor.setEnabled(true);
             txtFieldGun.setEnabled(true);
+            txtSpecializations.setEnabled(true);
             equipmentPane.setEnabledAt(T_FIELD_GUNS, 
                     getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
                     || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
@@ -539,6 +563,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         } else {
             txtArmor.setEnabled(false);
             txtFieldGun.setEnabled(false);
+            txtSpecializations.setEnabled(false);
             equipmentPane.setEnabledAt(T_FIELD_GUNS, false);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, false);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, false);
