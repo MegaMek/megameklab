@@ -141,6 +141,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         JPanel basicPanel = new JPanel(new GridBagLayout());
         JPanel squadPanel = new JPanel(new GridBagLayout());
         JPanel weaponPanel = new JPanel(new GridBagLayout());
+        JPanel advancedPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         Dimension comboSize = new Dimension(200, 25);
         Dimension labelSize = new Dimension(110, 25);
@@ -227,24 +228,25 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         gbc.gridwidth = 2;
         gbc.gridy++;
         weaponPanel.add(antiMekTraining, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        advancedPanel.add(createLabel("Field Gun:", labelSize), gbc);
+        gbc.gridx = 1;
+        advancedPanel.add(txtFieldGun, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        weaponPanel.add(createLabel("Armor:", labelSize), gbc);
+        advancedPanel.add(createLabel("Field Gun #:", labelSize), gbc);
         gbc.gridx = 1;
-        weaponPanel.add(txtArmor, gbc);
+        advancedPanel.add(cbFieldGunN, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        weaponPanel.add(createLabel("Field Gun:", labelSize), gbc);
+        advancedPanel.add(createLabel("Armor:", labelSize), gbc);
         gbc.gridx = 1;
-        weaponPanel.add(txtFieldGun, gbc);
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 1;
-        weaponPanel.add(createLabel("Field Gun #:", labelSize), gbc);
-        gbc.gridx = 1;
-        weaponPanel.add(cbFieldGunN, gbc);
+        advancedPanel.add(txtArmor, gbc);
 
         setFieldSize(motiveType, comboSize);
         setFieldSize(squadSize, comboSize);
@@ -264,6 +266,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         basicPanel.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         squadPanel.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
         weaponPanel.setBorder(BorderFactory.createTitledBorder("Current Weapons"));
+        advancedPanel.setBorder(BorderFactory.createTitledBorder("Advanced"));
         
         equipmentPane = new JTabbedPane();
         equipmentPane.addTab(tabNames[T_INFANTRY_WEAPONS], weaponView);
@@ -274,7 +277,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         leftPanel.add(basicPanel);
         leftPanel.add(squadPanel);
         leftPanel.add(weaponPanel);
-        //TODO: Add specializations
+        leftPanel.add(advancedPanel);
         leftPanel.add(Box.createVerticalGlue());
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
