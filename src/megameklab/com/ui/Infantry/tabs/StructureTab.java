@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -37,6 +38,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -49,7 +51,9 @@ import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
+import megamek.common.options.IOption;
 import megamek.common.options.OptionsConstants;
+import megamek.common.options.PilotOptions;
 import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -124,6 +128,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private JTextField txtFieldGun = new JTextField("None");
     private JTextField txtArmor = new JTextField("None");
     private JTextPane txtSpecializations = new JTextPane();
+    private JTextPane txtAugmentations = new JTextPane();
 
     private JTabbedPane equipmentPane;
     
@@ -161,8 +166,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         txtFieldGun.setEditable(false);
         txtArmor.setEditable(false);
         txtSpecializations.setEditable(false);
-        txtSpecializations.setContentType("text/html");
-
+        txtSpecializations.setContentType("text/html");        
+        txtAugmentations.setEditable(false);
+        txtAugmentations.setContentType("text/html");
+        
         chassis.setText(getInfantry().getChassis());
         model.setText(getInfantry().getModel());
 
@@ -259,13 +266,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         advancedPanel.add(createLabel("Armor:", labelSize), gbc);
         gbc.gridx = 1;
         advancedPanel.add(txtArmor, gbc);
+        
         gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(4, 4, 4, 4);
         advancedPanel.add(createLabel("Specializations:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridheight = 2;
         advancedPanel.add(txtSpecializations, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        advancedPanel.add(createLabel("Augmentations:", labelSize), gbc);
+        gbc.gridx = 1;
+        advancedPanel.add(txtAugmentations, gbc);
 
         setFieldSize(motiveType, comboSize);
         setFieldSize(squadSize, comboSize);
@@ -307,7 +320,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        add(leftPanel, gbc);
+        add(new JScrollPane(leftPanel), gbc);
         gbc.gridx = 1;
         gbc.fill = java.awt.GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -396,6 +409,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         }
         if (getInfantry().getSecondaryWeapon() != null) {
             int crewReq = getInfantry().getSecondaryWeapon().getCrew();
+            /* IOps shows the reduced crew requirements, but not the increased max secondary which
+             * should be there per http://bg.battletech.com/forums/index.php?topic=50926.msg1279434#msg1279434
+             */
             if (getInfantry().getCrew().getOptions().booleanOption(OptionsConstants.MD_DERMAL_ARMOR)) {
                 crewReq--;
                 maxSecondaryN++;
@@ -548,6 +564,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             }
             txtSpecializations.setText(sj.toString());
         }
+        StringJoiner sj = new StringJoiner("<br/>");
+        for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES);
+                e.hasMoreElements();) {
+            final IOption opt = e.nextElement();
+            if (getInfantry().getCrew().getOptions().booleanOption(opt.getName())) {
+                sj.add(opt.getDisplayableName());
+            }
+        }
+        if (sj.length() > 0) {
+            txtAugmentations.setText(sj.toString());
+        } else {
+            txtAugmentations.setText("None");
+        }
 
         weaponView.refresh();
         fieldGunView.refresh();
@@ -565,11 +594,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, true);
-            equipmentPane.setEnabledAt(T_AUGMENTATION, true);
+            //Experimental level
+            txtAugmentations.setEnabled(techLevel.getSelectedIndex() > 2);
+            equipmentPane.setEnabledAt(T_AUGMENTATION, techLevel.getSelectedIndex() > 2);
         } else {
             txtArmor.setEnabled(false);
             txtFieldGun.setEnabled(false);
             txtSpecializations.setEnabled(false);
+            txtAugmentations.setEnabled(false);
             equipmentPane.setEnabledAt(T_FIELD_GUNS, false);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, false);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, false);
