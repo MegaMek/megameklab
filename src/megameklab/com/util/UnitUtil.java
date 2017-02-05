@@ -3517,7 +3517,7 @@ public class UnitUtil {
         // if there is more than one secondary weapon per squad, then add that
         // to the unit otherwise add the primary weapon (unless the secondary
         // is TAG, in which case both are added.
-        if (unit.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
+        if (unit.getSecondaryWeapon() != null && unit.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
             try {
                 unit.addEquipment(unit.getPrimaryWeapon(),
                         Infantry.LOC_INFANTRY);
