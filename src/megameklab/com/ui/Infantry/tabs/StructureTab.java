@@ -462,6 +462,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                 motiveType.setSelectedIndex(current);
             }
         }
+        if (getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED
+                && getInfantry().getMovementMode() != EntityMovementMode.TRACKED
+                && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
+            UnitUtil.replaceFieldGun(getInfantry(), null, 0);
+        }
 
         if (null != getInfantry().getPrimaryWeapon()) {
             txtPrimary.setText(UnitUtil.trimInfantryWeaponNames(getInfantry().getPrimaryWeapon().getName()));
@@ -515,7 +520,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         if (techLevel.getSelectedIndex() > 1) {
             txtArmor.setEnabled(true);
             txtFieldGun.setEnabled(true);
-            equipmentPane.setEnabledAt(T_FIELD_GUNS, true);
+            equipmentPane.setEnabledAt(T_FIELD_GUNS, 
+                    getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
+                    || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
+                    || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
             equipmentPane.setEnabledAt(T_AUGMENTATION, true);            
         } else {
