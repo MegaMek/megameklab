@@ -55,6 +55,7 @@ import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Infantry.views.ArmorView;
+import megameklab.com.ui.Infantry.views.AugmentationView;
 import megameklab.com.ui.Infantry.views.FieldGunView;
 import megameklab.com.ui.Infantry.views.SpecializationView;
 import megameklab.com.ui.Infantry.views.WeaponView;
@@ -130,6 +131,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private FieldGunView fieldGunView;
     private ArmorView armorView;
     private SpecializationView specializationView;
+    private AugmentationView augmentationView;
 
     public StructureTab(EntitySource eSource) {
         super(eSource);
@@ -137,6 +139,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         fieldGunView = new FieldGunView(eSource);
         armorView = new ArmorView(eSource);
         specializationView = new SpecializationView(eSource);
+        augmentationView = new AugmentationView(eSource);
         setUpPanels();
         refresh();
     }
@@ -289,7 +292,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         equipmentPane.addTab(tabNames[T_FIELD_GUNS], fieldGunView);
         equipmentPane.addTab(tabNames[T_ARMOR_KIT], armorView);
         equipmentPane.addTab(tabNames[T_SPECIALIZATION], specializationView);
-        equipmentPane.addTab(tabNames[T_AUGMENTATION], new JPanel());
+        equipmentPane.addTab(tabNames[T_AUGMENTATION], augmentationView);
 
         leftPanel.add(basicPanel);
         leftPanel.add(squadPanel);
@@ -548,6 +551,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         fieldGunView.refresh();
         armorView.refresh();
         specializationView.refresh();
+        augmentationView.refresh();
         
         if (techLevel.getSelectedIndex() > 1) {
             txtArmor.setEnabled(true);
@@ -611,6 +615,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         fieldGunView.addRefreshedListener(refresh);
         armorView.addRefreshedListener(refresh);
         specializationView.addRefreshedListener(refresh);
+        augmentationView.addRefreshedListener(refresh);
     }
 
     @Override
