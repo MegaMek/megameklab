@@ -54,6 +54,7 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Infantry.views.ArmorView;
 import megameklab.com.ui.Infantry.views.FieldGunView;
+import megameklab.com.ui.Infantry.views.SpecializationView;
 import megameklab.com.ui.Infantry.views.WeaponView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -86,7 +87,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     public static final int T_INFANTRY_WEAPONS = 0;
     public static final int T_FIELD_GUNS       = 1;
     public static final int T_ARMOR_KIT        = 2;
-    public static final int T_AUGMENTATION     = 3;
+    public static final int T_SPECIALIZATION   = 3;
+    public static final int T_AUGMENTATION     = 4;
 
     private String[] techTypes = { "Inner Sphere", "Clan", "Mixed Inner Sphere", "Mixed Clan" };
     private JComboBox<String> techType = new JComboBox<String>(techTypes);
@@ -105,7 +107,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private JComboBox<String> secondaryN = new JComboBox<String>(secondaryNArray);
     private JComboBox<String> cbFieldGunN = new JComboBox<String>();
     private JCheckBox antiMekTraining = new JCheckBox("Anti-mek Training");
-    private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Augmentation"};
+    private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Specializations", "Augmentation"};
 
     private JTextField era = new JTextField(3);
     private JTextField source = new JTextField(3);
@@ -124,12 +126,14 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
     private WeaponView weaponView;
     private FieldGunView fieldGunView;
     private ArmorView armorView;
+    private SpecializationView specializationView;
 
     public StructureTab(EntitySource eSource) {
         super(eSource);
         weaponView = new WeaponView(eSource);
         fieldGunView = new FieldGunView(eSource);
         armorView = new ArmorView(eSource);
+        specializationView = new SpecializationView(eSource);
         setUpPanels();
         refresh();
     }
@@ -272,6 +276,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         equipmentPane.addTab(tabNames[T_INFANTRY_WEAPONS], weaponView);
         equipmentPane.addTab(tabNames[T_FIELD_GUNS], fieldGunView);
         equipmentPane.addTab(tabNames[T_ARMOR_KIT], armorView);
+        equipmentPane.addTab(tabNames[T_SPECIALIZATION], specializationView);
         equipmentPane.addTab(tabNames[T_AUGMENTATION], new JPanel());
 
         leftPanel.add(basicPanel);
@@ -519,6 +524,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         weaponView.refresh();
         fieldGunView.refresh();
         armorView.refresh();
+        specializationView.refresh();
         
         if (techLevel.getSelectedIndex() > 1) {
             txtArmor.setEnabled(true);
@@ -528,13 +534,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
                     || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
                     || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
-            equipmentPane.setEnabledAt(T_AUGMENTATION, true);            
+            equipmentPane.setEnabledAt(T_SPECIALIZATION, true);
+            equipmentPane.setEnabledAt(T_AUGMENTATION, true);
         } else {
             txtArmor.setEnabled(false);
             txtFieldGun.setEnabled(false);
             equipmentPane.setEnabledAt(T_FIELD_GUNS, false);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, false);
-            equipmentPane.setEnabledAt(T_AUGMENTATION, false);            
+            equipmentPane.setEnabledAt(T_SPECIALIZATION, false);
+            equipmentPane.setEnabledAt(T_AUGMENTATION, false);
         }
         if (!equipmentPane.isEnabledAt(equipmentPane.getSelectedIndex())) {
             equipmentPane.setSelectedIndex(T_INFANTRY_WEAPONS);
@@ -577,6 +585,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         weaponView.addRefreshedListener(refresh);
         fieldGunView.addRefreshedListener(refresh);
         armorView.addRefreshedListener(refresh);
+        specializationView.addRefreshedListener(refresh);
     }
 
     @Override
