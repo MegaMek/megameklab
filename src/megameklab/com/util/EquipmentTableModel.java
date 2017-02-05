@@ -302,6 +302,9 @@ public class EquipmentTableModel extends AbstractTableModel {
                 if (type.hasFlag(WeaponType.F_INF_ENCUMBER)) {
                     special += "E";
                 }
+            } else if (type instanceof WeaponType) {
+                // Field gun crew size
+                special += Math.max(2, (int)Math.ceil(type.getTonnage(entity))); 
             }
             return special;
         }
