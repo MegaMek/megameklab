@@ -3515,9 +3515,18 @@ public class UnitUtil {
             unit.setPrimaryWeapon(weapon);
         }
         // if there is more than one secondary weapon per squad, then add that
-        // to the unit
-        // otherwise add the primary weapon
-        if ((unit.getSecondaryN() < 2) || (null == unit.getSecondaryWeapon())) {
+        // to the unit otherwise add the primary weapon (unless the secondary
+        // is TAG, in which case both are added.
+        if (unit.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
+            try {
+                unit.addEquipment(unit.getPrimaryWeapon(),
+                        Infantry.LOC_INFANTRY);
+                unit.addEquipment(unit.getSecondaryWeapon(),
+                        Infantry.LOC_INFANTRY);
+            } catch (LocationFullException ex) {
+
+            }            
+        } else if ((unit.getSecondaryN() < 2) || (null == unit.getSecondaryWeapon())) {
             try {
                 unit.addEquipment(unit.getPrimaryWeapon(),
                         Infantry.LOC_INFANTRY);
