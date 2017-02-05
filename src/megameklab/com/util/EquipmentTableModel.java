@@ -58,25 +58,26 @@ public class EquipmentTableModel extends AbstractTableModel {
 
     public final static int COL_NAME = 0;
     public final static int COL_DAMAGE = 1;
-    public final static int COL_SPECIAL = 2;
-    public final static int COL_HEAT = 3;
-    public final static int COL_MRANGE = 4;
-    public final static int COL_RANGE = 5;
-    public final static int COL_SHOTS = 6;
-    public final static int COL_TECH = 7;
-    public final static int COL_TRATING = 8;
-    public final static int COL_AVSL = 9;
-    public final static int COL_AVSW = 10;
-    public final static int COL_AVCL = 11;
-    public final static int COL_DINTRO = 12;
-    public final static int COL_DEXTINCT = 13;
-    public final static int COL_DREINTRO = 14;
-    public final static int COL_COST = 15;
-    public final static int COL_CREW = 16;
-    public final static int COL_BV = 17;
-    public final static int COL_TON = 18;
-    public final static int COL_CRIT = 19;
-    public final static int N_COL = 20;
+    public final static int COL_DIVISOR = 2;
+    public final static int COL_SPECIAL = 3;
+    public final static int COL_HEAT = 4;
+    public final static int COL_MRANGE = 5;
+    public final static int COL_RANGE = 6;
+    public final static int COL_SHOTS = 7;
+    public final static int COL_TECH = 8;
+    public final static int COL_TRATING = 9;
+    public final static int COL_AVSL = 10;
+    public final static int COL_AVSW = 11;
+    public final static int COL_AVCL = 12;
+    public final static int COL_DINTRO = 13;
+    public final static int COL_DEXTINCT = 14;
+    public final static int COL_DREINTRO = 15;
+    public final static int COL_COST = 16;
+    public final static int COL_CREW = 17;
+    public final static int COL_BV = 18;
+    public final static int COL_TON = 19;
+    public final static int COL_CRIT = 20;
+    public final static int N_COL = 21;
 
     private ArrayList<EquipmentType> data = new ArrayList<EquipmentType>();
     private Entity entity = null;
@@ -99,6 +100,8 @@ public class EquipmentTableModel extends AbstractTableModel {
             case COL_NAME:
                 return "Name";
             case COL_DAMAGE:
+                return "Damage";
+            case COL_DIVISOR:
                 return "Damage";
             case COL_SPECIAL:
                 return "Special";
@@ -214,7 +217,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         EquipmentType type;
         WeaponType wtype = null;
         AmmoType atype = null;
-        //MiscType mtype = null;
+        MiscType mtype = null;
         if (data.isEmpty()) {
             return "";
         } else {
@@ -227,7 +230,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             atype = (AmmoType) type;
         }
         if (type instanceof MiscType) {
-            //mtype = (MiscType) type;
+            mtype = (MiscType) type;
         }
         DecimalFormat formatter = new DecimalFormat();
 
@@ -237,6 +240,17 @@ public class EquipmentTableModel extends AbstractTableModel {
         if (col == COL_DAMAGE) {
             if (null != wtype) {
                 return getDamageString(wtype, entity instanceof Aero);
+            } else {
+                return "-";
+            }
+        }
+        if (col == COL_DIVISOR) {
+            if (mtype != null && mtype.hasFlag(MiscType.F_ARMOR_KIT)){
+                if ((mtype.getSubType() & MiscType.S_ENCUMBERING) == 0) {
+                    return String.valueOf(mtype.getDamageDivisor());
+                } else {
+                    return mtype.getDamageDivisor() + "E";
+                }
             } else {
                 return "-";
             }
@@ -262,6 +276,23 @@ public class EquipmentTableModel extends AbstractTableModel {
                     special += "F";
                 }
             }
+            if (type.hasFlag(MiscType.F_ARMOR_KIT)) {
+                if ((type.getSubType() & MiscType.S_DEST) != 0) {
+                    special += "DEST ";
+                }
+                if ((type.getSubType() & MiscType.S_SNEAK_CAMO) != 0) {
+                    special += "Camo ";
+                }
+                if ((type.getSubType() & MiscType.S_SNEAK_IR) != 0) {
+                    special += "IR ";
+                }
+                if ((type.getSubType() & MiscType.S_SNEAK_ECM) != 0) {
+                    special += "ECM ";
+                }
+                if ((type.getSubType() & MiscType.S_SPACE_SUIT) != 0) {
+                    special += "SPC ";
+                }
+            }
             return special;
         }
         if (col == COL_CREW) {
@@ -271,6 +302,9 @@ public class EquipmentTableModel extends AbstractTableModel {
                 if (type.hasFlag(WeaponType.F_INF_ENCUMBER)) {
                     special += "E";
                 }
+            } else if (type instanceof WeaponType) {
+                // Field gun crew size
+                special += Math.max(2, (int)Math.ceil(type.getTonnage(entity))); 
             }
             return special;
         }
