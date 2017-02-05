@@ -398,9 +398,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             int crewReq = getInfantry().getSecondaryWeapon().getCrew();
             if (getInfantry().getCrew().getOptions().booleanOption(OptionsConstants.MD_DERMAL_ARMOR)) {
                 crewReq--;
+                maxSecondaryN++;
             }
             if (getInfantry().getCrew().getOptions().booleanOption(OptionsConstants.MD_TSM_IMPLANT)) {
                 crewReq--;
+                maxSecondaryN++;
             }
             maxSecondaryN = Math.min(maxSecondaryN, getInfantry().getSquadSize() / (Math.max(1, crewReq)));
         }
