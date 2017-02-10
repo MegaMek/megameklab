@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
@@ -369,6 +370,9 @@ public class SummaryView extends IView{
     }
 
     private int getEngineCrits() {
+        if (getMech().getEngine().getEngineType() == Engine.COMPACT_ENGINE) {
+            return 3;
+        }
         return 6 + (2 * getMech().getEngine().getSideTorsoCriticalSlots().length);
     }
 
