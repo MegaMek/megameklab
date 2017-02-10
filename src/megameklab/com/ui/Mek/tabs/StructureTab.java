@@ -100,6 +100,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             ENGINEFUELCELL, ENGINEFISSION };
     String[] isSuperHeavyEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINELIGHT,
             ENGINECOMPACT, ENGINEXXL };
+    String[] clanSuperHeavyEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINEXXL }; // For mixed tech
     private int clanEngineFlag = 0;
     private int superHeavyEngineFlag = 0;
 
@@ -1299,6 +1300,30 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     case Engine.XXL_ENGINE:
                         return 10;
                 }
+            } else if (getMech().isSuperHeavy()) {
+                if (getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
+                    switch (engineType) {
+                    case Engine.NORMAL_ENGINE:
+                        return 1;
+                    case Engine.XL_ENGINE:
+                        return 3;
+                    case Engine.XXL_ENGINE:
+                        return 7;
+                    }
+                } else {
+                    switch (engineType) {
+                    case Engine.NORMAL_ENGINE:
+                        return 0;
+                    case Engine.XL_ENGINE:
+                        return 2;
+                    case Engine.LIGHT_ENGINE:
+                        return 4;
+                    case Engine.COMPACT_ENGINE:
+                        return 5;
+                    case Engine.XXL_ENGINE:
+                        return 6;
+                    }
+                }
             }// IS Chassis with Clan Engine
             else if (!getMech().isClan()
                     && getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
@@ -1554,18 +1579,48 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     enginePos++;
                 }
             } else {
-                engineCount = clanEngineTypes.length + isEngineTypes.length;
-                engineList = new String[engineCount];
-                int clanPos = 0;
-                int enginePos = 0;
-                for (String isEngine : isEngineTypes) {
-                    engineList[enginePos] = isEngine;
-                    enginePos++;
-                    if (clanEngineTypes[clanPos].equals(isEngine)) {
-                        engineList[enginePos] = String.format("(Clan) %1$s",
-                                clanEngineTypes[clanPos]);
-                        clanPos++;
-                        enginePos++;
+                if (getMech().isIndustrial() || getMech().isPrimitive()) {
+                    engineList = isIndustrialEngineTypes;
+                    engineCount = isIndustrialEngineTypes.length;
+                    if (getMech().isSuperHeavy()) {
+                        engineCount = 1;
+                        superHeavyEngineFlag = Engine.SUPERHEAVY_ENGINE;
+                    } else {
+                        superHeavyEngineFlag = 0;
+                    }
+                } else {
+                    if (getMech().isSuperHeavy()) {
+                        superHeavyEngineFlag = Engine.SUPERHEAVY_ENGINE;
+                        engineCount = clanSuperHeavyEngineTypes.length + isSuperHeavyEngineTypes.length;
+                        engineList = new String[engineCount];
+                        int clanPos = 0;
+                        int enginePos = 0;
+                        for (String isEngine : isSuperHeavyEngineTypes) {
+                            engineList[enginePos] = isEngine;
+                            enginePos++;
+                            if (clanSuperHeavyEngineTypes[clanPos].equals(isEngine)) {
+                                engineList[enginePos] = String.format("(Clan) %1$s",
+                                        clanSuperHeavyEngineTypes[clanPos]);
+                                clanPos++;
+                                enginePos++;
+                            }
+                        }
+                    } else {
+                        superHeavyEngineFlag = 0;
+                        engineCount = clanEngineTypes.length + isEngineTypes.length;
+                        engineList = new String[engineCount];
+                        int clanPos = 0;
+                        int enginePos = 0;
+                        for (String isEngine : isEngineTypes) {
+                            engineList[enginePos] = isEngine;
+                            enginePos++;
+                            if (clanEngineTypes[clanPos].equals(isEngine)) {
+                                engineList[enginePos] = String.format("(Clan) %1$s",
+                                        clanEngineTypes[clanPos]);
+                                clanPos++;
+                                enginePos++;
+                            }
+                        }
                     }
                 }
             }

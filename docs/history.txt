@@ -1,5 +1,14 @@
 VERSION HISTORY:
 ----------------
+=======
+v0.42.1-git
++ Printing for conventional infantry record sheets.
++ New infantry motive types: VTOL and SCUBA.
++ Set infantry field guns, armor, specializations, and cybernetic implants/prosthetics (only what is currently
+  supported by MegaMek).
++ Fix #49: Engine Criticals not set correctly in Super Heavy Mixed tech units.
++ Show correct engine types for mixed tech superheavy Meks (including
+
 v0.42.0 (2017-01-01 14:00 UTC)
 + Updated MegaMek.jar to 0.41.28
 
