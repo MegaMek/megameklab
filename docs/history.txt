@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.43.1-git
+
 v0.43.0 (2017-02-13 03:30 UTC)
 + Printing for conventional infantry record sheets.
 + New infantry motive types: VTOL and SCUBA.
