@@ -230,21 +230,33 @@ public class PrintInfantry implements Printable {
 					tspan.setText(gun.getName());
 					((Text)tspan.getParent()).rebuild();
 					/* We don't use StringUnits.getEquipmentInfo() to format the damage
-					 * string because switchable ammo and gauss explosion flags do not apply.
+					 * string because gauss explosion flags do not apply, and switchable
+					 * only applies for non-LBX.
 					 */
 					tspan = (Tspan)diagram.getElement(ID_FIELD_GUN_DMG);
 					if (gun instanceof ArtilleryWeapon) {
 	                    tspan.setText(gun.getRackSize() + " [AE,S,F]");
 					} else {
 						StringBuilder sb = new StringBuilder(Integer.toString(gun.getDamage()));
-						if (gun.getAmmoType() == AmmoType.T_AC_ULTRA) {
-							sb.append("/Sht, R2 [DB,R/C]");
-						} else if (gun.getAmmoType() == AmmoType.T_AC_ROTARY) {
-							sb.append("/Sht, R6 [DB,R/C]");
-						} else if (gun.getAmmoType() == AmmoType.T_AC_LBX) {
-							sb.append(" [DB,C,F]");
-						} else {
-							sb.append(" [DB]");
+						switch (gun.getAmmoType()) {
+                        case AmmoType.T_AC_ULTRA:
+                        case AmmoType.T_AC_ULTRA_THB:
+                            sb.append("/Sht, R2 [DB,R/S/C]");
+                            break;
+                        case AmmoType.T_AC_ROTARY:
+                            sb.append("/Sht, R6 [DB,R/S/C]");
+                            break;
+                        case AmmoType.T_AC:
+                        case AmmoType.T_AC_PRIMITIVE:
+                        case AmmoType.T_LAC:
+                            sb.append(" [DB,C/S/F]");
+                            break;
+                        case AmmoType.T_AC_LBX:
+                        case AmmoType.T_AC_LBX_THB:
+                            sb.append(" [DB,C/F]");
+                            break;
+                        default:
+                            sb.append(" [DB]");
 						}
 						tspan.setText(sb.toString());
 					}
