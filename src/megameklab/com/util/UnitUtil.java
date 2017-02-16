@@ -3550,9 +3550,17 @@ public class UnitUtil {
         unit.getEquipment().removeAll(toRemove);
         unit.getWeaponList().removeAll(toRemove);
         unit.getAmmo().removeAll(toRemove);
+        final long munition;
         if (fieldGun != null && num > 0) {
-            Optional<AmmoType> ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType())
-                    .stream().filter(eq -> ((AmmoType)eq).getMunitionType() == AmmoType.M_STANDARD)
+            if (fieldGun.getAmmoType() == AmmoType.T_AC_LBX
+                    || fieldGun.getAmmoType() == AmmoType.T_AC_LBX_THB) {
+                munition = AmmoType.M_CLUSTER;
+            } else {
+                munition = AmmoType.M_STANDARD;
+            }
+            Optional<AmmoType> ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType()).stream()
+                    .filter(eq -> ((AmmoType)eq).getMunitionType() == munition
+                            && ((AmmoType)eq).getRackSize() == fieldGun.getRackSize())
                     .findFirst();
             if (!ammo.isPresent()) {
                 ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType())
