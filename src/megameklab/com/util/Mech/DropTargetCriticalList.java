@@ -447,7 +447,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         });
                         popup.add(info);
 
-                    } else {
+                    } else if (!(getUnit() instanceof Mech && ((Mech)getUnit()).isSuperHeavy())) {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(new ActionListener() {

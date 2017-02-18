@@ -2392,7 +2392,6 @@ public class UnitUtil {
                             || eq.hasFlag(MiscType.F_MASC) // to catch Supercharger
                             || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
                             || eq.hasFlag(MiscType.F_PARTIAL_WING)
-                            || eq.hasFlag(MiscType.F_SCM)
                             || eq.hasFlag(MiscType.F_UMU))) {
                 return false;
             }
