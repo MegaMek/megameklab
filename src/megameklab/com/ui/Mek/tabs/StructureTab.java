@@ -989,7 +989,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         // we are allowed
         jumpMPBase.setValue(getMech().getOriginalJumpMP(true));
         jumpMPFinal.setText(String.valueOf(getMech().getJumpMP()));
-        if ((getJumpJetType() == Mech.JUMP_IMPROVED)
+        if (getMech().isSuperHeavy()) {
+            jumpModel.setMaximum(0);
+        } else if ((getJumpJetType() == Mech.JUMP_IMPROVED)
                 || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
             jumpModel.setMaximum((int)Math.ceil(getMech().getOriginalWalkMP() * 1.5));
         } else if (getJumpJetType() == Mech.JUMP_BOOSTER) {
@@ -2192,6 +2194,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 getMech().setWeight((Integer) weightClass.getValue());
                 getMech().autoSetInternal();
+                if (getMech().isSuperHeavy()) {
+                    getMech().setOriginalJumpMP(0);
+                }
                 populateChoices(true);
                 if (changedSuperHeavyStatus) {
                     // Interal structure crits may change
