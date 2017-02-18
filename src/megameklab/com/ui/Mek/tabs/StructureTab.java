@@ -2740,7 +2740,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                     getMech().isMixedTech())) {
                 structures.add(et.getName());
             }
-            if (getMech().isMixedTech()) {
+            if (getMech().isMixedTech() && !getMech().isSuperHeavy()) {
                 et = EquipmentType.get(EquipmentType.getStructureTypeName(i,
                         !getMech().isClan()));
                 if ((et != null)
