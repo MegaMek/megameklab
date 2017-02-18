@@ -69,15 +69,16 @@ public class EquipmentTableModel extends AbstractTableModel {
     public final static int COL_AVSL = 10;
     public final static int COL_AVSW = 11;
     public final static int COL_AVCL = 12;
-    public final static int COL_DINTRO = 13;
-    public final static int COL_DEXTINCT = 14;
-    public final static int COL_DREINTRO = 15;
-    public final static int COL_COST = 16;
-    public final static int COL_CREW = 17;
-    public final static int COL_BV = 18;
-    public final static int COL_TON = 19;
-    public final static int COL_CRIT = 20;
-    public final static int N_COL = 21;
+    public final static int COL_AVDA = 13;
+    public final static int COL_DINTRO = 14;
+    public final static int COL_DEXTINCT = 15;
+    public final static int COL_DREINTRO = 16;
+    public final static int COL_COST = 17;
+    public final static int COL_CREW = 18;
+    public final static int COL_BV = 19;
+    public final static int COL_TON = 20;
+    public final static int COL_CRIT = 21;
+    public final static int N_COL = 22;
 
     private ArrayList<EquipmentType> data = new ArrayList<EquipmentType>();
     private Entity entity = null;
@@ -130,6 +131,8 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "SW";
             case COL_AVCL:
                 return "CL";
+            case COL_AVDA:
+                return "DA";
             case COL_COST:
                 return "Cost";
             case COL_SHOTS:
@@ -163,6 +166,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             case COL_AVSL:
             case COL_AVSW:
             case COL_AVCL:
+            case COL_AVDA:
             case COL_TON:
             case COL_CRIT:
             case COL_MRANGE:
@@ -406,6 +410,9 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if (col == COL_AVCL) {
             return type.getAvailabilityName(EquipmentType.ERA_CLAN);
+        }
+        if (col == COL_AVDA) {
+            return type.getAvailabilityName(EquipmentType.ERA_DA);
         }
         if (col == COL_TECH) {
             return TechConstants.isClan(type.getTechLevel(entity.getTechLevelYear())) ? "Clan" : "IS";

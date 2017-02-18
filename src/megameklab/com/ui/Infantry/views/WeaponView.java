@@ -355,6 +355,7 @@ public class WeaponView extends IView implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSL), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSW), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVCL), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVDA), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DINTRO), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), false);
@@ -377,6 +378,7 @@ public class WeaponView extends IView implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSL), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSW), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVCL), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVDA), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DINTRO), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), true);
