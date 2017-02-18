@@ -1998,7 +1998,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         /* ENHANCEMENTS */
         enhancement.removeAllItems();
         enhancement.addItem("None");
-        if (getMech().getTechLevel() > TechConstants.T_INTRO_BOXSET) {
+        if (getMech().getTechLevel() > TechConstants.T_INTRO_BOXSET
+                && !getMech().isSuperHeavy()) {
             enhancement.addItem("MASC");
             if (!TechConstants.isClan(getMech().getTechLevel())) {
                 if (getMech().isIndustrial()) {
