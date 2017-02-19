@@ -64,6 +64,7 @@ import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestInfantry;
 import megamek.common.verifier.TestMech;
 import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
@@ -2922,6 +2923,9 @@ public class UnitUtil {
         } else if (unit instanceof BattleArmor){
             testEntity = new TestBattleArmor((BattleArmor) unit,
                     entityVerifier.baOption, null);
+        } else if (unit instanceof Infantry) {
+            testEntity = new TestInfantry((Infantry)unit,
+                    entityVerifier.infOption, null);
         }
         return testEntity;
     }
