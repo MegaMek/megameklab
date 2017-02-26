@@ -28,7 +28,7 @@ import javax.swing.JScrollPane;
 
 import megamek.common.EquipmentType;
 import megamek.common.Infantry;
-import megamek.common.weapons.infantry.InfantryTAGWeapon;
+import megamek.common.weapons.infantry.InfantrySupportISTAGWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
@@ -186,7 +186,7 @@ public class SpecializationView extends IView implements ActionListener {
                 getInfantry().setSpecializations(getInfantry()
                         .getSpecializations() & ~spec);
                 if (getInfantry().getSecondaryWeapon() != null
-                        && getInfantry().getSecondaryWeapon() instanceof InfantryTAGWeapon) {
+                        && getInfantry().getSecondaryWeapon() instanceof InfantrySupportISTAGWeapon) {
                     getInfantry().setSecondaryN(0);
                     UnitUtil.replaceMainWeapon(getInfantry(), null, true);
                 }
