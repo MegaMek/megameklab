@@ -400,19 +400,19 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if (col == COL_DREINTRO) {
             return EquipmentType.getEquipDateAsString(type
-                    .getReintruductionDate());
+                    .getReintroductionDate());
         }
         if (col == COL_AVSL) {
-            return type.getAvailabilityName(EquipmentType.ERA_SL);
+            return type.getEraAvailabilityName(EquipmentType.ERA_SL, entity.isClan());
         }
         if (col == COL_AVSW) {
-            return type.getAvailabilityName(EquipmentType.ERA_SW);
+            return type.getEraAvailabilityName(EquipmentType.ERA_SW, entity.isClan());
         }
         if (col == COL_AVCL) {
-            return type.getAvailabilityName(EquipmentType.ERA_CLAN);
+            return type.getEraAvailabilityName(EquipmentType.ERA_CLAN, entity.isClan());
         }
         if (col == COL_AVDA) {
-            return type.getAvailabilityName(EquipmentType.ERA_DA);
+            return type.getEraAvailabilityName(EquipmentType.ERA_DA, entity.isClan());
         }
         if (col == COL_TECH) {
             return TechConstants.isClan(type.getTechLevel(entity.getTechLevelYear())) ? "Clan" : "IS";
