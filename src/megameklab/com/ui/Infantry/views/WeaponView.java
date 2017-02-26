@@ -312,7 +312,8 @@ public class WeaponView extends IView implements ActionListener {
                     return false;
                 }
                 InfantryWeapon weapon = (InfantryWeapon)etype;
-                if(!UnitUtil.isLegal(getInfantry(), etype.getTechLevel(getInfantry().getTechLevelYear()))) {
+                if(!UnitUtil.isLegal(getInfantry(),
+                        etype.getTechLevel(getInfantry().getTechLevelYear(), getInfantry().isClan()))) {
                     return false;
                 }
                 if(getInfantry().getSquadSize() < (getInfantry().getSecondaryN() * weapon.getCrew())) {
