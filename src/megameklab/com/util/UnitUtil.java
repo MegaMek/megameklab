@@ -49,6 +49,7 @@ import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechnology;
 import megamek.common.Infantry;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
@@ -58,6 +59,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
+import megamek.common.TechAdvancement;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megamek.common.VTOL;
@@ -438,12 +440,22 @@ public class UnitUtil {
      * Checks to see if unit can use the techlevel
      *
      * @param unit
-     * @param techLevel
+     * @param tech
      * @return Boolean if the tech level is legal for the passed unit
      */
-    public static boolean isLegal(Entity unit, int techLevel) {
-        return TechConstants.isLegal(unit.getTechLevel(), techLevel, false,
-                unit.isMixedTech());
+    public static boolean isLegal(Entity unit, ITechnology tech) {
+        if (!unit.isMixedTech()) {
+            if (tech.getTechBase() == TechAdvancement.TECH_BASE_CLAN
+                    && !unit.isClan()) {
+                return false;
+            }
+            if (tech.getTechBase() == TechAdvancement.TECH_BASE_IS
+                    && unit.isClan()) {
+                return false;
+            }
+        }
+        return tech.getRulesLevel(unit.getTechLevelYear(), unit.isClan())
+                <= TechConstants.convertFromNormalToSimple(unit.getTechLevel());
     }
 
     /**
@@ -3484,8 +3496,7 @@ public class UnitUtil {
                     || etype.hasFlag(MiscType.F_MASC)) {
                 continue;
             }
-            if (!UnitUtil.isLegal(unit,
-                    etype.getTechLevel(unit.getTechLevelYear()))) {
+            if (!UnitUtil.isLegal(unit, etype)) {
                 toRemove.add(m);
             }
         }
@@ -3495,15 +3506,13 @@ public class UnitUtil {
         if (unit instanceof Infantry) {
             Infantry pbi = (Infantry) unit;
             if ((null != pbi.getPrimaryWeapon())
-                    && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon()
-                            .getTechLevel(pbi.getTechLevelYear()))) {
+                    && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon())) {
                 UnitUtil.replaceMainWeapon((Infantry) unit,
                         (InfantryWeapon) EquipmentType
                                 .get("Infantry Auto Rifle"), false);
             }
             if ((null != pbi.getSecondaryWeapon())
-                    && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon()
-                            .getTechLevel(pbi.getTechLevelYear()))) {
+                    && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon())) {
                 UnitUtil.replaceMainWeapon((Infantry) unit, null, true);
             }
         }

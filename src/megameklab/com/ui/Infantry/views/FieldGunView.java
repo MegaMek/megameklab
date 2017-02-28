@@ -329,8 +329,7 @@ public class FieldGunView extends IView implements ActionListener {
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if(!UnitUtil.isLegal(getInfantry(),
-                        etype.getTechLevel(getInfantry().getTechLevelYear(), getInfantry().isClan()))) {
+                if(!UnitUtil.isLegal(getInfantry(), etype)) {
                     return false;
                 }
                 if ((nType == T_ALL)
