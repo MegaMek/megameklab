@@ -34,7 +34,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.RangeType;
 import megamek.common.Tank;
-import megamek.common.TechConstants;
+import megamek.common.TechAdvancement;
 import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.HAGWeapon;
@@ -393,14 +393,14 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         if (col == COL_DINTRO) {
             return EquipmentType.getEquipDateAsString(type
-                    .getIntroductionDate());
+                    .getIntroductionDate(entity.isClan()));
         }
         if (col == COL_DEXTINCT) {
-            return EquipmentType.getEquipDateAsString(type.getExtinctionDate());
+            return EquipmentType.getEquipDateAsString(type.getExtinctionDate(entity.isClan()));
         }
         if (col == COL_DREINTRO) {
             return EquipmentType.getEquipDateAsString(type
-                    .getReintroductionDate());
+                    .getReintroductionDate(entity.isClan()));
         }
         if (col == COL_AVSL) {
             return type.getEraAvailabilityName(EquipmentType.ERA_SL, entity.isClan());
@@ -415,7 +415,14 @@ public class EquipmentTableModel extends AbstractTableModel {
             return type.getEraAvailabilityName(EquipmentType.ERA_DA, entity.isClan());
         }
         if (col == COL_TECH) {
-            return TechConstants.isClan(type.getTechLevel(entity.getTechLevelYear())) ? "Clan" : "IS";
+            switch(type.getTechBase()) {
+            case TechAdvancement.TECH_BASE_ALL:
+                return "All";
+            case TechAdvancement.TECH_BASE_IS:
+                return "IS";
+            case TechAdvancement.TECH_BASE_CLAN:
+                return "Clan";
+            }
         }
         return "?";
     }

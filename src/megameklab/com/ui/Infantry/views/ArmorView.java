@@ -442,8 +442,7 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
                 if(!(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
                     return false;
                 }
-                if(!UnitUtil.isLegal(getInfantry(),
-                        etype.getTechLevel(getInfantry().getTechLevelYear(), getInfantry().isClan()))) {
+                if(!UnitUtil.isLegal(getInfantry(), etype)) {
                     return false;
                 }
                 if (!etype.isAvailableIn(getInfantry().getTechLevelYear())) {
