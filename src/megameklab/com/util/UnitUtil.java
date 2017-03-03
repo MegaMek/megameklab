@@ -59,7 +59,6 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.Tank;
-import megamek.common.TechAdvancement;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megamek.common.VTOL;
@@ -444,18 +443,14 @@ public class UnitUtil {
      * @return Boolean if the tech level is legal for the passed unit
      */
     public static boolean isLegal(Entity unit, ITechnology tech) {
-        if (!unit.isMixedTech()) {
-            if (tech.getTechBase() == TechAdvancement.TECH_BASE_CLAN
-                    && !unit.isClan()) {
-                return false;
-            }
-            if (tech.getTechBase() == TechAdvancement.TECH_BASE_IS
-                    && unit.isClan()) {
-                return false;
-            }
+        if (!unit.isMixedTech() && tech.isClan() != unit.isClan()) {
+            return false;
         }
-        return tech.getRulesLevel(unit.getTechLevelYear(), unit.isClan())
-                <= TechConstants.convertFromNormalToSimple(unit.getTechLevel());
+        if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan())) {
+            return false;
+        }
+        return TechConstants.convertFromNormalToSimple(tech.getTechLevel(unit.getTechLevelYear(),
+                unit.isClan())) <= TechConstants.convertFromNormalToSimple(unit.getTechLevel());
     }
 
     /**
