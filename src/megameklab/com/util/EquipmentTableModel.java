@@ -66,19 +66,18 @@ public class EquipmentTableModel extends AbstractTableModel {
     public final static int COL_SHOTS = 7;
     public final static int COL_TECH = 8;
     public final static int COL_TRATING = 9;
-    public final static int COL_AVSL = 10;
-    public final static int COL_AVSW = 11;
-    public final static int COL_AVCL = 12;
-    public final static int COL_AVDA = 13;
-    public final static int COL_DINTRO = 14;
-    public final static int COL_DEXTINCT = 15;
-    public final static int COL_DREINTRO = 16;
-    public final static int COL_COST = 17;
-    public final static int COL_CREW = 18;
-    public final static int COL_BV = 19;
-    public final static int COL_TON = 20;
-    public final static int COL_CRIT = 21;
-    public final static int N_COL = 22;
+    public final static int COL_DPROTOTYPE = 10;
+    public final static int COL_DPRODUCTION = 11;
+    public final static int COL_DCOMMON = 12;
+    public final static int COL_DEXTINCT = 13;
+    public final static int COL_DREINTRO = 14;
+    public final static int COL_COST = 15;
+    public final static int COL_CREW = 16;
+    public final static int COL_BV = 17;
+    public final static int COL_TON = 18;
+    public final static int COL_CRIT = 19;
+    public final static int COL_REF = 20;
+    public final static int N_COL = 21;
 
     private ArrayList<EquipmentType> data = new ArrayList<EquipmentType>();
     private Entity entity = null;
@@ -125,26 +124,24 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "Base";
             case COL_TRATING:
                 return "Rating";
-            case COL_AVSL:
-                return "SL";
-            case COL_AVSW:
-                return "SW";
-            case COL_AVCL:
-                return "CL";
-            case COL_AVDA:
-                return "DA";
             case COL_COST:
                 return "Cost";
             case COL_SHOTS:
                 return "Shots";
             case COL_BV:
                 return "BV";
-            case COL_DINTRO:
-                return "Intro";
+            case COL_DPROTOTYPE:
+                return "Prototype";
+            case COL_DPRODUCTION:
+                return "Production";
+            case COL_DCOMMON:
+                return "Common";
             case COL_DEXTINCT:
                 return "Extinct";
             case COL_DREINTRO:
                 return "Re-intro";
+            case COL_REF:
+                return "Reference";
             default:
                 return "?";
         }
@@ -159,14 +156,11 @@ public class EquipmentTableModel extends AbstractTableModel {
                  */
             case COL_RANGE:
             case COL_COST:
+            case COL_TRATING:
                 return 50;
                 /*
                  * case COL_TRATING: case COL_COST: return 20;
                  */
-            case COL_AVSL:
-            case COL_AVSW:
-            case COL_AVCL:
-            case COL_AVDA:
             case COL_TON:
             case COL_CRIT:
             case COL_MRANGE:
@@ -382,7 +376,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             return type.getCriticals(entity);
         }
         if (col == COL_TRATING) {
-            return type.getTechRatingName();
+            return type.getFullRatingName(entity.isClan());
         }
         if (col == COL_COST) {
             return formatter.format(type
@@ -391,28 +385,25 @@ public class EquipmentTableModel extends AbstractTableModel {
         if (col == COL_BV) {
             return type.getBV(entity);
         }
-        if (col == COL_DINTRO) {
-            return EquipmentType.getEquipDateAsString(type
-                    .getIntroductionDate(entity.isClan()));
+        if (col == COL_DPROTOTYPE) {
+            return entity.isMixedTech()? type.getTechAdvancement().getPrototypeDateName() :
+                    type.getTechAdvancement().getPrototypeDateName(entity.isClan());
+        }
+        if (col == COL_DPRODUCTION) {
+            return entity.isMixedTech()? type.getTechAdvancement().getProductionDateName() :
+                type.getTechAdvancement().getProductionDateName(entity.isClan());
+        }
+        if (col == COL_DCOMMON) {
+            return entity.isMixedTech()? type.getTechAdvancement().getCommonDateName() :
+                type.getTechAdvancement().getCommonDateName(entity.isClan());
         }
         if (col == COL_DEXTINCT) {
-            return EquipmentType.getEquipDateAsString(type.getExtinctionDate(entity.isClan()));
+            return entity.isMixedTech()? type.getTechAdvancement().getExtinctionDateName() :
+                type.getTechAdvancement().getExtinctionDateName(entity.isClan());
         }
         if (col == COL_DREINTRO) {
-            return EquipmentType.getEquipDateAsString(type
-                    .getReintroductionDate(entity.isClan()));
-        }
-        if (col == COL_AVSL) {
-            return type.getEraAvailabilityName(EquipmentType.ERA_SL, entity.isClan());
-        }
-        if (col == COL_AVSW) {
-            return type.getEraAvailabilityName(EquipmentType.ERA_SW, entity.isClan());
-        }
-        if (col == COL_AVCL) {
-            return type.getEraAvailabilityName(EquipmentType.ERA_CLAN, entity.isClan());
-        }
-        if (col == COL_AVDA) {
-            return type.getEraAvailabilityName(EquipmentType.ERA_DA, entity.isClan());
+            return entity.isMixedTech()? type.getTechAdvancement().getReintroductionDateName() :
+                type.getTechAdvancement().getReintroductionDateName(entity.isClan());
         }
         if (col == COL_TECH) {
             switch(type.getTechBase()) {
@@ -423,6 +414,9 @@ public class EquipmentTableModel extends AbstractTableModel {
             case TechAdvancement.TECH_BASE_CLAN:
                 return "Clan";
             }
+        }
+        if (col == COL_REF) {
+            return type.getRulesRefs();
         }
         return "?";
     }
