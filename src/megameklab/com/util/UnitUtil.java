@@ -443,8 +443,10 @@ public class UnitUtil {
      * @return Boolean if the tech level is legal for the passed unit
      */
     public static boolean isLegal(Entity unit, ITechnology tech) {
-        if (!unit.isMixedTech() && tech.isClan() != unit.isClan()) {
-            return false;
+        if (!unit.isMixedTech() && tech.getTechBase() != ITechnology.TECH_BASE_ALL) {
+            if (unit.isClan() != tech.isClan()) {
+                return false;
+            }
         }
         if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan())) {
             return false;
