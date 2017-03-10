@@ -2391,6 +2391,7 @@ public class UnitUtil {
             if (unit.isSuperHeavy()
                     && (eq.hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)
                             || eq.hasFlag(MiscType.F_MASC) // to catch Supercharger
+                            || eq.hasFlag(MiscType.F_SCM)
                             || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
                             || eq.hasFlag(MiscType.F_PARTIAL_WING)
                             || eq.hasFlag(MiscType.F_UMU))) {
