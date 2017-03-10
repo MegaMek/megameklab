@@ -19,6 +19,7 @@ package megameklab.com.util;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -119,6 +120,14 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 }
                 if (mount.isDWPMounted()) {
                     name += " (DWP)";
+                }
+                if (unit.isOmni()) {
+                    if (mount.isOmniPodMounted()) {
+                        name += " (Pod)";
+                    } else {
+                        name += " (Fixed)";
+                        label.setFont(label.getFont().deriveFont(Font.ITALIC));
+                    }
                 }
                 if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                         || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
