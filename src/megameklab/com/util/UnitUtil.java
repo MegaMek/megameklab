@@ -1100,6 +1100,34 @@ public class UnitUtil {
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
     }
+    
+    /**
+     * Checks whether the equipment is eligible for pod mounting in an omni unit, either because the
+     * equipment itself can never be pod-mounted (such as armor, structure, or myomer enhancements),
+     * or the number of fixed heat sinks have not been assigned locations.
+     * 
+     * @param unit
+     * @param eq
+     * @return
+     */
+    public static boolean canPodMount(Entity unit, Mounted eq) {
+        if (!unit.isOmni() || !eq.getType().isHittable()) {
+            return false;
+        }
+        if (unit instanceof Mech && eq.getType() instanceof MiscType
+                && eq.getType().hasFlag(MiscType.F_HEAT_SINK)
+                && unit.hasEngine()) {
+            int needed = unit.getEngine().getExcessBaseChassisHeatSinks(((Mech)unit).hasCompactHeatSinks());
+            long fixed = unit.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_HEAT_SINK)
+                    && m.getLocation() != Entity.LOC_NONE && !eq.isOmniPodMounted()).count();
+            //Do not count this heat among the fixed, since we are checking whether we can change it to pod-mounted
+            if (eq.getLocation() != Entity.LOC_NONE && !eq.isOmniPodMounted()) {
+                fixed--;
+            }
+            return fixed >= needed;
+        }
+        return true;
+    }
 
     public static boolean hasTargComp(Entity unit) {
 

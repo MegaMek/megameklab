@@ -120,6 +120,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     return;
                 }
 
+                if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
+                    changeOmniMounting(!mount.isOmniPodMounted());
+                    return;
+                }                
+                
                 if (mount != null) {
                     popup.setAutoscrolls(true);
                     JMenuItem info;
@@ -187,6 +192,18 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             });
                             popup.add(info);
                         }
+                    }
+                    
+                    if (getUnit().isOmni() && mount.getType().isHittable()) {
+                        if (mount.isOmniPodMounted()) {
+                            info = new JMenuItem("Change to fixed mount");
+                            info.addActionListener(ev -> changeOmniMounting(false));
+                            popup.add(info);
+                        } else if (UnitUtil.canPodMount(getUnit(), mount)) {
+                            info = new JMenuItem("Change to pod mount");
+                            info.addActionListener(ev -> changeOmniMounting(true));
+                            popup.add(info);
+                        }                        
                     }
                 }
 
@@ -305,6 +322,16 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         getMounted().setPintleTurretMounted(turret);
         if (getMounted().getLinkedBy() != null) {
             getMounted().getLinkedBy().setPintleTurretMounted(turret);
+        }
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
+    }
+
+    private void changeOmniMounting(boolean pod) {
+        Mounted mount = getMounted();
+        if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
+            mount.setOmniPodMounted(pod);
         }
         if (refresh != null) {
             refresh.refreshAll();
