@@ -1135,11 +1135,18 @@ public class UnitUtil {
                     || eq.getType().hasFlag(MiscType.F_SPONSON_TURRET)) {
                 return false;
             }
-            if (unit instanceof Mech && eq.getType().hasFlag(MiscType.F_HEAT_SINK)
-                && unit.hasEngine()) {
-                int needed = unit.getEngine().getExcessBaseChassisHeatSinks(((Mech)unit).hasCompactHeatSinks());
-                long fixed = unit.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_HEAT_SINK)
-                        && m.getLocation() != Entity.LOC_NONE && !eq.isOmniPodMounted()).count();
+            if (unit instanceof Mech
+                    && (eq.getType().hasFlag(MiscType.F_HEAT_SINK)
+                            || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
+                            || eq.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
+                    && unit.hasEngine()) {
+                int needed = Math.max(0, unit.getEngine().getWeightFreeEngineHeatSinks() -
+                        UnitUtil.getCriticalFreeHeatSinks(unit, ((Mech)unit).hasCompactHeatSinks()));
+                long fixed = unit.getMisc().stream().filter(m -> 
+                        (m.getType().hasFlag(MiscType.F_HEAT_SINK)
+                            || m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
+                            || m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
+                        && m.getLocation() != Entity.LOC_NONE && !m.isOmniPodMounted()).count();
                 //Do not count this heat among the fixed, since we are checking whether we can change it to pod-mounted
                 if (eq.getLocation() != Entity.LOC_NONE && !eq.isOmniPodMounted()) {
                     fixed--;
