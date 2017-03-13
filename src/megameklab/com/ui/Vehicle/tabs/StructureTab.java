@@ -134,7 +134,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JPanel panMovement;
     SummaryView panSummary;
     
-    JSpinner troopStorage = null;
+    JSpinner fixedTroopStorage = null;
+    JSpinner podTroopStorage = null;
+    JLabel podTroopStorageLabel;
     JButton resetChassisButton = new JButton("Reset Chassis (Omni)");
     int maxTonnage = 50;
     int minTonnage = 1;
@@ -236,7 +238,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         updateArmor();
 
-        troopStorage = new JSpinner(new SpinnerNumberModel(0, 0, 0, 0.5));
+        fixedTroopStorage = new JSpinner(new SpinnerNumberModel(0, 0, 0, 0.5));
+        podTroopStorage = new JSpinner(new SpinnerNumberModel(0, 0, 0, 0.5));
 
         chassis.setText(getTank().getChassis());
         model.setText(getTank().getModel());
@@ -354,14 +357,23 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         
         gbc.gridx = 0;
         gbc.gridy = 6;
-        gbc.gridwidth = 1;
-        panChassis.add(createLabel("Troop Storage:", labelSize), gbc);
-        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        panChassis.add(createLabel("Fixed Troop Storage:", labelSize), gbc);
+        gbc.gridx = 2;
         gbc.gridy = 6;
-        gbc.gridwidth = 3;
-        panChassis.add(troopStorage, gbc);
-        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        panChassis.add(fixedTroopStorage, gbc);
+        podTroopStorageLabel = createLabel("Pod Troop Storage:", labelSize);
+        gbc.gridx = 0;
         gbc.gridy = 7;
+        gbc.gridwidth = 2;
+        panChassis.add(podTroopStorageLabel, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 7;
+        gbc.gridwidth = 2;
+        panChassis.add(podTroopStorage, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 8;
         gbc.gridwidth = 3;
         panChassis.add(resetChassisButton, gbc);
 
@@ -468,6 +480,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         omniCB.setSelected(getTank().isOmni());
         superHeavyCB.setSelected((getTank()).isSuperHeavy());
         resetChassisButton.setEnabled(getTank().isOmni());
+        podTroopStorageLabel.setEnabled(getTank().isOmni());
+        podTroopStorage.setEnabled(getTank().isOmni());
 
         if (!getTank().hasNoDualTurret()) {
             turretCombo.setSelectedIndex(2);
@@ -689,8 +703,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 if (getTank().isOmni()) {
                 } else {
                     getTank().getEngine().setBaseChassisHeatSinks(-1);
+                    fixedTroopStorage.setValue(getTank().getTroopCarryingSpace());
+                    podTroopStorage.setValue(0.0);
+                    updateTroopSpaceAllotted();
                 }
                 resetChassisButton.setEnabled(getTank().isOmni());
+                podTroopStorageLabel.setEnabled(getTank().isOmni());
+                podTroopStorage.setEnabled(getTank().isOmni());
             }
         }
         else if (e.getSource() instanceof JButton) {
@@ -700,6 +719,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 useRemainingTonnageArmor();
             } else if (e.getSource().equals(resetChassisButton)) {
                 UnitUtil.resetBaseChassis(getTank());
+                podTroopStorage.setValue(0.0);
+                updateTroopSpaceAllotted();
             }
         }
         addAllListeners();
@@ -719,7 +740,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         superHeavyCB.removeActionListener(this);
         turretCombo.removeItemListener(this);
         tankMotiveType.removeItemListener(this);
-        troopStorage.removeChangeListener(this);
+        fixedTroopStorage.removeChangeListener(this);
+        podTroopStorage.removeChangeListener(this);
         resetChassisButton.removeActionListener(this);
         maximizeArmorButton.removeActionListener(this);
         unusedTonnageArmorButton.removeActionListener(this);
@@ -745,7 +767,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         superHeavyCB.addActionListener(this);
         turretCombo.addItemListener(this);
         tankMotiveType.addItemListener(this);
-        troopStorage.addChangeListener(this);
+        fixedTroopStorage.addChangeListener(this);
+        podTroopStorage.addChangeListener(this);
         resetChassisButton.addActionListener(this);
         maximizeArmorButton.addActionListener(this);
         unusedTonnageArmorButton.addActionListener(this);
@@ -818,13 +841,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private void updateTroopSpaceAllowed() {
     	double troops = getTank().getTroopCarryingSpace();
+    	double pod = getTank().getPodMountedTroopCarryingSpace();
 
         if (troops > (int) getTank().getWeight()) {
             getTank().removeAllTransporters();
-            ((SpinnerNumberModel) troopStorage.getModel()).setValue(0);
+            ((SpinnerNumberModel) fixedTroopStorage.getModel()).setValue(0.0);
+            ((SpinnerNumberModel) podTroopStorage.getModel()).setValue(0.0);
         } else {
-            ((SpinnerNumberModel) troopStorage.getModel())
-                    .setValue((double) troops);
+            fixedTroopStorage.setValue(troops - pod);
+            podTroopStorage.setValue(pod);
         }
 
     }
@@ -917,8 +942,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         currentTonnage = Math.max(minTonnage,
                 Math.min(currentTonnage, maxTonnage));
         getTank().setWeight(currentTonnage);
-        ((SpinnerNumberModel) troopStorage.getModel())
-                .setMaximum((double) currentTonnage);
+        ((SpinnerNumberModel) fixedTroopStorage.getModel())
+            .setMaximum((double) currentTonnage);
+        ((SpinnerNumberModel) podTroopStorage.getModel())
+            .setMaximum((double) currentTonnage);
         ((SpinnerNumberModel) weight.getModel()).setMaximum(maxTonnage);
         ((SpinnerNumberModel) weight.getModel()).setMinimum(minTonnage);
         weight.getModel().setValue((int)getTank().getWeight());
@@ -1045,14 +1072,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         if (e.getSource().equals(cruiseMP) || e.getSource().equals(weight)) {
             updateWeightEngineMovement();
         }
-        if (e.getSource().equals(troopStorage)) {
-            getTank().removeAllTransporters();
-            if (((SpinnerNumberModel) troopStorage.getModel()).getNumber()
-                    .doubleValue() > 0) {
-                double troopTons = Math
-                        .round(((Double) troopStorage.getValue()) * 2) / 2.0;
-                getTank().addTransporter(new TroopSpace(troopTons));
-            }
+        if (e.getSource().equals(fixedTroopStorage) || e.getSource().equals(podTroopStorage)) {
+            updateTroopSpaceAllotted();
         } else if (e.getSource().equals(armorTonnage)) {
             setArmorTonnage();
         } else if (e.getSource().equals(jumpMP)) {
@@ -1068,6 +1089,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
         addAllListeners();
         refresh.refreshAll();
+    }
+
+    private void updateTroopSpaceAllotted() {
+        getTank().removeAllTransporters();
+        double fixedStorage = (Double)fixedTroopStorage.getValue();
+        double podStorage = + (Double)podTroopStorage.getValue();
+        if (fixedStorage + podStorage > 0) {
+            double troopTons = Math
+                    .round((fixedStorage) * 2) / 2.0;
+            getTank().addTransporter(new TroopSpace(troopTons), false);
+            if (podStorage > 0) {
+                troopTons = Math.round(podStorage * 2) / 2.0;
+                getTank().addTransporter(new TroopSpace(troopTons), true);
+            }
+        }
     }
 
     public boolean isSuperHeavy() {
@@ -1232,7 +1268,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             "Bad Engine Rating", JOptionPane.ERROR_MESSAGE);
         } else {
             getTank().setWeight(Double.parseDouble(weight.getModel().getValue().toString()));
-            ((SpinnerNumberModel) troopStorage.getModel()).setMaximum(Double
+            ((SpinnerNumberModel) fixedTroopStorage.getModel()).setMaximum(Double
+                    .parseDouble(weight.getModel().getValue().toString()));
+            ((SpinnerNumberModel) podTroopStorage.getModel()).setMaximum(Double
                     .parseDouble(weight.getModel().getValue().toString()));
             getTank().autoSetInternal();
             int type = convertEngineType(engineType.getSelectedItem()
