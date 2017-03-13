@@ -410,6 +410,8 @@ public class CriticalTransferHandler extends TransferHandler {
                             || eq.getSecondLocation() != Entity.LOC_NONE){
                         UnitUtil.removeCriticals(getUnit(), eq);
                         changeMountStatus(eq,Entity.LOC_NONE,false);
+                    } else {
+                        eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
                     }
                 }
                 /*if (UnitUtil.isFixedLocationSpreadEquipment(eq.getType())) {
