@@ -127,7 +127,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     return;
                 }
                 
-                if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
+                if (mount != null && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
                     changeOmniMounting(!mount.isOmniPodMounted());
                     return;
                 }                
