@@ -151,6 +151,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox lamCB = new JCheckBox("LAM");
     JCheckBox fullHeadEjectCB = new JCheckBox("Full Head Ejection");
+    JButton resetChassisButton = new JButton("Reset Chassis (Omni)");
     JComboBox<String> structureCombo = new JComboBox<String>(
             EquipmentType.structureNames);
     JPanel masterPanel;
@@ -388,6 +389,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridy = 7;
         gbc.gridwidth = 3;
         panChassis.add(fullHeadEjectCB, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 8;
+        gbc.gridwidth = 3;
+        panChassis.add(resetChassisButton, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -562,6 +567,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             omniCB.setEnabled(true);
         }
         omniCB.setSelected(getMech().isOmni());
+        resetChassisButton.setEnabled(getMech().isOmni());
         if (getMech() instanceof TripodMech) {
             motiveType.setSelectedIndex(2);
         }
@@ -1068,6 +1074,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
                 UnitUtil.updateAutoSinks(getMech(),
                         (String) heatSinkType.getSelectedItem());
+                resetChassisButton.setEnabled(omniCB.isSelected());
 
             } else if (check.equals(fullHeadEjectCB)) {
                 getMech().setFullHeadEject(fullHeadEjectCB.isSelected());
@@ -1077,6 +1084,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 maximizeArmor();
             } else if (e.getSource().equals(unusedTonnageArmorButton)) {
                 useRemainingTonnageArmor();
+            } else if (e.getSource().equals(resetChassisButton)) {
+                UnitUtil.resetBaseChassis(getMech());
             }
         }
         addAllListeners();
@@ -1120,6 +1129,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         motiveType.removeItemListener(this);
         lamCB.removeActionListener(this);
         fullHeadEjectCB.removeActionListener(this);
+        resetChassisButton.removeActionListener(this);
         structureCombo.removeItemListener(this);
         baseChassisHeatSinks.removeChangeListener(this);
         chassis.removeKeyListener(this);
@@ -1150,6 +1160,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         motiveType.addItemListener(this);
         lamCB.addActionListener(this);
         fullHeadEjectCB.addActionListener(this);
+        resetChassisButton.addActionListener(this);
         structureCombo.addItemListener(this);
         baseChassisHeatSinks.addChangeListener(this);
         chassis.addKeyListener(this);

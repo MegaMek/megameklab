@@ -1139,6 +1139,26 @@ public class UnitUtil {
         }
         return true;
     }
+    
+    /**
+     * Removes all pod-mounted equipment from an omni unit
+     * @param unit
+     */
+    public static void resetBaseChassis(Entity unit) {
+        if (!unit.isOmni()) {
+            return;
+        }
+        List<Mounted> pods = unit.getEquipment().stream()
+                .filter(Mounted::isOmniPodMounted)
+                .collect(Collectors.toList());
+        for (Mounted m : pods) {
+            UnitUtil.removeMounted(unit, m);
+            if (m.getType() instanceof MiscType
+                    && m.getType().hasFlag(MiscType.F_JUMP_JET)) {
+                unit.setOriginalJumpMP(unit.getOriginalJumpMP() - 1);
+            }
+        }
+    }
 
     public static boolean hasTargComp(Entity unit) {
 
