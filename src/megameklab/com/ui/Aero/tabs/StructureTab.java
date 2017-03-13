@@ -125,6 +125,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private JComboBox<String> cockpitType =
             new JComboBox<String>(Aero.COCKPIT_SHORT_STRING);
     private JCheckBox omniCB = new JCheckBox("Omni");
+    private JButton resetChassisButton = new JButton("Reset Chassis (Omni)");
 
     // Movement Panel
     private JSpinner safeThrust;
@@ -362,7 +363,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridy = 5;
         gbc.gridwidth = 3;
         panChassis.add(cockpitType, gbc);
-
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        gbc.gridwidth = 3;
+        panChassis.add(resetChassisButton, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -554,6 +558,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             omniCB.setEnabled(true);
         }
         omniCB.setSelected(getAero().isOmni());
+        resetChassisButton.setEnabled(getAero().isOmni());
 
         fuelPoints.setText(getAero().getFuel()+"");
         turnsAtSafe.setText(String.format(
@@ -893,13 +898,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     baseChassisHeatSinks.setEnabled(false);
                     getAero().getEngine().setBaseChassisHeatSinks(-1);
                 }
-
+                resetChassisButton.setEnabled(omniCB.isSelected());
             }
         } else if (e.getSource() instanceof JButton) {
             if (e.getSource().equals(maximizeArmorButton)) {
                 maximizeArmor();
             } else if (e.getSource().equals(unusedTonnageArmorButton)) {
                 useRemainingTonnageArmor();
+            } else if (e.getSource().equals(resetChassisButton)) {
+                UnitUtil.resetBaseChassis(getAero());
             }
         }
         addAllListeners();
@@ -931,6 +938,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         unitType.removeItemListener(this);
         weightClass.removeChangeListener(this);
         cockpitType.removeItemListener(this);
+        resetChassisButton.removeActionListener(this);
         heatSinkNumber.removeChangeListener(this);
         heatSinkType.removeItemListener(this);
         safeThrust.removeChangeListener(this);
@@ -955,6 +963,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         unitType.addItemListener(this);
         weightClass.addChangeListener(this);
         cockpitType.addItemListener(this);
+        resetChassisButton.addActionListener(this);
         heatSinkNumber.addChangeListener(this);
         heatSinkType.addItemListener(this);
         safeThrust.addChangeListener(this);

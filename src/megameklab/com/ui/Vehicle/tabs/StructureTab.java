@@ -135,6 +135,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     SummaryView panSummary;
     
     JSpinner troopStorage = null;
+    JButton resetChassisButton = new JButton("Reset Chassis (Omni)");
     int maxTonnage = 50;
     int minTonnage = 1;
     JTextField manualBV = new JTextField(3);
@@ -359,6 +360,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridy = 6;
         gbc.gridwidth = 3;
         panChassis.add(troopStorage, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 7;
+        gbc.gridwidth = 3;
+        panChassis.add(resetChassisButton, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -462,6 +467,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         removeAllListeners();
         omniCB.setSelected(getTank().isOmni());
         superHeavyCB.setSelected((getTank()).isSuperHeavy());
+        resetChassisButton.setEnabled(getTank().isOmni());
 
         if (!getTank().hasNoDualTurret()) {
             turretCombo.setSelectedIndex(2);
@@ -684,6 +690,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 } else {
                     getTank().getEngine().setBaseChassisHeatSinks(-1);
                 }
+                resetChassisButton.setEnabled(getTank().isOmni());
             }
         }
         else if (e.getSource() instanceof JButton) {
@@ -691,6 +698,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 maximizeArmor();
             } else if (e.getSource().equals(unusedTonnageArmorButton)) {
                 useRemainingTonnageArmor();
+            } else if (e.getSource().equals(resetChassisButton)) {
+                UnitUtil.resetBaseChassis(getTank());
             }
         }
         addAllListeners();
@@ -711,6 +720,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         turretCombo.removeItemListener(this);
         tankMotiveType.removeItemListener(this);
         troopStorage.removeChangeListener(this);
+        resetChassisButton.removeActionListener(this);
         maximizeArmorButton.removeActionListener(this);
         unusedTonnageArmorButton.removeActionListener(this);
         armorTonnage.removeChangeListener(this);
@@ -736,6 +746,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         turretCombo.addItemListener(this);
         tankMotiveType.addItemListener(this);
         troopStorage.addChangeListener(this);
+        resetChassisButton.addActionListener(this);
         maximizeArmorButton.addActionListener(this);
         unusedTonnageArmorButton.addActionListener(this);
         armorTonnage.addChangeListener(this);
