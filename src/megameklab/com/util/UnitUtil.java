@@ -350,6 +350,12 @@ public class UnitUtil {
             }
         }
     }
+    
+    public static void addMounted(Entity unit, Mounted mounted, int loc,
+            boolean rearMounted) throws LocationFullException {
+        unit.addEquipment(mounted, loc, rearMounted);
+        mounted.setOmniPodMounted(canPodMount(unit, mounted));
+    }
 
     /**
      * Tells if param EQ is a targetting computer.
@@ -622,7 +628,7 @@ public class UnitUtil {
             UnitUtil.removeMounted(unit, eq);
             if (!eq.getType().hasFlag(MiscType.F_HEAT_SINK)) {
                 try {
-                    unit.addEquipment(
+                    UnitUtil.addMounted(unit,
                             new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
@@ -672,8 +678,7 @@ public class UnitUtil {
         if ((restHS % 2) == 1) {
             if (null == singleCompact) {
                 try {
-                    unit.addEquipment(
-                            new Mounted(unit, EquipmentType
+                    unit.addEquipment(new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
@@ -684,7 +689,7 @@ public class UnitUtil {
                 // remove singleCompact mount and replace with a double
                 UnitUtil.removeMounted(unit, singleCompact);
                 try {
-                    unit.addEquipment(
+                    addMounted(unit,
                             new Mounted(unit, EquipmentType.get(UnitUtil
                                     .getHeatSinkType("Compact", unit.isClan()))),
                             loc, false);
@@ -696,8 +701,7 @@ public class UnitUtil {
         }
         for (; restHS > 0; restHS -= 2) {
             try {
-                unit.addEquipment(
-                        new Mounted(unit, EquipmentType.get(UnitUtil
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil
                                 .getHeatSinkType("Compact", unit.isClan()))),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
@@ -1630,7 +1634,7 @@ public class UnitUtil {
                 try {
                     if (firstBlock || (locations.get(0) == Entity.LOC_NONE)) {
                         // create only one mount per equipment, for BV and stuff
-                        unit.addEquipment(mount, locations.get(0), false);
+                        addMounted(unit, mount, locations.get(0), false);
                         if (firstBlock) {
                             firstBlock = false;
                         }
