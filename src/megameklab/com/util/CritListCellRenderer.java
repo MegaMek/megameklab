@@ -121,7 +121,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
                 if (mount.isDWPMounted()) {
                     name += " (DWP)";
                 }
-                if (unit.isOmni()) {
+                if (unit.isOmni() && !mount.getType().isOmniFixedOnly()) {
                     if (mount.isOmniPodMounted()) {
                         name += " (Pod)";
                     } else {
