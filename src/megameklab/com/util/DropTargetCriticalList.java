@@ -194,7 +194,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         }
                     }
                     
-                    if (getUnit().isOmni() && mount.getType().isHittable()) {
+                    if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
                         if (mount.isOmniPodMounted()) {
                             info = new JMenuItem("Change to fixed mount");
                             info.addActionListener(ev -> changeOmniMounting(false));
