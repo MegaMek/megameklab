@@ -118,7 +118,7 @@ public class CriticalTransferHandler extends TransferHandler {
             if (linkedBy != null && !(getUnit() instanceof BattleArmor)) {
                 UnitUtil.removeCriticals(getUnit(), linkedBy);
                 try {
-                    getUnit().addEquipment(linkedBy, mounted.getLocation(), linkedBy.isRearMounted());
+                    UnitUtil.addMounted(getUnit(), linkedBy, mounted.getLocation(), linkedBy.isRearMounted());
                 } catch (LocationFullException e) {
                     UnitUtil.changeMountStatus(getUnit(), linkedBy, Entity.LOC_NONE, Entity.LOC_NONE, false);
                     linkedBy.setLinked(null);
@@ -359,10 +359,10 @@ public class CriticalTransferHandler extends TransferHandler {
                         " does not fit in " + getUnit().getLocationAbbr(location) +
                         " on " + getUnit().getDisplayName());
             } else {
-                getUnit().addEquipment(eq, location, false);
+                UnitUtil.addMounted(getUnit(), eq, location, false);
             }
         } else {
-            getUnit().addEquipment(eq, location, false);
+            UnitUtil.addMounted(getUnit(), eq, location, false);
         }
         changeMountStatus(eq, location, false);
         return true;
@@ -410,6 +410,8 @@ public class CriticalTransferHandler extends TransferHandler {
                             || eq.getSecondLocation() != Entity.LOC_NONE){
                         UnitUtil.removeCriticals(getUnit(), eq);
                         changeMountStatus(eq,Entity.LOC_NONE,false);
+                    } else {
+                        eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
                     }
                 }
                 /*if (UnitUtil.isFixedLocationSpreadEquipment(eq.getType())) {

@@ -134,10 +134,10 @@ public class BuildTab extends ITab implements ActionListener {
                 try {
                     if (mount.getType().isSpreadable() || (mount.isSplitable() && (critsUsed > 1))) {
                         for (int count = 0; count < critsUsed; count++) {
-                            getMech().addEquipment(mount, location, false);
+                            UnitUtil.addMounted(getMech(), mount, location, false);
                         }
                     } else {
-                        getMech().addEquipment(mount, location, false);
+                        UnitUtil.addMounted(getMech(), mount, location, false);
                     }
                     UnitUtil.changeMountStatus(getMech(), mount, location, Entity.LOC_NONE, false);
                     break;

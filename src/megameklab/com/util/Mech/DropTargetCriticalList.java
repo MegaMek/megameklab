@@ -126,7 +126,12 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     changeWeaponFacing(!mount.isRearMounted());
                     return;
                 }
-
+                
+                if (mount != null && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
+                    changeOmniMounting(!mount.isOmniPodMounted());
+                    return;
+                }                
+                
                 if (mount != null) {
                     JMenuItem info;
                     if (!UnitUtil.isFixedLocationSpreadEquipment(mount
@@ -353,6 +358,20 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                             popup.add(info);
                         }
                     }
+                    
+                    if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
+                        if (mount.isOmniPodMounted()) {
+                            info = new JMenuItem("Change to fixed mount");
+                            info.addActionListener(ev -> changeOmniMounting(false));
+                            popup.add(info);
+                        } else if (UnitUtil.canPodMount(getUnit(), mount)) {
+                            info = new JMenuItem("Change to pod mount");
+                            info.addActionListener(ev -> changeOmniMounting(true));
+                            popup.add(info);
+                        }
+                        
+                    }
+
                 }
 
                 if ((getUnit() instanceof BipedMech || getUnit() instanceof TripodMech)
@@ -458,7 +477,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         popup.add(info);
                     }
                 }
-
+                
                 if (popup.getComponentCount() > 0) {
                     popup.show(this, e.getX(), e.getY());
                 }
@@ -580,6 +599,19 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         int location = getCritLocation();
         changeMountStatus(mount, location, rear);
     }
+    
+    private void changeOmniMounting(boolean pod) {
+        Mounted mount = getMounted();
+        if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
+            mount.setOmniPodMounted(pod);
+            if (getCrit().getMount2() != null) {
+                getCrit().getMount2().setOmniPodMounted(pod);
+            }
+        }
+        if (refresh != null) {
+            refresh.refreshAll();
+        }
+    }
 
     private void changeTurretMount(boolean turret) {
         getMounted().setMechTurretMounted(turret);
@@ -590,7 +622,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
             refresh.refreshAll();
         }
     }
-
+    
     private int getCritLocation() {
         if (getUnit() instanceof BattleArmor){
             String[] split = getName().split(":");

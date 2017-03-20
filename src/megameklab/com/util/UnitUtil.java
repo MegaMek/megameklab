@@ -351,6 +351,12 @@ public class UnitUtil {
             }
         }
     }
+    
+    public static void addMounted(Entity unit, Mounted mounted, int loc,
+            boolean rearMounted) throws LocationFullException {
+        unit.addEquipment(mounted, loc, rearMounted);
+        mounted.setOmniPodMounted(canPodMount(unit, mounted));
+    }
 
     /**
      * Tells if param EQ is a targetting computer.
@@ -631,7 +637,7 @@ public class UnitUtil {
             UnitUtil.removeMounted(unit, eq);
             if (!eq.getType().hasFlag(MiscType.F_HEAT_SINK)) {
                 try {
-                    unit.addEquipment(
+                    UnitUtil.addMounted(unit,
                             new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
@@ -681,8 +687,7 @@ public class UnitUtil {
         if ((restHS % 2) == 1) {
             if (null == singleCompact) {
                 try {
-                    unit.addEquipment(
-                            new Mounted(unit, EquipmentType
+                    unit.addEquipment(new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
@@ -693,7 +698,7 @@ public class UnitUtil {
                 // remove singleCompact mount and replace with a double
                 UnitUtil.removeMounted(unit, singleCompact);
                 try {
-                    unit.addEquipment(
+                    addMounted(unit,
                             new Mounted(unit, EquipmentType.get(UnitUtil
                                     .getHeatSinkType("Compact", unit.isClan()))),
                             loc, false);
@@ -705,8 +710,7 @@ public class UnitUtil {
         }
         for (; restHS > 0; restHS -= 2) {
             try {
-                unit.addEquipment(
-                        new Mounted(unit, EquipmentType.get(UnitUtil
+                unit.addEquipment(new Mounted(unit, EquipmentType.get(UnitUtil
                                 .getHeatSinkType("Compact", unit.isClan()))),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
@@ -1108,6 +1112,61 @@ public class UnitUtil {
         eq.setLocation(location, rear);
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
+    }
+    
+    /**
+     * Checks whether the equipment is eligible for pod mounting in an omni unit, either because the
+     * equipment itself can never be pod-mounted (such as armor, structure, or myomer enhancements),
+     * or the number of fixed heat sinks have not been assigned locations.
+     * 
+     * @param unit
+     * @param eq
+     * @return
+     */
+    public static boolean canPodMount(Entity unit, Mounted eq) {
+        if (!unit.isOmni() || eq.getType().isOmniFixedOnly()) {
+            return false;
+        }
+        
+        if (eq.getType() instanceof MiscType && unit instanceof Mech
+                && (eq.getType().hasFlag(MiscType.F_HEAT_SINK)
+                        || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
+                        || eq.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
+                && unit.hasEngine()) {
+            int needed = Math.max(0, unit.getEngine().getWeightFreeEngineHeatSinks() -
+                    UnitUtil.getCriticalFreeHeatSinks(unit, ((Mech)unit).hasCompactHeatSinks()));
+            long fixed = unit.getMisc().stream().filter(m -> 
+            (m.getType().hasFlag(MiscType.F_HEAT_SINK)
+                    || m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
+                    || m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
+            && m.getLocation() != Entity.LOC_NONE && !m.isOmniPodMounted()).count();
+            //Do not count this heat among the fixed, since we are checking whether we can change it to pod-mounted
+            if (eq.getLocation() != Entity.LOC_NONE && !eq.isOmniPodMounted()) {
+                fixed--;
+            }
+            return fixed >= needed;
+        }
+        return true;
+    }
+    
+    /**
+     * Removes all pod-mounted equipment from an omni unit
+     * @param unit
+     */
+    public static void resetBaseChassis(Entity unit) {
+        if (!unit.isOmni()) {
+            return;
+        }
+        List<Mounted> pods = unit.getEquipment().stream()
+                .filter(Mounted::isOmniPodMounted)
+                .collect(Collectors.toList());
+        for (Mounted m : pods) {
+            UnitUtil.removeMounted(unit, m);
+            if (m.getType() instanceof MiscType
+                    && m.getType().hasFlag(MiscType.F_JUMP_JET)) {
+                unit.setOriginalJumpMP(unit.getOriginalJumpMP() - 1);
+            }
+        }
     }
 
     public static boolean hasTargComp(Entity unit) {
@@ -1583,7 +1642,7 @@ public class UnitUtil {
                 try {
                     if (firstBlock || (locations.get(0) == Entity.LOC_NONE)) {
                         // create only one mount per equipment, for BV and stuff
-                        unit.addEquipment(mount, locations.get(0), false);
+                        addMounted(unit, mount, locations.get(0), false);
                         if (firstBlock) {
                             firstBlock = false;
                         }
@@ -2400,6 +2459,7 @@ public class UnitUtil {
             if (unit.isSuperHeavy()
                     && (eq.hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)
                             || eq.hasFlag(MiscType.F_MASC) // to catch Supercharger
+                            || eq.hasFlag(MiscType.F_SCM)
                             || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
                             || eq.hasFlag(MiscType.F_PARTIAL_WING)
                             || eq.hasFlag(MiscType.F_UMU))) {
