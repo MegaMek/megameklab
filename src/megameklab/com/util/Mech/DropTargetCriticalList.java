@@ -128,11 +128,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 }
                 
                 if (mount != null && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
-                    changeOmniMounting(mount, !mount.isOmniPodMounted());
-                    //For superheavies with a second heat sink or ton of armor, set both together. 
-                    if (getCrit().getMount2() != null) {
-                        changeOmniMounting(getCrit().getMount2(), mount.isOmniPodMounted());
-                    }
+                    changeOmniMounting(!mount.isOmniPodMounted());
                     return;
                 }                
                 
@@ -364,39 +360,16 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     }
                     
                     if (getUnit().isOmni() && !mount.getType().isOmniFixedOnly()) {
-                        //Check whether there is a second heat sink or ton of armor in the same slot (superheavies)
-                        //and if so present them as separate options.
-                        String changeText = "Change ";
-                        if (getCrit().getMount2() != null) {
-                            changeText += mount.getType().getName();
-                            if (mount.getType().getName().equals(getCrit().getMount2().getType().getName())) {
-                                changeText += " (1)";
-                            }
-                        }
                         if (mount.isOmniPodMounted()) {
-                            info = new JMenuItem(changeText + " to fixed mount");
-                            info.addActionListener(ev -> changeOmniMounting(mount, false));
+                            info = new JMenuItem("Change to fixed mount");
+                            info.addActionListener(ev -> changeOmniMounting(false));
                             popup.add(info);
                         } else if (UnitUtil.canPodMount(getUnit(), mount)) {
-                            info = new JMenuItem(changeText + " to pod mount");
-                            info.addActionListener(ev -> changeOmniMounting(mount, true));
+                            info = new JMenuItem("Change to pod mount");
+                            info.addActionListener(ev -> changeOmniMounting(true));
                             popup.add(info);
                         }
-                        if (getCrit().getMount2() != null) {
-                            changeText = "Change " + getCrit().getMount2().getType().getName();
-                            if (mount.getType().getName().equals(getCrit().getMount2().getType().getName())) {
-                                changeText += " (2)";
-                            }
-                            if (getCrit().getMount2().isOmniPodMounted()) {
-                                info = new JMenuItem(changeText + " to fixed mount");
-                                info.addActionListener(ev -> changeOmniMounting(getCrit().getMount2(), false));
-                                popup.add(info);
-                            } else if (UnitUtil.canPodMount(getUnit(), getCrit().getMount2())) {
-                                info = new JMenuItem(changeText + " to pod mount");
-                                info.addActionListener(ev -> changeOmniMounting(getCrit().getMount2(),true));
-                                popup.add(info);
-                            }
-                        }
+                        
                     }
 
                 }
@@ -627,9 +600,13 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         changeMountStatus(mount, location, rear);
     }
     
-    private void changeOmniMounting(Mounted mount, boolean pod) {
+    private void changeOmniMounting(boolean pod) {
+        Mounted mount = getMounted();
         if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
             mount.setOmniPodMounted(pod);
+            if (getCrit().getMount2() != null) {
+                getCrit().getMount2().setOmniPodMounted(pod);
+            }
         }
         if (refresh != null) {
             refresh.refreshAll();
