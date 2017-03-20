@@ -403,7 +403,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
         for (int slot = 0; slot < openSlots; slot++) {
             try {
-                getMech().addEquipment(eq, location, false);
+                UnitUtil.addMounted(getMech(), eq, location, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -412,7 +412,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
         crits -= openSlots;
         for (int slot = 0; slot < crits; slot++) {
             try {
-                getMech().addEquipment(eq, secondaryLocation, false);
+                UnitUtil.addMounted(getMech(), eq, secondaryLocation, false);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -454,7 +454,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 if (facing == null) {
                     return;
                 }
-                getMech().addEquipment(eq, location, false);
+                UnitUtil.addMounted(getMech(), eq, location, false);
                 if (facing.equals("Front-Left")) {
                     eq.setFacing(5);
                 } else if (facing.equals("Front-Right")) {
@@ -468,7 +468,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                     UnitUtil.changeMountStatus(getMech(), eq, location, -1, true);
                 }
             } else {
-                getMech().addEquipment(eq, location, false);
+                UnitUtil.addMounted(getMech(), eq, location, false);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
