@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.43.2-git
+
 v0.43.1 (2017-02-13 01:15 UTC)
 + Issue #50: Super heavies shouldn't be allowed to use certain equipment.
 + Feature: Mark fixed equipment in omnis and button to reset base configuration be removing all pod-mounted equipment.
