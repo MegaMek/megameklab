@@ -1191,7 +1191,8 @@ public class UnitUtil {
             //  Unless it's a single shot ammo type, like Cruise Missiles
             if ((mount.getLocation() == Entity.LOC_NONE)
                     && ((mount.getUsableShotsLeft() > 1)
-                            || (ammoType == AmmoType.T_CRUISE_MISSILE))) {
+                            || (ammoType == AmmoType.T_CRUISE_MISSILE)
+                            || (ammoType == AmmoType.T_COOLANT_POD))) {
                 tonnage += mount.getType().getTonnage(unit);
             }
         }
