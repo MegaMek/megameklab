@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.42.3-git
+
 v0.42.2 (2017-05-1 01:00 UTC)
 + Fix #61: No cooland pod weight until assigned crit
 + Issue #50: Super heavies shouldn't be allowed to use certain equipment.
