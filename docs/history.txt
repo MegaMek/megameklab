@@ -1,7 +1,8 @@
 VERSION HISTORY:
 ----------------
-v0.43.2-git
+v0.43.2 (2017-05-1 22:00 UTC)
 + Issue #61: Coolant pods don't add weight until assigned critical slots
++ Updated MegaMek.jar to 0.43.2
 
 v0.43.1 (2017-03-31 01:15 UTC)
 + Issue #50: Super heavies shouldn't be allowed to use certain equipment.
