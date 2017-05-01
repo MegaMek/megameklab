@@ -571,11 +571,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         ((SpinnerNumberModel) heatSinkNumber.getModel()).setMinimum(freeSinks);
         heatSinkNumber.setValue(totalSinks);
 
-        ((SpinnerNumberModel) baseChassisHeatSinks.getModel()).setMinimum(freeSinks);
         ((SpinnerNumberModel) baseChassisHeatSinks.getModel())
-                .setMaximum(totalSinks);
+                .setMaximum(getAero().getEngine().integralHeatSinkCapacity(
+                       false));
 
-        baseChassisHeatSinks.setValue(Math.max(0, totalSinks - getAero().getPodHeatSinks()));
+        baseChassisHeatSinks.setValue(Math.max(0, getAero().getEngine()
+                .getBaseChassisHeatSinks(false)));
 
         if (getAero().isOmni()) {
             baseChassisHeatSinks.setEnabled(true);
@@ -886,13 +887,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 getAero().setOmni(omniCB.isSelected());
                 if (getAero().isOmni()) {
                     baseChassisHeatSinks.setEnabled(true);
-                    getAero().getEngine().setBaseChassisHeatSinks((Integer)baseChassisHeatSinks.getValue());
-                    getAero().setPodHeatSinks((Integer)heatSinkNumber.getValue()
-                            - (Integer)baseChassisHeatSinks.getValue());
+                    getAero().getEngine().setBaseChassisHeatSinks(
+                            10 + (Integer) baseChassisHeatSinks.getValue());
                 } else {
                     baseChassisHeatSinks.setEnabled(false);
                     getAero().getEngine().setBaseChassisHeatSinks(-1);
-                    getAero().setPodHeatSinks(0);
                 }
 
             }
@@ -1477,15 +1476,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 setArmorTonnage();
             } else if (spinner.equals(heatSinkNumber)) {
                 getAero().setHeatSinks((Integer) heatSinkNumber.getValue());
-                ((SpinnerNumberModel) baseChassisHeatSinks.getModel())
-                    .setMaximum((Integer)heatSinkNumber.getValue());
-                getAero().setPodHeatSinks(Math.max(0, (Integer)heatSinkNumber.getValue()
-                        - (Integer)baseChassisHeatSinks.getValue()));
             } else if (spinner.equals(baseChassisHeatSinks)) {
                 getAero().getEngine().setBaseChassisHeatSinks(
                         Math.max(0, (Integer) baseChassisHeatSinks.getValue()));
-                getAero().setPodHeatSinks((Integer)heatSinkNumber.getValue()
-                        - (Integer)baseChassisHeatSinks.getValue());
             }
             addAllListeners();
 
