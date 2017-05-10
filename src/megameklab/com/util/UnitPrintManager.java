@@ -169,13 +169,16 @@ public class UnitPrintManager {
                 UnitUtil.expandUnitMounts((Mech) unit);
 
                 tripodList.add((Mech) unit);
-            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank) && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank)unit).isSuperHeavy())) {
+            } else if ((unit instanceof LargeSupportTank) || ((unit instanceof Tank)
+                    && (unit.getMovementMode() != EntityMovementMode.VTOL) && ((Tank) unit).isSuperHeavy())) {
                 largeSupportTankList.add((Tank)unit);
             } else if (unit instanceof VTOL) {
                 VTOLList.add((VTOL) unit);
             } else if (unit.getMovementMode() == EntityMovementMode.WIGE) {
                 wigeList.add((Tank) unit);
-            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL) || (unit.getMovementMode() == EntityMovementMode.SUBMARINE) || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
+            } else if ((unit instanceof Tank) && ((unit.getMovementMode() == EntityMovementMode.NAVAL)
+                    || (unit.getMovementMode() == EntityMovementMode.SUBMARINE)
+                    || (unit.getMovementMode() == EntityMovementMode.HYDROFOIL))) {
                 navalList.add((Tank) unit);
             } else if (unit instanceof Tank) {
                 if (!((Tank) unit).hasNoDualTurret()) {
@@ -224,44 +227,37 @@ public class UnitPrintManager {
 
         if (bipedList.size() > 0) {
             PrintMech printMech = new PrintMech(bipedList, masterPrintJob);
-
             printMech.print(aset);
         }
 
         if (quadList.size() > 0) {
             PrintQuad printQuad = new PrintQuad(quadList, masterPrintJob);
-
             printQuad.print(aset);
         }
 
         if (tripodList.size() > 0) {
             PrintTripod printTripod = new PrintTripod(tripodList, masterPrintJob);
-
             printTripod.print(aset);
         }
 
 
         if (tankList.size() > 0) {
             PrintVehicle printTank = new PrintVehicle(tankList, singlePrint, masterPrintJob);
-
             printTank.print(aset);
         }
 
         if (wigeList.size() > 0) {
             PrintWiGE printWiGE = new PrintWiGE(wigeList, singlePrint, masterPrintJob);
-
             printWiGE.print(aset);
         }
 
         if (navalList.size() > 0) {
             PrintNavalVehicle printNaval = new PrintNavalVehicle(navalList, masterPrintJob);
-
             printNaval.print(aset);
         }
 
         if (dualTurretList.size() > 0) {
             PrintDualTurretVehicle printDualTurret = new PrintDualTurretVehicle(dualTurretList, singlePrint, masterPrintJob);
-
             printDualTurret.print(aset);
         }
 
@@ -292,25 +288,21 @@ public class UnitPrintManager {
 
         if (VTOLList.size() > 0) {
             PrintVTOL printVTOL = new PrintVTOL(VTOLList, masterPrintJob);
-
             printVTOL.print(aset);
         }
 
         if (baList.size() > 0) {
             PrintBattleArmor printBA = new PrintBattleArmor(baList, masterPrintJob);
-
             printBA.print(aset);
         }
         
         if (infList.size() > 0) {
         	PrintInfantry printInf = new PrintInfantry(infList, masterPrintJob);
-        	
         	printInf.print(aset);
         }
 
         if (protoList.size() > 0) {
             PrintProtomech printProto = new PrintProtomech(protoList, masterPrintJob);
-
             printProto.print(aset);
         }
 
