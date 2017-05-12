@@ -48,20 +48,26 @@ import megamek.common.EntityListFile;
 import megamek.common.EntityMovementMode;
 import megamek.common.FixedWingSupport;
 import megamek.common.Infantry;
+import megamek.common.Jumpship;
 import megamek.common.LargeSupportTank;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.Protomech;
 import megamek.common.QuadMech;
 import megamek.common.SmallCraft;
+import megamek.common.SpaceStation;
 import megamek.common.Tank;
 import megamek.common.TripodMech;
 import megamek.common.VTOL;
+import megamek.common.Warship;
 import megameklab.com.ui.Aero.Printing.PrintAero;
 import megameklab.com.ui.Aero.Printing.PrintConventionalFighter;
 import megameklab.com.ui.Aero.Printing.PrintFixedWingSupport;
+import megameklab.com.ui.Aero.Printing.PrintJumpship;
 import megameklab.com.ui.Aero.Printing.PrintSmallCraftAerodyne;
 import megameklab.com.ui.Aero.Printing.PrintSmallCraftSpheroid;
+import megameklab.com.ui.Aero.Printing.PrintSpaceStation;
+import megameklab.com.ui.Aero.Printing.PrintWarship;
 import megameklab.com.ui.BattleArmor.Printing.PrintBattleArmor;
 import megameklab.com.ui.Dropship.Printing.PrintAerodyne;
 import megameklab.com.ui.Dropship.Printing.PrintSpheroid;
@@ -152,6 +158,9 @@ public class UnitPrintManager {
         ArrayList<Tank> largeSupportTankList = new ArrayList<Tank>();
         ArrayList<SmallCraft> smallCraftAerodyneList = new ArrayList<SmallCraft>();
         ArrayList<SmallCraft> smallCraftSpheroidList = new ArrayList<SmallCraft>();
+        ArrayList<Warship> warshipList = new ArrayList<>();
+        ArrayList<Jumpship> jumpshipList = new ArrayList<>();
+        ArrayList<SpaceStation> spaceStationList = new ArrayList<>();
 
         for (Entity unit : loadedUnits) {
             if (unit instanceof QuadMech) {
@@ -203,6 +212,12 @@ public class UnitPrintManager {
                     } else {
                         smallCraftSpheroidList.add((SmallCraft) unit);
                     }
+                } else if (unit instanceof Warship) {
+                    warshipList.add((Warship)unit);
+                } else if (unit instanceof Jumpship) {
+                    jumpshipList.add((Jumpship)unit);
+                } else if (unit instanceof SpaceStation) {
+                    spaceStationList.add((SpaceStation)unit);
                 } else {
                     aeroList.add((Aero) unit);
                 }
@@ -321,6 +336,21 @@ public class UnitPrintManager {
             sp.print(aset);
         }
 
+        if (warshipList.size() > 0) {
+            PrintWarship sp = new PrintWarship(warshipList, masterPrintJob);
+            sp.print(aset);
+        }
+        
+        if (jumpshipList.size() > 0) {
+            PrintJumpship sp = new PrintJumpship(jumpshipList, masterPrintJob);
+            sp.print(aset);
+        }
+
+        if (spaceStationList.size() > 0) {
+            PrintSpaceStation sp = new PrintSpaceStation(spaceStationList, masterPrintJob);
+            sp.print(aset);
+        }
+        
         return true;
     }
 
