@@ -36,6 +36,7 @@ import java.util.Map;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import com.kitfox.svg.ImageSVG;
 import com.kitfox.svg.Rect;
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGElement;
@@ -69,7 +70,7 @@ public class PrintWarship implements Printable {
     public static int MAX_PIP_ROWS = 10;
 
     public static enum ElementType {
-        TEXT, ARMOR, INTERNALS, EQUIPMENT, CHECKBOX, TSPAN;
+        TEXT, ARMOR, INTERNALS, EQUIPMENT, IMAGE, TSPAN;
     }
 
     /**
@@ -135,7 +136,8 @@ public class PrintWarship implements Printable {
         FORE_HEAT("foreHeat", "Heat generation for fore", ElementType.TEXT), 
         BROADSIDE_HEAT("broadsideHeat", "Heat generation for broadside", ElementType.TEXT), 
         AFT_LR_HEAT("aftSidesHeat", "Heat generation for left/right aft", ElementType.TEXT), 
-        AFT_HEAT("aftHeat", "Heat generation for aft", ElementType.TEXT)
+        AFT_HEAT("aftHeat", "Heat generation for aft", ElementType.TEXT),
+        FLUFF_IMG("fluffImage", "Heat generation for aft", ElementType.IMAGE)
         ;
 
         /**
@@ -217,6 +219,9 @@ public class PrintWarship implements Printable {
     int mrvX;
     int lrvX;
     int ervX;
+    
+    int eqNormalSize = 6;
+    int eqHeaderSize = 8;
 
     public PrintWarship(ArrayList<Warship> list, PrinterJob masterPrintJob) {
         warshipList = list;
@@ -336,6 +341,8 @@ public class PrintWarship implements Printable {
                     printInternalRegion((Rect) svgEle, element);
                 } else if (element.getType().equals(ElementType.EQUIPMENT)) {
                     printEquipmentRegion((Rect) svgEle, element);
+                } else if (element.getType().equals(ElementType.IMAGE)) {
+                    printImage((Rect) svgEle, element);
                 } else if (element.getType().equals(ElementType.TSPAN)) {
                     // Do nothing - these are just references to elements in the
                     // SVG
@@ -471,7 +478,47 @@ public class PrintWarship implements Printable {
         textEle.getContent().add(text);
         textEle.rebuild();
     }
+    
+    /**
+     * Print an image, like the fluff image.
+     *
+     * @param boundingRect
+     * @param element
+     * @throws SVGException
+     */
+    private void printImage(Rect boundingRect, WarshipPrintElements element) throws SVGException {
+        Rectangle2D bbox = boundingRect.getBoundingBox();
+        int viewWidth = (int)bbox.getWidth();
+        int viewHeight = (int)bbox.getHeight();
+        int viewX = (int)bbox.getX();
+        int viewY = (int)bbox.getY();
+        
+        File fluffFile = new File(warship.getFluff().getMMLImagePath());
+        // Don't do anything if we don't have a good file.
+        if (!fluffFile.exists()) {
+            return;
+        }
 
+        ImageSVG img = new ImageSVG();
+        img.addAttribute("x", AnimationElement.AT_XML, viewX + "");
+        img.addAttribute("y", AnimationElement.AT_XML, viewY + "");
+        img.addAttribute("width", AnimationElement.AT_XML, viewWidth + "");
+        img.addAttribute("height", AnimationElement.AT_XML, viewHeight + "");
+        // Not sure why this is necessary, but the xlink:href attribute needs to be set for ImageSVG to work
+        // However, the actual URI that gets used is defined in xml:base
+        img.addAttribute("xlink:href", AnimationElement.AT_XML, fluffFile.toURI().toString());
+        img.addAttribute("xml:base", AnimationElement.AT_XML, fluffFile.toURI().toString());        
+        boundingRect.getRoot().loaderAddChild(null, img);
+        img.updateTime(0);
+    }
+
+    /**
+     * Print pips for some internal structure region.
+     *
+     * @param svgRect
+     * @param element
+     * @throws SVGException
+     */
     private void printInternalRegion(Rect svgRect, WarshipPrintElements element) throws SVGException {
         Rectangle2D bbox = svgRect.getBoundingBox();
 
@@ -635,32 +682,32 @@ public class PrintWarship implements Printable {
     }
 
     /**
-     * 
-     * @param svgRect
-     * @param element
+     * Print out all information related to weapons and equipment.
+     *
+     * @param svgRect   The bounding area that equipment info can be drawn into.
+     * @param element   The print element we are printing for.
+     *
      * @throws SVGException
      */
     private void printEquipmentRegion(Rect svgRect, WarshipPrintElements element) throws SVGException {
         Rectangle2D bbox = svgRect.getBoundingBox();
         int viewWidth = (int)bbox.getWidth();
-        int viewHeight = (int)bbox.getHeight();
+        //int viewHeight = (int)bbox.getHeight();
         int viewX = (int)bbox.getX();
         int viewY = (int)bbox.getY();
         
         int nameColWidth  = (int)(viewWidth * 0.4);
-        int otherColWidth = (int)(viewWidth * 0.1);
+        int otherColWidth = (int)(viewWidth * 0.11);
+        int otherColOffset = (int)(otherColWidth / 4 + 0.5);
         
         // Column positions
         nameX = viewX;
-        locX = viewX + nameColWidth + 0 * otherColWidth;
-        htX  = viewX + nameColWidth + 1 * otherColWidth;
-        srvX = viewX + nameColWidth + 2 * otherColWidth;
-        mrvX = viewX + nameColWidth + 3 * otherColWidth;
-        lrvX = viewX + nameColWidth + 4 * otherColWidth;
-        ervX = viewX + nameColWidth + 5 * otherColWidth;
-        
-        int normalSize = 5;
-        int headerSize = 7;
+        locX = viewX + nameColWidth + 0 * otherColWidth + otherColOffset;
+        htX  = viewX + nameColWidth + 1 * otherColWidth + otherColOffset;
+        srvX = viewX + nameColWidth + 2 * otherColWidth + otherColOffset;
+        mrvX = viewX + nameColWidth + 3 * otherColWidth + otherColOffset;
+        lrvX = viewX + nameColWidth + 4 * otherColWidth + otherColOffset;
+        ervX = viewX + nameColWidth + 5 * otherColWidth + otherColOffset;
         
         // Sort weapons in capital/standard
         List<Mounted> standardWeapons = new ArrayList<>();
@@ -679,27 +726,106 @@ public class PrintWarship implements Printable {
         int currY = viewY + 10;
 
         // Capital Scale line
-        lineHeight = addTextElement(canvas, nameX, currY, "Capital Scale", normalSize, "start", "bold");
-        addTextElement(canvas, srvX, currY, "(1-12)",  normalSize, "middle", "bold");
-        addTextElement(canvas, mrvX, currY, "(13-24)", normalSize, "middle", "bold");
-        addTextElement(canvas, lrvX, currY, "(25-40)", normalSize, "middle", "bold");
-        addTextElement(canvas, ervX, currY, "(41-50)", normalSize, "middle", "bold");
-        currY += lineHeight;
+        lineHeight = addTextElement(canvas, nameX, currY, "Capital Scale", eqNormalSize, "start", "bold");
+        addTextElement(canvas, srvX, currY, "(1-12)",  eqNormalSize, "middle", "bold");
+        addTextElement(canvas, mrvX, currY, "(13-24)", eqNormalSize, "middle", "bold");
+        addTextElement(canvas, lrvX, currY, "(25-40)", eqNormalSize, "middle", "bold");
+        addTextElement(canvas, ervX, currY, "(41-50)", eqNormalSize, "middle", "bold");
+        currY += lineHeight + (int)(0.5 * lineHeight);
 
         // Capital Bay Line
-        lineHeight = addTextElement(canvas, nameX, currY, "Bay", headerSize, "start", "bold");
-        addTextElement(canvas, locX, currY, "Loc", headerSize, "middle", "bold");
-        addTextElement(canvas, htX,  currY, "Ht", headerSize, "middle", "bold");
-        addTextElement(canvas, srvX, currY, "SRV", headerSize, "middle", "bold");
-        addTextElement(canvas, mrvX, currY, "MRV", headerSize, "middle", "bold");
-        addTextElement(canvas, lrvX, currY, "LRV", headerSize, "middle", "bold");
-        addTextElement(canvas, ervX, currY, "ERV", headerSize, "middle", "bold");
+        lineHeight = addTextElement(canvas, nameX, currY, "Bay", eqHeaderSize, "start", "bold");
+        addTextElement(canvas, locX, currY, "Loc", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, htX,  currY, "Ht", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, srvX, currY, "SRV", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, mrvX, currY, "MRV", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, lrvX, currY, "LRV", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, ervX, currY, "ERV", eqHeaderSize, "middle", "bold");
         currY += lineHeight;
 
-        for (Mounted bay : capitalWeapons) {
+        currY = printWeaponsText(capitalWeapons, true, canvas, currY);
+        
+        currY += lineHeight;
+        
+        // Standard Scale line
+        lineHeight = addTextElement(canvas, nameX, currY, "Standard Scale", eqNormalSize, "start", "bold");
+        addTextElement(canvas, srvX, currY, "(1-6)",  eqNormalSize, "middle", "bold");
+        addTextElement(canvas, mrvX, currY, "(7-12)", eqNormalSize, "middle", "bold");
+        addTextElement(canvas, lrvX, currY, "(13-20)", eqNormalSize, "middle", "bold");
+        addTextElement(canvas, ervX, currY, "(21-25)", eqNormalSize, "middle", "bold");
+        currY += lineHeight + (int)(0.5 * lineHeight);
+
+        // Standard Bay Line
+        lineHeight = addTextElement(canvas, nameX, currY, "Bay", eqHeaderSize, "start", "bold");
+        addTextElement(canvas, locX, currY, "Loc", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, htX,  currY, "Ht", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, srvX, currY, "SRV", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, mrvX, currY, "MRV", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, lrvX, currY, "LRV", eqHeaderSize, "middle", "bold");
+        addTextElement(canvas, ervX, currY, "ERV", eqHeaderSize, "middle", "bold");
+        currY += lineHeight;
+
+        currY = printWeaponsText(standardWeapons, false, canvas, currY);       
+
+        currY += lineHeight;
+
+        if (warship.getTotalGravDeck() > 0) {
+            lineHeight = addTextElement(canvas, nameX, currY, "Grav Decks:", eqNormalSize, "start", "bold");
+            currY += lineHeight;
+            int count = 1;
+            for (int i = 0; i < warship.getGravDeck(); i++) {
+                String gravString = "Grav Deck #" + count + ": Standard";
+                lineHeight = addTextElement(canvas, nameX, currY, gravString, eqNormalSize, "start");
+                currY += lineHeight;
+                count++;
+            }
+            for (int i = 0; i < warship.getGravDeckLarge(); i++) {
+                String gravString = "Grav Deck #" + count + ": Large";
+                lineHeight = addTextElement(canvas, nameX, currY, gravString, eqNormalSize, "start");
+                currY += lineHeight;
+                count++;
+            }
+            for (int i = 0; i < warship.getGravDeckHuge(); i++) {
+                String gravString = "Grav Deck #" + count + ": Huge";
+                lineHeight = addTextElement(canvas, nameX, currY, gravString, eqNormalSize, "start");
+                currY += lineHeight;
+                count++;
+            }
+        }
+        currY += lineHeight;
+        
+        if (warship.getTransportBays().size() > 0) {
+            lineHeight = addTextElement(canvas, nameX, currY, "Cargo:", eqNormalSize, "start", "bold");
+            currY += lineHeight;
+            int count = 1;
+            for (Bay bay : warship.getTransportBays()) {
+                String bayString = "Bay #" + count + ": " + bay.getType() 
+                    + "  (" + (int)bay.getCapacity() + ") (Doors " + bay.getDoors() + ")";
+                lineHeight = addTextElement(canvas, nameX, currY, bayString, eqNormalSize, "start");
+                currY += lineHeight;
+                count++;
+            }
+        }
+    }
+    
+    /**
+     * Iterate through all of the given weapons and print out information in the inventory table.
+     *
+     * @param weapons       The weapons to print info for.
+     * @param isCapital     Determines damage scale.
+     * @param canvas        The SVGElement to add text to.
+     * @param currY         The height location for text elements.
+     *
+     * @return  The current height after all text has been added.
+     * @throws SVGException
+     */
+    private int printWeaponsText(List<Mounted> weapons, boolean isCapital, SVGElement canvas, int currY)
+            throws SVGException {
+        int lineHeight;
+        for (Mounted bay : weapons) {
             Map<WeaponType, Integer> weapCount = new HashMap<>();
             for (Integer wId : bay.getBayWeapons()) {
-                Mounted weap = warship.getEquipment(bay.getBayWeapons().get(0));
+                Mounted weap = warship.getEquipment(wId);
                 WeaponType wtype = (WeaponType) weap.getType();
                 if (weapCount.containsKey(wtype)) {
                     weapCount.put(wtype, weapCount.get(wtype) + 1);
@@ -709,48 +835,92 @@ public class PrintWarship implements Printable {
             }
             boolean first = true;
             for (WeaponType wtype : weapCount.keySet()) {
-                lineHeight = addWeaponText(canvas, normalSize, first, currY, weapCount.get(wtype), wtype.getName(),
+                lineHeight = addWeaponText(canvas, first, currY, weapCount.get(wtype), wtype.getName(), isCapital,
                         warship.getLocationAbbr(bay.getLocation()), wtype.getHeat(), wtype.getShortAV(),
                         wtype.getMedAV(), wtype.getLongAV(), wtype.getExtAV());
                 currY += lineHeight;
                 first = false;
             }
         }
-        
-        
+
+        return currY;
     }
     
-    private int addWeaponText(SVGElement canvas, int fontSize, boolean first, int currY, int num, String name,
+    /**
+     * Convenience method for adding the inventory table row for a weapon. This consists of a series of text elements
+     * that cover all of the required weapon stats.
+     * 
+     * @param canvas    The element to add the text elements to.
+     * @param first     Flag that determines if this is the first weapon in a bay; subsequent weapons are indented
+     * @param currY     The height for the text element.
+     * @param num       Number of weapons of this type, for damage computations
+     * @param name      The name of the weapon.
+     * @param isCapital Determines damage scale.
+     * @param loc       The location, in abbreviated form.
+     * @param heat      Heat value.
+     * @param srv       Short range attack value.
+     * @param mrv       Medium range attack value.
+     * @param lrv       Long range attack value.
+     * @param erv       Extreme range attack value.
+     *
+     * @return  The height of text added, used for layout.
+     * @throws SVGException
+     */
+    private int addWeaponText(SVGElement canvas, boolean first, int currY, int num, String name, boolean isCapital,
             String loc, int heat, double srv, double mrv, double lrv, double erv) throws SVGException {
-        
-        String srvTxt = srv == 0 ? "-" : (int)srv + "";
-        String mrvTxt = mrv == 0 ? "-" : (int)mrv + "";
-        String lrvTxt = lrv == 0 ? "-" : (int)lrv + "";
-        String ervTxt = erv == 0 ? "-" : (int)erv + "";
-        
-        String nameString;
-        if (first) {
-            nameString = num + " " + name;
-        } else {
-            nameString = "    " + num + " " + name;
+
+        String srvTxt, mrvTxt, lrvTxt, ervTxt;
+        if (isCapital) { // Print out capital damage for weapon total
+            srvTxt = srv == 0 ? "-" : (int)srv * num + "";
+            mrvTxt = mrv == 0 ? "-" : (int)mrv * num + "";
+            lrvTxt = lrv == 0 ? "-" : (int)lrv * num + "";
+            ervTxt = erv == 0 ? "-" : (int)erv * num + "";
+        } else { // Print out capital and standard damages
+            srvTxt = srv == 0 ? "-" : (int)Math.round(srv * num / 10) + " (" + srv * num + ")";
+            mrvTxt = mrv == 0 ? "-" : (int)Math.round(mrv * num / 10) + " (" + mrv * num + ")";
+            lrvTxt = lrv == 0 ? "-" : (int)Math.round(lrv * num / 10) + " (" + lrv * num + ")";
+            ervTxt = erv == 0 ? "-" : (int)Math.round(erv * num / 10) + " (" + erv * num + ")";
         }
 
-        int lineHeight = addTextElement(canvas, nameX, currY, nameString, fontSize, "start");
-        addTextElement(canvas, locX, currY, loc, fontSize, "middle");
-        addTextElement(canvas, htX,  currY, heat + "", fontSize, "middle");
-        addTextElement(canvas, srvX, currY, srvTxt, fontSize, "middle");
-        addTextElement(canvas, mrvX, currY, mrvTxt, fontSize, "middle");
-        addTextElement(canvas, lrvX, currY, lrvTxt, fontSize, "middle");
-        addTextElement(canvas, ervX, currY, ervTxt, fontSize, "middle");
+        String nameString = num + "  " + name;
+        int localNameX = nameX;
+        if (!first) {
+            localNameX += 5;
+        }
+        int lineHeight = addTextElement(canvas, localNameX, currY, nameString, eqNormalSize, "start");
+        addTextElement(canvas, locX, currY, loc, eqNormalSize, "middle");
+        addTextElement(canvas, htX,  currY, heat + "", eqNormalSize, "middle");
+        addTextElement(canvas, srvX, currY, srvTxt, eqNormalSize, "middle");
+        addTextElement(canvas, mrvX, currY, mrvTxt, eqNormalSize, "middle");
+        addTextElement(canvas, lrvX, currY, lrvTxt, eqNormalSize, "middle");
+        addTextElement(canvas, ervX, currY, ervTxt, eqNormalSize, "middle");
 
         return lineHeight;
     }
     
+    /**
+     *
+     */
     private int addTextElement(SVGElement parent, int x, int y, String text, int fontSize, String anchor)
             throws SVGException {
         return addTextElement(parent, x, y, text, fontSize, anchor, "normal");
     }
 
+    /**
+     * Convenience method for creating a new SVG Text element and adding it to the parent.  The height of the text is
+     * returned, to aid in layout.
+     * 
+     * @param parent    The SVG element to add the text element to.
+     * @param x         The X position of the new element.
+     * @param y         The Y position of the new element.
+     * @param text      The text to display.
+     * @param fontSize  Font size of the text.
+     * @param anchor    Set the Text elements text-anchor.  Should be either start, middle, or end.
+     * @param weight    The font weight, either normal or bold.
+     *
+     * @return  The height of the text just added, to aid in layout.
+     * @throws SVGException
+     */
     @SuppressWarnings("unchecked")
     private int addTextElement(SVGElement parent, int x, int y, String text, int fontSize, String anchor, String weight)
             throws SVGException {
