@@ -584,7 +584,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         specializationView.refresh();
         augmentationView.refresh();
         
-        if (techLevel.getSelectedIndex() > 1) {
+        int level = TechConstants.convertFromNormalToSimple(getInfantry().getTechLevel());
+        if (level >= TechConstants.T_SIMPLE_ADVANCED) {
             txtArmor.setEnabled(true);
             txtFieldGun.setEnabled(true);
             txtSpecializations.setEnabled(true);
@@ -595,8 +596,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
             equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, true);
             //Experimental level
-            txtAugmentations.setEnabled(techLevel.getSelectedIndex() > 2);
-            equipmentPane.setEnabledAt(T_AUGMENTATION, techLevel.getSelectedIndex() > 2);
+            txtAugmentations.setEnabled(level >= TechConstants.T_SIMPLE_EXPERIMENTAL);
+            equipmentPane.setEnabledAt(T_AUGMENTATION, level >= TechConstants.T_SIMPLE_EXPERIMENTAL);
         } else {
             txtArmor.setEnabled(false);
             txtFieldGun.setEnabled(false);
