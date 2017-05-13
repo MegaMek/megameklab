@@ -375,6 +375,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         case TRACKED:
             motiveType.setSelectedIndex(M_TRACKED);
             break;
+        case WHEELED:
+            motiveType.setSelectedIndex(M_WHEELED);
+            break;
         case VTOL:
             if (getInfantry().hasMicrolite()) {
                 motiveType.setSelectedIndex(M_MICROLITE);
