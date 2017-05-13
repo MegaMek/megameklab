@@ -84,8 +84,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="391.52356"
-     inkscape:cy="602.26762"
+     inkscape:cx="149.13854"
+     inkscape:cy="182.10097"
      inkscape:document-units="px"
      inkscape:current-layer="svg2"
      showgrid="false"
@@ -468,9 +468,9 @@
          inkscape:connector-curvature="0"
          id="path3535"
          style="fill:#c8c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none"
-         d="m 246.449,178.73 -7.117,-9.867 -79.734,0 -5.696,8.637 -113.922,0 -7.105,10.062 0,498.34 5.695,8.543 99.383,0 5.695,-8.543 102.801,0 0,-507.172 z" />
+         d="m 246.449,280.07715 -7.117,-7.92796 -79.734,0 -5.696,6.93968 -113.922,0 -7.105,8.08464 0,400.40734 5.695,6.86415 99.383,0 5.695,-6.86415 102.801,0 0,-407.5037 z" />
       <g
-         transform="translate(0,791.99998)"
+         transform="matrix(1.0009389,0,0,0.80516747,-0.12712192,773.92627)"
          id="g3537">
         <path
            inkscape:connector-curvature="0"
@@ -2040,15 +2040,17 @@
       <text
          id="text4357"
          style="font-variant:normal;font-size:7.0321002px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
-         transform="matrix(1,0,0,-1,41.179099,186.8633)">
+         transform="scale(1,-1)"
+         x="41.1791"
+         y="-287.89233">
         <tspan
            id="tspan4359"
            sodipodi:role="line"
-           y="0"
-           x="0 4.8943415 8.9870234 12.903904 15.892546">Cost:</tspan>
+           y="-287.89233"
+           x="41.1791 46.073441 50.166122 54.083004 57.071644">Cost:</tspan>
       </text>
       <g
-         transform="translate(0,791.99998)"
+         transform="translate(0,893.02893)"
          id="g4361">
         <path
            inkscape:connector-curvature="0"
@@ -2061,11 +2063,11 @@
          style="font-variant:normal;font-size:7.0321002px;font-family:EurostileLTStd;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
          transform="scale(1,-1)"
          x="37.1479"
-         y="-213.19049">
+         y="-314.21954">
         <tspan
            id="tspan4369"
            sodipodi:role="line"
-           y="-186.8623"
+           y="-287.89136"
            x="148.15663 153.19162 157.86797 160.34326">BV:</tspan>
       </text>
       <text
@@ -4336,7 +4338,7 @@
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:7.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="77.416306"
-     y="627.23773"
+     y="519.16956"
      id="cost"
      sodipodi:linespacing="125%"
      transform="scale(1.0243414,0.97623703)">0</text>
@@ -4344,7 +4346,7 @@
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:7.5px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      x="164.69043"
-     y="626.72034"
+     y="518.65216"
      id="battlevalue"
      sodipodi:linespacing="125%"
      transform="scale(1.0243414,0.97623703)">0</text>
@@ -4422,7 +4424,14 @@
      style="fill:none;stroke:none"
      id="inventory"
      width="225.7883"
-     height="395.16827"
+     height="290.52542"
      x="7.803"
      y="201.2178" />
+  <rect
+     style="fill:none;stroke:none"
+     id="fluffImage"
+     width="225.7883"
+     height="98.739708"
+     x="10.248707"
+     y="524.2373" />
 </svg>
