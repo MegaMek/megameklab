@@ -36,7 +36,6 @@ import megamek.common.weapons.CLMicroPulseLaser;
 import megamek.common.weapons.CLPlasmaCannon;
 import megamek.common.weapons.CLSmallPulseLaser;
 import megamek.common.weapons.CLVehicularGrenadeLauncher;
-import megamek.common.weapons.FlamerWeapon;
 import megamek.common.weapons.HAGWeapon;
 import megamek.common.weapons.ISBombastLaser;
 import megamek.common.weapons.ISC3M;
@@ -66,7 +65,6 @@ import megamek.common.weapons.RLWeapon;
 import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.StreakLRMWeapon;
 import megamek.common.weapons.StreakSRMWeapon;
-import megamek.common.weapons.TAGWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.autocannons.ACWeapon;
@@ -80,7 +78,9 @@ import megamek.common.weapons.battlearmor.ISBASmallPulseLaser;
 import megamek.common.weapons.battlearmor.ISBASmallVariableSpeedPulseLaser;
 import megamek.common.weapons.capitalweapons.ScreenLauncherWeapon;
 import megamek.common.weapons.defensivepods.BPodWeapon;
+import megamek.common.weapons.flamers.FlamerWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.tag.TAGWeapon;
 
 public class StringUtils {
 
