@@ -40,7 +40,7 @@ import megamek.common.TripodMech;
 import megamek.common.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestBattleArmor;
-import megamek.common.weapons.ACWeapon;
+import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.PPCWeapon;
