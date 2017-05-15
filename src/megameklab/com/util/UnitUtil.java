@@ -71,15 +71,11 @@ import megamek.common.verifier.TestInfantry;
 import megamek.common.verifier.TestMech;
 import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
-import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.AmmoWeapon;
-import megamek.common.weapons.BPodWeapon;
 import megamek.common.weapons.CLAMS;
 import megamek.common.weapons.CLChemicalLaserWeapon;
 import megamek.common.weapons.CLLaserAMS;
-import megamek.common.weapons.CLLightTAG;
 import megamek.common.weapons.CLPlasmaCannon;
-import megamek.common.weapons.CLTAG;
 import megamek.common.weapons.EnergyWeapon;
 import megamek.common.weapons.GaussWeapon;
 import megamek.common.weapons.HAGWeapon;
@@ -90,13 +86,11 @@ import megamek.common.weapons.ISC3M;
 import megamek.common.weapons.ISC3MBS;
 import megamek.common.weapons.ISLaserAMS;
 import megamek.common.weapons.ISPlasmaRifle;
-import megamek.common.weapons.ISTAG;
 import megamek.common.weapons.LBXACWeapon;
 import megamek.common.weapons.LRMWeapon;
 import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.LegAttack;
 import megamek.common.weapons.MGWeapon;
-import megamek.common.weapons.MPodWeapon;
 import megamek.common.weapons.MRMWeapon;
 import megamek.common.weapons.PPCWeapon;
 import megamek.common.weapons.RLWeapon;
@@ -110,11 +104,17 @@ import megamek.common.weapons.SwarmWeaponAttack;
 import megamek.common.weapons.ThunderBoltWeapon;
 import megamek.common.weapons.UACWeapon;
 import megamek.common.weapons.VehicleFlamerWeapon;
+import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.battlearmor.CLBALightTAG;
 import megamek.common.weapons.battlearmor.ISBALightTAG;
+import megamek.common.weapons.defensivepods.BPodWeapon;
+import megamek.common.weapons.defensivepods.MPodWeapon;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.tag.CLLightTAG;
+import megamek.common.weapons.tag.CLTAG;
+import megamek.common.weapons.tag.ISTAG;
 
 public class UnitUtil {
 
@@ -449,13 +449,18 @@ public class UnitUtil {
      * @return Boolean if the tech level is legal for the passed unit
      */
     public static boolean isLegal(Entity unit, ITechnology tech) {
-        if (!unit.isMixedTech() && tech.getTechBase() != ITechnology.TECH_BASE_ALL) {
-            if (unit.isClan() != tech.isClan()) {
+        if (unit.isMixedTech()) {
+            if (!tech.isAvailableIn(unit.getTechLevelYear())) {
                 return false;
             }
-        }
-        if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan())) {
-            return false;
+        } else {
+            if (tech.getTechBase() != ITechnology.TECH_BASE_ALL
+                    && unit.isClan() != tech.isClan()) {
+                return false;
+            }
+            if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan())) {
+                return false;
+            }
         }
         return TechConstants.convertFromNormalToSimple(tech.getTechLevel(unit.getTechLevelYear(),
                 unit.isClan())) <= TechConstants.convertFromNormalToSimple(unit.getTechLevel());
