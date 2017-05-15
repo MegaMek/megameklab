@@ -49,7 +49,7 @@ import javax.swing.table.TableRowSorter;
 import megamek.common.AmmoType;
 import megamek.common.EquipmentType;
 import megamek.common.WeaponType;
-import megamek.common.weapons.ACWeapon;
+import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
 import megamek.common.weapons.GaussWeapon;
