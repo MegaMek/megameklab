@@ -31,20 +31,11 @@ import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
 import megamek.common.weapons.ArtilleryCannonWeapon;
 import megamek.common.weapons.ArtilleryWeapon;
-import megamek.common.weapons.CLERSmallPulseLaser;
-import megamek.common.weapons.CLMicroPulseLaser;
 import megamek.common.weapons.CLPlasmaCannon;
-import megamek.common.weapons.CLSmallPulseLaser;
 import megamek.common.weapons.CLVehicularGrenadeLauncher;
-import megamek.common.weapons.ISBombastLaser;
 import megamek.common.weapons.ISC3M;
 import megamek.common.weapons.ISC3RemoteSensorLauncher;
-import megamek.common.weapons.ISLargeVariableSpeedPulseLaser;
-import megamek.common.weapons.ISMediumVariableSpeedPulseLaser;
 import megamek.common.weapons.ISPlasmaRifle;
-import megamek.common.weapons.ISSmallPulseLaser;
-import megamek.common.weapons.ISSmallVariableSpeedPulseLaser;
-import megamek.common.weapons.ISSmallXPulseLaser;
 import megamek.common.weapons.ISSnubNosePPC;
 import megamek.common.weapons.ISThunderBolt10;
 import megamek.common.weapons.ISThunderBolt15;
@@ -80,6 +71,15 @@ import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.gaussrifles.ISHGaussRifle;
 import megamek.common.weapons.gaussrifles.ISSilverBulletGauss;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.lasers.CLERPulseLaserSmall;
+import megamek.common.weapons.lasers.CLPulseLaserMicro;
+import megamek.common.weapons.lasers.CLPulseLaserSmall;
+import megamek.common.weapons.lasers.ISBombastLaser;
+import megamek.common.weapons.lasers.ISPulseLaserSmall;
+import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserLarge;
+import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserMedium;
+import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserSmall;
+import megamek.common.weapons.lasers.ISXPulseLaserSmall;
 import megamek.common.weapons.tag.TAGWeapon;
 
 public class StringUtils {
@@ -239,11 +239,11 @@ public class StringUtils {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = "10/8/5 [DE,V]";
-                } else if ((weapon instanceof ISSmallVariableSpeedPulseLaser) || (weapon instanceof ISBASmallVariableSpeedPulseLaser)) {
+                } else if ((weapon instanceof ISVariableSpeedPulseLaserSmall) || (weapon instanceof ISBASmallVariableSpeedPulseLaser)) {
                     info = "5/4/3 [P,V]";
-                } else if ((weapon instanceof ISMediumVariableSpeedPulseLaser) || (weapon instanceof ISBAMediumVariableSpeedPulseLaser)) {
+                } else if ((weapon instanceof ISVariableSpeedPulseLaserMedium) || (weapon instanceof ISBAMediumVariableSpeedPulseLaser)) {
                     info = "9/7/5 [P,V]";
-                } else if (weapon instanceof ISLargeVariableSpeedPulseLaser) {
+                } else if (weapon instanceof ISVariableSpeedPulseLaserLarge) {
                     info = "11/9/7 [P,V]";
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "25/20/10 [DB,X]";
@@ -317,14 +317,14 @@ public class StringUtils {
                     info += "H,";
                 }
                 if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
-                        (weapon instanceof CLERSmallPulseLaser) ||
+                        (weapon instanceof CLERPulseLaserSmall) ||
                         (weapon instanceof CLBAERSmallPulseLaser) ||
-                        (weapon instanceof ISSmallXPulseLaser) ||
-                        (weapon instanceof ISSmallPulseLaser) ||
+                        (weapon instanceof ISXPulseLaserSmall) ||
+                        (weapon instanceof ISPulseLaserSmall) ||
                         (weapon instanceof ISBASmallPulseLaser) ||
-                        (weapon instanceof CLSmallPulseLaser) ||
+                        (weapon instanceof CLPulseLaserSmall) ||
                         (weapon instanceof CLBASmallPulseLaser) ||
-                        (weapon instanceof CLMicroPulseLaser) ||
+                        (weapon instanceof CLPulseLaserMicro) ||
                         (weapon instanceof CLBAMicroPulseLaser) ||
                         (weapon.hasFlag(WeaponType.F_FLAMER) ||
                         (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
@@ -403,11 +403,11 @@ public class StringUtils {
                     info = "[M,C]";
                 } else if ((weapon instanceof ISSnubNosePPC) || (weapon instanceof ISBombastLaser)) {
                     info = "[DE,V]";
-                } else if (weapon instanceof ISSmallVariableSpeedPulseLaser) {
+                } else if (weapon instanceof ISVariableSpeedPulseLaserSmall) {
                     info = "[P,V]";
-                } else if (weapon instanceof ISMediumVariableSpeedPulseLaser) {
+                } else if (weapon instanceof ISVariableSpeedPulseLaserMedium) {
                     info = "[P,V]";
-                } else if (weapon instanceof ISLargeVariableSpeedPulseLaser) {
+                } else if (weapon instanceof ISVariableSpeedPulseLaserLarge) {
                     info = "[P,V]";
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "[DB,X]";
@@ -453,11 +453,11 @@ public class StringUtils {
                 }
 
                 if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
-                        (weapon instanceof CLERSmallPulseLaser) ||
-                        (weapon instanceof ISSmallXPulseLaser) ||
-                        (weapon instanceof ISSmallPulseLaser) ||
-                        (weapon instanceof CLSmallPulseLaser) ||
-                        (weapon instanceof CLMicroPulseLaser)) {
+                        (weapon instanceof CLERPulseLaserSmall) ||
+                        (weapon instanceof ISXPulseLaserSmall) ||
+                        (weapon instanceof ISPulseLaserSmall) ||
+                        (weapon instanceof CLPulseLaserSmall) ||
+                        (weapon instanceof CLPulseLaserMicro)) {
                     info += "AI,";
                 }
 
