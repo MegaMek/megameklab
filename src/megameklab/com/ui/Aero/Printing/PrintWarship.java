@@ -776,27 +776,15 @@ public class PrintWarship implements Printable {
             lineHeight = addTextElement(canvas, nameX, currY, "Grav Decks:", eqNormalSize, "start", "bold");
             currY += lineHeight;
             int count = 1;
-            for (int i = 0; i < warship.getGravDeck(); i++) {
-                String gravString = "Grav Deck #" + count + ": Standard";
+            for (int size : warship.getGravDecks()) {
+                String gravString = "Grav Deck #" + count + ": " + size + "-meters";
                 lineHeight = addTextElement(canvas, nameX, currY, gravString, eqNormalSize, "start");
                 currY += lineHeight;
                 count++;
             }
-            for (int i = 0; i < warship.getGravDeckLarge(); i++) {
-                String gravString = "Grav Deck #" + count + ": Large";
-                lineHeight = addTextElement(canvas, nameX, currY, gravString, eqNormalSize, "start");
-                currY += lineHeight;
-                count++;
-            }
-            for (int i = 0; i < warship.getGravDeckHuge(); i++) {
-                String gravString = "Grav Deck #" + count + ": Huge";
-                lineHeight = addTextElement(canvas, nameX, currY, gravString, eqNormalSize, "start");
-                currY += lineHeight;
-                count++;
-            }
+            currY += lineHeight;
         }
-        currY += lineHeight;
-        
+
         if (warship.getTransportBays().size() > 0) {
             lineHeight = addTextElement(canvas, nameX, currY, "Cargo:", eqNormalSize, "start", "bold");
             currY += lineHeight;
