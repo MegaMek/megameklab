@@ -725,49 +725,52 @@ public class PrintWarship implements Printable {
         int lineHeight;
         int currY = viewY + 10;
 
-        // Capital Scale line
-        lineHeight = addTextElement(canvas, nameX, currY, "Capital Scale", eqNormalSize, "start", "bold");
-        addTextElement(canvas, srvX, currY, "(1-12)",  eqNormalSize, "middle", "bold");
-        addTextElement(canvas, mrvX, currY, "(13-24)", eqNormalSize, "middle", "bold");
-        addTextElement(canvas, lrvX, currY, "(25-40)", eqNormalSize, "middle", "bold");
-        addTextElement(canvas, ervX, currY, "(41-50)", eqNormalSize, "middle", "bold");
-        currY += lineHeight + (int)(0.5 * lineHeight);
-
-        // Capital Bay Line
-        lineHeight = addTextElement(canvas, nameX, currY, "Bay", eqHeaderSize, "start", "bold");
-        addTextElement(canvas, locX, currY, "Loc", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, htX,  currY, "Ht", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, srvX, currY, "SRV", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, mrvX, currY, "MRV", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, lrvX, currY, "LRV", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, ervX, currY, "ERV", eqHeaderSize, "middle", "bold");
-        currY += lineHeight;
-
-        currY = printWeaponsText(capitalWeapons, true, canvas, currY);
+        if (capitalWeapons.size() > 0) {
+            // Capital Scale line
+            lineHeight = addTextElement(canvas, nameX, currY, "Capital Scale", eqNormalSize, "start", "bold");
+            addTextElement(canvas, srvX, currY, "(1-12)",  eqNormalSize, "middle", "bold");
+            addTextElement(canvas, mrvX, currY, "(13-24)", eqNormalSize, "middle", "bold");
+            addTextElement(canvas, lrvX, currY, "(25-40)", eqNormalSize, "middle", "bold");
+            addTextElement(canvas, ervX, currY, "(41-50)", eqNormalSize, "middle", "bold");
+            currY += lineHeight + (int)(0.5 * lineHeight);
+    
+            // Capital Bay Line
+            lineHeight = addTextElement(canvas, nameX, currY, "Bay", eqHeaderSize, "start", "bold");
+            addTextElement(canvas, locX, currY, "Loc", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, htX,  currY, "Ht", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, srvX, currY, "SRV", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, mrvX, currY, "MRV", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, lrvX, currY, "LRV", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, ervX, currY, "ERV", eqHeaderSize, "middle", "bold");
+            currY += lineHeight;
+    
+            currY = printWeaponsText(capitalWeapons, true, canvas, currY);
+            
+            currY += lineHeight;
+        }
         
-        currY += lineHeight;
-        
-        // Standard Scale line
-        lineHeight = addTextElement(canvas, nameX, currY, "Standard Scale", eqNormalSize, "start", "bold");
-        addTextElement(canvas, srvX, currY, "(1-6)",  eqNormalSize, "middle", "bold");
-        addTextElement(canvas, mrvX, currY, "(7-12)", eqNormalSize, "middle", "bold");
-        addTextElement(canvas, lrvX, currY, "(13-20)", eqNormalSize, "middle", "bold");
-        addTextElement(canvas, ervX, currY, "(21-25)", eqNormalSize, "middle", "bold");
-        currY += lineHeight + (int)(0.5 * lineHeight);
-
-        // Standard Bay Line
-        lineHeight = addTextElement(canvas, nameX, currY, "Bay", eqHeaderSize, "start", "bold");
-        addTextElement(canvas, locX, currY, "Loc", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, htX,  currY, "Ht", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, srvX, currY, "SRV", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, mrvX, currY, "MRV", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, lrvX, currY, "LRV", eqHeaderSize, "middle", "bold");
-        addTextElement(canvas, ervX, currY, "ERV", eqHeaderSize, "middle", "bold");
-        currY += lineHeight;
-
-        currY = printWeaponsText(standardWeapons, false, canvas, currY);       
-
-        currY += lineHeight;
+        if (standardWeapons.size() > 0) {
+            // Standard Scale line
+            lineHeight = addTextElement(canvas, nameX, currY, "Standard Scale", eqNormalSize, "start", "bold");
+            addTextElement(canvas, srvX, currY, "(1-6)",  eqNormalSize, "middle", "bold");
+            addTextElement(canvas, mrvX, currY, "(7-12)", eqNormalSize, "middle", "bold");
+            addTextElement(canvas, lrvX, currY, "(13-20)", eqNormalSize, "middle", "bold");
+            addTextElement(canvas, ervX, currY, "(21-25)", eqNormalSize, "middle", "bold");
+            currY += lineHeight + (int)(0.5 * lineHeight);
+    
+            // Standard Bay Line
+            lineHeight = addTextElement(canvas, nameX, currY, "Bay", eqHeaderSize, "start", "bold");
+            addTextElement(canvas, locX, currY, "Loc", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, htX,  currY, "Ht", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, srvX, currY, "SRV", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, mrvX, currY, "MRV", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, lrvX, currY, "LRV", eqHeaderSize, "middle", "bold");
+            addTextElement(canvas, ervX, currY, "ERV", eqHeaderSize, "middle", "bold");
+            currY += lineHeight;
+    
+            currY = printWeaponsText(standardWeapons, false, canvas, currY);
+            currY += lineHeight;
+        }
 
         if (warship.getTotalGravDeck() > 0) {
             lineHeight = addTextElement(canvas, nameX, currY, "Grav Decks:", eqNormalSize, "start", "bold");
