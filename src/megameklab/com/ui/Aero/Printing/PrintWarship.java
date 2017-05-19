@@ -962,7 +962,7 @@ public class PrintWarship implements Printable {
         
         newText.addAttribute("x", AnimationElement.AT_XML, x + "");
         newText.addAttribute("y", AnimationElement.AT_XML, y + "");
-        newText.addAttribute("font-family", AnimationElement.AT_XML, "EurostileLTStd");
+        newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
         newText.addAttribute("font-size", AnimationElement.AT_XML, fontSize + "");
         newText.addAttribute("font-weight", AnimationElement.AT_XML, weight);
         newText.addAttribute("text-anchor", AnimationElement.AT_CSS, anchor);
