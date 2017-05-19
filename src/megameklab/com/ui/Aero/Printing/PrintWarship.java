@@ -228,7 +228,6 @@ public class PrintWarship implements Printable {
     public PrintWarship(ArrayList<Warship> list, PrinterJob masterPrintJob) {
         warshipList = list;
         this.masterPrintJob = masterPrintJob;
-
     }
 
     /**
@@ -367,7 +366,6 @@ public class PrintWarship implements Printable {
      * @throws SVGException
      *
      */
-    @SuppressWarnings("unchecked")
     private void setElementTextValue(Text textEle, WarshipPrintElements element) throws SVGException {
         textEle.getContent().clear();
 
@@ -477,7 +475,7 @@ public class PrintWarship implements Printable {
         } else {
             // Print a blank for any element we don't currently handle
         }
-        textEle.getContent().add(text);
+        textEle.appendText(text);
         textEle.rebuild();
     }
     
@@ -954,11 +952,10 @@ public class PrintWarship implements Printable {
      * @return  The height of the text just added, to aid in layout.
      * @throws SVGException
      */
-    @SuppressWarnings("unchecked")
     private int addTextElement(SVGElement parent, int x, int y, String text, int fontSize, String anchor, String weight)
             throws SVGException {
         Text newText = new Text();
-        newText.getContent().add(text);
+        newText.appendText(text);
         
         newText.addAttribute("x", AnimationElement.AT_XML, x + "");
         newText.addAttribute("y", AnimationElement.AT_XML, y + "");
