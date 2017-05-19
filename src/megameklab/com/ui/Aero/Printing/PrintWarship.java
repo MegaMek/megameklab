@@ -28,10 +28,12 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
@@ -788,14 +790,54 @@ public class PrintWarship implements Printable {
         if (warship.getTransportBays().size() > 0) {
             lineHeight = addTextElement(canvas, nameX, currY, "Cargo:", eqNormalSize, "start", "bold");
             currY += lineHeight;
-            int count = 1;
+            // We can have multiple Bay instances within one conceptual bay on the ship
+            // We need to gather all bays with the same ID to print out the string
+            Map<Integer, List<Bay>> bayMap = new TreeMap<>();
             for (Bay bay : warship.getTransportBays()) {
-                String bayString = "Bay #" + count + ": " + bay.getType() 
-                    + "  (" + (int)bay.getCapacity() + ") (Doors " + bay.getDoors() + ")";
+                List<Bay> bays = bayMap.get(bay.getBayNumber());
+                if (bays == null) {
+                    bays = new ArrayList<>();
+                    bays.add(bay);
+                    bayMap.put(bay.getBayNumber(), bays);
+                } else {
+                    bays.add(bay);
+                }
+            }
+            // Print each bay
+            for (Integer bayNum : bayMap.keySet()) {
+                StringBuilder bayTypeString = new StringBuilder();
+                StringBuilder bayCapacityString = new StringBuilder();
+                bayCapacityString.append(" (");
+                List<Bay> bays = bayMap.get(bayNum);
+                // Display larger storage first
+                java.util.Collections.sort(bays, new Comparator<Bay>(){
+
+                    @Override
+                    public int compare(Bay b1, Bay b2) {
+                        return (int)(b2.getCapacity() - b1.getCapacity());
+                    }});
+                int doors = 0;
+                for (int i = 0; i < bays.size(); i++) {
+                    Bay b = bays.get(i);
+                    bayTypeString.append(b.getType());
+                    if (b.getClass().getName().contains("Cargo")) {
+                        bayCapacityString.append(String.format("%1$.1f", b.getCapacity()));
+                    } else {
+                        bayCapacityString.append((int)b.getCapacity());
+                    }
+                    if (i + 1 <  bays.size()) {
+                        bayTypeString.append("/");
+                        bayCapacityString.append("/");
+                    }
+                    doors = Math.max(doors, b.getDoors());
+                }
+                bayCapacityString.append(")");
+                String bayString = "Bay #" + bayNum + ": " + bayTypeString
+                    + bayCapacityString + " (Doors " + doors + ")";
                 lineHeight = addTextElement(canvas, nameX, currY, bayString, eqNormalSize, "start");
                 currY += lineHeight;
-                count++;
             }
+            currY += lineHeight;
         }
     }
     
