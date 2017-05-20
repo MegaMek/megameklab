@@ -28,8 +28,8 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -725,6 +725,7 @@ public class PrintWarship implements Printable {
         int lineHeight;
         int currY = viewY + 10;
 
+        // Print Capital Scale Weapon Info
         if (capitalWeapons.size() > 0) {
             // Capital Scale line
             lineHeight = addTextElement(canvas, nameX, currY, "Capital Scale", eqNormalSize, "start", "bold");
@@ -748,7 +749,8 @@ public class PrintWarship implements Printable {
             
             currY += lineHeight;
         }
-        
+
+        // Print Standard Scale Weapon Info
         if (standardWeapons.size() > 0) {
             // Standard Scale line
             lineHeight = addTextElement(canvas, nameX, currY, "Standard Scale", eqNormalSize, "start", "bold");
@@ -772,6 +774,7 @@ public class PrintWarship implements Printable {
             currY += lineHeight;
         }
 
+        // Print GravDeck Info
         if (warship.getTotalGravDeck() > 0) {
             lineHeight = addTextElement(canvas, nameX, currY, "Grav Decks:", eqNormalSize, "start", "bold");
             currY += lineHeight;
@@ -785,6 +788,7 @@ public class PrintWarship implements Printable {
             currY += lineHeight;
         }
 
+        // Print Transport Bay Info
         if (warship.getTransportBays().size() > 0) {
             lineHeight = addTextElement(canvas, nameX, currY, "Cargo:", eqNormalSize, "start", "bold");
             currY += lineHeight;
@@ -853,22 +857,90 @@ public class PrintWarship implements Printable {
     private int printWeaponsText(List<Mounted> weapons, boolean isCapital, SVGElement canvas, int currY)
             throws SVGException {
         int lineHeight;
+        // Collection info on weapons to print
+        List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         for (Mounted bay : weapons) {
-            Map<WeaponType, Integer> weapCount = new HashMap<>();
+            WeaponBayText wbt = new WeaponBayText(bay.getLocation());
             for (Integer wId : bay.getBayWeapons()) {
                 Mounted weap = warship.getEquipment(wId);
-                WeaponType wtype = (WeaponType) weap.getType();
-                if (weapCount.containsKey(wtype)) {
-                    weapCount.put(wtype, weapCount.get(wtype) + 1);
-                } else {
-                    weapCount.put(wtype, 1);
+                wbt.addBayWeapon(weap);
+            }
+            // Combine or add
+            boolean combined = false;
+            for (WeaponBayText combine : weaponBayTexts) {
+                if (combine.canCombine(wbt)) {
+                    combine.combine(wbt);
+                    combined = true;
+                    break;
                 }
             }
+            if (!combined) {
+                weaponBayTexts.add(wbt);
+            }
+        }
+        Collections.sort(weaponBayTexts);
+        
+        // Print info
+        for (WeaponBayText wbt : weaponBayTexts) {
             boolean first = true;
-            for (WeaponType wtype : weapCount.keySet()) {
-                lineHeight = addWeaponText(canvas, first, currY, weapCount.get(wtype), wtype.getName(), isCapital,
-                        warship.getLocationAbbr(bay.getLocation()), wtype.getHeat(), wtype.getShortAV(),
-                        wtype.getMedAV(), wtype.getLongAV(), wtype.getExtAV());
+            int numBayWeapons = wbt.weapons.keySet().size();
+            int bayHeat = 0;
+            double baySRV, bayMRV, bayLRV, bayERV;
+            baySRV = bayMRV = bayLRV = bayERV = 0;
+            double standardBaySRV, standardBayMRV, standardBayLRV, standardBayERV;
+            standardBaySRV = standardBayMRV = standardBayLRV = standardBayERV = 0;
+            for (WeaponType wtype : wbt.weapons.keySet()) {
+                int numWeapons = wbt.weapons.get(wtype);
+                bayHeat += wtype.getHeat() * numWeapons;
+                if (isCapital) {
+                    baySRV += wtype.getShortAV() * numWeapons;
+                    bayMRV += wtype.getMedAV() * numWeapons;
+                    bayLRV += wtype.getLongAV() * numWeapons;
+                    bayERV += wtype.getExtAV() * numWeapons;
+                } else {
+                    baySRV += Math.round(wtype.getShortAV() * numWeapons / 10);
+                    bayMRV += Math.round(wtype.getMedAV() * numWeapons / 10);
+                    bayLRV += Math.round(wtype.getLongAV() * numWeapons / 10);
+                    bayERV += Math.round(wtype.getExtAV() * numWeapons / 10);
+                    standardBaySRV += wtype.getShortAV() * numWeapons;
+                    standardBayMRV += wtype.getMedAV() * numWeapons;
+                    standardBayLRV += wtype.getLongAV() * numWeapons;
+                    standardBayERV += wtype.getExtAV() * numWeapons;
+                }
+            }
+
+            for (WeaponType wtype : wbt.weapons.keySet()) {
+                String locString = "";
+                for (int i = 0; i < wbt.loc.size(); i++) {
+                    locString += warship.getLocationAbbr(wbt.loc.get(i));
+                    if (i + 1 < wbt.loc.size()) {
+                        locString += "/";
+                    }
+                }
+                String nameString;
+                if (wbt.weaponAmmo.containsKey(wtype)) {
+                    Mounted ammo = wbt.weaponAmmo.get(wtype);
+                    nameString = wtype.getName() + " (" + ammo.getBaseShotsLeft() + " " + "rounds)";
+                } else {
+                    nameString = wtype.getName();
+                }
+                if (first & numBayWeapons > 1) {
+                    nameString += ",";
+                }
+                String srvTxt, mrvTxt, lrvTxt, ervTxt;
+                if (isCapital) { // Print out capital damage for weapon total
+                    srvTxt = baySRV == 0 ? "-" : (int)baySRV + "";
+                    mrvTxt = bayMRV == 0 ? "-" : (int)bayMRV + "";
+                    lrvTxt = bayLRV == 0 ? "-" : (int)bayLRV + "";
+                    ervTxt = bayERV == 0 ? "-" : (int)bayERV + "";
+                } else { // Print out capital and standard damages
+                    srvTxt = baySRV == 0 ? "-" : (int)baySRV + " (" + standardBaySRV + ")";
+                    mrvTxt = bayMRV == 0 ? "-" : (int)bayMRV + " (" + standardBayMRV + ")";
+                    lrvTxt = bayLRV == 0 ? "-" : (int)bayLRV + " (" + standardBayLRV + ")";
+                    ervTxt = bayERV == 0 ? "-" : (int)bayERV + " (" + standardBayERV + ")";
+                }
+                lineHeight = addWeaponText(canvas, first, currY, wbt.weapons.get(wtype), nameString, isCapital,
+                        locString, bayHeat, srvTxt, mrvTxt, lrvTxt, ervTxt);
                 currY += lineHeight;
                 first = false;
             }
@@ -898,33 +970,27 @@ public class PrintWarship implements Printable {
      * @throws SVGException
      */
     private int addWeaponText(SVGElement canvas, boolean first, int currY, int num, String name, boolean isCapital,
-            String loc, int heat, double srv, double mrv, double lrv, double erv) throws SVGException {
-
-        String srvTxt, mrvTxt, lrvTxt, ervTxt;
-        if (isCapital) { // Print out capital damage for weapon total
-            srvTxt = srv == 0 ? "-" : (int)srv * num + "";
-            mrvTxt = mrv == 0 ? "-" : (int)mrv * num + "";
-            lrvTxt = lrv == 0 ? "-" : (int)lrv * num + "";
-            ervTxt = erv == 0 ? "-" : (int)erv * num + "";
-        } else { // Print out capital and standard damages
-            srvTxt = srv == 0 ? "-" : (int)Math.round(srv * num / 10) + " (" + srv * num + ")";
-            mrvTxt = mrv == 0 ? "-" : (int)Math.round(mrv * num / 10) + " (" + mrv * num + ")";
-            lrvTxt = lrv == 0 ? "-" : (int)Math.round(lrv * num / 10) + " (" + lrv * num + ")";
-            ervTxt = erv == 0 ? "-" : (int)Math.round(erv * num / 10) + " (" + erv * num + ")";
-        }
+            String loc, int heat, String srvTxt, String mrvTxt, String lrvTxt, String ervTxt) throws SVGException {
 
         String nameString = num + "  " + name;
+        String heatTxt;
         int localNameX = nameX;
         if (!first) {
             localNameX += 5;
+            loc = "";
+            heatTxt = "";
+            srvTxt = mrvTxt = lrvTxt = ervTxt = "";
+        } else {
+            heatTxt = heat + "";
         }
+
         int lineHeight = addTextElement(canvas, localNameX, currY, nameString, eqNormalSize, "start");
-        addTextElement(canvas, locX, currY, loc, eqNormalSize, "middle");
-        addTextElement(canvas, htX,  currY, heat + "", eqNormalSize, "middle");
-        addTextElement(canvas, srvX, currY, srvTxt, eqNormalSize, "middle");
-        addTextElement(canvas, mrvX, currY, mrvTxt, eqNormalSize, "middle");
-        addTextElement(canvas, lrvX, currY, lrvTxt, eqNormalSize, "middle");
-        addTextElement(canvas, ervX, currY, ervTxt, eqNormalSize, "middle");
+        addTextElement(canvas, locX, currY, loc,     eqNormalSize, "middle");
+        addTextElement(canvas, htX,  currY, heatTxt, eqNormalSize, "middle");
+        addTextElement(canvas, srvX, currY, srvTxt,  eqNormalSize, "middle");
+        addTextElement(canvas, mrvX, currY, mrvTxt,  eqNormalSize, "middle");
+        addTextElement(canvas, lrvX, currY, lrvTxt,  eqNormalSize, "middle");
+        addTextElement(canvas, ervX, currY, ervTxt,  eqNormalSize, "middle");
 
         return lineHeight;
     }
