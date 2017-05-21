@@ -74,6 +74,10 @@ public class PrintWarship implements Printable {
     public static enum ElementType {
         TEXT, ARMOR, INTERNALS, EQUIPMENT, IMAGE, TSPAN;
     }
+    
+    public static enum PrintType {
+        NORMAL, SIDE_BY_SIDE_FIRST, SIDE_BY_SIDE_SECOND;
+    }
 
     /**
      * Defines the different elements that can be printed to a Warship sheet.
@@ -213,7 +217,8 @@ public class PrintWarship implements Printable {
 
     PrinterJob masterPrintJob;
     
- // Column positions
+    // These are some global variables related to equipment printing, to cut down on method signature length
+    // Column positions
     int nameX;
     int locX;
     int htX;
@@ -222,8 +227,17 @@ public class PrintWarship implements Printable {
     int lrvX;
     int ervX;
     
-    int eqNormalSize = 6;
-    int eqHeaderSize = 8;
+    // Equipment rectangle bounds
+    int viewWidth;
+    int viewHeight;
+    int viewX;
+    int viewY;
+    
+    PrintType cargoPrintType;
+    PrintType gravPrintType;
+    
+    int eqNormalSize;
+    int eqHeaderSize;
 
     public PrintWarship(ArrayList<Warship> list, PrinterJob masterPrintJob) {
         warshipList = list;
@@ -691,15 +705,15 @@ public class PrintWarship implements Printable {
      */
     private void printEquipmentRegion(Rect svgRect, WarshipPrintElements element) throws SVGException {
         Rectangle2D bbox = svgRect.getBoundingBox();
-        int viewWidth = (int)bbox.getWidth();
-        //int viewHeight = (int)bbox.getHeight();
-        int viewX = (int)bbox.getX();
-        int viewY = (int)bbox.getY();
+        viewWidth = (int)bbox.getWidth();
+        viewHeight = (int)bbox.getHeight();
+        viewX = (int)bbox.getX();
+        viewY = (int)bbox.getY();
         
         int nameColWidth  = (int)(viewWidth * 0.4);
         int otherColWidth = (int)(viewWidth * 0.11);
         int otherColOffset = (int)(otherColWidth / 4 + 0.5);
-        
+
         // Column positions
         nameX = viewX;
         locX = viewX + nameColWidth + 0 * otherColWidth + otherColOffset;
@@ -708,8 +722,14 @@ public class PrintWarship implements Printable {
         mrvX = viewX + nameColWidth + 3 * otherColWidth + otherColOffset;
         lrvX = viewX + nameColWidth + 4 * otherColWidth + otherColOffset;
         ervX = viewX + nameColWidth + 5 * otherColWidth + otherColOffset;
-        
-        // Sort weapons in capital/standard
+
+        cargoPrintType = PrintType.NORMAL;
+        gravPrintType = PrintType.NORMAL;
+
+        eqNormalSize = 6;
+        eqHeaderSize = 8;
+
+        // Sort weapons in capital/standard for later printing
         List<Mounted> standardWeapons = new ArrayList<>();
         List<Mounted> capitalWeapons = new ArrayList<>();
         for (Mounted m : warship.getWeaponList()) {
@@ -720,10 +740,14 @@ public class PrintWarship implements Printable {
                 standardWeapons.add(m);
             }
         }
-        
+        List<WeaponBayText> capitalWeapTexts = computeWeaponBayTexts(capitalWeapons);
+        List<WeaponBayText> standardWeapTexts = computeWeaponBayTexts(standardWeapons);
+
         SVGElement canvas = svgRect.getRoot();
         int lineHeight;
         int currY = viewY + 10;
+
+        adjustEquipmentFont(capitalWeapTexts, standardWeapTexts, canvas);
 
         // Print Capital Scale Weapon Info
         if (capitalWeapons.size() > 0) {
@@ -744,9 +768,9 @@ public class PrintWarship implements Printable {
             addTextElement(canvas, lrvX, currY, "LRV", eqHeaderSize, "middle", "bold");
             addTextElement(canvas, ervX, currY, "ERV", eqHeaderSize, "middle", "bold");
             currY += lineHeight;
-    
-            currY = printWeaponsText(capitalWeapons, true, canvas, currY);
-            
+
+            currY = printWeaponsText(capitalWeapTexts, true, canvas, currY);
+
             currY += lineHeight;
         }
 
@@ -769,28 +793,153 @@ public class PrintWarship implements Printable {
             addTextElement(canvas, lrvX, currY, "LRV", eqHeaderSize, "middle", "bold");
             addTextElement(canvas, ervX, currY, "ERV", eqHeaderSize, "middle", "bold");
             currY += lineHeight;
-    
-            currY = printWeaponsText(standardWeapons, false, canvas, currY);
+
+            currY = printWeaponsText(standardWeapTexts, false, canvas, currY);
             currY += lineHeight;
         }
 
         // Print GravDeck Info
+        currY = printGravDecks(canvas, currY, gravPrintType);
+
+        // Print Transport Bay Info
+        currY = printCargoInfo(canvas, currY, cargoPrintType);
+        
+    }
+
+    /**
+     * We want the equipment font to be as large as possible, some sometimes we need to adjust things to make the text
+     * fit.  This involves estimating how large the text area will be and adjust font, and also determining is grav
+     * deck and cargo info should be side-by-side.
+     *
+     * @param capitalWeapTexts
+     * @param standardWeapTexts
+     * @param canvas
+     * @throws SVGException
+     */
+    private void adjustEquipmentFont(List<WeaponBayText> capitalWeapTexts, List<WeaponBayText> standardWeapTexts,
+            SVGElement canvas) throws SVGException {
+        // Try to Estimate size of equipment block, to scale text
+        //   Estimating lines between section as 1 lines, and header lines as 3
+        int numGravDeckLines = 2 + warship.getTotalGravDeck();
+        int numCargoLines = 2 + warship.getTransportBays().size();
+
+        int weaponLines = 4 + 4;
+        for (WeaponBayText wbt : capitalWeapTexts) {
+            weaponLines += wbt.weapons.size();
+        }
+        for (WeaponBayText wbt : standardWeapTexts) {
+            weaponLines += wbt.weapons.size();
+        }
+        
+        Text newText = new Text();
+        newText.appendText("Naval AC 25 (100 rounds)");        
+        newText.addAttribute("x", AnimationElement.AT_XML, "0");
+        newText.addAttribute("y", AnimationElement.AT_XML, "0");
+        newText.addAttribute("font-family", AnimationElement.AT_XML, "Eurostile");
+        newText.addAttribute("font-size", AnimationElement.AT_XML, eqNormalSize + "");
+        canvas.loaderAddChild(null, newText);
+        newText.rebuild();
+        
+        double textHeight = newText.getShape().getBounds().getHeight();
+        if ((weaponLines * textHeight) > (viewHeight * 0.75)) {
+            gravPrintType = PrintType.SIDE_BY_SIDE_FIRST;
+            cargoPrintType = PrintType.SIDE_BY_SIDE_SECOND;
+            numGravDeckLines = Math.max(numGravDeckLines, numCargoLines);
+            numCargoLines = numGravDeckLines;
+        }
+        int totalLines = weaponLines + numGravDeckLines + numCargoLines;
+
+        while (totalLines * textHeight >= viewHeight && eqNormalSize > 4) {
+            eqNormalSize--;
+            eqHeaderSize--;
+            newText.removeAttribute("font-size", AnimationElement.AT_XML);
+            newText.addAttribute("font-size", AnimationElement.AT_XML, eqNormalSize + "");
+            newText.rebuild();
+            textHeight = newText.getShape().getBounds().getHeight();
+            
+            if ((weaponLines * textHeight) > (viewHeight * 0.75)) {
+                gravPrintType = PrintType.SIDE_BY_SIDE_FIRST;
+                cargoPrintType = PrintType.SIDE_BY_SIDE_SECOND;
+                numGravDeckLines = Math.max(numGravDeckLines, numCargoLines);
+                numCargoLines = numGravDeckLines;
+            } else {
+                gravPrintType = PrintType.NORMAL;
+                cargoPrintType = PrintType.NORMAL;
+                numGravDeckLines = 2 + warship.getTotalGravDeck();
+                numCargoLines = 2 + warship.getTransportBays().size();                
+            }
+        }
+        canvas.removeChild(newText);
+    }
+
+    /**
+     * Convenience method for printing information related to grav decks
+     * @param canvas
+     * @param currY
+     * @return
+     * @throws SVGException 
+     */
+    private int printGravDecks(SVGElement canvas, int currY, PrintType pt) throws SVGException {
+        int lineHeight;
+        int printX;
+        int origY = currY;
+        switch (pt) {
+            case NORMAL:
+            case SIDE_BY_SIDE_FIRST:
+            default:
+                printX = nameX;
+                break;
+            case SIDE_BY_SIDE_SECOND:
+                printX = viewWidth / 2;
+                break;
+        }
         if (warship.getTotalGravDeck() > 0) {
-            lineHeight = addTextElement(canvas, nameX, currY, "Grav Decks:", eqNormalSize, "start", "bold");
+            lineHeight = addTextElement(canvas, printX, currY, "Grav Decks:", eqNormalSize, "start", "bold");
             currY += lineHeight;
             int count = 1;
             for (int size : warship.getGravDecks()) {
                 String gravString = "Grav Deck #" + count + ": " + size + "-meters";
-                lineHeight = addTextElement(canvas, nameX, currY, gravString, eqNormalSize, "start");
+                lineHeight = addTextElement(canvas, printX, currY, gravString, eqNormalSize, "start");
                 currY += lineHeight;
                 count++;
             }
             currY += lineHeight;
         }
-
-        // Print Transport Bay Info
+        
+        switch (pt) {
+            case NORMAL:
+            default:
+                return currY;
+            case SIDE_BY_SIDE_FIRST:
+            case SIDE_BY_SIDE_SECOND:
+                return origY;
+        }
+    }
+    
+    /**
+     * Convenience method for printing infor related to cargo & transport bays.
+     *
+     * @param canvas
+     * @param currY
+     * @return
+     * @throws SVGException
+     */
+    private int printCargoInfo(SVGElement canvas, int currY, PrintType pt) throws SVGException {
+        int lineHeight;
+        int printX;
+        int origY = currY;
+        switch (pt) {
+            case NORMAL:
+            case SIDE_BY_SIDE_FIRST:
+            default:
+                printX = nameX;
+                break;
+            case SIDE_BY_SIDE_SECOND:
+                printX = viewWidth / 2;
+                break;
+        }
         if (warship.getTransportBays().size() > 0) {
-            lineHeight = addTextElement(canvas, nameX, currY, "Cargo:", eqNormalSize, "start", "bold");
+            lineHeight = addTextElement(canvas, printX, currY, "Cargo:", eqNormalSize, "start", "bold");
             currY += lineHeight;
             // We can have multiple Bay instances within one conceptual bay on the ship
             // We need to gather all bays with the same ID to print out the string
@@ -836,27 +985,29 @@ public class PrintWarship implements Printable {
                 bayCapacityString.append(")");
                 String bayString = "Bay #" + bayNum + ": " + bayTypeString
                     + bayCapacityString + " (Doors " + doors + ")";
-                lineHeight = addTextElement(canvas, nameX, currY, bayString, eqNormalSize, "start");
+                lineHeight = addTextElement(canvas, printX, currY, bayString, eqNormalSize, "start");
                 currY += lineHeight;
             }
             currY += lineHeight;
         }
+        switch (pt) {
+            case NORMAL:
+            default:
+                return currY;
+            case SIDE_BY_SIDE_FIRST:
+            case SIDE_BY_SIDE_SECOND:
+                return origY;
+        }
     }
     
     /**
-     * Iterate through all of the given weapons and print out information in the inventory table.
-     *
-     * @param weapons       The weapons to print info for.
-     * @param isCapital     Determines damage scale.
-     * @param canvas        The SVGElement to add text to.
-     * @param currY         The height location for text elements.
-     *
-     * @return  The current height after all text has been added.
-     * @throws SVGException
+     * Iterate through a list of weapons and create information about what weapons belong in what bays, how many, the
+     * bay damage, and also condense entries when possible.
+     * 
+     * @param weapons
+     * @return
      */
-    private int printWeaponsText(List<Mounted> weapons, boolean isCapital, SVGElement canvas, int currY)
-            throws SVGException {
-        int lineHeight;
+    private List<WeaponBayText> computeWeaponBayTexts(List<Mounted> weapons) {
         // Collection info on weapons to print
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         for (Mounted bay : weapons) {
@@ -879,7 +1030,23 @@ public class PrintWarship implements Printable {
             }
         }
         Collections.sort(weaponBayTexts);
-        
+
+        return weaponBayTexts;
+    }
+
+    /**
+     * Iterate through all of the given weapons and print out information in the inventory table.
+     *
+     * @param weapons       The weapons to print info for.
+     * @param isCapital     Determines damage scale.
+     * @param canvas        The SVGElement to add text to.
+     * @param currY         The height location for text elements.
+     *
+     * @return  The current height after all text has been added.
+     * @throws SVGException
+     */
+    private int printWeaponsText(List<WeaponBayText> weaponBayTexts, boolean isCapital, SVGElement canvas, int currY)
+            throws SVGException {
         // Print info
         for (WeaponBayText wbt : weaponBayTexts) {
             boolean first = true;
@@ -927,21 +1094,9 @@ public class PrintWarship implements Printable {
                 if (first & numBayWeapons > 1) {
                     nameString += ",";
                 }
-                String srvTxt, mrvTxt, lrvTxt, ervTxt;
-                if (isCapital) { // Print out capital damage for weapon total
-                    srvTxt = baySRV == 0 ? "-" : (int)baySRV + "";
-                    mrvTxt = bayMRV == 0 ? "-" : (int)bayMRV + "";
-                    lrvTxt = bayLRV == 0 ? "-" : (int)bayLRV + "";
-                    ervTxt = bayERV == 0 ? "-" : (int)bayERV + "";
-                } else { // Print out capital and standard damages
-                    srvTxt = baySRV == 0 ? "-" : (int)baySRV + " (" + standardBaySRV + ")";
-                    mrvTxt = bayMRV == 0 ? "-" : (int)bayMRV + " (" + standardBayMRV + ")";
-                    lrvTxt = bayLRV == 0 ? "-" : (int)bayLRV + " (" + standardBayLRV + ")";
-                    ervTxt = bayERV == 0 ? "-" : (int)bayERV + " (" + standardBayERV + ")";
-                }
-                lineHeight = addWeaponText(canvas, first, currY, wbt.weapons.get(wtype), nameString, isCapital,
-                        locString, bayHeat, srvTxt, mrvTxt, lrvTxt, ervTxt);
-                currY += lineHeight;
+                currY = addWeaponText(canvas, first, currY, wbt.weapons.get(wtype), nameString, isCapital,
+                        locString, bayHeat, new double[] { baySRV, bayMRV, bayLRV, bayERV },
+                        new double[] { standardBaySRV, standardBayMRV, standardBayLRV, standardBayERV });
                 first = false;
             }
         }
@@ -970,8 +1125,34 @@ public class PrintWarship implements Printable {
      * @throws SVGException
      */
     private int addWeaponText(SVGElement canvas, boolean first, int currY, int num, String name, boolean isCapital,
-            String loc, int heat, String srvTxt, String mrvTxt, String lrvTxt, String ervTxt) throws SVGException {
-
+            String loc, int heat, double[] capitalAV, double[] standardAV) throws SVGException {
+        String srvTxt, mrvTxt, lrvTxt, ervTxt;
+        String slSRV, slMRV, slLRV, slERV;
+        slSRV = slMRV = slLRV = slERV = "";
+        boolean secondLine = false;
+        if (isCapital) { // Print out capital damage for weapon total
+            srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + "";
+            mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + "";
+            lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + "";
+            ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + "";
+        } else { // Print out capital and standard damages
+            if (standardAV[0] < 100) {
+                srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + " (" + standardAV[0] + ")";
+                mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + " (" + standardAV[1] + ")";
+                lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + " (" + standardAV[2] + ")";
+                ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + " (" + standardAV[3] + ")";
+            } else {
+                secondLine = true;
+                srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + "";
+                mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + "";
+                lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + "";
+                ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + "";
+                slSRV =  capitalAV[0] == 0 ? "" : " (" + standardAV[0] + ")";
+                slMRV =  capitalAV[1] == 0 ? "" : " (" + standardAV[1] + ")";
+                slLRV =  capitalAV[2] == 0 ? "" : " (" + standardAV[2] + ")";
+                slERV =  capitalAV[3] == 0 ? "" : " (" + standardAV[3] + ")";
+            }
+        }
         String nameString = num + "  " + name;
         String heatTxt;
         int localNameX = nameX;
@@ -991,8 +1172,15 @@ public class PrintWarship implements Printable {
         addTextElement(canvas, mrvX, currY, mrvTxt,  eqNormalSize, "middle");
         addTextElement(canvas, lrvX, currY, lrvTxt,  eqNormalSize, "middle");
         addTextElement(canvas, ervX, currY, ervTxt,  eqNormalSize, "middle");
-
-        return lineHeight;
+        currY += lineHeight;
+        if (secondLine) {
+            addTextElement(canvas, srvX, currY, slSRV,  eqNormalSize, "middle");
+            addTextElement(canvas, mrvX, currY, slMRV,  eqNormalSize, "middle");
+            addTextElement(canvas, lrvX, currY, slLRV,  eqNormalSize, "middle");
+            addTextElement(canvas, ervX, currY, slERV,  eqNormalSize, "middle");
+            currY += lineHeight;
+        }
+        return currY;
     }
     
     /**
