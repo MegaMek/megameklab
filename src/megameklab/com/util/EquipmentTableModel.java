@@ -40,7 +40,7 @@ import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.MissileWeapon;
 import megamek.common.weapons.RACWeapon;
 import megamek.common.weapons.ThunderBoltWeapon;
-import megamek.common.weapons.UACWeapon;
+import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
