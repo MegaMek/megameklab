@@ -457,6 +457,8 @@ public class PrintWarship implements Printable {
             text = warship.getNCrew() + "";
         } else if (element.equals(WarshipPrintElements.PASSENGERS)) {
             text = warship.getNPassenger() + "";
+        } else if (element.equals(WarshipPrintElements.OTHER)) {
+            text = warship.getNOtherCrew() + "";
         } else if (element.equals(WarshipPrintElements.LIFE_BOATS)) {
             text = warship.getLifeBoats() + "";
         } else if (element.equals(WarshipPrintElements.ESCAPE_PODS)) {
@@ -478,10 +480,11 @@ public class PrintWarship implements Printable {
             text = warship.getHeatInArc(Warship.LOC_ALS, false) + " / " + warship.getHeatInArc(Warship.LOC_ARS, false);
         } else if (element.equals(WarshipPrintElements.BROADSIDE_HEAT)) {
             text = warship.getHeatInArc(Warship.LOC_LBS, false) + " / " + warship.getHeatInArc(Warship.LOC_RBS, false);
-        } else if (element.equals(WarshipPrintElements.ELEMENTALS)) {
-            text = "0";
+        } else if (element.equals(WarshipPrintElements.ELEMENTALS) 
+                || element.equals(WarshipPrintElements.BATTLE_ARMOR)) {
+            text = warship.getNBattleArmor() + "";
         } else if (element.equals(WarshipPrintElements.MARINES)) {
-            text = "0";
+            text = warship.getNMarines() + "";
         } else if (element.equals(WarshipPrintElements.COST)) {
             text = NumberFormat.getNumberInstance(Locale.getDefault()).format(warship.getCost(false));
         } else if (element.equals(WarshipPrintElements.BV)) {
