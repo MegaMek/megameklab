@@ -852,7 +852,7 @@ public class PrintWarship implements Printable {
         }
         int totalLines = weaponLines + numGravDeckLines + numCargoLines;
 
-        while (totalLines * textHeight >= viewHeight && eqNormalSize > 4) {
+        while (totalLines * textHeight >= viewHeight && eqNormalSize > 5) {
             eqNormalSize--;
             eqHeaderSize--;
             newText.removeAttribute("font-size", AnimationElement.AT_XML);
