@@ -49,6 +49,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      */
     public Map<WeaponType, Mounted> weaponAmmo = new HashMap<>();
 
+    public boolean allowNosAftCombine = true;
     /**
      * The location of the bay, or locations if multiple identical bays are
      * combined.
@@ -125,6 +126,10 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
             rv = true;
         } else if (((loc1 == Warship.LOC_LBS) && (loc2 == Warship.LOC_RBS))
                 || ((loc1 == Warship.LOC_RBS) && (loc2 == Warship.LOC_LBS))) {
+            rv = true;
+        }
+        if (allowNosAftCombine && ((loc1 == Warship.LOC_NOSE) && (loc2 == Warship.LOC_AFT))
+                || ((loc1 == Warship.LOC_AFT) && (loc2 == Warship.LOC_NOSE))) {
             rv = true;
         }
         return rv;
