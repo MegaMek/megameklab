@@ -1139,12 +1139,7 @@ public class PrintWarship implements Printable {
             lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + "";
             ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + "";
         } else { // Print out capital and standard damages
-            if (standardAV[0] < 100) {
-                srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + " (" + standardAV[0] + ")";
-                mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + " (" + standardAV[1] + ")";
-                lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + " (" + standardAV[2] + ")";
-                ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + " (" + standardAV[3] + ")";
-            } else {
+            if (standardAV[0] >= 100 && standardAV[1] >= 100) {
                 secondLine = true;
                 srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + "";
                 mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + "";
@@ -1154,6 +1149,11 @@ public class PrintWarship implements Printable {
                 slMRV =  capitalAV[1] == 0 ? "" : " (" + standardAV[1] + ")";
                 slLRV =  capitalAV[2] == 0 ? "" : " (" + standardAV[2] + ")";
                 slERV =  capitalAV[3] == 0 ? "" : " (" + standardAV[3] + ")";
+            } else {
+                srvTxt = capitalAV[0] == 0 ? "-" : (int)capitalAV[0] + " (" + standardAV[0] + ")";
+                mrvTxt = capitalAV[1] == 0 ? "-" : (int)capitalAV[1] + " (" + standardAV[1] + ")";
+                lrvTxt = capitalAV[2] == 0 ? "-" : (int)capitalAV[2] + " (" + standardAV[2] + ")";
+                ervTxt = capitalAV[3] == 0 ? "-" : (int)capitalAV[3] + " (" + standardAV[3] + ")";
             }
         }
         String nameString = num + "  " + name;
