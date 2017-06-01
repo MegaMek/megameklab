@@ -56,8 +56,9 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      */
     public List<Integer> loc = new ArrayList<>();
 
-    public WeaponBayText(int l) {
+    public WeaponBayText(int l, boolean combineNoseAftBays) {
         loc.add(l);
+        allowNosAftCombine = combineNoseAftBays;
     }
 
     /**
