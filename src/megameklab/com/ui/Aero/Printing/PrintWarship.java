@@ -1114,7 +1114,14 @@ public class PrintWarship implements Printable {
                     Bay b = bays.get(i);
                     bayTypeString.append(b.getType());
                     if (b.getClass().getName().contains("Cargo")) {
-                        bayCapacityString.append(String.format("%1$.1f", b.getCapacity()));
+                        double capacity = b.getCapacity();
+                        int wholePart = (int)capacity;
+                        double fractPart = capacity - wholePart;
+                        if (fractPart == 0) {
+                            bayCapacityString.append(String.format("%1$d", wholePart));
+                        } else {
+                            bayCapacityString.append(String.format("%1$.1f", b.getCapacity()));
+                        }
                     } else {
                         bayCapacityString.append((int)b.getCapacity());
                     }
