@@ -62,14 +62,28 @@ import megameklab.com.util.ImageHelper;
  */
 public class PrintWarship implements Printable {
 
-    public static int ARMOR_PIP_WIDTH = 5;
-    public static int ARMOR_PIP_HEIGHT = 5;
+    public static double ARMOR_PIP_WIDTH = 4.5;
+    public static double ARMOR_PIP_HEIGHT = 4.5;
+    
+    public static double ARMOR_PIP_WIDTH_SMALL = 2.25;
+    public static double ARMOR_PIP_HEIGHT_SMALL = 2.25;
 
     public static int IS_PIP_WIDTH = 3;
     public static int IS_PIP_HEIGHT = 3;
 
     public static int PIPS_PER_ROW = 10;
     public static int MAX_PIP_ROWS = 10;
+    
+    /**
+     * Specifies how many weapon bay lines can exist before no fluff image sheets are forced.  If there are too many
+     * weapon bay lines, then the equipment list may be too small.
+     */
+    public static int WEAPON_LINES_FLUFF_LIMIT = 35;
+    
+    /**
+     * If we have a large number of weapon lines, we should consider condensing nose & aft bays, to save space.
+     */
+    public static int WEAPON_LINES_NOSE_AFT_COMBINE = 50;
 
     public static enum ElementType {
         TEXT, ARMOR, INTERNALS, EQUIPMENT, IMAGE, TSPAN;
@@ -238,6 +252,16 @@ public class PrintWarship implements Printable {
     
     int eqNormalSize;
     int eqHeaderSize;
+    
+    List<WeaponBayText> capitalWeapTexts;
+    List<WeaponBayText> standardWeapTexts;
+    
+    /**
+     * Determines if we should not print the fluff image.  Some warships have so much equipment, that we should use
+     * a sheet without the fluff image, to make sure there's enough room in the equipment table.
+     * 
+     */
+    boolean noFluffImg = false;
 
     public PrintWarship(ArrayList<Warship> list, PrinterJob masterPrintJob) {
         warshipList = list;
@@ -304,8 +328,47 @@ public class PrintWarship implements Printable {
             return;
         }
 
+        // Sort weapons in capital/standard for later printing
+        // Also use number of weapon bays to determine what sheet type to load
+        List<Mounted> standardWeapons = new ArrayList<>();
+        List<Mounted> capitalWeapons = new ArrayList<>();
+        for (Mounted m : warship.getWeaponList()) {
+            WeaponType wtype = (WeaponType)m.getType();
+            if (wtype.isCapital()) {
+                capitalWeapons.add(m);
+            } else {
+                standardWeapons.add(m);
+            }
+        }
+        boolean combineNoseAftWeaponBays = false;
+        int loopCount = 0;
+        int weaponLines;
+        String wsSheetSVG = "data/images/recordsheets/Warship_default.svg";
+        
+        do {
+            weaponLines = 4 + 4;
+            capitalWeapTexts = computeWeaponBayTexts(capitalWeapons, combineNoseAftWeaponBays);
+            standardWeapTexts = computeWeaponBayTexts(standardWeapons, combineNoseAftWeaponBays);
+            for (WeaponBayText wbt : capitalWeapTexts) {
+                weaponLines += wbt.weapons.size();
+            }
+            for (WeaponBayText wbt : standardWeapTexts) {
+                weaponLines += wbt.weapons.size();
+            }
+            if (weaponLines > WEAPON_LINES_FLUFF_LIMIT) {
+                wsSheetSVG = "data/images/recordsheets/Warship_no_fluff.svg";
+                noFluffImg = true;
+            } else {
+                wsSheetSVG = "data/images/recordsheets/Warship_default.svg";
+                noFluffImg = false;
+            }
+            // If we have to try again, combine nose/aft weapon bays
+            combineNoseAftWeaponBays = true;
+            loopCount++;
+        } while (weaponLines >= WEAPON_LINES_NOSE_AFT_COMBINE && loopCount <= 1);
+
         SVGDiagram diagram;
-        diagram = ImageHelper.loadSVGImage(new File("data/images/recordsheets/Warship_default.svg"));
+        diagram = ImageHelper.loadSVGImage(new File(wsSheetSVG));
         if (diagram == null) {
             System.out.println("Failed to open Warship SVG file! Path: ata/images/recordsheets/Warship_default.svg");
             return;
@@ -356,7 +419,7 @@ public class PrintWarship implements Printable {
                     printInternalRegion((Rect) svgEle, element);
                 } else if (element.getType().equals(ElementType.EQUIPMENT)) {
                     printEquipmentRegion((Rect) svgEle, element);
-                } else if (element.getType().equals(ElementType.IMAGE)) {
+                } else if (element.getType().equals(ElementType.IMAGE) && !noFluffImg) {
                     printImage((Rect) svgEle, element);
                 } else if (element.getType().equals(ElementType.TSPAN)) {
                     // Do nothing - these are just references to elements in the
@@ -556,7 +619,7 @@ public class PrintWarship implements Printable {
         // Print in two blocks
         if (structure > pipsPerBlock) {
             // Block 1
-            int pips = (int) Math.floor(structure + 0f / pipsPerBlock);
+            int pips = structure / 2;
             int startX, startY;
             double aspectRatio = (bbox.getWidth() / bbox.getHeight());
             if (aspectRatio >= 1) { // Landscape - 2 columns
@@ -574,7 +637,7 @@ public class PrintWarship implements Printable {
             } else { // Portrait - stacked 1 atop another
                 startY = (int) bbox.getY() + IS_PIP_HEIGHT * (pips / PIPS_PER_ROW + 1);
             }
-            pips = (int) Math.ceil(structure + 0f / pipsPerBlock);
+            pips = (int) Math.ceil(structure / 2.0);
             printPipBlock(startX, startY, svgRect.getParent(), pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, "white");
         } else { // Print in one block
             int startX = (int) bbox.getX() + (int) (bbox.getWidth() / 2 + 0.5) - (PIPS_PER_ROW * IS_PIP_WIDTH / 2);
@@ -610,47 +673,137 @@ public class PrintWarship implements Printable {
         }
         int armor = warship.getOArmor(loc);
 
-        int halfBlockHeight = (int) ((MAX_PIP_ROWS * ARMOR_PIP_HEIGHT / 2f) + 0.5);
-        int halfBlockWidth = (int) ((PIPS_PER_ROW * ARMOR_PIP_WIDTH / 2f) + 0.5);
+        double pipWidth = ARMOR_PIP_WIDTH;
+        double pipHeight = ARMOR_PIP_HEIGHT;;
+
+        int halfBlockHeight = (int) ((MAX_PIP_ROWS * pipHeight / 2f) + 0.5);
+        int halfBlockWidth = (int) ((PIPS_PER_ROW * pipWidth / 2f) + 0.5);
 
         // Armor comes in blocks of 100 pips
         int numBlocks = (int) Math.ceil(armor / 100f);
         double aspectRatio = bbox.getWidth() / bbox.getHeight();
-        // Use a single column if we only have a small number blocks
-        if (numBlocks <= 3) {
-            int startX, startY;
+        double startX, startY;
+        // If we have a large number of blocks, we need to shrinke the size
+        if (numBlocks > 6) {
+            pipWidth = ARMOR_PIP_WIDTH_SMALL;
+            pipHeight = ARMOR_PIP_HEIGHT_SMALL;
+            halfBlockHeight = (int) ((MAX_PIP_ROWS * pipHeight / 2f) + 0.5);
+            halfBlockWidth = (int) ((PIPS_PER_ROW * pipWidth / 2f) + 0.5);
+
+            // Two columns, because we have at least 7 blocks
+            int colBreak;
+            if (numBlocks < 8) {
+                colBreak = 3;
+            } else if (numBlocks < 10) {
+                colBreak = 4;
+            } else {
+                colBreak = 5;
+            }
+            
+            if (aspectRatio >= 1) { // Landscape
+                startX = bbox.getX();
+                startY = bbox.getY() + (bbox.getHeight() * 0.25);
+            } else { // Portrait
+                startX = bbox.getX() + (bbox.getWidth() * 0.25);
+                startY = bbox.getY();    
+            }
+            int count = 0;
+            while (armor > 0) {
+                armor = printPipBlock(startX, startY, svgRect.getParent(), armor, pipWidth, pipHeight, "none");
+                count++;
+                if (aspectRatio >= 1) { // Landscape
+                    // Have last block in middle
+                    if ((armor <= 100) && ((numBlocks % 2) == 1)) {
+                        startY = bbox.getY() + (bbox.getHeight() * 0.25) + halfBlockHeight + pipHeight;
+                        startX += (PIPS_PER_ROW + 1) * pipWidth; 
+                    } else if (count == colBreak) { // Check for start of new column
+                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
+                        startX = bbox.getX();
+                    } else {
+                        startX += (PIPS_PER_ROW + 1) * pipWidth;
+                    }
+                } else { // Portrait
+                    // Have last block in middle
+                    if ((armor <= 100) && ((numBlocks % 2) == 1)) {
+                        startX = bbox.getX() + (bbox.getWidth() * 0.25) + halfBlockWidth + pipWidth;
+                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
+                    } else if (count == colBreak) { // Check for start of new column
+                        startX += (PIPS_PER_ROW + 1) * pipWidth;
+                        startY = bbox.getY();
+                    } else {
+                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
+                    }
+                }
+            }            
+        } else if (numBlocks <= 3) { // Use a single column if we only have a small number blocks
             if (aspectRatio >= 1) { // Landscape
                 if (numBlocks == 1) {
-                    startX = (int) bbox.getX() + (int) (bbox.getWidth() * 0.5) - halfBlockWidth;
+                    startX = bbox.getX() + (bbox.getWidth() * 0.5) - halfBlockWidth;
                 } else if (numBlocks == 2) { // Center blocks if we have an even
                                              // number
-                    startX = (int) bbox.getX() + (int) (bbox.getWidth() * 0.333) - halfBlockWidth;
+                    startX = bbox.getX() + (bbox.getWidth() * 0.333) - halfBlockWidth;
                 } else {
-                    startX = (int) bbox.getX();
+                    startX = bbox.getX();
                 }
-                startY = (int) bbox.getY() + (int) (bbox.getHeight() / 2 + 0.5) - halfBlockHeight;
+                startY = (int) bbox.getY() + (bbox.getHeight() / 2 + 0.5) - halfBlockHeight;
             } else { // Portrait
-                startX = (int) bbox.getX() + (int) (bbox.getWidth() / 2 + 0.5) - halfBlockWidth;
+                startX = (int) bbox.getX() + (bbox.getWidth() / 2 + 0.5) - halfBlockWidth;
                 if (numBlocks == 1) {
-                    startY = (int) bbox.getY() + (int) (bbox.getHeight() * 0.33) - halfBlockHeight;
-                } else if (numBlocks == 2) { // Center blocks if we have an even
-                                             // number
-                    startY = (int) bbox.getY() + (int) (bbox.getHeight() * 0.5) - halfBlockHeight;
+                    startY =  bbox.getY() + (bbox.getHeight() * 0.33) - halfBlockHeight;
+                } else if (numBlocks == 2) { // Center blocks if we have an even number
+                    startY = bbox.getY() + (bbox.getHeight() * 0.5) - halfBlockHeight;
                 } else {
-                    startY = (int) bbox.getY();
+                    startY = bbox.getY();
                 }
             }
             while (armor > 0) {
-                armor = printPipBlock(startX, startY, svgRect.getParent(), armor, ARMOR_PIP_WIDTH, ARMOR_PIP_HEIGHT,
+                armor = printPipBlock(startX, startY, svgRect.getParent(), armor, pipWidth, pipHeight,
                         "none");
                 if (aspectRatio >= 1) { // Landscape
-                    startX += (PIPS_PER_ROW + 1) * ARMOR_PIP_WIDTH;
+                    startX += (PIPS_PER_ROW + 1) * pipWidth;
                 } else { // Portrait
-                    startY += (MAX_PIP_ROWS + 1) * ARMOR_PIP_HEIGHT;
+                    startY += (MAX_PIP_ROWS + 1) * pipHeight;
                 }
             }
         } else { // Double column layout
-
+            int colBreak;
+            if (numBlocks < 6) {
+                colBreak = 2;
+            } else {
+                colBreak = 3;
+            }
+            startX = bbox.getX();
+            startY = bbox.getY();
+            int count = 0;
+            while (armor > 0) {
+                armor = printPipBlock(startX, startY, svgRect.getParent(), armor, pipWidth, pipHeight, "none");
+                count++;
+                if (aspectRatio >= 1) { // Landscape
+                    // Have last block in middle
+                    if ((armor <= 100) && (numBlocks == 5)) {
+                        startY = bbox.getY() + (bbox.getHeight() * 0.5) - halfBlockHeight;
+                    }
+                    // Check for start of new column
+                    if (count == colBreak) {
+                        startY = bbox.getY() + (MAX_PIP_ROWS + 1) * pipHeight;
+                        startX = bbox.getX();
+                    } else {
+                        startX += (PIPS_PER_ROW + 1) * pipWidth;
+                    }
+                } else { // Portrait
+                    // Have last block in middle
+                    if ((armor <= 100) && (numBlocks == 5)) {
+                        startX = bbox.getX() + (bbox.getWidth() * 0.5) - halfBlockWidth;
+                    }
+                    // Check for start of new column
+                    if (count == colBreak) {
+                        startX = bbox.getX() + (PIPS_PER_ROW + 1) * pipWidth;
+                        startY = bbox.getY();
+                    } else {
+                        startY += (MAX_PIP_ROWS + 1) * pipHeight;
+                    }
+                }
+            }
         }
     }
 
@@ -665,15 +818,15 @@ public class PrintWarship implements Printable {
      * @return The Y location of the end of the block
      * @throws SVGException
      */
-    private int printPipBlock(int startX, int startY, SVGElement parent, int numPips, int pipWidth, int pipHeight,
-            String fillColor) throws SVGException {
+    private int printPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,
+            double pipHeight, String fillColor) throws SVGException {
 
-        int currX, currY;
+        double currX, currY;
         currY = startY;
         for (int row = 0; row < 10; row++) {
             int numRowPips = Math.min(numPips, PIPS_PER_ROW);
             // Adjust row start if it's not a complete row
-            currX = startX + (int) ((10 - numRowPips) / 2f * pipWidth + 0.5);
+            currX = startX + ((10 - numRowPips) / 2f * pipWidth + 0.5);
             for (int col = 0; col < numRowPips; col++) {
                 Rect svgRect = new Rect();
                 svgRect.addAttribute("x", AnimationElement.AT_XML, currX + "");
@@ -732,20 +885,6 @@ public class PrintWarship implements Printable {
         eqNormalSize = 6;
         eqHeaderSize = 8;
 
-        // Sort weapons in capital/standard for later printing
-        List<Mounted> standardWeapons = new ArrayList<>();
-        List<Mounted> capitalWeapons = new ArrayList<>();
-        for (Mounted m : warship.getWeaponList()) {
-            WeaponType wtype = (WeaponType)m.getType();
-            if (wtype.isCapital()) {
-                capitalWeapons.add(m);
-            } else {
-                standardWeapons.add(m);
-            }
-        }
-        List<WeaponBayText> capitalWeapTexts = computeWeaponBayTexts(capitalWeapons);
-        List<WeaponBayText> standardWeapTexts = computeWeaponBayTexts(standardWeapons);
-
         SVGElement canvas = svgRect.getRoot();
         int lineHeight;
         int currY = viewY + 10;
@@ -753,7 +892,7 @@ public class PrintWarship implements Printable {
         adjustEquipmentFont(capitalWeapTexts, standardWeapTexts, canvas);
 
         // Print Capital Scale Weapon Info
-        if (capitalWeapons.size() > 0) {
+        if (capitalWeapTexts.size() > 0) {
             // Capital Scale line
             lineHeight = addTextElement(canvas, nameX, currY, "Capital Scale", eqNormalSize, "start", "bold");
             addTextElement(canvas, srvX, currY, "(1-12)",  eqNormalSize, "middle", "bold");
@@ -778,7 +917,7 @@ public class PrintWarship implements Printable {
         }
 
         // Print Standard Scale Weapon Info
-        if (standardWeapons.size() > 0) {
+        if (standardWeapTexts.size() > 0) {
             // Standard Scale line
             lineHeight = addTextElement(canvas, nameX, currY, "Standard Scale", eqNormalSize, "start", "bold");
             addTextElement(canvas, srvX, currY, "(1-6)",  eqNormalSize, "middle", "bold");
@@ -1010,11 +1149,11 @@ public class PrintWarship implements Printable {
      * @param weapons
      * @return
      */
-    private List<WeaponBayText> computeWeaponBayTexts(List<Mounted> weapons) {
+    private List<WeaponBayText> computeWeaponBayTexts(List<Mounted> weapons, boolean combineNoseAftBays) {
         // Collection info on weapons to print
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         for (Mounted bay : weapons) {
-            WeaponBayText wbt = new WeaponBayText(bay.getLocation());
+            WeaponBayText wbt = new WeaponBayText(bay.getLocation(), combineNoseAftBays);
             for (Integer wId : bay.getBayWeapons()) {
                 Mounted weap = warship.getEquipment(wId);
                 wbt.addBayWeapon(weap);
