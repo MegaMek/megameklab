@@ -37,6 +37,7 @@ import java.util.StringJoiner;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -62,6 +63,7 @@ import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
+import megamek.common.QuadVee;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megamek.common.verifier.EntityVerifier;
@@ -89,6 +91,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private static final String ENGINEFUELCELL = "Fuel Cell";
     private static final String ENGINEXXL = "XXL";
     private static final String ENGINEICE = "I.C.E";
+    
+    private static final int BASE_TYPE_STANDARD = 0;
+    private static final int BASE_TYPE_LAM = 1;
+    private static final int BASE_TYPE_QUADVEE = 2;
 
     String[] isEngineTypes = { ENGINESTANDARD, ENGINEXL, ENGINELIGHT,
             ENGINECOMPACT, ENGINEFISSION, ENGINEFUELCELL, ENGINEXXL, ENGINEICE };
@@ -139,8 +145,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             "Experimental", "Unoffical" };
     String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
             "Unoffical" };
+    String[] baseTypes = { "Standard", "LAM", "QuadVee" };
     String[] motiveTypes = { "Biped", "Quad", "Tripod" };
-    JComboBox<String> motiveType = new JComboBox<String>(motiveTypes);
+    String[] lamMotiveTypes = { "Standard", "Bimodal" };
+    String[] qvMotiveTypes = { "Tracked", "Wheeled" };
+    DefaultComboBoxModel<String> standardTypesModel = new DefaultComboBoxModel<>(motiveTypes);
+    DefaultComboBoxModel<String> lamTypesModel = new DefaultComboBoxModel<>(lamMotiveTypes);
+    DefaultComboBoxModel<String> qvTypesModel = new DefaultComboBoxModel<>(qvMotiveTypes);
+    JComboBox<String> baseType = new JComboBox<String>(baseTypes);
+    JComboBox<String> motiveType = new JComboBox<String>(standardTypesModel);
     JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
     String[] jjTypes = { "Standard", "Improved", "Prototype",
             "Mechanical Boosters", "Improved Prototype" };
@@ -149,7 +162,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JTextField source = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
-    JCheckBox lamCB = new JCheckBox("LAM");
     JCheckBox fullHeadEjectCB = new JCheckBox("Full Head Ejection");
     JButton resetChassisButton = new JButton("Reset Chassis (Omni)");
     JComboBox<String> structureCombo = new JComboBox<String>(
@@ -330,67 +342,73 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridx = 2;
         gbc.gridy = 0;
         panChassis.add(omniCB, gbc);
-        gbc.gridx = 3;
-        gbc.gridy = 0;
-        panChassis.add(lamCB, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        panChassis.add(createLabel("Motive Type:", labelSize), gbc);
+        panChassis.add(createLabel("Base Type:", labelSize), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
+        gbc.gridwidth = 3;
+        panChassis.add(baseType, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        panChassis.add(createLabel("Motive Type:", labelSize), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         gbc.gridwidth = 3;
         panChassis.add(motiveType, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.gridwidth = 1;
         panChassis.add(createLabel("Structure Type:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.gridwidth = 3;
         panChassis.add(structureCombo, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 1;
         panChassis.add(createLabel("Engine Type:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 3;
         panChassis.add(engineType, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.gridwidth = 1;
         panChassis.add(createLabel("Gyro Type:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.gridwidth = 3;
         panChassis.add(gyroType, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridwidth = 1;
         panChassis.add(createLabel("Cockpit Type:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridwidth = 3;
         panChassis.add(cockpitType, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         gbc.gridwidth = 1;
         panChassis.add(createLabel("Enhancements:", labelSize), gbc);
         gbc.gridx = 1;
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         gbc.gridwidth = 3;
         panChassis.add(enhancement, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 7;
+        gbc.gridy = 8;
         gbc.gridwidth = 3;
         panChassis.add(fullHeadEjectCB, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 8;
+        gbc.gridy = 9;
         gbc.gridwidth = 3;
         panChassis.add(resetChassisButton, gbc);
 
@@ -568,15 +586,38 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
         omniCB.setSelected(getMech().isOmni());
         resetChassisButton.setEnabled(getMech().isOmni());
-        if (getMech() instanceof TripodMech) {
-            motiveType.setSelectedIndex(2);
+        baseType.removeAllItems();
+        baseType.addItem(baseTypes[BASE_TYPE_STANDARD]);
+        if (!TechConstants.isClan(getMech().getTechLevel())
+                || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
+                == TechConstants.T_SIMPLE_UNOFFICIAL){
+            baseType.addItem(baseTypes[BASE_TYPE_LAM]);
         }
-        if (getMech() instanceof QuadMech) {
-            motiveType.setSelectedIndex(1);
+        if (TechConstants.isClan(getMech().getTechLevel())
+                || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
+                == TechConstants.T_SIMPLE_UNOFFICIAL){
+            baseType.addItem(baseTypes[BASE_TYPE_QUADVEE]);
+        }
+        if (getMech() instanceof LandAirMech) {
+            baseType.setSelectedItem(baseTypes[1]);
+            motiveType.setModel(lamTypesModel);
+            motiveType.setSelectedIndex(((LandAirMech)getMech()).getLAMType());
+        } else if (getMech() instanceof QuadVee) {
+            baseType.setSelectedItem(baseTypes[2]);
+            motiveType.setModel(qvTypesModel);
+            motiveType.setSelectedIndex(((QuadVee)getMech()).getMotiveType());
         } else {
-            motiveType.setSelectedItem(0);
+            baseType.setSelectedIndex(0);
+            motiveType.setModel(standardTypesModel);
+            if (getMech() instanceof TripodMech) {
+                motiveType.setSelectedIndex(2);
+            }
+            if (getMech() instanceof QuadMech) {
+                motiveType.setSelectedIndex(1);
+            } else {
+                motiveType.setSelectedItem(0);
+            }
         }
-        lamCB.setSelected(getMech() instanceof LandAirMech);
         fullHeadEjectCB.setSelected(getMech().hasFullHeadEject());
         era.setText(Integer.toString(getMech().getYear()));
         source.setText(getMech().getSource());
@@ -1087,6 +1128,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             } else if (e.getSource().equals(resetChassisButton)) {
                 UnitUtil.resetBaseChassis(getMech());
             }
+        } else if (e.getSource().equals(motiveType)) {
+            if (getMech() instanceof LandAirMech) {
+                ((LandAirMech)getMech()).setLAMType(motiveType.getSelectedIndex());
+            } else if (getMech() instanceof QuadVee
+                    && ((QuadVee)getMech()).getMotiveType() != motiveType.getSelectedIndex()) {
+                //For QuadVees that change the motive type we need to remove the tracks
+                //or wheels and replace them with the alternate.
+                Optional<Mounted> mount = getMech().getMisc().stream()
+                        .filter(m -> m.getType().hasFlag(MiscType.F_TRACKS))
+                        .findAny();
+                if (mount.isPresent()) {
+                    UnitUtil.removeMounted(getMech(), mount.get());
+                }
+                
+                if (motiveType.getSelectedIndex() == QuadVee.MOTIVE_WHEEL) {
+                    ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_WHEEL);
+                    UnitUtil.createSpreadMounts(getMech(), EquipmentType.get("Wheels"));
+                } else {
+                    ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_TRACK);
+                    UnitUtil.createSpreadMounts(getMech(), EquipmentType.get("Tracks"));
+                }
+            }
+            //Change of biped, quad, or tripod requires a new Entity and is handled by refreshAll.
         }
         addAllListeners();
         refresh.refreshAll();
@@ -1126,8 +1190,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         source.removeKeyListener(this);
         manualBV.removeKeyListener(this);
         omniCB.removeActionListener(this);
-        motiveType.removeItemListener(this);
-        lamCB.removeActionListener(this);
+        baseType.removeActionListener(this);
+        motiveType.removeActionListener(this);
         fullHeadEjectCB.removeActionListener(this);
         resetChassisButton.removeActionListener(this);
         structureCombo.removeItemListener(this);
@@ -1157,8 +1221,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         source.addKeyListener(this);
         manualBV.addKeyListener(this);
         omniCB.addActionListener(this);
-        motiveType.addItemListener(this);
-        lamCB.addActionListener(this);
+        baseType.addActionListener(this);
+        motiveType.addActionListener(this);
         fullHeadEjectCB.addActionListener(this);
         resetChassisButton.addActionListener(this);
         structureCombo.addItemListener(this);
@@ -1225,15 +1289,19 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     public boolean isQuad() {
-        return motiveType.getSelectedIndex() == 1;
+        return baseType.getSelectedIndex() == 0 && motiveType.getSelectedIndex() == 1;
     }
 
     public boolean isTripod() {
-        return motiveType.getSelectedIndex() == 2;
+        return baseType.getSelectedIndex() == 0 && motiveType.getSelectedIndex() == 2;
     }
 
     public boolean isLAM() {
-        return lamCB.isSelected();
+        return baseType.getSelectedItem().equals(baseTypes[BASE_TYPE_LAM]);
+    }
+
+    public boolean isQuadVee() {
+        return baseType.getSelectedItem().equals(baseTypes[BASE_TYPE_QUADVEE]);
     }
 
     private void createISMounts() {
