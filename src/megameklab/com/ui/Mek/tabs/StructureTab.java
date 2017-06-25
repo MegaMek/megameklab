@@ -920,11 +920,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             break;
                     }
                 }
+                //If we have changed to or from unofficial, the availability of LAMs and QuadVees
+                //has changed.
+                boolean wasUnofficial = unitTechLevel == TechConstants.T_IS_UNOFFICIAL
+                        || unitTechLevel == TechConstants.T_CLAN_UNOFFICIAL;
+                if (wasUnofficial != (getMech().getTechLevel() == TechConstants.T_IS_UNOFFICIAL
+                        || getMech().getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL)) {
+                    populateUnitTypeOptions();
+                }
                 populateChoices(true);
                 refreshCockpitType();
                 armor.resetArmorPoints();
                 UnitUtil.checkEquipmentByTechLevel(getMech());
             } else if (combo.equals(techType)) {
+                boolean techBaseChanged = getMech().isClan() ==
+                        (techType.getSelectedIndex() == 0 || techType.getSelectedIndex() == 2);
                 if ((techType.getSelectedIndex() == 1)
                         && (!getMech().isClan() || getMech().isMixedTech())) {
                     techLevel.removeAllItems();
@@ -1009,6 +1019,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     UnitUtil.removeISorArmorMounts(getMech(), false);
                 }
                 createArmorMountsAndSetArmorType();
+                //If we have switched from Clan to IS or vice-versa and aren't unofficial, the
+                //availability of LAMs and QuadVees has changed.
+                if (techBaseChanged && getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL
+                        && getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL) {
+                    this.populateUnitTypeOptions();
+                }
                 populateChoices(true);
                 armor.resetArmorPoints();
                 UnitUtil.checkEquipmentByTechLevel(getMech());
@@ -1571,25 +1587,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 || (getMech().getTechLevel() == TechConstants.T_IS_UNOFFICIAL)
                 || (getMech().getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL);
 
-        baseType.removeAllItems();
-        baseType.addItem(baseTypes[BASE_TYPE_STANDARD]);
-        if (!isClan || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
-                == TechConstants.T_SIMPLE_UNOFFICIAL){
-            baseType.addItem(baseTypes[BASE_TYPE_LAM]);
-        }
-        if (isClan || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
-                == TechConstants.T_SIMPLE_UNOFFICIAL){
-            baseType.addItem(baseTypes[BASE_TYPE_QUADVEE]);
-        }
-
         // advanced means we allow ultra-light mechs
         if (!isAdvanced) {
             ((SpinnerNumberModel) weightClass.getModel()).setMinimum(20);
         } else {
             ((SpinnerNumberModel) weightClass.getModel()).setMinimum(10);
         }
-        // advanced IS means we allow super-heavy mechs
-        if (!isClan && isAdvanced) {
+
+        if (getMech() instanceof QuadVee) {
+            //Unofficial tech level allows building IS QuadVees, so we still need
+            //to set the max weight to prevent superheavies.
+            ((SpinnerNumberModel) weightClass.getModel()).setMaximum(100);            
+        } else if (getMech() instanceof LandAirMech) {
+            ((SpinnerNumberModel) weightClass.getModel()).setMaximum(55);            
+        } else if (!isClan && isAdvanced) {
+            // advanced IS means we allow super-heavy mechs
             ((SpinnerNumberModel) weightClass.getModel()).setMaximum(200);
         } else {
             ((SpinnerNumberModel) weightClass.getModel()).setMaximum(100);
@@ -1810,6 +1822,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             }
         } else if (getMech() instanceof TripodMech) {
             cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TRIPOD]);
+        } else if (getMech() instanceof QuadVee) {
+            cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_QUADVEE]);
+        } else if (getMech() instanceof LandAirMech) {
+            cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
+            cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
         } else {
             switch (getMech().getTechLevel()) {
                 case TechConstants.T_INTRO_BOXSET:
@@ -2166,6 +2183,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             }
         }
 
+    }
+    
+    private void populateUnitTypeOptions() {
+        baseType.removeAllItems();
+        baseType.addItem(baseTypes[BASE_TYPE_STANDARD]);
+        if (!TechConstants.isClan(getMech().getTechLevel())
+                || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
+                == TechConstants.T_SIMPLE_UNOFFICIAL){
+            baseType.addItem(baseTypes[BASE_TYPE_LAM]);
+        }
+        if (TechConstants.isClan(getMech().getTechLevel())
+                || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
+                == TechConstants.T_SIMPLE_UNOFFICIAL){
+            baseType.addItem(baseTypes[BASE_TYPE_QUADVEE]);
+        }
     }
 
     private void setStructureCombo() {

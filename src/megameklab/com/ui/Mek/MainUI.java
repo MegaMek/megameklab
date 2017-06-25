@@ -184,7 +184,7 @@ public class MainUI extends MegaMekLabMainUI {
             String chassis = getEntity().getChassis();
             String source = getEntity().getSource();
             int year = getEntity().getYear();
-            int techLevel = getEntity().getTechLevel();
+//            int techLevel = getEntity().getTechLevel();
             int mBV = getEntity().getManualBV();
 
             long eType;
@@ -206,7 +206,8 @@ public class MainUI extends MegaMekLabMainUI {
             getEntity().setModel(model);
             getEntity().setSource(source);
             getEntity().setYear(year);
-            getEntity().setTechLevel(techLevel);
+            // This is overwriting the minimum tech level of the Mech.
+//            getEntity().setTechLevel(techLevel);
             getEntity().setManualBV(mBV);
 
             reloadTabs();
