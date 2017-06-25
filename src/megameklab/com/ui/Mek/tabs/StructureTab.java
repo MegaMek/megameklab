@@ -586,18 +586,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
         omniCB.setSelected(getMech().isOmni());
         resetChassisButton.setEnabled(getMech().isOmni());
-        baseType.removeAllItems();
-        baseType.addItem(baseTypes[BASE_TYPE_STANDARD]);
-        if (!TechConstants.isClan(getMech().getTechLevel())
-                || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
-                == TechConstants.T_SIMPLE_UNOFFICIAL){
-            baseType.addItem(baseTypes[BASE_TYPE_LAM]);
-        }
-        if (TechConstants.isClan(getMech().getTechLevel())
-                || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
-                == TechConstants.T_SIMPLE_UNOFFICIAL){
-            baseType.addItem(baseTypes[BASE_TYPE_QUADVEE]);
-        }
         if (getMech() instanceof LandAirMech) {
             baseType.setSelectedItem(baseTypes[1]);
             motiveType.setModel(lamTypesModel);
@@ -611,8 +599,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             motiveType.setModel(standardTypesModel);
             if (getMech() instanceof TripodMech) {
                 motiveType.setSelectedIndex(2);
-            }
-            if (getMech() instanceof QuadMech) {
+            } else if (getMech() instanceof QuadMech) {
                 motiveType.setSelectedIndex(1);
             } else {
                 motiveType.setSelectedItem(0);
@@ -1025,6 +1012,29 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 populateChoices(true);
                 armor.resetArmorPoints();
                 UnitUtil.checkEquipmentByTechLevel(getMech());
+            } else if (e.getSource().equals(motiveType)) {
+                if (getMech() instanceof LandAirMech) {
+                    ((LandAirMech)getMech()).setLAMType(motiveType.getSelectedIndex());
+                } else if (getMech() instanceof QuadVee
+                        && ((QuadVee)getMech()).getMotiveType() != motiveType.getSelectedIndex()) {
+                    //For QuadVees that change the motive type we need to remove the tracks
+                    //or wheels and replace them with the alternate.
+                    Optional<Mounted> mount = getMech().getMisc().stream()
+                            .filter(m -> m.getType().hasFlag(MiscType.F_TRACKS))
+                            .findAny();
+                    if (mount.isPresent()) {
+                        UnitUtil.removeMounted(getMech(), mount.get());
+                    }
+                    
+                    if (motiveType.getSelectedIndex() == QuadVee.MOTIVE_WHEEL) {
+                        ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_WHEEL);
+                        UnitUtil.createSpreadMounts(getMech(), EquipmentType.get("Wheels"));
+                    } else {
+                        ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_TRACK);
+                        UnitUtil.createSpreadMounts(getMech(), EquipmentType.get("Tracks"));
+                    }
+                }
+                //Change of biped, quad, or tripod requires a new Entity and is handled by refreshAll.
             }
             addAllListeners();
             refresh.refreshAll();
@@ -1128,29 +1138,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             } else if (e.getSource().equals(resetChassisButton)) {
                 UnitUtil.resetBaseChassis(getMech());
             }
-        } else if (e.getSource().equals(motiveType)) {
-            if (getMech() instanceof LandAirMech) {
-                ((LandAirMech)getMech()).setLAMType(motiveType.getSelectedIndex());
-            } else if (getMech() instanceof QuadVee
-                    && ((QuadVee)getMech()).getMotiveType() != motiveType.getSelectedIndex()) {
-                //For QuadVees that change the motive type we need to remove the tracks
-                //or wheels and replace them with the alternate.
-                Optional<Mounted> mount = getMech().getMisc().stream()
-                        .filter(m -> m.getType().hasFlag(MiscType.F_TRACKS))
-                        .findAny();
-                if (mount.isPresent()) {
-                    UnitUtil.removeMounted(getMech(), mount.get());
-                }
-                
-                if (motiveType.getSelectedIndex() == QuadVee.MOTIVE_WHEEL) {
-                    ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_WHEEL);
-                    UnitUtil.createSpreadMounts(getMech(), EquipmentType.get("Wheels"));
-                } else {
-                    ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_TRACK);
-                    UnitUtil.createSpreadMounts(getMech(), EquipmentType.get("Tracks"));
-                }
-            }
-            //Change of biped, quad, or tripod requires a new Entity and is handled by refreshAll.
         }
         addAllListeners();
         refresh.refreshAll();
@@ -1190,8 +1177,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         source.removeKeyListener(this);
         manualBV.removeKeyListener(this);
         omniCB.removeActionListener(this);
-        baseType.removeActionListener(this);
-        motiveType.removeActionListener(this);
+        baseType.removeItemListener(this);
+        motiveType.removeItemListener(this);
         fullHeadEjectCB.removeActionListener(this);
         resetChassisButton.removeActionListener(this);
         structureCombo.removeItemListener(this);
@@ -1221,8 +1208,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         source.addKeyListener(this);
         manualBV.addKeyListener(this);
         omniCB.addActionListener(this);
-        baseType.addActionListener(this);
-        motiveType.addActionListener(this);
+        baseType.addItemListener(this);
+        motiveType.addItemListener(this);
         fullHeadEjectCB.addActionListener(this);
         resetChassisButton.addActionListener(this);
         structureCombo.addItemListener(this);
@@ -1583,6 +1570,17 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 || (getMech().getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL)
                 || (getMech().getTechLevel() == TechConstants.T_IS_UNOFFICIAL)
                 || (getMech().getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL);
+
+        baseType.removeAllItems();
+        baseType.addItem(baseTypes[BASE_TYPE_STANDARD]);
+        if (!isClan || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
+                == TechConstants.T_SIMPLE_UNOFFICIAL){
+            baseType.addItem(baseTypes[BASE_TYPE_LAM]);
+        }
+        if (isClan || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
+                == TechConstants.T_SIMPLE_UNOFFICIAL){
+            baseType.addItem(baseTypes[BASE_TYPE_QUADVEE]);
+        }
 
         // advanced means we allow ultra-light mechs
         if (!isAdvanced) {
