@@ -32,6 +32,7 @@ import megamek.common.EquipmentType;
 import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.QuadMech;
+import megamek.common.QuadVee;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megameklab.com.ui.MegaMekLabMainUI;
@@ -127,6 +128,11 @@ public class MainUI extends MegaMekLabMainUI {
             setEntity(new LandAirMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD, LandAirMech.LAM_STANDARD));
             getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);
             getEntity().setManualBV(-1);
+        } else if (entityType == Entity.ETYPE_QUADVEE) {
+            setEntity(new QuadVee(Mech.GYRO_STANDARD, QuadVee.MOTIVE_TRACK));
+            getEntity().setTechLevel(TechConstants.T_CLAN_ADVANCED);
+            UnitUtil.createSpreadMounts((Mech)getEntity(), EquipmentType.get("Tracks"));
+            getEntity().setManualBV(-1);
         } else { // type == 0
             setEntity(new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD));
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
@@ -159,9 +165,10 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshAll() {
 
-        boolean isQuad = getEntity() instanceof QuadMech;
+        boolean isQuad = getEntity() instanceof QuadMech && !(getEntity() instanceof QuadVee);
         boolean isLAM = getEntity() instanceof LandAirMech;
         boolean isTripod = getEntity() instanceof TripodMech;
+        boolean isQuadVee = getEntity() instanceof QuadVee;
 
         // Check to see if the current entity type matches the selected type
         if (((structureTab.isQuad() && !isQuad)
@@ -169,17 +176,21 @@ public class MainUI extends MegaMekLabMainUI {
                 || ((structureTab.isLAM() && !isLAM)
                         || (!structureTab.isLAM() && isLAM))
                 || ((structureTab.isTripod() && !isTripod)
-                        || (!structureTab.isTripod() && isTripod))) {
+                        || (!structureTab.isTripod() && isTripod))
+                || ((structureTab.isQuadVee() && !isQuadVee)
+                        || (!structureTab.isQuadVee() && isQuadVee))) {
             // If no match, create a new entity of the right type
             String model = getEntity().getModel();
             String chassis = getEntity().getChassis();
             String source = getEntity().getSource();
             int year = getEntity().getYear();
-            int techLevel = getEntity().getTechLevel();
+//            int techLevel = getEntity().getTechLevel();
             int mBV = getEntity().getManualBV();
 
             long eType;
-            if (structureTab.isQuad()){
+            if (structureTab.isQuadVee()) {
+                eType = Entity.ETYPE_QUADVEE;
+            } else if (structureTab.isQuad()){
                 eType = Entity.ETYPE_QUAD_MECH;
             } else if (structureTab.isLAM()){
                 eType = Entity.ETYPE_LAND_AIR_MECH;
@@ -195,7 +206,8 @@ public class MainUI extends MegaMekLabMainUI {
             getEntity().setModel(model);
             getEntity().setSource(source);
             getEntity().setYear(year);
-            getEntity().setTechLevel(techLevel);
+            // This is overwriting the minimum tech level of the Mech.
+//            getEntity().setTechLevel(techLevel);
             getEntity().setManualBV(mBV);
 
             reloadTabs();
