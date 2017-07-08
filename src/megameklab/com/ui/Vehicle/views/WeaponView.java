@@ -50,7 +50,7 @@ import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
-import megamek.common.weapons.ArtilleryWeapon;
+import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.IView;

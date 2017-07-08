@@ -32,8 +32,7 @@ import megamek.common.WeaponType;
 import megamek.common.weapons.ATMWeapon;
 import megamek.common.weapons.battlearmor.ISBACompactNarc;
 import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
-import megamek.common.weapons.capitalweapons.CLAR10Weapon;
-import megamek.common.weapons.capitalweapons.ISAR10Weapon;
+import megamek.common.weapons.capitalweapons.AR10Weapon;
 import megamek.common.weapons.lasers.EnergyWeapon;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
@@ -245,8 +244,7 @@ public class EquipmentInfo {
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
 
-            isAR10 = (weapon instanceof CLAR10Weapon) 
-                    || (weapon instanceof ISAR10Weapon);
+            isAR10 = (weapon instanceof AR10Weapon);
 
             if (isAR10) {
                 int barracudaAmmo = 0;

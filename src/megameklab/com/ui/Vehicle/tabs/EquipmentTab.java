@@ -66,7 +66,7 @@ import megamek.common.SupportVTOL;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.WeaponType;
-import megamek.common.weapons.ArtilleryWeapon;
+import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
