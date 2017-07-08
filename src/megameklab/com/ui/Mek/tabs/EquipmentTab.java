@@ -62,6 +62,7 @@ import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.QuadVee;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.com.ui.EntitySource;
@@ -378,6 +379,8 @@ public class EquipmentTab extends ITab implements ActionListener {
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || (etype.hasFlag(MiscType.F_MASC) 
                             && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+                    || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
+                        && etype.hasFlag(MiscType.F_TRACKS))
                     || UnitUtil.isArmorOrStructure(etype)) {
                 continue;
             }
@@ -549,6 +552,13 @@ public class EquipmentTab extends ITab implements ActionListener {
                 }
                 if ((etype instanceof MiscType) && (etype.hasFlag(MiscType.F_TSM) || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM) || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER)))) {
                     return false;
+                }
+                if (etype instanceof MiscType && etype.hasFlag(MiscType.F_TRACKS)) {
+                    if (getMech() instanceof QuadVee) {
+                        return false;
+                    } else if (etype.hasSubType(MiscType.S_QUADVEE_WHEELS)) {
+                        return false;
+                    }
                 }
                 if (((nType == T_OTHER) && UnitUtil.isMechEquipment(etype, mech))
                         || (((nType == T_WEAPON) && (UnitUtil.isMechWeapon(etype, mech) || UnitUtil.isPhysicalWeapon(etype))))

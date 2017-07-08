@@ -132,7 +132,10 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     return;
                 }                
                 
-                if (mount != null) {
+                if (mount != null
+                        && !((getUnit().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
+                        && mount.getType() instanceof MiscType
+                        && mount.getType().hasFlag(MiscType.F_TRACKS))) {
                     JMenuItem info;
                     if (!UnitUtil.isFixedLocationSpreadEquipment(mount
                             .getType())) {
