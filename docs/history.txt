@@ -1,5 +1,7 @@
 VERSION HISTORY:
 ----------------
+v0.43.4-git
+
 v0.43.3 (2017-07-18 18:30 UTC)
 + Bug: Some conventional infantry options require a higher tech level for Clan conventional infantry.
 + Issue #59: Drop-down list error when creating infantry.
