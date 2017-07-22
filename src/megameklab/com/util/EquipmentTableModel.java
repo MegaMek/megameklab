@@ -36,12 +36,12 @@ import megamek.common.RangeType;
 import megamek.common.Tank;
 import megamek.common.TechAdvancement;
 import megamek.common.WeaponType;
-import megamek.common.weapons.ATMWeapon;
-import megamek.common.weapons.MissileWeapon;
 import megamek.common.weapons.autocannons.RACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.missiles.ATMWeapon;
+import megamek.common.weapons.missiles.MissileWeapon;
 import megamek.common.weapons.missiles.ThunderBoltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 
