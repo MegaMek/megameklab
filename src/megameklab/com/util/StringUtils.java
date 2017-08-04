@@ -29,8 +29,6 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
-import megamek.common.weapons.StreakLRMWeapon;
-import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.autocannons.ACWeapon;
@@ -61,6 +59,7 @@ import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserMedium;
 import megamek.common.weapons.lasers.ISVariableSpeedPulseLaserSmall;
 import megamek.common.weapons.lasers.ISXPulseLaserSmall;
 import megamek.common.weapons.lrms.LRMWeapon;
+import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
 import megamek.common.weapons.missiles.ISThunderBolt10;
 import megamek.common.weapons.missiles.ISThunderBolt15;
@@ -80,6 +79,7 @@ import megamek.common.weapons.ppc.ISPlasmaRifle;
 import megamek.common.weapons.ppc.ISSnubNosePPC;
 import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
+import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.TAGWeapon;
 
 public class StringUtils {
