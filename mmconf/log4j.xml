@@ -27,7 +27,7 @@
 
     <!-- Setup the Root category -->
     <root>
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="FILE"/>
     </root>
 
