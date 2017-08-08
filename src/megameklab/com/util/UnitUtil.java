@@ -2308,6 +2308,13 @@ public class UnitUtil {
                     return false;
                 }
             }
+            
+            if ((unit instanceof LandAirMech)
+                    && (weapon.getAmmoType() == AmmoType.T_GAUSS_HEAVY
+                    || weapon.getAmmoType() == AmmoType.T_IGAUSS_HEAVY)) {
+                return false;
+            }
+            
             return true;
         }
         return false;
@@ -2455,6 +2462,26 @@ public class UnitUtil {
                             || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
                             || eq.hasFlag(MiscType.F_PARTIAL_WING)
                             || eq.hasFlag(MiscType.F_UMU))) {
+                return false;
+            }
+            
+            if ((unit instanceof LandAirMech)
+                    && ((eq.hasFlag(MiscType.F_MASC) && eq.getSubType() == MiscType.S_SUPERCHARGER)
+                            || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
+                            || eq.hasFlag(MiscType.F_JUMP_BOOSTER)
+                            || eq.hasFlag(MiscType.F_PARTIAL_WING)
+                            || eq.hasFlag(MiscType.F_VOIDSIG)
+                            || eq.hasFlag(MiscType.F_NULLSIG)
+                            || eq.hasFlag(MiscType.F_BLUE_SHIELD)
+                            || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
+                            || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
+                            || eq.hasFlag(MiscType.F_DUMPER)
+                            || eq.hasFlag(MiscType.F_HEAVY_BRIDGE_LAYER)
+                            || eq.hasFlag(MiscType.F_MEDIUM_BRIDGE_LAYER)
+                            || eq.hasFlag(MiscType.F_LIGHT_BRIDGE_LAYER)
+                            || (eq.hasFlag(MiscType.F_CLUB)
+                                    && (eq.getSubType() == MiscType.S_BACKHOE)
+                                    || (eq.getSubType() == MiscType.S_COMBINE)))) {
                 return false;
             }
 
