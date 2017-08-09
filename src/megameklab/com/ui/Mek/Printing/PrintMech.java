@@ -109,13 +109,13 @@ public class PrintMech implements Printable {
         printMekImage(g2d, hud);
 
         if (mech.hasShield()) {
-            if ((UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) && (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_LARM) > 0)) {
+            if ((UnitUtil.getShieldDamageAbsorption(mech, Mech.LOC_RARM) > 0) && (UnitUtil.getShieldDamageAbsorption(mech, Mech.LOC_LARM) > 0)) {
                 try {
                     ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedBothShields.svg")).render(g2d);
                 } catch (SVGException e) {
                     e.printStackTrace();
                 }
-            } else if (UnitUtil.getShieldDamageAbsorbtion(mech, Mech.LOC_RARM) > 0) {
+            } else if (UnitUtil.getShieldDamageAbsorption(mech, Mech.LOC_RARM) > 0) {
                 try {
                     ImageHelper.loadSVGImage(new File("data/images/recordsheets/BipedRightShields.svg")).render(g2d);
                 } catch (SVGException e) {
