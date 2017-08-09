@@ -3,6 +3,7 @@ VERSION HISTORY:
 v0.43.4-git
 + Issue #58: Right-click > Left/Right Torso > Add to Left/Right Torso for targeting computer makes it use only one crit slot
 + Issue #63: Double Heat Sinks are allowing "doubling up" on Super Heavy Mechs
++ Issue #70: Updated project URL on the About dialog.
 
 v0.43.3 (2017-07-18 18:30 UTC)
 + Bug: Some conventional infantry options require a higher tech level for Clan conventional infantry.
