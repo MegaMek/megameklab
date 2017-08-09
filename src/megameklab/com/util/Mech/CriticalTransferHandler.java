@@ -439,18 +439,18 @@ public class CriticalTransferHandler extends TransferHandler {
                         if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) && (cs.getMount2() == null)) {
                             EquipmentType etype = cs.getMount().getType();
                             EquipmentType etype2 = eq.getType();
-                            if ((etype instanceof AmmoType)) {
-                                if (!(etype2 instanceof AmmoType) || (((AmmoType)etype).getAmmoType() != ((AmmoType)etype2).getAmmoType())) {
-                                    return addEquipmentMech((Mech)getUnit(), eq, slotNumber);
-                                }
-                            } else {
-                                if (!(etype.equals(etype2)) || ((etype instanceof MiscType) && (!etype.hasFlag(MiscType.F_HEAT_SINK) && !etype.hasFlag(MiscType.F_DOUBLE_HEAT_SINK ))) || !((etype instanceof MiscType))) {
-                                    return addEquipmentMech((Mech)getUnit(), eq, slotNumber);
-                                }
+                            boolean canDouble = false;
+                            if ((etype instanceof AmmoType) && (etype2 instanceof AmmoType)) {
+                                canDouble = (((AmmoType)etype).getAmmoType() == ((AmmoType)etype2).getAmmoType())
+                                        && (((AmmoType)etype).getRackSize() == ((AmmoType)etype2).getRackSize());
+                            } else if (etype.equals(etype2) && UnitUtil.isHeatSink(etype)) {
+                                canDouble = etype.getCriticals(getUnit()) == 1;
                             }
-                            cs.setMount2(eq);
-                            changeMountStatus(eq, location, false);
-                            return true;
+                            if (canDouble) {
+                                cs.setMount2(eq);
+                                changeMountStatus(eq, location, false);
+                                return true;
+                            }
                         }
                     }
                     return addEquipmentMech((Mech)getUnit(), eq, slotNumber);
