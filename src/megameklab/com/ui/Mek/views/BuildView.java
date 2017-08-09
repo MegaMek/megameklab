@@ -38,6 +38,7 @@ import javax.swing.table.TableColumn;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
+import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -46,11 +47,11 @@ import megamek.common.weapons.Weapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.CriticalTransferHandler;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
-import megameklab.com.util.CriticalTransferHandler;
 
 /**
  * This IView shows all the equipment that's not yet been assigned a location
@@ -276,7 +277,9 @@ public class BuildView extends IView implements ActionListener, MouseListener {
             String[] abbrLocations = getMech().getLocationAbbrs();
 
             if ((eq.getType().isSpreadable() || eq.isSplitable())
-                    && (totalCrits > 1)) {
+                    && (totalCrits > 1)
+                    && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
+                    && !(getMech() instanceof LandAirMech)) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMech());
                 if ((critSpace[Mech.LOC_RT] >= 1) && UnitUtil.isValidLocation(getMech(), eq.getType(), Mech.LOC_RT)) {
                     JMenu rtMenu = new JMenu(locations[Mech.LOC_RT]);
@@ -427,6 +430,11 @@ public class BuildView extends IView implements ActionListener, MouseListener {
 
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
         Mounted eq = (Mounted) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+        if (eq.getType().isSpreadable() || eq.isSplitable()) {
+            jMenuLoadSplitComponent_actionPerformed(location, Entity.LOC_NONE, eq.getType().getCriticals(getMech()),
+                    selectedRow);
+            return;
+        }
         try {
             if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
                 String[] facings;
