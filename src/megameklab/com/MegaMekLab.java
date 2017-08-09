@@ -18,19 +18,15 @@ package megameklab.com;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.Locale;
 
 import megamek.MegaMek;
-import megamek.common.annotations.Nullable;
 import megamek.common.logging.DefaultMmLogger;
 import megamek.common.logging.LogConfig;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
-import megamek.common.preference.PreferenceManager;
 import megameklab.com.ui.Mek.MainUI;
 
 public class MegaMekLab {
