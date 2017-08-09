@@ -196,7 +196,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         ((JSpinner.DefaultEditor) jumpMP.getEditor())
                 .setMinimumSize(spinnerSize);
 
-        disableJump();
+//        disableJump();
 
         weight = new JSpinner(new SpinnerNumberModel(20, 1, 100, 1));
 
@@ -596,6 +596,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         cruiseMP.getModel().setValue(getTank().getWalkMP());
         flankMP.setText(getTank().getRunMPasString());
+        jumpMP.getModel().setValue(getTank().getJumpMP());
 
         updateEngineTypes(getTank().isClan());
         updateTroopSpaceAllowed();
