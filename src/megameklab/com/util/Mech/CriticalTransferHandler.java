@@ -35,6 +35,7 @@ import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
 import megamek.common.MechFileParser;
@@ -150,7 +151,9 @@ public class CriticalTransferHandler extends TransferHandler {
             int nextLocation = getUnit().getTransferLocation(location);
             
             // Determine if we should spread equipment over multiple locations
-            if (eq.getType().getCriticals(getUnit()) > primaryLocSpace) {
+            if ((eq.getType().getCriticals(getUnit()) > primaryLocSpace)
+                    && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
+                    && !(getUnit() instanceof LandAirMech)) {
                 if (location == Mech.LOC_RT) {
                     String[] locations =
                         { "Center Torso", "Right Leg", "Right Arm" };
