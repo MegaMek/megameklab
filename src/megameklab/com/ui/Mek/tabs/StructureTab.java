@@ -582,7 +582,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public void refresh() {
         removeAllListeners();
-        if (getMech().isPrimitive()) {
+        if (getMech().isPrimitive() || isLAM()) {
             getMech().setOmni(false);
             omniCB.setEnabled(false);
         } else {
@@ -1717,29 +1717,34 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
                         isClan));
                 if (((index == EquipmentType.T_ARMOR_PATCHWORK) && isExperimental)
-                        || ((et != null)
-                                && et.hasFlag(MiscType.F_MECH_EQUIPMENT) && (TechConstants
-                                    .isLegal(getMech().getTechLevel(), et
-                                            .getTechLevel(getMech().getYear()),
-                                            isMixed)))) {
+                        || (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
+                        && TechConstants.isLegal(getMech().getTechLevel(),
+                                et.getTechLevel(getMech().getYear()), isMixed)
+                        && !((getMech() instanceof LandAirMech)
+                                && ((et.getCriticals(getMech()) > 0)
+                                        || et.hasFlag(MiscType.F_HARDENED_ARMOR))))) {
                     armorCombo.addItem(EquipmentType.armorNames[index]);
                 }
             } else {
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
                         true));
-                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT) && TechConstants
-                        .isLegal(getMech().getTechLevel(), et
-                                .getTechLevel(getMech().getYear()),
-                                isMixed)) {
+                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
+                        && TechConstants.isLegal(getMech().getTechLevel(),
+                                et.getTechLevel(getMech().getYear()), isMixed)
+                        && !((getMech() instanceof LandAirMech)
+                                && ((et.getCriticals(getMech()) > 0)
+                                        || et.hasFlag(MiscType.F_HARDENED_ARMOR)))) {
                     armorCombo.addItem(EquipmentType.getArmorTypeName(index,
                             true));
                 }
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
                         false));
-                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT) && TechConstants
-                        .isLegal(getMech().getTechLevel(), et
-                                .getTechLevel(getMech().getYear()),
-                                isMixed)) {
+                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
+                        && TechConstants.isLegal(getMech().getTechLevel(),
+                                et.getTechLevel(getMech().getYear()), isMixed)
+                        && !((getMech() instanceof LandAirMech)
+                                && ((et.getCriticals(getMech()) > 0)
+                                        || et.hasFlag(MiscType.F_HARDENED_ARMOR)))) {
                     armorCombo.addItem(EquipmentType.getArmorTypeName(index,
                             false));
                 }
@@ -1755,7 +1760,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         engineType.removeAllItems();
 
-        if (isMixed) {
+        if (getMech() instanceof LandAirMech) {
+            engineCount = 2;
+            engineList = new String[engineCount];
+            engineList[0] = ENGINESTANDARD;
+            engineList[1] = ENGINECOMPACT;
+        } else if (isMixed) {
             if (isClan) {
                 engineCount = clanEngineTypes.length + isEngineTypes.length;
                 engineList = new String[engineCount];
@@ -2152,6 +2162,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         if (getMech().isSuperHeavy()) {
             gyroList = new String[1];
             gyroList[0] = Mech.GYRO_SHORT_STRING[Mech.GYRO_SUPERHEAVY];
+        } else if (getMech() instanceof LandAirMech) {
+            gyroList = new String[3];
+            gyroList[0] = Mech.GYRO_SHORT_STRING[Mech.GYRO_STANDARD];
+            gyroList[1] = Mech.GYRO_SHORT_STRING[Mech.GYRO_COMPACT];
+            gyroList[2] = Mech.GYRO_SHORT_STRING[Mech.GYRO_HEAVY_DUTY];
         } else if (isMixed) {
             if (isClan) {
                 int gyroPos = 0;
@@ -2950,6 +2965,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             }
             EquipmentType et = EquipmentType.get(EquipmentType
                     .getStructureTypeName(i, getMech().isClan()));
+            // LAMs cannot use any internal structure that requires critical space.
+            if ((getMech() instanceof LandAirMech) && et.getCriticals(getMech()) > 0) {
+                continue;
+            }
             if ((et != null)
                     && TechConstants
                             .isLegal(getMech().getTechLevel(),
