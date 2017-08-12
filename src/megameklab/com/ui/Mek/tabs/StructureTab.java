@@ -60,15 +60,19 @@ import megamek.common.EquipmentType;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
+import megamek.common.MechFileParser;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.QuadVee;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
+import megamek.common.loaders.EntityLoadingException;
+import megamek.common.logging.LogLevel;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.ui.Mek.views.SummaryView;
@@ -578,7 +582,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public void refresh() {
         removeAllListeners();
-        if (getMech().isPrimitive()) {
+        if (getMech().isPrimitive() || isLAM()) {
             getMech().setOmni(false);
             omniCB.setEnabled(false);
         } else {
@@ -841,26 +845,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     int gyroType = Arrays.asList(Mech.GYRO_SHORT_STRING)
                             .indexOf(((String)combo.getSelectedItem()).replace("(IS) ", ""));
                     getMech().setGyroType(gyroType);
-                    getMech().clearGyroCrits();
-
-                    switch (getMech().getGyroType()) {
-                        case Mech.GYRO_COMPACT:
-                            getMech().addCompactGyro();
-                            getMech().clearEngineCrits();
-                            getMech().addEngineCrits();
-                            break;
-                        case Mech.GYRO_HEAVY_DUTY:
-                            getMech().addHeavyDutyGyro();
-                            break;
-                        case Mech.GYRO_XL:
-                            getMech().addXLGyro();
-                            break;
-                        case Mech.GYRO_NONE:
-                            UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
-                            break;
-                        default:
-                            getMech().addGyro();
-                    }
+                    resetSystemCrits();
                 }
             } else if (combo.equals(heatSinkType)) {
                 UnitUtil.updateHeatSinks(getMech(), (Integer) heatSinkNumber
@@ -1056,6 +1041,159 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             refresh.refreshAll();
         }
     }
+    
+    private void resetSystemCrits() {
+        getMech().clearCockpitCrits();
+        getMech().clearGyroCrits();
+        getMech().clearEngineCrits();
+        
+        int[] ctEngine = getMech().getEngine().getCenterTorsoCriticalSlots(getMech().getGyroType());
+        int lastEngine = ctEngine[ctEngine.length - 1];
+        for (int slot = 0; slot <= lastEngine; slot++) {
+            clearCrit(Mech.LOC_CT, slot);
+        }
+        for (int slot : getMech().getEngine().getSideTorsoCriticalSlots()) {
+            clearCrit(Mech.LOC_RT, slot);
+            clearCrit(Mech.LOC_LT, slot);
+        }
+        getMech().addEngineCrits();
+        switch (getMech().getGyroType()) {
+        case Mech.GYRO_COMPACT:
+            getMech().addCompactGyro();
+            break;
+        case Mech.GYRO_HEAVY_DUTY:
+            getMech().addHeavyDutyGyro();
+            break;
+        case Mech.GYRO_XL:
+            getMech().addXLGyro();
+            break;
+        case Mech.GYRO_NONE:
+            UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
+            break;
+        default:
+            getMech().addGyro();
+        }
+        
+        switch (getMech().getCockpitType()) {
+            case Mech.COCKPIT_COMMAND_CONSOLE:
+                clearCritsForCockpit(false, true);
+                getMech().addCommandConsole();
+                break;
+            case Mech.COCKPIT_DUAL:
+                clearCritsForCockpit(false, true);
+                getMech().addDualCockpit();
+                break;
+            case Mech.COCKPIT_SMALL:
+                clearCritsForCockpit(true, false);
+                getMech().addSmallCockpit();
+                break;
+            case Mech.COCKPIT_INTERFACE:
+                clearCritsForCockpit(false, true);
+                getMech().addInterfaceCockpit();
+                break;
+            case Mech.COCKPIT_TORSO_MOUNTED:
+                if (lastEngine + 2 < getMech().getNumberOfCriticals(Mech.LOC_CT)) {
+                    clearCrit(Mech.LOC_CT, lastEngine + 1);
+                    clearCrit(Mech.LOC_CT, lastEngine + 2);
+                }
+                clearCrit(Mech.LOC_HEAD, 0);
+                clearCrit(Mech.LOC_HEAD, 1);
+                if (getMech().getEmptyCriticals(Mech.LOC_LT) < 1) {
+                    for (int i = 0; i < getMech().getNumberOfCriticals(Mech.LOC_LT); i++) {
+                        if (getMech().getCritical(Mech.LOC_LT, i) != null
+                                && getMech().getCritical(Mech.LOC_LT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                            clearCrit(Mech.LOC_LT, i);
+                            break;
+                        }
+                    }
+                }
+                if (getMech().getEmptyCriticals(Mech.LOC_RT) < 1) {
+                    for (int i = 0; i < getMech().getNumberOfCriticals(Mech.LOC_RT); i++) {
+                        if (getMech().getCritical(Mech.LOC_RT, i) != null
+                                && getMech().getCritical(Mech.LOC_RT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                            clearCrit(Mech.LOC_RT, i);
+                            break;
+                        }
+                    }
+                }
+                getMech().addTorsoMountedCockpit();
+                break;
+            case Mech.COCKPIT_INDUSTRIAL:
+                clearCritsForCockpit(false, false);
+                getMech().addIndustrialCockpit();
+                getMech().setArmorType(
+                        EquipmentType.T_ARMOR_INDUSTRIAL);
+                break;
+            case Mech.COCKPIT_PRIMITIVE:
+                clearCritsForCockpit(false, false);
+                getMech().addPrimitiveCockpit();
+                getMech().setArmorType(
+                        EquipmentType.T_ARMOR_PRIMITIVE);
+                break;
+            case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
+                clearCritsForCockpit(false, false);
+                getMech().addIndustrialPrimitiveCockpit();
+                getMech().setArmorType(
+                        EquipmentType.T_ARMOR_COMMERCIAL);
+                break;
+            default:
+                clearCritsForCockpit(false, false);
+                getMech().addCockpit();
+            }
+    }
+    
+    /**
+     * Removes equipment placed in head locations that are needed for a cockpit. For most cockpit
+     * types, this is all but the fourth slot.
+     * 
+     * @param small If true, only clears the first four slots.
+     * @param dual  If true, removes all equipment mounted in the head.
+     */
+    private void clearCritsForCockpit(boolean small, boolean dual) {
+        for (int slot = 0; slot < (small?4:6); slot++) {
+            if ((slot == 3) && !dual) {
+                continue;
+            }
+            clearCrit(Mech.LOC_HEAD, slot);
+        }
+    }
+
+    /**
+     * Removes equipment placed in the given critical slot to clear the space for a system critical
+     */
+    private void clearCrit(int loc, int slotNum) {
+        final CriticalSlot crit = getMech().getCritical(loc, slotNum);
+        Mounted mounted = null;
+        if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+            mounted = crit.getMount();
+        }
+        if (mounted == null) {
+            return;
+        }
+        UnitUtil.removeCriticals(getMech(), mounted);
+        if (crit.getMount2() != null) {
+            UnitUtil.removeCriticals(getMech(), crit.getMount2());
+        }
+
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(getMech());
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+            UnitUtil.changeMountStatus(getMech(), mounted, Entity.LOC_NONE, Entity.LOC_NONE,
+                    false);
+            if (crit.getMount2() != null) {
+                UnitUtil.changeMountStatus(getMech(), crit.getMount2(), Entity.LOC_NONE, Entity.LOC_NONE,
+                        false);
+            }
+        }
+
+    }
 
     public void refreshJumpMP() {
         // check to make sure we are not over the number of jets
@@ -1083,43 +1221,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         getMech().setCockpitType(
                 Mech.getCockpitTypeForString(cockpitType
                         .getSelectedItem().toString()));
-        getMech().clearCockpitCrits();
-        switch (getMech().getCockpitType()) {
-            case Mech.COCKPIT_COMMAND_CONSOLE:
-                getMech().addCommandConsole();
-                break;
-            case Mech.COCKPIT_DUAL:
-                getMech().addDualCockpit();
-                break;
-            case Mech.COCKPIT_SMALL:
-                getMech().addSmallCockpit();
-                break;
-            case Mech.COCKPIT_INTERFACE:
-                getMech().addInterfaceCockpit();
-                break;
-            case Mech.COCKPIT_TORSO_MOUNTED:
-                removeSystemCrits(Mech.SYSTEM_ENGINE);
-                getMech().addEngineCrits();
-                getMech().addTorsoMountedCockpit();
-                break;
-            case Mech.COCKPIT_INDUSTRIAL:
-                getMech().addIndustrialCockpit();
-                getMech().setArmorType(
-                        EquipmentType.T_ARMOR_INDUSTRIAL);
-                break;
-            case Mech.COCKPIT_PRIMITIVE:
-                getMech().addPrimitiveCockpit();
-                getMech().setArmorType(
-                        EquipmentType.T_ARMOR_PRIMITIVE);
-                break;
-            case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
-                getMech().addIndustrialPrimitiveCockpit();
-                getMech().setArmorType(
-                        EquipmentType.T_ARMOR_COMMERCIAL);
-                break;
-            default:
-                getMech().addCockpit();
-        }
+        resetSystemCrits();
         armor.resetArmorPoints();
         populateChoices(true);
     }
@@ -1615,29 +1717,34 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
                         isClan));
                 if (((index == EquipmentType.T_ARMOR_PATCHWORK) && isExperimental)
-                        || ((et != null)
-                                && et.hasFlag(MiscType.F_MECH_EQUIPMENT) && (TechConstants
-                                    .isLegal(getMech().getTechLevel(), et
-                                            .getTechLevel(getMech().getYear()),
-                                            isMixed)))) {
+                        || (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
+                        && TechConstants.isLegal(getMech().getTechLevel(),
+                                et.getTechLevel(getMech().getYear()), isMixed)
+                        && !((getMech() instanceof LandAirMech)
+                                && ((et.getCriticals(getMech()) > 0)
+                                        || et.hasFlag(MiscType.F_HARDENED_ARMOR))))) {
                     armorCombo.addItem(EquipmentType.armorNames[index]);
                 }
             } else {
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
                         true));
-                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT) && TechConstants
-                        .isLegal(getMech().getTechLevel(), et
-                                .getTechLevel(getMech().getYear()),
-                                isMixed)) {
+                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
+                        && TechConstants.isLegal(getMech().getTechLevel(),
+                                et.getTechLevel(getMech().getYear()), isMixed)
+                        && !((getMech() instanceof LandAirMech)
+                                && ((et.getCriticals(getMech()) > 0)
+                                        || et.hasFlag(MiscType.F_HARDENED_ARMOR)))) {
                     armorCombo.addItem(EquipmentType.getArmorTypeName(index,
                             true));
                 }
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
                         false));
-                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT) && TechConstants
-                        .isLegal(getMech().getTechLevel(), et
-                                .getTechLevel(getMech().getYear()),
-                                isMixed)) {
+                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
+                        && TechConstants.isLegal(getMech().getTechLevel(),
+                                et.getTechLevel(getMech().getYear()), isMixed)
+                        && !((getMech() instanceof LandAirMech)
+                                && ((et.getCriticals(getMech()) > 0)
+                                        || et.hasFlag(MiscType.F_HARDENED_ARMOR)))) {
                     armorCombo.addItem(EquipmentType.getArmorTypeName(index,
                             false));
                 }
@@ -1653,7 +1760,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         engineType.removeAllItems();
 
-        if (isMixed) {
+        if (getMech() instanceof LandAirMech) {
+            engineCount = 2;
+            engineList = new String[engineCount];
+            engineList[0] = ENGINESTANDARD;
+            engineList[1] = ENGINECOMPACT;
+        } else if (isMixed) {
             if (isClan) {
                 engineCount = clanEngineTypes.length + isEngineTypes.length;
                 engineList = new String[engineCount];
@@ -2050,6 +2162,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         if (getMech().isSuperHeavy()) {
             gyroList = new String[1];
             gyroList[0] = Mech.GYRO_SHORT_STRING[Mech.GYRO_SUPERHEAVY];
+        } else if (getMech() instanceof LandAirMech) {
+            gyroList = new String[3];
+            gyroList[0] = Mech.GYRO_SHORT_STRING[Mech.GYRO_STANDARD];
+            gyroList[1] = Mech.GYRO_SHORT_STRING[Mech.GYRO_COMPACT];
+            gyroList[2] = Mech.GYRO_SHORT_STRING[Mech.GYRO_HEAVY_DUTY];
         } else if (isMixed) {
             if (isClan) {
                 int gyroPos = 0;
@@ -2368,9 +2485,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         "Bad Engine Rating",
                         JOptionPane.ERROR_MESSAGE);
             } else {
-                System.out.println("Clearning engine crits.");
+                MegaMekLab.getLogger().log(getClass(), "resetEngine", LogLevel.INFO, "Clearing engine crits.");
                 mech.clearEngineCrits();
-                System.out.println("Setting new engine rating.");
+                MegaMekLab.getLogger().log(getClass(), "resetEngine", LogLevel.INFO, "Setting new engine rating.");
                 // Create new engine
                 Engine newEngine = new Engine(rating, convertEngineType(engineType
                         .getSelectedItem().toString()), clanEngineFlag
@@ -2380,12 +2497,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         .getBaseChassisHeatSinks(mech.hasCompactHeatSinks()));
                 // Add new engine
                 mech.setEngine(newEngine);
-                System.out.println("Adding engine crits.");
-                mech.addEngineCrits();
+                MegaMekLab.getLogger().log(getClass(), "resetEngine", LogLevel.INFO, "Adding engine crits.");
+                resetSystemCrits();
                 int autoSinks = mech.getEngine()
                         .getWeightFreeEngineHeatSinks();
-                System.out.println("Updating # engine heat sinks to "
-                        + autoSinks);
+                MegaMekLab.getLogger().log(getClass(), "resetEngine", LogLevel.INFO,
+                        "Updating # engine heat sinks to " + autoSinks);
                 UnitUtil.updateAutoSinks(mech,
                         (String) heatSinkType.getSelectedItem());
                 retVal = true;
@@ -2399,7 +2516,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         } while (getMech().getOriginalWalkMP() < 1);*/
         return retVal;
     }
-
+    
     private void maximizeArmor() {
         double maxArmor = UnitUtil.getMaximumArmorTonnage(getMech());
         armorTonnage.setValue(maxArmor);
@@ -2848,6 +2965,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             }
             EquipmentType et = EquipmentType.get(EquipmentType
                     .getStructureTypeName(i, getMech().isClan()));
+            // LAMs cannot use any internal structure that requires critical space.
+            if ((getMech() instanceof LandAirMech) && et.getCriticals(getMech()) > 0) {
+                continue;
+            }
             if ((et != null)
                     && TechConstants
                             .isLegal(getMech().getTechLevel(),

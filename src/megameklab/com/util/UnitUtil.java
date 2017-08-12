@@ -63,6 +63,8 @@ import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megamek.common.VTOL;
 import megamek.common.WeaponType;
+import megamek.common.logging.LogLevel;
+import megamek.common.logging.MMLogger;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
@@ -115,6 +117,7 @@ import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
+import megameklab.com.MegaMekLab;
 
 public class UnitUtil {
 
@@ -579,6 +582,8 @@ public class UnitUtil {
      * @param unit
      */
     public static void removeHeatSinks(Mech unit, int number) {
+        final String METHOD_NAME = "removeHeatSinks(Mech, int)";
+        
         Vector<Mounted> toRemove = new Vector<Mounted>();
         int base = UnitUtil.getCriticalFreeHeatSinks(unit,
                 unit.hasCompactHeatSinks());
@@ -646,7 +651,7 @@ public class UnitUtil {
                             new Mounted(unit, EquipmentType
                                     .get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
             }
 
@@ -661,6 +666,7 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, String hsType) {
+        final String METHOD_NAME = "addHeatSinkMounts(Mech, int, String)";
 
         EquipmentType sinkType;
         sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType,
@@ -673,13 +679,15 @@ public class UnitUtil {
                     unit.addEquipment(new Mounted(unit, sinkType),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
             }
         }
     }
 
     public static void addCompactHeatSinkMounts(Mech unit, int hsAmount) {
+        final String METHOD_NAME = "addCompactHeatSinkMounts(Mech, int)";
+        
         // first we need to figure out how many single compacts we need to add
         // for the engine, if any
         int currentSinks = UnitUtil.countActualHeatSinks(unit);
@@ -696,7 +704,7 @@ public class UnitUtil {
                                     .get("IS1 Compact Heat Sink")),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
             } else {
                 int loc = singleCompact.getLocation();
@@ -708,7 +716,7 @@ public class UnitUtil {
                                     .getHeatSinkType("Compact", unit.isClan()))),
                             loc, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
             }
             restHS -= 1;
@@ -719,7 +727,7 @@ public class UnitUtil {
                                 .getHeatSinkType("Compact", unit.isClan()))),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                getLogger().log(UnitUtil.class, METHOD_NAME, ex);
             }
         }
     }
@@ -907,6 +915,8 @@ public class UnitUtil {
      * @param jjType
      */
     public static void updateJumpJets(Mech unit, int jjAmount, int jjType) {
+        final String METHOD_NAME = "updateJumpJets(Mech, int, int)";
+        
         unit.setOriginalJumpMP(jjAmount);
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
@@ -940,7 +950,7 @@ public class UnitUtil {
                                     .getJumpJetType(jjType, unit.isClan()))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, ex);
                 }
                 jjAmount--;
             }
@@ -1552,6 +1562,8 @@ public class UnitUtil {
      * @return
      */
     public static Mounted createSpreadMounts(Mech unit, EquipmentType equip) {
+        final String METHOD_NAME = "createSpreadMounts(Mech, EquipmentType)";
+        
         // how many non-spreadable contiguous blocks of crits?
         int blocks = 0;
         boolean isMisc = equip instanceof MiscType;
@@ -1681,7 +1693,7 @@ public class UnitUtil {
                         }
                     }
                 } catch (LocationFullException lfe) {
-                    lfe.printStackTrace();
+                    getLogger().log(UnitUtil.class, METHOD_NAME, lfe);
                     JOptionPane.showMessageDialog(
                             null,
                             lfe.getMessage(),
@@ -1699,6 +1711,7 @@ public class UnitUtil {
     }
 
     public static void loadFonts() {
+        final String METHOD_NAME = "loadFonts()";
 
         if ((euroFont != null) && (euroBoldFont != null)) {
             return;
@@ -1711,8 +1724,8 @@ public class UnitUtil {
             euroFont = Font.createFont(Font.TRUETYPE_FONT, is);
             is.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println(fName + " not loaded.  Using Arial font.");
+            getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
+                            fName + " not loaded.  Using Arial font.", ex);
             euroFont = new Font("Arial", Font.PLAIN, 8);
         }
 
@@ -1723,8 +1736,8 @@ public class UnitUtil {
             euroBoldFont = Font.createFont(Font.TRUETYPE_FONT, is);
             is.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println(fName + " not loaded.  Using Arial font.");
+            getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
+                            fName + " not loaded.  Using Arial font.", ex);
             euroBoldFont = new Font("Arial", Font.PLAIN, 8);
         }
 
@@ -2322,6 +2335,13 @@ public class UnitUtil {
                     return false;
                 }
             }
+            
+            if ((unit instanceof LandAirMech)
+                    && (weapon.getAmmoType() == AmmoType.T_GAUSS_HEAVY
+                    || weapon.getAmmoType() == AmmoType.T_IGAUSS_HEAVY)) {
+                return false;
+            }
+            
             return true;
         }
         return false;
@@ -2469,6 +2489,26 @@ public class UnitUtil {
                             || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
                             || eq.hasFlag(MiscType.F_PARTIAL_WING)
                             || eq.hasFlag(MiscType.F_UMU))) {
+                return false;
+            }
+            
+            if ((unit instanceof LandAirMech)
+                    && ((eq.hasFlag(MiscType.F_MASC) && eq.getSubType() == MiscType.S_SUPERCHARGER)
+                            || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
+                            || eq.hasFlag(MiscType.F_JUMP_BOOSTER)
+                            || eq.hasFlag(MiscType.F_PARTIAL_WING)
+                            || eq.hasFlag(MiscType.F_VOIDSIG)
+                            || eq.hasFlag(MiscType.F_NULLSIG)
+                            || eq.hasFlag(MiscType.F_BLUE_SHIELD)
+                            || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
+                            || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
+                            || eq.hasFlag(MiscType.F_DUMPER)
+                            || eq.hasFlag(MiscType.F_HEAVY_BRIDGE_LAYER)
+                            || eq.hasFlag(MiscType.F_MEDIUM_BRIDGE_LAYER)
+                            || eq.hasFlag(MiscType.F_LIGHT_BRIDGE_LAYER)
+                            || (eq.hasFlag(MiscType.F_CLUB)
+                                    && (eq.getSubType() == MiscType.S_BACKHOE)
+                                    || (eq.getSubType() == MiscType.S_COMBINE)))) {
                 return false;
             }
 
@@ -2694,7 +2734,8 @@ public class UnitUtil {
         return false;
     }
 
-    public static int getShieldDamageAbsorbtion(Mech mech, int location) {
+    public static int getShieldDamageAbsorption(Mech mech, int location) {
+        final String METHOD_NAME = "getShieldDamageAbsorption(Mech, int)";
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             CriticalSlot cs = mech.getCritical(location, slot);
 
@@ -2709,7 +2750,8 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                System.err.println("Null Mount index: " + cs.getIndex());
+                getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
+                                "Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -2723,6 +2765,7 @@ public class UnitUtil {
     }
 
     public static int getShieldDamageCapacity(Mech mech, int location) {
+        final String METHOD_NAME = "getShieldDamageCapacity(Mech, int)";
         for (int slot = 0; slot < mech.getNumberOfCriticals(location); slot++) {
             CriticalSlot cs = mech.getCritical(location, slot);
 
@@ -2737,7 +2780,8 @@ public class UnitUtil {
             Mounted m = cs.getMount();
 
             if (m == null) {
-                System.err.println("Null Mount index: " + cs.getIndex());
+                getLogger().log(UnitUtil.class, METHOD_NAME, LogLevel.ERROR,
+                                "Null Mount index: " + cs.getIndex());
                 m = cs.getMount();
             }
 
@@ -3729,5 +3773,9 @@ public class UnitUtil {
             }
         }
 
+    }
+
+    public static MMLogger getLogger() {
+        return MegaMekLab.getLogger();
     }
 }
