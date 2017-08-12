@@ -912,7 +912,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         JLabel license1 = new JLabel("MegaMekLab software is under GPL. See");
         JLabel license2 = new JLabel("license.txt in ./Docs/licenses for details.");
         JLabel license3 = new JLabel("Project Info:");
-        JLabel license4 = new JLabel("       http://www.sourceforge.net/projects/megameklab       ");
+        JLabel license4 = new JLabel("       https://github.com/MegaMek/megameklab       ");
 
         // center everything
         mekwars.setAlignmentX(Component.CENTER_ALIGNMENT);
