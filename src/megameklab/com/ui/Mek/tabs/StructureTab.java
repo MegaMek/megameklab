@@ -20,13 +20,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +54,8 @@ import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechnology;
+import megamek.common.ITechnology.SimpleTechLevel;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
@@ -76,12 +75,13 @@ import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.ui.Mek.views.SummaryView;
+import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements ActionListener, KeyListener,
-        ChangeListener, ItemListener {
+public class StructureTab extends ITab implements ActionListener,
+        ChangeListener, ItemListener, BasicInfoView.BasicInfoListener {
     /**
      *
      */
@@ -114,7 +114,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private int clanEngineFlag = 0;
     private int superHeavyEngineFlag = 0;
 
-    JPanel panInfo;
+    BasicInfoView panBasicInfo;
     JPanel panChassis;
     JPanel panArmor;
     JPanel panMovement;
@@ -142,13 +142,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JComboBox<String> heatSinkType = new JComboBox<String>(isHeatSinkTypes);
     JSpinner heatSinkNumber;
     JSpinner baseChassisHeatSinks;
-    String[] techTypes = { "Inner Sphere", "Clan", "Mixed Inner Sphere",
-            "Mixed Clan" };
-    JComboBox<String> techType = new JComboBox<String>(techTypes);
-    String[] isTechLevels = { "Introductory", "Standard", "Advanced",
-            "Experimental", "Unoffical" };
-    String[] clanTechLevels = { "Standard", "Advanced", "Experimental",
-            "Unoffical" };
     String[] baseTypes = { "Standard", "LAM", "QuadVee" };
     String[] motiveTypes = { "Biped", "Quad", "Tripod" };
     String[] lamMotiveTypes = { "Standard", "Bimodal" };
@@ -158,12 +151,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     DefaultComboBoxModel<String> qvTypesModel = new DefaultComboBoxModel<>(qvMotiveTypes);
     JComboBox<String> baseType = new JComboBox<String>(baseTypes);
     JComboBox<String> motiveType = new JComboBox<String>(standardTypesModel);
-    JComboBox<String> techLevel = new JComboBox<String>(isTechLevels);
     String[] jjTypes = { "Standard", "Improved", "Prototype",
             "Mechanical Boosters", "Improved Prototype" };
     JComboBox<String> jjType = new JComboBox<String>(jjTypes);
-    JTextField era = new JTextField(3);
-    JTextField source = new JTextField(3);
     RefreshListener refresh = null;
     JCheckBox omniCB = new JCheckBox("Omni");
     JCheckBox fullHeadEjectCB = new JCheckBox("Full Head Ejection");
@@ -171,9 +161,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     JComboBox<String> structureCombo = new JComboBox<String>(
             EquipmentType.structureNames);
     JPanel masterPanel;
-    JTextField manualBV = new JTextField(3);
-    private JTextField chassis = new JTextField(5);
-    private JTextField model = new JTextField(5);
     private JLabel lblFreeSinks = new JLabel("");
 
     private JComboBox<String> armorCombo = new JComboBox<String>();
@@ -193,7 +180,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private void setUpPanels() {
         masterPanel = new JPanel(new GridBagLayout());
-        panInfo = new JPanel(new GridBagLayout());
+        panBasicInfo = new BasicInfoView(getMech().getConstructionTechAdvancement());
         panChassis = new JPanel(new GridBagLayout());
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
@@ -280,62 +267,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         // lblFreeSinks.setFont(new Font(lblFreeSinks.getName(), Font.PLAIN,
         // 10));
 
-        chassis.setText(getMech().getChassis());
-        model.setText(getMech().getModel());
+        panBasicInfo.setFromEntity(getMech());
 
         Dimension labelSize = new Dimension(110, 25);
         gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(0, 0, 1, 2);
-        panInfo.add(createLabel("Chassis:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        panInfo.add(chassis, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panInfo.add(createLabel("Model:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        panInfo.add(model, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panInfo.add(createLabel("Year:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        panInfo.add(era, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        panInfo.add(createLabel("Source/Era:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        panInfo.add(source, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        panInfo.add(createLabel("Tech:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 4;
-        panInfo.add(techType, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        panInfo.add(createLabel("Tech Level:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 5;
-        panInfo.add(techLevel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        panInfo.add(createLabel("Manual BV:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 6;
-        panInfo.add(manualBV, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -524,12 +459,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         Dimension comboSize = new Dimension(180, 25);
 
-        setFieldSize(era, comboSize);
-        setFieldSize(manualBV, comboSize);
-        setFieldSize(source, comboSize);
-        setFieldSize(techType, comboSize);
         setFieldSize(armorCombo, comboSize);
-        setFieldSize(techLevel, comboSize);
         setFieldSize(heatSinkType, comboSize);
         setFieldSize(engineType, comboSize);
         setFieldSize(enhancement, comboSize);
@@ -537,15 +467,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         setFieldSize(cockpitType, comboSize);
         setFieldSize(structureCombo, comboSize);
         setFieldSize(jjType, comboSize);
-        setFieldSize(model, comboSize);
-        setFieldSize(chassis, comboSize);
 
         JPanel leftPanel = new JPanel();
         JPanel rightPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
-        leftPanel.add(panInfo);
+        leftPanel.add(panBasicInfo);
         leftPanel.add(Box.createVerticalStrut(11));
         leftPanel.add(panChassis);
         leftPanel.add(Box.createVerticalStrut(11));
@@ -570,7 +498,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         gbc.gridx = 2;
         masterPanel.add(armor, gbc);
 
-        panInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
+        panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
@@ -582,6 +510,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     public void refresh() {
         removeAllListeners();
+        panBasicInfo.setFromEntity(getMech());
         if (getMech().isPrimitive() || isLAM()) {
             getMech().setOmni(false);
             omniCB.setEnabled(false);
@@ -610,9 +539,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             }
         }
         fullHeadEjectCB.setSelected(getMech().hasFullHeadEject());
-        era.setText(Integer.toString(getMech().getYear()));
-        source.setText(getMech().getSource());
-        manualBV.setText(Integer.toString(Math.max(0, getMech().getManualBV())));
         weightClass.setValue((int) (getMech().getWeight()));
 
         int totalSinks = getMech().heatSinks(false);
@@ -640,17 +566,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 + UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech()
                         .hasCompactHeatSinks()));
 
-        if (getMech().isClan()) {
-            techLevel.removeAllItems();
-            for (String item : clanTechLevels) {
-                techLevel.addItem(item);
-            }
-        } else {
-            techLevel.removeAllItems();
-            for (String item : isTechLevels) {
-                techLevel.addItem(item);
-            }
-        }
         engineType.setSelectedIndex(convertEngineType(getMech().getEngine()
                 .getEngineType()));
 
@@ -667,57 +582,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
         String gyroName = Mech.GYRO_SHORT_STRING[getMech().getGyroType()];
         gyroType.setSelectedItem(gyroName);
-
-        if (getMech().isMixedTech()) {
-            if (getMech().isClan()) {
-
-                techType.setSelectedIndex(3);
-                if (getMech().getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL) {
-                    techLevel.setSelectedIndex(3);
-                } else if (getMech().getTechLevel() >= TechConstants.T_CLAN_EXPERIMENTAL) {
-                    techLevel.setSelectedIndex(2);
-                } else {
-                    techLevel.setSelectedIndex(1);
-                }
-            } else {
-                techType.setSelectedIndex(2);
-
-                if (getMech().getTechLevel() >= TechConstants.T_IS_UNOFFICIAL) {
-                    techLevel.setSelectedIndex(4);
-                } else if (getMech().getTechLevel() >= TechConstants.T_IS_EXPERIMENTAL) {
-                    techLevel.setSelectedIndex(3);
-                } else {
-                    techLevel.setSelectedIndex(2);
-                }
-            }
-        } else if (getMech().isClan()) {
-
-            techType.setSelectedIndex(1);
-            if (getMech().getTechLevel() >= TechConstants.T_CLAN_UNOFFICIAL) {
-                techLevel.setSelectedIndex(3);
-            } else if (getMech().getTechLevel() >= TechConstants.T_CLAN_EXPERIMENTAL) {
-                techLevel.setSelectedIndex(2);
-            } else if (getMech().getTechLevel() >= TechConstants.T_CLAN_ADVANCED) {
-                techLevel.setSelectedIndex(1);
-            } else {
-                techLevel.setSelectedIndex(0);
-            }
-        } else {
-            techType.setSelectedIndex(0);
-
-            if (getMech().getTechLevel() >= TechConstants.T_IS_UNOFFICIAL) {
-                techLevel.setSelectedIndex(4);
-            } else if (getMech().getTechLevel() >= TechConstants.T_IS_EXPERIMENTAL) {
-                techLevel.setSelectedIndex(3);
-            } else if (getMech().getTechLevel() >= TechConstants.T_IS_ADVANCED) {
-                techLevel.setSelectedIndex(2);
-            } else if (getMech().getTechLevel() >= TechConstants.T_IS_TW_NON_BOX) {
-                techLevel.setSelectedIndex(1);
-            } else {
-                techLevel.setSelectedIndex(0);
-            }
-
-        }
 
         setHeatSinkCombo();
 
@@ -854,165 +718,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 refreshJumpMP();
             } else if (combo.equals(enhancement)) {
                 UnitUtil.updateEnhancements(getMech(), hasMASC(), hasTSM());
-            } else if (combo.equals(techLevel)) {
-                int unitTechLevel = techLevel.getSelectedIndex();
-
-                if (getMech().isClan()) {
-                    switch (unitTechLevel) {
-                        case 0:
-                            getMech().setTechLevel(TechConstants.T_CLAN_TW);
-                            techType.setSelectedIndex(1);
-                            break;
-                        case 1:
-                            getMech().setTechLevel(
-                                    TechConstants.T_CLAN_ADVANCED);
-                            break;
-                        case 2:
-                            getMech().setTechLevel(
-                                    TechConstants.T_CLAN_EXPERIMENTAL);
-                            break;
-                        case 3:
-                            getMech().setTechLevel(
-                                    TechConstants.T_CLAN_UNOFFICIAL);
-                            break;
-                        default:
-                            getMech().setTechLevel(TechConstants.T_CLAN_TW);
-                            break;
-                    }
-
-                } else {
-                    switch (unitTechLevel) {
-                        case 0:
-                            getMech()
-                                    .setTechLevel(TechConstants.T_INTRO_BOXSET);
-                            techType.setSelectedIndex(0);
-                            break;
-                        case 1:
-                            getMech().setTechLevel(
-                                    TechConstants.T_IS_TW_NON_BOX);
-                            techType.setSelectedIndex(0);
-                            break;
-                        case 2:
-                            getMech().setTechLevel(TechConstants.T_IS_ADVANCED);
-                            break;
-                        case 3:
-                            getMech().setTechLevel(
-                                    TechConstants.T_IS_EXPERIMENTAL);
-                            break;
-                        default:
-                            getMech().setTechLevel(
-                                    TechConstants.T_IS_UNOFFICIAL);
-                            break;
-                    }
-                }
-                //If we have changed to or from unofficial, the availability of LAMs and QuadVees
-                //has changed.
-                boolean wasUnofficial = unitTechLevel == TechConstants.T_IS_UNOFFICIAL
-                        || unitTechLevel == TechConstants.T_CLAN_UNOFFICIAL;
-                if (wasUnofficial != (getMech().getTechLevel() == TechConstants.T_IS_UNOFFICIAL
-                        || getMech().getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL)) {
-                    populateUnitTypeOptions();
-                }
-                populateChoices(true);
-                refreshCockpitType();
-                armor.resetArmorPoints();
-                UnitUtil.checkEquipmentByTechLevel(getMech());
-            } else if (combo.equals(techType)) {
-                boolean techBaseChanged = getMech().isClan() ==
-                        (techType.getSelectedIndex() == 0 || techType.getSelectedIndex() == 2);
-                if ((techType.getSelectedIndex() == 1)
-                        && (!getMech().isClan() || getMech().isMixedTech())) {
-                    techLevel.removeAllItems();
-                    for (String item : clanTechLevels) {
-                        techLevel.addItem(item);
-                    }
-                    getMech().setMixedTech(false);
-                    if (!getMech().isClan()) {
-                        int level = TechConstants
-                                .getOppositeTechLevel(getMech().getTechLevel());
-                        getMech().setTechLevel(level);
-                        getMech().setStructureTechLevel(level);
-                    }
-                } else if ((techType.getSelectedIndex() == 0)
-                        && (getMech().isClan() || getMech().isMixedTech())) {
-                    techLevel.removeAllItems();
-                    for (String item : isTechLevels) {
-                        techLevel.addItem(item);
-                    }
-                    getMech().setMixedTech(false);
-                    if (getMech().isClan()) {
-                        int level = TechConstants
-                                .getOppositeTechLevel(getMech().getTechLevel());
-                        getMech().setTechLevel(level);
-                        getMech().setStructureTechLevel(level);
-                    }
-                } else if ((techType.getSelectedIndex() == 2)
-                        && (!getMech().isMixedTech() || getMech().isClan())) {
-                    techLevel.removeAllItems();
-                    for (String item : isTechLevels) {
-                        techLevel.addItem(item);
-                    }
-                    if (getMech().getYear() < 3090) {
-                        // before 3090, mixed tech is experimental
-                        if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)) {
-                            getMech().setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-                        }
-                    } else if (getMech().getYear() < 3145) {
-                        // between 3090 and 3145, mixed tech is advanced
-                        if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)
-                                && (getMech().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)) {
-                            getMech().setTechLevel(TechConstants.T_IS_ADVANCED);
-                        }
-                    } else {
-                        // from 3145 on, mixed tech is tourney legal
-                        if ((getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL)
-                                && (getMech().getTechLevel() != TechConstants.T_IS_EXPERIMENTAL)
-                                && (getMech().getTechLevel() != TechConstants.T_IS_TW_NON_BOX)) {
-                            getMech().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-                        }
-                    }
-                    getMech().setMixedTech(true);
-
-                } else if ((techType.getSelectedIndex() == 3)
-                        && (!getMech().isMixedTech() || !getMech().isClan())) {
-                    techLevel.removeAllItems();
-                    for (String item : clanTechLevels) {
-                        techLevel.addItem(item);
-                    }
-                    if (getMech().getYear() < 3090) {
-                        // before 3090, mixed tech is experimental
-                        if ((getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)) {
-                            getMech().setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
-                        }
-                    } else if (getMech().getYear() < 3145) {
-                        // between 3090 and 3145, mixed tech is advanced
-                        if ((getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)
-                                && (getMech().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)) {
-                            getMech().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-                        }
-                    } else {
-                        // from 3145 on, mixed tech is tourney legal
-                        if ((getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL)
-                                && (getMech().getTechLevel() != TechConstants.T_CLAN_EXPERIMENTAL)
-                                && (getMech().getTechLevel() != TechConstants.T_CLAN_TW)) {
-                            getMech().setTechLevel(TechConstants.T_CLAN_TW);
-                        }
-                    }
-                    getMech().setMixedTech(true);
-                }
-                if (!getMech().hasPatchworkArmor()) {
-                    UnitUtil.removeISorArmorMounts(getMech(), false);
-                }
-                createArmorMountsAndSetArmorType();
-                //If we have switched from Clan to IS or vice-versa and aren't unofficial, the
-                //availability of LAMs and QuadVees has changed.
-                if (techBaseChanged && getMech().getTechLevel() != TechConstants.T_CLAN_UNOFFICIAL
-                        && getMech().getTechLevel() != TechConstants.T_IS_UNOFFICIAL) {
-                    this.populateUnitTypeOptions();
-                }
-                populateChoices(true);
-                armor.resetArmorPoints();
-                UnitUtil.checkEquipmentByTechLevel(getMech());
             } else if (e.getSource().equals(motiveType)) {
                 if (getMech() instanceof LandAirMech) {
                     ((LandAirMech)getMech()).setLAMType(motiveType.getSelectedIndex());
@@ -1289,11 +994,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         heatSinkNumber.removeChangeListener(this);
         heatSinkType.removeItemListener(this);
         walkMPBase.removeChangeListener(this);
-        techLevel.removeItemListener(this);
-        techType.removeItemListener(this);
-        era.removeKeyListener(this);
-        source.removeKeyListener(this);
-        manualBV.removeKeyListener(this);
         omniCB.removeActionListener(this);
         baseType.removeItemListener(this);
         motiveType.removeItemListener(this);
@@ -1301,12 +1001,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         resetChassisButton.removeActionListener(this);
         structureCombo.removeItemListener(this);
         baseChassisHeatSinks.removeChangeListener(this);
-        chassis.removeKeyListener(this);
-        model.removeKeyListener(this);
         jumpMPBase.removeChangeListener(this);
         jjType.removeItemListener(this);
         enhancement.removeItemListener(this);
         armorTonnage.removeChangeListener(this);
+        panBasicInfo.removeListener(this);
     }
 
     public void addAllListeners() {
@@ -1320,11 +1019,6 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         heatSinkNumber.addChangeListener(this);
         heatSinkType.addItemListener(this);
         walkMPBase.addChangeListener(this);
-        techLevel.addItemListener(this);
-        techType.addItemListener(this);
-        era.addKeyListener(this);
-        source.addKeyListener(this);
-        manualBV.addKeyListener(this);
         omniCB.addActionListener(this);
         baseType.addItemListener(this);
         motiveType.addItemListener(this);
@@ -1332,60 +1026,11 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         resetChassisButton.addActionListener(this);
         structureCombo.addItemListener(this);
         baseChassisHeatSinks.addChangeListener(this);
-        chassis.addKeyListener(this);
-        model.addKeyListener(this);
         jumpMPBase.addChangeListener(this);
         jjType.addItemListener(this);
         enhancement.addItemListener(this);
         armorTonnage.addChangeListener(this);
-
-    }
-
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    public void keyReleased(KeyEvent e) {
-        removeAllListeners();
-        if (e.getSource().equals(era)) {
-            try {
-                int year = Integer.parseInt(era.getText());
-                if (year < 1950) {
-                    addAllListeners();
-                    return;
-                }
-                getMech().setYear(Integer.parseInt(era.getText()));
-            } catch (Exception ex) {
-                getMech().setYear(3145);
-            }            
-            populateChoices(true);
-            armor.resetArmorPoints();
-            UnitUtil.checkEquipmentByTechLevel(getMech());
-        } else if (e.getSource().equals(source)) {
-            getMech().setSource(source.getText());
-        } else if (e.getSource().equals(manualBV)) {
-            if (!manualBV.getText().equals("-")) {
-                int bv = Integer.parseInt(manualBV.getText());
-                if (bv == 0) {
-                    getMech().setUseManualBV(false);
-                    getMech().setManualBV(0);
-                } else {
-                    getMech().setUseManualBV(true);
-                    getMech().setManualBV(bv);
-                }
-            }
-        } else if (e.getSource().equals(chassis)) {
-            getMech().setChassis(chassis.getText().trim());
-        } else if (e.getSource().equals(model)) {
-            getMech().setModel(model.getText().trim());
-        }
-        addAllListeners();
-        refresh.refreshEquipment();
-        refresh.refreshPreview();
-        refresh.refreshHeader();
-    }
-
-    public void keyTyped(KeyEvent e) {
+        panBasicInfo.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -1413,9 +1058,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         int isCount = 0;
         String structName = (String)structureCombo.getSelectedItem();
 
-        if (getMech().isMixedTech()) {
+        if (panBasicInfo.isMixedTech()) {
             structName = structureCombo.getSelectedItem().toString();
-            boolean clanStruct = getMech().isClan() ? structName
+            boolean clanStruct = panBasicInfo.isClan() ? structName
                     .indexOf(" (IS)") == -1
                     : structName.indexOf(" (Clan)") > -1;
 
@@ -1428,7 +1073,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 structName = String.format("IS %1$s", structName);
             }
         } else {
-            if (getMech().isClan()) {
+            if (panBasicInfo.isClan()) {
                 structName = String.format("Clan %1$s", structName);
             } else {
                 structName = String.format("IS %1$s", structName);
@@ -1453,9 +1098,9 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private int convertEngineType(int engineType) {
 
-        if (getMech().isMixedTech()) {
+        if (panBasicInfo.isMixedTech()) {
             // Clan Chassis with Clan Engine
-            if (getMech().isClan()
+            if (panBasicInfo.isClan()
                     && getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
                 switch (engineType) {
                     case Engine.NORMAL_ENGINE:
@@ -1468,7 +1113,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         return 9;
                 }
             }// Clan Chassis with IS Engine
-            else if (getMech().isClan()
+            else if (panBasicInfo.isClan()
                     && !getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
                 switch (engineType) {
                     case Engine.NORMAL_ENGINE:
@@ -1511,7 +1156,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     }
                 }
             }// IS Chassis with Clan Engine
-            else if (!getMech().isClan()
+            else if (!panBasicInfo.isClan()
                     && getMech().getEngine().hasFlag(Engine.CLAN_ENGINE)) {
                 switch (engineType) {
                     case Engine.NORMAL_ENGINE:
@@ -1617,7 +1262,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
     private int convertEngineType(String engineType) {
 
-        if (getMech().isMixedTech()) {
+        if (panBasicInfo.isMixedTech()) {
             if (engineType.startsWith("(")) {
                 if (engineType.startsWith("(Clan")) {
                     clanEngineFlag = Engine.CLAN_ENGINE;
@@ -1628,7 +1273,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 engineType = engineType.substring(
                         engineType.lastIndexOf(")") + 1).trim();
             } else {
-                if (getMech().isClan()) {
+                if (panBasicInfo.isClan()) {
                     clanEngineFlag = Engine.CLAN_ENGINE;
                 } else {
                     clanEngineFlag = 0;
@@ -1676,18 +1321,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
      */
     private void populateChoices(boolean updateUnit) {
 
-        boolean isClan = getMech().isClan();
-        boolean isMixed = getMech().isMixedTech();
-        boolean isExperimental = (getMech().getTechLevel() == TechConstants.T_IS_EXPERIMENTAL)
-                || (getMech().getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL)
-                || (getMech().getTechLevel() == TechConstants.T_IS_UNOFFICIAL)
-                || (getMech().getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL);
-        boolean isAdvanced = (getMech().getTechLevel() == TechConstants.T_IS_ADVANCED)
-                || (getMech().getTechLevel() == TechConstants.T_CLAN_ADVANCED)
-                || (getMech().getTechLevel() == TechConstants.T_IS_EXPERIMENTAL)
-                || (getMech().getTechLevel() == TechConstants.T_CLAN_EXPERIMENTAL)
-                || (getMech().getTechLevel() == TechConstants.T_IS_UNOFFICIAL)
-                || (getMech().getTechLevel() == TechConstants.T_CLAN_UNOFFICIAL);
+        boolean isClan = panBasicInfo.isClan();
+        boolean isMixed = panBasicInfo.isMixedTech();
+        boolean isExperimental = (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.EXPERIMENTAL)
+                || (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.UNOFFICIAL);
+        boolean isAdvanced = isExperimental
+                || (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.ADVANCED);
 
         // advanced means we allow ultra-light mechs
         if (!isAdvanced) {
@@ -1718,8 +1357,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         isClan));
                 if (((index == EquipmentType.T_ARMOR_PATCHWORK) && isExperimental)
                         || (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
-                        && TechConstants.isLegal(getMech().getTechLevel(),
-                                et.getTechLevel(getMech().getYear()), isMixed)
+                        && panBasicInfo.isLegal(et)
                         && !((getMech() instanceof LandAirMech)
                                 && ((et.getCriticals(getMech()) > 0)
                                         || et.hasFlag(MiscType.F_HARDENED_ARMOR))))) {
@@ -1729,8 +1367,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
                         true));
                 if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
-                        && TechConstants.isLegal(getMech().getTechLevel(),
-                                et.getTechLevel(getMech().getYear()), isMixed)
+                        && panBasicInfo.isLegal(et)
                         && !((getMech() instanceof LandAirMech)
                                 && ((et.getCriticals(getMech()) > 0)
                                         || et.hasFlag(MiscType.F_HARDENED_ARMOR)))) {
@@ -1740,8 +1377,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
                         false));
                 if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
-                        && TechConstants.isLegal(getMech().getTechLevel(),
-                                et.getTechLevel(getMech().getYear()), isMixed)
+                        && panBasicInfo.isLegal(et)
                         && !((getMech() instanceof LandAirMech)
                                 && ((et.getCriticals(getMech()) > 0)
                                         || et.hasFlag(MiscType.F_HARDENED_ARMOR)))) {
@@ -1835,24 +1471,18 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     engineCount = clanIndustrialEngineTypes.length;
                 } else {
                     engineList = clanEngineTypes;
-                    switch (getMech().getTechLevel()) {
-                        case TechConstants.T_INTRO_BOXSET:
+                    switch (panBasicInfo.getTechLevel()) {
+                        case INTRO:
                             engineCount = 1;
                             break;
-                        case TechConstants.T_CLAN_TW:
-                        case TechConstants.T_IS_TW_NON_BOX:
+                        case STANDARD:
                             engineCount = 2;
                             break;
-                        case TechConstants.T_CLAN_ADVANCED:
-                        case TechConstants.T_IS_ADVANCED:
+                        case ADVANCED:
                             engineCount = 3;
                             break;
-                        case TechConstants.T_CLAN_EXPERIMENTAL:
-                        case TechConstants.T_IS_EXPERIMENTAL:
-                            engineCount = 5;
-                            break;
-                        case TechConstants.T_CLAN_UNOFFICIAL:
-                        case TechConstants.T_IS_UNOFFICIAL:
+                        case EXPERIMENTAL:
+                        case UNOFFICIAL:
                             engineCount = 5;
                             break;
                     }
@@ -1873,36 +1503,24 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                         engineList = isSuperHeavyEngineTypes;
                         engineCount = isSuperHeavyEngineTypes.length;
                         superHeavyEngineFlag = Engine.SUPERHEAVY_ENGINE;
-                        switch (getMech().getTechLevel()) {
-                            case TechConstants.T_IS_ADVANCED:
-                                engineCount = isSuperHeavyEngineTypes.length - 1;
-                                break;
-                            case TechConstants.T_IS_EXPERIMENTAL:
-                            case TechConstants.T_IS_UNOFFICIAL:
-                                engineCount = isSuperHeavyEngineTypes.length;
-                                break;
+                        if (!isExperimental) {
+                            engineCount--;
                         }
                     } else {
                         superHeavyEngineFlag = 0;
                         engineList = isEngineTypes;
-                        switch (getMech().getTechLevel()) {
-                            case TechConstants.T_INTRO_BOXSET:
+                        switch (panBasicInfo.getTechLevel()) {
+                            case INTRO:
                                 engineCount = 1;
                                 break;
-                            case TechConstants.T_CLAN_TW:
-                            case TechConstants.T_IS_TW_NON_BOX:
+                            case STANDARD:
                                 engineCount = 4;
                                 break;
-                            case TechConstants.T_CLAN_ADVANCED:
-                            case TechConstants.T_IS_ADVANCED:
+                            case ADVANCED:
                                 engineCount = 6;
                                 break;
-                            case TechConstants.T_CLAN_EXPERIMENTAL:
-                            case TechConstants.T_IS_EXPERIMENTAL:
-                                engineCount = 8;
-                                break;
-                            case TechConstants.T_CLAN_UNOFFICIAL:
-                            case TechConstants.T_IS_UNOFFICIAL:
+                            case EXPERIMENTAL:
+                            case UNOFFICIAL:
                                 engineCount = 8;
                                 break;
                         }
@@ -1925,9 +1543,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             } else {
                 cockpitType
                         .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SUPERHEAVY]);
-                if (isExperimental
-                        || (getMech().getTechLevel() == TechConstants.T_CLAN_ADVANCED)
-                        || (getMech().getTechLevel() == TechConstants.T_IS_ADVANCED)) {
+                if (isAdvanced) {
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
                 }
@@ -1940,20 +1556,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
             cockpitType.addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
         } else {
-            switch (getMech().getTechLevel()) {
-                case TechConstants.T_INTRO_BOXSET:
+            switch (panBasicInfo.getTechLevel()) {
+                case INTRO:
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
                     break;
-                case TechConstants.T_CLAN_TW:
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                    break;
-                case TechConstants.T_IS_TW_NON_BOX:
+                case STANDARD:
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
                     cockpitType
@@ -1961,7 +1569,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
                     break;
-                case TechConstants.T_CLAN_ADVANCED:
+                case ADVANCED:
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
                     cockpitType
@@ -1971,17 +1579,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
                     break;
-                case TechConstants.T_IS_ADVANCED:
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                    break;
-                case TechConstants.T_CLAN_EXPERIMENTAL:
+                case EXPERIMENTAL:
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
                     cockpitType
@@ -1996,8 +1594,12 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                    if (panBasicInfo.isClan()) {
+                        cockpitType
+                                .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INTERFACE]);
+                    }
                     break;
-                case TechConstants.T_IS_EXPERIMENTAL:
+                case UNOFFICIAL:
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
                     cockpitType
@@ -2012,47 +1614,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INTERFACE]);
-                    break;
-                case TechConstants.T_CLAN_UNOFFICIAL:
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
+                    if (panBasicInfo.isClan()) {
+                        cockpitType
+                                .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INTERFACE]);
+                    }
                     cockpitType
                             .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
 
-                    break;
-                case TechConstants.T_IS_UNOFFICIAL:
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_STANDARD]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INDUSTRIAL]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_SMALL]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_COMMAND_CONSOLE]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_PRIMITIVE_INDUSTRIAL]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_TORSO_MOUNTED]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_INTERFACE]);
-                    cockpitType
-                            .addItem(Mech.COCKPIT_SHORT_STRING[Mech.COCKPIT_DUAL]);
                     break;
             }
         }
@@ -2103,29 +1671,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
 
                 heatSinkCount = clanHeatSinkTypes.length;
                 heatSinkList = clanHeatSinkTypes;
-
-                switch (getMech().getTechLevel()) {
-                    case TechConstants.T_CLAN_TW:
-                        heatSinkCount = 2;
-                        break;
-                    case TechConstants.T_CLAN_ADVANCED:
-                    case TechConstants.T_CLAN_EXPERIMENTAL:
-                    case TechConstants.T_CLAN_UNOFFICIAL:
-                        heatSinkCount = 3;
-                        break;
+                if (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.STANDARD) {
+                    heatSinkCount = 2;
                 }
             } else {
                 heatSinkList = isHeatSinkTypes;
-                switch (getMech().getTechLevel()) {
-                    case TechConstants.T_INTRO_BOXSET:
+                switch (panBasicInfo.getTechLevel()) {
+                    case INTRO:
                         heatSinkCount = 1;
                         break;
-                    case TechConstants.T_IS_TW_NON_BOX:
-                    case TechConstants.T_IS_ADVANCED:
+                    case STANDARD:
+                    case ADVANCED:
                         heatSinkCount = 2;
                         break;
-                    case TechConstants.T_IS_EXPERIMENTAL:
-                    case TechConstants.T_IS_UNOFFICIAL:
+                    case EXPERIMENTAL:
+                    case UNOFFICIAL:
                         heatSinkCount = 3;
                         break;
                 }
@@ -2137,20 +1697,13 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
 
         /* JUMP JETS */
-        int jjCount = 0;
-        jjType.removeAllItems();
-
-        switch (getMech().getTechLevel()) {
-            case TechConstants.T_INTRO_BOXSET:
-                jjCount = 1;
-                break;
-            case TechConstants.T_IS_EXPERIMENTAL:
-            case TechConstants.T_IS_UNOFFICIAL:
-                jjCount = jjTypes.length;
-                break;
-            default:
-                jjCount = 2;
+        int jjCount = 2;
+        if (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.INTRO) {
+            jjCount = 1;
+        } else if (isExperimental && !panBasicInfo.isClan()) {
+            jjCount = jjTypes.length;
         }
+        jjType.removeAllItems();
 
         for (int index = 0; index < jjCount; index++) {
             jjType.addItem(jjTypes[index]);
@@ -2190,7 +1743,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 gyroList = Mech.GYRO_SHORT_STRING.clone();
             }
         }
-        if (getMech().getTechLevel() <= TechConstants.T_INTRO_BOXSET) {
+        if (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.INTRO) {
             gyroList = new String[1];
             gyroList[0] = Mech.GYRO_SHORT_STRING[0];
         }
@@ -2209,10 +1762,10 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         /* ENHANCEMENTS */
         enhancement.removeAllItems();
         enhancement.addItem("None");
-        if (getMech().getTechLevel() > TechConstants.T_INTRO_BOXSET
+        if (panBasicInfo.getTechLevel() != ITechnology.SimpleTechLevel.INTRO
                 && !getMech().isSuperHeavy()) {
             enhancement.addItem("MASC");
-            if (!TechConstants.isClan(getMech().getTechLevel())) {
+            if (!panBasicInfo.isClan()) {
                 if (getMech().isIndustrial()) {
                     enhancement.addItem("Industrial TSM");
                 } else {
@@ -2305,23 +1858,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     private void populateUnitTypeOptions() {
         baseType.removeAllItems();
         baseType.addItem(baseTypes[BASE_TYPE_STANDARD]);
-        if (!TechConstants.isClan(getMech().getTechLevel())
-                || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
-                == TechConstants.T_SIMPLE_UNOFFICIAL){
+        if (!panBasicInfo.isClan()
+                || panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.UNOFFICIAL) {
             baseType.addItem(baseTypes[BASE_TYPE_LAM]);
         }
-        if (TechConstants.isClan(getMech().getTechLevel())
-                || TechConstants.convertFromNormalToSimple(getMech().getTechLevel())
-                == TechConstants.T_SIMPLE_UNOFFICIAL){
+        if (panBasicInfo.isClan()
+                || panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.UNOFFICIAL) {
             baseType.addItem(baseTypes[BASE_TYPE_QUADVEE]);
         }
     }
 
     private void setStructureCombo() {
 
-        if (getMech().isMixedTech()) {
+        if (panBasicInfo.isMixedTech()) {
             String structName;
-            if (getMech().isClan()) {
+            if (panBasicInfo.isClan()) {
                 structName = EquipmentType.structureNames[getMech()
                         .getStructureType()];
                 if ((getMech().getStructureType() != EquipmentType.T_STRUCTURE_STANDARD)
@@ -2559,8 +2110,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             llArmor.setName("ll");
             JComboBox<String> rlArmor = new JComboBox<String>();
             rlArmor.setName("rl");
-            boolean isMixed = getMech().isMixedTech();
-            boolean isClan = getMech().isClan();
+            boolean isMixed = panBasicInfo.isMixedTech();
+            boolean isClan = panBasicInfo.isClan();
             for (int index = 0; index < (EquipmentType.armorNames.length); index++) {
                 EquipmentType et;
                 if (!isMixed) {
@@ -2568,9 +2119,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                             index, isClan));
                     if ((et != null)
                             && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
-                            && (TechConstants.isLegal(getMech().getTechLevel(),
-                                    et.getTechLevel(getMech().getYear()),
-                                    isMixed))) {
+                            && panBasicInfo.isLegal(et)) {
                         headArmor.addItem(EquipmentType.armorNames[index]);
                         laArmor.addItem(EquipmentType.armorNames[index]);
                         ltArmor.addItem(EquipmentType.armorNames[index]);
@@ -2664,21 +2213,21 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     "Please choose the armor types",
                     JOptionPane.QUESTION_MESSAGE);
             getMech().setArmorTechLevel(EquipmentType.get(getArmorType(headArmor))
-                    .getTechLevel(getMech().getYear()), Mech.LOC_HEAD);
+                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_HEAD);
             getMech().setArmorTechLevel(EquipmentType.get(getArmorType(laArmor))
-                    .getTechLevel(getMech().getYear()), Mech.LOC_LARM);
+                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_LARM);
             getMech().setArmorTechLevel(EquipmentType.get(getArmorType(ltArmor))
-                    .getTechLevel(getMech().getYear()), Mech.LOC_LT);
+                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_LT);
             getMech().setArmorTechLevel(EquipmentType.get(getArmorType(ctArmor))
-                    .getTechLevel(getMech().getYear()), Mech.LOC_CT);
+                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_CT);
             getMech().setArmorTechLevel(EquipmentType.get(getArmorType(rtArmor))
-                    .getTechLevel(getMech().getYear()), Mech.LOC_RT);
+                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_RT);
             getMech().setArmorTechLevel(EquipmentType.get(getArmorType(raArmor))
-                    .getTechLevel(getMech().getYear()), Mech.LOC_RARM);
+                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_RARM);
             getMech().setArmorTechLevel(EquipmentType.get(getArmorType(llArmor))
-                    .getTechLevel(getMech().getYear()), Mech.LOC_LLEG);
+                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_LLEG);
             getMech().setArmorTechLevel(EquipmentType.get(getArmorType(rlArmor))
-                    .getTechLevel(getMech().getYear()), Mech.LOC_RLEG);
+                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_RLEG);
             getMech().setArmorType(getArmorType(headArmor), Mech.LOC_HEAD);
             getMech().setArmorType(getArmorType(laArmor), Mech.LOC_LARM);
             getMech().setArmorType(getArmorType(ltArmor), Mech.LOC_LT);
@@ -2727,7 +2276,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                                         EquipmentType.get(EquipmentType
                                                 .getArmorTypeName(
                                                         getMech().getArmorType(i),
-                                                        getMech().isClan()))), i,
+                                                        panBasicInfo.isClan()))), i,
                                 false);
                     } catch (LocationFullException ex) {
                         JOptionPane
@@ -2749,7 +2298,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
             }
         } else {
             getMech().setArmorTechLevel(EquipmentType.get(getArmorType(armorCombo))
-                    .getTechLevel(getMech().getYear()));
+                    .getTechLevel(panBasicInfo.getYear()));
             getMech().setArmorType(getArmorType(armorCombo));
             int armorCount = 0;
 
@@ -2773,7 +2322,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                     setArmorCombo(EquipmentType.T_ARMOR_STANDARD);
                     getMech().setArmorTechLevel(EquipmentType.get(
                             getArmorType(armorCombo)).getTechLevel(
-                            getMech().getYear()));
+                            panBasicInfo.getYear()));
                     getMech().setArmorType(getArmorType(armorCombo));
                 }
             } else {
@@ -2793,7 +2342,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         armorCombo.setSelectedIndex(-1);
 
         for (int index = 0; index < armorCombo.getItemCount(); index++) {
-            if (getMech().isMixedTech()) {
+            if (panBasicInfo.isMixedTech()) {
                 if (EquipmentType.getArmorTypeName(type,
                         TechConstants.isClan(getMech().getArmorTechLevel(0)))
                         .equals(armorCombo.getItemAt(index))) {
@@ -2823,8 +2372,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 .getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK))) {
             return armorType;
         }
-        if (!getMech().isMixedTech()) {
-            String prefix = getMech().isClan() ? "Clan " : "IS ";
+        if (!panBasicInfo.isMixedTech()) {
+            String prefix = panBasicInfo.isClan() ? "Clan " : "IS ";
             for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
                 if (armorType.equals(EquipmentType.armorNames[pos])) {
                     return prefix + armorType;
@@ -2843,7 +2392,7 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
 
         return EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_STANDARD,
-                getMech().isClan());
+                panBasicInfo.isClan());
     }
 
     private void setArmorTonnage() {
@@ -2861,18 +2410,15 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
     }
 
     public void setAsCustomization() {
-        chassis.setEditable(false);
-        chassis.setEnabled(false);
+        panBasicInfo.setAsCustomization();
         weightClass.setEnabled(false);
-        era.setEditable(false);
-        era.setEnabled(false);
         motiveType.setEnabled(false);
     }
 
     private void setHeatSinkCombo() {
         int selIndex = -1;
-        if (getMech().isMixedTech()) {
-            if (getMech().isClan()) {
+        if (panBasicInfo.isMixedTech()) {
+            if (panBasicInfo.isClan()) {
                 if (UnitUtil.hasLaserHeatSinks(getMech())) {
                     selIndex = 3;
                 } else if (getMech().hasCompactHeatSinks()) {
@@ -2964,30 +2510,100 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
                 }
             }
             EquipmentType et = EquipmentType.get(EquipmentType
-                    .getStructureTypeName(i, getMech().isClan()));
+                    .getStructureTypeName(i, panBasicInfo.isClan()));
             // LAMs cannot use any internal structure that requires critical space.
             if ((getMech() instanceof LandAirMech) && et.getCriticals(getMech()) > 0) {
                 continue;
             }
-            if ((et != null)
-                    && TechConstants
-                            .isLegal(getMech().getTechLevel(),
-                                    et.getTechLevel(getMech().getYear()),
-                                    getMech().isMixedTech())) {
+            if ((et != null) && panBasicInfo.isLegal(et)) {
                 structures.add(et.getName());
             }
-            if (getMech().isMixedTech() && !getMech().isSuperHeavy()) {
+            if (panBasicInfo.isMixedTech() && !getMech().isSuperHeavy()) {
                 et = EquipmentType.get(EquipmentType.getStructureTypeName(i,
-                        !getMech().isClan()));
-                if ((et != null)
-                        && TechConstants.isLegal(getMech().getTechLevel(),
-                                et.getTechLevel(getMech().getYear()),
-                                getMech().isMixedTech())) {
+                        !panBasicInfo.isClan()));
+                if ((et != null) && panBasicInfo.isLegal(et)) {
                     structures.add(et.getName()
-                            + (getMech().isClan() ? " (IS)" : " (Clan)"));
+                            + (panBasicInfo.isClan() ? " (IS)" : " (Clan)"));
                 }
             }
         }
         return structures;
+    }
+
+    @Override
+    public void chassisChanged(String chassis) {
+        getMech().setChassis(chassis);
+    }
+
+    @Override
+    public void modelChanged(String model) {
+        getMech().setModel(model);
+    }
+
+    @Override
+    public void yearChanged(int year) {
+        getMech().setYear(year);
+    }
+
+    @Override
+    public void sourceChanged(String source) {
+        getMech().setSource(source);
+    }
+
+    @Override
+    public void techBaseChanged(boolean clan, boolean mixed) {
+        if ((clan != getMech().isClan()) || (mixed != getMech().isMixedTech())) {
+            getMech().setMixedTech(mixed);
+            updateTechLevel();
+        }
+    }
+
+    @Override
+    public void techLevelChanged(SimpleTechLevel techLevel) {
+        if (techLevel != getMech().getStaticTechLevel()) {
+            updateTechLevel();
+        }
+    }
+    
+    private void updateTechLevel() {
+        removeAllListeners();
+        switch(panBasicInfo.getTechLevel()) {
+            case INTRO:
+                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_TW : TechConstants.T_INTRO_BOXSET);
+                break;
+            case STANDARD:
+                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_TW : TechConstants.T_IS_TW_NON_BOX);
+                break;
+            case ADVANCED:
+                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_ADVANCED : TechConstants.T_IS_ADVANCED);
+                break;
+            case EXPERIMENTAL:
+                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_EXPERIMENTAL : TechConstants.T_IS_EXPERIMENTAL);
+                break;
+            case UNOFFICIAL:
+            default:
+                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_UNOFFICIAL: TechConstants.T_IS_UNOFFICIAL);
+                break;
+        }
+
+        if (!getMech().hasPatchworkArmor()) {
+            UnitUtil.removeISorArmorMounts(getMech(), false);
+        }
+        createArmorMountsAndSetArmorType();
+        //If we have switched from Clan to IS or vice-versa and aren't unofficial, the
+        //availability of LAMs and QuadVees has changed.
+        if (panBasicInfo.getTechLevel() != ITechnology.SimpleTechLevel.UNOFFICIAL) {
+            populateUnitTypeOptions();
+        }
+        populateChoices(true);
+        refreshCockpitType();
+        armor.resetArmorPoints();
+        UnitUtil.checkEquipmentByTechLevel(getMech());
+        addAllListeners();
+    }
+
+    @Override
+    public void manualBVChanged(int manualBV) {
+        getMech().setManualBV(manualBV);
     }
 }
