@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
 import megamek.common.ITechnology;
+import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
@@ -47,7 +48,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         void yearChanged(int year);
         void sourceChanged(String source);
         void techBaseChanged(boolean clan, boolean mixed);
-        void techLevelChanged(ITechnology.SimpleTechLevel techLevel);
+        void techLevelChanged(SimpleTechLevel techLevel);
         void manualBVChanged(int manualBV);
     }
     
@@ -79,7 +80,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
     private JTextField txtYear = new JTextField(3);
     private JTextField txtSource = new JTextField(3);
     private CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
-    private JComboBox<ITechnology.SimpleTechLevel> cbTechLevel = new JComboBox<>();
+    private JComboBox<SimpleTechLevel> cbTechLevel = new JComboBox<>();
     private JTextField txtManualBV = new JTextField(3);
     
     private int prevYear = 3067;
@@ -183,7 +184,8 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         setYear(en.getYear());
         setSource(en.getSource());
         setTechBase(en.isClan(), en.isMixedTech());
-        setTechLevel(en.getStaticTechLevel());
+        setTechLevel(SimpleTechLevel.max(en.getStaticTechLevel(),
+                SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
     }
     
     public void setAsCustomization() {
@@ -264,14 +266,14 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         cbTechBase.setSelectedItem(item);
     }
     
-    public ITechnology.SimpleTechLevel getTechLevel() {
+    public SimpleTechLevel getTechLevel() {
         if (cbTechLevel.getSelectedItem() == null) {
-            return ITechnology.SimpleTechLevel.STANDARD;
+            return SimpleTechLevel.STANDARD;
         }
-        return (ITechnology.SimpleTechLevel)cbTechLevel.getSelectedItem();
+        return (SimpleTechLevel)cbTechLevel.getSelectedItem();
     }
     
-    public void setTechLevel(ITechnology.SimpleTechLevel level) {
+    public void setTechLevel(SimpleTechLevel level) {
         cbTechLevel.setSelectedItem(level);
     }
     
@@ -297,18 +299,18 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
     }
     
     private void refreshTechLevel() {
-        ITechnology.SimpleTechLevel prev = getTechLevel();
+        SimpleTechLevel prev = getTechLevel();
         cbTechLevel.removeActionListener(this);
         cbTechLevel.removeAllItems();
         if (!isClan() && !isMixedTech()) {
-            cbTechLevel.addItem(ITechnology.SimpleTechLevel.INTRO);
+            cbTechLevel.addItem(SimpleTechLevel.INTRO);
         }
         if (!isMixedTech()) {
-            cbTechLevel.addItem(ITechnology.SimpleTechLevel.STANDARD);
+            cbTechLevel.addItem(SimpleTechLevel.STANDARD);
         }
-        cbTechLevel.addItem(ITechnology.SimpleTechLevel.ADVANCED);
-        cbTechLevel.addItem(ITechnology.SimpleTechLevel.EXPERIMENTAL);
-        cbTechLevel.addItem(ITechnology.SimpleTechLevel.UNOFFICIAL);
+        cbTechLevel.addItem(SimpleTechLevel.ADVANCED);
+        cbTechLevel.addItem(SimpleTechLevel.EXPERIMENTAL);
+        cbTechLevel.addItem(SimpleTechLevel.UNOFFICIAL);
         cbTechLevel.setSelectedItem(prev);
         cbTechLevel.addActionListener(this);
         if (cbTechLevel.getSelectedItem() == null || cbTechLevel.getSelectedItem() != prev) {
