@@ -54,8 +54,6 @@ import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.ITechnology;
-import megamek.common.ITechnology.SimpleTechLevel;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
@@ -64,6 +62,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMech;
 import megamek.common.QuadVee;
+import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megamek.common.loaders.EntityLoadingException;
@@ -1323,10 +1322,10 @@ public class StructureTab extends ITab implements ActionListener,
 
         boolean isClan = panBasicInfo.isClan();
         boolean isMixed = panBasicInfo.isMixedTech();
-        boolean isExperimental = (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.EXPERIMENTAL)
-                || (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.UNOFFICIAL);
+        boolean isExperimental = (panBasicInfo.getTechLevel() == SimpleTechLevel.EXPERIMENTAL)
+                || (panBasicInfo.getTechLevel() == SimpleTechLevel.UNOFFICIAL);
         boolean isAdvanced = isExperimental
-                || (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.ADVANCED);
+                || (panBasicInfo.getTechLevel() == SimpleTechLevel.ADVANCED);
 
         // advanced means we allow ultra-light mechs
         if (!isAdvanced) {
@@ -1671,7 +1670,7 @@ public class StructureTab extends ITab implements ActionListener,
 
                 heatSinkCount = clanHeatSinkTypes.length;
                 heatSinkList = clanHeatSinkTypes;
-                if (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.STANDARD) {
+                if (panBasicInfo.getTechLevel() == SimpleTechLevel.STANDARD) {
                     heatSinkCount = 2;
                 }
             } else {
@@ -1698,7 +1697,7 @@ public class StructureTab extends ITab implements ActionListener,
 
         /* JUMP JETS */
         int jjCount = 2;
-        if (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.INTRO) {
+        if (panBasicInfo.getTechLevel() == SimpleTechLevel.INTRO) {
             jjCount = 1;
         } else if (isExperimental && !panBasicInfo.isClan()) {
             jjCount = jjTypes.length;
@@ -1743,7 +1742,7 @@ public class StructureTab extends ITab implements ActionListener,
                 gyroList = Mech.GYRO_SHORT_STRING.clone();
             }
         }
-        if (panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.INTRO) {
+        if (panBasicInfo.getTechLevel() == SimpleTechLevel.INTRO) {
             gyroList = new String[1];
             gyroList[0] = Mech.GYRO_SHORT_STRING[0];
         }
@@ -1762,7 +1761,7 @@ public class StructureTab extends ITab implements ActionListener,
         /* ENHANCEMENTS */
         enhancement.removeAllItems();
         enhancement.addItem("None");
-        if (panBasicInfo.getTechLevel() != ITechnology.SimpleTechLevel.INTRO
+        if (panBasicInfo.getTechLevel() != SimpleTechLevel.INTRO
                 && !getMech().isSuperHeavy()) {
             enhancement.addItem("MASC");
             if (!panBasicInfo.isClan()) {
@@ -1859,11 +1858,11 @@ public class StructureTab extends ITab implements ActionListener,
         baseType.removeAllItems();
         baseType.addItem(baseTypes[BASE_TYPE_STANDARD]);
         if (!panBasicInfo.isClan()
-                || panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.UNOFFICIAL) {
+                || panBasicInfo.getTechLevel() == SimpleTechLevel.UNOFFICIAL) {
             baseType.addItem(baseTypes[BASE_TYPE_LAM]);
         }
         if (panBasicInfo.isClan()
-                || panBasicInfo.getTechLevel() == ITechnology.SimpleTechLevel.UNOFFICIAL) {
+                || panBasicInfo.getTechLevel() == SimpleTechLevel.UNOFFICIAL) {
             baseType.addItem(baseTypes[BASE_TYPE_QUADVEE]);
         }
     }
@@ -2592,7 +2591,7 @@ public class StructureTab extends ITab implements ActionListener,
         createArmorMountsAndSetArmorType();
         //If we have switched from Clan to IS or vice-versa and aren't unofficial, the
         //availability of LAMs and QuadVees has changed.
-        if (panBasicInfo.getTechLevel() != ITechnology.SimpleTechLevel.UNOFFICIAL) {
+        if (panBasicInfo.getTechLevel() != SimpleTechLevel.UNOFFICIAL) {
             populateUnitTypeOptions();
         }
         populateChoices(true);
