@@ -94,6 +94,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
     
     private void initUI() {
         Dimension labelSize = new Dimension(110, 25);
+        Dimension controlSize = new Dimension(180, 25);
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         techBaseNames = resourceMap.getString("BasicInfoView.cbTechBase.values").split(",");
         
@@ -109,6 +110,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         gbc.gridx = 1;
         gbc.gridy = 0;
         add(txtChassis, gbc);
+        setFieldSize(txtChassis, controlSize);
         txtChassis.addFocusListener(this);
 
         gbc.gridx = 0;
@@ -117,6 +119,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         gbc.gridx = 1;
         gbc.gridy = 1;
         add(txtModel, gbc);
+        setFieldSize(txtModel, controlSize);
         txtModel.addFocusListener(this);
 
         gbc.gridx = 0;
@@ -125,6 +128,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         gbc.gridx = 1;
         gbc.gridy = 2;
         add(txtYear, gbc);
+        setFieldSize(txtYear, controlSize);
         txtYear.setMaximum(9999);
         txtYear.addFocusListener(this);
 
@@ -133,6 +137,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         add(createLabel(resourceMap.getString("BasicInfoView.txtSource.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 3;
+        setFieldSize(txtSource, controlSize);
         add(txtSource, gbc);
         txtSource.addFocusListener(this);
 
@@ -141,6 +146,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         add(createLabel(resourceMap.getString("BasicInfoView.cbTechBase.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 4;
+        setFieldSize(cbTechBase, controlSize);
         add(cbTechBase, gbc);
         refreshTechBase();
         cbTechBase.addActionListener(this);
@@ -150,6 +156,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         add(createLabel(resourceMap.getString("BasicInfoView.cbTechLevel.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 5;
+        setFieldSize(cbTechLevel, controlSize);
         add(cbTechLevel, gbc);
         cbTechLevel.addActionListener(this);
 
@@ -158,6 +165,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         add(createLabel(resourceMap.getString("BasicInfoView.txtManualBV.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 6;
+        setFieldSize(txtManualBV, controlSize);
         add(txtManualBV, gbc);
         txtManualBV.addFocusListener(this);
         
