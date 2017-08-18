@@ -28,6 +28,7 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
+import megameklab.com.ui.util.IntRangeTextField;
 
 /**
  * Basic information common to all unit types: name, year, tech level.
@@ -77,11 +78,11 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
     
     private JTextField txtChassis = new JTextField(5);
     private JTextField txtModel = new JTextField(5);
-    private JTextField txtYear = new JTextField(3);
+    private IntRangeTextField txtYear = new IntRangeTextField(3);
     private JTextField txtSource = new JTextField(3);
     private CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
     private JComboBox<SimpleTechLevel> cbTechLevel = new JComboBox<>();
-    private JTextField txtManualBV = new JTextField(3);
+    private IntRangeTextField txtManualBV = new IntRangeTextField(3);
     
     private int prevYear = 3067;
     private int prevBV = 0;
@@ -124,7 +125,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         gbc.gridx = 1;
         gbc.gridy = 2;
         add(txtYear, gbc);
-        txtYear.setText("0");
+        txtYear.setMaximum(9999);
         txtYear.addFocusListener(this);
 
         gbc.gridx = 0;
@@ -158,7 +159,6 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         gbc.gridx = 1;
         gbc.gridy = 6;
         add(txtManualBV, gbc);
-        txtManualBV.setText("0");
         txtManualBV.addFocusListener(this);
         
     }
@@ -179,6 +179,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
 
     public void setFromEntity(Entity en) {
         baseTA = en.getConstructionTechAdvancement();
+        txtYear.setMinimum(baseTA.getIntroductionDate());
         setChassis(en.getChassis());
         setModel(en.getModel());
         setYear(en.getYear());
@@ -186,6 +187,9 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         setTechBase(en.isClan(), en.isMixedTech());
         setTechLevel(SimpleTechLevel.max(en.getStaticTechLevel(),
                 SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
+        if (en.getManualBV() >= 0) {
+            setManualBV(en.getManualBV());
+        }
     }
     
     public void setAsCustomization() {
@@ -212,11 +216,11 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
     }
 
     public int getYear() {
-        return Integer.parseInt(txtYear.getText());
+        return txtYear.getIntVal();
     }
     
     public void setYear(int year) {
-        txtYear.setText(String.valueOf(year));
+        txtYear.setIntVal(year);
         refreshTechBase();
     }
 
@@ -229,11 +233,11 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
     }
 
     public int getManualBV() {
-        return Integer.parseInt(txtManualBV.getText());
+        return txtManualBV.getIntVal();
     }
     
     public void setManualBV(int bv) {
-        txtManualBV.setText(String.valueOf(bv));
+        txtManualBV.setIntVal(bv);
     }
     
     public boolean isClan() {
