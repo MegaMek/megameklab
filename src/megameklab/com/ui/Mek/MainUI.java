@@ -62,9 +62,12 @@ public class MainUI extends MegaMekLabMainUI {
     private MenuBarCreator menubarcreator;
 
     public MainUI() {
+        this(false, false);
+    }
 
+    public MainUI(boolean primitive, boolean industrial) {
         super();
-        createNewUnit(Entity.ETYPE_BIPED_MECH, false, false);
+        createNewUnit(Entity.ETYPE_BIPED_MECH, primitive, industrial);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -164,7 +167,15 @@ public class MainUI extends MegaMekLabMainUI {
 
         mech.addGyro();
         mech.addEngineCrits();
-        mech.addCockpit();
+        if (isPrimitive) {
+            mech.addPrimitiveCockpit();
+        } else if (isIndustrial) {
+            mech.addIndustrialCockpit();
+        } else if (Entity.ETYPE_QUADVEE == entityType) {
+            mech.addQuadVeeCockpit();
+        } else {
+            mech.addCockpit();
+        }
         UnitUtil.updateHeatSinks(mech, 10, "Single");
 
         getEntity().autoSetInternal();
