@@ -1013,6 +1013,28 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         UnitUtil.updateAutoSinks(getMech(),
                 (String) heatSinkType.getSelectedItem());
     }
+    
+    private boolean hasCTSpace(Engine engine, int gyroType, int cockpitType) {
+        if (getMech().isSuperHeavy()) {
+            return true;
+        }
+        int crits = 10;
+        if (engine.getEngineType() == Engine.COMPACT_ENGINE) {
+            crits -= 3;
+        } else if (engine.hasFlag(Engine.LARGE_ENGINE)) {
+            crits += 2;
+        }
+        if (gyroType == Mech.GYRO_COMPACT) {
+            crits -= 2;
+        } else if (gyroType == Mech.GYRO_XL) {
+            crits += 2;
+        }
+        if ((cockpitType == Mech.COCKPIT_TORSO_MOUNTED)
+                || (cockpitType == Mech.COCKPIT_VRRP)) {
+            crits += 2;
+        }
+        return crits <= 12;
+    }
 
     private boolean resetEngine() {
         boolean retVal = false;
@@ -1685,27 +1707,33 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
 
     @Override
     public void engineChanged(Engine engine) {
-        // Make sure we keep same number of base heat sinks for omnis
-        engine.setBaseChassisHeatSinks(getMech().getEngine()
-                .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
-        getMech().setEngine(engine);
-        resetSystemCrits();
-        UnitUtil.updateAutoSinks(getMech(),
-                (String) heatSinkType.getSelectedItem());
-        refreshSummary();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
+        if (!hasCTSpace(engine, panChassis.getGyroType(), panChassis.getCockpitType())) {
+            JOptionPane.showMessageDialog(
+                    this, "There is not enough space in the center torso for this engine.",
+                    "Bad Engine", JOptionPane.ERROR_MESSAGE);
+            panChassis.removeListener(this);
+            panChassis.setEngine(getMech().getEngine());
+            panChassis.addListener(this);
+        } else {
+            // Make sure we keep same number of base heat sinks for omnis
+            engine.setBaseChassisHeatSinks(getMech().getEngine()
+                    .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
+            getMech().setEngine(engine);
+            resetSystemCrits();
+            UnitUtil.updateAutoSinks(getMech(),
+                    (String) heatSinkType.getSelectedItem());
+            refreshSummary();
+            refresh.refreshPreview();
+            refresh.refreshStatus();
+        }
     }
 
     @Override
     public void gyroChanged(int gyroType) {
-        if (panChassis.getEngine().hasFlag(Engine.LARGE_ENGINE)
-                && (gyroType == Mech.GYRO_XL)) {
-            JOptionPane
-                    .showMessageDialog(
-                            this,
-                            "A XL gyro does not fit with a large engine installed",
-                            "Bad Gyro", JOptionPane.ERROR_MESSAGE);
+        if (!hasCTSpace(panChassis.getEngine(), gyroType, panChassis.getCockpitType())) {
+            JOptionPane.showMessageDialog(
+                    this, "There is not enough space in the center torso for this gyro.",
+                    "Bad Gyro", JOptionPane.ERROR_MESSAGE);
             panChassis.removeListener(this);
             panChassis.setGyroType(getMech().getGyroType());
             panChassis.addListener(this);
@@ -1720,11 +1748,20 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
 
     @Override
     public void cockpitChanged(int cockpitType) {
-        getMech().setCockpitType(cockpitType);
-        resetSystemCrits();
-        refreshSummary();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
+        if (!hasCTSpace(panChassis.getEngine(), panChassis.getGyroType(), cockpitType)) {
+            JOptionPane.showMessageDialog(
+                    this, "There is not enough space in the center torso for this cockpit.",
+                    "Bad Gyro", JOptionPane.ERROR_MESSAGE);
+            panChassis.removeListener(this);
+            panChassis.setCockpitType(getMech().getCockpitType());
+            panChassis.addListener(this);
+        } else {
+            getMech().setCockpitType(cockpitType);
+            resetSystemCrits();
+            refreshSummary();
+            refresh.refreshPreview();
+            refresh.refreshStatus();
+        }
     }
 
     @Override

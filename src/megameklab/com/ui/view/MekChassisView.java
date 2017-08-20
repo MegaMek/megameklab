@@ -455,8 +455,6 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         boolean isMixed = techManager.isMixedTech();
         cbEngine.removeActionListener(this);
         Engine prevEngine = (Engine)cbEngine.getSelectedItem();
-        int prevType = null == prevEngine? -1 : prevEngine.getEngineType();
-        int prevFlags = null == prevEngine? -1 : prevEngine.getFlags();
         cbEngine.removeAllItems();
         int flags = 0;
         if (techManager.isClan()) {
@@ -477,16 +475,10 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         boolean allowNonFusion = !isSuperheavy()
                 && (isIndustrial() || isPrimitive()
                         || (techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0));
-        int sameEngine = -1;
-        int index = 0;
         for (int i : engineTypes) {
             Engine e = new Engine(getEngineRating(), i, flags);
             if (e.engineValid && (e.isFusion() || allowNonFusion)) {
                 cbEngine.addItem(e);
-                if ((e.getEngineType() == prevType) && (e.getFlags() == prevFlags)) {
-                    sameEngine = index;
-                }
-                index++;
             }
             // Only add the opposite tech base if the engine is different.
             if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
@@ -494,14 +486,10 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
                 if (e.engineValid && (e.isFusion()
                         || techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0)) {
                     cbEngine.addItem(e);
-                    if ((e.getEngineType() == prevType) && (e.getFlags() == prevFlags)) {
-                        sameEngine = index;
-                    }
-                    index++;
                 }
             }
         }
-        cbEngine.setSelectedIndex(sameEngine);
+        setEngine(prevEngine);
         cbEngine.addActionListener(this);
         if (cbEngine.getSelectedIndex() < 0) {
             cbEngine.setSelectedIndex(0);
@@ -662,9 +650,22 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         Engine e = (Engine) cbEngine.getSelectedItem();
         return new Engine(getEngineRating(), e.getEngineType(), e.getFlags());
     }
-    
+
+    /**
+     * Select the first engine in the list that matches engine type and flags, disregarding the large engine flag.
+     */
     public void setEngine(Engine engine) {
-        cbEngine.setSelectedItem(engine);
+        if (null != engine) {
+            int type = engine.getEngineType();
+            int flags = engine.getFlags() & ~Engine.LARGE_ENGINE;
+            for (int i = 0; i < cbEngine.getModel().getSize(); i++) {
+                final Engine e = cbEngine.getItemAt(i);
+                if ((e.getEngineType() == type) && ((e.getFlags() & ~Engine.LARGE_ENGINE) == flags)) {
+                    cbEngine.setSelectedIndex(i);
+                    return;
+                }
+            }
+        }
     }
     
     public int getGyroType() {
