@@ -23,22 +23,38 @@ public class CustomComboBox<T> extends JComboBox<T> {
      * 
      */
     private static final long serialVersionUID = 3775138378658623671L;
-
-    public CustomComboBox(T[] values) {
-        super(values);
+    
+    private String nullValue = "-error-";
+    
+    protected CustomComboBox() {
+        super();
+        setRenderer(new Renderer<T>(Object::toString));
     }
     
+    protected CustomComboBox(T[] values) {
+        super(values);
+        setRenderer(new Renderer<T>(Object::toString));
+    }
+
     public CustomComboBox(Function<T,String> renderer) {
         super();
         setRenderer(new Renderer<T>(renderer));
     }
     
     public CustomComboBox(T[] values, Function<T,String> renderer) {
-        this(values);
+        super(values);
         setRenderer(new Renderer<T>(renderer));
     }
     
-    static class Renderer<U> extends JLabel implements ListCellRenderer<U> {
+    public void setNullValue(String val) {
+        if (null != val) {
+            nullValue = val;
+        } else {
+            val = "null";
+        }
+    }
+    
+    class Renderer<U> extends JLabel implements ListCellRenderer<U> {
         
         /**
          * 
@@ -47,7 +63,7 @@ public class CustomComboBox<T> extends JComboBox<T> {
         
         private Function<U,String> toString;
         
-        private Renderer(Function<U,String> toString) {
+        protected Renderer(Function<U,String> toString) {
             super();
             this.toString = toString;
         }
@@ -58,7 +74,7 @@ public class CustomComboBox<T> extends JComboBox<T> {
             try {
                 setText(toString.apply(value));
             } catch (Exception ex) {
-                setText("-error-");
+                setText(nullValue);
             }
             return this;
         }

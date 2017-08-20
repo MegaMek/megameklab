@@ -54,7 +54,7 @@ public class MainUI extends MegaMekLabMainUI {
     public MainUI() {
 
         super();
-        createNewUnit(Entity.ETYPE_INFANTRY, false);
+        createNewUnit(Entity.ETYPE_INFANTRY);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -96,7 +96,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isSuperHeavy) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial) {
         setEntity(new Infantry());
         getEntity().setYear(3145);
         getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);

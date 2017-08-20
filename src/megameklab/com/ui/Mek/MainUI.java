@@ -64,7 +64,7 @@ public class MainUI extends MegaMekLabMainUI {
     public MainUI() {
 
         super();
-        createNewUnit(Entity.ETYPE_BIPED_MECH, false);
+        createNewUnit(Entity.ETYPE_BIPED_MECH, false, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -116,13 +116,29 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isSuperHeavy) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial) {
+        
+        int cockpit = Mech.COCKPIT_STANDARD;
+        int at = EquipmentType.T_ARMOR_STANDARD;
+        int st = EquipmentType.T_STRUCTURE_STANDARD;
+        if (isPrimitive && isIndustrial) {
+            cockpit = Mech.COCKPIT_PRIMITIVE_INDUSTRIAL;
+            at = EquipmentType.T_ARMOR_PRIMITIVE;
+            st = EquipmentType.T_STRUCTURE_INDUSTRIAL;
+        } else if (isPrimitive) {
+            cockpit = Mech.COCKPIT_PRIMITIVE;
+            at = EquipmentType.T_ARMOR_PRIMITIVE;
+        } else if (isIndustrial) {
+            cockpit = Mech.COCKPIT_INDUSTRIAL;
+            at = EquipmentType.T_ARMOR_INDUSTRIAL;
+            st = EquipmentType.T_STRUCTURE_INDUSTRIAL;
+        }
 
         if (entityType == Entity.ETYPE_TRIPOD_MECH) {
             setEntity(new TripodMech(Mech.GYRO_STANDARD, Mech.COCKPIT_TRIPOD));
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_QUAD_MECH) {
-            setEntity(new QuadMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD));
+            setEntity(new QuadMech(Mech.GYRO_STANDARD, cockpit));
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_LAND_AIR_MECH) {
             setEntity(new LandAirMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD, LandAirMech.LAM_STANDARD));
@@ -134,7 +150,7 @@ public class MainUI extends MegaMekLabMainUI {
             UnitUtil.createSpreadMounts((Mech)getEntity(), EquipmentType.get("Tracks"));
             getEntity().setManualBV(-1);
         } else { // type == 0
-            setEntity(new BipedMech(Mech.GYRO_STANDARD, Mech.COCKPIT_STANDARD));
+            setEntity(new BipedMech(Mech.GYRO_STANDARD, cockpit));
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         }
         Mech mech = (Mech) getEntity();
@@ -142,9 +158,9 @@ public class MainUI extends MegaMekLabMainUI {
         getEntity().setYear(3145);
         getEntity().setWeight(25);
         mech.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
-        getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        getEntity().setArmorType(at);
         getEntity().setArmorTechLevel(getEntity().getTechLevel());
-        getEntity().setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+        getEntity().setStructureType(st);
 
         mech.addGyro();
         mech.addEngineCrits();
@@ -200,7 +216,7 @@ public class MainUI extends MegaMekLabMainUI {
                 eType = Entity.ETYPE_BIPED_MECH;
             }
 
-            createNewUnit(eType, false);
+            createNewUnit(eType);
 
             getEntity().setChassis(chassis);
             getEntity().setModel(model);

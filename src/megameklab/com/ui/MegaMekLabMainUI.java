@@ -96,8 +96,6 @@ public abstract class MegaMekLabMainUI extends JFrame implements
 
     public abstract void reloadTabs();
 
-    public abstract void createNewUnit(long entitytype, boolean isSuperHeavy);
-
     public abstract void refreshAll();
 
     public abstract void refreshArmor();

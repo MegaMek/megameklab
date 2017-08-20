@@ -59,7 +59,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         super();
         // ConfigPane.setMinimumSize(new Dimension(300, 300));
-        createNewUnit(Entity.ETYPE_BATTLEARMOR, false);
+        createNewUnit(Entity.ETYPE_BATTLEARMOR);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -104,7 +104,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isSuperHeavy) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial) {
         setEntity(new BattleArmor());
         BattleArmor ba = (BattleArmor) getEntity();
 
