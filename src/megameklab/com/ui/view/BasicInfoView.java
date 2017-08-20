@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
+import megamek.common.ITechnology;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
 import megamek.common.util.EncodeControl;
@@ -188,6 +189,7 @@ public class BasicInfoView extends JPanel implements ITechManager, ActionListene
     public void setFromEntity(Entity en) {
         baseTA = en.getConstructionTechAdvancement();
         txtYear.setMinimum(baseTA.getIntroductionDate());
+        refreshTechBase();
         setChassis(en.getChassis());
         setModel(en.getModel());
         setYear(en.getYear());
@@ -301,14 +303,16 @@ public class BasicInfoView extends JPanel implements ITechManager, ActionListene
         Integer prev = (Integer)cbTechBase.getSelectedItem();
         cbTechBase.removeActionListener(this);
         cbTechBase.removeAllItems();
-        cbTechBase.addItem(TECH_BASE_IS);
-        if (getYear() >= CLAN_START) {
+        if (baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN) {
+            cbTechBase.addItem(TECH_BASE_IS);
+        }
+        if ((getYear() >= CLAN_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)) {
             cbTechBase.addItem(TECH_BASE_CLAN);
         }
-        if (getYear() >= IS_MIXED_START) {
+        if ((getYear() >= IS_MIXED_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN)) {
             cbTechBase.addItem(TECH_BASE_IS_MIXED);
         }
-        if (getYear() >= CLAN_MIXED_START) {
+        if ((getYear() >= CLAN_MIXED_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)) {
             cbTechBase.addItem(TECH_BASE_CLAN_MIXED);
         }
         cbTechBase.setSelectedItem(prev);
