@@ -134,7 +134,7 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
     private ComboBoxModel<String> standardTypesModel;
     private ComboBoxModel<String> lamTypesModel;
     private ComboBoxModel<String> qvTypesModel;
-
+    
     private boolean primitive = false;
     private boolean industrial = false;
     private int engineRating = 20;
@@ -300,6 +300,7 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         setTonnage(mech.getWeight());
         setOmni(mech.isOmni());
         chkOmni.setEnabled(!mech.isPrimitive() && techManager.isLegal(Entity.getOmniAdvancement()));
+        cbBaseType.setEnabled(!primitive && !industrial);
         if (mech instanceof LandAirMech) {
             chkOmni.setEnabled(false);
             setBaseTypeIndex(BASE_TYPE_LAM);
@@ -377,7 +378,8 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         refreshFullHeadEject();
         
         chkOmni.removeActionListener(this);
-        chkOmni.setEnabled(techManager.isLegal(Entity.getOmniAdvancement()));
+        chkOmni.setEnabled(!isPrimitive() && !isIndustrial()
+                && techManager.isLegal(Entity.getOmniAdvancement()));
         chkOmni.addActionListener(this);
     }
 
@@ -404,7 +406,7 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
             spnTonnage.setValue(prev);
         }
     }
-
+    
     private void refreshStructure() {
         boolean isMixed = techManager.isMixedTech();
         boolean isClan = techManager.isClan();
@@ -415,10 +417,10 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         // Primitive/retro can only use standard/industrial structure. Industrial can only use industrial
         // at standard rules level. Superheavies can only use standard.
         if (isIndustrial()) {
-            String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL);
+            String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL, isClan);
             cbStructure.addItem(EquipmentType.get(name));
         } else if (isPrimitive()) {
-            String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD);
+            String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD, isClan);
             cbStructure.addItem(EquipmentType.get(name));
         } else {
             int[] structureTypes = isSuperheavy()?
@@ -512,6 +514,8 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         cbGyro.removeAllItems();
         if (isSuperheavy()) {
             cbGyro.addItem(Mech.GYRO_SUPERHEAVY);
+        } else if (isPrimitive() || isIndustrial()) {
+            cbGyro.addItem(Mech.GYRO_STANDARD);
         } else {
             for (int i = 0; i <= Mech.GYRO_NONE; i++) {
                 if (techManager.isLegal(Mech.getGyroTechAdvancement(i))

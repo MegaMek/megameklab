@@ -312,19 +312,26 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         JMenu unitMenu = new JMenu("Switch Unit Type");
         unitMenu.setMnemonic(KeyEvent.VK_S);
+        Entity en = parentFrame.getEntity();
 
-        if (!(parentFrame.getEntity() instanceof Mech)) {
+        if (!(en instanceof Mech)
+                || ((Mech)en).isPrimitive()
+                || ((Mech)en).isIndustrial()) {
             item = new JMenuItem();
             item.setText("Mech");
             item.setMnemonic(KeyEvent.VK_M);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-            item.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    jMenuLoadMech();
-                }
+            item.addActionListener(e -> jMenuLoadMech());
+            unitMenu.add(item);
+        }
 
-            });
+        if (!(en instanceof Mech)
+                || ((Mech)en).isPrimitive()
+                || !((Mech)en).isIndustrial()) {
+            item = new JMenuItem();
+            item.setText("IndustrialMech");
+            item.addActionListener(e -> jMenuLoadIndustrialMech());
             unitMenu.add(item);
         }
 
@@ -387,6 +394,27 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             });
             unitMenu.add(item);
         }
+        
+        JMenu pMenu = new JMenu("Primitive");
+        if (!(en instanceof Mech)
+                || !((Mech)en).isPrimitive()
+                || ((Mech)en).isIndustrial()) {
+            item = new JMenuItem();
+            item.setText("Mech");
+            item.addActionListener(e ->jMenuLoadPrimitiveMech());
+            pMenu.add(item);
+        }
+
+        if (!(en instanceof Mech)
+                || !((Mech)en).isPrimitive()
+                || !((Mech)en).isIndustrial()) {
+            item = new JMenuItem();
+            item.setText("IndustrialMech");
+            item.addActionListener(e -> jMenuLoadPrimitiveIndustrialMech());
+            pMenu.add(item);
+        }
+        
+        unitMenu.add(pMenu);
 
         file.add(unitMenu);
 
@@ -1001,7 +1029,22 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuLoadMech() {
-        new megameklab.com.ui.Mek.MainUI();
+        new megameklab.com.ui.Mek.MainUI(false, false);
+        parentFrame.dispose();
+    }
+    
+    private void jMenuLoadIndustrialMech() {
+        new megameklab.com.ui.Mek.MainUI(false, true);
+        parentFrame.dispose();
+    }
+
+    private void jMenuLoadPrimitiveMech() {
+        new megameklab.com.ui.Mek.MainUI(true, false);
+        parentFrame.dispose();
+    }
+
+    private void jMenuLoadPrimitiveIndustrialMech() {
+        new megameklab.com.ui.Mek.MainUI(true, true);
         parentFrame.dispose();
     }
 
@@ -1034,12 +1077,13 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     public void jMenuResetEntity_actionPerformed(ActionEvent event) {
         CConfig.updateSaveFiles("Reset Unit");
         CConfig.setParam(CConfig.CONFIG_SAVE_FILE_1, "");
-        if (parentFrame.getEntity() instanceof Tank) {
-            parentFrame.createNewUnit(Entity.ETYPE_TANK, false);
-        } else if (parentFrame.getEntity() instanceof Mech) {
-            parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, false, false);
+        Entity en = parentFrame.getEntity();
+        if (en instanceof Tank) {
+            parentFrame.createNewUnit(Entity.ETYPE_TANK);
+        } else if (en instanceof Mech) {
+            parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, ((Mech)en).isPrimitive(), ((Mech)en).isIndustrial());
         } else if (parentFrame.getEntity() instanceof Aero) {
-            parentFrame.createNewUnit(Entity.ETYPE_AERO, false);
+            parentFrame.createNewUnit(Entity.ETYPE_AERO, ((Aero)en).isPrimitive());
         } else if (parentFrame.getEntity() instanceof BattleArmor) {
             parentFrame.createNewUnit(Entity.ETYPE_BATTLEARMOR);
         } else if (parentFrame.getEntity() instanceof Infantry) {
