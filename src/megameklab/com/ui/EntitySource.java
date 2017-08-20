@@ -13,4 +13,14 @@ import megamek.common.Entity;
 public interface EntitySource {
 
     public Entity getEntity();
+
+    default void createNewUnit(long entitytype) {
+        createNewUnit(entitytype, false, false);
+    }
+    
+    default void createNewUnit(long entitytype, boolean isPrimitive) {
+        createNewUnit(entitytype, isPrimitive, false);
+    }
+    
+    void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial);
 }

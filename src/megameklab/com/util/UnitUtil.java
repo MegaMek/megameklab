@@ -978,30 +978,6 @@ public class UnitUtil {
         }
     }
 
-    public static void updateEnhancements(Mech unit, boolean hasMASC,
-            boolean hasTSM) {
-        UnitUtil.removeEnhancements(unit);
-        if (hasTSM) {
-            if (unit.isIndustrial()) {
-                UnitUtil.createSpreadMounts(unit,
-                        EquipmentType.get("Industrial TSM"));
-            } else {
-                UnitUtil.createSpreadMounts(unit, EquipmentType.get("TSM"));
-            }
-        }
-        if (hasMASC) {
-            Mounted mount = new Mounted(unit, EquipmentType.get("ISMASC"));
-            if (unit.isClan()) {
-                mount = new Mounted(unit, EquipmentType.get("CLMASC"));
-            }
-            try {
-                unit.addEquipment(mount, Entity.LOC_NONE, false);
-            } catch (LocationFullException lfe) {
-                // this can't happen, we add to Entity.LOC_NONE
-            }
-        }
-    }
-
     public static boolean isPrintableEquipment(EquipmentType eq) {
         return UnitUtil.isPrintableEquipment(eq, false);
     }

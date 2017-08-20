@@ -112,7 +112,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isSuperHeavy) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial) {
 
         if (entityType == Entity.ETYPE_AERO) {
             setEntity(new Aero());

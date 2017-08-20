@@ -64,7 +64,7 @@ public class MainUI extends MegaMekLabMainUI {
     public MainUI() {
 
         super();
-        createNewUnit(Entity.ETYPE_TANK, false);
+        createNewUnit(Entity.ETYPE_TANK, false, false);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -131,7 +131,7 @@ public class MainUI extends MegaMekLabMainUI {
             createNewUnit(
                     structureTab.isVTOL() ? Entity.ETYPE_VTOL
                             : tank.isSuperHeavy() ? Entity.ETYPE_SUPER_HEAVY_TANK
-                                    : Entity.ETYPE_TANK, tank.isSuperHeavy());
+                                    : Entity.ETYPE_TANK);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD);
             getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
             getEntity().setChassis(chassis);
@@ -153,7 +153,7 @@ public class MainUI extends MegaMekLabMainUI {
             int mBV = getEntity().getManualBV();
             createNewUnit(
                     structureTab.isSuperHeavy() ? Entity.ETYPE_SUPER_HEAVY_TANK
-                            : Entity.ETYPE_TANK, structureTab.isSuperHeavy());
+                            : Entity.ETYPE_TANK);
             getEntity().setChassis(chassis);
             getEntity().setModel(model);
             getEntity().setSource(source);
@@ -219,14 +219,10 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isSuperHeavy) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial) {
         if (entityType == Entity.ETYPE_VTOL) {
             setEntity(new VTOL());
             getEntity().setTechLevel(TechConstants.T_INTRO_BOXSET);
-            if (isSuperHeavy) {
-                getEntity().setWeight(31);
-                getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);
-            }
             getEntity().setWeight(20);
             getEntity().setMovementMode(EntityMovementMode.VTOL);
         } else {

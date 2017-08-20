@@ -23,7 +23,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
-import megamek.common.ITechnology;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
 import megamek.common.util.EncodeControl;
@@ -36,7 +35,7 @@ import megameklab.com.ui.util.IntRangeTextField;
  * @author Neoancient
  *
  */
-public class BasicInfoView extends JPanel implements ActionListener, FocusListener {
+public class BasicInfoView extends JPanel implements ITechManager, ActionListener, FocusListener {
     
     /**
      * 
@@ -44,6 +43,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
     private static final long serialVersionUID = -6831478201489228066L;
 
     public interface BasicInfoListener {
+        void refreshSummary();
         void chassisChanged(String chassis);
         void modelChanged(String model);
         void yearChanged(int year);
@@ -232,6 +232,12 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         refreshTechBase();
     }
 
+    //TODO: allow setting of tech year apart from origin for era-based option
+    @Override
+    public int getTechYear() {
+        return getYear();
+    }
+
     public String getSource() {
         return txtSource.getText();
     }
@@ -248,6 +254,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         txtManualBV.setIntVal(bv);
     }
     
+    @Override
     public boolean isClan() {
         if (getYear() < CLAN_START) {
             return false;
@@ -258,6 +265,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         }
     }
     
+    @Override
     public boolean isMixedTech() {
         if (getYear() < CLAN_START) {
             return false;
@@ -330,30 +338,6 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
         }
     }
     
-    public boolean isLegal(ITechnology tech) {
-        if (isMixedTech()) {
-            if (!tech.isAvailableIn(getYear())) {
-                return false;
-            }
-            /* TODO: era-based option
-             * return tech.getSimpleLevel(getYear(), true).compareTo(getTechLevel()) <= 0
-             *       || tech.getSimpleLevel(getYear(), false).compareTo(getTechLevel()) <= 0;
-                    */
-        } else {
-            if (tech.getTechBase() != ITechnology.TECH_BASE_ALL
-                    && isClan() != tech.isClan()) {
-                return false;
-            }
-            if (!tech.isAvailableIn(getYear(), isClan())) {
-                return false;
-            }
-            /* TODO: era-based option
-             * return tech.getSimpleLevel(getYear(), isClan()).compareTo(getTechLevel()) <= 0;
-                    */
-        }
-        return tech.getStaticTechLevel().compareTo(getTechLevel()) <= 0;
-    }
-
     @Override
     public void focusGained(FocusEvent e) {
         if (e.getSource().equals(txtYear)) {
@@ -388,6 +372,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
                 setManualBV(prevBV);
             }
         }
+        listeners.forEach(l -> l.refreshSummary());
     }
     
     @Override
@@ -402,6 +387,7 @@ public class BasicInfoView extends JPanel implements ActionListener, FocusListen
             listeners.forEach(l -> l.techLevelChanged(getTechLevel()));
             cbTechLevel.addActionListener(this);
         }
+        listeners.forEach(l -> l.refreshSummary());
     }
     
 }

@@ -1037,13 +1037,13 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         if (parentFrame.getEntity() instanceof Tank) {
             parentFrame.createNewUnit(Entity.ETYPE_TANK, false);
         } else if (parentFrame.getEntity() instanceof Mech) {
-            parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, false);
+            parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, false, false);
         } else if (parentFrame.getEntity() instanceof Aero) {
             parentFrame.createNewUnit(Entity.ETYPE_AERO, false);
         } else if (parentFrame.getEntity() instanceof BattleArmor) {
-            parentFrame.createNewUnit(Entity.ETYPE_BATTLEARMOR, false);
+            parentFrame.createNewUnit(Entity.ETYPE_BATTLEARMOR);
         } else if (parentFrame.getEntity() instanceof Infantry) {
-            parentFrame.createNewUnit(Entity.ETYPE_INFANTRY, false);
+            parentFrame.createNewUnit(Entity.ETYPE_INFANTRY);
         } else {
             System.out.println("util.MenuBarCreatoer: " +
                         "Received unknown entityType!");
