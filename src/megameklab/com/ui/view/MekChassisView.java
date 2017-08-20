@@ -95,6 +95,28 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
             Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.FUEL_CELL, Engine.LIGHT_ENGINE,
             Engine.COMPACT_ENGINE, Engine.FISSION, Engine.COMBUSTION_ENGINE
     };
+    // Primitive Mechs can only use some engine types. These are also the only ones available to IndusrialMechs
+    // under standard rules.
+    private final static int[] PRIMITIVE_ENGINE_TYPES = {
+            Engine.NORMAL_ENGINE, Engine.FUEL_CELL, Engine.FISSION, Engine.COMBUSTION_ENGINE
+    };
+    // LAMs can only use fusion engines that are contained entirely within the center torso.
+    private final static int[] LAM_ENGINE_TYPES = {
+            Engine.NORMAL_ENGINE, Engine.COMPACT_ENGINE
+    };
+    
+    // Internal structure for non-industrial mechs
+    private final static int[] STRUCTURE_TYPES = {
+            EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
+            EquipmentType.T_STRUCTURE_ENDO_PROTOTYPE, EquipmentType.T_STRUCTURE_REINFORCED,
+            EquipmentType.T_STRUCTURE_COMPOSITE, EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
+    };
+
+    // Internal structure for superheavy battlemechs
+    private final static int[] SUPERHEAVY_STRUCTURE_TYPES = {
+            EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
+            EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
+    };
 
     final private SpinnerNumberModel tonnageModel = new SpinnerNumberModel(20, 20, 100, 5);
     final private JSpinner spnTonnage = new JSpinner(tonnageModel);
@@ -241,14 +263,14 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         add(cbEnhancement, gbc);
         cbEnhancement.addActionListener(this);
         
-        chkFullHeadEject.setText(resourceMap.getString("MekChassisView.resetChassis.text")); //$NON-NLS-1$
+        chkFullHeadEject.setText(resourceMap.getString("MekChassisView.chkFullHeadEject.text")); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 8;
         gbc.gridwidth = 3;
         add(chkFullHeadEject, gbc);
         chkFullHeadEject.addActionListener(this);
         
-        btnResetChassis.setText(resourceMap.getString("MekChassisView.chkFullHeadEject.text")); //$NON-NLS-1$
+        btnResetChassis.setText(resourceMap.getString("MekChassisView.btnResetChassis.text")); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 9;
         gbc.gridwidth = 3;
@@ -352,14 +374,11 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         refreshGyro();
         refreshCockpit();
         refreshEnhancement();
+        refreshFullHeadEject();
         
         chkOmni.removeActionListener(this);
         chkOmni.setEnabled(techManager.isLegal(Entity.getOmniAdvancement()));
         chkOmni.addActionListener(this);
-
-        chkFullHeadEject.removeActionListener(this);
-        chkFullHeadEject.setEnabled(techManager.isLegal(Mech.getFullHeadEjectAdvancement()));
-        chkFullHeadEject.addActionListener(this);
     }
 
     private void refreshTonnage() {
@@ -393,17 +412,33 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         EquipmentType prevStructure = (EquipmentType)cbStructure.getSelectedItem();
         cbStructure.removeAllItems();
         cbStructure.showTechBase(isMixed);
-        for (int i = 0; i < EquipmentType.structureNames.length; i++) {
-            String name = EquipmentType.getStructureTypeName(i, isClan);
-            EquipmentType structure = EquipmentType.get(name);
-            if ((null != structure) && techManager.isLegal(structure)) {
-                cbStructure.addItem(structure);
-            }
-            if (isMixed && (i > EquipmentType.T_STRUCTURE_INDUSTRIAL)) {
-                name = EquipmentType.getStructureTypeName(i, !isClan);
-                structure = EquipmentType.get(name);
+        // Primitive/retro can only use standard/industrial structure. Industrial can only use industrial
+        // at standard rules level. Superheavies can only use standard.
+        if (isIndustrial()) {
+            String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL);
+            cbStructure.addItem(EquipmentType.get(name));
+        } else if (isPrimitive()) {
+            String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD);
+            cbStructure.addItem(EquipmentType.get(name));
+        } else {
+            int[] structureTypes = isSuperheavy()?
+                    SUPERHEAVY_STRUCTURE_TYPES : STRUCTURE_TYPES;
+            for (int i : structureTypes) {
+                String name = EquipmentType.getStructureTypeName(i, isClan);
+                EquipmentType structure = EquipmentType.get(name);
+                // LAMs cannot use bulky structure
+                if ((getBaseTypeIndex() == BASE_TYPE_LAM) && (structure.getCriticals(null) > 0)) {
+                    continue;
+                }
                 if ((null != structure) && techManager.isLegal(structure)) {
                     cbStructure.addItem(structure);
+                }
+                if (isMixed && (i > EquipmentType.T_STRUCTURE_INDUSTRIAL)) {
+                    name = EquipmentType.getStructureTypeName(i, !isClan);
+                    structure = EquipmentType.get(name);
+                    if ((null != structure) && techManager.isLegal(structure)) {
+                        cbStructure.addItem(structure);
+                    }
                 }
             }
         }
@@ -418,6 +453,8 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         boolean isMixed = techManager.isMixedTech();
         cbEngine.removeActionListener(this);
         Engine prevEngine = (Engine)cbEngine.getSelectedItem();
+        int prevType = null == prevEngine? -1 : prevEngine.getEngineType();
+        int prevFlags = null == prevEngine? -1 : prevEngine.getFlags();
         cbEngine.removeAllItems();
         int flags = 0;
         if (techManager.isClan()) {
@@ -427,11 +464,27 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
             flags |= Engine.LARGE_ENGINE;
         }
         int altFlags = flags ^ Engine.CLAN_ENGINE;
-        for (int i : ENGINE_TYPES) {
+        int[] engineTypes = ENGINE_TYPES;
+        if (isPrimitive() || (isIndustrial()
+                && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) < 0)) {
+            engineTypes = PRIMITIVE_ENGINE_TYPES;
+        } else if (getBaseTypeIndex() == BASE_TYPE_LAM) {
+            engineTypes = LAM_ENGINE_TYPES;
+        }
+        // Primitive and industrial mechs can use non-fusion engines, as can non-superheavies under experimental rules
+        boolean allowNonFusion = !isSuperheavy()
+                && (isIndustrial() || isPrimitive()
+                        || (techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0));
+        int sameEngine = -1;
+        int index = 0;
+        for (int i : engineTypes) {
             Engine e = new Engine(getEngineRating(), i, flags);
-            if (e.engineValid && (industrial || e.isFusion()
-                    || techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0)) {
+            if (e.engineValid && (e.isFusion() || allowNonFusion)) {
                 cbEngine.addItem(e);
+                if ((e.getEngineType() == prevType) && (e.getFlags() == prevFlags)) {
+                    sameEngine = index;
+                }
+                index++;
             }
             // Only add the opposite tech base if the engine is different.
             if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
@@ -439,10 +492,14 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
                 if (e.engineValid && (e.isFusion()
                         || techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0)) {
                     cbEngine.addItem(e);
+                    if ((e.getEngineType() == prevType) && (e.getFlags() == prevFlags)) {
+                        sameEngine = index;
+                    }
+                    index++;
                 }
             }
         }
-        cbEngine.setSelectedItem(prevEngine);
+        cbEngine.setSelectedIndex(sameEngine);
         cbEngine.addActionListener(this);
         if (cbEngine.getSelectedIndex() < 0) {
             cbEngine.setSelectedIndex(0);
@@ -457,7 +514,8 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
             cbGyro.addItem(Mech.GYRO_SUPERHEAVY);
         } else {
             for (int i = 0; i <= Mech.GYRO_NONE; i++) {
-                if (techManager.isLegal(Mech.getGyroTechAdvancement(i))) {
+                if (techManager.isLegal(Mech.getGyroTechAdvancement(i))
+                        && ((i != Mech.GYRO_XL) || (getBaseTypeIndex() !=  BASE_TYPE_LAM))) {
                     cbGyro.addItem(i);
                 }
             }
@@ -528,6 +586,15 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         }
     }
     
+    private void refreshFullHeadEject() {
+        chkFullHeadEject.removeActionListener(this);
+        chkFullHeadEject.setEnabled((getCockpitType() != Mech.COCKPIT_TORSO_MOUNTED)
+                && (getCockpitType() != Mech.COCKPIT_VRRP)
+                && (getCockpitType() != Mech.COCKPIT_COMMAND_CONSOLE)
+                && techManager.isLegal(Mech.getFullHeadEjectAdvancement()));
+        chkFullHeadEject.addActionListener(this);
+    }
+    
     public double getTonnage() {
         return tonnageModel.getNumber().doubleValue();
     }
@@ -588,7 +655,8 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
     }
 
     public Engine getEngine() {
-        return (Engine)cbEngine.getSelectedItem();
+        Engine e = (Engine) cbEngine.getSelectedItem();
+        return new Engine(getEngineRating(), e.getEngineType(), e.getFlags());
     }
     
     public void setEngine(Engine engine) {
@@ -641,6 +709,7 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
             listeners.forEach(l -> l.gyroChanged(getGyroType()));
         } else if (e.getSource() == cbCockpit) {
             listeners.forEach(l -> l.cockpitChanged(getCockpitType()));
+            refreshFullHeadEject();
         } else if (e.getSource() == cbEnhancement) {
             listeners.forEach(l -> l.enhancementChanged(getEnhancement()));
         } else if (e.getSource() == chkFullHeadEject) {
@@ -649,7 +718,6 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
             listeners.forEach(MekChassisListener::resetChassis);
         }
         refresh();
-        listeners.forEach(l -> l.refreshSummary());
     }
 
     @Override
@@ -657,7 +725,7 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         }
-        refresh();
-        listeners.forEach(l -> l.refreshSummary());
+        // Change from standard to superheavy or reverse will cause the structure tab to call setEntity()
+        // and so cause a refresh
     }
 }

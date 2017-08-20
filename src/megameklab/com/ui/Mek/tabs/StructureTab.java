@@ -614,7 +614,8 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
             default:
                 clearCritsForCockpit(false, false);
                 getMech().addCockpit();
-            }
+        }
+        refresh.refreshBuild();
     }
     
     /**
@@ -996,6 +997,21 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
 
             refresh.refreshAll();
         }
+    }
+    
+    private void recalculateEngineRating() {
+        int rating = ((Integer) walkMPBase.getValue())
+                * ((int) panChassis.getTonnage());
+        if (getMech().isPrimitive()) {
+            rating = (int)Math.ceil((rating * 1.2) / 5.0) * 5; 
+        }
+        panChassis.setEngineRating(rating);
+        Engine engine = panChassis.getEngine();
+        engine.setBaseChassisHeatSinks(getMech().getEngine()
+                .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
+        getMech().setEngine(engine);
+        UnitUtil.updateAutoSinks(getMech(),
+                (String) heatSinkType.getSelectedItem());
     }
 
     private boolean resetEngine() {
@@ -1481,11 +1497,15 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
     @Override
     public void chassisChanged(String chassis) {
         getMech().setChassis(chassis);
+        refresh.refreshHeader();
+        refresh.refreshPreview();
     }
 
     @Override
     public void modelChanged(String model) {
         getMech().setModel(model);
+        refresh.refreshHeader();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -1551,11 +1571,8 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
 
     @Override
     public void tonnageChanged(double tonnage) {
-        boolean changedSuperHeavyStatus = false;
-        if ((getMech().isSuperHeavy() 
-                && (tonnage <= 100))
-                || (!getMech().isSuperHeavy() 
-                        && (tonnage > 100))) {
+        boolean changedSuperHeavyStatus = getMech().isSuperHeavy() != tonnage <= 100;
+        if (changedSuperHeavyStatus) {
             // if we switch from being superheavy to not being superheavy,
             // remove crits
             for (Mounted mount : getMech().getEquipment()) {
@@ -1564,7 +1581,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                     UnitUtil.changeMountStatus(getMech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 }
             }
-            changedSuperHeavyStatus = true;
         }
         getMech().setWeight(tonnage);
         getMech().autoSetInternal();
@@ -1576,10 +1592,12 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
             // Internal structure crits may change
             UnitUtil.removeISorArmorMounts(getMech(), true);
             createISMounts(panChassis.getStructure());
-            getMech().clearGyroCrits();
-            getMech().addGyro();
+            resetSystemCrits();
+            refresh();
         }
-        resetEngine();
+        recalculateEngineRating();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
@@ -1596,6 +1614,7 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         }
         UnitUtil.updateAutoSinks(getMech(),
                 (String) heatSinkType.getSelectedItem());
+        refresh.refreshPreview();
     }
 
     @Override
@@ -1644,28 +1663,38 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                         }
                     }
                 } else {
-                    eSource.createNewUnit(Entity.ETYPE_LAND_AIR_MECH);
+                    eSource.createNewUnit(Entity.ETYPE_QUADVEE);
                 }
                 break;
         }
+        refresh();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
     public void structureChanged(EquipmentType structure) {
         UnitUtil.removeISorArmorMounts(getMech(), true);
         createISMounts(structure);
+        refreshSummary();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
     public void engineChanged(Engine engine) {
         // Make sure we keep same number of base heat sinks for omnis
-        Engine newEngine = new Engine(engine.getRating(), engine.getEngineType(), engine.getFlags());
-        newEngine.setBaseChassisHeatSinks(getMech().getEngine()
+        engine.setBaseChassisHeatSinks(getMech().getEngine()
                 .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
-        getMech().setEngine(newEngine);
+        getMech().setEngine(engine);
         resetSystemCrits();
         UnitUtil.updateAutoSinks(getMech(),
                 (String) heatSinkType.getSelectedItem());
+        refreshSummary();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
@@ -1684,12 +1713,18 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
             getMech().setGyroType(gyroType);
             resetSystemCrits();
         }
+        refreshSummary();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
     public void cockpitChanged(int cockpitType) {
         getMech().setCockpitType(cockpitType);
         resetSystemCrits();
+        refreshSummary();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
@@ -1703,10 +1738,13 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                 } catch (LocationFullException lfe) {
                     // this can't happen, we add to Entity.LOC_NONE
                 }
+            } else {
+                UnitUtil.createSpreadMounts(getMech(), enhancement);
             }
-        } else {
-            UnitUtil.createSpreadMounts(getMech(), enhancement);
         }
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
@@ -1717,5 +1755,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
     @Override
     public void resetChassis() {
         UnitUtil.resetBaseChassis(getMech());
+        refresh.refreshAll();
     }
 }
