@@ -129,7 +129,7 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
     final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(c -> Mech.getCockpitTypeString(c));
     final private TechComboBox<EquipmentType> cbEnhancement = new TechComboBox<>(EquipmentType::getName);
     final private JCheckBox chkFullHeadEject = new JCheckBox();
-    final private JButton btnResetChassis = new JButton();    
+    final private JButton btnResetChassis = new JButton();
     
     private ComboBoxModel<String> standardTypesModel;
     private ComboBoxModel<String> lamTypesModel;
@@ -148,6 +148,8 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
     private static final String[] ENHANCEMENT_NAMES = {
             "ISMASC", "CLMASC", "TSM", "ISSuperCooledMyomer"
     };
+    
+    public static final EquipmentType EJECTION_SEAT = EquipmentType.get("Ejection Seat (Industrial Mech)");
     
     final ITechManager techManager;
     
@@ -378,8 +380,7 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         refreshFullHeadEject();
         
         chkOmni.removeActionListener(this);
-        chkOmni.setEnabled(!isPrimitive() && !isIndustrial()
-                && techManager.isLegal(Entity.getOmniAdvancement()));
+        chkOmni.setEnabled(techManager.isLegal(Entity.getOmniAdvancement()));
         chkOmni.addActionListener(this);
     }
 
@@ -536,6 +537,9 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
             cbCockpit.addItem(isIndustrial()? Mech.COCKPIT_PRIMITIVE_INDUSTRIAL : Mech.COCKPIT_PRIMITIVE);
         } else if (isIndustrial()) {
             cbCockpit.addItem(Mech.COCKPIT_INDUSTRIAL);
+            if (techManager.isLegal(Mech.getIndustrialAdvFireConTA())) {
+                cbCockpit.addItem(Mech.COCKPIT_STANDARD);
+            }
         } else {
             for (int cockpitType : GENERAL_COCKPITS) {
                 if (techManager.isLegal(Mech.getCockpitTechAdvancement(cockpitType))) {
