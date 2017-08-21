@@ -1351,10 +1351,13 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
 
     @Override
     public void typeChanged(int baseType, int motiveType, long etype) {
+        boolean industrial = false;
         switch (baseType) {
+            case MekChassisView.BASE_TYPE_INDUSTRIAL:
+                industrial = true;
+                //fall through
             case MekChassisView.BASE_TYPE_STANDARD:
                 boolean primitive = getMech().isPrimitive();
-                boolean industrial = getMech().isIndustrial();
                 if (motiveType == MekChassisView.MOTIVE_TYPE_BIPED) {
                     if  (((getMech().getEntityType() & Entity.ETYPE_BIPED_MECH) == 0)
                             || ((getMech().getEntityType() & Entity.ETYPE_LAND_AIR_MECH) != 0)) {
@@ -1399,6 +1402,11 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                 }
                 break;
         }
+        if (getMech().isIndustrial() != industrial) {
+            getMech().setStructureType(industrial?
+                    EquipmentType.T_STRUCTURE_INDUSTRIAL : EquipmentType.T_STRUCTURE_STANDARD);
+        }
+
         refresh();
         refresh.refreshBuild();
         refresh.refreshPreview();

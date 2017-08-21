@@ -315,23 +315,13 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         Entity en = parentFrame.getEntity();
 
         if (!(en instanceof Mech)
-                || ((Mech)en).isPrimitive()
-                || ((Mech)en).isIndustrial()) {
+                || ((Mech)en).isPrimitive()) {
             item = new JMenuItem();
             item.setText("Mech");
             item.setMnemonic(KeyEvent.VK_M);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
             item.addActionListener(e -> jMenuLoadMech());
-            unitMenu.add(item);
-        }
-
-        if (!(en instanceof Mech)
-                || ((Mech)en).isPrimitive()
-                || !((Mech)en).isIndustrial()) {
-            item = new JMenuItem();
-            item.setText("IndustrialMech");
-            item.addActionListener(e -> jMenuLoadIndustrialMech());
             unitMenu.add(item);
         }
 
@@ -397,20 +387,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         
         JMenu pMenu = new JMenu("Primitive");
         if (!(en instanceof Mech)
-                || !((Mech)en).isPrimitive()
-                || ((Mech)en).isIndustrial()) {
+                || !((Mech)en).isPrimitive()) {
             item = new JMenuItem();
             item.setText("Mech");
             item.addActionListener(e ->jMenuLoadPrimitiveMech());
-            pMenu.add(item);
-        }
-
-        if (!(en instanceof Mech)
-                || !((Mech)en).isPrimitive()
-                || !((Mech)en).isIndustrial()) {
-            item = new JMenuItem();
-            item.setText("IndustrialMech");
-            item.addActionListener(e -> jMenuLoadPrimitiveIndustrialMech());
             pMenu.add(item);
         }
         
@@ -1033,18 +1013,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         parentFrame.dispose();
     }
     
-    private void jMenuLoadIndustrialMech() {
-        new megameklab.com.ui.Mek.MainUI(false, true);
-        parentFrame.dispose();
-    }
-
     private void jMenuLoadPrimitiveMech() {
         new megameklab.com.ui.Mek.MainUI(true, false);
-        parentFrame.dispose();
-    }
-
-    private void jMenuLoadPrimitiveIndustrialMech() {
-        new megameklab.com.ui.Mek.MainUI(true, true);
         parentFrame.dispose();
     }
 

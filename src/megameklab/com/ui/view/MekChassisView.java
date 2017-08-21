@@ -71,28 +71,29 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         listeners.remove(l);
     }
     
-    public static final int BASE_TYPE_STANDARD = 0;
-    public static final int BASE_TYPE_LAM      = 1;
-    public static final int BASE_TYPE_QUADVEE  = 2;
-    
-    public static final int MOTIVE_TYPE_BIPED  = 0;
-    public static final int MOTIVE_TYPE_QUAD   = 1;
-    public static final int MOTIVE_TYPE_TRIPOD = 2;
-    
-    public static final int MOTIVE_TYPE_LAM_STD  = 0;
-    public static final int MOTIVE_TYPE_LAM_BM   = 1;
-    
-    public static final int MOTIVE_TYPE_QV_TRACKED   = 0;
-    public static final int MOTIVE_TYPE_QV_WHEELED   = 1;
-    
+    public static final int BASE_TYPE_STANDARD         = 0;
+    public static final int BASE_TYPE_INDUSTRIAL       = 1;
+    public static final int BASE_TYPE_LAM              = 2;
+    public static final int BASE_TYPE_QUADVEE          = 3;
+
+    public static final int MOTIVE_TYPE_BIPED          = 0;
+    public static final int MOTIVE_TYPE_QUAD           = 1;
+    public static final int MOTIVE_TYPE_TRIPOD         = 2;
+
+    public static final int MOTIVE_TYPE_LAM_STD        = 0;
+    public static final int MOTIVE_TYPE_LAM_BM         = 1;
+
+    public static final int MOTIVE_TYPE_QV_TRACKED     = 0;
+    public static final int MOTIVE_TYPE_QV_WHEELED     = 1;
+
     // Engines that can be used by mechs and the order they appear in the combobox
     private final static int[] ENGINE_TYPES = {
             Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.FUEL_CELL, Engine.LIGHT_ENGINE,
             Engine.COMPACT_ENGINE, Engine.FISSION, Engine.COMBUSTION_ENGINE
     };
-    // Primitive Mechs can only use some engine types. These are also the only ones available to IndusrialMechs
-    // under standard rules.
-    private final static int[] PRIMITIVE_ENGINE_TYPES = {
+    // Industrial (and primitive) mechs can use non-fusion engines under standard rules, but cannot use
+    // any fusion engines other than standard.
+    private final static int[] INDUSTRIAL_ENGINE_TYPES = {
             Engine.NORMAL_ENGINE, Engine.FUEL_CELL, Engine.FISSION, Engine.COMBUSTION_ENGINE
     };
     // LAMs can only use fusion engines that are contained entirely within the center torso.
@@ -131,7 +132,6 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
     private ComboBoxModel<String> qvTypesModel;
     
     private boolean primitive = false;
-    private boolean industrial = false;
     private int engineRating = 20;
     
     private static final int[] GENERAL_COCKPITS = {
@@ -273,13 +273,13 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
 
     public void setFromEntity(Mech mech) {
         primitive = mech.isPrimitive();
-        industrial = mech.isIndustrial();
         engineRating = mech.getEngine().getRating();
         refresh();
         setTonnage(mech.getWeight());
         setOmni(mech.isOmni());
-        chkOmni.setEnabled(!mech.isPrimitive() && techManager.isLegal(Entity.getOmniAdvancement()));
-        cbBaseType.setEnabled(!primitive && !industrial);
+        chkOmni.setEnabled(!mech.isPrimitive() && !mech.isIndustrial()
+                && techManager.isLegal(Entity.getOmniAdvancement()));
+        cbBaseType.setEnabled(!primitive);
         if (mech instanceof LandAirMech) {
             chkOmni.setEnabled(false);
             setBaseTypeIndex(BASE_TYPE_LAM);
@@ -290,7 +290,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
             cbMotiveType.setModel(qvTypesModel);
             setMotiveTypeIndex(((QuadVee)mech).getMotiveType());
         } else {
-            setBaseTypeIndex(BASE_TYPE_STANDARD);
+            setBaseTypeIndex(mech.isIndustrial()? BASE_TYPE_INDUSTRIAL : BASE_TYPE_STANDARD);
             cbMotiveType.setModel(standardTypesModel);
             if ((mech.getEntityType() & Entity.ETYPE_TRIPOD_MECH) != 0) {
                 setMotiveTypeIndex(MOTIVE_TYPE_TRIPOD);
@@ -336,7 +336,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
     }
     
     public boolean isIndustrial() {
-        return industrial;
+        return getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL;
     }
     
     public int getEngineRating() {
@@ -357,7 +357,10 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         refreshFullHeadEject();
         
         chkOmni.removeActionListener(this);
-        chkOmni.setEnabled(techManager.isLegal(Entity.getOmniAdvancement()));
+        chkOmni.setEnabled(!isPrimitive()
+                && (getBaseTypeIndex() != BASE_TYPE_INDUSTRIAL)
+                && (getBaseTypeIndex() != BASE_TYPE_LAM)
+                && techManager.isLegal(Entity.getOmniAdvancement()));
         chkOmni.addActionListener(this);
     }
 
@@ -443,16 +446,14 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         }
         int altFlags = flags ^ Engine.CLAN_ENGINE;
         int[] engineTypes = ENGINE_TYPES;
-        if (isPrimitive() || (isIndustrial()
-                && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) < 0)) {
-            engineTypes = PRIMITIVE_ENGINE_TYPES;
+        if (isPrimitive() || isIndustrial()) {
+            engineTypes = INDUSTRIAL_ENGINE_TYPES;
         } else if (getBaseTypeIndex() == BASE_TYPE_LAM) {
             engineTypes = LAM_ENGINE_TYPES;
         }
-        // Primitive and industrial mechs can use non-fusion engines, as can non-superheavies under experimental rules
+        // Non-superheavies can use non-fusion engines under experimental rules
         boolean allowNonFusion = !isSuperheavy()
-                && (isIndustrial() || isPrimitive()
-                        || (techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0));
+                && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0;
         for (int i : engineTypes) {
             Engine e = new Engine(getEngineRating(), i, flags);
             if (e.engineValid && (e.isFusion() || allowNonFusion)) {
