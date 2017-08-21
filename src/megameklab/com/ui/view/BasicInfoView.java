@@ -320,19 +320,22 @@ public class BasicInfoView extends JPanel implements ITechManager, ActionListene
         if (cbTechBase.getSelectedItem() == null || !cbTechBase.getSelectedItem().equals(prev)) {
             cbTechBase.setSelectedItem(0);
         }
+        refreshTechLevel();
     }
     
     private void refreshTechLevel() {
         SimpleTechLevel prev = getTechLevel();
         cbTechLevel.removeActionListener(this);
         cbTechLevel.removeAllItems();
-        if (!isClan() && !isMixedTech()) {
+        if (!isClan() && !isMixedTech() && SimpleTechLevel.INTRO.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
             cbTechLevel.addItem(SimpleTechLevel.INTRO);
         }
-        if (!isMixedTech()) {
+        if (!isMixedTech() && SimpleTechLevel.STANDARD.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
             cbTechLevel.addItem(SimpleTechLevel.STANDARD);
         }
-        cbTechLevel.addItem(SimpleTechLevel.ADVANCED);
+        if (SimpleTechLevel.ADVANCED.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
+            cbTechLevel.addItem(SimpleTechLevel.ADVANCED);
+        }
         cbTechLevel.addItem(SimpleTechLevel.EXPERIMENTAL);
         cbTechLevel.addItem(SimpleTechLevel.UNOFFICIAL);
         cbTechLevel.setSelectedItem(prev);
