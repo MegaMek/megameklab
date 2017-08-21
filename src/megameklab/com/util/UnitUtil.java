@@ -666,12 +666,20 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, String hsType) {
+        addHeatSinkMounts(unit, hsAmount, EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan())));
+    }
+    
+    /**
+     * adds all heat sinks to the mech
+     * 
+     * @param unit
+     * @param hsAmount
+     * @param sinkType
+     */
+    public static void addHeatSinkMounts(Mech unit, int hsAmount, EquipmentType sinkType) {
         final String METHOD_NAME = "addHeatSinkMounts(Mech, int, String)";
 
-        EquipmentType sinkType;
-        sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType,
-                unit.isClan()));
-        if (hsType.equals("Compact")) {
+        if (sinkType.hasFlag(MiscType.F_COMPACT_HEAT_SINK)) {
             UnitUtil.addCompactHeatSinkMounts(unit, hsAmount);
         } else {
             for (; hsAmount > 0; hsAmount--) {
@@ -834,9 +842,8 @@ public class UnitUtil {
      *
      * @param unit
      */
-    public static void updateAutoSinks(Mech unit, String hsType) {
-        int base = UnitUtil.getCriticalFreeHeatSinks(unit,
-                hsType.equals("Compact"));
+    public static void updateAutoSinks(Mech unit, boolean compact) {
+        int base = UnitUtil.getCriticalFreeHeatSinks(unit, compact);
         Vector<Mounted> unassigned = new Vector<Mounted>();
         Vector<Mounted> assigned = new Vector<Mounted>();
         for (Mounted m : unit.getMisc()) {
