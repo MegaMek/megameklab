@@ -3,7 +3,6 @@
  */
 package megameklab.com.ui.view;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -18,12 +17,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -48,7 +43,7 @@ import megameklab.com.ui.util.TechComboBox;
  * @author Neoancient
  *
  */
-public class MekChassisView extends JPanel implements ActionListener, ChangeListener {
+public class MekChassisView extends MainUIView implements ActionListener, ChangeListener {
     
     /**
      * 
@@ -151,7 +146,7 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
     
     public static final EquipmentType EJECTION_SEAT = EquipmentType.get("Ejection Seat (Industrial Mech)");
     
-    final ITechManager techManager;
+    private final ITechManager techManager;
     
     public MekChassisView(ITechManager techManager) {
         this.techManager = techManager;
@@ -159,10 +154,6 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
     }
 
     private void initUI() {
-        Dimension labelSize = new Dimension(110, 25);
-        Dimension controlSize = new Dimension(180, 25);
-        Dimension spinnerSize = new Dimension(55, 25);
-
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.baseType.values").split(","))); //$NON-NLS-1$
         standardTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.motiveType.values").split(",")); //$NON-NLS-1$
@@ -280,20 +271,6 @@ public class MekChassisView extends JPanel implements ActionListener, ChangeList
         btnResetChassis.addActionListener(this);
     }
 
-    public JLabel createLabel(String text, Dimension maxSize) {
-
-        JLabel label = new JLabel(text, SwingConstants.RIGHT);
-
-        setFieldSize(label, maxSize);
-        return label;
-    }
-
-    public void setFieldSize(JComponent box, Dimension maxSize) {
-        box.setPreferredSize(maxSize);
-        box.setMaximumSize(maxSize);
-        box.setMinimumSize(maxSize);
-    }
-    
     public void setFromEntity(Mech mech) {
         primitive = mech.isPrimitive();
         industrial = mech.isIndustrial();

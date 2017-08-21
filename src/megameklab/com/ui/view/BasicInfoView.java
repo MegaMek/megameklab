@@ -3,7 +3,6 @@
  */
 package megameklab.com.ui.view;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -16,11 +15,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
 import megamek.common.ITechnology;
@@ -36,7 +31,7 @@ import megameklab.com.ui.util.IntRangeTextField;
  * @author Neoancient
  *
  */
-public class BasicInfoView extends JPanel implements ITechManager, ActionListener, FocusListener {
+public class BasicInfoView extends MainUIView implements ITechManager, ActionListener, FocusListener {
     
     /**
      * 
@@ -94,8 +89,6 @@ public class BasicInfoView extends JPanel implements ITechManager, ActionListene
     }
     
     private void initUI() {
-        Dimension labelSize = new Dimension(110, 25);
-        Dimension controlSize = new Dimension(180, 25);
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         techBaseNames = resourceMap.getString("BasicInfoView.cbTechBase.values").split(",");
         
@@ -170,20 +163,6 @@ public class BasicInfoView extends JPanel implements ITechManager, ActionListene
         add(txtManualBV, gbc);
         txtManualBV.addFocusListener(this);
         
-    }
-
-    public JLabel createLabel(String text, Dimension maxSize) {
-
-        JLabel label = new JLabel(text, SwingConstants.RIGHT);
-
-        setFieldSize(label, maxSize);
-        return label;
-    }
-
-    public void setFieldSize(JComponent box, Dimension maxSize) {
-        box.setPreferredSize(maxSize);
-        box.setMaximumSize(maxSize);
-        box.setMinimumSize(maxSize);
     }
 
     public void setFromEntity(Entity en) {

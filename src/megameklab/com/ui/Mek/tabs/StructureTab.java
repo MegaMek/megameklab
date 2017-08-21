@@ -60,22 +60,22 @@ import megamek.common.QuadVee;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.loaders.EntityLoadingException;
-import megamek.common.logging.LogLevel;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
-import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.ui.view.BasicInfoView;
+import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MekChassisView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements ActionListener, ChangeListener, ItemListener,
-    BasicInfoView.BasicInfoListener, MekChassisView.MekChassisListener {
+    BasicInfoView.BasicInfoListener, MekChassisView.MekChassisListener,
+    HeatSinkView.HeatSinkListener {
     /**
      *
      */
@@ -85,7 +85,7 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
     MekChassisView panChassis;
     JPanel panArmor;
     JPanel panMovement;
-    JPanel panHeat;
+    HeatSinkView panHeat;
     SummaryView panSummary;
 
     private ArmorView armor;
@@ -97,17 +97,11 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
     JTextField runMPFinal;
     JTextField jumpMPFinal;
     SpinnerNumberModel jumpModel;
-    String[] clanHeatSinkTypes = { "Single", "Double", "Laser" };
-    String[] isHeatSinkTypes = { "Single", "Double", "Compact" };
-    JComboBox<String> heatSinkType = new JComboBox<String>(isHeatSinkTypes);
-    JSpinner heatSinkNumber;
-    JSpinner baseChassisHeatSinks;
     String[] jjTypes = { "Standard", "Improved", "Prototype",
             "Mechanical Boosters", "Improved Prototype" };
     JComboBox<String> jjType = new JComboBox<String>(jjTypes);
     RefreshListener refresh = null;
     JPanel masterPanel;
-    private JLabel lblFreeSinks = new JLabel("");
 
     private JComboBox<String> armorCombo = new JComboBox<String>();
     private JButton maximizeArmorButton = new JButton("Maximize Armor");
@@ -130,7 +124,7 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         panChassis = new MekChassisView(panBasicInfo);
         panArmor = new JPanel(new GridBagLayout());
         panMovement = new JPanel(new GridBagLayout());
-        panHeat = new JPanel(new GridBagLayout());
+        panHeat = new HeatSinkView(panBasicInfo);
         panSummary = new SummaryView(eSource);
 
         GridBagConstraints gbc;
@@ -174,27 +168,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         jumpMPFinal.setEditable(false);
         setFieldSize(jumpMPFinal, new Dimension(60, 25));
         jumpMPFinal.setHorizontalAlignment(SwingConstants.RIGHT);
-
-        heatSinkNumber = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
-        spinnerSize = new Dimension(40, 25);
-        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
-                .setSize(spinnerSize);
-        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
-                .setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
-                .setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor) heatSinkNumber.getEditor())
-                .setMinimumSize(spinnerSize);
-
-        baseChassisHeatSinks = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
-        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
-                .setSize(spinnerSize);
-        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
-                .setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
-                .setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor) baseChassisHeatSinks.getEditor())
-                .setMinimumSize(spinnerSize);
 
         armorTonnage = new JSpinner(new SpinnerNumberModel(
                 getMech().getArmorWeight(), 0.0,
@@ -294,38 +267,9 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         gbc.gridwidth = 2;
         panMovement.add(jjType, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        panHeat.add(createLabel("Sink Type:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        panHeat.add(heatSinkType, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        panHeat.add(createLabel("Number:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        panHeat.add(heatSinkNumber, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        panHeat.add(lblFreeSinks, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panHeat.add(createLabel("Base (Omni):", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        panHeat.add(baseChassisHeatSinks, gbc);
-
         Dimension comboSize = new Dimension(180, 25);
 
         setFieldSize(armorCombo, comboSize);
-        setFieldSize(heatSinkType, comboSize);
         setFieldSize(jjType, comboSize);
 
         JPanel leftPanel = new JPanel();
@@ -372,39 +316,13 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         removeAllListeners();
         panBasicInfo.setFromEntity(getMech());
         panChassis.setFromEntity(getMech());
-        
-        int totalSinks = getMech().heatSinks(false);
-        int freeSinks = getMech().getEngine().getWeightFreeEngineHeatSinks();
-        ((SpinnerNumberModel) heatSinkNumber.getModel()).setMinimum(freeSinks);
-        heatSinkNumber.setValue(totalSinks);
-
-        ((SpinnerNumberModel) baseChassisHeatSinks.getModel())
-                .setMaximum(getMech().getEngine().integralHeatSinkCapacity(
-                        getMech().hasCompactHeatSinks()));
-
-        baseChassisHeatSinks.setValue(Math.max(0, getMech().getEngine()
-                .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks())));
-
-        if (getMech().isOmni()) {
-            baseChassisHeatSinks.setEnabled(true);
-            getMech().getEngine().setBaseChassisHeatSinks(
-                    Math.max(0, (Integer) baseChassisHeatSinks.getValue()));
-        } else {
-            baseChassisHeatSinks.setEnabled(false);
-            getMech().getEngine().setBaseChassisHeatSinks(-1);
-        }
-
-        lblFreeSinks.setText("Engine Free: "
-                + UnitUtil.getCriticalFreeHeatSinks(getMech(), getMech()
-                        .hasCompactHeatSinks()));
+        panHeat.setFromMech(getMech());
 
         if (getMech().hasPatchworkArmor()) {
             setArmorCombo(EquipmentType.T_ARMOR_PATCHWORK);
         } else {
             setArmorCombo(getMech().getArmorType(0));
         }
-
-        setHeatSinkCombo();
 
         walkMPBase.setValue(Math.max(1, getMech().getOriginalWalkMP()));
         walkMPFinal.setText(String.valueOf(getMech().getWalkMP()));
@@ -506,9 +424,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                 if (!getMech().hasPatchworkArmor()) {
                     armor.resetArmorPoints();
                 }
-            } else if (combo.equals(heatSinkType)) {
-                UnitUtil.updateHeatSinks(getMech(), (Integer) heatSinkNumber
-                        .getValue(), heatSinkType.getSelectedItem().toString());
             } else if (combo.equals(jjType)) {
                 refreshJumpMP();
             }
@@ -727,30 +642,26 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         maximizeArmorButton.removeActionListener(this);
         unusedTonnageArmorButton.removeActionListener(this);
         armorCombo.removeItemListener(this);
-        heatSinkNumber.removeChangeListener(this);
-        heatSinkType.removeItemListener(this);
         walkMPBase.removeChangeListener(this);
-        baseChassisHeatSinks.removeChangeListener(this);
         jumpMPBase.removeChangeListener(this);
         jjType.removeItemListener(this);
         armorTonnage.removeChangeListener(this);
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
+        panHeat.removeListener(this);
     }
 
     public void addAllListeners() {
         maximizeArmorButton.addActionListener(this);
         unusedTonnageArmorButton.addActionListener(this);
         armorCombo.addItemListener(this);
-        heatSinkNumber.addChangeListener(this);
-        heatSinkType.addItemListener(this);
         walkMPBase.addChangeListener(this);
-        baseChassisHeatSinks.addChangeListener(this);
         jumpMPBase.addChangeListener(this);
         jjType.addItemListener(this);
         armorTonnage.addChangeListener(this);
         panBasicInfo.addListener(this);
         panChassis.addListener(this);
+        panHeat.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -814,6 +725,7 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                 || (panBasicInfo.getTechLevel() == SimpleTechLevel.UNOFFICIAL);
         
         panChassis.refresh();
+        panHeat.refresh();
 
         /* ARMOR */
         armorCombo.removeAllItems();
@@ -857,71 +769,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
             }
         }
 
-        /* HEAT SINKS */
-        int heatSinkCount = 0;
-        String[] heatSinkList;
-        heatSinkType.removeAllItems();
-
-        if (isMixed) {
-            heatSinkCount = (clanHeatSinkTypes.length + isHeatSinkTypes.length) - 1;
-            heatSinkList = new String[heatSinkCount];
-            int clanPos = 1;
-            int heatSinkPos = 0;
-            if (isClan) {
-                clanPos = 0;
-                for (String isHeatSink : isHeatSinkTypes) {
-                    heatSinkList[heatSinkPos] = clanHeatSinkTypes[clanPos];
-                    heatSinkPos++;
-                    clanPos++;
-                    if (isHeatSink.equals("Single")) {
-                        continue;
-                    }
-                    heatSinkList[heatSinkPos] = String.format("(IS) %1$s",
-                            isHeatSink);
-                    heatSinkPos++;
-                }
-            } else {
-                for (String isHeatSink : isHeatSinkTypes) {
-                    heatSinkList[heatSinkPos] = isHeatSink;
-                    heatSinkPos++;
-                    if (clanPos < clanHeatSinkTypes.length) {
-                        heatSinkList[heatSinkPos] = String.format(
-                                "(Clan) %1$s", clanHeatSinkTypes[clanPos]);
-                    }
-                    clanPos++;
-                    heatSinkPos++;
-                }
-            }
-        } else {
-            if (isClan) {
-
-                heatSinkCount = clanHeatSinkTypes.length;
-                heatSinkList = clanHeatSinkTypes;
-                if (panBasicInfo.getTechLevel() == SimpleTechLevel.STANDARD) {
-                    heatSinkCount = 2;
-                }
-            } else {
-                heatSinkList = isHeatSinkTypes;
-                switch (panBasicInfo.getTechLevel()) {
-                    case INTRO:
-                        heatSinkCount = 1;
-                        break;
-                    case STANDARD:
-                    case ADVANCED:
-                        heatSinkCount = 2;
-                        break;
-                    case EXPERIMENTAL:
-                    case UNOFFICIAL:
-                        heatSinkCount = 3;
-                        break;
-                }
-            }
-        }
-
-        for (int index = 0; index < heatSinkCount; index++) {
-            heatSinkType.addItem(heatSinkList[index]);
-        }
-
         /* JUMP JETS */
         int jjCount = 2;
         if (panBasicInfo.getTechLevel() == SimpleTechLevel.INTRO) {
@@ -943,12 +790,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                 UnitUtil.removeISorArmorMounts(getMech(), false);
                 createArmorMountsAndSetArmorType();
                 armor.resetArmorPoints();
-            }
-            setHeatSinkCombo();
-            if (heatSinkType.getSelectedIndex() == -1) {
-                heatSinkType.setSelectedIndex(0);
-                UnitUtil.updateHeatSinks(getMech(),
-                        (Integer) heatSinkNumber.getValue(), "Single");
             }
             setJumpJetCombo();
             if (jjType.getSelectedIndex() == -1) {
@@ -978,20 +819,12 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
             JSpinner spinner = (JSpinner) e.getSource();
             removeAllListeners();
             if (spinner.equals(walkMPBase)) {
-                resetEngine();
+                recalculateEngineRating();
             } else if (spinner.equals(jumpMPBase)) {
                 UnitUtil.updateJumpJets(getMech(), (Integer) jumpModel.getValue(),
                         getJumpJetType());
             } else if (spinner.equals(armorTonnage)) {
                 setArmorTonnage();
-            } else if (spinner.equals(heatSinkNumber)) {
-                UnitUtil.updateHeatSinks(getMech(), (Integer) heatSinkNumber
-                        .getValue(), heatSinkType.getSelectedItem().toString());
-            } else if (spinner.equals(baseChassisHeatSinks)) {
-                getMech().getEngine().setBaseChassisHeatSinks(
-                        Math.max(0, (Integer) baseChassisHeatSinks.getValue()));
-                UnitUtil.updateAutoSinks(getMech(),
-                        (String) heatSinkType.getSelectedItem());
             }
             addAllListeners();
 
@@ -1005,13 +838,14 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         if (getMech().isPrimitive()) {
             rating = (int)Math.ceil((rating * 1.2) / 5.0) * 5; 
         }
-        panChassis.setEngineRating(rating);
-        Engine engine = panChassis.getEngine();
-        engine.setBaseChassisHeatSinks(getMech().getEngine()
-                .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
-        getMech().setEngine(engine);
-        UnitUtil.updateAutoSinks(getMech(),
-                (String) heatSinkType.getSelectedItem());
+        if (getMech().getEngine().getRating() != rating) {
+            panChassis.setEngineRating(rating);
+            Engine engine = panChassis.getEngine();
+            engine.setBaseChassisHeatSinks(getMech().getEngine()
+                    .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
+            getMech().setEngine(engine);
+            UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+        }
     }
     
     private boolean hasCTSpace(Engine engine, int gyroType, int cockpitType) {
@@ -1034,68 +868,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
             crits += 2;
         }
         return crits <= 12;
-    }
-
-    private boolean resetEngine() {
-        boolean retVal = false;
-        //do {
-            Mech mech = getMech();
-            int rating = ((Integer) walkMPBase.getValue())
-                    * ((int) panChassis.getTonnage());
-            if (mech.isPrimitive()) {
-                double dRating = ((Integer) walkMPBase.getValue())
-                        * ((int) panChassis.getTonnage());
-                dRating *= 1.2;
-                if ((dRating % 5) != 0) {
-                    dRating = (dRating - (dRating % 5)) + 5;
-                }
-                rating = (int) dRating;
-            }
-            if ((rating > 400) && (mech.getGyroType() == Mech.GYRO_XL)) {
-                JOptionPane
-                .showMessageDialog(
-                        this,
-                        "That speed would require a large engine, which doesn't fit",
-                        "Bad Engine", JOptionPane.ERROR_MESSAGE);
-            }
-            if (rating > 500) {
-                JOptionPane
-                .showMessageDialog(
-                        this,
-                        "That speed would create an engine with a rating over 500.",
-                        "Bad Engine Rating",
-                        JOptionPane.ERROR_MESSAGE);
-            } else {
-                panChassis.setEngineRating(rating);
-                MegaMekLab.getLogger().log(getClass(), "resetEngine", LogLevel.INFO, "Clearing engine crits.");
-                mech.clearEngineCrits();
-                MegaMekLab.getLogger().log(getClass(), "resetEngine", LogLevel.INFO, "Setting new engine rating.");
-                // Create new engine
-                Engine newEngine = new Engine(rating, getMech().getEngine().getEngineType(),
-                        getMech().getEngine().getFlags());
-                // Make sure we keep same number of base heat sinks for omnis
-                newEngine.setBaseChassisHeatSinks(mech.getEngine()
-                        .getBaseChassisHeatSinks(mech.hasCompactHeatSinks()));
-                // Add new engine
-                mech.setEngine(newEngine);
-                MegaMekLab.getLogger().log(getClass(), "resetEngine", LogLevel.INFO, "Adding engine crits.");
-                resetSystemCrits();
-                int autoSinks = mech.getEngine()
-                        .getWeightFreeEngineHeatSinks();
-                MegaMekLab.getLogger().log(getClass(), "resetEngine", LogLevel.INFO,
-                        "Updating # engine heat sinks to " + autoSinks);
-                UnitUtil.updateAutoSinks(mech,
-                        (String) heatSinkType.getSelectedItem());
-                retVal = true;
-            }
-            // We need a minimum of 1 here...
-            // most useful when we lower tonnage from the default 25 w/out changing settings
-            // as that can return a bad engine
-            /*if (getMech().getOriginalWalkMP() < 1) {
-                walkMP.setValue(((Integer) walkMP.getValue()) + 1);
-            }
-        } while (getMech().getOriginalWalkMP() < 1);*/
-        return retVal;
     }
     
     private void maximizeArmor() {
@@ -1436,61 +1208,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         panChassis.setAsCustomization();
     }
 
-    private void setHeatSinkCombo() {
-        int selIndex = -1;
-        if (panBasicInfo.isMixedTech()) {
-            if (panBasicInfo.isClan()) {
-                if (UnitUtil.hasLaserHeatSinks(getMech())) {
-                    selIndex = 3;
-                } else if (getMech().hasCompactHeatSinks()) {
-                    selIndex = 4;
-                } else if (getMech().hasDoubleHeatSinks()) {
-
-                    if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
-                        selIndex = 1;
-                    } else {
-                        selIndex = 2;
-                    }
-
-                } else {
-                    selIndex = 0;
-                }
-            } else {
-                if (UnitUtil.hasLaserHeatSinks(getMech())) {
-                    selIndex = 3;
-                } else if (getMech().hasCompactHeatSinks()) {
-                    selIndex = 4;
-                } else if (getMech().hasDoubleHeatSinks()) {
-                    if (UnitUtil.hasClanDoubleHeatSinks(getMech())) {
-                        selIndex = 1;
-                    } else {
-                        selIndex = 2;
-                    }
-                } else {
-                    selIndex = 0;
-                }
-            }
-        } else {
-            if (UnitUtil.hasLaserHeatSinks(getMech())) {
-                selIndex = 2;
-            } else if (getMech().hasDoubleHeatSinks()) {
-                if (getMech().hasCompactHeatSinks()) {
-                    selIndex = 2;
-                } else {
-                    selIndex = 1;
-                }
-            } else if (getMech().hasCompactHeatSinks()) {
-                selIndex = 2;
-            } else {
-                selIndex = 0;
-            }
-        }
-        if (heatSinkType.getItemCount() <= selIndex) {
-            selIndex = -1;
-        }
-        heatSinkType.setSelectedIndex(selIndex);
-    }
-
     private void setArmorType(JComboBox<String> combo, int type,
             boolean removeListeners) {
         if (removeListeners) {
@@ -1625,17 +1342,10 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
     @Override
     public void omniChanged(boolean omni) {
         getMech().setOmni(omni);
-        if (omni) {
-            baseChassisHeatSinks.setEnabled(true);
-            getMech().getEngine().setBaseChassisHeatSinks(
-                    10 + (Integer) baseChassisHeatSinks.getValue());
-            UnitUtil.removeOmniArmActuators(getMech());
-        } else {
-            baseChassisHeatSinks.setEnabled(false);
-            getMech().getEngine().setBaseChassisHeatSinks(-1);
-        }
-        UnitUtil.updateAutoSinks(getMech(),
-                (String) heatSinkType.getSelectedItem());
+        getMech().getEngine().setBaseChassisHeatSinks(
+                omni? Math.max(0, panHeat.getBaseCount()) : -1);
+        panHeat.setFromMech(getMech());
+        UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
         refresh.refreshPreview();
     }
 
@@ -1720,8 +1430,7 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                     .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
             getMech().setEngine(engine);
             resetSystemCrits();
-            UnitUtil.updateAutoSinks(getMech(),
-                    (String) heatSinkType.getSelectedItem());
+            UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
             refreshSummary();
             refresh.refreshPreview();
             refresh.refreshStatus();
@@ -1793,5 +1502,43 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
     public void resetChassis() {
         UnitUtil.resetBaseChassis(getMech());
         refresh.refreshAll();
+    }
+
+    @Override
+    public void heatSinksChanged(int index, int count) {
+        // Method for ASFs
+    }
+
+    @Override
+    public void heatSinksChanged(EquipmentType hsType, int count) {
+        // if we have the same type of heat sink, then we should not remove the
+        // existing heat sinks
+        int currentSinks = UnitUtil.countActualHeatSinks(getMech());
+        if (getMech().hasWorkingMisc(hsType.getInternalName())) {
+            if (count < currentSinks) {
+                UnitUtil.removeHeatSinks(getMech(), currentSinks - count);
+            } else if (count > currentSinks) {
+                UnitUtil.addHeatSinkMounts(getMech(), count - currentSinks,
+                        hsType);
+            }
+        } else {
+            UnitUtil.removeHeatSinks(getMech(), count);
+            UnitUtil.addHeatSinkMounts(getMech(), count, hsType);
+        }
+        getMech().resetSinks();
+        panSummary.refresh();
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void heatSinkBaseCountChanged(int count) {
+        getMech().getEngine().setBaseChassisHeatSinks(
+                Math.max(0, count));
+        UnitUtil.updateAutoSinks(getMech(), panHeat.getHeatSinkType().hasFlag(MiscType.F_COMPACT_HEAT_SINK));
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 }
