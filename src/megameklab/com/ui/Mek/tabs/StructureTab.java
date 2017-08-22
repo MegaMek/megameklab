@@ -20,27 +20,19 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import megamek.client.ui.GBC;
 import megamek.common.CriticalSlot;
@@ -66,13 +58,14 @@ import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MekChassisView;
+import megameklab.com.ui.view.MovementView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements ChangeListener, ItemListener,
-    BasicInfoView.BasicInfoListener, MekChassisView.MekChassisListener,
-    HeatSinkView.HeatSinkListener, MVFArmorView.ArmorListener {
+public class StructureTab extends ITab implements BasicInfoView.BasicInfoListener,
+    MekChassisView.MekChassisListener, HeatSinkView.HeatSinkListener, MVFArmorView.ArmorListener,
+    MovementView.MovementListener {
     /**
      *
      */
@@ -81,22 +74,12 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
     BasicInfoView panBasicInfo;
     MekChassisView panChassis;
     MVFArmorView panArmor;
-    JPanel panMovement;
+    MovementView panMovement;
     HeatSinkView panHeat;
     SummaryView panSummary;
 
     private ArmorView armor;
 
-    JSpinner walkMPBase;
-    JTextField runMPBase;
-    JSpinner jumpMPBase;
-    JTextField walkMPFinal;
-    JTextField runMPFinal;
-    JTextField jumpMPFinal;
-    SpinnerNumberModel jumpModel;
-    String[] jjTypes = { "Standard", "Improved", "Prototype",
-            "Mechanical Boosters", "Improved Prototype" };
-    JComboBox<String> jjType = new JComboBox<String>(jjTypes);
     RefreshListener refresh = null;
     JPanel masterPanel;
 
@@ -106,7 +89,6 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
-        populateChoices(false);
         refresh();
     }
 
@@ -115,115 +97,17 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
         panBasicInfo = new BasicInfoView(getMech().getConstructionTechAdvancement());
         panChassis = new MekChassisView(panBasicInfo);
         panArmor = new MVFArmorView(panBasicInfo);
-        panMovement = new JPanel(new GridBagLayout());
+        panMovement = new MovementView(panBasicInfo);
         panHeat = new HeatSinkView(panBasicInfo);
         panSummary = new SummaryView(eSource);
 
         GridBagConstraints gbc;
 
-        Dimension spinnerSize = new Dimension(55, 25);
-        Dimension labelSize = new Dimension(180, 25);
-
-        walkMPBase = new JSpinner(new SpinnerNumberModel(1, 1, 25, 1));
-        ((JSpinner.DefaultEditor) walkMPBase.getEditor()).setSize(spinnerSize);
-        ((JSpinner.DefaultEditor) walkMPBase.getEditor())
-                .setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) walkMPBase.getEditor())
-                .setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor) walkMPBase.getEditor())
-                .setMinimumSize(spinnerSize);
-        runMPBase = new JTextField();
-        runMPBase.setEditable(false);
-        setFieldSize(runMPBase, new Dimension(60, 25));
-        runMPBase.setHorizontalAlignment(SwingConstants.RIGHT);
-
-        jumpModel = new SpinnerNumberModel(0, 0, 25, 1);
-        jumpMPBase = new JSpinner(jumpModel);
-        JSpinner.DefaultEditor jumpEditor = ((JSpinner.DefaultEditor) jumpMPBase
-                .getEditor());
-        jumpEditor.setSize(spinnerSize);
-        jumpEditor.setMaximumSize(spinnerSize);
-        jumpEditor.setPreferredSize(spinnerSize);
-        jumpEditor.setMinimumSize(spinnerSize);
-
-        walkMPFinal = new JTextField();
-        walkMPFinal.setEditable(false);
-        setFieldSize(walkMPFinal, new Dimension(60, 25));
-        walkMPFinal.setHorizontalAlignment(SwingConstants.RIGHT);
-
-        runMPFinal = new JTextField();
-        runMPFinal.setEditable(false);
-        setFieldSize(runMPFinal, new Dimension(60, 25));
-        runMPFinal.setHorizontalAlignment(SwingConstants.RIGHT);
-
-        jumpMPFinal = new JTextField();
-        jumpMPFinal.setEditable(false);
-        setFieldSize(jumpMPFinal, new Dimension(60, 25));
-        jumpMPFinal.setHorizontalAlignment(SwingConstants.RIGHT);
-
-        // lblFreeSinks.setFont(new Font(lblFreeSinks.getName(), Font.PLAIN,
-        // 10));
-
         panBasicInfo.setFromEntity(getMech());
         panChassis.setFromEntity(getMech());
         panArmor.setFromEntity(getMech());
+        panMovement.setFromEntity(getMech());
         panHeat.setFromMech(getMech());
-
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        panMovement.add(new JLabel("Base"), gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        panMovement.add(new JLabel("Final"), gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        panMovement.add(createLabel("Walking MP:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        panMovement.add(walkMPBase, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        panMovement.add(walkMPFinal, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panMovement.add(createLabel("Running MP:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        panMovement.add(runMPBase, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        panMovement.add(runMPFinal, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        panMovement.add(createLabel("Jumping MP:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        panMovement.add(jumpMPBase, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 3;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
-        panMovement.add(jumpMPFinal, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        panMovement.add(createLabel("Jump Jet Type:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 4;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 2;
-        panMovement.add(jjType, gbc);
-
-        Dimension comboSize = new Dimension(180, 25);
-
-        setFieldSize(jjType, comboSize);
 
         JPanel leftPanel = new JPanel();
         JPanel rightPanel = new JPanel();
@@ -272,49 +156,6 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
         panArmor.setFromEntity(getMech());
         panHeat.setFromMech(getMech());
 
-        walkMPBase.setValue(Math.max(1, getMech().getOriginalWalkMP()));
-        walkMPFinal.setText(String.valueOf(getMech().getWalkMP()));
-        setJumpJetCombo();
-        refreshJumpMP();
-        //getOriginalRunMPWithoutMASC() still subtracts for hardened armor, so we just do the calculation here
-        runMPBase.setText(String.valueOf((int)Math.ceil((int)walkMPBase.getValue() * 1.5)));
-        runMPFinal.setText(getMech().getRunMPasString());
-        
-        StringJoiner walkTooltip = new StringJoiner(", ");
-        StringJoiner runTooltip = new StringJoiner(", ");
-        StringJoiner jumpTooltip = new StringJoiner(", ");
-        
-        if (getMech().hasModularArmor()) {
-        	walkTooltip.add("-1 (Modular armor)");
-        	jumpTooltip.add("-1 (Modular armor)");
-        }
-        if (getMech().hasMPReducingHardenedArmor()) {
-        	runTooltip.add("-1 (Hardened armor)");
-        }
-        if (getMech().hasArmedMASC()) {
-        	runTooltip.add("MASC");
-        }
-        if (getMech().hasArmedMASCAndSuperCharger()) {
-        	runTooltip.add("Supercharger");
-        }
-        Optional<Mounted> partialWing = getMech().getMisc().stream()
-        		.filter(m -> m.getType().hasFlag(MiscType.F_PARTIAL_WING)).findAny();
-        if (partialWing.isPresent()) {
-        	jumpTooltip.add(String.format("+%d (Partial wing)",
-        			getMech().getPartialWingJumpBonus(partialWing.get())));
-        }
-        int medShields = getMech().getNumberOfShields(MiscType.S_SHIELD_MEDIUM);
-        int lgShields = getMech().getNumberOfShields(MiscType.S_SHIELD_LARGE);
-        if (lgShields + medShields > 0) {
-        	walkTooltip.add(String.format("-%d (Shield)", lgShields + medShields));
-        }
-        if (lgShields > 0) {
-        	jumpTooltip.add("No Jump (Large Shield)");
-        }
-        walkMPFinal.setToolTipText(walkTooltip.length() > 0? walkTooltip.toString() : null);
-        runMPFinal.setToolTipText(runTooltip.length() > 0? runTooltip.toString() : null);
-        jumpMPFinal.setToolTipText(jumpTooltip.length() > 0 && getMech().getOriginalJumpMP(true) > 0?
-        		jumpTooltip.toString() : null);
 
         armor.refresh();
         panSummary.refresh();
@@ -336,20 +177,6 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
         box.setMinimumSize(maxSize);
     }
 
-    public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-            removeAllListeners();
-            @SuppressWarnings("unchecked")
-            JComboBox<String> combo = (JComboBox<String>) e.getSource();
-
-            if (combo.equals(jjType)) {
-                refreshJumpMP();
-            }
-            addAllListeners();
-            refresh.refreshAll();
-        }
-    }
-    
     private void resetSystemCrits() {
         getMech().clearCockpitCrits();
         getMech().clearGyroCrits();
@@ -504,30 +331,7 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
 
     }
 
-    public void refreshJumpMP() {
-        // check to make sure we are not over the number of jets
-        // we are allowed
-        jumpMPBase.setValue(getMech().getOriginalJumpMP(true));
-        jumpMPFinal.setText(String.valueOf(getMech().getJumpMP()));
-        if (getMech().isSuperHeavy()) {
-            jumpModel.setMaximum(0);
-        } else if ((getJumpJetType() == Mech.JUMP_IMPROVED)
-                || (getJumpJetType() == Mech.JUMP_PROTOTYPE_IMPROVED)) {
-            jumpModel.setMaximum((int)Math.ceil(getMech().getOriginalWalkMP() * 1.5));
-        } else if (getJumpJetType() == Mech.JUMP_BOOSTER) {
-            jumpModel.setMaximum(20);
-        } else {
-            jumpModel.setMaximum(getMech().getOriginalWalkMP());
-        }
-        if ((Integer) jumpModel.getValue() > (Integer) jumpModel.getMaximum()) {
-            jumpMPBase.setValue(jumpModel.getMaximum());
-        }
-        UnitUtil.updateJumpJets(getMech(), (Integer) jumpModel.getValue(),
-                getJumpJetType());
-    }
-
     public void removeSystemCrits(int systemType) {
-
         for (int loc = 0; loc < getMech().locations(); loc++) {
             for (int slot = 0; slot < getMech().getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = getMech().getCritical(loc, slot);
@@ -544,23 +348,19 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
     }
 
     public void removeAllListeners() {
-        walkMPBase.removeChangeListener(this);
-        jumpMPBase.removeChangeListener(this);
-        jjType.removeItemListener(this);
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
         panHeat.removeListener(this);
         panArmor.removeListener(this);
+        panMovement.removeListener(this);
     }
 
     public void addAllListeners() {
-        walkMPBase.addChangeListener(this);
-        jumpMPBase.addChangeListener(this);
-        jjType.addItemListener(this);
         panBasicInfo.addListener(this);
         panChassis.addListener(this);
         panHeat.addListener(this);
         panArmor.addListener(this);
+        panMovement.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -605,82 +405,9 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
             }
         }
     }
-
-    /**
-     * resets all the various combo boxes with appropriate options based on the
-     * tech base and tech level of the unit. This should NEVER be run when
-     * listeners are turned on. If the updateUnit boolean is set to true, then
-     * this method will check that the values of the current unit are available
-     * as choices after populating the choices and if not it will reset them to
-     * default values on the unit itself.
-     *
-     * @param updateUnit
-     */
-    private void populateChoices(boolean updateUnit) {
-
-        boolean isExperimental = (panBasicInfo.getTechLevel() == SimpleTechLevel.EXPERIMENTAL)
-                || (panBasicInfo.getTechLevel() == SimpleTechLevel.UNOFFICIAL);
-        
-        panChassis.refresh();
-        panHeat.refresh();
-        panArmor.refresh();
-
-        /* JUMP JETS */
-        int jjCount = 2;
-        if (panBasicInfo.getTechLevel() == SimpleTechLevel.INTRO) {
-            jjCount = 1;
-        } else if (isExperimental && !panBasicInfo.isClan()) {
-            jjCount = jjTypes.length;
-        }
-        jjType.removeAllItems();
-
-        for (int index = 0; index < jjCount; index++) {
-            jjType.addItem(jjTypes[index]);
-        }
-
-        /* UNIT UPDATING */
-        if (updateUnit) {
-            setJumpJetCombo();
-            if (jjType.getSelectedIndex() == -1) {
-                jjType.setSelectedIndex(0);
-                int jump = Math.min((Integer) jumpModel.getValue(), getMech()
-                        .getWalkMP(true, false, true));
-                UnitUtil.updateJumpJets(getMech(), jump, Mech.JUMP_STANDARD);
-            }
-        }
-    }
-    
-    private void setJumpJetCombo() {
-        int selIndex = Math.max(0, getMech().getJumpType() - 1);
-        // Hack because of hidden disposable jump packs
-        if (selIndex == 5) {
-            selIndex--;
-        }
-        if (jjType.getItemCount() <= selIndex) {
-            selIndex = -1;
-        }
-        jjType.setSelectedIndex(selIndex);
-    }
-
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        if (e.getSource() instanceof JSpinner) {
-            JSpinner spinner = (JSpinner) e.getSource();
-            removeAllListeners();
-            if (spinner.equals(walkMPBase)) {
-                recalculateEngineRating();
-            } else if (spinner.equals(jumpMPBase)) {
-                UnitUtil.updateJumpJets(getMech(), (Integer) jumpModel.getValue(),
-                        getJumpJetType());
-            }
-            addAllListeners();
-
-            refresh.refreshAll();
-        }
-    }
     
     private void recalculateEngineRating() {
-        int rating = ((Integer) walkMPBase.getValue())
+        int rating = panMovement.getWalk()
                 * ((int) panChassis.getTonnage());
         if (getMech().isPrimitive()) {
             rating = (int)Math.ceil((rating * 1.2) / 5.0) * 5; 
@@ -821,15 +548,6 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
         }
     }
 
-    private int getJumpJetType() {
-        int retVal = jjType.getSelectedIndex() + 1;
-        // Hack to hide Disposable Jump Packs
-        if (retVal == jjTypes.length) {
-            retVal++;
-        }
-        return retVal;
-    }
-
     public void setAsCustomization() {
         panBasicInfo.setAsCustomization();
         panChassis.setAsCustomization();
@@ -904,7 +622,10 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }
         createArmorMountsAndSetArmorType(getMech().getArmorType(0), getMech().getArmorTechLevel(0));
-        populateChoices(true);
+        panChassis.refresh();
+        panHeat.refresh();
+        panArmor.refresh();
+        panMovement.refresh();
         armor.resetArmorPoints();
         UnitUtil.checkEquipmentByTechLevel(getMech());
         addAllListeners();
@@ -933,7 +654,8 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
         if (getMech().isSuperHeavy()) {
             getMech().setOriginalJumpMP(0);
         }
-        populateChoices(true);
+        panArmor.refresh();
+        panMovement.refresh();
         if (changedSuperHeavyStatus) {
             // Internal structure crits may change
             UnitUtil.removeISorArmorMounts(getMech(), true);
@@ -1221,6 +943,52 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+
+    @Override
+    public void walkChanged(int walkMP) {
+        getMech().setOriginalWalkMP(walkMP);
+        recalculateEngineRating();
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+        panMovement.setFromEntity(getMech());
+    }
+
+    @Override
+    public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
+        getMech().setOriginalJumpMP(jumpMP);
+        List<Mounted> jjs = getMech().getMisc().stream()
+                .filter(m -> m.getType() == jumpJet)
+                .collect(Collectors.toList());
+        while (jjs.size() > jumpMP) {
+            UnitUtil.removeMounted(getMech(), jjs.remove(jjs.size() - 1));
+        }
+        while (jumpMP > jjs.size()) {
+            try {
+                UnitUtil.addMounted(getMech(), new Mounted(getMech(), jumpJet),
+                        Entity.LOC_NONE, false);
+            } catch (LocationFullException e) {
+                // Adding to LOC_NONE
+            }
+            jumpMP--;
+        }
+        panSummary.refresh();
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+        panMovement.setFromEntity(getMech());
+    }
+
+    @Override
+    public void jumpTypeChanged(final EquipmentType jumpJet) {
+        List<Mounted> jjs = getMech().getMisc().stream()
+                .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET)
+                        || m.getType().hasFlag(MiscType.F_UMU))
+                .filter(m -> m.getType() != jumpJet)
+                .collect(Collectors.toList());
+        jjs.forEach(jj -> UnitUtil.removeMounted(getMech(), jj));
+        jumpChanged(panMovement.getJump(), jumpJet);
     }
 
 }
