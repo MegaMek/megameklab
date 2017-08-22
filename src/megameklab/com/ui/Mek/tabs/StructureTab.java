@@ -20,18 +20,16 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -55,27 +53,26 @@ import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
-import megamek.common.QuadMech;
 import megamek.common.QuadVee;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.loaders.EntityLoadingException;
-import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestMech;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.ui.Mek.views.SummaryView;
+import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.HeatSinkView;
+import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MekChassisView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements ActionListener, ChangeListener, ItemListener,
+public class StructureTab extends ITab implements ChangeListener, ItemListener,
     BasicInfoView.BasicInfoListener, MekChassisView.MekChassisListener,
-    HeatSinkView.HeatSinkListener {
+    HeatSinkView.HeatSinkListener, MVFArmorView.ArmorListener {
     /**
      *
      */
@@ -83,7 +80,7 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
 
     BasicInfoView panBasicInfo;
     MekChassisView panChassis;
-    JPanel panArmor;
+    MVFArmorView panArmor;
     JPanel panMovement;
     HeatSinkView panHeat;
     SummaryView panSummary;
@@ -103,11 +100,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
     RefreshListener refresh = null;
     JPanel masterPanel;
 
-    private JComboBox<String> armorCombo = new JComboBox<String>();
-    private JButton maximizeArmorButton = new JButton("Maximize Armor");
-    private JButton unusedTonnageArmorButton = new JButton("Use Remaining Tonnage");
-    private JSpinner armorTonnage;
-
     public StructureTab(EntitySource eSource) {
         super(eSource);
         armor = new ArmorView(eSource);
@@ -122,7 +114,7 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         masterPanel = new JPanel(new GridBagLayout());
         panBasicInfo = new BasicInfoView(getMech().getConstructionTechAdvancement());
         panChassis = new MekChassisView(panBasicInfo);
-        panArmor = new JPanel(new GridBagLayout());
+        panArmor = new MVFArmorView(panBasicInfo);
         panMovement = new JPanel(new GridBagLayout());
         panHeat = new HeatSinkView(panBasicInfo);
         panSummary = new SummaryView(eSource);
@@ -169,53 +161,15 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         setFieldSize(jumpMPFinal, new Dimension(60, 25));
         jumpMPFinal.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        armorTonnage = new JSpinner(new SpinnerNumberModel(
-                getMech().getArmorWeight(), 0.0,
-                UnitUtil.getMaximumArmorTonnage(getMech()), 0.5));
-        spinnerSize = new Dimension(45, 25);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor())
-                .setSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor())
-                .setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor())
-                .setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor) armorTonnage.getEditor())
-                .setMinimumSize(spinnerSize);
-
         // lblFreeSinks.setFont(new Font(lblFreeSinks.getName(), Font.PLAIN,
         // 10));
 
         panBasicInfo.setFromEntity(getMech());
         panChassis.setFromEntity(getMech());
+        panArmor.setFromEntity(getMech());
+        panHeat.setFromMech(getMech());
 
         gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        panArmor.add(createLabel("Armor Type:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        panArmor.add(armorCombo, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        panArmor.add(createLabel("Armor Tonnage:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        panArmor.add(armorTonnage, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 3;
-        panArmor.add(maximizeArmorButton, gbc);
-        
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 3;
-        panArmor.add(unusedTonnageArmorButton, gbc);
-        
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -269,7 +223,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
 
         Dimension comboSize = new Dimension(180, 25);
 
-        setFieldSize(armorCombo, comboSize);
         setFieldSize(jjType, comboSize);
 
         JPanel leftPanel = new JPanel();
@@ -316,13 +269,8 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         removeAllListeners();
         panBasicInfo.setFromEntity(getMech());
         panChassis.setFromEntity(getMech());
+        panArmor.setFromEntity(getMech());
         panHeat.setFromMech(getMech());
-
-        if (getMech().hasPatchworkArmor()) {
-            setArmorCombo(EquipmentType.T_ARMOR_PATCHWORK);
-        } else {
-            setArmorCombo(getMech().getArmorType(0));
-        }
 
         walkMPBase.setValue(Math.max(1, getMech().getOriginalWalkMP()));
         walkMPFinal.setText(String.valueOf(getMech().getWalkMP()));
@@ -368,28 +316,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         jumpMPFinal.setToolTipText(jumpTooltip.length() > 0 && getMech().getOriginalJumpMP(true) > 0?
         		jumpTooltip.toString() : null);
 
-        ((SpinnerNumberModel) armorTonnage.getModel()).setMaximum(UnitUtil
-                .getMaximumArmorTonnage(getMech()));
-        ((SpinnerNumberModel) armorTonnage.getModel()).setValue(Math.min(
-                UnitUtil.getMaximumArmorTonnage(getMech()),
-                getMech().getLabArmorTonnage()));
-        if (getMech().hasPatchworkArmor()) {
-            TestMech testMech = new TestMech(
-                    getMech(),
-                    EntityVerifier.getInstance(new File(
-                            "data/mechfiles/UnitVerifierOptions.xml")).mechOption,
-                    null);
-            armorTonnage.setEnabled(false);
-            armorTonnage.getModel()
-                    .setValue(testMech.getWeightAllocatedArmor());
-            getMech().setArmorTonnage(testMech.getWeightAllocatedArmor());
-            maximizeArmorButton.setEnabled(false);
-            unusedTonnageArmorButton.setEnabled(false);
-        } else {
-            armorTonnage.setEnabled(true);
-            maximizeArmorButton.setEnabled(true);
-            unusedTonnageArmorButton.setEnabled(true);
-        }
         armor.refresh();
         panSummary.refresh();
         addAllListeners();
@@ -416,15 +342,7 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
             @SuppressWarnings("unchecked")
             JComboBox<String> combo = (JComboBox<String>) e.getSource();
 
-            if (combo.equals(armorCombo)) {
-                if (!getMech().hasPatchworkArmor()) {
-                    UnitUtil.removeISorArmorMounts(getMech(), false);
-                }
-                createArmorMountsAndSetArmorType();
-                if (!getMech().hasPatchworkArmor()) {
-                    armor.resetArmorPoints();
-                }
-            } else if (combo.equals(jjType)) {
+            if (combo.equals(jjType)) {
                 refreshJumpMP();
             }
             addAllListeners();
@@ -608,19 +526,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                 getJumpJetType());
     }
 
-    public void actionPerformed(ActionEvent e) {
-        removeAllListeners();
-        if (e.getSource() instanceof JButton) {
-            if (e.getSource().equals(maximizeArmorButton)) {
-                maximizeArmor();
-            } else if (e.getSource().equals(unusedTonnageArmorButton)) {
-                useRemainingTonnageArmor();
-            }
-        }
-        addAllListeners();
-        refresh.refreshAll();
-    }
-
     public void removeSystemCrits(int systemType) {
 
         for (int loc = 0; loc < getMech().locations(); loc++) {
@@ -639,29 +544,23 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
     }
 
     public void removeAllListeners() {
-        maximizeArmorButton.removeActionListener(this);
-        unusedTonnageArmorButton.removeActionListener(this);
-        armorCombo.removeItemListener(this);
         walkMPBase.removeChangeListener(this);
         jumpMPBase.removeChangeListener(this);
         jjType.removeItemListener(this);
-        armorTonnage.removeChangeListener(this);
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
         panHeat.removeListener(this);
+        panArmor.removeListener(this);
     }
 
     public void addAllListeners() {
-        maximizeArmorButton.addActionListener(this);
-        unusedTonnageArmorButton.addActionListener(this);
-        armorCombo.addItemListener(this);
         walkMPBase.addChangeListener(this);
         jumpMPBase.addChangeListener(this);
         jjType.addItemListener(this);
-        armorTonnage.addChangeListener(this);
         panBasicInfo.addListener(this);
         panChassis.addListener(this);
         panHeat.addListener(this);
+        panArmor.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -719,55 +618,12 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
      */
     private void populateChoices(boolean updateUnit) {
 
-        boolean isClan = panBasicInfo.isClan();
-        boolean isMixed = panBasicInfo.isMixedTech();
         boolean isExperimental = (panBasicInfo.getTechLevel() == SimpleTechLevel.EXPERIMENTAL)
                 || (panBasicInfo.getTechLevel() == SimpleTechLevel.UNOFFICIAL);
         
         panChassis.refresh();
         panHeat.refresh();
-
-        /* ARMOR */
-        armorCombo.removeAllItems();
-        for (int index = 0; index < (EquipmentType.armorNames.length); index++) {
-            EquipmentType et;
-            if (!isMixed) {
-                et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
-                        isClan));
-                if (((index == EquipmentType.T_ARMOR_PATCHWORK) && isExperimental)
-                        || (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
-                        && panBasicInfo.isLegal(et)
-                        && !((getMech() instanceof LandAirMech)
-                                && ((et.getCriticals(getMech()) > 0)
-                                        || et.hasFlag(MiscType.F_HARDENED_ARMOR))))) {
-                    armorCombo.addItem(EquipmentType.armorNames[index]);
-                }
-            } else {
-                et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
-                        true));
-                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
-                        && panBasicInfo.isLegal(et)
-                        && !((getMech() instanceof LandAirMech)
-                                && ((et.getCriticals(getMech()) > 0)
-                                        || et.hasFlag(MiscType.F_HARDENED_ARMOR)))) {
-                    armorCombo.addItem(EquipmentType.getArmorTypeName(index,
-                            true));
-                }
-                et = EquipmentType.get(EquipmentType.getArmorTypeName(index,
-                        false));
-                if (et != null && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
-                        && panBasicInfo.isLegal(et)
-                        && !((getMech() instanceof LandAirMech)
-                                && ((et.getCriticals(getMech()) > 0)
-                                        || et.hasFlag(MiscType.F_HARDENED_ARMOR)))) {
-                    armorCombo.addItem(EquipmentType.getArmorTypeName(index,
-                            false));
-                }
-                if (index == EquipmentType.T_ARMOR_PATCHWORK) {
-                    armorCombo.addItem(EquipmentType.getArmorTypeName(index));
-                }
-            }
-        }
+        panArmor.refresh();
 
         /* JUMP JETS */
         int jjCount = 2;
@@ -784,13 +640,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
 
         /* UNIT UPDATING */
         if (updateUnit) {
-            setArmorCombo(getMech().getArmorType(0));
-            if (armorCombo.getSelectedIndex() == -1) {
-                armorCombo.setSelectedIndex(0);
-                UnitUtil.removeISorArmorMounts(getMech(), false);
-                createArmorMountsAndSetArmorType();
-                armor.resetArmorPoints();
-            }
             setJumpJetCombo();
             if (jjType.getSelectedIndex() == -1) {
                 jjType.setSelectedIndex(0);
@@ -823,8 +672,6 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
             } else if (spinner.equals(jumpMPBase)) {
                 UnitUtil.updateJumpJets(getMech(), (Integer) jumpModel.getValue(),
                         getJumpJetType());
-            } else if (spinner.equals(armorTonnage)) {
-                setArmorTonnage();
             }
             addAllListeners();
 
@@ -870,242 +717,59 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         return crits <= 12;
     }
     
-    private void maximizeArmor() {
-        double maxArmor = UnitUtil.getMaximumArmorTonnage(getMech());
-        armorTonnage.setValue(maxArmor);
-        getMech().setArmorTonnage(maxArmor);
-        armor.resetArmorPoints();
-    }
-    
-    private void useRemainingTonnageArmor() {
-    	double currentTonnage = UnitUtil.getEntityVerifier(getMech())
-                .calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
-        double totalTonnage = getMech().getWeight();
-        double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
-        
-        double maxArmor = Math.min(remainingTonnage,
-                UnitUtil.getMaximumArmorTonnage(getMech()));
-        armorTonnage.setValue(maxArmor);
-        getMech().setArmorTonnage(maxArmor);
-        armor.resetArmorPoints();        
-    }
+    private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
 
-    private void createArmorMountsAndSetArmorType() {
-
-        if (getArmorType(armorCombo) == EquipmentType
-                .getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK)) {
-            JComboBox<String> headArmor = new JComboBox<String>();
-            headArmor.setName("head");
-            JComboBox<String> laArmor = new JComboBox<String>();
-            laArmor.setName("la");
-            JComboBox<String> ltArmor = new JComboBox<String>();
-            ltArmor.setName("lt");
-            JComboBox<String> ctArmor = new JComboBox<String>();
-            ctArmor.setName("ct");
-            JComboBox<String> rtArmor = new JComboBox<String>();
-            rtArmor.setName("rt");
-            JComboBox<String> raArmor = new JComboBox<String>();
-            raArmor.setName("ra");
-            JComboBox<String> llArmor = new JComboBox<String>();
-            llArmor.setName("ll");
-            JComboBox<String> rlArmor = new JComboBox<String>();
-            rlArmor.setName("rl");
+        if (at == EquipmentType.T_ARMOR_PATCHWORK) {
             boolean isMixed = panBasicInfo.isMixedTech();
-            boolean isClan = panBasicInfo.isClan();
-            for (int index = 0; index < (EquipmentType.armorNames.length); index++) {
-                EquipmentType et;
-                if (!isMixed) {
-                    et = EquipmentType.get(EquipmentType.getArmorTypeName(
-                            index, isClan));
-                    if ((et != null)
-                            && et.hasFlag(MiscType.F_MECH_EQUIPMENT)
-                            && panBasicInfo.isLegal(et)) {
-                        headArmor.addItem(EquipmentType.armorNames[index]);
-                        laArmor.addItem(EquipmentType.armorNames[index]);
-                        ltArmor.addItem(EquipmentType.armorNames[index]);
-                        ctArmor.addItem(EquipmentType.armorNames[index]);
-                        rtArmor.addItem(EquipmentType.armorNames[index]);
-                        raArmor.addItem(EquipmentType.armorNames[index]);
-                        llArmor.addItem(EquipmentType.armorNames[index]);
-                        rlArmor.addItem(EquipmentType.armorNames[index]);
-                    }
-                } else {
-                    et = EquipmentType.get(EquipmentType.getArmorTypeName(
-                            index, true));
-                    if (et != null) {
-                        headArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                true));
-                        laArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                true));
-                        ltArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                true));
-                        ctArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                true));
-                        rtArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                true));
-                        raArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                true));
-                        llArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                true));
-                        rlArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                true));
-                    }
-                    et = EquipmentType.get(EquipmentType.getArmorTypeName(
-                            index, false));
-                    if (et != null) {
-                        headArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                false));
-                        laArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                false));
-                        ltArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                false));
-                        ctArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                false));
-                        rtArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                false));
-                        raArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                false));
-                        llArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                false));
-                        rlArmor.addItem(EquipmentType.getArmorTypeName(index,
-                                false));
-                    }
-                }
-            }
-            setArmorType(headArmor, getMech().getArmorType(Mech.LOC_HEAD), false);
-            setArmorType(laArmor, getMech().getArmorType(Mech.LOC_LARM), false);
-            setArmorType(ltArmor, getMech().getArmorType(Mech.LOC_LT), false);
-            setArmorType(ctArmor, getMech().getArmorType(Mech.LOC_CT), false);
-            setArmorType(rtArmor, getMech().getArmorType(Mech.LOC_RT), false);
-            setArmorType(raArmor, getMech().getArmorType(Mech.LOC_RARM), false);
-            setArmorType(llArmor, getMech().getArmorType(Mech.LOC_LLEG), false);
-            setArmorType(rlArmor, getMech().getArmorType(Mech.LOC_RLEG), false);
-            JLabel headLabel = new JLabel("Head:");
-            JLabel laLabel = new JLabel(getMech() instanceof QuadMech ?
-                "Front Left Leg:" : "Left Arm:");
-            JLabel ltLabel = new JLabel("Left Torso:");
-            JLabel ctLabel = new JLabel("Center Torso:");
-            JLabel rtLabel = new JLabel("Right Torso:");
-            JLabel raLabel = new JLabel(getMech() instanceof QuadMech ?
-                "Front Right Leg:" : "Right Arm:");
-            JLabel llLabel = new JLabel(getMech() instanceof QuadMech ?
-                "Rear Left Leg:" : "Left Leg:");
-            JLabel rlLabel = new JLabel(getMech() instanceof QuadMech ?
-                "Rear Right Leg:" : "Right Leg:");
+            List<EquipmentType> armors = panArmor.getAllArmors();
+            List<TechComboBox<EquipmentType>> combos = new ArrayList<>();
             JPanel panel = new JPanel(new GridBagLayout());
-            panel.add(headLabel, GBC.std());
-            panel.add(headArmor, GBC.eol());
-            panel.add(laLabel, GBC.std());
-            panel.add(laArmor, GBC.eol());
-            panel.add(ltLabel, GBC.std());
-            panel.add(ltArmor, GBC.eol());
-            panel.add(ctLabel, GBC.std());
-            panel.add(ctArmor, GBC.eol());
-            panel.add(rtLabel, GBC.std());
-            panel.add(rtArmor, GBC.eol());
-            panel.add(raLabel, GBC.std());
-            panel.add(raArmor, GBC.eol());
-            panel.add(llLabel, GBC.std());
-            panel.add(llArmor, GBC.eol());
-            panel.add(rlLabel, GBC.std());
-            panel.add(rlArmor, GBC.eol());
+            for (int loc = 0; loc < getMech().locations(); loc++) {
+                TechComboBox<EquipmentType> cbLoc = new TechComboBox<>(eq -> eq.getName());
+                cbLoc.showTechBase(isMixed);
+                armors.forEach(a -> cbLoc.addItem(a));
+                EquipmentType locArmor = EquipmentType.get(EquipmentType
+                        .getArmorTypeName(getMech().getArmorType(loc),
+                                TechConstants.isClan(getMech().getArmorTechLevel(loc))));
+                cbLoc.setSelectedItem(locArmor);
+                combos.add(cbLoc);
+                JLabel label = new JLabel(getMech().getLocationName(loc));
+                panel.add(label, GBC.std());
+                panel.add(cbLoc, GBC.eol());
+            }
             JOptionPane.showMessageDialog(this, panel,
                     "Please choose the armor types",
                     JOptionPane.QUESTION_MESSAGE);
-            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(headArmor))
-                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_HEAD);
-            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(laArmor))
-                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_LARM);
-            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(ltArmor))
-                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_LT);
-            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(ctArmor))
-                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_CT);
-            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(rtArmor))
-                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_RT);
-            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(raArmor))
-                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_RARM);
-            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(llArmor))
-                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_LLEG);
-            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(rlArmor))
-                    .getTechLevel(panBasicInfo.getYear()), Mech.LOC_RLEG);
-            getMech().setArmorType(getArmorType(headArmor), Mech.LOC_HEAD);
-            getMech().setArmorType(getArmorType(laArmor), Mech.LOC_LARM);
-            getMech().setArmorType(getArmorType(ltArmor), Mech.LOC_LT);
-            getMech().setArmorType(getArmorType(ctArmor), Mech.LOC_CT);
-            getMech().setArmorType(getArmorType(rtArmor), Mech.LOC_RT);
-            getMech().setArmorType(getArmorType(raArmor), Mech.LOC_RARM);
-            getMech().setArmorType(getArmorType(llArmor), Mech.LOC_LLEG);
-            getMech().setArmorType(getArmorType(rlArmor), Mech.LOC_RLEG);
-            for (int i = 0; i < getMech().locations(); i++) {
-                int armorCount = 0;
-                switch (getMech().getArmorType(i)) {
-                    case EquipmentType.T_ARMOR_STANDARD:
-                    case EquipmentType.T_ARMOR_HARDENED:
-                    case EquipmentType.T_ARMOR_INDUSTRIAL:
-                    case EquipmentType.T_ARMOR_COMMERCIAL:
-                    case EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL:
-                        armorCount = 0;
-                        break;
-                    case EquipmentType.T_ARMOR_STEALTH:
-                    case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-                        armorCount = 2;
-                        break;
-                    case EquipmentType.T_ARMOR_HEAVY_FERRO:
-                        armorCount = 3;
-                        break;
-                    case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-                    case EquipmentType.T_ARMOR_REFLECTIVE:
-                    case EquipmentType.T_ARMOR_REACTIVE:
-                        if (TechConstants.isClan(getMech().getArmorTechLevel(i))) {
-                            armorCount = 1;
-                        } else {
-                            armorCount = 2;
+            for (int loc = 0; loc < getMech().locations(); loc++) {
+                EquipmentType armor = (EquipmentType)combos.get(loc).getSelectedItem();
+                getMech().setArmorTechLevel(armor.getTechLevel(panBasicInfo.getTechYear()), loc);
+                getMech().setArmorType(EquipmentType.getArmorType(armor), loc);
+                if (armor.getCriticals(getMech()) > 0) {
+                    int crits = armor.getCriticals(getMech()) / 10 + 1;
+                    for (; crits > 0; crits--) {
+                        try {
+                            getMech().addEquipment( new Mounted(getMech(), armor), loc, false);
+                        } catch (LocationFullException ex) {
+                            JOptionPane .showMessageDialog(
+                                            null, armor.getName()
+                                                    + " does not fit in location "
+                                                    + getMech().getLocationName(loc)
+                                                    + ". Resetting to Standard Armor in this location.",
+                                            "Error",
+                                            JOptionPane.INFORMATION_MESSAGE);
+                            getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET, loc);
+                            getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD, loc);
                         }
-                        break;
-                    default:
-                        break;
-                }
-                if (armorCount < 1) {
-                    continue;
-                }
-
-                for (; armorCount > 0; armorCount--) {
-                    try {
-                        getMech().addEquipment(
-                                new Mounted(getMech(),
-                                        EquipmentType.get(EquipmentType
-                                                .getArmorTypeName(
-                                                        getMech().getArmorType(i),
-                                                        panBasicInfo.isClan()))), i,
-                                false);
-                    } catch (LocationFullException ex) {
-                        JOptionPane
-                                .showMessageDialog(
-                                        null,
-                                        EquipmentType.getArmorTypeName(getMech()
-                                                .getArmorType(i))
-                                                + " does not fit in location "
-                                                + getMech().getLocationName(i)
-                                                + ". Resetting to Standard Armor in this location.",
-                                        "Error",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                        getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD, i);
                     }
                 }
             }
             if (!getMech().hasPatchworkArmor()) {
-                setArmorType(armorCombo, EquipmentType.T_ARMOR_STANDARD, false);
+                panArmor.setFromEntity(getMech());
             }
         } else {
-            getMech().setArmorTechLevel(EquipmentType.get(getArmorType(armorCombo))
-                    .getTechLevel(panBasicInfo.getYear()));
-            getMech().setArmorType(getArmorType(armorCombo));
-            int armorCount = 0;
-
-            armorCount = EquipmentType.get(getArmorType(armorCombo))
-                    .getCriticals(getMech());
+            getMech().setArmorTechLevel(aTechLevel);
+            getMech().setArmorType(at);
+            int armorCount = panArmor.getArmor().getCriticals(getMech());
 
             if (armorCount < 1) {
                 return;
@@ -1121,39 +785,18 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
                             "Stealth Armor does not fit in location.",
                             "Resetting to Standard Armor",
                             JOptionPane.INFORMATION_MESSAGE);
-                    setArmorCombo(EquipmentType.T_ARMOR_STANDARD);
-                    getMech().setArmorTechLevel(EquipmentType.get(
-                            getArmorType(armorCombo)).getTechLevel(
-                            panBasicInfo.getYear()));
-                    getMech().setArmorType(getArmorType(armorCombo));
+                    getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+                    getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                    panArmor.setFromEntity(getMech());
                 }
             } else {
+                final EquipmentType armor = panArmor.getArmor();
                 for (; armorCount > 0; armorCount--) {
                     try {
                         getMech().addEquipment(new Mounted(getMech(),
-                                EquipmentType.get(getArmorType(armorCombo))),
-                                Entity.LOC_NONE, false);
+                                armor), Entity.LOC_NONE, false);
                     } catch (Exception ex) {
                     }
-                }
-            }
-        }
-    }
-
-    private void setArmorCombo(int type) {
-        armorCombo.setSelectedIndex(-1);
-
-        for (int index = 0; index < armorCombo.getItemCount(); index++) {
-            if (panBasicInfo.isMixedTech()) {
-                if (EquipmentType.getArmorTypeName(type,
-                        TechConstants.isClan(getMech().getArmorTechLevel(0)))
-                        .equals(armorCombo.getItemAt(index))) {
-                    armorCombo.setSelectedIndex(index);
-                }
-            } else {
-                if (EquipmentType.getArmorTypeName(type).equals(
-                        armorCombo.getItemAt(index))) {
-                    armorCombo.setSelectedIndex(index);
                 }
             }
         }
@@ -1168,64 +811,9 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         return retVal;
     }
 
-    private String getArmorType(JComboBox<String> combo) {
-        String armorType = combo.getSelectedItem().toString();
-        if (armorType.equals(EquipmentType
-                .getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK))) {
-            return armorType;
-        }
-        if (!panBasicInfo.isMixedTech()) {
-            String prefix = panBasicInfo.isClan() ? "Clan " : "IS ";
-            for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
-                if (armorType.equals(EquipmentType.armorNames[pos])) {
-                    return prefix + armorType;
-                }
-            }
-        } else {
-            for (int pos = 0; pos < EquipmentType.armorNames.length; pos++) {
-                if (armorType.equals(EquipmentType.getArmorTypeName(pos, true))) {
-                    return armorType;
-                }
-                if (armorType
-                        .equals(EquipmentType.getArmorTypeName(pos, false))) {
-                    return armorType;
-                }
-            }
-        }
-
-        return EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_STANDARD,
-                panBasicInfo.isClan());
-    }
-
-    private void setArmorTonnage() {
-        double armorTons = Math.round(((Double) armorTonnage.getValue()) * 2) / 2.0;
-        getMech().setArmorTonnage(armorTons);
-        armor.resetArmorPoints();
-    }
-
     public void setAsCustomization() {
         panBasicInfo.setAsCustomization();
         panChassis.setAsCustomization();
-    }
-
-    private void setArmorType(JComboBox<String> combo, int type,
-            boolean removeListeners) {
-        if (removeListeners) {
-            removeAllListeners();
-        }
-        for (int index = 0; index < combo.getItemCount(); index++) {
-            if (EquipmentType.getArmorTypeName(type).equals(
-                    combo.getItemAt(index))) {
-                armorCombo.setSelectedIndex(index);
-            }
-        }
-        if (removeListeners) {
-            addAllListeners();
-        }
-    }
-
-    public void setArmorType(int type) {
-        setArmorType(armorCombo, type, true);
     }
 
     @Override
@@ -1296,7 +884,7 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         if (!getMech().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }
-        createArmorMountsAndSetArmorType();
+        createArmorMountsAndSetArmorType(getMech().getArmorType(0), getMech().getArmorTechLevel(0));
         populateChoices(true);
         armor.resetArmorPoints();
         UnitUtil.checkEquipmentByTechLevel(getMech());
@@ -1549,4 +1137,71 @@ public class StructureTab extends ITab implements ActionListener, ChangeListener
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
+    
+    @Override
+    public void armorTypeChanged(int at, int aTechLevel) {
+        if (!getMech().hasPatchworkArmor()) {
+            UnitUtil.removeISorArmorMounts(getMech(), false);
+        }
+        createArmorMountsAndSetArmorType(at, aTechLevel);
+        if (!getMech().hasPatchworkArmor()) {
+            armor.resetArmorPoints();
+        }
+        
+        armor.refresh();
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+    }
+    
+    @Override
+    public void armorTonnageChanged(double tonnage) {
+        getMech().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
+        armor.resetArmorPoints();
+        
+        armor.refresh();
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void maximizeArmor() {
+        double maxArmor = UnitUtil.getMaximumArmorTonnage(getMech());
+        getMech().setArmorTonnage(maxArmor);
+        armor.resetArmorPoints();
+        panArmor.removeListener(this);
+        panArmor.setFromEntity(getMech());
+        panArmor.addListener(this);
+        
+        armor.refresh();
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+    
+    @Override
+    public void useRemainingTonnageArmor() {
+        double currentTonnage = UnitUtil.getEntityVerifier(getMech())
+                .calculateWeight();
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
+        double totalTonnage = getMech().getWeight();
+        double remainingTonnage = TestEntity.floor(
+                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+        
+        double maxArmor = Math.min(getMech().getArmorWeight() + remainingTonnage,
+                UnitUtil.getMaximumArmorTonnage(getMech()));
+        getMech().setArmorTonnage(maxArmor);
+        armor.resetArmorPoints();
+        panArmor.removeListener(this);
+        panArmor.setFromEntity(getMech());
+        panArmor.addListener(this);
+        
+        armor.refresh();
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
 }
