@@ -740,36 +740,56 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
             JOptionPane.showMessageDialog(this, panel,
                     "Please choose the armor types",
                     JOptionPane.QUESTION_MESSAGE);
+            UnitUtil.removeISorArmorMounts(getMech(), false);
             for (int loc = 0; loc < getMech().locations(); loc++) {
                 EquipmentType armor = (EquipmentType)combos.get(loc).getSelectedItem();
                 getMech().setArmorTechLevel(armor.getTechLevel(panBasicInfo.getTechYear()), loc);
                 getMech().setArmorType(EquipmentType.getArmorType(armor), loc);
-                if (armor.getCriticals(getMech()) > 0) {
-                    int crits = armor.getCriticals(getMech()) / 10 + 1;
+                int crits = 0;
+                switch (EquipmentType.getArmorType(armor)) {
+                    case EquipmentType.T_ARMOR_STEALTH:
+                    case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+                        crits = 2;
+                        break;
+                    case EquipmentType.T_ARMOR_HEAVY_FERRO:
+                        crits = 3;
+                        break;
+                    case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+                    case EquipmentType.T_ARMOR_REFLECTIVE:
+                    case EquipmentType.T_ARMOR_REACTIVE:
+                        if (armor.isClan()) {
+                            crits = 1;
+                        } else {
+                            crits = 2;
+                        }
+                        break;
+                }
+                if (getMech().getEmptyCriticals(loc) < crits) {
+                    JOptionPane .showMessageDialog(
+                            null, armor.getName()
+                            + " does not fit in location "
+                            + getMech().getLocationName(loc)
+                            + ". Resetting to Standard Armor in this location.",
+                            "Error",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET, loc);
+                    getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD, loc);
+                } else {
                     for (; crits > 0; crits--) {
                         try {
                             getMech().addEquipment( new Mounted(getMech(), armor), loc, false);
                         } catch (LocationFullException ex) {
-                            JOptionPane .showMessageDialog(
-                                            null, armor.getName()
-                                                    + " does not fit in location "
-                                                    + getMech().getLocationName(loc)
-                                                    + ". Resetting to Standard Armor in this location.",
-                                            "Error",
-                                            JOptionPane.INFORMATION_MESSAGE);
-                            getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET, loc);
-                            getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD, loc);
                         }
                     }
                 }
             }
-            if (!getMech().hasPatchworkArmor()) {
-                panArmor.setFromEntity(getMech());
-            }
+            panArmor.setFromEntity(getMech());
         } else {
             getMech().setArmorTechLevel(aTechLevel);
             getMech().setArmorType(at);
-            int armorCount = panArmor.getArmor().getCriticals(getMech());
+            final EquipmentType armor = EquipmentType.get(EquipmentType.getArmorTypeName(at,
+                    TechConstants.isClan(aTechLevel)));
+            int armorCount = armor.getCriticals(getMech());
 
             if (armorCount < 1) {
                 return;
@@ -790,7 +810,6 @@ public class StructureTab extends ITab implements ChangeListener, ItemListener,
                     panArmor.setFromEntity(getMech());
                 }
             } else {
-                final EquipmentType armor = panArmor.getArmor();
                 for (; armorCount > 0; armorCount--) {
                     try {
                         getMech().addEquipment(new Mounted(getMech(),
