@@ -643,6 +643,23 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }
         createArmorMountsAndSetArmorType(getMech().getArmorType(0), getMech().getArmorTechLevel(0));
+        // If we have a large engine, a drop in tech level may make it unavailable and we will need
+        // to reduce speed to a legal value.
+        if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE)
+                && panChassis.getAvailableEngines().isEmpty()) {
+            int walk;
+            if (getMech().isPrimitive()) {
+                walk = 400 / (int)(getMech().getWeight() * 1.2);
+            } else {
+                walk = 400 / (int)getMech().getWeight();
+            }
+            recalculateEngineRating(walk, getMech().getWeight());
+            getMech().setOriginalWalkMP(walk);
+            panMovement.setFromEntity(getMech());
+            JOptionPane.showMessageDialog(
+                    this, String.format("Large engine not available at this tech level. Reducing MP to %d.", walk),
+                    "Bad Engine", JOptionPane.ERROR_MESSAGE);
+        }
         panChassis.refresh();
         panHeat.refresh();
         panArmor.refresh();
@@ -981,6 +998,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         refresh.refreshStatus();
         refresh.refreshPreview();
         panMovement.setFromEntity(getMech());
+        panChassis.refresh();
     }
 
     @Override
