@@ -1835,9 +1835,8 @@ public class UnitUtil {
      */
     public static boolean isJumpJet(EquipmentType eq) {
         if ((eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || eq.hasFlag(MiscType.F_JUMP_JET) || eq
-                            .hasFlag(MiscType.F_UMU))) {
+                && (eq.hasFlag(MiscType.F_JUMP_JET)
+                        || eq.hasFlag(MiscType.F_UMU))) {
             return true;
         }
 
