@@ -104,7 +104,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
         setEntity(new BattleArmor());
         BattleArmor ba = (BattleArmor) getEntity();
 

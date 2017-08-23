@@ -304,7 +304,9 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         if ((getYear() >= CLAN_MIXED_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)) {
             cbTechBase.addItem(TECH_BASE_CLAN_MIXED);
         }
-        cbTechBase.setSelectedItem(prev);
+        if (null != prev) {
+            cbTechBase.setSelectedItem(prev);
+        }
         cbTechBase.addActionListener(this);
         if (cbTechBase.getSelectedItem() == null || !cbTechBase.getSelectedItem().equals(prev)) {
             cbTechBase.setSelectedItem(0);
