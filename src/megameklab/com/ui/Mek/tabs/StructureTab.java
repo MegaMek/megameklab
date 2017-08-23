@@ -406,20 +406,40 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         }
     }
     
-    private void recalculateEngineRating() {
-        int rating = panMovement.getWalk()
-                * ((int) panChassis.getTonnage());
+    /**
+     * Calculates required engine rating for speed and tonnage and updates engine if possible.
+     * @return true if the new engine is legal for rating, space, and tech level
+     */
+    private boolean recalculateEngineRating(int walkMP, double tonnage) {
+        int rating = walkMP * (int)tonnage;
         if (getMech().isPrimitive()) {
             rating = (int)Math.ceil((rating * 1.2) / 5.0) * 5; 
         }
-        if (getMech().getEngine().getRating() != rating) {
+        int oldRating = getMech().getEngine().getRating();
+        if (oldRating != rating) {
             panChassis.setEngineRating(rating);
             Engine engine = panChassis.getEngine();
-            engine.setBaseChassisHeatSinks(getMech().getEngine()
-                    .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
-            getMech().setEngine(engine);
-            UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+            if (!engine.engineValid || !panBasicInfo.isLegal(engine)) {
+                JOptionPane.showMessageDialog(
+                        this, String.format("The required engine rating of %d exceeds the maximum.", rating),
+                        "Bad Engine", JOptionPane.ERROR_MESSAGE);
+                panChassis.setEngineRating(oldRating);
+                return false;
+            } else if ((tonnage <= 100)
+                    && !hasCTSpace(engine, getMech().getGyroType(), getMech().getCockpitType())) {
+                JOptionPane.showMessageDialog(
+                        this, "There is not enough space in the center torso for the required engine.",
+                        "Bad Engine", JOptionPane.ERROR_MESSAGE);
+                panChassis.setEngineRating(oldRating);
+                return false;
+            } else {
+                engine.setBaseChassisHeatSinks(getMech().getEngine()
+                        .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
+                getMech().setEngine(engine);
+                UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+            }
         }
+        return true;
     }
     
     private boolean hasCTSpace(Engine engine, int gyroType, int cockpitType) {
@@ -638,7 +658,12 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
 
     @Override
     public void tonnageChanged(double tonnage) {
+        if (!recalculateEngineRating(panMovement.getWalk(), tonnage)) {
+            panChassis.setFromEntity(getMech());
+            return;
+        }
         boolean changedSuperHeavyStatus = getMech().isSuperHeavy() != tonnage <= 100;
+        
         if (changedSuperHeavyStatus) {
             // if we switch from being superheavy to not being superheavy,
             // remove crits
@@ -663,7 +688,6 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
             resetSystemCrits();
             refresh();
         }
-        recalculateEngineRating();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -947,8 +971,11 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
 
     @Override
     public void walkChanged(int walkMP) {
+        if (!recalculateEngineRating(walkMP, panChassis.getTonnage())) {
+            panMovement.setFromEntity(getMech());
+            return;
+        }
         getMech().setOriginalWalkMP(walkMP);
-        recalculateEngineRating();
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
