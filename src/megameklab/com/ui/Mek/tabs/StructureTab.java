@@ -155,7 +155,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panChassis.setFromEntity(getMech());
         panArmor.setFromEntity(getMech());
         panHeat.setFromMech(getMech());
-
+        panMovement.setFromEntity(getMech());
 
         armor.refresh();
         panSummary.refresh();
