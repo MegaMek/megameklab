@@ -957,7 +957,12 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
 
     @Override
     public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
-        getMech().setOriginalJumpMP(jumpMP);
+        // Don't set jumpMP for UMU.
+        if (jumpJet.hasFlag(MiscType.F_JUMP_JET)) {
+            getMech().setOriginalJumpMP(jumpMP);
+        } else {
+            getMech().setOriginalJumpMP(0);
+        }
         List<Mounted> jjs = getMech().getMisc().stream()
                 .filter(m -> m.getType() == jumpJet)
                 .collect(Collectors.toList());
