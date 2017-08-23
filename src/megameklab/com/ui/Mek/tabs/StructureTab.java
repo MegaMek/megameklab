@@ -595,6 +595,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     @Override
     public void yearChanged(int year) {
         getMech().setYear(year);
+        updateTechLevel();
     }
 
     @Override

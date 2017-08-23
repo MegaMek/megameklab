@@ -466,14 +466,15 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
                 && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0);
         for (int i : engineTypes) {
             Engine e = new Engine(getEngineRating(), i, flags);
-            if (e.engineValid && (e.isFusion() || allowNonFusion)) {
+            if (e.engineValid && (e.isFusion() || allowNonFusion)
+                    && techManager.isLegal(e)) {
                 cbEngine.addItem(e);
             }
             // Only add the opposite tech base if the engine is different.
             if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
                 e = new Engine(getEngineRating(), i, altFlags);
-                if (e.engineValid && (e.isFusion()
-                        || techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0)) {
+                if (e.engineValid && (e.isFusion() || allowNonFusion)
+                        && techManager.isLegal(e)) {
                     cbEngine.addItem(e);
                 }
             }
