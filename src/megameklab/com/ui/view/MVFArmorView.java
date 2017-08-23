@@ -208,7 +208,7 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
                 }
                 String name = EquipmentType.getArmorTypeName(at, techManager.isClan());
                 EquipmentType eq = EquipmentType.get(name);
-                if (isLAM && ((eq.getCriticals(null) > 0))) {
+                if ((null == eq) || (isLAM && ((eq.getCriticals(null) > 0)))) {
                     continue;
                 }
                 if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {
