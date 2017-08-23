@@ -33,6 +33,7 @@ import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.QuadMech;
 import megamek.common.QuadVee;
+import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megameklab.com.ui.MegaMekLabMainUI;
@@ -119,7 +120,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
         
         int cockpit = Mech.COCKPIT_STANDARD;
         int at = EquipmentType.T_ARMOR_STANDARD;
@@ -157,8 +158,6 @@ public class MainUI extends MegaMekLabMainUI {
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         }
         Mech mech = (Mech) getEntity();
-
-        getEntity().setYear(3145);
         getEntity().setWeight(25);
         if (entityType == Entity.ETYPE_LAND_AIR_MECH) {
             mech.setEngine(new Engine(75, Engine.NORMAL_ENGINE, 0));
@@ -189,63 +188,27 @@ public class MainUI extends MegaMekLabMainUI {
             mech.initializeRearArmor(0, loc);
         }
 
-        getEntity().setChassis("New");
-        getEntity().setModel("Mek");
+        if (null == oldEntity) {
+            mech.setChassis("New");
+            mech.setModel("Mek");
+            mech.setYear(3145);
+        } else {
+            mech.setChassis(oldEntity.getChassis());
+            mech.setModel(oldEntity.getModel());
+            mech.setYear(Math.max(oldEntity.getYear(),
+                    mech.getConstructionTechAdvancement().getIntroductionDate()));
+            mech.setSource(oldEntity.getSource());
+            mech.setManualBV(oldEntity.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(mech.getStaticTechLevel(),
+                    SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
+            mech.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
+            mech.setMixedTech(oldEntity.isMixedTech());
+        }
 
     }
 
     @Override
     public void refreshAll() {
-
-        boolean isQuad = getEntity() instanceof QuadMech && !(getEntity() instanceof QuadVee);
-        boolean isLAM = getEntity() instanceof LandAirMech;
-        boolean isTripod = getEntity() instanceof TripodMech;
-        boolean isQuadVee = getEntity() instanceof QuadVee;
-
-        // Check to see if the current entity type matches the selected type
-        if (((structureTab.isQuad() && !isQuad)
-                    || (!structureTab.isQuad() && isQuad))
-                || ((structureTab.isLAM() && !isLAM)
-                        || (!structureTab.isLAM() && isLAM))
-                || ((structureTab.isTripod() && !isTripod)
-                        || (!structureTab.isTripod() && isTripod))
-                || ((structureTab.isQuadVee() && !isQuadVee)
-                        || (!structureTab.isQuadVee() && isQuadVee))) {
-            // If no match, create a new entity of the right type
-            String model = getEntity().getModel();
-            String chassis = getEntity().getChassis();
-            String source = getEntity().getSource();
-            int year = getEntity().getYear();
-//            int techLevel = getEntity().getTechLevel();
-            int mBV = getEntity().getManualBV();
-
-            long eType;
-            if (structureTab.isQuadVee()) {
-                eType = Entity.ETYPE_QUADVEE;
-            } else if (structureTab.isQuad()){
-                eType = Entity.ETYPE_QUAD_MECH;
-            } else if (structureTab.isLAM()){
-                eType = Entity.ETYPE_LAND_AIR_MECH;
-            } else if (structureTab.isTripod()){
-                eType = Entity.ETYPE_TRIPOD_MECH;
-            } else {
-                eType = Entity.ETYPE_BIPED_MECH;
-            }
-
-            createNewUnit(eType);
-
-            getEntity().setChassis(chassis);
-            getEntity().setModel(model);
-            getEntity().setSource(source);
-            getEntity().setYear(year);
-            // This is overwriting the minimum tech level of the Mech.
-//            getEntity().setTechLevel(techLevel);
-            getEntity().setManualBV(mBV);
-
-            reloadTabs();
-            repaint();
-            refreshAll();
-        }
         statusbar.refresh();
         structureTab.refresh();
         equipmentTab.refresh();

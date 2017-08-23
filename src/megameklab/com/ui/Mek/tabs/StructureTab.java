@@ -733,22 +733,22 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
                 if (motiveType == MekChassisView.MOTIVE_TYPE_BIPED) {
                     if  (((getMech().getEntityType() & Entity.ETYPE_BIPED_MECH) == 0)
                             || ((getMech().getEntityType() & Entity.ETYPE_LAND_AIR_MECH) != 0)) {
-                        eSource.createNewUnit(Entity.ETYPE_BIPED_MECH, primitive, industrial);
+                        eSource.createNewUnit(Entity.ETYPE_BIPED_MECH, primitive, industrial, getMech());
                     }
                 } else if (motiveType == MekChassisView.MOTIVE_TYPE_QUAD) {
                     if  (((getMech().getEntityType() & Entity.ETYPE_QUAD_MECH) == 0)
                             || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) != 0)) {
-                        eSource.createNewUnit(Entity.ETYPE_QUAD_MECH, primitive, industrial);
+                        eSource.createNewUnit(Entity.ETYPE_QUAD_MECH, primitive, industrial, getMech());
                     }
                 } else if ((getMech().getEntityType() & Entity.ETYPE_TRIPOD_MECH) == 0) {
-                    eSource.createNewUnit(Entity.ETYPE_TRIPOD_MECH, primitive, industrial);
+                    eSource.createNewUnit(Entity.ETYPE_TRIPOD_MECH, primitive, industrial, getMech());
                 }
                 break;
             case MekChassisView.BASE_TYPE_LAM:
                 if (getMech() instanceof LandAirMech) {
                     ((LandAirMech)getMech()).setLAMType(motiveType);
                 } else {
-                    eSource.createNewUnit(Entity.ETYPE_LAND_AIR_MECH);
+                    eSource.createNewUnit(Entity.ETYPE_LAND_AIR_MECH, getMech());
                 }
                 break;
             case MekChassisView.BASE_TYPE_QUADVEE:
@@ -770,7 +770,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
                         }
                     }
                 } else {
-                    eSource.createNewUnit(Entity.ETYPE_QUADVEE);
+                    eSource.createNewUnit(Entity.ETYPE_QUADVEE, getMech());
                 }
                 break;
         }

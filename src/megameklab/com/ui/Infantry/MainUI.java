@@ -96,7 +96,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
         setEntity(new Infantry());
         getEntity().setYear(3145);
         getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
