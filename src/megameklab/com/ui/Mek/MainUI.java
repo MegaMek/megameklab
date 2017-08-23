@@ -160,7 +160,12 @@ public class MainUI extends MegaMekLabMainUI {
 
         getEntity().setYear(3145);
         getEntity().setWeight(25);
-        mech.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
+        if (entityType == Entity.ETYPE_LAND_AIR_MECH) {
+            mech.setEngine(new Engine(75, Engine.NORMAL_ENGINE, 0));
+            UnitUtil.updateJumpJets(((Mech)getEntity()), 3, Mech.JUMP_STANDARD);
+        } else {
+            mech.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
+        }
         getEntity().setArmorType(at);
         getEntity().setArmorTechLevel(getEntity().getTechLevel());
         getEntity().setStructureType(st);
