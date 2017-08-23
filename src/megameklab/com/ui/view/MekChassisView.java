@@ -17,6 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -443,41 +444,11 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
     }
 
     private void refreshEngine() {
-        boolean isMixed = techManager.isMixedTech();
         cbEngine.removeActionListener(this);
         Engine prevEngine = (Engine)cbEngine.getSelectedItem();
         cbEngine.removeAllItems();
-        int flags = 0;
-        if (techManager.isClan()) {
-            flags |= Engine.CLAN_ENGINE;
-        }
-        if (getEngineRating() > 400) {
-            flags |= Engine.LARGE_ENGINE;
-        }
-        int altFlags = flags ^ Engine.CLAN_ENGINE;
-        int[] engineTypes = ENGINE_TYPES;
-        if (isPrimitive() || isIndustrial()) {
-            engineTypes = INDUSTRIAL_ENGINE_TYPES;
-        } else if (getBaseTypeIndex() == BASE_TYPE_LAM) {
-            engineTypes = LAM_ENGINE_TYPES;
-        }
-        // Non-superheavies can use non-fusion engines under experimental rules
-        boolean allowNonFusion = isPrimitive() || (!isSuperheavy()
-                && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0);
-        for (int i : engineTypes) {
-            Engine e = new Engine(getEngineRating(), i, flags);
-            if (e.engineValid && (e.isFusion() || allowNonFusion)
-                    && techManager.isLegal(e)) {
-                cbEngine.addItem(e);
-            }
-            // Only add the opposite tech base if the engine is different.
-            if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
-                e = new Engine(getEngineRating(), i, altFlags);
-                if (e.engineValid && (e.isFusion() || allowNonFusion)
-                        && techManager.isLegal(e)) {
-                    cbEngine.addItem(e);
-                }
-            }
+        for (Engine e : getAvailableEngines()) {
+            cbEngine.addItem(e);
         }
         setEngine(prevEngine);
         cbEngine.addActionListener(this);
@@ -580,6 +551,44 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         chkFullHeadEject.addActionListener(this);
     }
     
+    public List<Engine> getAvailableEngines() {
+        List<Engine> retVal = new ArrayList<>();
+        boolean isMixed = techManager.isMixedTech();
+        int flags = 0;
+        if (techManager.isClan()) {
+            flags |= Engine.CLAN_ENGINE;
+        }
+        if (getEngineRating() > 400) {
+            flags |= Engine.LARGE_ENGINE;
+        }
+        int altFlags = flags ^ Engine.CLAN_ENGINE;
+        int[] engineTypes = ENGINE_TYPES;
+        if (isPrimitive() || isIndustrial()) {
+            engineTypes = INDUSTRIAL_ENGINE_TYPES;
+        } else if (getBaseTypeIndex() == BASE_TYPE_LAM) {
+            engineTypes = LAM_ENGINE_TYPES;
+        }
+        // Non-superheavies can use non-fusion engines under experimental rules
+        boolean allowNonFusion = isPrimitive() || (!isSuperheavy()
+                && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0);
+        for (int i : engineTypes) {
+            Engine e = new Engine(getEngineRating(), i, flags);
+            if (e.engineValid && (e.isFusion() || allowNonFusion)
+                    && techManager.isLegal(e)) {
+                retVal.add(e);
+            }
+            // Only add the opposite tech base if the engine is different.
+            if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
+                e = new Engine(getEngineRating(), i, altFlags);
+                if (e.engineValid && (e.isFusion() || allowNonFusion)
+                        && techManager.isLegal(e)) {
+                    retVal.add(e);
+                }
+            }
+        }
+        return retVal;
+    }
+    
     public double getTonnage() {
         return tonnageModel.getNumber().doubleValue();
     }
@@ -641,6 +650,9 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
 
     public Engine getEngine() {
         Engine e = (Engine) cbEngine.getSelectedItem();
+        if (null == e) {
+            return null;
+        }
         return new Engine(getEngineRating(), e.getEngineType(), e.getFlags());
     }
 
