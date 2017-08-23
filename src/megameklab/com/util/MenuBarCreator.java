@@ -385,7 +385,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitMenu.add(item);
         }
         
-        JMenu pMenu = new JMenu("Primitive");
+        JMenu pMenu = new JMenu("Primitive/Retro");
         if (!(en instanceof Mech)
                 || !((Mech)en).isPrimitive()) {
             item = new JMenuItem();

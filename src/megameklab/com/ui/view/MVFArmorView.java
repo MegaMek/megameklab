@@ -186,9 +186,11 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
         // IndustrialMechs can only use industrial armor below experimental rules level
         if (industrial && (techManager.getTechLevel().ordinal() < SimpleTechLevel.EXPERIMENTAL.ordinal())) {
             for (int at : INDUSTRIAL_TYPES) {
-                String name = EquipmentType.getArmorTypeName(at);
+                String name = EquipmentType.getArmorTypeName(at, false);
                 EquipmentType eq = EquipmentType.get(name);
-                cbArmorType.addItem(eq);
+                if ((null != eq) && techManager.isLegal(eq)) {
+                    cbArmorType.addItem(eq);
+                }
             }
         } else {
             BigInteger flag = MiscType.F_MECH_EQUIPMENT;

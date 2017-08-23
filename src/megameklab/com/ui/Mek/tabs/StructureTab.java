@@ -680,7 +680,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
             panChassis.setFromEntity(getMech());
             return;
         }
-        boolean changedSuperHeavyStatus = getMech().isSuperHeavy() != tonnage <= 100;
+        boolean changedSuperHeavyStatus = getMech().isSuperHeavy() != tonnage > 100;
         
         if (changedSuperHeavyStatus) {
             // if we switch from being superheavy to not being superheavy,
@@ -693,19 +693,20 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
             }
         }
         getMech().setWeight(tonnage);
+        // Force recalculation of walk MP
+        getMech().setEngine(getMech().getEngine());
         getMech().autoSetInternal();
         if (getMech().isSuperHeavy()) {
             getMech().setOriginalJumpMP(0);
         }
-        panArmor.refresh();
-        panMovement.refresh();
         if (changedSuperHeavyStatus) {
             // Internal structure crits may change
             UnitUtil.removeISorArmorMounts(getMech(), true);
             createISMounts(panChassis.getStructure());
             resetSystemCrits();
-            refresh();
+            panMovement.setFromEntity(getMech());
         }
+        refresh();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -810,6 +811,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
             getMech().setEngine(engine);
             resetSystemCrits();
             UnitUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+            panMovement.setFromEntity(getMech());
             refreshSummary();
             refresh.refreshPreview();
             refresh.refreshStatus();
@@ -1004,7 +1006,10 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     @Override
     public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
         // Don't set jumpMP for UMU.
-        if (jumpJet.hasFlag(MiscType.F_JUMP_JET)) {
+        if (null == jumpJet) {
+            getMech().setOriginalJumpMP(0);
+            jumpMP = 0;
+        } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET)) {
             getMech().setOriginalJumpMP(jumpMP);
         } else {
             getMech().setOriginalJumpMP(0);
