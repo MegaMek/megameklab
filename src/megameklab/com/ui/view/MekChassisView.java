@@ -138,9 +138,12 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
     final private JCheckBox chkFullHeadEject = new JCheckBox();
     final private JButton btnResetChassis = new JButton();
     
+    private ComboBoxModel<String> baseTypesModel;
     private ComboBoxModel<String> standardTypesModel;
     private ComboBoxModel<String> lamTypesModel;
     private ComboBoxModel<String> qvTypesModel;
+    private ComboBoxModel<String> primitiveTypesModel;
+    private ComboBoxModel<String> primitiveMotiveTypesModel;
     
     private boolean primitive = false;
     private int engineRating = 20;
@@ -166,10 +169,12 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
 
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
-        cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.baseType.values").split(","))); //$NON-NLS-1$
+        baseTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.baseType.values").split(",")); //$NON-NLS-1$
         standardTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.motiveType.values").split(",")); //$NON-NLS-1$
         lamTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.lamType.values").split(",")); //$NON-NLS-1$
         qvTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.qvType.values").split(",")); //$NON-NLS-1$
+        primitiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveType.values").split(",")); //$NON-NLS-1$
+        primitiveMotiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveMotiveType.values").split(",")); //$NON-NLS-1$
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -290,7 +295,13 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         setOmni(mech.isOmni());
         chkOmni.setEnabled(!mech.isPrimitive() && !mech.isIndustrial()
                 && techManager.isLegal(Entity.getOmniAdvancement()));
-        cbBaseType.setEnabled(!primitive);
+        cbBaseType.removeActionListener(this);
+        cbMotiveType.removeActionListener(this);
+        if (primitive) {
+            cbBaseType.setModel(primitiveTypesModel);
+        } else {
+            cbBaseType.setModel(baseTypesModel);
+        }
         if (mech instanceof LandAirMech) {
             chkOmni.setEnabled(false);
             setBaseTypeIndex(BASE_TYPE_LAM);
@@ -302,7 +313,11 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
             setMotiveTypeIndex(((QuadVee)mech).getMotiveType());
         } else {
             setBaseTypeIndex(mech.isIndustrial()? BASE_TYPE_INDUSTRIAL : BASE_TYPE_STANDARD);
-            cbMotiveType.setModel(standardTypesModel);
+            if (primitive) {
+                cbMotiveType.setModel(primitiveMotiveTypesModel);
+            } else {
+                cbMotiveType.setModel(standardTypesModel);
+            }
             if ((mech.getEntityType() & Entity.ETYPE_TRIPOD_MECH) != 0) {
                 setMotiveTypeIndex(MOTIVE_TYPE_TRIPOD);
             } else if ((mech.getEntityType() & Entity.ETYPE_QUAD_MECH) != 0) {
@@ -311,6 +326,8 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
                 setMotiveTypeIndex(MOTIVE_TYPE_BIPED);
             }
         }
+        cbBaseType.addActionListener(this);
+        cbMotiveType.addActionListener(this);
         setStructureType(EquipmentType.getStructureTypeName(mech.getStructureType(),
                 TechConstants.isClan(mech.getStructureTechLevel())));
         setEngine(mech.getEngine());

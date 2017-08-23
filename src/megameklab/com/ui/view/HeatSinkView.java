@@ -91,6 +91,7 @@ public class HeatSinkView extends MainUIView implements ActionListener, ChangeLi
     
     private final ITechManager techManager;
     private boolean isAero;
+    private boolean isPrimitive;
     
     public HeatSinkView(ITechManager techManager) {
         this.techManager = techManager;
@@ -155,6 +156,7 @@ public class HeatSinkView extends MainUIView implements ActionListener, ChangeLi
     
     public void setFromMech(Mech mech) {
         isAero = false;
+        isPrimitive = mech.isPrimitive();
         refresh();
         Optional<EquipmentType> hs = mech.getMisc().stream().map(Mounted::getType)
                 .filter(et -> UnitUtil.isHeatSink(et)).findAny();
@@ -181,6 +183,7 @@ public class HeatSinkView extends MainUIView implements ActionListener, ChangeLi
     
     public void setFromAero(Aero aero) {
         isAero = true;
+        isPrimitive = aero.isPrimitive();
         refresh();
         cbHSType.removeActionListener(this);
         setHeatSinkIndex(aero.getHeatType());
@@ -208,6 +211,8 @@ public class HeatSinkView extends MainUIView implements ActionListener, ChangeLi
                     || techManager.isLegal(heatSinks.get(TYPE_DOUBLE_CLAN))) {
                 cbHSType.addItem(TYPE_DOUBLE_AERO);
             }
+        } else if (isPrimitive) {
+            cbHSType.addItem(TYPE_SINGLE);
         } else {
             for (int i = 0; i < heatSinks.size(); i++) {
                 if (techManager.isLegal(heatSinks.get(i))) {

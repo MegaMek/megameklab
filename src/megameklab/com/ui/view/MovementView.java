@@ -31,6 +31,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
@@ -88,6 +89,7 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
     
     private final ITechManager techManager;
     private long etype;
+    private boolean industrial;
     private String[] walkNames;
     private String[] runNames;
     private String[] jumpNames;
@@ -96,6 +98,11 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
             "JumpJet", "ImprovedJump Jet",
             "ISPrototypeJumpJet", "ISPrototypeImprovedJumpJet",
             "UMU",
+    };
+    
+    // No improved JJs for industrial mechs
+    private static final String[] INDUSTRIAL_JUMP_TYPE = {
+            "JumpJet", "ISPrototypeJumpJet", "UMU"
     };
     
     private static final String[] PROTOMECH_JUMP_TYPE = {
@@ -164,6 +171,7 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         spnJump.addChangeListener(this);
         
         lblJumpType.setText(resourceMap.getString("MovementView.cbJumpType.text")); // $NON-NLS-1$
+        cbJumpType.setNullValue(resourceMap.getString("MovementView.cbJumpType.null")); //$NON-NLS-1$
         gbc.gridx = 0;
         gbc.gridy = 4;
         add(lblJumpType, gbc);
@@ -190,6 +198,7 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
     
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
+        industrial = (en instanceof Mech) && ((Mech)en).isIndustrial();
         refresh();
 
         boolean improvedJJ = false;
@@ -206,7 +215,9 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         int minWalk = 1;
         int minJump = 0;
         int maxJump = en.getOriginalWalkMP();
-        if ((en instanceof Mech) && ((Mech)en).isSuperHeavy()) {
+        if ((en instanceof Mech)
+                && (((Mech)en).isSuperHeavy()
+                        || (!en.getEngine().isFusion() && (en.getEngine().getEngineType() != Engine.FISSION)))) {
             maxJump = 0;
         } else if (improvedJJ) {
             maxJump = (int)Math.ceil(maxJump * 1.5);
@@ -267,6 +278,8 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         txtJumpFinal.setVisible(showJump);
         lblJumpType.setVisible(showJumpType);
         cbJumpType.setVisible(showJumpType);
+        spnJump.setEnabled(maxJump > 0);
+        cbJumpType.setEnabled(maxJump > 0);
         
         if (jump0 > maxJump) {
             spnJump.setValue(spnJumpModel.getMaximum());
@@ -280,7 +293,7 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
             cbJumpType.removeAllItems();
             String[] keys = null;
             if ((etype & Entity.ETYPE_MECH) != 0) {
-                keys = MECH_JUMP_TYPE;
+                keys = industrial? INDUSTRIAL_JUMP_TYPE : MECH_JUMP_TYPE;
             } else if ((etype & Entity.ETYPE_PROTOMECH) != 0) {
                 keys = PROTOMECH_JUMP_TYPE;
             }
