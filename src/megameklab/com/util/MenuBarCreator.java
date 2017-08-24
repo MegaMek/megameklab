@@ -985,7 +985,8 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     public void jMenuConfiguration_actionPerformed(ActionEvent event) {
-        new ConfigurationDialog();
+        new ConfigurationDialog(parentFrame).setVisible(true);
+        parentFrame.refreshAll();
     }
 
     public void jMenuExit_actionPerformed(ActionEvent event) {
