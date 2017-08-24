@@ -15,6 +15,7 @@ package megameklab.com.ui.view;
 
 import megamek.common.ITechnology;
 import megamek.common.SimpleTechLevel;
+import megameklab.com.util.CConfig;
 
 /**
  * Implementing classes dictate tech base and rule level and can determine whether any given technology
@@ -25,32 +26,42 @@ import megamek.common.SimpleTechLevel;
  */
 public interface ITechManager {
     
+    int getIntroYear();
     int getTechYear();
     boolean isClan();
     boolean isMixedTech();
     SimpleTechLevel getTechLevel();
     
     default boolean isLegal(ITechnology tech) {
+        // Unofficial tech has the option to ignore year availability
+        if ((getTechLevel() == SimpleTechLevel.UNOFFICIAL)
+                && CConfig.getBooleanParam(CConfig.CONFIG_TECH_UNOFFICAL_NO_YEAR)) {
+            return isMixedTech() || (tech.getTechBase() == ITechnology.TECH_BASE_ALL)
+                    || (isClan() == tech.isClan());
+        }
+        boolean useTP = CConfig.getBooleanParam(CConfig.CONFIG_TECH_PROGRESSION);
+        boolean showExtinct = CConfig.getBooleanParam(CConfig.CONFIG_TECH_EXTINCT);
         if (isMixedTech()) {
-            if (!tech.isAvailableIn(getTechYear())) {
+            if (!tech.isAvailableIn(getTechYear())
+                    && (!showExtinct || (tech.getIntroductionDate() < getIntroYear()))) {
                 return false;
+            } else if (useTP) {
+                // If using tech progression with mixed tech, we pass if either IS or Clan meets the required level
+                return tech.getSimpleLevel(getTechYear(), true).compareTo(getTechLevel()) <= 0
+                        || tech.getSimpleLevel(getTechYear(), false).compareTo(getTechLevel()) <= 0;
             }
-            /* TODO: era-based option
-             * return tech.getSimpleLevel(getYear(), true).compareTo(getTechLevel()) <= 0
-             *       || tech.getSimpleLevel(getYear(), false).compareTo(getTechLevel()) <= 0;
-                    */
         } else {
             if (tech.getTechBase() != ITechnology.TECH_BASE_ALL
                     && isClan() != tech.isClan()) {
                 return false;
-            }
-            if (!tech.isAvailableIn(getTechYear(), isClan())) {
+            } else if (!tech.isAvailableIn(getIntroYear(), isClan())
+                    && (!showExtinct || (tech.getIntroductionDate(isClan()) < getIntroYear()))) {
                 return false;
+            } else if (useTP) {
+                return tech.getSimpleLevel(getTechYear(), isClan()).compareTo(getTechLevel()) <= 0;
             }
-            /* TODO: era-based option
-             * return tech.getSimpleLevel(getYear(), isClan()).compareTo(getTechLevel()) <= 0;
-                    */
         }
+        // It's available in the year and we're not using tech progression, so just check the tech level.
         return tech.getStaticTechLevel().compareTo(getTechLevel()) <= 0;
     }
 

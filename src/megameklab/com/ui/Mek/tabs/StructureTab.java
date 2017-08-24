@@ -618,7 +618,8 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         }
     }
     
-    private void updateTechLevel() {
+    @Override
+    public void updateTechLevel() {
         removeAllListeners();
         switch(panBasicInfo.getTechLevel()) {
             case INTRO:
