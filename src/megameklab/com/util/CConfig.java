@@ -60,9 +60,12 @@ public class CConfig {
     public static final String CONFIG_EMPTY_FOREGROUND = "Empty-Foreground";
     public static final String CONFIG_EMPTY_BACKGROUND = "Empty-Background";
     
-    public static final String CONFIG_TECH_PROGRESSION = "techProgression";
-    public static final String CONFIG_TECH_EXTINCT = "techShowExtinct";
-    public static final String CONFIG_TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
+    public static final String TECH_PROGRESSION = "techProgression";
+    public static final String TECH_USE_YEAR = "techUseYear";
+    public static final String TECH_YEAR = "techYear";
+    public static final String TECH_SHOW_FACTION = "techShowFaction";
+    public static final String TECH_EXTINCT = "techShowExtinct";
+    public static final String TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
     
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
 

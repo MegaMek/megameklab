@@ -85,15 +85,15 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     private String[] techBaseNames;
     private TechAdvancement baseTA;
     
-    private JTextField txtChassis = new JTextField(5);
-    private JTextField txtModel = new JTextField(5);
-    private IntRangeTextField txtIntroYear = new IntRangeTextField(3);
-    private JLabel lblTechYear = createLabel("", labelSize);
-    private IntRangeTextField txtTechYear = new IntRangeTextField(3);
-    private JTextField txtSource = new JTextField(3);
-    private CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
-    private JComboBox<SimpleTechLevel> cbTechLevel = new JComboBox<>();
-    private IntRangeTextField txtManualBV = new IntRangeTextField(3);
+    private final JTextField txtChassis = new JTextField(5);
+    private final JTextField txtModel = new JTextField(5);
+    private final IntRangeTextField txtYear = new IntRangeTextField(3);
+    private final JComboBox<String> cbFaction = new JComboBox<>();
+    private final JLabel lblFaction = createLabel("", labelSize);
+    private final JTextField txtSource = new JTextField(3);
+    private final CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
+    private final JComboBox<SimpleTechLevel> cbTechLevel = new JComboBox<>();
+    private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
     
     private int prevYear = 3145;
     private int prevBV = 0;
@@ -133,24 +133,23 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        add(createLabel(resourceMap.getString("BasicInfoView.txtIntroYear.text"), labelSize), gbc); //$NON-NLS-1$
+        add(createLabel(resourceMap.getString("BasicInfoView.txtYear.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 2;
-        add(txtIntroYear, gbc);
-        setFieldSize(txtIntroYear, controlSize);
-        txtIntroYear.setMaximum(9999);
-        txtIntroYear.addFocusListener(this);
+        add(txtYear, gbc);
+        setFieldSize(txtYear, controlSize);
+        txtYear.setMaximum(9999);
+        txtYear.addFocusListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
-        lblTechYear.setText(resourceMap.getString("BasicInfoView.txtTechYear.text")); //$NON-NLS-1$
-        add(lblTechYear, gbc);
+        lblFaction.setText(resourceMap.getString("BasicInfoView.cbFaction.text")); //$NON-NLS-1$
+        add(lblFaction, gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
-        add(txtTechYear, gbc);
-        setFieldSize(txtTechYear, controlSize);
-        txtTechYear.setMaximum(9999);
-        txtTechYear.addFocusListener(this);
+        add(cbFaction, gbc);
+        setFieldSize(cbFaction, controlSize);
+        cbFaction.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -189,45 +188,49 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         add(txtManualBV, gbc);
         txtManualBV.addFocusListener(this);
         
-        if (CConfig.getBooleanParam(CConfig.CONFIG_TECH_PROGRESSION)) {
-            lblTechYear.setVisible(true);
-            txtTechYear.setVisible(true);
+        if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
+            lblFaction.setVisible(true);
+            cbFaction.setVisible(true);
         } else {
-            lblTechYear.setVisible(false);
-            txtTechYear.setVisible(false);
+            lblFaction.setVisible(false);
+            cbFaction.setVisible(false);
         }
     }
 
     public void setFromEntity(Entity en) {
+        boolean useTP = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         baseTA = en.getConstructionTechAdvancement();
-        txtIntroYear.setMinimum(baseTA.getIntroductionDate());
+        txtYear.setMinimum(baseTA.getIntroductionDate());
         refreshTechBase();
         setChassis(en.getChassis());
         setModel(en.getModel());
-        setIntroYear(en.getYear());
-        setTechYear(Math.max(en.getYear(), getTechYear()));
+        setYear(en.getYear());
         setSource(en.getSource());
         setTechBase(en.isClan(), en.isMixedTech());
-        setTechLevel(SimpleTechLevel.max(en.getStaticTechLevel(),
-                SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
+        if (useTP) {
+            setTechLevel(en.getSimpleLevel(getTechYear()));
+        } else {
+            setTechLevel(SimpleTechLevel.max(en.getStaticTechLevel(),
+                    SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
+        }
         if (en.getManualBV() >= 0) {
             setManualBV(en.getManualBV());
         }
 
-        if (CConfig.getBooleanParam(CConfig.CONFIG_TECH_PROGRESSION)) {
-            lblTechYear.setVisible(true);
-            txtTechYear.setVisible(true);
+        if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
+            lblFaction.setVisible(true);
+            cbFaction.setVisible(true);
         } else {
-            lblTechYear.setVisible(false);
-            txtTechYear.setVisible(false);
+            lblFaction.setVisible(false);
+            cbFaction.setVisible(false);
         }
     }
     
     public void setAsCustomization() {
         txtChassis.setEditable(false);
         txtChassis.setEnabled(false);
-        txtIntroYear.setEditable(false);
-        txtIntroYear.setEnabled(false);
+        txtYear.setEditable(false);
+        txtYear.setEnabled(false);
     }
     
     public String getChassis() {
@@ -248,23 +251,22 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
 
     @Override
     public int getIntroYear() {
-        return txtIntroYear.getIntVal();
+        return txtYear.getIntVal();
     }
     
-    public void setIntroYear(int year) {
-        txtIntroYear.setIntVal(year);
+    public void setYear(int year) {
+        txtYear.setIntVal(year);
         refreshTechBase();
     }
 
     @Override
     public int getTechYear() {
-        return txtIntroYear.getIntVal();
+        if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
+            return Math.max(getIntroYear(), CConfig.getIntParam(CConfig.TECH_YEAR));
+        }
+        return getIntroYear();
     }
     
-    public void setTechYear(int year) {
-        txtTechYear.setIntVal(year);
-    }
-
     public String getSource() {
         return txtSource.getText();
     }
@@ -374,7 +376,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     
     @Override
     public void focusGained(FocusEvent e) {
-        if (e.getSource().equals(txtIntroYear)) {
+        if (e.getSource().equals(txtYear)) {
             prevYear = getIntroYear();
         } else if (e.getSource().equals(txtManualBV)) {
             prevBV = getManualBV();
@@ -387,16 +389,16 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
             listeners.forEach(l -> l.chassisChanged(getChassis()));
         } else if (e.getSource() == txtModel) {
             listeners.forEach(l -> l.modelChanged(getModel()));
-        } else if (e.getSource() == txtIntroYear) {
+        } else if (e.getSource() == txtYear) {
             try {
                 int year = Math.max(getIntroYear(), baseTA.getIntroductionDate(isClan()));
                 listeners.forEach(l -> l.yearChanged(year));
                 prevYear = year;
             } catch (NumberFormatException ex) {
             } finally {
-                setIntroYear(prevYear);
+                setYear(prevYear);
             }
-        } else if (e.getSource() == txtIntroYear) {
+        } else if (e.getSource() == txtYear) {
             listeners.forEach(l -> l.updateTechLevel());
         } else if (e.getSource() == txtSource) {
             listeners.forEach(l -> l.sourceChanged(getSource()));

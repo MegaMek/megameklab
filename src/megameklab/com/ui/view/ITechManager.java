@@ -35,12 +35,12 @@ public interface ITechManager {
     default boolean isLegal(ITechnology tech) {
         // Unofficial tech has the option to ignore year availability
         if ((getTechLevel() == SimpleTechLevel.UNOFFICIAL)
-                && CConfig.getBooleanParam(CConfig.CONFIG_TECH_UNOFFICAL_NO_YEAR)) {
+                && CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR)) {
             return isMixedTech() || (tech.getTechBase() == ITechnology.TECH_BASE_ALL)
                     || (isClan() == tech.isClan());
         }
-        boolean useTP = CConfig.getBooleanParam(CConfig.CONFIG_TECH_PROGRESSION);
-        boolean showExtinct = CConfig.getBooleanParam(CConfig.CONFIG_TECH_EXTINCT);
+        boolean useTP = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
+        boolean showExtinct = CConfig.getBooleanParam(CConfig.TECH_EXTINCT);
         if (isMixedTech()) {
             if (!tech.isAvailableIn(getTechYear())
                     && (!showExtinct || (tech.getIntroductionDate() < getIntroYear()))) {
