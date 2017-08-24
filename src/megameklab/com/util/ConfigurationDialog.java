@@ -14,6 +14,8 @@ package megameklab.com.util;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -30,7 +32,9 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
 
+import megamek.common.ITechnology;
 import megamek.common.util.EncodeControl;
+import megameklab.com.ui.util.IntRangeTextField;
 
 public final class ConfigurationDialog extends JDialog implements ActionListener {
 
@@ -49,9 +53,12 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
 
     private final JTabbedPane panMain = new JTabbedPane();
     private final JPanel panColors = new JPanel(new SpringLayout());
-    private final JPanel panTech = new JPanel(new SpringLayout());
+    private final JPanel panTech = new JPanel(new GridBagLayout());
     
     private final JCheckBox chkTechProgression = new JCheckBox();
+    private final JCheckBox chkTechUseYear = new JCheckBox();
+    private final IntRangeTextField txtTechYear = new IntRangeTextField();
+    private final JCheckBox chkTechShowFaction = new JCheckBox();
     private final JCheckBox chkShowExtinct = new JCheckBox();
     private final JCheckBox chkUnofficialIgnoreYear = new JCheckBox();
     
@@ -117,19 +124,59 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     }
     
     private void loadTechPanel(ResourceBundle resourceMap) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        chkTechProgression.addActionListener(e -> {
+            chkTechUseYear.setEnabled(chkTechProgression.isSelected());
+            txtTechYear.setEnabled(chkTechProgression.isSelected()
+                    && chkTechUseYear.isSelected());
+        });
         chkTechProgression.setText(resourceMap.getString("ConfigurationDialog.chkTechProgression.text")); //$NON-NLS-1$
         chkTechProgression.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechProgression.tooltip")); //$NON-NLS-1$
-        chkTechProgression.setSelected(CConfig.getBooleanParam(CConfig.CONFIG_TECH_PROGRESSION));
-        panTech.add(chkTechProgression);
+        chkTechProgression.setSelected(CConfig.getBooleanParam(CConfig.TECH_PROGRESSION));
+        panTech.add(chkTechProgression, gbc);
+        
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        chkTechUseYear.addActionListener(e -> {
+            txtTechYear.setEnabled(chkTechUseYear.isSelected());
+        });
+        chkTechUseYear.setText(resourceMap.getString("ConfigurationDialog.chkTechYear.text")); //$NON-NLS-1$
+        chkTechUseYear.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechYear.tooltip")); //$NON-NLS-1$
+        chkTechUseYear.setSelected(CConfig.getBooleanParam(CConfig.TECH_USE_YEAR));
+        panTech.add(chkTechUseYear, gbc);
+        gbc.gridx = 1;
+        txtTechYear.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechYear.tooltip")); //$NON-NLS-1$
+        txtTechYear.setMinimum(ITechnology.DATE_PS);
+        txtTechYear.setMaximum(9999);
+        String year = CConfig.getParam(CConfig.TECH_YEAR);
+        if (year.length() == 0) {
+            year = "3145";
+        }
+        txtTechYear.setText(year);
+        panTech.add(txtTechYear, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        chkTechShowFaction.setText(resourceMap.getString("ConfigurationDialog.chkTechShowFaction.text")); //$NON-NLS-1$
+        chkTechShowFaction.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechShowFaction.tooltip")); //$NON-NLS-1$
+        chkTechShowFaction.setSelected(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
+        panTech.add(chkTechShowFaction, gbc);
+        
+        gbc.gridy++;
         chkShowExtinct.setText(resourceMap.getString("ConfigurationDialog.chkShowExtinct.text")); //$NON-NLS-1$
         chkShowExtinct.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowExtinct.tooltip")); //$NON-NLS-1$
-        chkShowExtinct.setSelected(CConfig.getBooleanParam(CConfig.CONFIG_TECH_EXTINCT));
-        panTech.add(chkShowExtinct);
+        chkShowExtinct.setSelected(CConfig.getBooleanParam(CConfig.TECH_EXTINCT));
+        panTech.add(chkShowExtinct, gbc);
+        
+        gbc.gridy++;
         chkUnofficialIgnoreYear.setText(resourceMap.getString("ConfigurationDialog.chkUnofficialIgnoreYear.text")); //$NON-NLS-1$
         chkUnofficialIgnoreYear.setToolTipText(resourceMap.getString("ConfigurationDialog.chkUnofficialIgnoreYear.tooltip")); //$NON-NLS-1$
-        chkUnofficialIgnoreYear.setSelected(CConfig.getBooleanParam(CConfig.CONFIG_TECH_UNOFFICAL_NO_YEAR));
-        panTech.add(chkUnofficialIgnoreYear);
-        SpringLayoutHelper.setupSpringGrid(panTech, 1);
+        chkUnofficialIgnoreYear.setSelected(CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR));
+        panTech.add(chkUnofficialIgnoreYear, gbc);
     }
 
     private JLabel findLabel(String name) {
@@ -179,9 +226,12 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     
     private void saveConfig() {
         colorMap.forEach((k,v) -> CConfig.setParam(k, v));
-        CConfig.setParam(CConfig.CONFIG_TECH_PROGRESSION, String.valueOf(chkTechProgression.isSelected()));
-        CConfig.setParam(CConfig.CONFIG_TECH_EXTINCT, String.valueOf(chkShowExtinct.isSelected()));
-        CConfig.setParam(CConfig.CONFIG_TECH_UNOFFICAL_NO_YEAR, String.valueOf(this.chkUnofficialIgnoreYear.isSelected()));
+        CConfig.setParam(CConfig.TECH_PROGRESSION, String.valueOf(chkTechProgression.isSelected()));
+        CConfig.setParam(CConfig.TECH_USE_YEAR, String.valueOf(chkTechUseYear.isSelected()));
+        CConfig.setParam(CConfig.TECH_YEAR, String.valueOf(txtTechYear.getIntVal()));
+        CConfig.setParam(CConfig.TECH_SHOW_FACTION, String.valueOf(chkTechShowFaction.isSelected()));
+        CConfig.setParam(CConfig.TECH_EXTINCT, String.valueOf(chkShowExtinct.isSelected()));
+        CConfig.setParam(CConfig.TECH_UNOFFICAL_NO_YEAR, String.valueOf(chkUnofficialIgnoreYear.isSelected()));
         CConfig.saveConfig();
     }
 

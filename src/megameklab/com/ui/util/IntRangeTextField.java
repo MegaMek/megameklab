@@ -42,9 +42,8 @@ public class IntRangeTextField extends JFormattedTextField {
     private Integer minimum = null;
     private Integer maximum = null;
 
-    public IntRangeTextField(int columns) {
+    public IntRangeTextField() {
         super();
-        setColumns(columns);
         NumberFormat format = NumberFormat.getIntegerInstance();
         format.setGroupingUsed(false);
         setFormatter(new NumberFormatter(format));
@@ -52,6 +51,11 @@ public class IntRangeTextField extends JFormattedTextField {
         if (getDocument() instanceof AbstractDocument) {
             ((AbstractDocument)getDocument()).setDocumentFilter(docFilter);
         }
+    }
+
+    public IntRangeTextField(int columns) {
+        this();
+        setColumns(columns);
     }
     
     public Integer getMinimum() {
