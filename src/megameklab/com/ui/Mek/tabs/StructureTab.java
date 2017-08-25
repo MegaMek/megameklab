@@ -613,9 +613,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
 
     @Override
     public void techLevelChanged(SimpleTechLevel techLevel) {
-        if (techLevel != getMech().getStaticTechLevel()) {
-            updateTechLevel();
-        }
+        updateTechLevel();
     }
     
     @Override
@@ -1001,6 +999,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         refresh.refreshStatus();
         refresh.refreshPreview();
         panMovement.setFromEntity(getMech());
+        panHeat.setFromMech(getMech());
         panChassis.refresh();
     }
 

@@ -28,6 +28,7 @@ public interface ITechManager {
     
     int getIntroYear();
     int getTechYear();
+    int getFaction();
     boolean isClan();
     boolean isMixedTech();
     SimpleTechLevel getTechLevel();
@@ -41,28 +42,46 @@ public interface ITechManager {
         }
         boolean useTP = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         boolean showExtinct = CConfig.getBooleanParam(CConfig.TECH_EXTINCT);
+
+        int faction = getFaction();
+        boolean availableIS = tech.isAvailableIn(getIntroYear(), false, faction);
+        boolean availableClan = tech.isAvailableIn(getIntroYear(), true, faction);
+        boolean extinctIS = tech.isExtinct(getIntroYear(), false, faction);
+        boolean extinctClan = tech.isExtinct(getIntroYear(), true, faction);
+        // A little bit of hard-coded universe detail
+        if ((faction == ITechnology.F_CS)
+                && extinctIS && (tech.getReintroductionDate(false) != ITechnology.DATE_NONE)) {
+            availableIS = true;
+            extinctIS = false;
+            faction = ITechnology.F_TH;
+        } else if (isClan() && !availableClan && tech.isAvailableIn(2787, false, ITechnology.F_TH)) {
+            if (!extinctClan) {
+                availableClan = true;
+                faction = ITechnology.F_TH;
+            }
+        }
         if (isMixedTech()) {
-            if (!tech.isAvailableIn(getTechYear())
-                    && (!showExtinct || (tech.getIntroductionDate() < getIntroYear()))) {
+            if (!availableIS && !availableClan
+                    && !(showExtinct && (extinctIS || extinctClan))) {
                 return false;
             } else if (useTP) {
                 // If using tech progression with mixed tech, we pass if either IS or Clan meets the required level
-                return tech.getSimpleLevel(getTechYear(), true).compareTo(getTechLevel()) <= 0
-                        || tech.getSimpleLevel(getTechYear(), false).compareTo(getTechLevel()) <= 0;
+                return tech.getSimpleLevel(getTechYear(), true, faction).compareTo(getTechLevel()) <= 0
+                        || tech.getSimpleLevel(getTechYear(), false, faction).compareTo(getTechLevel()) <= 0;
             }
         } else {
             if (tech.getTechBase() != ITechnology.TECH_BASE_ALL
                     && isClan() != tech.isClan()) {
                 return false;
-            } else if (!tech.isAvailableIn(getIntroYear(), isClan())
-                    && (!showExtinct || (tech.getIntroductionDate(isClan()) < getIntroYear()))) {
+            } else if (isClan() && !availableClan && !(showExtinct && extinctClan)) {
+                return false;
+            } else if (!isClan() && !availableIS && !(showExtinct && extinctIS)) {
                 return false;
             } else if (useTP) {
-                return tech.getSimpleLevel(getTechYear(), isClan()).compareTo(getTechLevel()) <= 0;
+                return tech.getSimpleLevel(getTechYear(), isClan(), faction).compareTo(getTechLevel()) <= 0;
             }
         }
         // It's available in the year and we're not using tech progression, so just check the tech level.
         return tech.getStaticTechLevel().compareTo(getTechLevel()) <= 0;
     }
-
 }
