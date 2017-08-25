@@ -32,6 +32,7 @@ import megamek.common.Entity;
 import megamek.common.ITechnology;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
+import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.FactionComboBox;
@@ -212,7 +213,14 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         cbTechBase.addActionListener(this);
         cbTechLevel.removeActionListener(this);
         if (useTP) {
-            setTechLevel(en.getSimpleLevel(getTechYear()));
+            // Default to minimum of Standard unless the unit is explicitly set to intro
+            SimpleTechLevel lvl = en.getSimpleLevel(getTechYear());
+            if ((lvl == SimpleTechLevel.INTRO)
+                    && (en.getTechLevel() != TechConstants.T_INTRO_BOXSET)) {
+                setTechLevel(SimpleTechLevel.STANDARD);
+            } else {
+                setTechLevel(lvl);
+            }
         } else {
             setTechLevel(SimpleTechLevel.max(en.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
