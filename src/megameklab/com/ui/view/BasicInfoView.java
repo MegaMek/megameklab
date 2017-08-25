@@ -34,6 +34,7 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
+import megameklab.com.ui.util.FactionComboBox;
 import megameklab.com.ui.util.IntRangeTextField;
 import megameklab.com.util.CConfig;
 
@@ -88,7 +89,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     private final JTextField txtChassis = new JTextField(5);
     private final JTextField txtModel = new JTextField(5);
     private final IntRangeTextField txtYear = new IntRangeTextField(3);
-    private final JComboBox<String> cbFaction = new JComboBox<>();
+    private final FactionComboBox cbFaction = new FactionComboBox();
     private final JLabel lblFaction = createLabel("", labelSize);
     private final JTextField txtSource = new JTextField(3);
     private final CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
@@ -206,18 +207,25 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         setModel(en.getModel());
         setYear(en.getYear());
         setSource(en.getSource());
+        cbTechBase.removeActionListener(this);
         setTechBase(en.isClan(), en.isMixedTech());
+        cbTechBase.addActionListener(this);
+        cbTechLevel.removeActionListener(this);
         if (useTP) {
             setTechLevel(en.getSimpleLevel(getTechYear()));
         } else {
             setTechLevel(SimpleTechLevel.max(en.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
         }
+        cbTechLevel.addActionListener(this);
         if (en.getManualBV() >= 0) {
             setManualBV(en.getManualBV());
         }
 
         if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
+            cbFaction.removeActionListener(this);
+            cbFaction.refresh(getIntroYear(), isClan());
+            cbFaction.addActionListener(this);
             lblFaction.setVisible(true);
             cbFaction.setVisible(true);
         } else {
@@ -257,6 +265,13 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     public void setYear(int year) {
         txtYear.setIntVal(year);
         refreshTechBase();
+    }
+    
+    public int getFaction() {
+        if (cbFaction.getSelectedIndex() < 0) {
+            return -1;
+        }
+        return (Integer)cbFaction.getSelectedItem();
     }
 
     @Override
@@ -372,6 +387,17 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         if (cbTechLevel.getSelectedItem() == null || cbTechLevel.getSelectedItem() != prev) {
             cbTechLevel.setSelectedIndex(0);
         }
+        
+        if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
+            cbFaction.removeActionListener(this);
+            Integer prevFaction = (Integer)cbFaction.getSelectedItem();
+            cbFaction.refresh(getIntroYear(), isClan());
+            cbFaction.setSelectedItem(prevFaction);
+            cbFaction.addActionListener(this);
+            if (cbFaction.getSelectedIndex() < 0) {
+                cbFaction.setSelectedIndex(0);
+            }
+        }
     }
     
     @Override
@@ -415,15 +441,13 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == cbTechBase) {
-            cbTechBase.removeActionListener(this);
+        if (e.getSource() == cbFaction) {
+            listeners.forEach(l -> l.updateTechLevel());
+        } else if (e.getSource() == cbTechBase) {
             listeners.forEach(l -> l.techBaseChanged(isClan(), isMixedTech()));
             refreshTechLevel();
-            cbTechBase.addActionListener(this);
         } else if (e.getSource() == cbTechLevel) {
-            cbTechLevel.removeActionListener(this);
             listeners.forEach(l -> l.techLevelChanged(getTechLevel()));
-            cbTechLevel.addActionListener(this);
         }
         listeners.forEach(l -> l.refreshSummary());
     }
