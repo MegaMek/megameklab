@@ -56,6 +56,7 @@ import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.HeatSinkView;
+import megameklab.com.ui.view.ITechManager;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MekChassisView;
 import megameklab.com.ui.view.MovementView;
@@ -175,6 +176,10 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         box.setPreferredSize(maxSize);
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
+    }
+    
+    public ITechManager getTechManager() {
+        return panBasicInfo;
     }
 
     private void resetSystemCrits() {
@@ -664,6 +669,8 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panArmor.refresh();
         panMovement.refresh();
         armor.resetArmorPoints();
+        //TODO: fix circular refresh hell
+//        refresh.refreshEquipment();
         UnitUtil.checkEquipmentByTechLevel(getMech());
         addAllListeners();
     }
