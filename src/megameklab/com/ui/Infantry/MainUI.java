@@ -34,6 +34,7 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Infantry.tabs.PreviewTab;
 import megameklab.com.ui.Infantry.tabs.StructureTab;
+import megameklab.com.ui.view.ITechManager;
 import megameklab.com.util.MenuBarCreator;
 
 public class MainUI extends MegaMekLabMainUI {
@@ -170,6 +171,12 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         structureTab.refreshEquipmentTable();
+    }
+
+    @Override
+    public ITechManager getTechManager() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

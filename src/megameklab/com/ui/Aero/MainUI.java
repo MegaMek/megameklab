@@ -36,6 +36,7 @@ import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.Aero.tabs.PreviewTab;
 import megameklab.com.ui.Aero.tabs.StructureTab;
+import megameklab.com.ui.view.ITechManager;
 import megameklab.com.util.MenuBarCreator;
 
 public class MainUI extends MegaMekLabMainUI {
@@ -219,6 +220,12 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
+    }
+
+    @Override
+    public ITechManager getTechManager() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

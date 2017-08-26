@@ -454,10 +454,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 }
 
                 if (UnitUtil.isArmorable(cs) && !(getUnit() instanceof BattleArmor)
-                        && ((UnitUtil.getUnitTechType(getUnit()) == 
-                                UnitUtil.TECH_EXPERIMENTAL) 
-                            || (UnitUtil.getUnitTechType(getUnit()) == 
-                                UnitUtil.TECH_UNOFFICAL))) {
+                        && eSource.getTechManager().isLegal(Entity.getArmoredComponentTechAdvancement())) {
                     popup.addSeparator();
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");

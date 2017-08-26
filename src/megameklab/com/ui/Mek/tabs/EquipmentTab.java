@@ -66,7 +66,6 @@ import megamek.common.QuadVee;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.view.ITechManager;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.ITab;
@@ -116,8 +115,6 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String ADD_COMMAND = "ADD";
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
-    
-    private ITechManager techManager;
 
     public static String getTypeName(int type) {
         switch(type) {
@@ -142,9 +139,8 @@ public class EquipmentTab extends ITab implements ActionListener {
         }
     }
 
-    public EquipmentTab(EntitySource eSource, ITechManager techManager) {
+    public EquipmentTab(EntitySource eSource) {
         super(eSource);
-        this.techManager = techManager;
 
         equipmentList = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.WEAPONTABLE);
         equipmentTable.setModel(equipmentList);
@@ -583,7 +579,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
                         || ((nType == T_PHYSICAL) && UnitUtil.isPhysicalWeapon(etype))
                         || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(mech, atype))) {
-                    if (!techManager.isLegal(etype)) {
+                    if (eSource.getTechManager().isLegal(etype)) {
                         return false;
                     }
                     if (txtFilter.getText().length() > 0) {
