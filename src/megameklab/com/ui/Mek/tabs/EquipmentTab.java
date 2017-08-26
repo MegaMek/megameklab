@@ -579,7 +579,7 @@ public class EquipmentTab extends ITab implements ActionListener {
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
                         || ((nType == T_PHYSICAL) && UnitUtil.isPhysicalWeapon(etype))
                         || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(mech, atype))) {
-                    if (eSource.getTechManager().isLegal(etype)) {
+                    if (!eSource.getTechManager().isLegal(etype)) {
                         return false;
                     }
                     if (txtFilter.getText().length() > 0) {
