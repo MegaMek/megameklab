@@ -44,6 +44,9 @@ public class FactionComboBox extends CustomComboBox<Integer> {
     public void refresh(int year, boolean clan) {
         displayNames.clear();
         for (int i = 0; i < ITechnology.MM_FACTION_CODES.length; i++) {
+            if (i == ITechnology.F_TA) {// IO data separates TA and TH; only include one
+                continue;
+            }
             final FactionRecord fRec = RATGenerator.getInstance().getFaction(ITechnology.MM_FACTION_CODES[i]);
             if ((fRec.isClan() == clan) && (fRec.isActiveInYear(year))) {
                 displayNames.put(i, fRec.getName(year));
