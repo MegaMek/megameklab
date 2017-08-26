@@ -432,6 +432,10 @@ public class EquipmentTab extends ITab implements ActionListener {
         addAllListeners();
         fireTableRefresh();
     }
+    
+    public void refreshTable() {
+        filterEquipment();
+    }
 
     private void removeAllListeners() {
         addButton.removeActionListener(this);

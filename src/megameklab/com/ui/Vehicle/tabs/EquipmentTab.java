@@ -799,4 +799,8 @@ public class EquipmentTab extends ITab implements ActionListener {
             return ((Comparable<Integer>)l0).compareTo(l1);
         }
     }
+
+    public void refreshTable() {
+        filterEquipment();
+    }
 }

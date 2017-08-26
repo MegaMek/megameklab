@@ -1033,4 +1033,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener {
         era.setEnabled(false);
     }
 
+    public void refreshEquipmentTable() {
+        weaponView.refresh();
+    }
+
 }
