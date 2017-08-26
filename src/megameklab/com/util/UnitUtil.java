@@ -118,6 +118,7 @@ import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
 import megameklab.com.MegaMekLab;
+import megameklab.com.ui.view.ITechManager;
 
 public class UnitUtil {
 
@@ -3572,6 +3573,10 @@ public class UnitUtil {
         return sinks;
     }
 
+    /**
+     * @deprecated Use {@link checkEquipmentByTechLevel(Entity,ITechManager)} instead
+     */
+    @Deprecated
     public static void checkEquipmentByTechLevel(Entity unit) {
         Vector<Mounted> toRemove = new Vector<Mounted>();
         for (Mounted m : unit.getEquipment()) {
@@ -3605,6 +3610,46 @@ public class UnitUtil {
                 UnitUtil.replaceMainWeapon((Infantry) unit, null, true);
             }
         }
+    }
+
+    public static boolean checkEquipmentByTechLevel(Entity unit, ITechManager techManager) {
+        Vector<Mounted> toRemove = new Vector<Mounted>();
+        for (Mounted m : unit.getEquipment()) {
+            EquipmentType etype = m.getType();
+            if (UnitUtil.isArmorOrStructure(etype)
+                    || UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
+                continue;
+            }
+            if (etype.hasFlag(MiscType.F_TSM)
+                    || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                    || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+                    || etype.hasFlag(MiscType.F_SCM)) {
+                continue;
+            }
+            if (!techManager.isLegal(etype)) {
+                toRemove.add(m);
+            }
+        }
+        boolean dirty = toRemove.size() > 0;
+        for (Mounted m : toRemove) {
+            UnitUtil.removeMounted(unit, m);
+        }
+        if (unit instanceof Infantry) {
+            Infantry pbi = (Infantry) unit;
+            if ((null != pbi.getPrimaryWeapon())
+                    && techManager.isLegal(pbi.getPrimaryWeapon())) {
+                dirty = true;
+                UnitUtil.replaceMainWeapon((Infantry) unit,
+                        (InfantryWeapon) EquipmentType
+                                .get("Infantry Auto Rifle"), false);
+            }
+            if ((null != pbi.getSecondaryWeapon())
+                    && !techManager.isLegal(pbi.getSecondaryWeapon())) {
+                dirty = true;
+                UnitUtil.replaceMainWeapon((Infantry) unit, null, true);
+            }
+        }
+        return dirty;
     }
 
     public static void replaceMainWeapon(Infantry unit, InfantryWeapon weapon,
