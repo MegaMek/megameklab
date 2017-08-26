@@ -624,25 +624,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     @Override
     public void updateTechLevel() {
         removeAllListeners();
-        switch(panBasicInfo.getTechLevel()) {
-            case INTRO:
-                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_TW : TechConstants.T_INTRO_BOXSET);
-                break;
-            case STANDARD:
-                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_TW : TechConstants.T_IS_TW_NON_BOX);
-                break;
-            case ADVANCED:
-                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_ADVANCED : TechConstants.T_IS_ADVANCED);
-                break;
-            case EXPERIMENTAL:
-                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_EXPERIMENTAL : TechConstants.T_IS_EXPERIMENTAL);
-                break;
-            case UNOFFICIAL:
-            default:
-                getMech().setTechLevel(panBasicInfo.isClan()? TechConstants.T_CLAN_UNOFFICIAL: TechConstants.T_IS_UNOFFICIAL);
-                break;
-        }
-
+        getMech().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.isClan()));
         if (!getMech().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }
@@ -669,8 +651,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panArmor.refresh();
         panMovement.refresh();
         armor.resetArmorPoints();
-        //TODO: fix circular refresh hell
-//        refresh.refreshEquipment();
+        refresh.refreshEquipmentTable();
         UnitUtil.checkEquipmentByTechLevel(getMech());
         addAllListeners();
     }

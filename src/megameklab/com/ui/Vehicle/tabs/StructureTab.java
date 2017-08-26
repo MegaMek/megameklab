@@ -1815,4 +1815,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         }
     }
 
+    public void refreshSummary() {
+        panSummary.refresh();
+    }
+
 }

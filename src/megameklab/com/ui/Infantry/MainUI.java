@@ -163,4 +163,13 @@ public class MainUI extends MegaMekLabMainUI {
         previewTab.refresh();
     }
 
+    @Override
+    public void refreshSummary() {
+    }
+
+    @Override
+    public void refreshEquipmentTable() {
+        structureTab.refreshEquipmentTable();
+    }
+
 }

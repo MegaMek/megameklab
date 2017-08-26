@@ -32,7 +32,6 @@ import megamek.common.Entity;
 import megamek.common.ITechnology;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
-import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.FactionComboBox;
@@ -212,34 +211,15 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         setTechBase(en.isClan(), en.isMixedTech());
         cbTechBase.addActionListener(this);
         cbTechLevel.removeActionListener(this);
-        if (useTP) {
-            // Default to minimum of Standard unless the unit is explicitly set to intro
-            SimpleTechLevel lvl = en.getSimpleLevel(getTechYear());
-            if ((lvl == SimpleTechLevel.INTRO)
-                    && (en.getTechLevel() != TechConstants.T_INTRO_BOXSET)) {
-                setTechLevel(SimpleTechLevel.STANDARD);
-            } else {
-                setTechLevel(lvl);
-            }
-        } else {
-            setTechLevel(SimpleTechLevel.max(en.getStaticTechLevel(),
-                    SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
-        }
+        SimpleTechLevel lvl = useTP? en.getSimpleLevel(getTechYear()) : en.getStaticTechLevel();
+        setTechLevel(SimpleTechLevel.max(lvl,
+                SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
         cbTechLevel.addActionListener(this);
         if (en.getManualBV() >= 0) {
             setManualBV(en.getManualBV());
         }
-
-        if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
-            cbFaction.removeActionListener(this);
-            cbFaction.refresh(getIntroYear(), isClan());
-            cbFaction.addActionListener(this);
-            lblFaction.setVisible(true);
-            cbFaction.setVisible(true);
-        } else {
-            lblFaction.setVisible(false);
-            cbFaction.setVisible(false);
-        }
+        
+        refreshFaction();
     }
     
     public void setAsCustomization() {
@@ -336,6 +316,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
             item++;
         }
         cbTechBase.setSelectedItem(item);
+        refreshFaction();
     }
     
     public SimpleTechLevel getTechLevel() {
@@ -373,6 +354,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
             cbTechBase.setSelectedItem(0);
         }
         refreshTechLevel();
+        refreshFaction();
     }
     
     private void refreshTechLevel() {
@@ -395,6 +377,9 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         if (cbTechLevel.getSelectedItem() == null || cbTechLevel.getSelectedItem() != prev) {
             cbTechLevel.setSelectedIndex(0);
         }
+    }
+    
+    private void refreshFaction() {
         
         if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             cbFaction.removeActionListener(this);
@@ -405,6 +390,11 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
             if (cbFaction.getSelectedIndex() < 0) {
                 cbFaction.setSelectedIndex(0);
             }
+            lblFaction.setVisible(true);
+            cbFaction.setVisible(true);
+        } else {
+            lblFaction.setVisible(false);
+            cbFaction.setVisible(false);
         }
     }
     

@@ -46,8 +46,8 @@ public interface ITechManager {
         int faction = getFaction();
         boolean availableIS = tech.isAvailableIn(getIntroYear(), false, faction);
         boolean availableClan = tech.isAvailableIn(getIntroYear(), true, faction);
-        boolean extinctIS = tech.isExtinct(getIntroYear(), false, faction);
-        boolean extinctClan = tech.isExtinct(getIntroYear(), true, faction);
+        boolean extinctIS = tech.isExtinct(getIntroYear(), false);
+        boolean extinctClan = tech.isExtinct(getIntroYear(), true);
         // A little bit of hard-coded universe detail
         if ((faction == ITechnology.F_CS)
                 && extinctIS && (tech.getReintroductionDate(false) != ITechnology.DATE_NONE)) {

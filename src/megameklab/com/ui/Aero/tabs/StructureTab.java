@@ -1671,4 +1671,8 @@ public class StructureTab extends ITab implements ActionListener, KeyListener,
         structuralIntegrity.setValue(si);
     }
 
+    public void refreshSummary() {
+        panSummary.refresh();
+    }
+
 }
