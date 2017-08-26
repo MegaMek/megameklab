@@ -9,7 +9,7 @@
 	<property name="timestampfile" value="timestamp" />
 	<property name="megameklab" value="MegaMekLab.jar" />
 	<property name="jarmanifest" value="manifest.txt" />
-     <property name="splashdir" value="${basedir}/data/images/splash" />
+    <property name="splashdir" value="${basedir}/data/images/splash" />
 
 	<path id="project.classpath" >
 		<pathelement path="${build}" >
@@ -38,8 +38,13 @@
 	<target
 		depends="init"
 		description="Compile java sources into class files"
-		name="compile"
-	>
+		name="compile">
+		<copy todir="${build}">
+		  <fileset dir="${src}">
+		  	<include name="**/*.properties"/>
+		    <exclude name="**/*.java"/>
+		  </fileset>
+		</copy>
 		<javac
 			classpathref="project.classpath"
 			debug="true"
