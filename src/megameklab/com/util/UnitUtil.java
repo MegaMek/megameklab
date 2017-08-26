@@ -3614,7 +3614,14 @@ public class UnitUtil {
 
     public static boolean checkEquipmentByTechLevel(Entity unit, ITechManager techManager) {
         Vector<Mounted> toRemove = new Vector<Mounted>();
+        ITechnology acTA = Entity.getArmoredComponentTechAdvancement();
+        boolean dirty = false;
         for (Mounted m : unit.getEquipment()) {
+            if (m.isArmored() && !techManager.isLegal(acTA)) {
+                m.setArmored(false);
+                updateCritsArmoredStatus(unit, m);
+                dirty = true;
+            }
             EquipmentType etype = m.getType();
             if (UnitUtil.isArmorOrStructure(etype)
                     || UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
@@ -3630,7 +3637,7 @@ public class UnitUtil {
                 toRemove.add(m);
             }
         }
-        boolean dirty = toRemove.size() > 0;
+        dirty |= toRemove.size() > 0;
         for (Mounted m : toRemove) {
             UnitUtil.removeMounted(unit, m);
         }

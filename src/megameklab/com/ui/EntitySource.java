@@ -1,6 +1,7 @@
 package megameklab.com.ui;
 
 import megamek.common.Entity;
+import megameklab.com.ui.view.ITechManager;
 
 /**
  * In order to track when changes are made to the unit, we will have one
@@ -70,4 +71,9 @@ public interface EntitySource {
      *                      will be copied from the old unit.
      */
     void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit);
+    
+    /**
+     * Provides means to determine legality of any piece of tech.
+     */
+    ITechManager getTechManager();
 }

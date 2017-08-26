@@ -35,6 +35,7 @@ import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.ui.BattleArmor.tabs.EquipmentTab;
 import megameklab.com.ui.BattleArmor.tabs.StructureTab;
+import megameklab.com.ui.view.ITechManager;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
@@ -191,6 +192,12 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipTab.refreshTable();
+    }
+
+    @Override
+    public ITechManager getTechManager() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

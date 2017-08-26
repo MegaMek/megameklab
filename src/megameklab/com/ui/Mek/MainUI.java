@@ -41,6 +41,7 @@ import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
 import megameklab.com.ui.Mek.tabs.PreviewTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
+import megameklab.com.ui.view.ITechManager;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 
@@ -97,7 +98,7 @@ public class MainUI extends MegaMekLabMainUI {
         previewTab = new PreviewTab(this);
 
         statusbar = new StatusBar(this);
-        equipmentTab = new EquipmentTab(this, structureTab.getTechManager());
+        equipmentTab = new EquipmentTab(this);
         buildTab = new BuildTab(this, equipmentTab);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
@@ -276,6 +277,11 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();
+    }
+
+    @Override
+    public ITechManager getTechManager() {
+        return structureTab.getTechManager();
     }
 
 }
