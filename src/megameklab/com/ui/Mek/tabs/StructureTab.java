@@ -646,13 +646,16 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
                     this, String.format("Large engine not available at this tech level. Reducing MP to %d.", walk),
                     "Bad Engine", JOptionPane.ERROR_MESSAGE);
         }
+        if (UnitUtil.checkEquipmentByTechLevel(getMech(), panBasicInfo)) {
+            refresh.refreshEquipment();
+        } else {
+            refresh.refreshEquipmentTable();
+        }
         panChassis.refresh();
         panHeat.refresh();
         panArmor.refresh();
         panMovement.refresh();
         armor.resetArmorPoints();
-        refresh.refreshEquipmentTable();
-        UnitUtil.checkEquipmentByTechLevel(getMech());
         addAllListeners();
     }
 
