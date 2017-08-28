@@ -109,6 +109,10 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
             "JumpJet", "ExtendedJumpJetSystem", "ProtomechUMU"
     };
     
+    private static final String[] TANK_JUMP_TYPE = {
+            "VehicleJumpJet"
+    };
+    
     public MovementView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
@@ -215,7 +219,9 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         int minWalk = 1;
         int minJump = 0;
         int maxJump = en.getOriginalWalkMP();
-        if ((en instanceof Mech)
+        if (cbJumpType.getModel().getSize() == 0) { // No legal jump jet tech for this unit type
+            maxJump = 0;
+        } else if ((en instanceof Mech)
                 && (((Mech)en).isSuperHeavy()
                         || (!en.getEngine().isFusion() && (en.getEngine().getEngineType() != Engine.FISSION)))) {
             maxJump = 0;
@@ -296,6 +302,8 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
                 keys = industrial? INDUSTRIAL_JUMP_TYPE : MECH_JUMP_TYPE;
             } else if ((etype & Entity.ETYPE_PROTOMECH) != 0) {
                 keys = PROTOMECH_JUMP_TYPE;
+            } else if ((etype & Entity.ETYPE_TANK) != 0) {
+                keys = TANK_JUMP_TYPE;
             }
             if (null != keys) {
                 for (String key : keys) {
@@ -307,11 +315,16 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
             }
             cbJumpType.setSelectedItem(prev);
             cbJumpType.addActionListener(this);
-            if ((cbJumpType.getSelectedIndex() < 0) && (cbJumpType.getModel().getSize() > 0)) {
-                cbJumpType.setSelectedIndex(0);
+            if (cbJumpType.getModel().getSize() > 0) {
+                spnJump.setEnabled(true);
+                cbJumpType.setEnabled(true);
+                if ((cbJumpType.getSelectedIndex() < 0)) {
+                    cbJumpType.setSelectedIndex(0);
+                }
+            } else {
+                spnJump.setEnabled(false);
+                cbJumpType.setEnabled(false);
             }
-            cbJumpType.setEnabled(((etype & Entity.ETYPE_TANK) == 0)
-                    || techManager.isLegal(EquipmentType.get("VJJ")));
         }
     }
     
