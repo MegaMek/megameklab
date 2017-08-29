@@ -38,6 +38,7 @@ import megamek.common.EquipmentType;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.TechComboBox;
 
@@ -228,7 +229,10 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         } else if (improvedJJ) {
             maxJump = (int)Math.ceil(maxJump * 1.5);
         }
-        if ((etype & Entity.ETYPE_LAND_AIR_MECH) != 0) {
+        if ((etype & Entity.ETYPE_TANK) != 0) {
+            int minRating = 10 + Tank.getSuspensionFactor(en.getMovementMode(), en.getWeight());
+            minWalk = Math.max(1, (int)(minRating / en.getWeight()));
+        } else if ((etype & Entity.ETYPE_LAND_AIR_MECH) != 0) {
             minJump = 3;
             minWalk = improvedJJ? 2 : 3;
         }
