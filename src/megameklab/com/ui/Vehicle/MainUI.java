@@ -31,6 +31,7 @@ import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.MechSummaryCache;
+import megamek.common.SimpleTechLevel;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
@@ -114,58 +115,6 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
-        Tank tank = (Tank)getEntity();
-        if (structureTab.isVTOL() && (getEntity() instanceof VTOL)) {
-            if ((structureTab.isSuperHeavy() && !tank.isSuperHeavy())) {
-                tank.setWeight(31);
-            } else if (!structureTab.isSuperHeavy() && tank.isSuperHeavy()){
-                tank.setWeight(30);
-            }
-        } else if ((structureTab.isVTOL() && !(getEntity() instanceof VTOL))
-                || (!structureTab.isVTOL() && (getEntity() instanceof VTOL))) {
-            String model = getEntity().getModel();
-            String chassis = getEntity().getChassis();
-            String source = getEntity().getSource();
-            int year = getEntity().getYear();
-            int techLevel = getEntity().getTechLevel();
-            int mBV = getEntity().getManualBV();
-            createNewUnit(
-                    structureTab.isVTOL() ? Entity.ETYPE_VTOL
-                            : tank.isSuperHeavy() ? Entity.ETYPE_SUPER_HEAVY_TANK
-                                    : Entity.ETYPE_TANK);
-            getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD);
-            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
-            getEntity().setChassis(chassis);
-            getEntity().setModel(model);
-            getEntity().setSource(source);
-            getEntity().setYear(year);
-            getEntity().setTechLevel(techLevel);
-            getEntity().setManualBV(mBV);
-            reloadTabs();
-            repaint();
-            refreshAll();
-        } else if ((structureTab.isSuperHeavy() && !(tank.isSuperHeavy()))
-                || (!structureTab.isSuperHeavy() && (tank.isSuperHeavy()))) {
-            String model = getEntity().getModel();
-            String chassis = getEntity().getChassis();
-            String source = getEntity().getSource();
-            int year = getEntity().getYear();
-            int techLevel = getEntity().getTechLevel();
-            int mBV = getEntity().getManualBV();
-            createNewUnit(
-                    structureTab.isSuperHeavy() ? Entity.ETYPE_SUPER_HEAVY_TANK
-                            : Entity.ETYPE_TANK);
-            getEntity().setChassis(chassis);
-            getEntity().setModel(model);
-            getEntity().setSource(source);
-            getEntity().setYear(year);
-            getEntity().setTechLevel(techLevel);
-            getEntity().setManualBV(mBV);
-            reloadTabs();
-            repaint();
-            refreshAll();
-        }
-
         structureTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
@@ -241,28 +190,42 @@ public class MainUI extends MegaMekLabMainUI {
 
         Tank tank = (Tank) getEntity();
 
-        getEntity().setYear(3145);
+        tank.setYear(3145);
 
         tank.setEngine(new Engine(Math.max(10, (int) getEntity().getWeight()
                 - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE,
                 Engine.TANK_ENGINE));
-        getEntity().setOriginalWalkMP(1);
 
-        getEntity().autoSetInternal();
+        tank.autoSetInternal();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
-            getEntity().initializeArmor(0, loc);
+            tank.initializeArmor(0, loc);
         }
 
         getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD);
         getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
         getEntity().setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
         tank.setHasNoDualTurret(true);
-        if (getEntity() instanceof VTOL) {
+        if (Entity.ETYPE_VTOL == entityType) {
             tank.setHasNoTurret(true);
         }
-        getEntity().setChassis("New");
-        getEntity().setModel("Tank");
-
+        if (null == oldEntity) {
+            tank.setChassis("New");
+            tank.setModel("Tank");
+            tank.setYear(3145);
+        } else {
+            tank.setChassis(oldEntity.getChassis());
+            tank.setModel(oldEntity.getModel());
+            tank.setYear(Math.max(oldEntity.getYear(),
+                    tank.getConstructionTechAdvancement().getIntroductionDate()));
+            tank.setSource(oldEntity.getSource());
+            tank.setManualBV(oldEntity.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(tank.getStaticTechLevel(),
+                    SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
+            tank.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
+            tank.setMixedTech(oldEntity.isMixedTech());
+            tank.setMovementMode(oldEntity.getMovementMode());
+        }
+        tank.setOriginalWalkMP((tank.getEngine().getRating() + tank.getSuspensionFactor()) / (int)tank.getWeight());
     }
 
     @Override
@@ -282,8 +245,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public ITechManager getTechManager() {
-        // TODO Auto-generated method stub
-        return null;
+        return structureTab.getTechManager();
     }
 
 }
