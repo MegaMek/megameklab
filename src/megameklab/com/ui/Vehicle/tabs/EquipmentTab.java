@@ -541,9 +541,6 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (etype instanceof AmmoType) {
                     atype = (AmmoType)etype;
                 }
-                if (!UnitUtil.isLegal(tank, etype)) {
-                    return false;
-                }
                 if (UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
                     return false;
                 }
@@ -577,6 +574,9 @@ public class EquipmentTab extends ITab implements ActionListener {
                         || ((nType == T_ARTILLERY) && UnitUtil.isTankWeapon(etype, tank)
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
                         || (((nType == T_AMMO) & (atype != null)) && UnitUtil.canUseAmmo(tank, atype))) {
+                    if (!eSource.getTechManager().isLegal(etype)) {
+                        return false;
+                    }
                     if (txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());
