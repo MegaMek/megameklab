@@ -268,10 +268,10 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         if (!tank.hasNoDualTurret()) {
             cbTurrets.setSelectedItem(TURRET_DUAL);
         } else if (!tank.hasNoTurret()) {
-            cbTurrets.setSelectedIndex((getMovementMode() == EntityMovementMode.VTOL)?
+            cbTurrets.setSelectedItem((getMovementMode() == EntityMovementMode.VTOL)?
                     TURRET_CHIN : TURRET_SINGLE);
         } else {
-            cbTurrets.setSelectedIndex(TURRET_NONE);
+            cbTurrets.setSelectedItem(TURRET_NONE);
         }
         spnTurretWtModel.setValue(Math.max(0, tank.getBaseChassisTurretWeight()));
         spnTurret2WtModel.setValue(Math.max(0, tank.getBaseChassisTurret2Weight()));
