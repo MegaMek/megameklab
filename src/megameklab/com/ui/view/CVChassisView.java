@@ -227,6 +227,7 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridwidth = 1;
         setFieldSize(spnFixedTroop, spinnerSize);
         add(spnFixedTroop, gbc);
+        spnFixedTroop.addChangeListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 7;

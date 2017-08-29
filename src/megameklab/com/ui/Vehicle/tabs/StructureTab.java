@@ -562,7 +562,7 @@ public class StructureTab extends ITab implements
                 && !getTank().hasNoTurret()) {
             removeTurret(getTank().getLocTurret());
             getTank().setHasNoTurret(true);
-            getTank().setBaseChassisTurret2Weight(-1);
+            getTank().setBaseChassisTurretWeight(-1);
         }
     
         if (getTank().hasNoTurret() && (turretConfig != CVChassisView.TURRET_NONE)) {
@@ -575,15 +575,19 @@ public class StructureTab extends ITab implements
             getTank().autoSetInternal();
             initTurretArmor(getTank().getLocTurret2());
         }
+        panChassis.setFromEntity(getTank());
         armor.refresh();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
     public void turretBaseWtChanged(double turret1, double turret2) {
         getTank().setBaseChassisTurretWeight(turret1);
         getTank().setBaseChassisTurret2Weight(turret2);
+        panSummary.refresh();
+        refresh.refreshStatus();
     }
 
     @Override
@@ -599,11 +603,19 @@ public class StructureTab extends ITab implements
             }
         }
         panSummary.refresh();
+        refresh.refreshStatus();
     }
 
     @Override
     public void resetChassis() {
-        // TODO Auto-generated method stub
-        
+        UnitUtil.resetBaseChassis(getTank());
+        troopSpaceChanged(getTank().getTroopCarryingSpace()
+                - getTank().getPodMountedTroopCarryingSpace(), 0);
+        panChassis.setFromEntity(getTank());
+        panSummary.refresh();
+        refresh.refreshEquipment();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 }
