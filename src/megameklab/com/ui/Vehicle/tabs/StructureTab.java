@@ -535,6 +535,7 @@ public class StructureTab extends ITab implements
         panMovement.addListener(this);
         armor.refresh();
         panSummary.refresh();
+        refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
