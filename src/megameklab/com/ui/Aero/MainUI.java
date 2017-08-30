@@ -132,7 +132,7 @@ public class MainUI extends MegaMekLabMainUI {
         aero.setYear(3145);
         aero.setWeight(25);
         aero.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
-        if (isPrimitive || ((Aero)oldEntity).isPrimitive()) {
+        if (isPrimitive) {
             aero.setCockpitType(Aero.COCKPIT_PRIMITIVE);
             aero.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
         } else {
