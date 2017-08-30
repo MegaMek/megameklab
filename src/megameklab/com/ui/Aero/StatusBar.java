@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import megamek.common.AmmoType;
+import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
@@ -123,6 +124,7 @@ public class StatusBar extends ITab {
         } else {
             heatSink.setForeground(Color.black);
         }
+        heatSink.setVisible(getAero().getEntityType() == Entity.ETYPE_AERO);
 
         tons.setText("Tonnage: " + currentTonnage + "/" + tonnage);
         tons.setToolTipText("Current Tonnage/Max Tonnage");

@@ -20,8 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -30,11 +28,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
@@ -46,6 +40,7 @@ import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.views.ArmorView;
 import megameklab.com.ui.Aero.views.SummaryView;
+import megameklab.com.ui.view.AeroFuelView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.FighterChassisView;
 import megameklab.com.ui.view.HeatSinkView;
@@ -57,10 +52,10 @@ import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements 
-        ChangeListener,
         BasicInfoView.BasicInfoListener,
         FighterChassisView.ChassisListener,
         HeatSinkView.HeatSinkListener,
+        AeroFuelView.FuelListener,
         MovementView.MovementListener,
         MVFArmorView.ArmorListener {
 
@@ -74,20 +69,12 @@ public class StructureTab extends ITab implements
     private FighterChassisView panChassis;
     private MVFArmorView panArmor;
     private MovementView panMovement;
-    private JPanel panFuel;
+    private AeroFuelView panFuel;
     private HeatSinkView panHeat;
     private SummaryView panSummary;
     private ArmorView armorView;
 
     RefreshListener refresh = null;
-
-    // Fuel Panel
-    private JSpinner fuel;
-    private JLabel fuelPoints;
-    private JLabel turnsAtSafe;
-    private JLabel turnsAtMax;
-    //private JLabel burnDays1G;
-    //private JLabel burnDaysMax;
 
     public StructureTab(EntitySource eSource) {
         super(eSource);
@@ -95,7 +82,6 @@ public class StructureTab extends ITab implements
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
-        populateChoices(false);
         refresh();
     }
 
@@ -105,79 +91,11 @@ public class StructureTab extends ITab implements
         panChassis = new FighterChassisView(panInfo);
         panArmor = new MVFArmorView(panInfo);
         panMovement = new MovementView(panInfo);
-        panFuel = new JPanel(new GridBagLayout());
+        panFuel = new AeroFuelView();
         panHeat = new HeatSinkView(panInfo);
         panSummary = new SummaryView(eSource);
 
         GridBagConstraints gbc = new GridBagConstraints();
-
-        Dimension spinnerSize = new Dimension(55, 25);
-
-        fuel = new JSpinner(new SpinnerNumberModel(1.0, 0.0, null, 0.5));
-        ((JSpinner.DefaultEditor) fuel.getEditor()).setSize(spinnerSize);
-        ((JSpinner.DefaultEditor) fuel.getEditor())
-                .setMaximumSize(spinnerSize);
-        ((JSpinner.DefaultEditor) fuel.getEditor())
-                .setPreferredSize(spinnerSize);
-        ((JSpinner.DefaultEditor) fuel.getEditor())
-                .setMinimumSize(spinnerSize);
-
-        fuelPoints = new JLabel("0");
-        turnsAtSafe = new JLabel("0", JLabel.CENTER);
-        turnsAtMax = new JLabel("0", JLabel.CENTER);
-        //burnDays1G = new JLabel("0", JLabel.CENTER);
-        //burnDaysMax = new JLabel("0", JLabel.CENTER);
-
-        Dimension labelSize = new Dimension(110, 25);
-        gbc.insets = new Insets(0,0,0,0);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        panFuel.add(createLabel("Fuel Tons:", labelSize), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        panFuel.add(fuel, gbc);
-        gbc.gridx = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        panFuel.add(createLabel("Fuel Points:", labelSize), gbc);
-        gbc.gridx = 3;
-        fuelPoints.setSize(labelSize);
-        gbc.insets = new Insets(0,10,0,20);
-        panFuel.add(fuelPoints, gbc);
-        gbc.insets = new Insets(0,0,0,0);
-
-
-        JPanel fuelInfoPanel = new JPanel(new GridLayout(0,2));
-
-        JLabel lblTurnsAtSafe =
-                new JLabel("Turns at Safe", JLabel.CENTER);
-        JLabel lblTurnsAtMax =
-                new JLabel("Turns at Max", JLabel.CENTER);
-        fuelInfoPanel.add(lblTurnsAtSafe);
-        fuelInfoPanel.add(lblTurnsAtMax);
-
-        fuelInfoPanel.add(turnsAtSafe);
-        fuelInfoPanel.add(turnsAtMax);
-
-        /*
-        JLabel lbl1GBurnDays =
-                new JLabel("1G Burn Days", JLabel.CENTER);
-        JLabel lblMaxBurnDays =
-                new JLabel("Max Burn Days", JLabel.CENTER);
-        fuelInfoPanel.add(lbl1GBurnDays);
-        fuelInfoPanel.add(lblMaxBurnDays);
-
-        fuelInfoPanel.add(burnDays1G);
-        fuelInfoPanel.add(burnDaysMax);
-        */
-
-
-        gbc.gridx = 0;
-        gbc.gridwidth = 4;
-        gbc.gridy = 1;
-        gbc.fill = java.awt.GridBagConstraints.BOTH;
-        gbc.insets = new Insets(10,10,10,10);
-        panFuel.add(fuelInfoPanel, gbc);
 
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
@@ -200,7 +118,6 @@ public class StructureTab extends ITab implements
 
         rightPanel.add(panArmor);
         rightPanel.add(armorView);
-
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -235,17 +152,10 @@ public class StructureTab extends ITab implements
         panInfo.setFromEntity(getAero());
         panChassis.setFromEntity(getAero());
         panHeat.setFromAero(getAero());
+        panFuel.setFromEntity(getAero());
         panMovement.setFromEntity(getAero());
         panArmor.setFromEntity(getAero());
         
-        fuelPoints.setText(getAero().getFuel()+"");
-        turnsAtSafe.setText(String.format(
-                "%1$.2f", TestAero.calculateMaxTurnsAtSafe(getAero())));
-        turnsAtMax.setText(String.format(
-                "%1$.2f", TestAero.calculateMaxTurnsAtMax(getAero())));
-
-        fuel.setValue((double)getAero().getFuelTonnage());
-
         setAeroStructuralIntegrity();
 
         armorView.refresh();
@@ -307,19 +217,19 @@ public class StructureTab extends ITab implements
     }
 
     public void removeAllListeners() {
-        fuel.removeChangeListener(this);
         panInfo.removeListener(this);
         panChassis.removeListener(this);
         panHeat.removeListener(this);
+        panFuel.removeListener(this);
         panMovement.removeListener(this);
         panArmor.removeListener(this);
     }
 
     public void addAllListeners() {
-        fuel.addChangeListener(this);
         panInfo.addListener(this);
         panChassis.addListener(this);
         panHeat.addListener(this);
+        panFuel.addListener(this);
         panMovement.addListener(this);
         panArmor.addListener(this);
     }
@@ -327,37 +237,6 @@ public class StructureTab extends ITab implements
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
         armorView.addRefreshedListener(l);
-    }
-
-
-    /**
-     * resets all the various combo boxes with appropriate options based on the
-     * tech base and tech level of the unit. This should NEVER be run when
-     * listeners are turned on. If the updateUnit boolean is set to true, then
-     * this method will check that the values of the current unit are available
-     * as choices after populating the choices and if not it will reset them to
-     * default values on the unit itself.
-     *
-     * @param updateUnit
-     */
-    private void populateChoices(boolean updateUnit) {
-        ((SpinnerNumberModel)fuel.getModel()).setMaximum(panChassis.getTonnage());
-    }
-
-
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        if (e.getSource() instanceof JSpinner) {
-            JSpinner spinner = (JSpinner) e.getSource();
-            removeAllListeners();
-            if (spinner.equals(fuel)) {
-                double fuelTons = Math.round(((Double) fuel.getValue()) * 2) / 2.0;
-                getAero().setFuelTonnage(fuelTons);
-            }
-            addAllListeners();
-
-            refresh.refreshAll();
-        }
     }
 
     private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
@@ -654,6 +533,16 @@ public class StructureTab extends ITab implements
     public void resetChassis() {
         UnitUtil.resetBaseChassis(getAero());
         refresh.refreshAll();
+    }
+
+    @Override
+    public void fuelTonnageChanged(double tonnage) {
+        double fuelTons = Math.round(tonnage * 2) / 2.0;
+        getAero().setFuelTonnage(fuelTons);
+        panFuel.setFromEntity(getAero());
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
 }
