@@ -1331,6 +1331,7 @@ public class UnitUtil {
             double points =
                     TestAero.maxArmorPoints(unit, unit.getWeight());
             armorWeight = points / armorPerTon;
+            armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         }
         return armorWeight;
     }

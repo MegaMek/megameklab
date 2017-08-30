@@ -30,6 +30,7 @@ import megamek.common.ConvFighter;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Aero.tabs.BuildTab;
@@ -128,40 +129,45 @@ public class MainUI extends MegaMekLabMainUI {
 
         Aero aero = (Aero) getEntity();
 
-        getEntity().setYear(3145);
-        getEntity().setWeight(25);
+        aero.setYear(3145);
+        aero.setWeight(25);
         aero.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
-        getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        getEntity().setArmorTechLevel(getEntity().getTechLevel());
-        getEntity().setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+        if (isPrimitive) {
+            aero.setCockpitType(Aero.COCKPIT_PRIMITIVE);
+            aero.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE);
+        } else {
+            aero.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        }
+        aero.setArmorTechLevel(getEntity().getTechLevel());
+        aero.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
         aero.setHeatSinks(10);
         aero.setHeatType(Aero.HEAT_SINGLE);
 
-        getEntity().autoSetInternal();
+        aero.autoSetInternal();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
             aero.initializeArmor(0, loc);
         }
 
-        getEntity().setChassis("New");
-        getEntity().setModel("Aero");
+        if (null == oldEntity) {
+            getEntity().setChassis("New");
+            getEntity().setModel("Aero");
+        } else {
+            aero.setChassis(oldEntity.getChassis());
+            aero.setModel(oldEntity.getModel());
+            aero.setYear(Math.max(oldEntity.getYear(),
+                    aero.getConstructionTechAdvancement().getIntroductionDate()));
+            aero.setSource(oldEntity.getSource());
+            aero.setManualBV(oldEntity.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(aero.getStaticTechLevel(),
+                    SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
+            aero.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
+            aero.setMixedTech(oldEntity.isMixedTech());
+        }
     }
 
     @Override
     public void refreshAll() {
-
-//        String model = getEntity().getModel();
-//        String chassis = getEntity().getChassis();
-//
-//        createNewUnit(Entity.ETYPE_AERO, false);
-//
-//        getEntity().setChassis(chassis);
-//        getEntity().setModel(model);
-//
-//        reloadTabs();
-//        repaint();
-//        refreshAll();
-
         statusbar.refresh();
         structureTab.refresh();
         equipmentTab.refresh();
@@ -224,8 +230,7 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public ITechManager getTechManager() {
-        // TODO Auto-generated method stub
-        return null;
+        return structureTab.getTechManager();
     }
 
 }
