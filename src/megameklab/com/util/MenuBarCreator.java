@@ -394,6 +394,14 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             pMenu.add(item);
         }
         
+        if (!(en instanceof Aero)
+                || !((Aero)en).isPrimitive()) {
+            item = new JMenuItem();
+            item.setText("Aero");
+            item.addActionListener(e ->jMenuLoadPrimitiveAero());
+            pMenu.add(item);
+        }
+        
         unitMenu.add(pMenu);
 
         file.add(unitMenu);
@@ -1020,7 +1028,12 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     }
 
     private void jMenuLoadAero() {
-        new megameklab.com.ui.Aero.MainUI();
+        new megameklab.com.ui.Aero.MainUI(false);
+        parentFrame.dispose();
+    }
+
+    private void jMenuLoadPrimitiveAero() {
+        new megameklab.com.ui.Aero.MainUI(true);
         parentFrame.dispose();
     }
 
@@ -1268,7 +1281,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                     && !((newUnit instanceof SmallCraft)
                     || (newUnit instanceof Jumpship)
                     || (newUnit instanceof FixedWingSupport))) {
-                newUI = new megameklab.com.ui.Aero.MainUI();
+                newUI = new megameklab.com.ui.Aero.MainUI(((Aero)newUnit).isPrimitive());
             } else if (newUnit instanceof BattleArmor) {
                 newUI = new megameklab.com.ui.BattleArmor.MainUI();
             } else if (newUnit instanceof Infantry) {
@@ -1381,7 +1394,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                         && !((tempEntity instanceof SmallCraft)
                         || (tempEntity instanceof Jumpship)
                         || (tempEntity instanceof FixedWingSupport))) {
-                    newUI = new megameklab.com.ui.Aero.MainUI();
+                    newUI = new megameklab.com.ui.Aero.MainUI(((Aero)tempEntity).isPrimitive());
                 } else if (tempEntity instanceof BattleArmor) {
                     newUI = new megameklab.com.ui.BattleArmor.MainUI();
                 } else if (tempEntity instanceof Infantry) {
