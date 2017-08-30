@@ -156,6 +156,8 @@ public class StructureTab extends ITab implements
         panMovement.setFromEntity(getAero());
         panArmor.setFromEntity(getAero());
         
+        panHeat.setVisible(!getAero().hasETypeFlag(Entity.ETYPE_CONV_FIGHTER));
+        
         setAeroStructuralIntegrity();
 
         armorView.refresh();
