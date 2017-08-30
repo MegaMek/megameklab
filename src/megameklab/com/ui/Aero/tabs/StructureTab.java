@@ -20,6 +20,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -30,16 +32,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import megamek.client.ui.GBC;
+import megamek.common.Aero;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.views.ArmorView;
 import megameklab.com.ui.Aero.views.SummaryView;
+import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.AeroFuelView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.FighterChassisView;
@@ -242,8 +248,44 @@ public class StructureTab extends ITab implements
     }
 
     private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
-        getAero().setArmorTechLevel(aTechLevel);
-        getAero().setArmorType(at);
+        /* TODO: Patchwork armor needs support from ArmorView
+        if (EquipmentType.T_ARMOR_PATCHWORK == at) {
+            boolean isMixed = panInfo.isMixedTech();
+            List<EquipmentType> armors = panArmor.getAllArmors();
+            List<TechComboBox<EquipmentType>> combos = new ArrayList<>();
+            JPanel panel = new JPanel(new GridBagLayout());
+            // Start with 1 to skip body
+            for (int loc = 0; loc < Aero.LOC_WINGS; loc++) {
+                TechComboBox<EquipmentType> cbLoc = new TechComboBox<>(eq -> eq.getName());
+                cbLoc.showTechBase(isMixed);
+                armors.forEach(a -> cbLoc.addItem(a));
+                EquipmentType locArmor = EquipmentType.get(EquipmentType
+                        .getArmorTypeName(getAero().getArmorType(loc),
+                                TechConstants.isClan(getAero().getArmorTechLevel(loc))));
+                cbLoc.setSelectedItem(locArmor);
+                combos.add(cbLoc);
+                JLabel label = new JLabel(getAero().getLocationName(loc));
+                panel.add(label, GBC.std());
+                panel.add(cbLoc, GBC.eol());
+            }
+            JOptionPane.showMessageDialog(this, panel,
+                    "Please choose the armor types",
+                    JOptionPane.QUESTION_MESSAGE);
+            UnitUtil.removeISorArmorMounts(getAero(), false);
+            for (int loc = 0; loc < Aero.LOC_WINGS; loc++) {
+                EquipmentType armor = (EquipmentType)combos.get(loc).getSelectedItem();
+                getAero().setArmorTechLevel(armor.getTechLevel(panInfo.getTechYear()), loc);
+                getAero().setArmorType(EquipmentType.getArmorType(armor), loc);
+            }
+            panArmor.removeListener(this);
+            panArmor.setFromEntity(getAero());
+            panArmor.addListener(this);
+        } else {
+         * 
+         */
+            getAero().setArmorTechLevel(aTechLevel);
+            getAero().setArmorType(at);
+        //}
     }
 
     public void setAsCustomization() {
