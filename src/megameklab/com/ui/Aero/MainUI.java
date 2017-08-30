@@ -60,10 +60,10 @@ public class MainUI extends MegaMekLabMainUI {
     JScrollPane scroll = new JScrollPane();
     private MenuBarCreator menubarcreator;
 
-    public MainUI() {
+    public MainUI(boolean primitive) {
 
         super();
-        createNewUnit(Entity.ETYPE_AERO, false);
+        createNewUnit(Entity.ETYPE_AERO, primitive);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".blk");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -132,9 +132,9 @@ public class MainUI extends MegaMekLabMainUI {
         aero.setYear(3145);
         aero.setWeight(25);
         aero.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
-        if (isPrimitive) {
+        if (isPrimitive || ((Aero)oldEntity).isPrimitive()) {
             aero.setCockpitType(Aero.COCKPIT_PRIMITIVE);
-            aero.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE);
+            aero.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
         } else {
             aero.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         }

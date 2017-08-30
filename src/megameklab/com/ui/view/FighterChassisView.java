@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -219,8 +220,13 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
     
     private void refreshTonnage() {
         int prev = spnTonnageModel.getNumber().intValue();
+        int min = primitive? 10 : 5;
         int max = conventional? 50 : 100;
+        spnTonnageModel.setMinimum(min);
         spnTonnageModel.setMaximum(max);
+        if (prev < min) {
+            spnTonnage.setValue(min);
+        }
         if (prev > max) {
             spnTonnage.setValue(max);
         }
@@ -256,12 +262,16 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         }
         setEngine(prevEngine);
         cbEngine.addActionListener(this);
-        if (cbEngine.getSelectedIndex() < 0) {
+        if ((cbEngine.getSelectedIndex() < 0) && (cbEngine.getModel().getSize() > 0)) {
             cbEngine.setSelectedIndex(0);
         }
     }
     
     public List<Engine> getAvailableEngines() {
+        if (isPrimitive()) {
+            return Collections.singletonList(new Engine(getEngineRating(),
+                    Engine.NORMAL_ENGINE, 0));
+        }
         List<Engine> retVal = new ArrayList<>();
         boolean isMixed = techManager.isMixedTech();
         int flags = 0;
