@@ -48,8 +48,8 @@ import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.UnitSelectorDialog;
 import megamek.common.Aero;
 import megamek.common.BattleArmor;
-import megamek.common.ConvFighter;
 import megamek.common.Entity;
+import megamek.common.FixedWingSupport;
 import megamek.common.GunEmplacement;
 import megamek.common.Infantry;
 import megamek.common.Jumpship;
@@ -327,7 +327,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         if (!(parentFrame.getEntity() instanceof Aero)) {
             item = new JMenuItem();
-            item.setText("Aero");
+            item.setText("Aero/Conv Fighter");
             item.setMnemonic(KeyEvent.VK_A);
             item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -1267,7 +1267,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             if ((newUnit instanceof Aero)
                     && !((newUnit instanceof SmallCraft)
                     || (newUnit instanceof Jumpship)
-                    || (newUnit instanceof ConvFighter))) {
+                    || (newUnit instanceof FixedWingSupport))) {
                 newUI = new megameklab.com.ui.Aero.MainUI();
             } else if (newUnit instanceof BattleArmor) {
                 newUI = new megameklab.com.ui.BattleArmor.MainUI();
@@ -1380,7 +1380,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
                 if ((tempEntity instanceof Aero)
                         && !((tempEntity instanceof SmallCraft)
                         || (tempEntity instanceof Jumpship)
-                        || (tempEntity instanceof ConvFighter))) {
+                        || (tempEntity instanceof FixedWingSupport))) {
                     newUI = new megameklab.com.ui.Aero.MainUI();
                 } else if (tempEntity instanceof BattleArmor) {
                     newUI = new megameklab.com.ui.BattleArmor.MainUI();

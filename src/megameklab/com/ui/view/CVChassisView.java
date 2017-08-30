@@ -141,6 +141,8 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
 
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap.getString("CVChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 0;

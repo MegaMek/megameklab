@@ -393,7 +393,6 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
     }
 
     private void refreshTonnage() {
-        int prev = tonnageModel.getNumber().intValue();
         int min = 20;
         int max = 100;
         spnTonnage.removeChangeListener(this);
@@ -411,8 +410,10 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         tonnageModel.setMinimum(min);
         tonnageModel.setMaximum(max);
         spnTonnage.addChangeListener(this);
-        if ((prev < min) || (prev > max)) {
-            spnTonnage.setValue(prev);
+        if (tonnageModel.getNumber().doubleValue() < min) {
+            tonnageModel.setValue(min);
+        } else if (tonnageModel.getNumber().doubleValue() > max) {
+            tonnageModel.setValue(max);
         }
     }
     
