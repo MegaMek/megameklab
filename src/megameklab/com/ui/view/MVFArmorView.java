@@ -231,7 +231,9 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
                 cbArmorType.setSelectedIndex(0);
             }
         }
-        if (techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
+        //TODO: patchwork armor for fighters needs work on the armor allocation view
+        if (((etype & Entity.ETYPE_AERO) == 0)
+                && techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
             cbArmorType.addItem(null);
         }
         cbArmorType.showTechBase(techManager.isMixedTech());
