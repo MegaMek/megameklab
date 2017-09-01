@@ -329,9 +329,6 @@ public class FieldGunView extends IView implements ActionListener {
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if(!UnitUtil.isLegal(getInfantry(), etype)) {
-                    return false;
-                }
                 if ((nType == T_ALL)
                         || ((nType == T_GUN) 
                                 && !(etype instanceof ArtilleryWeapon)
@@ -339,6 +336,10 @@ public class FieldGunView extends IView implements ActionListener {
                         || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon)
                         || ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)
                         ) {
+                    if(null != eSource.getTechManager()
+                            && !eSource.getTechManager().isLegal(etype)) {
+                        return false;
+                    }
                     if(txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());

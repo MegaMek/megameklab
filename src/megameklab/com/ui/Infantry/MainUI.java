@@ -175,7 +175,9 @@ public class MainUI extends MegaMekLabMainUI {
 
     @Override
     public ITechManager getTechManager() {
-        // TODO Auto-generated method stub
+        if (null != structureTab) {
+            return structureTab.getTechManager();
+        }
         return null;
     }
 

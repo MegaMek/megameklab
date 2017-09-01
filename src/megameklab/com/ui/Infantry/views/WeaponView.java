@@ -312,9 +312,6 @@ public class WeaponView extends IView implements ActionListener {
                     return false;
                 }
                 InfantryWeapon weapon = (InfantryWeapon)etype;
-                if(!UnitUtil.isLegal(getInfantry(), etype)) {
-                    return false;
-                }
                 if(getInfantry().getSquadSize() < (getInfantry().getSecondaryN() * weapon.getCrew())) {
                     return false;
                 }
@@ -326,6 +323,10 @@ public class WeaponView extends IView implements ActionListener {
                         || ((nType == T_PERSONAL) && !etype.hasFlag(WeaponType.F_INF_ARCHAIC) && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
                         || ((nType == T_SUPPORT) && etype.hasFlag(WeaponType.F_INF_SUPPORT))
                         ) {
+                    if (null != eSource.getTechManager()
+                            && !eSource.getTechManager().isLegal(etype)) {
+                        return false;
+                    }
                     if(txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());
