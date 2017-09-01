@@ -61,7 +61,6 @@ import megameklab.com.ui.EntitySource;
 import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
-import megameklab.com.util.UnitUtil;
 import megameklab.com.util.XTableColumnModel;
 
 public class ArmorView extends IView implements ActionListener, ChangeListener {
@@ -442,7 +441,8 @@ public class ArmorView extends IView implements ActionListener, ChangeListener {
                 if(!(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
                     return false;
                 }
-                if(!UnitUtil.isLegal(getInfantry(), etype)) {
+                if(null != eSource.getTechManager()
+                        && !eSource.getTechManager().isLegal(etype)) {
                     return false;
                 }
                 if (!etype.isAvailableIn(getInfantry().getTechLevelYear())) {
