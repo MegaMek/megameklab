@@ -168,7 +168,6 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         gbc.gridy = 5;
         setFieldSize(cbTechBase, controlSize);
         add(cbTechBase, gbc);
-        refreshTechBase();
         cbTechBase.addActionListener(this);
 
         gbc.gridx = 0;
@@ -179,6 +178,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         setFieldSize(cbTechLevel, controlSize);
         add(cbTechLevel, gbc);
         cbTechLevel.addActionListener(this);
+        refreshTechBase();
 
         gbc.gridx = 0;
         gbc.gridy = 7;

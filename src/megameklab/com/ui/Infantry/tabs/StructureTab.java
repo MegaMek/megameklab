@@ -20,19 +20,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -45,15 +39,10 @@ import javax.swing.SwingConstants;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.Infantry;
-import megamek.common.LocationFullException;
-import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
 import megamek.common.WeaponType;
 import megamek.common.options.IOption;
-import megamek.common.options.OptionsConstants;
 import megamek.common.options.PilotOptions;
-import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
-import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Infantry.views.ArmorView;
@@ -63,14 +52,17 @@ import megameklab.com.ui.Infantry.views.SpecializationView;
 import megameklab.com.ui.Infantry.views.WeaponView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.ITechManager;
+import megameklab.com.ui.view.InfantryWeaponView;
 import megameklab.com.ui.view.PlatoonTypeView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements ActionListener,
+public class StructureTab extends ITab implements
         BasicInfoView.BasicInfoListener,
-        PlatoonTypeView.PlatoonListener {
+        PlatoonTypeView.PlatoonListener,
+        InfantryWeaponView.WeaponListener,
+        SpecializationView.SpecializationListener {
 
     /**
      *
@@ -87,17 +79,10 @@ public class StructureTab extends ITab implements ActionListener,
 
     private BasicInfoView panBasicInfo;
     private PlatoonTypeView panPlatoonType;
+    private InfantryWeaponView panWeapons;
     
-    private String[] secondaryNArray = { "0", "1", "2" };
-    private JComboBox<String> secondaryN = new JComboBox<String>(secondaryNArray);
-    private JCheckBox antiMekTraining = new JCheckBox("Anti-mek Training");
-    private JComboBox<String> cbFieldGunN = new JComboBox<String>();
     private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Specializations", "Augmentation"};
 
-    private JTextField txtPrimary = new JTextField("None");
-    private JTextField txtSecondary = new JTextField("None");
-    
-    private JTextField txtFieldGun = new JTextField("None");
     private JTextField txtArmor = new JTextField("None");
     private JTextPane txtSpecializations = new JTextPane();
     private JTextPane txtAugmentations = new JTextPane();
@@ -114,6 +99,7 @@ public class StructureTab extends ITab implements ActionListener,
         super(eSource);
         panBasicInfo = new BasicInfoView(getInfantry().getConstructionTechAdvancement());
         panPlatoonType = new PlatoonTypeView(panBasicInfo);
+        panWeapons = new InfantryWeaponView(panBasicInfo);
         weaponView = new WeaponView(eSource);
         fieldGunView = new FieldGunView(eSource);
         armorView = new ArmorView(eSource);
@@ -127,15 +113,11 @@ public class StructureTab extends ITab implements ActionListener,
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
-        JPanel weaponPanel = new JPanel(new GridBagLayout());
         JPanel advancedPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         Dimension comboSize = new Dimension(200, 25);
         Dimension labelSize = new Dimension(110, 25);
 
-        txtPrimary.setEditable(false);
-        txtSecondary.setEditable(false);
-        txtFieldGun.setEditable(false);
         txtArmor.setEditable(false);
         txtSpecializations.setEditable(false);
         txtSpecializations.setContentType("text/html");        
@@ -148,39 +130,6 @@ public class StructureTab extends ITab implements ActionListener,
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        weaponPanel.add(createLabel("Primary:", labelSize), gbc);
-        gbc.gridx = 1;
-        weaponPanel.add(txtPrimary, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        weaponPanel.add(createLabel("Secondary:", labelSize), gbc);
-        gbc.gridx = 1;
-        weaponPanel.add(txtSecondary, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        weaponPanel.add(createLabel("Secondary #:", labelSize), gbc);
-        gbc.gridx = 1;
-        weaponPanel.add(secondaryN, gbc);
-        antiMekTraining.setHorizontalTextPosition(SwingConstants.LEFT);
-        gbc.gridx = 0;
-        gbc.gridwidth = 2;
-        gbc.gridy++;
-        weaponPanel.add(antiMekTraining, gbc);
-        
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        advancedPanel.add(createLabel("Field Gun:", labelSize), gbc);
-        gbc.gridx = 1;
-        advancedPanel.add(txtFieldGun, gbc);
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 1;
-        advancedPanel.add(createLabel("Field Gun #:", labelSize), gbc);
-        gbc.gridx = 1;
-        advancedPanel.add(cbFieldGunN, gbc);
-        gbc.gridx = 0;
-        gbc.gridy++;
         gbc.gridwidth = 1;
         advancedPanel.add(createLabel("Armor:", labelSize), gbc);
         gbc.gridx = 1;
@@ -199,15 +148,11 @@ public class StructureTab extends ITab implements ActionListener,
         gbc.gridx = 1;
         advancedPanel.add(txtAugmentations, gbc);
 
-        setFieldSize(secondaryN, comboSize);
-        setFieldSize(txtPrimary, comboSize);
-        setFieldSize(txtSecondary, comboSize);
-        setFieldSize(txtFieldGun, comboSize);
         setFieldSize(txtArmor, comboSize);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panPlatoonType.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
-        weaponPanel.setBorder(BorderFactory.createTitledBorder("Current Weapons"));
+        panWeapons.setBorder(BorderFactory.createTitledBorder("Current Weapons"));
         advancedPanel.setBorder(BorderFactory.createTitledBorder("Advanced"));
         
         equipmentPane = new JTabbedPane();
@@ -219,7 +164,7 @@ public class StructureTab extends ITab implements ActionListener,
 
         leftPanel.add(panBasicInfo);
         leftPanel.add(panPlatoonType);
-        leftPanel.add(weaponPanel);
+        leftPanel.add(panWeapons);
         leftPanel.add(advancedPanel);
         leftPanel.add(Box.createVerticalGlue());
         setLayout(new GridBagLayout());
@@ -258,95 +203,13 @@ public class StructureTab extends ITab implements ActionListener,
     }
 
     public void refresh() {
-        removeAllListeners();
         
         panBasicInfo.setFromEntity(getInfantry());
         panPlatoonType.setFromEntity(getInfantry());
+        panWeapons.setFromEntity(getInfantry());
 
-        int maxSecondaryN = 2;
-
-        if (getInfantry().hasSpecialization(Infantry.MOUNTAIN_TROOPS | Infantry.PARATROOPS)) {
-            maxSecondaryN = 1;
-        }
-        if (getInfantry().hasSpecialization(Infantry.COMBAT_ENGINEERS)) {
-            maxSecondaryN = 0;
-        }
-        if (getInfantry().getSecondaryWeapon() != null) {
-            int crewReq = getInfantry().getSecondaryWeapon().getCrew();
-            /* IOps shows the reduced crew requirements, but not the increased max secondary which
-             * should be there per http://bg.battletech.com/forums/index.php?topic=50926.msg1279434#msg1279434
-             */
-            if (getInfantry().getCrew().getOptions().booleanOption(OptionsConstants.MD_DERMAL_ARMOR)) {
-                crewReq--;
-                maxSecondaryN++;
-            }
-            if (getInfantry().getCrew().getOptions().booleanOption(OptionsConstants.MD_TSM_IMPLANT)) {
-                crewReq--;
-                maxSecondaryN++;
-            }
-            maxSecondaryN = Math.min(maxSecondaryN, getInfantry().getSquadSize() / (Math.max(1, crewReq)));
-        }
-        secondaryN.removeAllItems();
-        if (getInfantry().getSecondaryWeapon() != null
-                && getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
-            getInfantry().setSecondaryN(2);
-            secondaryN.addItem("0");
-            secondaryN.addItem("2");
-            secondaryN.setSelectedIndex(1);
-        } else {
-            for (int i = 0; i <= maxSecondaryN; i++) {
-                secondaryN.addItem(Integer.toString(i));
-            }
-            secondaryN.setSelectedIndex(Math.min(maxSecondaryN, getInfantry().getSecondaryN()));
-        }
-
-        refreshAntiMek();
+        removeAllListeners();
         
-        if (getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED
-                && getInfantry().getMovementMode() != EntityMovementMode.TRACKED
-                && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
-            UnitUtil.replaceFieldGun(getInfantry(), null, 0);
-        }
-
-        if (null != getInfantry().getPrimaryWeapon()) {
-            txtPrimary.setText(UnitUtil.trimInfantryWeaponNames(getInfantry().getPrimaryWeapon().getName()));
-        } else {
-            txtPrimary.setText("None");
-        }
-        if (null != getInfantry().getSecondaryWeapon()) {
-            txtSecondary.setText(UnitUtil.trimInfantryWeaponNames(getInfantry().getSecondaryWeapon().getName()));
-        } else {
-            txtSecondary.setText("None");
-        }
-        
-        List<EquipmentType> fieldGuns = getInfantry().getWeaponList().stream()
-                .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                .map(m -> m.getType()).filter(et -> et instanceof WeaponType)
-                .collect(Collectors.toList());
-        if (fieldGuns.isEmpty()) {
-            cbFieldGunN.setEnabled(false);
-            if ((getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED)
-                    || (getInfantry().getMovementMode() == EntityMovementMode.TRACKED)
-                    || (getInfantry().getMovementMode() == EntityMovementMode.WHEELED)) {
-                txtFieldGun.setText("None");
-            } else {
-                txtFieldGun.setText("Invalid Motive Type");
-            }
-        } else {
-            cbFieldGunN.setEnabled(true);
-            int maxNum = 1;
-            if (!(fieldGuns.get(0) instanceof ArtilleryWeapon
-                    || fieldGuns.get(0) instanceof ArtilleryCannonWeapon)) {
-                int crewReq = Math.max(2, (int)Math.ceil(fieldGuns.get(0).getTonnage(getInfantry())));
-                maxNum = getInfantry().getShootingStrength() / crewReq;                
-            }
-            cbFieldGunN.removeAllItems();
-            for (int i = 0; i <= maxNum; i++) {
-                cbFieldGunN.addItem(Integer.toString(i));
-            }
-            cbFieldGunN.setSelectedIndex(Math.min(fieldGuns.size(), maxNum));
-            txtFieldGun.setText(fieldGuns.get(0).getName());
-        }
         EquipmentType armor = getInfantry().getArmorKit();
         if (null != armor) {
             txtArmor.setText(armor.getName());
@@ -358,17 +221,7 @@ public class StructureTab extends ITab implements ActionListener,
                 txtArmor.setText(desc);
             }
         }
-        if (getInfantry().getSpecializations() == 0) {
-            txtSpecializations.setText("None");
-        } else {
-            StringJoiner sj = new StringJoiner("<br/>");
-            for (int i = 0; i < Infantry.NUM_SPECIALIZATIONS; i++) {
-                if (getInfantry().hasSpecialization(1 << i)) {
-                    sj.add(Infantry.getSpecializationName(1 << i));
-                }
-            }
-            txtSpecializations.setText(sj.toString());
-        }
+        updateSpecializations();
         StringJoiner sj = new StringJoiner("<br/>");
         for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES);
                 e.hasMoreElements();) {
@@ -389,10 +242,63 @@ public class StructureTab extends ITab implements ActionListener,
         specializationView.refresh();
         augmentationView.refresh();
         
+        enableTabs();
+        
+        addAllListeners();
+    }
+
+    public void addAllListeners() {
+        panBasicInfo.addListener(this);
+        panPlatoonType.addListener(this);
+        panWeapons.addListener(this);
+        specializationView.addListener(this);
+    }
+
+    public void removeAllListeners() {
+        panWeapons.removeListener(this);
+        panBasicInfo.removeListener(this);
+        panPlatoonType.removeListener(this);
+        specializationView.removeListener(this);
+    }
+
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
+        weaponView.addRefreshedListener(refresh);
+        fieldGunView.addRefreshedListener(refresh);
+        armorView.addRefreshedListener(refresh);
+        specializationView.addRefreshedListener(refresh);
+        augmentationView.addRefreshedListener(refresh);
+    }
+
+    public void setAsCustomization() {
+        panBasicInfo.setAsCustomization();
+    }
+    
+    private void updateSpecializations() {
+        if (getInfantry().getSpecializations() == 0) {
+            txtSpecializations.setText("None");
+        } else {
+            StringJoiner sj = new StringJoiner("<br/>");
+            for (int i = 0; i < Infantry.NUM_SPECIALIZATIONS; i++) {
+                if (getInfantry().hasSpecialization(1 << i)) {
+                    sj.add(Infantry.getSpecializationName(1 << i));
+                }
+            }
+            txtSpecializations.setText(sj.toString());
+        }
+        if (getInfantry().hasSpecialization(Infantry.TAG_TROOPS)
+                && ((getInfantry().getSecondaryN() < 2)
+                        || (getInfantry().getSecondaryWeapon() == null)
+                        || !getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG))) {
+            UnitUtil.replaceMainWeapon(getInfantry(), (InfantryWeapon)EquipmentType.get("InfantryTAG"), true);
+            getInfantry().setSecondaryN(2);
+        }
+    }
+    
+    private void enableTabs() {
         SimpleTechLevel level = panBasicInfo.getTechLevel();
         if (level.ordinal() >= SimpleTechLevel.ADVANCED.ordinal()) {
             txtArmor.setEnabled(true);
-            txtFieldGun.setEnabled(true);
             txtSpecializations.setEnabled(true);
             equipmentPane.setEnabledAt(T_FIELD_GUNS, 
                     getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
@@ -405,7 +311,6 @@ public class StructureTab extends ITab implements ActionListener,
             equipmentPane.setEnabledAt(T_AUGMENTATION, level.ordinal() >= SimpleTechLevel.EXPERIMENTAL.ordinal());
         } else {
             txtArmor.setEnabled(false);
-            txtFieldGun.setEnabled(false);
             txtSpecializations.setEnabled(false);
             txtAugmentations.setEnabled(false);
             equipmentPane.setEnabledAt(T_FIELD_GUNS, false);
@@ -415,104 +320,6 @@ public class StructureTab extends ITab implements ActionListener,
         }
         if (!equipmentPane.isEnabledAt(equipmentPane.getSelectedIndex())) {
             equipmentPane.setSelectedIndex(T_INFANTRY_WEAPONS);
-        }
-        addAllListeners();
-    }
-
-    public void addAllListeners() {
-        secondaryN.addActionListener(this);
-        cbFieldGunN.addActionListener(this);
-        antiMekTraining.addActionListener(this);
-        panBasicInfo.addListener(this);
-        panPlatoonType.addListener(this);
-    }
-
-    public void removeAllListeners() {
-        secondaryN.removeActionListener(this);
-        cbFieldGunN.removeActionListener(this);
-        antiMekTraining.removeActionListener(this);
-        panBasicInfo.removeListener(this);
-        panPlatoonType.removeListener(this);
-    }
-
-    public void addRefreshedListener(RefreshListener l) {
-        refresh = l;
-        weaponView.addRefreshedListener(refresh);
-        fieldGunView.addRefreshedListener(refresh);
-        armorView.addRefreshedListener(refresh);
-        specializationView.addRefreshedListener(refresh);
-        augmentationView.addRefreshedListener(refresh);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        removeAllListeners();
-        if (e.getSource() instanceof JComboBox) {
-            @SuppressWarnings("unchecked")
-            JComboBox<String> combo = (JComboBox<String>) e.getSource();
-            if (combo.equals(secondaryN)) {
-                getInfantry().setSecondaryN(secondaryN.getSelectedIndex());
-                checkMainWeapon();
-            } else if (combo.equals(cbFieldGunN)) {
-                Optional<EquipmentType> fieldGun = getInfantry().getWeaponList()
-                        .stream().filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                        .map(m -> m.getType()).filter(eq -> eq instanceof WeaponType)
-                        .findAny();
-                UnitUtil.replaceFieldGun(getInfantry(), (WeaponType)fieldGun.get(),
-                        cbFieldGunN.getSelectedIndex());
-            }
-        } else if (e.getSource().equals(antiMekTraining)) {
-            getInfantry().setAntiMekSkill(antiMekTraining.isSelected());
-        }
-        refresh.refreshAll();
-    }
-
-    private void checkMainWeapon() {
-        Mounted existingInfantryMount = null;
-        for (Mounted m : getInfantry().getWeaponList()) {
-            if ((m.getType() instanceof InfantryWeapon) && (m.getLocation() == Infantry.LOC_INFANTRY)) {
-                existingInfantryMount = m;
-                break;
-            }
-        }
-        if (null != existingInfantryMount) {
-            UnitUtil.removeMounted(getInfantry(), existingInfantryMount);
-        }
-
-        // if there is more than one secondary weapon per squad, then add that
-        // to the unit
-        // otherwise add the primary weapon
-        if ((getInfantry().getSecondaryN() < 2) || (null == getInfantry().getSecondaryWeapon())) {
-            try {
-                getInfantry().addEquipment(getInfantry().getPrimaryWeapon(), Infantry.LOC_INFANTRY);
-            } catch (LocationFullException ex) {
-
-            }
-        } else {
-            try {
-                getInfantry().addEquipment(getInfantry().getSecondaryWeapon(), Infantry.LOC_INFANTRY);
-            } catch (LocationFullException ex) {
-
-            }
-        }
-        // also check for zero secondary n
-        if (getInfantry().getSecondaryN() <= 0) {
-            UnitUtil.replaceMainWeapon(getInfantry(), null, true);
-        }
-    }
-
-    public void setAsCustomization() {
-        panBasicInfo.setAsCustomization();
-    }
-    
-    private void refreshAntiMek() {
-        if (!getInfantry().isMechanized() && getTechManager().isLegal(Infantry.getAntiMekTA())) {
-            antiMekTraining.setEnabled(true);
-            antiMekTraining.setSelected(getInfantry().isAntiMekTrained());
-        } else {
-            antiMekTraining.setEnabled(false);
-            antiMekTraining.setSelected(false);
-            getInfantry().setAntiMekSkill(false);
         }
     }
 
@@ -529,35 +336,39 @@ public class StructureTab extends ITab implements ActionListener,
     @Override
     public void chassisChanged(String chassis) {
         getInfantry().setChassis(chassis);
+        refresh.refreshPreview();
     }
 
     @Override
     public void modelChanged(String model) {
         getInfantry().setModel(model);
+        refresh.refreshPreview();
     }
 
     @Override
     public void yearChanged(int year) {
         getInfantry().setYear(year);
+        updateTechLevel();
     }
 
     @Override
     public void updateTechLevel() {
-        removeAllListeners();
         if (!panBasicInfo.isLegal(Infantry.getMotiveTechAdvancement(getInfantry().getMovementMode()))) {
             motiveTypeChanged(EntityMovementMode.INF_LEG, false);
         }
         getInfantry().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.isClan()));
         UnitUtil.checkEquipmentByTechLevel(getInfantry(), panBasicInfo);
         UnitUtil.resetInfantryArmor(getInfantry());
-        refreshAntiMek();
-        refresh();
-        addAllListeners();
+        panPlatoonType.setFromEntity(getInfantry());
+        panWeapons.setFromEntity(getInfantry());
+        updateSpecializations();
+        enableTabs();
     }
 
     @Override
     public void sourceChanged(String source) {
         getInfantry().setSource(source);
+        refresh.refreshPreview();
     }
 
     @Override
@@ -592,8 +403,8 @@ public class StructureTab extends ITab implements ActionListener,
                 && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
             UnitUtil.replaceFieldGun(getInfantry(), null, 0);
         }
-        refreshAntiMek();
-        refresh();
+        panPlatoonType.setFromEntity(getInfantry());
+        panWeapons.setFromEntity(getInfantry());
     }
 
     @Override
@@ -602,6 +413,47 @@ public class StructureTab extends ITab implements ActionListener,
         getInfantry().setSquadSize(squadSize);
         getInfantry().autoSetInternal();
         panPlatoonType.setFromEntity(getInfantry());
+    }
+    
+    @Override
+    public void specializationsChanged() {
+        updateSpecializations();
+        panPlatoonType.setFromEntity(getInfantry());
+        panWeapons.setFromEntity(getInfantry());
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void numSecondaryChanged(final int count) {
+        if (getInfantry().getSecondaryWeapon() == null) {
+            getInfantry().setSecondaryN(0);
+        } else if (count == 0) {
+            UnitUtil.replaceMainWeapon(getInfantry(), null, true);
+            getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.TAG_TROOPS);
+        } else {
+            getInfantry().setSecondaryN(count);
+        }
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void numFieldGunsChanged(final int count) {
+        Optional<EquipmentType> fieldGun = getInfantry().getWeaponList()
+                .stream().filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
+                .map(m -> m.getType()).filter(eq -> eq instanceof WeaponType)
+                .findAny();
+        UnitUtil.replaceFieldGun(getInfantry(), (WeaponType)fieldGun.orElse(null),
+                count);
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void antiMekChanged(final boolean antiMek) {
+        getInfantry().setAntiMekSkill(antiMek);
+        refresh.refreshStatus();
     }
 
 }
