@@ -48,7 +48,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import megamek.common.EquipmentType;
+import megamek.common.Infantry;
 import megamek.common.WeaponType;
+import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.EquipmentTableModel;
@@ -259,7 +261,7 @@ public class WeaponView extends IView implements ActionListener {
     public void refresh() {
         removeAllListeners();
         filterEquipment();
-        if(getInfantry().getSecondaryN() > 0) {
+        if(TestInfantry.maxSecondaryWeapons(getInfantry()) > 0) {
             addSecondaryButton.setEnabled(true);
         } else {
             addSecondaryButton.setEnabled(false);
@@ -291,8 +293,14 @@ public class WeaponView extends IView implements ActionListener {
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = masterEquipmentList.getType(selected);
-            if(equip instanceof InfantryWeapon) {
+            if (equip instanceof InfantryWeapon) {
                 UnitUtil.replaceMainWeapon(getInfantry(), (InfantryWeapon) equip, isSecondary);
+                if (equip.hasFlag(WeaponType.F_TAG)) {
+                    getInfantry().setSpecializations(getInfantry().getSpecializations() | Infantry.TAG_TROOPS);
+                    getInfantry().setSecondaryN(2);
+                } else if (getInfantry().getSecondaryN() == 0) {
+                    getInfantry().setSecondaryN(1);
+                }
             }
         } else {
             return;
