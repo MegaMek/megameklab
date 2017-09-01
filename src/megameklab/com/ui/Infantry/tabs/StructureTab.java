@@ -299,8 +299,9 @@ public class StructureTab extends ITab implements ActionListener,
             }
             secondaryN.setSelectedIndex(Math.min(maxSecondaryN, getInfantry().getSecondaryN()));
         }
-        getInfantry().setAntiMekSkill(antiMekTraining.isSelected());
 
+        refreshAntiMek();
+        
         if (getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED
                 && getInfantry().getMovementMode() != EntityMovementMode.TRACKED
                 && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
@@ -503,6 +504,17 @@ public class StructureTab extends ITab implements ActionListener,
     public void setAsCustomization() {
         panBasicInfo.setAsCustomization();
     }
+    
+    private void refreshAntiMek() {
+        if (!getInfantry().isMechanized() && getTechManager().isLegal(Infantry.getAntiMekTA())) {
+            antiMekTraining.setEnabled(true);
+            antiMekTraining.setSelected(getInfantry().isAntiMekTrained());
+        } else {
+            antiMekTraining.setEnabled(false);
+            antiMekTraining.setSelected(false);
+            getInfantry().setAntiMekSkill(false);
+        }
+    }
 
     public void refreshEquipmentTable() {
         weaponView.refresh();
@@ -538,6 +550,7 @@ public class StructureTab extends ITab implements ActionListener,
         getInfantry().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.isClan()));
         UnitUtil.checkEquipmentByTechLevel(getInfantry(), panBasicInfo);
         UnitUtil.resetInfantryArmor(getInfantry());
+        refreshAntiMek();
         refresh();
         addAllListeners();
     }
@@ -579,12 +592,7 @@ public class StructureTab extends ITab implements ActionListener,
                 && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
             UnitUtil.replaceFieldGun(getInfantry(), null, 0);
         }
-        if (getInfantry().isMechanized()) {
-            antiMekTraining.setSelected(false);
-            antiMekTraining.setEnabled(false);
-        } else {
-            antiMekTraining.setEnabled(true);
-        }
+        refreshAntiMek();
         refresh();
     }
 
