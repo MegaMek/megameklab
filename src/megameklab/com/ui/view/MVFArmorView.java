@@ -201,7 +201,7 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
             }
             boolean isLAM = (etype & Entity.ETYPE_LAND_AIR_MECH) != 0;
             
-            for (int at = 0; at < EquipmentType.T_ARMOR_BA_STANDARD; at++) {
+            for (int at = 0; at < EquipmentType.armorNames.length; at++) {
                 if (at == EquipmentType.T_ARMOR_PATCHWORK) {
                     continue;
                 }
