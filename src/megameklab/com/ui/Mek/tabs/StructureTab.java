@@ -770,6 +770,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         }
 
         refresh();
+        armor.refresh();
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
