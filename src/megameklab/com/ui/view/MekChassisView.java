@@ -161,6 +161,9 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
     public static final EquipmentType EJECTION_SEAT = EquipmentType.get("Ejection Seat (Industrial Mech)");
     
     private final ITechManager techManager;
+    private String stdMotiveTooltip;
+    private String lamMotiveTooltip;
+    private String qvMotiveTooltip;
     
     public MekChassisView(ITechManager techManager) {
         this.techManager = techManager;
@@ -175,6 +178,9 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         qvTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.qvType.values").split(",")); //$NON-NLS-1$
         primitiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveType.values").split(",")); //$NON-NLS-1$
         primitiveMotiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveMotiveType.values").split(",")); //$NON-NLS-1$
+        stdMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.tooltip"); //$NON-NLS-1$
+        lamMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.LAM.tooltip"); //$NON-NLS-1$
+        qvMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.QuadVee.tooltip"); //$NON-NLS-1$
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -185,6 +191,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
+        spnTonnage.setToolTipText(resourceMap.getString("MekChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
@@ -192,6 +199,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridx = 2;
         gbc.gridy = 0;
         chkOmni.setText(resourceMap.getString("MekChassisView.chkOmni.text")); //$NON-NLS-1$
+        chkOmni.setToolTipText(resourceMap.getString("MekChassisView.chkOmni.tooltip")); //$NON-NLS-1$
         add(chkOmni, gbc);
         chkOmni.addChangeListener(this);
 
@@ -202,6 +210,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbBaseType, controlSize);
+        cbBaseType.setToolTipText(resourceMap.getString("MekChassisView.cbBaseType.tooltip")); //$NON-NLS-1$
         add(cbBaseType, gbc);
         cbBaseType.addActionListener(this);
 
@@ -213,6 +222,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
+        cbMotiveType.setToolTipText(resourceMap.getString("MekChassisView.cbMotiveType.tooltip")); //$NON-NLS-1$
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
 
@@ -224,6 +234,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         setFieldSize(cbStructure, controlSize);
+        cbStructure.setToolTipText(resourceMap.getString("MekChassisView.cbStructure.tooltip")); //$NON-NLS-1$
         add(cbStructure, gbc);
         cbStructure.addActionListener(this);
 
@@ -235,6 +246,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridy = 4;
         gbc.gridwidth = 3;
         setFieldSize(cbEngine, controlSize);
+        cbEngine.setToolTipText(resourceMap.getString("MekChassisView.cbEngine.tooltip")); //$NON-NLS-1$
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
 
@@ -246,6 +258,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridy = 5;
         gbc.gridwidth = 3;
         setFieldSize(cbGyro, controlSize);
+        cbGyro.setToolTipText(resourceMap.getString("MekChassisView.cbGyro.tooltip")); //$NON-NLS-1$
         add(cbGyro, gbc);
         cbGyro.addActionListener(this);
 
@@ -257,6 +270,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridy = 6;
         gbc.gridwidth = 3;
         setFieldSize(cbCockpit, controlSize);
+        cbCockpit.setToolTipText(resourceMap.getString("MekChassisView.cbCockpit.tooltip")); //$NON-NLS-1$
         add(cbCockpit, gbc);
         cbCockpit.addActionListener(this);
         
@@ -269,6 +283,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridwidth = 3;
         setFieldSize(cbEnhancement, controlSize);
         cbEnhancement.setNullValue(resourceMap.getString("MekChassisView.cbEnhancement.null")); //$NON-NLS-1$
+        cbEnhancement.setToolTipText(resourceMap.getString("MekChassisView.cbEnhancement.tooltip")); //$NON-NLS-1$
         add(cbEnhancement, gbc);
         cbEnhancement.addActionListener(this);
         
@@ -277,6 +292,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridy = 8;
         gbc.gridwidth = 3;
         add(chkFullHeadEject, gbc);
+        chkFullHeadEject.setToolTipText(resourceMap.getString("MekChassisView.chkFullHeadEject.tooltip")); //$NON-NLS-1$
         chkFullHeadEject.addActionListener(this);
         
         btnResetChassis.setText(resourceMap.getString("MekChassisView.btnResetChassis.text")); //$NON-NLS-1$
@@ -284,6 +300,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         gbc.gridy = 9;
         gbc.gridwidth = 3;
         add(btnResetChassis, gbc);
+        btnResetChassis.setToolTipText(resourceMap.getString("MekChassisView.btnResetChassis.tooltip")); //$NON-NLS-1$
         btnResetChassis.addActionListener(this);
     }
 
@@ -307,10 +324,12 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
             setBaseTypeIndex(BASE_TYPE_LAM);
             cbMotiveType.setModel(lamTypesModel);
             setMotiveTypeIndex(((LandAirMech)mech).getLAMType());
+            cbMotiveType.setToolTipText(lamMotiveTooltip);
         } else if (mech instanceof QuadVee) {
             setBaseTypeIndex(BASE_TYPE_QUADVEE);
             cbMotiveType.setModel(qvTypesModel);
             setMotiveTypeIndex(((QuadVee)mech).getMotiveType());
+            cbMotiveType.setToolTipText(qvMotiveTooltip);
         } else {
             setBaseTypeIndex(mech.isIndustrial()? BASE_TYPE_INDUSTRIAL : BASE_TYPE_STANDARD);
             if (primitive) {
@@ -325,6 +344,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
             } else {
                 setMotiveTypeIndex(MOTIVE_TYPE_BIPED);
             }
+            cbMotiveType.setToolTipText(stdMotiveTooltip);
         }
         cbBaseType.addActionListener(this);
         cbMotiveType.addActionListener(this);

@@ -85,6 +85,7 @@ public class BAProtoArmorView extends MainUIView implements ActionListener, Chan
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         setFieldSize(cbArmorType, controlSize);
+        cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip")); //$NON-NLS-1$
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
         
@@ -95,6 +96,7 @@ public class BAProtoArmorView extends MainUIView implements ActionListener, Chan
         gbc.gridx = 1;
         gbc.gridy = 1;
         setFieldSize(spnArmorPoints.getEditor(), spinnerEditorSize);
+        spnArmorPoints.setToolTipText(resourceMap.getString("ArmorView.spnArmorPoints.tooltip")); //$NON-NLS-1$
         add(spnArmorPoints, gbc);
         spnArmorPoints.addChangeListener(this);
     }

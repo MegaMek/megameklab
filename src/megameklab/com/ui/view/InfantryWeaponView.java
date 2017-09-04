@@ -104,6 +104,7 @@ public class InfantryWeaponView extends MainUIView implements ActionListener {
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
+        txtPrimary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtPrimary.tooltip")); //$NON-NLS-1$
         setFieldSize(txtPrimary, controlSize);
         txtPrimary.setEditable(false);
         add(txtPrimary, gbc);
@@ -116,6 +117,7 @@ public class InfantryWeaponView extends MainUIView implements ActionListener {
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(txtSecondary, controlSize);
+        txtSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtSecondary.tooltip")); //$NON-NLS-1$
         txtSecondary.setEditable(false);
         add(txtSecondary, gbc);
         
@@ -127,6 +129,7 @@ public class InfantryWeaponView extends MainUIView implements ActionListener {
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(cbNumSecondary, controlSize);
+        cbNumSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumSecondary.tooltip")); //$NON-NLS-1$
         add(cbNumSecondary, gbc);
         cbNumSecondary.addActionListener(this);
         
@@ -138,6 +141,7 @@ public class InfantryWeaponView extends MainUIView implements ActionListener {
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         setFieldSize(txtGuns, controlSize);
+        txtGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.txtGuns.tooltip")); //$NON-NLS-1$
         txtGuns.setEditable(false);
         add(txtGuns, gbc);
         
@@ -149,6 +153,7 @@ public class InfantryWeaponView extends MainUIView implements ActionListener {
         gbc.gridy = 4;
         gbc.gridwidth = 3;
         setFieldSize(cbNumGuns, controlSize);
+        cbNumGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumGuns.tooltip")); //$NON-NLS-1$
         add(cbNumGuns, gbc);
         cbNumGuns.addActionListener(this);
         
@@ -157,6 +162,7 @@ public class InfantryWeaponView extends MainUIView implements ActionListener {
         gbc.gridy = 5;
         gbc.gridwidth = 2;
         chkAntiMek.setHorizontalTextPosition(SwingConstants.LEFT);
+        chkAntiMek.setToolTipText(resourceMap.getString("InfantryWeaponView.chkAntiMek.tooltip")); //$NON-NLS-1$
         add(chkAntiMek, gbc);
         chkAntiMek.addActionListener(this);
     }

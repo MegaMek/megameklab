@@ -83,6 +83,7 @@ public class AeroFuelView extends MainUIView implements ChangeListener {
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.NONE;
         setFieldSize(spnFuel, spinnerSize);
+        spnFuel.setToolTipText(resourceMap.getString("AeroFuelView.spnFuel.tooltip")); //$NON-NLS-1$
         add(spnFuel, gbc);
         spnFuel.addChangeListener(this);
         
@@ -91,12 +92,15 @@ public class AeroFuelView extends MainUIView implements ChangeListener {
         add(createLabel(resourceMap.getString("AeroFuelView.lblFuelPoints.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 3;
         gbc.insets = new Insets(0,10,0,20);
+        lblFuelPoints.setToolTipText(resourceMap.getString("AeroFuelView.lblFuelPoints.tooltip")); //$NON-NLS-1$
         add(lblFuelPoints, gbc);
         gbc.insets = new Insets(0,0,0,0);
 
         JPanel panInfoTurns = new JPanel(new GridLayout(0,2));
         panInfoTurns.add(createLabel(resourceMap.getString("AeroFuelView.lblTurnsAtSafe.text"), labelSize), gbc); //$NON-NLS-1$
         panInfoTurns.add(createLabel(resourceMap.getString("AeroFuelView.lblTurnsAtMax.text"), labelSize), gbc); //$NON-NLS-1$
+        lblTurnsAtSafe.setToolTipText(resourceMap.getString("AeroFuelView.lblTurnsAtSafe.tooltip")); //$NON-NLS-1$
+        lblTurnsAtMax.setToolTipText(resourceMap.getString("AeroFuelView.lblTurnsAtMax.tooltip")); //$NON-NLS-1$
         panInfoTurns.add(lblTurnsAtSafe);
         panInfoTurns.add(lblTurnsAtMax);
 
@@ -110,6 +114,8 @@ public class AeroFuelView extends MainUIView implements ChangeListener {
         panBurnDays.setLayout(new GridLayout(0,2));
         panBurnDays.add(createLabel(resourceMap.getString("AeroFuelView.lblBurnDays1G.text"), labelSize), gbc); //$NON-NLS-1$
         panBurnDays.add(createLabel(resourceMap.getString("AeroFuelView.lblBurnDaysMax.text"), labelSize), gbc); //$NON-NLS-1$
+        lblBurnDays1G.setToolTipText(resourceMap.getString("AeroFuelView.lblBurnDays1G.tooltip")); //$NON-NLS-1$
+        lblBurnDaysMax.setToolTipText(resourceMap.getString("AeroFuelView.lblBurnDaysMax.tooltip")); //$NON-NLS-1$
         panBurnDays.add(lblBurnDays1G);
         panBurnDays.add(lblBurnDaysMax);
 

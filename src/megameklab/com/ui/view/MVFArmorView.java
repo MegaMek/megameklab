@@ -107,6 +107,7 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
         gbc.gridwidth = 2;
         setFieldSize(cbArmorType, controlSize);
         cbArmorType.setNullValue(EquipmentType.armorNames[EquipmentType.T_ARMOR_PATCHWORK]);
+        cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip")); //$NON-NLS-1$
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
         
@@ -117,6 +118,7 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 1;
         setFieldSize(spnTonnage.getEditor(), spinnerEditorSize);
+        spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
@@ -126,6 +128,7 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
         btnMaximize.setText(resourceMap.getString("ArmorView.btnMaximize.text")); //$NON-NLS-1$
         btnMaximize.setActionCommand(CMD_MAXIMIZE);
         setFieldSize(btnMaximize, controlSize);
+        btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip")); //$NON-NLS-1$
         add(btnMaximize, gbc);
         btnMaximize.addActionListener(this);
         
@@ -135,6 +138,7 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
         btnUseRemaining.setText(resourceMap.getString("ArmorView.btnRemaining.text")); //$NON-NLS-1$
         btnUseRemaining.setActionCommand(CMD_REMAINING);
         setFieldSize(btnUseRemaining, controlSize);
+        btnUseRemaining.setToolTipText(resourceMap.getString("ArmorView.btnRemaining.tooltip")); //$NON-NLS-1$
         add(btnUseRemaining, gbc);
         btnUseRemaining.addActionListener(this);
     }
