@@ -31,7 +31,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Engine;
+import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
@@ -40,6 +40,8 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestBattleArmor;
+import megamek.common.verifier.TestMech;
 import megameklab.com.ui.util.TechComboBox;
 
 /**
@@ -71,12 +73,14 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
     private final static int LABEL_INDEX_MEK  = 0;
     private final static int LABEL_INDEX_TANK = 1;
     private final static int LABEL_INDEX_AERO = 2;
+    private final static int LABEL_INDEX_BA   = 3;
 
     private final SpinnerNumberModel spnWalkModel = new SpinnerNumberModel(1, 1, null, 1);
     private final SpinnerNumberModel spnJumpModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnWalk = new JSpinner(spnWalkModel);
     private final JSpinner spnJump = new JSpinner(spnJumpModel);
-    private final TechComboBox<EquipmentType> cbJumpType = new TechComboBox<>(eq -> eq.getName());
+    private final TechComboBox<EquipmentType> cbJumpType =
+                new TechComboBox<>(eq -> eq.getName().replaceAll("\\s+\\[.*?\\]",  ""));
     
     private final JLabel lblWalk = createLabel("", labelSize);
     private final JLabel lblRun = createLabel("", labelSize);
@@ -113,6 +117,14 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
     private static final String[] TANK_JUMP_TYPE = {
             "VehicleJumpJet"
     };
+    
+    private static final String[] BA_JUMP_TYPE = {
+            "BAJumpJet", "BAVTOL", "BAUMU"
+    };
+    // BA is determined by EntityMovementMode instead of installed equipment, so we use indices.
+    private static final int BA_JUMP = 0;
+    private static final int BA_VTOL = 1;
+    private static final int BA_UMU  = 2;
     
     public MovementView(ITechManager techManager) {
         this.techManager = techManager;
@@ -218,31 +230,46 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         }
         // LAMs have a minimum jump MP of 3, which implies a minimum walk
         int minWalk = 1;
+        Integer maxWalk = null;
         int minJump = 0;
         int maxJump = en.getOriginalWalkMP();
         if (cbJumpType.getModel().getSize() == 0) { // No legal jump jet tech for this unit type
             maxJump = 0;
-        } else if ((en instanceof Mech)
-                && (((Mech)en).isSuperHeavy()
-                        || (!en.getEngine().isFusion() && (en.getEngine().getEngineType() != Engine.FISSION)))) {
-            maxJump = 0;
+        } else if (en.hasETypeFlag(Entity.ETYPE_MECH)) {
+            maxJump = TestMech.maxJumpMP((Mech)en);
         } else if (improvedJJ) {
             maxJump = (int)Math.ceil(maxJump * 1.5);
         }
-        if ((etype & Entity.ETYPE_TANK) != 0) {
+        if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
             int minRating = 10 + Tank.getSuspensionFactor(en.getMovementMode(), en.getWeight());
             minWalk = Math.max(1, (int)(minRating / en.getWeight()));
-        } else if ((etype & Entity.ETYPE_LAND_AIR_MECH) != 0) {
+        } else if (en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
             minJump = 3;
             minWalk = improvedJJ? 2 : 3;
+        } else if (en.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
+            cbJumpType.removeActionListener(this);
+            maxWalk = TestBattleArmor.maxWalkMP((BattleArmor)en);
+            if (((BattleArmor)en).getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
+                minWalk = 2;
+            }
+            if (en.getMovementMode() == EntityMovementMode.VTOL) {
+                maxJump = TestBattleArmor.maxVtolMP((BattleArmor)en);
+                cbJumpType.setSelectedItem(EquipmentType.get(BA_JUMP_TYPE[BA_VTOL]));
+            } else if (en.getMovementMode() == EntityMovementMode.INF_UMU) {
+                maxJump = TestBattleArmor.maxUmuMP((BattleArmor)en);
+                cbJumpType.setSelectedItem(EquipmentType.get(BA_JUMP_TYPE[BA_UMU]));
+            } else {
+                maxJump = TestBattleArmor.maxJumpMP((BattleArmor)en);
+                cbJumpType.setSelectedItem(EquipmentType.get(BA_JUMP_TYPE[BA_JUMP]));
+            }
+            cbJumpType.addActionListener(this);
         }
 
-        spnWalk.removeChangeListener(this);
         spnWalkModel.setMinimum(minWalk);
+        spnWalkModel.setMaximum(maxWalk);
         spnWalk.setValue(Math.max(minWalk, en.getOriginalWalkMP()));
         txtWalkFinal.setText(String.valueOf(en.getWalkMP()));
-        spnWalk.addChangeListener(this);
-        
+
         //getOriginalRunMPWithoutMASC() still subtracts for hardened armor, so we just do the calculation here
         txtRunBase.setText(String.valueOf((int)Math.ceil(en.getOriginalWalkMP() * 1.5)));
         txtRunFinal.setText(en.getRunMPasString());
@@ -267,21 +294,28 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         int labelIndex = LABEL_INDEX_MEK;
         boolean showJump = true;
         boolean showJumpType = true;
-        if ((etype & Entity.ETYPE_AERO) != 0) {
+        boolean showRun = true;
+        if (en.hasETypeFlag(Entity.ETYPE_AERO)) {
             labelIndex = LABEL_INDEX_AERO;
             showJump = showJumpType = false;
-        } else if ((etype & (Entity.ETYPE_VTOL | Entity.ETYPE_SUPPORT_TANK)) != 0) {
+        } else if (en.hasETypeFlag(Entity.ETYPE_VTOL) || en.hasETypeFlag(Entity.ETYPE_SUPPORT_TANK)) {
             labelIndex = LABEL_INDEX_TANK;
             showJump = showJumpType = false;
-        } else if ((etype & Entity.ETYPE_TANK) != 0) {
+        } else if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
             labelIndex = LABEL_INDEX_TANK;
             showJumpType = (en.getMovementMode() == EntityMovementMode.TRACKED)
                     || (en.getMovementMode() == EntityMovementMode.WHEELED)
                     || (en.getMovementMode() == EntityMovementMode.HOVER)
                     || (en.getMovementMode() == EntityMovementMode.WIGE);
+        } else if (en.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
+            labelIndex = LABEL_INDEX_BA;
+            showRun = false;
         }
         lblWalk.setText(walkNames[labelIndex]);
         lblRun.setText(runNames[labelIndex]);
+        lblRun.setVisible(showRun);
+        txtRunBase.setVisible(showRun);
+        txtRunFinal.setVisible(showRun);
         lblJump.setText(jumpNames[labelIndex]);
         lblJump.setVisible(showJump);
         spnJump.setVisible(showJump);
@@ -293,6 +327,8 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         
         if (jump0 > maxJump) {
             spnJump.setValue(spnJumpModel.getMaximum());
+        } else if (jump0 < minJump) {
+            spnJump.setValue(spnJumpModel.getMinimum());
         }
     }
     
@@ -308,6 +344,8 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
                 keys = PROTOMECH_JUMP_TYPE;
             } else if ((etype & Entity.ETYPE_TANK) != 0) {
                 keys = TANK_JUMP_TYPE;
+            } else if ((etype & Entity.ETYPE_BATTLEARMOR) != 0) {
+                keys = BA_JUMP_TYPE;
             }
             if (null != keys) {
                 for (String key : keys) {
