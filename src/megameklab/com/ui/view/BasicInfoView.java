@@ -119,6 +119,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         add(createLabel(resourceMap.getString("BasicInfoView.txtChassis.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 0;
+        txtChassis.setToolTipText(resourceMap.getString("BasicInfoView.txtChassis.tooltip")); //$NON-NLS-1$
         add(txtChassis, gbc);
         setFieldSize(txtChassis, controlSize);
         txtChassis.addFocusListener(this);
@@ -128,6 +129,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         add(createLabel(resourceMap.getString("BasicInfoView.txtModel.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 1;
+        txtModel.setToolTipText(resourceMap.getString("BasicInfoView.txtModel.tooltip")); //$NON-NLS-1$
         add(txtModel, gbc);
         setFieldSize(txtModel, controlSize);
         txtModel.addFocusListener(this);
@@ -138,6 +140,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         gbc.gridx = 1;
         gbc.gridy = 2;
         add(txtYear, gbc);
+        txtYear.setToolTipText(resourceMap.getString("BasicInfoView.txtYear.tooltip")); //$NON-NLS-1$
         setFieldSize(txtYear, controlSize);
         txtYear.setMaximum(9999);
         txtYear.addFocusListener(this);
@@ -148,6 +151,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         add(lblFaction, gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
+        cbFaction.setToolTipText(resourceMap.getString("BasicInfoView.cbFaction.tooltip")); //$NON-NLS-1$
         add(cbFaction, gbc);
         setFieldSize(cbFaction, controlSize);
         cbFaction.addActionListener(this);
@@ -158,6 +162,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         gbc.gridx = 1;
         gbc.gridy = 4;
         setFieldSize(txtSource, controlSize);
+        txtSource.setToolTipText(resourceMap.getString("BasicInfoView.txtSource.tooltip")); //$NON-NLS-1$
         add(txtSource, gbc);
         txtSource.addFocusListener(this);
 
@@ -167,6 +172,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         gbc.gridx = 1;
         gbc.gridy = 5;
         setFieldSize(cbTechBase, controlSize);
+        cbTechBase.setToolTipText(resourceMap.getString("BasicInfoView.cbTechBase.tooltip")); //$NON-NLS-1$
         add(cbTechBase, gbc);
         cbTechBase.addActionListener(this);
 
@@ -176,6 +182,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         gbc.gridx = 1;
         gbc.gridy = 6;
         setFieldSize(cbTechLevel, controlSize);
+        cbTechLevel.setToolTipText(resourceMap.getString("BasicInfoView.cbTechLevel.tooltip")); //$NON-NLS-1$
         add(cbTechLevel, gbc);
         cbTechLevel.addActionListener(this);
         refreshTechBase();
@@ -186,6 +193,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         gbc.gridx = 1;
         gbc.gridy = 7;
         setFieldSize(txtManualBV, controlSize);
+        txtManualBV.setToolTipText(resourceMap.getString("BasicInfoView.txtManualBV.tooltip")); //$NON-NLS-1$
         add(txtManualBV, gbc);
         txtManualBV.addFocusListener(this);
         

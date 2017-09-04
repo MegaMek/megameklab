@@ -123,6 +123,7 @@ public class PlatoonTypeView extends MainUIView implements ActionListener, Chang
         gbc.gridy = 0;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
+        cbMotiveType.setToolTipText(resourceMap.getString("PlatoonTypeView.cbMotiveType.tooltip")); //$NON-NLS-1$
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
         
@@ -134,6 +135,7 @@ public class PlatoonTypeView extends MainUIView implements ActionListener, Chang
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(spnNumSquads, spinnerSize);
+        spnNumSquads.setToolTipText(resourceMap.getString("PlatoonTypeView.spnNumSquads.tooltip")); //$NON-NLS-1$
         add(spnNumSquads, gbc);
         spnNumSquads.addChangeListener(this);
         
@@ -145,6 +147,7 @@ public class PlatoonTypeView extends MainUIView implements ActionListener, Chang
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(spnSquadSize, spinnerSize);
+        spnSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.spnSquadSize.tooltip")); //$NON-NLS-1$
         add(spnSquadSize, gbc);
         spnSquadSize.addChangeListener(this);
 
@@ -155,6 +158,7 @@ public class PlatoonTypeView extends MainUIView implements ActionListener, Chang
         add(new JLabel(resourceMap.getString("PlatoonTypeView.lblMaxSize.text")), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 3;
+        lblMaxSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSize.tooltip")); //$NON-NLS-1$
         add(lblMaxSize, gbc);
         
         gbc.gridx = 2;
@@ -163,6 +167,7 @@ public class PlatoonTypeView extends MainUIView implements ActionListener, Chang
         add(new JLabel(resourceMap.getString("PlatoonTypeView.lblMaxSquadSize.text")), gbc); //$NON-NLS-1$
         gbc.gridx = 3;
         gbc.gridy = 3;
+        lblMaxSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSquadSize.tooltip")); //$NON-NLS-1$
         add(lblMaxSquadSize, gbc);
         
     }

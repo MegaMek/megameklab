@@ -90,6 +90,7 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
         add(createLabel(resourceMap.getString("BAChassisView.cbChassisType.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         setFieldSize(cbChassisType, controlSize);
+        cbChassisType.setToolTipText(resourceMap.getString("BAChassisView.cbChassisType.tooltip")); //$NON-NLS-1$
         add(cbChassisType, gbc);
         cbChassisType.addActionListener(this);
 
@@ -98,6 +99,7 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
         add(createLabel(resourceMap.getString("BAChassisView.cbWeightClass.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         setFieldSize(cbWeightClass, controlSize);
+        cbWeightClass.setToolTipText(resourceMap.getString("BAChassisView.cbWeightClass.tooltip")); //$NON-NLS-1$
         add(cbWeightClass, gbc);
         cbWeightClass.addActionListener(this);
 
@@ -106,15 +108,18 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
         add(createLabel(resourceMap.getString("BAChassisView.spnSquadSize.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         setFieldSize(spnSquadSize, controlSize);
+        spnSquadSize.setToolTipText(resourceMap.getString("BAChassisView.spnSquadSize.tooltip")); //$NON-NLS-1$
         add(spnSquadSize, gbc);
         spnSquadSize.addChangeListener(this);
 
         JPanel chassisOptions = new JPanel();
         chkExoskeleton.setText(resourceMap.getString("BAChassisView.chkExoskeleton.text")); //$NON-NLS-1$
         chkExoskeleton.addActionListener(this);
+        chkExoskeleton.setToolTipText(resourceMap.getString("BAChassisView.chkExoskeleton.tooltip")); //$NON-NLS-1$
         chassisOptions.add(chkExoskeleton);
         chkHarjel.setText(resourceMap.getString("BAChassisView.chkHarjel.text")); //$NON-NLS-1$
         chkHarjel.addActionListener(this);
+        chkHarjel.setToolTipText(resourceMap.getString("BAChassisView.chkHarjel.tooltip")); //$NON-NLS-1$
         chassisOptions.add(chkHarjel);
 
         gbc.gridx = 0;
@@ -161,7 +166,7 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
             cbWeightClass.setSelectedIndex(0);
         }
         
-        chkHarjel.setEnabled(!techManager.isClan() || isExoskeleton());
+        chkHarjel.setEnabled(techManager.isClan() && isExoskeleton());
     }
     
     public int getBodyType() {

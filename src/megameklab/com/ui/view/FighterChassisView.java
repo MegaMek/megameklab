@@ -110,6 +110,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
+        spnTonnage.setToolTipText(resourceMap.getString("FighterChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
@@ -117,6 +118,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
+        chkOmni.setToolTipText(resourceMap.getString("FighterChassisView.chkOmni.tooltip")); //$NON-NLS-1$
         add(chkOmni, gbc);
         chkOmni.addActionListener(this);
 
@@ -126,6 +128,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap.getString("FighterChassisView.txtSI.text"), labelSize),gbc); //$NON-NLS-1$
         setFieldSize(txtSI, spinnerEditorSize);
+        txtSI.setToolTipText(resourceMap.getString("FighterChassisView.txtSI.tooltip")); //$NON-NLS-1$
         txtSI.setEditable(false);
         
         chkVSTOL.setText(resourceMap.getString("FighterChassisView.chkVSTOL.text")); //$NON-NLS-1$
@@ -134,6 +137,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         add(txtSI, gbc);
         gbc.gridx = 2;
         gbc.anchor = GridBagConstraints.EAST;
+        chkVSTOL.setToolTipText(resourceMap.getString("FighterChassisView.chkVSTOL.tooltip")); //$NON-NLS-1$
         add(chkVSTOL,gbc);
         chkVSTOL.addActionListener(this);
 
@@ -145,6 +149,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(cbFighterType, controlSize);
+        cbFighterType.setToolTipText(resourceMap.getString("FighterChassisView.cbFighterType.tooltip")); //$NON-NLS-1$
         add(cbFighterType, gbc);
         cbFighterType.addActionListener(this);
 
@@ -156,6 +161,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         setFieldSize(cbEngine, controlSize);
+        cbEngine.setToolTipText(resourceMap.getString("FighterChassisView.cbEngine.tooltip")); //$NON-NLS-1$
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
 
@@ -168,6 +174,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         gbc.gridy = 4;
         gbc.gridwidth = 3;
         setFieldSize(cbCockpit, controlSize);
+        cbCockpit.setToolTipText(resourceMap.getString("FighterChassisView.cbCockpit.tooltip")); //$NON-NLS-1$
         add(cbCockpit, gbc);
         cbCockpit.addActionListener(this);
         
@@ -175,6 +182,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         gbc.gridy = 5;
         gbc.gridwidth = 3;
         setFieldSize(btnResetChassis, controlSize);
+        btnResetChassis.setToolTipText(resourceMap.getString("FighterChassisView.btnResetChassis.tooltip")); //$NON-NLS-1$
         add(btnResetChassis, gbc);
         btnResetChassis.addActionListener(this);
     }

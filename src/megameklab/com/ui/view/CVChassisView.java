@@ -147,16 +147,19 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridx = 1;
         gbc.gridy = 0;
         setFieldSize(spnTonnage, spinnerSize);
+        spnTonnage.setToolTipText(resourceMap.getString("CVChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
         
         chkOmni.setText(resourceMap.getString("CVChassisView.chkOmni.text")); //$NON-NLS-1$
         gbc.gridx = 2;
+        chkOmni.setToolTipText(resourceMap.getString("CVChassisView.chkOmni.tooltip")); //$NON-NLS-1$
         add(chkOmni, gbc);
         chkOmni.addActionListener(this);
         
         chkSuperheavy.setText(resourceMap.getString("CVChassisView.chkSuperheavy.text")); //$NON-NLS-1$
         gbc.gridx = 3;
+        chkSuperheavy.setToolTipText(resourceMap.getString("CVChassisView.chkSuperheavy.tooltip")); //$NON-NLS-1$
         add(chkSuperheavy, gbc);
         chkSuperheavy.addActionListener(this);
 
@@ -168,6 +171,7 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         setFieldSize(cbMotiveType, controlSize);
+        cbMotiveType.setToolTipText(resourceMap.getString("CVChassisView.cbMotiveType.tooltip")); //$NON-NLS-1$
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
 
@@ -179,6 +183,7 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridy = 2;
         gbc.gridwidth = 3;
         setFieldSize(cbEngine, controlSize);
+        cbEngine.setToolTipText(resourceMap.getString("CVChassisView.cbEngine.tooltip")); //$NON-NLS-1$
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
 
@@ -190,6 +195,7 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridy = 3;
         gbc.gridwidth = 3;
         setFieldSize(cbTurrets, controlSize);
+        cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip")); //$NON-NLS-1$
         add(cbTurrets, gbc);
         cbTurrets.addActionListener(this);
         
@@ -201,6 +207,7 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridx = 3;
         gbc.gridy = 4;
         setFieldSize(spnChassisTurretWt, spinnerSize);
+        spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip")); //$NON-NLS-1$
         add(spnChassisTurretWt, gbc);
         spnChassisTurretWt.addChangeListener(this);
         omniComponents.add(lbl);
@@ -215,6 +222,7 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridy = 5;
         gbc.gridwidth = 1;
         setFieldSize(spnChassisTurret2Wt, spinnerSize);
+        spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip")); //$NON-NLS-1$
         add(spnChassisTurret2Wt, gbc);
         spnChassisTurret2Wt.addChangeListener(this);
         omniComponents.add(lbl);
@@ -228,6 +236,7 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridy = 6;
         gbc.gridwidth = 1;
         setFieldSize(spnFixedTroop, spinnerSize);
+        spnFixedTroop.setToolTipText(resourceMap.getString("CVChassisView.spnFixedTroop.tooltip")); //$NON-NLS-1$
         add(spnFixedTroop, gbc);
         spnFixedTroop.addChangeListener(this);
 
@@ -240,6 +249,7 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridy = 7;
         gbc.gridwidth = 1;
         setFieldSize(spnPodTroop, spinnerSize);
+        spnPodTroop.setToolTipText(resourceMap.getString("CVChassisView.spnPodTroop.tooltip")); //$NON-NLS-1$
         add(spnPodTroop, gbc);
         spnPodTroop.addChangeListener(this);
         omniComponents.add(lbl);
@@ -251,6 +261,7 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
         gbc.gridy = 8;
         gbc.gridwidth = 3;
         setFieldSize(btnResetChassis, controlSize);
+        btnResetChassis.setToolTipText(resourceMap.getString("CVChassisView.btnResetChassis.tooltip")); //$NON-NLS-1$
         add(btnResetChassis, gbc);
         btnResetChassis.addActionListener(this);
         omniComponents.add(btnResetChassis);

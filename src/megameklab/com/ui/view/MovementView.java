@@ -157,10 +157,12 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
+        spnWalk.setToolTipText(resourceMap.getString("MovementView.spnWalk.tooltip")); //$NON-NLS-1$
         add(spnWalk, gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
+        txtWalkFinal.setToolTipText(resourceMap.getString("MovementView.txtWalkFinal.tooltip")); //$NON-NLS-1$
         add(txtWalkFinal, gbc);
         spnWalk.addChangeListener(this);
         
@@ -169,10 +171,12 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         add(lblRun, gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
+        txtRunBase.setToolTipText(resourceMap.getString("MovementView.txtRunBase.tooltip")); //$NON-NLS-1$
         add(txtRunBase, gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.NONE;
+        txtRunFinal.setToolTipText(resourceMap.getString("MovementView.txtRunFinal.tooltip")); //$NON-NLS-1$
         add(txtRunFinal, gbc);
         
         gbc.gridx = 0;
@@ -180,10 +184,12 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         add(lblJump, gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
+        spnJump.setToolTipText(resourceMap.getString("MovementView.spnJump.tooltip")); //$NON-NLS-1$
         add(spnJump, gbc);
         gbc.gridx = 2;
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.NONE;
+        txtJumpFinal.setToolTipText(resourceMap.getString("MovementView.txtJumpFinal.tooltip")); //$NON-NLS-1$
         add(txtJumpFinal, gbc);
         spnJump.addChangeListener(this);
         
@@ -196,6 +202,7 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         gbc.gridy = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
+        cbJumpType.setToolTipText(resourceMap.getString("MovementView.cbJumpType.tooltip")); //$NON-NLS-1$
         add(cbJumpType, gbc);
         cbJumpType.addActionListener(this);
 
@@ -205,6 +212,7 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         txtWalkFinal.setHorizontalAlignment(SwingConstants.RIGHT);
         setFieldSize(txtRunBase, spinnerEditorSize);
         setFieldSize(txtRunFinal, spinnerEditorSize);
+        txtRunBase.setEditable(false);
         txtRunFinal.setEditable(false);
         txtRunFinal.setHorizontalAlignment(SwingConstants.RIGHT);
         setFieldSize(spnJump.getEditor(), spinnerEditorSize);
