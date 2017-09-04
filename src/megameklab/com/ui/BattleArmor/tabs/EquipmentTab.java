@@ -555,9 +555,6 @@ public class EquipmentTab extends ITab implements ActionListener {
                 if (etype instanceof AmmoType) {
                     atype = (AmmoType)etype;
                 }
-                if (!UnitUtil.isLegal(getBattleArmor(), etype)) {
-                    return false;
-                }
 
                 if ((etype instanceof MiscType)
                         && (etype.hasFlag(MiscType.F_TSM)
@@ -599,6 +596,10 @@ public class EquipmentTab extends ITab implements ActionListener {
                             && (wtype != null) && (wtype instanceof ArtilleryWeapon))
                         || (((nType == T_AMMO) && (atype != null)) && UnitUtil.canUseAmmo(ba, atype))
                         || ((nType == T_AP) && UnitUtil.isBattleArmorAPWeapon(etype))) {
+                    if (eSource.getTechManager() != null
+                            && !eSource.getTechManager().isLegal(etype)) {
+                        return false;
+                    }
                     if (txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());

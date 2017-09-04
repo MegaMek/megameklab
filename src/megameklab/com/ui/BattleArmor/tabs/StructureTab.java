@@ -440,6 +440,7 @@ public class StructureTab extends ITab implements ActionListener,
                 squadSizeChanged(4);
             }
         }
+        updateTechLevel();
     }
 
     @Override

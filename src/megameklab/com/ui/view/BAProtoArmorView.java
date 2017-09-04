@@ -150,7 +150,8 @@ public class BAProtoArmorView extends MainUIView implements ActionListener, Chan
         }
         cbArmorType.setSelectedItem(prev);
         cbArmorType.addActionListener(this);
-        if (cbArmorType.getSelectedIndex() < 0) {
+        if ((cbArmorType.getSelectedIndex() < 0)
+                && (cbArmorType.getModel().getSize() > 0)) {
             cbArmorType.setSelectedIndex(0);
         }
         cbArmorType.showTechBase(techManager.isMixedTech());
