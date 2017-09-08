@@ -31,6 +31,7 @@ import javax.swing.event.ChangeListener;
 
 import megamek.common.Aero;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.util.EncodeControl;

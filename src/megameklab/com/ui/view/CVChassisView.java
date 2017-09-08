@@ -37,6 +37,7 @@ import javax.swing.event.ChangeListener;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
+import megamek.common.ITechManager;
 import megamek.common.Tank;
 import megamek.common.TechAdvancement;
 import megamek.common.VTOL;
@@ -447,9 +448,9 @@ public class CVChassisView extends MainUIView implements ActionListener, ChangeL
     
     public List<Engine> getAvailableEngines() {
         List<Engine> retVal = new ArrayList<>();
-        boolean isMixed = techManager.isMixedTech();
+        boolean isMixed = techManager.useMixedTech();
         int flags = 0;
-        if (techManager.isClan()) {
+        if (techManager.useClanTechBase()) {
             flags |= Engine.CLAN_ENGINE;
         }
         if (getEngineRating() > 400) {

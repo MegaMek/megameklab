@@ -32,6 +32,7 @@ import javax.swing.SwingConstants;
 
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.Infantry;
 import megamek.common.SimpleTechLevel;
 import megamek.common.WeaponType;

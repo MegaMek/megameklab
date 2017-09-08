@@ -35,6 +35,7 @@ import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.LocationFullException;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -49,7 +50,6 @@ import megameklab.com.ui.Vehicle.views.SummaryView;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.CVChassisView;
-import megameklab.com.ui.view.ITechManager;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.util.ITab;
@@ -228,7 +228,7 @@ public class StructureTab extends ITab implements
     
     private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
         if (EquipmentType.T_ARMOR_PATCHWORK == at) {
-            boolean isMixed = panBasicInfo.isMixedTech();
+            boolean isMixed = panBasicInfo.useMixedTech();
             List<EquipmentType> armors = panArmor.getAllArmors();
             List<TechComboBox<EquipmentType>> combos = new ArrayList<>();
             JPanel panel = new JPanel(new GridBagLayout());
@@ -252,7 +252,7 @@ public class StructureTab extends ITab implements
             UnitUtil.removeISorArmorMounts(getTank(), false);
             for (int loc = 0; loc < getTank().locations(); loc++) {
                 EquipmentType armor = (EquipmentType)combos.get(loc).getSelectedItem();
-                getTank().setArmorTechLevel(armor.getTechLevel(panBasicInfo.getTechYear()), loc);
+                getTank().setArmorTechLevel(armor.getTechLevel(panBasicInfo.getGameYear()), loc);
                 getTank().setArmorType(EquipmentType.getArmorType(armor), loc);
             }
             panArmor.removeListener(this);
@@ -309,7 +309,7 @@ public class StructureTab extends ITab implements
     @Override
     public void updateTechLevel() {
         removeAllListeners();
-        getTank().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.isClan()));
+        getTank().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
         if (!getTank().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getTank(), false);
         }

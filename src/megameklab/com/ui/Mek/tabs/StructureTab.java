@@ -39,6 +39,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
 import megamek.common.Mech;
@@ -56,7 +57,6 @@ import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.HeatSinkView;
-import megameklab.com.ui.view.ITechManager;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MekChassisView;
 import megameklab.com.ui.view.MovementView;
@@ -472,7 +472,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
 
         if (at == EquipmentType.T_ARMOR_PATCHWORK) {
-            boolean isMixed = panBasicInfo.isMixedTech();
+            boolean isMixed = panBasicInfo.useMixedTech();
             List<EquipmentType> armors = panArmor.getAllArmors();
             List<TechComboBox<EquipmentType>> combos = new ArrayList<>();
             JPanel panel = new JPanel(new GridBagLayout());
@@ -495,7 +495,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
             UnitUtil.removeISorArmorMounts(getMech(), false);
             for (int loc = 0; loc < getMech().locations(); loc++) {
                 EquipmentType armor = (EquipmentType)combos.get(loc).getSelectedItem();
-                getMech().setArmorTechLevel(armor.getTechLevel(panBasicInfo.getTechYear()), loc);
+                getMech().setArmorTechLevel(armor.getTechLevel(panBasicInfo.getGameYear()), loc);
                 getMech().setArmorType(EquipmentType.getArmorType(armor), loc);
                 int crits = 0;
                 switch (EquipmentType.getArmorType(armor)) {
@@ -624,7 +624,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     @Override
     public void updateTechLevel() {
         removeAllListeners();
-        getMech().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.isClan()));
+        getMech().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
         if (!getMech().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }

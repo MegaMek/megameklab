@@ -32,14 +32,14 @@ import java.util.Calendar;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import com.kitfox.svg.SVGException;
+
 import megamek.common.Protomech;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperBattleArmor;
 import megameklab.com.util.ImageHelperProto;
 import megameklab.com.util.UnitUtil;
-
-import com.kitfox.svg.SVGException;
 
 public class PrintProtomech implements Printable {
 

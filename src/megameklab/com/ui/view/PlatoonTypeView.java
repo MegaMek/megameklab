@@ -29,6 +29,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.common.EntityMovementMode;
+import megamek.common.ITechManager;
 import megamek.common.Infantry;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestInfantry;

@@ -35,6 +35,7 @@ import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.Mounted;

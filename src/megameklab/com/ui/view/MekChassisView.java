@@ -37,6 +37,7 @@ import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.MiscType;
@@ -438,8 +439,8 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
     }
     
     private void refreshStructure() {
-        boolean isMixed = techManager.isMixedTech();
-        boolean isClan = techManager.isClan();
+        boolean isMixed = techManager.useMixedTech();
+        boolean isClan = techManager.useClanTechBase();
         cbStructure.removeActionListener(this);
         EquipmentType prevStructure = (EquipmentType)cbStructure.getSelectedItem();
         cbStructure.removeAllItems();
@@ -564,7 +565,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
                     cbEnhancement.addItem(eq);
                 }
             } else {
-                cbEnhancement.showTechBase(techManager.isMixedTech());
+                cbEnhancement.showTechBase(techManager.useMixedTech());
                 for (String name : ENHANCEMENT_NAMES) {
                     EquipmentType eq = EquipmentType.get(name);
                     if (techManager.isLegal(eq)) {
@@ -591,9 +592,9 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
     
     public List<Engine> getAvailableEngines() {
         List<Engine> retVal = new ArrayList<>();
-        boolean isMixed = techManager.isMixedTech();
+        boolean isMixed = techManager.useMixedTech();
         int flags = 0;
-        if (techManager.isClan()) {
+        if (techManager.useClanTechBase()) {
             flags |= Engine.CLAN_ENGINE;
         }
         if (getEngineRating() > 400) {

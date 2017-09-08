@@ -38,6 +38,7 @@ import megamek.client.ui.swing.MechViewPanel;
 import megamek.common.BattleArmor;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.LocationFullException;
 import megamek.common.MechView;
 import megamek.common.MiscType;
@@ -50,7 +51,6 @@ import megameklab.com.ui.view.BAChassisView;
 import megameklab.com.ui.view.BAEnhancementView;
 import megameklab.com.ui.view.BAProtoArmorView;
 import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.ITechManager;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -451,7 +451,7 @@ public class StructureTab extends ITab implements ActionListener,
     @Override
     public void updateTechLevel() {
         removeAllListeners();
-        getBattleArmor().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.isClan()));
+        getBattleArmor().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
         if (UnitUtil.checkEquipmentByTechLevel(getBattleArmor(), panBasicInfo)) {
             refresh.refreshEquipment();
         } else {
@@ -532,7 +532,7 @@ public class StructureTab extends ITab implements ActionListener,
     @Override
     public void exoskeletonChanged(boolean exoskeleton) {
         getBattleArmor().setIsExoskeleton(exoskeleton);
-        if (exoskeleton && !panBasicInfo.isClan()) {
+        if (exoskeleton && !panBasicInfo.useClanTechBase()) {
             getBattleArmor().setClanExoWithoutHarjel(panChassis.hasHarjel());
         }
         refresh.refreshStatus();

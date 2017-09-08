@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import megamek.common.Entity;
+import megamek.common.ITechManager;
 import megamek.common.ITechnology;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
@@ -219,7 +220,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         setTechBase(en.isClan(), en.isMixedTech());
         cbTechBase.addActionListener(this);
         cbTechLevel.removeActionListener(this);
-        SimpleTechLevel lvl = useTP? en.getSimpleLevel(getTechYear()) : en.getStaticTechLevel();
+        SimpleTechLevel lvl = useTP? en.getSimpleLevel(getGameYear()) : en.getStaticTechLevel();
         setTechLevel(SimpleTechLevel.max(lvl,
                 SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
         cbTechLevel.addActionListener(this);
@@ -254,7 +255,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     }
 
     @Override
-    public int getIntroYear() {
+    public int getTechIntroYear() {
         return txtYear.getIntVal();
     }
     
@@ -263,7 +264,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         refreshTechBase();
     }
     
-    public int getFaction() {
+    public int getTechFaction() {
         if (cbFaction.getSelectedIndex() < 0) {
             return -1;
         }
@@ -271,11 +272,11 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     }
 
     @Override
-    public int getTechYear() {
+    public int getGameYear() {
         if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
-            return Math.max(getIntroYear(), CConfig.getIntParam(CConfig.TECH_YEAR));
+            return Math.max(getTechIntroYear(), CConfig.getIntParam(CConfig.TECH_YEAR));
         }
-        return getIntroYear();
+        return getTechIntroYear();
     }
     
     public String getSource() {
@@ -295,8 +296,8 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     }
     
     @Override
-    public boolean isClan() {
-        if (getIntroYear() < CLAN_START) {
+    public boolean useClanTechBase() {
+        if (getTechIntroYear() < CLAN_START) {
             return false;
         } else {
             Integer selected = (Integer)cbTechBase.getSelectedItem();
@@ -306,8 +307,8 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     }
     
     @Override
-    public boolean isMixedTech() {
-        if (getIntroYear() < CLAN_START) {
+    public boolean useMixedTech() {
+        if (getTechIntroYear() < CLAN_START) {
             return false;
         }
         Integer selected = (Integer)cbTechBase.getSelectedItem();
@@ -317,7 +318,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     
     public void setTechBase(boolean clan, boolean mixed) {
         int item = 0;
-        if (clan && (getIntroYear() > CLAN_START)) {
+        if (clan && (getTechIntroYear() > CLAN_START)) {
             item++;
         }
         if (mixed) {
@@ -345,13 +346,13 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         if (baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN) {
             cbTechBase.addItem(TECH_BASE_IS);
         }
-        if ((getIntroYear() >= CLAN_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)) {
+        if ((getTechIntroYear() >= CLAN_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)) {
             cbTechBase.addItem(TECH_BASE_CLAN);
         }
-        if ((getIntroYear() >= IS_MIXED_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN)) {
+        if ((getTechIntroYear() >= IS_MIXED_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN)) {
             cbTechBase.addItem(TECH_BASE_IS_MIXED);
         }
-        if ((getIntroYear() >= CLAN_MIXED_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)) {
+        if ((getTechIntroYear() >= CLAN_MIXED_START) && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)) {
             cbTechBase.addItem(TECH_BASE_CLAN_MIXED);
         }
         if (null != prev) {
@@ -369,10 +370,10 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         SimpleTechLevel prev = getTechLevel();
         cbTechLevel.removeActionListener(this);
         cbTechLevel.removeAllItems();
-        if (!isClan() && !isMixedTech() && SimpleTechLevel.INTRO.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
+        if (!useClanTechBase() && !useMixedTech() && SimpleTechLevel.INTRO.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
             cbTechLevel.addItem(SimpleTechLevel.INTRO);
         }
-        if (!isMixedTech() && SimpleTechLevel.STANDARD.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
+        if (!useMixedTech() && SimpleTechLevel.STANDARD.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
             cbTechLevel.addItem(SimpleTechLevel.STANDARD);
         }
         if (SimpleTechLevel.ADVANCED.ordinal() >= baseTA.getStaticTechLevel().ordinal()) {
@@ -392,7 +393,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             cbFaction.removeActionListener(this);
             Integer prevFaction = (Integer)cbFaction.getSelectedItem();
-            cbFaction.refresh(getIntroYear(), isClan());
+            cbFaction.refresh(getTechIntroYear(), useClanTechBase());
             cbFaction.setSelectedItem(prevFaction);
             cbFaction.addActionListener(this);
             if (cbFaction.getSelectedIndex() < 0) {
@@ -409,7 +410,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
     @Override
     public void focusGained(FocusEvent e) {
         if (e.getSource().equals(txtYear)) {
-            prevYear = getIntroYear();
+            prevYear = getTechIntroYear();
         } else if (e.getSource().equals(txtManualBV)) {
             prevBV = getManualBV();
         }
@@ -423,7 +424,7 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
             listeners.forEach(l -> l.modelChanged(getModel()));
         } else if (e.getSource() == txtYear) {
             try {
-                int year = Math.max(getIntroYear(), baseTA.getIntroductionDate(isClan()));
+                int year = Math.max(getTechIntroYear(), baseTA.getIntroductionDate(useClanTechBase()));
                 listeners.forEach(l -> l.yearChanged(year));
                 prevYear = year;
             } catch (NumberFormatException ex) {
@@ -450,12 +451,27 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         if (e.getSource() == cbFaction) {
             listeners.forEach(l -> l.updateTechLevel());
         } else if (e.getSource() == cbTechBase) {
-            listeners.forEach(l -> l.techBaseChanged(isClan(), isMixedTech()));
+            listeners.forEach(l -> l.techBaseChanged(useClanTechBase(), useMixedTech()));
             refreshTechLevel();
         } else if (e.getSource() == cbTechLevel) {
             listeners.forEach(l -> l.techLevelChanged(getTechLevel()));
         }
         listeners.forEach(l -> l.refreshSummary());
+    }
+    
+    @Override
+    public boolean unofficialNoYear() {
+        return CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR);
+    }
+    
+    @Override
+    public boolean useVariableTechLevel() {
+        return CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
+    }
+    
+    @Override
+    public boolean showExtinct() {
+        return CConfig.getBooleanParam(CConfig.TECH_EXTINCT);
     }
     
 }

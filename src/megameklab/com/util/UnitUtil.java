@@ -49,6 +49,7 @@ import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.ITechnology;
 import megamek.common.Infantry;
 import megamek.common.LandAirMech;
@@ -118,7 +119,6 @@ import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
 import megameklab.com.MegaMekLab;
-import megameklab.com.ui.view.ITechManager;
 
 public class UnitUtil {
 

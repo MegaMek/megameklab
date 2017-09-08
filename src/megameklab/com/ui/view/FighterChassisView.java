@@ -34,6 +34,7 @@ import javax.swing.event.ChangeListener;
 import megamek.common.Aero;
 import megamek.common.Engine;
 import megamek.common.Entity;
+import megamek.common.ITechManager;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
@@ -291,9 +292,9 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
                     Engine.NORMAL_ENGINE, 0));
         }
         List<Engine> retVal = new ArrayList<>();
-        boolean isMixed = techManager.isMixedTech();
+        boolean isMixed = techManager.useMixedTech();
         int flags = 0;
-        if (techManager.isClan()) {
+        if (techManager.useClanTechBase()) {
             flags |= Engine.CLAN_ENGINE;
         }
         if (getEngineRating() > 400) {

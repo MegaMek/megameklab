@@ -32,6 +32,7 @@ import javax.swing.event.ChangeListener;
 
 import megamek.common.BattleArmor;
 import megamek.common.EntityWeightClass;
+import megamek.common.ITechManager;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 
@@ -166,7 +167,7 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
             cbWeightClass.setSelectedIndex(0);
         }
         
-        chkHarjel.setEnabled(techManager.isClan() && isExoskeleton());
+        chkHarjel.setEnabled(techManager.useClanTechBase() && isExoskeleton());
     }
     
     public int getBodyType() {

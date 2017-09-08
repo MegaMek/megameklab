@@ -38,6 +38,7 @@ import javax.swing.SwingConstants;
 
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.Infantry;
 import megamek.common.SimpleTechLevel;
 import megamek.common.WeaponType;
@@ -51,7 +52,6 @@ import megameklab.com.ui.Infantry.views.FieldGunView;
 import megameklab.com.ui.Infantry.views.SpecializationView;
 import megameklab.com.ui.Infantry.views.WeaponView;
 import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.ITechManager;
 import megameklab.com.ui.view.InfantryWeaponView;
 import megameklab.com.ui.view.PlatoonTypeView;
 import megameklab.com.util.ITab;
@@ -356,7 +356,7 @@ public class StructureTab extends ITab implements
         if (!panBasicInfo.isLegal(Infantry.getMotiveTechAdvancement(getInfantry().getMovementMode()))) {
             motiveTypeChanged(EntityMovementMode.INF_LEG, false);
         }
-        getInfantry().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.isClan()));
+        getInfantry().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
         UnitUtil.checkEquipmentByTechLevel(getInfantry(), panBasicInfo);
         UnitUtil.resetInfantryArmor(getInfantry());
         panPlatoonType.setFromEntity(getInfantry());
