@@ -34,6 +34,8 @@ import java.util.Vector;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import com.kitfox.svg.SVGException;
+
 import megamek.common.Crew;
 import megamek.common.Engine;
 import megamek.common.LargeSupportTank;
@@ -44,8 +46,6 @@ import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperVehicle;
 import megameklab.com.util.UnitUtil;
-
-import com.kitfox.svg.SVGException;
 
 public class PrintLargeSupportVehicle implements Printable {
 

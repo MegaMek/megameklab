@@ -34,6 +34,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
@@ -44,7 +45,6 @@ import megameklab.com.ui.view.AeroFuelView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.FighterChassisView;
 import megameklab.com.ui.view.HeatSinkView;
-import megameklab.com.ui.view.ITechManager;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.util.ITab;
@@ -344,7 +344,7 @@ public class StructureTab extends ITab implements
     @Override
     public void updateTechLevel() {
         removeAllListeners();
-        getAero().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.isClan()));
+        getAero().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.useClanTechBase()));
         if (!getAero().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getAero(), false);
         }

@@ -30,6 +30,7 @@ import javax.swing.event.ChangeListener;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
@@ -134,13 +135,13 @@ public class BAProtoArmorView extends MainUIView implements ActionListener, Chan
             flag = MiscType.F_PROTOMECH_EQUIPMENT;
         }
         for (int at = 0; at < EquipmentType.armorNames.length; at++) {
-            String name = EquipmentType.getArmorTypeName(at, techManager.isClan());
+            String name = EquipmentType.getArmorTypeName(at, techManager.useClanTechBase());
             EquipmentType eq = EquipmentType.get(name);
             if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {
                 cbArmorType.addItem(eq);
             }
-            if (techManager.isMixedTech()) {
-                name = EquipmentType.getArmorTypeName(at, !techManager.isClan());
+            if (techManager.useMixedTech()) {
+                name = EquipmentType.getArmorTypeName(at, !techManager.useClanTechBase());
                 EquipmentType eq2 = EquipmentType.get(name);
                 if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag)
                         && techManager.isLegal(eq2)) {
@@ -154,7 +155,7 @@ public class BAProtoArmorView extends MainUIView implements ActionListener, Chan
                 && (cbArmorType.getModel().getSize() > 0)) {
             cbArmorType.setSelectedIndex(0);
         }
-        cbArmorType.showTechBase(techManager.isMixedTech());
+        cbArmorType.showTechBase(techManager.useMixedTech());
     }
     
     @Override

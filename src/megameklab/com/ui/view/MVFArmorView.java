@@ -32,6 +32,7 @@ import javax.swing.event.ChangeListener;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.Mech;
 import megamek.common.MiscType;
 import megamek.common.SimpleTechLevel;
@@ -212,7 +213,7 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
                 if ((at == EquipmentType.T_ARMOR_HARDENED) && hardenedIllegal) {
                     continue;
                 }
-                String name = EquipmentType.getArmorTypeName(at, techManager.isClan());
+                String name = EquipmentType.getArmorTypeName(at, techManager.useClanTechBase());
                 EquipmentType eq = EquipmentType.get(name);
                 if ((null == eq) || (isLAM && ((eq.getCriticals(null) > 0)))) {
                     continue;
@@ -220,8 +221,8 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
                 if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {
                     cbArmorType.addItem(eq);
                 }
-                if (techManager.isMixedTech()) {
-                    name = EquipmentType.getArmorTypeName(at, !techManager.isClan());
+                if (techManager.useMixedTech()) {
+                    name = EquipmentType.getArmorTypeName(at, !techManager.useClanTechBase());
                     EquipmentType eq2 = EquipmentType.get(name);
                     if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag)
                             && techManager.isLegal(eq2)) {
@@ -240,7 +241,7 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
                 && techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
             cbArmorType.addItem(null);
         }
-        cbArmorType.showTechBase(techManager.isMixedTech());
+        cbArmorType.showTechBase(techManager.useMixedTech());
     }
     
     public EquipmentType getArmor() {
@@ -272,11 +273,11 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
 
     public int getArmorTechConstant() {
         if (cbArmorType.getSelectedItem() == null) {
-            return Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getTechYear(),
-                    techManager.isClan());
+            return Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getGameYear(),
+                    techManager.useClanTechBase());
         } else {
             EquipmentType armor = (EquipmentType)cbArmorType.getSelectedItem();
-            return (armor.getTechLevel(techManager.getTechYear(), armor.isClan()));
+            return (armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
         }
     }
 

@@ -27,6 +27,7 @@ import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.Infantry;
 import megamek.common.LocationFullException;
 import megamek.common.TechConstants;
@@ -34,7 +35,6 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.Infantry.tabs.PreviewTab;
 import megameklab.com.ui.Infantry.tabs.StructureTab;
-import megameklab.com.ui.view.ITechManager;
 import megameklab.com.util.MenuBarCreator;
 
 public class MainUI extends MegaMekLabMainUI {

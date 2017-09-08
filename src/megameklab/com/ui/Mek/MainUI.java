@@ -29,6 +29,7 @@ import megamek.common.BipedMech;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.LandAirMech;
 import megamek.common.Mech;
 import megamek.common.QuadMech;
@@ -41,7 +42,6 @@ import megameklab.com.ui.Mek.tabs.BuildTab;
 import megameklab.com.ui.Mek.tabs.EquipmentTab;
 import megameklab.com.ui.Mek.tabs.PreviewTab;
 import megameklab.com.ui.Mek.tabs.StructureTab;
-import megameklab.com.ui.view.ITechManager;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 

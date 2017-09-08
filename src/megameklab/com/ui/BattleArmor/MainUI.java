@@ -30,12 +30,12 @@ import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.TechConstants;
 import megameklab.com.ui.MegaMekLabMainUI;
 import megameklab.com.ui.BattleArmor.tabs.BuildTab;
 import megameklab.com.ui.BattleArmor.tabs.EquipmentTab;
 import megameklab.com.ui.BattleArmor.tabs.StructureTab;
-import megameklab.com.ui.view.ITechManager;
 import megameklab.com.util.MenuBarCreator;
 import megameklab.com.util.UnitUtil;
 

@@ -1,7 +1,7 @@
 package megameklab.com.ui;
 
 import megamek.common.Entity;
-import megameklab.com.ui.view.ITechManager;
+import megamek.common.ITechManager;
 
 /**
  * In order to track when changes are made to the unit, we will have one
