@@ -1001,7 +1001,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         if (null == jumpJet) {
             getMech().setOriginalJumpMP(0);
             jumpMP = 0;
-        } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET)) {
+        } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET) || jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
             getMech().setOriginalJumpMP(jumpMP);
         } else {
             getMech().setOriginalJumpMP(0);
@@ -1009,17 +1009,23 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         List<Mounted> jjs = getMech().getMisc().stream()
                 .filter(m -> m.getType() == jumpJet)
                 .collect(Collectors.toList());
-        while (jjs.size() > jumpMP) {
-            UnitUtil.removeMounted(getMech(), jjs.remove(jjs.size() - 1));
-        }
-        while (jumpMP > jjs.size()) {
-            try {
-                UnitUtil.addMounted(getMech(), new Mounted(getMech(), jumpJet),
-                        Entity.LOC_NONE, false);
-            } catch (LocationFullException e) {
-                // Adding to LOC_NONE
+        if (jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
+            if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
+                UnitUtil.createSpreadMounts(getMech(), jumpJet);
             }
-            jumpMP--;
+        } else {
+            while (jjs.size() > jumpMP) {
+                UnitUtil.removeMounted(getMech(), jjs.remove(jjs.size() - 1));
+            }
+            while (jumpMP > jjs.size()) {
+                try {
+                    UnitUtil.addMounted(getMech(), new Mounted(getMech(), jumpJet),
+                            Entity.LOC_NONE, false);
+                } catch (LocationFullException e) {
+                    // Adding to LOC_NONE
+                }
+                jumpMP--;
+            }
         }
         panSummary.refresh();
         refresh.refreshBuild();
@@ -1032,7 +1038,8 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     public void jumpTypeChanged(final EquipmentType jumpJet) {
         List<Mounted> jjs = getMech().getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET)
-                        || m.getType().hasFlag(MiscType.F_UMU))
+                        || m.getType().hasFlag(MiscType.F_UMU)
+                        || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER))
                 .filter(m -> m.getType() != jumpJet)
                 .collect(Collectors.toList());
         jjs.forEach(jj -> UnitUtil.removeMounted(getMech(), jj));
