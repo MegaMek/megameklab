@@ -1865,12 +1865,6 @@ public class UnitUtil {
 
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
-        if ((eq instanceof WeaponType)
-                && (eq.hasFlag(WeaponType.F_C3M) || eq
-                        .hasFlag(WeaponType.F_C3MBS))) {
-            return name = name.substring(0,
-                    eq.getName().indexOf("with TAG") - 1);
-        }
         if (unit.isMixedTech()
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
