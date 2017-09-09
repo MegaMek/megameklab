@@ -42,6 +42,7 @@ import megamek.common.Mounted;
 import megamek.common.Tank;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestBattleArmor;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megameklab.com.ui.util.TechComboBox;
 
@@ -99,33 +100,6 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
     private String[] walkNames;
     private String[] runNames;
     private String[] jumpNames;
-    
-    private static final String[] MECH_JUMP_TYPE = {
-            "JumpJet", "ImprovedJump Jet",
-            "ISPrototypeJumpJet", "ISPrototypeImprovedJumpJet",
-            "UMU",
-    };
-    
-    // No improved JJs for industrial mechs
-    private static final String[] INDUSTRIAL_JUMP_TYPE = {
-            "JumpJet", "ISPrototypeJumpJet", "UMU"
-    };
-    
-    private static final String[] PROTOMECH_JUMP_TYPE = {
-            "JumpJet", "ExtendedJumpJetSystem", "ProtomechUMU"
-    };
-    
-    private static final String[] TANK_JUMP_TYPE = {
-            "VehicleJumpJet"
-    };
-    
-    private static final String[] BA_JUMP_TYPE = {
-            "BAJumpJet", "BAVTOL", "BAUMU"
-    };
-    // BA is determined by EntityMovementMode instead of installed equipment, so we use indices.
-    private static final int BA_JUMP = 0;
-    private static final int BA_VTOL = 1;
-    private static final int BA_UMU  = 2;
     
     public MovementView(ITechManager techManager) {
         this.techManager = techManager;
@@ -229,8 +203,8 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
 
         boolean improvedJJ = false;
         Optional<EquipmentType> jj = en.getMisc().stream().map(Mounted::getType)
-                .filter(eq -> eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU))
-                .findAny();
+                .filter(eq -> eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU)
+                        || eq.hasFlag(MiscType.F_JUMP_BOOSTER)).findAny();
         if (jj.isPresent()) {
             improvedJJ = jj.get().hasSubType(MiscType.S_IMPROVED);
             cbJumpType.removeActionListener(this);
@@ -241,7 +215,7 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         int minWalk = 1;
         Integer maxWalk = null;
         int minJump = 0;
-        int maxJump = en.getOriginalWalkMP();
+        Integer maxJump = en.getOriginalWalkMP();
         if (cbJumpType.getModel().getSize() == 0) { // No legal jump jet tech for this unit type
             maxJump = 0;
         } else if (en.hasETypeFlag(Entity.ETYPE_MECH)) {
@@ -261,15 +235,13 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
             if (((BattleArmor)en).getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
                 minWalk = 2;
             }
+            cbJumpType.setSelectedItem(TestBattleArmor.BAMotiveSystems.getEquipment(en.getMovementMode()));
             if (en.getMovementMode() == EntityMovementMode.VTOL) {
                 maxJump = TestBattleArmor.maxVtolMP((BattleArmor)en);
-                cbJumpType.setSelectedItem(EquipmentType.get(BA_JUMP_TYPE[BA_VTOL]));
             } else if (en.getMovementMode() == EntityMovementMode.INF_UMU) {
                 maxJump = TestBattleArmor.maxUmuMP((BattleArmor)en);
-                cbJumpType.setSelectedItem(EquipmentType.get(BA_JUMP_TYPE[BA_UMU]));
             } else {
                 maxJump = TestBattleArmor.maxJumpMP((BattleArmor)en);
-                cbJumpType.setSelectedItem(EquipmentType.get(BA_JUMP_TYPE[BA_JUMP]));
             }
             cbJumpType.addActionListener(this);
         }
@@ -331,10 +303,10 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         txtJumpFinal.setVisible(showJump);
         lblJumpType.setVisible(showJumpType);
         cbJumpType.setVisible(showJumpType);
-        spnJump.setEnabled(maxJump > 0);
-        cbJumpType.setEnabled(maxJump > 0);
+        spnJump.setEnabled((null == maxJump) || (maxJump > 0));
+        cbJumpType.setEnabled((null == maxJump) || (maxJump > 0));
         
-        if (jump0 > maxJump) {
+        if ((maxJump != null) && (jump0 > maxJump)) {
             spnJump.setValue(spnJumpModel.getMaximum());
         } else if (jump0 < minJump) {
             spnJump.setValue(spnJumpModel.getMinimum());
@@ -346,22 +318,9 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
             EquipmentType prev = (EquipmentType)cbJumpType.getSelectedItem();
             cbJumpType.removeActionListener(this);
             cbJumpType.removeAllItems();
-            String[] keys = null;
-            if ((etype & Entity.ETYPE_MECH) != 0) {
-                keys = industrial? INDUSTRIAL_JUMP_TYPE : MECH_JUMP_TYPE;
-            } else if ((etype & Entity.ETYPE_PROTOMECH) != 0) {
-                keys = PROTOMECH_JUMP_TYPE;
-            } else if ((etype & Entity.ETYPE_TANK) != 0) {
-                keys = TANK_JUMP_TYPE;
-            } else if ((etype & Entity.ETYPE_BATTLEARMOR) != 0) {
-                keys = BA_JUMP_TYPE;
-            }
-            if (null != keys) {
-                for (String key : keys) {
-                    EquipmentType eq = EquipmentType.get(key);
-                    if (null != eq && techManager.isLegal(eq)) {
-                        cbJumpType.addItem(eq);
-                    }
+            for (EquipmentType eq : TestEntity.validJumpJets(etype, industrial)) {
+                if (techManager.isLegal(eq)) {
+                    cbJumpType.addItem(eq);
                 }
             }
             cbJumpType.setSelectedItem(prev);
