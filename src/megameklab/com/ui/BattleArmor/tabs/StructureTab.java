@@ -147,12 +147,12 @@ public class StructureTab extends ITab implements ActionListener,
         leftPanel.add(panChassis);
         leftPanel.add(panMovement);
         leftPanel.add(panArmor);
-        leftPanel.add(manipPanel);
         //leftPanel.add(Box.createVerticalGlue());
         
         rightPanel.add(Box.createVerticalStrut(5));
         rightPanel.add(previewPanel);
         rightPanel.add(panEnhancements);
+        rightPanel.add(manipPanel);
         
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -511,11 +511,12 @@ public class StructureTab extends ITab implements ActionListener,
     public void chassisTypeChanged(int chassisType) {
         getBattleArmor().setChassisType(chassisType);
         panBasicInfo.setFromEntity(getBattleArmor());
-        panChassis.refresh();
+        panChassis.setFromEntity(getBattleArmor());
         panMovement.setFromEntity(getBattleArmor());
         panEnhancements.setFromEntity(getBattleArmor());
         refreshPreview();
         refresh.refreshStatus();
+        refresh.refreshBuild();
     }
 
     @Override
@@ -555,6 +556,29 @@ public class StructureTab extends ITab implements ActionListener,
             refresh.refreshPreview();
             refresh.refreshBuild();
         }
+    }
+
+    @Override
+    public void turretChanged(int type, int size) {
+        getBattleArmor().setModularTurret(type == BAChassisView.TURRET_MODULAR);
+        if (type == BAChassisView.TURRET_NONE) {
+            size = 0;
+        } else {
+            size = Math.max(1, size);
+        }
+        getBattleArmor().setTurretSize(size);
+        
+        if (size == 0) {
+            for (Mounted mount : getBattleArmor().getEquipment()) {
+                if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_TURRET) {
+                    mount.setBaMountLoc(BattleArmor.MOUNT_LOC_BODY);
+                }
+            }
+        }
+        panChassis.setFromEntity(getBattleArmor());
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+        refresh.refreshBuild();
     }
 
     @Override
