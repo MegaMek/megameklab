@@ -7,6 +7,7 @@ v0.43.4-git
 + Issue #52: Gyro switching and validation
 + Issue #66: Jumpjets on Vehicles greyout out on loading (0.43.3)
 + Feature: LAM construction rules.
++ Fixed issue setting fluff image on tanks
 
 v0.43.3 (2017-07-18 18:30 UTC)
 + Bug: Some conventional infantry options require a higher tech level for Clan conventional infantry.
