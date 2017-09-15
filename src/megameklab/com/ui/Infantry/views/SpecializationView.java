@@ -85,13 +85,13 @@ public class SpecializationView extends IView implements ActionListener {
             
             gbc.gridx++;
             gbc.anchor = GridBagConstraints.CENTER;
-            if (spec == Infantry.TAG_TROOPS || spec == Infantry.PARATROOPS) {
+            if (spec == Infantry.TAG_TROOPS || spec == Infantry.PARATROOPS || spec == Infantry.XCT) {
                 specPanel.add(new JLabel("-"), gbc);
             } else {
                 specPanel.add(new JLabel("10"), gbc);
             }
             gbc.gridx++;
-            if (spec == Infantry.TAG_TROOPS || spec == Infantry.PARATROOPS) {
+            if (spec == Infantry.TAG_TROOPS || spec == Infantry.PARATROOPS || spec == Infantry.XCT) {
                 specPanel.add(new JLabel("-"), gbc);
             } else if (spec < Infantry.MARINES || spec == Infantry.MOUNTAIN_TROOPS) {
                 specPanel.add(new JLabel("2"), gbc);
@@ -101,7 +101,7 @@ public class SpecializationView extends IView implements ActionListener {
                 specPanel.add(new JLabel("4"), gbc);
             }
             gbc.gridx++;
-            if (spec == Infantry.TAG_TROOPS || spec == Infantry.PARATROOPS) {
+            if (spec == Infantry.TAG_TROOPS || spec == Infantry.PARATROOPS || spec == Infantry.XCT) {
                 specPanel.add(new JLabel("-"), gbc);
             } else if (spec == Infantry.MARINES) {
                 specPanel.add(new JLabel("2"), gbc);
