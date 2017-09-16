@@ -44,6 +44,9 @@ public class CriticalSuit {
                 }
                 crits[i] = new CriticalSlot[numSlots];
                 break;
+            case BattleArmor.MOUNT_LOC_TURRET:
+                crits[i] = new CriticalSlot[ba.getTurretCapacity()];
+                break;
             }
 
         }
