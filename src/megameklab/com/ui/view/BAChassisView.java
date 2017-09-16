@@ -52,6 +52,7 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
     public interface ChassisListener {
         void chassisTypeChanged(int bodyType);
         void weightClassChanged(int weightClass);
+        void turretChanged(int type, int size);
         void exoskeletonChanged(boolean exoskeleton);
         void harjelChanged(boolean harjel);
         void squadSizeChanged(int squadSize);
@@ -64,11 +65,18 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
         listeners.remove(l);
     }
     
+    public final static int TURRET_NONE     = 0;
+    public final static int TURRET_STANDARD = 1;
+    public final static int TURRET_MODULAR  = 2;
+    
+    private final SpinnerNumberModel spnTurretSizeModel = new SpinnerNumberModel(0, 0, 10, 1);
     private final JComboBox<String> cbChassisType = new JComboBox<>();
     private final CustomComboBox<Integer> cbWeightClass = new CustomComboBox<>(i -> EntityWeightClass.getClassName(i));
     private final JCheckBox chkExoskeleton = new JCheckBox();
     private final JCheckBox chkHarjel = new JCheckBox();
     private final JSpinner spnSquadSize = new JSpinner(new SpinnerNumberModel(4, 4, 6, 1));
+    private final JComboBox<String> cbTurretType = new JComboBox<>();
+    private final JSpinner spnTurretSize = new JSpinner(spnTurretSizeModel);
     
     private ITechManager techManager;
     
@@ -80,6 +88,7 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
         cbChassisType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("BAChassisView.cbBodyType.values").split(","))); //$NON-NLS-1$
+        cbTurretType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("BAChassisView.cbTurretType.values").split(","))); //$NON-NLS-1$
         setLayout(new GridBagLayout());
         
         GridBagConstraints gbc = new GridBagConstraints();
@@ -112,6 +121,24 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
         spnSquadSize.setToolTipText(resourceMap.getString("BAChassisView.spnSquadSize.tooltip")); //$NON-NLS-1$
         add(spnSquadSize, gbc);
         spnSquadSize.addChangeListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("BAChassisView.cbTurretType.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        setFieldSize(cbTurretType, controlSize);
+        cbTurretType.setToolTipText(resourceMap.getString("BAChassisView.cbTurretType.tooltip")); //$NON-NLS-1$
+        add(cbTurretType, gbc);
+        cbTurretType.addActionListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(createLabel(resourceMap.getString("BAChassisView.spnTurretSize.text"), labelSize), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        setFieldSize(spnTurretSize, controlSize);
+        spnTurretSize.setToolTipText(resourceMap.getString("BAChassisView.spnTurretSize.tooltip")); //$NON-NLS-1$
+        add(spnTurretSize, gbc);
+        spnTurretSize.addChangeListener(this);
 
         JPanel chassisOptions = new JPanel();
         chkExoskeleton.setText(resourceMap.getString("BAChassisView.chkExoskeleton.text")); //$NON-NLS-1$
@@ -149,6 +176,23 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
         spnSquadSize.removeChangeListener(this);
         spnSquadSize.setValue(ba.getTroopers());
         spnSquadSize.addChangeListener(this);
+        
+        cbTurretType.removeActionListener(this);
+        spnTurretSize.removeChangeListener(this);
+        spnTurretSizeModel.setValue(ba.getTurretCapacity());
+        if (ba.getTurretCapacity() > 0) {
+            if (ba.hasModularTurretMount()) {
+                cbTurretType.setSelectedIndex(TURRET_MODULAR);
+                spnTurretSizeModel.setMaximum(9);
+            } else {
+                cbTurretType.setSelectedIndex(TURRET_STANDARD);
+                spnTurretSizeModel.setMaximum(10);
+            }
+        } else {
+            cbTurretType.setSelectedIndex(TURRET_NONE);
+        }
+        cbTurretType.addActionListener(this);
+        spnTurretSize.addChangeListener(this);
     }
     
     public void refresh() {
@@ -165,6 +209,22 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
         cbWeightClass.addActionListener(this);
         if (cbWeightClass.getSelectedIndex() < 0) {
             cbWeightClass.setSelectedIndex(0);
+        }
+        if (getBodyType() == BattleArmor.CHASSIS_TYPE_QUAD) {
+            if (cbTurretType.getSelectedIndex() == TURRET_NONE) {
+                spnTurretSizeModel.setMaximum(0);
+            } else if (cbTurretType.getSelectedIndex() == TURRET_MODULAR) {
+                spnTurretSizeModel.setMaximum(9);
+            } else {
+                spnTurretSizeModel.setMaximum(10);
+            }
+            cbTurretType.setEnabled(true);
+            spnTurretSize.setEnabled(true);
+        } else {
+            cbTurretType.setSelectedIndex(TURRET_NONE);
+            spnTurretSizeModel.setMaximum(0);
+            cbTurretType.setEnabled(false);
+            spnTurretSize.setEnabled(false);
         }
         
         chkHarjel.setEnabled(techManager.useClanTechBase() && isExoskeleton());
@@ -190,6 +250,9 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnSquadSize) {
             listeners.forEach(l -> l.squadSizeChanged((Integer)spnSquadSize.getValue()));
+        } else if (e.getSource() == spnTurretSize) {
+            listeners.forEach(l -> l.turretChanged(cbTurretType.getSelectedIndex(),
+                    spnTurretSizeModel.getNumber().intValue()));
         }
     }
 
@@ -199,6 +262,9 @@ public class BAChassisView extends MainUIView implements ActionListener, ChangeL
             listeners.forEach(l -> l.chassisTypeChanged(cbChassisType.getSelectedIndex()));
         } else if (e.getSource() == cbWeightClass) {
             listeners.forEach(l -> l.weightClassChanged(getWeightClass()));
+        } else if (e.getSource() == cbTurretType) {
+            listeners.forEach(l -> l.turretChanged(cbTurretType.getSelectedIndex(),
+                    spnTurretSizeModel.getNumber().intValue()));
         } else if (e.getSource() == chkExoskeleton) {
             listeners.forEach(l -> l.exoskeletonChanged(chkExoskeleton.isSelected()));
         } else if (e.getSource() == chkHarjel) {

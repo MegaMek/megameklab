@@ -14,6 +14,7 @@ v0.43.4-git
 	  by faction availability.
 	o Rewrote structure tab code to implement consistent filtering of options by intro year and tech level.
 	  Some minor layout changes.
++ PR #80: BA Quad turrets
 
 v0.43.3 (2017-07-18 18:30 UTC)
 + Bug: Some conventional infantry options require a higher tech level for Clan conventional infantry.
