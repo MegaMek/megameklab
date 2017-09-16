@@ -7,6 +7,12 @@ v0.43.4-git
 + Issue #52: Gyro switching and validation
 + Issue #66: Jumpjets on Vehicles greyout out on loading (0.43.3)
 + Feature: LAM construction rules.
++ PR #79: IOTech
+	o Updates all tech intro dates to the Universal Technology Advancement Table in Interstellar Operations.
+	o New configuration options for filtering construction options by tech level in a given year or
+	  by faction availability.
+	o Rewrote structure tab code to implement consistent filtering of options by intro year and tech level.
+	  Some minor layout changes.
 
 v0.43.3 (2017-07-18 18:30 UTC)
 + Bug: Some conventional infantry options require a higher tech level for Clan conventional infantry.
