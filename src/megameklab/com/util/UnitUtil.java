@@ -49,6 +49,8 @@ import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.ITechnology;
 import megamek.common.Infantry;
 import megamek.common.LandAirMech;
 import megamek.common.LocationFullException;
@@ -72,50 +74,50 @@ import megamek.common.verifier.TestInfantry;
 import megamek.common.verifier.TestMech;
 import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
-import megamek.common.weapons.ACWeapon;
 import megamek.common.weapons.AmmoWeapon;
-import megamek.common.weapons.BPodWeapon;
-import megamek.common.weapons.CLAMS;
-import megamek.common.weapons.CLChemicalLaserWeapon;
-import megamek.common.weapons.CLLaserAMS;
-import megamek.common.weapons.CLLightTAG;
-import megamek.common.weapons.CLPlasmaCannon;
-import megamek.common.weapons.CLTAG;
-import megamek.common.weapons.EnergyWeapon;
-import megamek.common.weapons.GaussWeapon;
-import megamek.common.weapons.HAGWeapon;
-import megamek.common.weapons.HVACWeapon;
-import megamek.common.weapons.ISAMS;
-import megamek.common.weapons.ISAPDS;
-import megamek.common.weapons.ISC3M;
-import megamek.common.weapons.ISC3MBS;
-import megamek.common.weapons.ISLaserAMS;
-import megamek.common.weapons.ISPlasmaRifle;
-import megamek.common.weapons.ISTAG;
-import megamek.common.weapons.LBXACWeapon;
-import megamek.common.weapons.LRMWeapon;
-import megamek.common.weapons.LRTWeapon;
 import megamek.common.weapons.LegAttack;
-import megamek.common.weapons.MGWeapon;
-import megamek.common.weapons.MPodWeapon;
-import megamek.common.weapons.MRMWeapon;
-import megamek.common.weapons.PPCWeapon;
-import megamek.common.weapons.RLWeapon;
-import megamek.common.weapons.SRMWeapon;
-import megamek.common.weapons.SRTWeapon;
 import megamek.common.weapons.StopSwarmAttack;
-import megamek.common.weapons.StreakLRMWeapon;
-import megamek.common.weapons.StreakSRMWeapon;
 import megamek.common.weapons.SwarmAttack;
 import megamek.common.weapons.SwarmWeaponAttack;
-import megamek.common.weapons.ThunderBoltWeapon;
-import megamek.common.weapons.UACWeapon;
-import megamek.common.weapons.VehicleFlamerWeapon;
+import megamek.common.weapons.autocannons.ACWeapon;
+import megamek.common.weapons.autocannons.HVACWeapon;
+import megamek.common.weapons.autocannons.LBXACWeapon;
+import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.battlearmor.CLBALightTAG;
 import megamek.common.weapons.battlearmor.ISBALightTAG;
+import megamek.common.weapons.defensivepods.BPodWeapon;
+import megamek.common.weapons.defensivepods.MPodWeapon;
+import megamek.common.weapons.flamers.VehicleFlamerWeapon;
+import megamek.common.weapons.gaussrifles.GaussWeapon;
+import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.lasers.CLChemicalLaserWeapon;
+import megamek.common.weapons.lasers.EnergyWeapon;
+import megamek.common.weapons.lrms.LRMWeapon;
+import megamek.common.weapons.lrms.LRTWeapon;
+import megamek.common.weapons.lrms.StreakLRMWeapon;
+import megamek.common.weapons.mgs.MGWeapon;
+import megamek.common.weapons.missiles.MRMWeapon;
+import megamek.common.weapons.missiles.RLWeapon;
+import megamek.common.weapons.missiles.ThunderBoltWeapon;
+import megamek.common.weapons.other.CLAMS;
+import megamek.common.weapons.other.CLLaserAMS;
+import megamek.common.weapons.other.ISAMS;
+import megamek.common.weapons.other.ISAPDS;
+import megamek.common.weapons.other.ISC3M;
+import megamek.common.weapons.other.ISC3MBS;
+import megamek.common.weapons.other.ISLaserAMS;
+import megamek.common.weapons.ppc.CLPlasmaCannon;
+import megamek.common.weapons.ppc.ISPlasmaRifle;
+import megamek.common.weapons.ppc.PPCWeapon;
+import megamek.common.weapons.srms.SRMWeapon;
+import megamek.common.weapons.srms.SRTWeapon;
+import megamek.common.weapons.srms.StreakSRMWeapon;
+import megamek.common.weapons.tag.CLLightTAG;
+import megamek.common.weapons.tag.CLTAG;
+import megamek.common.weapons.tag.ISTAG;
 import megameklab.com.MegaMekLab;
 
 public class UnitUtil {
@@ -447,12 +449,25 @@ public class UnitUtil {
      * Checks to see if unit can use the techlevel
      *
      * @param unit
-     * @param techLevel
+     * @param tech
      * @return Boolean if the tech level is legal for the passed unit
      */
-    public static boolean isLegal(Entity unit, int techLevel) {
-        return TechConstants.isLegal(unit.getTechLevel(), techLevel, false,
-                unit.isMixedTech());
+    public static boolean isLegal(Entity unit, ITechnology tech) {
+        if (unit.isMixedTech()) {
+            if (!tech.isAvailableIn(unit.getTechLevelYear())) {
+                return false;
+            }
+        } else {
+            if (tech.getTechBase() != ITechnology.TECH_BASE_ALL
+                    && unit.isClan() != tech.isClan()) {
+                return false;
+            }
+            if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan())) {
+                return false;
+            }
+        }
+        return TechConstants.convertFromNormalToSimple(tech.getTechLevel(unit.getTechLevelYear(),
+                unit.isClan())) <= TechConstants.convertFromNormalToSimple(unit.getTechLevel());
     }
 
     /**
@@ -652,12 +667,20 @@ public class UnitUtil {
      * @param hsType
      */
     public static void addHeatSinkMounts(Mech unit, int hsAmount, String hsType) {
+        addHeatSinkMounts(unit, hsAmount, EquipmentType.get(UnitUtil.getHeatSinkType(hsType, unit.isClan())));
+    }
+    
+    /**
+     * adds all heat sinks to the mech
+     * 
+     * @param unit
+     * @param hsAmount
+     * @param sinkType
+     */
+    public static void addHeatSinkMounts(Mech unit, int hsAmount, EquipmentType sinkType) {
         final String METHOD_NAME = "addHeatSinkMounts(Mech, int, String)";
 
-        EquipmentType sinkType;
-        sinkType = EquipmentType.get(UnitUtil.getHeatSinkType(hsType,
-                unit.isClan()));
-        if (hsType.equals("Compact")) {
+        if (sinkType.hasFlag(MiscType.F_COMPACT_HEAT_SINK)) {
             UnitUtil.addCompactHeatSinkMounts(unit, hsAmount);
         } else {
             for (; hsAmount > 0; hsAmount--) {
@@ -820,9 +843,8 @@ public class UnitUtil {
      *
      * @param unit
      */
-    public static void updateAutoSinks(Mech unit, String hsType) {
-        int base = UnitUtil.getCriticalFreeHeatSinks(unit,
-                hsType.equals("Compact"));
+    public static void updateAutoSinks(Mech unit, boolean compact) {
+        int base = UnitUtil.getCriticalFreeHeatSinks(unit, compact);
         Vector<Mounted> unassigned = new Vector<Mounted>();
         Vector<Mounted> assigned = new Vector<Mounted>();
         for (Mounted m : unit.getMisc()) {
@@ -960,30 +982,6 @@ public class UnitUtil {
             if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())) {
                 unit.getMisc().remove(eq);
                 unit.getEquipment().remove(eq);
-            }
-        }
-    }
-
-    public static void updateEnhancements(Mech unit, boolean hasMASC,
-            boolean hasTSM) {
-        UnitUtil.removeEnhancements(unit);
-        if (hasTSM) {
-            if (unit.isIndustrial()) {
-                UnitUtil.createSpreadMounts(unit,
-                        EquipmentType.get("Industrial TSM"));
-            } else {
-                UnitUtil.createSpreadMounts(unit, EquipmentType.get("TSM"));
-            }
-        }
-        if (hasMASC) {
-            Mounted mount = new Mounted(unit, EquipmentType.get("ISMASC"));
-            if (unit.isClan()) {
-                mount = new Mounted(unit, EquipmentType.get("CLMASC"));
-            }
-            try {
-                unit.addEquipment(mount, Entity.LOC_NONE, false);
-            } catch (LocationFullException lfe) {
-                // this can't happen, we add to Entity.LOC_NONE
             }
         }
     }
@@ -1333,6 +1331,7 @@ public class UnitUtil {
             double points =
                     TestAero.maxArmorPoints(unit, unit.getWeight());
             armorWeight = points / armorPerTon;
+            armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         }
         return armorWeight;
     }
@@ -1838,9 +1837,8 @@ public class UnitUtil {
      */
     public static boolean isJumpJet(EquipmentType eq) {
         if ((eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || eq.hasFlag(MiscType.F_JUMP_JET) || eq
-                            .hasFlag(MiscType.F_UMU))) {
+                && (eq.hasFlag(MiscType.F_JUMP_JET)
+                        || eq.hasFlag(MiscType.F_UMU))) {
             return true;
         }
 
@@ -1867,12 +1865,6 @@ public class UnitUtil {
 
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
-        if ((eq instanceof WeaponType)
-                && (eq.hasFlag(WeaponType.F_C3M) || eq
-                        .hasFlag(WeaponType.F_C3MBS))) {
-            return name = name.substring(0,
-                    eq.getName().indexOf("with TAG") - 1);
-        }
         if (unit.isMixedTech()
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
                 && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
@@ -3576,6 +3568,10 @@ public class UnitUtil {
         return sinks;
     }
 
+    /**
+     * @deprecated Use {@link checkEquipmentByTechLevel(Entity,ITechManager)} instead
+     */
+    @Deprecated
     public static void checkEquipmentByTechLevel(Entity unit) {
         Vector<Mounted> toRemove = new Vector<Mounted>();
         for (Mounted m : unit.getEquipment()) {
@@ -3589,8 +3585,7 @@ public class UnitUtil {
                     || etype.hasFlag(MiscType.F_MASC)) {
                 continue;
             }
-            if (!UnitUtil.isLegal(unit,
-                    etype.getTechLevel(unit.getTechLevelYear()))) {
+            if (!UnitUtil.isLegal(unit, etype)) {
                 toRemove.add(m);
             }
         }
@@ -3600,18 +3595,63 @@ public class UnitUtil {
         if (unit instanceof Infantry) {
             Infantry pbi = (Infantry) unit;
             if ((null != pbi.getPrimaryWeapon())
-                    && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon()
-                            .getTechLevel(pbi.getTechLevelYear()))) {
+                    && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon())) {
                 UnitUtil.replaceMainWeapon((Infantry) unit,
                         (InfantryWeapon) EquipmentType
                                 .get("Infantry Auto Rifle"), false);
             }
             if ((null != pbi.getSecondaryWeapon())
-                    && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon()
-                            .getTechLevel(pbi.getTechLevelYear()))) {
+                    && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon())) {
                 UnitUtil.replaceMainWeapon((Infantry) unit, null, true);
             }
         }
+    }
+
+    public static boolean checkEquipmentByTechLevel(Entity unit, ITechManager techManager) {
+        Vector<Mounted> toRemove = new Vector<Mounted>();
+        ITechnology acTA = Entity.getArmoredComponentTechAdvancement();
+        boolean dirty = false;
+        for (Mounted m : unit.getEquipment()) {
+            if (m.isArmored() && !techManager.isLegal(acTA)) {
+                m.setArmored(false);
+                updateCritsArmoredStatus(unit, m);
+                dirty = true;
+            }
+            EquipmentType etype = m.getType();
+            if (UnitUtil.isArmorOrStructure(etype)
+                    || UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
+                continue;
+            }
+            if (etype.hasFlag(MiscType.F_TSM)
+                    || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                    || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+                    || etype.hasFlag(MiscType.F_SCM)) {
+                continue;
+            }
+            if (!techManager.isLegal(etype)) {
+                toRemove.add(m);
+            }
+        }
+        dirty |= toRemove.size() > 0;
+        for (Mounted m : toRemove) {
+            UnitUtil.removeMounted(unit, m);
+        }
+        if (unit instanceof Infantry) {
+            Infantry pbi = (Infantry) unit;
+            if ((null != pbi.getPrimaryWeapon())
+                    && techManager.isLegal(pbi.getPrimaryWeapon())) {
+                dirty = true;
+                UnitUtil.replaceMainWeapon((Infantry) unit,
+                        (InfantryWeapon) EquipmentType
+                                .get("Infantry Auto Rifle"), false);
+            }
+            if ((null != pbi.getSecondaryWeapon())
+                    && !techManager.isLegal(pbi.getSecondaryWeapon())) {
+                dirty = true;
+                UnitUtil.replaceMainWeapon((Infantry) unit, null, true);
+            }
+        }
+        return dirty;
     }
 
     public static void replaceMainWeapon(Infantry unit, InfantryWeapon weapon,

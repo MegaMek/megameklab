@@ -282,10 +282,21 @@ public class SummaryView extends IView{
         txtGyroCrit.setText(Integer.toString(getGyroCrits()));
         txtEngineCrit.setText(Integer.toString(getEngineCrits()));
         txtCockpitCrit.setText(Integer.toString(getCockpitCrits()));
-        String structName = EquipmentType.getStructureTypeName(getMech().getStructureType(),TechConstants.isClan(getMech().getStructureTechLevel()));
-        txtStructCrit.setText(Integer.toString(EquipmentType.get(structName).getCriticals(getMech())));
-        String armorName = EquipmentType.getArmorTypeName(getMech().getArmorType(0),TechConstants.isClan(getMech().getArmorTechLevel(0)));
-        txtArmorCrit.setText(Integer.toString(EquipmentType.get(armorName).getCriticals(getMech())));
+        if ((getMech().getStructureType() >= 0)
+                && (getMech().getStructureType() < EquipmentType.structureNames.length)) {
+            String structName = EquipmentType.getStructureTypeName(getMech().getStructureType(),TechConstants.isClan(getMech().getStructureTechLevel()));
+            txtStructCrit.setText(Integer.toString(EquipmentType.get(structName).getCriticals(getMech())));
+        } else {
+            txtStructCrit.setText("?");
+        }
+        //FIXME: This doesn't account for patchwork armor crits.
+        if ((getMech().getArmorType(0) >= 0)
+                && (getMech().getArmorType(0) < EquipmentType.armorNames.length)) {
+            String armorName = EquipmentType.getArmorTypeName(getMech().getArmorType(0),TechConstants.isClan(getMech().getArmorTechLevel(0)));
+            txtArmorCrit.setText(Integer.toString(EquipmentType.get(armorName).getCriticals(getMech())));
+        } else {
+            txtArmorCrit.setText("?");
+        }
 
         runThroughEquipment(testMech);
 
