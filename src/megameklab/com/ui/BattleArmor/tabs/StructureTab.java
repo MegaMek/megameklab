@@ -36,6 +36,7 @@ import javax.swing.SwingConstants;
 
 import megamek.client.ui.swing.MechViewPanel;
 import megamek.common.BattleArmor;
+import megamek.common.CriticalSlot;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
@@ -549,9 +550,28 @@ public class StructureTab extends ITab implements ActionListener,
 
     @Override
     public void squadSizeChanged(int squadSize) {
-        if (squadSize != getBattleArmor().getTroopers()){
+        if (squadSize != getBattleArmor().getTroopers()) {
+            // We need to resize several arrays. This clears out the critical slots, so
+            // we're going to preserve them before refreshing and restore the data afterward.
+            CriticalSlot[][] slots = new CriticalSlot[getBattleArmor().locations()][];
+            for (int loc = 0; loc < getBattleArmor().locations(); loc++) {
+                slots[loc] = new CriticalSlot[getBattleArmor().getNumberOfCriticals(loc)];
+                for (int i = 0; i < getBattleArmor().getNumberOfCriticals(loc); i++) {
+                    slots[loc][i] = getBattleArmor().getCritical(loc, i);
+                }
+            }
+            int armor = getBattleArmor().getArmor(BattleArmor.LOC_TROOPER_1);
             getBattleArmor().setTroopers(squadSize);
+            getBattleArmor().refreshLocations();
+            for (int loc = 0; loc < Math.min(getBattleArmor().locations(), slots.length); loc++) {
+                for (int i = 0; i < slots[loc].length; i++) {
+                    getBattleArmor().setCritical(loc, i, slots[loc][i]);
+                }
+            }
             getBattleArmor().autoSetInternal();
+            for(int i = 1; i < getBattleArmor().locations(); i++) {
+                getBattleArmor().initializeArmor(armor, i);
+            }
             refresh.refreshStatus();
             refresh.refreshPreview();
             refresh.refreshBuild();
