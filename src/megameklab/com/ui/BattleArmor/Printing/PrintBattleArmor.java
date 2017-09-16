@@ -31,14 +31,14 @@ import java.util.Calendar;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.standard.PrintQuality;
 
+import com.kitfox.svg.SVGException;
+
 import megamek.common.BattleArmor;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megameklab.com.util.ImageHelper;
 import megameklab.com.util.ImageHelperBattleArmor;
 import megameklab.com.util.UnitUtil;
-
-import com.kitfox.svg.SVGException;
 
 public class PrintBattleArmor implements Printable {
 

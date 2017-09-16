@@ -60,6 +60,13 @@ public class CConfig {
     public static final String CONFIG_EMPTY_FOREGROUND = "Empty-Foreground";
     public static final String CONFIG_EMPTY_BACKGROUND = "Empty-Background";
     
+    public static final String TECH_PROGRESSION = "techProgression";
+    public static final String TECH_USE_YEAR = "techUseYear";
+    public static final String TECH_YEAR = "techYear";
+    public static final String TECH_SHOW_FACTION = "techShowFaction";
+    public static final String TECH_EXTINCT = "techShowExtinct";
+    public static final String TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
+    
     public static final String CONFIG_SAVE_LOC = "Save-Location-Default";
 
     private static Properties config;// config. player values.
@@ -198,6 +205,20 @@ public class CConfig {
             toReturn = Integer.parseInt(CConfig.getParam(param));
         } catch (Exception ex) {
             return 0;
+        }
+        return toReturn;
+    }
+
+    /**
+     * Return the boolean value of a given config property. Return a false if the
+     * property does not exist.
+     */
+    public static boolean getBooleanParam(String param) {
+        boolean toReturn;
+        try {
+            toReturn = Boolean.parseBoolean(CConfig.getParam(param));
+        } catch (Exception ex) {
+            return false;
         }
         return toReturn;
     }

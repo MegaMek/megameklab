@@ -49,15 +49,15 @@ import javax.swing.table.TableRowSorter;
 import megamek.common.AmmoType;
 import megamek.common.EquipmentType;
 import megamek.common.WeaponType;
-import megamek.common.weapons.ACWeapon;
-import megamek.common.weapons.ArtilleryCannonWeapon;
-import megamek.common.weapons.ArtilleryWeapon;
-import megamek.common.weapons.GaussWeapon;
-import megamek.common.weapons.HVACWeapon;
-import megamek.common.weapons.LBXACWeapon;
-import megamek.common.weapons.RACWeapon;
-import megamek.common.weapons.RifleWeapon;
-import megamek.common.weapons.UACWeapon;
+import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
+import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megamek.common.weapons.autocannons.ACWeapon;
+import megamek.common.weapons.autocannons.HVACWeapon;
+import megamek.common.weapons.autocannons.LBXACWeapon;
+import megamek.common.weapons.autocannons.RACWeapon;
+import megamek.common.weapons.autocannons.RifleWeapon;
+import megamek.common.weapons.autocannons.UACWeapon;
+import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.EquipmentTableModel;
 import megameklab.com.util.IView;
@@ -329,9 +329,6 @@ public class FieldGunView extends IView implements ActionListener {
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if(!UnitUtil.isLegal(getInfantry(), etype.getTechLevel(getInfantry().getTechLevelYear()))) {
-                    return false;
-                }
                 if ((nType == T_ALL)
                         || ((nType == T_GUN) 
                                 && !(etype instanceof ArtilleryWeapon)
@@ -339,6 +336,10 @@ public class FieldGunView extends IView implements ActionListener {
                         || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon)
                         || ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)
                         ) {
+                    if(null != eSource.getTechManager()
+                            && !eSource.getTechManager().isLegal(etype)) {
+                        return false;
+                    }
                     if(txtFilter.getText().length() > 0) {
                         String text = txtFilter.getText();
                         return etype.getName().toLowerCase().contains(text.toLowerCase());
@@ -365,11 +366,9 @@ public class FieldGunView extends IView implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSL), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSW), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVCL), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVDA), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DINTRO), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DCOMMON), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), false);
@@ -377,6 +376,7 @@ public class FieldGunView extends IView implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
         } else {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
@@ -388,11 +388,9 @@ public class FieldGunView extends IView implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSL), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVSW), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVCL), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_AVDA), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DINTRO), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DCOMMON), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), true);
@@ -400,6 +398,7 @@ public class FieldGunView extends IView implements ActionListener {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
         }
     }
 

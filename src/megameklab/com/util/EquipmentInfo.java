@@ -29,18 +29,17 @@ import megamek.common.Sensor;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.WeaponType;
-import megamek.common.weapons.ATMWeapon;
-import megamek.common.weapons.CLAR10Weapon;
-import megamek.common.weapons.CLVehicularGrenadeLauncher;
-import megamek.common.weapons.EnergyWeapon;
-import megamek.common.weapons.ISAR10Weapon;
-import megamek.common.weapons.ISCenturionWeaponSystem;
-import megamek.common.weapons.ISVehicularGrenadeLauncher;
-import megamek.common.weapons.LRMWeapon;
-import megamek.common.weapons.MMLWeapon;
-import megamek.common.weapons.SRMWeapon;
 import megamek.common.weapons.battlearmor.ISBACompactNarc;
 import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
+import megamek.common.weapons.capitalweapons.AR10Weapon;
+import megamek.common.weapons.lasers.EnergyWeapon;
+import megamek.common.weapons.lrms.LRMWeapon;
+import megamek.common.weapons.missiles.ATMWeapon;
+import megamek.common.weapons.missiles.MMLWeapon;
+import megamek.common.weapons.mortars.CLVehicularGrenadeLauncher;
+import megamek.common.weapons.mortars.ISVehicularGrenadeLauncher;
+import megamek.common.weapons.other.ISCenturionWeaponSystem;
+import megamek.common.weapons.srms.SRMWeapon;
 
 public class EquipmentInfo {
     public int count = 0;
@@ -245,8 +244,7 @@ public class EquipmentInfo {
             minRange = Math.max(0, weapon.minimumRange);
             isWeapon = true;
 
-            isAR10 = (weapon instanceof CLAR10Weapon) 
-                    || (weapon instanceof ISAR10Weapon);
+            isAR10 = (weapon instanceof AR10Weapon);
 
             if (isAR10) {
                 int barracudaAmmo = 0;

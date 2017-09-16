@@ -12,18 +12,29 @@
 
 package megameklab.com.util;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SpringLayout;
+
+import megamek.common.ITechnology;
+import megamek.common.util.EncodeControl;
+import megameklab.com.ui.util.IntRangeTextField;
 
 public final class ConfigurationDialog extends JDialog implements ActionListener {
 
@@ -32,70 +43,66 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
      */
     private static final long serialVersionUID = -6504846822457360057L;
 
-    private final static String saveCommand = "Save";
-    private final static String cancelCommand = "Cancel";
-    private final static String windowName = "Configuration Dialog";
+    private final static String saveCommand = "Save"; //$NON-NLS-1$
+    private final static String cancelCommand = "Cancel"; //$NON-NLS-1$
 
     // BUTTONS
-    private final JButton saveButton = new JButton(saveCommand);
-    private final JButton cancelButton = new JButton(cancelCommand);
+    private final JButton btnSave = new JButton(saveCommand);
+    private final JButton btnCancel = new JButton(cancelCommand);
     private JButton baseButton;
 
-    // STOCK DIALOUG AND PANE
-    private JDialog dialog;
-    private JOptionPane pane;
-    private JPanel MasterPanel = new JPanel();
-    private JPanel ConfigPane = new JPanel(new SpringLayout());
+    private final JTabbedPane panMain = new JTabbedPane();
+    private final JPanel panColors = new JPanel(new SpringLayout());
+    private final JPanel panTech = new JPanel(new GridBagLayout());
+    
+    private final JCheckBox chkTechProgression = new JCheckBox();
+    private final JCheckBox chkTechUseYear = new JCheckBox();
+    private final IntRangeTextField txtTechYear = new IntRangeTextField();
+    private final JCheckBox chkTechShowFaction = new JCheckBox();
+    private final JCheckBox chkShowExtinct = new JCheckBox();
+    private final JCheckBox chkUnofficialIgnoreYear = new JCheckBox();
+    
+    //Store changes in the color configuration to write only if the user clicks save
+    private final Map<String,String> colorMap = new HashMap<>();
 
-    public ConfigurationDialog() {
+    public ConfigurationDialog(JFrame frame) {
+        super(frame, true);
+        
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs", new EncodeControl()); //$NON-NLS-1$
+        setTitle(resourceMap.getString("ConfigurationDialog.windowName.text")); //$NON-NLS-1$
+        
+        getContentPane().setLayout(new BorderLayout());
+        add(panMain, BorderLayout.CENTER);
+        JPanel panButtons = new JPanel();
+        btnSave.setText(resourceMap.getString("ConfigurationDialog.btnSave.text")); //$NON-NLS-1$
+        btnSave.setToolTipText(resourceMap.getString("ConfigurationDialog.btnSave.tooltip")); //$NON-NLS-1$
+        btnSave.setActionCommand(saveCommand);
+        btnSave.addActionListener(this);
+        panButtons.add(btnSave);
 
-        // stored values.
-        setTitle(windowName);
+        btnCancel.setText(resourceMap.getString("ConfigurationDialog.btnCancel.text")); //$NON-NLS-1$
+        btnCancel.setToolTipText(resourceMap.getString("ConfigurationDialog.btnCancel.tooltip")); //$NON-NLS-1$
+        btnCancel.setActionCommand(cancelCommand);
+        btnCancel.addActionListener(this);
+        panButtons.add(btnCancel);
+        add(panButtons, BorderLayout.SOUTH);
 
-        // Set the tooltips and actions for dialouge buttons
-        saveButton.setActionCommand(saveCommand);
-        cancelButton.setActionCommand(cancelCommand);
+        panMain.addTab(resourceMap.getString("ConfigurationDialog.colorCodes.title"), panColors); //$NON-NLS-1$
+        panMain.addTab(resourceMap.getString("ConfigurationDialog.techProgression.title"), panTech); //$NON-NLS-1$
+        
+        loadColorPanel();
+        loadTechPanel(resourceMap);
 
-        saveButton.addActionListener(this);
-        cancelButton.addActionListener(this);
-        saveButton.setToolTipText("Save");
-        cancelButton.setToolTipText("Exit without saving changes");
-
-        loadPanel();
-        MasterPanel.add(ConfigPane);
-
-        // Set the user's options
-        Object[] options = { saveButton, cancelButton };
-
-        Dimension dim = new Dimension(100, 200);
-
-        ConfigPane.setMaximumSize(dim);
-
-        // Create the pane containing the buttons
-        pane = new JOptionPane(ConfigPane, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, options, null);
-
-        pane.setMaximumSize(dim);
-
-        MasterPanel.setMaximumSize(dim);
-
-        // Create the main dialog and set the default button
-        dialog = pane.createDialog(MasterPanel, windowName);
-        dialog.getRootPane().setDefaultButton(cancelButton);
-
-        dialog.setMaximumSize(dim);
-        // Show the dialog and get the user's input
-        dialog.setModal(true);
-        dialog.pack();
-        dialog.setVisible(true);
+        pack();
     }
 
-    private void loadPanel() {
+    private void loadColorPanel() {
         addFields(CConfig.CONFIG_WEAPONS);
         addFields(CConfig.CONFIG_EQUIPMENT);
         addFields(CConfig.CONFIG_AMMO);
         addFields(CConfig.CONFIG_SYSTEMS);
         addFields(CConfig.CONFIG_EMPTY);
-        SpringLayoutHelper.setupSpringGrid(ConfigPane, 3);
+        SpringLayoutHelper.setupSpringGrid(panColors, 3);
     }
 
     private void addFields(String fieldName) {
@@ -105,19 +112,75 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
         baseLabel.setBackground(CConfig.getBackgroundColor(fieldName));
         baseLabel.setForeground(CConfig.getForegroundColor(fieldName));
 
-        ConfigPane.add(baseLabel);
+        panColors.add(baseLabel);
         baseButton = new JButton("Foreground");
         baseButton.setName(fieldName + CConfig.CONFIG_FOREGROUND);
         baseButton.addActionListener(this);
-        ConfigPane.add(baseButton);
+        panColors.add(baseButton);
         baseButton = new JButton("Background");
         baseButton.setName(fieldName + CConfig.CONFIG_BACKGROUND);
         baseButton.addActionListener(this);
-        ConfigPane.add(baseButton);
+        panColors.add(baseButton);
+    }
+    
+    private void loadTechPanel(ResourceBundle resourceMap) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        chkTechProgression.addActionListener(e -> {
+            chkTechUseYear.setEnabled(chkTechProgression.isSelected());
+            txtTechYear.setEnabled(chkTechProgression.isSelected()
+                    && chkTechUseYear.isSelected());
+        });
+        chkTechProgression.setText(resourceMap.getString("ConfigurationDialog.chkTechProgression.text")); //$NON-NLS-1$
+        chkTechProgression.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechProgression.tooltip")); //$NON-NLS-1$
+        chkTechProgression.setSelected(CConfig.getBooleanParam(CConfig.TECH_PROGRESSION));
+        panTech.add(chkTechProgression, gbc);
+        
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        chkTechUseYear.addActionListener(e -> {
+            txtTechYear.setEnabled(chkTechUseYear.isSelected());
+        });
+        chkTechUseYear.setText(resourceMap.getString("ConfigurationDialog.chkTechYear.text")); //$NON-NLS-1$
+        chkTechUseYear.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechYear.tooltip")); //$NON-NLS-1$
+        chkTechUseYear.setSelected(CConfig.getBooleanParam(CConfig.TECH_USE_YEAR));
+        panTech.add(chkTechUseYear, gbc);
+        gbc.gridx = 1;
+        txtTechYear.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechYear.tooltip")); //$NON-NLS-1$
+        txtTechYear.setMinimum(ITechnology.DATE_PS);
+        txtTechYear.setMaximum(9999);
+        String year = CConfig.getParam(CConfig.TECH_YEAR);
+        if (year.length() == 0) {
+            year = "3145";
+        }
+        txtTechYear.setText(year);
+        panTech.add(txtTechYear, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        chkTechShowFaction.setText(resourceMap.getString("ConfigurationDialog.chkTechShowFaction.text")); //$NON-NLS-1$
+        chkTechShowFaction.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechShowFaction.tooltip")); //$NON-NLS-1$
+        chkTechShowFaction.setSelected(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
+        panTech.add(chkTechShowFaction, gbc);
+        
+        gbc.gridy++;
+        chkShowExtinct.setText(resourceMap.getString("ConfigurationDialog.chkShowExtinct.text")); //$NON-NLS-1$
+        chkShowExtinct.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowExtinct.tooltip")); //$NON-NLS-1$
+        chkShowExtinct.setSelected(CConfig.getBooleanParam(CConfig.TECH_EXTINCT));
+        panTech.add(chkShowExtinct, gbc);
+        
+        gbc.gridy++;
+        chkUnofficialIgnoreYear.setText(resourceMap.getString("ConfigurationDialog.chkUnofficialIgnoreYear.text")); //$NON-NLS-1$
+        chkUnofficialIgnoreYear.setToolTipText(resourceMap.getString("ConfigurationDialog.chkUnofficialIgnoreYear.tooltip")); //$NON-NLS-1$
+        chkUnofficialIgnoreYear.setSelected(CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR));
+        panTech.add(chkUnofficialIgnoreYear, gbc);
     }
 
     private JLabel findLabel(String name) {
-        for (Component component : ConfigPane.getComponents()) {
+        for (Component component : panColors.getComponents()) {
 
             if (component instanceof JLabel) {
                 JLabel newLabel = (JLabel) component;
@@ -133,12 +196,11 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equals(saveCommand)) {
-            CConfig.saveConfig();
-            dialog.dispose();
-            return;
+            saveConfig();
+            setVisible(false);
         } else if (command.equals(cancelCommand)) {
             CConfig.loadConfigFile();
-            dialog.dispose();
+            setVisible(false);
         } else if (e.getSource() instanceof JButton) {
             JButton newButton = (JButton) e.getSource();
             StringTokenizer st = new StringTokenizer(newButton.getName(), "-");
@@ -155,11 +217,22 @@ public final class ConfigurationDialog extends JDialog implements ActionListener
                 colorConfig = new ColorConfigurationDialog(newButton.getName().replace("-", " "), label.getBackground());
                 label.setBackground(colorConfig.getColor());
             }
-            CConfig.setParam(newButton.getName(), Integer.toString(colorConfig.getColor().getRGB()));
+            colorMap.put(newButton.getName(), Integer.toString(colorConfig.getColor().getRGB()));
             colorConfig.dispose();
             label.repaint();
         }
 
+    }
+    
+    private void saveConfig() {
+        colorMap.forEach((k,v) -> CConfig.setParam(k, v));
+        CConfig.setParam(CConfig.TECH_PROGRESSION, String.valueOf(chkTechProgression.isSelected()));
+        CConfig.setParam(CConfig.TECH_USE_YEAR, String.valueOf(chkTechUseYear.isSelected()));
+        CConfig.setParam(CConfig.TECH_YEAR, String.valueOf(txtTechYear.getIntVal()));
+        CConfig.setParam(CConfig.TECH_SHOW_FACTION, String.valueOf(chkTechShowFaction.isSelected()));
+        CConfig.setParam(CConfig.TECH_EXTINCT, String.valueOf(chkShowExtinct.isSelected()));
+        CConfig.setParam(CConfig.TECH_UNOFFICAL_NO_YEAR, String.valueOf(chkUnofficialIgnoreYear.isSelected()));
+        CConfig.saveConfig();
     }
 
 }

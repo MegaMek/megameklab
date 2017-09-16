@@ -46,11 +46,11 @@ import megamek.common.weapons.Weapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.util.CriticalTableModel;
+import megameklab.com.util.CriticalTransferHandler;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
 import megameklab.com.util.UnitUtil;
-import megameklab.com.util.CriticalTransferHandler;
 
 /**
  * This IView shows all the equipment that's not yet been assigned a location

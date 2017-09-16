@@ -27,6 +27,7 @@ import javax.swing.SwingConstants;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
 import megamek.common.Infantry;
 import megamek.common.LocationFullException;
 import megamek.common.TechConstants;
@@ -54,7 +55,7 @@ public class MainUI extends MegaMekLabMainUI {
     public MainUI() {
 
         super();
-        createNewUnit(Entity.ETYPE_INFANTRY, false);
+        createNewUnit(Entity.ETYPE_INFANTRY);
         setTitle(getEntity().getChassis() + " " + getEntity().getModel() + ".mtf");
         menubarcreator = new MenuBarCreator(this);
         setJMenuBar(menubarcreator);
@@ -96,7 +97,7 @@ public class MainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entityType, boolean isSuperHeavy) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
         setEntity(new Infantry());
         getEntity().setYear(3145);
         getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
@@ -161,6 +162,23 @@ public class MainUI extends MegaMekLabMainUI {
     @Override
     public void refreshPreview() {
         previewTab.refresh();
+    }
+
+    @Override
+    public void refreshSummary() {
+    }
+
+    @Override
+    public void refreshEquipmentTable() {
+        structureTab.refreshEquipmentTable();
+    }
+
+    @Override
+    public ITechManager getTechManager() {
+        if (null != structureTab) {
+            return structureTab.getTechManager();
+        }
+        return null;
     }
 
 }
