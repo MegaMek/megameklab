@@ -11,6 +11,7 @@
     <property name="jarmanifest" value="manifest.txt"/>
     <property name="splashdir" value="${basedir}/data/images/splash"/>
     <property name="class.main" value="megameklab.com.MegaMekLab"/>
+    <property name="megamek" value="MegaMek.jar"/>
 
     <path id="project.classpath">
         <pathelement path="${build}">
@@ -139,7 +140,7 @@
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
                 <attribute name="Main-Class" value="${class.main}"/>
-                <attribute name="Class-Path" value="${classpath.manifest}"/>
+                <attribute name="Class-Path" value="${classpath.manifest} ${megamek}"/>
             </manifest>
 
             <fileset dir="${splashdir}" includes="**/*.gif **/*.jpg"/>
