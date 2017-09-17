@@ -270,6 +270,10 @@ public class BasicInfoView extends MainUIView implements ITechManager, ActionLis
         }
         return (Integer)cbFaction.getSelectedItem();
     }
+    
+    public void setTechFaction(int techFaction) {
+        cbFaction.setSelectedItem(techFaction);
+    }
 
     @Override
     public int getGameYear() {

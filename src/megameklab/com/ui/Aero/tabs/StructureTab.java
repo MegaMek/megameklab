@@ -145,6 +145,13 @@ public class StructureTab extends ITab implements
     public ITechManager getTechManager() {
         return panInfo;
     }
+    
+    /*
+     * Used by MekHQ to set the tech faction for custom refits.
+     */
+    public void setTechFaction(int techFaction) {
+        panInfo.setTechFaction(techFaction);
+    }
 
     public void refresh() {
         removeAllListeners();
