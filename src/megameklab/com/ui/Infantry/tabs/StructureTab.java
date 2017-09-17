@@ -188,6 +188,13 @@ public class StructureTab extends ITab implements
         return panBasicInfo;
     }
 
+    /*
+     * Used by MekHQ to set the tech faction for custom refits.
+     */
+    public void setTechFaction(int techFaction) {
+        panBasicInfo.setTechFaction(techFaction);
+    }
+
     public JLabel createLabel(String text, Dimension maxSize) {
 
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
@@ -455,5 +462,4 @@ public class StructureTab extends ITab implements
         getInfantry().setAntiMekSkill(antiMek);
         refresh.refreshStatus();
     }
-
 }

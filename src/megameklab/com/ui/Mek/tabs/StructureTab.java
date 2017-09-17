@@ -182,6 +182,13 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         return panBasicInfo;
     }
 
+    /*
+     * Used by MekHQ to set the tech faction for custom refits.
+     */
+    public void setTechFaction(int techFaction) {
+        panBasicInfo.setTechFaction(techFaction);
+    }
+
     private void resetSystemCrits() {
         getMech().clearCockpitCrits();
         getMech().clearGyroCrits();
@@ -1045,5 +1052,4 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         jjs.forEach(jj -> UnitUtil.removeMounted(getMech(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);
     }
-
 }
