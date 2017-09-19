@@ -129,7 +129,7 @@ public class HeatSinkView extends MainUIView implements ActionListener, ChangeLi
         add(createLabel(resourceMap.getString("HeatSinkView.spnCount.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 1;
-        setFieldSize(spnCount.getEditor(), spinnerEditorSize);
+        setFieldSize(spnCount.getEditor(), editorSize);
         spnCount.setToolTipText(resourceMap.getString("HeatSinkView.spnCount.tooltip")); //$NON-NLS-1$
         add(spnCount, gbc);
         spnCount.addChangeListener(this);
@@ -149,7 +149,7 @@ public class HeatSinkView extends MainUIView implements ActionListener, ChangeLi
         add(createLabel(resourceMap.getString("HeatSinkView.spnBaseCount.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 2;
-        setFieldSize(spnBaseCount.getEditor(), spinnerEditorSize);
+        setFieldSize(spnBaseCount.getEditor(), editorSize);
         spnBaseCount.setToolTipText(resourceMap.getString("HeatSinkView.spnBaseCount.tooltip")); //$NON-NLS-1$
         add(spnBaseCount, gbc);
         spnBaseCount.addChangeListener(this);

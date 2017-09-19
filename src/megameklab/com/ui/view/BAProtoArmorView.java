@@ -96,7 +96,7 @@ public class BAProtoArmorView extends MainUIView implements ActionListener, Chan
         add(createLabel(resourceMap.getString("ArmorView.spnArmorPoints.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 1;
-        setFieldSize(spnArmorPoints.getEditor(), spinnerEditorSize);
+        setFieldSize(spnArmorPoints.getEditor(), editorSize);
         spnArmorPoints.setToolTipText(resourceMap.getString("ArmorView.spnArmorPoints.tooltip")); //$NON-NLS-1$
         add(spnArmorPoints, gbc);
         spnArmorPoints.addChangeListener(this);
