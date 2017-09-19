@@ -181,17 +181,17 @@ public class MovementView extends MainUIView implements ActionListener, ChangeLi
         add(cbJumpType, gbc);
         cbJumpType.addActionListener(this);
 
-        setFieldSize(spnWalk.getEditor(), spinnerEditorSize);
-        setFieldSize(txtWalkFinal, spinnerEditorSize);
+        setFieldSize(spnWalk.getEditor(), editorSize);
+        setFieldSize(txtWalkFinal, editorSize);
         txtWalkFinal.setEditable(false);
         txtWalkFinal.setHorizontalAlignment(SwingConstants.RIGHT);
-        setFieldSize(txtRunBase, spinnerEditorSize);
-        setFieldSize(txtRunFinal, spinnerEditorSize);
+        setFieldSize(txtRunBase, editorSize);
+        setFieldSize(txtRunFinal, editorSize);
         txtRunBase.setEditable(false);
         txtRunFinal.setEditable(false);
         txtRunFinal.setHorizontalAlignment(SwingConstants.RIGHT);
-        setFieldSize(spnJump.getEditor(), spinnerEditorSize);
-        setFieldSize(txtJumpFinal, spinnerEditorSize);
+        setFieldSize(spnJump.getEditor(), editorSize);
+        setFieldSize(txtJumpFinal, editorSize);
         txtJumpFinal.setEditable(false);
         txtJumpFinal.setHorizontalAlignment(SwingConstants.RIGHT);
     }

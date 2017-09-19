@@ -118,7 +118,7 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
         add(createLabel(resourceMap.getString("ArmorView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 1;
-        setFieldSize(spnTonnage.getEditor(), spinnerEditorSize);
+        setFieldSize(spnTonnage.getEditor(), editorSize);
         spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);

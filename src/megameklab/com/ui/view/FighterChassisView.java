@@ -128,7 +128,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap.getString("FighterChassisView.txtSI.text"), labelSize),gbc); //$NON-NLS-1$
-        setFieldSize(txtSI, spinnerEditorSize);
+        setFieldSize(txtSI, editorSize);
         txtSI.setToolTipText(resourceMap.getString("FighterChassisView.txtSI.tooltip")); //$NON-NLS-1$
         txtSI.setEditable(false);
         

@@ -48,6 +48,8 @@ import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
+import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.ITechnology;
@@ -58,12 +60,15 @@ import megamek.common.Mech;
 import megamek.common.MechView;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Protomech;
 import megamek.common.QuadMech;
+import megamek.common.SimpleTechLevel;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
 import megamek.common.VTOL;
 import megamek.common.WeaponType;
+import megamek.common.annotations.Nullable;
 import megamek.common.logging.LogLevel;
 import megamek.common.logging.MMLogger;
 import megamek.common.verifier.EntityVerifier;
@@ -1343,13 +1348,24 @@ public class UnitUtil {
      * @param armorTons
      * @return
      */
-    public static int getArmorPoints(Entity unit, double armorTons) {
+    public static int getRawArmorPoints(Entity unit, double armorTons) {
         double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
         if (unit.getArmorType(1) == EquipmentType.T_ARMOR_HARDENED) {
             armorPerTon = 8.0;
         }
-        return Math.min((int) Math.floor(armorPerTon * armorTons),
+        return (int)Math.floor(armorPerTon * armorTons);
+    }
+
+    /**
+     * NOTE: only use for non-patchwork armor
+     *
+     * @param unit
+     * @param armorTons
+     * @return
+     */
+    public static int getArmorPoints(Entity unit, double armorTons) {
+        return Math.min(UnitUtil.getRawArmorPoints(unit, armorTons),
                 UnitUtil.getMaximumArmorPoints(unit));
     }
 
@@ -1380,6 +1396,105 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Determine the maximum number of armor points that can be mounted in a location.
+     * 
+     * @param entity
+     * @param location
+     * @return  The maximum number of armor points for the location, or null if there is no maximum.
+     */
+    public static @Nullable Integer getMaxArmor(Entity entity, int location) {
+        if ((location < 0) || (location >= entity.locations())) {
+            return 0;
+        }
+        if (entity.hasETypeFlag(Entity.ETYPE_MECH)) {
+            if (location == Mech.LOC_HEAD) {
+                return (entity.getWeightClass() == EntityWeightClass.WEIGHT_SUPER_HEAVY)? 12 : 9;
+            } else {
+                return entity.getOInternal(location) * 2;
+            }
+        } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
+            if (location == Protomech.LOC_HEAD) {
+                return 2 + (int)entity.getWeight() / 2;
+            } else if (location == Protomech.LOC_MAINGUN) {
+                return entity.getOInternal(location) * 3;
+            } else if ((location == Protomech.LOC_LARM)
+                    || (location == Protomech.LOC_RARM)) {
+                return Math.min(entity.getOInternal(location) * 2, 6);
+            } else {
+                return entity.getOInternal(location) * 2;
+            }
+        }
+        return null;
+    }
+
+    //Types available for industrial mechs, used by legalArmorsFor
+    private final static int[] INDUSTRIAL_TYPES = {
+            EquipmentType.T_ARMOR_INDUSTRIAL, EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL,
+            EquipmentType.T_ARMOR_COMMERCIAL
+    };
+    
+    /**
+     * Compiles a list of all armor types legal for the unit under given tech limits
+     * 
+     * @param en           The unit for which to compile the list
+     * @param techManager  Provides era and tech constraints to determine whether the armor is legal
+     * @return             A list of armors legal for the unit type under the tech constaints
+     */
+    public static List<EquipmentType> legalArmorsFor(Entity en, ITechManager techManager) {
+        List<EquipmentType> retVal = new ArrayList<>();
+        // IndustrialMechs can only use industrial armor below experimental rules level
+        if ((en instanceof Mech) && ((Mech)en).isIndustrial()
+                && (techManager.getTechLevel().ordinal() < SimpleTechLevel.EXPERIMENTAL.ordinal())) {
+            
+            for (int at : INDUSTRIAL_TYPES) {
+                String name = EquipmentType.getArmorTypeName(at, false);
+                EquipmentType eq = EquipmentType.get(name);
+                if ((null != eq) && techManager.isLegal(eq)) {
+                    retVal.add(eq);
+                }
+            }
+        } else {
+            BigInteger flag = MiscType.F_MECH_EQUIPMENT;
+            if (en.hasETypeFlag(Entity.ETYPE_AERO)) {
+                flag = MiscType.F_AERO_EQUIPMENT;
+            } else if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
+                flag = MiscType.F_TANK_EQUIPMENT;
+            }
+            boolean isLAM = en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH);
+            boolean hardenedIllegal = isLAM
+                    || (en.getMovementMode() == EntityMovementMode.VTOL)
+                    || (en.getMovementMode() == EntityMovementMode.WIGE)
+                    || (en.getMovementMode() == EntityMovementMode.HOVER);
+            
+            for (int at = 0; at < EquipmentType.armorNames.length; at++) {
+                if (at == EquipmentType.T_ARMOR_PATCHWORK) {
+                    continue;
+                }
+                if ((at == EquipmentType.T_ARMOR_HARDENED) && hardenedIllegal) {
+                    continue;
+                }
+                String name = EquipmentType.getArmorTypeName(at, techManager.useClanTechBase());
+                EquipmentType eq = EquipmentType.get(name);
+                if ((null == eq) || (isLAM && ((eq.getCriticals(null) > 0)))) {
+                    continue;
+                }
+                if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {
+                    retVal.add(eq);
+                }
+                if (techManager.useMixedTech()) {
+                    name = EquipmentType.getArmorTypeName(at, !techManager.useClanTechBase());
+                    EquipmentType eq2 = EquipmentType.get(name);
+                    if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag)
+                            && techManager.isLegal(eq2)) {
+                        retVal.add(eq2);
+                    }
+                }
+            }
+        }
+        return retVal;
+    }
+    
     public static void compactCriticals(Entity unit, int loc) {
         int firstEmpty = -1;
         for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {

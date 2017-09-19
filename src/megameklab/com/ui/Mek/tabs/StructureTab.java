@@ -52,9 +52,10 @@ import megamek.common.TechConstants;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Mek.views.ArmorView;
 import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.ui.util.TechComboBox;
+import megameklab.com.ui.view.ArmorAllocationView;
+import megameklab.com.ui.view.ArmorLocationView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
@@ -66,27 +67,25 @@ import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements BasicInfoView.BasicInfoListener,
     MekChassisView.MekChassisListener, HeatSinkView.HeatSinkListener, MVFArmorView.ArmorListener,
-    MovementView.MovementListener {
+    MovementView.MovementListener, ArmorLocationView.ArmorLocationListener {
     /**
      *
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
-    BasicInfoView panBasicInfo;
-    MekChassisView panChassis;
-    MVFArmorView panArmor;
-    MovementView panMovement;
-    HeatSinkView panHeat;
-    SummaryView panSummary;
-
-    private ArmorView armor;
+    private BasicInfoView panBasicInfo;
+    private MekChassisView panChassis;
+    private MVFArmorView panArmor;
+    private MovementView panMovement;
+    private HeatSinkView panHeat;
+    private SummaryView panSummary;
+    private ArmorAllocationView panArmorAllocation;
 
     RefreshListener refresh = null;
     JPanel masterPanel;
 
     public StructureTab(EntitySource eSource) {
         super(eSource);
-        armor = new ArmorView(eSource);
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
@@ -100,7 +99,10 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panArmor = new MVFArmorView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panHeat = new HeatSinkView(panBasicInfo);
+        panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MECH);
+        panArmorAllocation.setPatchwork(getMech().hasPatchworkArmor());
         panSummary = new SummaryView(eSource);
+        
 
         GridBagConstraints gbc;
 
@@ -109,6 +111,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panArmor.setFromEntity(getMech());
         panMovement.setFromEntity(getMech());
         panHeat.setFromMech(getMech());
+        panArmorAllocation.setFromEntity(getMech());
 
         JPanel leftPanel = new JPanel();
         JPanel rightPanel = new JPanel();
@@ -138,7 +141,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         gbc.gridx = 1;
         masterPanel.add(rightPanel, gbc);
         gbc.gridx = 2;
-        masterPanel.add(armor, gbc);
+        masterPanel.add(panArmorAllocation, gbc);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
@@ -146,7 +149,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
-        armor.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
+        panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
 
     }
 
@@ -157,8 +160,8 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panArmor.setFromEntity(getMech());
         panHeat.setFromMech(getMech());
         panMovement.setFromEntity(getMech());
+        panArmorAllocation.setFromEntity(getMech());
 
-        armor.refresh();
         panSummary.refresh();
         addAllListeners();
 
@@ -358,6 +361,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panHeat.removeListener(this);
         panArmor.removeListener(this);
         panMovement.removeListener(this);
+        panArmorAllocation.removeListener(this);
     }
 
     public void addAllListeners() {
@@ -366,11 +370,11 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panHeat.addListener(this);
         panArmor.addListener(this);
         panMovement.addListener(this);
+        panArmorAllocation.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        armor.addRefreshedListener(l);
     }
 
     public boolean isQuad() {
@@ -655,7 +659,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panHeat.refresh();
         panArmor.refresh();
         panMovement.refresh();
-        armor.resetArmorPoints();
+        panArmorAllocation.setFromEntity(getMech());
         addAllListeners();
     }
 
@@ -770,7 +774,6 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         }
 
         refresh();
-        armor.refresh();
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
@@ -919,12 +922,9 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         if (!getMech().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }
-        createArmorMountsAndSetArmorType(at, aTechLevel);
-        if (!getMech().hasPatchworkArmor()) {
-            armor.resetArmorPoints();
-        }
-        
-        armor.refresh();
+//        createArmorMountsAndSetArmorType(at, aTechLevel);
+        panArmorAllocation.setPatchwork(at == EquipmentType.T_ARMOR_PATCHWORK);
+        panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshBuild();
@@ -934,9 +934,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     @Override
     public void armorTonnageChanged(double tonnage) {
         getMech().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
-        armor.resetArmorPoints();
-        
-        armor.refresh();
+        panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -946,12 +944,11 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     public void maximizeArmor() {
         double maxArmor = UnitUtil.getMaximumArmorTonnage(getMech());
         getMech().setArmorTonnage(maxArmor);
-        armor.resetArmorPoints();
         panArmor.removeListener(this);
         panArmor.setFromEntity(getMech());
         panArmor.addListener(this);
         
-        armor.refresh();
+        panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -969,12 +966,11 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         double maxArmor = Math.min(getMech().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getMech()));
         getMech().setArmorTonnage(maxArmor);
-        armor.resetArmorPoints();
         panArmor.removeListener(this);
         panArmor.setFromEntity(getMech());
         panArmor.addListener(this);
         
-        armor.refresh();
+        panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -1044,6 +1040,21 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
                 .collect(Collectors.toList());
         jjs.forEach(jj -> UnitUtil.removeMounted(getMech(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);
+    }
+
+    @Override
+    public void armorPointsChanged(int location, int front, int rear) {
+        getMech().initializeArmor(front, location);
+        if (getMech().hasRearArmor(location)) {
+            getMech().initializeRearArmor(rear, location);
+        }
+        panArmorAllocation.setFromEntity(getMech());
+    }
+
+    @Override
+    public void patchworkTypeChanged(int location, EquipmentType at) {
+        getMech().setArmorType(EquipmentType.getArmorType(at));
+        getMech().setArmorTechLevel(at.getTechLevel(getTechManager().getGameYear(), at.isClan()));
     }
 
 }
