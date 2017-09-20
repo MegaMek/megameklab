@@ -37,6 +37,7 @@ import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.FactionComboBox;
 import megameklab.com.ui.util.IntRangeTextField;
+import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.CConfig;
 
 /**
@@ -45,32 +46,20 @@ import megameklab.com.util.CConfig;
  * @author Neoancient
  *
  */
-public class BasicInfoView extends MainUIView implements ITechManager, ActionListener, FocusListener {
+public class BasicInfoView extends BuildView implements ITechManager, ActionListener, FocusListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = -6831478201489228066L;
 
-    public interface BasicInfoListener {
-        void refreshSummary();
-        void chassisChanged(String chassis);
-        void modelChanged(String model);
-        void yearChanged(int year);
-        void updateTechLevel();
-        void sourceChanged(String source);
-        void techBaseChanged(boolean clan, boolean mixed);
-        void techLevelChanged(SimpleTechLevel techLevel);
-        void manualBVChanged(int manualBV);
-    }
-    
-    private List<BasicInfoListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(BasicInfoListener l) {
+    private List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(BuildListener l) {
         if (null != l) {
             listeners.add(l);
         }
     }
-    public void removeListener(BasicInfoListener l) {
+    public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
     

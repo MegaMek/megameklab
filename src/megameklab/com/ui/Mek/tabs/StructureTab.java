@@ -52,21 +52,18 @@ import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.SummaryView;
 import megameklab.com.ui.view.ArmorAllocationView;
-import megameklab.com.ui.view.ArmorLocationView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MekChassisView;
 import megameklab.com.ui.view.MovementView;
 import megameklab.com.ui.view.PatchworkArmorView;
+import megameklab.com.ui.view.listeners.MekBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements BasicInfoView.BasicInfoListener,
-    MekChassisView.MekChassisListener, HeatSinkView.HeatSinkListener, MVFArmorView.ArmorListener,
-    MovementView.MovementListener, ArmorLocationView.ArmorLocationListener,
-    PatchworkArmorView.PatchworkListener {
+public class StructureTab extends ITab implements MekBuildListener {
     /**
      *
      */

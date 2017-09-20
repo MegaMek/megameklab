@@ -37,6 +37,7 @@ import megamek.common.Infantry;
 import megamek.common.TechAdvancement;
 import megamek.common.verifier.TestInfantry;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.view.listeners.InfantryBuildListener;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -52,14 +53,11 @@ public class SpecializationView extends IView implements TableModelListener {
 
     private static final long serialVersionUID = -5851020780074510576L;
     
-    public interface SpecializationListener {
-        void specializationsChanged();
-    }
-    private List<SpecializationListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(SpecializationListener l) {
+    private List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(SpecializationListener l) {
+    public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
 
@@ -124,7 +122,7 @@ public class SpecializationView extends IView implements TableModelListener {
 
     @Override
     public void tableChanged(TableModelEvent e) {
-        listeners.forEach(SpecializationListener::specializationsChanged);
+        listeners.forEach(InfantryBuildListener::specializationsChanged);
     }
     
     private class SpecializationModel extends AbstractTableModel {

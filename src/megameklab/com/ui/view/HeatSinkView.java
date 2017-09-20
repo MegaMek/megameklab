@@ -36,6 +36,7 @@ import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
+import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -44,23 +45,18 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  *
  */
-public class HeatSinkView extends MainUIView implements ActionListener, ChangeListener {
+public class HeatSinkView extends BuildView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = -3310994380270514088L;
 
-    public interface HeatSinkListener {
-        void heatSinksChanged(int index, int count);
-        void heatSinksChanged(EquipmentType hsType, int count);
-        void heatSinkBaseCountChanged(int count);
-    }
-    private final List<HeatSinkListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(HeatSinkListener l) {
+    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(BuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(HeatSinkListener l) {
+    public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
     

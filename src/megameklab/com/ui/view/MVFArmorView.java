@@ -39,6 +39,7 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.TechComboBox;
+import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -47,24 +48,18 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  *
  */
-public class MVFArmorView extends MainUIView implements ActionListener, ChangeListener {
+public class MVFArmorView extends BuildView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = 1246552271894765543L;
 
-    public interface ArmorListener {
-        void armorTypeChanged(int at, int armorTechLevel);
-        void armorTonnageChanged(double tonnage);
-        void maximizeArmor();
-        void useRemainingTonnageArmor();
-    }
-    private final List<ArmorListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(ArmorListener l) {
+    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(BuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(ArmorListener l) {
+    public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
     

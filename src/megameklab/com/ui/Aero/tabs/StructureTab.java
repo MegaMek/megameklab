@@ -47,17 +47,12 @@ import megameklab.com.ui.view.FighterChassisView;
 import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.listeners.AeroBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements 
-        BasicInfoView.BasicInfoListener,
-        FighterChassisView.ChassisListener,
-        HeatSinkView.HeatSinkListener,
-        AeroFuelView.FuelListener,
-        MovementView.MovementListener,
-        MVFArmorView.ArmorListener {
+public class StructureTab extends ITab implements AeroBuildListener {
 
     /**
      *
@@ -581,6 +576,18 @@ public class StructureTab extends ITab implements
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+
+    @Override
+    public void armorPointsChanged(int location, int front, int rear) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void patchworkChanged(int location, EquipmentType armor) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
