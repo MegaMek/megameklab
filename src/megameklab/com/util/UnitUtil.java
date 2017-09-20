@@ -1276,16 +1276,20 @@ public class UnitUtil {
 
     public static int getMaximumArmorPoints(Entity unit) {
         int points = 0;
-        if (unit instanceof Mech) {
+        if (unit.hasETypeFlag(Entity.ETYPE_MECH)) {
             int headPoints = 3;
-            if (((Mech)unit).isSuperHeavy()) {
+            if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SUPER_HEAVY) {
                 headPoints = 4;
             }
             points = (unit.getTotalInternal() * 2) + headPoints;
-        } else if (unit instanceof Tank) {
+        } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
-        } else if (unit instanceof BattleArmor) {
+        } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             points = (unit.getWeightClass() * 4) + 2;
+        } else if (unit.hasETypeFlag(Entity.ETYPE_CONV_FIGHTER)) {
+            points = (int) Math.floor(unit.getWeight());
+        } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
+            points = (int) Math.floor(unit.getWeight() * 8);
         }
         return points;
     }

@@ -226,9 +226,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
                 }
             }
         }
-        //TODO: patchwork armor for fighters needs work on the armor allocation view
-        if (((etype & Entity.ETYPE_AERO) == 0)
-                && techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
+        if (techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
             cbArmorType.addItem(null);
         }
         if (null == prev) {
