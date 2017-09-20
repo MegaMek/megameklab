@@ -27,7 +27,7 @@ import javax.swing.SwingConstants;
  * @author Neoancient
  *
  */
-public abstract class MainUIView extends JPanel {
+public abstract class BuildView extends JPanel {
     
     /**
      * 

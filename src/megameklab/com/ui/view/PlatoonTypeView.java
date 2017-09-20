@@ -34,6 +34,7 @@ import megamek.common.Infantry;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestInfantry;
 import megameklab.com.ui.util.CustomComboBox;
+import megameklab.com.ui.view.listeners.InfantryBuildListener;
 
 /**
  * Infantry structure tab panel for selecting platoon movement type and number/size of squads.
@@ -41,28 +42,18 @@ import megameklab.com.ui.util.CustomComboBox;
  * @author Neoancient
  *
  */
-public class PlatoonTypeView extends MainUIView implements ActionListener, ChangeListener {
+public class PlatoonTypeView extends BuildView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = -7227731728613831387L;
     
-    public interface PlatoonListener {
-        /**
-         * @param motiveType The selected motive type
-         * @param alt        If motiveType is VTOL or INF_UMU, alt is true for microlite and motorized scuba
-         *                   respectively, false for microcopter and foot scuba. It has no meaning for other
-         *                   motive types.
-         */
-        void motiveTypeChanged(EntityMovementMode motiveType, boolean alt);
-        void platoonSizeChanged(int numSquads, int squadSize);
-    }
-    List<PlatoonListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(PlatoonListener l) {
+    List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(PlatoonListener l) {
+    public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
     

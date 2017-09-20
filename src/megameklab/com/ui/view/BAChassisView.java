@@ -35,6 +35,7 @@ import megamek.common.EntityWeightClass;
 import megamek.common.ITechManager;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
+import megameklab.com.ui.view.listeners.BABuildListener;
 
 /**
  * Structure tab chassis view for BattleArmor
@@ -42,26 +43,18 @@ import megameklab.com.ui.util.CustomComboBox;
  * @author Neoancient
  *
  */
-public class BAChassisView extends MainUIView implements ActionListener, ChangeListener {
+public class BAChassisView extends BuildView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = 2230418263440532689L;
 
-    public interface ChassisListener {
-        void chassisTypeChanged(int bodyType);
-        void weightClassChanged(int weightClass);
-        void turretChanged(int type, int size);
-        void exoskeletonChanged(boolean exoskeleton);
-        void harjelChanged(boolean harjel);
-        void squadSizeChanged(int squadSize);
-    }
-    private final List<ChassisListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(ChassisListener l) {
+    private final List<BABuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(BABuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(ChassisListener l) {
+    public void removeListener(BABuildListener l) {
         listeners.remove(l);
     }
     

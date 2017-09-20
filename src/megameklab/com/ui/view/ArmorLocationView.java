@@ -37,7 +37,7 @@ import megamek.common.util.EncodeControl;
  * @author Neoancient
  *
  */
-public class ArmorLocationView extends MainUIView implements ChangeListener {
+public class ArmorLocationView extends BuildView implements ChangeListener {
     
     /**
      * 

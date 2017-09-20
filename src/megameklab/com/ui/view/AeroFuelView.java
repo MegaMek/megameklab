@@ -32,6 +32,7 @@ import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
+import megameklab.com.ui.view.listeners.AeroBuildListener;
 
 /**
  * Structure tab panel for aero unit fuel
@@ -39,21 +40,18 @@ import megamek.common.verifier.TestAero;
  * @author Neoancient
  *
  */
-public class AeroFuelView extends MainUIView implements ChangeListener {
+public class AeroFuelView extends BuildView implements ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = -3321986392656071192L;
 
-    public interface FuelListener {
-        void fuelTonnageChanged(double tonnage);
-    }
-    List<FuelListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(FuelListener l) {
+    List<AeroBuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(AeroBuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(FuelListener l) {
+    public void removeListener(AeroBuildListener l) {
         listeners.remove(l);
     }
 

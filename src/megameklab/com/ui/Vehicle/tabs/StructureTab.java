@@ -52,15 +52,12 @@ import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.CVChassisView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.listeners.CVBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements
-        BasicInfoView.BasicInfoListener,
-        CVChassisView.ChassisListener,
-        MovementView.MovementListener,
-        MVFArmorView.ArmorListener {
+public class StructureTab extends ITab implements CVBuildListener {
 
     /**
      *
@@ -618,5 +615,17 @@ public class StructureTab extends ITab implements
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
+    }
+
+    @Override
+    public void armorPointsChanged(int location, int front, int rear) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void patchworkChanged(int location, EquipmentType armor) {
+        // TODO Auto-generated method stub
+        
     }
 }

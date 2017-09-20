@@ -44,6 +44,7 @@ import megamek.common.VTOL;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
+import megameklab.com.ui.view.listeners.CVBuildListener;
 
 /**
  * Chassis panel for combat vehicles
@@ -51,29 +52,18 @@ import megameklab.com.ui.util.TechComboBox;
  * @author Neoancient
  *
  */
-public class CVChassisView extends MainUIView implements ActionListener, ChangeListener {
+public class CVChassisView extends BuildView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = -5860627963911641227L;
 
-    public interface ChassisListener {
-        void tonnageChanged(double tonnage);
-        void omniChanged(boolean omni);
-        void superheavyChanged(boolean superheavy);
-        void motiveChanged(EntityMovementMode motive);
-        void engineChanged(Engine engine);
-        void turretChanged(int turretConfig);
-        void turretBaseWtChanged(double turret1, double turret2);
-        void troopSpaceChanged(double fixed, double pod);
-        void resetChassis();
-    }
-    List<ChassisListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(ChassisListener l) {
+    List<CVBuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(CVBuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(ChassisListener l) {
+    public void removeListener(CVBuildListener l) {
         listeners.remove(l);
     }
     

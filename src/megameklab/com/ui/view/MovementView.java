@@ -45,6 +45,7 @@ import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMech;
 import megameklab.com.ui.util.TechComboBox;
+import megameklab.com.ui.view.listeners.BuildListener;
 
 /**
  * Controls for setting a unit's speed
@@ -52,23 +53,18 @@ import megameklab.com.ui.util.TechComboBox;
  * @author Neoancient
  *
  */
-public class MovementView extends MainUIView implements ActionListener, ChangeListener {
+public class MovementView extends BuildView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = 9047797409742756926L;
 
-    public interface MovementListener {
-        void walkChanged(int walkMP);
-        void jumpChanged(int jumpMP, EquipmentType jumpJet);
-        void jumpTypeChanged(EquipmentType jumpJet);
-    }
-    private final List<MovementListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(MovementListener l) {
+    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(BuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(MovementListener l) {
+    public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
     

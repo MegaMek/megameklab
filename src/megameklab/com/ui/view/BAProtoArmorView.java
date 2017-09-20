@@ -35,6 +35,7 @@ import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.TechComboBox;
+import megameklab.com.ui.view.listeners.BuildListener;
 
 /**
  * Structure table armor panel for units that allocate armor by point instead of ton.
@@ -42,22 +43,18 @@ import megameklab.com.ui.util.TechComboBox;
  * @author Neoancient
  *
  */
-public class BAProtoArmorView extends MainUIView implements ActionListener, ChangeListener {
+public class BAProtoArmorView extends BuildView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = 14527455823813010L;
 
-    public interface ArmorListener {
-        void armorValueChanged(int points);
-        void armorTypeChanged(EquipmentType armor);
-    }
-    private final List<ArmorListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(ArmorListener l) {
+    private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(BuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(ArmorListener l) {
+    public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
     
