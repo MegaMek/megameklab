@@ -576,7 +576,6 @@ public class StructureTab extends ITab implements MekBuildListener {
         if (!getMech().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }
-//        createArmorMountsAndSetArmorType(getMech().getArmorType(0), getMech().getArmorTechLevel(0));
         // If we have a large engine, a drop in tech level may make it unavailable and we will need
         // to reduce speed to a legal value.
         if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE)

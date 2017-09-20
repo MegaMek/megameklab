@@ -27,9 +27,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
+import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.TechComboBox;
@@ -106,7 +108,9 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         List<EquipmentType> armors = UnitUtil.legalArmorsFor(en, techManager);
         ignoreEvents = true;
         for (int loc = 0; loc < combos.size(); loc++) {
-            if (loc < en.locations()) {
+            if ((loc < en.locations())
+                    && !((en.hasETypeFlag(Entity.ETYPE_TANK) && (loc == Tank.LOC_BODY)))
+                    && !((en.hasETypeFlag(Entity.ETYPE_AERO) && (loc == Aero.LOC_WINGS)))) {
                 labels.get(loc).setText(en.getLocationName(loc));
                 combos.get(loc).removeAllItems();
                 for (EquipmentType eq : armors) {
