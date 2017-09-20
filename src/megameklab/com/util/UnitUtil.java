@@ -1385,6 +1385,35 @@ public class UnitUtil {
         return Math.min((int) Math.floor(armorPerTon * armorTons),
                 UnitUtil.getMaximumArmorPoints(unit, loc));
     }
+    
+    /**
+     * Calculate the number of armor points per ton of armor for the given unit.
+     * 
+     * @param en
+     * @param at
+     * @param clanArmor
+     * @return
+     */
+    // TODO: aerospace and support vehicle armor
+    public static double getArmorPointsPerTon(Entity en, int at, boolean clanArmor) {
+       if (at == EquipmentType.T_ARMOR_HARDENED) {
+           return 8.0;
+       } else {
+           return 16.0 * EquipmentType.getArmorPointMultiplier(at, clanArmor);
+       }
+    }
+    
+    /**
+     * Calculate the number of armor points per ton of armor for the given unit.
+     * 
+     * @param en
+     * @param at
+     * @param atTechLevel
+     * @return
+     */
+    public static double getArmorPointsPerTon(Entity en, int at, int techLevel) {
+        return getArmorPointsPerTon(en, at, TechConstants.isClan(techLevel));
+    }
 
     public static void compactCriticals(Entity unit) {
         for (int loc = 0; loc < unit.locations(); loc++) {
