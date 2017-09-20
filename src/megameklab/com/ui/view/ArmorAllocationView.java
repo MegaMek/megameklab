@@ -29,7 +29,6 @@ import javax.swing.SwingConstants;
 
 import megamek.common.Aero;
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.Mech;
 import megamek.common.SuperHeavyTank;
@@ -46,14 +45,15 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  *
  */
-public class ArmorAllocationView extends MainUIView implements ArmorLocationView.ArmorLocationListener {
+public class ArmorAllocationView extends MainUIView implements
+        ArmorLocationView.ArmorLocationListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = 1707528067499186372L;
     
-    private List<ArmorLocationView.ArmorLocationListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<ArmorLocationView.ArmorLocationListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(ArmorLocationView.ArmorLocationListener l) {
         listeners.add(l);
     }
@@ -88,7 +88,6 @@ public class ArmorAllocationView extends MainUIView implements ArmorLocationView
     };
     
     private final List<ArmorLocationView> locationViews = new ArrayList<>();
-    private final ITechManager techManager;
     private final long entitytype;
     private final JTextField txtUnallocated = new JTextField();
     private final JTextField txtAllocated = new JTextField();
@@ -99,10 +98,9 @@ public class ArmorAllocationView extends MainUIView implements ArmorLocationView
     private int armorPoints = 0;
     private int maxArmorPoints = 0;
     private int wastedPoints = 0;
-    private boolean showPatchwork =false;
+    private boolean showPatchwork = false;
     
     public ArmorAllocationView(ITechManager techManager, long entitytype) {
-        this.techManager = techManager;
         this.entitytype = entitytype;
         initUI();
     }
@@ -130,8 +128,9 @@ public class ArmorAllocationView extends MainUIView implements ArmorLocationView
             JPanel panRow = new JPanel();
             panRow.setLayout(new BoxLayout(panRow, BoxLayout.X_AXIS));
             for (int col = 0; col < layout[row].length; col++) {
-                if (layout[row][col] >= 0) {
-                    ArmorLocationView locView = new ArmorLocationView(layout[row][col]);
+                final int loc = layout[row][col];
+                if (loc >= 0) {
+                    ArmorLocationView locView = new ArmorLocationView(loc);
                     locationViews.add(locView);
                     panRow.add(locView);
                     locView.addListener(this);
@@ -178,22 +177,35 @@ public class ArmorAllocationView extends MainUIView implements ArmorLocationView
         gbc.gridy++;
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtWasted.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         txtWasted.setEditable(false);
         setFieldSize(txtWasted, editorSize);
         add(txtWasted, gbc);
-        
     }
     
     public void setFromEntity(Entity en) {
         maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
-        
+        int raw = UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage());
+        int currentPoints = en.getTotalOArmor();
+        if (showPatchwork) {
+            armorPoints = currentPoints;
+            raw = currentPoints;
+        } else {
+            armorPoints = Math.min(raw, maxArmorPoints);
+        }
+        wastedPoints = Math.max(0, raw - armorPoints);
         for (ArmorLocationView locView : locationViews) {
             final int location = locView.getLocationIndex();
             if (location < en.locations()) {
                 locView.setVisible(true);
                 locView.updateLocation(en.getLocationAbbr(location),
                         en.hasRearArmor(location));
-                locView.setMaxPoints(UnitUtil.getMaxArmor(en, location));
+                // If we've already hit the maximum allocated to armor, set the current value as maximum.
+                if (showPatchwork || (currentPoints < armorPoints)) {
+                    locView.setMaxPoints(UnitUtil.getMaxArmor(en, location));
+                } else {
+                    locView.setMaxPoints(en.getArmor(location, false) + en.getArmor(location, true));
+                }
                 locView.setPoints(en.getArmor(location));
                 if (en.hasRearArmor(location)) {
                     locView.setPointsRear(en.getArmor(location, true));
@@ -206,14 +218,6 @@ public class ArmorAllocationView extends MainUIView implements ArmorLocationView
                 locView.setPointsRear(0);
             }
         }
-        int currentPoints = en.getTotalOArmor();
-        int raw = UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage());
-        if (showPatchwork) {
-            armorPoints = currentPoints;
-        } else {
-            armorPoints = Math.min(raw, maxArmorPoints);
-        }
-        wastedPoints = Math.max(0, raw - armorPoints);
         txtUnallocated.setText(Integer.toString(armorPoints - currentPoints));
         txtAllocated.setText(String.valueOf(currentPoints));
         if (armorPoints != currentPoints) {
@@ -226,21 +230,12 @@ public class ArmorAllocationView extends MainUIView implements ArmorLocationView
         txtWasted.setText(String.valueOf(wastedPoints));
     }
     
-    public void setPatchwork(boolean patchwork) {
-        showPatchwork = patchwork;
-        for (ArmorLocationView locView : locationViews) {
-            locView.setPatchwork(patchwork);
-        }
+    public void showPatchwork(boolean show) {
+        showPatchwork = show;
     }
     
     @Override
     public void armorPointsChanged(int location, int front, int rear) {
         listeners.forEach(l -> l.armorPointsChanged(location, front, rear));
     }
-    
-    @Override
-    public void patchworkTypeChanged(int location, EquipmentType at) {
-        listeners.forEach(l -> l.patchworkTypeChanged(location, at));
-    }
-
 }

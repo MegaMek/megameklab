@@ -20,7 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +33,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import megamek.client.ui.GBC;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -53,7 +51,6 @@ import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Mek.views.SummaryView;
-import megameklab.com.ui.util.TechComboBox;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.ArmorLocationView;
 import megameklab.com.ui.view.BasicInfoView;
@@ -61,13 +58,15 @@ import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MekChassisView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.PatchworkArmorView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
 public class StructureTab extends ITab implements BasicInfoView.BasicInfoListener,
     MekChassisView.MekChassisListener, HeatSinkView.HeatSinkListener, MVFArmorView.ArmorListener,
-    MovementView.MovementListener, ArmorLocationView.ArmorLocationListener {
+    MovementView.MovementListener, ArmorLocationView.ArmorLocationListener,
+    PatchworkArmorView.PatchworkListener {
     /**
      *
      */
@@ -80,6 +79,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     private HeatSinkView panHeat;
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
+    private PatchworkArmorView panPatchwork;
 
     RefreshListener refresh = null;
     JPanel masterPanel;
@@ -100,9 +100,13 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panMovement = new MovementView(panBasicInfo);
         panHeat = new HeatSinkView(panBasicInfo);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MECH);
-        panArmorAllocation.setPatchwork(getMech().hasPatchworkArmor());
+        panPatchwork = new PatchworkArmorView(panBasicInfo);
         panSummary = new SummaryView(eSource);
-        
+        if (getMech().hasPatchworkArmor()) {
+            panArmorAllocation.showPatchwork(true);
+        } else {
+            panPatchwork.setVisible(false);
+        }
 
         GridBagConstraints gbc;
 
@@ -112,10 +116,13 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panMovement.setFromEntity(getMech());
         panHeat.setFromMech(getMech());
         panArmorAllocation.setFromEntity(getMech());
+        panPatchwork.setFromEntity(getMech());
 
         JPanel leftPanel = new JPanel();
+        JPanel centerPanel = new JPanel();
         JPanel rightPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panBasicInfo);
@@ -125,10 +132,14 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         leftPanel.add(panHeat);
         leftPanel.add(Box.createGlue());
         
-        rightPanel.add(panArmor);
-        rightPanel.add(panMovement);       
-        rightPanel.add(panSummary);
-        leftPanel.add(Box.createVerticalGlue());
+        centerPanel.add(panArmor);
+        centerPanel.add(panMovement);       
+        centerPanel.add(panSummary);
+        centerPanel.add(Box.createVerticalGlue());
+        
+        rightPanel.add(panArmorAllocation);
+        rightPanel.add(panPatchwork);
+        rightPanel.add(Box.createVerticalGlue());
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -139,9 +150,9 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         gbc.anchor = GridBagConstraints.NORTHWEST;
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
-        masterPanel.add(rightPanel, gbc);
+        masterPanel.add(centerPanel, gbc);
         gbc.gridx = 2;
-        masterPanel.add(panArmorAllocation, gbc);
+        masterPanel.add(rightPanel, gbc);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
@@ -150,6 +161,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
+        panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
 
     }
 
@@ -161,6 +173,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panHeat.setFromMech(getMech());
         panMovement.setFromEntity(getMech());
         panArmorAllocation.setFromEntity(getMech());
+        panPatchwork.setFromEntity(getMech());
 
         panSummary.refresh();
         addAllListeners();
@@ -362,6 +375,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panArmor.removeListener(this);
         panMovement.removeListener(this);
         panArmorAllocation.removeListener(this);
+        panPatchwork.removeListener(this);
     }
 
     public void addAllListeners() {
@@ -371,6 +385,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panArmor.addListener(this);
         panMovement.addListener(this);
         panArmorAllocation.addListener(this);
+        panPatchwork.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -474,104 +489,36 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     }
     
     private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
+        getMech().setArmorTechLevel(aTechLevel);
+        getMech().setArmorType(at);
+        final EquipmentType armor = EquipmentType.get(EquipmentType.getArmorTypeName(at,
+                TechConstants.isClan(aTechLevel)));
+        int armorCount = armor.getCriticals(getMech());
 
-        if (at == EquipmentType.T_ARMOR_PATCHWORK) {
-            boolean isMixed = panBasicInfo.useMixedTech();
-            List<EquipmentType> armors = panArmor.getAllArmors();
-            List<TechComboBox<EquipmentType>> combos = new ArrayList<>();
-            JPanel panel = new JPanel(new GridBagLayout());
-            for (int loc = 0; loc < getMech().locations(); loc++) {
-                TechComboBox<EquipmentType> cbLoc = new TechComboBox<>(eq -> eq.getName());
-                cbLoc.showTechBase(isMixed);
-                armors.forEach(a -> cbLoc.addItem(a));
-                EquipmentType locArmor = EquipmentType.get(EquipmentType
-                        .getArmorTypeName(getMech().getArmorType(loc),
-                                TechConstants.isClan(getMech().getArmorTechLevel(loc))));
-                cbLoc.setSelectedItem(locArmor);
-                combos.add(cbLoc);
-                JLabel label = new JLabel(getMech().getLocationName(loc));
-                panel.add(label, GBC.std());
-                panel.add(cbLoc, GBC.eol());
+        if (armorCount < 1) {
+            return;
+        }
+        // auto-place stealth crits
+        if (getMech().getArmorType(0) == EquipmentType.T_ARMOR_STEALTH) {
+            Mounted mount = UnitUtil.createSpreadMounts(
+                    getMech(),
+                    EquipmentType.get(EquipmentType.getArmorTypeName(
+                            getMech().getArmorType(0), false)));
+            if (mount == null) {
+                JOptionPane.showMessageDialog(null,
+                        "Stealth Armor does not fit in location.",
+                        "Resetting to Standard Armor",
+                        JOptionPane.INFORMATION_MESSAGE);
+                getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+                getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                panArmor.setFromEntity(getMech());
             }
-            JOptionPane.showMessageDialog(this, panel,
-                    "Please choose the armor types",
-                    JOptionPane.QUESTION_MESSAGE);
-            UnitUtil.removeISorArmorMounts(getMech(), false);
-            for (int loc = 0; loc < getMech().locations(); loc++) {
-                EquipmentType armor = (EquipmentType)combos.get(loc).getSelectedItem();
-                getMech().setArmorTechLevel(armor.getTechLevel(panBasicInfo.getGameYear()), loc);
-                getMech().setArmorType(EquipmentType.getArmorType(armor), loc);
-                int crits = 0;
-                switch (EquipmentType.getArmorType(armor)) {
-                    case EquipmentType.T_ARMOR_STEALTH:
-                    case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-                        crits = 2;
-                        break;
-                    case EquipmentType.T_ARMOR_HEAVY_FERRO:
-                        crits = 3;
-                        break;
-                    case EquipmentType.T_ARMOR_FERRO_FIBROUS:
-                    case EquipmentType.T_ARMOR_REFLECTIVE:
-                    case EquipmentType.T_ARMOR_REACTIVE:
-                        if (armor.isClan()) {
-                            crits = 1;
-                        } else {
-                            crits = 2;
-                        }
-                        break;
-                }
-                if (getMech().getEmptyCriticals(loc) < crits) {
-                    JOptionPane .showMessageDialog(
-                            null, armor.getName()
-                            + " does not fit in location "
-                            + getMech().getLocationName(loc)
-                            + ". Resetting to Standard Armor in this location.",
-                            "Error",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET, loc);
-                    getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD, loc);
-                } else {
-                    for (; crits > 0; crits--) {
-                        try {
-                            getMech().addEquipment( new Mounted(getMech(), armor), loc, false);
-                        } catch (LocationFullException ex) {
-                        }
-                    }
-                }
-            }
-            panArmor.setFromEntity(getMech());
         } else {
-            getMech().setArmorTechLevel(aTechLevel);
-            getMech().setArmorType(at);
-            final EquipmentType armor = EquipmentType.get(EquipmentType.getArmorTypeName(at,
-                    TechConstants.isClan(aTechLevel)));
-            int armorCount = armor.getCriticals(getMech());
-
-            if (armorCount < 1) {
-                return;
-            }
-            // auto-place stealth crits
-            if (getMech().getArmorType(0) == EquipmentType.T_ARMOR_STEALTH) {
-                Mounted mount = UnitUtil.createSpreadMounts(
-                        getMech(),
-                        EquipmentType.get(EquipmentType.getArmorTypeName(
-                                getMech().getArmorType(0), false)));
-                if (mount == null) {
-                    JOptionPane.showMessageDialog(null,
-                            "Stealth Armor does not fit in location.",
-                            "Resetting to Standard Armor",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
-                    getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
-                    panArmor.setFromEntity(getMech());
-                }
-            } else {
-                for (; armorCount > 0; armorCount--) {
-                    try {
-                        getMech().addEquipment(new Mounted(getMech(),
-                                armor), Entity.LOC_NONE, false);
-                    } catch (Exception ex) {
-                    }
+            for (; armorCount > 0; armorCount--) {
+                try {
+                    getMech().addEquipment(new Mounted(getMech(),
+                            armor), Entity.LOC_NONE, false);
+                } catch (Exception ex) {
                 }
             }
         }
@@ -632,7 +579,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         if (!getMech().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getMech(), false);
         }
-        createArmorMountsAndSetArmorType(getMech().getArmorType(0), getMech().getArmorTechLevel(0));
+//        createArmorMountsAndSetArmorType(getMech().getArmorType(0), getMech().getArmorTechLevel(0));
         // If we have a large engine, a drop in tech level may make it unavailable and we will need
         // to reduce speed to a legal value.
         if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE)
@@ -660,6 +607,7 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         panArmor.refresh();
         panMovement.refresh();
         panArmorAllocation.setFromEntity(getMech());
+        panPatchwork.setFromEntity(getMech());
         addAllListeners();
     }
 
@@ -919,11 +867,16 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
     
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
-        if (!getMech().hasPatchworkArmor()) {
-            UnitUtil.removeISorArmorMounts(getMech(), false);
+        UnitUtil.removeISorArmorMounts(getMech(), false);
+        if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            createArmorMountsAndSetArmorType(at, aTechLevel);
+            panArmorAllocation.showPatchwork(false);
+            panPatchwork.setVisible(false);
+        } else {
+            panPatchwork.setFromEntity(getMech());
+            panArmorAllocation.showPatchwork(true);
+            panPatchwork.setVisible(true);
         }
-//        createArmorMountsAndSetArmorType(at, aTechLevel);
-        panArmorAllocation.setPatchwork(at == EquipmentType.T_ARMOR_PATCHWORK);
         panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -1049,12 +1002,62 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
             getMech().initializeRearArmor(rear, location);
         }
         panArmorAllocation.setFromEntity(getMech());
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
     }
 
     @Override
-    public void patchworkTypeChanged(int location, EquipmentType at) {
-        getMech().setArmorType(EquipmentType.getArmorType(at));
-        getMech().setArmorTechLevel(at.getTechLevel(getTechManager().getGameYear(), at.isClan()));
+    public void patchworkChanged(int location, EquipmentType armor) {
+        UnitUtil.resetArmor(getMech(), location);
+
+        //TODO: move this construction data out of the ui
+        int crits = 0;
+        switch (EquipmentType.getArmorType(armor)) {
+            case EquipmentType.T_ARMOR_STEALTH:
+            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+                crits = 2;
+                break;
+            case EquipmentType.T_ARMOR_HEAVY_FERRO:
+                crits = 3;
+                break;
+            case EquipmentType.T_ARMOR_LIGHT_FERRO:
+                crits = 1;
+                break;
+            case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+            case EquipmentType.T_ARMOR_REFLECTIVE:
+            case EquipmentType.T_ARMOR_REACTIVE:
+                if (armor.isClan()) {
+                    crits = 1;
+                } else {
+                    crits = 2;
+                }
+                break;
+        }
+        if (getMech().getEmptyCriticals(location) < crits) {
+            JOptionPane .showMessageDialog(
+                    null, armor.getName()
+                    + " does not fit in location "
+                    + getMech().getLocationName(location)
+                    + ". Resetting to Standard Armor in this location.",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            getMech().setArmorType(EquipmentType.getArmorType(armor), location);
+            getMech().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
+            for (; crits > 0; crits--) {
+                try {
+                    getMech().addEquipment( new Mounted(getMech(), armor), location, false);
+                } catch (LocationFullException ex) {
+                }
+            }
+        }
+        panArmor.refresh();
+        panArmorAllocation.setFromEntity(getMech());
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
     }
 
 }
