@@ -275,7 +275,11 @@ public class SummaryView extends IView{
         txtCockpitTon.setText(Double.toString(testMech.getWeightCockpit()));
         txtHeatTon.setText(Double.toString(testMech.getWeightHeatSinks()));
         txtStructTon.setText(Double.toString(testMech.getWeightStructure()));
-        txtArmorTon.setText(Double.toString(testMech.getWeightArmor()));
+        if (getMech().hasPatchworkArmor()) {
+            txtArmorTon.setText(Double.toString(testMech.getWeightAllocatedArmor()));
+        } else {
+            txtArmorTon.setText(Double.toString(testMech.getWeightArmor()));
+        }
         txtOtherTon.setText(Double.toString(testMech.getWeightPowerAmp() + testMech.getWeightCarryingSpace() + testMech.getWeightMisc()));
 
 

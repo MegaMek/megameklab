@@ -2984,6 +2984,31 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Remove all mounts for the current armor type from a single location on the passed unit
+     * and sets the armor type in that location to standard.
+     *
+     * @param unit The <code>Entity</code>
+     * @param loc  The location from which to remove the armor mounts.
+     */
+    public static void resetArmor(Entity unit, int loc) {
+        String name = EquipmentType.getArmorTypeName(unit.getArmorType(loc),
+                TechConstants.isClan(unit.getArmorTechLevel(loc)));
+        EquipmentType eq = EquipmentType.get(name);
+        if (null != eq) {
+            for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+                final CriticalSlot crit = unit.getCritical(loc, slot);
+                if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
+                        && (null != crit.getMount()) && crit.getMount().getType().equals(eq)) {
+                    unit.getMisc().remove(crit.getMount());
+                    unit.setCritical(loc, slot, null);
+                }
+            }
+        }
+        unit.setArmorType(EquipmentType.T_ARMOR_STANDARD, loc);
+        unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET, loc);
+    }
+
     public static void checkArmor(Entity unit) {
 
         if (!(unit instanceof Mech)) {

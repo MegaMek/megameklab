@@ -230,16 +230,20 @@ public class MVFArmorView extends MainUIView implements ActionListener, ChangeLi
                     }
                 }
             }
-            cbArmorType.setSelectedItem(prev);
-            cbArmorType.addActionListener(this);
-            if (cbArmorType.getSelectedIndex() < 0) {
-                cbArmorType.setSelectedIndex(0);
-            }
         }
         //TODO: patchwork armor for fighters needs work on the armor allocation view
         if (((etype & Entity.ETYPE_AERO) == 0)
                 && techManager.isLegal(Entity.getPatchworkArmorAdvancement())) {
             cbArmorType.addItem(null);
+        }
+        if (null == prev) {
+            cbArmorType.setSelectedIndex(cbArmorType.getModel().getSize() - 1);
+        } else {
+            cbArmorType.setSelectedItem(prev);
+        }
+        cbArmorType.addActionListener(this);
+        if ((null != prev) && (cbArmorType.getSelectedIndex() < 0)) {
+            cbArmorType.setSelectedIndex(0);
         }
         cbArmorType.showTechBase(techManager.useMixedTech());
     }
