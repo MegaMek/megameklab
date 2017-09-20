@@ -245,6 +245,25 @@ public class ArmorAllocationView extends MainUIView implements
         txtWasted.setText(String.valueOf(wastedPoints));
     }
     
+    /**
+     * Helper function for patchwork. If used for non-patchwork, it will likely give incorrect values
+     * due to rounding up by location.
+     * 
+     * @param en
+     * @return   The total weight of all allocated armor.
+     */
+    public double getTotalArmorWeight(Entity en) {
+        double weight = 0.0;
+        for (ArmorLocationView locView : locationViews) {
+            final int loc = locView.getLocationIndex();
+            if (loc < en.locations()) {
+                double pointsPerTon = UnitUtil.getArmorPointsPerTon(en, en.getArmorType(loc),  en.getArmorTechLevel(loc));
+                weight += Math.ceil((locView.getPoints() + locView.getPointsRear()) / pointsPerTon * 2.0) * 0.5;
+            }
+        }
+        return weight;
+    }
+    
     public void showPatchwork(boolean show) {
         showPatchwork = show;
     }

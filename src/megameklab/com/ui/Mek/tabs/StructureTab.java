@@ -1001,6 +1001,9 @@ public class StructureTab extends ITab implements BasicInfoView.BasicInfoListene
         if (getMech().hasRearArmor(location)) {
             getMech().initializeRearArmor(rear, location);
         }
+        if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
+            getMech().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMech()));
+        }
         panArmorAllocation.setFromEntity(getMech());
         refresh.refreshPreview();
         refresh.refreshSummary();
