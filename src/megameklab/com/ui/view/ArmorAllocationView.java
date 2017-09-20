@@ -99,6 +99,7 @@ public class ArmorAllocationView extends MainUIView implements
     private int maxArmorPoints = 0;
     private int wastedPoints = 0;
     private boolean showPatchwork = false;
+    private String tooltipFormat;
     
     public ArmorAllocationView(ITechManager techManager, long entitytype) {
         this.entitytype = entitytype;
@@ -107,6 +108,7 @@ public class ArmorAllocationView extends MainUIView implements
     
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views", new EncodeControl()); //$NON-NLS-1$
+        tooltipFormat = resourceMap.getString("ArmorAllocationView.locationTooltip.format");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -204,13 +206,26 @@ public class ArmorAllocationView extends MainUIView implements
                 if (showPatchwork || (currentPoints < armorPoints)) {
                     locView.setMaxPoints(UnitUtil.getMaxArmor(en, location));
                 } else {
-                    locView.setMaxPoints(en.getArmor(location, false) + en.getArmor(location, true));
+                    int max = en.getArmor(location, false);
+                    if (en.hasRearArmor(location)) {
+                        max += en.getArmor(location, true);
+                    }
+                    locView.setMaxPoints(max);
                 }
                 locView.setPoints(en.getArmor(location));
                 if (en.hasRearArmor(location)) {
                     locView.setPointsRear(en.getArmor(location, true));
                 } else {
                     locView.setPointsRear(0);
+                }
+                if (showPatchwork) {
+                    double pointsPerTon = UnitUtil.getArmorPointsPerTon(en, en.getArmorType(location),  en.getArmorTechLevel(location));
+                    double points = en.getArmor(location, false);
+                    if (en.hasRearArmor(location)) {
+                        points += en.getArmor(location, true);
+                    }
+                    locView.setToolTipText(String.format(tooltipFormat, pointsPerTon,
+                            Math.ceil(points / pointsPerTon * 2.0) * 0.5));
                 }
             } else {
                 locView.setVisible(false);
