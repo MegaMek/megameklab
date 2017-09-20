@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -68,7 +69,14 @@ public class ArmorAllocationView extends BuildView implements
             {-1, Mech.LOC_LLEG, Mech.LOC_CLEG, Mech.LOC_RLEG, -1}
     };
     
-    private static final int[][] VEE_LAYOUT = {
+    private static final int[][] TANK_LAYOUT = {
+            {-1, Tank.LOC_FRONT, -1},
+            {Tank.LOC_LEFT, Tank.LOC_TURRET, Tank.LOC_RIGHT},
+            {-1, Tank.LOC_TURRET_2, -1},
+            {-1, Tank.LOC_REAR, -1}
+    };
+
+    private static final int[][] SH_TANK_LAYOUT = {
             {-1, SuperHeavyTank.LOC_FRONT, -1},
             {SuperHeavyTank.LOC_FRONTLEFT, SuperHeavyTank.LOC_TURRET, SuperHeavyTank.LOC_FRONTRIGHT},
             {SuperHeavyTank.LOC_REARLEFT, SuperHeavyTank.LOC_TURRET_2, SuperHeavyTank.LOC_REARRIGHT},
@@ -76,10 +84,10 @@ public class ArmorAllocationView extends BuildView implements
     };
 
     private static final int[][] VTOL_LAYOUT = {
-            {-1, Tank.LOC_FRONT, -1},
-            {Tank.LOC_LEFT, VTOL.LOC_ROTOR, Tank.LOC_RIGHT},
-            {-1, Tank.LOC_TURRET, -1},
-            {-1, Tank.LOC_REAR, -1}
+            {-1, VTOL.LOC_FRONT, -1},
+            {VTOL.LOC_LEFT, VTOL.LOC_ROTOR, VTOL.LOC_RIGHT},
+            {-1, VTOL.LOC_TURRET, -1},
+            {-1, VTOL.LOC_REAR, -1}
     };
     
     private static final int[][] AERODYNE_LAYOUT = {
@@ -89,13 +97,14 @@ public class ArmorAllocationView extends BuildView implements
     };
     
     private final List<ArmorLocationView> locationViews = new ArrayList<>();
-    private final long entitytype;
+    private final JPanel panLocations = new JPanel();
     private final JTextField txtUnallocated = new JTextField();
     private final JTextField txtAllocated = new JTextField();
     private final JTextField txtTotal = new JTextField();
     private final JTextField txtMaxPossible = new JTextField();
     private final JTextField txtWasted = new JTextField();
     
+    private long entitytype;
     private int armorPoints = 0;
     private int maxArmorPoints = 0;
     private int wastedPoints = 0;
@@ -112,38 +121,15 @@ public class ArmorAllocationView extends BuildView implements
         tooltipFormat = resourceMap.getString("ArmorAllocationView.locationTooltip.format");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        
+        panLocations.setLayout(new GridBagLayout());
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
+        add(panLocations, gbc);
         
-        int[][] layout;
-        if ((entitytype & Entity.ETYPE_MECH) != 0) {
-            layout = MEK_LAYOUT;
-        } else if ((entitytype & Entity.ETYPE_AERO) != 0) {
-            // Spheroids use lwing/rwing rear for l/r aft positions
-            layout = AERODYNE_LAYOUT;
-        } else if ((entitytype & Entity.ETYPE_VTOL) != 0) {
-            layout = VTOL_LAYOUT;
-        } else {
-            layout = VEE_LAYOUT;
-        }
-        for (int row = 0; row < layout.length; row++) {
-            JPanel panRow = new JPanel();
-            panRow.setLayout(new BoxLayout(panRow, BoxLayout.X_AXIS));
-            for (int col = 0; col < layout[row].length; col++) {
-                final int loc = layout[row][col];
-                if (loc >= 0) {
-                    ArmorLocationView locView = new ArmorLocationView(loc);
-                    locationViews.add(locView);
-                    panRow.add(locView);
-                    locView.addListener(this);
-                } else {
-                    panRow.add(new JPanel());
-                }
-            }
-            add(panRow, gbc);
-            gbc.gridy++;
-        }
+        updateLayout();
+        gbc.gridy++;
         
         gbc.gridwidth = 1;
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtUnallocated.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
@@ -187,6 +173,7 @@ public class ArmorAllocationView extends BuildView implements
     }
     
     public void setFromEntity(Entity en) {
+        setEntityType(en.getEntityType());
         maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
         int raw = UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage());
         int currentPoints = en.getTotalOArmor();
@@ -244,6 +231,54 @@ public class ArmorAllocationView extends BuildView implements
         txtTotal.setText(String.valueOf(armorPoints));
         txtMaxPossible.setText(String.valueOf(maxArmorPoints));
         txtWasted.setText(String.valueOf(wastedPoints));
+    }
+    
+    private void updateLayout() {
+        int[][] layout;
+        if ((entitytype & Entity.ETYPE_MECH) != 0) {
+            layout = MEK_LAYOUT;
+        } else if ((entitytype & Entity.ETYPE_AERO) != 0) {
+            // Spheroids use lwing/rwing rear for l/r aft positions
+            layout = AERODYNE_LAYOUT;
+        } else if ((entitytype & Entity.ETYPE_VTOL) != 0) {
+            layout = VTOL_LAYOUT;
+        } else if ((entitytype & Entity.ETYPE_SUPER_HEAVY_TANK) != 0) {
+            layout = SH_TANK_LAYOUT;
+        } else {
+            layout = TANK_LAYOUT;
+        }
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        for (int row = 0; row < layout.length; row++) {
+            JPanel panRow = new JPanel();
+            panRow.setLayout(new BoxLayout(panRow, BoxLayout.X_AXIS));
+            for (int col = 0; col < layout[row].length; col++) {
+                final int loc = layout[row][col];
+                if (loc >= 0) {
+                    ArmorLocationView locView = new ArmorLocationView(loc);
+                    locationViews.add(locView);
+                    panRow.add(locView);
+                    locView.addListener(this);
+                } else {
+                    panRow.add(Box.createHorizontalGlue());
+                }
+            }
+            panLocations.add(panRow, gbc);
+            gbc.gridy++;
+        }
+    }
+    
+    public void setEntityType(long etype) {
+        if (etype != entitytype) {
+            entitytype = etype;
+            panLocations.removeAll();
+            updateLayout();
+            panLocations.repaint();
+        }
     }
     
     /**
