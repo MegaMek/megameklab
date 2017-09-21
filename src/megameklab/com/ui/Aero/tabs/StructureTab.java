@@ -30,6 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import megamek.common.Aero;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
@@ -376,11 +377,6 @@ public class StructureTab extends ITab implements AeroBuildListener {
     }
 
     @Override
-    public void heatSinksChanged(EquipmentType hsType, int count) {
-        // Not used by aerospace units
-    }
-
-    @Override
     public void heatSinkBaseCountChanged(int count) {
         getAero().getEngine().setBaseChassisHeatSinks(Math.max(0,  count));
         getAero().setPodHeatSinks(getAero().getHeatSinks() - count);
@@ -569,6 +565,44 @@ public class StructureTab extends ITab implements AeroBuildListener {
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
+    }
+
+    @Override
+    public void autoAllocateArmor() {
+        for (int loc = 0; loc < getAero().locations(); loc++) {
+            getAero().initializeArmor(0, loc);
+        }
+        
+        // divide armor among positions, with more toward the front
+        int points = UnitUtil.getArmorPoints(getAero(), getAero().getLabArmorTonnage());
+        int nose = (int)Math.floor(points * 0.3);
+        int wing = (int)Math.floor(points * 0.25);
+        int aft = (int)Math.floor(points * 0.2);
+        int remainder = points - nose - wing - wing - aft;
+        
+        // spread remainder among nose and wings
+        switch(remainder % 4) {
+            case 1:
+                nose++;
+                break;
+            case 3:
+                nose++;
+                wing++;
+                break;
+            case 2:
+                wing++;
+                break;
+        }
+        getAero().initializeArmor(nose, Aero.LOC_NOSE);
+        getAero().initializeArmor(wing, Aero.LOC_LWING);
+        getAero().initializeArmor(wing, Aero.LOC_RWING);
+        getAero().initializeArmor(aft, Aero.LOC_AFT);
+
+        panArmorAllocation.setFromEntity(getAero());
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
+
     }
 
     @Override
