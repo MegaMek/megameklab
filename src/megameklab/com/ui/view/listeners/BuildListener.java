@@ -61,5 +61,6 @@ public interface BuildListener {
     // For units that allocate armor to location
     default void armorPointsChanged(int location, int front, int rear) {};
     default void patchworkChanged(int location, EquipmentType armor) {};
+    default void autoAllocateArmor() {};
 
 }
