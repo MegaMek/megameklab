@@ -259,6 +259,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         return (Integer)cbFaction.getSelectedItem();
     }
+    
+    public void setTechFaction(int techFaction) {
+        cbFaction.setSelectedItem(techFaction);
+    }
 
     @Override
     public int getGameYear() {

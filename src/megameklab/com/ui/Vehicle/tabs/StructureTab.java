@@ -164,6 +164,13 @@ public class StructureTab extends ITab implements CVBuildListener {
         return panBasicInfo;
     }
     
+    /*
+     * Used by MekHQ to set the tech faction for custom refits.
+     */
+    public void setTechFaction(int techFaction) {
+        panBasicInfo.setTechFaction(techFaction);
+    }
+
     public void removeAllListeners() {
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);

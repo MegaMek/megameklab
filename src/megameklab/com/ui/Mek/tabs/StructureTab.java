@@ -195,6 +195,13 @@ public class StructureTab extends ITab implements MekBuildListener {
         return panBasicInfo;
     }
 
+    /*
+     * Used by MekHQ to set the tech faction for custom refits.
+     */
+    public void setTechFaction(int techFaction) {
+        panBasicInfo.setTechFaction(techFaction);
+    }
+
     private void resetSystemCrits() {
         getMech().clearCockpitCrits();
         getMech().clearGyroCrits();

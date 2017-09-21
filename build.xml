@@ -56,8 +56,13 @@
     <target
             depends="init"
             description="Compile java sources into class files"
-            name="compile"
-    >
+            name="compile">
+    	<copy todir="${build}">
+    		  <fileset dir="${src}">
+    		  	<include name="**/*.properties"/>
+    		    <exclude name="**/*.java"/>
+    		  </fileset>
+	    </copy>
         <javac
                 classpathref="project.classpath"
                 debug="true"

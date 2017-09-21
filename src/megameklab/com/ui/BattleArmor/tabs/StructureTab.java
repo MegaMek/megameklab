@@ -226,6 +226,13 @@ public class StructureTab extends ITab implements ActionListener, BABuildListene
 	    return panBasicInfo;
 	}
 
+    /*
+     * Used by MekHQ to set the tech faction for custom refits.
+     */
+    public void setTechFaction(int techFaction) {
+        panBasicInfo.setTechFaction(techFaction);
+    }
+
 	public void addAllListeners() {
         leftManipSelect.addActionListener(this);
         rightManipSelect.addActionListener(this);
