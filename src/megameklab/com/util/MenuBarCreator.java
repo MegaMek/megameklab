@@ -57,7 +57,6 @@ import megamek.common.Mech;
 import megamek.common.MechFileParser;
 import megamek.common.MechTextView;
 import megamek.common.MechView;
-import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.loaders.BLKFile;
 import megameklab.com.MegaMekLab;
@@ -325,7 +324,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             unitMenu.add(item);
         }
 
-        if (!(parentFrame.getEntity() instanceof Aero)) {
+        if (!(parentFrame.getEntity().isFighter())) {
             item = new JMenuItem();
             item.setText("Aero/Conv Fighter");
             item.setMnemonic(KeyEvent.VK_A);
@@ -334,6 +333,21 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     jMenuLoadAero();
+                }
+
+            });
+            unitMenu.add(item);
+        }
+
+        if (!(parentFrame.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT))) {
+            item = new JMenuItem();
+            item.setText("Dropship/Small Craft");
+            item.setMnemonic(KeyEvent.VK_D);
+            item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D,
+                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    jMenuLoadDropship();
                 }
 
             });
@@ -1036,6 +1050,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
         new megameklab.com.ui.Aero.MainUI(true);
         parentFrame.dispose();
     }
+    
+    private void jMenuLoadDropship() {
+        new megameklab.com.ui.Dropship.MainUI();
+    }
 
     private void jMenuLoadInfantry() {
     	new megameklab.com.ui.Infantry.MainUI();
@@ -1277,18 +1295,20 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
         if (newUnit.getEntityType() != parentFrame.getEntity().getEntityType()) {
             MegaMekLabMainUI newUI = null;
-            if ((newUnit instanceof Aero)
-                    && !((newUnit instanceof SmallCraft)
-                    || (newUnit instanceof Jumpship)
-                    || (newUnit instanceof FixedWingSupport))) {
+            if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+                newUI = new megameklab.com.ui.Dropship.MainUI();
+            } else if (newUnit.hasETypeFlag(Entity.ETYPE_AERO)
+                    && !(newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)
+                    || newUnit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT))) {
                 newUI = new megameklab.com.ui.Aero.MainUI(((Aero)newUnit).isPrimitive());
-            } else if (newUnit instanceof BattleArmor) {
+            } else if (newUnit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
                 newUI = new megameklab.com.ui.BattleArmor.MainUI();
-            } else if (newUnit instanceof Infantry) {
+            } else if (newUnit.hasETypeFlag(Entity.ETYPE_INFANTRY)) {
                 newUI = new megameklab.com.ui.Infantry.MainUI();
-            } else if (newUnit instanceof Mech) {
+            } else if (newUnit.hasETypeFlag(Entity.ETYPE_MECH)) {
                 newUI = new megameklab.com.ui.Mek.MainUI();
-            } else if ((newUnit instanceof Tank) && !(newUnit instanceof GunEmplacement)) {
+            } else if (newUnit.hasETypeFlag(Entity.ETYPE_TANK)
+                    && !newUnit.hasETypeFlag(Entity.ETYPE_GUN_EMPLACEMENT)) {
                 newUI = new megameklab.com.ui.Vehicle.MainUI();
             }
             if (null == newUI) {
@@ -1390,9 +1410,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
 
             if (tempEntity.getEntityType() != parentFrame.getEntity().getEntityType()) {
                 MegaMekLabMainUI newUI = null;
-                if ((tempEntity instanceof Aero)
-                        && !((tempEntity instanceof SmallCraft)
-                        || (tempEntity instanceof Jumpship)
+                if (tempEntity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+                    newUI = new megameklab.com.ui.Dropship.MainUI();
+                } else if ((tempEntity instanceof Aero)
+                        && !((tempEntity instanceof Jumpship)
                         || (tempEntity instanceof FixedWingSupport))) {
                     newUI = new megameklab.com.ui.Aero.MainUI(((Aero)tempEntity).isPrimitive());
                 } else if (tempEntity instanceof BattleArmor) {
