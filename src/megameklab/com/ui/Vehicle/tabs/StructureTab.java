@@ -35,8 +35,10 @@ import megamek.common.LocationFullException;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
+import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.TroopSpace;
+import megamek.common.VTOL;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Vehicle.views.SummaryView;
@@ -510,6 +512,7 @@ public class StructureTab extends ITab implements CVBuildListener {
         panMovement.removeListener(this);
         panMovement.setFromEntity(getTank());
         panMovement.addListener(this);
+        panArmor.setFromEntity(getTank());
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         panSummary.refresh();
@@ -604,6 +607,65 @@ public class StructureTab extends ITab implements CVBuildListener {
         if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
             getTank().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getTank()));
         }
+        panArmorAllocation.setFromEntity(getTank());
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
+    }
+
+    @Override
+    public void autoAllocateArmor() {
+        int pointsToAllocate = UnitUtil.getArmorPoints(getTank(), getTank().getLabArmorTonnage());
+
+        for (int location = 0; location < getTank().locations(); location++) {
+            getTank().initializeArmor(0, location);
+        }
+        
+        // Discount body, as it's not armored
+        int numLocations = getTank().locations() - 1;
+
+        // Make sure that the VTOL rotor has the 2 armor it should have
+        if (getTank().hasETypeFlag(Entity.ETYPE_VTOL)) {
+            getTank().initializeArmor(Math.min(pointsToAllocate, 2), VTOL.LOC_ROTOR);
+            pointsToAllocate -= 2;
+            numLocations--;
+        }
+        
+        // Determine the percentage of total armor each location should get
+        double otherPercent = 1.0 / numLocations;
+        double remainingPercent = 1.0 - (otherPercent * (numLocations - 2));
+        // Front should be slightly more armored and rear slightly less
+        double frontPercent = remainingPercent * 0.6;
+        double rearPercent = remainingPercent * 0.4;
+        
+        // With the percentage of total for each location, assign armor
+        int allocatedPoints = 0;
+        int rear = Tank.LOC_REAR;
+        if (getTank().hasETypeFlag(Entity.ETYPE_SUPER_HEAVY_TANK)) {
+            rear = SuperHeavyTank.LOC_REAR;
+        }
+        for (int location = 1; location < getTank().locations(); location++) {
+            if ((getTank().hasETypeFlag(Entity.ETYPE_VTOL)) && (location == VTOL.LOC_ROTOR)) {
+                continue;
+            }
+            int armorToAllocate = 0;
+            if (location == Tank.LOC_FRONT) {
+                armorToAllocate = (int)(pointsToAllocate * frontPercent);
+            } else if (location == rear) {
+                armorToAllocate = (int)(pointsToAllocate * rearPercent);
+            } else {
+                armorToAllocate = (int)(pointsToAllocate * otherPercent);
+            }
+            getTank().initializeArmor(armorToAllocate, location);
+            allocatedPoints += armorToAllocate;
+        }
+        
+        // Because of rounding, may have leftover armor: allocate it to front
+        int unallocated = pointsToAllocate - allocatedPoints;
+        int currentFrontArmor = getTank().getOArmor(Tank.LOC_FRONT);
+        getTank().initializeArmor(currentFrontArmor + unallocated, Tank.LOC_FRONT);
+
+        
         panArmorAllocation.setFromEntity(getTank());
         refresh.refreshPreview();
         refresh.refreshSummary();
