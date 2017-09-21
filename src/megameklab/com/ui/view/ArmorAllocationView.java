@@ -23,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -103,6 +104,7 @@ public class ArmorAllocationView extends BuildView implements
     private final JTextField txtTotal = new JTextField();
     private final JTextField txtMaxPossible = new JTextField();
     private final JTextField txtWasted = new JTextField();
+    private final JButton btnAutoAllocate = new JButton();
     
     private long entitytype;
     private int armorPoints = 0;
@@ -166,10 +168,19 @@ public class ArmorAllocationView extends BuildView implements
         gbc.gridy++;
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtWasted.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
         txtWasted.setEditable(false);
         setFieldSize(txtWasted, editorSize);
         add(txtWasted, gbc);
+
+        btnAutoAllocate.setText(resourceMap.getString("ArmorAllocationView.btnAutoAllocate.text")); //$NON-NLS-1$
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(Box.createVerticalStrut(18), gbc);
+        gbc.gridy++;
+        add(btnAutoAllocate, gbc);
+        btnAutoAllocate.addActionListener(e -> listeners.forEach(BuildListener::autoAllocateArmor));
     }
     
     public void setFromEntity(Entity en) {
@@ -180,8 +191,10 @@ public class ArmorAllocationView extends BuildView implements
         if (showPatchwork) {
             armorPoints = currentPoints;
             raw = currentPoints;
+            btnAutoAllocate.setEnabled(false);
         } else {
             armorPoints = Math.min(raw, maxArmorPoints);
+            btnAutoAllocate.setEnabled(true);
         }
         wastedPoints = Math.max(0, raw - armorPoints);
         for (ArmorLocationView locView : locationViews) {
@@ -190,16 +203,7 @@ public class ArmorAllocationView extends BuildView implements
                 locView.setVisible(true);
                 locView.updateLocation(en.getLocationAbbr(location),
                         en.hasRearArmor(location));
-                // If we've already hit the maximum allocated to armor, set the current value as maximum.
-                if (showPatchwork || (currentPoints < armorPoints)) {
-                    locView.setMaxPoints(UnitUtil.getMaxArmor(en, location));
-                } else {
-                    int max = en.getArmor(location, false);
-                    if (en.hasRearArmor(location)) {
-                        max += en.getArmor(location, true);
-                    }
-                    locView.setMaxPoints(max);
-                }
+                locView.setMaxPoints(UnitUtil.getMaxArmor(en, location));
                 locView.setPoints(en.getArmor(location));
                 if (en.hasRearArmor(location)) {
                     locView.setPointsRear(en.getArmor(location, true));

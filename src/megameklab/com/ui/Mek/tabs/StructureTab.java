@@ -128,12 +128,12 @@ public class StructureTab extends ITab implements MekBuildListener {
         leftPanel.add(Box.createVerticalStrut(11));
         leftPanel.add(panHeat);
         leftPanel.add(Box.createGlue());
-        
+
         centerPanel.add(panArmor);
         centerPanel.add(panMovement);       
         centerPanel.add(panSummary);
         centerPanel.add(Box.createVerticalGlue());
-        
+
         rightPanel.add(panArmorAllocation);
         rightPanel.add(panPatchwork);
         rightPanel.add(Box.createVerticalGlue());
@@ -176,7 +176,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         addAllListeners();
 
     }
-    
+
     public JLabel createLabel(String text, Dimension maxSize) {
 
         JLabel label = new JLabel(text, SwingConstants.RIGHT);
@@ -190,7 +190,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         box.setMaximumSize(maxSize);
         box.setMinimumSize(maxSize);
     }
-    
+
     public ITechManager getTechManager() {
         return panBasicInfo;
     }
@@ -206,7 +206,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         getMech().clearCockpitCrits();
         getMech().clearGyroCrits();
         getMech().clearEngineCrits();
-        
+
         int[] ctEngine = getMech().getEngine().getCenterTorsoCriticalSlots(getMech().getGyroType());
         int lastEngine = ctEngine[ctEngine.length - 1];
         for (int slot = 0; slot <= lastEngine; slot++) {
@@ -218,22 +218,22 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
         getMech().addEngineCrits();
         switch (getMech().getGyroType()) {
-        case Mech.GYRO_COMPACT:
-            getMech().addCompactGyro();
-            break;
-        case Mech.GYRO_HEAVY_DUTY:
-            getMech().addHeavyDutyGyro();
-            break;
-        case Mech.GYRO_XL:
-            getMech().addXLGyro();
-            break;
-        case Mech.GYRO_NONE:
-            UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
-            break;
-        default:
-            getMech().addGyro();
+            case Mech.GYRO_COMPACT:
+                getMech().addCompactGyro();
+                break;
+            case Mech.GYRO_HEAVY_DUTY:
+                getMech().addHeavyDutyGyro();
+                break;
+            case Mech.GYRO_XL:
+                getMech().addXLGyro();
+                break;
+            case Mech.GYRO_NONE:
+                UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
+                break;
+            default:
+                getMech().addGyro();
         }
-        
+
         switch (getMech().getCockpitType()) {
             case Mech.COCKPIT_COMMAND_CONSOLE:
                 clearCritsForCockpit(false, true);
@@ -302,7 +302,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
         refresh.refreshBuild();
     }
-    
+
     /**
      * Removes equipment placed in head locations that are needed for a cockpit. For most cockpit
      * types, this is all but the fourth slot.
@@ -418,7 +418,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         int isCount = 0;
         getMech().setStructureType(EquipmentType.getStructureType(structure));
         getMech().setStructureTechLevel(structure.getStaticTechLevel().getCompoundTechLevel(structure.isClan()));
-        
+
         isCount = structure.getCriticals(getMech());
         if (isCount < 1) {
             return;
@@ -433,7 +433,7 @@ public class StructureTab extends ITab implements MekBuildListener {
             }
         }
     }
-    
+
     /**
      * Calculates required engine rating for speed and tonnage and updates engine if possible.
      * @return true if the new engine is legal for rating, space, and tech level
@@ -469,7 +469,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
         return true;
     }
-    
+
     private boolean hasCTSpace(Engine engine, int gyroType, int cockpitType) {
         if (getMech().isSuperHeavy()) {
             return true;
@@ -491,7 +491,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         }
         return crits <= 12;
     }
-    
+
     private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
         getMech().setArmorTechLevel(aTechLevel);
         getMech().setArmorType(at);
@@ -537,7 +537,7 @@ public class StructureTab extends ITab implements MekBuildListener {
     public void refreshSummary() {
         panSummary.refresh();
     }
-    
+
     @Override
     public void chassisChanged(String chassis) {
         getMech().setChassis(chassis);
@@ -575,7 +575,7 @@ public class StructureTab extends ITab implements MekBuildListener {
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
     }
-    
+
     @Override
     public void updateTechLevel() {
         removeAllListeners();
@@ -626,7 +626,7 @@ public class StructureTab extends ITab implements MekBuildListener {
             return;
         }
         boolean changedSuperHeavyStatus = getMech().isSuperHeavy() != tonnage > 100;
-        
+
         if (changedSuperHeavyStatus) {
             // if we switch from being superheavy to not being superheavy,
             // remove crits
@@ -705,7 +705,7 @@ public class StructureTab extends ITab implements MekBuildListener {
                         if (mount.isPresent()) {
                             UnitUtil.removeMounted(getMech(), mount.get());
                         }
-    
+
                         if (motiveType == QuadVee.MOTIVE_WHEEL) {
                             ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_WHEEL);
                             UnitUtil.createSpreadMounts(getMech(), EquipmentType.get("Wheels"));
@@ -867,7 +867,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
         UnitUtil.removeISorArmorMounts(getMech(), false);
@@ -886,7 +886,7 @@ public class StructureTab extends ITab implements MekBuildListener {
         refresh.refreshBuild();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void armorTonnageChanged(double tonnage) {
         getMech().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
@@ -903,13 +903,13 @@ public class StructureTab extends ITab implements MekBuildListener {
         panArmor.removeListener(this);
         panArmor.setFromEntity(getMech());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void useRemainingTonnageArmor() {
         double currentTonnage = UnitUtil.getEntityVerifier(getMech())
@@ -918,14 +918,14 @@ public class StructureTab extends ITab implements MekBuildListener {
         double totalTonnage = getMech().getWeight();
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
-        
+
         double maxArmor = Math.min(getMech().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getMech()));
         getMech().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getMech());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getMech());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -1011,6 +1011,190 @@ public class StructureTab extends ITab implements MekBuildListener {
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
+    }
+
+    @Override
+    public void autoAllocateArmor() {
+        double pointsToAllocate = UnitUtil.getArmorPoints(getMech(), getMech().getLabArmorTonnage());
+        double maxArmor = UnitUtil.getMaximumArmorPoints(getMech());
+        if (pointsToAllocate > maxArmor) {
+            pointsToAllocate = maxArmor;
+        }
+        double percent = pointsToAllocate / maxArmor;
+        int headMaxArmor = 9;
+        if (getMech().isSuperHeavy()) {
+            headMaxArmor = 12;
+        }
+        // put 5 times the percentage of total possible armor into the head
+        int headArmor = (int) Math.min(Math.floor(percent * headMaxArmor * 5), headMaxArmor);
+        getMech().initializeArmor(headArmor, Mech.LOC_HEAD);
+        pointsToAllocate -= headArmor;
+        maxArmor -= headMaxArmor;
+        // recalculate percentage for remainder
+        percent = pointsToAllocate / maxArmor;
+        for (int location = 0; location < getMech().locations(); location++) {
+            double IS = (getMech().getInternal(location) * 2);
+            double allocate = Math.min(IS * percent, pointsToAllocate);
+            switch (location) {
+                case Mech.LOC_HEAD:
+                    break;
+                case Mech.LOC_CT:
+                case Mech.LOC_LT:
+                case Mech.LOC_RT:
+                    double rear = Math.floor(allocate * .25);
+                    double front = Math.ceil(allocate * .75);
+                    pointsToAllocate -= (int) rear;
+                    pointsToAllocate -= (int) front;
+                    getMech().initializeArmor((int) front, location);
+                    getMech().initializeRearArmor((int) rear, location);
+                    break;
+                default:
+                    getMech().initializeArmor((int) allocate, location);
+                    pointsToAllocate -= (int) allocate;
+                    break;
+            }
+        }
+        allocateLeftoverPoints(pointsToAllocate);
+
+        panArmorAllocation.setFromEntity(getMech());
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
+    }
+
+    /**
+     * allocate any leftover points one-by-one
+     *
+     * @param points
+     *            the amount of points left over
+     */
+    private void allocateLeftoverPoints(double points) {
+        int headMaxArmor = 9;
+        if (getMech().isSuperHeavy()) {
+            headMaxArmor = 12;
+        }
+        while (points >= 1) {
+            // if two or more are left, add armor to symmetrical locations,
+            // to torso, legs, arms, in that order
+            if (points >= 2) {
+                if (((getMech().getOArmor(Mech.LOC_LT) + getMech().getOArmor(Mech.LOC_LT,
+                        true)) < (getMech().getOInternal(Mech.LOC_LT) * 2))
+                        && ((getMech().getOArmor(Mech.LOC_RT) + getMech().getOArmor(
+                                Mech.LOC_RT, true)) < (getMech()
+                                        .getOInternal(Mech.LOC_RT) * 2))) {
+                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LT) + 1,
+                            Mech.LOC_LT);
+                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RT) + 1,
+                            Mech.LOC_RT);
+                    points -= 2;
+                } else if ((getMech().getOArmor(Mech.LOC_LLEG) < (getMech()
+                        .getOInternal(Mech.LOC_LLEG) * 2))
+                        && (getMech().getOArmor(Mech.LOC_RLEG) < (getMech()
+                                .getOInternal(Mech.LOC_RLEG) * 2))) {
+                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LLEG) + 1,
+                            Mech.LOC_LLEG);
+                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RLEG) + 1,
+                            Mech.LOC_RLEG);
+                    points -= 2;
+                } else if ((getMech().getOArmor(Mech.LOC_LARM) < (getMech()
+                        .getOInternal(Mech.LOC_LARM) * 2))
+                        && (getMech().getOArmor(Mech.LOC_RARM) < (getMech()
+                                .getOInternal(Mech.LOC_RARM) * 2))) {
+                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LARM) + 1,
+                            Mech.LOC_LARM);
+                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RARM) + 1,
+                            Mech.LOC_RARM);
+                    points -= 2;
+                }
+                // otherwise, first add to the head, and then even out uneven
+                // allocation
+            } else if (getMech().getOArmor(Mech.LOC_HEAD) < headMaxArmor) {
+                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_HEAD) + 1,
+                        Mech.LOC_HEAD);
+                points--;
+            } else if (getMech().getOArmor(Mech.LOC_LT) < getMech()
+                    .getOArmor(Mech.LOC_RT)) {
+                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LT) + 1,
+                        Mech.LOC_LT);
+                points--;
+            } else if (getMech().getOArmor(Mech.LOC_RT) < getMech()
+                    .getOArmor(Mech.LOC_LT)) {
+                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RT) + 1,
+                        Mech.LOC_RT);
+                points--;
+            } else if (getMech().getOArmor(Mech.LOC_RARM) < getMech()
+                    .getOArmor(Mech.LOC_LARM)) {
+                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RARM) + 1,
+                        Mech.LOC_RARM);
+                points--;
+            } else if (getMech().getOArmor(Mech.LOC_LARM) < getMech()
+                    .getOArmor(Mech.LOC_RARM)) {
+                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LARM) + 1,
+                        Mech.LOC_LARM);
+                points--;
+            } else if (getMech().getOArmor(Mech.LOC_RLEG) < getMech()
+                    .getArmor(Mech.LOC_LLEG)) {
+                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RLEG) + 1,
+                        Mech.LOC_RLEG);
+                points--;
+            } else if (getMech().getOArmor(Mech.LOC_LLEG) < getMech()
+                    .getOArmor(Mech.LOC_RLEG)) {
+                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LLEG) + 1,
+                        Mech.LOC_LLEG);
+                points--;
+                // if nothing is uneven, add to the CT
+            } else if (((getMech().getOArmor(Mech.LOC_CT) + getMech().getOArmor(
+                    Mech.LOC_CT, true)) < (getMech().getOInternal(Mech.LOC_CT) * 2))) {
+                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_CT) + 1,
+                        Mech.LOC_CT);
+                points--;
+            }
+            // if only one is left, and head and CT have max, remove one from CT
+            // so symmetric locations can get extra, unless they are already at
+            // max
+            if (points == 1) {
+                if ((getMech().getOArmor(Mech.LOC_HEAD) == headMaxArmor)
+                        && ((getMech().getOArmor(Mech.LOC_CT) + getMech().getOArmor(
+                                Mech.LOC_CT, true)) == (getMech()
+                                        .getOInternal(Mech.LOC_CT) * 2))) {
+                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_CT) - 1,
+                            Mech.LOC_CT);
+                    points++;
+                }
+            }
+            // if all locations have max, return
+            boolean toReturn = true;
+            for (int location = 0; location < getMech().locations(); location++) {
+                double is = (getMech().getInternal(location) * 2);
+                switch (location) {
+                    case Mech.LOC_HEAD:
+                        int headPoints = 3;
+                        if (getMech().isSuperHeavy()) {
+                            headPoints = 4;
+                        }
+                        if ((is + headPoints) > getMech().getOArmor(location)) {
+                            toReturn = false;
+                        }
+                        break;
+                    case Mech.LOC_CT:
+                    case Mech.LOC_LT:
+                    case Mech.LOC_RT:
+                        if (is > (getMech().getOArmor(location) + getMech().getOArmor(
+                                location, true))) {
+                            toReturn = false;
+                        }
+                        break;
+                    default:
+                        if (is > getMech().getOArmor(location)) {
+                            toReturn = false;
+                        }
+                        break;
+                }
+            }
+            if (toReturn) {
+                return;
+            }
+        }
     }
 
     @Override
