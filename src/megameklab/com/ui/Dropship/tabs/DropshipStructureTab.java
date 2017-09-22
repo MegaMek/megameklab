@@ -361,6 +361,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panMovement.setFromEntity(getSmallCraft());
         panHeat.setFromAero(getSmallCraft());
         panChassis.setFromEntity(getSmallCraft());
+        panFuel.setFromEntity(getSmallCraft());
     }
 
     @Override

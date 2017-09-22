@@ -122,6 +122,7 @@ public class MainUI extends MegaMekLabMainUI {
         aero.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         aero.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         aero.setArmorTechLevel(getEntity().getTechLevel());
+        aero.setOriginalWalkMP(2);
         
         aero.setHeatType(Aero.HEAT_SINGLE);
 
