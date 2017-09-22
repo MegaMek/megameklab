@@ -48,7 +48,6 @@ import megamek.common.BattleArmor;
 import megamek.common.BipedMech;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
 import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
@@ -62,7 +61,6 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Protomech;
 import megamek.common.QuadMech;
-import megamek.common.SimpleTechLevel;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
@@ -1461,73 +1459,6 @@ public class UnitUtil {
         return null;
     }
 
-    //Types available for industrial mechs, used by legalArmorsFor
-    private final static int[] INDUSTRIAL_TYPES = {
-            EquipmentType.T_ARMOR_INDUSTRIAL, EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL,
-            EquipmentType.T_ARMOR_COMMERCIAL
-    };
-    
-    /**
-     * Compiles a list of all armor types legal for the unit under given tech limits
-     * 
-     * @param en           The unit for which to compile the list
-     * @param techManager  Provides era and tech constraints to determine whether the armor is legal
-     * @return             A list of armors legal for the unit type under the tech constaints
-     */
-    public static List<EquipmentType> legalArmorsFor(Entity en, ITechManager techManager) {
-        List<EquipmentType> retVal = new ArrayList<>();
-        // IndustrialMechs can only use industrial armor below experimental rules level
-        if ((en instanceof Mech) && ((Mech)en).isIndustrial()
-                && (techManager.getTechLevel().ordinal() < SimpleTechLevel.EXPERIMENTAL.ordinal())) {
-            
-            for (int at : INDUSTRIAL_TYPES) {
-                String name = EquipmentType.getArmorTypeName(at, false);
-                EquipmentType eq = EquipmentType.get(name);
-                if ((null != eq) && techManager.isLegal(eq)) {
-                    retVal.add(eq);
-                }
-            }
-        } else {
-            BigInteger flag = MiscType.F_MECH_EQUIPMENT;
-            if (en.hasETypeFlag(Entity.ETYPE_AERO)) {
-                flag = MiscType.F_FIGHTER_EQUIPMENT;
-            } else if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
-                flag = MiscType.F_TANK_EQUIPMENT;
-            }
-            boolean isLAM = en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH);
-            boolean hardenedIllegal = isLAM
-                    || (en.getMovementMode() == EntityMovementMode.VTOL)
-                    || (en.getMovementMode() == EntityMovementMode.WIGE)
-                    || (en.getMovementMode() == EntityMovementMode.HOVER);
-            
-            for (int at = 0; at < EquipmentType.armorNames.length; at++) {
-                if (at == EquipmentType.T_ARMOR_PATCHWORK) {
-                    continue;
-                }
-                if ((at == EquipmentType.T_ARMOR_HARDENED) && hardenedIllegal) {
-                    continue;
-                }
-                String name = EquipmentType.getArmorTypeName(at, techManager.useClanTechBase());
-                EquipmentType eq = EquipmentType.get(name);
-                if ((null == eq) || (isLAM && ((eq.getCriticals(null) > 0)))) {
-                    continue;
-                }
-                if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {
-                    retVal.add(eq);
-                }
-                if (techManager.useMixedTech()) {
-                    name = EquipmentType.getArmorTypeName(at, !techManager.useClanTechBase());
-                    EquipmentType eq2 = EquipmentType.get(name);
-                    if ((null != eq2) && (eq != eq2) && eq2.hasFlag(flag)
-                            && techManager.isLegal(eq2)) {
-                        retVal.add(eq2);
-                    }
-                }
-            }
-        }
-        return retVal;
-    }
-    
     public static void compactCriticals(Entity unit, int loc) {
         int firstEmpty = -1;
         for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
