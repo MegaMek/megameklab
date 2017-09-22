@@ -35,6 +35,7 @@ import megamek.common.ITechManager;
 import megamek.common.Mech;
 import megamek.common.Mounted;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestAero;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.view.listeners.BuildListener;
 import megameklab.com.util.UnitUtil;
@@ -79,9 +80,12 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
 
     private final CustomComboBox<Integer> cbHSType = new CustomComboBox<>(i -> getDisplayName(i));
     private final JSpinner spnCount = new JSpinner();
+    private final JLabel lblBaseCount = new JLabel();
     private final JSpinner spnBaseCount = new JSpinner();
-    private final JLabel lblFreeText = new JLabel();
-    private final JLabel lblFreeCount = new JLabel();
+    private final JLabel lblCritFreeText = new JLabel();
+    private final JLabel lblCritFreeCount = new JLabel();
+    private final JLabel lblWeightFreeText = new JLabel();
+    private final JLabel lblWeightFreeCount = new JLabel();
     
     private SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, 100, 1);
     private SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, 100, 1);
@@ -132,23 +136,34 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
 
         gbc.gridx = 3;
         gbc.gridy = 1;
-        lblFreeText.setText(resourceMap.getString("HeatSinkView.lblFree.text"));
-        add(lblFreeText, gbc);
+        lblCritFreeText.setText(resourceMap.getString("HeatSinkView.lblCritFree.text"));
+        add(lblCritFreeText, gbc);
         gbc.gridx = 4;
         gbc.gridy = 1;
-        lblFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblFree.tooltip")); //$NON-NLS-1$
-        add(lblFreeCount, gbc);
+        lblCritFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblCritFree.tooltip")); //$NON-NLS-1$
+        add(lblCritFreeCount, gbc);
 
         spnBaseCount.setModel(baseCountModel);
         gbc.gridx = 0;
         gbc.gridy = 2;
-        add(createLabel(resourceMap.getString("HeatSinkView.spnBaseCount.text"), labelSize), gbc); //$NON-NLS-1$
+        lblBaseCount.setText(resourceMap.getString("HeatSinkView.spnBaseCount.text")); //$NON-NLS-1$
+        add(lblBaseCount, gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         setFieldSize(spnBaseCount.getEditor(), editorSize);
         spnBaseCount.setToolTipText(resourceMap.getString("HeatSinkView.spnBaseCount.tooltip")); //$NON-NLS-1$
         add(spnBaseCount, gbc);
         spnBaseCount.addChangeListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        lblWeightFreeText.setText(resourceMap.getString("HeatSinkView.lblWeightFree.text"));
+        add(lblWeightFreeText, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        lblWeightFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblWeightFree.tooltip")); //$NON-NLS-1$
+        add(lblWeightFreeCount, gbc);
+
     }
     
     private String getDisplayName(int index) {
@@ -179,7 +194,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         baseCountModel.setMaximum(capacity);
         baseCountModel.setValue(Math.max(0, mech.getEngine().getBaseChassisHeatSinks(isCompact)));
         spnBaseCount.addChangeListener(this);
-        lblFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mech, isCompact)));
+        lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mech, isCompact)));
+        lblWeightFreeCount.setText(String.valueOf(mech.getEngine().getWeightFreeEngineHeatSinks()));
     }
     
     public void setFromAero(Aero aero) {
@@ -191,15 +207,17 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         cbHSType.addActionListener(this);
         spnCount.removeChangeListener(this);
         countModel.setValue(aero.getHeatSinks());
-        countModel.setMinimum(aero.getEngine().getWeightFreeEngineHeatSinks());
+        countModel.setMinimum(TestAero.weightFreeHeatSinks(aero));
         spnCount.addChangeListener(this);
         spnBaseCount.removeChangeListener(this);
         baseCountModel.setMaximum(aero.getHeatSinks());
         baseCountModel.setValue(Math.max(0, aero.getHeatSinks() - aero.getPodHeatSinks()));
         spnBaseCount.addChangeListener(this);
-        spnBaseCount.setEnabled(aero.isOmni());
-        lblFreeText.setVisible(false);
-        lblFreeCount.setVisible(false);
+        lblWeightFreeCount.setText(String.valueOf(TestAero.weightFreeHeatSinks(aero)));
+        lblBaseCount.setVisible(aero.isOmni());
+        spnBaseCount.setVisible(aero.isOmni());
+        lblCritFreeText.setVisible(false);
+        lblCritFreeCount.setVisible(false);
     }
     
     public void refresh() {
@@ -266,7 +284,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
             reportChange();
         } else if (e.getSource() == spnBaseCount) {
             listeners.forEach(l -> l.heatSinkBaseCountChanged(getBaseCount()));
-            lblFreeCount.setText(String.valueOf(getBaseCount()));
+            lblCritFreeCount.setText(String.valueOf(getBaseCount()));
         }
     }
     

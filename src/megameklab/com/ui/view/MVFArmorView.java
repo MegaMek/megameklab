@@ -195,7 +195,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         } else {
             BigInteger flag = MiscType.F_MECH_EQUIPMENT;
             if ((etype & Entity.ETYPE_AERO) != 0) {
-                flag = MiscType.F_AERO_EQUIPMENT;
+                flag = MiscType.F_FIGHTER_EQUIPMENT;
             } else if ((etype & Entity.ETYPE_TANK) != 0) {
                 flag = MiscType.F_TANK_EQUIPMENT;
             }
