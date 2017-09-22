@@ -157,7 +157,7 @@ public class PrintAdvancedQuad implements Printable {
             case EquipmentType.T_ARMOR_FERRO_FIBROUS:
                 g2d.fillRoundRect(367, 250, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
                 break;
-            case EquipmentType.T_ARMOR_LAMELLOR_FERRO_CARBIDE:
+            case EquipmentType.T_ARMOR_LC_LAMELLOR_FERRO_CARBIDE:
                 g2d.fillRoundRect(367, 259, fillRec.width, fillRec.height, fillRecArc.width, fillRecArc.height);
                 break;
             case EquipmentType.T_ARMOR_LIGHT_FERRO:

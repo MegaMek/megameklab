@@ -1490,7 +1490,7 @@ public class UnitUtil {
         } else {
             BigInteger flag = MiscType.F_MECH_EQUIPMENT;
             if (en.hasETypeFlag(Entity.ETYPE_AERO)) {
-                flag = MiscType.F_AERO_EQUIPMENT;
+                flag = MiscType.F_FIGHTER_EQUIPMENT;
             } else if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
                 flag = MiscType.F_TANK_EQUIPMENT;
             }
@@ -2564,7 +2564,7 @@ public class UnitUtil {
                 return false;
             }
 
-            if (eq.hasFlag(MiscType.F_AERO_EQUIPMENT)
+            if (eq.hasFlag(MiscType.F_FIGHTER_EQUIPMENT)
                     && !eq.hasFlag(MiscType.F_CLUB)
                     && !eq.hasFlag(MiscType.F_HAND_WEAPON)
                     && !eq.hasFlag(MiscType.F_TALON)) {
