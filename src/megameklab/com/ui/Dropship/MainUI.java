@@ -39,7 +39,7 @@ import megameklab.com.ui.Aero.StatusBar;
 import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.Aero.tabs.PreviewTab;
-import megameklab.com.ui.Dropship.tabs.StructureTab;
+import megameklab.com.ui.Dropship.tabs.DropshipStructureTab;
 import megameklab.com.util.MenuBarCreator;
 
 /**
@@ -57,7 +57,7 @@ public class MainUI extends MegaMekLabMainUI {
     
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     JPanel contentPane;
-    private StructureTab structureTab;
+    private DropshipStructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private BuildTab buildTab;
@@ -163,7 +163,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         masterPanel.setLayout(new BorderLayout());
 
-        structureTab = new StructureTab(this);
+        structureTab = new DropshipStructureTab(this);
 
         previewTab = new PreviewTab(this);
 
