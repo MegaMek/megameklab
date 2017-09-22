@@ -152,7 +152,7 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
         setTonnage(craft.getWeight());
         spnTonnage.addChangeListener(this);
         chkMilitary.removeActionListener(this);
-        setMilitary(craft.isMilitary());
+        setMilitary(craft.getDesignType() == SmallCraft.MILITARY);
         chkMilitary.addActionListener(this);
         
         cbBaseType.removeActionListener(this);
