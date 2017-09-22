@@ -31,6 +31,4 @@ public interface AeroBuildListener extends BuildListener {
     void cockpitChanged(int cockpitType);
     void resetChassis();
 
-    void fuelTonnageChanged(double tonnage);
-
 }
