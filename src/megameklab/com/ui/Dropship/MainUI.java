@@ -24,7 +24,6 @@ import javax.swing.SwingConstants;
 
 import megamek.common.Aero;
 import megamek.common.Dropship;
-import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
@@ -115,40 +114,40 @@ public class MainUI extends MegaMekLabMainUI {
             return;
         }
 
-        Aero aero = (Aero) getEntity();
+        SmallCraft smallCraft = (SmallCraft) getEntity();
 
-        aero.setYear(3145);
-        aero.setWeight(25);
-        aero.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
-        aero.setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        aero.setArmorTechLevel(getEntity().getTechLevel());
-        aero.setOriginalWalkMP(2);
+        smallCraft.setYear(3145);
+        smallCraft.setWeight(200);
+        smallCraft.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+        smallCraft.setArmorTechLevel(getEntity().getTechLevel());
+        smallCraft.setOriginalWalkMP(2);
+        smallCraft.setDesignType(SmallCraft.MILITARY);
         
-        aero.setHeatType(Aero.HEAT_SINGLE);
+        smallCraft.setHeatType(Aero.HEAT_SINGLE);
 
-        aero.autoSetInternal();
+        smallCraft.autoSetInternal();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
-            aero.initializeArmor(0, loc);
+            smallCraft.initializeArmor(0, loc);
         }
 
         if (null == oldUnit) {
             getEntity().setChassis("New");
             if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
-                aero.setModel("Small Craft");
+                smallCraft.setModel("Small Craft");
             } else {
-                aero.setModel("Dropship");
+                smallCraft.setModel("Dropship");
             }
         } else {
-            aero.setChassis(oldUnit.getChassis());
-            aero.setModel(oldUnit.getModel());
-            aero.setYear(Math.max(oldUnit.getYear(),
-                    aero.getConstructionTechAdvancement().getIntroductionDate()));
-            aero.setSource(oldUnit.getSource());
-            aero.setManualBV(oldUnit.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(aero.getStaticTechLevel(),
+            smallCraft.setChassis(oldUnit.getChassis());
+            smallCraft.setModel(oldUnit.getModel());
+            smallCraft.setYear(Math.max(oldUnit.getYear(),
+                    smallCraft.getConstructionTechAdvancement().getIntroductionDate()));
+            smallCraft.setSource(oldUnit.getSource());
+            smallCraft.setManualBV(oldUnit.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(smallCraft.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
-            aero.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
-            aero.setMixedTech(oldUnit.isMixedTech());
+            smallCraft.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
+            smallCraft.setMixedTech(oldUnit.isMixedTech());
         }
     }
 
