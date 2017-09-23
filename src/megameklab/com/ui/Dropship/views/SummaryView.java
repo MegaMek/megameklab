@@ -60,7 +60,7 @@ public class SummaryView extends IView {
         valueFields.add(txtWeapTon);
         valueFields.add(txtOtherTon);
 
-        Dimension size = new Dimension(45,25);
+        Dimension size = new Dimension(60,25);
         for(JTextField field : valueFields) {
             field.setEditable(false);
             field.setSize(size);
