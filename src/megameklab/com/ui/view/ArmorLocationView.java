@@ -134,6 +134,13 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
         }
     }
     
+    public void setMinimum(int minimum) {
+        spnPointsModel.setMinimum(minimum);
+        if (getPoints() < minimum) {
+            spnPointsModel.setValue(minimum);
+        }
+    }
+    
     /**
      * Sets the number of points for this location. If the location has rear armor, this sets only the front.
      * 

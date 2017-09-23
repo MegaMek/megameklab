@@ -117,16 +117,17 @@ public class MainUI extends MegaMekLabMainUI {
 
         smallCraft.setYear(3145);
         smallCraft.setWeight(200);
+        smallCraft.setOriginalWalkMP(2); // Start at 1G
         smallCraft.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
         smallCraft.setArmorTechLevel(getEntity().getTechLevel());
-        smallCraft.setOriginalWalkMP(2);
+        smallCraft.set0SI(3);
         smallCraft.setDesignType(SmallCraft.MILITARY);
         
         smallCraft.setHeatType(Aero.HEAT_SINGLE);
 
         smallCraft.autoSetInternal();
         for (int loc = 0; loc < getEntity().locations(); loc++) {
-            smallCraft.initializeArmor(0, loc);
+            smallCraft.initializeArmor(smallCraft.get0SI(), loc);
         }
 
         if (null == oldUnit) {

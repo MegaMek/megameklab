@@ -33,6 +33,7 @@ import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.ITechManager;
 import megamek.common.Mech;
+import megamek.common.SmallCraft;
 import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.VTOL;
@@ -104,6 +105,7 @@ public class ArmorAllocationView extends BuildView implements
     private final JTextField txtTotal = new JTextField();
     private final JTextField txtMaxPossible = new JTextField();
     private final JTextField txtWasted = new JTextField();
+    private final JTextField txtPointsPerTon = new JTextField();
     private final JButton btnAutoAllocate = new JButton();
     
     private long entitytype;
@@ -137,7 +139,7 @@ public class ArmorAllocationView extends BuildView implements
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtUnallocated.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         txtUnallocated.setEditable(false);
-        setFieldSize(txtUnallocated, editorSize);
+        setFieldSize(txtUnallocated, editorSizeLg);
         add(txtUnallocated, gbc);
         
         gbc.gridx = 0;
@@ -145,7 +147,7 @@ public class ArmorAllocationView extends BuildView implements
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtAllocated.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         txtAllocated.setEditable(false);
-        setFieldSize(txtAllocated, editorSize);
+        setFieldSize(txtAllocated, editorSizeLg);
         add(txtAllocated, gbc);
         
         gbc.gridx = 0;
@@ -153,7 +155,7 @@ public class ArmorAllocationView extends BuildView implements
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtTotal.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         txtTotal.setEditable(false);
-        setFieldSize(txtTotal, editorSize);
+        setFieldSize(txtTotal, editorSizeLg);
         add(txtTotal, gbc);
         
         gbc.gridx = 0;
@@ -161,7 +163,7 @@ public class ArmorAllocationView extends BuildView implements
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtMaxPossible.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         txtMaxPossible.setEditable(false);
-        setFieldSize(txtMaxPossible, editorSize);
+        setFieldSize(txtMaxPossible, editorSizeLg);
         add(txtMaxPossible, gbc);
         
         gbc.gridx = 0;
@@ -169,8 +171,16 @@ public class ArmorAllocationView extends BuildView implements
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtWasted.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         txtWasted.setEditable(false);
-        setFieldSize(txtWasted, editorSize);
+        setFieldSize(txtWasted, editorSizeLg);
         add(txtWasted, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"), SwingConstants.RIGHT), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        txtPointsPerTon.setEditable(false);
+        setFieldSize(txtPointsPerTon, editorSizeLg);
+        add(txtPointsPerTon, gbc);
 
         btnAutoAllocate.setText(resourceMap.getString("ArmorAllocationView.btnAutoAllocate.text")); //$NON-NLS-1$
         gbc.gridx = 0;
@@ -187,6 +197,9 @@ public class ArmorAllocationView extends BuildView implements
         setEntityType(en.getEntityType());
         maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
         int raw = UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage());
+        if (en instanceof SmallCraft) {
+            raw += ((SmallCraft)en).getSI() * en.locations();
+        }
         int currentPoints = en.getTotalOArmor();
         if (showPatchwork) {
             armorPoints = currentPoints;
@@ -209,6 +222,9 @@ public class ArmorAllocationView extends BuildView implements
                     locView.setPointsRear(en.getArmor(location, true));
                 } else {
                     locView.setPointsRear(0);
+                }
+                if (en instanceof SmallCraft) {
+                    locView.setMinimum(((SmallCraft)en).get0SI());
                 }
                 if (showPatchwork) {
                     double pointsPerTon = UnitUtil.getArmorPointsPerTon(en, en.getArmorType(location),  en.getArmorTechLevel(location));
@@ -235,6 +251,12 @@ public class ArmorAllocationView extends BuildView implements
         txtTotal.setText(String.valueOf(armorPoints));
         txtMaxPossible.setText(String.valueOf(maxArmorPoints));
         txtWasted.setText(String.valueOf(wastedPoints));
+        if (en.hasPatchworkArmor()) {
+            txtPointsPerTon.setText("-"); //$NON-NLS-1$
+        } else {
+            txtPointsPerTon.setText(String.format("%3.2f", //$NON-NLS-1$
+                    UnitUtil.getArmorPointsPerTon(en, en.getArmorType(1), en.getArmorTechLevel(1))));
+        }
     }
     
     private void updateLayout() {
