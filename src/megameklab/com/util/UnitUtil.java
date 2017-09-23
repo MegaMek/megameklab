@@ -61,6 +61,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.Protomech;
 import megamek.common.QuadMech;
+import megamek.common.SmallCraft;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
 import megamek.common.TripodMech;
@@ -75,6 +76,7 @@ import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.verifier.TestMech;
+import megamek.common.verifier.TestSmallCraft;
 import megamek.common.verifier.TestSupportVehicle;
 import megamek.common.verifier.TestTank;
 import megamek.common.weapons.AmmoWeapon;
@@ -1333,6 +1335,8 @@ public class UnitUtil {
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         } else if (unit instanceof BattleArmor) {
             armorWeight = (unit.getWeightClass() * 4) + 2;
+        } else if (unit instanceof SmallCraft) {
+            return TestSmallCraft.maxArmorWeight((SmallCraft) unit);
         }
         if (unit instanceof Aero){
             double points =
