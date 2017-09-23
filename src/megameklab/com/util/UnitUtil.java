@@ -1402,11 +1402,13 @@ public class UnitUtil {
      */
     // TODO: aerospace and support vehicle armor
     public static double getArmorPointsPerTon(Entity en, int at, boolean clanArmor) {
-       if (at == EquipmentType.T_ARMOR_HARDENED) {
-           return 8.0;
-       } else {
-           return 16.0 * EquipmentType.getArmorPointMultiplier(at, clanArmor);
-       }
+        if (at == EquipmentType.T_ARMOR_HARDENED) {
+            return 8.0;
+        } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            return SmallCraft.armorPointsPerTon(en.getWeight(), ((Aero)en).isSpheroid(), at, clanArmor);
+        } else {
+            return 16.0 * EquipmentType.getArmorPointMultiplier(at, clanArmor);
+        }
     }
     
     /**
