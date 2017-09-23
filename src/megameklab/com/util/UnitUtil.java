@@ -1286,6 +1286,8 @@ public class UnitUtil {
             points = (int) Math.floor((unit.getWeight() * 3.5) + 40);
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             points = (unit.getWeightClass() * 4) + 2;
+        } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            points = TestSmallCraft.maxArmorPoints((SmallCraft)unit); 
         } else if (unit.hasETypeFlag(Entity.ETYPE_CONV_FIGHTER)) {
             points = (int) Math.floor(unit.getWeight());
         } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
@@ -1355,11 +1357,8 @@ public class UnitUtil {
      * @return
      */
     public static int getRawArmorPoints(Entity unit, double armorTons) {
-        double armorPerTon = 16.0 * EquipmentType.getArmorPointMultiplier(
+        double armorPerTon = UnitUtil.getArmorPointsPerTon(unit,
                 unit.getArmorType(1), unit.getArmorTechLevel(1));
-        if (unit.getArmorType(1) == EquipmentType.T_ARMOR_HARDENED) {
-            armorPerTon = 8.0;
-        }
         return (int)Math.floor(armorPerTon * armorTons);
     }
 
