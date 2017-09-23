@@ -93,6 +93,8 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
         add(createLabel(resourceMap.getString("DropshipChassisView.spnTonnage.text"), labelSize), gbc); //$NON-NLS-1$
         gbc.gridx = 1;
         gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
         spnTonnage.setToolTipText(resourceMap.getString("DropshipChassisView.spnTonnage.tooltip")); //$NON-NLS-1$
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
@@ -100,7 +102,8 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
         chkMilitary.setText(resourceMap.getString("DropshipChassisView.chkFunction.text")); //$NON-NLS-1$
         gbc.gridx = 2;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
         chkMilitary.setToolTipText(resourceMap.getString("DropshipChassisView.chkFunction.tooltip")); //$NON-NLS-1$
         add(chkMilitary, gbc);
         chkMilitary.addActionListener(this);
