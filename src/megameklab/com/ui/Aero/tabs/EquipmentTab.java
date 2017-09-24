@@ -64,6 +64,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.EquipmentTableModel;
@@ -358,7 +359,11 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private void loadEquipmentTable() {
 
-        for (Mounted mount : getAero().getWeaponList()) {
+        // On this table we want to show individual weapons, not bays.
+        for (Mounted mount : getAero().getTotalWeaponList()) {
+            if (mount.getType() instanceof BayWeapon) {
+                continue;
+            }
             equipmentList.addCrit(mount);
         }
 
