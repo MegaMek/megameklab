@@ -134,7 +134,7 @@ public class MainUI extends MegaMekLabMainUI {
         aero.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         if (isPrimitive) {
             aero.setCockpitType(Aero.COCKPIT_PRIMITIVE);
-            aero.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            aero.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
         } else {
             aero.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         }

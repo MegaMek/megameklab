@@ -91,6 +91,7 @@ import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.battlearmor.CLBALBX;
 import megamek.common.weapons.battlearmor.CLBALightTAG;
 import megamek.common.weapons.battlearmor.ISBALightTAG;
+import megamek.common.weapons.capitalweapons.CapitalMissileWeapon;
 import megamek.common.weapons.defensivepods.BPodWeapon;
 import megamek.common.weapons.defensivepods.MPodWeapon;
 import megamek.common.weapons.flamers.VehicleFlamerWeapon;
@@ -2426,6 +2427,12 @@ public class UnitUtil {
                     && !unit.hasETypeFlag(Entity.ETYPE_DROPSHIP);
         }
 
+        if (weapon.hasFlag(WeaponType.F_ARTILLERY) && !weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
+            return (weapon.getAmmoType() == AmmoType.T_ARROW_IV)
+                    || unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                    || unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
+        }
+        
         if (!weapon.hasFlag(WeaponType.F_AERO_WEAPON)) {
             return false;
         }
@@ -2434,10 +2441,14 @@ public class UnitUtil {
             return false;
         }
 
-        if (weapon.isCapital() || weapon.isSubCapital()
+        if (weapon.isSubCapital() || (weapon instanceof CapitalMissileWeapon)
                 || (weapon.getAtClass() == WeaponType.CLASS_SCREEN)) {
             return unit.hasETypeFlag(Entity.ETYPE_DROPSHIP)
                     || unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
+        }
+
+        if (weapon.isCapital()) {
+            return unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
         }
 
         if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon))
@@ -2459,12 +2470,6 @@ public class UnitUtil {
 
         if ((weapon instanceof RLWeapon) && (weapon.getRackSize() < 10)) {
             return false;
-        }
-        
-        if (weapon.hasFlag(WeaponType.F_ARTILLERY)) {
-            return (weapon.getAmmoType() == AmmoType.T_ARROW_IV)
-                    || unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                    || unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
         }
         
         if (weapon.hasFlag(WeaponType.F_ENERGY)

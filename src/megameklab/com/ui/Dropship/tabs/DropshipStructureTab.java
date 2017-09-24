@@ -397,9 +397,10 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
             eSource.createNewUnit(Entity.ETYPE_SMALL_CRAFT, getSmallCraft());
         } else if ((DropshipChassisView.TYPE_DROPSHIP == type)
                 && !getSmallCraft().hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
-            eSource.createNewUnit(Entity.ETYPE_SMALL_CRAFT, getSmallCraft());
+            eSource.createNewUnit(Entity.ETYPE_DROPSHIP, getSmallCraft());
         }
         refresh();
+        refresh.refreshEquipmentTable();
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
