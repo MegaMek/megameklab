@@ -13,8 +13,11 @@
  */
 package megameklab.com.ui.util;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -91,6 +94,43 @@ public class BayWeaponCriticalTree extends JTree {
         // expand all the bays to show the weapons
         for (int i = 0; i < model.getChildCount(model.getRoot()); i++) {
             expandPath(new TreePath(new Object[] {model.getRoot(), model.getChild(model.getRoot(), i)}));
+        }
+    }
+    
+    @Override
+    public void paintComponent(Graphics g) {
+        //FIXME: This is supposed to draw the background color across the width of the tree
+        for (int i = 0; i < getRowCount(); i++) {
+            Object node = getPathForRow(i).getLastPathComponent();
+            if (node instanceof Mounted) {
+                final Mounted m = (Mounted)node;
+                if (m.getType() instanceof WeaponType) {
+                    g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
+                } else if (m.getType() instanceof AmmoType) {
+                    g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
+                } else {
+                    g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
+                }
+            }
+            final Rectangle r = getRowBounds(i);
+            g.fillRect(0, r.y, getWidth(), r.height);
+        }
+        // draw the selection color across the width
+        for (int i: getSelectionRows()) {
+            Rectangle r = getRowBounds(i);
+            g.setColor(renderer.getBackgroundSelectionColor());
+            g.fillRect(0, r.y, getWidth(), r.height);
+        }
+        super.paintComponent(g);
+        g.setColor(Color.black);
+        for (int i = 0; i < getRowCount(); i++) {
+            Object node = getPathForRow(i).getLastPathComponent();
+            if ((node instanceof Mounted)
+                    && ((((Mounted)node).getType() instanceof BayWeapon)
+                            || !(((Mounted)node).getType() instanceof WeaponType))) {
+                final Rectangle r = getRowBounds(i);
+                g.drawLine(0, r.y, getWidth(), r.y);
+            }
         }
     }
     
@@ -180,13 +220,24 @@ public class BayWeaponCriticalTree extends JTree {
         }
     }
     
-    private TreeCellRenderer renderer = new DefaultTreeCellRenderer() {
+    private DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
 
         /**
          * 
          */
         private static final long serialVersionUID = 718540539581341886L;
+        
+        @Override
+        public void setTextNonSelectionColor(Color c) {
+            // we want the renderer to set the color based on component type
+        }
 
+
+        @Override
+        public void setBackgroundNonSelectionColor(Color c) {
+            // we want the renderer to set the color based on component type
+        }
+        
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
                 boolean leaf, int row, boolean hasFocus) {
@@ -227,7 +278,6 @@ public class BayWeaponCriticalTree extends JTree {
                     label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
                     label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
                 }
-
             }
 
             return label;

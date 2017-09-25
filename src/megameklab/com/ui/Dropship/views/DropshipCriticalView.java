@@ -13,6 +13,8 @@
  */
 package megameklab.com.ui.Dropship.views;
 
+import java.awt.Color;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -81,18 +83,21 @@ public class DropshipCriticalView extends IView {
 
         leftColumn.add(Box.createVerticalGlue());
         leftPanel.add(leftTree);
+        leftTree.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
         leftPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Left Side",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         leftColumn.add(leftPanel);
 
         aftLeftPanel.add(aftLeftTree);
+        aftLeftTree.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
         aftLeftPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Aft Left",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         leftColumn.add(aftLeftPanel);
 
         nosePanel.add(noseTree);
+        noseTree.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
         nosePanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Nose",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
@@ -100,6 +105,7 @@ public class DropshipCriticalView extends IView {
 
         midColumn.add(Box.createVerticalGlue());
         aftPanel.add(aftTree);
+        aftTree.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
         aftPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Aft",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
@@ -107,12 +113,14 @@ public class DropshipCriticalView extends IView {
 
         rightColumn.add(Box.createVerticalGlue());
         rightPanel.add(rightTree);
+        rightTree.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
         rightPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Right Side",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         rightColumn.add(rightPanel);
 
         aftRightPanel.add(aftRightTree);
+        aftRightTree.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.black));
         aftRightPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Aft Right",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
