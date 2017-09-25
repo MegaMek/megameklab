@@ -34,9 +34,9 @@ import megamek.common.TechConstants;
 import megamek.common.logging.LogLevel;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.MegaMekLabMainUI;
-import megameklab.com.ui.Aero.tabs.BuildTab;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
 import megameklab.com.ui.Aero.tabs.PreviewTab;
+import megameklab.com.ui.Dropship.tabs.DropshipBuildTab;
 import megameklab.com.ui.Dropship.tabs.DropshipStructureTab;
 import megameklab.com.util.MenuBarCreator;
 
@@ -58,7 +58,7 @@ public class MainUI extends MegaMekLabMainUI {
     private DropshipStructureTab structureTab;
     private EquipmentTab equipmentTab;
     private PreviewTab previewTab;
-    private BuildTab buildTab;
+    private DropshipBuildTab buildTab;
     private StatusBar statusbar;
     JPanel masterPanel = new JPanel();
     JScrollPane scroll = new JScrollPane();
@@ -169,7 +169,7 @@ public class MainUI extends MegaMekLabMainUI {
 
         statusbar = new StatusBar(this);
         equipmentTab = new EquipmentTab(this);
-        buildTab = new BuildTab(this, equipmentTab);
+        buildTab = new DropshipBuildTab(this, equipmentTab);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
