@@ -157,12 +157,12 @@ public class DropshipCriticalView extends IView {
         }
 
         synchronized (getSmallCraft()) {
-            noseTree.refresh();
-            leftTree.refresh();
-            aftLeftTree.refresh();
-            rightTree.refresh();
-            aftRightTree.refresh();
-            aftTree.refresh();
+            noseTree.rebuild();
+            leftTree.rebuild();
+            aftLeftTree.rebuild();
+            rightTree.rebuild();
+            aftRightTree.rebuild();
+            aftTree.rebuild();
         }
     }
 }
