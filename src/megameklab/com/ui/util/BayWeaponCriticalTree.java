@@ -18,21 +18,21 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JTree;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeCellRenderer;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import megamek.common.AmmoType;
-import megamek.common.Entity;
+import megamek.common.EquipmentType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.bayweapons.BayWeapon;
@@ -65,7 +65,6 @@ public class BayWeaponCriticalTree extends JTree {
     
     private final EntitySource eSource;
     private final RefreshListener refresh;
-    private final BayTreeModel model;
     
     public BayWeaponCriticalTree(int location, EntitySource eSource, RefreshListener refresh) {
         this(location, eSource, refresh, BOTH);
@@ -79,9 +78,7 @@ public class BayWeaponCriticalTree extends JTree {
         
         setRootVisible(false);
         setMinimumSize(new Dimension(110,15));
-        model = new BayTreeModel();
-        setModel(model);
-        model.refresh();
+        setModel(new DefaultTreeModel(createRoot()));
         setCellRenderer(renderer);
     }
     
@@ -89,21 +86,56 @@ public class BayWeaponCriticalTree extends JTree {
         this.facing = facing;
     }
     
-    public void refresh() {
-        model.refresh();
-        // expand all the bays to show the weapons
-        for (int i = 0; i < model.getChildCount(model.getRoot()); i++) {
-            expandPath(new TreePath(new Object[] {model.getRoot(), model.getChild(model.getRoot(), i)}));
+    public void rebuild() {
+        ((DefaultTreeModel)getModel()).setRoot(createRoot());
+    }
+    
+    private TreeNode createRoot() {
+        Map<EquipmentType,Node> ammoNodes = new HashMap<>();
+        int bayCount = 0;
+        int ammoCount = 0;
+        MutableTreeNode newRoot = new DefaultMutableTreeNode();
+        for (Mounted m : eSource.getEntity().getEquipment()) {
+            if ((m.getLocation() == location)
+                    && ((facing == BOTH)
+                            || (m.isRearMounted() == (facing == AFT)))) {
+                if (m.getType() instanceof BayWeapon) {
+                    Node bayNode = new Node(m);
+                    for (int index = 0; index < m.getBayWeapons().size(); index++) {
+                        final Mounted weapon = eSource.getEntity().getEquipment(m.getBayWeapons().get(index));
+                        bayNode.insert(new Node(weapon), index);
+                    }
+                    newRoot.insert(bayNode, bayCount);
+                    bayCount++;
+                    
+                } else if (m.getType() instanceof AmmoType) {
+                    Node ammoNode = ammoNodes.get(m.getType());
+                    if (null == ammoNode) {
+                        ammoNode = new Node(m.getType());
+                        ammoNodes.put(m.getType(), ammoNode);
+                        newRoot.insert(ammoNode, bayCount + ammoCount);
+                        ammoCount++;
+                    }
+                    Node node = new Node(m);
+                    ammoNode.insert(node, ammoNode.getChildCount());
+                    
+                } else if (!(m.getType() instanceof WeaponType)
+                        || (((WeaponType)m.getType()).getBayType() == null)) {
+                    Node node = new Node(m);
+                    newRoot.insert(node, newRoot.getChildCount());
+                }
+            }
         }
+        return newRoot;
     }
     
     @Override
     public void paintComponent(Graphics g) {
         //FIXME: This is supposed to draw the background color across the width of the tree
         for (int i = 0; i < getRowCount(); i++) {
-            Object node = getPathForRow(i).getLastPathComponent();
-            if (node instanceof Mounted) {
-                final Mounted m = (Mounted)node;
+            Object object = ((Node)getPathForRow(i).getLastPathComponent()).getObject();
+            if (object instanceof Mounted) {
+                final Mounted m = (Mounted)object;
                 if (m.getType() instanceof WeaponType) {
                     g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
                 } else if (m.getType() instanceof AmmoType) {
@@ -111,6 +143,8 @@ public class BayWeaponCriticalTree extends JTree {
                 } else {
                     g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
                 }
+            } else if (object instanceof AmmoType) {
+                g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
             }
             final Rectangle r = getRowBounds(i);
             g.fillRect(0, r.y, getWidth(), r.height);
@@ -122,102 +156,103 @@ public class BayWeaponCriticalTree extends JTree {
             g.fillRect(0, r.y, getWidth(), r.height);
         }
         super.paintComponent(g);
+        // Draw a separating line above top level nodes
         g.setColor(Color.black);
         for (int i = 0; i < getRowCount(); i++) {
-            Object node = getPathForRow(i).getLastPathComponent();
-            if ((node instanceof Mounted)
-                    && ((((Mounted)node).getType() instanceof BayWeapon)
-                            || !(((Mounted)node).getType() instanceof WeaponType))) {
+            if (((Node)getPathForRow(i).getLastPathComponent()).getParent() == ((DefaultTreeModel)getModel()).getRoot()) {
                 final Rectangle r = getRowBounds(i);
                 g.drawLine(0, r.y, getWidth(), r.y);
             }
         }
     }
     
-    private class BayTreeModel implements TreeModel {
+    private class Node implements MutableTreeNode {
         
-        private final List<Mounted> bays = new ArrayList<>();
-        private final List<Mounted> otherEquipment = new ArrayList<>();
+        private Object object;
+        private MutableTreeNode parent;
+        private final Vector<MutableTreeNode> children = new Vector<>();
         
-        private final List<TreeModelListener> listeners = new CopyOnWriteArrayList<>();
-        
-        public void refresh() {
-            bays.clear();
-            otherEquipment.clear();
-            for (Mounted m : eSource.getEntity().getEquipment()) {
-                if ((m.getLocation() == location)
-                        && ((facing == BOTH)
-                                || (m.isRearMounted() == (facing == AFT)))) {
-                    if (m.getType() instanceof BayWeapon) {
-                        bays.add(m);
-                    } else if (!(m.getType() instanceof WeaponType)
-                            || (((WeaponType)m.getType()).getBayType() == null)) {
-                        otherEquipment.add(m);
-                    }
-                }
-            }
-            TreeModelEvent e = new TreeModelEvent(this, new Object[] { getRoot() });
-            listeners.forEach(l -> l.treeStructureChanged(e));
+        Node(Object object) {
+            this.object = object;
         }
         
-        @Override
-        public Object getRoot() {
-            return eSource.getEntity();
+        Object getObject() {
+            return object;
         }
 
         @Override
-        public Object getChild(Object parent, int index) {
-            if (parent instanceof Entity) {
-                if (index < bays.size()) {
-                    return bays.get(index);
-                } else {
-                    return otherEquipment.get(index - bays.size());
-                }
-            } else if ((parent instanceof Mounted) && (((Mounted)parent).getType() instanceof BayWeapon)) {
-                return eSource.getEntity().getEquipment(((Mounted)parent).getBayWeapons().get(index));
+        public TreeNode getChildAt(int childIndex) {
+            return children.get(childIndex);
+        }
+
+        @Override
+        public int getChildCount() {
+            return children.size();
+        }
+
+        @Override
+        public TreeNode getParent() {
+            return parent;
+        }
+
+        @Override
+        public int getIndex(TreeNode node) {
+            return children.indexOf(node);
+        }
+
+        @Override
+        public boolean getAllowsChildren() {
+            return ((object instanceof Mounted)
+                    && (((Mounted)object).getType() instanceof BayWeapon))
+                    || (object instanceof AmmoType);
+        }
+
+        @Override
+        public boolean isLeaf() {
+            return children.isEmpty();
+        }
+
+        @Override
+        public Enumeration<MutableTreeNode> children() {
+            return children.elements();
+        }
+
+        @Override
+        public void insert(MutableTreeNode child, int index) {
+            if ((index < 0) || (index >= children.size())) {
+                children.add(child);
+            } else {
+                children.add(index, child);
             }
-            return null;
         }
 
         @Override
-        public int getChildCount(Object parent) {
-            if (parent instanceof Entity) {
-                return bays.size() + otherEquipment.size();
-            } else if ((parent instanceof Mounted) && (((Mounted)parent).getType() instanceof BayWeapon)) {
-                return ((Mounted)parent).getBayWeapons().size();
+        public void remove(int index) {
+            children.remove(index);
+        }
+
+        @Override
+        public void remove(MutableTreeNode node) {
+            children.remove(node);
+        }
+
+        @Override
+        public void setUserObject(Object object) {
+            this.object = object;
+        }
+
+        @Override
+        public void removeFromParent() {
+            if (null != parent) {
+                parent.remove(this);
             }
-            return 0;
         }
 
         @Override
-        public boolean isLeaf(Object node) {
-            return (node instanceof Mounted) && !(((Mounted)node).getType() instanceof BayWeapon);
+        public void setParent(MutableTreeNode newParent) {
+            this.parent = newParent;
         }
-
-        @Override
-        public void valueForPathChanged(TreePath path, Object newValue) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public int getIndexOfChild(Object parent, Object child) {
-            if ((parent instanceof Mounted) && ((Mounted)parent).getType() instanceof BayWeapon) {
-                final int equipNum = eSource.getEntity().getEquipmentNum((Mounted)child);
-                return ((Mounted)parent).getBayWeapons().indexOf(equipNum);
-            }
-            return 0;
-        }
-
-        @Override
-        public void addTreeModelListener(TreeModelListener l) {
-            listeners.add(l);
-        }
-
-        @Override
-        public void removeTreeModelListener(TreeModelListener l) {
-            listeners.remove(l);
-        }
+        
     }
     
     private DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
@@ -243,13 +278,17 @@ public class BayWeaponCriticalTree extends JTree {
                 boolean leaf, int row, boolean hasFocus) {
             JLabel label = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded,
                     leaf, row, hasFocus);
+            if (!(value instanceof Node)) {
+                return label;
+            }
 
             setPreferredSize(new Dimension(180,15));
             setMaximumSize(new Dimension(180,15));
             setMinimumSize(new Dimension(180,15));
+                        Object object = ((Node)value).getObject();
             
-            if (value instanceof Mounted) {
-                final Mounted mounted = (Mounted)value;
+            if (object instanceof Mounted) {
+                final Mounted mounted = (Mounted)object;
                 StringBuilder text = new StringBuilder(mounted.getName());
                 if (mounted.getType() instanceof BayWeapon) {
                     double av = 0.0;
@@ -278,6 +317,17 @@ public class BayWeaponCriticalTree extends JTree {
                     label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
                     label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
                 }
+            } else if (object instanceof AmmoType) {
+                StringBuilder text = new StringBuilder(((AmmoType)object).getName());
+                int shots = 0;
+                for (Enumeration<MutableTreeNode> e = ((Node)value).children(); e.hasMoreElements(); ) {
+                    Node n = (Node)e.nextElement();
+                    shots += ((Mounted)n.getObject()).getBaseShotsLeft();
+                }
+                text.append(" (").append(shots).append(" Shots)");
+                label.setText(text.toString());
+                label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
+                label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_AMMO));
             }
 
             return label;
