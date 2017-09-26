@@ -91,7 +91,7 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     private TreeNode createRoot() {
-        Map<EquipmentType,Node> ammoNodes = new HashMap<>();
+        Map<EquipmentType,EquipmentNode> ammoNodes = new HashMap<>();
         int bayCount = 0;
         int ammoCount = 0;
         MutableTreeNode newRoot = new DefaultMutableTreeNode();
@@ -100,28 +100,28 @@ public class BayWeaponCriticalTree extends JTree {
                     && ((facing == BOTH)
                             || (m.isRearMounted() == (facing == AFT)))) {
                 if (m.getType() instanceof BayWeapon) {
-                    Node bayNode = new Node(m);
+                    EquipmentNode bayNode = new BayNode(m);
                     for (int index = 0; index < m.getBayWeapons().size(); index++) {
                         final Mounted weapon = eSource.getEntity().getEquipment(m.getBayWeapons().get(index));
-                        bayNode.insert(new Node(weapon), index);
+                        bayNode.insert(new EquipmentNode(weapon), index);
                     }
                     newRoot.insert(bayNode, bayCount);
                     bayCount++;
                     
                 } else if (m.getType() instanceof AmmoType) {
-                    Node ammoNode = ammoNodes.get(m.getType());
+                    EquipmentNode ammoNode = ammoNodes.get(m.getType());
                     if (null == ammoNode) {
-                        ammoNode = new Node(m.getType());
+                        ammoNode = new AmmoNode(m.getType());
                         ammoNodes.put(m.getType(), ammoNode);
                         newRoot.insert(ammoNode, bayCount + ammoCount);
                         ammoCount++;
                     }
-                    Node node = new Node(m);
+                    EquipmentNode node = new EquipmentNode(m);
                     ammoNode.insert(node, ammoNode.getChildCount());
                     
                 } else if (!(m.getType() instanceof WeaponType)
                         || (((WeaponType)m.getType()).getBayType() == null)) {
-                    Node node = new Node(m);
+                    EquipmentNode node = new EquipmentNode(m);
                     newRoot.insert(node, newRoot.getChildCount());
                 }
             }
@@ -133,19 +133,8 @@ public class BayWeaponCriticalTree extends JTree {
     public void paintComponent(Graphics g) {
         //FIXME: This is supposed to draw the background color across the width of the tree
         for (int i = 0; i < getRowCount(); i++) {
-            Object object = ((Node)getPathForRow(i).getLastPathComponent()).getObject();
-            if (object instanceof Mounted) {
-                final Mounted m = (Mounted)object;
-                if (m.getType() instanceof WeaponType) {
-                    g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
-                } else if (m.getType() instanceof AmmoType) {
-                    g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
-                } else {
-                    g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
-                }
-            } else if (object instanceof AmmoType) {
-                g.setColor(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
-            }
+            EquipmentNode node = (EquipmentNode)getPathForRow(i).getLastPathComponent();
+            g.setColor(node.getBackgroundColor());
             final Rectangle r = getRowBounds(i);
             g.fillRect(0, r.y, getWidth(), r.height);
         }
@@ -159,25 +148,38 @@ public class BayWeaponCriticalTree extends JTree {
         // Draw a separating line above top level nodes
         g.setColor(Color.black);
         for (int i = 0; i < getRowCount(); i++) {
-            if (((Node)getPathForRow(i).getLastPathComponent()).getParent() == ((DefaultTreeModel)getModel()).getRoot()) {
+            if (((EquipmentNode)getPathForRow(i).getLastPathComponent()).getParent() == ((DefaultTreeModel)getModel()).getRoot()) {
                 final Rectangle r = getRowBounds(i);
                 g.drawLine(0, r.y, getWidth(), r.y);
             }
         }
     }
     
-    private class Node implements MutableTreeNode {
+    /**
+     * Node class used directly for individual mounts and serves as the base class for weapon
+     * and ammo bays. Provides display name and color to the renderer.
+     *
+     */
+    private class EquipmentNode implements MutableTreeNode {
         
         private Object object;
         private MutableTreeNode parent;
         private final Vector<MutableTreeNode> children = new Vector<>();
         
-        Node(Object object) {
+        EquipmentNode(Object object) {
             this.object = object;
         }
         
-        Object getObject() {
-            return object;
+        Mounted getMounted() {
+            return (Mounted)object;
+        }
+        
+        WeaponType getWeapon() {
+            return (WeaponType)((Mounted)object).getType();
+        }
+        
+        AmmoType getAmmoType() {
+            return (AmmoType)object;
         }
 
         @Override
@@ -205,11 +207,6 @@ public class BayWeaponCriticalTree extends JTree {
             return ((object instanceof Mounted)
                     && (((Mounted)object).getType() instanceof BayWeapon))
                     || (object instanceof AmmoType);
-        }
-
-        @Override
-        public boolean isLeaf() {
-            return children.isEmpty();
         }
 
         @Override
@@ -253,6 +250,115 @@ public class BayWeaponCriticalTree extends JTree {
             this.parent = newParent;
         }
         
+        @Override
+        public boolean isLeaf() {
+            return true;
+        }
+        
+        public Color getBackgroundColor() {
+            if (getMounted().getType() instanceof WeaponType) {
+                return CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS);
+            } else if (getMounted().getType() instanceof AmmoType) {
+                return CConfig.getBackgroundColor(CConfig.CONFIG_AMMO);
+            } else {
+                return CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT);
+            }
+        }
+        public Color getForegroundColor() {
+            if (getMounted().getType() instanceof WeaponType) {
+                return CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS);
+            } else if (getMounted().getType() instanceof AmmoType) {
+                return CConfig.getForegroundColor(CConfig.CONFIG_AMMO);
+            } else {
+                return CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT);
+            }
+        }
+        
+        @Override
+        public String toString() {
+            return getMounted().getName();
+        }
+        
+    }
+    
+    /**
+     * Node used for weapon bays. Display name shows the current and maximum AV for the bay.
+     *
+     */
+    private class BayNode extends EquipmentNode {
+
+        BayNode(Mounted object) {
+            super(object);
+        }
+
+        @Override
+        public boolean isLeaf() {
+            return false;
+        }
+
+        @Override
+        public Color getBackgroundColor() {
+            return CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS);
+        }
+
+        @Override
+        public Color getForegroundColor() {
+            return CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS);
+        }
+        
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder(getMounted().getName());
+            double av = 0;
+            for (Enumeration<MutableTreeNode> e = children(); e.hasMoreElements(); ) {
+                av += ((EquipmentNode)e.nextElement()).getWeapon().getShortAV();
+            }
+            sb.append(" (").append((int)av).append("/");
+            if (getWeapon().isCapital()) {
+                sb.append("70)");
+            } else {
+                sb.append("700");
+            }
+            return sb.toString();
+        }
+    }
+    
+    /**
+     * Node used for ammo "bays" which conserve screen space but grouping all the ammo of a given
+     * type in the location into a single collapsible node.
+     * 
+     */
+    private class AmmoNode extends EquipmentNode {
+
+        AmmoNode(EquipmentType object) {
+            super(object);
+        }
+
+        @Override
+        public boolean isLeaf() {
+            return false;
+        }
+
+        @Override
+        public Color getBackgroundColor() {
+            return CConfig.getBackgroundColor(CConfig.CONFIG_AMMO);
+        }
+
+        @Override
+        public Color getForegroundColor() {
+            return CConfig.getForegroundColor(CConfig.CONFIG_AMMO);
+        }
+        
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder(getAmmoType().getName());
+            int shots = 0;
+            for (Enumeration<MutableTreeNode> e = children(); e.hasMoreElements(); ) {
+                shots += ((EquipmentNode)e.nextElement()).getMounted().getBaseShotsLeft();
+            }
+            sb.append(" (").append(shots).append(")");
+            return sb.toString();
+        }
     }
     
     private DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
@@ -278,57 +384,17 @@ public class BayWeaponCriticalTree extends JTree {
                 boolean leaf, int row, boolean hasFocus) {
             JLabel label = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded,
                     leaf, row, hasFocus);
-            if (!(value instanceof Node)) {
+            if (!(value instanceof EquipmentNode)) {
                 return label;
             }
+            EquipmentNode node = (EquipmentNode)value;
 
             setPreferredSize(new Dimension(180,15));
             setMaximumSize(new Dimension(180,15));
             setMinimumSize(new Dimension(180,15));
-                        Object object = ((Node)value).getObject();
             
-            if (object instanceof Mounted) {
-                final Mounted mounted = (Mounted)object;
-                StringBuilder text = new StringBuilder(mounted.getName());
-                if (mounted.getType() instanceof BayWeapon) {
-                    double av = 0.0;
-                    for (int eqNum : mounted.getBayWeapons()) {
-                        av += ((WeaponType)eSource.getEntity().getEquipment(eqNum).getType()).getShortAV();
-                    }
-                    text.append(" (").append((int)Math.ceil(av)).append("/");
-                    if (((WeaponType)mounted.getType()).isCapital()) {
-                        text.append("70)");
-                    } else {
-                        text.append("700)");
-                    }
-                }
-                if ((facing == BOTH) && mounted.isRearMounted()) {
-                    text.append(" (R)");
-                }
-                label.setText(text.toString());
-                
-                if (mounted.getType() instanceof WeaponType) {
-                    label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_WEAPONS));
-                    label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_WEAPONS));
-                } else if (mounted.getType() instanceof AmmoType) {
-                    label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
-                    label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_AMMO));
-                } else {
-                    label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_EQUIPMENT));
-                    label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_EQUIPMENT));
-                }
-            } else if (object instanceof AmmoType) {
-                StringBuilder text = new StringBuilder(((AmmoType)object).getName());
-                int shots = 0;
-                for (Enumeration<MutableTreeNode> e = ((Node)value).children(); e.hasMoreElements(); ) {
-                    Node n = (Node)e.nextElement();
-                    shots += ((Mounted)n.getObject()).getBaseShotsLeft();
-                }
-                text.append(" (").append(shots).append(" Shots)");
-                label.setText(text.toString());
-                label.setBackground(CConfig.getBackgroundColor(CConfig.CONFIG_AMMO));
-                label.setForeground(CConfig.getForegroundColor(CConfig.CONFIG_AMMO));
-            }
+            label.setBackground(node.getBackgroundColor());
+            label.setForeground(node.getForegroundColor());
 
             return label;
         }
