@@ -61,6 +61,9 @@ public class DropshipCriticalView extends IView {
     private JPanel midColumn = new JPanel();
     private JPanel rightColumn = new JPanel();
     private RefreshListener refresh;
+    
+    private boolean spheroid; // Track the chassis type so we can tell whether side arc equipment
+                              // needs to be shuffled when a refresh is triggered.
 
     public DropshipCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
@@ -162,13 +165,19 @@ public class DropshipCriticalView extends IView {
             aftRightPanel.setVisible(false);
         }
 
-        synchronized (getSmallCraft()) {
-            noseTree.rebuild();
+        if (spheroid != getSmallCraft().isSpheroid()) {
             leftTree.rebuild();
-            aftLeftTree.rebuild();
             rightTree.rebuild();
+            aftLeftTree.rebuild();
             aftRightTree.rebuild();
-            aftTree.rebuild();
+            spheroid = getSmallCraft().isSpheroid();
+        } else {
+            noseTree.repaint();
+            leftTree.repaint();
+            rightTree.repaint();
+            aftLeftTree.repaint();
+            aftRightTree.repaint();
+            aftTree.repaint();
         }
     }
 }
