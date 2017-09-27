@@ -60,7 +60,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
      *
      */
     private static final long serialVersionUID = -6756011847500605874L;
-
+    
     private JPanel masterPanel;
     private BasicInfoView panInfo;
     private DropshipChassisView panChassis;
@@ -410,6 +410,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void chassisTypeChanged(int type) {
         getSmallCraft().setSpheroid(type == DropshipChassisView.CHASSIS_SPHEROID);
+        refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }

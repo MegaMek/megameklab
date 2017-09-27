@@ -64,9 +64,9 @@ public class BayWeaponCriticalTree extends JTree {
      */
     private static final long serialVersionUID = -223615170732243552L;
     // Spheroids show only forward or only aft on the side arcs
-    public static final int BOTH    = 0;
-    public static final int FORWARD = 1;
-    public static final int AFT     = 2;
+    public static final int FORWARD = 0; // No rear-mounting allowed (nose, aft, spheroid forward side arcs
+    public static final int BOTH    = 1; // Can be mounted forward or rear (aerodyne wing arcs)
+    public static final int AFT     = 2; // Always rear mounted, displayed as forward (spheroid aft side arcs)
 
     // In the case of spheroid dropships side locations this represents either forward or aft weapons.
     private final int location;
@@ -76,7 +76,7 @@ public class BayWeaponCriticalTree extends JTree {
     private RefreshListener refresh;
     
     public BayWeaponCriticalTree(int location, EntitySource eSource, RefreshListener refresh) {
-        this(location, eSource, refresh, BOTH);
+        this(location, eSource, refresh, FORWARD);
     }
     
     public BayWeaponCriticalTree(int location, EntitySource eSource, RefreshListener refresh, int facing) {
@@ -190,6 +190,22 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshBuild();
             refresh.refreshPreview();
         }
+    }
+    
+    private void setBayFacing(EquipmentNode node, boolean rear) {
+        if (node.isLeaf() && (node.getParent() instanceof BayNode)) {
+            node = (EquipmentNode)node.getParent();
+        }
+        for (Enumeration<MutableTreeNode> e = node.children(); e.hasMoreElements(); ) {
+            final Mounted m = ((EquipmentNode)e.nextElement()).getMounted();
+            UnitUtil.changeMountStatus(eSource.getEntity(), m,
+                    location, Entity.LOC_NONE, rear);
+        }
+        UnitUtil.changeMountStatus(eSource.getEntity(), node.getMounted(),
+                location, Entity.LOC_NONE, rear);
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
     
     private void deleteEquipment(final EquipmentNode node) {
@@ -465,9 +481,7 @@ public class BayWeaponCriticalTree extends JTree {
                 final Mounted mounted = node.getMounted();
 
                 if ((facing == BOTH) && ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0)) {
-                    UnitUtil.changeMountStatus(eSource.getEntity(), mounted,
-                            mounted.getLocation(), mounted.getSecondLocation(), !mounted.isRearMounted());
-                    return;
+                    setBayFacing(node, !node.getMounted().isRearMounted());
                 }
 
                 JPopupMenu popup = new JPopupMenu();
@@ -492,7 +506,12 @@ public class BayWeaponCriticalTree extends JTree {
                     info.addActionListener(ev -> removeBay(node));
                     popup.add(info);
                 }
-                
+                if (facing == BOTH) {
+                    info = new JMenuItem("Change facing");
+                    info.addActionListener(ev -> setBayFacing(node, !node.getMounted().isRearMounted()));
+                    popup.add(info);
+                }
+
                 popup.add(info);
 
                 if (popup.getComponentCount() > 0) {

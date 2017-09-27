@@ -103,7 +103,6 @@ public class DropshipBuildTab extends ITab implements ActionListener {
         }
     }
 
-
     private void resetCrits() {
         for (Mounted mount : getAero().getEquipment()) {
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
@@ -114,7 +113,6 @@ public class DropshipBuildTab extends ITab implements ActionListener {
 
         refresh.refreshAll();
     }
-
 
     public void removeAllActionListeners() {
         resetButton.removeActionListener(this);
