@@ -122,7 +122,7 @@ public class BuildView extends IView implements ActionListener, MouseListener {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getAero().getWeaponList()) {
+        for (Mounted mount : getAero().getTotalWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
