@@ -73,6 +73,7 @@ public class BayWeaponCriticalTree extends JTree {
     private int facing;
     
     private final EntitySource eSource;
+    private final DefaultTreeModel model;
     private RefreshListener refresh;
     
     public BayWeaponCriticalTree(int location, EntitySource eSource, RefreshListener refresh) {
@@ -85,9 +86,11 @@ public class BayWeaponCriticalTree extends JTree {
         this.eSource = eSource;
         this.refresh = refresh;
         
-        setRootVisible(false);
         setMinimumSize(new Dimension(110,15));
-        setModel(new DefaultTreeModel(initRoot()));
+        TreeNode root = initRoot();
+        setRootVisible(root.getChildCount() == 0);
+        model = new DefaultTreeModel(root);
+        setModel(model);
         setCellRenderer(renderer);
         addMouseListener(mouseListener);
     }
@@ -101,7 +104,9 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     public void rebuild() {
-        ((DefaultTreeModel)getModel()).setRoot(initRoot());
+        TreeNode root = initRoot();
+        model.setRoot(root);
+        setRootVisible(root.getChildCount() == 0);
     }
     
     private TreeNode initRoot() {
@@ -151,7 +156,8 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     private void removeBay(final EquipmentNode bayNode) {
-        ((DefaultTreeModel)getModel()).removeNodeFromParent(bayNode);
+        model.removeNodeFromParent(bayNode);
+        setRootVisible(((TreeNode)model.getRoot()).getChildCount() == 0);
         for (Enumeration<MutableTreeNode> e = bayNode.children(); e.hasMoreElements(); ) {
             removeEquipment((EquipmentNode)e.nextElement(), false);
         }
@@ -167,7 +173,8 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     private void removeEquipment(final EquipmentNode node, boolean shouldRefresh) {
-        ((DefaultTreeModel)getModel()).removeNodeFromParent(node);
+        model.removeNodeFromParent(node);
+        setRootVisible(((TreeNode)model.getRoot()).getChildCount() == 0);
         final Mounted mounted = node.getMounted();
         if (node.getParent() instanceof BayNode) {
             Mounted bay = ((BayNode)node.getParent()).getMounted();
@@ -209,7 +216,8 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     private void deleteEquipment(final EquipmentNode node) {
-        ((DefaultTreeModel)getModel()).removeNodeFromParent(node);
+        model.removeNodeFromParent(node);
+        setRootVisible(((TreeNode)model.getRoot()).getChildCount() == 0);
         final Mounted mounted = node.getMounted();
 
         UnitUtil.removeMounted(eSource.getEntity(), mounted);
@@ -229,10 +237,12 @@ public class BayWeaponCriticalTree extends JTree {
     public void paintComponent(Graphics g) {
         //FIXME: This is supposed to draw the background color across the width of the tree
         for (int i = 0; i < getRowCount(); i++) {
-            EquipmentNode node = (EquipmentNode)getPathForRow(i).getLastPathComponent();
-            g.setColor(node.getBackgroundColor());
-            final Rectangle r = getRowBounds(i);
-            g.fillRect(0, r.y, getWidth(), r.height);
+            Object node = getPathForRow(i).getLastPathComponent();
+            if (node instanceof EquipmentNode) {
+                g.setColor(((EquipmentNode) node).getBackgroundColor());
+                final Rectangle r = getRowBounds(i);
+                g.fillRect(0, r.y, getWidth(), r.height);
+            }
         }
         // draw the selection color across the width
         for (int i: getSelectionRows()) {
@@ -243,7 +253,8 @@ public class BayWeaponCriticalTree extends JTree {
         super.paintComponent(g);
         // Draw a separating line above top level nodes
         for (int i = 0; i < getRowCount(); i++) {
-            if (((EquipmentNode)getPathForRow(i).getLastPathComponent()).getParent() == ((DefaultTreeModel)getModel()).getRoot()) {
+            Object node = getPathForRow(i).getLastPathComponent();
+            if ((node == model.getRoot()) || ((EquipmentNode)node).getParent() == model.getRoot()) {
                 g.setColor(Color.black);
             } else {
                 g.setColor(Color.lightGray);
@@ -447,6 +458,7 @@ public class BayWeaponCriticalTree extends JTree {
             JLabel label = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded,
                     leaf, row, hasFocus);
             if (!(value instanceof EquipmentNode)) {
+                label.setText("-Empty-");
                 return label;
             }
             EquipmentNode node = (EquipmentNode)value;
@@ -473,7 +485,6 @@ public class BayWeaponCriticalTree extends JTree {
                             && ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0))) {
                 if (node.isLeaf()) {
                     removeEquipment(node);
-                    ((DefaultTreeModel)getModel()).removeNodeFromParent(node);
                 } else {
                     removeBay(node);
                 }
