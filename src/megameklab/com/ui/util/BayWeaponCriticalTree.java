@@ -18,12 +18,18 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -32,13 +38,16 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import megamek.common.AmmoType;
-import megamek.common.EquipmentType;
+import megamek.common.Entity;
+import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
+import megamek.common.loaders.EntityLoadingException;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CConfig;
 import megameklab.com.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
 
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons into bays. Also
@@ -64,7 +73,7 @@ public class BayWeaponCriticalTree extends JTree {
     private int facing;
     
     private final EntitySource eSource;
-    private final RefreshListener refresh;
+    private RefreshListener refresh;
     
     public BayWeaponCriticalTree(int location, EntitySource eSource, RefreshListener refresh) {
         this(location, eSource, refresh, BOTH);
@@ -78,55 +87,126 @@ public class BayWeaponCriticalTree extends JTree {
         
         setRootVisible(false);
         setMinimumSize(new Dimension(110,15));
-        setModel(new DefaultTreeModel(createRoot()));
+        setModel(new DefaultTreeModel(initRoot()));
         setCellRenderer(renderer);
+        addMouseListener(mouseListener);
     }
     
     public void setFacing(int facing) {
         this.facing = facing;
     }
     
-    public void rebuild() {
-        ((DefaultTreeModel)getModel()).setRoot(createRoot());
+    public void updateRefresh(RefreshListener refresh) {
+        this.refresh = refresh;
     }
     
-    private TreeNode createRoot() {
-        Map<EquipmentType,EquipmentNode> ammoNodes = new HashMap<>();
-        int bayCount = 0;
-        int ammoCount = 0;
-        MutableTreeNode newRoot = new DefaultMutableTreeNode();
-        for (Mounted m : eSource.getEntity().getEquipment()) {
-            if ((m.getLocation() == location)
+    public void rebuild() {
+        ((DefaultTreeModel)getModel()).setRoot(initRoot());
+    }
+    
+    private TreeNode initRoot() {
+        MutableTreeNode root = new DefaultMutableTreeNode();
+        Set<Integer> eqSet = new HashSet<>();
+        for (Mounted bay : eSource.getEntity().getWeaponBayList()) {
+            if ((bay.getLocation() == location)
                     && ((facing == BOTH)
-                            || (m.isRearMounted() == (facing == AFT)))) {
-                if (m.getType() instanceof BayWeapon) {
-                    EquipmentNode bayNode = new BayNode(m);
-                    for (int index = 0; index < m.getBayWeapons().size(); index++) {
-                        final Mounted weapon = eSource.getEntity().getEquipment(m.getBayWeapons().get(index));
-                        bayNode.insert(new EquipmentNode(weapon), index);
+                            || (bay.isRearMounted() == (facing == AFT)))) {
+                eqSet.add(eSource.getEntity().getEquipmentNum(bay));
+                EquipmentNode bayNode = new BayNode(bay);
+                root.insert(bayNode, root.getChildCount());
+                bayNode.setParent(root);
+                for (Integer wNum : bay.getBayWeapons()) {
+                    final Mounted weapon = eSource.getEntity().getEquipment(wNum);
+                    EquipmentNode node = new EquipmentNode(weapon);
+                    bayNode.insert(node, bayNode.getChildCount());
+                    node.setParent(bayNode);
+                    eqSet.add(wNum);
+                    if (weapon.getLinkedBy() != null) {
+                        node = new EquipmentNode(weapon.getLinkedBy());
+                        bayNode.insert(node, bayNode.getChildCount());
+                        node.setParent(bayNode);
+                        eqSet.add(eSource.getEntity().getEquipmentNum(weapon.getLinkedBy()));
                     }
-                    newRoot.insert(bayNode, bayCount);
-                    bayCount++;
-                    
-                } else if (m.getType() instanceof AmmoType) {
-                    EquipmentNode ammoNode = ammoNodes.get(m.getType());
-                    if (null == ammoNode) {
-                        ammoNode = new AmmoNode(m.getType());
-                        ammoNodes.put(m.getType(), ammoNode);
-                        newRoot.insert(ammoNode, bayCount + ammoCount);
-                        ammoCount++;
-                    }
-                    EquipmentNode node = new EquipmentNode(m);
-                    ammoNode.insert(node, ammoNode.getChildCount());
-                    
-                } else if (!(m.getType() instanceof WeaponType)
-                        || (((WeaponType)m.getType()).getBayType() == null)) {
-                    EquipmentNode node = new EquipmentNode(m);
-                    newRoot.insert(node, newRoot.getChildCount());
+                }
+                for (Integer aNum : bay.getBayAmmo()) {
+                    final Mounted ammo = eSource.getEntity().getEquipment(aNum);
+                    EquipmentNode node = new EquipmentNode(ammo);
+                    bayNode.insert(node, bayNode.getChildCount());
+                    node.setParent(bayNode);
+                    eqSet.add(aNum);
                 }
             }
         }
-        return newRoot;
+        for (int eqIndex = 0; eqIndex < eSource.getEntity().getEquipment().size(); eqIndex++) {
+            final Mounted eq = eSource.getEntity().getEquipment(eqIndex);
+            if (!eqSet.contains(eqIndex) && (eq.getLocation() == location)
+                    && ((facing == BOTH)
+                            || (eq.isRearMounted() == (facing == AFT)))) {
+                EquipmentNode node = new EquipmentNode(eq);
+                root.insert(node, root.getChildCount());
+                node.setParent(root);
+            }
+        }
+        return root;
+    }
+    
+    private void removeBay(final EquipmentNode bayNode) {
+        ((DefaultTreeModel)getModel()).removeNodeFromParent(bayNode);
+        for (Enumeration<MutableTreeNode> e = bayNode.children(); e.hasMoreElements(); ) {
+            removeEquipment((EquipmentNode)e.nextElement(), false);
+        }
+        bayNode.getMounted().getBayWeapons().clear();
+        UnitUtil.removeMounted(eSource.getEntity(), bayNode.getMounted());
+        refresh.refreshEquipment();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+    }
+    
+    private void removeEquipment(final EquipmentNode node) {
+        removeEquipment(node, true);
+    }
+    
+    private void removeEquipment(final EquipmentNode node, boolean shouldRefresh) {
+        ((DefaultTreeModel)getModel()).removeNodeFromParent(node);
+        final Mounted mounted = node.getMounted();
+        if (node.getParent() instanceof BayNode) {
+            Mounted bay = ((BayNode)node.getParent()).getMounted();
+            if (mounted.getType() instanceof WeaponType) {
+                bay.getBayWeapons().removeElement(eSource.getEntity().getEquipmentNum(mounted));
+            } else if (mounted.getType() instanceof AmmoType) {
+                bay.getBayAmmo().removeElement(eSource.getEntity().getEquipmentNum(mounted));
+            }
+        }
+        UnitUtil.removeCriticals(eSource.getEntity(), mounted);
+        UnitUtil.changeMountStatus(eSource.getEntity(), mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
+        UnitUtil.compactCriticals(eSource.getEntity());
+        try {
+            MechFileParser.postLoadInit(eSource.getEntity());
+        } catch (EntityLoadingException ex)  {
+            // do nothing
+        }
+        if (shouldRefresh) {
+            refresh.refreshEquipment();
+            refresh.refreshBuild();
+            refresh.refreshPreview();
+        }
+    }
+    
+    private void deleteEquipment(final EquipmentNode node) {
+        ((DefaultTreeModel)getModel()).removeNodeFromParent(node);
+        final Mounted mounted = node.getMounted();
+
+        UnitUtil.removeMounted(eSource.getEntity(), mounted);
+        UnitUtil.compactCriticals(eSource.getEntity());
+        // Check linkings after you remove everything.
+        try {
+            MechFileParser.postLoadInit(eSource.getEntity());
+        } catch (EntityLoadingException ele) {
+            // do nothing.
+        }
+        refresh.refreshEquipment();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
     }
     
     @Override
@@ -146,12 +226,14 @@ public class BayWeaponCriticalTree extends JTree {
         }
         super.paintComponent(g);
         // Draw a separating line above top level nodes
-        g.setColor(Color.black);
         for (int i = 0; i < getRowCount(); i++) {
             if (((EquipmentNode)getPathForRow(i).getLastPathComponent()).getParent() == ((DefaultTreeModel)getModel()).getRoot()) {
-                final Rectangle r = getRowBounds(i);
-                g.drawLine(0, r.y, getWidth(), r.y);
+                g.setColor(Color.black);
+            } else {
+                g.setColor(Color.lightGray);
             }
+            final Rectangle r = getRowBounds(i);
+            g.drawLine(0, r.y, getWidth(), r.y);
         }
     }
     
@@ -174,14 +256,6 @@ public class BayWeaponCriticalTree extends JTree {
             return (Mounted)object;
         }
         
-        WeaponType getWeapon() {
-            return (WeaponType)((Mounted)object).getType();
-        }
-        
-        AmmoType getAmmoType() {
-            return (AmmoType)object;
-        }
-
         @Override
         public TreeNode getChildAt(int childIndex) {
             return children.get(childIndex);
@@ -290,6 +364,10 @@ public class BayWeaponCriticalTree extends JTree {
         BayNode(Mounted object) {
             super(object);
         }
+        
+        public boolean isCapital() {
+            return ((WeaponType)getMounted().getType()).isCapital();
+        }
 
         @Override
         public boolean isLeaf() {
@@ -311,52 +389,20 @@ public class BayWeaponCriticalTree extends JTree {
             StringBuilder sb = new StringBuilder(getMounted().getName());
             double av = 0;
             for (Enumeration<MutableTreeNode> e = children(); e.hasMoreElements(); ) {
-                av += ((EquipmentNode)e.nextElement()).getWeapon().getShortAV();
+                final Mounted m = ((EquipmentNode)e.nextElement()).getMounted();
+                if (m.getType() instanceof WeaponType) {
+                    av += ((WeaponType)m.getType()).getShortAV();
+                }
             }
             sb.append(" (").append((int)av).append("/");
-            if (getWeapon().isCapital()) {
+            if (isCapital()) {
                 sb.append("70)");
             } else {
-                sb.append("700");
+                sb.append("700)");
             }
-            return sb.toString();
-        }
-    }
-    
-    /**
-     * Node used for ammo "bays" which conserve screen space but grouping all the ammo of a given
-     * type in the location into a single collapsible node.
-     * 
-     */
-    private class AmmoNode extends EquipmentNode {
-
-        AmmoNode(EquipmentType object) {
-            super(object);
-        }
-
-        @Override
-        public boolean isLeaf() {
-            return false;
-        }
-
-        @Override
-        public Color getBackgroundColor() {
-            return CConfig.getBackgroundColor(CConfig.CONFIG_AMMO);
-        }
-
-        @Override
-        public Color getForegroundColor() {
-            return CConfig.getForegroundColor(CConfig.CONFIG_AMMO);
-        }
-        
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder(getAmmoType().getName());
-            int shots = 0;
-            for (Enumeration<MutableTreeNode> e = children(); e.hasMoreElements(); ) {
-                shots += ((EquipmentNode)e.nextElement()).getMounted().getBaseShotsLeft();
+            if ((facing == BOTH) && getMounted().isRearMounted()) {
+                sb.append(" (R)");
             }
-            sb.append(" (").append(shots).append(")");
             return sb.toString();
         }
     }
@@ -399,5 +445,60 @@ public class BayWeaponCriticalTree extends JTree {
             return label;
         }
         
+    };
+
+    MouseListener mouseListener = new MouseAdapter() {
+        @Override
+        public void mousePressed(MouseEvent e) {
+            final int row = getClosestRowForLocation(e.getX(), e.getY());
+            final EquipmentNode node = (EquipmentNode)getPathForRow(row).getLastPathComponent();
+            if ((e.getButton() == MouseEvent.BUTTON2)
+                    || ((e.getButton() == MouseEvent.BUTTON3)
+                            && ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0))) {
+                if (node.isLeaf()) {
+                    removeEquipment(node);
+                    ((DefaultTreeModel)getModel()).removeNodeFromParent(node);
+                } else {
+                    removeBay(node);
+                }
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
+                final Mounted mounted = node.getMounted();
+
+                if ((facing == BOTH) && ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0)) {
+                    UnitUtil.changeMountStatus(eSource.getEntity(), mounted,
+                            mounted.getLocation(), mounted.getSecondLocation(), !mounted.isRearMounted());
+                    return;
+                }
+
+                JPopupMenu popup = new JPopupMenu();
+                popup.setAutoscrolls(true);
+                JMenuItem info;
+
+                
+                if (node.isLeaf()) {
+                    info = new JMenuItem("Remove " + mounted.getName());
+                    if ((node.getParent() instanceof BayNode)
+                            && (node.getParent().getChildCount() == 1)) {
+                        info.addActionListener(ev -> removeBay((EquipmentNode)node.getParent()));
+                    } else {
+                        info.addActionListener(ev -> removeEquipment(node));
+                    }
+                    popup.add(info);
+
+                    info = new JMenuItem("Delete " + mounted.getName());
+                    info.addActionListener(ev -> deleteEquipment(node));
+                } else {
+                    info = new JMenuItem("Remove entire bay");
+                    info.addActionListener(ev -> removeBay(node));
+                    popup.add(info);
+                }
+                
+                popup.add(info);
+
+                if (popup.getComponentCount() > 0) {
+                    popup.show(BayWeaponCriticalTree.this, e.getX(), e.getY());
+                }
+            }
+        }
     };
 }

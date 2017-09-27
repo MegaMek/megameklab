@@ -137,6 +137,12 @@ public class DropshipCriticalView extends IView {
 
     public void updateRefresh(RefreshListener refresh) {
         this.refresh = refresh;
+        noseTree.updateRefresh(refresh);
+        leftTree.updateRefresh(refresh);
+        rightTree.updateRefresh(refresh);
+        aftTree.updateRefresh(refresh);
+        aftLeftTree.updateRefresh(refresh);
+        aftRightTree.updateRefresh(refresh);
     }
 
     public void refresh() {
