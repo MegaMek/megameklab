@@ -27,7 +27,7 @@ import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Aero.tabs.EquipmentTab;
-import megameklab.com.ui.Aero.views.BuildView;
+import megameklab.com.ui.Dropship.views.AerospaceBuildView;
 import megameklab.com.ui.Dropship.views.DropshipCriticalView;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
@@ -48,7 +48,7 @@ public class DropshipBuildTab extends ITab implements ActionListener {
     
     private RefreshListener refresh = null;
     private DropshipCriticalView critView = null;
-    private BuildView buildView = null;
+    private AerospaceBuildView buildView = null;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
 
@@ -65,7 +65,8 @@ public class DropshipBuildTab extends ITab implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
 
         critView = new DropshipCriticalView(eSource, refresh);
-        buildView = new BuildView(eSource,refresh);
+        buildView = new AerospaceBuildView(eSource,refresh);
+        critView.addAllocationListeners(buildView);
 
         resetButton.setMnemonic('R');
         resetButton.setActionCommand(RESETCOMMAND);        
