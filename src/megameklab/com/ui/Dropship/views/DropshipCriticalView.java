@@ -137,6 +137,15 @@ public class DropshipCriticalView extends IView {
         refresh();
 
     }
+    
+    public void addAllocationListeners(AerospaceBuildView abv) {
+        abv.addArcView(noseTree);
+        abv.addArcView(leftTree);
+        abv.addArcView(rightTree);
+        abv.addArcView(aftLeftTree);
+        abv.addArcView(aftRightTree);
+        abv.addArcView(aftTree);
+    }
 
     public void updateRefresh(RefreshListener refresh) {
         this.refresh = refresh;
