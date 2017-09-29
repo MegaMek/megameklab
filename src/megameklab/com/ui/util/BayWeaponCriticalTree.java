@@ -38,6 +38,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -102,6 +103,10 @@ public class BayWeaponCriticalTree extends JTree {
         setModel(model);
         setCellRenderer(renderer);
         addMouseListener(mouseListener);
+        
+        AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource);
+        setDragEnabled(true);
+        setTransferHandler(cth);
     }
     
     /**
@@ -114,6 +119,17 @@ public class BayWeaponCriticalTree extends JTree {
     
     public void updateRefresh(RefreshListener refresh) {
         this.refresh = refresh;
+    }
+    
+    /**
+     * @return The <code>Mounted</code> that is currently selected, or null if there is no selection.
+     */
+    public Mounted getSelectedMount() {
+        TreePath path = getSelectionPath();
+        if ((null != path) && (path.getLastPathComponent() instanceof EquipmentNode)) {
+            return ((EquipmentNode)path.getLastPathComponent()).getMounted();
+        }
+        return null;
     }
     
     public void rebuild() {
@@ -183,7 +199,7 @@ public class BayWeaponCriticalTree extends JTree {
         model.removeNodeFromParent(bayNode);
         setRootVisible(((TreeNode)model.getRoot()).getChildCount() == 0);
         for (Enumeration<MutableTreeNode> e = bayNode.children(); e.hasMoreElements(); ) {
-            removeEquipment((EquipmentNode)e.nextElement(), false);
+            removeEquipment((EquipmentNode)e.nextElement(), false, true);
         }
         bayNode.getMounted().getBayWeapons().clear();
         UnitUtil.removeMounted(eSource.getEntity(), bayNode.getMounted());
@@ -197,7 +213,7 @@ public class BayWeaponCriticalTree extends JTree {
      * @param node
      */
     private void removeEquipment(final EquipmentNode node) {
-        removeEquipment(node, true);
+        removeEquipment(node, true, true);
     }
     
     /**
@@ -205,8 +221,11 @@ public class BayWeaponCriticalTree extends JTree {
      * @param node          The node to remove
      * @param shouldRefresh If false, will not trigger refreshes. This is used when removing
      *                      all equipment in a bay to hold the refresh until the end.
+     * @param updateMount   If true, the mount location will be set to LOC_NONE. The transfer handler
+     *                      takes care of this separately to keep from unallocating equipment that
+     *                      has been transferred to another bay.
      */
-    private void removeEquipment(final EquipmentNode node, boolean shouldRefresh) {
+    private void removeEquipment(final EquipmentNode node, boolean shouldRefresh, boolean updateMount) {
         model.removeNodeFromParent(node);
         setRootVisible(((TreeNode)model.getRoot()).getChildCount() == 0);
         final Mounted mounted = node.getMounted();
@@ -234,12 +253,14 @@ public class BayWeaponCriticalTree extends JTree {
             }
         }
         UnitUtil.removeCriticals(eSource.getEntity(), mounted);
-        UnitUtil.changeMountStatus(eSource.getEntity(), mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
-        UnitUtil.compactCriticals(eSource.getEntity());
-        try {
-            MechFileParser.postLoadInit(eSource.getEntity());
-        } catch (EntityLoadingException ex)  {
-            // do nothing
+        if (updateMount) {
+            UnitUtil.changeMountStatus(eSource.getEntity(), mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            UnitUtil.compactCriticals(eSource.getEntity());
+            try {
+                MechFileParser.postLoadInit(eSource.getEntity());
+            } catch (EntityLoadingException ex)  {
+                // do nothing
+            }
         }
         if (shouldRefresh) {
             refresh.refreshEquipment();
@@ -807,5 +828,40 @@ public class BayWeaponCriticalTree extends JTree {
             }
         }
         return false;
+    }
+    
+    public boolean isValidDropLocation(JTree.DropLocation loc, Mounted eq) {
+        Mounted bay = null;
+        TreePath path = loc.getPath();
+        if (null != path) {
+            bay = getBayFromPath(path);
+            if (null != bay) {
+                return canTakeEquipment(bay, eq);
+            }
+        }
+        return false;
+    }
+    
+    public Mounted getBayFromPath(TreePath path) {
+        if (null != path) {
+            MutableTreeNode node = (MutableTreeNode)path.getLastPathComponent();
+            if (node instanceof BayNode) {
+                return ((BayNode)node).getMounted();
+            } else if (node.getParent() instanceof BayNode) {
+                return ((BayNode)node.getParent()).getMounted();
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Removes the selected node and unallocates any equipment in the node. If none is
+     * selected, does nothing.
+     */
+    public void removeSelected() {
+        TreePath path = getSelectionPath();
+        if ((null != path) && (path.getLastPathComponent() instanceof EquipmentNode)) {
+            removeEquipment((EquipmentNode)path.getLastPathComponent(), true, false);
+        }
     }
 }

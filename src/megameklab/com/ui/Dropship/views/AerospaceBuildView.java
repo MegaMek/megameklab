@@ -41,9 +41,9 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.Weapon;
 import megameklab.com.ui.EntitySource;
+import megameklab.com.ui.util.AeroBayTransferHandler;
 import megameklab.com.ui.util.BayWeaponCriticalTree;
 import megameklab.com.util.CriticalTableModel;
-import megameklab.com.util.CriticalTransferHandler;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.StringUtils;
@@ -70,8 +70,6 @@ public class AerospaceBuildView extends IView implements MouseListener {
    private JTable equipmentTable = new JTable();
    private JScrollPane equipmentScroll = new JScrollPane();
    
-   CriticalTransferHandler cth;
-
    public AerospaceBuildView(EntitySource eSource, RefreshListener refresh) {
        super(eSource);
 
@@ -79,7 +77,7 @@ public class AerospaceBuildView extends IView implements MouseListener {
 
        equipmentTable.setModel(equipmentList);
        equipmentTable.setDragEnabled(true);
-       cth = new CriticalTransferHandler(eSource, refresh);
+       AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource);
        equipmentTable.setTransferHandler(cth);
        TableColumn column = null;
        for (int i = 0; i < equipmentList.getColumnCount(); i++) {
@@ -109,7 +107,6 @@ public class AerospaceBuildView extends IView implements MouseListener {
    }
 
    public void addRefreshedListener(RefreshListener l) {
-       cth.addRefreshListener(l);
    }
 
    private void loadEquipmentTable() {
