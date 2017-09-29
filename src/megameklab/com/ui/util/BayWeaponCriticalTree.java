@@ -139,6 +139,22 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     /**
+     * @return The number of weapon slots required by equipment allocated to this arc.
+     */
+    public int getSlotCount() {
+        int count = 0;
+        for (Enumeration<?> e = ((MutableTreeNode)model.getRoot()).children(); e.hasMoreElements(); ) {
+            final Object node = e.nextElement();
+            if (node instanceof BayNode) {
+                count += ((BayNode)node).getMounted().getBayWeapons().size();
+            } else if (node instanceof EquipmentNode) {
+                count += ((EquipmentNode)node).getMounted().getType().getCriticals(eSource.getEntity());
+            }
+        }
+        return count;
+    }
+    
+    /**
      * Runs through all equipment mounted on the vessel and adds nodes for the ones that match this
      * tree's location and facing.
      * 
