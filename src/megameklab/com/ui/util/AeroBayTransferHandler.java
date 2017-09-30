@@ -28,6 +28,8 @@ import megamek.common.Entity;
 import megamek.common.MechFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.common.weapons.bayweapons.BayWeapon;
+import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.CriticalTableModel;
 import megameklab.com.util.UnitUtil;
@@ -58,27 +60,39 @@ public class AeroBayTransferHandler extends TransferHandler {
             return false;
         }
         
-        Mounted mount = null;
+        // Fields are equipmentNum, node child index, bay child index
+        String[] source = null;
+        int eqNum = -1;
+        
         try {
-            mount = eSource.getEntity().getEquipment(Integer.parseInt((String) support.getTransferable()
-                    .getTransferData(DataFlavor.stringFlavor)));
+            source = ((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor)).split(",");
+            eqNum = Integer.parseInt(source[0]);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MegaMekLab.getLogger().log(AeroBayTransferHandler.class,
+                    "importData(TransferSupport)", //$NON-NLS-1$
+                    ex);
+            return false;
         }
+        if (eqNum < 0) {
+            return false;
+        }
+        final Mounted mount = eSource.getEntity().getEquipment(eqNum);
         if (null == mount) {
             return false;
         }
 
         if ((support.getComponent() instanceof BayWeaponCriticalTree)) {
-            // If we're dragging to a different location, clear the critical slots from the previous location
-            if (mount.getLocation() != Entity.LOC_NONE) {
-                UnitUtil.removeCriticals(eSource.getEntity(), mount);
-            }
             final BayWeaponCriticalTree tree = (BayWeaponCriticalTree) support.getComponent();
-            Mounted bay = tree.getBayFromPath(((JTree.DropLocation) support.getDropLocation()).getPath());
-
-            // We've already tested the bay in canImport
-            tree.addToBay(bay, mount);
+            // If it's a bay we move it and its entire contents. Otherwise we find the bay that was
+            // dropped on and add it there. A weapon dropped on an illegal bay will create a new one
+            // and non-bay equipment will be added at the top level regardless of the drop location.
+            // Non-weapon bay equipment cannot be dropped on an illegal bay.
+            if (mount.getType() instanceof BayWeapon) {
+                tree.addBay(mount);
+            } else {
+                Mounted bay = tree.getBayFromPath(((JTree.DropLocation) support.getDropLocation()).getPath());
+                tree.addToBay(bay, mount);
+            }
         } else {
             // Target is unallocated bay table.
             UnitUtil.removeCriticals(eSource.getEntity(), mount);
@@ -102,9 +116,11 @@ public class AeroBayTransferHandler extends TransferHandler {
         // check if the dragged mounted should be transferrable
         Mounted mounted = null;
         try {
-            mounted = eSource.getEntity().getEquipment(Integer
-                    .parseInt((String) support.getTransferable().getTransferData(
-                            DataFlavor.stringFlavor)));
+            String str = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+            if (str.contains(",")) {
+                str = str.substring(0, str.indexOf(","));
+            }
+            mounted = eSource.getEntity().getEquipment(Integer.parseInt(str));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (UnsupportedFlavorException e) {
@@ -128,8 +144,7 @@ public class AeroBayTransferHandler extends TransferHandler {
     @Override
     protected Transferable createTransferable(JComponent c) {
         if (c instanceof BayWeaponCriticalTree) {
-            Mounted mount = ((BayWeaponCriticalTree)c).getSelectedMount();
-            return new StringSelection(Integer.toString(eSource.getEntity().getEquipmentNum(mount)));
+            return new StringSelection(((BayWeaponCriticalTree)c).encodeSelection());
         } else {
             JTable table = (JTable) c;
             Mounted mount = (Mounted) ((CriticalTableModel) table.getModel()).getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
@@ -145,7 +160,13 @@ public class AeroBayTransferHandler extends TransferHandler {
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
         if (source instanceof BayWeaponCriticalTree) {
-            ((BayWeaponCriticalTree)source).removeSelected();
+            try {
+                ((BayWeaponCriticalTree)source).removeExported((String)data.getTransferData(DataFlavor.stringFlavor));
+            } catch (Exception ex) {
+                MegaMekLab.getLogger().log(AeroBayTransferHandler.class,
+                        "exportDone(JComponent,Transferable,action", //$NON-NLS-1$
+                        ex);
+            }
         }
     }
     

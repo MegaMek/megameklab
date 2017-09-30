@@ -27,6 +27,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.Vector;
 
 import javax.swing.JLabel;
@@ -49,6 +50,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.SmallCraft;
 import megamek.common.WeaponType;
+import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.logging.LogLevel;
 import megamek.common.weapons.bayweapons.BayWeapon;
@@ -119,17 +121,6 @@ public class BayWeaponCriticalTree extends JTree {
     
     public void updateRefresh(RefreshListener refresh) {
         this.refresh = refresh;
-    }
-    
-    /**
-     * @return The <code>Mounted</code> that is currently selected, or null if there is no selection.
-     */
-    public Mounted getSelectedMount() {
-        TreePath path = getSelectionPath();
-        if ((null != path) && (path.getLastPathComponent() instanceof EquipmentNode)) {
-            return ((EquipmentNode)path.getLastPathComponent()).getMounted();
-        }
-        return null;
     }
     
     public void rebuild() {
@@ -212,16 +203,28 @@ public class BayWeaponCriticalTree extends JTree {
      * @param bayNode
      */
     private void removeBay(final EquipmentNode bayNode) {
+        removeBay(bayNode, true);
+    }
+    
+    /**
+     * Removes the bay node and all subnodes.
+     *
+     * @param bayNode     The bay node to remove
+     * @param updateMount If true, will remove all equipment in the bay from the location and delete the bay itself
+     */
+    private void removeBay(final EquipmentNode bayNode, boolean updateMount) {
         model.removeNodeFromParent(bayNode);
         setRootVisible(((TreeNode)model.getRoot()).getChildCount() == 0);
         for (Enumeration<MutableTreeNode> e = bayNode.children(); e.hasMoreElements(); ) {
-            removeEquipment((EquipmentNode)e.nextElement(), false, true);
+            removeEquipment((EquipmentNode)e.nextElement(), false, updateMount);
         }
-        bayNode.getMounted().getBayWeapons().clear();
-        UnitUtil.removeMounted(eSource.getEntity(), bayNode.getMounted());
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
+        if (updateMount) {
+            bayNode.getMounted().getBayWeapons().clear();
+            UnitUtil.removeMounted(eSource.getEntity(), bayNode.getMounted());
+            refresh.refreshEquipment();
+            refresh.refreshBuild();
+            refresh.refreshPreview();
+        }
     }
     
     /**
@@ -233,7 +236,8 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     /**
-     * Removes equipment node and assigns its mount to LOC_NONE.
+     * Removes equipment node.
+     * 
      * @param node          The node to remove
      * @param shouldRefresh If false, will not trigger refreshes. This is used when removing
      *                      all equipment in a bay to hold the refresh until the end.
@@ -535,6 +539,7 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return sb.toString();
         }
+        
     }
     
     /**
@@ -569,13 +574,13 @@ public class BayWeaponCriticalTree extends JTree {
             }
             EquipmentNode node = (EquipmentNode)value;
 
-            setPreferredSize(new Dimension(180,15));
-            setMaximumSize(new Dimension(180,15));
-            setMinimumSize(new Dimension(180,15));
+            setPreferredSize(new Dimension(180, 15));
+            setMaximumSize(new Dimension(180, 15));
+            setMinimumSize(new Dimension(180, 15));
             
             label.setBackground(node.getBackgroundColor());
             label.setForeground(node.getForegroundColor());
-
+            
             return label;
         }
         
@@ -723,7 +728,17 @@ public class BayWeaponCriticalTree extends JTree {
      * @param bay
      * @param eq
      */
-    public void addToBay(Mounted bay, Mounted eq) {
+    public void addToBay(@Nullable Mounted bay, Mounted eq) {
+        // Check that we have a bay
+        if ((null == bay) || !canTakeEquipment(bay, eq)) {
+            if (eq.getType() instanceof WeaponType) {
+                EquipmentType bayType = ((WeaponType)eq.getType()).getBayType();
+                addToNewBay(bayType, eq);
+            } else {
+                addToLocation(eq);
+            }
+            return;
+        }
         EquipmentNode bayNode = null;
         for (Enumeration<?> e = ((TreeNode)model.getRoot()).children(); e.hasMoreElements(); ) {
             final EquipmentNode node = (EquipmentNode)e.nextElement();
@@ -733,7 +748,7 @@ public class BayWeaponCriticalTree extends JTree {
             }
         }
         if (null != bayNode) {
-            UnitUtil.changeMountStatus(eSource.getEntity(), eq, location, Entity.LOC_NONE, facing == AFT);
+            moveToArc(eq);
             EquipmentNode eqNode = new EquipmentNode(eq);
             model.insertNodeInto(eqNode, bayNode, bayNode.getChildCount());
             eqNode.setParent(bayNode);
@@ -769,13 +784,53 @@ public class BayWeaponCriticalTree extends JTree {
      * @param eq
      */
     public void addToLocation(Mounted eq) {
-        UnitUtil.changeMountStatus(eSource.getEntity(), eq, location, Entity.LOC_NONE, facing == AFT);
+        moveToArc(eq);
         EquipmentNode node = new EquipmentNode(eq);
         model.insertNodeInto(node, (MutableTreeNode)model.getRoot(), ((TreeNode)model.getRoot()).getChildCount());
         node.setParent((MutableTreeNode)model.getRoot());
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
+    }
+    
+    /**
+     * Moves a bay and all its contents from another location
+     * @param bay
+     */
+    public void addBay(Mounted bay) {
+        // First move the bay here
+        moveToArc(bay);
+        BayNode bayNode = new BayNode(bay);
+        model.insertNodeInto(bayNode, (MutableTreeNode)model.getRoot(),
+                ((TreeNode)model.getRoot()).getChildCount());
+        bayNode.setParent((MutableTreeNode)model.getRoot());
+        // Now go through all the equipment in the bay
+        for (Integer eqNum : bay.getBayWeapons()) {
+            final Mounted weapon = eSource.getEntity().getEquipment(eqNum);
+            moveToArc(weapon);
+            EquipmentNode node = new EquipmentNode(weapon);
+            model.insertNodeInto(node, bayNode, bayNode.getChildCount());
+            node.setParent(bayNode);
+            if (weapon.getLinkedBy() != null) {
+                moveToArc(weapon.getLinkedBy());
+                node = new EquipmentNode(weapon.getLinkedBy());
+                model.insertNodeInto(node, bayNode, bayNode.getChildCount());
+                node.setParent(bayNode);
+            }
+        }
+        for (Integer eqNum : bay.getBayAmmo()) {
+            final Mounted ammo = eSource.getEntity().getEquipment(eqNum);
+            moveToArc(ammo);
+            EquipmentNode node = new EquipmentNode(ammo);
+            model.insertNodeInto(node, bayNode, bayNode.getChildCount());
+            node.setParent(bayNode);
+        }
+    }
+    
+    private void moveToArc(Mounted eq) {
+        UnitUtil.removeCriticals(eSource.getEntity(), eq);
+        UnitUtil.changeMountStatus(eSource.getEntity(), eq, location,
+                Entity.LOC_NONE, (facing == AFT) || ((facing == BOTH) && eq.isRearMounted()));
     }
     
     /**
@@ -845,17 +900,36 @@ public class BayWeaponCriticalTree extends JTree {
         }
         return false;
     }
-    
+
+    /**
+     * Determines whether the equipment can be dropped here. In the case of ammo or weapon
+     * enhancement, there must be a matching weapon in the bay. A weapon that doesn't fit the
+     * bay will be placed in a new bay.
+     * 
+     * @param loc The drop location from the TransferSupport object passed to the TransferHandler
+     * @param eq  The equipment to be dropped
+     * @return    Whether the equipment can be dropped in the location
+     */
     public boolean isValidDropLocation(JTree.DropLocation loc, Mounted eq) {
-        Mounted bay = null;
-        TreePath path = loc.getPath();
-        if (null != path) {
-            bay = getBayFromPath(path);
-            if (null != bay) {
-                return canTakeEquipment(bay, eq);
+        if ((eq.getType() instanceof AmmoType)
+                || ((eq.getType() instanceof MiscType)
+                        && (eq.getType().hasFlag(MiscType.F_ARTEMIS)
+                                || eq.getType().hasFlag(MiscType.F_ARTEMIS_V)
+                                || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO)
+                                || eq.getType().hasFlag(MiscType.F_APOLLO)
+                                || eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR)
+                                || eq.getType().hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)))) {
+            Mounted bay = null;
+            TreePath path = loc.getPath();
+            if (null != path) {
+                bay = getBayFromPath(path);
+                if (null != bay) {
+                    return canTakeEquipment(bay, eq);
+                }
             }
+            return false;
         }
-        return false;
+        return true;
     }
     
     public Mounted getBayFromPath(TreePath path) {
@@ -871,13 +945,51 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     /**
-     * Removes the selected node and unallocates any equipment in the node. If none is
-     * selected, does nothing.
+     * Builds a String representation of the selected node that can be used by the transfer handler
+     * to find the node to be removed after export.
+     * 
+     * @return A String in the format equipmentNum,nodeIndex[,bayNodeIndex]
      */
-    public void removeSelected() {
+    public String encodeSelection() {
         TreePath path = getSelectionPath();
         if ((null != path) && (path.getLastPathComponent() instanceof EquipmentNode)) {
-            removeEquipment((EquipmentNode)path.getLastPathComponent(), true, false);
+            EquipmentNode node = (EquipmentNode)path.getLastPathComponent();
+            StringJoiner sj = new StringJoiner(",");
+            sj.add(String.valueOf(eSource.getEntity().getEquipmentNum(node.getMounted())));
+            sj.add(String.valueOf(node.getParent().getIndex(node)));
+            if (node.getParent() instanceof BayNode) {
+                sj.add(String.valueOf(((MutableTreeNode)model.getRoot()).getIndex(node.getParent())));
+            }
+            return sj.toString();
+        } else {
+            return "-1"; //$NON-NLS-1$
+        }
+    }
+    
+    public void removeExported(String selection) {
+        String[] sources = selection.split(",");
+        if (sources.length < 2) {
+            return;
+        }
+        // Check whether this is equipment in a bay.
+        if (sources.length > 2) {
+            BayNode bayNode = (BayNode)((MutableTreeNode)model.getRoot())
+                    .getChildAt(Integer.parseInt(sources[2]));
+            EquipmentNode node = (EquipmentNode)bayNode.getChildAt(Integer.parseInt(sources[1]));
+            removeEquipment(node, true, false);
+            // If this is the last weapon in the bay, we remove the bay also
+            if (bayNode.getMounted().getBayWeapons().size() == 0) {
+                removeBay(bayNode, false);
+            }
+        } else {
+            EquipmentNode node = (EquipmentNode)((MutableTreeNode)model.getRoot())
+                    .getChildAt(Integer.parseInt(sources[1]));
+            // Check whether we're moving an entire bay
+            if (node instanceof BayNode) {
+                removeBay(node, false);
+            } else {
+                removeEquipment(node, true, false);
+            }
         }
     }
 }
