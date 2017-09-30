@@ -25,9 +25,8 @@ import javax.swing.JTree;
 import javax.swing.TransferHandler;
 
 import megamek.common.Entity;
-import megamek.common.MechFileParser;
 import megamek.common.Mounted;
-import megamek.common.loaders.EntityLoadingException;
+import megamek.common.WeaponType;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.com.MegaMekLab;
 import megameklab.com.ui.EntitySource;
@@ -90,19 +89,20 @@ public class AeroBayTransferHandler extends TransferHandler {
             if (mount.getType() instanceof BayWeapon) {
                 tree.addBay(mount);
             } else {
-                Mounted bay = tree.getBayFromPath(((JTree.DropLocation) support.getDropLocation()).getPath());
-                tree.addToBay(bay, mount);
+                tree.addToArc(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());
             }
         } else {
             // Target is unallocated bay table.
             UnitUtil.removeCriticals(eSource.getEntity(), mount);
             UnitUtil.changeMountStatus(eSource.getEntity(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-            UnitUtil.compactCriticals(eSource.getEntity());
-            try {
-                MechFileParser.postLoadInit(eSource.getEntity());
-            } catch (EntityLoadingException ex)  {
-                // do nothing
+            if ((mount.getType() instanceof WeaponType) && (mount.getLinkedBy() != null)) {
+                UnitUtil.removeCriticals(eSource.getEntity(), mount.getLinkedBy());
+                UnitUtil.changeMountStatus(eSource.getEntity(), mount.getLinkedBy(),
+                        Entity.LOC_NONE, Entity.LOC_NONE, false);
+                mount.getLinkedBy().setLinked(null);
+                mount.setLinkedBy(null);
             }
+            UnitUtil.compactCriticals(eSource.getEntity());
         }
         return true;
     }
