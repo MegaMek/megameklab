@@ -159,7 +159,7 @@ public class AeroBayTransferHandler extends TransferHandler {
 
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
-        if (source instanceof BayWeaponCriticalTree) {
+        if ((action == MOVE) && (source instanceof BayWeaponCriticalTree)) {
             try {
                 ((BayWeaponCriticalTree)source).removeExported((String)data.getTransferData(DataFlavor.stringFlavor));
             } catch (Exception ex) {

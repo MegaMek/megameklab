@@ -203,24 +203,30 @@ public class BayWeaponCriticalTree extends JTree {
      * @param bayNode
      */
     private void removeBay(final EquipmentNode bayNode) {
-        removeBay(bayNode, true);
+        removeBay(bayNode, true, true);
     }
     
     /**
      * Removes the bay node and all subnodes.
      *
      * @param bayNode     The bay node to remove
+     * @param shouldRefresh If false, will not trigger refreshes. This is used when removing
+     *                      all equipment in a bay or finishing a DnD export to hold the refresh until the end.
      * @param updateMount If true, will remove all equipment in the bay from the location and delete the bay itself
      */
-    private void removeBay(final EquipmentNode bayNode, boolean updateMount) {
+    private void removeBay(final EquipmentNode bayNode, boolean shouldRefresh, boolean updateMount) {
         model.removeNodeFromParent(bayNode);
         setRootVisible(((TreeNode)model.getRoot()).getChildCount() == 0);
+        List<EquipmentNode> children = new ArrayList<>();
         for (Enumeration<MutableTreeNode> e = bayNode.children(); e.hasMoreElements(); ) {
-            removeEquipment((EquipmentNode)e.nextElement(), false, updateMount);
+            children.add((EquipmentNode)e.nextElement());
         }
+        children.forEach(c -> removeEquipment(c, false, updateMount));
         if (updateMount) {
             bayNode.getMounted().getBayWeapons().clear();
             UnitUtil.removeMounted(eSource.getEntity(), bayNode.getMounted());
+        }
+        if (shouldRefresh) {
             refresh.refreshEquipment();
             refresh.refreshBuild();
             refresh.refreshPreview();
@@ -270,6 +276,9 @@ public class BayWeaponCriticalTree extends JTree {
                     && (node.getMounted().getLinked().getType() instanceof WeaponType)) {
                 node.getMounted().getLinked().setLinkedBy(null);
                 node.getMounted().setLinked(null);
+            }
+            if ((node.getMounted().getType() instanceof WeaponType) && bay.getBayWeapons().size() == 0) {
+                removeBay((EquipmentNode)node.getParent(), false, true);
             }
         }
         UnitUtil.removeCriticals(eSource.getEntity(), mounted);
@@ -911,21 +920,38 @@ public class BayWeaponCriticalTree extends JTree {
      * @return    Whether the equipment can be dropped in the location
      */
     public boolean isValidDropLocation(JTree.DropLocation loc, Mounted eq) {
-        if ((eq.getType() instanceof AmmoType)
-                || ((eq.getType() instanceof MiscType)
-                        && (eq.getType().hasFlag(MiscType.F_ARTEMIS)
-                                || eq.getType().hasFlag(MiscType.F_ARTEMIS_V)
-                                || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO)
-                                || eq.getType().hasFlag(MiscType.F_APOLLO)
-                                || eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR)
-                                || eq.getType().hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)))) {
-            Mounted bay = null;
-            TreePath path = loc.getPath();
-            if (null != path) {
-                bay = getBayFromPath(path);
-                if (null != bay) {
-                    return canTakeEquipment(bay, eq);
+        Mounted bay = null;
+        TreePath path = loc.getPath();
+        if (null != path) {
+            bay = getBayFromPath(path);
+        }
+        // disallow dropping into the same location
+        if (null != bay) {
+            if ((eq == bay)
+                    || ((eq.getType() instanceof WeaponType)
+                            && (bay.getBayWeapons().contains(eSource.getEntity().getEquipmentNum(eq))))
+                    || ((eq.getType() instanceof AmmoType)
+                            && (bay.getBayAmmo().contains(eSource.getEntity().getEquipmentNum(eq))))) {
+                return false;
+            }
+        }
+        if (eq.getType() instanceof AmmoType) {
+            return (null != bay) && canTakeEquipment(bay, eq);
+        }
+        if ((eq.getType() instanceof MiscType)
+                && (eq.getType().hasFlag(MiscType.F_ARTEMIS)
+                        || eq.getType().hasFlag(MiscType.F_ARTEMIS_V)
+                        || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO)
+                        || eq.getType().hasFlag(MiscType.F_APOLLO)
+                        || eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR)
+                        || eq.getType().hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE))) {
+            if ((null != bay) && canTakeEquipment(bay, eq)) {
+                for (Integer eqNum : bay.getBayWeapons()) {
+                    if (eSource.getEntity().getEquipment(eqNum) == eq.getLinked()) {
+                        return false;
+                    }
                 }
+                return true;
             }
             return false;
         }
@@ -976,20 +1002,19 @@ public class BayWeaponCriticalTree extends JTree {
             BayNode bayNode = (BayNode)((MutableTreeNode)model.getRoot())
                     .getChildAt(Integer.parseInt(sources[2]));
             EquipmentNode node = (EquipmentNode)bayNode.getChildAt(Integer.parseInt(sources[1]));
-            removeEquipment(node, true, false);
-            // If this is the last weapon in the bay, we remove the bay also
-            if (bayNode.getMounted().getBayWeapons().size() == 0) {
-                removeBay(bayNode, false);
-            }
+            removeEquipment(node, false, false);
         } else {
             EquipmentNode node = (EquipmentNode)((MutableTreeNode)model.getRoot())
                     .getChildAt(Integer.parseInt(sources[1]));
-            // Check whether we're moving an entire bay
+            // If we're moving an entire bay we only need to get rid of the bay node.
             if (node instanceof BayNode) {
-                removeBay(node, false);
+                model.removeNodeFromParent(node);
             } else {
-                removeEquipment(node, true, false);
+                removeEquipment(node, false, false);
             }
         }
+        refresh.refreshEquipment();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
     }
 }
