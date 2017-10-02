@@ -48,6 +48,7 @@ import megamek.common.TechConstants;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
+import megameklab.com.ui.view.listeners.MekBuildListener;
 
 /**
  * Construction options and systems for Meks.
@@ -55,31 +56,18 @@ import megameklab.com.ui.util.TechComboBox;
  * @author Neoancient
  *
  */
-public class MekChassisView extends MainUIView implements ActionListener, ChangeListener {
+public class MekChassisView extends BuildView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = -2620071922845931509L;
 
-    public interface MekChassisListener {
-        void refreshSummary();
-        void tonnageChanged(double tonnage);
-        void omniChanged(boolean omni);
-        void typeChanged(int baseType, int motiveType, long etype);
-        void structureChanged(EquipmentType structure);
-        void engineChanged(Engine engine);
-        void gyroChanged(int gyroType);
-        void cockpitChanged(int cockpitType);
-        void enhancementChanged(EquipmentType enhancement);
-        void fullHeadEjectChanged(boolean eject);
-        void resetChassis();
-    }
-    List<MekChassisListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(MekChassisListener l) {
+    List<MekBuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(MekBuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(MekChassisListener l) {
+    public void removeListener(MekBuildListener l) {
         listeners.remove(l);
     }
     
@@ -764,7 +752,7 @@ public class MekChassisView extends MainUIView implements ActionListener, Change
         } else if (e.getSource() == chkFullHeadEject) {
             listeners.forEach(l -> l.fullHeadEjectChanged(chkFullHeadEject.isSelected()));
         } else if (e.getSource() == btnResetChassis) {
-            listeners.forEach(MekChassisListener::resetChassis);
+            listeners.forEach(MekBuildListener::resetChassis);
         }
         refresh();
     }

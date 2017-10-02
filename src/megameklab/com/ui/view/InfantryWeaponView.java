@@ -40,6 +40,7 @@ import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megameklab.com.ui.view.listeners.InfantryBuildListener;
 import megameklab.com.util.UnitUtil;
 
 /**
@@ -49,23 +50,18 @@ import megameklab.com.util.UnitUtil;
  * @author Neoancient
  *
  */
-public class InfantryWeaponView extends MainUIView implements ActionListener {
+public class InfantryWeaponView extends BuildView implements ActionListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = 6150492212690074504L;
 
-    public interface WeaponListener {
-        void numSecondaryChanged(int count);
-        void numFieldGunsChanged(int count);
-        void antiMekChanged(boolean antiMek);
-    }
-    private List<WeaponListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(WeaponListener l) {
+    private List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(WeaponListener l) {
+    public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
     

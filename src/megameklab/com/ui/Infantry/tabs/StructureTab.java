@@ -54,15 +54,12 @@ import megameklab.com.ui.Infantry.views.WeaponView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.InfantryWeaponView;
 import megameklab.com.ui.view.PlatoonTypeView;
+import megameklab.com.ui.view.listeners.InfantryBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements
-        BasicInfoView.BasicInfoListener,
-        PlatoonTypeView.PlatoonListener,
-        InfantryWeaponView.WeaponListener,
-        SpecializationView.SpecializationListener {
+public class StructureTab extends ITab implements InfantryBuildListener {
 
     /**
      *
@@ -462,4 +459,20 @@ public class StructureTab extends ITab implements
         getInfantry().setAntiMekSkill(antiMek);
         refresh.refreshStatus();
     }
+
+    @Override
+    public void walkChanged(int walkMP) {
+        // not used by conventional infantry
+    }
+
+    @Override
+    public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
+        // not used by conventional infantry
+    }
+
+    @Override
+    public void jumpTypeChanged(EquipmentType jumpJet) {
+        // not used by conventional infantry
+    }
+
 }

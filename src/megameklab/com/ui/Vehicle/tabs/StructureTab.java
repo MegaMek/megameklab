@@ -17,20 +17,15 @@
 package megameklab.com.ui.Vehicle.tabs;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import megamek.client.ui.GBC;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
@@ -40,47 +35,43 @@ import megamek.common.LocationFullException;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
+import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
-import megamek.common.TechConstants;
 import megamek.common.TroopSpace;
+import megamek.common.VTOL;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Vehicle.views.ArmorView;
 import megameklab.com.ui.Vehicle.views.SummaryView;
-import megameklab.com.ui.util.TechComboBox;
+import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.CVChassisView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.PatchworkArmorView;
+import megameklab.com.ui.view.listeners.CVBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements
-        BasicInfoView.BasicInfoListener,
-        CVChassisView.ChassisListener,
-        MovementView.MovementListener,
-        MVFArmorView.ArmorListener {
+public class StructureTab extends ITab implements CVBuildListener {
 
     /**
      *
      */
     private static final long serialVersionUID = -6756011847500605874L;
 
-    RefreshListener refresh = null;
-    Dimension maxSize = new Dimension();
-    JPanel masterPanel;
-    BasicInfoView panBasicInfo; 
-    CVChassisView panChassis;
-    MVFArmorView panArmor;
-    MovementView panMovement;
-    SummaryView panSummary;
+    private RefreshListener refresh = null;
+    private JPanel masterPanel;
+    private BasicInfoView panBasicInfo; 
+    private CVChassisView panChassis;
+    private MVFArmorView panArmor;
+    private MovementView panMovement;
+    private SummaryView panSummary;
+    private ArmorAllocationView panArmorAllocation;
+    private PatchworkArmorView panPatchwork;
     
-    private ArmorView armor;
-
     public StructureTab(EntitySource eSource) {
         super(eSource);
-        armor = new ArmorView(eSource);
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
@@ -93,7 +84,14 @@ public class StructureTab extends ITab implements
         panChassis = new CVChassisView(panBasicInfo);
         panArmor = new MVFArmorView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
+        panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_TANK);
+        panPatchwork = new PatchworkArmorView(panBasicInfo);
         panSummary = new SummaryView(eSource);
+        if (getTank().hasPatchworkArmor()) {
+            panArmorAllocation.showPatchwork(true);
+        } else {
+            panPatchwork.setVisible(false);
+        }
 
         GridBagConstraints gbc;
 
@@ -101,12 +99,16 @@ public class StructureTab extends ITab implements
         panChassis.setFromEntity(getTank());
         panMovement.setFromEntity(getTank());
         panArmor.setFromEntity(getTank());
+        panArmorAllocation.setFromEntity(getTank());
+        panPatchwork.setFromEntity(getTank());
 
         gbc = new GridBagConstraints();
 
         JPanel leftPanel = new JPanel();
+        JPanel midPanel = new JPanel();
         JPanel rightPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.Y_AXIS));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panBasicInfo);
@@ -116,9 +118,12 @@ public class StructureTab extends ITab implements
         leftPanel.add(panMovement);
         leftPanel.add(Box.createGlue());
         
-        rightPanel.add(panArmor);
-        rightPanel.add(panSummary);
-        rightPanel.add(Box.createVerticalGlue());
+        midPanel.add(panArmor);
+        midPanel.add(panSummary);
+        midPanel.add(Box.createVerticalGlue());
+        
+        rightPanel.add(panArmorAllocation);
+        rightPanel.add(panPatchwork);
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -129,16 +134,17 @@ public class StructureTab extends ITab implements
         gbc.anchor = GridBagConstraints.NORTHWEST;
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
-        masterPanel.add(rightPanel, gbc);
+        masterPanel.add(midPanel, gbc);
         gbc.gridx = 2;
-        masterPanel.add(armor, gbc);
+        masterPanel.add(rightPanel, gbc);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
-        armor.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
+        panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
+        panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
     }
 
     public void refresh() {
@@ -148,8 +154,9 @@ public class StructureTab extends ITab implements
         panChassis.setFromEntity(getTank());
         panMovement.setFromEntity(getTank());
         panArmor.setFromEntity(getTank());
+        panArmorAllocation.setFromEntity(getTank());
+        panPatchwork.setFromEntity(getTank());
 
-        armor.refresh();
         panSummary.refresh();
 
         addAllListeners();
@@ -171,6 +178,8 @@ public class StructureTab extends ITab implements
         panChassis.removeListener(this);
         panMovement.removeListener(this);
         panArmor.removeListener(this);
+        panArmorAllocation.removeListener(this);
+        panPatchwork.removeListener(this);
     }
 
     public void addAllListeners() {
@@ -178,11 +187,12 @@ public class StructureTab extends ITab implements
         panChassis.addListener(this);
         panMovement.addListener(this);
         panArmor.addListener(this);
+        panArmorAllocation.addListener(this);
+        panPatchwork.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        armor.addRefreshedListener(l);
     }
     
     private void removeTurret(int loc) {
@@ -233,44 +243,6 @@ public class StructureTab extends ITab implements
         return true;
     }
     
-    private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
-        if (EquipmentType.T_ARMOR_PATCHWORK == at) {
-            boolean isMixed = panBasicInfo.useMixedTech();
-            List<EquipmentType> armors = panArmor.getAllArmors();
-            List<TechComboBox<EquipmentType>> combos = new ArrayList<>();
-            JPanel panel = new JPanel(new GridBagLayout());
-            // Start with 1 to skip body
-            for (int loc = 1; loc < getTank().locations(); loc++) {
-                TechComboBox<EquipmentType> cbLoc = new TechComboBox<>(eq -> eq.getName());
-                cbLoc.showTechBase(isMixed);
-                armors.forEach(a -> cbLoc.addItem(a));
-                EquipmentType locArmor = EquipmentType.get(EquipmentType
-                        .getArmorTypeName(getTank().getArmorType(loc),
-                                TechConstants.isClan(getTank().getArmorTechLevel(loc))));
-                cbLoc.setSelectedItem(locArmor);
-                combos.add(cbLoc);
-                JLabel label = new JLabel(getTank().getLocationName(loc));
-                panel.add(label, GBC.std());
-                panel.add(cbLoc, GBC.eol());
-            }
-            JOptionPane.showMessageDialog(this, panel,
-                    "Please choose the armor types",
-                    JOptionPane.QUESTION_MESSAGE);
-            UnitUtil.removeISorArmorMounts(getTank(), false);
-            for (int loc = 0; loc < getTank().locations(); loc++) {
-                EquipmentType armor = (EquipmentType)combos.get(loc).getSelectedItem();
-                getTank().setArmorTechLevel(armor.getTechLevel(panBasicInfo.getGameYear()), loc);
-                getTank().setArmorType(EquipmentType.getArmorType(armor), loc);
-            }
-            panArmor.removeListener(this);
-            panArmor.setFromEntity(getTank());
-            panArmor.addListener(this);
-        } else {
-            getTank().setArmorTechLevel(aTechLevel);
-            getTank().setArmorType(at);
-        }
-    }
-
     public void refreshSummary() {
         panSummary.refresh();
     }
@@ -320,7 +292,6 @@ public class StructureTab extends ITab implements
         if (!getTank().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getTank(), false);
         }
-        createArmorMountsAndSetArmorType(getTank().getArmorType(0), getTank().getArmorTechLevel(0));
         // If we have a large engine, a drop in tech level may make it unavailable and we will need
         // to reduce speed to a legal value.
         if (getTank().getEngine().hasFlag(Engine.LARGE_ENGINE)
@@ -343,7 +314,8 @@ public class StructureTab extends ITab implements
         panChassis.refresh();
         panArmor.refresh();
         panMovement.refresh();
-        armor.resetArmorPoints();
+        panArmorAllocation.setFromEntity(getTank());
+        panPatchwork.setFromEntity(getTank());
         addAllListeners();
     }
 
@@ -400,15 +372,18 @@ public class StructureTab extends ITab implements
 
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
-        if (!getTank().hasPatchworkArmor()) {
-            UnitUtil.removeISorArmorMounts(getTank(), false);
+        UnitUtil.removeISorArmorMounts(getTank(), false);
+        if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            getTank().setArmorTechLevel(aTechLevel);
+            getTank().setArmorType(at);
+            panArmorAllocation.showPatchwork(false);
+            panPatchwork.setVisible(false);
+        } else {
+            panPatchwork.setFromEntity(getTank());
+            panArmorAllocation.showPatchwork(true);
+            panPatchwork.setVisible(true);
         }
-        createArmorMountsAndSetArmorType(at, aTechLevel);
-        if (!getTank().hasPatchworkArmor()) {
-            armor.resetArmorPoints();
-        }
-        
-        armor.refresh();
+        panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshBuild();
@@ -418,9 +393,7 @@ public class StructureTab extends ITab implements
     @Override
     public void armorTonnageChanged(double tonnage) {
         getTank().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
-        armor.resetArmorPoints();
-
-        armor.refresh();
+        panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -430,12 +403,11 @@ public class StructureTab extends ITab implements
     public void maximizeArmor() {
         double maxArmor = UnitUtil.getMaximumArmorTonnage(getTank());
         getTank().setArmorTonnage(maxArmor);
-        armor.resetArmorPoints();
         panArmor.removeListener(this);
         panArmor.setFromEntity(getTank());
         panArmor.addListener(this);
         
-        armor.refresh();
+        panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -453,12 +425,11 @@ public class StructureTab extends ITab implements
         double maxArmor = Math.min(getTank().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getTank()));
         getTank().setArmorTonnage(maxArmor);
-        armor.resetArmorPoints();
         panArmor.removeListener(this);
         panArmor.setFromEntity(getTank());
         panArmor.addListener(this);
         
-        armor.refresh();
+        panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -508,6 +479,7 @@ public class StructureTab extends ITab implements
         }
         panChassis.refresh();
         panSummary.refresh();
+        panArmorAllocation.setFromEntity(getTank());
         refresh.refreshPreview();
         refresh.refreshBuild();
         refresh.refreshStatus();
@@ -540,7 +512,9 @@ public class StructureTab extends ITab implements
         panMovement.removeListener(this);
         panMovement.setFromEntity(getTank());
         panMovement.addListener(this);
-        armor.refresh();
+        panArmor.setFromEntity(getTank());
+        panArmorAllocation.setFromEntity(getTank());
+        panPatchwork.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
@@ -584,7 +558,7 @@ public class StructureTab extends ITab implements
             initTurretArmor(getTank().getLocTurret2());
         }
         panChassis.setFromEntity(getTank());
-        armor.refresh();
+        panArmorAllocation.setFromEntity(getTank());
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
@@ -624,6 +598,123 @@ public class StructureTab extends ITab implements
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
+    }
+
+    @Override
+    public void armorPointsChanged(int location, int front, int rear) {
+        getTank().initializeArmor(front, location);
+        if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
+            getTank().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getTank()));
+        }
+        panArmorAllocation.setFromEntity(getTank());
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
+    }
+
+    @Override
+    public void autoAllocateArmor() {
+        int pointsToAllocate = UnitUtil.getArmorPoints(getTank(), getTank().getLabArmorTonnage());
+
+        for (int location = 0; location < getTank().locations(); location++) {
+            getTank().initializeArmor(0, location);
+        }
+        
+        // Discount body, as it's not armored
+        int numLocations = getTank().locations() - 1;
+
+        // Make sure that the VTOL rotor has the 2 armor it should have
+        if (getTank().hasETypeFlag(Entity.ETYPE_VTOL)) {
+            getTank().initializeArmor(Math.min(pointsToAllocate, 2), VTOL.LOC_ROTOR);
+            pointsToAllocate -= 2;
+            numLocations--;
+        }
+        
+        // Determine the percentage of total armor each location should get
+        double otherPercent = 1.0 / numLocations;
+        double remainingPercent = 1.0 - (otherPercent * (numLocations - 2));
+        // Front should be slightly more armored and rear slightly less
+        double frontPercent = remainingPercent * 0.6;
+        double rearPercent = remainingPercent * 0.4;
+        
+        // With the percentage of total for each location, assign armor
+        int allocatedPoints = 0;
+        int rear = Tank.LOC_REAR;
+        if (getTank().hasETypeFlag(Entity.ETYPE_SUPER_HEAVY_TANK)) {
+            rear = SuperHeavyTank.LOC_REAR;
+        }
+        for (int location = 1; location < getTank().locations(); location++) {
+            if ((getTank().hasETypeFlag(Entity.ETYPE_VTOL)) && (location == VTOL.LOC_ROTOR)) {
+                continue;
+            }
+            int armorToAllocate = 0;
+            if (location == Tank.LOC_FRONT) {
+                armorToAllocate = (int)(pointsToAllocate * frontPercent);
+            } else if (location == rear) {
+                armorToAllocate = (int)(pointsToAllocate * rearPercent);
+            } else {
+                armorToAllocate = (int)(pointsToAllocate * otherPercent);
+            }
+            getTank().initializeArmor(armorToAllocate, location);
+            allocatedPoints += armorToAllocate;
+        }
+        
+        // Because of rounding, may have leftover armor: allocate it to front
+        int unallocated = pointsToAllocate - allocatedPoints;
+        int currentFrontArmor = getTank().getOArmor(Tank.LOC_FRONT);
+        getTank().initializeArmor(currentFrontArmor + unallocated, Tank.LOC_FRONT);
+
+        
+        panArmorAllocation.setFromEntity(getTank());
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
+    }
+
+    @Override
+    public void patchworkChanged(int location, EquipmentType armor) {
+        UnitUtil.resetArmor(getAero(), location);
+
+        //TODO: move this construction data out of the ui
+        int crits = 0;
+        switch (EquipmentType.getArmorType(armor)) {
+            case EquipmentType.T_ARMOR_STEALTH_VEHICLE:
+            case EquipmentType.T_ARMOR_LIGHT_FERRO:
+            case EquipmentType.T_ARMOR_FERRO_FIBROUS:
+            case EquipmentType.T_ARMOR_FERRO_FIBROUS_PROTO:
+            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+            case EquipmentType.T_ARMOR_REFLECTIVE:
+            case EquipmentType.T_ARMOR_REACTIVE:
+                crits = 1;
+                break;
+            case EquipmentType.T_ARMOR_HEAVY_FERRO:
+                crits = 2;
+                break;
+        }
+        if (getAero().getEmptyCriticals(location) < crits) {
+            JOptionPane .showMessageDialog(
+                    null, armor.getName()
+                    + " does not fit in location "
+                    + getAero().getLocationName(location)
+                    + ". Resetting to Standard Armor in this location.",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            getAero().setArmorType(EquipmentType.getArmorType(armor), location);
+            getAero().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
+            for (; crits > 0; crits--) {
+                try {
+                    getAero().addEquipment( new Mounted(getAero(), armor), location, false);
+                } catch (LocationFullException ex) {
+                }
+            }
+        }
+        panArmor.refresh();
+        panArmorAllocation.setFromEntity(getAero());
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshSummary();
         refresh.refreshStatus();
     }
 }

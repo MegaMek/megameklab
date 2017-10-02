@@ -38,6 +38,7 @@ import megamek.common.ITechManager;
 import megamek.common.util.EncodeControl;
 import megameklab.com.ui.util.CustomComboBox;
 import megameklab.com.ui.util.TechComboBox;
+import megameklab.com.ui.view.listeners.AeroBuildListener;
 
 /**
  * Structure tab chassis panel for aerospace and conventional fighters.
@@ -45,27 +46,18 @@ import megameklab.com.ui.util.TechComboBox;
  * @author Neoancient
  *
  */
-public class FighterChassisView extends MainUIView implements ActionListener, ChangeListener {
+public class FighterChassisView extends BuildView implements ActionListener, ChangeListener {
     
     /**
      * 
      */
     private static final long serialVersionUID = -1129246135285707937L;
 
-    public interface ChassisListener {
-        void tonnageChanged(double tonnage);
-        void omniChanged(boolean omni);
-        void vstolChanged(boolean vstol);
-        void fighterTypeChanged(int type);
-        void engineChanged(Engine engine);
-        void cockpitChanged(int cockpitType);
-        void resetChassis();
-    }
-    private final List<ChassisListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(ChassisListener l) {
+    private final List<AeroBuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(AeroBuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(ChassisListener l) {
+    public void removeListener(AeroBuildListener l) {
         listeners.remove(l);
     }
     
@@ -128,7 +120,7 @@ public class FighterChassisView extends MainUIView implements ActionListener, Ch
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap.getString("FighterChassisView.txtSI.text"), labelSize),gbc); //$NON-NLS-1$
-        setFieldSize(txtSI, spinnerEditorSize);
+        setFieldSize(txtSI, editorSize);
         txtSI.setToolTipText(resourceMap.getString("FighterChassisView.txtSI.tooltip")); //$NON-NLS-1$
         txtSI.setEditable(false);
         
