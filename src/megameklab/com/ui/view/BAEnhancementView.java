@@ -29,6 +29,7 @@ import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.MiscType;
 import megamek.common.util.EncodeControl;
+import megameklab.com.ui.view.listeners.BABuildListener;
 
 /**
  * Structure tab panel for BA movement enhancements
@@ -36,21 +37,18 @@ import megamek.common.util.EncodeControl;
  * @author Neoancient
  *
  */
-public class BAEnhancementView extends MainUIView implements ActionListener {
+public class BAEnhancementView extends BuildView implements ActionListener {
 
     /**
      * 
      */
     private static final long serialVersionUID = 6181555446271444880L;
 
-    public interface EnhancementListener {
-        void enhancementChanged(EquipmentType eq, boolean selected);
-    }
-    private List<EnhancementListener> listeners = new CopyOnWriteArrayList<>();
-    public void addListener(EnhancementListener l) {
+    private List<BABuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(BABuildListener l) {
         listeners.add(l);
     }
-    public void removeListener(EnhancementListener l) {
+    public void removeListener(BABuildListener l) {
         listeners.remove(l);
     }
     

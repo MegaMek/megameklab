@@ -30,34 +30,33 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import megamek.common.Aero;
 import megamek.common.CriticalSlot;
 import megamek.common.Engine;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.LocationFullException;
+import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
-import megameklab.com.ui.Aero.views.ArmorView;
 import megameklab.com.ui.Aero.views.SummaryView;
 import megameklab.com.ui.view.AeroFuelView;
+import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.FighterChassisView;
 import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.PatchworkArmorView;
+import megameklab.com.ui.view.listeners.AeroBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements 
-        BasicInfoView.BasicInfoListener,
-        FighterChassisView.ChassisListener,
-        HeatSinkView.HeatSinkListener,
-        AeroFuelView.FuelListener,
-        MovementView.MovementListener,
-        MVFArmorView.ArmorListener {
+public class StructureTab extends ITab implements AeroBuildListener {
 
     /**
      *
@@ -72,13 +71,13 @@ public class StructureTab extends ITab implements
     private AeroFuelView panFuel;
     private HeatSinkView panHeat;
     private SummaryView panSummary;
-    private ArmorView armorView;
+    private ArmorAllocationView panArmorAllocation;
+    private PatchworkArmorView panPatchwork;
 
     RefreshListener refresh = null;
 
     public StructureTab(EntitySource eSource) {
         super(eSource);
-        armorView = new ArmorView(eSource);
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
@@ -93,7 +92,14 @@ public class StructureTab extends ITab implements
         panMovement = new MovementView(panInfo);
         panFuel = new AeroFuelView();
         panHeat = new HeatSinkView(panInfo);
+        panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
+        panPatchwork = new PatchworkArmorView(panInfo);
         panSummary = new SummaryView(eSource);
+        if (getAero().hasPatchworkArmor()) {
+            panArmorAllocation.showPatchwork(true);
+        } else {
+            panPatchwork.setVisible(false);
+        }
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -117,7 +123,8 @@ public class StructureTab extends ITab implements
         midPanel.add(Box.createHorizontalStrut(300));
 
         rightPanel.add(panArmor);
-        rightPanel.add(armorView);
+        rightPanel.add(panArmorAllocation);
+        rightPanel.add(panPatchwork);
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -139,7 +146,8 @@ public class StructureTab extends ITab implements
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
-        armorView.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
+        panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
+        panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
     }
     
     public ITechManager getTechManager() {
@@ -162,12 +170,13 @@ public class StructureTab extends ITab implements
         panFuel.setFromEntity(getAero());
         panMovement.setFromEntity(getAero());
         panArmor.setFromEntity(getAero());
+        panArmorAllocation.setFromEntity(getAero());
+        panPatchwork.setFromEntity(getAero());
         
         panHeat.setVisible(!getAero().hasETypeFlag(Entity.ETYPE_CONV_FIGHTER));
         
         setAeroStructuralIntegrity();
 
-        armorView.refresh();
         panSummary.refresh();
         addAllListeners();
 
@@ -232,6 +241,8 @@ public class StructureTab extends ITab implements
         panFuel.removeListener(this);
         panMovement.removeListener(this);
         panArmor.removeListener(this);
+        panArmorAllocation.removeListener(this);
+        panPatchwork.removeListener(this);
     }
 
     public void addAllListeners() {
@@ -241,52 +252,12 @@ public class StructureTab extends ITab implements
         panFuel.addListener(this);
         panMovement.addListener(this);
         panArmor.addListener(this);
+        panArmorAllocation.addListener(this);
+        panPatchwork.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        armorView.addRefreshedListener(l);
-    }
-
-    private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
-        /* TODO: Patchwork armor needs support from ArmorView
-        if (EquipmentType.T_ARMOR_PATCHWORK == at) {
-            boolean isMixed = panInfo.isMixedTech();
-            List<EquipmentType> armors = panArmor.getAllArmors();
-            List<TechComboBox<EquipmentType>> combos = new ArrayList<>();
-            JPanel panel = new JPanel(new GridBagLayout());
-            // Start with 1 to skip body
-            for (int loc = 0; loc < Aero.LOC_WINGS; loc++) {
-                TechComboBox<EquipmentType> cbLoc = new TechComboBox<>(eq -> eq.getName());
-                cbLoc.showTechBase(isMixed);
-                armors.forEach(a -> cbLoc.addItem(a));
-                EquipmentType locArmor = EquipmentType.get(EquipmentType
-                        .getArmorTypeName(getAero().getArmorType(loc),
-                                TechConstants.isClan(getAero().getArmorTechLevel(loc))));
-                cbLoc.setSelectedItem(locArmor);
-                combos.add(cbLoc);
-                JLabel label = new JLabel(getAero().getLocationName(loc));
-                panel.add(label, GBC.std());
-                panel.add(cbLoc, GBC.eol());
-            }
-            JOptionPane.showMessageDialog(this, panel,
-                    "Please choose the armor types",
-                    JOptionPane.QUESTION_MESSAGE);
-            UnitUtil.removeISorArmorMounts(getAero(), false);
-            for (int loc = 0; loc < Aero.LOC_WINGS; loc++) {
-                EquipmentType armor = (EquipmentType)combos.get(loc).getSelectedItem();
-                getAero().setArmorTechLevel(armor.getTechLevel(panInfo.getTechYear()), loc);
-                getAero().setArmorType(EquipmentType.getArmorType(armor), loc);
-            }
-            panArmor.removeListener(this);
-            panArmor.setFromEntity(getAero());
-            panArmor.addListener(this);
-        } else {
-         * 
-         */
-            getAero().setArmorTechLevel(aTechLevel);
-            getAero().setArmorType(at);
-        //}
     }
 
     public void setAsCustomization() {
@@ -355,7 +326,6 @@ public class StructureTab extends ITab implements
         if (!getAero().hasPatchworkArmor()) {
             UnitUtil.removeISorArmorMounts(getAero(), false);
         }
-        createArmorMountsAndSetArmorType(getAero().getArmorType(0), getAero().getArmorTechLevel(0));
         // If we have a large engine, a drop in tech level may make it unavailable and we will need
         // to reduce speed to a legal value.
         if (getAero().getEngine().hasFlag(Engine.LARGE_ENGINE)
@@ -385,7 +355,8 @@ public class StructureTab extends ITab implements
         panHeat.refresh();
         panArmor.refresh();
         panMovement.refresh();
-        armorView.resetArmorPoints();
+        panArmorAllocation.setFromEntity(getAero());
+        panPatchwork.setFromEntity(getAero());
         addAllListeners();
     }
 
@@ -406,11 +377,6 @@ public class StructureTab extends ITab implements
     }
 
     @Override
-    public void heatSinksChanged(EquipmentType hsType, int count) {
-        // Not used by aerospace units
-    }
-
-    @Override
     public void heatSinkBaseCountChanged(int count) {
         getAero().getEngine().setBaseChassisHeatSinks(Math.max(0,  count));
         getAero().setPodHeatSinks(getAero().getHeatSinks() - count);
@@ -418,15 +384,18 @@ public class StructureTab extends ITab implements
 
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
-        if (!getAero().hasPatchworkArmor()) {
-            UnitUtil.removeISorArmorMounts(getAero(), false);
+        UnitUtil.removeISorArmorMounts(getAero(), false);
+        if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            getAero().setArmorTechLevel(aTechLevel);
+            getAero().setArmorType(at);
+            panArmorAllocation.showPatchwork(false);
+            panPatchwork.setVisible(false);
+        } else {
+            panPatchwork.setFromEntity(getAero());
+            panArmorAllocation.showPatchwork(true);
+            panPatchwork.setVisible(true);
         }
-        createArmorMountsAndSetArmorType(at, aTechLevel);
-        if (!getAero().hasPatchworkArmor()) {
-            armorView.resetArmorPoints();
-        }
-        
-        armorView.refresh();
+        panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshBuild();
@@ -436,9 +405,7 @@ public class StructureTab extends ITab implements
     @Override
     public void armorTonnageChanged(double tonnage) {
         getAero().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
-        armorView.resetArmorPoints();
-        
-        armorView.refresh();
+        panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -448,12 +415,11 @@ public class StructureTab extends ITab implements
     public void maximizeArmor() {
         double maxArmor = UnitUtil.getMaximumArmorTonnage(getAero());
         getAero().setArmorTonnage(maxArmor);
-        armorView.resetArmorPoints();
         panArmor.removeListener(this);
         panArmor.setFromEntity(getAero());
         panArmor.addListener(this);
         
-        armorView.refresh();
+        panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -471,12 +437,11 @@ public class StructureTab extends ITab implements
         double maxArmor = Math.min(getAero().getArmorWeight() + remainingTonnage,
                 UnitUtil.getMaximumArmorTonnage(getAero()));
         getAero().setArmorTonnage(maxArmor);
-        armorView.resetArmorPoints();
         panArmor.removeListener(this);
         panArmor.setFromEntity(getAero());
         panArmor.addListener(this);
         
-        armorView.refresh();
+        panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -588,6 +553,102 @@ public class StructureTab extends ITab implements
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+
+    @Override
+    public void armorPointsChanged(int location, int front, int rear) {
+        getAero().initializeArmor(front, location);
+        if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
+            getAero().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getAero()));
+        }
+        panArmorAllocation.setFromEntity(getAero());
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
+    }
+
+    @Override
+    public void autoAllocateArmor() {
+        for (int loc = 0; loc < getAero().locations(); loc++) {
+            getAero().initializeArmor(0, loc);
+        }
+        
+        // divide armor among positions, with more toward the front
+        int points = UnitUtil.getArmorPoints(getAero(), getAero().getLabArmorTonnage());
+        int nose = (int)Math.floor(points * 0.3);
+        int wing = (int)Math.floor(points * 0.25);
+        int aft = (int)Math.floor(points * 0.2);
+        int remainder = points - nose - wing - wing - aft;
+        
+        // spread remainder among nose and wings
+        switch(remainder % 4) {
+            case 1:
+                nose++;
+                break;
+            case 3:
+                nose++;
+                wing++;
+                break;
+            case 2:
+                wing++;
+                break;
+        }
+        getAero().initializeArmor(nose, Aero.LOC_NOSE);
+        getAero().initializeArmor(wing, Aero.LOC_LWING);
+        getAero().initializeArmor(wing, Aero.LOC_RWING);
+        getAero().initializeArmor(aft, Aero.LOC_AFT);
+
+        panArmorAllocation.setFromEntity(getAero());
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
+
+    }
+
+    @Override
+    public void patchworkChanged(int location, EquipmentType armor) {
+        UnitUtil.resetArmor(getAero(), location);
+
+        //TODO: move this construction data out of the ui
+        int crits = 0;
+        switch (EquipmentType.getArmorType(armor)) {
+            case EquipmentType.T_ARMOR_STEALTH_VEHICLE:
+            case EquipmentType.T_ARMOR_LIGHT_ALUM:
+            case EquipmentType.T_ARMOR_ALUM:
+            case EquipmentType.T_ARMOR_FERRO_ALUM_PROTO:
+            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
+            case EquipmentType.T_ARMOR_REFLECTIVE:
+            case EquipmentType.T_ARMOR_REACTIVE:
+                crits = 1;
+                break;
+            case EquipmentType.T_ARMOR_HEAVY_ALUM:
+                crits = 2;
+                break;
+        }
+        if (getAero().getEmptyCriticals(location) < crits) {
+            JOptionPane .showMessageDialog(
+                    null, armor.getName()
+                    + " does not fit in location "
+                    + getAero().getLocationName(location)
+                    + ". Resetting to Standard Armor in this location.",
+                    "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            getAero().setArmorType(EquipmentType.getArmorType(armor), location);
+            getAero().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
+            for (; crits > 0; crits--) {
+                try {
+                    getAero().addEquipment( new Mounted(getAero(), armor), location, false);
+                } catch (LocationFullException ex) {
+                }
+            }
+        }
+        panArmor.refresh();
+        panArmorAllocation.setFromEntity(getAero());
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshSummary();
+        refresh.refreshStatus();
     }
 
 }

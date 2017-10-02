@@ -53,16 +53,12 @@ import megameklab.com.ui.view.BAEnhancementView;
 import megameklab.com.ui.view.BAProtoArmorView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.listeners.BABuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
 
-public class StructureTab extends ITab implements ActionListener,
-        BasicInfoView.BasicInfoListener,
-        BAChassisView.ChassisListener,
-        MovementView.MovementListener,
-        BAProtoArmorView.ArmorListener,
-        BAEnhancementView.EnhancementListener {
+public class StructureTab extends ITab implements ActionListener, BABuildListener {
 
 	/**
 	 *
