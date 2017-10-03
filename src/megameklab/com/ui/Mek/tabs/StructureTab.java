@@ -252,6 +252,7 @@ public class StructureTab extends ITab implements MekBuildListener {
                 getMech().addInterfaceCockpit();
                 break;
             case Mech.COCKPIT_TORSO_MOUNTED:
+            case Mech.COCKPIT_VRRP:
                 if (lastEngine + 2 < getMech().getNumberOfCriticals(Mech.LOC_CT)) {
                     clearCrit(Mech.LOC_CT, lastEngine + 1);
                     clearCrit(Mech.LOC_CT, lastEngine + 2);
@@ -276,7 +277,7 @@ public class StructureTab extends ITab implements MekBuildListener {
                         }
                     }
                 }
-                getMech().addTorsoMountedCockpit();
+                getMech().addTorsoMountedCockpit(getMech().getCockpitType() == Mech.COCKPIT_VRRP);
                 break;
             case Mech.COCKPIT_INDUSTRIAL:
                 clearCritsForCockpit(false, false);
