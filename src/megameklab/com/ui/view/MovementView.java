@@ -202,7 +202,6 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                 .filter(eq -> eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU)
                         || eq.hasFlag(MiscType.F_JUMP_BOOSTER)).findAny();
         if (jj.isPresent()) {
-            improvedJJ = jj.get().hasSubType(MiscType.S_IMPROVED);
             cbJumpType.removeActionListener(this);
             cbJumpType.setSelectedItem(jj.get());
             cbJumpType.addActionListener(this);
@@ -216,8 +215,6 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             maxJump = 0;
         } else if (en.hasETypeFlag(Entity.ETYPE_MECH)) {
             maxJump = TestMech.maxJumpMP((Mech)en);
-        } else if (improvedJJ) {
-            maxJump = (int)Math.ceil(maxJump * 1.5);
         }
         if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
             int minRating = 10 + Tank.getSuspensionFactor(en.getMovementMode(), en.getWeight());
