@@ -315,7 +315,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             item++;
         }
         if (mixed) {
-            item++;
+            item += 2;
         }
         cbTechBase.setSelectedItem(item);
         refreshFaction();
