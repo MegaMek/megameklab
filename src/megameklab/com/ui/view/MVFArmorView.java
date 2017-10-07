@@ -210,7 +210,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
                 }
                 String name = EquipmentType.getArmorTypeName(at, techManager.useClanTechBase());
                 EquipmentType eq = EquipmentType.get(name);
-                if ((null == eq) || (isLAM && ((eq.getCriticals(null) > 0)))) {
+                if ((null == eq) || (isLAM && ((eq.getCriticals(null) != 0)))) {
                     continue;
                 }
                 if ((null != eq) && eq.hasFlag(flag) && techManager.isLegal(eq)) {

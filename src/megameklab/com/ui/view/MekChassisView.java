@@ -448,7 +448,7 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
                 String name = EquipmentType.getStructureTypeName(i, isClan);
                 EquipmentType structure = EquipmentType.get(name);
                 // LAMs cannot use bulky structure
-                if ((getBaseTypeIndex() == BASE_TYPE_LAM) && (structure.getCriticals(null) > 0)) {
+                if ((getBaseTypeIndex() == BASE_TYPE_LAM) && (structure.getCriticals(null) != 0)) {
                     continue;
                 }
                 if ((null != structure) && techManager.isLegal(structure)) {
