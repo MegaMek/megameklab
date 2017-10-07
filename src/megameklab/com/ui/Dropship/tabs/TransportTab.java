@@ -23,6 +23,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import megamek.common.Bay;
+import megamek.common.InfantryBay;
 import megamek.common.verifier.TestAero;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
@@ -106,12 +107,15 @@ public class TransportTab extends IView {
                 case COL_NAME:
                     return bayTypeList.get(rowIndex).getDisplayName();
                 case COL_SIZE:
-                    return bayList.get(rowIndex).getCapacity();
+                    return bayList.get(rowIndex).getUnusedSlots();
                 case COL_DOORS:
                     return bayList.get(rowIndex).getDoors();
                 case COL_TONNAGE:
                     return bayList.get(rowIndex).getWeight();
                 case COL_PERSONNEL:
+                    if (bayList.get(rowIndex) instanceof InfantryBay) {
+                        return "*";
+                    }
                     return bayTypeList.get(rowIndex).getPersonnel()
                             * (int)bayList.get(rowIndex).getCapacity();
                 default:
@@ -172,6 +176,9 @@ public class TransportTab extends IView {
                     case COL_SIZE:
                         return bayList.get(rowIndex).getWeight();
                     case COL_PERSONNEL:
+                        if (bayList.get(rowIndex).getDisplayName().startsWith("Infantry")) {
+                            return "*";
+                        }
                         return bayList.get(rowIndex).getPersonnel();
                 }
             }            
