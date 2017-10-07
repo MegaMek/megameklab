@@ -233,7 +233,7 @@ public class ArmorAllocationView extends BuildView implements
                         points += en.getArmor(location, true);
                     }
                     locView.setToolTipText(String.format(tooltipFormat, pointsPerTon,
-                            Math.ceil(points / pointsPerTon * 2.0) * 0.5));
+                            points / pointsPerTon));
                 }
             } else {
                 locView.setVisible(false);
@@ -279,6 +279,7 @@ public class ArmorAllocationView extends BuildView implements
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
+        locationViews.clear();
         for (int row = 0; row < layout.length; row++) {
             JPanel panRow = new JPanel();
             panRow.setLayout(new BoxLayout(panRow, BoxLayout.X_AXIS));
@@ -320,10 +321,10 @@ public class ArmorAllocationView extends BuildView implements
             final int loc = locView.getLocationIndex();
             if (loc < en.locations()) {
                 double pointsPerTon = UnitUtil.getArmorPointsPerTon(en, en.getArmorType(loc),  en.getArmorTechLevel(loc));
-                weight += Math.ceil((locView.getPoints() + locView.getPointsRear()) / pointsPerTon * 2.0) * 0.5;
+                weight += (locView.getPoints() + locView.getPointsRear()) / pointsPerTon;
             }
         }
-        return weight;
+        return Math.ceil(weight * 2.0) * 0.5;
     }
     
     public void showPatchwork(boolean show) {
