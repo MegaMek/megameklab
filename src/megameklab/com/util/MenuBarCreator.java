@@ -1053,6 +1053,7 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
     
     private void jMenuLoadDropship() {
         new megameklab.com.ui.Dropship.MainUI();
+        parentFrame.dispose();
     }
 
     private void jMenuLoadInfantry() {
