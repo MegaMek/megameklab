@@ -14,12 +14,17 @@
 package megameklab.com.ui.Dropship.tabs;
 
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.AbstractCellEditor;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
@@ -27,12 +32,14 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import megamek.common.Bay;
 import megamek.common.Entity;
 import megamek.common.InfantryBay;
+import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
@@ -50,6 +57,7 @@ public class TransportTab extends IView {
      */
     private static final long serialVersionUID = 6288658666144030993L;
     
+    private final JLabel lblMaxDoors = new JLabel();
     private final InstalledBaysModel modelInstalled = new InstalledBaysModel();
     private final JTable tblInstalled = new JTable(modelInstalled);
     private final AvailableBaysModel modelAvailable = new AvailableBaysModel();
@@ -57,19 +65,86 @@ public class TransportTab extends IView {
     
     public TransportTab(EntitySource eSource) {
         super(eSource);
+        initUI();
+    }
+    
+    private void initUI() {
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs", new EncodeControl()); //$NON-NLS-1$
         
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        add(new JScrollPane(tblInstalled));
-        add(Box.createHorizontalGlue());
-        add(new JScrollPane(tblAvailable));
-        modelInstalled.refreshBays();
-        modelAvailable.refreshBays();
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        add(new JLabel(resourceMap.getString("TransportTab.lblCurrentBays.text")), gbc); //$NON-NLS-1$
+        
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        add(new JLabel(resourceMap.getString("TransportTab.lblMaxDoors.text")), gbc); //$NON-NLS-1$
+        gbc.gridx = 1;
+        add(lblMaxDoors, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        JButton btnRemoveBay = new JButton(resourceMap.getString("TransportTab.btnRemoveBay.text")); //$NON-NLS-1$
+        btnRemoveBay.setToolTipText(resourceMap.getString("TransportTab.btnRemoveBay.tooltip")); //$NON-NLS-1$
+        add(btnRemoveBay, gbc);
+        
+        gbc.gridy++;
+        gbc.gridwidth = 3;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        add(new JScrollPane(tblInstalled), gbc);
+        
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        add(new JLabel(resourceMap.getString("TransportTab.lblAvailableBays.text")), gbc); //$NON-NLS-1$
+        
+        gbc.gridy = 2;
+        JButton btnAddBay = new JButton(resourceMap.getString("TransportTab.btnAddBay.text")); //$NON-NLS-1$
+        btnAddBay.setToolTipText(resourceMap.getString("TransportTab.btnAddBay.tooltip")); //$NON-NLS-1$
+        add(btnAddBay, gbc);
+        
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        add(new JScrollPane(tblAvailable), gbc);
         
         tblInstalled.setRowHeight(24);
         TableColumn col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_SIZE);
         col.setCellEditor(new SpinnerCellEditor(InstalledBaysModel.COL_SIZE));
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setToolTipText(resourceMap.getString("TransportTab.colSize.tooltip")); //$NON-NLS-1$
+        col.setCellRenderer(renderer);
         col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_DOORS);
         col.setCellEditor(new SpinnerCellEditor(InstalledBaysModel.COL_DOORS));
+        renderer = new DefaultTableCellRenderer();
+        renderer.setToolTipText(resourceMap.getString("TransportTab.colDoors.tooltip")); //$NON-NLS-1$
+        col.setCellRenderer(renderer);
+        col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_TONNAGE);
+        renderer = new DefaultTableCellRenderer();
+        renderer.setToolTipText(resourceMap.getString("TransportTab.colTonnage.tooltip")); //$NON-NLS-1$
+        col.setCellRenderer(renderer);
+        col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_PERSONNEL);
+        renderer = new DefaultTableCellRenderer();
+        renderer.setToolTipText(resourceMap.getString("TransportTab.colPersonnel.tooltip")); //$NON-NLS-1$
+        col.setCellRenderer(renderer);
+        tblInstalled.setShowGrid(false);
+        tblInstalled.setIntercellSpacing(new Dimension(0, 0));
+        tblAvailable.setShowGrid(false);
+        tblAvailable.setIntercellSpacing(new Dimension(0, 0));
+        
+        refresh();
+    }
+    
+    public void refresh() {
+        lblMaxDoors.setText(String.valueOf(TestAero.maxBayDoors(getAero())));
+        modelInstalled.refreshBays();
+        modelAvailable.refreshBays();
     }
     
     private int doorsAvailable() {
@@ -302,5 +377,4 @@ public class TransportTab extends IView {
         }
         
     }
-
 }
