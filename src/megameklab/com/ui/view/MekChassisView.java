@@ -454,13 +454,6 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
                 if ((null != structure) && techManager.isLegal(structure)) {
                     cbStructure.addItem(structure);
                 }
-                if (isMixed && (i > EquipmentType.T_STRUCTURE_INDUSTRIAL)) {
-                    name = EquipmentType.getStructureTypeName(i, !isClan);
-                    structure = EquipmentType.get(name);
-                    if ((null != structure) && techManager.isLegal(structure)) {
-                        cbStructure.addItem(structure);
-                    }
-                }
             }
         }
         cbStructure.setSelectedItem(prevStructure);
