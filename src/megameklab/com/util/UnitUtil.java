@@ -3600,7 +3600,7 @@ public class UnitUtil {
             return false;
         }
 
-        for (Mounted m : unit.getWeaponList()) {
+        for (Mounted m : unit.getTotalWeaponList()) {
             if (m.getType() instanceof AmmoWeapon) {
                 WeaponType wtype = (WeaponType) m.getType();
                 if ((wtype.getAmmoType() == atype.getAmmoType())
