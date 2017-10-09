@@ -230,8 +230,11 @@ public class TransportTab extends IView implements ActionListener {
             bayTypeList.clear();
             for (Bay bay : getAero().getTransportBays()) {
                 TestAero.TransportBay bayType = TestAero.TransportBay.getBayType(bay);
-                bayList.add(bay);
-                bayTypeList.add(bayType);
+                // Make sure it's not crew quarters
+                if (null != bayType) {
+                    bayList.add(bay);
+                    bayTypeList.add(bayType);
+                }
             }
             fireTableDataChanged();
         }
