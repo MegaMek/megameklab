@@ -18,6 +18,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -28,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -41,6 +44,7 @@ import megamek.common.Entity;
 import megamek.common.InfantryBay;
 import megamek.common.util.EncodeControl;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestAero.TransportBay;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 
@@ -50,7 +54,7 @@ import megameklab.com.util.IView;
  * @author Neoancient
  *
  */
-public class TransportTab extends IView {
+public class TransportTab extends IView implements ActionListener {
     
     /**
      * 
@@ -62,6 +66,8 @@ public class TransportTab extends IView {
     private final JTable tblInstalled = new JTable(modelInstalled);
     private final AvailableBaysModel modelAvailable = new AvailableBaysModel();
     private final JTable tblAvailable = new JTable(modelAvailable);
+    private final JButton btnRemoveBay = new JButton();
+    private final JButton btnAddBay = new JButton();
     
     public TransportTab(EntitySource eSource) {
         super(eSource);
@@ -89,9 +95,10 @@ public class TransportTab extends IView {
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        JButton btnRemoveBay = new JButton(resourceMap.getString("TransportTab.btnRemoveBay.text")); //$NON-NLS-1$
+        btnRemoveBay.setText(resourceMap.getString("TransportTab.btnRemoveBay.text")); //$NON-NLS-1$
         btnRemoveBay.setToolTipText(resourceMap.getString("TransportTab.btnRemoveBay.tooltip")); //$NON-NLS-1$
         add(btnRemoveBay, gbc);
+        btnRemoveBay.addActionListener(this);
         
         gbc.gridy++;
         gbc.gridwidth = 3;
@@ -105,9 +112,10 @@ public class TransportTab extends IView {
         add(new JLabel(resourceMap.getString("TransportTab.lblAvailableBays.text")), gbc); //$NON-NLS-1$
         
         gbc.gridy = 2;
-        JButton btnAddBay = new JButton(resourceMap.getString("TransportTab.btnAddBay.text")); //$NON-NLS-1$
+        btnAddBay.setText(resourceMap.getString("TransportTab.btnAddBay.text")); //$NON-NLS-1$
         btnAddBay.setToolTipText(resourceMap.getString("TransportTab.btnAddBay.tooltip")); //$NON-NLS-1$
         add(btnAddBay, gbc);
+        btnAddBay.addActionListener(this);
         
         gbc.gridy++;
         gbc.gridwidth = 2;
@@ -138,13 +146,23 @@ public class TransportTab extends IView {
         tblAvailable.setShowGrid(false);
         tblAvailable.setIntercellSpacing(new Dimension(0, 0));
         
+        tblInstalled.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblInstalled.getSelectionModel().addListSelectionListener(e -> checkButtons());
+        tblAvailable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblAvailable.getSelectionModel().addListSelectionListener(e -> checkButtons());
         refresh();
     }
     
     public void refresh() {
         lblMaxDoors.setText(String.valueOf(TestAero.maxBayDoors(getAero())));
+        checkButtons();
         modelInstalled.refreshBays();
         modelAvailable.refreshBays();
+    }
+    
+    private void checkButtons() {
+        btnRemoveBay.setEnabled(tblInstalled.getSelectedRow() >= 0);
+        btnAddBay.setEnabled(canAddSelectedBay());
     }
     
     private int doorsAvailable() {
@@ -153,6 +171,41 @@ public class TransportTab extends IView {
             total -= bay.getDoors();
         }
         return Math.max(total, 0);
+    }
+    
+    private boolean canAddSelectedBay() {
+        int selected = tblAvailable.getSelectedRow();
+        if (selected < 0) {
+            return false;
+        }
+        TestAero.TransportBay bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
+        return (doorsAvailable() > 0) || (bayType == TestAero.TransportBay.CARGO);
+    }
+    
+    public void actionPerformed(ActionEvent ev) {
+        if (ev.getSource() == btnAddBay) {
+            int selected = tblAvailable.getSelectedRow();
+            if (selected >= 0) {
+                TestAero.TransportBay bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
+                int num = 1;
+                while (getAero().getBayById(num) != null) {
+                    num++;
+                }
+                Bay newBay = bayType.newBay(1, num);
+                if (doorsAvailable() > 0) {
+                    newBay.setDoors(1);
+                }
+                getAero().addTransporter(newBay);
+                refresh();
+            }
+        } else if (ev.getSource() == btnRemoveBay) {
+            int selected = tblInstalled.getSelectedRow();
+            if (selected >= 0) {
+                Bay bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
+                getAero().removeTransporter(bay);
+                refresh();
+            }
+        }
     }
     
     private class InstalledBaysModel extends AbstractTableModel {
@@ -183,6 +236,10 @@ public class TransportTab extends IView {
             fireTableDataChanged();
         }
         
+        public Bay getBay(int row) {
+            return bayList.get(row);
+        }
+
         @Override
         public String getColumnName(int column) {
             switch (column) {
@@ -269,6 +326,10 @@ public class TransportTab extends IView {
             fireTableDataChanged();
         }
 
+        public TransportBay getBayType(int row) {
+            return bayList.get(row);
+        }
+
         @Override
         public String getColumnName(int column) {
             switch (column) {
@@ -350,6 +411,7 @@ public class TransportTab extends IView {
                 modelInstalled.bayList.get(row).setDoors((Integer)getCellEditorValue());
             }
             modelInstalled.fireTableRowsUpdated(row, row);
+            checkButtons();
         }
 
         @Override
