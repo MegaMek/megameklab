@@ -241,7 +241,7 @@ public class DropshipChassisView extends BuildView implements ActionListener, Ch
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         } else if (e.getSource() == spnSI) {
-            listeners.forEach(l -> l.siChanged(cbBaseType.getSelectedIndex()));
+            listeners.forEach(l -> l.siChanged(spnSIModel.getNumber().intValue()));
         }
     }
 
