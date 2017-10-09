@@ -38,8 +38,9 @@ public class SummaryView extends IView {
     private JTextField txtControlTon = new JTextField("?");
     private JTextField txtHeatTon = new JTextField("?");
     private JTextField txtArmorTon = new JTextField("?");   
-    private JTextField txtEnhancementsTon = new JTextField("?");
     private JTextField txtWeapTon = new JTextField("?");
+    private JTextField txtAmmoTon = new JTextField("?");
+    private JTextField txtTransportTon = new JTextField("?");
     private JTextField txtOtherTon = new JTextField("?");
 
     private EntityVerifier entityVerifier = EntityVerifier.getInstance(
@@ -56,8 +57,9 @@ public class SummaryView extends IView {
         valueFields.add(txtControlTon);
         valueFields.add(txtHeatTon);
         valueFields.add(txtArmorTon);
-        valueFields.add(txtEnhancementsTon);
         valueFields.add(txtWeapTon);
+        valueFields.add(txtAmmoTon);
+        valueFields.add(txtTransportTon);
         valueFields.add(txtOtherTon);
 
         Dimension size = new Dimension(60,25);
@@ -101,14 +103,14 @@ public class SummaryView extends IView {
         gbc.gridy = 5;
         this.add(createLabel("Heat Sinks:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 6;
-        this.add(createLabel("Armor:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Armor", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 7;
-        this.add(createLabel("Enhancements:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 9;
-        this.add(createLabel("Equipment", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 10;
         this.add(createLabel("Weapons:", size, SwingConstants.RIGHT), gbc);
-        gbc.gridy = 11;
+        gbc.gridy = 8;
+        this.add(createLabel("Ammo:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 9;
+        this.add(createLabel("Transport:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 10;
         this.add(createLabel("Other:", size, SwingConstants.RIGHT), gbc);
 
         size = new Dimension(45,25);
@@ -129,10 +131,12 @@ public class SummaryView extends IView {
         gbc.gridy = 6;
         this.add(txtArmorTon, gbc);
         gbc.gridy = 7;
-        this.add(txtEnhancementsTon, gbc);
-        gbc.gridy = 10;
         this.add(txtWeapTon, gbc);
-        gbc.gridy = 11;
+        gbc.gridy = 8;
+        this.add(txtAmmoTon, gbc);
+        gbc.gridy = 9;
+        this.add(txtTransportTon, gbc);
+        gbc.gridy = 10;
         this.add(txtOtherTon, gbc);
 
         setBorder(BorderFactory.createTitledBorder("Summary"));
@@ -164,12 +168,9 @@ public class SummaryView extends IView {
         txtControlTon.setText(Double.toString(testSmallCraft.getWeightControls()));
         txtHeatTon.setText(Double.toString(testSmallCraft.getWeightHeatSinks()));        
         txtArmorTon.setText(Double.toString(testSmallCraft.getWeightArmor()));
-        txtEnhancementsTon.setText(Double.toString(testSmallCraft.getWeightMisc()));
         txtWeapTon.setText(Double.toString(testSmallCraft.getWeightWeapon()));
-        txtOtherTon.setText(Double.toString(testSmallCraft.getWeightPowerAmp() + 
-                testSmallCraft.getWeightCarryingSpace() + testSmallCraft.getWeightMisc()));
-        
-        
-        
+        txtAmmoTon.setText(Double.toString(testSmallCraft.getWeightAmmo()));
+        txtTransportTon.setText(Double.toString(testSmallCraft.getWeightCarryingSpace()));
+        txtOtherTon.setText(Double.toString(testSmallCraft.getWeightMisc()));
     }
 }
