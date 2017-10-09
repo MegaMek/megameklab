@@ -419,6 +419,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     public void siChanged(int si) {
         getSmallCraft().set0SI(si);
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
     }
     
