@@ -2466,6 +2466,10 @@ public class UnitUtil {
 
         WeaponType weapon = (WeaponType) eq;
         
+        if (weapon.hasFlag(WeaponType.F_BOMB_WEAPON)) {
+            return false;
+        }
+        
         // small craft only; lacks aero weapon flag
         if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
             return unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
@@ -2478,14 +2482,6 @@ public class UnitUtil {
                     || unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
         }
         
-        if (!weapon.hasFlag(WeaponType.F_AERO_WEAPON)) {
-            return false;
-        }
-
-        if (weapon.getTonnage(unit) <= 0) {
-            return false;
-        }
-
         if (weapon.isSubCapital() || (weapon instanceof CapitalMissileWeapon)
                 || (weapon.getAtClass() == WeaponType.CLASS_SCREEN)) {
             return unit.hasETypeFlag(Entity.ETYPE_DROPSHIP)
@@ -2494,6 +2490,14 @@ public class UnitUtil {
 
         if (weapon.isCapital()) {
             return unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
+        }
+
+        if (!weapon.hasFlag(WeaponType.F_AERO_WEAPON)) {
+            return false;
+        }
+
+        if (weapon.getTonnage(unit) <= 0) {
+            return false;
         }
 
         if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon))
