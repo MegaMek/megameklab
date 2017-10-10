@@ -18,6 +18,9 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -132,14 +135,36 @@ public class AeroBayTransferHandler extends TransferHandler {
                     }
                 }
             } else {
-                UnitUtil.removeCriticals(eSource.getEntity(), mount);
-                UnitUtil.changeMountStatus(eSource.getEntity(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-                if ((mount.getType() instanceof WeaponType) && (mount.getLinkedBy() != null)) {
-                    UnitUtil.removeCriticals(eSource.getEntity(), mount.getLinkedBy());
-                    UnitUtil.changeMountStatus(eSource.getEntity(), mount.getLinkedBy(),
-                            Entity.LOC_NONE, Entity.LOC_NONE, false);
-                    mount.getLinkedBy().setLinked(null);
-                    mount.setLinkedBy(null);
+                List<Mounted> toRemove;
+                if (mount.getType() instanceof BayWeapon) {
+                    toRemove = new ArrayList<>();
+                    for (Integer num : mount.getBayWeapons()) {
+                        toRemove.add(eSource.getEntity().getEquipment(num));
+                    }
+                    for (Integer num : mount.getBayAmmo()) {
+                        toRemove.add(eSource.getEntity().getEquipment(num));
+                    }
+                } else {
+                    toRemove = Collections.singletonList(mount);
+                }
+                for (Mounted m : toRemove) {
+                    if (m.getType() instanceof AmmoType) {
+                        Mounted aMount = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), m.getType());
+                        if (null != aMount) {
+                            aMount.setShotsLeft(aMount.getUsableShotsLeft() + m.getUsableShotsLeft());
+                            m.setShotsLeft(0);
+                            continue;
+                        }
+                    }
+                    UnitUtil.removeCriticals(eSource.getEntity(), m);
+                    UnitUtil.changeMountStatus(eSource.getEntity(), m, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                    if ((mount.getType() instanceof WeaponType) && (m.getLinkedBy() != null)) {
+                        UnitUtil.removeCriticals(eSource.getEntity(), m.getLinkedBy());
+                        UnitUtil.changeMountStatus(eSource.getEntity(), m.getLinkedBy(),
+                                Entity.LOC_NONE, Entity.LOC_NONE, false);
+                        m.getLinkedBy().setLinked(null);
+                        m.setLinkedBy(null);
+                    }
                 }
                 UnitUtil.compactCriticals(eSource.getEntity());
             }
