@@ -32,6 +32,7 @@ import java.util.StringJoiner;
 import java.util.Vector;
 
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -297,17 +298,18 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     /**
-     * Moves a single slot of ammo from this location to unallocated. This should not be used if
+     * Moves one or more shots of ammo from this location to unallocated. This should not be used if
      * there is only one slot of ammo left in the location;
      * use {@link #removeEquipment(EquipmentNode) removeEquipment}
      * instead.
      * 
-     * @param ammo The allocated ammo to remove.
+     * @param ammo  The allocated ammo to remove.
+     * @param shots The number of shots to remove.
      */
-    private void removeAmmo(final Mounted ammo) {
+    private void removeAmmo(final Mounted ammo, int shots) {
         AmmoType at = (AmmoType)ammo.getType();
-        ammo.setShotsLeft(ammo.getUsableShotsLeft() - at.getShots());
-        Mounted unallocated = null;
+        ammo.setShotsLeft(ammo.getUsableShotsLeft() - shots);
+        Mounted unallocated = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), at);
         for (Mounted m : eSource.getEntity().getAmmo()) {
             if ((m.getLocation() == Entity.LOC_NONE)
                     && (m.getType() == at)) {
@@ -316,9 +318,10 @@ public class BayWeaponCriticalTree extends JTree {
             }
         }
         if (null != unallocated) {
-            unallocated.setShotsLeft(ammo.getUsableShotsLeft() + at.getShots());
+            unallocated.setShotsLeft(ammo.getUsableShotsLeft() + shots);
         } else {
             unallocated = new Mounted(eSource.getEntity(), at);
+            unallocated.setShotsLeft(shots);
             try {
                 eSource.getEntity().addEquipment(unallocated, Entity.LOC_NONE, false);
             } catch (LocationFullException e) {
@@ -332,15 +335,15 @@ public class BayWeaponCriticalTree extends JTree {
     }
     
     /**
-     * Deletes a single slot of ammo from this location. This should not be used if
+     * Deletes one or more shots of ammo from this location. This should not be used if
      * there is only one slot of ammo left in the location;
      * use {@link #deleteEquipment(EquipmentNode) deleteEquipment} instead.
      * 
-     * @param ammo The allocated ammo to remove.
+     * @param ammo  The allocated ammo to remove.
+     * @param shots The number of shots to remove.
      */
-    private void deleteAmmo(final Mounted ammo) {
-        AmmoType at = (AmmoType)ammo.getType();
-        ammo.setShotsLeft(ammo.getUsableShotsLeft() - at.getShots());
+    private void deleteAmmo(final Mounted ammo, int shots) {
+        ammo.setShotsLeft(ammo.getUsableShotsLeft());
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
@@ -685,18 +688,34 @@ public class BayWeaponCriticalTree extends JTree {
                     if (node.getMounted().getType() instanceof AmmoType) {
                         AmmoType at = (AmmoType)node.getMounted().getType();
                         if (node.getMounted().getUsableShotsLeft() > at.getShots()) {
-                            info = new JMenuItem("Remove " + at.getShots() + " shots");
-                            info.addActionListener(ev -> removeAmmo(node.getMounted()));
+                            JMenu remove = new JMenu("Remove");
+                            JMenu delete = new JMenu("Delete");
+                            for (int s = at.getShots();
+                                    s < node.getMounted().getUsableShotsLeft();
+                                    s += at.getShots()) {
+                                final int shots = s;
+                                info = new JMenuItem("Remove " + shots + ((shots > 1)?" shots" : " shot"));
+                                info.addActionListener(ev -> removeAmmo(node.getMounted(), shots));
+                                remove.add(info);
+                                info = new JMenuItem("Delete " + shots + ((shots > 1)?" shots" : " shot"));
+                                info.addActionListener(ev -> deleteAmmo(node.getMounted(), shots));
+                                delete.add(info);
+                            }
+                            info = new JMenuItem("Remove all");
+                            info.addActionListener(ev -> removeEquipment(node));
+                            remove.add(info);
+                            info = new JMenuItem("Delete all");
+                            info.addActionListener(ev -> deleteEquipment(node));
+                            delete.add(info);
+                            popup.add(remove);
+                            popup.add(delete);
+                        } else {
+                            info = new JMenuItem("Remove all shots");
+                            info.addActionListener(ev -> removeEquipment(node));
                             popup.add(info);
-                            info = new JMenuItem("Delete " + at.getShots() + " shots");
-                            info.addActionListener(ev -> deleteAmmo(node.getMounted()));
-                            popup.add(info);
+                            info = new JMenuItem("Delete all shots");
+                            info.addActionListener(ev -> deleteEquipment(node));
                         }
-                        info = new JMenuItem("Remove all shots");
-                        info.addActionListener(ev -> removeEquipment(node));
-                        popup.add(info);
-                        info = new JMenuItem("Delete all shots");
-                        info.addActionListener(ev -> deleteEquipment(node));
                     } else {
                         info = new JMenuItem("Remove " + mounted.getName());
                         if ((node.getParent() instanceof BayNode)
@@ -905,13 +924,13 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshSummary();
     }
     
-    public void addAmmoToBay(Mounted bay, Mounted eq) {
+    public void addAmmoToBay(Mounted bay, Mounted eq, int shots) {
         AmmoType at = (AmmoType)eq.getType();
-        eq.setShotsLeft(eq.getUsableShotsLeft() - at.getShots());
+        eq.setShotsLeft(eq.getUsableShotsLeft() - shots);
         Optional<Mounted> addMount = bay.getBayAmmo().stream().map(n -> eSource.getEntity().getEquipment(n))
                 .filter(m -> m.getType() == at).findFirst();
         if (addMount.isPresent()) {
-            addMount.get().setShotsLeft(addMount.get().getUsableShotsLeft() + at.getShots());
+            addMount.get().setShotsLeft(addMount.get().getUsableShotsLeft() + shots);
             refresh.refreshEquipment();
             refresh.refreshBuild();
             refresh.refreshPreview();
@@ -920,6 +939,7 @@ public class BayWeaponCriticalTree extends JTree {
         } else {
             try {
                 Mounted m = eSource.getEntity().addEquipment(at, bay.getLocation());
+                m.setShotsLeft(shots);
                 addToBay(bay, m);
             } catch (LocationFullException e) {
             }
@@ -980,12 +1000,12 @@ public class BayWeaponCriticalTree extends JTree {
      * @param eq
      * @param path
      */
-    public void addAmmoSlot(Mounted eq, TreePath path) {
+    public void addAmmo(Mounted eq, int shots, TreePath path) {
         EquipmentNode node = (EquipmentNode)path.getLastPathComponent();
         if (node instanceof BayNode) {
-            addAmmoToBay(node.getMounted(), eq);
+            addAmmoToBay(node.getMounted(), eq, shots);
         } else {
-            addAmmoToBay(getBayFromPath(path), eq);
+            addAmmoToBay(getBayFromPath(path), eq, shots);
         }
     }
 

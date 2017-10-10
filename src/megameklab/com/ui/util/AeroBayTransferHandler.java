@@ -100,7 +100,8 @@ public class AeroBayTransferHandler extends TransferHandler {
             } else if ((mount.getType() instanceof AmmoType) && (support.getUserDropAction() == AMMO_SINGLE)) {
                 // Default action for ammo is to move a single slot. Holding the ctrl key when dropping
                 // will create a AMMO_ALL command, which adds all the ammo of the type.
-                tree.addAmmoSlot(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());
+                tree.addAmmo(mount, ((AmmoType)mount.getType()).getShots(),
+                        ((JTree.DropLocation) support.getDropLocation()).getPath());
             } else {
                 tree.addToArc(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());
             }
