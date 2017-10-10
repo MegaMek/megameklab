@@ -459,6 +459,15 @@ public class EquipmentTab extends ITab implements ActionListener {
                 success = mount != null;
             }        
         } else {
+            if (getAero().usesWeaponBays() && (equip instanceof AmmoType)) {
+                for (Mounted m : getAero().getAmmo()) {
+                    if ((m.getLocation() == Entity.LOC_NONE)
+                            && (m.getType() == equip)) {
+                        m.setShotsLeft(m.getUsableShotsLeft() + ((AmmoType)equip).getShots());
+                        return;
+                    }
+                }
+            }
             try {
                 mount = new Mounted(getAero(), equip);
                 getAero().addEquipment(mount, Entity.LOC_NONE, false);

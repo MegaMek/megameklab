@@ -218,9 +218,21 @@ public class AerospaceBuildView extends IView implements MouseListener {
                
                JMenu menu = new JMenu(l.getLocationName());
                for (Mounted bay : l.baysFor(eq)) {
-                   item = new JMenuItem(bay.getName());
-                   item.addActionListener(ev -> l.addToBay(bay, eq));
-                   menu.add(item);
+                   if ((eq.getType() instanceof AmmoType)
+                           && (eq.getUsableShotsLeft() > ((AmmoType)eq.getType()).getShots())) {
+                       JMenu locMenu = new JMenu(bay.getName());
+                       item = new JMenuItem("Add " + ((AmmoType)eq.getType()).getShots() + " shots");
+                       item.addActionListener(ev -> l.addAmmoToBay(bay, eq));
+                       locMenu.add(item);
+                       item = new JMenuItem("Add all");
+                       item.addActionListener(ev -> l.addToBay(bay, eq));
+                       locMenu.add(item);
+                       menu.add(locMenu);
+                   } else {
+                       item = new JMenuItem(bay.getName());
+                       item.addActionListener(ev -> l.addToBay(bay, eq));
+                       menu.add(item);
+                   }
                }
                if (eq.getType() instanceof WeaponType) {
                    final EquipmentType bayType = ((WeaponType)eq.getType()).getBayType();
