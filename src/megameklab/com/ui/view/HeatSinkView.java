@@ -30,6 +30,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.common.Aero;
+import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.Mech;
@@ -87,8 +88,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     private final JLabel lblWeightFreeText = new JLabel();
     private final JLabel lblWeightFreeCount = new JLabel();
     
-    private SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, 100, 1);
-    private SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, 100, 1);
+    private SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, null, 1);
+    private SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, null, 1);
     
     private final ITechManager techManager;
     private boolean isAero;
@@ -207,7 +208,9 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         cbHSType.addActionListener(this);
         spnCount.removeChangeListener(this);
         countModel.setValue(aero.getHeatSinks());
-        countModel.setMinimum(TestAero.weightFreeHeatSinks(aero));
+        if (!aero.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT) && !aero.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            countModel.setMinimum(TestAero.weightFreeHeatSinks(aero));
+        }
         spnCount.addChangeListener(this);
         spnBaseCount.removeChangeListener(this);
         baseCountModel.setMaximum(aero.getHeatSinks());
