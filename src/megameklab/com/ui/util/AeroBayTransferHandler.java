@@ -24,7 +24,9 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
 
+import megamek.common.AmmoType;
 import megamek.common.Entity;
+import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.weapons.bayweapons.BayWeapon;
@@ -48,6 +50,13 @@ public class AeroBayTransferHandler extends TransferHandler {
     private static final long serialVersionUID = 2534394664060762469L;
     
     private EntitySource eSource;
+    
+    /* Aliases for local usage.
+     * When moving ammo, the default is to move a single ton (or whatever the atomic value is) at a time.
+     * Holding the ctrl key will move all ammo of that type in that location.
+     */
+    public static final int AMMO_SINGLE = MOVE;
+    public static final int AMMO_ALL    = COPY;
     
     public AeroBayTransferHandler(EntitySource eSource) {
         this.eSource = eSource;
@@ -88,21 +97,51 @@ public class AeroBayTransferHandler extends TransferHandler {
             // Non-weapon bay equipment cannot be dropped on an illegal bay.
             if (mount.getType() instanceof BayWeapon) {
                 tree.addBay(mount);
+            } else if ((mount.getType() instanceof AmmoType) && (support.getUserDropAction() == AMMO_SINGLE)) {
+                // Default action for ammo is to move a single slot. Holding the ctrl key when dropping
+                // will create a AMMO_ALL command, which adds all the ammo of the type.
+                tree.addAmmoSlot(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());
             } else {
                 tree.addToArc(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());
             }
         } else {
             // Target is unallocated bay table.
-            UnitUtil.removeCriticals(eSource.getEntity(), mount);
-            UnitUtil.changeMountStatus(eSource.getEntity(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-            if ((mount.getType() instanceof WeaponType) && (mount.getLinkedBy() != null)) {
-                UnitUtil.removeCriticals(eSource.getEntity(), mount.getLinkedBy());
-                UnitUtil.changeMountStatus(eSource.getEntity(), mount.getLinkedBy(),
-                        Entity.LOC_NONE, Entity.LOC_NONE, false);
-                mount.getLinkedBy().setLinked(null);
-                mount.setLinkedBy(null);
+            if (mount.getType() instanceof AmmoType) {
+                AmmoType at = (AmmoType)mount.getType();
+                // Check whether we are moving one of multiple slots. 
+                if ((support.getUserDropAction() == AMMO_SINGLE) && (mount.getUsableShotsLeft() > at.getShots())) {
+                    mount.setShotsLeft(mount.getUsableShotsLeft() - at.getShots());
+                }
+                Mounted addMount = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), at);
+                if (null != addMount) {
+                    if (support.getUserDropAction() == AMMO_SINGLE) {
+                        addMount.setShotsLeft(addMount.getUsableShotsLeft() + at.getShots());
+                    } else {
+                        addMount.setShotsLeft(addMount.getUsableShotsLeft() + mount.getUsableShotsLeft());
+                    }
+                } else {
+                    try {
+                        Mounted m = eSource.getEntity().addEquipment(at, Entity.LOC_NONE);
+                        if (support.getUserDropAction() == AMMO_ALL) {
+                            m.setShotsLeft(mount.getUsableShotsLeft());
+                        }
+                    } catch (LocationFullException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                UnitUtil.removeCriticals(eSource.getEntity(), mount);
+                UnitUtil.changeMountStatus(eSource.getEntity(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                if ((mount.getType() instanceof WeaponType) && (mount.getLinkedBy() != null)) {
+                    UnitUtil.removeCriticals(eSource.getEntity(), mount.getLinkedBy());
+                    UnitUtil.changeMountStatus(eSource.getEntity(), mount.getLinkedBy(),
+                            Entity.LOC_NONE, Entity.LOC_NONE, false);
+                    mount.getLinkedBy().setLinked(null);
+                    mount.setLinkedBy(null);
+                }
+                UnitUtil.compactCriticals(eSource.getEntity());
             }
-            UnitUtil.compactCriticals(eSource.getEntity());
         }
         return true;
     }
@@ -154,14 +193,15 @@ public class AeroBayTransferHandler extends TransferHandler {
 
     @Override
     public int getSourceActions(JComponent c) {
-        return MOVE;
+        return COPY_OR_MOVE;
     }
 
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
-        if ((action == MOVE) && (source instanceof BayWeaponCriticalTree)) {
+        if (((action == MOVE) || (action == COPY)) && (source instanceof BayWeaponCriticalTree)) {
             try {
-                ((BayWeaponCriticalTree)source).removeExported((String)data.getTransferData(DataFlavor.stringFlavor));
+                ((BayWeaponCriticalTree)source).removeExported((String)data.getTransferData(DataFlavor.stringFlavor),
+                        action);
             } catch (Exception ex) {
                 MegaMekLab.getLogger().log(AeroBayTransferHandler.class,
                         "exportDone(JComponent,Transferable,action", //$NON-NLS-1$

@@ -27,7 +27,9 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -307,6 +309,17 @@ public class UnitUtil {
                 ((Aero)unit).getWeaponGroupList().remove(mount);
             }
         }
+        // We will need to reset the equipment numbers of the bay ammo and weapons
+        Map<Mounted,List<Mounted>> bayWeapons = new HashMap<>();
+        Map<Mounted,List<Mounted>> bayAmmo = new HashMap<>();
+        for (Mounted bay : unit.getWeaponBayList()) {
+            List<Mounted> list = bay.getBayWeapons().stream()
+                    .map(n -> unit.getEquipment(n)).collect(Collectors.toList());
+            bayWeapons.put(bay, list);
+            list = bay.getBayAmmo().stream()
+                    .map(n -> unit.getEquipment(n)).collect(Collectors.toList());
+            bayAmmo.put(bay, list);
+        }
         unit.getEquipment().remove(mount);
         if (mount.getType() instanceof MiscType) {
             unit.getMisc().remove(mount);
@@ -314,6 +327,18 @@ public class UnitUtil {
             unit.getAmmo().remove(mount);
         } else {
             unit.getWeaponList().remove(mount);
+        }
+        for (Mounted bay : bayWeapons.keySet()) {
+            bay.getBayWeapons().clear();
+            for (Mounted w : bayWeapons.get(bay)) {
+                bay.getBayWeapons().add(unit.getEquipmentNum(w));
+            }
+        }
+        for (Mounted bay : bayAmmo.keySet()) {
+            bay.getBayAmmo().clear();
+            for (Mounted a : bayAmmo.get(bay)) {
+                bay.getBayAmmo().add(unit.getEquipmentNum(a));
+            }
         }
         // It's possible that the equipment we are removing was linked to
         // something else, and so the linkedBy state may be set.  We should
@@ -1117,6 +1142,26 @@ public class UnitUtil {
         eq.setLocation(location, rear);
         eq.setSecondLocation(secondaryLocation, rear);
         eq.setSplit(secondaryLocation > -1);
+    }
+    
+    /**
+     * Find unallocated ammo of the same type. Used by large aerospace units when removing ammo
+     * from a location to find the group to add it to.
+     * 
+     * @param unit The Entity
+     * @param at   The type of armor to match
+     * @return     An unallocated non-oneshot ammo mount of the same type, or null if there is not one.
+     */
+    public static Mounted findUnallocatedAmmo(Entity unit, EquipmentType at) {
+        for (Mounted m : unit.getAmmo()) {
+            if ((m.getLocation() == Entity.LOC_NONE)
+                    && (m.getType() == at)
+                    && ((m.getLinkedBy() == null)
+                            || !m.getLinkedBy().getType().hasFlag(WeaponType.F_ONESHOT))) {
+                return m;
+            }
+        }
+        return null;
     }
     
     /**
