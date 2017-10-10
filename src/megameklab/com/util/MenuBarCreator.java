@@ -1085,6 +1085,10 @@ public class MenuBarCreator extends JMenuBar implements ClipboardOwner {
             parentFrame.createNewUnit(Entity.ETYPE_TANK);
         } else if (en instanceof Mech) {
             parentFrame.createNewUnit(Entity.ETYPE_BIPED_MECH, ((Mech)en).isPrimitive(), ((Mech)en).isIndustrial());
+        } else if (en.hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
+            parentFrame.createNewUnit(Entity.ETYPE_DROPSHIP);
+        } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            parentFrame.createNewUnit(Entity.ETYPE_SMALL_CRAFT);
         } else if (parentFrame.getEntity() instanceof Aero) {
             parentFrame.createNewUnit(Entity.ETYPE_AERO, ((Aero)en).isPrimitive());
         } else if (parentFrame.getEntity() instanceof BattleArmor) {
