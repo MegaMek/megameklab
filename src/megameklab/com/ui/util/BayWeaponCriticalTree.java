@@ -227,6 +227,8 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshEquipment();
             refresh.refreshBuild();
             refresh.refreshPreview();
+            refresh.refreshStatus();
+            refresh.refreshSummary();
         }
     }
     
@@ -289,6 +291,8 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshEquipment();
             refresh.refreshBuild();
             refresh.refreshPreview();
+            refresh.refreshStatus();
+            refresh.refreshSummary();
         }
     }
     
@@ -323,6 +327,8 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
     
     /**
@@ -338,6 +344,8 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
     
     /**
@@ -364,6 +372,8 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
     
     /**
@@ -383,6 +393,8 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
     
     /**
@@ -785,12 +797,15 @@ public class BayWeaponCriticalTree extends JTree {
             model.insertNodeInto(bayNode, (MutableTreeNode)model.getRoot(), ((TreeNode)model.getRoot()).getChildCount());
             bayNode.setParent((MutableTreeNode)model.getRoot());
             addToBay(bay, eq);
+            setRootVisible(false);
         } catch (LocationFullException ex) {
             //should not happen
         }
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
 
     /**
@@ -850,6 +865,8 @@ public class BayWeaponCriticalTree extends JTree {
                     refresh.refreshEquipment();
                     refresh.refreshBuild();
                     refresh.refreshPreview();
+                    refresh.refreshStatus();
+                    refresh.refreshSummary();
                     return;
                 }
             }
@@ -884,6 +901,8 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
     
     public void addAmmoToBay(Mounted bay, Mounted eq) {
@@ -896,7 +915,9 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshEquipment();
             refresh.refreshBuild();
             refresh.refreshPreview();
-        } else { 
+            refresh.refreshStatus();
+            refresh.refreshSummary();
+        } else {
             try {
                 Mounted m = eSource.getEntity().addEquipment(at, bay.getLocation());
                 addToBay(bay, m);
@@ -914,9 +935,12 @@ public class BayWeaponCriticalTree extends JTree {
         EquipmentNode node = new EquipmentNode(eq);
         model.insertNodeInto(node, (MutableTreeNode)model.getRoot(), ((TreeNode)model.getRoot()).getChildCount());
         node.setParent((MutableTreeNode)model.getRoot());
+        setRootVisible(false);
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
     
     /**
@@ -941,6 +965,8 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshEquipment();
             refresh.refreshBuild();
             refresh.refreshPreview();
+            refresh.refreshStatus();
+            refresh.refreshSummary();
         } else {
             addToBay(getBayFromPath(path), eq);
         }
@@ -974,6 +1000,7 @@ public class BayWeaponCriticalTree extends JTree {
         model.insertNodeInto(bayNode, (MutableTreeNode)model.getRoot(),
                 ((TreeNode)model.getRoot()).getChildCount());
         bayNode.setParent((MutableTreeNode)model.getRoot());
+        setRootVisible(false);
         // Now go through all the equipment in the bay
         for (Integer eqNum : bay.getBayWeapons()) {
             final Mounted weapon = eSource.getEntity().getEquipment(eqNum);
@@ -1195,5 +1222,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.refreshStatus();
+        refresh.refreshSummary();
     }
 }
