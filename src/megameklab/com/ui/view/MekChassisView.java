@@ -454,13 +454,6 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
                 if ((null != structure) && techManager.isLegal(structure)) {
                     cbStructure.addItem(structure);
                 }
-                if (isMixed && (i > EquipmentType.T_STRUCTURE_INDUSTRIAL)) {
-                    name = EquipmentType.getStructureTypeName(i, !isClan);
-                    structure = EquipmentType.get(name);
-                    if ((null != structure) && techManager.isLegal(structure)) {
-                        cbStructure.addItem(structure);
-                    }
-                }
             }
         }
         cbStructure.setSelectedItem(prevStructure);
@@ -680,19 +673,26 @@ public class MekChassisView extends BuildView implements ActionListener, ChangeL
         if (null == e) {
             return null;
         }
-        return new Engine(getEngineRating(), e.getEngineType(), e.getFlags());
+        // Clan and large flags are specific to the engine. the superheavy flag depends on the mech
+        // and may have changed since the last refresh.
+        int flags = e.getFlags() & (Engine.CLAN_ENGINE | Engine.LARGE_ENGINE);
+        if (isSuperheavy()) {
+            flags |= Engine.SUPERHEAVY_ENGINE;
+        }
+        return new Engine(getEngineRating(), e.getEngineType(), flags);
     }
 
     /**
-     * Select the first engine in the list that matches engine type and flags, disregarding the large engine flag.
+     * Select the first engine in the list that matches engine type and flags,
+     * ignoring any flags other than Clan.
      */
     public void setEngine(Engine engine) {
         if (null != engine) {
             int type = engine.getEngineType();
-            int flags = engine.getFlags() & ~Engine.LARGE_ENGINE;
+            int flags = engine.getFlags() & Engine.CLAN_ENGINE;
             for (int i = 0; i < cbEngine.getModel().getSize(); i++) {
                 final Engine e = cbEngine.getItemAt(i);
-                if ((e.getEngineType() == type) && ((e.getFlags() & ~Engine.LARGE_ENGINE) == flags)) {
+                if ((e.getEngineType() == type) && ((e.getFlags() & Engine.CLAN_ENGINE) == flags)) {
                     cbEngine.setSelectedIndex(i);
                     return;
                 }
