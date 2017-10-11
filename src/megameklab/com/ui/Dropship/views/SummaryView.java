@@ -40,6 +40,7 @@ public class SummaryView extends IView {
     private JTextField txtArmorTon = new JTextField("?");   
     private JTextField txtWeapTon = new JTextField("?");
     private JTextField txtAmmoTon = new JTextField("?");
+    private JTextField txtMiscTon = new JTextField("?");
     private JTextField txtTransportTon = new JTextField("?");
     private JTextField txtOtherTon = new JTextField("?");
 
@@ -59,6 +60,7 @@ public class SummaryView extends IView {
         valueFields.add(txtArmorTon);
         valueFields.add(txtWeapTon);
         valueFields.add(txtAmmoTon);
+        valueFields.add(txtMiscTon);
         valueFields.add(txtTransportTon);
         valueFields.add(txtOtherTon);
 
@@ -109,8 +111,10 @@ public class SummaryView extends IView {
         gbc.gridy = 8;
         this.add(createLabel("Ammo:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 9;
-        this.add(createLabel("Transport:", size, SwingConstants.RIGHT), gbc);
+        this.add(createLabel("Equipment:", size, SwingConstants.RIGHT), gbc);
         gbc.gridy = 10;
+        this.add(createLabel("Transport:", size, SwingConstants.RIGHT), gbc);
+        gbc.gridy = 11;
         this.add(createLabel("Other:", size, SwingConstants.RIGHT), gbc);
 
         size = new Dimension(45,25);
@@ -135,8 +139,10 @@ public class SummaryView extends IView {
         gbc.gridy = 8;
         this.add(txtAmmoTon, gbc);
         gbc.gridy = 9;
-        this.add(txtTransportTon, gbc);
+        this.add(txtMiscTon, gbc);
         gbc.gridy = 10;
+        this.add(txtTransportTon, gbc);
+        gbc.gridy = 11;
         this.add(txtOtherTon, gbc);
 
         setBorder(BorderFactory.createTitledBorder("Summary"));
@@ -170,6 +176,7 @@ public class SummaryView extends IView {
         txtArmorTon.setText(Double.toString(testSmallCraft.getWeightArmor()));
         txtWeapTon.setText(Double.toString(testSmallCraft.getWeightWeapon()));
         txtAmmoTon.setText(Double.toString(testSmallCraft.getWeightAmmo()));
+        txtMiscTon.setText(Double.toString(testSmallCraft.getWeightMiscEquip()));
         txtTransportTon.setText(Double.toString(testSmallCraft.getWeightCarryingSpace()));
         txtOtherTon.setText(Double.toString(testSmallCraft.getWeightMisc()));
     }
