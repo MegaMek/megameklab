@@ -639,8 +639,8 @@ public class StructureTab extends ITab implements MekBuildListener {
             }
         }
         getMech().setWeight(tonnage);
-        // Force recalculation of walk MP
-        getMech().setEngine(getMech().getEngine());
+        // Force recalculation of walk MP. Set from chassis panel in case superheavy flag changed
+        getMech().setEngine(panChassis.getEngine());
         getMech().autoSetInternal();
         if (getMech().isSuperHeavy()) {
             getMech().setOriginalJumpMP(0);
