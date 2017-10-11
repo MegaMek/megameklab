@@ -21,7 +21,6 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import megamek.common.Aero;
@@ -29,8 +28,6 @@ import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
-import megamek.common.LocationFullException;
-import megamek.common.Mounted;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SmallCraft;
 import megamek.common.verifier.TestEntity;
@@ -256,9 +253,6 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     public void updateTechLevel() {
         removeAllListeners();
         getSmallCraft().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.useClanTechBase()));
-        if (!getSmallCraft().hasPatchworkArmor()) {
-            UnitUtil.removeISorArmorMounts(getSmallCraft(), false);
-        }
         if (UnitUtil.checkEquipmentByTechLevel(getSmallCraft(), panInfo)) {
             refresh.refreshEquipment();
         } else {
@@ -296,7 +290,6 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
-        UnitUtil.removeISorArmorMounts(getSmallCraft(), false);
         getSmallCraft().setArmorTechLevel(aTechLevel);
         getSmallCraft().setArmorType(at);
         panArmorAllocation.setFromEntity(getSmallCraft());
@@ -436,9 +429,6 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     @Override
     public void armorPointsChanged(int location, int front, int rear) {
         getSmallCraft().initializeArmor(front, location);
-        if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
-            getSmallCraft().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getSmallCraft()));
-        }
         panArmorAllocation.setFromEntity(getSmallCraft());
         refresh.refreshPreview();
         refresh.refreshSummary();
@@ -452,7 +442,8 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         }
         
         // divide armor among positions, with more toward the front
-        int points = UnitUtil.getArmorPoints(getSmallCraft(), getSmallCraft().getLabArmorTonnage());
+        int points = UnitUtil.getArmorPoints(getSmallCraft(), getSmallCraft().getLabArmorTonnage())
+                + getAero().getSI() * getAero().locations();
         int nose = (int)Math.floor(points * 0.3);
         int wing = (int)Math.floor(points * 0.25);
         int aft = (int)Math.floor(points * 0.2);
@@ -485,48 +476,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void patchworkChanged(int location, EquipmentType armor) {
-        UnitUtil.resetArmor(getSmallCraft(), location);
-
-        //TODO: move this construction data out of the ui
-        int crits = 0;
-        switch (EquipmentType.getArmorType(armor)) {
-            case EquipmentType.T_ARMOR_STEALTH_VEHICLE:
-            case EquipmentType.T_ARMOR_LIGHT_ALUM:
-            case EquipmentType.T_ARMOR_ALUM:
-            case EquipmentType.T_ARMOR_FERRO_ALUM_PROTO:
-            case EquipmentType.T_ARMOR_FERRO_LAMELLOR:
-            case EquipmentType.T_ARMOR_REFLECTIVE:
-            case EquipmentType.T_ARMOR_REACTIVE:
-                crits = 1;
-                break;
-            case EquipmentType.T_ARMOR_HEAVY_ALUM:
-                crits = 2;
-                break;
-        }
-        if (getSmallCraft().getEmptyCriticals(location) < crits) {
-            JOptionPane .showMessageDialog(
-                    null, armor.getName()
-                    + " does not fit in location "
-                    + getSmallCraft().getLocationName(location)
-                    + ". Resetting to Standard Armor in this location.",
-                    "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            getSmallCraft().setArmorType(EquipmentType.getArmorType(armor), location);
-            getSmallCraft().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
-            for (; crits > 0; crits--) {
-                try {
-                    getSmallCraft().addEquipment( new Mounted(getSmallCraft(), armor), location, false);
-                } catch (LocationFullException ex) {
-                }
-            }
-        }
-        panArmor.refresh();
-        panArmorAllocation.setFromEntity(getSmallCraft());
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshSummary();
-        refresh.refreshStatus();
+        // Cannot have patchwork armor
     }
 
 }
