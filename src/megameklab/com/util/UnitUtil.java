@@ -331,13 +331,17 @@ public class UnitUtil {
         for (Mounted bay : bayWeapons.keySet()) {
             bay.getBayWeapons().clear();
             for (Mounted w : bayWeapons.get(bay)) {
-                bay.getBayWeapons().add(unit.getEquipmentNum(w));
+                if (mount != w) {
+                    bay.getBayWeapons().add(unit.getEquipmentNum(w));
+                }
             }
         }
         for (Mounted bay : bayAmmo.keySet()) {
             bay.getBayAmmo().clear();
             for (Mounted a : bayAmmo.get(bay)) {
-                bay.getBayAmmo().add(unit.getEquipmentNum(a));
+                if (mount != a) {
+                    bay.getBayAmmo().add(unit.getEquipmentNum(a));
+                }
             }
         }
         // It's possible that the equipment we are removing was linked to
