@@ -15,6 +15,9 @@
  */
 package megameklab.com.util;
 
+import java.awt.Dimension;
+
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import megamek.common.Aero;
@@ -64,6 +67,12 @@ public class ITab extends JPanel {
     
     public Infantry getInfantry() {
     	return (Infantry) eSource.getEntity();
+    }
+
+    protected void setFieldSize(JComponent box, Dimension maxSize) {
+        box.setPreferredSize(maxSize);
+        box.setMaximumSize(maxSize);
+        box.setMinimumSize(maxSize);
     }
 
 }

@@ -40,9 +40,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -50,6 +52,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
@@ -101,7 +104,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
     private JRadioButton rbtnStats = new JRadioButton("Stats");
     private JRadioButton rbtnFluff = new JRadioButton("Fluff");
-
+    private JSpinner spnAddCount = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
 
     private TableRowSorter<EquipmentTableModel> equipmentSorter;
 
@@ -115,6 +118,8 @@ public class EquipmentTab extends ITab implements ActionListener {
     private String ADD_COMMAND = "ADD";
     private String REMOVE_COMMAND = "REMOVE";
     private String REMOVEALL_COMMAND = "REMOVEALL";
+    
+    private final Dimension SPINNER_SIZE = new Dimension(55, 25);
 
     public static String getTypeName(int type) {
         switch(type) {
@@ -314,6 +319,27 @@ public class EquipmentTab extends ITab implements ActionListener {
         databasePanel.add(viewPanel, gbc);
 
         gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(2,2,2,2);
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        databasePanel.add(new JLabel("Number to add:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(2,2,2,2);
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        setFieldSize(spnAddCount, SPINNER_SIZE);
+        databasePanel.add(spnAddCount, gbc);
+
+        gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.fill = java.awt.GridBagConstraints.NONE;
@@ -332,7 +358,7 @@ public class EquipmentTab extends ITab implements ActionListener {
 
         gbc.insets = new Insets(2,0,0,0);
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.gridwidth = 4;
         gbc.fill = java.awt.GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -450,34 +476,43 @@ public class EquipmentTab extends ITab implements ActionListener {
     }
 
     private void addEquipment(EquipmentType equip) {
-        boolean success = false;
         Mounted mount = null;
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(getAero())) {
                 mount = UnitUtil.updateTC(getAero(), equip);
-                success = mount != null;
+                if (null != mount) {
+                    equipmentList.addCrit(mount);
+                }
             }        
         } else {
+            int count = (Integer)spnAddCount.getValue();
             if (getAero().usesWeaponBays() && (equip instanceof AmmoType)) {
-                for (Mounted m : getAero().getAmmo()) {
-                    if ((m.getLocation() == Entity.LOC_NONE)
-                            && (m.getType() == equip)) {
-                        m.setShotsLeft(m.getUsableShotsLeft() + ((AmmoType)equip).getShots());
-                        return;
+                Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), equip);
+                if (null != aMount) {
+                    aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType)equip).getShots() * count);
+                    return;
+                } else {
+                    mount = new Mounted(getAero(), equip);
+                    mount.setShotsLeft(((AmmoType)equip).getShots() * count);
+                    try {
+                        getAero().addEquipment(mount, Entity.LOC_NONE, false);
+                        equipmentList.addCrit(mount);
+                    } catch (LocationFullException lfe) {
+                        // this can't happen, we add to Entity.LOC_NONE
                     }
                 }
+            } else {
+                try {
+                    for (int i = 0; i < count; i++) {
+                        mount = new Mounted(getAero(), equip);
+                        getAero().addEquipment(mount, Entity.LOC_NONE, false);
+                        equipmentList.addCrit(mount);
+                    }
+                } catch (LocationFullException lfe) {
+                    // this can't happen, we add to Entity.LOC_NONE
+                }
             }
-            try {
-                mount = new Mounted(getAero(), equip);
-                getAero().addEquipment(mount, Entity.LOC_NONE, false);
-                success = true;
-            } catch (LocationFullException lfe) {
-                // this can't happen, we add to Entity.LOC_NONE
-            }
-        }
-        if (success) {
-            equipmentList.addCrit(mount);
         }
     }
 
