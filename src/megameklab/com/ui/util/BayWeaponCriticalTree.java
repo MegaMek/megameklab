@@ -815,8 +815,11 @@ public class BayWeaponCriticalTree extends JTree {
             BayNode bayNode = new BayNode(bay);
             model.insertNodeInto(bayNode, (MutableTreeNode)model.getRoot(), ((TreeNode)model.getRoot()).getChildCount());
             bayNode.setParent((MutableTreeNode)model.getRoot());
+            if (isRootVisible()) {
+                expandRow(0);
+                setRootVisible(false);
+            }
             addToBay(bay, eq);
-            setRootVisible(false);
         } catch (LocationFullException ex) {
             //should not happen
         }
@@ -955,7 +958,10 @@ public class BayWeaponCriticalTree extends JTree {
         EquipmentNode node = new EquipmentNode(eq);
         model.insertNodeInto(node, (MutableTreeNode)model.getRoot(), ((TreeNode)model.getRoot()).getChildCount());
         node.setParent((MutableTreeNode)model.getRoot());
-        setRootVisible(false);
+        if (isRootVisible()) {
+            expandRow(0);
+            setRootVisible(false);
+        }
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
@@ -1020,7 +1026,10 @@ public class BayWeaponCriticalTree extends JTree {
         model.insertNodeInto(bayNode, (MutableTreeNode)model.getRoot(),
                 ((TreeNode)model.getRoot()).getChildCount());
         bayNode.setParent((MutableTreeNode)model.getRoot());
-        setRootVisible(false);
+        if (isRootVisible()) {
+            expandRow(0);
+            setRootVisible(false);
+        }
         // Now go through all the equipment in the bay
         for (Integer eqNum : bay.getBayWeapons()) {
             final Mounted weapon = eSource.getEntity().getEquipment(eqNum);
