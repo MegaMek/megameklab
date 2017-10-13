@@ -34,6 +34,7 @@ import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Dropship.views.SummaryView;
 import megameklab.com.ui.view.AeroFuelView;
+import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
 import megameklab.com.ui.view.DropshipBuildListener;
@@ -65,6 +66,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     private MovementView panMovement;
     private AeroFuelView panFuel;
     private HeatSinkView panHeat;
+    private AerospaceCrewView panCrew;
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
 
@@ -86,6 +88,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panMovement = new MovementView(panInfo);
         panFuel = new AeroFuelView();
         panHeat = new HeatSinkView(panInfo);
+        panCrew = new AerospaceCrewView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panSummary = new SummaryView(eSource);
 
@@ -102,6 +105,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         leftPanel.add(panInfo);
         leftPanel.add(panChassis);
         leftPanel.add(panHeat);
+        leftPanel.add(panCrew);
 
         midPanel.add(panMovement);
         midPanel.add(panFuel);
@@ -130,6 +134,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panFuel.setBorder(BorderFactory.createTitledBorder("Fuel"));
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
+        panCrew.setBorder(BorderFactory.createTitledBorder("Crew and Quarters"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
@@ -154,6 +159,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panFuel.setFromEntity(getSmallCraft());
         panMovement.setFromEntity(getSmallCraft());
         panArmor.setFromEntity(getSmallCraft());
+        panCrew.setFromEntity(getSmallCraft());
         panArmorAllocation.setFromEntity(getSmallCraft());
         
         panSummary.refresh();
