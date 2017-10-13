@@ -1,9 +1,7 @@
 /**
  * 
  */
-package megameklab.com.ui.view;
-
-import megameklab.com.ui.view.listeners.BuildListener;
+package megameklab.com.ui.view.listeners;
 
 /**
  * Listener for views used by aerospace units.
@@ -11,7 +9,7 @@ import megameklab.com.ui.view.listeners.BuildListener;
  * @author Neoancient
  *
  */
-public interface DropshipBuildListener extends BuildListener {
+public interface DropshipBuildListener extends AeroVesselBuildListener {
 
     void tonnageChanged(double tonnage);
     void militaryChanged(boolean military);
