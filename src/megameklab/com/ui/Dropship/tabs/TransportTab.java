@@ -47,6 +47,7 @@ import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestAero.TransportBay;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
+import megameklab.com.util.RefreshListener;
 
 /**
  * Tab for adding and modifying aerospace transport bays.
@@ -68,6 +69,8 @@ public class TransportTab extends IView implements ActionListener {
     private final JTable tblAvailable = new JTable(modelAvailable);
     private final JButton btnRemoveBay = new JButton();
     private final JButton btnAddBay = new JButton();
+    
+    private RefreshListener refresh = null;
     
     public TransportTab(EntitySource eSource) {
         super(eSource);
@@ -153,11 +156,20 @@ public class TransportTab extends IView implements ActionListener {
         refresh();
     }
     
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
+    }
+    
     public void refresh() {
         lblMaxDoors.setText(String.valueOf(TestAero.maxBayDoors(getAero())));
         checkButtons();
         modelInstalled.refreshBays();
         modelAvailable.refreshBays();
+        if (null != refresh) {
+            refresh.refreshStructure();
+            refresh.refreshStatus();
+            refresh.refreshPreview();
+        }
     }
     
     private void checkButtons() {
@@ -415,6 +427,11 @@ public class TransportTab extends IView implements ActionListener {
             }
             modelInstalled.fireTableRowsUpdated(row, row);
             checkButtons();
+            if (null != refresh) {
+                refresh.refreshStructure();
+                refresh.refreshStatus();
+                refresh.refreshPreview();
+            }
         }
 
         @Override
