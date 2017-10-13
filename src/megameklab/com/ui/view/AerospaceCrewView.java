@@ -15,19 +15,30 @@ package megameklab.com.ui.view;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import megamek.common.BattleArmor;
+import megamek.common.Bay;
 import megamek.common.EntityWeightClass;
 import megamek.common.ITechManager;
 import megamek.common.SmallCraft;
 import megamek.common.util.EncodeControl;
+import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestAero.Quarters;
 import megamek.common.verifier.TestSmallCraft;
+import megameklab.com.ui.view.listeners.AeroVesselBuildListener;
 
 /**
  * Structure tab panel for setting crew levels and quarters, as well as life boats and escape pods.
@@ -36,7 +47,20 @@ import megamek.common.verifier.TestSmallCraft;
  *
  */
 
-public class AerospaceCrewView extends BuildView {
+public class AerospaceCrewView extends BuildView implements ActionListener, ChangeListener {
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5340962405770541772L;
+    
+    private List<AeroVesselBuildListener> listeners = new CopyOnWriteArrayList<>();
+    public void addListener(AeroVesselBuildListener l) {
+        listeners.add(l);
+    }
+    public void removeListener(AeroVesselBuildListener l) {
+        listeners.remove(l);
+    }
     
     private final JSpinner spnCrew = new JSpinner(new SpinnerNumberModel(3, 1, null, 1));
     private final JSpinner spnOfficers = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
@@ -45,7 +69,6 @@ public class AerospaceCrewView extends BuildView {
     private final JSpinner spnMarines = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnBAMarines = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnPassengers = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-    private final JSpinner spnQuartersOfficer = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnQuartersStandard = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnQuartersFirstClass = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnQuartersSecondClass = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
@@ -53,8 +76,10 @@ public class AerospaceCrewView extends BuildView {
     private final JSpinner spnLifeBoats = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnEscapePods = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JButton btnAssignQuarters = new JButton();
-    
+
+    private final JLabel lblBAMarines = createLabel("", labelSize);
     private final ITechManager techManager;
+    private boolean ignoreChangeEvents = false;
     
     public AerospaceCrewView(ITechManager techManager) {
         this.techManager = techManager;
@@ -73,6 +98,7 @@ public class AerospaceCrewView extends BuildView {
         setFieldSize(spnCrew, spinnerSize);
         spnCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.spnCrew.tooltip"));
         add(spnCrew, gbc);
+        spnCrew.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy++;
@@ -81,6 +107,7 @@ public class AerospaceCrewView extends BuildView {
         setFieldSize(spnOfficers, spinnerSize);
         spnOfficers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnOfficers.tooltip"));
         add(spnOfficers, gbc);
+        spnOfficers.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy++;
@@ -105,6 +132,7 @@ public class AerospaceCrewView extends BuildView {
         setFieldSize(spnPassengers, spinnerSize);
         spnPassengers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnPassengers.tooltip"));
         add(spnPassengers, gbc);
+        spnPassengers.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy++;
@@ -113,14 +141,17 @@ public class AerospaceCrewView extends BuildView {
         setFieldSize(spnMarines, spinnerSize);
         spnMarines.setToolTipText(resourceMap.getString("AerospaceCrewView.spnMarines.tooltip"));
         add(spnMarines, gbc);
+        spnMarines.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap.getString("AerospaceCrewView.spnBAMarines.text"), labelSize), gbc);
+        lblBAMarines.setText(resourceMap.getString("AerospaceCrewView.spnBAMarines.text"));
+        add(lblBAMarines, gbc);
         gbc.gridx = 1;
         setFieldSize(spnBAMarines, spinnerSize);
         spnBAMarines.setToolTipText(resourceMap.getString("AerospaceCrewView.spnBAMarines.tooltip"));
         add(spnBAMarines, gbc);
+        spnBAMarines.addChangeListener(this);
         
         gbc.gridx = 0;
         gbc.gridy++;
@@ -128,15 +159,22 @@ public class AerospaceCrewView extends BuildView {
         btnAssignQuarters.setText(resourceMap.getString("AerospaceCrewView.btnAssignQuarters.text"));
         btnAssignQuarters.setToolTipText(resourceMap.getString("AerospaceCrewView.btnAssignQuarters.tooltip"));
         add(btnAssignQuarters, gbc);
+        btnAssignQuarters.addActionListener(this);
         
         gbc.gridx = 2;
         gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        add(new JLabel(resourceMap.getString("AerospaceCrewView.lblQuarters.text")), gbc);
+        
+        gbc.gridx = 2;
+        gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap.getString("AerospaceCrewView.spnQuartersOfficer.text"), labelSize), gbc);
+        add(createLabel(resourceMap.getString("AerospaceCrewView.spnQuartersFirstClass.text"), labelSize), gbc);
         gbc.gridx = 3;
-        setFieldSize(spnQuartersOfficer, spinnerSize);
-        spnQuartersOfficer.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersOfficer.tooltip"));
-        add(spnQuartersOfficer, gbc);
+        setFieldSize(spnQuartersFirstClass, spinnerSize);
+        spnQuartersFirstClass.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersFirstClass.tooltip"));
+        add(spnQuartersFirstClass, gbc);
+        spnQuartersFirstClass.addChangeListener(this);
         
         gbc.gridx = 2;
         gbc.gridy++;
@@ -145,14 +183,7 @@ public class AerospaceCrewView extends BuildView {
         setFieldSize(spnQuartersStandard, spinnerSize);
         spnQuartersStandard.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersStandard.tooltip"));
         add(spnQuartersStandard, gbc);
-        
-        gbc.gridx = 2;
-        gbc.gridy++;
-        add(createLabel(resourceMap.getString("AerospaceCrewView.spnQuartersFirstClass.text"), labelSize), gbc);
-        gbc.gridx = 3;
-        setFieldSize(spnQuartersFirstClass, spinnerSize);
-        spnQuartersFirstClass.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersFirstClass.tooltip"));
-        add(spnQuartersFirstClass, gbc);
+        spnQuartersStandard.addChangeListener(this);
         
         gbc.gridx = 2;
         gbc.gridy++;
@@ -161,6 +192,7 @@ public class AerospaceCrewView extends BuildView {
         setFieldSize(spnQuartersSecondClass, spinnerSize);
         spnQuartersSecondClass.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersSecondClass.tooltip"));
         add(spnQuartersSecondClass, gbc);
+        spnQuartersSecondClass.addChangeListener(this);
         
         gbc.gridx = 2;
         gbc.gridy++;
@@ -169,6 +201,7 @@ public class AerospaceCrewView extends BuildView {
         setFieldSize(spnQuartersSteerage, spinnerSize);
         spnQuartersSteerage.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersSteerage.tooltip"));
         add(spnQuartersSteerage, gbc);
+        spnQuartersSteerage.addChangeListener(this);
         
         gbc.gridx = 2;
         gbc.gridy += 2;
@@ -177,6 +210,7 @@ public class AerospaceCrewView extends BuildView {
         setFieldSize(spnLifeBoats, spinnerSize);
         spnLifeBoats.setToolTipText(resourceMap.getString("AerospaceCrewView.spnLifeBoats.tooltip"));
         add(spnLifeBoats, gbc);
+        spnLifeBoats.addChangeListener(this);
         
         gbc.gridx = 2;
         gbc.gridy++;
@@ -185,6 +219,7 @@ public class AerospaceCrewView extends BuildView {
         setFieldSize(spnEscapePods, spinnerSize);
         spnEscapePods.setToolTipText(resourceMap.getString("AerospaceCrewView.spnEscapePods.tooltip"));
         add(spnEscapePods, gbc);
+        spnEscapePods.addChangeListener(this);
     }
     
     public void setFromEntity(SmallCraft sc) {
@@ -195,6 +230,7 @@ public class AerospaceCrewView extends BuildView {
         ((SpinnerNumberModel)spnCrew.getModel()).setMinimum(minBase + gunners);
         ((SpinnerNumberModel)spnOfficers.getModel()).setMinimum(minOfficers);
         
+        ignoreChangeEvents = true;
         spnCrew.setValue(nonBay);
         spnOfficers.setValue(Math.max(minOfficers, sc.getNOfficers()));
         lblEnlisted.setText(String.valueOf(Math.max(0, nonBay - gunners - ((Integer) spnOfficers.getValue()))));
@@ -204,13 +240,61 @@ public class AerospaceCrewView extends BuildView {
         
         if (techManager.isLegal(BattleArmor.getConstructionTechAdvancement(EntityWeightClass.WEIGHT_MEDIUM))) {
             spnBAMarines.setValue(sc.getNBattleArmor());
+            lblBAMarines.setVisible(true);
             spnBAMarines.setVisible(true);
         } else {
             spnBAMarines.setValue(0);
+            lblBAMarines.setVisible(false);
             spnBAMarines.setVisible(false);
         }
         
+        EnumMap<TestAero.Quarters, Integer> sizes = new EnumMap<>(TestAero.Quarters.class);
+        for (Bay bay : sc.getTransportBays()) {
+            Quarters q = TestAero.Quarters.getQuartersForBay(bay);
+            if (null != q) {
+                sizes.merge(q, (int) bay.getCapacity(), Integer::sum);
+            }
+        }
+        spnQuartersFirstClass.setValue(sizes.getOrDefault(TestAero.Quarters.FIRST_CLASS, 0));
+        spnQuartersStandard.setValue(sizes.getOrDefault(TestAero.Quarters.STANDARD, 0));
+        spnQuartersSecondClass.setValue(sizes.getOrDefault(TestAero.Quarters.SECOND_CLASS, 0));
+        spnQuartersSteerage.setValue(sizes.getOrDefault(TestAero.Quarters.STEERAGE, 0));
+        
         spnLifeBoats.setValue(sc.getLifeBoats());
         spnEscapePods.setValue(sc.getEscapePods());
+        ignoreChangeEvents = false;
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (!ignoreChangeEvents) {
+            if (e.getSource() == spnCrew) {
+                listeners.forEach(l -> l.crewSizeChanged((Integer) spnCrew.getValue()));
+            } else if (e.getSource() == spnOfficers) {
+                listeners.forEach(l -> l.officersChanged((Integer) spnOfficers.getValue()));
+            } else if (e.getSource() == spnPassengers) {
+                listeners.forEach(l -> l.officersChanged((Integer) spnPassengers.getValue()));
+            } else if (e.getSource() == spnMarines) {
+                listeners.forEach(l -> l.officersChanged((Integer) spnMarines.getValue()));
+            } else if (e.getSource() == spnBAMarines) {
+                listeners.forEach(l -> l.officersChanged((Integer) spnBAMarines.getValue()));
+            } else if ((e.getSource() == spnLifeBoats)
+                    || (e.getSource() == spnEscapePods)) {
+                listeners.forEach(l -> l.escapeChanged((Integer) spnLifeBoats.getValue(),
+                        (Integer) spnEscapePods.getValue()));
+            } else {
+                listeners.forEach(l -> l.quartersChanged(
+                        (Integer) spnQuartersFirstClass.getValue(),
+                        (Integer) spnQuartersStandard.getValue(),
+                        (Integer) spnQuartersSecondClass.getValue(),
+                        (Integer) spnQuartersSteerage.getValue()));
+            }
+        }
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnAssignQuarters) {
+            listeners.forEach(AeroVesselBuildListener::autoAssignQuarters);
+        }
     }
 }

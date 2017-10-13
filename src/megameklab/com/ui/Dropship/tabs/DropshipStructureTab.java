@@ -17,6 +17,9 @@ package megameklab.com.ui.Dropship.tabs;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -24,12 +27,15 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.common.Aero;
+import megamek.common.Bay;
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SmallCraft;
+import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestAero.Quarters;
 import megamek.common.verifier.TestEntity;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.ui.Dropship.views.SummaryView;
@@ -37,11 +43,11 @@ import megameklab.com.ui.view.AeroFuelView;
 import megameklab.com.ui.view.AerospaceCrewView;
 import megameklab.com.ui.view.ArmorAllocationView;
 import megameklab.com.ui.view.BasicInfoView;
-import megameklab.com.ui.view.DropshipBuildListener;
 import megameklab.com.ui.view.DropshipChassisView;
 import megameklab.com.ui.view.HeatSinkView;
 import megameklab.com.ui.view.MVFArmorView;
 import megameklab.com.ui.view.MovementView;
+import megameklab.com.ui.view.listeners.DropshipBuildListener;
 import megameklab.com.util.ITab;
 import megameklab.com.util.RefreshListener;
 import megameklab.com.util.UnitUtil;
@@ -191,6 +197,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panFuel.removeListener(this);
         panMovement.removeListener(this);
         panArmor.removeListener(this);
+        panCrew.removeListener(this);
         panArmorAllocation.removeListener(this);
     }
 
@@ -201,6 +208,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
         panFuel.addListener(this);
         panMovement.addListener(this);
         panArmor.addListener(this);
+        panCrew.addListener(this);
         panArmorAllocation.addListener(this);
     }
 
@@ -484,5 +492,96 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     public void patchworkChanged(int location, EquipmentType armor) {
         // Cannot have patchwork armor
     }
+
+    @Override
+    public void crewSizeChanged(int nCrew) {
+        getSmallCraft().setNCrew(nCrew + getSmallCraft().getBayPersonnel());
+        // May need to adjust number of officers
+        panCrew.setFromEntity(getSmallCraft());
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void officersChanged(int nOfficers) {
+        getSmallCraft().setNOfficers(nOfficers);
+        panCrew.setFromEntity(getSmallCraft());
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void passengersChanged(int nPassengers) {
+        getSmallCraft().setNPassenger(nPassengers);
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void marinesChanged(int nMarines) {
+        getSmallCraft().setNMarines(nMarines);
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void baMarinesChanged(int nBAMarines) {
+        getSmallCraft().setNBattleArmor(nBAMarines);
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void quartersChanged(int officer, int standard, int secondclass, int steerage) {
+        EnumMap<TestAero.Quarters, Integer> sizes = new EnumMap<>(TestAero.Quarters.class);
+        for (Bay bay : getSmallCraft().getTransportBays()) {
+            Quarters q = TestAero.Quarters.getQuartersForBay(bay);
+            if (null != q) {
+                sizes.merge(q, (int) bay.getCapacity(), Integer::sum);
+            }
+        }
+        if (sizes.getOrDefault(TestAero.Quarters.FIRST_CLASS, 0) != officer) {
+            setQuarters(TestAero.Quarters.FIRST_CLASS, officer);
+        }
+        if (sizes.getOrDefault(TestAero.Quarters.STANDARD, 0) != standard) {
+            setQuarters(TestAero.Quarters.STANDARD, standard);
+        }
+        if (sizes.getOrDefault(TestAero.Quarters.SECOND_CLASS, 0) != secondclass) {
+            setQuarters(TestAero.Quarters.SECOND_CLASS, secondclass);
+        }
+        if (sizes.getOrDefault(TestAero.Quarters.STEERAGE, 0) != steerage) {
+            setQuarters(TestAero.Quarters.STEERAGE, steerage);
+        }
+        panCrew.setFromEntity(getSmallCraft());
+        refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+    
+    private void setQuarters(TestAero.Quarters quarters, int size) {
+        List<Bay> toRemove = new ArrayList<>();
+        for (Bay bay : getSmallCraft().getTransportBays()) {
+            if (TestAero.Quarters.getQuartersForBay(bay) == quarters) {
+                toRemove.add(bay);
+            }
+        }
+        for (Bay bay : toRemove) {
+            getSmallCraft().removeTransporter(bay);
+        }
+        getSmallCraft().addTransporter(quarters.newQuarters(size));
+    }
+
+    @Override
+    public void autoAssignQuarters() {
+        int standard = getSmallCraft().getNCrew() - getSmallCraft().getBayPersonnel();
+        standard = Math.max(0, standard - getSmallCraft().getNOfficers());
+        standard += getSmallCraft().getNPassenger() + getSmallCraft().getNMarines() + getSmallCraft().getNBattleArmor();
+        quartersChanged(getSmallCraft().getNOfficers(), standard, getSmallCraft().getNPassenger(), 0);
+    }
+
+    @Override
+    public void escapeChanged(int lifeBoats, int escapePods) {
+        getSmallCraft().setLifeBoats(lifeBoats);
+        getSmallCraft().setEscapePods(escapePods);
+        refreshSummary();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
 
 }
