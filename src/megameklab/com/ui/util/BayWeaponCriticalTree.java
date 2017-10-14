@@ -1134,6 +1134,9 @@ public class BayWeaponCriticalTree extends JTree {
      * @return    Whether the equipment can be dropped in the location
      */
     public boolean isValidDropLocation(JTree.DropLocation loc, Mounted eq) {
+        if (!eSource.getEntity().usesWeaponBays()) {
+            return true;
+        }
         Mounted bay = null;
         TreePath path = loc.getPath();
         if (null != path) {

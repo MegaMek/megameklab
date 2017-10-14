@@ -216,32 +216,38 @@ public class AerospaceBuildView extends IView implements MouseListener {
                    continue;
                }
                
-               JMenu menu = new JMenu(l.getLocationName());
-               for (Mounted bay : l.baysFor(eq)) {
-                   if (eq.getType() instanceof AmmoType) {
-                       final int shotCount = ((AmmoType)eq.getType()).getShots();
-                       JMenu locMenu = new JMenu(bay.getName());
-                       for (int shots = shotCount; shots <= eq.getUsableShotsLeft(); shots += shotCount) {
-                           item = new JMenuItem("Add " + shots + ((shots > 1)?" shots" : " shot"));
-                           final int addShots = shots;
-                           item.addActionListener(ev -> l.addAmmoToBay(bay, eq, addShots));
-                           locMenu.add(item);
+               if (getAero().usesWeaponBays()) {
+                   JMenu menu = new JMenu(l.getLocationName());
+                   for (Mounted bay : l.baysFor(eq)) {
+                       if (eq.getType() instanceof AmmoType) {
+                           final int shotCount = ((AmmoType)eq.getType()).getShots();
+                           JMenu locMenu = new JMenu(bay.getName());
+                           for (int shots = shotCount; shots <= eq.getUsableShotsLeft(); shots += shotCount) {
+                               item = new JMenuItem("Add " + shots + ((shots > 1)?" shots" : " shot"));
+                               final int addShots = shots;
+                               item.addActionListener(ev -> l.addAmmoToBay(bay, eq, addShots));
+                               locMenu.add(item);
+                           }
+                           menu.add(locMenu);
+                       } else {
+                           item = new JMenuItem(bay.getName());
+                           item.addActionListener(ev -> l.addToBay(bay, eq));
+                           menu.add(item);
                        }
-                       menu.add(locMenu);
-                   } else {
-                       item = new JMenuItem(bay.getName());
-                       item.addActionListener(ev -> l.addToBay(bay, eq));
+                   }
+                   if (eq.getType() instanceof WeaponType) {
+                       final EquipmentType bayType = ((WeaponType)eq.getType()).getBayType();
+                       item = new JMenuItem("New " + bayType.getName());
+                       item.addActionListener(ev -> l.addToNewBay(bayType,  eq));
                        menu.add(item);
                    }
-               }
-               if (eq.getType() instanceof WeaponType) {
-                   final EquipmentType bayType = ((WeaponType)eq.getType()).getBayType();
-                   item = new JMenuItem("New " + bayType.getName());
-                   item.addActionListener(ev -> l.addToNewBay(bayType,  eq));
-                   menu.add(item);
-               }
-               if (menu.getItemCount() > 0) {
-                   popup.add(menu);
+                   if (menu.getItemCount() > 0) {
+                       popup.add(menu);
+                   }
+               } else {
+                   item = new JMenuItem(l.getLocationName());
+                   item.addActionListener(ev -> l.addToLocation(eq));
+                   popup.add(item);
                }
            }
            
