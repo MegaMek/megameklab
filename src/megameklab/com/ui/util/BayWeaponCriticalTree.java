@@ -663,87 +663,89 @@ public class BayWeaponCriticalTree extends JTree {
         @Override
         public void mousePressed(MouseEvent e) {
             final int row = getClosestRowForLocation(e.getX(), e.getY());
-            final EquipmentNode node = (EquipmentNode)getPathForRow(row).getLastPathComponent();
-            if ((e.getButton() == MouseEvent.BUTTON2)
-                    || ((e.getButton() == MouseEvent.BUTTON3)
-                            && ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0))) {
-                if (node.isLeaf()) {
-                    removeEquipment(node);
-                } else {
-                    removeBay(node);
-                }
-            } else if (e.getButton() == MouseEvent.BUTTON3) {
-                final Mounted mounted = node.getMounted();
-
-                if ((facing == BOTH) && ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0)) {
-                    setBayFacing(node, !node.getMounted().isRearMounted());
-                }
-
-                JPopupMenu popup = new JPopupMenu();
-                popup.setAutoscrolls(true);
-                JMenuItem info;
-
-                
-                if (node.isLeaf()) {
-                    if (node.getMounted().getType() instanceof AmmoType) {
-                        AmmoType at = (AmmoType)node.getMounted().getType();
-                        if (node.getMounted().getUsableShotsLeft() > at.getShots()) {
-                            JMenu remove = new JMenu("Remove");
-                            JMenu delete = new JMenu("Delete");
-                            for (int s = at.getShots();
-                                    s < node.getMounted().getUsableShotsLeft();
-                                    s += at.getShots()) {
-                                final int shots = s;
-                                info = new JMenuItem("Remove " + shots + ((shots > 1)?" shots" : " shot"));
-                                info.addActionListener(ev -> removeAmmo(node.getMounted(), shots));
+            if (getPathForRow(row).getLastPathComponent() instanceof EquipmentNode) {
+                final EquipmentNode node = (EquipmentNode)getPathForRow(row).getLastPathComponent();
+                if ((e.getButton() == MouseEvent.BUTTON2)
+                        || ((e.getButton() == MouseEvent.BUTTON3)
+                                && ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0))) {
+                    if (node.isLeaf()) {
+                        removeEquipment(node);
+                    } else {
+                        removeBay(node);
+                    }
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    final Mounted mounted = node.getMounted();
+    
+                    if ((facing == BOTH) && ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0)) {
+                        setBayFacing(node, !node.getMounted().isRearMounted());
+                    }
+    
+                    JPopupMenu popup = new JPopupMenu();
+                    popup.setAutoscrolls(true);
+                    JMenuItem info;
+    
+                    
+                    if (node.isLeaf()) {
+                        if (node.getMounted().getType() instanceof AmmoType) {
+                            AmmoType at = (AmmoType)node.getMounted().getType();
+                            if (node.getMounted().getUsableShotsLeft() > at.getShots()) {
+                                JMenu remove = new JMenu("Remove");
+                                JMenu delete = new JMenu("Delete");
+                                for (int s = at.getShots();
+                                        s < node.getMounted().getUsableShotsLeft();
+                                        s += at.getShots()) {
+                                    final int shots = s;
+                                    info = new JMenuItem("Remove " + shots + ((shots > 1)?" shots" : " shot"));
+                                    info.addActionListener(ev -> removeAmmo(node.getMounted(), shots));
+                                    remove.add(info);
+                                    info = new JMenuItem("Delete " + shots + ((shots > 1)?" shots" : " shot"));
+                                    info.addActionListener(ev -> deleteAmmo(node.getMounted(), shots));
+                                    delete.add(info);
+                                }
+                                info = new JMenuItem("Remove all");
+                                info.addActionListener(ev -> removeEquipment(node));
                                 remove.add(info);
-                                info = new JMenuItem("Delete " + shots + ((shots > 1)?" shots" : " shot"));
-                                info.addActionListener(ev -> deleteAmmo(node.getMounted(), shots));
+                                info = new JMenuItem("Delete all");
+                                info.addActionListener(ev -> deleteEquipment(node));
                                 delete.add(info);
+                                popup.add(remove);
+                                popup.add(delete);
+                            } else {
+                                info = new JMenuItem("Remove all shots");
+                                info.addActionListener(ev -> removeEquipment(node));
+                                popup.add(info);
+                                info = new JMenuItem("Delete all shots");
+                                info.addActionListener(ev -> deleteEquipment(node));
                             }
-                            info = new JMenuItem("Remove all");
-                            info.addActionListener(ev -> removeEquipment(node));
-                            remove.add(info);
-                            info = new JMenuItem("Delete all");
-                            info.addActionListener(ev -> deleteEquipment(node));
-                            delete.add(info);
-                            popup.add(remove);
-                            popup.add(delete);
                         } else {
-                            info = new JMenuItem("Remove all shots");
-                            info.addActionListener(ev -> removeEquipment(node));
+                            info = new JMenuItem("Remove " + mounted.getName());
+                            if ((node.getParent() instanceof BayNode)
+                                    && (node.getParent().getChildCount() == 1)) {
+                                info.addActionListener(ev -> removeBay((EquipmentNode)node.getParent()));
+                            } else {
+                                info.addActionListener(ev -> removeEquipment(node));
+                            }
                             popup.add(info);
-                            info = new JMenuItem("Delete all shots");
+        
+                            info = new JMenuItem("Delete " + mounted.getName());
                             info.addActionListener(ev -> deleteEquipment(node));
                         }
                     } else {
-                        info = new JMenuItem("Remove " + mounted.getName());
-                        if ((node.getParent() instanceof BayNode)
-                                && (node.getParent().getChildCount() == 1)) {
-                            info.addActionListener(ev -> removeBay((EquipmentNode)node.getParent()));
-                        } else {
-                            info.addActionListener(ev -> removeEquipment(node));
-                        }
+                        info = new JMenuItem("Remove entire bay");
+                        info.addActionListener(ev -> removeBay(node));
                         popup.add(info);
-    
-                        info = new JMenuItem("Delete " + mounted.getName());
-                        info.addActionListener(ev -> deleteEquipment(node));
                     }
-                } else {
-                    info = new JMenuItem("Remove entire bay");
-                    info.addActionListener(ev -> removeBay(node));
+                    if (facing == BOTH) {
+                        info = new JMenuItem("Change facing");
+                        info.addActionListener(ev -> setBayFacing(node, !node.getMounted().isRearMounted()));
+                        popup.add(info);
+                    }
+    
                     popup.add(info);
-                }
-                if (facing == BOTH) {
-                    info = new JMenuItem("Change facing");
-                    info.addActionListener(ev -> setBayFacing(node, !node.getMounted().isRearMounted()));
-                    popup.add(info);
-                }
-
-                popup.add(info);
-
-                if (popup.getComponentCount() > 0) {
-                    popup.show(BayWeaponCriticalTree.this, e.getX(), e.getY());
+    
+                    if (popup.getComponentCount() > 0) {
+                        popup.show(BayWeaponCriticalTree.this, e.getX(), e.getY());
+                    }
                 }
             }
         }
