@@ -3158,34 +3158,25 @@ public class UnitUtil {
                 "data/mechfiles/UnitVerifierOptions.xml"));
         TestEntity testEntity = null;
 
-        if (unit instanceof Mech) {
+        if (unit.hasETypeFlag(Entity.ETYPE_MECH)) {
             testEntity = new TestMech((Mech) unit, entityVerifier.mechOption,
                     null);
-        } else if (unit instanceof Tank) {
-            if (unit.isSupportVehicle()) {
-                testEntity = new TestSupportVehicle((Tank) unit,
-                        entityVerifier.tankOption, null);
-            } else {
-                testEntity = new TestTank((Tank) unit,
-                        entityVerifier.tankOption, null);
-            }
-        } else if ((unit.getEntityType() == Entity.ETYPE_AERO)
-                && (unit.getEntityType() !=
-                Entity.ETYPE_DROPSHIP)
-                && (unit.getEntityType() !=
-                        Entity.ETYPE_SMALL_CRAFT)
-                && (unit.getEntityType() !=
-                        Entity.ETYPE_FIGHTER_SQUADRON)
-                && (unit.getEntityType() !=
-                        Entity.ETYPE_JUMPSHIP)
-                && (unit.getEntityType() !=
-                        Entity.ETYPE_SPACE_STATION)) {
-            testEntity =
-                    new TestAero((Aero)unit,entityVerifier.aeroOption,null);
-        } else if (unit instanceof BattleArmor){
+        } else if (unit.hasETypeFlag(Entity.ETYPE_SUPPORT_TANK)) {
+            testEntity = new TestSupportVehicle((Tank) unit,
+                    entityVerifier.tankOption, null);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_TANK)) {
+            testEntity = new TestTank((Tank) unit,
+                    entityVerifier.tankOption, null);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            testEntity = new TestSmallCraft((SmallCraft) unit,
+                    entityVerifier.aeroOption, null);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
+            testEntity = new TestAero((Aero) unit,
+                    entityVerifier.aeroOption, null);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             testEntity = new TestBattleArmor((BattleArmor) unit,
                     entityVerifier.baOption, null);
-        } else if (unit instanceof Infantry) {
+        } else if (unit.hasETypeFlag(Entity.ETYPE_INFANTRY)) {
             testEntity = new TestInfantry((Infantry)unit,
                     entityVerifier.infOption, null);
         }
