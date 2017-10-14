@@ -48,6 +48,7 @@ import megamek.common.verifier.TestAero.TransportBay;
 import megameklab.com.ui.EntitySource;
 import megameklab.com.util.IView;
 import megameklab.com.util.RefreshListener;
+import megameklab.com.util.UnitUtil;
 
 /**
  * Tab for adding and modifying aerospace transport bays.
@@ -69,6 +70,7 @@ public class TransportTab extends IView implements ActionListener {
     private final JTable tblAvailable = new JTable(modelAvailable);
     private final JButton btnRemoveBay = new JButton();
     private final JButton btnAddBay = new JButton();
+    private final JButton btnAddToCargo = new JButton();
     
     private RefreshListener refresh = null;
     
@@ -103,6 +105,13 @@ public class TransportTab extends IView implements ActionListener {
         add(btnRemoveBay, gbc);
         btnRemoveBay.addActionListener(this);
         
+        gbc.gridx = 1;
+        btnAddToCargo.setText(resourceMap.getString("TransportTab.btnAddToCargo.text")); //$NON-NLS-1$
+        btnAddToCargo.setToolTipText(resourceMap.getString("TransportTab.btnAddToCargo.tooltip")); //$NON-NLS-1$
+        add(btnAddToCargo, gbc);
+        btnAddToCargo.addActionListener(this);
+        
+        gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 3;
         gbc.gridheight = GridBagConstraints.REMAINDER;
@@ -175,6 +184,7 @@ public class TransportTab extends IView implements ActionListener {
     private void checkButtons() {
         btnRemoveBay.setEnabled(tblInstalled.getSelectedRow() >= 0);
         btnAddBay.setEnabled(canAddSelectedBay());
+        btnAddToCargo.setEnabled(UnitUtil.getEntityVerifier(getAero()).calculateWeight() < getAero().getWeight());
     }
     
     private int doorsAvailable() {
@@ -217,6 +227,27 @@ public class TransportTab extends IView implements ActionListener {
                 getAero().removeTransporter(bay);
                 refresh();
             }
+        } else if (ev.getSource() == btnAddToCargo) {
+            double size = getAero().getWeight() - UnitUtil.getEntityVerifier(getAero()).calculateWeight();
+            if (size > 0) {
+                int selected = tblInstalled.getSelectedRow();
+                Bay bay = null;
+                int bayNum = 1;
+                if ((selected >= 0)
+                        && (modelInstalled.getBayType(tblInstalled.convertRowIndexToModel(selected)) == TestAero.TransportBay.CARGO)) {
+                    bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
+                    size += bay.getCapacity();
+                    bayNum = bay.getBayNumber();
+                    getAero().removeTransporter(bay);
+                } else {
+                    while (getAero().getBayById(bayNum) != null) {
+                        bayNum++;
+                    }
+                }
+                bay = TestAero.TransportBay.CARGO.newBay(size, bayNum);
+                getAero().addTransporter(bay);
+                refresh();
+            }
         }
     }
     
@@ -253,6 +284,10 @@ public class TransportTab extends IView implements ActionListener {
         
         public Bay getBay(int row) {
             return bayList.get(row);
+        }
+        
+        public TestAero.TransportBay getBayType(int row) {
+            return bayTypeList.get(row);
         }
 
         @Override
