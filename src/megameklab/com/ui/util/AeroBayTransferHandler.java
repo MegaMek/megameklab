@@ -94,19 +94,24 @@ public class AeroBayTransferHandler extends TransferHandler {
 
         if ((support.getComponent() instanceof BayWeaponCriticalTree)) {
             final BayWeaponCriticalTree tree = (BayWeaponCriticalTree) support.getComponent();
-            // If it's a bay we move it and its entire contents. Otherwise we find the bay that was
-            // dropped on and add it there. A weapon dropped on an illegal bay will create a new one
-            // and non-bay equipment will be added at the top level regardless of the drop location.
-            // Non-weapon bay equipment cannot be dropped on an illegal bay.
-            if (mount.getType() instanceof BayWeapon) {
-                tree.addBay(mount);
-            } else if ((mount.getType() instanceof AmmoType) && (support.getUserDropAction() == AMMO_SINGLE)) {
-                // Default action for ammo is to move a single slot. Holding the ctrl key when dropping
-                // will create a AMMO_ALL command, which adds all the ammo of the type.
-                tree.addAmmo(mount, ((AmmoType)mount.getType()).getShots(),
-                        ((JTree.DropLocation) support.getDropLocation()).getPath());
+            if (eSource.getEntity().usesWeaponBays()) {
+                // If it's a bay we move it and its entire contents. Otherwise we find the bay that was
+                // dropped on and add it there. A weapon dropped on an illegal bay will create a new one
+                // and non-bay equipment will be added at the top level regardless of the drop location.
+                // Non-weapon bay equipment cannot be dropped on an illegal bay.
+                if (mount.getType() instanceof BayWeapon) {
+                    tree.addBay(mount);
+                } else if ((mount.getType() instanceof AmmoType) && (support.getUserDropAction() == AMMO_SINGLE)) {
+                    // Default action for ammo is to move a single slot. Holding the ctrl key when dropping
+                    // will create a AMMO_ALL command, which adds all the ammo of the type.
+                    tree.addAmmo(mount, ((AmmoType)mount.getType()).getShots(),
+                            ((JTree.DropLocation) support.getDropLocation()).getPath());
+                } else {
+                    tree.addToArc(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());
+                }
             } else {
-                tree.addToArc(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());
+                // Small craft don't use bays.
+                tree.addToLocation(mount);
             }
         } else {
             // Target is unallocated bay table.
