@@ -255,7 +255,11 @@ public class BayWeaponCriticalTree extends JTree {
         model.removeNodeFromParent(node);
         setRootVisible(((TreeNode)model.getRoot()).getChildCount() == 0);
         final Mounted mounted = node.getMounted();
-        if (node.getParent() instanceof BayNode) {
+        // If the parent node is a bay, we need to remove the weapon or ammo from the bay. Unless
+        // the parent node does not have a parent, in which case this equipment is being removed in the
+        // process of removing a bay.
+        if ((node.getParent() instanceof BayNode)
+                && (node.getParent().getParent() != null)) {
             Mounted bay = ((BayNode)node.getParent()).getMounted();
             if (mounted.getType() instanceof WeaponType) {
                 bay.getBayWeapons().removeElement(eSource.getEntity().getEquipmentNum(mounted));

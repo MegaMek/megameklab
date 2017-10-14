@@ -223,6 +223,8 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     public void refreshSummary() {
         panSummary.refresh();
+        // We're going to cheat and recalculate minimum crew values here in case the number of gunners changed.
+        panCrew.setFromEntity(getSmallCraft());
     }
 
     @Override
@@ -317,6 +319,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     public void armorTonnageChanged(double tonnage) {
         getSmallCraft().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
         panArmorAllocation.setFromEntity(getSmallCraft());
+        panCrew.setFromEntity(getSmallCraft());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -385,6 +388,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
     public void tonnageChanged(double tonnage) {
         getSmallCraft().setWeight(tonnage);
         panChassis.setFromEntity(getSmallCraft());
+        panCrew.setFromEntity(getSmallCraft());
         getSmallCraft().autoSetInternal();
         refresh();
         refresh.refreshPreview();
