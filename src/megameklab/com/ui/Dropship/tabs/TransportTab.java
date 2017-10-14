@@ -204,6 +204,32 @@ public class TransportTab extends IView implements ActionListener {
         return (doorsAvailable() > 0) || (bayType == TestAero.TransportBay.CARGO);
     }
     
+    /**
+     * Removes the bay from the vessel and adjusts the crew count.
+     * 
+     * @param bay
+     */
+    private void removeBay(Bay bay) {
+        int personnel = bay.getPersonnel(getAero().isClan());
+        if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            getSmallCraft().setNCrew(getSmallCraft().getNCrew() - personnel);
+        }
+        getAero().removeTransporter(bay);
+    }
+    
+    /**
+     * Adds the bay to the vessel and adjusts the crew count.
+     * 
+     * @param bay
+     */
+    private void addBay(Bay bay) {
+        getAero().addTransporter(bay);
+        int personnel = bay.getPersonnel(getAero().isClan());
+        if (getAero().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            getSmallCraft().setNCrew(getSmallCraft().getNCrew() + personnel);
+        }
+    }
+    
     public void actionPerformed(ActionEvent ev) {
         if (ev.getSource() == btnAddBay) {
             int selected = tblAvailable.getSelectedRow();
@@ -217,14 +243,14 @@ public class TransportTab extends IView implements ActionListener {
                 if (doorsAvailable() > 0) {
                     newBay.setDoors(1);
                 }
-                getAero().addTransporter(newBay);
+                addBay(newBay);
                 refresh();
             }
         } else if (ev.getSource() == btnRemoveBay) {
             int selected = tblInstalled.getSelectedRow();
             if (selected >= 0) {
                 Bay bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
-                getAero().removeTransporter(bay);
+                removeBay(bay);
                 refresh();
             }
         } else if (ev.getSource() == btnAddToCargo) {
@@ -238,14 +264,14 @@ public class TransportTab extends IView implements ActionListener {
                     bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
                     size += bay.getCapacity();
                     bayNum = bay.getBayNumber();
-                    getAero().removeTransporter(bay);
+                    removeBay(bay);
                 } else {
                     while (getAero().getBayById(bayNum) != null) {
                         bayNum++;
                     }
                 }
                 bay = TestAero.TransportBay.CARGO.newBay(size, bayNum);
-                getAero().addTransporter(bay);
+                addBay(bay);
                 refresh();
             }
         }
@@ -454,8 +480,8 @@ public class TransportTab extends IView implements ActionListener {
                 Bay newBay = modelInstalled.bayTypeList.get(row).newBay((Double)getCellEditorValue(),
                         bay.getBayNumber());
                 newBay.setDoors(bay.getDoors());
-                getAero().removeTransporter(bay);
-                getAero().addTransporter(newBay);
+                removeBay(bay);
+                addBay(newBay);
                 modelInstalled.bayList.set(row, newBay);
             } else if (column == InstalledBaysModel.COL_DOORS) {
                 modelInstalled.bayList.get(row).setDoors((Integer)getCellEditorValue());

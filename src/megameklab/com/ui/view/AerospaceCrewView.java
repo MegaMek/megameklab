@@ -229,6 +229,7 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         int minOfficers = (int)Math.ceil(nonBay / 5.0);
         ((SpinnerNumberModel)spnCrew.getModel()).setMinimum(minBase + gunners);
         ((SpinnerNumberModel)spnOfficers.getModel()).setMinimum(minOfficers);
+        // If we do not meet the minimum, set the values and trigger an event that will update the vessel.
         
         ignoreChangeEvents = true;
         spnCrew.setValue(nonBay);
@@ -263,6 +264,14 @@ public class AerospaceCrewView extends BuildView implements ActionListener, Chan
         spnLifeBoats.setValue(sc.getLifeBoats());
         spnEscapePods.setValue(sc.getEscapePods());
         ignoreChangeEvents = false;
+        
+        if (nonBay < minBase + gunners) {
+            spnCrew.setValue(minBase + gunners);
+        }
+        if (sc.getNOfficers() < minOfficers) {
+            spnOfficers.setValue(minOfficers);
+        }
+
     }
 
     @Override
