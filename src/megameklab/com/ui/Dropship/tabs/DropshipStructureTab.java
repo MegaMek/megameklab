@@ -300,8 +300,7 @@ public class DropshipStructureTab extends ITab implements DropshipBuildListener 
 
     @Override
     public void heatSinkBaseCountChanged(int count) {
-        getSmallCraft().getEngine().setBaseChassisHeatSinks(Math.max(0,  count));
-        getSmallCraft().setPodHeatSinks(getSmallCraft().getHeatSinks() - count);
+        // Only used for omnifighters
     }
 
     @Override
