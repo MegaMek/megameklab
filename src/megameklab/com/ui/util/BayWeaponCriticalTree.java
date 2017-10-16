@@ -599,7 +599,17 @@ public class BayWeaponCriticalTree extends JTree {
             for (Enumeration<MutableTreeNode> e = children(); e.hasMoreElements(); ) {
                 final Mounted m = ((EquipmentNode)e.nextElement()).getMounted();
                 if (m.getType() instanceof WeaponType) {
-                    av += ((WeaponType)m.getType()).getShortAV();
+                    // Plasma weapons add the average heat to the damage to compute bay AV limit.
+                    // That's 2d6 for canon and 10 dmg + 1d6 for rifle.
+                    if (m.getType().hasFlag(WeaponType.F_PLASMA)) {
+                        if (((WeaponType)m.getType()).getDamage() == WeaponType.DAMAGE_VARIABLE) {
+                            av += 7;
+                        } else {
+                            av += 13.5;
+                        }
+                    } else {
+                        av += ((WeaponType) m.getType()).getShortAV();
+                    }
                 }
             }
             sb.append(" (").append((int)av).append("/");
@@ -1078,8 +1088,21 @@ public class BayWeaponCriticalTree extends JTree {
                 return false;
             }
             // find current av
-            double av = bay.getBayWeapons().stream().map(eqNum -> eSource.getEntity().getEquipment(eqNum))
-                    .mapToDouble(m -> ((WeaponType)m.getType()).getShortAV()).sum();
+            double av = 0;
+            for (Integer wNum : bay.getBayWeapons()) {
+                final Mounted w = eSource.getEntity().getEquipment(wNum);
+                // Plasma weapons add the average heat to the damage to compute bay AV limit.
+                // That's 1d6 for rifle and 2d6 for canon.
+                if (w.getType().hasFlag(WeaponType.F_PLASMA)) {
+                    if (((WeaponType)w.getType()).getDamage() == WeaponType.DAMAGE_VARIABLE) {
+                        av += 7;
+                    } else {
+                        av += 13.5;
+                    }
+                } else {
+                    av += ((WeaponType) w.getType()).getShortAV();
+                }
+            }
             if (((WeaponType)eq.getType()).isCapital()) {
                 return av + ((WeaponType)eq.getType()).getShortAV() <= 70;
             } else {
